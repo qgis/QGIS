@@ -104,6 +104,7 @@ class TestStyle : public QObject
     void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
+    void testProperties();
     void testCreateSymbols();
     void testCreateColorRamps();
     void testCreateTextFormats();
@@ -193,6 +194,13 @@ void TestStyle::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
+}
+
+void TestStyle::testProperties()
+{
+  QgsStyle s;
+  s.setName( QStringLiteral( "my name" ) );
+  QCOMPARE( s.name(), QStringLiteral( "my name" ) );
 }
 
 void TestStyle::testCreateSymbols()

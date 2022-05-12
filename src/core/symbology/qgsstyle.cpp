@@ -96,6 +96,16 @@ QgsStyle::~QgsStyle()
   clear();
 }
 
+void QgsStyle::setName( const QString &name )
+{
+  mName = name;
+}
+
+QString QgsStyle::name() const
+{
+  return mName;
+}
+
 bool QgsStyle::addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update )
 {
   switch ( entity->type() )
@@ -158,6 +168,7 @@ QgsStyle *QgsStyle::defaultStyle() // static
         sDefaultStyle->upgradeIfRequired();
       }
     }
+    sDefaultStyle->setName( QObject::tr( "Default" ) );
   }
   return sDefaultStyle;
 }

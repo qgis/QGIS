@@ -188,6 +188,22 @@ class CORE_EXPORT QgsStyle : public QObject
     };
 
     /**
+     * Returns the name of the style.
+     *
+     * \see setName()
+     * \since QGIS 3.26
+     */
+    QString name() const;
+
+    /**
+     * Sets the \a name of the style.
+     *
+     * \see name()
+     * \since QGIS 3.26
+     */
+    void setName( const QString &name );
+
+    /**
      * Adds an \a entity to the style, with the specified \a name. Ownership is not transferred.
      *
      * If \a update is TRUE then the style database is updated automatically as a result.
@@ -1077,6 +1093,8 @@ class CORE_EXPORT QgsStyle : public QObject
     void labelSettingsChanged( const QString &name );
 
   private:
+
+    QString mName;
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
