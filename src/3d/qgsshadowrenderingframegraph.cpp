@@ -152,6 +152,8 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   }
 
   return mMainCameraSelector;
+  // cppcheck wrongly believes transparentObjectsRenderStateSet will leak
+  // cppcheck-suppress memleak
 }
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructShadowRenderPass()
