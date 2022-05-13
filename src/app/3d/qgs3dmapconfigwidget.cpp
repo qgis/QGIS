@@ -157,6 +157,11 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
 
+  mDebugOverlayCheckBox->setChecked( mMap->isDebugOverlayEnabled() );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  mDebugOverlayCheckBox->setVisible( true );
+#endif
+
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
   QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
@@ -370,6 +375,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
+  mMap->setIsDebugOverlayEnabled( mDebugOverlayCheckBox->isChecked() );
 
   const std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
   if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
