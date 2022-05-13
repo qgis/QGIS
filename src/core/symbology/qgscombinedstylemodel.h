@@ -68,6 +68,7 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      *
      * \see styles()
      * \see addDefaultStyle()
+     * \see removeStyle()
      */
     void addStyle( QgsStyle *style );
 
@@ -77,6 +78,13 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      * \see addStyle()
      */
     void addDefaultStyle();
+
+    /**
+     * Removes a \a style from the model.
+     *
+     * \see addStyle()
+     */
+    void removeStyle( QgsStyle *style );
 
     /**
      * Returns a list of all styles shown in the model.

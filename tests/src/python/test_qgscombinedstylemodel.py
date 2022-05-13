@@ -107,6 +107,11 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(2, 0)), 'format 3')
         self.assertFalse(model.data(model.index(2, 0), QgsCombinedStyleModel.IsTitleRole))
 
+        model.removeStyle(style2)
+        self.assertEqual(model.rowCount(), 0)
+
+        model.removeStyle(style2)
+
 
 if __name__ == '__main__':
     unittest.main()
