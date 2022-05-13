@@ -1983,13 +1983,13 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         symbol = single_symbol_renderer.symbol()
         symbol.setColor(QColor.fromRgb(255, 0, 0))
 
-        props = layer_date.temporalProperties()
-        props.setIsActive(True)
-        props = layer_date.temporalProperties()
-        self.assertTrue(props.isActive())
-        self.assertEqual(props.startField(), 'event_date')
-        self.assertFalse(props.endField())
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
+        props_date = layer_date.temporalProperties()
+        props_date.setIsActive(False)
+        props_date = layer_date.temporalProperties()
+        self.assertFalse(props_date.isActive())
+        self.assertEqual(props_date.startField(), 'event_date')
+        self.assertFalse(props_date.endField())
+        self.assertEqual(props_date.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeInstantFromField)
 
         # sample table with likely dual fields
         layer_range = QgsVectorLayer("Point?srid=EPSG:4326&field=event_id:integer&field=start_date:datetime&field=end_date:datetime", "test_range", "memory")
@@ -2007,13 +2007,13 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         symbol = single_symbol_renderer.symbol()
         symbol.setColor(QColor.fromRgb(0, 0, 255))
 
-        props = layer_range.temporalProperties()
-        props.setIsActive(True)
-        props = layer_range.temporalProperties()
-        self.assertTrue(props.isActive())
-        self.assertEqual(props.startField(), 'start_date')
-        self.assertEqual(props.endField(), 'end_date')
-        self.assertEqual(props.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
+        props_range = layer_range.temporalProperties()
+        props_range.setIsActive(False)
+        props_range = layer_range.temporalProperties()
+        self.assertFalse(props_range.isActive())
+        self.assertEqual(props_range.startField(), 'start_date')
+        self.assertEqual(props_range.endField(), 'end_date')
+        self.assertEqual(props_range.mode(), QgsVectorLayerTemporalProperties.ModeFeatureDateTimeStartAndEndFromFields)
 
         project = QgsProject()
         project.addMapLayers([layer_date, layer_range])
@@ -2055,8 +2055,9 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_no_filter")
 
         # Activate!
-        project.writeEntryBool("WMSExposeTemporalProperties", "/", True)
-        self.assertTrue(QgsServerProjectUtils.wmsExposeTemporalProperties(project))
+        props_date.setIsActive(True)
+        props_range.setIsActive(True)
+
         r, h = self._result(self._execute_request_project(qs, project))
         self._img_diff_error(r, h, "WMS_GetMap_TemporalProperties_date_filter")
 
