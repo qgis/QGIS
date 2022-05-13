@@ -164,10 +164,7 @@ QgsStyle *QgsStyle::defaultStyle() // static
     else
     {
       sDefaultStyle = new QgsStyle;
-      if ( sDefaultStyle->load( styleFilename ) )
-      {
-        sDefaultStyle->upgradeIfRequired();
-      }
+      sDefaultStyle->load( styleFilename );
     }
     sDefaultStyle->setName( QObject::tr( "Default" ) );
   }
@@ -845,10 +842,9 @@ bool QgsStyle::load( const QString &filename )
   }
 
   mFileName = filename;
+  upgradeIfRequired();
   return true;
 }
-
-
 
 bool QgsStyle::save( const QString &filename )
 {
