@@ -112,6 +112,12 @@ void QgsProjectStyleSettings::reset()
   mDefaultSymbolOpacity = 1.0;
 
   mStyleDatabases.clear();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  for ( QgsStyle *style : std::as_const( mStyles ) )
+  {
+    mCombinedStyleModel->removeStyle( style );
+  }
+#endif
   qDeleteAll( mStyles );
   mStyles.clear();
 
@@ -170,6 +176,12 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   }
 
   {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    for ( QgsStyle *style : std::as_const( mStyles ) )
+    {
+      mCombinedStyleModel->removeStyle( style );
+    }
+#endif
     qDeleteAll( mStyles );
     mStyles.clear();
     mStyleDatabases.clear();
@@ -187,6 +199,9 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
         QgsStyle *style = new QgsStyle( this );
         style->load( fullPath );
         style->setName( QFileInfo( fullPath ).completeBaseName() );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+        mCombinedStyleModel->addStyle( style );
+#endif
         mStyles.append( style );
       }
     }
@@ -273,6 +288,9 @@ void QgsProjectStyleSettings::addStyleDatabasePath( const QString &path )
   style->load( path );
   style->setName( QFileInfo( path ).completeBaseName() );
   mStyles.append( style );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mCombinedStyleModel->addStyle( style );
+#endif
 
   emit styleDatabasesChanged();
 }
@@ -282,6 +300,12 @@ void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
   if ( paths == mStyleDatabases )
     return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  for ( QgsStyle *style : std::as_const( mStyles ) )
+  {
+    mCombinedStyleModel->removeStyle( style );
+  }
+#endif
   qDeleteAll( mStyles );
   mStyles.clear();
 
@@ -291,6 +315,9 @@ void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
     style->load( path );
     style->setName( QFileInfo( path ).completeBaseName() );
     mStyles.append( style );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    mCombinedStyleModel->addStyle( style );
+#endif
   }
 
   mStyleDatabases = paths;

@@ -179,7 +179,11 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * Returns the combined style model which includes all style databases
      * associated with the project.
      *
+     * This model also includes QgsStyle::defaultStyle().
+     *
      * \note This is only available on builds based on Qt 5.13 or later.
+     *
+     * \see styles()
      */
     QgsCombinedStyleModel *combinedStyleModel();
     SIP_END

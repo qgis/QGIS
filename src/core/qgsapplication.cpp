@@ -78,6 +78,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgsbabelformatregistry.h"
 #include "qgsdbquerylog.h"
+#include "qgsprojectstylesettings.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -87,6 +88,9 @@
 #include "layout/qgspagesizeregistry.h"
 #include "qgsrecentstylehandler.h"
 #include "qgsdatetimefieldformatter.h"
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+#include "qgscombinedstylemodel.h"
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
@@ -443,8 +447,15 @@ void QgsApplication::init( QString profileFolder )
     bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
   }
 
+  // trigger creation of default style
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle();
   if ( !members()->mStyleModel )
-    members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+    members()->mStyleModel = new QgsStyleModel( defaultStyle );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  // initialization is a bit of a mess here -- construction of QgsStyleModel triggers construction of QgsProject::instance(),
+  // so QgsProject members CANNOT rely on the default style model being available at that time.
+  QgsProject::instance()->styleSettings()->combinedStyleModel()->addDefaultStyle();
+#endif
 
   ABISYM( mInitialized ) = true;
 }
