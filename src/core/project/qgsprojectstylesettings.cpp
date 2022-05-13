@@ -314,6 +314,7 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
   {
     style->createMemoryDatabase();
     style->importXml( path );
+    style->setFileName( path );
   }
   else
   {
