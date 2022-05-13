@@ -50,11 +50,15 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
 
   mStyles.append( style );
 
-  QgsSingleItemModel *titleModel = new QgsSingleItemModel( nullptr, style->name(),
+  QgsSingleItemModel *titleModel = new QgsSingleItemModel( this,
   {
-    { IsTitleRole, true },
-    { QgsStyleModel::StyleFileName, style->fileName() },
-    { QgsStyleModel::StyleName, style->name() },
+    {
+      { Qt::DisplayRole, style->name() },
+      { Qt::ToolTipRole, style->name() },
+      { IsTitleRole, true },
+      { QgsStyleModel::StyleFileName, style->fileName() },
+      { QgsStyleModel::StyleName, style->name() },
+    }, {}
   } );
   addSourceModel( titleModel );
   mTitleModels.insert( style, titleModel );
@@ -93,12 +97,17 @@ void QgsCombinedStyleModel::addDefaultStyle()
   QgsStyle *defaultStyle = QgsStyle::defaultStyle();
   mStyles.append( defaultStyle );
 
-  QgsSingleItemModel *titleModel = new QgsSingleItemModel( nullptr, defaultStyle->name(),
+  QgsSingleItemModel *titleModel = new QgsSingleItemModel( this,
   {
-    { IsTitleRole, true },
-    { QgsStyleModel::StyleFileName, defaultStyle->fileName() },
-    { QgsStyleModel::StyleName, defaultStyle->name() },
+    {
+      { Qt::DisplayRole, defaultStyle->name() },
+      { Qt::ToolTipRole, defaultStyle->name() },
+      { IsTitleRole, true },
+      { QgsStyleModel::StyleFileName, defaultStyle->fileName() },
+      { QgsStyleModel::StyleName, defaultStyle->name() },
+    }, {}
   } );
+
   addSourceModel( titleModel );
   mTitleModels.insert( defaultStyle, titleModel );
 

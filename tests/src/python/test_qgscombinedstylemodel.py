@@ -48,6 +48,7 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
         model.addStyle(style1)
         self.assertEqual(model.styles(), [style1])
 
+        self.assertEqual(model.columnCount(), 2)
         self.assertEqual(model.rowCount(), 1)
         self.assertEqual(model.data(model.index(0, 0)), 'first style')
         self.assertTrue(model.data(model.index(0, 0), QgsCombinedStyleModel.IsTitleRole))
