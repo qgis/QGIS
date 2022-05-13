@@ -89,10 +89,15 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         spy = QSignalSpy(p.styleDatabasesChanged)
 
         self.assertFalse(p.styleDatabasePaths())
+        self.assertFalse(p.styles())
 
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db'])
+
+        self.assertEqual(len(p.styles()), 1)
+        self.assertEqual(p.styles()[0].fileName(), unitTestDataPath() + '/style1.db')
+        self.assertEqual(p.styles()[0].name(), 'style1')
 
         # try re-adding path which is already present
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
@@ -102,10 +107,17 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.addStyleDatabasePath(unitTestDataPath() + '/style2.db')
         self.assertEqual(len(spy), 2)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db', unitTestDataPath() + '/style2.db'])
+        self.assertEqual(p.styles()[0].fileName(), unitTestDataPath() + '/style1.db')
+        self.assertEqual(p.styles()[0].name(), 'style1')
+        self.assertEqual(p.styles()[1].fileName(), unitTestDataPath() + '/style2.db')
+        self.assertEqual(p.styles()[1].name(), 'style2')
 
         p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
         self.assertEqual(len(spy), 3)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style3.db'])
+
+        self.assertEqual(p.styles()[0].fileName(), unitTestDataPath() + '/style3.db')
+        self.assertEqual(p.styles()[0].name(), 'style3')
 
         p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
         self.assertEqual(len(spy), 3)
@@ -113,6 +125,7 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.setStyleDatabasePaths([])
         self.assertEqual(len(spy), 4)
         self.assertFalse(p.styleDatabasePaths())
+        self.assertFalse(p.styles())
 
     def testReadWrite(self):
         p = QgsProjectStyleSettings()
@@ -145,6 +158,8 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertTrue(p2.defaultTextFormat().isValid())
         self.assertFalse(p2.randomizeDefaultSymbolColor())
         self.assertEqual(p2.defaultSymbolOpacity(), 0.25)
+
+        self.assertEqual(p2.styleDatabasePaths(), [unitTestDataPath() + '/style1.db', unitTestDataPath() + '/style2.db'])
 
 
 if __name__ == '__main__':
