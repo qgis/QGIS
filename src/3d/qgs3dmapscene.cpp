@@ -1239,6 +1239,7 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
     if ( eng )
       m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( eng->window() ),
                                eng->root(),
+                               this,
                                mCameraController,
                                mMap );
   }
