@@ -14,6 +14,8 @@
  ***************************************************************************/
 #include "qgspointcloudrendererregistry.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
 
 // default renderers
 #include "qgspointcloudattributebyramprenderer.h"
@@ -161,8 +163,8 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     classes.removeAll( 1 );
     if ( !classes.empty() )
     {
-      std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = std::make_unique< QgsPointCloudClassifiedRenderer >();
-      renderer->setAttribute( QStringLiteral( "Classification" ) );
+      const QgsPointCloudCategoryList categories = classificationAttributeCategories( layer );
+      std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = std::make_unique< QgsPointCloudClassifiedRenderer >( QLatin1String( "Classification" ), categories );
       return renderer.release();
     }
   }
@@ -188,3 +190,21 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   return renderer.release();
 }
 
+QgsPointCloudCategoryList QgsPointCloudRendererRegistry::classificationAttributeCategories( const QgsPointCloudLayer *layer )
+{
+  if ( !layer )
+    return QgsPointCloudCategoryList();
+
+  const QgsPointCloudStatistics stats = layer->statistics();
+  const QList<int> layerClasses = stats.classesOf( QStringLiteral( "Classification" ) );
+  const QgsPointCloudCategoryList defaultCategories = QgsPointCloudClassifiedRenderer::defaultCategories();
+
+  QgsPointCloudCategoryList categories;
+  for ( const int &layerClass : layerClasses )
+  {
+    const QColor color = layerClass < defaultCategories.size() ? defaultCategories.at( layerClass ).color() : QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+    const QString label = layerClass < defaultCategories.size() ? QgsPointCloudDataProvider::translatedLasClassificationCodes().value( layerClass, QString::number( layerClass ) ) : QString::number( layerClass );
+    categories.append( QgsPointCloudCategory( layerClass, color, label ) );
+  }
+  return categories;
+}
