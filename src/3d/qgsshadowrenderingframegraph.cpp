@@ -57,6 +57,7 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   // forwaredRenderStateSet    | sortPolicy
   // mFrustumCulling           | transparentObjectsRenderStateSet
   // mForwardClearBuffers      |
+  // mDebugOverlay             |
   mMainCameraSelector = new Qt3DRender::QCameraSelector;
   mMainCameraSelector->setCamera( mMainCamera );
 
@@ -150,6 +151,11 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
     blenEquationArgs->setDestinationAlpha( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
     transparentObjectsRenderStateSet->addRenderState( blenEquationArgs );
   }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  mDebugOverlay = new Qt3DRender::QDebugOverlay( mForwardClearBuffers );
+  mDebugOverlay->setEnabled( false );
+#endif
 
   // cppcheck wrongly believes transparentObjectsRenderStateSet will leak
   // cppcheck-suppress memleak
@@ -670,4 +676,14 @@ void QgsShadowRenderingFrameGraph::setRenderCaptureEnabled( bool enabled )
     return;
   mRenderCaptureEnabled = enabled;
   mRenderCaptureTargetSelector->setEnabled( mRenderCaptureEnabled );
+}
+
+void QgsShadowRenderingFrameGraph::setDebugOverlayEnabled( bool enabled )
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  mDebugOverlay->setEnabled( enabled );
+#else
+  Q_UNUSED( enabled )
+  qDebug() << "Cannot display debug overlay. Qt version 5.15 or above is needed.";
+#endif
 }
