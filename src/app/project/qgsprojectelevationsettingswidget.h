@@ -46,9 +46,6 @@ class QgsProjectElevationSettingsWidgetFactory : public QgsOptionsWidgetFactory
   public:
     explicit QgsProjectElevationSettingsWidgetFactory( QObject *parent = nullptr );
 
-    QString title() const override;
-    QIcon icon() const override;
-
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
 };
 
