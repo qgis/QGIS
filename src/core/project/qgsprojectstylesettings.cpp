@@ -25,13 +25,19 @@
 #include "qgstextformat.h"
 #include "qgsstyle.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+#include "qgscombinedstylemodel.h"
+#endif
+
 #include <QDomElement>
 
 QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mCombinedStyleModel = new QgsCombinedStyleModel( this );
+#endif
 }
 
 QgsSymbol *QgsProjectStyleSettings::defaultSymbol( Qgis::SymbolType symbolType ) const
@@ -290,3 +296,10 @@ void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
   mStyleDatabases = paths;
   emit styleDatabasesChanged();
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
+{
+  return mCombinedStyleModel;
+}
+#endif

@@ -28,6 +28,7 @@ class QgsProject;
 class QgsSymbol;
 class QgsColorRamp;
 class QgsStyle;
+class QgsCombinedStyleModel;
 
 /**
  * \brief Contains settings and properties relating to how a QgsProject should handle
@@ -171,6 +172,19 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      */
     void setStyleDatabasePaths( const QStringList &paths );
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    SIP_IF_FEATURE( CONCATENATED_TABLES_MODEL )
+
+    /**
+     * Returns the combined style model which includes all style databases
+     * associated with the project.
+     *
+     * \note This is only available on builds based on Qt 5.13 or later.
+     */
+    QgsCombinedStyleModel *combinedStyleModel();
+    SIP_END
+#endif
+
   signals:
 
     /**
@@ -193,6 +207,8 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
     QStringList mStyleDatabases;
     QList< QPointer< QgsStyle > > mStyles;
+
+    QgsCombinedStyleModel *mCombinedStyleModel = nullptr;
 
 };
 
