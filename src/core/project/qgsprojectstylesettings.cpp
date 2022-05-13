@@ -196,13 +196,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
         const QString fullPath = context.pathResolver().readPath( path );
         mStyleDatabases.append( fullPath );
 
-        QgsStyle *style = new QgsStyle( this );
-        style->load( fullPath );
-        style->setName( QFileInfo( fullPath ).completeBaseName() );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-        mCombinedStyleModel->addStyle( style );
-#endif
-        mStyles.append( style );
+        loadStyleAtPath( fullPath );
       }
     }
   }
@@ -283,14 +277,7 @@ void QgsProjectStyleSettings::addStyleDatabasePath( const QString &path )
     return;
 
   mStyleDatabases.append( path );
-
-  QgsStyle *style = new QgsStyle( this );
-  style->load( path );
-  style->setName( QFileInfo( path ).completeBaseName() );
-  mStyles.append( style );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  mCombinedStyleModel->addStyle( style );
-#endif
+  loadStyleAtPath( path );
 
   emit styleDatabasesChanged();
 }
@@ -311,17 +298,32 @@ void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
 
   for ( const QString &path : paths )
   {
-    QgsStyle *style = new QgsStyle( this );
-    style->load( path );
-    style->setName( QFileInfo( path ).completeBaseName() );
-    mStyles.append( style );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    mCombinedStyleModel->addStyle( style );
-#endif
+    loadStyleAtPath( path );
   }
 
   mStyleDatabases = paths;
   emit styleDatabasesChanged();
+}
+
+void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
+{
+  QgsStyle *style = new QgsStyle( this );
+
+  const QFileInfo fileInfo( path );
+  if ( fileInfo.suffix().compare( QLatin1String( "xml" ), Qt::CaseInsensitive ) == 0 )
+  {
+    style->createMemoryDatabase();
+    style->importXml( path );
+  }
+  else
+  {
+    style->load( path );
+  }
+  style->setName( fileInfo.completeBaseName() );
+  mStyles.append( style );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mCombinedStyleModel->addStyle( style );
+#endif
 }
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
