@@ -58,11 +58,17 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
     txtDatabase->setText( settings.value( key + QStringLiteral( "/database" ) ).toString() );
     txtHost->setText( settings.value( key + QStringLiteral( "/host" ) ).toString() );
     QString port = settings.value( key + QStringLiteral( "/port" ) ).toString();
-    if ( port.length() == 0 )
+
+    // User can set database without host and port, meaning he is using a service (tnsnames.ora)
+    // if he sets host, port has to be set also (and vice versa)
+    // https://github.com/qgis/QGIS/issues/38979
+    if ( port.length() == 0
+         && ( !txtHost->text().isEmpty() || txtDatabase->text().isEmpty() ) )
     {
       port = QStringLiteral( "1521" );
     }
     txtPort->setText( port );
+
     txtOptions->setText( settings.value( key + QStringLiteral( "/dboptions" ) ).toString() );
     txtWorkspace->setText( settings.value( key + QStringLiteral( "/dbworkspace" ) ).toString() );
     txtSchema->setText( settings.value( key + QStringLiteral( "/schema" ) ).toString() );
