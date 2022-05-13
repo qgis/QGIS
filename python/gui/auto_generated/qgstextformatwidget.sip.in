@@ -183,7 +183,7 @@ Updates line placement options to reflect current state of widget
 Updates label placement options to reflect current state of widget
 %End
 
-    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath );
 %Docstring
 Sets the current text settings from a style entry.
 

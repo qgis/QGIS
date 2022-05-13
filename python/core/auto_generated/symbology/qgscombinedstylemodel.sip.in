@@ -30,11 +30,6 @@ A model which contains entities from multiple :py:class:`QgsStyle` databases.
 %End
   public:
 
-    enum Role
-    {
-      IsTitleRole,
-    };
-
     explicit QgsCombinedStyleModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCombinedStyleModel with the specified ``parent`` object.

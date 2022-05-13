@@ -26,6 +26,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgssymbolanimationsettingswidget.h"
+#include "qgsprojectstylesettings.h"
 
 #include <QMessageBox>
 
@@ -128,7 +129,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   connect( mSymbolOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
 
-  connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
+  connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::selectionChangedWithStylePath, this, &QgsSymbolsListWidget::setSymbolFromStyle );
   connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbolsListWidget::saveSymbol );
 }
 
@@ -599,10 +600,26 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   whileBlocking( mStandardizeRingsAction )->setChecked( mSymbol->forceRHR() );
 }
 
-void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity )
+void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity, const QString &stylePath )
 {
+  QgsStyle *style = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( mStyle != QgsStyle::defaultStyle() )
+  {
+    // get new instance of symbol from style
+    style = mStyle;
+  }
+  else
+  {
+    style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
+  }
+#else
+  ( void )stylePath;
+  style = mStyle;
+#endif
+
   // get new instance of symbol from style
-  std::unique_ptr< QgsSymbol > s( mStyle->symbol( name ) );
+  std::unique_ptr< QgsSymbol > s( style->symbol( name ) );
   if ( !s )
     return;
 

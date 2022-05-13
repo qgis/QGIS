@@ -22,6 +22,8 @@
 #include "qgsgui.h"
 #include "qgswindowmanagerinterface.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 
 //
 // QgsReadOnlyStyleModel
@@ -39,6 +41,14 @@ QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
 {
 
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent )
+  : QgsStyleProxyModel( style, parent )
+{
+
+}
+#endif
 
 Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
 {
@@ -132,8 +142,13 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 {
   mStyle = style;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this )
+           : new QgsReadOnlyStyleModel( mStyle, this );
+#else
   mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsApplication::defaultStyleModel(), this )
            : new QgsReadOnlyStyleModel( mStyle, this );
+#endif
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
@@ -454,7 +469,10 @@ void QgsStyleItemsListWidget::onSelectionChanged( const QModelIndex &index )
   const QString symbolName = mModel->data( mModel->index( index.row(), QgsStyleModel::Name ) ).toString();
   lblSymbolName->setText( symbolName );
 
+  const QString sourceName = mModel->data( mModel->index( index.row(), 0 ), QgsStyleModel::StyleFileName ).toString();
+
   emit selectionChanged( symbolName, static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() ) );
+  emit selectionChangedWithStylePath( symbolName, static_cast< QgsStyle::StyleEntity >( mModel->data( index, QgsStyleModel::TypeRole ).toInt() ), sourceName );
 }
 
 void QgsStyleItemsListWidget::groupsCombo_currentIndexChanged( int index )
