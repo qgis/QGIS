@@ -150,20 +150,11 @@ bool QgsProjectElevationSettingsWidget::isValid()
 //
 
 QgsProjectElevationSettingsWidgetFactory::QgsProjectElevationSettingsWidgetFactory( QObject *parent )
-  : QgsOptionsWidgetFactory()
+  : QgsOptionsWidgetFactory( tr( "Terrain" ), QgsApplication::getThemeIcon( QStringLiteral( "mLayoutItem3DMap.svg" ) ) )
 {
   setParent( parent );
 }
 
-QString QgsProjectElevationSettingsWidgetFactory::title() const
-{
-  return tr( "Terrain" );
-}
-
-QIcon QgsProjectElevationSettingsWidgetFactory::icon() const
-{
-  return QgsApplication::getThemeIcon( QStringLiteral( "mLayoutItem3DMap.svg" ) );
-}
 
 QgsOptionsPageWidget *QgsProjectElevationSettingsWidgetFactory::createWidget( QWidget *parent ) const
 {
