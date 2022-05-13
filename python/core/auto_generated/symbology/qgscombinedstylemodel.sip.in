@@ -49,11 +49,20 @@ Ownership of ``style`` is not transferred.
 .. seealso:: :py:func:`styles`
 
 .. seealso:: :py:func:`addDefaultStyle`
+
+.. seealso:: :py:func:`removeStyle`
 %End
 
     void addDefaultStyle();
 %Docstring
 Adds the default style (:py:func:`QgsStyle.defaultStyle()`) to the model.
+
+.. seealso:: :py:func:`addStyle`
+%End
+
+    void removeStyle( QgsStyle *style );
+%Docstring
+Removes a ``style`` from the model.
 
 .. seealso:: :py:func:`addStyle`
 %End

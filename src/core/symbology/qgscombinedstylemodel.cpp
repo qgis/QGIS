@@ -70,6 +70,24 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
   mOwnedStyleModels.insert( style, styleModel );
 }
 
+void QgsCombinedStyleModel::removeStyle( QgsStyle *style )
+{
+  if ( QgsSingleItemModel *model = mTitleModels.value( style ) )
+  {
+    removeSourceModel( model );
+    mTitleModels.remove( style );
+    delete model;
+  }
+
+  if ( QgsStyleModel *model = mOwnedStyleModels.value( style ) )
+  {
+    removeSourceModel( model );
+    mOwnedStyleModels.remove( style );
+    delete model;
+  }
+  mStyles.removeAll( style );
+}
+
 void QgsCombinedStyleModel::addDefaultStyle()
 {
   QgsStyle *defaultStyle = QgsStyle::defaultStyle();
