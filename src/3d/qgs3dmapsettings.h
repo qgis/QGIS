@@ -640,6 +640,23 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void set3dAxisSettings( const Qgs3DAxisSettings &axisSettings ) SIP_SKIP;
 
+    /**
+     * Returns whether debug overlay is enabled
+     * \see setIsDebugOverlayEnabled()
+     * \since QGIS 3.26
+     */
+    bool isDebugOverlayEnabled() const { return mIsDebugOverlayEnabled; }
+
+    /**
+     * Sets whether debug overlay is enabled
+     * The debug overlay displays some debugging and profiling information.
+     * It has been introduced in Qt version 5.15.
+     * This parameter is transient. It is not saved in the project parameters.
+     * \see isDebugOverlayEnabled()
+     * \since QGIS 3.26
+     */
+    void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
+
   signals:
 
     /**
@@ -826,6 +843,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void axisSettingsChanged();
 
+    /**
+     * Emitted when the debug overaly is enabled or disabled
+     * \since QGIS 3.26
+     */
+    void debugOverlayEnabledChanged( bool debugOverlayEnabled );
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -894,6 +917,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     Qgis::RendererUsage mRendererUsage;
 
     Qgs3DAxisSettings m3dAxisSettings; //!< 3d axis related configuration
+
+    bool mIsDebugOverlayEnabled = false;
 
 };
 

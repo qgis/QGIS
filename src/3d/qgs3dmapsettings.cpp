@@ -92,7 +92,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
   , mRendererUsage( other.mRendererUsage )
   , m3dAxisSettings( other.m3dAxisSettings )
-
+  , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -915,6 +915,15 @@ void Qgs3DMapSettings::setViewFrustumVisualizationEnabled( bool enabled )
     mVisualizeViewFrustum = enabled;
     emit viewFrustumVisualizationEnabledChanged();
   }
+}
+
+void Qgs3DMapSettings::setIsDebugOverlayEnabled( bool debugOverlayEnabled )
+{
+  if ( debugOverlayEnabled == mIsDebugOverlayEnabled )
+    return;
+
+  mIsDebugOverlayEnabled = debugOverlayEnabled;
+  emit debugOverlayEnabledChanged( mIsDebugOverlayEnabled );
 }
 
 
