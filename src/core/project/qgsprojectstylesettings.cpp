@@ -271,6 +271,20 @@ QList<QgsStyle *> QgsProjectStyleSettings::styles() const
   return res;
 }
 
+QgsStyle *QgsProjectStyleSettings::styleAtPath( const QString &path )
+{
+  if ( path == QgsStyle::defaultStyle()->fileName() )
+    return QgsStyle::defaultStyle();
+
+  for ( QgsStyle *style : mStyles )
+  {
+    if ( style->fileName() == path )
+      return style;
+  }
+
+  return nullptr;
+}
+
 void QgsProjectStyleSettings::addStyleDatabasePath( const QString &path )
 {
   if ( mStyleDatabases.contains( path ) )

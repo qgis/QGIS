@@ -149,6 +149,11 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     QList< QgsStyle * > styles() const;
 
     /**
+     * Returns a reference to the style database associated with the project with matching file \a path.
+     */
+    QgsStyle *styleAtPath( const QString &path );
+
+    /**
      * Adds a style database \a path to the project.
      *
      * Paths can be either style .db databases, or .xml exports of style databases.

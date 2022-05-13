@@ -125,6 +125,10 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style1')
         self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(1, 0)), 'style2')
 
+        self.assertEqual(p.styleAtPath(unitTestDataPath() + '/style1.db'), p.styles()[0])
+        self.assertEqual(p.styleAtPath(unitTestDataPath() + '/style2.db'), p.styles()[1])
+        self.assertFalse(p.styleAtPath('.xxx'))
+
         p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
         self.assertEqual(len(spy), 3)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style3.db'])

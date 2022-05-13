@@ -153,6 +153,11 @@ Returns a list of all the styles associated with the project.
 .. seealso:: :py:func:`styleDatabasePaths`
 %End
 
+    QgsStyle *styleAtPath( const QString &path );
+%Docstring
+Returns a reference to the style database associated with the project with matching file ``path``.
+%End
+
     void addStyleDatabasePath( const QString &path );
 %Docstring
 Adds a style database ``path`` to the project.
