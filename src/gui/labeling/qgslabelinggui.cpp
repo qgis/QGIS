@@ -32,6 +32,7 @@
 #include "callouts/qgscalloutwidget.h"
 #include "qgslabelobstaclesettingswidget.h"
 #include "qgslabellineanchorwidget.h"
+#include "qgsprojectstylesettings.h"
 
 #include <mutex>
 
@@ -694,8 +695,18 @@ void QgsLabelingGui::updateUi()
   }
 }
 
-void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
+void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
 {
+  QgsStyle *style = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
+#else
+  ( void )stylePath;
+#endif
+
+  if ( !style )
+    style = QgsStyle::defaultStyle();
+
   switch ( type )
   {
     case QgsStyle::SymbolEntity:
@@ -706,16 +717,16 @@ void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEnt
     case QgsStyle::LegendPatchShapeEntity:
     case QgsStyle::Symbol3DEntity:
     {
-      QgsTextFormatWidget::setFormatFromStyle( name, type );
+      QgsTextFormatWidget::setFormatFromStyle( name, type, stylePath );
       return;
     }
 
     case QgsStyle::LabelSettingsEntity:
     {
-      if ( !QgsStyle::defaultStyle()->labelSettingsNames().contains( name ) )
+      if ( !style->labelSettingsNames().contains( name ) )
         return;
 
-      QgsPalLayerSettings settings = QgsStyle::defaultStyle()->labelSettings( name );
+      QgsPalLayerSettings settings = style->labelSettings( name );
       if ( settings.fieldName.isEmpty() )
       {
         // if saved settings doesn't have a field name stored, retain the current one

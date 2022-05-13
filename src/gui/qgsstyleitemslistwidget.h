@@ -24,6 +24,7 @@
 
 class QgsStyle;
 class QMenu;
+class QgsCombinedStyleModel;
 
 
 #ifndef SIP_RUN
@@ -35,6 +36,11 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
 
     explicit QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr );
     explicit QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent = nullptr );
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    explicit QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent = nullptr );
+#endif
+
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
 
@@ -155,6 +161,16 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
      * \param type Newly selected item type
      */
     void selectionChanged( const QString &name, QgsStyle::StyleEntity type );
+
+    /**
+     * Emitted when the selected item is changed in the widget.
+     * \param name Newly selected item name
+     * \param type Newly selected item type
+     * \param stylePath file path to associated style database
+     *
+     * \since QGIS 3.26
+     */
+    void selectionChangedWithStylePath( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath );
 
     /**
      * Emitted when the user has opted to save a new entity to the style
