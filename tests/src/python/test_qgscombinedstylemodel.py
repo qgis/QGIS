@@ -14,7 +14,7 @@ import os
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import QCoreApplication, QEvent
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, Qt
 
 from qgis.core import (
     QgsStyle,
@@ -47,6 +47,8 @@ class TestQgsCombinedStyleModel(unittest.TestCase):
 
         model.addStyle(style1)
         self.assertEqual(model.styles(), [style1])
+        self.assertEqual(model.headerData(0, Qt.Horizontal), 'Name')
+        self.assertEqual(model.headerData(1, Qt.Horizontal), 'Tags')
 
         self.assertEqual(model.columnCount(), 2)
         self.assertEqual(model.rowCount(), 1)

@@ -61,6 +61,9 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      */
     explicit QgsCombinedStyleModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
+
     /**
      * Adds a style to the model.
      *

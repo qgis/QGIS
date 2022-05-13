@@ -512,6 +512,11 @@ Qt::ItemFlags QgsStyleModel::flags( const QModelIndex &index ) const
 
 QVariant QgsStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
+  return headerDataStatic( section, orientation, role );
+}
+
+QVariant QgsStyleModel::headerDataStatic( int section, Qt::Orientation orientation, int role )
+{
   if ( role == Qt::DisplayRole )
   {
     if ( orientation == Qt::Vertical ) //row

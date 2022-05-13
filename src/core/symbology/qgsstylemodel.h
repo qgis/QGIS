@@ -199,7 +199,10 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
     int offsetForEntity( QgsStyle::StyleEntity entity ) const;
+    static QVariant headerDataStatic( int section, Qt::Orientation orientation,
+                                      int role = Qt::DisplayRole );
 
+    friend class QgsCombinedStyleModel;
 };
 
 /**
