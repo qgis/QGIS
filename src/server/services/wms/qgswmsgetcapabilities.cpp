@@ -1294,7 +1294,6 @@ namespace QgsWms
 
           // Add WMS time dimension if not already added
           if ( ! timeDimensionAdded
-               && QgsServerProjectUtils::wmsExposeTemporalProperties( *project )
                && l->temporalProperties()
                && l->temporalProperties()->isActive() )
           {

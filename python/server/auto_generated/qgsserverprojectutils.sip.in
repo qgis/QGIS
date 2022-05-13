@@ -229,17 +229,6 @@ Returns if the geometry is displayed as Well Known Text in GetFeatureInfo reques
 :return: if the geometry is displayed as Well Known Text in GetFeatureInfo request.
 %End
 
-  bool wmsExposeTemporalProperties( const QgsProject &project );
-%Docstring
-Returns if the temporal properties are exposed to WMS.
-
-:param project: the QGIS project
-
-:return: if the temporal properties are exposed.
-
-.. versionadded:: 3.26
-%End
-
   bool wmsFeatureInfoUseAttributeFormSettings( const QgsProject &project );
 %Docstring
 Returns if feature form settings should be considered for the format of the feature info response

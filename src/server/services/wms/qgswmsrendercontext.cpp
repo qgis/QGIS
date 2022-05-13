@@ -155,11 +155,6 @@ bool QgsWmsRenderContext::renderMapTiles() const
   return QgsServerProjectUtils::wmsRenderMapTiles( *mProject );
 }
 
-bool QgsWmsRenderContext::exposeTemporalProperties() const
-{
-  return QgsServerProjectUtils::wmsExposeTemporalProperties( *mProject );
-}
-
 int QgsWmsRenderContext::precision() const
 {
   int precision = QgsServerProjectUtils::wmsFeatureInfoPrecision( *mProject );

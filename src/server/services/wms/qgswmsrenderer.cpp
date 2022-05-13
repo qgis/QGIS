@@ -1313,35 +1313,32 @@ namespace QgsWms
     mapSettings.setSelectionColor( mProject->selectionColor() );
 
     // Set WMS temporal properties
-    if ( mContext.exposeTemporalProperties( ) )
+    const QString timeString { mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ) };
+    if ( ! timeString.isEmpty() )
     {
-      const QString timeString { mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ) };
-      if ( ! timeString.isEmpty() )
+      QgsDateTimeRange range;
+      // First try with a simple date/datetime instant
+      const QDateTime dt { QDateTime::fromString( timeString, Qt::DateFormat::ISODateWithMs ) };
+      if ( dt.isValid() )
       {
-        QgsDateTimeRange range;
-        // First try with a simple date/datetime instant
-        const QDateTime dt { QDateTime::fromString( timeString, Qt::DateFormat::ISODateWithMs ) };
-        if ( dt.isValid() )
-        {
-          range = QgsDateTimeRange( dt, dt );
-        }
-        else  // parse as an interval
-        {
-          try
-          {
-            range = QgsServerApiUtils::parseTemporalDateTimeInterval( timeString );
-          }
-          catch ( const QgsServerApiBadRequestException &ex )
-          {
-            throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                          ex.what() );
-          }
-        }
-
-        mapSettings.setIsTemporal( true );
-        mapSettings.setTemporalRange( range );
-
+        range = QgsDateTimeRange( dt, dt );
       }
+      else  // parse as an interval
+      {
+        try
+        {
+          range = QgsServerApiUtils::parseTemporalDateTimeInterval( timeString );
+        }
+        catch ( const QgsServerApiBadRequestException &ex )
+        {
+          throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
+                                        ex.what() );
+        }
+      }
+
+      mapSettings.setIsTemporal( true );
+      mapSettings.setTemporalRange( range );
+
     }
   }
 
