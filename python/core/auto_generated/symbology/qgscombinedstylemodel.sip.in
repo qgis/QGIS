@@ -40,6 +40,9 @@ A model which contains entities from multiple :py:class:`QgsStyle` databases.
 Constructor for QgsCombinedStyleModel with the specified ``parent`` object.
 %End
 
+     virtual QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
+
     void addStyle( QgsStyle *style );
 %Docstring
 Adds a style to the model.

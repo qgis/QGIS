@@ -28,6 +28,11 @@ QgsCombinedStyleModel::QgsCombinedStyleModel( QObject *parent )
 
 }
 
+QVariant QgsCombinedStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  return QgsStyleModel::headerDataStatic( section, orientation, role );
+}
+
 void QgsCombinedStyleModel::addStyle( QgsStyle *style )
 {
   connect( style, &QgsStyle::destroyed, this, [this, style]()
