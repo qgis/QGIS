@@ -146,6 +146,14 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertFalse(p.styles())
         self.assertEqual(p.combinedStyleModel().rowCount(), 0)
 
+        # test using a .xml path
+        p.addStyleDatabasePath(unitTestDataPath() + '/categorized.xml')
+        self.assertEqual(p.combinedStyleModel().rowCount(), 4)
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'categorized')
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(1, 0)), ' ----c/- ')
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(2, 0)), 'B ')
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(3, 0)), 'a')
+
     def testReadWrite(self):
         p = QgsProjectStyleSettings()
 

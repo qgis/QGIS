@@ -151,6 +151,8 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     /**
      * Adds a style database \a path to the project.
      *
+     * Paths can be either style .db databases, or .xml exports of style databases.
+     *
      * The file path added by this method must always be absolute paths. Depending on the
      * project settings, they may be converted to relative paths when the project is saved.
      *
@@ -162,6 +164,8 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
     /**
      * Sets the \a paths to all style databases associated with the project.
+     *
+     * Paths can be either style .db databases, or .xml exports of style databases.
      *
      * The file paths set by this method must always be absolute paths. Depending on the
      * project settings, they may be converted to relative paths when the project is saved.
@@ -213,6 +217,8 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     QList< QPointer< QgsStyle > > mStyles;
 
     QgsCombinedStyleModel *mCombinedStyleModel = nullptr;
+
+    void loadStyleAtPath( const QString &path );
 
 };
 
