@@ -30,6 +30,10 @@ from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
+try:
+    from qgis.core import QgsCombinedStyleModel
+except ImportError:
+    QgsCombinedStyleModel = None
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -84,16 +88,20 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.setDefaultSymbolOpacity(0.25)
         self.assertEqual(p.defaultSymbolOpacity(), 0.25)
 
+    @unittest.skipIf(QgsCombinedStyleModel is None, "QgsCombinedStyleModel not available")
     def testStylePaths(self):
         p = QgsProjectStyleSettings()
         spy = QSignalSpy(p.styleDatabasesChanged)
 
         self.assertFalse(p.styleDatabasePaths())
         self.assertFalse(p.styles())
+        self.assertEqual(p.combinedStyleModel().rowCount(), 0)
 
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db'])
+        self.assertEqual(p.combinedStyleModel().rowCount(), 1)
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style1')
 
         self.assertEqual(len(p.styles()), 1)
         self.assertEqual(p.styles()[0].fileName(), unitTestDataPath() + '/style1.db')
@@ -103,6 +111,8 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style1.db'])
+        self.assertEqual(p.combinedStyleModel().rowCount(), 1)
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style1')
 
         p.addStyleDatabasePath(unitTestDataPath() + '/style2.db')
         self.assertEqual(len(spy), 2)
@@ -111,21 +121,30 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(p.styles()[0].name(), 'style1')
         self.assertEqual(p.styles()[1].fileName(), unitTestDataPath() + '/style2.db')
         self.assertEqual(p.styles()[1].name(), 'style2')
+        self.assertEqual(p.combinedStyleModel().rowCount(), 2)
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style1')
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(1, 0)), 'style2')
 
         p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
         self.assertEqual(len(spy), 3)
         self.assertEqual(p.styleDatabasePaths(), [unitTestDataPath() + '/style3.db'])
+
+        self.assertEqual(p.combinedStyleModel().rowCount(), 1)
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style3')
 
         self.assertEqual(p.styles()[0].fileName(), unitTestDataPath() + '/style3.db')
         self.assertEqual(p.styles()[0].name(), 'style3')
 
         p.setStyleDatabasePaths([unitTestDataPath() + '/style3.db'])
         self.assertEqual(len(spy), 3)
+        self.assertEqual(p.combinedStyleModel().rowCount(), 1)
+        self.assertEqual(p.combinedStyleModel().data(p.combinedStyleModel().index(0, 0)), 'style3')
 
         p.setStyleDatabasePaths([])
         self.assertEqual(len(spy), 4)
         self.assertFalse(p.styleDatabasePaths())
         self.assertFalse(p.styles())
+        self.assertEqual(p.combinedStyleModel().rowCount(), 0)
 
     def testReadWrite(self):
         p = QgsProjectStyleSettings()
