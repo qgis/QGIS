@@ -65,6 +65,28 @@ class TestQgsSingleItemModel(unittest.TestCase):
         # manually specified tooltip should take precedence
         self.assertEqual(model.data(index, Qt.ToolTipRole), 'abc')
 
+    def testModelWithColumns(self):
+        model = QgsSingleItemModel(None, [
+            {Qt.DisplayRole: 'col 1', Qt.ToolTipRole: 'column 1'},
+            {Qt.DisplayRole: 'col 2', Qt.ToolTipRole: 'column 2'},
+            {Qt.DisplayRole: 'col 3'},
+        ], Qt.ItemIsSelectable | Qt.ItemIsDropEnabled)
+
+        self.assertEqual(model.rowCount(), 1)
+        self.assertEqual(model.columnCount(), 3)
+
+        index = model.index(0, 0)
+        self.assertEqual(model.data(index, Qt.DisplayRole), 'col 1')
+        self.assertEqual(model.data(index, Qt.ToolTipRole), 'column 1')
+        index = model.index(0, 1)
+        self.assertEqual(model.data(index, Qt.DisplayRole), 'col 2')
+        self.assertEqual(model.data(index, Qt.ToolTipRole), 'column 2')
+        index = model.index(0, 2)
+        self.assertEqual(model.data(index, Qt.DisplayRole), 'col 3')
+        self.assertFalse(model.data(index, Qt.ToolTipRole))
+
+        self.assertEqual(model.flags(index), Qt.ItemIsSelectable | Qt.ItemIsDropEnabled)
+
 
 if __name__ == '__main__':
     unittest.main()
