@@ -1771,7 +1771,9 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
         // update original uri parts with this layername and path -- this ensures that other uri components
         // like open options are preserved for the sublayer uris
         uriParts.insert( QStringLiteral( "layerName" ), layerUriParts.value( QStringLiteral( "layerName" ) ) );
+        uriParts.insert( QStringLiteral( "vsiPrefix" ), layerUriParts.value( QStringLiteral( "vsiPrefix" ) ) );
         uriParts.insert( QStringLiteral( "path" ), layerUriParts.value( QStringLiteral( "path" ) ) );
+        uriParts.insert( QStringLiteral( "vsiSuffix" ), layerUriParts.value( QStringLiteral( "vsiSuffix" ) ) );
         details.setUri( encodeGdalUri( uriParts ) );
 
         res << details;
@@ -3638,6 +3640,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   QgsGdalProviderBase::registerGdalDrivers();
 
   QString gdalUri = QgsGdalProvider::expandAuthConfig( uri );
+  QString npGdalUri = gdalUri;
 
   QVariantMap uriParts = decodeUri( gdalUri );
 
@@ -3725,6 +3728,60 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     return {details};
   }
 
+  // GDAL is able to handle some compressed datasets directly
+  // by exposing compressed files as subdatasets (e.g. SENTINEL 2 SAFE)
+  // thus at first lets try to look for subdatasets and only then for
+  // individual files inside a compressed file.
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  CPLErrorReset();
+  dataset.reset( QgsGdalProviderBase::gdalOpen( npGdalUri, GDAL_OF_READONLY ) );
+  CPLPopErrorHandler();
+
+  if ( !dataset )
+  {
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    CPLErrorReset();
+    dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
+    CPLPopErrorHandler();
+  }
+  if ( dataset )
+  {
+    const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
+    if ( res.empty() )
+    {
+      // may not have multiple sublayers, but may still be a single-raster layer dataset
+      if ( GDALGetRasterCount( dataset.get() ) != 0 )
+      {
+        QgsProviderSublayerDetails details;
+        details.setProviderKey( PROVIDER_KEY );
+        details.setType( QgsMapLayerType::RasterLayer );
+        details.setUri( uri );
+        details.setLayerNumber( 1 );
+        GDALDriverH hDriver = GDALGetDatasetDriver( dataset.get() );
+        details.setDriverName( GDALGetDriverShortName( hDriver ) );
+
+        QString name;
+        const QVariantMap parts = decodeUri( uri );
+        if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+        {
+          name = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+          if ( name.startsWith( '/' ) )
+            name = name.mid( 1 );
+        }
+        else if ( parts.contains( QStringLiteral( "path" ) ) )
+        {
+          name = QgsProviderUtils::suggestLayerNameFromFilePath( parts.value( QStringLiteral( "path" ) ).toString() );
+        }
+        details.setName( name.isEmpty() ? uri : name );
+        return {details};
+      }
+    }
+    else
+    {
+      return res;
+    }
+  }
+
   if ( !uriParts.value( QStringLiteral( "vsiPrefix" ) ).toString().isEmpty()
        && uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
   {
@@ -3757,55 +3814,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
       return res;
     }
   }
-
-  CPLPushErrorHandler( CPLQuietErrorHandler );
-  CPLErrorReset();
-  dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
-  CPLPopErrorHandler();
-
-  if ( !dataset )
-  {
-    return {};
-  }
-
-  const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
-  if ( res.empty() )
-  {
-    // may not have multiple sublayers, but may still be a single-raster layer dataset
-    if ( GDALGetRasterCount( dataset.get() ) != 0 )
-    {
-      QgsProviderSublayerDetails details;
-      details.setProviderKey( PROVIDER_KEY );
-      details.setType( QgsMapLayerType::RasterLayer );
-      details.setUri( uri );
-      details.setLayerNumber( 1 );
-      GDALDriverH hDriver = GDALGetDatasetDriver( dataset.get() );
-      details.setDriverName( GDALGetDriverShortName( hDriver ) );
-
-      QString name;
-      const QVariantMap parts = decodeUri( uri );
-      if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
-      {
-        name = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
-        if ( name.startsWith( '/' ) )
-          name = name.mid( 1 );
-      }
-      else if ( parts.contains( QStringLiteral( "path" ) ) )
-      {
-        name = QgsProviderUtils::suggestLayerNameFromFilePath( parts.value( QStringLiteral( "path" ) ).toString() );
-      }
-      details.setName( name.isEmpty() ? uri : name );
-      return {details};
-    }
-    else
-    {
-      return {};
-    }
-  }
-  else
-  {
-    return res;
-  }
+  return {};
 }
 
 QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) const
