@@ -27,6 +27,7 @@ class QDomDocument;
 class QgsProject;
 class QgsSymbol;
 class QgsColorRamp;
+class QgsStyle;
 
 /**
  * \brief Contains settings and properties relating to how a QgsProject should handle
@@ -133,10 +134,18 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * The file paths returned by this method will always be absolute paths. Depending on the
      * project settings, they may be converted to relative paths when the project is saved.
      *
+     * \see styles()
      * \see addStyleDatabasePath()
      * \see setStyleDatabasePaths()
      */
     QStringList styleDatabasePaths() const { return mStyleDatabases; }
+
+    /**
+     * Returns a list of all the styles associated with the project.
+     *
+     * \see styleDatabasePaths()
+     */
+    QList< QgsStyle * > styles() const;
 
     /**
      * Adds a style database \a path to the project.
@@ -183,6 +192,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     double mDefaultSymbolOpacity = 1.0;
 
     QStringList mStyleDatabases;
+    QList< QPointer< QgsStyle > > mStyles;
 
 };
 

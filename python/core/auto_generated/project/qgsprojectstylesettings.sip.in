@@ -139,9 +139,18 @@ Returns a list of all style databases (file paths) associated with the project.
 The file paths returned by this method will always be absolute paths. Depending on the
 project settings, they may be converted to relative paths when the project is saved.
 
+.. seealso:: :py:func:`styles`
+
 .. seealso:: :py:func:`addStyleDatabasePath`
 
 .. seealso:: :py:func:`setStyleDatabasePaths`
+%End
+
+    QList< QgsStyle * > styles() const;
+%Docstring
+Returns a list of all the styles associated with the project.
+
+.. seealso:: :py:func:`styleDatabasePaths`
 %End
 
     void addStyleDatabasePath( const QString &path );

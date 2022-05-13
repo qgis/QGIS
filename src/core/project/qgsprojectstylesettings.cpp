@@ -23,6 +23,7 @@
 #include "qgsfillsymbol.h"
 #include "qgscolorramp.h"
 #include "qgstextformat.h"
+#include "qgsstyle.h"
 
 #include <QDomElement>
 
@@ -103,7 +104,11 @@ void QgsProjectStyleSettings::reset()
   mDefaultTextFormat = QgsTextFormat();
   mRandomizeDefaultSymbolColor = true;
   mDefaultSymbolOpacity = 1.0;
+
   mStyleDatabases.clear();
+  qDeleteAll( mStyles );
+  mStyles.clear();
+
   emit styleDatabasesChanged();
 }
 
@@ -159,6 +164,8 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   }
 
   {
+    qDeleteAll( mStyles );
+    mStyles.clear();
     mStyleDatabases.clear();
     const QDomElement styleDatabases = element.firstChildElement( QStringLiteral( "databases" ) );
     if ( !styleDatabases.isNull() )
@@ -168,7 +175,13 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
       {
         const QDomElement styleElement = styleEntries.at( i ).toElement();
         const QString path = styleElement.attribute( QStringLiteral( "path" ) );
-        mStyleDatabases.append( context.pathResolver().readPath( path ) );
+        const QString fullPath = context.pathResolver().readPath( path );
+        mStyleDatabases.append( fullPath );
+
+        QgsStyle *style = new QgsStyle( this );
+        style->load( fullPath );
+        style->setName( QFileInfo( fullPath ).completeBaseName() );
+        mStyles.append( style );
       }
     }
   }
@@ -231,12 +244,30 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
   return element;
 }
 
+QList<QgsStyle *> QgsProjectStyleSettings::styles() const
+{
+  QList< QgsStyle * > res;
+  res.reserve( mStyles.size() );
+  for ( QgsStyle *style : mStyles )
+  {
+    if ( style )
+      res.append( style );
+  }
+  return res;
+}
+
 void QgsProjectStyleSettings::addStyleDatabasePath( const QString &path )
 {
   if ( mStyleDatabases.contains( path ) )
     return;
 
   mStyleDatabases.append( path );
+
+  QgsStyle *style = new QgsStyle( this );
+  style->load( path );
+  style->setName( QFileInfo( path ).completeBaseName() );
+  mStyles.append( style );
+
   emit styleDatabasesChanged();
 }
 
@@ -244,6 +275,17 @@ void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
 {
   if ( paths == mStyleDatabases )
     return;
+
+  qDeleteAll( mStyles );
+  mStyles.clear();
+
+  for ( const QString &path : paths )
+  {
+    QgsStyle *style = new QgsStyle( this );
+    style->load( path );
+    style->setName( QFileInfo( path ).completeBaseName() );
+    mStyles.append( style );
+  }
 
   mStyleDatabases = paths;
   emit styleDatabasesChanged();
