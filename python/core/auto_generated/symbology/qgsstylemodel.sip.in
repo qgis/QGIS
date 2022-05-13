@@ -41,6 +41,7 @@ instead.
     {
       TypeRole,
       TagRole,
+      EntityName,
       SymbolTypeRole,
       IsFavoriteRole,
       LayerTypeRole,

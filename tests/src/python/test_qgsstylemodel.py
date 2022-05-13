@@ -134,6 +134,10 @@ class TestQgsStyleModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleName), 'style name')
         self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.StyleFileName), '/home/me/my.db')
 
+        self.assertEqual(model.data(model.index(0, 0), QgsStyleModel.EntityName), ' ----c/- ')
+        self.assertEqual(model.data(model.index(1, 0), QgsStyleModel.EntityName), 'B ')
+        self.assertEqual(model.data(model.index(2, 0), QgsStyleModel.EntityName), 'C')
+
         for role in (Qt.DisplayRole, Qt.EditRole):
             self.assertIsNone(model.data(model.index(-1, 0), role))
             self.assertIsNone(model.data(model.index(-1, 1), role))

@@ -450,6 +450,9 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
+    case EntityName:
+      return name;
+
     case StyleName:
       return mStyle->name();
 
