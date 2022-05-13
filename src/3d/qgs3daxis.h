@@ -29,15 +29,18 @@
 #include <QVector3D>
 #include <QVector2D>
 
+#include <Qt3DRender/QLayer>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometryRenderer>
 
 #include <QtWidgets/QMenu>
 
 #define SIP_NO_FILE
+#define UNUSED __attribute__((__unused__))
 
 class QgsCameraController;
 class Qgs3DMapSettings;
+class Qgs3DMapScene;
 
 /**
  * \ingroup 3d
@@ -60,11 +63,12 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * \brief Defaul Qgs3DAxis constructor
      * \param parentWindow qt3d windows
      * @param parent3DScene root entity to set as parent
+     * @param mapScene 3d map scene to retrieve terrain and 3d engine data
      * @param camera camera controller used to track camera movements
      * @param map 3D map settings
      */
-    Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene, QgsCameraController *camera,
-               Qgs3DMapSettings &map );
+    Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene,
+               Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings &map );
 
     /**
      * \brief The Axis enum
@@ -164,6 +168,15 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onAxisModeChanged( Qgs3DAxis::Mode mode );
     void onAxisHorizPositionChanged( AxisViewportPosition pos );
     void onAxisVertPositionChanged( AxisViewportPosition pos );
+    void onCameraViewChange( float pitch, float yaw );
+
+    void onCameraViewChangeHome( UNUSED bool fake = true ) { onCameraViewChange( 45.0, 45.0 ); }
+    void onCameraViewChangeTop( UNUSED bool fake = true ) {onCameraViewChange( 0.0, 90.0 );}
+    void onCameraViewChangeNorth( UNUSED bool fake = true ) {onCameraViewChange( 90.0, 180.0 );}
+    void onCameraViewChangeEast( UNUSED bool fake = true ) {onCameraViewChange( 90.0, 90.0 );}
+    void onCameraViewChangeSouth( UNUSED bool fake = true ) {onCameraViewChange( 90.0, 0.0 );}
+    void onCameraViewChangeWest( UNUSED bool fake = true ) {onCameraViewChange( 90.0, -90.0 );}
+    void onCameraViewChangeBottom( UNUSED bool fake = true ) {onCameraViewChange( 180.0, 0.0 );}
 
   private:
     // ========= private functions
@@ -189,6 +202,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     // ========= private attributes
     Qgs3DMapSettings &mMapSettings;
     Qt3DExtras::Qt3DWindow *mParentWindow;
+    Qgs3DMapScene *mMapScene;
     QgsCameraController *mCameraController;
 
     float mCylinderLength = 40.0f;
@@ -198,6 +212,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     int mFontSize = 10;
 
     Qt3DCore::QEntity *mAxisSceneEntity;
+    Qt3DRender::QLayer *mAxisSceneLayer;
     Qt3DRender::QCamera *mAxisCamera;
     Qt3DRender::QViewport *mAxisViewport;
 

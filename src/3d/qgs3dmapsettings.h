@@ -635,7 +635,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     Qgs3DAxisSettings get3dAxisSettings() const SIP_SKIP { return m3dAxisSettings; }
 
     /**
-     * Sets the current configuration of shadow rendering
+     * Sets the current configuration of 3d axis
      * \since QGIS 3.26
      */
     void set3dAxisSettings( const Qgs3DAxisSettings &axisSettings ) SIP_SKIP;

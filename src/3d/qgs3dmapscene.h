@@ -150,6 +150,13 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     Qgs3DAxis *get3DAxis() { return m3DAxis; }
 
+    /**
+     * Returns the abstract 3D engine
+     *
+     * \since QGIS 3.26
+     */
+    QgsAbstract3DEngine *engine() { return mEngine; }
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
