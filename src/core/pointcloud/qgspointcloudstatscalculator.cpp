@@ -98,7 +98,13 @@ struct StatsProcessor
         int attributeOffset = 0;
         attributesCollection.find( attribute.name(), attributeOffset );
         attributeOffsetVector.push_back( attributeOffset );
-        if ( attribute.name() == QStringLiteral( "Classification" ) )
+        if ( attribute.name() == QLatin1String( "ScannerChannel" ) ||
+             attribute.name() == QLatin1String( "ReturnNumber" ) ||
+             attribute.name() == QLatin1String( "NumberOfReturns" ) ||
+             attribute.name() == QLatin1String( "ScanDirectionFlag" ) ||
+             attribute.name() == QLatin1String( "Classification" ) ||
+             attribute.name() == QLatin1String( "EdgeOfFlightLine" ) ||
+             attribute.name() == QLatin1String( "PointSourceId" ) )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }
