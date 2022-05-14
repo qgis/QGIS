@@ -1066,6 +1066,7 @@ The development version
       DontLoad3DViews,
       DontLoadProjectStyles,
     };
+
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
 
 
