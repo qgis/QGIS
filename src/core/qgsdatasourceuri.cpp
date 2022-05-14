@@ -53,6 +53,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       i++;
 
     const QString pname = uri.mid( start, i - start );
+    mParamKeys.insert( pname );
 
     skipBlanks( uri, i );
 
@@ -857,4 +858,9 @@ bool QgsDataSourceUri::hasParam( const QString &key ) const
     return true;
 
   return mParams.contains( key );
+}
+
+const QSet<QString> &QgsDataSourceUri::parameterKeys() const
+{
+  return mParamKeys;
 }
