@@ -176,8 +176,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * Used to access data provided by a web feature service.
  *
- * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
- * starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
+ * The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or a URI constructed using the QgsDataSourceUri class with the following parameters (note that parameter keys are case sensitive):
  *
  * - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
  * - typename=string (mandatory): WFS typename
@@ -196,8 +195,7 @@ typedef QSet<int> QgsAttributeIds;
  * - InvertAxisOrientation=1: to invert axis order
  * - hideDownloadProgressDialog=1: to hide the download progress dialog
  *
- * The ‘FILTER’ query string parameter can be used to filter
- * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+ * The ‘filter’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
  * turn it into OGC XML filter before passing it to the WFS server. Beware the
  * QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
