@@ -124,7 +124,7 @@ void QgsProjectStyleSettings::reset()
   emit styleDatabasesChanged();
 }
 
-bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
 {
   mRandomizeDefaultSymbolColor = element.attribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), QStringLiteral( "0" ) ).toInt();
   mDefaultSymbolOpacity = element.attribute( QStringLiteral( "DefaultSymbolOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
@@ -185,18 +185,22 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
     qDeleteAll( mStyles );
     mStyles.clear();
     mStyleDatabases.clear();
-    const QDomElement styleDatabases = element.firstChildElement( QStringLiteral( "databases" ) );
-    if ( !styleDatabases.isNull() )
-    {
-      const QDomNodeList styleEntries = styleDatabases.childNodes();
-      for ( int i = 0; i < styleEntries.count(); ++i )
-      {
-        const QDomElement styleElement = styleEntries.at( i ).toElement();
-        const QString path = styleElement.attribute( QStringLiteral( "path" ) );
-        const QString fullPath = context.pathResolver().readPath( path );
-        mStyleDatabases.append( fullPath );
 
-        loadStyleAtPath( fullPath );
+    if ( !( flags & Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
+    {
+      const QDomElement styleDatabases = element.firstChildElement( QStringLiteral( "databases" ) );
+      if ( !styleDatabases.isNull() )
+      {
+        const QDomNodeList styleEntries = styleDatabases.childNodes();
+        for ( int i = 0; i < styleEntries.count(); ++i )
+        {
+          const QDomElement styleElement = styleEntries.at( i ).toElement();
+          const QString path = styleElement.attribute( QStringLiteral( "path" ) );
+          const QString fullPath = context.pathResolver().readPath( path );
+          mStyleDatabases.append( fullPath );
+
+          loadStyleAtPath( fullPath );
+        }
       }
     }
   }

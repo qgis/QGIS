@@ -492,7 +492,11 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
   QVector<QgsDataItem *> childItems;
 
   QgsProject p;
-  if ( !p.read( mPath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontLoadLayouts | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+  if ( !p.read( mPath, Qgis::ProjectReadFlag::DontResolveLayers
+                | Qgis::ProjectReadFlag::DontLoadLayouts
+                | Qgis::ProjectReadFlag::DontStoreOriginalStyles
+                | Qgis::ProjectReadFlag::DontLoad3DViews
+                | Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
   {
     childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
     return childItems;

@@ -459,7 +459,7 @@ void TestQgsProject::testReadFlags()
 {
   const QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
   QgsProject p;
-  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
+  QVERIFY( p.read( project1Path, Qgis::ProjectReadFlag::DontResolveLayers ) );
   auto layers = p.mapLayers();
   QCOMPARE( layers.count(), 3 );
   // layers should be invalid - we skipped loading them!
@@ -474,14 +474,14 @@ void TestQgsProject::testReadFlags()
   QVERIFY( ! layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
 
   // do not store styles
-  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) );
+  QVERIFY( p.read( project1Path, Qgis::ProjectReadFlag::DontStoreOriginalStyles ) );
   layers = p.mapLayers();
   QVERIFY( layers.value( QStringLiteral( "polys20170310142652234" ) )->originalXmlProperties().isEmpty() );
 
   // project with embedded groups
   const QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
   QgsProject p2;
-  QVERIFY( p2.read( project2Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
+  QVERIFY( p2.read( project2Path, Qgis::ProjectReadFlag::DontResolveLayers ) );
   // layers should be invalid - we skipped loading them!
   layers = p2.mapLayers();
   QCOMPARE( layers.count(), 2 );
@@ -493,7 +493,7 @@ void TestQgsProject::testReadFlags()
 
   const QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
   QgsProject p3;
-  QVERIFY( p3.read( project3Path, QgsProject::ReadFlag::FlagDontLoadLayouts ) );
+  QVERIFY( p3.read( project3Path, Qgis::ProjectReadFlag::DontLoadLayouts ) );
   QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
 }
 
