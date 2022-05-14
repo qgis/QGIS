@@ -24,6 +24,7 @@
 #include "qgswkbtypes.h"
 
 #include <QMap>
+#include <QSet>
 
 /**
  * \ingroup core
@@ -318,6 +319,12 @@ class CORE_EXPORT QgsDataSourceUri
      */
     void setGeometryColumn( const QString &geometryColumn );
 
+    /**
+     * Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
+     * \since QGIS 3.26
+     */
+    const QSet<QString> &parameterKeys() const;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -371,6 +378,8 @@ class CORE_EXPORT QgsDataSourceUri
     QString mSrid;
     //! Generic params store
     QMultiMap<QString, QString> mParams;
+    //! Parameter keys ("table", "schema", ...) found in the uri
+    QSet<QString> mParamKeys;
 };
 
 #endif //QGSDATASOURCEURI_H
