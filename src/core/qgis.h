@@ -1786,6 +1786,14 @@ class CORE_EXPORT Qgis
       DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (since QGIS 3.26)
     };
     Q_ENUM( ProjectReadFlag )
+
+    /**
+     * Project load flags.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsProject::ReadFlags.
+     *
+     * \since QGIS 3.26
+     */
     Q_DECLARE_FLAGS( ProjectReadFlags, ProjectReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProject, ReadFlags )
     Q_FLAG( ProjectReadFlags )
 
