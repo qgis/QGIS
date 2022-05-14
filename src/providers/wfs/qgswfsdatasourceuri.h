@@ -22,6 +22,7 @@
 #include "qgsauthorizationsettings.h"
 
 #include <QNetworkRequest>
+#include <QSet>
 #include <QString>
 
 /**
@@ -133,11 +134,15 @@ class QgsWFSDataSourceURI
     //! Sets Post DCP endpoints
     void setPostEndpoints( const QgsStringMap &map );
 
+    //! Return set of unknown parameter keys in the URI.
+    QSet<QString> unknownParamKeys() const;
+
   private:
     QgsDataSourceUri    mURI;
     QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;
+    bool mDeprecatedURI = false;
 };
 
 

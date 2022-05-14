@@ -479,6 +479,17 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename'", 'test', 'WFS')
         self.assertFalse(vl.isValid())
 
+    def testMissingTypename(self):
+
+        # No typename
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS1.0'
+        with MessageLogger('WFS') as logger:
+            vl = QgsVectorLayer("url='http://" + endpoint + "'", 'test', 'WFS')
+            self.assertFalse(vl.isValid())
+            self.assertEqual(len(logger.messages()), 1, logger.messages())
+            self.assertTrue(logger.messages()[0].decode('UTF-8') == "Missing or empty 'typename' URI parameter",
+                            logger.messages())
+
     def testWFS10(self):
         """Test WFS 1.0 read-only"""
         # We also test attribute fields in upper-case, and a field named GEOMETRY
@@ -659,6 +670,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         request = QgsFeatureRequest().setLimit(1)
         values = [(f.id(), f['INTFIELD']) for f in vl.getFeatures(request)]
         self.assertEqual(values[0][1], 100)
+
+        # Unexpected foo parameter key
+        with MessageLogger('WFS') as logger:
+            vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='1.0.0' foo='bar'", 'test', 'WFS')
+            self.assertTrue(vl.isValid())
+            self.assertEqual(len(logger.messages()), 1, logger.messages())
+            self.assertTrue(logger.messages()[0].decode('UTF-8') == "The following unknown parameter(s) have been found in the URI: foo",
+                            logger.messages())
 
     def testWFS10_outputformat_GML3(self):
         """Test WFS 1.0 with OUTPUTFORMAT=GML3"""

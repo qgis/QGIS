@@ -71,6 +71,28 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
+  if ( mShared->mURI.typeName().isEmpty() )
+  {
+    QgsMessageLog::logMessage( tr( "Missing or empty 'typename' URI parameter" ), tr( "WFS" ) );
+    mValid = false;
+    return;
+  }
+
+  const QSet<QString> &unknownParamKeys = mShared->mURI.unknownParamKeys();
+  if ( !unknownParamKeys.isEmpty() )
+  {
+    QString msg = tr( "The following unknown parameter(s) have been found in the URI: " );
+    bool firstOne = true;
+    for ( const QString &key : unknownParamKeys )
+    {
+      if ( !firstOne )
+        msg += QLatin1String( ", " );
+      firstOne = false;
+      msg += key;
+    }
+    QgsMessageLog::logMessage( msg, tr( "WFS" ) );
+  }
+
   //create mSourceCrs from url if possible [WBC 111221] refactored from GetFeatureGET()
   QString srsname = mShared->mURI.SRSName();
   if ( !srsname.isEmpty() )
