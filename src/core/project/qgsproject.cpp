@@ -963,7 +963,7 @@ void QgsProject::clear()
   mElevationProperties->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
-  mAvoidIntersectionsMode = AvoidIntersectionsMode::AllowIntersections;
+  mAvoidIntersectionsMode = Qgis::AvoidIntersectionsMode::AllowIntersections;
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
@@ -1190,7 +1190,7 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
   emit snappingConfigChanged( mSnappingConfig );
 }
 
-void QgsProject::setAvoidIntersectionsMode( const AvoidIntersectionsMode mode )
+void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode )
 {
   if ( mAvoidIntersectionsMode == mode )
     return;
@@ -1199,7 +1199,7 @@ void QgsProject::setAvoidIntersectionsMode( const AvoidIntersectionsMode mode )
   emit avoidIntersectionsModeChanged();
 }
 
-bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags )
+bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
 {
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... )' signal
@@ -1281,7 +1281,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, QgsProject::ReadFlags flags )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
 {
   const QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
@@ -1305,7 +1305,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
       // apply specific settings to vector layer
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
       {
-        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
       }
       break;
     }
@@ -1364,10 +1364,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
-  if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
+  if ( flags & Qgis::ProjectReadFlag::DontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   // Propagate trust layer metadata flag
-  if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) )
+  if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
     layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
 
   profile.switchTask( tr( "Load layer source" ) );
@@ -1376,7 +1376,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   profile.switchTask( tr( "Add layer to project" ) );
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
-  if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
+  if ( layerIsValid || flags & Qgis::ProjectReadFlag::DontResolveLayers )
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
@@ -1418,7 +1418,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   return layerIsValid;
 }
 
-bool QgsProject::read( const QString &filename, QgsProject::ReadFlags flags )
+bool QgsProject::read( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   mFile.setFileName( filename );
   mCachedHomePath.clear();
@@ -1427,7 +1427,7 @@ bool QgsProject::read( const QString &filename, QgsProject::ReadFlags flags )
   return read( flags );
 }
 
-bool QgsProject::read( QgsProject::ReadFlags flags )
+bool QgsProject::read( Qgis::ProjectReadFlags flags )
 {
   const QString filename = mFile.fileName();
   bool returnValue;
@@ -1493,7 +1493,7 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
   return returnValue;
 }
 
-bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags flags )
+bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   // avoid multiple emission of snapping updated signals
   ScopedIntIncrementor snapSignalBlock( &mBlockSnappingUpdates );
@@ -1920,7 +1920,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // After bad layer handling we might still have invalid layers,
   // store them in case the user wanted to handle them later
   // or wanted to pass them through when saving
-  if ( !( flags & QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+  if ( !( flags & Qgis::ProjectReadFlag::DontStoreOriginalStyles ) )
   {
     profile.switchTask( tr( "Storing original layer properties" ) );
     QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
@@ -1939,13 +1939,13 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   profile.switchTask( tr( "Loading annotations" ) );
   mAnnotationManager->readXml( doc->documentElement(), context );
-  if ( !( flags & QgsProject::ReadFlag::FlagDontLoadLayouts ) )
+  if ( !( flags & Qgis::ProjectReadFlag::DontLoadLayouts ) )
   {
     profile.switchTask( tr( "Loading layouts" ) );
     mLayoutManager->readXml( doc->documentElement(), *doc );
   }
 
-  if ( !( flags & QgsProject::ReadFlag::FlagDontLoad3DViews ) )
+  if ( !( flags & Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     profile.switchTask( tr( "Loading 3D Views" ) );
     m3DViewsManager->readXml( doc->documentElement(), *doc );
@@ -1963,7 +1963,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   profile.switchTask( tr( "Loading snapping settings" ) );
   mSnappingConfig.readProject( *doc );
-  mAvoidIntersectionsMode = static_cast<AvoidIntersectionsMode>( readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( AvoidIntersectionsMode::AvoidIntersectionsLayers ) ) );
+  mAvoidIntersectionsMode = static_cast<Qgis::AvoidIntersectionsMode>( readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers ) ) );
 
   profile.switchTask( tr( "Loading view settings" ) );
   // restore older project scales settings
@@ -1992,7 +1992,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   profile.switchTask( tr( "Loading style properties" ) );
   const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
   if ( !styleSettingsElement.isNull() )
-    mStyleSettings->readXml( styleSettingsElement, context );
+    mStyleSettings->readXml( styleSettingsElement, context, flags );
 
   // restore time settings
   profile.switchTask( tr( "Loading temporal settings" ) );
@@ -2076,7 +2076,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 }
 
 
-bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadFlags flags )
 {
   bool valid = true;
   const auto constChildren = group->children();
@@ -3148,7 +3148,7 @@ QString QgsProject::layerIsEmbedded( const QString &id ) const
 }
 
 bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                                      bool saveFlag, QgsProject::ReadFlags flags )
+                                      bool saveFlag, Qgis::ProjectReadFlags flags )
 {
   QgsDebugCall;
 
@@ -3242,7 +3242,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 }
 
 
-QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags )
+QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags )
 {
   QString qgsProjectFile = projectFilePath;
   QgsProjectArchive archive;
@@ -3318,7 +3318,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   return newGroup;
 }
 
-void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, Qgis::ProjectReadFlags flags )
 {
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
@@ -3693,7 +3693,7 @@ QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName 
   return layers;
 }
 
-bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
+bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   clearError();
   std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );

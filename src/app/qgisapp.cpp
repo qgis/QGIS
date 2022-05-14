@@ -7100,14 +7100,18 @@ bool QgisApp::fileSave()
     const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
 
     QString exts;
-    QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
-    if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+    Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+    switch ( defaultProjectFileFormat )
     {
-      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
-    }
-    else
-    {
-      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+      case Qgis::ProjectFileFormat::Qgs:
+      {
+        exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+        break;
+      }
+      case Qgis::ProjectFileFormat::Qgz:
+      {
+        exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+      }
     }
     QString filter;
     QString path = QFileDialog::getSaveFileName(
@@ -7213,14 +7217,19 @@ void QgisApp::fileSaveAs()
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
 
   QString exts;
-  QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
-  if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+  Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+  switch ( defaultProjectFileFormat )
   {
-    exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
-  }
-  else
-  {
-    exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+    case Qgis::ProjectFileFormat::Qgs:
+    {
+      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+      break;
+    }
+    case Qgis::ProjectFileFormat::Qgz:
+    {
+      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+      break;
+    }
   }
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
@@ -10828,13 +10837,13 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
       {
-        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+        case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
           avoidIntersectionsLayers.append( pasteVectorLayer );
           break;
-        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+        case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
           avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
           break;
-        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+        case Qgis::AvoidIntersectionsMode::AllowIntersections:
           break;
       }
       if ( avoidIntersectionsLayers.size() > 0 )

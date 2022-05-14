@@ -605,7 +605,12 @@ int main( int argc, char *argv[] )
   {
     // Check it!
     const QString projectFilePath { parser.value( projectOption ) };
-    if ( ! QgsProject::instance()->read( projectFilePath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontLoadLayouts  | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+    if ( ! QgsProject::instance()->read( projectFilePath,
+                                         Qgis::ProjectReadFlag::DontResolveLayers
+                                         | Qgis::ProjectReadFlag::DontLoadLayouts
+                                         | Qgis::ProjectReadFlag::DontStoreOriginalStyles
+                                         | Qgis::ProjectReadFlag::DontLoad3DViews
+                                         | Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
     {
       std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
     }

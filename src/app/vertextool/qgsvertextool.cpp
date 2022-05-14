@@ -2253,7 +2253,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
               mapPointMatch->layer()->addTopologicalPoints( layerPoint );
           }
         }
-        if ( QgsProject::instance()->avoidIntersectionsMode() != QgsProject::AvoidIntersectionsMode::AllowIntersections )
+        if ( QgsProject::instance()->avoidIntersectionsMode() != Qgis::AvoidIntersectionsMode::AllowIntersections )
         {
           for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
           {
@@ -2388,13 +2388,13 @@ void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
       {
-        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+        case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
           avoidIntersectionsLayers.append( layer );
           break;
-        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+        case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
           avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
           break;
-        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+        case Qgis::AvoidIntersectionsMode::AllowIntersections:
           break;
       }
       QgsGeometry featGeom = it2.value();

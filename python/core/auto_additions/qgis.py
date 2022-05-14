@@ -1531,3 +1531,54 @@ QgsPointCloudRenderer.TopToBottom.__doc__ = "Draw points with larger Z values fi
 Qgis.PointCloudDrawOrder.__doc__ = 'Pointcloud rendering order for 2d views\n\n/since QGIS 3.26\n\n' + '* ``Default``: ' + Qgis.PointCloudDrawOrder.Default.__doc__ + '\n' + '* ``BottomToTop``: ' + Qgis.PointCloudDrawOrder.BottomToTop.__doc__ + '\n' + '* ``TopToBottom``: ' + Qgis.PointCloudDrawOrder.TopToBottom.__doc__
 # --
 Qgis.PointCloudDrawOrder.baseClass = Qgis
+QgsProject.AvoidIntersectionsMode = Qgis.AvoidIntersectionsMode
+# monkey patching scoped based enum
+QgsProject.AllowIntersections = Qgis.AvoidIntersectionsMode.AllowIntersections
+QgsProject.AllowIntersections.is_monkey_patched = True
+QgsProject.AllowIntersections.__doc__ = "Overlap with any feature allowed when digitizing new features"
+QgsProject.AvoidIntersectionsCurrentLayer = Qgis.AvoidIntersectionsMode.AvoidIntersectionsCurrentLayer
+QgsProject.AvoidIntersectionsCurrentLayer.is_monkey_patched = True
+QgsProject.AvoidIntersectionsCurrentLayer.__doc__ = "Overlap with features from the active layer when digitizing new features not allowed"
+QgsProject.AvoidIntersectionsLayers = Qgis.AvoidIntersectionsMode.AvoidIntersectionsLayers
+QgsProject.AvoidIntersectionsLayers.is_monkey_patched = True
+QgsProject.AvoidIntersectionsLayers.__doc__ = "Overlap with features from a specified list of layers when digitizing new features not allowed"
+Qgis.AvoidIntersectionsMode.__doc__ = 'Flags which control how intersections of pre-existing feature are handled when digitizing new features.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsProject`.AvoidIntersectionsMode\n\n.. versionadded:: 3.26\n\n' + '* ``AllowIntersections``: ' + Qgis.AvoidIntersectionsMode.AllowIntersections.__doc__ + '\n' + '* ``AvoidIntersectionsCurrentLayer``: ' + Qgis.AvoidIntersectionsMode.AvoidIntersectionsCurrentLayer.__doc__ + '\n' + '* ``AvoidIntersectionsLayers``: ' + Qgis.AvoidIntersectionsMode.AvoidIntersectionsLayers.__doc__
+# --
+Qgis.AvoidIntersectionsMode.baseClass = Qgis
+QgsProject.FileFormat = Qgis.ProjectFileFormat
+# monkey patching scoped based enum
+QgsProject.Qgz = Qgis.ProjectFileFormat.Qgz
+QgsProject.Qgz.is_monkey_patched = True
+QgsProject.Qgz.__doc__ = "Archive file format, supports auxiliary data"
+QgsProject.Qgs = Qgis.ProjectFileFormat.Qgs
+QgsProject.Qgs.is_monkey_patched = True
+QgsProject.Qgs.__doc__ = "Project saved in a clear text, does not support auxiliary data"
+Qgis.ProjectFileFormat.__doc__ = 'Flags which control project read behavior.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsProject`.FileFormat\n\n.. versionadded:: 3.26\n\n' + '* ``Qgz``: ' + Qgis.ProjectFileFormat.Qgz.__doc__ + '\n' + '* ``Qgs``: ' + Qgis.ProjectFileFormat.Qgs.__doc__
+# --
+Qgis.ProjectFileFormat.baseClass = Qgis
+QgsProject.ReadFlag = Qgis.ProjectReadFlag
+# monkey patching scoped based enum
+QgsProject.FlagDontResolveLayers = Qgis.ProjectReadFlag.DontResolveLayers
+QgsProject.FlagDontResolveLayers.is_monkey_patched = True
+QgsProject.FlagDontResolveLayers.__doc__ = "Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required."
+QgsProject.FlagDontLoadLayouts = Qgis.ProjectReadFlag.DontLoadLayouts
+QgsProject.FlagDontLoadLayouts.is_monkey_patched = True
+QgsProject.FlagDontLoadLayouts.__doc__ = "Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe)."
+QgsProject.FlagTrustLayerMetadata = Qgis.ProjectReadFlag.TrustLayerMetadata
+QgsProject.FlagTrustLayerMetadata.is_monkey_patched = True
+QgsProject.FlagTrustLayerMetadata.__doc__ = "Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server."
+QgsProject.FlagDontStoreOriginalStyles = Qgis.ProjectReadFlag.DontStoreOriginalStyles
+QgsProject.FlagDontStoreOriginalStyles.is_monkey_patched = True
+QgsProject.FlagDontStoreOriginalStyles.__doc__ = "Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts."
+QgsProject.FlagDontLoad3DViews = Qgis.ProjectReadFlag.DontLoad3DViews
+QgsProject.FlagDontLoad3DViews.is_monkey_patched = True
+QgsProject.FlagDontLoad3DViews.__doc__ = "Skip loading 3D views (since QGIS 3.26)"
+QgsProject.DontLoadProjectStyles = Qgis.ProjectReadFlag.DontLoadProjectStyles
+QgsProject.DontLoadProjectStyles.is_monkey_patched = True
+QgsProject.DontLoadProjectStyles.__doc__ = "Skip loading project style databases (since QGIS 3.26)"
+Qgis.ProjectReadFlag.__doc__ = 'Flags which control project read behavior.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsProject`.ReadFlag\n\n.. versionadded:: 3.26\n\n' + '* ``FlagDontResolveLayers``: ' + Qgis.ProjectReadFlag.DontResolveLayers.__doc__ + '\n' + '* ``FlagDontLoadLayouts``: ' + Qgis.ProjectReadFlag.DontLoadLayouts.__doc__ + '\n' + '* ``FlagTrustLayerMetadata``: ' + Qgis.ProjectReadFlag.TrustLayerMetadata.__doc__ + '\n' + '* ``FlagDontStoreOriginalStyles``: ' + Qgis.ProjectReadFlag.DontStoreOriginalStyles.__doc__ + '\n' + '* ``FlagDontLoad3DViews``: ' + Qgis.ProjectReadFlag.DontLoad3DViews.__doc__ + '\n' + '* ``DontLoadProjectStyles``: ' + Qgis.ProjectReadFlag.DontLoadProjectStyles.__doc__
+# --
+Qgis.ProjectReadFlag.baseClass = Qgis
+QgsProject.ReadFlags = Qgis.ProjectReadFlags
+Qgis.ProjectReadFlags.baseClass = Qgis
+ProjectReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module

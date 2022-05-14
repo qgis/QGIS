@@ -107,18 +107,20 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     prj->setBadLayerHandler( badLayerHandler );
 
     // Always skip original styles storage
-    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
+    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles
+                                       | Qgis::ProjectReadFlag::DontLoad3DViews
+                                       | Qgis::ProjectReadFlag::DontLoadProjectStyles;
     if ( settings )
     {
       // Activate trust layer metadata flag
       if ( settings->trustLayerMetadata() )
       {
-        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+        readFlags |= Qgis::ProjectReadFlag::TrustLayerMetadata;
       }
       // Activate don't load layouts flag
       if ( settings->getPrintDisabled() )
       {
-        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+        readFlags |= Qgis::ProjectReadFlag::DontLoadLayouts;
       }
     }
 

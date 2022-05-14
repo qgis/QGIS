@@ -121,7 +121,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * Reads the settings's state from a DOM element.
      * \see writeXml()
      */
-    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 
     /**
      * Returns a DOM element representing the settings.
