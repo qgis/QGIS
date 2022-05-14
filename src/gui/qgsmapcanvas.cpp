@@ -2846,16 +2846,21 @@ void QgsMapCanvas::showEvent( QShowEvent *event )
   Q_UNUSED( event )
   updateDevicePixelFromScreen();
   // keep device pixel ratio up to date on screen or resolution change
-  if ( window()->windowHandle() )
+  QWindow *l_window = window()->windowHandle();
+  if ( l_window )
   {
-    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    connect( l_window, &QWindow::screenChanged, this, [ = ]( QScreen * )
     {
       disconnect( mScreenDpiChangedConnection );
-      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
-      updateDevicePixelFromScreen();
+      QWindow *windowInLambda = window()->windowHandle();
+      if ( windowInLambda )
+      {
+        mScreenDpiChangedConnection = connect( windowInLambda->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
+        updateDevicePixelFromScreen();
+      }
     } );
 
-    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
+    mScreenDpiChangedConnection = connect( l_window->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
   }
 }
 
