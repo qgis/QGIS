@@ -709,6 +709,12 @@ void QgsOgrSourceSelect::fillOpenOptions()
       continue;
     }
 
+    // QGIS data model doesn't support the OGRFeature native data concept
+    // (typically used for GeoJSON "foreign" members). Hide it to avoid setting
+    // wrong expectations to users (https://github.com/qgis/QGIS/issues/48004)
+    if ( EQUAL( pszOptionName, "NATIVE_DATA" ) )
+      continue;
+
     const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
     QStringList options;
     if ( pszType && EQUAL( pszType, "string-select" ) )
