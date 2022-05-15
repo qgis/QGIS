@@ -29,7 +29,13 @@ for tracking the mouse while drawing polylines or polygons.
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+    {
       sipType = sipType_QgsRubberBand;
+      // We need to tweak the pointer as sip believes it is single inheritance
+      // from QgsMapCanvasItem, but the raw address of QgsRubberBand (sipCpp)
+      // is actually a QObject
+      *sipCppRet = dynamic_cast<QgsRubberBand *>( sipCpp );
+    }
     else
       sipType = nullptr;
 %End
