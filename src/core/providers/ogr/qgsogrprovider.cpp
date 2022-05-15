@@ -2966,10 +2966,27 @@ void QgsOgrProvider::computeCapabilities()
         ability &= ~( AddAttributes | DeleteFeatures );
       }
     }
-    else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
-              mGDALDriverName == QLatin1String( "SQLite" ) )
+    else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
     {
       ability |= CreateSpatialIndex;
+      ability |= CreateAttributeIndex;
+    }
+    else if ( mGDALDriverName == QLatin1String( "SQLite" ) )
+    {
+      // Spatial index can only be created on Spatialite enabled datasources.
+      QString sql = QStringLiteral( "SELECT 1 FROM sqlite_master WHERE name='spatialite_history' AND type='table'" );
+      bool isSpatialite = false;
+      if ( QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+      {
+        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+        if ( f )
+        {
+          isSpatialite = true;
+        }
+      }
+
+      if ( isSpatialite )
+        ability |= CreateSpatialIndex;
       ability |= CreateAttributeIndex;
     }
 
