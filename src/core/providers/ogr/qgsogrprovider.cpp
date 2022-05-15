@@ -3365,14 +3365,14 @@ void QgsOgrProvider::recalculateFeatureCount() const
     mOgrLayer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
     const OGRwkbGeometryType flattenGeomTypeFilter =
-      QgsOgrProviderUtils::ogrWkbSingleFlatten( mOgrGeometryTypeFilter );
+      QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( mOgrGeometryTypeFilter );
     while ( fet.reset( mOgrLayer->GetNextFeature() ), fet )
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
       if ( geom )
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
-        gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+        gType = QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( gType );
         if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
       }
     }

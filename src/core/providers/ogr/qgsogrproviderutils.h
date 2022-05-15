@@ -242,6 +242,9 @@ class CORE_EXPORT QgsOgrProviderUtils
     //! Gets single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
+    //! Gets single flatten and linear geometry type
+    static OGRwkbGeometryType ogrWkbSingleFlattenAndLinear( OGRwkbGeometryType type );
+
     static QString ogrWkbGeometryTypeName( OGRwkbGeometryType type );
 
     //! Resolves the geometry type for a feature, with special handling for some drivers
