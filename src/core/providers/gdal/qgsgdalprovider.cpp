@@ -684,13 +684,13 @@ bool QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *data 
   // We have to read with correct data type consistent with other readBlock functions
   int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
-  CPLErr err = gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType.at( bandNo - 1 ), 0, 0 );
+  const GDALDataType gdalDataType = mGdalDataType.at( bandNo - 1 );
+  CPLErr err = gdalRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, data, mXBlockSize, mYBlockSize, gdalDataType, 0, 0 );
   if ( err != CPLE_None )
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return false;
   }
-
   return true;
 }
 
@@ -1511,6 +1511,40 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
                           &value, 1, 1, dataType, 0, 0 );
       break;
     }
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+    case GDT_UInt64:
+    {
+      uint64_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      if ( err == CE_None )
+      {
+        value = static_cast<double>( tempVal );
+        if ( tempVal != static_cast<uint64_t>( value ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Loss when reading value from UInt64 band" ) );
+          return std::numeric_limits<double>::quiet_NaN();
+        }
+      }
+      break;
+    }
+    case GDT_Int64:
+    {
+      int64_t tempVal{0};
+      err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                          &tempVal, 1, 1, dataType, 0, 0 );
+      if ( err == CE_None )
+      {
+        value = static_cast<double>( tempVal );
+        if ( tempVal != static_cast<int64_t>( value ) )
+        {
+          QgsDebugMsg( QStringLiteral( "Loss when reading value from Int64 band" ) );
+          return std::numeric_limits<double>::quiet_NaN();
+        }
+      }
+      break;
+    }
+#endif
     case GDT_CInt16:
     case GDT_CInt32:
     case GDT_CFloat32:
@@ -3261,12 +3295,23 @@ void QgsGdalProvider::initBaseDataset()
         case GDT_Float64:
         case GDT_CInt32:
         case GDT_CFloat32:
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+        case GDT_Int64:
+        case GDT_UInt64:
+#endif
           myGdalDataType = GDT_Float64;
           break;
         case GDT_CFloat64:
           break;
       }
     }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+    if ( myGdalDataType == GDT_Int64 || myGdalDataType == GDT_UInt64 )
+    {
+      myGdalDataType = GDT_Float64;
+    }
+#endif
 
     mGdalDataType.append( myGdalDataType );
     //mInternalNoDataValue.append( myInternalNoDataValue );
@@ -3335,7 +3380,13 @@ bool QgsGdalProvider::write( void *data, int band, int width, int height, int xO
   {
     return false;
   }
-  return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None;
+  GDALDataType gdalDataType = GDALGetRasterDataType( rasterBand );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  if ( gdalDataType == GDT_Int64 || gdalDataType == GDT_UInt64 )
+    gdalDataType = GDT_Float64;
+#endif
+
+  return gdalRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, gdalDataType, 0, 0 ) == CE_None;
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
