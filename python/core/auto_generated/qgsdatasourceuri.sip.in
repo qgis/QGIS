@@ -349,7 +349,7 @@ Sets geometry column name to ``geometryColumn``
 .. versionadded:: 3.10
 %End
 
-    const QSet<QString> &parameterKeys() const;
+    QSet<QString> parameterKeys() const;
 %Docstring
 Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
 

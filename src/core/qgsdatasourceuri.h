@@ -323,7 +323,7 @@ class CORE_EXPORT QgsDataSourceUri
      * Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
      * \since QGIS 3.26
      */
-    const QSet<QString> &parameterKeys() const;
+    QSet<QString> parameterKeys() const;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
@@ -372,14 +372,14 @@ class CORE_EXPORT QgsDataSourceUri
     bool mUseEstimatedMetadata = false;
     //! Disable SelectAtId capability (e.g., to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled = false;
+    //! Whether mSelectAtIdDisabled has been explicitly set to true or false
+    bool mSelectAtIdDisabledSet = false;
     //! geometry type (or QgsWkbTypes::Unknown if not specified)
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store
     QMultiMap<QString, QString> mParams;
-    //! Parameter keys ("table", "schema", ...) found in the uri
-    QSet<QString> mParamKeys;
 };
 
 #endif //QGSDATASOURCEURI_H
