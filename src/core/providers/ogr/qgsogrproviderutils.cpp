@@ -1956,6 +1956,16 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QStrin
     return wkbMultiPolygon;
   else if ( typeName == QLatin1String( "GeometryCollection" ) )
     return wkbGeometryCollection;
+  else if ( typeName == QLatin1String( "CircularString" ) )
+    return wkbCircularString;
+  else if ( typeName == QLatin1String( "CompoundCurve" ) )
+    return wkbCompoundCurve;
+  else if ( typeName == QLatin1String( "CurvePolygon" ) )
+    return wkbCurvePolygon;
+  else if ( typeName == QLatin1String( "MultiCurve" ) )
+    return wkbMultiCurve;
+  else if ( typeName == QLatin1String( "MultiSurface" ) )
+    return wkbMultiSurface;
   else if ( typeName == QLatin1String( "None" ) )
     return wkbNone;
   else if ( typeName == QLatin1String( "Point25D" ) )
@@ -1972,6 +1982,16 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QStrin
     return wkbMultiPolygon25D;
   else if ( typeName == QLatin1String( "GeometryCollection25D" ) )
     return wkbGeometryCollection25D;
+  else if ( typeName == QLatin1String( "CircularStringZ" ) )
+    return wkbCircularStringZ;
+  else if ( typeName == QLatin1String( "CompoundCurveZ" ) )
+    return wkbCompoundCurveZ;
+  else if ( typeName == QLatin1String( "CurvePolygonZ" ) )
+    return wkbCurvePolygonZ;
+  else if ( typeName == QLatin1String( "MultiCurveZ" ) )
+    return wkbMultiCurveZ;
+  else if ( typeName == QLatin1String( "MultiSurfaceZ" ) )
+    return wkbMultiSurfaceZ;
 
   QgsDebugMsg( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
   return wkbUnknown;
@@ -1992,6 +2012,21 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbSingleFlatten( OGRwkbGeometryType 
       return wkbCompoundCurve;
     case wkbMultiSurface:
       return wkbCurvePolygon;
+    default:
+      return type;
+  }
+}
+
+OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( OGRwkbGeometryType type )
+{
+  type = ogrWkbSingleFlatten( type );
+  switch ( type )
+  {
+    case wkbCircularString:
+    case wkbCompoundCurve:
+      return wkbLineString;
+    case wkbCurvePolygon:
+      return wkbPolygon;
     default:
       return type;
   }
