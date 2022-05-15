@@ -59,7 +59,13 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsRubberBand *>( sipCpp ) )
+    {
       sipType = sipType_QgsRubberBand;
+      // We need to tweak the pointer as sip believes it is single inheritance
+      // from QgsMapCanvasItem, but the raw address of QgsRubberBand (sipCpp)
+      // is actually a QObject
+      *sipCppRet = dynamic_cast<QgsRubberBand *>( sipCpp );
+    }
     else
       sipType = nullptr;
     SIP_END

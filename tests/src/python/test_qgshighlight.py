@@ -92,6 +92,29 @@ class TestQgsHighlight(unittest.TestCase):
         polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.runTestForLayer(polys_shp, 'polygons')
 
+    def testBugfix48471(self):
+        """ Test scenario of https://github.com/qgis/QGIS/issues/48471 """
+
+        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        layer = QgsVectorLayer(lines_shp, 'Layer', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
+        self.iface.mapCanvas().setExtent(layer.extent())
+
+        geom = next(layer.getFeatures()).geometry()
+
+        highlight = QgsHighlight(self.iface.mapCanvas(), geom, layer)
+        highlight.setBuffer(12345)
+
+        try:
+            found = False
+            for item in self.iface.mapCanvas().scene().items():
+                if isinstance(item, QgsHighlight):
+                    if item.buffer() == 12345:
+                        found = True
+            self.assertTrue(found)
+        finally:
+            self.iface.mapCanvas().scene().removeItem(highlight)
+
 
 if __name__ == '__main__':
     unittest.main()
