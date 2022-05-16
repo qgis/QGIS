@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgscopcpointcloudindex.h"
 #include <memory>
 
 class QgsEptPointCloudIndex;
@@ -61,7 +62,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     qint64 mPointCount = 0;
 
     QVariantMap mOriginalMetadata;
-    std::unique_ptr<QgsEptPointCloudIndex> mIndex;
+    std::unique_ptr<QgsCopcPointCloudIndex> mIndex;
     QgsPdalEptGenerationTask *mRunningIndexingTask = nullptr;
     static QQueue<QgsPdalProvider *> sIndexingQueue;
 };

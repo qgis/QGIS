@@ -46,7 +46,7 @@ QgsPdalProvider::QgsPdalProvider(
   const QgsDataProvider::ProviderOptions &options,
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
-  , mIndex( new QgsEptPointCloudIndex )
+  , mIndex( new QgsCopcPointCloudIndex )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -73,12 +73,12 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return mIndex->attributes();
 }
 
-static QString _outdir( const QString &filename )
+static QString _outFile( const QString &filename )
 {
   const QFileInfo fi( filename );
   const QDir directory = fi.absoluteDir();
-  const QString outputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.baseName() );
-  return outputDir;
+  const QString outputFile = QStringLiteral( "%1/copc_%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.baseName() );
+  return outputFile;
 }
 
 void QgsPdalProvider::generateIndex()
@@ -92,9 +92,9 @@ void QgsPdalProvider::generateIndex()
     return;
   }
 
-  const QString outputDir = _outdir( dataSourceUri() );
+  const QString outputFile = _outFile( dataSourceUri() );
 
-  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputDir, QFileInfo( dataSourceUri() ).fileName() );
+  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputFile, QFileInfo( dataSourceUri() ).fileName() );
 
   connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
   connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
@@ -120,16 +120,15 @@ void QgsPdalProvider::loadIndex( )
   if ( mIndex->isValid() )
     return;
 
-  const QString outputDir = _outdir( dataSourceUri() );
-  const QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( outputDir );
-  const QFileInfo fi( outEptJson );
+  const QString outputFile = _outFile( dataSourceUri() );
+  const QFileInfo fi( outputFile );
   if ( fi.isFile() )
   {
-    mIndex->load( outEptJson );
+    mIndex->load( outputFile );
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outEptJson ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outputFile ), 2 );
   }
 }
 

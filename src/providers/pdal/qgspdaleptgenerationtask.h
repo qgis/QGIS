@@ -24,13 +24,13 @@ class QgsPdalEptGenerationTask: public QgsTask
     Q_OBJECT
 
   public:
-    QgsPdalEptGenerationTask( const QString &file, const QString &outputDir, const QString &name = QString() );
+    QgsPdalEptGenerationTask( const QString &file, const QString &outputFile, const QString &name = QString() );
     bool run() override;
 
     QString untwineExecutableBinary() const;
     void setUntwineExecutableBinary( const QString &untwineExecutableBinary );
 
-    QString outputDir() const;
+    QString outputFile() const;
     const QString errorMessage() const { return mErrorMessage; };
 
   private:
@@ -40,7 +40,7 @@ class QgsPdalEptGenerationTask: public QgsTask
 
     QString guessUntwineExecutableBinary() const;
     QString mUntwineExecutableBinary;
-    QString mOutputDir;
+    QString mOutputFile;
     QString mFile;
     QString mErrorMessage;
 };
