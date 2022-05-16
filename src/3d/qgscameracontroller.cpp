@@ -154,22 +154,6 @@ float find_x_on_line( float x0, float y0, float x1, float y1, float y )
   return x0 + k * d_x;
 }
 
-QPointF screen_point_to_point_on_plane( QPointF pt, QRect viewport, Qt3DRender::QCamera *camera, float y )
-{
-  // get two points of the ray
-  const QVector3D l0 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 0 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
-  const QVector3D l1 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 1 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
-
-  const QVector3D p0( 0, y, 0 ); // a point on the plane
-  const QVector3D n( 0, 1, 0 ); // normal of the plane
-  const QVector3D l = l1 - l0; // vector in the direction of the line
-  const float d = QVector3D::dotProduct( p0 - l0, n ) / QVector3D::dotProduct( l, n );
-  const QVector3D p = d * l + l0;
-
-  return QPointF( p.x(), p.z() );
-}
-
-
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
   const float pitch = mCameraPose.pitchAngle();
