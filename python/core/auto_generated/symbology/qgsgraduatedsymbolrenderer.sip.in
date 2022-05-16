@@ -45,9 +45,23 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
 
     QString classAttribute() const;
+%Docstring
+Returns the attribute name (or expression) used for the classification.
+
+.. seealso:: :py:func:`setClassAttribute`
+%End
+
     void setClassAttribute( const QString &attr );
+%Docstring
+Sets the attribute name (or expression) used for the classification.
+
+.. seealso:: :py:func:`classAttribute`
+%End
 
     const QgsRangeList &ranges() const;
+%Docstring
+Returns a list of all ranges used in the classification.
+%End
 
     bool updateRangeSymbol( int rangeIndex, QgsSymbol *symbol /Transfer/ );
     bool updateRangeLabel( int rangeIndex, const QString &label );
@@ -441,14 +455,18 @@ Returns the max symbol size when graduated by size
 
     GraduatedMethod graduatedMethod() const;
 %Docstring
-Returns the method used for graduation (either size or color)
+Returns the method used for graduation (either size or color).
+
+.. seealso:: :py:func:`setGraduatedMethod`
 
 .. versionadded:: 2.10
 %End
 
     void setGraduatedMethod( GraduatedMethod method );
 %Docstring
-set the method used for graduation (either size or color)
+Set the ``method`` used for graduation (either size or color).
+
+.. seealso:: :py:func:`graduatedMethod`
 
 .. versionadded:: 2.10
 %End

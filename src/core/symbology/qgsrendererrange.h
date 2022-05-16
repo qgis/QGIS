@@ -58,22 +58,87 @@ class CORE_EXPORT QgsRendererRange
 
     bool operator<( const QgsRendererRange &other ) const;
 
+    /**
+     * Returns the lower bound of the range.
+     *
+     * \see setLowerValue()
+     * \see upperValue()
+     */
     double lowerValue() const;
+
+    /**
+     * Returns the upper bound of the range.
+     *
+     * \see setUpperValue()
+     * \see lowerValue()
+     */
     double upperValue() const;
 
+    /**
+     * Returns the symbol used for the range.
+     *
+     * \see setSymbol()
+     */
     QgsSymbol *symbol() const;
+
+    /**
+     * Returns the label used for the range.
+     *
+     * \see setLabel()
+     */
     QString label() const;
 
+    /**
+     * Sets the symbol used for the range.
+     *
+     * Ownership of the symbol is transferred.
+     *
+     * \see symbol()
+     */
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
+
+    /**
+     * Sets the label used for the range.
+     *
+     * \see label()
+     */
     void setLabel( const QString &label );
+
+    /**
+     * Sets the lower bound of the range.
+     *
+     * \see lowerValue()
+     * \see setUpperValue()
+     */
     void setLowerValue( double lowerValue );
+
+    /**
+     * Sets the upper bound of the range.
+     *
+     * \see upperValue()
+     * \see setLowerValue()
+     */
     void setUpperValue( double upperValue );
 
-    // \since QGIS 2.5
+    /**
+     * Returns TRUE if the range should be rendered.
+     *
+     * \see setRenderState()
+     * \since QGIS 2.6
+     */
     bool renderState() const;
+
+    /**
+     * Sets whether the range should be rendered.
+     *
+     * \see renderState()
+     * \since QGIS 2.6
+     */
     void setRenderState( bool render );
 
-    // debugging
+    /**
+     * Dumps a string representation of the range.
+     */
     QString dump() const;
 
     /**
