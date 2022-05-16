@@ -1579,7 +1579,7 @@
                     <item>
                      <widget class="QToolButton" name="mButtonAddStyleDatabase">
                       <property name="toolTip">
-                       <string>Add predefined scale</string>
+                       <string>Add existing style database</string>
                       </property>
                       <property name="text">
                        <string>…</string>
@@ -1593,7 +1593,7 @@
                     <item>
                      <widget class="QToolButton" name="mButtonRemoveStyleDatabase">
                       <property name="toolTip">
-                       <string>Remove selected scale</string>
+                       <string>Remove selected style database</string>
                       </property>
                       <property name="text">
                        <string>…</string>
@@ -1601,6 +1601,20 @@
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mButtonNewStyleDatabase">
+                      <property name="toolTip">
+                       <string>Create new style database</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionNewPage.svg</normaloff>:/images/themes/default/mActionNewPage.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -3609,6 +3623,7 @@
   <tabstop>mListStyleDatabases</tabstop>
   <tabstop>mButtonAddStyleDatabase</tabstop>
   <tabstop>mButtonRemoveStyleDatabase</tabstop>
+  <tabstop>mButtonNewStyleDatabase</tabstop>
   <tabstop>mTransactionModeComboBox</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mCheckRememberEditStatus</tabstop>
