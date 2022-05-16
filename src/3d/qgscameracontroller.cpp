@@ -123,14 +123,6 @@ void QgsCameraController::setViewport( QRect viewport )
   emit viewportChanged();
 }
 
-float find_x_on_line( float x0, float y0, float x1, float y1, float y )
-{
-  const float d_x = x1 - x0;
-  const float d_y = y1 - y0;
-  const float k = ( y - y0 ) / d_y; // TODO: can we have d_y == 0 ?
-  return x0 + k * d_x;
-}
-
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
   const float pitch = mCameraPose.pitchAngle();
