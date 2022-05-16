@@ -118,16 +118,6 @@ namespace QgsRayCastingUtils
                                 QVector3D c,
                                 QVector3D &uvw,
                                 float &t );
-
-  /**
-   * Returns a ray coming out of camera
-   * \note With switch to Qt 5.11 we may remove it and use QRayCaster/QScreenRayCaster instead.
-   * \since QGIS 3.4
-   */
-  Ray3D rayForViewportAndCamera( const QSize &area,
-                                 const QPointF &pos,
-                                 const QRectF &relativeViewport,
-                                 const Qt3DRender::QCamera *camera );
 }
 
 /// @endcond

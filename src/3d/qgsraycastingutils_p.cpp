@@ -334,23 +334,4 @@ static QgsRayCastingUtils::Ray3D intersectionRay( QPointF pos, const QMatrix4x4 
 }
 
 
-namespace QgsRayCastingUtils
-{
-
-  Ray3D rayForViewportAndCamera( QSize area,
-                                 QPointF pos,
-                                 const QRectF &relativeViewport,
-                                 const Qt3DRender::QCamera *camera )
-  {
-    const QMatrix4x4 viewMatrix = camera->viewMatrix();
-    const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
-    const QRect viewport = windowViewport( area, relativeViewport );
-
-    // In GL the y is inverted compared to Qt
-    const QPointF glCorrectPos = QPointF( pos.x(), area.isValid() ? area.height() - pos.y() : pos.y() );
-    const auto ray = intersectionRay( glCorrectPos, viewMatrix, projectionMatrix, viewport );
-    return ray;
-  }
-}
-
 /// @endcond
