@@ -37,9 +37,16 @@ default constructor
 
     QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
 %Docstring
-Constructor from :py:class:`QgsSettings` ``settings`` object
+Constructor from :py:class:`QgsSettings` ``settings`` object and root ``key``
 
 :param settings:
+:param key:
+%End
+
+    QgsHttpHeaders( const QString &key );
+%Docstring
+Constructor from default :py:class:`QgsSettings` object and root ``key``
+
 :param key:
 %End
 
@@ -48,6 +55,13 @@ Constructor from :py:class:`QgsSettings` ``settings`` object
     bool updateNetworkRequest( QNetworkRequest &request ) const;
 %Docstring
 Updates a ``request`` by adding all the HTTP headers
+
+:return: ``True`` if the update succeed
+%End
+
+    bool updateDataSourceUri( QgsDataSourceUri &uri ) const;
+%Docstring
+Updates an ``uri`` by adding all the HTTP headers
 
 :return: ``True`` if the update succeed
 %End

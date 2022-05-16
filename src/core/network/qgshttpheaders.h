@@ -26,6 +26,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssettingsentry.h"
+#include "qgsdatasourceuri.h"
 
 /**
  * \ingroup core
@@ -39,9 +40,14 @@ class CORE_EXPORT QgsHttpHeaders
 #ifndef SIP_RUN
 
     /**
-     * Used in settings
+     * Used in settings as the group name
      */
     static const QString KEY_PREFIX;
+
+    /**
+     * Used in settings as the referer key
+     */
+    static const QString KEY_REFERER;
 #endif
 
     /**
@@ -56,11 +62,17 @@ class CORE_EXPORT QgsHttpHeaders
     QgsHttpHeaders();
 
     /**
-     * \brief Constructor from QgsSettings \a settings object
+     * \brief Constructor from QgsSettings \a settings object and root \a key
      * \param settings
      * \param key
      */
     QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() );
+
+    /**
+     * \brief Constructor from default QgsSettings object and root \a key
+     * \param key
+     */
+    QgsHttpHeaders( const QString &key );
 
     virtual ~QgsHttpHeaders();
 
@@ -69,6 +81,12 @@ class CORE_EXPORT QgsHttpHeaders
      * \return TRUE if the update succeed
      */
     bool updateNetworkRequest( QNetworkRequest &request ) const;
+
+    /**
+     * \brief Updates an \a uri by adding all the HTTP headers
+     * \return TRUE if the update succeed
+     */
+    bool updateDataSourceUri( QgsDataSourceUri &uri ) const;
 
     /**
      * \brief Updates the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
