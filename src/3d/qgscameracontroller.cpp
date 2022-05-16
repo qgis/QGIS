@@ -123,29 +123,6 @@ void QgsCameraController::setViewport( QRect viewport )
   emit viewportChanged();
 }
 
-
-static QVector3D unproject( QVector3D v, const QMatrix4x4 &modelView, const QMatrix4x4 &projection, QRect viewport )
-{
-  // Reimplementation of QVector3D::unproject() - see qtbase/src/gui/math3d/qvector3d.cpp
-  // The only difference is that the original implementation uses tolerance 1e-5
-  // (see qFuzzyIsNull()) as a protection against division by zero. For us it is however
-  // common to get lower values (e.g. as low as 1e-8 when zoomed out to the whole Earth with web mercator).
-
-  const QMatrix4x4 inverse = QMatrix4x4( projection * modelView ).inverted();
-
-  QVector4D tmp( v, 1.0f );
-  tmp.setX( ( tmp.x() - float( viewport.x() ) ) / float( viewport.width() ) );
-  tmp.setY( ( tmp.y() - float( viewport.y() ) ) / float( viewport.height() ) );
-  tmp = tmp * 2.0f - QVector4D( 1.0f, 1.0f, 1.0f, 1.0f );
-
-  QVector4D obj = inverse * tmp;
-  if ( qgsDoubleNear( obj.w(), 0, 1e-10 ) )
-    obj.setW( 1.0f );
-  obj /= obj.w();
-  return obj.toVector3D();
-}
-
-
 float find_x_on_line( float x0, float y0, float x1, float y1, float y )
 {
   const float d_x = x1 - x0;
