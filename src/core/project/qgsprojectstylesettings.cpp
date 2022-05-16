@@ -111,16 +111,7 @@ void QgsProjectStyleSettings::reset()
   mRandomizeDefaultSymbolColor = true;
   mDefaultSymbolOpacity = 1.0;
 
-  mStyleDatabases.clear();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  for ( QgsStyle *style : std::as_const( mStyles ) )
-  {
-    mCombinedStyleModel->removeStyle( style );
-  }
-#endif
-  qDeleteAll( mStyles );
-  mStyles.clear();
-
+  clearStyles();
   emit styleDatabasesChanged();
 }
 
@@ -176,16 +167,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
   }
 
   {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    for ( QgsStyle *style : std::as_const( mStyles ) )
-    {
-      mCombinedStyleModel->removeStyle( style );
-    }
-#endif
-    qDeleteAll( mStyles );
-    mStyles.clear();
-    mStyleDatabases.clear();
-
+    clearStyles();
     if ( !( flags & Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
     {
       const QDomElement styleDatabases = element.firstChildElement( QStringLiteral( "databases" ) );
@@ -197,9 +179,10 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
           const QDomElement styleElement = styleEntries.at( i ).toElement();
           const QString path = styleElement.attribute( QStringLiteral( "path" ) );
           const QString fullPath = context.pathResolver().readPath( path );
+          emit styleDatabaseAboutToBeAdded( fullPath );
           mStyleDatabases.append( fullPath );
-
           loadStyleAtPath( fullPath );
+          emit styleDatabaseAdded( fullPath );
         }
       }
     }
@@ -280,7 +263,7 @@ QgsStyle *QgsProjectStyleSettings::styleAtPath( const QString &path )
   if ( path == QgsStyle::defaultStyle()->fileName() )
     return QgsStyle::defaultStyle();
 
-  for ( QgsStyle *style : mStyles )
+  for ( QgsStyle *style : std::as_const( mStyles ) )
   {
     if ( style->fileName() == path )
       return style;
@@ -294,8 +277,10 @@ void QgsProjectStyleSettings::addStyleDatabasePath( const QString &path )
   if ( mStyleDatabases.contains( path ) )
     return;
 
+  emit styleDatabaseAboutToBeAdded( path );
   mStyleDatabases.append( path );
   loadStyleAtPath( path );
+  emit styleDatabaseAdded( path );
 
   emit styleDatabasesChanged();
 }
@@ -305,21 +290,15 @@ void QgsProjectStyleSettings::setStyleDatabasePaths( const QStringList &paths )
   if ( paths == mStyleDatabases )
     return;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  for ( QgsStyle *style : std::as_const( mStyles ) )
-  {
-    mCombinedStyleModel->removeStyle( style );
-  }
-#endif
-  qDeleteAll( mStyles );
-  mStyles.clear();
+  clearStyles();
 
   for ( const QString &path : paths )
   {
+    emit styleDatabaseAboutToBeAdded( path );
+    mStyleDatabases.append( path );
     loadStyleAtPath( path );
+    emit styleDatabaseAdded( path );
   }
-
-  mStyleDatabases = paths;
   emit styleDatabasesChanged();
 }
 
@@ -345,9 +324,171 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
 #endif
 }
 
+void QgsProjectStyleSettings::clearStyles()
+{
+  const QStringList pathsToRemove = mStyleDatabases;
+  for ( const QString &path : pathsToRemove )
+  {
+    emit styleDatabaseAboutToBeRemoved( path );
+    mStyleDatabases.removeAll( path );
+    if ( QgsStyle *style = styleAtPath( path ) )
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+      mCombinedStyleModel->removeStyle( style );
+#endif
+      style->deleteLater();
+      mStyles.removeAll( style );
+    }
+    emit styleDatabaseRemoved( path );
+  }
+
+  // should already be empty, but play it safe..!
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  for ( QgsStyle *style : std::as_const( mStyles ) )
+  {
+    mCombinedStyleModel->removeStyle( style );
+  }
+#endif
+  qDeleteAll( mStyles );
+  mStyles.clear();
+}
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
 {
   return mCombinedStyleModel;
 }
 #endif
+
+
+
+
+//
+// QgsProjectStyleDatabaseModel
+//
+
+QgsProjectStyleDatabaseModel::QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent )
+  : QAbstractListModel( parent )
+  , mSettings( settings )
+{
+  connect( mSettings, &QgsProjectStyleSettings::styleDatabaseAboutToBeAdded, this, &QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeAdded );
+  connect( mSettings, &QgsProjectStyleSettings::styleDatabaseAdded, this, &QgsProjectStyleDatabaseModel::styleDatabaseAdded );
+  connect( mSettings, &QgsProjectStyleSettings::styleDatabaseAboutToBeRemoved, this, &QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved );
+  connect( mSettings, &QgsProjectStyleSettings::styleDatabaseRemoved, this, &QgsProjectStyleDatabaseModel::styleDatabaseRemoved );
+}
+
+int QgsProjectStyleDatabaseModel::rowCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent )
+  return ( mSettings ? mSettings->styleDatabasePaths().count() : 0 ) + ( mShowDefault ? 1 : 0 );
+}
+
+QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role ) const
+{
+  if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
+    return QVariant();
+
+  const bool isDefault = index.row() == 0 && mShowDefault;
+  const int styleRow = mShowDefault ? index.row() - 1 : index.row();
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+    case Qt::ToolTipRole:
+    case Qt::EditRole:
+      if ( isDefault )
+        return QgsStyle::defaultStyle()->name();
+      else
+        return mSettings ? mSettings->styles().at( styleRow )->name() : QVariant();
+
+    case StyleRole:
+    {
+      if ( isDefault )
+        return QVariant::fromValue( QgsStyle::defaultStyle() );
+      else if ( QgsStyle *style = mSettings->styles().value( styleRow ) )
+        return QVariant::fromValue( style );
+      else
+        return QVariant();
+    }
+
+    default:
+      return QVariant();
+  }
+}
+
+QgsStyle *QgsProjectStyleDatabaseModel::styleFromIndex( const QModelIndex &index ) const
+{
+  if ( index.row() == 0 && mShowDefault )
+    return QgsStyle::defaultStyle();
+
+  if ( QgsStyle *style = qobject_cast< QgsStyle * >( qvariant_cast<QObject *>( data( index, StyleRole ) ) ) )
+    return style;
+  else
+    return nullptr;
+}
+
+QModelIndex QgsProjectStyleDatabaseModel::indexFromStyle( QgsStyle *style ) const
+{
+  if ( style == QgsStyle::defaultStyle() && mShowDefault )
+    return index( 0, 0, QModelIndex() );
+
+  if ( !mSettings )
+  {
+    return QModelIndex();
+  }
+
+  const int r = mSettings->styles().indexOf( style );
+  if ( r < 0 )
+    return QModelIndex();
+
+  QModelIndex idx = index( mShowDefault ? r + 1 : r, 0, QModelIndex() );
+  if ( idx.isValid() )
+  {
+    return idx;
+  }
+
+  return QModelIndex();
+}
+
+void QgsProjectStyleDatabaseModel::setShowDefaultStyle( bool show )
+{
+  if ( show == mShowDefault )
+    return;
+
+  if ( show )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mShowDefault = true;
+    endInsertRows();
+  }
+  else
+  {
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mShowDefault = false;
+    endRemoveRows();
+  }
+}
+
+void QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeAdded( const QString & )
+{
+  int row = mSettings->styles().count() + ( mShowDefault ? 1 : 0 );
+  beginInsertRows( QModelIndex(), row, row );
+}
+
+void QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved( const QString &path )
+{
+  QgsStyle *style = mSettings->styleAtPath( path );
+  int row = mSettings->styles().indexOf( style ) + ( mShowDefault ? 1 : 0 );
+  if ( row >= 0 )
+    beginRemoveRows( QModelIndex(), row, row );
+}
+
+void QgsProjectStyleDatabaseModel::styleDatabaseAdded( const QString & )
+{
+  endInsertRows();
+}
+
+void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & )
+{
+  endRemoveRows();
+}

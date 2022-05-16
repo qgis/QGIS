@@ -20,6 +20,7 @@
 #include "qgswkbtypes.h"
 
 #include <memory.h>
+#include <QAbstractListModel>
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -205,6 +206,37 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      */
     void styleDatabasesChanged();
 
+#ifndef SIP_RUN
+
+    /**
+     * Emitted when a style database path is about to be added.
+     *
+     * \note Not available in Python bindings
+     */
+    void styleDatabaseAboutToBeAdded( const QString &path );
+
+    /**
+     * Emitted when a style database path is added.
+     *
+     * \note Not available in Python bindings
+     */
+    void styleDatabaseAdded( const QString &path );
+
+    /**
+     * Emitted when a style database path is about to be removed.
+     *
+     * \note Not available in Python bindings
+     */
+    void styleDatabaseAboutToBeRemoved( const QString &path );
+
+    /**
+     * Emitted when a style database path is removed.
+     *
+     * \note Not available in Python bindings
+     */
+    void styleDatabaseRemoved( const QString &path );
+
+#endif
   private:
 
     QgsProject *mProject = nullptr;
@@ -224,7 +256,74 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     QgsCombinedStyleModel *mCombinedStyleModel = nullptr;
 
     void loadStyleAtPath( const QString &path );
+    void clearStyles();
 
 };
+
+/**
+ * \ingroup core
+ * \class QgsProjectStyleDatabaseModel
+ *
+ * \brief List model representing the style databases associated with a QgsProject.
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Custom model roles
+    enum Role
+    {
+      StyleRole = Qt::UserRole + 1, //!< Style object
+    };
+
+    /**
+     * Constructor for QgsProjectStyleDatabaseModel, showing the styles from the specified \a settings.
+     */
+    explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+
+    /**
+     * Returns the style at the corresponding \a index.
+     * \see indexFromStyle()
+     */
+    QgsStyle *styleFromIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the model index corresponding to a \a style.
+     * \see styleFromIndex()
+     */
+    QModelIndex indexFromStyle( QgsStyle *style ) const;
+
+    /**
+     * Sets whether the default style should also be included in the model.
+     *
+     * \see showDefaultStyle()
+     */
+    void setShowDefaultStyle( bool show );
+
+    /**
+     * Returns TRUE if the model includes the default style.
+     *
+     * \see setShowDefaultStyle()
+     */
+    bool showDefaultStyle() const { return mShowDefault; }
+
+  private slots:
+    void styleDatabaseAboutToBeAdded( const QString &path );
+    void styleDatabaseAboutToBeRemoved( const QString &path );
+    void styleDatabaseAdded( const QString &path );
+    void styleDatabaseRemoved( const QString &path );
+
+  private:
+    QgsProjectStyleSettings *mSettings = nullptr;
+    bool mShowDefault = false;
+};
+
 
 #endif // QGSPROJECTSTYLESETTINGS_H
