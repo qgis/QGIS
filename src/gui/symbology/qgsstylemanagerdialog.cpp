@@ -43,6 +43,7 @@
 #include "qgsiconutils.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgsfileutils.h"
 
 #include <QAction>
 #include <QFile>
@@ -178,7 +179,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 {
   init();
   setCurrentStyle( style );
-  mComboBoxStyleDatabase->hide();
+  mStyleDatabaseWidget->hide();
 }
 
 QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags flags )
@@ -200,6 +201,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags f
     const QModelIndex index = mProjectStyleModel->index( mComboBoxStyleDatabase->currentIndex(), 0, QModelIndex() );
     setCurrentStyle( mProjectStyleModel->styleFromIndex( index ) );
   } );
+
+  connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, [ = ] { addStyleDatabase( false ); } );
+  connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, [ = ] { addStyleDatabase( true ); } );
 }
 
 void QgsStyleManagerDialog::init()
@@ -2145,6 +2149,47 @@ bool QgsStyleManagerDialog::editSymbol3D()
   mStyle->addSymbol3D( symbolName, symbol.release(), true );
   mModified = true;
   return true;
+}
+
+void QgsStyleManagerDialog::addStyleDatabase( bool createNew )
+{
+  QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder.value();
+  if ( initialFolder.isEmpty() )
+    initialFolder = QDir::homePath();
+
+  QString databasePath = createNew
+                         ? QFileDialog::getSaveFileName(
+                           this,
+                           tr( "Create Style Database" ),
+                           initialFolder,
+                           tr( "Style databases" ) + " (*.db)" )
+                         : QFileDialog::getOpenFileName(
+                           this,
+                           tr( "Add Style Database" ),
+                           initialFolder,
+                           tr( "Style databases" ) + " (*.db *.xml)" );
+  if ( ! databasePath.isEmpty() )
+  {
+    QgsStyleManagerDialog::settingLastStyleDatabaseFolder.setValue( QFileInfo( databasePath ).path() );
+
+    if ( createNew )
+    {
+      databasePath = QgsFileUtils::ensureFileNameHasExtension( databasePath, { QStringLiteral( "db" )} );
+      if ( QFile::exists( databasePath ) )
+      {
+        QFile::remove( databasePath );
+      }
+      QgsStyle s;
+      if ( !s.createDatabase( databasePath ) )
+      {
+        QMessageBox::warning( this, tr( "Create Style Database" ), tr( "The style database could not be created" ) );
+        return;
+      }
+    }
+
+    QgsProject::instance()->styleSettings()->addStyleDatabasePath( databasePath );
+    setCurrentStyle( QgsProject::instance()->styleSettings()->styleAtPath( databasePath ) );
+  }
 }
 
 void QgsStyleManagerDialog::removeItem()
