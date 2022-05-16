@@ -19,10 +19,10 @@
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
-#include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include <QIcon>
 #include <QBuffer>
+#include <QDir>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 #include "qgscombinedstylemodel.h"
@@ -75,6 +75,7 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   connect( mStyle, &QgsStyle::entityRenamed, this, &QgsStyleModel::onEntityRename );
   connect( mStyle, &QgsStyle::entityChanged, this, &QgsStyleModel::onEntityChanged );
   connect( mStyle, &QgsStyle::entityTagsChanged, this, &QgsStyleModel::onTagsChanged );
+  connect( mStyle, &QgsStyle::rebuildIconPreviews, this, &QgsStyleModel::rebuildSymbolIcons );
 
   // when a remote svg or image has been fetched, update the model's decorations.
   // this is required if a symbol utilizes remote svgs, and the current icons
@@ -83,10 +84,6 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   // svg
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsStyleModel::rebuildSymbolIcons );
   connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsStyleModel::rebuildSymbolIcons );
-
-  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
-  // need updating to reflect the new colors
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsStyleModel::rebuildSymbolIcons );
 
   if ( sIconGenerator )
     connect( sIconGenerator, &QgsAbstractStyleEntityIconGenerator::iconGenerated, this, &QgsStyleModel::iconGenerated, Qt::QueuedConnection );

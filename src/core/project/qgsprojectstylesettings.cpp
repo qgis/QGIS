@@ -323,6 +323,10 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mCombinedStyleModel->addStyle( style );
 #endif
+
+  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+  // need updating to reflect the new colors
+  connect( mProject, &QgsProject::projectColorsChanged, style, &QgsStyle::triggerIconRebuild );
 }
 
 void QgsProjectStyleSettings::clearStyles()

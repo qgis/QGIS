@@ -972,6 +972,19 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     static bool isXmlStyleFile( const QString &path );
 
+  public slots:
+#ifndef SIP_RUN
+
+    /**
+     * Triggers emission of the rebuildIconPreviews() signal.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.26
+     */
+    void triggerIconRebuild();
+#endif
+
   signals:
 
     /**
@@ -1172,6 +1185,13 @@ class CORE_EXPORT QgsStyle : public QObject
      * \since QGIS 3.10
      */
     void labelSettingsChanged( const QString &name );
+
+    /**
+     * Emitted whenever icon previews for entities in the style must be rebuilt.
+     *
+     * \since QGIS 3.26
+     */
+    void rebuildIconPreviews();
 
   private:
 
