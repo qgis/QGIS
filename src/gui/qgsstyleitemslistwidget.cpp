@@ -24,6 +24,7 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include <QScrollBar>
 
 //
 // QgsReadOnlyStyleModel
@@ -62,10 +63,111 @@ QVariant QgsReadOnlyStyleModel::data( const QModelIndex &index, int role ) const
     // drop font size to get reasonable amount of item name shown
     QFont f = QgsStyleProxyModel::data( index, role ).value< QFont >();
     f.setPointSize( 9 );
+
     return f;
   }
   return QgsStyleProxyModel::data( index, role );
 }
+
+
+//
+// QgsStyleModelDelegate
+//
+
+QgsStyleModelDelegate::QgsStyleModelDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
+
+QSize QgsStyleModelDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  if ( const QListView *view = qobject_cast< const QListView * >( option.widget ) )
+  {
+    if ( index.data( QgsStyleModel::IsTitleRole ).toBool() )
+    {
+      // make titles take up full width of list view widgets
+      QFont f = option.font;
+      f.setPointSizeF( f.pointSizeF() * 1.4 );
+      const QFontMetrics fm( f );
+      return QSize( option.widget->width() - view->verticalScrollBar()->width() * 2, fm.height() );
+    }
+    else
+    {
+      // for normal entries we just apply a nice grid spacing to the icons. (This needs to be sufficient to
+      // allow enough of the item's name text to show without truncation).
+      const QSize iconSize = option.decorationSize;
+      return QSize( static_cast< int >( iconSize.width() * 1.4 ), static_cast< int >( iconSize.height() * 1.7 ) );
+    }
+  }
+  else if ( qobject_cast< const QTreeView * >( option.widget ) )
+  {
+    if ( index.data( QgsStyleModel::IsTitleRole ).toBool() )
+    {
+      QSize defaultSize = QStyledItemDelegate::sizeHint( option, index );
+      // add a little bit of vertical padding
+      return QSize( defaultSize.width(), static_cast< int >( defaultSize.height() * 1.2 ) );
+    }
+  }
+
+  return QStyledItemDelegate::sizeHint( option, index );
+}
+
+void QgsStyleModelDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  if ( index.data( QgsStyleModel::IsTitleRole ).toBool() )
+  {
+    QStyleOptionViewItem titleOption( option );
+    initStyleOption( &titleOption, index );
+    if ( qobject_cast< const QListView * >( option.widget ) )
+    {
+      titleOption.font.setBold( true );
+      titleOption.font.setPointSizeF( titleOption.font.pointSizeF() * 1.4 );
+
+      painter->save();
+      painter->setBrush( titleOption.palette.windowText() );
+      painter->setFont( titleOption.font );
+      const QRect rect = QRect( titleOption.rect.left(), titleOption.rect.top(),
+                                titleOption.rect.width(), titleOption.rect.height() );
+
+      painter->drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, index.data( Qt::DisplayRole ).toString() );
+      painter->setBrush( Qt::NoBrush );
+      QColor lineColor =  titleOption.palette.windowText().color();
+      lineColor.setAlpha( 100 );
+      painter->setPen( QPen( lineColor, 1 ) );
+      painter->drawLine( titleOption.rect.left(), titleOption.rect.bottom(), titleOption.rect.right(), titleOption.rect.bottom() );
+      painter->restore();
+      return;
+    }
+    else if ( qobject_cast< const QTreeView * >( option.widget ) )
+    {
+      painter->save();
+      QColor lineColor = option.palette.windowText().color();
+      lineColor.setAlpha( 100 );
+      painter->setPen( QPen( lineColor, 1 ) );
+
+      QFont f = option.font;
+      f.setBold( true );
+      f.setPointSize( 9 );
+      titleOption.font = f;
+      titleOption.fontMetrics = QFontMetrics( titleOption.font );
+
+      painter->drawLine( index.column() == 0 ? 0 : option.rect.left(),
+                         option.rect.bottom(),
+                         index.column() == 0 ? option.rect.right() : option.widget->width(),
+                         option.rect.bottom() );
+      painter->restore();
+
+      titleOption.state |= QStyle::State_Enabled;
+      QStyledItemDelegate::paint( painter, titleOption, index );
+      return;
+    }
+  }
+
+  QStyledItemDelegate::paint( painter, option, index );
+
+}
+
 
 ///@endcond
 
@@ -79,6 +181,8 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
 {
   setupUi( this );
 
+  mDelegate = new QgsStyleModelDelegate( this );
+
   btnAdvanced->hide(); // advanced button is hidden by default
   btnAdvanced->setMenu( new QMenu( this ) );
 
@@ -88,6 +192,9 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
   const double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
   mSymbolTreeView->setMinimumHeight( mSymbolTreeView->fontMetrics().height() * 6 );
+
+  viewSymbols->setItemDelegate( mDelegate );
+  mSymbolTreeView->setItemDelegate( mDelegate );
 
   viewSymbols->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSymbolTreeView->setSelectionMode( viewSymbols->selectionMode() );
@@ -153,8 +260,6 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
 
-  // set a grid size which allows sufficient vertical spacing to fit reasonably sized entity names
-  viewSymbols->setGridSize( QSize( static_cast< int >( viewSymbols->iconSize().width() * 1.4 ), static_cast< int >( viewSymbols->iconSize().height() * 1.7 ) ) );
   viewSymbols->setTextElideMode( Qt::TextElideMode::ElideRight );
 
   viewSymbols->setModel( mModel );

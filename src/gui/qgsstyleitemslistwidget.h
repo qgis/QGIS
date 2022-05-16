@@ -20,6 +20,7 @@
 
 #include "qgsstylemodel.h"
 #include <QWidget>
+#include <QStyledItemDelegate>
 #include "qgis_gui.h"
 
 class QgsStyle;
@@ -45,6 +46,30 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
     QVariant data( const QModelIndex &index, int role ) const override;
 
 };
+
+/**
+ * \ingroup gui
+ * \class QgsStyleModelDelegate
+ * \brief Custom delegate for formatting style models.
+ * \note Not available in Python bindings
+ * \since QGIS 3.26
+ */
+class QgsStyleModelDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsStyleModelDelegate, with the specifed \a parent object.
+     */
+    QgsStyleModelDelegate( QObject *parent );
+
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
+};
+
 #endif
 ///@endcond
 
@@ -191,6 +216,7 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
   private:
     QgsStyle *mStyle = nullptr;
     QgsStyleProxyModel *mModel = nullptr;
+    QgsStyleModelDelegate *mDelegate = nullptr;
     bool mUpdatingGroups = false;
 };
 
