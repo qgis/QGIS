@@ -101,13 +101,6 @@ namespace QgsRayCastingUtils
   };
 
   /**
-   * Tests whether a plane is intersected by a ray.
-   * \note With switch to Qt 5.11 we may remove it and use QRayCaster/QScreenRayCaster instead.
-   * \since QGIS 3.4
-   */
-  bool rayPlaneIntersection( const Ray3D &r, const Plane3D &plane, QVector3D &pt );
-
-  /**
    * Tests whether a triangle is intersected by a ray.
    * \note With switch to Qt 5.11 we may remove it and use QRayCaster/QScreenRayCaster instead.
    * \since QGIS 3.4

@@ -229,22 +229,6 @@ namespace QgsRayCastingUtils
     return intersection( b, ray( r ) );
   }
 
-  // copied from https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
-  bool rayPlaneIntersection( const Ray3D &r, const Plane3D &plane, QVector3D &pt )
-  {
-    const float denom = QVector3D::dotProduct( plane.normal, r.direction() );
-    if ( std::abs( denom ) > 0.0001f ) // your favorite epsilon
-    {
-      const float t = QVector3D::dotProduct( plane.center - r.origin(), plane.normal ) / denom;
-      if ( t >= 0 )
-      {
-        pt = r.point( t );
-        return true; // you might want to allow an epsilon here too
-      }
-    }
-    return false;
-  }
-
 // copied from intersectsSegmentTriangle() from qt3d/src/render/backend/triangleboundingvolume.cpp
 // by KDAB, licensed under the terms of LGPL
   bool rayTriangleIntersection( const Ray3D &ray,
