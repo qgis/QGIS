@@ -3051,6 +3051,11 @@ bool QgsStyle::isXmlStyleFile( const QString &path )
   return line == QLatin1String( "<!DOCTYPE qgis_style>" );
 }
 
+void QgsStyle::triggerIconRebuild()
+{
+  emit rebuildIconPreviews();
+}
+
 bool QgsStyle::isReadOnly() const
 {
   return mReadOnly;

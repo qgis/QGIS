@@ -991,6 +991,8 @@ large xml files.
 .. versionadded:: 3.6
 %End
 
+  public slots:
+
   signals:
 
     void aboutToBeDestroyed();
@@ -1225,6 +1227,13 @@ name or tag changes.
 .. seealso:: :py:func:`labelSettingsAdded`
 
 .. versionadded:: 3.10
+%End
+
+    void rebuildIconPreviews();
+%Docstring
+Emitted whenever icon previews for entities in the style must be rebuilt.
+
+.. versionadded:: 3.26
 %End
 
 };

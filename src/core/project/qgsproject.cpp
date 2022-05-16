@@ -476,6 +476,8 @@ QgsProject *QgsProject::instance()
   if ( !sProject )
   {
     sProject = new QgsProject;
+
+    connect( sProject, &QgsProject::projectColorsChanged, QgsStyle::defaultStyle(), &QgsStyle::triggerIconRebuild );
   }
   return sProject;
 }
