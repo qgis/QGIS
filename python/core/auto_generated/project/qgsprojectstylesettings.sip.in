@@ -216,6 +216,66 @@ Emitted whenever the set of style databases associated with the project is chang
 
 };
 
+class QgsProjectStyleDatabaseModel : QAbstractListModel
+{
+%Docstring(signature="appended")
+
+List model representing the style databases associated with a :py:class:`QgsProject`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstylesettings.h"
+%End
+  public:
+
+    enum Role
+    {
+      StyleRole,
+    };
+
+    explicit QgsProjectStyleDatabaseModel( QgsProjectStyleSettings *settings, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStyleDatabaseModel, showing the styles from the specified ``settings``.
+%End
+
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+
+    QgsStyle *styleFromIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the style at the corresponding ``index``.
+
+.. seealso:: :py:func:`indexFromStyle`
+%End
+
+    QModelIndex indexFromStyle( QgsStyle *style ) const;
+%Docstring
+Returns the model index corresponding to a ``style``.
+
+.. seealso:: :py:func:`styleFromIndex`
+%End
+
+    void setShowDefaultStyle( bool show );
+%Docstring
+Sets whether the default style should also be included in the model.
+
+.. seealso:: :py:func:`showDefaultStyle`
+%End
+
+    bool showDefaultStyle() const;
+%Docstring
+Returns ``True`` if the model includes the default style.
+
+.. seealso:: :py:func:`setShowDefaultStyle`
+%End
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
