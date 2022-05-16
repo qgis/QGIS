@@ -344,7 +344,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
     mGeometryGeneratorGroupBox->setCollapsed( true );
   mGeometryGeneratorType->setCurrentIndex( mGeometryGeneratorType->findData( mSettings.geometryGeneratorType ) );
 
-  updateWidgetForFormat( mSettings.format().isValid() ? mSettings.format() : QgsStyle::defaultStyle()->defaultTextFormat( QgsStyle::TextFormatContext::Labeling ) );
+  updateWidgetForFormat( mSettings.format().isValid() ? mSettings.format() : QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling ) );
 
   mFieldExpressionWidget->setRow( -1 );
   mFieldExpressionWidget->setField( mSettings.fieldName );
