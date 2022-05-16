@@ -383,6 +383,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      */
     bool allTypesSelected() const;
 
+    bool isReadOnly() const;
+
     struct ItemDetails
     {
       QgsStyle::StyleEntity entityType;
@@ -453,6 +455,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QAction *mActionCopyItem = nullptr;
     QAction *mActionPasteItem = nullptr;
+    QAction *mExportAction = nullptr;
+    QAction *mImportAction = nullptr;
 
     int mBlockGroupUpdates = 0;
     int mBlockStyleDatabaseChanges = 0;
