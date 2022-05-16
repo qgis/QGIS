@@ -144,6 +144,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
+  connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
 
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
@@ -1094,6 +1095,11 @@ void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
 {
   mCameraController->setCameraMovementSpeed( mMap.cameraMovementSpeed() );
+}
+
+void Qgs3DMapScene::onCameraNavigationModeChanged()
+{
+  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
