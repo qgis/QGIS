@@ -296,42 +296,4 @@ namespace QgsRayCastingUtils
 }
 
 
-////////////////////////////////////////////////////////////////////////////
-
-
-
-static QRect windowViewport( QSize area, const QRectF &relativeViewport )
-{
-  if ( area.isValid() )
-  {
-    const int areaWidth = area.width();
-    const int areaHeight = area.height();
-    return QRect( relativeViewport.x() * areaWidth,
-                  ( 1.0 - relativeViewport.y() - relativeViewport.height() ) * areaHeight,
-                  relativeViewport.width() * areaWidth,
-                  relativeViewport.height() * areaHeight );
-  }
-  return relativeViewport.toRect();
-}
-
-
-static QgsRayCastingUtils::Ray3D intersectionRay( QPointF pos, const QMatrix4x4 &viewMatrix,
-    const QMatrix4x4 &projectionMatrix, QRect viewport )
-{
-  // if something seems wrong slightly off with the returned intersection rays,
-  // it may be the case that unproject() has hit qFuzzyIsNull() condition inside
-  // which has IMHO the threshold too high (1e-5) and can give problems when
-  // the camera is ~50km away or further.
-
-  QVector3D nearPos = QVector3D( pos.x(), pos.y(), 0.0f );
-  nearPos = nearPos.unproject( viewMatrix, projectionMatrix, viewport );
-  QVector3D farPos = QVector3D( pos.x(), pos.y(), 1.0f );
-  farPos = farPos.unproject( viewMatrix, projectionMatrix, viewport );
-
-  return QgsRayCastingUtils::Ray3D( nearPos,
-                                    ( farPos - nearPos ).normalized(),
-                                    ( farPos - nearPos ).length() );
-}
-
-
 /// @endcond
