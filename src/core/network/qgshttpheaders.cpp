@@ -25,6 +25,7 @@
 //
 
 const QString QgsHttpHeaders::KEY_PREFIX = "http-header/";
+const QString QgsHttpHeaders::KEY_REFERER = "referer";
 
 QgsHttpHeaders::QgsHttpHeaders() = default;
 
@@ -39,6 +40,11 @@ QgsHttpHeaders::QgsHttpHeaders( const QgsSettings &settings, const QString &key 
   setFromSettings( settings, key );
 }
 
+QgsHttpHeaders::QgsHttpHeaders( const QString &key )
+{
+  setFromSettings( QgsSettings(), key );
+}
+
 QgsHttpHeaders::~QgsHttpHeaders() = default;
 
 bool QgsHttpHeaders::updateNetworkRequest( QNetworkRequest &request ) const
@@ -46,6 +52,15 @@ bool QgsHttpHeaders::updateNetworkRequest( QNetworkRequest &request ) const
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
     request.setRawHeader( ite.key().toUtf8(), ite.value().toString().toUtf8() );
+  }
+  return true;
+}
+
+bool QgsHttpHeaders::updateDataSourceUri( QgsDataSourceUri &uri ) const
+{
+  for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
+  {
+    uri.setParam( ite.key().toUtf8(), ite.value().toString().toUtf8() );
   }
   return true;
 }
@@ -61,9 +76,9 @@ void QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key )
     settings.setValue( keyHH  + ite.key(), ite.value() );
   }
 
-  if ( !mHeaders["referer"].toString().isEmpty() && settings.contains( keyFixed + "referer" ) ) // backward comptibility
+  if ( !mHeaders[QgsHttpHeaders::KEY_REFERER].toString().isEmpty() && settings.contains( keyFixed + QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
   {
-    settings.setValue( keyFixed + "referer", mHeaders["referer"].toString() );
+    settings.setValue( keyFixed + QgsHttpHeaders::KEY_REFERER, mHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
   }
 }
 
@@ -82,9 +97,9 @@ void QgsHttpHeaders::setFromSettings( const QgsSettings &settings, const QString
       mHeaders.insert( name, settings.value( *ite ).toString() );
     }
   }
-  if ( mHeaders["referer"].toString().isEmpty() ) // backward comptibility
+  if ( settings.contains( keyFixed + QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
   {
-    mHeaders["referer"] = settings.value( keyFixed + "referer" ).toString(); // retrieve value from old location
+    mHeaders[QgsHttpHeaders::KEY_REFERER] = settings.value( keyFixed + QgsHttpHeaders::KEY_REFERER ).toString(); // retrieve value from old location
   }
 }
 
