@@ -41,6 +41,8 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsiconutils.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 
 #include <QAction>
 #include <QFile>
@@ -176,13 +178,28 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 {
   init();
   setCurrentStyle( style );
+  mComboBoxStyleDatabase->hide();
 }
 
 QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   init();
+
+  mProjectStyleModel = new QgsProjectStyleDatabaseModel( QgsProject::instance()->styleSettings(), this );
+  mProjectStyleModel->setShowDefaultStyle( true );
+  mComboBoxStyleDatabase->setModel( mProjectStyleModel );
+
   setCurrentStyle( QgsStyle::defaultStyle() );
+
+  connect( mComboBoxStyleDatabase, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]()
+  {
+    if ( mBlockStyleDatabaseChanges )
+      return;
+
+    const QModelIndex index = mProjectStyleModel->index( mComboBoxStyleDatabase->currentIndex(), 0, QModelIndex() );
+    setCurrentStyle( mProjectStyleModel->styleFromIndex( index ) );
+  } );
 }
 
 void QgsStyleManagerDialog::init()
@@ -568,6 +585,14 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
   connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
   connect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
   connect( mStyle, &QgsStyle::aboutToBeDestroyed, this, &QgsStyleManagerDialog::currentStyleAboutToBeDestroyed );
+
+  if ( mProjectStyleModel )
+  {
+    const QModelIndex styleIndex = mProjectStyleModel->indexFromStyle( mStyle );
+    mBlockStyleDatabaseChanges++;
+    mComboBoxStyleDatabase->setCurrentIndex( styleIndex.row() );
+    mBlockStyleDatabaseChanges--;
+  }
 
   populateList();
   populateGroups();

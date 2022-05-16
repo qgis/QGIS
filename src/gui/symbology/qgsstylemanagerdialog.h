@@ -30,6 +30,7 @@
 class QgsStyle;
 class QgsTemporaryCursorOverride;
 class QgsMessageBar;
+class QgsProjectStyleDatabaseModel;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -409,6 +410,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     QgsCheckableStyleModel *mModel = nullptr;
 
+    QgsProjectStyleDatabaseModel *mProjectStyleModel = nullptr;
+
     QString mStyleFilename;
 
     bool mModified = false;
@@ -451,6 +454,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QAction *mActionPasteItem = nullptr;
 
     int mBlockGroupUpdates = 0;
+    int mBlockStyleDatabaseChanges = 0;
 
     bool mReadOnly = false;
     bool mFavoritesGroupVisible = true;
