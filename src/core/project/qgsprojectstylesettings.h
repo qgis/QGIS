@@ -21,6 +21,7 @@
 
 #include <memory.h>
 #include <QAbstractListModel>
+#include <QSortFilterProxyModel>
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -325,6 +326,58 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
     QgsProjectStyleSettings *mSettings = nullptr;
     bool mShowDefault = false;
 };
+
+/**
+ * \ingroup core
+ * \class QgsProjectStyleDatabaseProxyModel
+ *
+ * \brief A proxy model for filtering QgsProjectStyleDatabaseModel.
+ *
+ * \since QGIS 3.26
+ */
+class CORE_EXPORT QgsProjectStyleDatabaseProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    //! Available filter flags for filtering the model
+    enum class Filter
+    {
+      FilterHideReadOnly = 1 << 0, //!< Hide read-only style databases
+    };
+    Q_ENUM( Filter )
+    //! Available filter flags for filtering the model
+    Q_DECLARE_FLAGS( Filters, Filter )
+    Q_FLAG( Filters )
+
+    /**
+     * Constructor for QgsProjectStyleDatabaseProxyModel, for the specified style database \a model.
+     */
+    QgsProjectStyleDatabaseProxyModel( QgsProjectStyleDatabaseModel *model, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    /**
+     * Returns the current filters used for filtering available style.
+     *
+     * \see setFilters()
+     */
+    QgsProjectStyleDatabaseProxyModel::Filters filters() const;
+
+    /**
+     * Sets the current \a filters used for filtering available styles.
+     *
+     * \see filters()
+     */
+    void setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters );
+
+  private:
+
+    QgsProjectStyleDatabaseProxyModel::Filters mFilters;
+
+};
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjectStyleDatabaseProxyModel::Filters )
 
 
 #endif // QGSPROJECTSTYLESETTINGS_H

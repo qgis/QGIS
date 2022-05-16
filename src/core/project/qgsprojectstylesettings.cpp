@@ -503,3 +503,41 @@ void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & )
 {
   endRemoveRows();
 }
+
+//
+// QgsProjectStyleDatabaseProxyModel
+//
+
+QgsProjectStyleDatabaseProxyModel::QgsProjectStyleDatabaseProxyModel( QgsProjectStyleDatabaseModel *model, QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setSourceModel( model );
+  setDynamicSortFilter( true );
+}
+
+bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( mFilters & Filter::FilterHideReadOnly )
+  {
+    const QString path = sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), QgsProjectStyleDatabaseModel::Role::PathRole ).toString();
+    if ( !path.isEmpty() )
+    {
+      const QFileInfo fi( path );
+      if ( fi.suffix().compare( QLatin1String( "xml" ), Qt::CaseInsensitive ) == 0 )
+        return false;
+    }
+  }
+
+  return true;
+}
+
+QgsProjectStyleDatabaseProxyModel::Filters QgsProjectStyleDatabaseProxyModel::filters() const
+{
+  return mFilters;
+}
+
+void QgsProjectStyleDatabaseProxyModel::setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters )
+{
+  mFilters = filters;
+  invalidateFilter();
+}

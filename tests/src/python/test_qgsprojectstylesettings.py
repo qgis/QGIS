@@ -16,6 +16,7 @@ import os
 from qgis.core import (QgsProject,
                        QgsProjectStyleSettings,
                        QgsProjectStyleDatabaseModel,
+                       QgsProjectStyleDatabaseProxyModel,
                        QgsReadWriteContext,
                        QgsSymbol,
                        QgsWkbTypes,
@@ -97,6 +98,8 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         model = QgsProjectStyleDatabaseModel(p)
         model_with_default = QgsProjectStyleDatabaseModel(p)
         model_with_default.setShowDefaultStyle(True)
+        proxy_model = QgsProjectStyleDatabaseProxyModel(model_with_default)
+        proxy_model.setFilters(QgsProjectStyleDatabaseProxyModel.Filter.FilterHideReadOnly)
 
         self.assertFalse(p.styleDatabasePaths())
         self.assertFalse(p.styles())
@@ -106,6 +109,9 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 1)
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
+        self.assertEqual(proxy_model.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
 
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
         self.assertEqual(len(spy), 1)
@@ -128,6 +134,13 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
                                                  QgsProjectStyleDatabaseModel.PathRole), unitTestDataPath() + '/style1.db')
+        self.assertEqual(proxy_model.rowCount(QModelIndex()), 2)
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
+        self.assertEqual(proxy_model.data(proxy_model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'style1')
+        self.assertEqual(proxy_model.data(proxy_model.index(1, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
+        self.assertEqual(proxy_model.data(proxy_model.index(1, 0, QModelIndex()),
+                                          QgsProjectStyleDatabaseModel.PathRole), unitTestDataPath() + '/style1.db')
 
         # try re-adding path which is already present
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')
@@ -232,6 +245,10 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole), 'categorized')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
+        # read only style should not be included
+        self.assertEqual(proxy_model.rowCount(QModelIndex()), 1)
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
+        self.assertEqual(proxy_model.data(proxy_model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
 
     def testReadWrite(self):
         p = QgsProjectStyleSettings()

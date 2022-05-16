@@ -82,7 +82,10 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
   mComboBoxDestination->hide();
 #else
   QgsProjectStyleDatabaseModel *projectStyleModel = new QgsProjectStyleDatabaseModel( QgsProject::instance()->styleSettings(), this );
-  if ( projectStyleModel->rowCount( QModelIndex() ) == 0 )
+  QgsProjectStyleDatabaseProxyModel *styleProxyModel = new QgsProjectStyleDatabaseProxyModel( projectStyleModel, this );
+  styleProxyModel->setFilters( QgsProjectStyleDatabaseProxyModel::Filter::FilterHideReadOnly );
+
+  if ( styleProxyModel->rowCount( QModelIndex() ) == 0 )
   {
     mLabelDestination->hide();
     mComboBoxDestination->hide();
@@ -90,7 +93,7 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
   else
   {
     projectStyleModel->setShowDefaultStyle( true );
-    mComboBoxDestination->setModel( projectStyleModel );
+    mComboBoxDestination->setModel( styleProxyModel );
   }
 #endif
 
