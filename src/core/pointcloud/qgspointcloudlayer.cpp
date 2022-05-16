@@ -398,7 +398,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     }
   }
 
-  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 )
+  if ( mDataProvider && mDataProvider->isValid() && mDataProvider->hasStatisticsMetadata() && mStatistics.sampledPointsCount() == 0 )
   {
     mStatistics = mDataProvider->metadataStatistics();
   }
