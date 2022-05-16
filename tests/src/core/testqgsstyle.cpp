@@ -204,6 +204,10 @@ void TestStyle::testProperties()
 
   s.setFileName( QStringLiteral( "file name" ) );
   QCOMPARE( s.fileName(), QStringLiteral( "file name" ) );
+
+  QVERIFY( !s.isReadOnly() );
+  s.setReadOnly( true );
+  QVERIFY( s.isReadOnly() );
 }
 
 void TestStyle::testCreateSymbols()

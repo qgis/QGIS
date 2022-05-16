@@ -117,6 +117,34 @@ Sets the ``name`` of the style.
 .. versionadded:: 3.26
 %End
 
+    bool isReadOnly() const;
+%Docstring
+Returns ``True`` if the style is considered a read-only library.
+
+.. note::
+
+   This flag is used to control GUI operations, and does not prevent calling functions
+   which mutate the style directly via the API.
+
+.. seealso:: :py:func:`setReadOnly`
+
+.. versionadded:: 3.26
+%End
+
+    void setReadOnly( bool readOnly );
+%Docstring
+Sets whether the style is considered a read-only library.
+
+.. note::
+
+   This flag is used to control GUI operations, and does not prevent calling functions
+   which mutate the style directly via the API.
+
+.. seealso:: :py:func:`isReadOnly`
+
+.. versionadded:: 3.26
+%End
+
     bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
 %Docstring
 Adds an ``entity`` to the style, with the specified ``name``. Ownership is not transferred.

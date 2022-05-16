@@ -204,6 +204,28 @@ class CORE_EXPORT QgsStyle : public QObject
     void setName( const QString &name );
 
     /**
+     * Returns TRUE if the style is considered a read-only library.
+     *
+     * \note This flag is used to control GUI operations, and does not prevent calling functions
+     * which mutate the style directly via the API.
+     *
+     * \see setReadOnly()
+     * \since QGIS 3.26
+     */
+    bool isReadOnly() const;
+
+    /**
+     * Sets whether the style is considered a read-only library.
+     *
+     * \note This flag is used to control GUI operations, and does not prevent calling functions
+     * which mutate the style directly via the API.
+     *
+     * \see isReadOnly()
+     * \since QGIS 3.26
+     */
+    void setReadOnly( bool readOnly );
+
+    /**
      * Adds an \a entity to the style, with the specified \a name. Ownership is not transferred.
      *
      * If \a update is TRUE then the style database is updated automatically as a result.
@@ -1147,6 +1169,7 @@ class CORE_EXPORT QgsStyle : public QObject
   private:
 
     QString mName;
+    bool mReadOnly = false;
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
