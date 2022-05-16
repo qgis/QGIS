@@ -394,12 +394,17 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
   switch ( role )
   {
     case Qt::DisplayRole:
-    case Qt::ToolTipRole:
     case Qt::EditRole:
       if ( isDefault )
         return QgsStyle::defaultStyle()->name();
       else
         return mSettings ? mSettings->styles().at( styleRow )->name() : QVariant();
+
+    case Qt::ToolTipRole:
+      if ( isDefault )
+        return QDir::toNativeSeparators( QgsStyle::defaultStyle()->fileName() );
+      else
+        return mSettings ? QDir::toNativeSeparators( mSettings->styles().at( styleRow )->fileName() ) : QVariant();
 
     case StyleRole:
     {
@@ -410,6 +415,12 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
       else
         return QVariant();
     }
+
+    case PathRole:
+      if ( isDefault )
+        return QgsStyle::defaultStyle()->fileName();
+      else
+        return mSettings ? mSettings->styles().at( styleRow )->fileName() : QVariant();
 
     default:
       return QVariant();

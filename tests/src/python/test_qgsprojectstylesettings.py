@@ -118,12 +118,16 @@ class TestQgsProjectViewSettings(unittest.TestCase):
         self.assertEqual(model.rowCount(QModelIndex()), 1)
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'style1')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.PathRole),
+                         unitTestDataPath() + '/style1.db')
 
         self.assertEqual(model_with_default.rowCount(QModelIndex()), 2)
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), Qt.DisplayRole), 'Default')
         self.assertEqual(model_with_default.data(model_with_default.index(0, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), QgsStyle.defaultStyle())
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), Qt.DisplayRole), 'style1')
         self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()), QgsProjectStyleDatabaseModel.StyleRole), p.styles()[0])
+        self.assertEqual(model_with_default.data(model_with_default.index(1, 0, QModelIndex()),
+                                                 QgsProjectStyleDatabaseModel.PathRole), unitTestDataPath() + '/style1.db')
 
         # try re-adding path which is already present
         p.addStyleDatabasePath(unitTestDataPath() + '/style1.db')

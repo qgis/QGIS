@@ -278,6 +278,7 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
     enum Role
     {
       StyleRole = Qt::UserRole + 1, //!< Style object
+      PathRole, //!< Style path
     };
 
     /**
