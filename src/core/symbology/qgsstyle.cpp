@@ -165,6 +165,7 @@ QgsStyle *QgsStyle::defaultStyle() // static
     {
       sDefaultStyle = new QgsStyle;
       sDefaultStyle->load( styleFilename );
+      sDefaultStyle->upgradeIfRequired();
     }
     sDefaultStyle->setName( QObject::tr( "Default" ) );
   }
@@ -842,7 +843,7 @@ bool QgsStyle::load( const QString &filename )
   }
 
   mFileName = filename;
-  upgradeIfRequired();
+  createStyleMetadataTableIfNeeded();
   return true;
 }
 
