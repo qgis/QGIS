@@ -94,6 +94,7 @@ QgsStyle::QgsStyle( QObject *parent )
 
 QgsStyle::~QgsStyle()
 {
+  emit aboutToBeDestroyed();
   clear();
 }
 

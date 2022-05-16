@@ -33,6 +33,15 @@ this style will be shown in the dialog, and changes made within the dialog will 
 The ``style`` object must last for the lifetime of the dialog.
 %End
 
+    QgsStyleManagerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
+
+All styles linked to the current project will be available.
+
+.. versionadded:: 3.26
+%End
+
 
     static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
                                        const QString &RampType = QString() );

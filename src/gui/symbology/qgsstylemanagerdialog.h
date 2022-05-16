@@ -89,6 +89,15 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
                            bool readOnly = false );
 
+    /**
+     * Constructor for QgsStyleManagerDialog, with the specified \a parent widget and window \a flags.
+     *
+     * All styles linked to the current project will be available.
+     *
+     * \since QGIS 3.26
+     */
+    QgsStyleManagerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
+
     // TODO QGIS 4.0 -- rename "RampType" to "rampType".
 
     /**
@@ -358,7 +367,13 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     void setThumbnailSize( int );
 
+    void currentStyleAboutToBeDestroyed();
+
   private:
+
+    void init();
+
+    void setCurrentStyle( QgsStyle *style );
     int selectedItemType();
 
     /**
@@ -403,6 +418,8 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     //! space to store symbol tags
     QStringList mTagList;
+
+    QMenu *mShareMenu = nullptr;
 
     //! Context menu for the symbols/colorramps
     QMenu *mGroupMenu = nullptr;
