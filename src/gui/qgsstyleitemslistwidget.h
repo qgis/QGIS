@@ -61,7 +61,7 @@ class QgsStyleModelDelegate : public QStyledItemDelegate
   public:
 
     /**
-     * Constructor for QgsStyleModelDelegate, with the specifed \a parent object.
+     * Constructor for QgsStyleModelDelegate, with the specified \a parent object.
      */
     QgsStyleModelDelegate( QObject *parent );
 
