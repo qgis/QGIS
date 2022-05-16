@@ -490,4 +490,3 @@ void Qgs3DMapConfigWidget::validate()
 
   emit isValidChanged( valid );
 }
-
