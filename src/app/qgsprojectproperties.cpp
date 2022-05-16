@@ -77,6 +77,7 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
+#include "qgsstylemanagerdialog.h"
 
 //qt includes
 #include <QInputDialog>
@@ -109,6 +110,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+  // not supported on Qt < 5.13
+  mGroupBoxStyleDatabases->hide();
+#endif
+
   connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
   connect( pbnImportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnImportScales_clicked );
@@ -133,6 +139,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
   connect( mCustomizeCoordinateFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeGeographicCoordinateFormat );
   connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
+  connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::addStyleDatabase );
+  connect( mButtonRemoveStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::removeStyleDatabase );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -986,6 +994,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mTreeProjectColors->setScheme( projectSchemes.at( 0 ) );
   }
 
+  {
+    const QStringList styleDatabasePaths = QgsProject::instance()->styleSettings()->styleDatabasePaths();
+    for ( const QString &path : styleDatabasePaths )
+    {
+      QListWidgetItem *newItem = new QListWidgetItem( mListStyleDatabases );
+      newItem->setText( QDir::toNativeSeparators( path ) );
+      newItem->setData( Qt::UserRole, path );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListStyleDatabases->addItem( newItem );
+    }
+  }
 
   // Project macros
   QString pythonMacros = QgsProject::instance()->readEntry( QStringLiteral( "Macros" ), QStringLiteral( "/pythonCode" ), QString() );
@@ -1664,6 +1683,16 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->styleSettings()->setDefaultTextFormat( mStyleTextFormat->textFormat() );
   QgsProject::instance()->styleSettings()->setRandomizeDefaultSymbolColor( cbxStyleRandomColors->isChecked() );
   QgsProject::instance()->styleSettings()->setDefaultSymbolOpacity( mDefaultOpacityWidget->opacity() );
+
+  {
+    QStringList styleDatabasePaths;
+    styleDatabasePaths.reserve( mListStyleDatabases->count() );
+    for ( int i = 0; i < mListStyleDatabases->count(); ++i )
+    {
+      styleDatabasePaths << mListStyleDatabases->item( i )->data( Qt::UserRole ).toString();
+    }
+    QgsProject::instance()->styleSettings()->setStyleDatabasePaths( styleDatabasePaths );
+  }
 
   if ( mTreeProjectColors->isDirty() )
   {
@@ -2472,6 +2501,36 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   const QgsDateTimeRange range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
   mStartDateTimeEdit->setDateTime( range.begin() );
   mEndDateTimeEdit->setDateTime( range.end() );
+}
+
+void QgsProjectProperties::addStyleDatabase()
+{
+  QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder.value();
+  if ( initialFolder.isEmpty() )
+    initialFolder = QDir::homePath();
+
+  const QString databasePath = QFileDialog::getOpenFileName(
+                                 this,
+                                 tr( "Add Style Database" ),
+                                 initialFolder,
+                                 tr( "Style databases" ) + " (*.db *.xml)" );
+  if ( ! databasePath.isEmpty() )
+  {
+    QgsStyleManagerDialog::settingLastStyleDatabaseFolder.setValue( QFileInfo( databasePath ).path() );
+
+    QListWidgetItem *newItem = new QListWidgetItem( mListStyleDatabases );
+    newItem->setText( QDir::toNativeSeparators( databasePath ) );
+    newItem->setData( Qt::UserRole, databasePath );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListStyleDatabases->addItem( newItem );
+    mListStyleDatabases->setCurrentItem( newItem );
+  }
+}
+
+void QgsProjectProperties::removeStyleDatabase()
+{
+  int currentRow = mListStyleDatabases->currentRow();
+  delete mListStyleDatabases->takeItem( currentRow );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

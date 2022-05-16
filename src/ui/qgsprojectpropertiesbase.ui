@@ -303,6 +303,15 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="titleBox">
                  <property name="title">
@@ -829,10 +838,35 @@
           </layout>
          </widget>
          <widget class="QWidget" name="mMetadataPage">
-          <layout class="QVBoxLayout" name="verticalLayout_19"/>
+          <layout class="QVBoxLayout" name="verticalLayout_19">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+          </layout>
          </widget>
          <widget class="QWidget" name="mViewSettingsPage">
           <layout class="QVBoxLayout" name="verticalLayout_25">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QgsCollapsibleGroupBox" name="grpProjectScales">
              <property name="sizePolicy">
@@ -996,6 +1030,18 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="cbxProjectionEnabled">
                  <property name="title">
@@ -1049,6 +1095,18 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="mDatumTransformGroupBox">
                  <property name="title">
@@ -1108,7 +1166,19 @@
                 <height>563</height>
                </rect>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_12">
+              <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1,1">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
@@ -1272,9 +1342,6 @@
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <property name="text">
-                     <string>Configure color ramp…</string>
-                    </property>
                     <property name="minimumSize">
                      <size>
                       <width>120</width>
@@ -1286,6 +1353,9 @@
                       <width>16777215</width>
                       <height>16777215</height>
                      </size>
+                    </property>
+                    <property name="text">
+                     <string>Configure color ramp…</string>
                     </property>
                    </widget>
                   </item>
@@ -1480,6 +1550,78 @@
                  </layout>
                 </widget>
                </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mGroupBoxStyleDatabases">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>3</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Style Databases</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>false</bool>
+                 </property>
+                 <property name="checked">
+                  <bool>false</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">projgeneral</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <item row="0" column="0">
+                   <widget class="QListWidget" name="mListStyleDatabases"/>
+                  </item>
+                  <item row="0" column="1">
+                   <layout class="QVBoxLayout" name="verticalLayout_27">
+                    <item>
+                     <widget class="QToolButton" name="mButtonAddStyleDatabase">
+                      <property name="toolTip">
+                       <string>Add predefined scale</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mButtonRemoveStyleDatabase">
+                      <property name="toolTip">
+                       <string>Remove selected scale</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="verticalSpacer_7">
+                      <property name="orientation">
+                       <enum>Qt::Vertical</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>40</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
               </layout>
              </widget>
             </widget>
@@ -1488,6 +1630,18 @@
          </widget>
          <widget class="QWidget" name="mTab_DataSources">
           <layout class="QGridLayout" name="mTab_DataSourcesGridLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item row="1" column="0">
             <widget class="QgsCollapsibleGroupBox" name="mLayerCapabilitiesGrpBox">
              <property name="sizePolicy">
@@ -1640,6 +1794,18 @@
          </widget>
          <widget class="QWidget" name="mTab_Variables">
           <layout class="QVBoxLayout" name="verticalLayout_23">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QGroupBox" name="groupBox_4">
              <property name="title">
@@ -1690,6 +1856,9 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
                <property name="topMargin">
                 <number>0</number>
                </property>
@@ -1708,6 +1877,18 @@
                   <bool>false</bool>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_16">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QgsCodeEditorPython" name="ptePythonMacros" native="true"/>
                   </item>
@@ -3150,6 +3331,18 @@
          </widget>
          <widget class="QWidget" name="mTemporalOptions">
           <layout class="QVBoxLayout" name="verticalLayout_20">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QGroupBox" name="mTemporalOptionsGroup">
              <property name="title">
@@ -3400,6 +3593,11 @@
   <tabstop>scrollArea_3</tabstop>
   <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>scrollArea_4</tabstop>
+  <tabstop>mStyleMarkerSymbol</tabstop>
+  <tabstop>mStyleLineSymbol</tabstop>
+  <tabstop>mStyleFillSymbol</tabstop>
+  <tabstop>mStyleColorRampSymbol</tabstop>
+  <tabstop>mStyleTextFormat</tabstop>
   <tabstop>mDefaultOpacityWidget</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>mButtonAddColor</tabstop>
@@ -3408,6 +3606,9 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mListStyleDatabases</tabstop>
+  <tabstop>mButtonAddStyleDatabase</tabstop>
+  <tabstop>mButtonRemoveStyleDatabase</tabstop>
   <tabstop>mTransactionModeComboBox</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
   <tabstop>mCheckRememberEditStatus</tabstop>

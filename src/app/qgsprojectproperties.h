@@ -195,6 +195,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void calculateFromLayersButton_clicked();
 
+    void addStyleDatabase();
+    void removeStyleDatabase();
+
   private:
 
     /**
