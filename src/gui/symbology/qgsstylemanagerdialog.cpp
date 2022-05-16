@@ -172,8 +172,20 @@ QString QgsStyleManagerDialog::sPreviousTag;
 
 QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, Qt::WindowFlags flags, bool readOnly )
   : QDialog( parent, flags )
-  , mStyle( style )
   , mReadOnly( readOnly )
+{
+  init();
+  setCurrentStyle( style );
+}
+
+QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+{
+  init();
+  setCurrentStyle( QgsStyle::defaultStyle() );
+}
+
+void QgsStyleManagerDialog::init()
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -234,28 +246,19 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
     btnAddSmartgroup->setEnabled( false );
   }
 
-  QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
+  mShareMenu = new QMenu( tr( "Share Menu" ), this );
   QAction *exportAction = new QAction( tr( "Export Item(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
-  shareMenu->addAction( exportAction );
+  mShareMenu->addAction( exportAction );
   if ( !mReadOnly )
   {
     QAction *importAction = new QAction( tr( "Import Item(s)…" ), this );
     importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
-    shareMenu->addAction( importAction );
+    mShareMenu->addAction( importAction );
     connect( importAction, &QAction::triggered, this, &QgsStyleManagerDialog::importItems );
   }
-  if ( mStyle != QgsStyle::defaultStyle() )
-  {
-    mActionCopyToDefault = new QAction( tr( "Copy Selection to Default Style…" ), this );
-    shareMenu->addAction( mActionCopyToDefault );
-    connect( mActionCopyToDefault, &QAction::triggered, this, &QgsStyleManagerDialog::copyItemsToDefault );
-    connect( mCopyToDefaultButton, &QPushButton::clicked, this, &QgsStyleManagerDialog::copyItemsToDefault );
-  }
-  else
-  {
-    mCopyToDefaultButton->hide();
-  }
+
+  connect( mCopyToDefaultButton, &QPushButton::clicked, this, &QgsStyleManagerDialog::copyItemsToDefault );
 
   mActionCopyItem = new QAction( tr( "Copy Item" ), this );
   connect( mActionCopyItem, &QAction::triggered, this, &QgsStyleManagerDialog::copyItem );
@@ -271,39 +274,26 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   QShortcut *editShortcut = new QShortcut( QKeySequence( Qt::Key_Return ), this );
   connect( editShortcut, &QShortcut::activated, this, &QgsStyleManagerDialog::editItem );
 
-  shareMenu->addSeparator();
-  shareMenu->addAction( actnExportAsPNG );
-  shareMenu->addAction( actnExportAsSVG );
+  mShareMenu->addSeparator();
+  mShareMenu->addAction( actnExportAsPNG );
+  mShareMenu->addAction( actnExportAsSVG );
 
   connect( actnExportAsPNG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsPNG );
   connect( actnExportAsSVG, &QAction::triggered, this, &QgsStyleManagerDialog::exportItemsSVG );
   connect( exportAction, &QAction::triggered, this, &QgsStyleManagerDialog::exportItems );
-  btnShare->setMenu( shareMenu );
+  btnShare->setMenu( mShareMenu );
 
   listItems->setTextElideMode( Qt::TextElideMode::ElideRight );
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
-  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly )
-           : new QgsCheckableStyleModel( mStyle, this, mReadOnly );
-  mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
-  listItems->setModel( mModel );
-  mSymbolTreeView->setModel( mModel );
-
   listItems->setSelectionBehavior( QAbstractItemView::SelectRows );
   listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  mSymbolTreeView->setSelectionModel( listItems->selectionModel() );
   mSymbolTreeView->setSelectionMode( listItems->selectionMode() );
-
-  connect( listItems->selectionModel(), &QItemSelectionModel::currentChanged,
-           this, &QgsStyleManagerDialog::symbolSelected );
-  connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
-           this, &QgsStyleManagerDialog::selectedSymbolsChanged );
 
   QStandardItemModel *groupModel = new QStandardItemModel( groupTree );
   groupTree->setModel( groupModel );
   groupTree->setHeaderHidden( true );
-  populateGroups();
 
   const QModelIndexList prevIndex = groupTree->model()->match( groupTree->model()->index( 0, 0 ), Qt::UserRole + 1, sPreviousTag, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive | Qt::MatchRecursive );
   groupTree->setCurrentIndex( !prevIndex.empty() ? prevIndex.at( 0 ) : groupTree->model()->index( 0, 0 ) );
@@ -480,9 +470,6 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
 
   tabItemType_currentChanged( 0 );
 
-  connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
-  connect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
-
   connect( mButtonIconView, &QToolButton::toggled, this, [ = ]( bool active )
   {
     if ( active )
@@ -518,9 +505,83 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent, 
   mSliderIconSize->setValue( thumbnailSize );
   connect( mSliderIconSize, &QSlider::valueChanged, this, &QgsStyleManagerDialog::setThumbnailSize );
   setThumbnailSize( thumbnailSize );
+}
+
+void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
+{
+  if ( mStyle == style )
+    return;
+
+  if ( mStyle )
+  {
+    disconnect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
+    disconnect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
+    disconnect( mStyle, &QgsStyle::aboutToBeDestroyed, this, &QgsStyleManagerDialog::currentStyleAboutToBeDestroyed );
+  }
+
+  QgsCheckableStyleModel *oldModel = mModel;
+
+
+  mStyle = style;
+  if ( mStyle != QgsStyle::defaultStyle() )
+  {
+    if ( !mActionCopyToDefault )
+    {
+      mActionCopyToDefault = new QAction( tr( "Copy Selection to Default Style…" ), this );
+      mShareMenu->insertAction( mActionCopyItem, mActionCopyToDefault );
+      connect( mActionCopyToDefault, &QAction::triggered, this, &QgsStyleManagerDialog::copyItemsToDefault );
+    }
+    mCopyToDefaultButton->show();
+    mModel = new QgsCheckableStyleModel( mStyle, this, mReadOnly );
+  }
+  else
+  {
+    mCopyToDefaultButton->hide();
+    if ( mActionCopyToDefault )
+    {
+      mActionCopyToDefault->deleteLater();
+      mActionCopyToDefault = nullptr;
+    }
+    mModel = new QgsCheckableStyleModel( QgsApplication::defaultStyleModel(), this, mReadOnly );
+  }
+  mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
+  mModel->addDesiredIconSize( listItems->iconSize() );
+
+  listItems->setModel( mModel );
+  mSymbolTreeView->setModel( mModel );
+
+  mSymbolTreeView->setSelectionModel( listItems->selectionModel() );
+
+  connect( listItems->selectionModel(), &QItemSelectionModel::currentChanged,
+           this, &QgsStyleManagerDialog::symbolSelected );
+  connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &QgsStyleManagerDialog::selectedSymbolsChanged );
+
+  tabItemType_currentChanged( tabItemType->currentIndex() );
+
+  if ( oldModel )
+  {
+    oldModel->deleteLater();
+    oldModel = nullptr;
+  }
+
+  connect( mStyle, &QgsStyle::symbolSaved, this, &QgsStyleManagerDialog::populateList );
+  connect( mStyle, &QgsStyle::groupsModified, this, &QgsStyleManagerDialog::populateGroups );
+  connect( mStyle, &QgsStyle::aboutToBeDestroyed, this, &QgsStyleManagerDialog::currentStyleAboutToBeDestroyed );
+
+  populateList();
+  populateGroups();
 
   // set initial disabled state for actions requiring a selection
   selectedSymbolsChanged( QItemSelection(), QItemSelection() );
+}
+
+void QgsStyleManagerDialog::currentStyleAboutToBeDestroyed()
+{
+  if ( mStyle != QgsStyle::defaultStyle() )
+  {
+    setCurrentStyle( QgsStyle::defaultStyle() );
+  }
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -580,11 +641,14 @@ void QgsStyleManagerDialog::tabItemType_currentChanged( int )
   actnExportAsPNG->setVisible( isSymbol );
   actnExportAsSVG->setVisible( isSymbol );
 
-  mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : isTextFormat ? QgsStyle::TextFormatEntity : isLabelSettings ? QgsStyle::LabelSettingsEntity : isLegendPatchShape ? QgsStyle::LegendPatchShapeEntity : QgsStyle::Symbol3DEntity ) );
-  mModel->setEntityFilterEnabled( !allTypesSelected() );
-  mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
-  if ( isSymbol && !allTypesSelected() )
-    mModel->setSymbolType( static_cast< Qgis::SymbolType >( currentItemType() ) );
+  if ( mModel )
+  {
+    mModel->setEntityFilter( isSymbol ? QgsStyle::SymbolEntity : ( isColorRamp ? QgsStyle::ColorrampEntity : isTextFormat ? QgsStyle::TextFormatEntity : isLabelSettings ? QgsStyle::LabelSettingsEntity : isLegendPatchShape ? QgsStyle::LegendPatchShapeEntity : QgsStyle::Symbol3DEntity ) );
+    mModel->setEntityFilterEnabled( !allTypesSelected() );
+    mModel->setSymbolTypeFilterEnabled( isSymbol && !allTypesSelected() );
+    if ( isSymbol && !allTypesSelected() )
+      mModel->setSymbolType( static_cast< Qgis::SymbolType >( currentItemType() ) );
+  }
 
   populateList();
 }
@@ -743,7 +807,10 @@ void QgsStyleManagerDialog::setThumbnailSize( int value )
                                  + iconSize * 0.8;
   listItems->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );
   listItems->setGridSize( QSize( static_cast< int >( spacing ), static_cast< int >( verticalSpacing ) ) );
-  mModel->addDesiredIconSize( listItems->iconSize() );
+  if ( mModel )
+  {
+    mModel->addDesiredIconSize( listItems->iconSize() );
+  }
 
   QgsSettings().setValue( QStringLiteral( "Windows/StyleV2Manager/thumbnailSize" ), value, QgsSettings::Gui );
 }
@@ -2278,7 +2345,7 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
   const QString category = index.data( Qt::UserRole + 1 ).toString();
   sPreviousTag = category;
 
-  if ( mGroupingMode )
+  if ( mGroupingMode && mModel )
   {
     mModel->setTagId( -1 );
     mModel->setSmartGroupId( -1 );
@@ -2299,9 +2366,12 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
       actnAddSmartgroup->setEnabled( !mReadOnly );
     }
 
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFavoritesOnly( false );
+    if ( mModel )
+    {
+      mModel->setTagId( -1 );
+      mModel->setSmartGroupId( -1 );
+      mModel->setFavoritesOnly( false );
+    }
   }
   else if ( category == QLatin1String( "favorite" ) )
   {
@@ -2315,17 +2385,23 @@ void QgsStyleManagerDialog::groupChanged( const QModelIndex &index )
     actnRemoveGroup->setEnabled( !mReadOnly );
     btnManageGroups->setEnabled( !mReadOnly );
     const int groupId = index.data( Qt::UserRole + 1 ).toInt();
-    mModel->setTagId( -1 );
-    mModel->setSmartGroupId( groupId );
-    mModel->setFavoritesOnly( false );
+    if ( mModel )
+    {
+      mModel->setTagId( -1 );
+      mModel->setSmartGroupId( groupId );
+      mModel->setFavoritesOnly( false );
+    }
   }
   else // tags
   {
     enableGroupInputs( true );
     int tagId = index.data( Qt::UserRole + 1 ).toInt();
-    mModel->setTagId( tagId );
-    mModel->setSmartGroupId( -1 );
-    mModel->setFavoritesOnly( false );
+    if ( mModel )
+    {
+      mModel->setTagId( tagId );
+      mModel->setSmartGroupId( -1 );
+      mModel->setFavoritesOnly( false );
+    }
   }
 
   actnEditSmartGroup->setVisible( false );

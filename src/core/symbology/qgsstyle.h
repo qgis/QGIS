@@ -946,6 +946,17 @@ class CORE_EXPORT QgsStyle : public QObject
   signals:
 
     /**
+     * Emitted just before the style object is destroyed.
+     *
+     * Emitted in the destructor when the style is about to be deleted,
+     * but it is still in a perfectly valid state: the last chance for
+     * other pieces of code for some cleanup if they use the style.
+     *
+     * \since QGIS 3.26
+     */
+    void aboutToBeDestroyed();
+
+    /**
      * Emitted every time a new symbol has been added to the database.
      * Emitted whenever a symbol has been added to the style and the database
      * has been updated as a result.
