@@ -57,7 +57,7 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QPushButton" name="btnAddTag">
          <property name="text">
           <string>Add Tag…</string>
@@ -67,7 +67,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QPushButton" name="btnAddSmartgroup">
          <property name="text">
           <string>Add Smart Group…</string>
@@ -77,7 +77,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QPushButton" name="btnManageGroups">
          <property name="toolTip">
           <string>Modify selected tag or smart group</string>
@@ -90,7 +90,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0">
         <widget class="QPushButton" name="btnShare">
          <property name="text">
           <string>Import / Export</string>
@@ -104,7 +104,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="0">
         <widget class="QTreeView" name="groupTree">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -123,8 +123,60 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QComboBox" name="mComboBoxStyleDatabase"/>
+       <item row="1" column="0">
+        <widget class="QWidget" name="mStyleDatabaseWidget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QComboBox" name="mComboBoxStyleDatabase"/>
+          </item>
+          <item>
+           <widget class="QToolButton" name="mButtonAddStyleDatabase">
+            <property name="toolTip">
+             <string>Add existing style database to project</string>
+            </property>
+            <property name="text">
+             <string>…</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="mButtonNewStyleDatabase">
+            <property name="toolTip">
+             <string>Create new style database</string>
+            </property>
+            <property name="text">
+             <string>…</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionNewPage.svg</normaloff>:/images/themes/default/mActionNewPage.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -689,6 +741,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mComboBoxStyleDatabase</tabstop>
+  <tabstop>mButtonAddStyleDatabase</tabstop>
+  <tabstop>mButtonNewStyleDatabase</tabstop>
   <tabstop>groupTree</tabstop>
   <tabstop>btnAddTag</tabstop>
   <tabstop>btnAddSmartgroup</tabstop>
