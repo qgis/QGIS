@@ -78,6 +78,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
 #include "qgsstylemanagerdialog.h"
+#include "qgsfileutils.h"
 
 //qt includes
 #include <QInputDialog>
@@ -141,6 +142,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
   connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::addStyleDatabase );
   connect( mButtonRemoveStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::removeStyleDatabase );
+  connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::newStyleDatabase );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -2505,18 +2507,49 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
 
 void QgsProjectProperties::addStyleDatabase()
 {
+  addStyleDatabasePrivate( false );
+}
+
+void QgsProjectProperties::newStyleDatabase()
+{
+  addStyleDatabasePrivate( true );
+}
+
+void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
+{
   QString initialFolder = QgsStyleManagerDialog::settingLastStyleDatabaseFolder.value();
   if ( initialFolder.isEmpty() )
     initialFolder = QDir::homePath();
 
-  const QString databasePath = QFileDialog::getOpenFileName(
-                                 this,
-                                 tr( "Add Style Database" ),
-                                 initialFolder,
-                                 tr( "Style databases" ) + " (*.db *.xml)" );
+  QString databasePath = createNew
+                         ? QFileDialog::getSaveFileName(
+                           this,
+                           tr( "Create Style Database" ),
+                           initialFolder,
+                           tr( "Style databases" ) + " (*.db)" )
+                         : QFileDialog::getOpenFileName(
+                           this,
+                           tr( "Add Style Database" ),
+                           initialFolder,
+                           tr( "Style databases" ) + " (*.db *.xml)" );
   if ( ! databasePath.isEmpty() )
   {
     QgsStyleManagerDialog::settingLastStyleDatabaseFolder.setValue( QFileInfo( databasePath ).path() );
+
+    if ( createNew )
+    {
+      databasePath = QgsFileUtils::ensureFileNameHasExtension( databasePath, { QStringLiteral( "db" )} );
+      if ( QFile::exists( databasePath ) )
+      {
+        QFile::remove( databasePath );
+      }
+      QgsStyle s;
+      if ( !s.createDatabase( databasePath ) )
+      {
+        QMessageBox::warning( this, tr( "Create Style Database" ), tr( "The style database could not be created" ) );
+        return;
+      }
+    }
 
     QListWidgetItem *newItem = new QListWidgetItem( mListStyleDatabases );
     newItem->setText( QDir::toNativeSeparators( databasePath ) );

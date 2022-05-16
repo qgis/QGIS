@@ -197,6 +197,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     void addStyleDatabase();
     void removeStyleDatabase();
+    void newStyleDatabase();
 
   private:
 
@@ -266,6 +267,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits();
+    void addStyleDatabasePrivate( bool createNew );
 
     void showHelp();
 
