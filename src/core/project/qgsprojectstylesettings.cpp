@@ -312,6 +312,7 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
     style->createMemoryDatabase();
     style->importXml( path );
     style->setFileName( path );
+    style->setReadOnly( true );
   }
   else
   {
@@ -519,11 +520,9 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
 {
   if ( mFilters & Filter::FilterHideReadOnly )
   {
-    const QString path = sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), QgsProjectStyleDatabaseModel::Role::PathRole ).toString();
-    if ( !path.isEmpty() )
+    if ( const QgsStyle *style = qobject_cast< QgsStyle * >( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), QgsProjectStyleDatabaseModel::Role::StyleRole ).value< QObject * >() ) )
     {
-      const QFileInfo fi( path );
-      if ( fi.suffix().compare( QLatin1String( "xml" ), Qt::CaseInsensitive ) == 0 )
+      if ( style->isReadOnly() )
         return false;
     }
   }

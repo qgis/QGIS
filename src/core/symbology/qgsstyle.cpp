@@ -3043,6 +3043,16 @@ bool QgsStyle::isXmlStyleFile( const QString &path )
   return line == QLatin1String( "<!DOCTYPE qgis_style>" );
 }
 
+bool QgsStyle::isReadOnly() const
+{
+  return mReadOnly;
+}
+
+void QgsStyle::setReadOnly( bool readOnly )
+{
+  mReadOnly = readOnly;
+}
+
 bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 {
   QDomDocument doc( QStringLiteral( "dummy" ) );
