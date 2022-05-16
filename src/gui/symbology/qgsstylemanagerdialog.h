@@ -25,6 +25,7 @@
 #include "qgshelp.h"
 #include "qgsstylemodel.h"
 #include "qgis_gui.h"
+#include "qgssettingsentryimpl.h"
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
@@ -69,6 +70,14 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     Q_OBJECT
 
   public:
+#ifndef SIP_RUN
+
+    /**
+     * Last used folder for generic style database actions.
+     * \since QGIS 3.26
+     */
+    static const inline QgsSettingsEntryString settingLastStyleDatabaseFolder = QgsSettingsEntryString( QStringLiteral( "last-style-database-folder" ), QgsSettings::Prefix::STYLE_MANAGER, QString(), QStringLiteral( "Last used folder for style databases" ) );
+#endif
 
     /**
      * Constructor for QgsStyleManagerDialog, with the specified \a parent widget and window \a flags.
