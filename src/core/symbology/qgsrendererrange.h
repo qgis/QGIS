@@ -160,6 +160,22 @@ class CORE_EXPORT QgsRendererRange
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
+    SIP_PYOBJECT __getitem__( int );
+    % MethodCode
+    if ( a0 == 0 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->lowerValue() );
+    }
+    else if ( a0 == 1 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->upperValue() );
+    }
+    else
+    {
+      QString msg = QString( "Bad index: %1" ).arg( a0 );
+      PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
+    }
+    % End
 #endif
 
   protected:
