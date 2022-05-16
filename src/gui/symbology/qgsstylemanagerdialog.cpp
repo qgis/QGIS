@@ -316,9 +316,6 @@ void QgsStyleManagerDialog::init()
   groupTree->setModel( groupModel );
   groupTree->setHeaderHidden( true );
 
-  const QModelIndexList prevIndex = groupTree->model()->match( groupTree->model()->index( 0, 0 ), Qt::UserRole + 1, sPreviousTag, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive | Qt::MatchRecursive );
-  groupTree->setCurrentIndex( !prevIndex.empty() ? prevIndex.at( 0 ) : groupTree->model()->index( 0, 0 ) );
-
   connect( groupTree->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsStyleManagerDialog::groupChanged );
   if ( !mReadOnly )
@@ -542,7 +539,6 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
 
   QgsCheckableStyleModel *oldModel = mModel;
 
-
   mStyle = style;
   if ( mStyle != QgsStyle::defaultStyle() )
   {
@@ -567,6 +563,7 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
   }
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );
   mModel->addDesiredIconSize( listItems->iconSize() );
+  mModel->setFilterString( searchBox->text() );
 
   listItems->setModel( mModel );
   mSymbolTreeView->setModel( mModel );
@@ -577,8 +574,6 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
            this, &QgsStyleManagerDialog::symbolSelected );
   connect( listItems->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsStyleManagerDialog::selectedSymbolsChanged );
-
-  tabItemType_currentChanged( tabItemType->currentIndex() );
 
   if ( oldModel )
   {
@@ -598,8 +593,12 @@ void QgsStyleManagerDialog::setCurrentStyle( QgsStyle *style )
     mBlockStyleDatabaseChanges--;
   }
 
-  populateList();
   populateGroups();
+  const QModelIndexList prevIndex = groupTree->model()->match( groupTree->model()->index( 0, 0 ), Qt::UserRole + 1, sPreviousTag, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive | Qt::MatchRecursive );
+  groupTree->setCurrentIndex( !prevIndex.empty() ? prevIndex.at( 0 ) : groupTree->model()->index( 0, 0 ) );
+  populateList();
+
+  tabItemType_currentChanged( tabItemType->currentIndex() );
 
   // set initial disabled state for actions requiring a selection
   selectedSymbolsChanged( QItemSelection(), QItemSelection() );
