@@ -761,6 +761,13 @@ Returns the default text format to use for new text based objects in the specifi
 .. versionadded:: 3.20
 %End
 
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+%Docstring
+Returns the default text format to use for new text based objects for the specified ``project``, in the specified ``context``.
+
+.. versionadded:: 3.26
+%End
+
     bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool favorite, const QStringList &tags );
 %Docstring
 Adds a 3d ``symbol`` to the database.

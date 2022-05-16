@@ -1211,13 +1211,21 @@ QList<QList<QPolygonF> > QgsStyle::defaultPatchAsQPolygonF( Qgis::SymbolType typ
 
 QgsTextFormat QgsStyle::defaultTextFormat( QgsStyle::TextFormatContext ) const
 {
-  QgsTextFormat defaultTextFormat = QgsProject::instance()->styleSettings()->defaultTextFormat();
-  if ( defaultTextFormat.isValid() )
+  return textFormat( QStringLiteral( "Default" ) );
+}
+
+QgsTextFormat QgsStyle::defaultTextFormatForProject( QgsProject *project, TextFormatContext context )
+{
+  if ( project )
   {
-    return defaultTextFormat;
+    QgsTextFormat defaultTextFormat = project->styleSettings()->defaultTextFormat();
+    if ( defaultTextFormat.isValid() )
+    {
+      return defaultTextFormat;
+    }
   }
 
-  return textFormat( QStringLiteral( "Default" ) );
+  return QgsStyle::defaultStyle()->defaultTextFormat( context );
 }
 
 bool QgsStyle::saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol, bool favorite, const QStringList &tags )

@@ -778,6 +778,13 @@ class CORE_EXPORT QgsStyle : public QObject
     QgsTextFormat defaultTextFormat( QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling ) const;
 
     /**
+     * Returns the default text format to use for new text based objects for the specified \a project, in the specified \a context.
+     *
+     * \since QGIS 3.26
+     */
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+
+    /**
      * Adds a 3d \a symbol to the database.
      *
      * \param name is the name of the 3d symbol
