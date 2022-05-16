@@ -78,16 +78,16 @@ void QgsLegendPatchShapeWidget::setShapeFromStyle( const QString &name, QgsStyle
 
 void QgsLegendPatchShapeWidget::saveShape()
 {
-  QgsStyle *style = QgsStyle::defaultStyle();
-  if ( !style )
-    return;
-
   QgsStyleSaveDialog saveDlg( this, QgsStyle::LegendPatchShapeEntity );
   saveDlg.setDefaultTags( mStyleItemsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;
 
   if ( saveDlg.name().isEmpty() )
+    return;
+
+  QgsStyle *style = saveDlg.destinationStyle();
+  if ( !style )
     return;
 
   // check if there is no shape with same name

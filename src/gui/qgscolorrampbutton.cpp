@@ -401,8 +401,10 @@ void QgsColorRampButton::saveColorRamp()
     return;
   }
 
+  QgsStyle *destinationStyle = saveDlg.destinationStyle();
+
   // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+  if ( destinationStyle->symbolNames().contains( saveDlg.name() ) )
   {
     const int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
                                           tr( "Color ramp with name '%1' already exists. Overwrite?" )
@@ -412,15 +414,15 @@ void QgsColorRampButton::saveColorRamp()
     {
       return;
     }
-    mStyle->removeColorRamp( saveDlg.name() );
+    destinationStyle->removeColorRamp( saveDlg.name() );
   }
 
   const QStringList colorRampTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsColorRamp *ramp = colorRamp();
-  mStyle->addColorRamp( saveDlg.name(), ramp );
-  mStyle->saveColorRamp( saveDlg.name(), ramp, saveDlg.isFavorite(), colorRampTags );
+  destinationStyle->addColorRamp( saveDlg.name(), ramp );
+  destinationStyle->saveColorRamp( saveDlg.name(), ramp, saveDlg.isFavorite(), colorRampTags );
 
   setColorRampName( saveDlg.name() );
 }

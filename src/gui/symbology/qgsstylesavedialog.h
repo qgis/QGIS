@@ -71,6 +71,13 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
      */
     QgsStyle::StyleEntity selectedType() const;
 
+    /**
+     * Returns the destination style database.
+     *
+     * \since QGIS 3.26
+     */
+    QgsStyle *destinationStyle();
+
   private:
 
     QgsStyle::StyleEntity mType = QgsStyle::SymbolEntity;

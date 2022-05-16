@@ -292,9 +292,6 @@ void QgsSymbolsListWidget::showAnimationSettings()
 
 void QgsSymbolsListWidget::saveSymbol()
 {
-  if ( !mStyle )
-    return;
-
   QgsStyleSaveDialog saveDlg( this );
   saveDlg.setDefaultTags( mStyleItemsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
@@ -303,8 +300,12 @@ void QgsSymbolsListWidget::saveSymbol()
   if ( saveDlg.name().isEmpty() )
     return;
 
+  QgsStyle *style = saveDlg.destinationStyle();
+  if ( !style )
+    return;
+
   // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+  if ( style->symbolNames().contains( saveDlg.name() ) )
   {
     const int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                           tr( "Symbol with name '%1' already exists. Overwrite?" )
@@ -314,17 +315,17 @@ void QgsSymbolsListWidget::saveSymbol()
     {
       return;
     }
-    mStyle->removeSymbol( saveDlg.name() );
+    style->removeSymbol( saveDlg.name() );
   }
 
   const QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsSymbol *newSymbol = mSymbol->clone();
-  mStyle->addSymbol( saveDlg.name(), newSymbol );
+  style->addSymbol( saveDlg.name(), newSymbol );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
+  style->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsSymbolsListWidget::updateSymbolDataDefinedProperty()
