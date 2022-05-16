@@ -33,6 +33,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgspointcloudlayerrenderer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 
 /* Few notes about highlighting (RB):
  - The highlight fill must always be partially transparent because above highlighted layer
@@ -157,7 +158,7 @@ std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderConte
   return renderer;
 }
 
-void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context,   const QColor &color, const QColor &fillColor )
+void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context, const QColor &color, const QColor &fillColor )
 {
   if ( !symbol )
     return;
@@ -167,6 +168,23 @@ void QgsHighlight::setSymbol( QgsSymbol *symbol, const QgsRenderContext &context
     QgsSymbolLayer *symbolLayer = symbol->symbolLayer( i );
     if ( !symbolLayer )
       continue;
+
+    // For geometry generators we need to generate the geometry using the layer's CRS and transform the generated
+    // geometry to the canvas CRS, see issue https://github.com/qgis/QGIS/issues/48439
+    if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer ) )
+    {
+      QgsExpressionContext ctx { context.expressionContext() };
+      QgsFeature feature { mFeature };
+      feature.setGeometry( mOriginalGeometry );
+      ctx.setFeature( feature );
+      QgsGeometry geom { QgsExpression( generator->geometryExpression() ).evaluate( &ctx ).value<QgsGeometry>() };
+      const QgsCoordinateTransform ct { mMapCanvas->mapSettings().layerTransform( mLayer ) };
+      if ( ct.isValid() )
+      {
+        geom.transform( ct );
+      }
+      generator->setGeometryExpression( QStringLiteral( "geom_from_wkt('%1')" ).arg( geom.asWkt() ) );
+    }
 
     if ( symbolLayer->subSymbol() )
     {
