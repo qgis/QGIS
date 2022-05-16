@@ -351,31 +351,6 @@ namespace QgsRayCastingUtils
     const auto ray = intersectionRay( glCorrectPos, viewMatrix, projectionMatrix, viewport );
     return ray;
   }
-
-  Ray3D rayForCameraCenter( const Qt3DRender::QCamera *camera )
-  {
-    const QMatrix4x4 inverse = QMatrix4x4( camera->projectionMatrix() * camera->viewMatrix() ).inverted();
-
-    const QVector4D vNear( 0.0, 0.0, -1.0, 1.0 );
-    const QVector4D vFar( 0.0, 0.0, 1.0, 1.0 );
-    QVector4D nearPos4D = inverse * vNear;
-    QVector4D farPos4D = inverse * vFar;
-
-    // the cases below hopefully should not happen and the check is here just as the last resort
-    // (with sensible camera matrix we should not hit singularities)
-    if ( qgsFloatNear( nearPos4D.w(), 0, 1e-10f ) )
-      nearPos4D.setW( 1 );
-    if ( qgsFloatNear( farPos4D.w(), 0, 1e-10f ) )
-      farPos4D.setW( 1 );
-
-    const QVector3D nearPos( ( nearPos4D / nearPos4D.w() ).toVector3D() );
-    const QVector3D farPos( ( farPos4D / farPos4D.w() ).toVector3D() );
-
-    return QgsRayCastingUtils::Ray3D( nearPos,
-                                      ( farPos - nearPos ).normalized(),
-                                      ( farPos - nearPos ).length() );
-  }
-
 }
 
 /// @endcond

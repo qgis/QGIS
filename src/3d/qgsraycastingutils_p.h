@@ -128,13 +128,6 @@ namespace QgsRayCastingUtils
                                  const QPointF &pos,
                                  const QRectF &relativeViewport,
                                  const Qt3DRender::QCamera *camera );
-
-  /**
-   * Returns a ray coming out of center of camera
-   * \note With switch to Qt 5.11 we may remove it and use QRayCaster/QScreenRayCaster instead.
-   * \since QGIS 3.4
-   */
-  Ray3D rayForCameraCenter( const Qt3DRender::QCamera *camera );
 }
 
 /// @endcond
