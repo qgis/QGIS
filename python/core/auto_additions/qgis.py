@@ -1308,6 +1308,17 @@ Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adju
 Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
 # --
 Qgis.DashPatternSizeAdjustment.baseClass = Qgis
+QgsGraduatedSymbolRenderer.GraduatedMethod = Qgis.GraduatedMethod
+# monkey patching scoped based enum
+QgsGraduatedSymbolRenderer.GraduatedColor = Qgis.GraduatedMethod.Color
+QgsGraduatedSymbolRenderer.GraduatedColor.is_monkey_patched = True
+QgsGraduatedSymbolRenderer.GraduatedColor.__doc__ = "Alter color of symbols"
+QgsGraduatedSymbolRenderer.GraduatedSize = Qgis.GraduatedMethod.Size
+QgsGraduatedSymbolRenderer.GraduatedSize.is_monkey_patched = True
+QgsGraduatedSymbolRenderer.GraduatedSize.__doc__ = "Alter size of symbols"
+Qgis.GraduatedMethod.__doc__ = 'Methods for modifying symbols by range in a graduated symbol renderer.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsGraduatedSymbolRenderer`.GraduatedMethod\n\n.. versionadded:: 3.26\n\n' + '* ``GraduatedColor``: ' + Qgis.GraduatedMethod.Color.__doc__ + '\n' + '* ``GraduatedSize``: ' + Qgis.GraduatedMethod.Size.__doc__
+# --
+Qgis.GraduatedMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"

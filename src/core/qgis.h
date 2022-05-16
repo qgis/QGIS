@@ -1387,6 +1387,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( DashPatternSizeAdjustment )
 
     /**
+     * Methods for modifying symbols by range in a graduated symbol renderer.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsGraduatedSymbolRenderer::GraduatedMethod
+     *
+     * \since QGIS 3.26
+     */
+    enum class GraduatedMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGraduatedSymbolRenderer, GraduatedMethod ) : int
+      {
+      Color SIP_MONKEYPATCH_COMPAT_NAME( GraduatedColor ), //!< Alter color of symbols
+      Size SIP_MONKEYPATCH_COMPAT_NAME( GraduatedSize ), //!< Alter size of symbols
+    };
+    Q_ENUM( GraduatedMethod )
+
+    /**
      * DpiMode enum
      * \since QGIS 3.26
      */
