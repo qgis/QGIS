@@ -63,7 +63,11 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
       { QgsStyleModel::IsTitleRole, true },
       { QgsStyleModel::StyleFileName, style->fileName() },
       { QgsStyleModel::StyleName, style->name() },
-    }, {}
+    }, {
+      { QgsStyleModel::IsTitleRole, true },
+      { QgsStyleModel::StyleFileName, style->fileName() },
+      { QgsStyleModel::StyleName, style->name() }
+    }
   } );
   addSourceModel( titleModel );
   mTitleModels.insert( style, titleModel );
@@ -110,7 +114,11 @@ void QgsCombinedStyleModel::addDefaultStyle()
       { QgsStyleModel::IsTitleRole, true },
       { QgsStyleModel::StyleFileName, defaultStyle->fileName() },
       { QgsStyleModel::StyleName, defaultStyle->name() },
-    }, {}
+    }, {
+      { QgsStyleModel::IsTitleRole, true },
+      { QgsStyleModel::StyleFileName, defaultStyle->fileName() },
+      { QgsStyleModel::StyleName, defaultStyle->name() }
+    }
   } );
 
   addSourceModel( titleModel );
