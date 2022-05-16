@@ -93,13 +93,6 @@ namespace QgsRayCastingUtils
    */
   bool rayBoxIntersection( const Ray3D &r, const QgsAABB &aabb );
 
-  //! Represents a plane in 3D space
-  struct Plane3D
-  {
-    QVector3D center;  //!< A point that lies on the plane
-    QVector3D normal;  //!< Normal vector of the plane
-  };
-
   /**
    * Tests whether a triangle is intersected by a ray.
    * \note With switch to Qt 5.11 we may remove it and use QRayCaster/QScreenRayCaster instead.
