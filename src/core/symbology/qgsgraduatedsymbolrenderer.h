@@ -387,19 +387,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     double maxSymbolSize() const;
 
-    enum GraduatedMethod
-    {
-      GraduatedColor = 0,
-      GraduatedSize = 1
-    };
-
     /**
      * Returns the method used for graduation (either size or color).
      *
      * \see setGraduatedMethod()
      * \since QGIS 2.10
      */
-    GraduatedMethod graduatedMethod() const { return mGraduatedMethod; }
+    Qgis::GraduatedMethod graduatedMethod() const { return mGraduatedMethod; }
 
     /**
      * Set the \a method used for graduation (either size or color).
@@ -407,7 +401,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \see graduatedMethod()
      * \since QGIS 2.10
      */
-    void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
+    void setGraduatedMethod( Qgis::GraduatedMethod method ) { mGraduatedMethod = method; }
 
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
@@ -462,7 +456,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
     std::unique_ptr<QgsExpression> mExpression;
-    GraduatedMethod mGraduatedMethod = GraduatedColor;
+    Qgis::GraduatedMethod mGraduatedMethod = Qgis::GraduatedMethod::Color;
     //! attribute index (derived from attribute name in startRender)
 
     int mAttrNum = -1;
@@ -481,7 +475,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString legendKeyForValue( double value ) const;
 
     //! \note not available in Python bindings
-    static QString graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
+    static QString graduatedMethodStr( Qgis::GraduatedMethod method ) SIP_SKIP;
 
     std::shared_ptr<QgsClassificationMethod> mClassificationMethod;
 

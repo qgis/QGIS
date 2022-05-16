@@ -447,13 +447,7 @@ Returns the max symbol size when graduated by size
 .. versionadded:: 2.10
 %End
 
-    enum GraduatedMethod
-    {
-      GraduatedColor,
-      GraduatedSize
-    };
-
-    GraduatedMethod graduatedMethod() const;
+    Qgis::GraduatedMethod graduatedMethod() const;
 %Docstring
 Returns the method used for graduation (either size or color).
 
@@ -462,7 +456,7 @@ Returns the method used for graduation (either size or color).
 .. versionadded:: 2.10
 %End
 
-    void setGraduatedMethod( GraduatedMethod method );
+    void setGraduatedMethod( Qgis::GraduatedMethod method );
 %Docstring
 Set the ``method`` used for graduation (either size or color).
 

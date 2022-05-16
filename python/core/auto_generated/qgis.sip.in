@@ -861,6 +861,12 @@ The development version
       ScaleGapOnly,
     };
 
+    enum class GraduatedMethod
+      {
+      Color,
+      Size,
+    };
+
     enum class DpiMode
     {
       All,
