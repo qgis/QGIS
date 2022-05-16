@@ -140,6 +140,16 @@ Creates a DOM element representing the range in SLD format.
                    rather than a < test.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = sipCpp->label().isEmpty()
+                        ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
+                        : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+%End
+
   protected:
 
     void swap( QgsRendererRange &other );
