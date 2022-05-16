@@ -276,6 +276,53 @@ Returns ``True`` if the model includes the default style.
 
 };
 
+class QgsProjectStyleDatabaseProxyModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+
+A proxy model for filtering QgsProjectStyleDatabaseModel.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprojectstylesettings.h"
+%End
+  public:
+
+    enum class Filter
+    {
+      FilterHideReadOnly,
+    };
+    typedef QFlags<QgsProjectStyleDatabaseProxyModel::Filter> Filters;
+
+
+    QgsProjectStyleDatabaseProxyModel( QgsProjectStyleDatabaseModel *model, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectStyleDatabaseProxyModel, for the specified style database ``model``.
+%End
+
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+    QgsProjectStyleDatabaseProxyModel::Filters filters() const;
+%Docstring
+Returns the current filters used for filtering available style.
+
+.. seealso:: :py:func:`setFilters`
+%End
+
+    void setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters );
+%Docstring
+Sets the current ``filters`` used for filtering available styles.
+
+.. seealso:: :py:func:`filters`
+%End
+
+};
+QFlags<QgsProjectStyleDatabaseProxyModel::Filter> operator|(QgsProjectStyleDatabaseProxyModel::Filter f1, QFlags<QgsProjectStyleDatabaseProxyModel::Filter> f2);
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
