@@ -25,6 +25,7 @@
 #include "qgshelp.h"
 #include "qgsstylemodel.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgssettingsentryimpl.h"
 
 class QgsStyle;
