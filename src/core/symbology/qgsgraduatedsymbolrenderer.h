@@ -53,9 +53,23 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsSymbolList symbols( QgsRenderContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
+    /**
+     * Returns the attribute name (or expression) used for the classification.
+     *
+     * \see setClassAttribute()
+     */
     QString classAttribute() const { return mAttrName; }
+
+    /**
+     * Sets the attribute name (or expression) used for the classification.
+     *
+     * \see classAttribute()
+     */
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }
 
+    /**
+     * Returns a list of all ranges used in the classification.
+     */
     const QgsRangeList &ranges() const { return mRanges; }
 
     bool updateRangeSymbol( int rangeIndex, QgsSymbol *symbol SIP_TRANSFER );
@@ -380,13 +394,17 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     };
 
     /**
-     * Returns the method used for graduation (either size or color)
+     * Returns the method used for graduation (either size or color).
+     *
+     * \see setGraduatedMethod()
      * \since QGIS 2.10
      */
     GraduatedMethod graduatedMethod() const { return mGraduatedMethod; }
 
     /**
-     * set the method used for graduation (either size or color)
+     * Set the \a method used for graduation (either size or color).
+     *
+     * \see graduatedMethod()
      * \since QGIS 2.10
      */
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
