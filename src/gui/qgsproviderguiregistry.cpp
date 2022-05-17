@@ -98,7 +98,7 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 
 #ifdef HAVE_COPC
   QgsProviderGuiMetadata *copc = new QgsCopcProviderGuiMetadata();
-  mProviders[ ept->key() ] = copc;
+  mProviders[ copc->key() ] = copc;
 #endif
 
   // only show point cloud option if we have at least one point cloud provider available!
