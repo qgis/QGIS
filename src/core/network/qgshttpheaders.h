@@ -103,6 +103,12 @@ class CORE_EXPORT QgsHttpHeaders
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
 
     /**
+     * \brief Returns a cleansed \a key
+     * \param key a key to be sanitized
+     */
+    QString sanitizeKey( const QString &key ) const;
+
+    /**
      * \param key http header key name
      * \return http header value
      */

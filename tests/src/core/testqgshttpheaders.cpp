@@ -29,12 +29,18 @@ class TestQgsHttpheaders: public QObject
 {
 
     Q_OBJECT
+  private:
+    void setFromSettings( const QString &base );
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase() {} // will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
-    void setFromSettings();
+
+    void sanitize();
+    void setFromSettingsGoodKey();
+    void setFromSettingsBadKey();
     void updateSettings();
     void createQgsOwsConnection();
 };
@@ -44,16 +50,34 @@ void TestQgsHttpheaders::initTestCase()
 
 }
 
-void TestQgsHttpheaders::setFromSettings()
+void TestQgsHttpheaders::sanitize()
+{
+  QgsHttpHeaders h;
+
+  QCOMPARE( h.sanitizeKey( "qgis//mytest1/" ), "qgis/mytest1" ) ;
+  QCOMPARE( h.sanitizeKey( "qgis/mytest1/" ), "qgis/mytest1" ) ;
+}
+
+void TestQgsHttpheaders::setFromSettingsGoodKey()
+{
+  setFromSettings( "qgis/mytest1/" );
+}
+
+void TestQgsHttpheaders::setFromSettingsBadKey()
+{
+  setFromSettings( "qgis//mytest1/" );
+}
+
+void TestQgsHttpheaders::setFromSettings( const QString &keyBase )
 {
   QgsSettings settings;
-  QString keyBase = QStringLiteral( "qgis/mytest1/" );
   QString outOfHeaderKey = QStringLiteral( "outofheader" );
   settings.remove( keyBase ); // cleanup
 
   settings.setValue( keyBase + outOfHeaderKey, "value" );
   settings.setValue( keyBase + QgsHttpHeaders::KEY_PREFIX + "key1", "value1" );
   settings.setValue( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER, "valueHH_R" );
+
   QgsHttpHeaders h( settings, keyBase );
   QVERIFY( ! h.keys().contains( outOfHeaderKey ) );
   QVERIFY( h.keys().contains( QStringLiteral( "key1" ) ) );
@@ -85,14 +109,12 @@ void TestQgsHttpheaders::updateSettings()
   settings.remove( keyBase + QgsHttpHeaders::KEY_REFERER );
   h [QgsHttpHeaders::KEY_REFERER] = QStringLiteral( "http://gg.com" );
 
-  qDebug() << settings.allKeys();
   h.updateSettings( settings, keyBase );
-  qDebug() << settings.allKeys();
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
   QVERIFY( ! settings.contains( keyBase + QgsHttpHeaders::KEY_REFERER ) );
 
-// test backward compatibility
+  // test backward compatibility
   settings.setValue( keyBase + QgsHttpHeaders::KEY_REFERER, "paf" ) ; // legacy referer, should be overridden
   h.updateSettings( settings, keyBase );
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ) );

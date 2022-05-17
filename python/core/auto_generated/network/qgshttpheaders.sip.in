@@ -82,6 +82,13 @@ Loads headers from the ``settings``
 :param key: sub group path
 %End
 
+    QString sanitizeKey( const QString &key ) const;
+%Docstring
+Returns a cleansed ``key``
+
+:param key: a key to be sanitized
+%End
+
     QVariant &operator[]( const QString &key );
 
 
