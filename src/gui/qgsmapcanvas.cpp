@@ -274,7 +274,6 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::cancelJobs()
 {
-
   // rendering job may still end up writing into canvas map item
   // so kill it before deleting canvas items
   if ( mJob )
@@ -284,8 +283,7 @@ void QgsMapCanvas::cancelJobs()
     mJob = nullptr;
   }
 
-  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
-  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  for ( auto previewJob = mPreviewJobs.constBegin(); previewJob != mPreviewJobs.constEnd(); ++previewJob )
   {
     if ( *previewJob )
     {
@@ -293,8 +291,8 @@ void QgsMapCanvas::cancelJobs()
       delete *previewJob;
     }
   }
+  mPreviewJobs.clear();
 }
-
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
@@ -3274,14 +3272,13 @@ void QgsMapCanvas::startPreviewJob( int number )
 void QgsMapCanvas::stopPreviewJobs()
 {
   mPreviewTimer.stop();
-  const auto previewJobs = mPreviewJobs;
-  for ( auto previewJob : previewJobs )
+  for ( auto previewJob = mPreviewJobs.constBegin(); previewJob != mPreviewJobs.constEnd(); ++previewJob )
   {
-    if ( previewJob )
+    if ( *previewJob )
     {
-      disconnect( previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
-      connect( previewJob, &QgsMapRendererQImageJob::finished, previewJob, &QgsMapRendererQImageJob::deleteLater );
-      previewJob->cancelWithoutBlocking();
+      disconnect( *previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( *previewJob, &QgsMapRendererQImageJob::finished, *previewJob, &QgsMapRendererQImageJob::deleteLater );
+      ( *previewJob )->cancelWithoutBlocking();
     }
   }
   mPreviewJobs.clear();
