@@ -742,8 +742,10 @@ void TestQgsProject::testDefaultRelativePaths()
 void TestQgsProject::testAttachmentsQgs()
 {
   // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
+  int defaultAttachmentSize = 0;
   {
     QgsProject p;
+    defaultAttachmentSize = p.attachedFiles().size();
 
     const QString fileName = p.createAttachedFile( "myattachment" );
     QVERIFY( QFile( fileName ).exists() );
@@ -751,6 +753,7 @@ void TestQgsProject::testAttachmentsQgs()
     QVERIFY( p.removeAttachedFile( fileName ) );
     QVERIFY( !p.attachedFiles().contains( fileName ) );
     QVERIFY( !p.removeAttachedFile( fileName ) );
+    QCOMPARE( p.attachedFiles().size(), defaultAttachmentSize );
   }
 
   // Verify that attachment is exists after re-reading project
@@ -775,9 +778,9 @@ void TestQgsProject::testAttachmentsQgs()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
 
-    file.setFileName( p2.attachedFiles().at( 0 ) );
+    file.setFileName( p2.attachedFiles().at( defaultAttachmentSize ) );
     QVERIFY( file.open( QIODevice::ReadOnly ) );
     QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
   }
@@ -810,9 +813,9 @@ void TestQgsProject::testAttachmentsQgs()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
-    QVERIFY( p2.mapLayers().size() == 1 );
-    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
+    QCOMPARE( p2.mapLayers().size(), 1 );
+    QCOMPARE( p2.mapLayer( p2.mapLayers().firstKey() )->source(), p2.attachedFiles().at( defaultAttachmentSize ) );
 
     // Verify that attachment file is removed when layer is deleted
     QgsMapLayer *p2layer = p2.mapLayer( p2.mapLayers().firstKey() );
@@ -826,9 +829,11 @@ void TestQgsProject::testAttachmentsQgs()
 
 void TestQgsProject::testAttachmentsQgz()
 {
+  int defaultAttachmentSize = 0;
   // Test QgsProject::{createAttachedFile,attachedFiles,removeAttachedFile}
   {
     QgsProject p;
+    defaultAttachmentSize = p.attachedFiles().size();
 
     const QString fileName = p.createAttachedFile( "myattachment" );
     QVERIFY( QFile( fileName ).exists() );
@@ -836,6 +841,7 @@ void TestQgsProject::testAttachmentsQgz()
     QVERIFY( p.removeAttachedFile( fileName ) );
     QVERIFY( !p.attachedFiles().contains( fileName ) );
     QVERIFY( !p.removeAttachedFile( fileName ) );
+    QCOMPARE( p.attachedFiles().size(), defaultAttachmentSize );
   }
 
   // Verify that attachment is exists after re-reading project
@@ -856,9 +862,9 @@ void TestQgsProject::testAttachmentsQgz()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
 
-    file.setFileName( p2.attachedFiles().at( 0 ) );
+    file.setFileName( p2.attachedFiles().at( defaultAttachmentSize ) );
     QVERIFY( file.open( QIODevice::ReadOnly ) );
     QVERIFY( file.readAll() == QByteArray( "Attachment" ) );
   }
@@ -887,9 +893,9 @@ void TestQgsProject::testAttachmentsQgz()
 
     QgsProject p2;
     p2.read( projFile.fileName() );
-    QVERIFY( p2.attachedFiles().size() == 1 );
-    QVERIFY( p2.mapLayers().size() == 1 );
-    QVERIFY( p2.mapLayer( p2.mapLayers().firstKey() )->source() == p2.attachedFiles().first() );
+    QCOMPARE( p2.attachedFiles().size(), defaultAttachmentSize + 1 );
+    QCOMPARE( p2.mapLayers().size(), 1 );
+    QCOMPARE( p2.mapLayer( p2.mapLayers().firstKey() )->source(), p2.attachedFiles().at( defaultAttachmentSize ) );
 
     // Verify that attachment file is removed when layer is deleted
     QgsMapLayer *p2layer = p2.mapLayer( p2.mapLayers().firstKey() );
