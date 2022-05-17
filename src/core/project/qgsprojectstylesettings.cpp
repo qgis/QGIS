@@ -40,6 +40,15 @@ QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
 #endif
 }
 
+QgsProjectStyleSettings::~QgsProjectStyleSettings()
+{
+  if ( mProjectStyle )
+  {
+    mProjectStyle->deleteLater();
+    mProjectStyle = nullptr;
+  }
+}
+
 QgsSymbol *QgsProjectStyleSettings::defaultSymbol( Qgis::SymbolType symbolType ) const
 {
   switch ( symbolType )
@@ -112,7 +121,48 @@ void QgsProjectStyleSettings::reset()
   mDefaultSymbolOpacity = 1.0;
 
   clearStyles();
+
+  if ( mProject )
+  {
+    const QString stylePath = mProject->createAttachedFile( QStringLiteral( "styles.db" ) );
+    QgsStyle *style = new QgsStyle();
+    style->createDatabase( stylePath );
+    style->setName( tr( "Project Style" ) );
+    style->setFileName( stylePath );
+    setProjectStyle( style );
+  }
+
   emit styleDatabasesChanged();
+}
+
+void QgsProjectStyleSettings::setProjectStyle( QgsStyle *style )
+{
+  if ( mProjectStyle )
+  {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    mCombinedStyleModel->removeStyle( mProjectStyle );
+#endif
+    mProjectStyle->deleteLater();
+  }
+  mProjectStyle = style;
+  mProjectStyle->setName( tr( "Project Styles" ) );
+
+  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+  // need updating to reflect the new colors
+  if ( mProject )
+  {
+    connect( mProject, &QgsProject::projectColorsChanged, mProjectStyle, &QgsStyle::triggerIconRebuild );
+  }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mCombinedStyleModel->addStyle( mProjectStyle );
+#endif
+
+  emit projectStyleChanged();
+}
+
+QgsStyle *QgsProjectStyleSettings::projectStyle()
+{
+  return mProjectStyle;
 }
 
 bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
@@ -185,8 +235,29 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
           emit styleDatabaseAdded( fullPath );
         }
       }
+
+      if ( mProject )
+      {
+        const QString projectStyleId = element.attribute( QStringLiteral( "projectStyleId" ) );
+        const QString projectStyleFile = mProject->resolveAttachmentIdentifier( projectStyleId );
+        QgsStyle *style = new QgsStyle();
+        if ( !projectStyleFile.isEmpty() && QFile::exists( projectStyleFile ) )
+        {
+          style->load( projectStyleFile );
+          style->setFileName( projectStyleFile );
+        }
+        else
+        {
+          const QString stylePath = mProject->createAttachedFile( QStringLiteral( "styles.db" ) );
+          style->createDatabase( stylePath );
+          style->setFileName( stylePath );
+        }
+        style->setName( tr( "Project Style" ) );
+        setProjectStyle( style );
+      }
     }
   }
+
   emit styleDatabasesChanged();
 
   return true;
@@ -243,6 +314,11 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
     element.appendChild( styleDatabases );
   }
 
+  if ( mProject && mProjectStyle )
+  {
+    element.setAttribute( QStringLiteral( "projectStyleId" ), mProject->attachmentIdentifier( mProjectStyle->fileName() ) );
+  }
+
   return element;
 }
 
@@ -262,6 +338,9 @@ QgsStyle *QgsProjectStyleSettings::styleAtPath( const QString &path )
 {
   if ( path == QgsStyle::defaultStyle()->fileName() )
     return QgsStyle::defaultStyle();
+
+  if ( mProjectStyle && path == mProjectStyle->fileName() )
+    return mProjectStyle;
 
   for ( QgsStyle *style : std::as_const( mStyles ) )
   {
@@ -324,9 +403,12 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
   mCombinedStyleModel->addStyle( style );
 #endif
 
-  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
-  // need updating to reflect the new colors
-  connect( mProject, &QgsProject::projectColorsChanged, style, &QgsStyle::triggerIconRebuild );
+  if ( mProject )
+  {
+    // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
+    // need updating to reflect the new colors
+    connect( mProject, &QgsProject::projectColorsChanged, style, &QgsStyle::triggerIconRebuild );
+  }
 }
 
 void QgsProjectStyleSettings::clearStyles()
@@ -380,12 +462,18 @@ QgsProjectStyleDatabaseModel::QgsProjectStyleDatabaseModel( QgsProjectStyleSetti
   connect( mSettings, &QgsProjectStyleSettings::styleDatabaseAdded, this, &QgsProjectStyleDatabaseModel::styleDatabaseAdded );
   connect( mSettings, &QgsProjectStyleSettings::styleDatabaseAboutToBeRemoved, this, &QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved );
   connect( mSettings, &QgsProjectStyleSettings::styleDatabaseRemoved, this, &QgsProjectStyleDatabaseModel::styleDatabaseRemoved );
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( mSettings->projectStyle() )
+    setProjectStyle( mSettings->projectStyle() );
+  connect( mSettings, &QgsProjectStyleSettings::projectStyleChanged, this, &QgsProjectStyleDatabaseModel::projectStyleChanged );
+#endif
 }
 
 int QgsProjectStyleDatabaseModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return ( mSettings ? mSettings->styleDatabasePaths().count() : 0 ) + ( mShowDefault ? 1 : 0 );
+  return ( mSettings ? mSettings->styleDatabasePaths().count() : 0 ) + ( mProjectStyle ? 1 : 0 ) + ( mShowDefault ? 1 : 0 );
 }
 
 QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role ) const
@@ -393,8 +481,9 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
   if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
 
-  const bool isDefault = index.row() == 0 && mShowDefault;
-  const int styleRow = mShowDefault ? index.row() - 1 : index.row();
+  const bool isProjectStyle = index.row() == 0 && mProjectStyle;
+  const bool isDefault = mShowDefault && ( ( index.row() == 0 && !mProjectStyle ) || ( index.row() == 1 && mProjectStyle ) );
+  const int styleRow = index.row() - ( mShowDefault ? 1 : 0 ) - ( mProjectStyle ? 1 : 0 );
 
   switch ( role )
   {
@@ -402,12 +491,16 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
     case Qt::EditRole:
       if ( isDefault )
         return QgsStyle::defaultStyle()->name();
+      else if ( isProjectStyle )
+        return mProjectStyle->name();
       else
         return mSettings ? mSettings->styles().at( styleRow )->name() : QVariant();
 
     case Qt::ToolTipRole:
       if ( isDefault )
         return QDir::toNativeSeparators( QgsStyle::defaultStyle()->fileName() );
+      else if ( isProjectStyle )
+        return mProjectStyle->name();
       else
         return mSettings ? QDir::toNativeSeparators( mSettings->styles().at( styleRow )->fileName() ) : QVariant();
 
@@ -415,6 +508,8 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
     {
       if ( isDefault )
         return QVariant::fromValue( QgsStyle::defaultStyle() );
+      else if ( isProjectStyle )
+        return QVariant::fromValue( mProjectStyle.data() );
       else if ( QgsStyle *style = mSettings->styles().value( styleRow ) )
         return QVariant::fromValue( style );
       else
@@ -424,6 +519,8 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
     case PathRole:
       if ( isDefault )
         return QgsStyle::defaultStyle()->fileName();
+      else if ( isProjectStyle )
+        return mProjectStyle->fileName();
       else
         return mSettings ? mSettings->styles().at( styleRow )->fileName() : QVariant();
 
@@ -434,10 +531,11 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
 
 QgsStyle *QgsProjectStyleDatabaseModel::styleFromIndex( const QModelIndex &index ) const
 {
-  if ( index.row() == 0 && mShowDefault )
+  if ( index.row() == 0 && mProjectStyle )
+    return mProjectStyle;
+  else if ( mShowDefault && ( ( index.row() == 0 && !mProjectStyle ) || ( index.row() == 1 && mProjectStyle ) ) )
     return QgsStyle::defaultStyle();
-
-  if ( QgsStyle *style = qobject_cast< QgsStyle * >( qvariant_cast<QObject *>( data( index, StyleRole ) ) ) )
+  else if ( QgsStyle *style = qobject_cast< QgsStyle * >( qvariant_cast<QObject *>( data( index, StyleRole ) ) ) )
     return style;
   else
     return nullptr;
@@ -445,8 +543,10 @@ QgsStyle *QgsProjectStyleDatabaseModel::styleFromIndex( const QModelIndex &index
 
 QModelIndex QgsProjectStyleDatabaseModel::indexFromStyle( QgsStyle *style ) const
 {
-  if ( style == QgsStyle::defaultStyle() && mShowDefault )
+  if ( style == mProjectStyle )
     return index( 0, 0, QModelIndex() );
+  else if ( style == QgsStyle::defaultStyle() && mShowDefault )
+    return index( mProjectStyle ? 1 : 0, 0, QModelIndex() );
 
   if ( !mSettings )
   {
@@ -457,7 +557,7 @@ QModelIndex QgsProjectStyleDatabaseModel::indexFromStyle( QgsStyle *style ) cons
   if ( r < 0 )
     return QModelIndex();
 
-  QModelIndex idx = index( mShowDefault ? r + 1 : r, 0, QModelIndex() );
+  QModelIndex idx = index( r + ( mShowDefault ? 1 : 0 ) + ( mProjectStyle ? 1 : 0 ), 0, QModelIndex() );
   if ( idx.isValid() )
   {
     return idx;
@@ -471,30 +571,56 @@ void QgsProjectStyleDatabaseModel::setShowDefaultStyle( bool show )
   if ( show == mShowDefault )
     return;
 
+  const int row = mProjectStyle ? 1 : 0;
   if ( show )
   {
-    beginInsertRows( QModelIndex(), 0, 0 );
+    beginInsertRows( QModelIndex(), row, row );
     mShowDefault = true;
     endInsertRows();
   }
   else
   {
-    beginRemoveRows( QModelIndex(), 0, 0 );
+    beginRemoveRows( QModelIndex(), row, row );
     mShowDefault = false;
     endRemoveRows();
   }
 }
 
+void QgsProjectStyleDatabaseModel::setProjectStyle( QgsStyle *style )
+{
+  if ( style == mProjectStyle )
+    return;
+
+  if ( mProjectStyle )
+  {
+    disconnect( mProjectStyle, &QgsStyle::aboutToBeDestroyed, this, &QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed );
+    disconnect( mProjectStyle, &QgsStyle::destroyed, this, &QgsProjectStyleDatabaseModel::projectStyleDestroyed );
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mProjectStyle = nullptr;
+    endRemoveRows();
+  }
+
+  if ( style )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mProjectStyle = style;
+    endInsertRows();
+
+    connect( mProjectStyle, &QgsStyle::aboutToBeDestroyed, this, &QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed );
+    connect( mProjectStyle, &QgsStyle::destroyed, this, &QgsProjectStyleDatabaseModel::projectStyleDestroyed );
+  }
+}
+
 void QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeAdded( const QString & )
 {
-  int row = mSettings->styles().count() + ( mShowDefault ? 1 : 0 );
+  int row = mSettings->styles().count() + ( mShowDefault ? 1 : 0 ) + ( mProjectStyle ? 1 : 0 );
   beginInsertRows( QModelIndex(), row, row );
 }
 
 void QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved( const QString &path )
 {
   QgsStyle *style = mSettings->styleAtPath( path );
-  int row = mSettings->styles().indexOf( style ) + ( mShowDefault ? 1 : 0 );
+  int row = mSettings->styles().indexOf( style ) + ( mShowDefault ? 1 : 0 ) + ( mProjectStyle ? 1 : 0 );
   if ( row >= 0 )
     beginRemoveRows( QModelIndex(), row, row );
 }
@@ -507,6 +633,21 @@ void QgsProjectStyleDatabaseModel::styleDatabaseAdded( const QString & )
 void QgsProjectStyleDatabaseModel::styleDatabaseRemoved( const QString & )
 {
   endRemoveRows();
+}
+
+void QgsProjectStyleDatabaseModel::projectStyleAboutToBeDestroyed()
+{
+  beginRemoveRows( QModelIndex(), 0, 0 );
+}
+
+void QgsProjectStyleDatabaseModel::projectStyleDestroyed()
+{
+  endRemoveRows();
+}
+
+void QgsProjectStyleDatabaseModel::projectStyleChanged()
+{
+  setProjectStyle( mSettings->projectStyle() );
 }
 
 //
