@@ -965,7 +965,6 @@ void QgsProject::clear()
   m3DViewsManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
-  mStyleSettings->reset();
   mTimeSettings->reset();
   mElevationProperties->reset();
   mDisplaySettings->reset();
@@ -981,6 +980,9 @@ void QgsProject::clear()
 
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
   mArchive.reset( new QgsArchive() );
+
+  // must happen after archive reset!
+  mStyleSettings->reset();
 
   emit labelingEngineSettingsChanged();
 
@@ -2006,6 +2008,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
   if ( !timeSettingsElement.isNull() )
     mTimeSettings->readXml( timeSettingsElement, context );
+
 
   profile.switchTask( tr( "Loading elevation properties" ) );
   const QDomElement elevationPropertiesElement = doc->documentElement().firstChildElement( QStringLiteral( "ElevationProperties" ) );

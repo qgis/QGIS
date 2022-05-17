@@ -30,6 +30,8 @@ Constructor for QgsProjectStyleSettings for the specified ``project``.
 Ownership is transferred to the ``project``.
 %End
 
+    ~QgsProjectStyleSettings();
+
     QgsSymbol *defaultSymbol( Qgis::SymbolType symbolType ) const /Factory/;
 %Docstring
 Returns the project default symbol for a given type.
@@ -116,6 +118,20 @@ Sets the default symbol opacity.
     void reset();
 %Docstring
 Resets the settings to a default state.
+%End
+
+    void setProjectStyle( QgsStyle *style /Transfer/ );
+%Docstring
+Sets the style database to use for the project style.
+
+.. seealso:: :py:func:`projectStyle`
+%End
+
+    QgsStyle *projectStyle();
+%Docstring
+Returns the style database to use for project specific styles.
+
+.. seealso:: :py:func:`setProjectStyle`
 %End
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );

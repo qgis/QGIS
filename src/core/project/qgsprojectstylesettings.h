@@ -22,6 +22,7 @@
 #include <memory.h>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
+#include <QPointer>
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -51,6 +52,8 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * Ownership is transferred to the \a project.
      */
     QgsProjectStyleSettings( QgsProject *project = nullptr );
+
+    ~QgsProjectStyleSettings() override;
 
     /**
      * Returns the project default symbol for a given type.
@@ -118,6 +121,20 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * Resets the settings to a default state.
      */
     void reset();
+
+    /**
+     * Sets the style database to use for the project style.
+     *
+     * \see projectStyle()
+     */
+    void setProjectStyle( QgsStyle *style SIP_TRANSFER );
+
+    /**
+     * Returns the style database to use for project specific styles.
+     *
+     * \see setProjectStyle()
+     */
+    QgsStyle *projectStyle();
 
     /**
      * Reads the settings's state from a DOM element.
@@ -237,6 +254,13 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      */
     void styleDatabaseRemoved( const QString &path );
 
+    /**
+     * Emitted when the style returned by projectStyle() is changed.
+     *
+     * \note Not available in Python bindings
+     */
+    void projectStyleChanged();
+
 #endif
   private:
 
@@ -251,6 +275,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     bool mRandomizeDefaultSymbolColor = true;
     double mDefaultSymbolOpacity = 1.0;
 
+    QgsStyle *mProjectStyle = nullptr;
     QStringList mStyleDatabases;
     QList< QPointer< QgsStyle > > mStyles;
 
@@ -322,9 +347,15 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
     void styleDatabaseAdded( const QString &path );
     void styleDatabaseRemoved( const QString &path );
 
+    void setProjectStyle( QgsStyle *style );
+    void projectStyleAboutToBeDestroyed();
+    void projectStyleDestroyed();
+    void projectStyleChanged();
+
   private:
     QgsProjectStyleSettings *mSettings = nullptr;
     bool mShowDefault = false;
+    QPointer< QgsStyle > mProjectStyle;
 };
 
 /**
