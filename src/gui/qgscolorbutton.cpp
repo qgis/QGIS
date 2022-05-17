@@ -424,7 +424,7 @@ void QgsColorButton::wheelEvent( QWheelEvent *event )
 {
   if ( mAllowOpacity && isEnabled() && !isNull() )
   {
-    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.25 : 0.1 ) *
+    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.01 : 0.1 ) *
                              ( event->angleDelta().y() > 0 ? 1 : -1 );
     const double alpha = std::min( std::max( 0.0, mColor.alphaF() + increment ), 1.0 );
     mColor.setAlphaF( alpha );
