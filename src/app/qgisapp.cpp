@@ -14143,7 +14143,6 @@ void QgisApp::closeProject()
   onActiveLayerChanged( activeLayer() );
 }
 
-
 void QgisApp::changeEvent( QEvent *event )
 {
   QMainWindow::changeEvent( event );
