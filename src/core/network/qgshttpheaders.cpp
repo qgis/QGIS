@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qgshttpheaders.h"
+#include <QDir>
 
 //
 // QgsHttpHeaders
@@ -67,10 +68,12 @@ bool QgsHttpHeaders::updateDataSourceUri( QgsDataSourceUri &uri ) const
 
 void QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key ) const
 {
-  QString keyFixed = key;
-  if ( !keyFixed.isEmpty() && !keyFixed.endsWith( "/" ) )
+  QString keyFixed = sanitizeKey( key );
+  if ( !keyFixed.isEmpty() )
     keyFixed = keyFixed + "/";
+
   QString keyHH = keyFixed + QgsHttpHeaders::KEY_PREFIX;
+  settings.remove( keyHH ); // cleanup
   for ( auto ite = mHeaders.constBegin(); ite != mHeaders.constEnd(); ++ite )
   {
     settings.setValue( keyHH  + ite.key(), ite.value() );
@@ -80,14 +83,30 @@ void QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key )
   {
     settings.setValue( keyFixed + QgsHttpHeaders::KEY_REFERER, mHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
   }
+
+#if 0
+  QgsLogger::debug( QString( "updateSettings key: %1" ).arg( keyFixed ) );
+  for ( auto k : settings.allKeys() )
+    if ( k.startsWith( keyFixed ) )
+      QgsLogger::debug( QString( "updateSettings in settings: %1=%2" ).arg( k, settings.value( k ).toString() ) );
+#endif
 }
 
 void QgsHttpHeaders::setFromSettings( const QgsSettings &settings, const QString &key )
 {
-  QString keyFixed = key;
-  if ( !keyFixed.isEmpty() && !keyFixed.endsWith( "/" ) )
+  QString keyFixed = sanitizeKey( key );
+  if ( !keyFixed.isEmpty() )
     keyFixed = keyFixed + "/";
   QString keyHH = keyFixed + QgsHttpHeaders::KEY_PREFIX;
+
+#if 0
+  QgsLogger::debug( QString( "setFromSettings key: %1" ).arg( keyFixed ) );
+  for ( auto k : settings.allKeys() )
+    if ( k.startsWith( keyFixed ) )
+      QgsLogger::debug( QString( "setFromSettings called: %1=%2" ).arg( k, settings.value( k ).toString() ) );
+  QgsLogger::debug( QString( "setFromSettings keyHH: %1" ).arg( keyHH ) );
+#endif
+
   QStringList keys = settings.allKeys();
   for ( auto ite = keys.cbegin(); ite != keys.cend(); ++ite )
   {
@@ -101,17 +120,29 @@ void QgsHttpHeaders::setFromSettings( const QgsSettings &settings, const QString
   {
     mHeaders[QgsHttpHeaders::KEY_REFERER] = settings.value( keyFixed + QgsHttpHeaders::KEY_REFERER ).toString(); // retrieve value from old location
   }
+
+#if 0
+  for ( auto k : mHeaders.keys() )
+    QgsLogger::debug( QString( "setFromSettings mHeaders[%1]=%2" ).arg( k, mHeaders[k].toString() ) );
+#endif
+}
+
+// To clean the path
+QString QgsHttpHeaders::sanitizeKey( const QString &key ) const
+{
+  QString out = QDir::cleanPath( key );
+  return out;
 }
 
 
 QVariant &QgsHttpHeaders::operator[]( const QString &key )
 {
-  return mHeaders[key];
+  return mHeaders[sanitizeKey( key )];
 }
 
 const QVariant QgsHttpHeaders::operator[]( const QString &key ) const
 {
-  return mHeaders[key];
+  return mHeaders[sanitizeKey( key )];
 }
 
 QgsHttpHeaders &QgsHttpHeaders::operator = ( const QMap<QString, QVariant> &headers )
