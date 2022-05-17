@@ -720,10 +720,9 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       mTempRubberBand->movePoint( mapPoint ); //move the last point of the temp rubberband before operating with it
       if ( mTempRubberBand->curveIsComplete() ) //2 points for line and 3 points for circular
       {
-        const QgsCurve *curve = mTempRubberBand->curve();
-        if ( curve )
+        if ( QgsCurve *curve = mTempRubberBand->curve() )
         {
-          addCurve( curve->clone() );
+          addCurve( curve );
           // add curve append only invalid match to mSnappingMatches,
           // so we need to remove them and add the one from here if it is valid
           if ( match.isValid() && mSnappingMatches.count() > 0 && !mSnappingMatches.last().isValid() )
