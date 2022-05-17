@@ -70,6 +70,7 @@
 #include "qgsgrouplayer.h"
 #include "qgsmapviewsmanager.h"
 #include "qgsprojectelevationproperties.h"
+#include "qgscombinedstylemodel.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -447,6 +448,10 @@ QgsProject::QgsProject( QObject *parent )
   Q_NOWARN_DEPRECATED_PUSH
   connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
   Q_NOWARN_DEPRECATED_POP
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mStyleSettings->combinedStyleModel()->addDefaultStyle();
+#endif
 }
 
 
