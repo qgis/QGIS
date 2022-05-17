@@ -150,8 +150,12 @@ class QgsMeshDatasetGroupStore: public QObject
     //! Returns a pointer to the root of the dataset groups tree item
     QgsMeshDatasetGroupTreeItem *datasetGroupTreeItem() const;
 
-    //! Sets the root of the dataset groups tree item, doesn't take onwnershib but clone the root item
-    void setDatasetGroupTreeItem( QgsMeshDatasetGroupTreeItem *rootItem );
+    /**
+     * Sets the root of the dataset groups tree item.
+     *
+     * The \a rootItem is cloned (ownership is not transferred).
+     */
+    void setDatasetGroupTreeItem( const QgsMeshDatasetGroupTreeItem *rootItem );
 
     //! Returns a list of all group indexes
     QList<int> datasetGroupIndexes() const;
