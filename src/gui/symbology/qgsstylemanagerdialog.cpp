@@ -256,7 +256,9 @@ void QgsStyleManagerDialog::init()
   {
     // only show add item if the btn doesn't have a menu -- otherwise it should show the menu instead!
     if ( !btnAddItem->menu() )
-    { addItem(); }
+    {
+      addItem();
+    }
   }
          );
 
