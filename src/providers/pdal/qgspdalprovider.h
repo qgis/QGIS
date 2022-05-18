@@ -25,7 +25,7 @@
 #include <memory>
 
 class QgsEptPointCloudIndex;
-class QgsPdalEptGenerationTask;
+class QgsPdalIndexingTask;
 
 class QgsPdalProvider: public QgsPointCloudDataProvider
 {
@@ -63,7 +63,8 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
 
     QVariantMap mOriginalMetadata;
     std::unique_ptr<QgsCopcPointCloudIndex> mIndex;
-    QgsPdalEptGenerationTask *mRunningIndexingTask = nullptr;
+    QgsPdalIndexingTask *mRunningIndexingTask = nullptr;
+    QgsDataProvider::ProviderOptions mOptions;
     static QQueue<QgsPdalProvider *> sIndexingQueue;
 };
 

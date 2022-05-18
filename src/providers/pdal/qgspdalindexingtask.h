@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgspdaleptgenerationtask.h
+  qgspdalindexingtask.h
   ------------------------
   Date                 : December 2020
   Copyright            : (C) 2020 by Peter Petrik
@@ -13,36 +13,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPDALEPTGENERATIONTASK_H
-#define QGSPDALEPTGENERATIONTASK_H
+#ifndef QGSPDALINDEXINGTASK_H
+#define QGSPDALINDEXINGTASK_H
 
 #include <QObject>
 #include "qgstaskmanager.h"
 
-class QgsPdalEptGenerationTask: public QgsTask
+class QgsPdalIndexingTask: public QgsTask
 {
     Q_OBJECT
 
   public:
-    QgsPdalEptGenerationTask( const QString &file, const QString &outputFile, const QString &name = QString() );
+    enum class OutputFormat
+    {
+      Ept,
+      Copc
+    };
+
+    QgsPdalIndexingTask( const QString &file, const QString &outputPath, OutputFormat outputFormat = OutputFormat::Ept, const QString &name = QString() );
     bool run() override;
 
     QString untwineExecutableBinary() const;
     void setUntwineExecutableBinary( const QString &untwineExecutableBinary );
 
-    QString outputFile() const;
+    QString outputPath() const;
     const QString errorMessage() const { return mErrorMessage; };
 
   private:
-    bool prepareOutputDir();
+    bool prepareOutputPath();
     bool runUntwine();
     void cleanTemp();
 
     QString guessUntwineExecutableBinary() const;
     QString mUntwineExecutableBinary;
-    QString mOutputFile;
+    QString mOutputPath;
     QString mFile;
+    OutputFormat mOutputFormat = OutputFormat::Copc;
     QString mErrorMessage;
 };
 
-#endif // QGSPDALEPTGENERATIONTASK_H
+#endif // QGSPDALINDEXINGTASK_H
