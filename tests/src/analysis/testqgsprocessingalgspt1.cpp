@@ -60,7 +60,6 @@
 #include "qgsmeshlayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
-#include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgscolorrampimpl.h"
