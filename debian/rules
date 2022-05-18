@@ -73,7 +73,7 @@ else
 TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"focal groovy hirsute impish sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"focal groovy hirsute impish jammy sid"))
 PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
 else
 PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L[^ ]* -l\([^ ]*\) .*$$,\1/lib\2.so,')
@@ -332,7 +332,7 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid impish"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid impish jammy"))
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
 	find $(CURDIR)/debian/tmp/ -depth -empty -type d -delete
@@ -358,7 +358,7 @@ override_dh_installmime:
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-ifeq (,$(findstring $(DISTRIBUTION),"sid impish"))
+ifeq (,$(findstring $(DISTRIBUTION),"sid impish jammy"))
 	dh_sip3 -ppython3-qgis
 endif
 
