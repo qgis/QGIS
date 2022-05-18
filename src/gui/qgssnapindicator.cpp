@@ -27,27 +27,10 @@
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
   : mCanvas( canvas )
 {
-  // We need to make sure that the internal pointers are invalidated if the canvas is deleted before this
-  // indicator.
-  // The canvas is specified again as the "receiver", just to silence clazy (official clazy recommendation
-  // for false positives).
-  mCanvasDestroyedConnection = QObject::connect( canvas, &QgsMapCanvas::destroyed, canvas, [ = ]()
-  {
-    mCanvas = nullptr;
-    mSnappingMarker = nullptr;
-  } );
+  mSnappingMarker.setParentOwner( canvas );
 }
 
-QgsSnapIndicator::~QgsSnapIndicator()
-{
-  if ( mSnappingMarker && mCanvas )
-  {
-    mCanvas->scene()->removeItem( mSnappingMarker );
-    delete mSnappingMarker;
-  }
-
-  QObject::disconnect( mCanvasDestroyedConnection );
-};
+QgsSnapIndicator::~QgsSnapIndicator() = default;
 
 void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
 {
@@ -58,16 +41,15 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     if ( mSnappingMarker )
     {
       mCanvas->scene()->removeItem( mSnappingMarker );
-      delete mSnappingMarker; // need to delete since QGraphicsSene::removeItem transfers back ownership
+      mSnappingMarker.reset(); // need to delete since QGraphicsSene::removeItem transfers back ownership
     }
-    mSnappingMarker = nullptr;
     QToolTip::hideText();
   }
   else
   {
     if ( !mSnappingMarker )
     {
-      mSnappingMarker = new QgsVertexMarker( mCanvas ); // ownership of the marker is transferred to QGraphicsScene
+      mSnappingMarker.reset( new QgsVertexMarker( mCanvas ) );
       mSnappingMarker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
       mSnappingMarker->setPenWidth( QgsGuiUtils::scaleIconSize( 3 ) );
     }
