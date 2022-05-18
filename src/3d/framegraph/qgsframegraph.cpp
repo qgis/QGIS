@@ -54,6 +54,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/QClipPlane>
+#include "qgsabstractrenderview.h"
+
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
@@ -744,6 +746,50 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mDepthRenderQuad->setParent( mRootEntity );
 }
 
+void QgsFrameGraph::unregisterRenderView( const QString &name )
+{
+  std::shared_ptr<QgsAbstractRenderView> renderView = mRenderViewMap.find( name ).value();
+  if ( renderView )
+  {
+    renderView->topGraphNode()->setParent( ( QNode * )nullptr );
+    mRenderViewMap.remove( name );
+  }
+}
+
+bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const QString &name )
+{
+  bool out;
+  if ( mRenderViewMap.find( name ) == mRenderViewMap.end() )
+  {
+    mRenderViewMap.insert( name, std::shared_ptr<QgsAbstractRenderView>( renderView ) );
+    renderView->topGraphNode()->setParent( mMainViewPort );
+    renderView->updateWindowResize( mSize.width(), mSize.height() );
+    out = true;
+  }
+  else
+    out = false;
+
+  return out;
+}
+
+void QgsFrameGraph::setRenderViewEnabled( const QString &name, bool enable )
+{
+  if ( mRenderViewMap [name] != nullptr )
+  {
+    mRenderViewMap [name]->setEnabled( enable );
+  }
+}
+
+QgsAbstractRenderView *QgsFrameGraph::renderView( const QString &name )
+{
+  return mRenderViewMap[name].get();
+}
+
+bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
+{
+  return mRenderViewMap [name] != nullptr && mRenderViewMap [name]->isEnabled();
+}
+
 QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerTexCoords, const QSizeF &sizeTexCoords, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
 {
   QgsPreviewQuad *previewQuad = new QgsPreviewQuad( texture, centerTexCoords, sizeTexCoords, additionalShaderParameters );
@@ -982,8 +1028,12 @@ void QgsFrameGraph::setupDepthMapDebugging( bool enabled, Qt::Corner corner, dou
 void QgsFrameGraph::setSize( QSize s )
 {
   mSize = s;
-  mForwardColorTexture->setSize( mSize.width(), mSize.height() );
-  mForwardDepthTexture->setSize( mSize.width(), mSize.height() );
+  for ( QMap<QString, std::shared_ptr<QgsAbstractRenderView>>::iterator it = mRenderViewMap.begin(); it != mRenderViewMap.end(); ++it )
+  {
+    std::shared_ptr<QgsAbstractRenderView> rv = it.value();
+    rv->updateWindowResize( mSize.width(), mSize.height() );
+  }
+
   mRenderCaptureColorTexture->setSize( mSize.width(), mSize.height() );
   mRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
   mDepthRenderCaptureDepthTexture->setSize( mSize.width(), mSize.height() );
