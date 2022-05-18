@@ -105,6 +105,8 @@ checkDock::~checkDock()
   // delete errors in list
   deleteErrors();
   delete mErrorListModel;
+
+  mTest->deleteLater();
 }
 
 void checkDock::clearVertexMarkers()
