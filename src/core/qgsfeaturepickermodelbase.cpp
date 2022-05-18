@@ -20,7 +20,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
-
+#include "qgsexpressioncontextutils.h"
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )
@@ -421,7 +421,10 @@ void QgsFeaturePickerModelBase::scheduledReload()
       filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '%%3%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
 
     if ( !filterClause.isEmpty() )
+    {
       request.setFilterExpression( filterClause );
+      request.expressionContext()->appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( sourceLayer() ) );
+    }
   }
   QSet<QString> attributes = requestedAttributes();
   if ( !attributes.isEmpty() )
