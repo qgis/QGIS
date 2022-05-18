@@ -446,7 +446,7 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
     mCurrentShapeMapTool->deleteLater();
   }
 
-  mCurrentShapeMapTool = shapeMapToolMetadata ? shapeMapToolMetadata->factory( this ) : nullptr;
+  mCurrentShapeMapTool.reset( shapeMapToolMetadata ? shapeMapToolMetadata->factory( this ) : nullptr );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && isActive() )
   {

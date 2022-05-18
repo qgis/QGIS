@@ -427,7 +427,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     Qgis::CaptureTechnique mCurrentCaptureTechnique = Qgis::CaptureTechnique::StraightSegments;
 
-    QgsMapToolShapeAbstract *mCurrentShapeMapTool = nullptr;
+    QObjectUniquePtr< QgsMapToolShapeAbstract > mCurrentShapeMapTool;
 
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;
