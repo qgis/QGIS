@@ -33,7 +33,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
   public:
     QgsPdalProvider( const QString &uri,
                      const QgsDataProvider::ProviderOptions &providerOptions,
-                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
+                     QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags(), bool generateCopc = true );
 
     ~QgsPdalProvider();
     QgsCoordinateReferenceSystem crs() const override;
@@ -64,7 +64,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     QVariantMap mOriginalMetadata;
     std::unique_ptr<QgsCopcPointCloudIndex> mIndex;
     QgsPdalIndexingTask *mRunningIndexingTask = nullptr;
-    QgsDataProvider::ProviderOptions mOptions;
+    bool mGenerateCopc = true;
     static QQueue<QgsPdalProvider *> sIndexingQueue;
 };
 

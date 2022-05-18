@@ -44,10 +44,10 @@ QQueue<QgsPdalProvider *> QgsPdalProvider::sIndexingQueue;
 QgsPdalProvider::QgsPdalProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
-  QgsDataProvider::ReadFlags flags )
+  QgsDataProvider::ReadFlags flags, bool generateCopc )
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( new QgsCopcPointCloudIndex )
-  , mOptions( options )
+  , mGenerateCopc( generateCopc )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -103,12 +103,12 @@ void QgsPdalProvider::generateIndex()
 
   QString outputPath;
 
-  if ( mOptions.generateCopc )
+  if ( mGenerateCopc )
     outputPath = _outCopcFile( dataSourceUri() );
   else
     outputPath = _outEptDir( dataSourceUri() );
 
-  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( dataSourceUri(), outputPath, mOptions.generateCopc ? QgsPdalIndexingTask::OutputFormat::Copc : QgsPdalIndexingTask::OutputFormat::Ept, QFileInfo( dataSourceUri() ).fileName() );
+  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( dataSourceUri(), outputPath, mGenerateCopc ? QgsPdalIndexingTask::OutputFormat::Copc : QgsPdalIndexingTask::OutputFormat::Ept, QFileInfo( dataSourceUri() ).fileName() );
 
   connect( generationTask, &QgsPdalIndexingTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
   connect( generationTask, &QgsPdalIndexingTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
