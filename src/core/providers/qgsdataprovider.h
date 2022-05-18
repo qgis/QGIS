@@ -106,12 +106,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
+      //! Constructor
+      ProviderOptions() {}
+      ProviderOptions( QgsCoordinateTransformContext transformContext ) : transformContext( transformContext ) {}
 
       /**
        * Coordinate transform context
        */
       QgsCoordinateTransformContext transformContext;
-
+      //! Indicate whether to generate COPC or EPT indexing for point clouds
+      bool generateCopc = false;
     };
 
     /**

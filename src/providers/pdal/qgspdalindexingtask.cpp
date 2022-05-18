@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgspdaleptgenerationtask.cpp
+  qgspdalindexingtask.cpp
   ------------------------
   Date                 : December 2020
   Copyright            : (C) 2020 by Peter Petrik
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspdaleptgenerationtask.h"
+#include "qgspdalindexingtask.h"
 
 #include <vector>
 #include <string>
@@ -28,17 +28,18 @@
 #include "qgsmessagelog.h"
 #include "qgis.h"
 
-QgsPdalEptGenerationTask::QgsPdalEptGenerationTask( const QString &file, const QString &outputFile, const QString &name )
+QgsPdalIndexingTask::QgsPdalIndexingTask( const QString &file, const QString &outputPath, OutputFormat outputFormat, const QString &name )
   : QgsTask( tr( "Indexing Point Cloud (%1)" ).arg( name ) )
-  , mOutputFile( outputFile )
+  , mOutputPath( outputPath )
   , mFile( file )
+  , mOutputFormat( outputFormat )
 {
   mUntwineExecutableBinary = guessUntwineExecutableBinary();
 }
 
-bool QgsPdalEptGenerationTask::run()
+bool QgsPdalIndexingTask::run()
 {
-  if ( isCanceled() )
+  if ( isCanceled() || !prepareOutputPath() )
     return false;
 
   if ( isCanceled() || !runUntwine() )
@@ -52,10 +53,19 @@ bool QgsPdalEptGenerationTask::run()
   return true;
 }
 
-void QgsPdalEptGenerationTask::cleanTemp()
+void QgsPdalIndexingTask::cleanTemp()
 {
-  QDir tmpDir( mOutputFile + QStringLiteral( "_tmp" ) );
-  qDebug() << tmpDir.absolutePath();
+  QDir tmpDir;
+  switch ( mOutputFormat )
+  {
+    case QgsPdalIndexingTask::OutputFormat::Ept:
+      tmpDir.setPath( mOutputPath + QDir::separator() + QStringLiteral( "tmp" ) );
+      break;
+    case QgsPdalIndexingTask::OutputFormat::Copc:
+      tmpDir.setPath( mOutputPath + QStringLiteral( "_tmp" ) );
+      break;
+  }
+
   if ( tmpDir.exists() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), 2 );
@@ -63,7 +73,7 @@ void QgsPdalEptGenerationTask::cleanTemp()
   }
 }
 
-bool QgsPdalEptGenerationTask::runUntwine()
+bool QgsPdalIndexingTask::runUntwine()
 {
   const QFileInfo executable( mUntwineExecutableBinary );
   if ( !executable.isExecutable() )
@@ -82,11 +92,14 @@ bool QgsPdalEptGenerationTask::runUntwine()
   // By default Untwine does not calculate stats for attributes, but they are very useful for us:
   // we can use them to set automatically set valid range for the data without having to scan the points again.
   options.push_back( { "stats", std::string() } );
-  // By default Untwine will generate an ept dataset, we use single_file flag to generate COPC files
-  options.push_back( { "single_file", std::string() } );
+  if ( mOutputFormat == OutputFormat::Copc )
+  {
+    // By default Untwine will generate an ept dataset, we use single_file flag to generate COPC files
+    options.push_back( { "single_file", std::string() } );
+  }
 
   const std::vector<std::string> files = {mFile.toStdString()};
-  untwineProcess.start( files, mOutputFile.toStdString(), options );
+  untwineProcess.start( files, mOutputPath.toStdString(), options );
   const int lastPercent = 0;
   while ( true )
   {
@@ -127,17 +140,17 @@ bool QgsPdalEptGenerationTask::runUntwine()
   }
 }
 
-QString QgsPdalEptGenerationTask::untwineExecutableBinary() const
+QString QgsPdalIndexingTask::untwineExecutableBinary() const
 {
   return mUntwineExecutableBinary;
 }
 
-void QgsPdalEptGenerationTask::setUntwineExecutableBinary( const QString &untwineExecutableBinary )
+void QgsPdalIndexingTask::setUntwineExecutableBinary( const QString &untwineExecutableBinary )
 {
   mUntwineExecutableBinary = untwineExecutableBinary;
 }
 
-QString QgsPdalEptGenerationTask::guessUntwineExecutableBinary() const
+QString QgsPdalIndexingTask::guessUntwineExecutableBinary() const
 {
   QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
   if ( untwineExecutable.isEmpty() )
@@ -151,8 +164,67 @@ QString QgsPdalEptGenerationTask::guessUntwineExecutableBinary() const
   return QString( untwineExecutable );
 }
 
-QString QgsPdalEptGenerationTask::outputFile() const
+QString QgsPdalIndexingTask::outputPath() const
 {
-  return mOutputFile;
+  return mOutputPath;
+}
+
+bool QgsPdalIndexingTask::prepareOutputPath()
+{
+  switch ( mOutputFormat )
+  {
+    case OutputFormat::Ept:
+    {
+      const QFileInfo fi( mOutputPath + "/ept.json" );
+      if ( fi.exists() )
+      {
+        QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
+        return true;
+      }
+      if ( QDir( mOutputPath ).exists() )
+      {
+        if ( !QDir( mOutputPath ).isEmpty() )
+        {
+          if ( QDir( mOutputPath + "/temp" ).exists() )
+          {
+            QgsMessageLog::logMessage( tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( mOutputPath ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Warning );
+            return false;
+          }
+          else
+          {
+            QgsMessageLog::logMessage( tr( "Folder %1 is non-empty, but there isn't ept.json present." ).arg( mOutputPath ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
+            return false;
+          }
+        }
+        else
+        {
+          // untwine expects that the output directory does not exist at all
+          if ( !QDir().rmdir( mOutputPath ) )
+          {
+            QgsMessageLog::logMessage( tr( "Failed to remove empty directory %1" ).arg( mOutputPath ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
+            return false;
+          }
+        }
+      }
+      break;
+    }
+    case OutputFormat::Copc:
+    {
+      const QFileInfo fi( mOutputPath );
+      if ( fi.exists() )
+      {
+        QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
+        return true;
+      }
+      QString tmpDir = mOutputPath + QStringLiteral( "_tmp" );
+      if ( QDir( tmpDir ).exists() )
+      {
+        QgsMessageLog::logMessage( tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( mOutputPath ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Warning );
+        return false;
+      }
+      break;
+    }
+  }
+  return true;
 }
 

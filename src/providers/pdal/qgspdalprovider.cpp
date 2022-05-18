@@ -22,7 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
-#include "qgspdaleptgenerationtask.h"
+#include "qgspdalindexingtask.h"
 #include "qgseptpointcloudindex.h"
 #include "qgstaskmanager.h"
 #include "qgsprovidersublayerdetails.h"
@@ -47,6 +47,7 @@ QgsPdalProvider::QgsPdalProvider(
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( new QgsCopcPointCloudIndex )
+  , mOptions( options )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -73,7 +74,15 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
   return mIndex->attributes();
 }
 
-static QString _outFile( const QString &filename )
+static QString _outEptDir( const QString &filename )
+{
+  const QFileInfo fi( filename );
+  const QDir directory = fi.absoluteDir();
+  const QString outputDir = QStringLiteral( "%1/ept_%2" ).arg( directory.absolutePath() ).arg( fi.baseName() );
+  return outputDir;
+}
+
+static QString _outCopcFile( const QString &filename )
 {
   const QFileInfo fi( filename );
   const QDir directory = fi.absoluteDir();
@@ -92,12 +101,17 @@ void QgsPdalProvider::generateIndex()
     return;
   }
 
-  const QString outputFile = _outFile( dataSourceUri() );
+  QString outputPath;
 
-  QgsPdalEptGenerationTask *generationTask = new QgsPdalEptGenerationTask( dataSourceUri(), outputFile, QFileInfo( dataSourceUri() ).fileName() );
+  if ( mOptions.generateCopc )
+    outputPath = _outCopcFile( dataSourceUri() );
+  else
+    outputPath = _outEptDir( dataSourceUri() );
 
-  connect( generationTask, &QgsPdalEptGenerationTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
-  connect( generationTask, &QgsPdalEptGenerationTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
+  QgsPdalIndexingTask *generationTask = new QgsPdalIndexingTask( dataSourceUri(), outputPath, mOptions.generateCopc ? QgsPdalIndexingTask::OutputFormat::Copc : QgsPdalIndexingTask::OutputFormat::Ept, QFileInfo( dataSourceUri() ).fileName() );
+
+  connect( generationTask, &QgsPdalIndexingTask::taskTerminated, this, &QgsPdalProvider::onGenerateIndexFailed );
+  connect( generationTask, &QgsPdalIndexingTask::taskCompleted, this, &QgsPdalProvider::onGenerateIndexFinished );
 
   mRunningIndexingTask = generationTask;
   QgsDebugMsgLevel( "Ept Generation Task Created", 2 );
@@ -120,7 +134,7 @@ void QgsPdalProvider::loadIndex( )
   if ( mIndex->isValid() )
     return;
 
-  const QString outputFile = _outFile( dataSourceUri() );
+  const QString outputFile = _outCopcFile( dataSourceUri() );
   const QFileInfo fi( outputFile );
   if ( fi.isFile() )
   {
@@ -134,7 +148,7 @@ void QgsPdalProvider::loadIndex( )
 
 void QgsPdalProvider::onGenerateIndexFinished()
 {
-  QgsPdalEptGenerationTask *task = qobject_cast<QgsPdalEptGenerationTask *>( QObject::sender() );
+  QgsPdalIndexingTask *task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
   {
@@ -147,7 +161,7 @@ void QgsPdalProvider::onGenerateIndexFinished()
 
 void QgsPdalProvider::onGenerateIndexFailed()
 {
-  QgsPdalEptGenerationTask *task = qobject_cast<QgsPdalEptGenerationTask *>( QObject::sender() );
+  QgsPdalIndexingTask *task = qobject_cast<QgsPdalIndexingTask *>( QObject::sender() );
   // this may be already canceled task that we don't care anymore...
   if ( task == mRunningIndexingTask )
   {
@@ -168,7 +182,7 @@ bool QgsPdalProvider::anyIndexingTaskExists()
   const QList< QgsTask * > tasks = QgsApplication::taskManager()->activeTasks();
   for ( const QgsTask *task : tasks )
   {
-    const QgsPdalEptGenerationTask *eptTask = qobject_cast<const QgsPdalEptGenerationTask *>( task );
+    const QgsPdalIndexingTask *eptTask = qobject_cast<const QgsPdalIndexingTask *>( task );
     if ( eptTask )
     {
       return true;

@@ -10,13 +10,13 @@ find_package(Threads REQUIRED)
 
 set(PDAL_SRCS
   qgspdalprovider.cpp
-  qgspdaleptgenerationtask.cpp
+  qgspdalindexingtask.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
 set(PDAL_HDRS
   qgspdalprovider.h
-  qgspdaleptgenerationtask.h
+  qgspdalindexingtask.h
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.hpp
 )
 
