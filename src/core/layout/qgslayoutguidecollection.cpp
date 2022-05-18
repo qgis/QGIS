@@ -384,7 +384,8 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
 
 void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
 {
-  guide->setLayout( mLayout );
+  if ( guide->layout() != mLayout )
+    guide->setLayout( mLayout );
 
   if ( !mBlockUndoCommands )
     mLayout->undoStack()->beginCommand( mPageCollection, tr( "Create Guide" ) );
