@@ -48,6 +48,8 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   , mCaptureMode( mode )
   , mCaptureModeFromLayer( mode == CaptureNone )
 {
+  mTempRubberBand.setParentOwner( canvas );
+
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
