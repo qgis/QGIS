@@ -11129,7 +11129,7 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   {
     for ( int idx = 0; idx < layer->fields().count() && idx < it->attributeCount(); ++idx )
     {
-      QVariant attr { it->attribute( idx ) };
+      QVariant attr = it->attribute( idx );
       if ( layer->fields().at( idx ).convertCompatible( attr ) )
       {
         it->setAttribute( idx, attr );
