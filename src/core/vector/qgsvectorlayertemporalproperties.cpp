@@ -442,7 +442,7 @@ QString dateTimeExpressionLiteral( const QDateTime &datetime )
          .arg( datetime.time().second() + datetime.time().msec() / 1000.0 );
 }
 
-QString QgsVectorLayerTemporalProperties::createFilterString( QgsVectorLayerTemporalContext context, const QgsDateTimeRange &filterRange ) const
+QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &filterRange ) const
 {
   if ( !isActive() )
     return QString();
