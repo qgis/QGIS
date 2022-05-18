@@ -11127,10 +11127,9 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   // Convert attributes
   for ( auto it = convertedFeatures.begin(); it != convertedFeatures.end(); ++it )
   {
-    for ( int idx = 0; idx < layer->fields().count(); ++idx )
+    for ( int idx = 0; idx < layer->fields().count() && idx < it->attributeCount(); ++idx )
     {
       QVariant attr { it->attribute( idx ) };
-      QString error;
       if ( layer->fields().at( idx ).convertCompatible( attr ) )
       {
         it->setAttribute( idx, attr );
