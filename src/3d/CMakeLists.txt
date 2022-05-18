@@ -74,6 +74,7 @@ set(QGIS_3D_SRCS
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
 
+  framegraph/qgsabstractrenderview.cpp
   framegraph/qgsambientocclusionrenderentity.cpp
   framegraph/qgsambientocclusionblurentity.cpp
   framegraph/qgspostprocessingentity.cpp
@@ -169,6 +170,7 @@ set(QGIS_3D_HDRS
   materials/qgssimplelinematerialsettings.h
   materials/qgstexturematerial.h
 
+  framegraph/qgsabstractrenderview.h
   framegraph/qgsambientocclusionrenderentity.h
   framegraph/qgsambientocclusionblurentity.h
   framegraph/qgsframegraph.h

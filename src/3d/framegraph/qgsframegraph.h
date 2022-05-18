@@ -45,6 +45,7 @@ class QgsPostprocessingEntity;
 class QgsAmbientOcclusionRenderEntity;
 class QgsPreviewQuad;
 class QgsAmbientOcclusionBlurEntity;
+class QgsAbstractRenderView;
 
 #define SIP_NO_FILE
 
@@ -222,6 +223,21 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     //! Dumps scene graph as string
     QString dumpSceneGraph() const;
 
+    //! Registers a new the render view \a renderView with name \a name
+    bool registerRenderView( QgsAbstractRenderView *renderView, const QString &name );
+
+    //! Unregisters the render view named \a name, if any
+    void unregisterRenderView( const QString &name );
+
+    //! Enables or disables the render view named \a name according to \a enable
+    void setEnableRenderView( const QString &name, bool enable );
+
+    //! Returns the render view named \a name, if any
+    QgsAbstractRenderView *renderView( const QString &name );
+
+    //! Returns the layer used to assign entities to the render view named \a name, if any
+    Qt3DRender::QLayer *filterLayer( const QString &name );
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -348,6 +364,8 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DCore::QEntity *constructDepthRenderQuad();
 
     bool mRenderCaptureEnabled = false;
+
+    QMap<QString, QgsAbstractRenderView *> mRenderViewMap;
 
     Q_DISABLE_COPY( QgsFrameGraph )
 };
