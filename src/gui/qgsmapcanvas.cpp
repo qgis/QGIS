@@ -1114,8 +1114,9 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
   };
 
   addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
-  if ( mSettings.destinationCrs() != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
-    addCoordinateFormat( tr( "WGS84" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
+  if ( mSettings.destinationCrs() != wgs84 )
+    addCoordinateFormat( wgs84.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), wgs84 );
 
   QgsSettings settings;
   const QString customCrsString = settings.value( QStringLiteral( "qgis/custom_coordinate_crs" ) ).toString();
