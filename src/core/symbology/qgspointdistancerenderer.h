@@ -288,7 +288,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) const = 0 SIP_FORCE;
 
     //! Creates a search rectangle with specified distance tolerance.
-    QgsRectangle searchRect( const QgsPointXY &p, double distance ) const;
+    QgsRectangle searchRect( const QgsPoint *p, double distance ) const;
 
     //! Debugging function to check the entries in the clustered groups
     void printGroupInfo() const;
