@@ -391,7 +391,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QObjectUniquePtr<QgsRubberBand> mRubberBand;
 
     //! Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position
-    std::unique_ptr<QgsMapToolCaptureRubberBand> mTempRubberBand;
+    QObjectParentUniquePtr<QgsMapToolCaptureRubberBand> mTempRubberBand;
 
     //! List to store the points of digitized lines and polygons (in layer coordinates)
     QgsCompoundCurve mCaptureCurve;
