@@ -57,6 +57,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/QClipPlane>
+#include "qgsabstractrenderview.h"
+
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
@@ -736,6 +738,49 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   mDepthRenderQuad = constructDepthRenderQuad();
   mDepthRenderQuad->addComponent( mDepthRenderPassLayer );
   mDepthRenderQuad->setParent( mRootEntity );
+}
+
+void QgsFrameGraph::unregisterRenderView( const QString &name )
+{
+  QgsAbstractRenderView *renderView = mRenderViewMap [name];
+  if ( renderView )
+  {
+    renderView->topGraphNode()->setParent( ( QNode * )nullptr );
+    mRenderViewMap.remove( name );
+  }
+}
+
+bool QgsFrameGraph::registerRenderView( QgsAbstractRenderView *renderView, const QString &name )
+{
+  bool out;
+  if ( mRenderViewMap [name] == nullptr )
+  {
+    mRenderViewMap [name] = renderView;
+    renderView->topGraphNode()->setParent( mMainViewPort );
+    out = true;
+  }
+  else
+    out = false;
+
+  return out;
+}
+
+void QgsFrameGraph::setEnableRenderView( const QString &name, bool enable )
+{
+  if ( mRenderViewMap [name] != nullptr )
+  {
+    mRenderViewMap [name]->setEnabled( enable );
+  }
+}
+
+QgsAbstractRenderView *QgsFrameGraph::renderView( const QString &name )
+{
+  return mRenderViewMap [name];
+}
+
+bool QgsFrameGraph::isRenderViewEnabled( const QString &name )
+{
+  return mRenderViewMap [name] != nullptr && mRenderViewMap [name]->isEnabled();
 }
 
 QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D *texture, const QPointF &centerTexCoords, const QSizeF &sizeTexCoords, QVector<Qt3DRender::QParameter *> additionalShaderParameters )
