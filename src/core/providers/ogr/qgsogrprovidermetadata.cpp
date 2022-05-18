@@ -857,7 +857,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
 
       // we write a simple piece of GDAL metadata too -- this is solely to delegate responsibility of
       // creating all the metadata tables to GDAL! We will remove it once done.
-      if ( GDALSetMetadataItem( hLayer, "QGIS_VERSION", Qgis::version().toLocal8Bit().constData(), nullptr ) == CE_None )
+      if ( GDALSetMetadataItem( hLayer, "QGIS_VERSION", Qgis::version().toUtf8().constData(), nullptr ) == CE_None )
       {
         // so far so good, ready to throw the whole of the QGIS layer XML into the metadata table!
 
@@ -869,7 +869,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
                         QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
                         QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ) );
         int existingRowId = -1;
-        if ( QgsOgrLayerUniquePtr l = userLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+        if ( QgsOgrLayerUniquePtr l = userLayer->ExecuteSQL( sql.toUtf8().constData() ) )
         {
           // retrieve inserted row id
           gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
@@ -891,7 +891,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
           // update existing row
           sql = QStringLiteral( "UPDATE gpkg_metadata SET metadata=%1 where id=%2;" ).arg(
                   QgsSqliteUtils::quotedString( metadataXml ) ).arg( existingRowId );
-          userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+          userLayer->ExecuteSQLNoReturn( sql.toUtf8().constData() );
           if ( CPLGetLastErrorType() != CE_None )
           {
             errorMessage = QStringLiteral( "%1 (%2): %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() );
@@ -912,11 +912,11 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
                       QgsSqliteUtils::quotedString( QStringLiteral( "http://mrcc.com/qgis.dtd" ) ),
                       QgsSqliteUtils::quotedString( QStringLiteral( "text/xml" ) ),
                       QgsSqliteUtils::quotedString( metadataXml ) );
-          userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+          userLayer->ExecuteSQLNoReturn( sql.toUtf8().constData() );
 
           sql = QStringLiteral( "SELECT last_insert_rowid();" );
           int lastRowId = -1;
-          if ( QgsOgrLayerUniquePtr  l = userLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+          if ( QgsOgrLayerUniquePtr  l = userLayer->ExecuteSQL( sql.toUtf8().constData() ) )
           {
             // retrieve inserted row id
             gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
@@ -934,7 +934,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
                     .arg( QgsSqliteUtils::quotedString( QStringLiteral( "table" ) ),
                           QgsSqliteUtils::quotedString( layerName ) )
                     .arg( lastRowId );
-              userLayer->ExecuteSQLNoReturn( sql.toLocal8Bit().constData() );
+              userLayer->ExecuteSQLNoReturn( sql.toUtf8().constData() );
 
               // Remove QGIS_VERSION now that we are done
               GDALSetMetadataItem( hLayer, "QGIS_VERSION", nullptr, nullptr );
