@@ -78,7 +78,10 @@ QgsMapToolCapture::~QgsMapToolCapture()
   // we call stop capturing. Otherwise stopCapturing tries to access members
   // from the mapcanvas, which is likely already being destroyed and triggering
   // the deletion of this object...
-  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+  if ( mCanvas )
+  {
+    mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+  }
   mExtraSnapLayer->deleteLater();
   mExtraSnapLayer = nullptr;
 
