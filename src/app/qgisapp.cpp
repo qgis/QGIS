@@ -113,6 +113,7 @@
 #include "vertextool/qgsvertexeditor.h"
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
+#include "qgsvectorlayerutils.h"
 
 #include "options/qgscodeeditoroptions.h"
 #include "options/qgsgpsdeviceoptions.h"
@@ -11105,43 +11106,38 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
     if ( !layer->addAttribute( f ) )
     {
       visibleMessageBar()->pushMessage( tr( "Paste features" ),
-                                        tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
+                                        tr( "Cannot create field %1 (%2,%3), falling back to string type" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
                                         Qgis::MessageLevel::Warning );
-      return nullptr;
+
+      // Fallback to string
+      QgsField strField { f };
+      strField.setType( QVariant::String );
+      if ( !layer->addAttribute( strField ) )
+      {
+        visibleMessageBar()->pushMessage( tr( "Paste features" ),
+                                          tr( "Cannot create field %1 (%2,%3)" ).arg( strField.name(), strField.typeName(), QVariant::typeToName( strField.type() ) ),
+                                          Qgis::MessageLevel::Critical );
+        return nullptr;
+      }
     }
   }
 
-  // Convert to multi if necessary
-  QgsFeatureList convertedFeatures;
-  convertedFeatures.reserve( features.length() );
-  for ( QgsFeature feature : features )
+  QgsFeatureList convertedFeatures { QgsVectorLayerUtils::makeFeaturesCompatible( features, layer.get() ) };
+
+  // Convert attributes
+  for ( auto it = convertedFeatures.begin(); it != convertedFeatures.end(); ++it )
   {
-    if ( !feature.hasGeometry() )
+    for ( int idx = 0; idx < layer->fields().count(); ++idx )
     {
-      convertedFeatures.append( feature );
-      continue;
+      QVariant attr { it->attribute( idx ) };
+      QString error;
+      if ( layer->fields().at( idx ).convertCompatible( attr ) )
+      {
+        it->setAttribute( idx, attr );
+      }
     }
-
-    const QgsWkbTypes::Type type = feature.geometry().wkbType();
-    if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
-    {
-      convertedFeatures.append( feature );
-      continue;
-    }
-
-    if ( QgsWkbTypes::singleType( wkbType ) != QgsWkbTypes::singleType( type ) )
-    {
-      feature.clearGeometry();
-    }
-
-    if ( QgsWkbTypes::isMultiType( wkbType ) &&  QgsWkbTypes::isSingleType( type ) )
-    {
-      QgsGeometry g = feature.geometry();
-      g.convertToMultiType();
-      feature.setGeometry( g );
-    }
-    convertedFeatures.append( feature );
   }
+
   if ( ! layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
   {
     QgsDebugMsg( QStringLiteral( "Cannot add features or commit changes" ) );
