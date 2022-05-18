@@ -205,6 +205,7 @@ set(TESTS
  testqgstiles.cpp
  testqgsweakrelation.cpp
  testqgsziputils.cpp
+ testqobjectparentuniqueptr.cpp
  testqobjectuniqueptr.cpp
  testziplayer.cpp
 )
