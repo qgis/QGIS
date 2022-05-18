@@ -87,7 +87,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mStepHeight->setValidator( new QIntValidator( 0, 999999, this ) );
   mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
-  mImageFormatGroup = new QButtonGroup;
+  mImageFormatGroup = new QButtonGroup( this );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
