@@ -64,7 +64,8 @@ class TestQgsAttributeTable : public QObject
     void testVisibleTemporal();
     void testCopySelectedRows();
     void testSortNumbers();
-    void testMultiEdit();
+    void testStartMultiEditNoChanges();
+    void testMultiEditMakeUncommittedChanges();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -471,7 +472,7 @@ void TestQgsAttributeTable::testSortNumbers()
 
 }
 
-void TestQgsAttributeTable::testMultiEdit()
+void TestQgsAttributeTable::testStartMultiEditNoChanges()
 {
   std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );
@@ -516,6 +517,39 @@ void TestQgsAttributeTable::testMultiEdit()
     QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
     layer->rollBack();
   }
+}
+
+void TestQgsAttributeTable::testMultiEditMakeUncommittedChanges()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature ft1( layer->dataProvider()->fields() );
+  ft1.setAttributes( QgsAttributes() << 1 << 2 );
+  layer->dataProvider()->addFeature( ft1 );
+  QgsFeature ft2( layer->dataProvider()->fields() );
+  ft2.setAttributes( QgsAttributes() << 3 << 4 );
+  layer->dataProvider()->addFeature( ft2 );
+
+  layer->selectAll();
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  dlg->mMainView->setCurrentEditSelection( {ft2.id()} );
+  layer->startEditing();
+  dlg->mMainView->setMultiEditEnabled( true );
+
+  dlg->mMainView->mAttributeForm->changeAttribute( QStringLiteral( "col0" ), 99 );
+
+  // nothing should change until the multiedit changes are manually applied
+  QgsFeature fNew1 = layer->getFeature( ft1.id() );
+  QCOMPARE( fNew1.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( fNew1.attributes().at( 1 ).toInt(), 2 );
+  QgsFeature fNew2 = layer->getFeature( ft2.id() );
+  QCOMPARE( fNew2.attributes().at( 0 ).toInt(), 3 );
+  QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
+
+  layer->rollBack();
 }
 
 void TestQgsAttributeTable::testRegression15974()
