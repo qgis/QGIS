@@ -76,6 +76,26 @@ void TestQgsServerWmsParameters::external_layers()
   QCOMPARE( layers_params[0].mOpacity, 255 );
   QCOMPARE( layers_params[1].mOpacity, 200 );
   QCOMPARE( layers_params[2].mOpacity, 125 );
+
+  // Upper case
+  QUrlQuery query2;
+  query2.addQueryItem( "LAYERS", "EXTERNAL_WMS:external_layer_1,layer,EXTERNAL_WMS:external_layer_2" );
+  query2.addQueryItem( "EXTERNAL_LAYER_1:url", "http://url_1" );
+  query2.addQueryItem( "EXTERNAL_LAYER_1:layers", "layer_1_name" );
+  query2.addQueryItem( "external_layer_2:url", "http://url_2" );
+  query2.addQueryItem( "external_layer_2:layers", "layer_2_name" );
+  query2.addQueryItem( "external_layer_2:opacities", "100" );
+  query2.addQueryItem( "OPACITIES", "255,200,125" );
+
+  const QgsWms::QgsWmsParameters parameters2( query );
+  QList<QgsWms::QgsWmsParametersLayer> layers_params2 = parameters2.layersParameters();
+  QCOMPARE( layers_params2.size(), 3 );
+
+  QgsWms::QgsWmsParametersLayer layer_params2 = layers_params2[0];
+  QCOMPARE( layer_params2.mNickname, QString( "external_layer_1" ) );
+  QCOMPARE( layer_params2.mExternalUri, QString( "layers=layer_1_name&url=http://url_1" ) );
+
+
 }
 
 void TestQgsServerWmsParameters::percent_encoding()
