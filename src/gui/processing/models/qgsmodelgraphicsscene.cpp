@@ -226,8 +226,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
 
     // offsets from algorithm item needed to correctly place output items
     // which does not have valid position assigned (https://github.com/qgis/QGIS/issues/48132)
-    double output_offset_x = mChildAlgorithmItems[it.value().childId()]->component()->size().width();
-    double output_offset_y = 1.5 * mChildAlgorithmItems[it.value().childId()]->component()->size().height();
+    QgsProcessingModelComponent *algItem = mChildAlgorithmItems[it.value().childId()]->component();
+    const double output_offset_x = algItem->size().width();
+    double output_offset_y = 1.5 * algItem->size().height();
 
     for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); ++outputIt )
     {
@@ -243,7 +244,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       QPointF pos = outputIt.value().position();
       if ( pos.isNull() )
       {
-        pos = mChildAlgorithmItems[it.value().childId()]->component()->position() + QPointF( output_offset_x, output_offset_y );
+        pos = algItem->position() + QPointF( output_offset_x, output_offset_y );
         output_offset_y += 1.5 * outputIt.value().size().height();
       }
       int idx = -1;
