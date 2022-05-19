@@ -9661,6 +9661,7 @@ void TestQgsProcessing::generateIteratingDestination()
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "/home/bif.o/ape.shp", 2, context ).toString(), QStringLiteral( "/home/bif.o/ape_2.shp" ) );
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( QgsProcessing::TEMPORARY_OUTPUT, 2, context ).toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT ), 2, context ).toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "/home/user/folder", 1, context ).toString(), QStringLiteral( "/home/user/folder_1" ) );
 
   QgsProject p;
   QgsProcessingOutputLayerDefinition def;
