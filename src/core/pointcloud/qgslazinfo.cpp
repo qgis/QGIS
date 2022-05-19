@@ -281,7 +281,7 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
   lazInfo.parseRawHeader( headerRawData, 375 );
 
   int vlrDataSize = lazInfo.firstPointRecordOffset() - lazInfo.firstVariableLengthRecord();
-  std::unique_ptr<char> vlrEntriesRawData( new char[ vlrDataSize ] );
+  std::unique_ptr<char[]> vlrEntriesRawData( new char[ vlrDataSize ] );
   file.seekg( lazInfo.firstVariableLengthRecord() );
   file.read( vlrEntriesRawData.get(), vlrDataSize );
   lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), vlrDataSize );
