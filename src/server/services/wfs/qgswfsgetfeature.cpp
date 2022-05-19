@@ -1226,7 +1226,28 @@ namespace QgsWfs
           const bool invertAxis { mWfsParameters.versionAsNumber() >= QgsProjectVersion( 1, 1, 0 ) &&
                                   crs.hasAxisInverted() &&
                                   ! srsName.startsWith( QLatin1String( "EPSG:" ) ) };
-          QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc, srsName, invertAxis, prec );
+
+          // If requested SRS (srsName) is different from rect CRS (crs) we need to transform the envelope
+          QgsRectangle crsCorrectedRect { rect ? *rect : QgsRectangle() };
+          QgsCoordinateTransform transform;
+          transform.setSourceCrs( crs );
+          transform.setDestinationCrs( QgsCoordinateReferenceSystem( srsName ) );
+          QgsGeometry exportGeom { QgsGeometry::fromRect( *rect ) };
+          try
+          {
+            if ( exportGeom.transform( transform ) == Qgis::GeometryOperationResult::Success )
+            {
+              crsCorrectedRect = exportGeom.boundingBox();
+            }
+          }
+          catch ( QgsException &cse )
+          {
+            Q_UNUSED( cse )
+          }
+
+          exportGeom.transform( transform );
+
+          QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( &crsCorrectedRect, doc, srsName, invertAxis, prec );
           if ( !envElem.isNull() )
           {
             if ( crs.isValid() && srsName.isEmpty() )
