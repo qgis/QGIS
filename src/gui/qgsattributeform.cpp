@@ -1044,7 +1044,11 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     Q_NOWARN_DEPRECATED_PUSH
     emit attributeChanged( eww->field().name(), value );
     Q_NOWARN_DEPRECATED_POP
-    emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+    bool attributeHasChanged = !mIsSettingFeature;
+    if ( mMode == QgsAttributeEditorContext::MultiEditMode )
+      attributeHasChanged &= !mIsSettingMultiEditFeatures;
+
+    emit widgetValueChanged( eww->field().name(), value, attributeHasChanged );
   }
 }
 
