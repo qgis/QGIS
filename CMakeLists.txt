@@ -575,6 +575,15 @@ if (ENABLE_TESTS)
   # For server side testing we have no X, we can use xvfb as a fake x
   # sudo apt-get install xvfb
   add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
+
+  # Define SOURCETREE fixture
+  add_test(NAME   logGitStatus COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/chkgitstatus.sh log)
+  add_test(NAME checkGitStatus COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/chkgitstatus.sh check)
+  set_tests_properties(logGitStatus   PROPERTIES FIXTURES_SETUP   SOURCETREE)
+  set_property(TEST logGitStatus PROPERTY SKIP_RETURN_CODE 2)
+  set_tests_properties(checkGitStatus PROPERTIES FIXTURES_CLEANUP SOURCETREE)
+  set_property(TEST checkGitStatus PROPERTY SKIP_RETURN_CODE 2)
+
 endif()
 
 if (WITH_CORE)
