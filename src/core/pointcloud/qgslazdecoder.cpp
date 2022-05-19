@@ -569,7 +569,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
     return nullptr;
   }
 
-  std::unique_ptr<char> decodedData( new char[ lazInfo.pointRecordLength() ] );
+  std::unique_ptr<char []> decodedData( new char[ lazInfo.pointRecordLength() ] );
 
   lazperf::reader::chunk_decompressor decompressor( lasPointFormat, lazInfo.extrabytesCount(), data.data() );
 

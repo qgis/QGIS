@@ -206,7 +206,7 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
 void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   mCopcFile.seekg( offset );
-  std::unique_ptr<char> data( new char[ byteSize ] );
+  std::unique_ptr<char []> data( new char[ byteSize ] );
   mCopcFile.read( data.get(), byteSize );
 
   struct CopcVoxelKey
