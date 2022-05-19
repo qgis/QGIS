@@ -866,6 +866,38 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.25', '44.7'])
         self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['7.29', '44.8'])
 
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326",
+            "BBOX": "7.2,44.5,8.2,45.1,EPSG:4326"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        root = et.fromstring(body)
+        e = root.findall('.//gml:Envelope', root.nsmap)[0]
+        self.assertEqual(e.attrib, {'srsName': 'EPSG:4326'})
+        self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.2', '44.5'])
+        self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['8.2', '45.1'])
+
+        query_string = "?" + "&".join(["%s=%s" % i for i in list({
+            "SERVICE": "WFS",
+            "REQUEST": "GetFeature",
+            "VERSION": "1.1.0",
+            "TYPENAME": "layer",
+            "SRSNAME": "EPSG:4326",
+            "BBOX": "807305,5589555,812191,5592878,EPSG:3857"
+        }.items())])
+
+        header, body = self._execute_request_project(query_string, project)
+        root = et.fromstring(body)
+        e = root.findall('.//gml:Envelope', root.nsmap)[0]
+        self.assertEqual(e.attrib, {'srsName': 'EPSG:4326'})
+        self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.25', '44.7'])
+        self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['7.29', '44.8'])
+
 
 if __name__ == '__main__':
     unittest.main()
