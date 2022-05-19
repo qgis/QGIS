@@ -496,6 +496,16 @@ double QgsRasterAnalysisUtils::nearestRankPercentile( std::vector<double> &cellV
 double QgsRasterAnalysisUtils::interpolatedPercentileInc( std::vector<double> &cellValues, int stackSize, double percentile )
 {
   std::sort( cellValues.begin(), cellValues.end() );
+
+  if ( qgsDoubleNear( percentile, 1.0 ) )
+  {
+    return cellValues[stackSize - 1 ];
+  }
+  else if ( qgsDoubleNear( percentile, 0.0 ) )
+  {
+    return cellValues[0];
+  }
+
   const double x = ( percentile * ( stackSize - 1 ) );
 
   const int i = static_cast<int>( std::floor( x ) );
