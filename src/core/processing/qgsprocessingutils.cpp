@@ -1020,7 +1020,7 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
       // assume a filename type output for now
       // TODO - uris?
       int lastIndex = res.lastIndexOf( '.' );
-      return QString( res.left( lastIndex ) + '_' + id.toString() + res.mid( lastIndex ) );
+      return lastIndex >= 0 ? QString( res.left( lastIndex ) + '_' + id.toString() + res.mid( lastIndex ) ) : QString( res + '_' + id.toString() );
     }
   }
 }
