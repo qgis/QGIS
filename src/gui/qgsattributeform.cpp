@@ -1018,7 +1018,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
         if ( !mButtonBox->isVisible() )
           mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
 
-        emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+        emit widgetValueChanged( eww->field().name(), value, false );
+        signalEmitted = true;
       }
       break;
     }
