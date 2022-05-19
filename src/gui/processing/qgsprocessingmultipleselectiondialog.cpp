@@ -95,9 +95,15 @@ QVariantList QgsProcessingMultipleSelectionPanelWidget::selectedOptions() const
   bool hasModelSources = false;
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
-    if ( mModel->item( i )->checkState() == Qt::Checked )
+    QStandardItem *item = mModel->item( i );
+    if ( !item )
     {
-      const QVariant option = mModel->item( i )->data( Qt::UserRole );
+      continue;
+    }
+
+    if ( item->checkState() == Qt::Checked )
+    {
+      const QVariant option = item->data( Qt::UserRole );
 
       if ( option.canConvert< QgsProcessingModelChildParameterSource >() )
         hasModelSources = true;
