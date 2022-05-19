@@ -30,6 +30,9 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsclipboard.h"
 #include "qgsvectorlayercache.h"
+#include "qgsfeatureselectionmodel.h"
+#include "qgsgui.h"
+#include "qgseditorwidgetregistry.h"
 
 /**
  * \ingroup UnitTests
@@ -61,6 +64,7 @@ class TestQgsAttributeTable : public QObject
     void testVisibleTemporal();
     void testCopySelectedRows();
     void testSortNumbers();
+    void testMultiEdit();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -75,6 +79,7 @@ void TestQgsAttributeTable::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsGui::editorWidgetRegistry()->initEditors();
   mQgisApp = new QgisApp();
 
   // setup the test QSettings environment
@@ -464,6 +469,53 @@ void TestQgsAttributeTable::testSortNumbers()
   QCOMPARE( dlg->mMainView->mTableView->horizontalHeader()->sortIndicatorOrder(), Qt::SortOrder::DescendingOrder );
   QVERIFY( dlg->mMainView->mTableView->horizontalHeader()->isSortIndicatorShown() );
 
+}
+
+void TestQgsAttributeTable::testMultiEdit()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature ft1( layer->dataProvider()->fields() );
+  ft1.setAttributes( QgsAttributes() << 1 << 2 );
+  layer->dataProvider()->addFeature( ft1 );
+  QgsFeature ft2( layer->dataProvider()->fields() );
+  ft2.setAttributes( QgsAttributes() << 3 << 4 );
+  layer->dataProvider()->addFeature( ft2 );
+
+  layer->selectAll();
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  for ( int i = 0; i < 10; ++i )
+  {
+    dlg->mMainView->setCurrentEditSelection( {ft2.id()} );
+    layer->startEditing();
+    dlg->mMainView->setMultiEditEnabled( true );
+
+    // nothing should change until the user actually makes a change!
+    // see https://github.com/qgis/QGIS/issues/46306
+    QgsFeature fNew1 = layer->getFeature( ft1.id() );
+    QCOMPARE( fNew1.attributes().at( 0 ).toInt(), 1 );
+    QCOMPARE( fNew1.attributes().at( 1 ).toInt(), 2 );
+    QgsFeature fNew2 = layer->getFeature( ft2.id() );
+    QCOMPARE( fNew2.attributes().at( 0 ).toInt(), 3 );
+    QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
+
+    layer->rollBack();
+    dlg->mMainView->setCurrentEditSelection( {ft1.id()} );
+    layer->startEditing();
+    dlg->mMainView->setMultiEditEnabled( true );
+
+    // nothing should change until the user actually makes a change!
+    fNew1 = layer->getFeature( ft1.id() );
+    QCOMPARE( fNew1.attributes().at( 0 ).toInt(), 1 );
+    QCOMPARE( fNew1.attributes().at( 1 ).toInt(), 2 );
+    fNew2 = layer->getFeature( ft2.id() );
+    QCOMPARE( fNew2.attributes().at( 0 ).toInt(), 3 );
+    QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
+    layer->rollBack();
+  }
 }
 
 void TestQgsAttributeTable::testRegression15974()
