@@ -709,12 +709,16 @@ void TestQgsAttributeTable::testCopySelectedRows()
 
   const QgsFeatureList features = clipboard->copyOf();
   QCOMPARE( features.count(), 2 );
-  QCOMPARE( features.at( 0 ).attribute( 0 ), 1 );
-  QCOMPARE( features.at( 0 ).attribute( "col1" ), 2 );
-  QCOMPARE( features.at( 0 ).attribute( "col2" ), QVariant() );
-  QCOMPARE( features.at( 1 ).attribute( "pk" ), 2 );
-  QCOMPARE( features.at( 1 ).attribute( "col1" ), 4 );
-  QCOMPARE( features.at( 1 ).attribute( 2 ), QVariant() );
+
+  const int feature1Index = features.at( 0 ).attribute( 0 ).toInt() == 1 ? 0 : 1;
+  const int feature2Index = feature1Index == 0 ? 1 : 0;
+
+  QCOMPARE( features.at( feature1Index ).attribute( 0 ), 1 );
+  QCOMPARE( features.at( feature1Index ).attribute( "col1" ), 2 );
+  QCOMPARE( features.at( feature1Index ).attribute( "col2" ), QVariant() );
+  QCOMPARE( features.at( feature2Index ).attribute( "pk" ), 2 );
+  QCOMPARE( features.at( feature2Index ).attribute( "col1" ), 4 );
+  QCOMPARE( features.at( feature2Index ).attribute( 2 ), QVariant() );
 
   QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
 }
