@@ -75,8 +75,8 @@ void TestQgsHttpheaders::setFromSettings( const QString &keyBase )
   settings.remove( keyBase ); // cleanup
 
   settings.setValue( keyBase + outOfHeaderKey, "value" );
-  settings.setValue( keyBase + QgsHttpHeaders::KEY_PREFIX + "key1", "value1" );
-  settings.setValue( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER, "valueHH_R" );
+  settings.setValue( keyBase + QgsHttpHeaders::PATH_PREFIX + "key1", "value1" );
+  settings.setValue( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER, "valueHH_R" );
 
   QgsHttpHeaders h( settings, keyBase );
   QVERIFY( ! h.keys().contains( outOfHeaderKey ) );
@@ -99,26 +99,26 @@ void TestQgsHttpheaders::updateSettings()
 
   QgsHttpHeaders h( QVariantMap( { {QStringLiteral( "key1" ), "value1"}} ) );
   h.updateSettings( settings, keyBase );
-  QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + "key1" ) );
-  QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + "key1" ).toString(), "value1" );
+  QVERIFY( settings.contains( keyBase + QgsHttpHeaders::PATH_PREFIX + "key1" ) );
+  QCOMPARE( settings.value( keyBase + QgsHttpHeaders::PATH_PREFIX + "key1" ).toString(), "value1" );
 
   QVERIFY( ! settings.contains( keyBase + QgsHttpHeaders::KEY_REFERER ) );
-  QVERIFY( ! settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
+  QVERIFY( ! settings.contains( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
 
   // at old location
   settings.remove( keyBase + QgsHttpHeaders::KEY_REFERER );
   h [QgsHttpHeaders::KEY_REFERER] = QStringLiteral( "http://gg.com" );
 
   h.updateSettings( settings, keyBase );
-  QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
-  QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
+  QVERIFY( settings.contains( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
+  QCOMPARE( settings.value( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
   QVERIFY( ! settings.contains( keyBase + QgsHttpHeaders::KEY_REFERER ) );
 
   // test backward compatibility
   settings.setValue( keyBase + QgsHttpHeaders::KEY_REFERER, "paf" ) ; // legacy referer, should be overridden
   h.updateSettings( settings, keyBase );
-  QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
-  QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
+  QVERIFY( settings.contains( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER ) );
+  QCOMPARE( settings.value( keyBase + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
   QVERIFY( settings.contains( keyBase + QgsHttpHeaders::KEY_REFERER ) );
   QCOMPARE( settings.value( keyBase + QgsHttpHeaders::KEY_REFERER ).toString(), "http://gg.com" );
 }
@@ -127,18 +127,18 @@ void TestQgsHttpheaders::updateSettings()
 void TestQgsHttpheaders::createQgsOwsConnection()
 {
   QgsSettings settings;
-  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::KEY_PREFIX + QgsHttpHeaders::KEY_REFERER,
+  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::PATH_PREFIX + QgsHttpHeaders::KEY_REFERER,
                      "http://test.com" );
-  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::KEY_PREFIX + "other_http_header",
+  settings.setValue( QString( QgsSettings::Prefix::QGIS ) + "/connections-service/name/" + QgsHttpHeaders::PATH_PREFIX + "other_http_header",
                      "value" );
 
   QgsOwsConnection ows( "service", "name" );
   QCOMPARE( ows.connectionInfo(), ",authcfg=,referer=http://test.com" );
-  QCOMPARE( ows.uri().encodedUri(), "referer=http://test.com&url" );
+  QCOMPARE( ows.uri().encodedUri(), "url&http-header:other_http_header=value&http-header:referer=http://test.com" );
 
   QgsDataSourceUri uri( QString( "https://www.ogc.org/?p1=v1" ) );
   QgsDataSourceUri uri2 = ows.addWmsWcsConnectionSettings( uri, "service", "name" );
-  QCOMPARE( uri2.encodedUri(), "https://www.ogc.org/?p1=v1&other_http_header=value&referer=http://test.com" );
+  QCOMPARE( uri2.encodedUri(), "https://www.ogc.org/?p1=v1&http-header:other_http_header=value&http-header:referer=http://test.com" );
 }
 
 QGSTEST_MAIN( TestQgsHttpheaders )

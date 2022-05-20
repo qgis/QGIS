@@ -52,7 +52,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mAuth.mAuthCfg = uri.authConfigId();
   }
 
-  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
+  mAuth.mHttpHeaders = uri.httpHeaders();
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.hasParam( QStringLiteral( "interpretation" ) ) )

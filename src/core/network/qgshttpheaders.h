@@ -21,12 +21,14 @@
 #ifndef QGSHTTPHEADERS_H
 #define QGSHTTPHEADERS_H
 
-#include <QNetworkRequest>
 #include <QMap>
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssettingsentry.h"
-#include "qgsdatasourceuri.h"
+
+class QNetworkRequest;
+class QUrlQuery;
+class QDomElement;
 
 /**
  * \ingroup core
@@ -39,15 +41,15 @@ class CORE_EXPORT QgsHttpHeaders
 
 #ifndef SIP_RUN
 
-    /**
-     * Used in settings as the group name
-     */
-    static const QString KEY_PREFIX;
+    //! Used in settings as the group name
+    static const QString PATH_PREFIX;
 
-    /**
-     * Used in settings as the referer key
-     */
+    //! Used in settings as the referer key
     static const QString KEY_REFERER;
+
+    //! Used in uri to pass headers as params
+    static const QString PARAM_PREFIX;
+
 #endif
 
     /**
@@ -74,7 +76,22 @@ class CORE_EXPORT QgsHttpHeaders
      */
     QgsHttpHeaders( const QString &key );
 
+    /**
+     * \brief Constructor from a QDomElement \a element
+     * \param element
+     */
+    QgsHttpHeaders( const QDomElement &element );
+
+    //! default detructor
     virtual ~QgsHttpHeaders();
+
+    /**
+     * \brief Updates the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
+     * \param settings
+     * \param key sub group path
+     * \return TRUE if the update succeed
+     */
+    bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
 
     /**
      * \brief Updates a \a request by adding all the HTTP headers
@@ -86,14 +103,19 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Updates an \a uri by adding all the HTTP headers
      * \return TRUE if the update succeed
      */
-    bool updateDataSourceUri( QgsDataSourceUri &uri ) const;
+    bool updateUrlQuery( QUrlQuery &uri ) const;
 
     /**
-     * \brief Updates the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
-     * \param settings
-     * \param key sub group path
+     * \brief Updates a \a map by adding all the HTTP headers
+     * \return TRUE if the update succeed
      */
-    void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+    bool updateMap( QVariantMap &map ) const;
+
+    /**
+     * \brief Updates a \a map by adding all the HTTP headers
+     * \return TRUE if the update succeed
+     */
+    bool updateDomElement( QDomElement &el ) const;
 
     /**
      * \brief Loads headers from the \a settings
@@ -101,6 +123,24 @@ class CORE_EXPORT QgsHttpHeaders
      * \param key sub group path
      */
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
+
+    /**
+     * \brief Loads headers from the \a uri
+     * \param uri
+     */
+    void setFromUrlQuery( const QUrlQuery &uri );
+
+    /**
+     * \brief Loads headers from the \a map
+     * \param map
+     */
+    void setFromMap( const QVariantMap &map );
+
+    /**
+     * \brief Loads headers from the \a element
+     * \param element
+     */
+    void setFromDomElement( const QDomElement &element );
 
     /**
      * \brief Returns a cleansed \a key
@@ -120,6 +160,9 @@ class CORE_EXPORT QgsHttpHeaders
      * \return the list of all http header keys
      */
     QList<QString> keys() const;
+
+    //! Returns key/value pairs as strings separated by space
+    QString toSpacedString() const;
 
 #ifndef SIP_RUN
 

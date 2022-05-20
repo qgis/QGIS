@@ -578,6 +578,8 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
     uri += ' ' + it.key() + "='" + escape( it.value() ) + '\'';
   }
 
+  uri += mHttpHeaders.toSpacedString();
+
   QString columnName( mGeometryColumn );
   columnName.replace( '\\', QLatin1String( "\\\\" ) );
   columnName.replace( ')', QLatin1String( "\\)" ) );
@@ -626,6 +628,8 @@ QByteArray QgsDataSourceUri::encodedUri() const
   if ( !mAuthConfigId.isEmpty() )
     url.addQueryItem( QStringLiteral( "authcfg" ), mAuthConfigId );
 
+  mHttpHeaders.updateUrlQuery( url );
+
   return toLatin1_helper( url.toString( QUrl::FullyEncoded ) );
 }
 
@@ -640,17 +644,22 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   url.setQuery( QString::fromLatin1( uri ) );
   const QUrlQuery query( url );
 
+  mHttpHeaders.setFromUrlQuery( query );
+
   const auto constQueryItems = query.queryItems( QUrl::ComponentFormattingOption::FullyDecoded );
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
-    if ( item.first == QLatin1String( "username" ) )
-      mUsername = item.second;
-    else if ( item.first == QLatin1String( "password" ) )
-      mPassword = item.second;
-    else if ( item.first == QLatin1String( "authcfg" ) )
-      mAuthConfigId = item.second;
-    else
-      mParams.insert( item.first, item.second );
+    if ( !item.first.startsWith( QgsHttpHeaders::PARAM_PREFIX ) )
+    {
+      if ( item.first == QLatin1String( "username" ) )
+        mUsername = item.second;
+      else if ( item.first == QLatin1String( "password" ) )
+        mPassword = item.second;
+      else if ( item.first == QLatin1String( "authcfg" ) )
+        mAuthConfigId = item.second;
+      else
+        mParams.insert( item.first, item.second );
+    }
   }
 }
 

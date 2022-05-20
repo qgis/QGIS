@@ -62,10 +62,10 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
   QgsHttpHeaders httpHeaders( QString( "%3/connections-%1/%2/" ).arg( mService.toLower(), mConnName, QgsSettings::Prefix::QGIS ) );
+  mUri.setHttpHeaders( httpHeaders );
   const QString referer = httpHeaders[QgsHttpHeaders::KEY_REFERER].toString();
   if ( !referer.isEmpty() )
   {
-    mUri.setParam( QStringLiteral( "referer" ), referer );
     mConnectionInfo.append( ",referer=" + referer );
   }
 
@@ -109,8 +109,7 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   Q_NOWARN_DEPRECATED_POP
 
   const QgsSettings settings;
-  QgsHttpHeaders httpHeaders( settings, settingsKey );
-  httpHeaders.updateDataSourceUri( uri );
+  uri.httpHeaders().setFromSettings( settings, settingsKey );
 
   if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetMapURI" ), false ).toBool() )
   {
@@ -141,8 +140,9 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  QgsHttpHeaders httpHeaders( QString( "%3/connections-%1/%2/" ).arg( service.toLower(), connName, QgsSettings::Prefix::QGIS ) );
-  httpHeaders.updateDataSourceUri( uri );
+  QString settingsKey = QString( "%3/connections-%1/%2/" ).arg( service.toLower(), connName, QgsSettings::Prefix::QGIS );
+  const QgsSettings settings;
+  uri.httpHeaders().setFromSettings( settings, settingsKey );
 
   if ( settingsConnectionIgnoreGetMapURI.value( {service.toLower(), connName} ) )
   {
