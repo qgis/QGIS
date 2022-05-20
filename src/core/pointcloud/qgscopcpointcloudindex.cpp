@@ -238,7 +238,7 @@ void QgsCopcPointCloudIndex::writeStats( QgsPointCloudStatistics &stats )
   evlrHeaders[ statsEvlrIndex ].data_length = evlrDataVector[ statsEvlrIndex ].size();
 
   mCopcFile.close();
-  // TODO: figure out how to manage syncronising between the open mCopcFile and this editing code
+  // TODO: figure out how to manage synchronising between the open mCopcFile and this editing code
   std::fstream copcFile;
   copcFile.open( mFileName.toStdString(), std::ios_base::binary | std::iostream::in | std::iostream::out );
   if ( copcFile.is_open() && copcFile.good() )
@@ -262,6 +262,7 @@ void QgsCopcPointCloudIndex::writeStats( QgsPointCloudStatistics &stats )
   {
     QgsMessageLog::logMessage( tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mFileName ) );
   }
+  mCopcFile.open( mFileName.toStdString(), std::ios::binary );
 }
 
 QgsPointCloudStatistics QgsCopcPointCloudIndex::readStats()

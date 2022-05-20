@@ -212,7 +212,7 @@ Returns the status of point cloud statistics calculation
 
     void waitForStatisticsCalculationToFinish( bool cancelTask );
 %Docstring
-If a statistics calculation task is running wait for it to finish, the task will be cancelled if ``cancelTask`` is set to ``True``
+If a statistics calculation task is running wait for it to finish, the task will be canceled if ``cancelTask`` is set to ``True``
 
 .. versionadded:: 3.26
 %End

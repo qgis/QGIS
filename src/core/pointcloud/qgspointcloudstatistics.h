@@ -136,9 +136,12 @@ class CORE_EXPORT QgsPointCloudStatistics
     //! Merges the current statistics with the statistics from \a stats
     void combineWith( const QgsPointCloudStatistics &stats );
 
+    //! Converts the current statistics object into JSON object
     QJsonObject toJson() const;
 
+    //! Creates a JSON object from the statistics measure \a stats
     static QJsonObject fromStatsToJson( AttributeStatistics &stats );
+    //! Creates a statistics object from the JSON object \a stats
     static AttributeStatistics fromJsonToStats( QJsonObject &stats );
 #ifndef SIP_RUN
     //! Returns a map object containing all the statistics

@@ -256,7 +256,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
 
     /**
-     * If a statistics calculation task is running wait for it to finish, the task will be cancelled if \a cancelTask is set to TRUE
+     * If a statistics calculation task is running wait for it to finish, the task will be canceled if \a cancelTask is set to TRUE
      * \since QGIS 3.26
      */
     void waitForStatisticsCalculationToFinish( bool cancelTask );

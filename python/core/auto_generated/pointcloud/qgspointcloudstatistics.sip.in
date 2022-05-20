@@ -101,9 +101,18 @@ Merges the current statistics with the statistics from ``stats``
 %End
 
     QJsonObject toJson() const;
+%Docstring
+Converts the current statistics object into JSON object
+%End
 
     static QJsonObject fromStatsToJson( AttributeStatistics &stats );
+%Docstring
+Creates a JSON object from the statistics measure ``stats``
+%End
     static AttributeStatistics fromJsonToStats( QJsonObject &stats );
+%Docstring
+Creates a statistics object from the JSON object ``stats``
+%End
 };
 
 /************************************************************************
