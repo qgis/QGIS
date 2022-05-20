@@ -331,10 +331,16 @@ class CORE_EXPORT QgsDataSourceUri
     QgsHttpHeaders httpHeaders() const { return mHttpHeaders; }
 #endif
 
-    //! Returns http headers
+    /**
+     * Returns http headers
+     * \since QGIS 3.26
+     */
     QgsHttpHeaders &httpHeaders() { return mHttpHeaders; }
 
-    //! Returns the http header value according to \a key
+    /**
+     * Returns the http header value according to \a key
+     * \since QGIS 3.26
+     */
     QString httpHeader( const QString &key ) { return mHttpHeaders[key].toString(); }
 
     /**
@@ -403,4 +409,3 @@ class CORE_EXPORT QgsDataSourceUri
 };
 
 #endif //QGSDATASOURCEURI_H
-

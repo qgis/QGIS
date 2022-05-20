@@ -86,7 +86,10 @@ class CORE_EXPORT QgsHttpHeaders
     virtual ~QgsHttpHeaders();
 
     /**
-     * \brief Updates the \a settings by adding all the http headers in the path "key/KEY_PREFIX/"
+     * \brief Updates the \a settings by adding all the http headers in the path "key/PATH_PREFIX/"
+     *
+     * KEY_REFERER value will be available at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
+     *
      * \param settings
      * \param key sub group path
      * \return TRUE if the update succeed
@@ -107,18 +110,27 @@ class CORE_EXPORT QgsHttpHeaders
 
     /**
      * \brief Updates a \a map by adding all the HTTP headers
+     *
+     * KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+     *
      * \return TRUE if the update succeed
      */
     bool updateMap( QVariantMap &map ) const;
 
     /**
      * \brief Updates a \a map by adding all the HTTP headers
+     *
+     * KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+     *
      * \return TRUE if the update succeed
      */
     bool updateDomElement( QDomElement &el ) const;
 
     /**
      * \brief Loads headers from the \a settings
+     *
+     * key KEY_REFERER will be read at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
+     *
      * \param settings
      * \param key sub group path
      */
@@ -132,12 +144,18 @@ class CORE_EXPORT QgsHttpHeaders
 
     /**
      * \brief Loads headers from the \a map
+     *
+     * key KEY_REFERER will be read from key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+     *
      * \param map
      */
     void setFromMap( const QVariantMap &map );
 
     /**
      * \brief Loads headers from the \a element
+     *
+     * key KEY_REFERER will be read from attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+     *
      * \param element
      */
     void setFromDomElement( const QDomElement &element );

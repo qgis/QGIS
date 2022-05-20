@@ -94,6 +94,7 @@ bool QgsHttpHeaders::updateSettings( QgsSettings &settings, const QString &key )
     settings.setValue( keyFixed + QgsHttpHeaders::KEY_REFERER, mHeaders[QgsHttpHeaders::KEY_REFERER].toString() );
   }
 
+// TODO REMOVE!
 #if 0
   QgsLogger::debug( QString( "updateSettings key: %1" ).arg( keyFixed ) );
   for ( auto k : settings.allKeys() )
@@ -198,7 +199,7 @@ void QgsHttpHeaders::setFromMap( const QVariantMap &map )
     }
   }
 
-  if ( map.contains( QgsHttpHeaders::KEY_REFERER ) )
+  if ( map.contains( QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
   {
     mHeaders[QgsHttpHeaders::KEY_REFERER] = map [QgsHttpHeaders::KEY_REFERER].toString();
   }
@@ -208,6 +209,7 @@ void QgsHttpHeaders::setFromMap( const QVariantMap &map )
 void QgsHttpHeaders::setFromDomElement( const QDomElement &el )
 {
   QDomNamedNodeMap attribs = el.attributes();
+
   for ( int i = 0; i < attribs.length(); i++ )
   {
     QDomNode item = attribs.item( i );
@@ -219,10 +221,11 @@ void QgsHttpHeaders::setFromDomElement( const QDomElement &el )
     }
   }
 
-  if ( attribs.contains( QgsHttpHeaders::KEY_REFERER ) )
+  if ( attribs.contains( QgsHttpHeaders::KEY_REFERER ) ) // backward comptibility
   {
     mHeaders[QgsHttpHeaders::KEY_REFERER] = attribs.namedItem( QgsHttpHeaders::KEY_REFERER ).nodeValue();
   }
+
 }
 
 QString QgsHttpHeaders::toSpacedString() const

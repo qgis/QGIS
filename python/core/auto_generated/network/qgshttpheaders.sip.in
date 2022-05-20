@@ -62,7 +62,9 @@ Constructor from a QDomElement ``element``
 
     bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
 %Docstring
-Updates the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
+Updates the ``settings`` by adding all the http headers in the path "key/PATH_PREFIX/"
+
+KEY_REFERER value will be available at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
 
 :param settings:
 :param key: sub group path
@@ -88,6 +90,8 @@ Updates an ``uri`` by adding all the HTTP headers
 %Docstring
 Updates a ``map`` by adding all the HTTP headers
 
+KEY_REFERER value will be available at key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+
 :return: ``True`` if the update succeed
 %End
 
@@ -95,12 +99,16 @@ Updates a ``map`` by adding all the HTTP headers
 %Docstring
 Updates a ``map`` by adding all the HTTP headers
 
+KEY_REFERER value will be available at attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
+
 :return: ``True`` if the update succeed
 %End
 
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
 %Docstring
 Loads headers from the ``settings``
+
+key KEY_REFERER will be read at path "key/PATH_PREFIX/KEY_REFERER" and path "key/KEY_REFERER" (for backward compatibility)
 
 :param settings:
 :param key: sub group path
@@ -117,12 +125,16 @@ Loads headers from the ``uri``
 %Docstring
 Loads headers from the ``map``
 
+key KEY_REFERER will be read from key "KEY_PREFIX+KEY_REFERER" and key "KEY_REFERER" (for backward compatibility)
+
 :param map:
 %End
 
     void setFromDomElement( const QDomElement &element );
 %Docstring
 Loads headers from the ``element``
+
+key KEY_REFERER will be read from attribute "KEY_PREFIX+KEY_REFERER" and attribute "KEY_REFERER" (for backward compatibility)
 
 :param element:
 %End
