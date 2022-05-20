@@ -32,6 +32,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
+#include "qgspointcloudstatistics.h"
 
 #include "qgslazinfo.h"
 #include "lazperf/vlr.hpp"
@@ -64,6 +65,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
+
+    void writeStats( QgsPointCloudStatistics &stats );
+    QgsPointCloudStatistics readStats();
 
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );

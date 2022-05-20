@@ -46,6 +46,10 @@ Constructor for LayerOptions with optional ``transformContext``.
 
       bool skipIndexGeneration;
 
+      bool skipSavingStatistics;
+
+      bool skipLoadingStatistics;
+
       bool skipStatisticsCalculation;
     };
 
@@ -206,9 +210,9 @@ Returns the status of point cloud statistics calculation
 .. versionadded:: 3.26
 %End
 
-    void waitForStatisticsCalculationToFinish();
+    void waitForStatisticsCalculationToFinish( bool cancelTask );
 %Docstring
-If a statistics calculation task is running wait for it to finish
+If a statistics calculation task is running wait for it to finish, the task will be cancelled if ``cancelTask`` is set to ``True``
 
 .. versionadded:: 3.26
 %End

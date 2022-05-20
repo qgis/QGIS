@@ -77,6 +77,9 @@ class CORE_EXPORT QgsPointCloudStatistics
     //! Constructor
     QgsPointCloudStatistics();
 
+    //! Constructor from JSON object
+    QgsPointCloudStatistics( const QJsonObject &obj );
+
 #ifndef SIP_RUN
     //! Constructor from statistics map
     QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, AttributeStatistics> &stats );
@@ -133,6 +136,10 @@ class CORE_EXPORT QgsPointCloudStatistics
     //! Merges the current statistics with the statistics from \a stats
     void combineWith( const QgsPointCloudStatistics &stats );
 
+    QJsonObject toJson() const;
+
+    static QJsonObject fromStatsToJson( AttributeStatistics &stats );
+    static AttributeStatistics fromJsonToStats( QJsonObject &stats );
 #ifndef SIP_RUN
     //! Returns a map object containing all the statistics
     QMap<QString, AttributeStatistics> statisticsMap() const { return mStatisticsMap; };

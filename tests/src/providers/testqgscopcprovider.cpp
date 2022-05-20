@@ -46,6 +46,7 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsfeedback.h"
 #include "qgsrangerequestcache.h"
+#include "qgscopcpointcloudindex.h"
 
 /**
  * \ingroup UnitTests
@@ -80,6 +81,7 @@ class TestQgsCopcProvider : public QObject
     void testExtraBytesAttributesValues();
     void testPointCloudIndex();
     void testStatsCalculator();
+    void testSaveLoadStats();
 
     void testQgsRangeRequestCache();
 
@@ -613,7 +615,6 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
     {
       for ( const QString &k : keys )
       {
-        qDebug() << i << k << identifiedPoints[i][k].toDouble() << " " << expectedPoints[i][k].toDouble();
         QCOMPARE( identifiedPoints[i][k].toDouble(), expectedPoints[i][k].toDouble() );
       }
     }
@@ -889,6 +890,37 @@ void TestQgsCopcProvider::testQgsRangeRequestCache()
     QVERIFY( files[0].baseName().endsWith( QLatin1String( "bytes=9-10" ) ) );
     QVERIFY( files[1].baseName().endsWith( QLatin1String( "bytes=7-8" ) ) );
   }
+}
+
+void TestQgsCopcProvider::testSaveLoadStats()
+{
+  QgsPointCloudStatistics calculatedStats;
+  QgsPointCloudStatistics readStats;
+  {
+    std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+    QVERIFY( layer->isValid() );
+    layer->waitForStatisticsCalculationToFinish( false );
+
+    QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
+    QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( layer->dataProvider()->index() );
+
+    calculatedStats = layer->statistics();
+    index->writeStats( calculatedStats );
+  }
+
+  {
+    std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
+    QVERIFY( layer->isValid() );
+    layer->waitForStatisticsCalculationToFinish( false );
+
+    QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
+
+    QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( layer->dataProvider()->index() );
+    readStats = index->readStats();
+  }
+
+  QVERIFY( calculatedStats.sampledPointsCount() == readStats.sampledPointsCount() );
+  QVERIFY( calculatedStats.toJson() == readStats.toJson() );
 }
 
 QGSTEST_MAIN( TestQgsCopcProvider )

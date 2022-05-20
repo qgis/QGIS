@@ -102,6 +102,11 @@ class CORE_EXPORT QgsLazInfo
     //! Returns the number of extrabytes contained in the LAZ dataset
     int extrabytesCount() const { return mHeader.ebCount(); }
 
+    //! Returns the absolute offset to the first extended point record in the LAZ file
+    uint64_t firstExtendedPointRecordOffset() const { return mHeader.evlr_offset; }
+    //! Returns the absolute offset to the first variable length record in the LAZ file
+    uint32_t extendedVariableLengthRecordsCount() const { return mHeader.evlr_count; }
+
     //! Returns the coordinate system stored in the LAZ file
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
@@ -124,6 +129,11 @@ class CORE_EXPORT QgsLazInfo
     static QgsLazInfo fromFile( std::ifstream &file );
     //! Static function to create a QgsLazInfo class from a file over network
     static QgsLazInfo fromUrl( QUrl &url );
+
+#ifndef SIP_RUN
+    //! Returns the LAZPERF header object
+    lazperf::header14 header() const { return mHeader; }
+#endif
 
   private:
     void parseHeader( lazperf::header14 &header );

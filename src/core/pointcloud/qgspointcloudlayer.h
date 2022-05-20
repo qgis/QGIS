@@ -87,6 +87,16 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
       bool skipIndexGeneration = false;
 
       /**
+       * Set to True if the point cloud shouldn't save the calculated statistics
+       */
+      bool skipSavingStatistics = true;
+
+      /**
+       * Set to True if the point cloud shouldn't load the calculated statistics
+       */
+      bool skipLoadingStatistics = true;
+
+      /**
        * Set to true if the statistics calculation for this point cloud is disabled
        * \since QGIS 3.26
        */
@@ -246,10 +256,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
 
     /**
-     * If a statistics calculation task is running wait for it to finish
+     * If a statistics calculation task is running wait for it to finish, the task will be cancelled if \a cancelTask is set to TRUE
      * \since QGIS 3.26
      */
-    void waitForStatisticsCalculationToFinish();
+    void waitForStatisticsCalculationToFinish( bool cancelTask );
   signals:
 
     /**
@@ -301,6 +311,9 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudStatistics mStatistics;
     PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;
+
+    void saveCopcStatistics();
+    QgsPointCloudStatistics loadCopcStatistics();
 };
 
 

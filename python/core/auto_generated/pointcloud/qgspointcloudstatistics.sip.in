@@ -39,6 +39,11 @@ Class used to store statistics of a point cloud dataset.
 Constructor
 %End
 
+    QgsPointCloudStatistics( const QJsonObject &obj );
+%Docstring
+Constructor from JSON object
+%End
+
 
     int sampledPointsCount() const;
 %Docstring
@@ -95,6 +100,10 @@ If no matching statistic is available then NaN will be returned.
 Merges the current statistics with the statistics from ``stats``
 %End
 
+    QJsonObject toJson() const;
+
+    static QJsonObject fromStatsToJson( AttributeStatistics &stats );
+    static AttributeStatistics fromJsonToStats( QJsonObject &stats );
 };
 
 /************************************************************************

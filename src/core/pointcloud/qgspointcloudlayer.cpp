@@ -39,6 +39,7 @@
 #include "qgsmessagelog.h"
 #include "qgstaskmanager.h"
 #include "qgspointcloudlayerprofilegenerator.h"
+#include "qgscopcpointcloudindex.h"
 
 #include <QUrl>
 
@@ -67,7 +68,8 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
 
 QgsPointCloudLayer::~QgsPointCloudLayer()
 {
-  waitForStatisticsCalculationToFinish();
+  // If the task is still running we need to cancel it
+  waitForStatisticsCalculationToFinish( true );
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
@@ -780,6 +782,18 @@ void QgsPointCloudLayer::calculateStatistics()
     QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
     return;
   }
+  if ( !mLayerOptions.skipLoadingStatistics )
+  {
+    mStatistics = loadCopcStatistics();
+    if ( mStatistics.sampledPointsCount() != 0 )
+    {
+      mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+      emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+      resetRenderer();
+      return;
+    }
+  }
+
   QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
   // Do not calculate stats for X, Y & Z since the point cloud index contains that
   for ( int i = 0; i < attributes.size(); ++i )
@@ -799,6 +813,10 @@ void QgsPointCloudLayer::calculateStatistics()
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     mStatsCalculationTask = 0;
+    if ( !mLayerOptions.skipSavingStatistics && mStatistics.sampledPointsCount() != 0 )
+    {
+      this->saveCopcStatistics();
+    }
   } );
 
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
@@ -814,9 +832,9 @@ void QgsPointCloudLayer::calculateStatistics()
   emit statisticsCalculationStateChanged( mStatisticsCalculationState );
 }
 
-void QgsPointCloudLayer::waitForStatisticsCalculationToFinish()
+void QgsPointCloudLayer::waitForStatisticsCalculationToFinish( bool cancelTask )
 {
-  // If the statistics calculation task is still running we need to cancel it and wait for the task to get actually terminated or completed properly
+  // If the statistics calculation task is still running we need to wait for the task to get actually terminated or completed properly
   if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
   {
     if ( task->isActive() )
@@ -824,7 +842,10 @@ void QgsPointCloudLayer::waitForStatisticsCalculationToFinish()
       QEventLoop loop;
       connect( task, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
       connect( task, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
-      task->cancel();
+      if ( cancelTask )
+      {
+        task->cancel();
+      }
       loop.exec();
     }
   }
@@ -844,4 +865,26 @@ void QgsPointCloudLayer::resetRenderer()
   triggerRepaint();
 
   emit rendererChanged();
+}
+
+void QgsPointCloudLayer::saveCopcStatistics()
+{
+  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() )
+    return;
+  if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+  {
+    index->writeStats( mStatistics );
+  }
+}
+
+QgsPointCloudStatistics QgsPointCloudLayer::loadCopcStatistics()
+{
+  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() )
+    return QgsPointCloudStatistics();
+
+  if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+  {
+    return index->readStats();
+  }
+  return QgsPointCloudStatistics();
 }
