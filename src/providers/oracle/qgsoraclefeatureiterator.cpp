@@ -28,6 +28,8 @@
 
 #include <QObject>
 
+#include <algorithm>
+
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
 {
@@ -107,6 +109,9 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   }
   else
     mAttributeList = mSource->mFields.allAttributesList();
+
+  // Sort for query planners peace of mind: https://github.com/qgis/QGIS/issues/35309
+  std::sort( mAttributeList.begin(), mAttributeList.end() );
 
   bool limitAtProvider = ( mRequest.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
   QString whereClause;
