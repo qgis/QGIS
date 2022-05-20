@@ -2106,11 +2106,19 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setTopLeft( pos );
 }
 
+void QgsMapCanvas::stopZoomRect()
+{
+  if ( mZoomDragging )
+  {
+    mZoomDragging = false;
+    mZoomRubberBand.reset( nullptr );
+    mTemporaryCursorOverride.reset();
+  }
+}
+
 void QgsMapCanvas::endZoomRect( QPoint pos )
 {
-  mZoomDragging = false;
-  mZoomRubberBand.reset( nullptr );
-  mTemporaryCursorOverride.reset();
+  stopZoomRect();
 
   // store the rectangle
   mZoomRect.setRight( pos.x() );
@@ -2138,6 +2146,26 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   refresh();
 }
 
+void QgsMapCanvas::startPan()
+{
+  if ( !mCanvasProperties->panSelectorDown )
+  {
+    mCanvasProperties->panSelectorDown = true;
+    mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+    panActionStart( mCanvasProperties->mouseLastXY );
+  }
+}
+
+void QgsMapCanvas::stopPan()
+{
+  if ( mCanvasProperties->panSelectorDown )
+  {
+    mCanvasProperties->panSelectorDown = false;
+    mTemporaryCursorOverride.reset();
+    panActionEnd( mCanvasProperties->mouseLastXY );
+  }
+}
+
 void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 {
   // use shift+middle mouse button for zooming, map tools won't receive any events in that case
@@ -2150,15 +2178,15 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    if ( !mCanvasProperties->panSelectorDown )
-    {
-      mCanvasProperties->panSelectorDown = true;
-      mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
-      panActionStart( mCanvasProperties->mouseLastXY );
-    }
+    startPan();
   }
   else
   {
+    // If doing a middle-button-click, followed by a right-button-click,
+    // cancel the pan or zoomRect action started above.
+    stopPan();
+    stopZoomRect();
+
     // call handler of current map tool
     if ( mMapTool )
     {
@@ -2203,12 +2231,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    if ( mCanvasProperties->panSelectorDown )
-    {
-      mCanvasProperties->panSelectorDown = false;
-      mTemporaryCursorOverride.reset();
-      panActionEnd( mCanvasProperties->mouseLastXY );
-    }
+    stopPan();
   }
   else if ( e->button() == Qt::BackButton )
   {
