@@ -466,7 +466,6 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   {
     newDownloadNeeded = true;
   }
-
   if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
@@ -480,6 +479,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     mDownloader.reset( new QgsThreadedFeatureDownloader( this ) );
     mDownloader->startAndWait();
   }
+
   if ( mDownloadFinished )
     return -1;
 
