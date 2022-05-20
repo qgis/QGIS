@@ -360,11 +360,15 @@ Returns parameter keys used in the uri: specialized ones ("table", "schema", etc
     QgsHttpHeaders &httpHeaders();
 %Docstring
 Returns http headers
+
+.. versionadded:: 3.26
 %End
 
     QString httpHeader( const QString &key );
 %Docstring
 Returns the http header value according to ``key``
+
+.. versionadded:: 3.26
 %End
 
     void setHttpHeaders( const QgsHttpHeaders &headers );
@@ -381,7 +385,6 @@ Sets headers to ``headers``
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
