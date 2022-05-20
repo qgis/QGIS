@@ -3788,13 +3788,6 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
   dataset.reset( QgsGdalProviderBase::gdalOpen( npGdalUri, GDAL_OF_READONLY ) );
   CPLPopErrorHandler();
 
-  if ( !dataset )
-  {
-    CPLPushErrorHandler( CPLQuietErrorHandler );
-    CPLErrorReset();
-    dataset.reset( QgsGdalProviderBase::gdalOpen( gdalUri, GDAL_OF_READONLY ) );
-    CPLPopErrorHandler();
-  }
   if ( dataset )
   {
     const QList< QgsProviderSublayerDetails > res = QgsGdalProvider::sublayerDetails( dataset.get(), uri );
