@@ -110,13 +110,13 @@ class TestVectorTile(unittest.TestCase):
         uri = md.encodeUri(parts)
         self.assertEqual(uri, 'type=xyz&url=https://fake.new.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2&zmin=0')
 
-        uri = 'type=xyz&serviceType=arcgis&url=https://fake.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2&referer=https://qgis.org/&styleUrl=https://qgis.org/'
+        uri = 'type=xyz&serviceType=arcgis&url=https://fake.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2&http-header:referer=https://qgis.org/&styleUrl=https://qgis.org/'
         parts = md.decodeUri(uri)
-        self.assertEqual(parts, {'type': 'xyz', 'serviceType': 'arcgis', 'url': 'https://fake.server/{x}/{y}/{z}.png', 'zmax': '2', 'referer': 'https://qgis.org/', 'styleUrl': 'https://qgis.org/'})
+        self.assertEqual(parts, {'type': 'xyz', 'serviceType': 'arcgis', 'url': 'https://fake.server/{x}/{y}/{z}.png', 'zmax': '2', 'http-header:referer': 'https://qgis.org/', 'referer': 'https://qgis.org/', 'styleUrl': 'https://qgis.org/'})
 
         parts['url'] = 'https://fake.new.server/{x}/{y}/{z}.png'
         uri = md.encodeUri(parts)
-        self.assertEqual(uri, 'referer=https://qgis.org/&serviceType=arcgis&styleUrl=https://qgis.org/&type=xyz&url=https://fake.new.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2')
+        self.assertEqual(uri, 'serviceType=arcgis&styleUrl=https://qgis.org/&type=xyz&url=https://fake.new.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2&http-header:referer=https://qgis.org/')
 
     def testZoomRange(self):
         """

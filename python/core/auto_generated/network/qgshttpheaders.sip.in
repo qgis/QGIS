@@ -9,6 +9,7 @@
 
 
 
+
 class QgsHttpHeaders
 {
 %Docstring(signature="appended")
@@ -50,7 +51,24 @@ Constructor from default :py:class:`QgsSettings` object and root ``key``
 :param key:
 %End
 
+    QgsHttpHeaders( const QDomElement &element );
+%Docstring
+Constructor from a QDomElement ``element``
+
+:param element:
+%End
+
     virtual ~QgsHttpHeaders();
+
+    bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+%Docstring
+Updates the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
+
+:param settings:
+:param key: sub group path
+
+:return: ``True`` if the update succeed
+%End
 
     bool updateNetworkRequest( QNetworkRequest &request ) const;
 %Docstring
@@ -59,19 +77,25 @@ Updates a ``request`` by adding all the HTTP headers
 :return: ``True`` if the update succeed
 %End
 
-    bool updateDataSourceUri( QgsDataSourceUri &uri ) const;
+    bool updateUrlQuery( QUrlQuery &uri ) const;
 %Docstring
 Updates an ``uri`` by adding all the HTTP headers
 
 :return: ``True`` if the update succeed
 %End
 
-    void updateSettings( QgsSettings &settings, const QString &key = QString() ) const;
+    bool updateMap( QVariantMap &map ) const;
 %Docstring
-Updates the ``settings`` by adding all the http headers in the path "key/KEY_PREFIX/"
+Updates a ``map`` by adding all the HTTP headers
 
-:param settings:
-:param key: sub group path
+:return: ``True`` if the update succeed
+%End
+
+    bool updateDomElement( QDomElement &el ) const;
+%Docstring
+Updates a ``map`` by adding all the HTTP headers
+
+:return: ``True`` if the update succeed
 %End
 
     void setFromSettings( const QgsSettings &settings, const QString &key = QString() );
@@ -80,6 +104,27 @@ Loads headers from the ``settings``
 
 :param settings:
 :param key: sub group path
+%End
+
+    void setFromUrlQuery( const QUrlQuery &uri );
+%Docstring
+Loads headers from the ``uri``
+
+:param uri:
+%End
+
+    void setFromMap( const QVariantMap &map );
+%Docstring
+Loads headers from the ``map``
+
+:param map:
+%End
+
+    void setFromDomElement( const QDomElement &element );
+%Docstring
+Loads headers from the ``element``
+
+:param element:
 %End
 
     QString sanitizeKey( const QString &key ) const;
@@ -96,6 +141,11 @@ Returns a cleansed ``key``
 %Docstring
 
 :return: the list of all http header keys
+%End
+
+    QString toSpacedString() const;
+%Docstring
+Returns key/value pairs as strings separated by space
 %End
 
 

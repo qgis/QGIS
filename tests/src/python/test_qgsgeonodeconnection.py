@@ -57,7 +57,7 @@ class TestQgsGeoNodeConnection(unittest.TestCase):
         uri = c.uri()
         c.addWmsConnectionSettings(uri)
 
-        self.assertEqual(uri.param('referer'), 'my_ref')
+        self.assertEqual(uri.httpHeader('referer'), 'my_ref')
         self.assertEqual(uri.param('IgnoreGetMapUrl'), '1')
         self.assertEqual(uri.param('IgnoreGetFeatureInfoUrl'), '1')
         self.assertEqual(uri.param('SmoothPixmapTransform'), '1')
