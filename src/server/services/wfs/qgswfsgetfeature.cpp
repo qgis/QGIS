@@ -1224,24 +1224,19 @@ namespace QgsWfs
                                   ! srsName.startsWith( QLatin1String( "EPSG:" ) ) };
 
           // If requested SRS (srsName) is different from rect CRS (crs) we need to transform the envelope
-          QgsRectangle crsCorrectedRect { rect ? *rect : QgsRectangle() };
           QgsCoordinateTransform transform;
           transform.setSourceCrs( crs );
           transform.setDestinationCrs( QgsCoordinateReferenceSystem( srsName ) );
-          QgsGeometry exportGeom { QgsGeometry::fromRect( *rect ) };
+          QgsRectangle crsCorrectedRect { rect ? *rect : QgsRectangle() };
+
           try
           {
-            if ( exportGeom.transform( transform ) == Qgis::GeometryOperationResult::Success )
-            {
-              crsCorrectedRect = exportGeom.boundingBox();
-            }
+            crsCorrectedRect = transform.transformBoundingBox( crsCorrectedRect );
           }
           catch ( QgsException &cse )
           {
             Q_UNUSED( cse )
           }
-
-          exportGeom.transform( transform );
 
           QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( &crsCorrectedRect, doc, srsName, invertAxis, prec );
           if ( !envElem.isNull() )
