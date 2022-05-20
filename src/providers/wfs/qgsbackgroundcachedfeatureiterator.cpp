@@ -362,6 +362,11 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
   }
 
+  if ( mRequest.filterExpression() )
+  {
+    mShared->setExpression( mRequest.filterExpression() );
+  }
+
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
                    mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect ) :
                    mShared->registerToCache( this, static_cast<int>( mRequest.limit() ) );

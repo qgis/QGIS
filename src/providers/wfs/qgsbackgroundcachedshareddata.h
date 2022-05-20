@@ -132,6 +132,8 @@ class QgsBackgroundCachedSharedData
 
     //// Actions
 
+    void setExpression( QgsExpression *expression ) {mExpression = *expression;}
+
     /**
      * Used by a QgsBackgroundCachedFeatureIterator to start a downloader and get the
      * generation counter.
@@ -227,6 +229,8 @@ class QgsBackgroundCachedSharedData
     //! Returns true if it is likely that the server doesn't properly honor axis order.
     virtual bool detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const { return false; }
 
+    QgsExpression mExpression;
+
   private:
 
     //! Cache directory manager
@@ -267,6 +271,7 @@ class QgsBackgroundCachedSharedData
 
     //! Current BBOX used by the downloader
     QgsRectangle mRect;
+
 
     //! The background feature downloader
     std::unique_ptr<QgsThreadedFeatureDownloader> mDownloader;
