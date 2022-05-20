@@ -219,7 +219,7 @@ bool QgsPdalProvider::load( const QString &uri )
     las_reader.setOptions( las_opts );
     pdal::PointTable table;
     las_reader.prepare( table );
-    const pdal::LasHeader las_header = las_reader.header();
+    const pdal::LasHeader &las_header = las_reader.header();
 
     const std::string tableMetadata = pdal::Utils::toJSON( table.metadata() );
     const QVariantMap readerMetadata = QgsJsonUtils::parseJson( tableMetadata ).toMap().value( QStringLiteral( "root" ) ).toMap();
