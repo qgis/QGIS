@@ -249,7 +249,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * If a statistics calculation task is running wait for it to finish
      * \since QGIS 3.26
      */
-    void waitForStatisticsCalculationToFinish();
+    void waitForStatisticsCalculationToFinish( bool cancelTask );
   signals:
 
     /**

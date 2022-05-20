@@ -206,7 +206,7 @@ Returns the status of point cloud statistics calculation
 .. versionadded:: 3.26
 %End
 
-    void waitForStatisticsCalculationToFinish();
+    void waitForStatisticsCalculationToFinish( bool cancelTask );
 %Docstring
 If a statistics calculation task is running wait for it to finish
 
