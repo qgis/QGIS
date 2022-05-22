@@ -26,6 +26,8 @@ RUN dnf -y install \
     netcdf-devel \
     ninja-build \
     ocl-icd-devel \
+    PDAL \
+    PDAL-libs \
     PDAL-devel \
     proj-devel \
     protobuf-devel \
