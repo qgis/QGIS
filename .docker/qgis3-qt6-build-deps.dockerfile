@@ -3,6 +3,8 @@ ARG DISTRO_VERSION=36
 FROM fedora:${DISTRO_VERSION} as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
+RUN dnf update --refresh
+
 RUN dnf -y install \
     bison \
     ccache \
