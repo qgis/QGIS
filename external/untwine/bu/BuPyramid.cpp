@@ -19,6 +19,8 @@ namespace
 
 // PDAL's directoryList had a bug, so we've imported a working
 // version here so that we can still use older PDAL releases.
+
+#ifndef __APPLE_CC__
 std::vector<std::string> directoryList(const std::string& dir)
 {
     namespace fs = std::filesystem;
@@ -41,6 +43,31 @@ std::vector<std::string> directoryList(const std::string& dir)
     }
     return files;
 }
+#else
+
+#include <dirent.h>
+
+// Provide simple opendir/readdir solution for OSX because directory_iterator is
+// not available until OSX 10.15
+std::vector<std::string> directoryList(const std::string& dir)
+{
+
+    DIR *dpdf;
+    struct dirent *epdf;
+
+    std::vector<std::string> files;
+    dpdf = opendir(dir.c_str());
+    if (dpdf != NULL){
+       while ((epdf = readdir(dpdf))){
+           files.push_back(untwine::fromNative(epdf->d_name));
+       }
+    }
+    closedir(dpdf);
+
+    return files;
+
+}
+#endif
 
 } // unnamed namespace
 
@@ -61,7 +88,7 @@ void BuPyramid::run(ProgressWriter& progress)
     size_t count = queueWork();
     if (!count)
         throw FatalError("No temporary files to process. I/O or directory list error?");
-    
+
     progress.setPercent(.6);
     progress.setIncrement(.4 / count);
     m_manager.setProgress(&progress);
