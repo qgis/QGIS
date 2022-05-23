@@ -161,6 +161,16 @@ A base map is defined as a non-gdal provider raster layer (e.g. XYZ raster layer
 
 .. versionadded:: 3.28
 %End
+
+    static QString expressionForLegendKey( QgsLayerTreeNode *node, const QString &legendKey );
+%Docstring
+Returns an expression representing a legend key for a given layer tree ``node``.
+
+This method only works with nodes representing vector layers. For all nodes of all other layer types
+an empty string will be returned.
+
+.. versionadded:: 3.26
+%End
 };
 
 /************************************************************************

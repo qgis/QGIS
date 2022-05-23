@@ -19,6 +19,7 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
@@ -233,4 +234,5 @@ void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
 {
   mPatchShape = shape;
 }
+
 

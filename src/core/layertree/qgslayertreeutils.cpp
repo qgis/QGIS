@@ -696,3 +696,21 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
   }
   return group->insertLayer( index, layer );
 }
+
+QString QgsLayerTreeUtils::expressionForLegendKey( QgsLayerTreeNode *node, const QString &legendKey )
+{
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+    if ( !layer )
+      return QString();
+    if ( layer->renderer() )
+    {
+      bool ok = false;
+      return ( layer->renderer()->legendKeyToExpression( legendKey, layer, ok ) );
+    }
+    return QString( "TRUE" );
+  }
+  return QString();
+}
