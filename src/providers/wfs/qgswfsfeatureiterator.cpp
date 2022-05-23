@@ -178,16 +178,10 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
-  if ( !rect.isNull() && !mShared->mWFSFilter.isEmpty() )
+  if ( ( !rect.isNull() && !mShared->mWFSFilter.isEmpty() )
+       || ( !rect.isNull() && mShared->mExpression.isValid() )
+       || ( !mShared->mWFSFilter.isEmpty() && mShared->mExpression.isValid() ) )
   {
-    qDebug() << "we have a bbox and a filter";
-    double minx = rect.xMinimum();
-    double miny = rect.yMinimum();
-    double maxx = rect.xMaximum();
-    double maxy = rect.yMaximum();
-    QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
-                        arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
-    QgsExpression bboxExp( filterBbox );
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
     bool honourAxisOrientation = false;
@@ -208,33 +202,56 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       gmlVersion = QgsOgcUtils::GML_3_2_1;
       filterVersion = QgsOgcUtils::FILTER_FES_2_0;
     }
+
     QDomDocument doc;
+    QDomElement andElem = doc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
+
+
     QString geometryAttribute( mShared->mGeometryAttribute );
     if ( mShared->mLayerPropertiesList.size() > 1 )
       geometryAttribute = mShared->mURI.typeName() + "/" + geometryAttribute;
     else if ( mShared->mLayerPropertiesList.size() == 1 && !mShared->mLayerPropertiesList[0].mNamespacePrefix.isEmpty() )
       geometryAttribute = mShared->mLayerPropertiesList[0].mNamespacePrefix + QStringLiteral( ":" ) + geometryAttribute;
-    QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, doc,
-                           gmlVersion, filterVersion, geometryAttribute, mShared->srsName(),
-                           honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
-    doc.appendChild( bboxElem );
-    QDomNode bboxNode = bboxElem.firstChildElement();
-    bboxNode = bboxElem.removeChild( bboxNode );
-    QDomDocument filterDoc;
-    ( void )filterDoc.setContent( mShared->mWFSFilter, true );
-    QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
-    filterNode = filterDoc.firstChildElement().removeChild( filterNode );
 
-    QDomElement andElem = doc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
-    andElem.appendChild( bboxNode );
-    andElem.appendChild( filterNode );
-    QDomElement expressionElem ;
+    if ( !rect.isNull() )
+    {
+      qDebug() << QThread::currentThreadId() << "we have a bbox";
+      double minx = rect.xMinimum();
+      double miny = rect.yMinimum();
+      double maxx = rect.xMaximum();
+      double maxy = rect.yMaximum();
+      QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
+                          arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
+      QgsExpression bboxExp( filterBbox );
+      QDomDocument bboxDoc;
+      QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, bboxDoc,
+                             gmlVersion, filterVersion, geometryAttribute, mShared->srsName(),
+                             honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
+      bboxDoc.appendChild( bboxElem );
+
+      QDomNode bboxNode = bboxElem.firstChildElement();
+      bboxNode = bboxElem.removeChild( bboxNode );
+      andElem.appendChild( bboxNode );
+    }
+
+    if ( !mShared->mWFSFilter.isEmpty() )
+    {
+      qDebug() << QThread::currentThreadId() << "we have a filter";
+      QDomDocument filterDoc;
+      ( void )filterDoc.setContent( mShared->mWFSFilter, true );
+      QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
+      filterNode = filterDoc.firstChildElement().removeChild( filterNode );
+      andElem.appendChild( filterNode );
+    }
+
     if ( mShared->mExpression.isValid() )
     {
-      qDebug() << "... and an expression as well: " << mShared->mExpression.expression();
-      expressionElem = QgsOgcUtils::expressionToOgcExpression( mShared->mExpression, doc );
+      qDebug() << QThread::currentThreadId() << "... and an expression as well: " << mShared->mExpression.expression();
+      QDomDocument expressionDoc;
+      QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( mShared->mExpression, expressionDoc, gmlVersion, filterVersion, geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
       andElem.appendChild( expressionElem );
     }
+
     doc.firstChildElement().appendChild( andElem );
 
     QString str;
