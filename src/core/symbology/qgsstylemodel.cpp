@@ -826,7 +826,7 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *p
 
 bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilterString.isEmpty()  && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly )
+  if ( mFilterString.isEmpty()  && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly && mTagFilter.isEmpty() )
     return true;
 
   const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
@@ -878,6 +878,9 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
     return false;
 
   if ( mSmartGroupId >= 0 && !mSmartGroupSymbolNames.contains( name ) )
+    return false;
+
+  if ( !mTagFilter.isEmpty() && !tags.contains( mTagFilter, Qt::CaseInsensitive ) )
     return false;
 
   if ( mFavoritesOnly && !sourceModel()->data( index, QgsStyleModel::IsFavoriteRole ).toBool() )
@@ -995,6 +998,18 @@ void QgsStyleProxyModel::setTagId( int id )
 int QgsStyleProxyModel::tagId() const
 {
   return mTagId;
+}
+
+void QgsStyleProxyModel::setTagString( const QString &tag )
+{
+  mTagFilter = tag;
+
+  invalidateFilter();
+}
+
+QString QgsStyleProxyModel::tagString() const
+{
+  return mTagFilter;
 }
 
 void QgsStyleProxyModel::setSmartGroupId( int id )

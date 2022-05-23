@@ -372,7 +372,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * Set \a id to -1 to disable tag filtering.
      *
-     * \note This method has no effect for models created using QgsCombinedStyleModel source models.
+     * \note This method has no effect for models created using QgsCombinedStyleModel source models. Use setTagString() instead.
      *
      * \see tagId()
      */
@@ -383,11 +383,32 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      *
      * If returned value is -1, then no tag filtering is being conducted.
      *
-     * \note This method has no effect for models created using QgsCombinedStyleModel source models.
+     * \note This method has no effect for models created using QgsCombinedStyleModel source models. Use tagString() instead.
      *
      * \see setTagId()
      */
     int tagId() const;
+
+    /**
+     * Sets a \a tag to filter style entities by. Only entities with the given
+     * tag will be shown in the model.
+     *
+     * Set \a tag to an empty string to disable tag filtering.
+     *
+     * \see tagString()
+     * \since QGIS 3.26
+     */
+    void setTagString( const QString &tag );
+
+    /**
+     * Returns the tag string used to filter style entities by.
+     *
+     * If returned value is empty, then no tag filtering is being conducted.
+     *
+     * \see setTagString()
+     * \since QGIS 3.26
+     */
+    QString tagString() const;
 
     /**
      * Sets a smart group \a id to filter style entities by. Only entities within the given
@@ -461,6 +482,8 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
 
     int mTagId = -1;
     QStringList mTaggedSymbolNames;
+
+    QString mTagFilter;
 
     int mSmartGroupId = -1;
     QStringList mSmartGroupSymbolNames;
