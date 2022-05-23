@@ -41,10 +41,14 @@ instead.
     {
       TypeRole,
       TagRole,
+      EntityName,
       SymbolTypeRole,
       IsFavoriteRole,
       LayerTypeRole,
       CompatibleGeometryTypesRole,
+      StyleName,
+      StyleFileName,
+      IsTitleRole,
     };
 
     explicit QgsStyleModel( QgsStyle *style, QObject *parent /TransferThis/ = 0 );
@@ -117,6 +121,22 @@ The ``style`` object must exist for the lifetime of this model.
 Constructor for QgsStyleProxyModel, using the specified source ``model`` and ``parent`` object.
 
 The source ``model`` object must exist for the lifetime of this model.
+%End
+
+%If (CONCATENATED_TABLES_MODEL)
+
+    explicit QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsStyleProxyModel, using the specified source combined ``model`` and ``parent`` object.
+
+The source ``model`` object must exist for the lifetime of this model.
+
+.. note::
+
+   This is only available on builds based on Qt 5.13 or later.
+
+.. versionadded:: 3.26
+%End
 %End
 
     QString filterString() const;
@@ -240,6 +260,10 @@ tag will be shown in the model.
 
 Set ``id`` to -1 to disable tag filtering.
 
+.. note::
+
+   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models.
+
 .. seealso:: :py:func:`tagId`
 %End
 
@@ -248,6 +272,10 @@ Set ``id`` to -1 to disable tag filtering.
 Returns the tag id used to filter style entities by.
 
 If returned value is -1, then no tag filtering is being conducted.
+
+.. note::
+
+   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models.
 
 .. seealso:: :py:func:`setTagId`
 %End
@@ -259,6 +287,10 @@ smart group will be shown in the model.
 
 Set ``id`` to -1 to disable smart group filtering.
 
+.. note::
+
+   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models.
+
 .. seealso:: :py:func:`smartGroupId`
 %End
 
@@ -268,10 +300,16 @@ Returns the smart group id used to filter style entities by.
 
 If returned value is -1, then no smart group filtering is being conducted.
 
+.. note::
+
+   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models.
+
 .. seealso:: :py:func:`setSmartGroupId`
 %End
 
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 
     bool favoritesOnly() const;

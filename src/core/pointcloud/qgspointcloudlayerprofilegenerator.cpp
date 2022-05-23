@@ -395,7 +395,14 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
 
   const IndexedPointCloudNode root = pc->root();
 
-  const double maximumErrorPixels = context.convertDistanceToPixels( mMaximumScreenError, mMaximumScreenErrorUnit );
+  double maximumErrorPixels = context.convertDistanceToPixels( mMaximumScreenError, mMaximumScreenErrorUnit );
+  const double toleranceInPixels = context.convertDistanceToPixels( mTolerance, QgsUnitTypes::RenderMapUnits );
+  // ensure that the maximum error is compatible with the tolerance size -- otherwise if the tolerance size
+  // is much smaller than the maximum error, we don't dig deep enough into the point cloud nodes to find
+  // points which are inside the tolerance.
+  // "4" is a magic number here, based purely on what "looks good" in the profile results!
+  if ( toleranceInPixels / 4 < maximumErrorPixels )
+    maximumErrorPixels = toleranceInPixels / 4;
 
   const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
   QgsRectangle rootNodeExtentInCurveCrs;

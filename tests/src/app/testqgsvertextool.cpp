@@ -1065,8 +1065,8 @@ void TestQgsVertexTool::testAvoidIntersections()
   // enabled, the geometry does not get corrupted (#20774)
 
   QgsProject::instance()->setTopologicalEditing( true );
-  const QgsProject::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
-  QgsProject::instance()->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
 
   QgsPolygonXY polygon2;
   QgsPolylineXY polygon2exterior;

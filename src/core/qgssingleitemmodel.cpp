@@ -25,21 +25,38 @@ QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QString &text, co
 
 }
 
+QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QList<QMap<int, QVariant> > &columnData, Qt::ItemFlags flags )
+  : QAbstractItemModel( parent )
+  , mColumnData( columnData )
+  , mFlags( flags )
+{
+}
+
 QVariant QgsSingleItemModel::data( const QModelIndex &index, int role ) const
 {
   if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
 
-  switch ( role )
+  if ( index.column() < 0 || index.column() >= columnCount( QModelIndex() ) )
+    return QVariant();
+
+  if ( !mColumnData.isEmpty() )
   {
-    case Qt::DisplayRole:
-      return mText;
+    return mColumnData.value( index.column() ).value( role );
+  }
+  else
+  {
+    switch ( role )
+    {
+      case Qt::DisplayRole:
+        return mText;
 
-    case Qt::ToolTipRole:
-      return mData.value( Qt::ToolTipRole, mText );
+      case Qt::ToolTipRole:
+        return mData.value( Qt::ToolTipRole, mText );
 
-    default:
-      return mData.value( role );
+      default:
+        return mData.value( role );
+    }
   }
 }
 
@@ -84,5 +101,8 @@ int QgsSingleItemModel::rowCount( const QModelIndex &parent ) const
 
 int QgsSingleItemModel::columnCount( const QModelIndex & ) const
 {
+  if ( !mColumnData.empty() )
+    return mColumnData.size();
+
   return 1;
 }

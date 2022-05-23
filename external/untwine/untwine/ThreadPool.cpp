@@ -32,8 +32,6 @@
  * OF SUCH DAMAGE.
  ****************************************************************************/
 
-#include <iostream>
-
 #include "ThreadPool.hpp"
 
 namespace untwine

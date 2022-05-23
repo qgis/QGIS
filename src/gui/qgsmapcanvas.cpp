@@ -274,7 +274,6 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::cancelJobs()
 {
-
   // rendering job may still end up writing into canvas map item
   // so kill it before deleting canvas items
   if ( mJob )
@@ -284,8 +283,7 @@ void QgsMapCanvas::cancelJobs()
     mJob = nullptr;
   }
 
-  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
-  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  for ( auto previewJob = mPreviewJobs.constBegin(); previewJob != mPreviewJobs.constEnd(); ++previewJob )
   {
     if ( *previewJob )
     {
@@ -293,8 +291,8 @@ void QgsMapCanvas::cancelJobs()
       delete *previewJob;
     }
   }
+  mPreviewJobs.clear();
 }
-
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
@@ -1113,9 +1111,10 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     }
   };
 
-  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
-  if ( mSettings.destinationCrs() != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
-    addCoordinateFormat( tr( "WGS84" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ) ), mSettings.destinationCrs() );
+  QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
+  if ( mSettings.destinationCrs() != wgs84 )
+    addCoordinateFormat( wgs84.userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ), wgs84 );
 
   QgsSettings settings;
   const QString customCrsString = settings.value( QStringLiteral( "qgis/custom_coordinate_crs" ) ).toString();
@@ -1124,7 +1123,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     QgsCoordinateReferenceSystem customCrs( customCrsString );
     if ( customCrs != mSettings.destinationCrs() && customCrs != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
     {
-      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), customCrs );
+      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ), customCrs );
     }
   }
   copyCoordinateMenu->addSeparator();
@@ -2107,11 +2106,19 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setTopLeft( pos );
 }
 
+void QgsMapCanvas::stopZoomRect()
+{
+  if ( mZoomDragging )
+  {
+    mZoomDragging = false;
+    mZoomRubberBand.reset( nullptr );
+    mTemporaryCursorOverride.reset();
+  }
+}
+
 void QgsMapCanvas::endZoomRect( QPoint pos )
 {
-  mZoomDragging = false;
-  mZoomRubberBand.reset( nullptr );
-  mTemporaryCursorOverride.reset();
+  stopZoomRect();
 
   // store the rectangle
   mZoomRect.setRight( pos.x() );
@@ -2139,6 +2146,26 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   refresh();
 }
 
+void QgsMapCanvas::startPan()
+{
+  if ( !mCanvasProperties->panSelectorDown )
+  {
+    mCanvasProperties->panSelectorDown = true;
+    mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+    panActionStart( mCanvasProperties->mouseLastXY );
+  }
+}
+
+void QgsMapCanvas::stopPan()
+{
+  if ( mCanvasProperties->panSelectorDown )
+  {
+    mCanvasProperties->panSelectorDown = false;
+    mTemporaryCursorOverride.reset();
+    panActionEnd( mCanvasProperties->mouseLastXY );
+  }
+}
+
 void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 {
   // use shift+middle mouse button for zooming, map tools won't receive any events in that case
@@ -2151,15 +2178,15 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    if ( !mCanvasProperties->panSelectorDown )
-    {
-      mCanvasProperties->panSelectorDown = true;
-      mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
-      panActionStart( mCanvasProperties->mouseLastXY );
-    }
+    startPan();
   }
   else
   {
+    // If doing a middle-button-click, followed by a right-button-click,
+    // cancel the pan or zoomRect action started above.
+    stopPan();
+    stopZoomRect();
+
     // call handler of current map tool
     if ( mMapTool )
     {
@@ -2204,12 +2231,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    if ( mCanvasProperties->panSelectorDown )
-    {
-      mCanvasProperties->panSelectorDown = false;
-      mTemporaryCursorOverride.reset();
-      panActionEnd( mCanvasProperties->mouseLastXY );
-    }
+    stopPan();
   }
   else if ( e->button() == Qt::BackButton )
   {
@@ -3274,14 +3296,13 @@ void QgsMapCanvas::startPreviewJob( int number )
 void QgsMapCanvas::stopPreviewJobs()
 {
   mPreviewTimer.stop();
-  const auto previewJobs = mPreviewJobs;
-  for ( auto previewJob : previewJobs )
+  for ( auto previewJob = mPreviewJobs.constBegin(); previewJob != mPreviewJobs.constEnd(); ++previewJob )
   {
-    if ( previewJob )
+    if ( *previewJob )
     {
-      disconnect( previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
-      connect( previewJob, &QgsMapRendererQImageJob::finished, previewJob, &QgsMapRendererQImageJob::deleteLater );
-      previewJob->cancelWithoutBlocking();
+      disconnect( *previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( *previewJob, &QgsMapRendererQImageJob::finished, *previewJob, &QgsMapRendererQImageJob::deleteLater );
+      ( *previewJob )->cancelWithoutBlocking();
     }
   }
   mPreviewJobs.clear();

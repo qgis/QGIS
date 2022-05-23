@@ -768,7 +768,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
   methodComboBox->blockSignals( true );
   switch ( mRenderer->graduatedMethod() )
   {
-    case QgsGraduatedSymbolRenderer::GraduatedColor:
+    case Qgis::GraduatedMethod::Color:
     {
       methodComboBox->setCurrentIndex( methodComboBox->findData( ColorMode ) );
       if ( mRenderer->sourceColorRamp() )
@@ -777,7 +777,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
       }
       break;
     }
-    case QgsGraduatedSymbolRenderer::GraduatedSize:
+    case Qgis::GraduatedMethod::Size:
     {
       methodComboBox->setCurrentIndex( methodComboBox->findData( SizeMode ) );
       if ( !mRenderer->ranges().isEmpty() ) // avoid overriding default size with zeros
@@ -816,7 +816,7 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
   {
     case ColorMode:
     {
-      mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedColor );
+      mRenderer->setGraduatedMethod( Qgis::GraduatedMethod::Color );
       QgsColorRamp *ramp = btnColorRamp->colorRamp();
 
       if ( !ramp )
@@ -839,7 +839,7 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
       maxSizeSpinBox->setVisible( true );
       mSizeUnitWidget->setVisible( true );
 
-      mRenderer->setGraduatedMethod( QgsGraduatedSymbolRenderer::GraduatedSize );
+      mRenderer->setGraduatedMethod( Qgis::GraduatedMethod::Size );
       reapplySizes();
       break;
     }

@@ -49,6 +49,7 @@ clean up and terminate at the earliest possible convenience.
       CanCancel,
       CancelWithoutPrompt,
       Hidden,
+      Silent,
       AllFlags,
     };
     typedef QFlags<QgsTask::Flag> Flags;

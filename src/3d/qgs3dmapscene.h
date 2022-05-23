@@ -189,6 +189,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
+    void onCameraNavigationModeChanged();
 
     bool updateCameraNearFarPlanes();
 

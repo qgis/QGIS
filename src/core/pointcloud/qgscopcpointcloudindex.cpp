@@ -63,7 +63,7 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
   }
   if ( !mIsValid )
   {
-    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName ).arg( mLazInfo->error() ) );
+    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName, mLazInfo->error() ) );
     return;
   }
 
@@ -72,10 +72,10 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
 
 bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 {
-  QByteArray copcInfoVlrData = lazInfo.vlrData( "copc", 1 );
+  QByteArray copcInfoVlrData = lazInfo.vlrData( QStringLiteral( "copc" ), 1 );
   if ( copcInfoVlrData.isEmpty() )
   {
-    QgsDebugMsg( "Invalid COPC file" );
+    QgsDebugMsg( QStringLiteral( "Invalid COPC file" ) );
     return false;
   }
   mCopcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
@@ -129,8 +129,8 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   if ( !found )
     return nullptr;
   mHierarchyMutex.lock();
-  int pointCount = mHierarchy[n];
-  auto [blockOffset, blockSize] = mHierarchyNodePos[n];
+  int pointCount = mHierarchy.value( n );
+  auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
   mHierarchyMutex.unlock();
 
   // we need to create a copy of the expression to pass to the decoder
@@ -150,8 +150,8 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
 {
-  Q_UNUSED( n );
-  Q_UNUSED( request );
+  Q_UNUSED( n )
+  Q_UNUSED( request )
   Q_ASSERT( false );
   return nullptr; // unsupported
 }
@@ -192,12 +192,14 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
   ancestors.push_front( foundRoot );
   for ( IndexedPointCloudNode n : ancestors )
   {
-    if ( !mHierarchy.contains( n ) )
+    auto hierarchyIt = mHierarchy.constFind( n );
+    if ( hierarchyIt == mHierarchy.constEnd() )
       return false;
-    int nodesCount = mHierarchy[n];
+    int nodesCount = *hierarchyIt;
     if ( nodesCount < 0 )
     {
-      fetchHierarchyPage( mHierarchyNodePos[n].first, mHierarchyNodePos[n].second );
+      auto hierarchyNodePos = mHierarchyNodePos.constFind( n );
+      fetchHierarchyPage( hierarchyNodePos->first, hierarchyNodePos->second );
     }
   }
   return true;
@@ -206,7 +208,7 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
 void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   mCopcFile.seekg( offset );
-  std::unique_ptr<char> data( new char[ byteSize ] );
+  std::unique_ptr<char []> data( new char[ byteSize ] );
   mCopcFile.read( data.get(), byteSize );
 
   struct CopcVoxelKey
@@ -238,7 +240,9 @@ bool QgsCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
 {
   fetchNodeHierarchy( n );
   mHierarchyMutex.lock();
-  const bool found = mHierarchy.contains( n ) && mHierarchy[n] > 0;
+
+  auto it = mHierarchy.constFind( n );
+  const bool found = it != mHierarchy.constEnd() && *it  > 0;
   mHierarchyMutex.unlock();
   return found;
 }
@@ -248,8 +252,11 @@ QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const Indexed
   fetchNodeHierarchy( n );
 
   mHierarchyMutex.lock();
-  Q_ASSERT( mHierarchy.contains( n ) );
+
+  auto hierarchyIt = mHierarchy.constFind( n );
+  Q_ASSERT( hierarchyIt != mHierarchy.constEnd() );
   QList<IndexedPointCloudNode> lst;
+  lst.reserve( 8 );
   const int d = n.d() + 1;
   const int x = n.x() * 2;
   const int y = n.y() * 2;

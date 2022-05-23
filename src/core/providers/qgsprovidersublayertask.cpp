@@ -22,7 +22,7 @@
 #include "qgsreadwritelocker.h"
 
 QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri, bool includeSystemTables )
-  : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
+  : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mUri( uri )
   , mIncludeSystemTables( includeSystemTables )
 {

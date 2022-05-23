@@ -64,6 +64,7 @@ QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const In
   const int y = n.y() * 2;
   const int z = n.z() * 2;
 
+  lst.reserve( 8 );
   for ( int i = 0; i < 8; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );

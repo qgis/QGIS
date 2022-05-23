@@ -40,6 +40,7 @@
 #include "qgsiconutils.h"
 #include "qgssymbollayerreference.h"
 #include "qgsconfig.h"
+#include "qgsprojectstylesettings.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -52,7 +53,7 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
   initWidget();
   setWidgetMode( Text );
   populateDataDefinedButtons();
-  updateWidgetForFormat( format.isValid() ? format : QgsStyle::defaultStyle()->defaultTextFormat() );
+  updateWidgetForFormat( format.isValid() ? format : QgsStyle::defaultTextFormatForProject( QgsProject::instance() ) );
 }
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode, QgsVectorLayer *layer )
@@ -513,7 +514,7 @@ void QgsTextFormatWidget::initWidget()
 
   mTextFormatsListWidget->setStyle( QgsStyle::defaultStyle() );
   mTextFormatsListWidget->setEntityType( QgsStyle::TextFormatEntity );
-  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsTextFormatWidget::setFormatFromStyle );
+  connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::selectionChangedWithStylePath, this, &QgsTextFormatWidget::setFormatFromStyle );
   connect( mTextFormatsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsTextFormatWidget::saveFormat );
 }
 
@@ -1868,8 +1869,18 @@ void QgsTextFormatWidget::updateDataDefinedAlignment()
                                     || mCoordPointDDBtn->isActive() );
 }
 
-void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
+void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
 {
+  QgsStyle *style = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
+#else
+  ( void )stylePath;
+#endif
+
+  if ( !style )
+    style = QgsStyle::defaultStyle();
+
   switch ( type )
   {
     case QgsStyle::SymbolEntity:
@@ -1882,20 +1893,20 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
 
     case QgsStyle::TextFormatEntity:
     {
-      if ( !QgsStyle::defaultStyle()->textFormatNames().contains( name ) )
+      if ( !style->textFormatNames().contains( name ) )
         return;
 
-      const QgsTextFormat newFormat = QgsStyle::defaultStyle()->textFormat( name );
+      const QgsTextFormat newFormat = style->textFormat( name );
       setFormat( newFormat );
       break;
     }
 
     case QgsStyle::LabelSettingsEntity:
     {
-      if ( !QgsStyle::defaultStyle()->labelSettingsNames().contains( name ) )
+      if ( !style->labelSettingsNames().contains( name ) )
         return;
 
-      const QgsTextFormat newFormat = QgsStyle::defaultStyle()->labelSettings( name ).format();
+      const QgsTextFormat newFormat = style->labelSettings( name ).format();
       setFormat( newFormat );
       break;
     }
@@ -1904,16 +1915,16 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
 
 void QgsTextFormatWidget::saveFormat()
 {
-  QgsStyle *style = QgsStyle::defaultStyle();
-  if ( !style )
-    return;
-
   QgsStyleSaveDialog saveDlg( this, QgsStyle::TextFormatEntity );
   saveDlg.setDefaultTags( mTextFormatsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
     return;
 
   if ( saveDlg.name().isEmpty() )
+    return;
+
+  QgsStyle *style = saveDlg.destinationStyle();
+  if ( !style )
     return;
 
   // check if there is no format with same name

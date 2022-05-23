@@ -19,10 +19,14 @@
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
-#include "qgsproject.h"
 #include "qgsexpressioncontextutils.h"
 #include <QIcon>
 #include <QBuffer>
+#include <QDir>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+#include "qgscombinedstylemodel.h"
+#endif
 
 const double ICON_PADDING_FACTOR = 0.16;
 
@@ -71,6 +75,7 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   connect( mStyle, &QgsStyle::entityRenamed, this, &QgsStyleModel::onEntityRename );
   connect( mStyle, &QgsStyle::entityChanged, this, &QgsStyleModel::onEntityChanged );
   connect( mStyle, &QgsStyle::entityTagsChanged, this, &QgsStyleModel::onTagsChanged );
+  connect( mStyle, &QgsStyle::rebuildIconPreviews, this, &QgsStyleModel::rebuildSymbolIcons );
 
   // when a remote svg or image has been fetched, update the model's decorations.
   // this is required if a symbol utilizes remote svgs, and the current icons
@@ -79,10 +84,6 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   // svg
   connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsStyleModel::rebuildSymbolIcons );
   connect( QgsApplication::imageCache(), &QgsImageCache::remoteImageFetched, this, &QgsStyleModel::rebuildSymbolIcons );
-
-  // if project color scheme changes, we need to redraw symbols - they may use project colors and accordingly
-  // need updating to reflect the new colors
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsStyleModel::rebuildSymbolIcons );
 
   if ( sIconGenerator )
     connect( sIconGenerator, &QgsAbstractStyleEntityIconGenerator::iconGenerated, this, &QgsStyleModel::iconGenerated, Qt::QueuedConnection );
@@ -450,6 +451,15 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
+    case EntityName:
+      return name;
+
+    case StyleName:
+      return mStyle->name();
+
+    case StyleFileName:
+      return mStyle->fileName();
+
     default:
       return QVariant();
   }
@@ -505,6 +515,11 @@ Qt::ItemFlags QgsStyleModel::flags( const QModelIndex &index ) const
 }
 
 QVariant QgsStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  return headerDataStatic( section, orientation, role );
+}
+
+QVariant QgsStyleModel::headerDataStatic( int section, Qt::Orientation orientation, int role )
 {
   if ( role == Qt::DisplayRole )
   {
@@ -743,6 +758,7 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyle *style, QObject *parent )
   , mStyle( style )
 {
   mModel = new QgsStyleModel( mStyle, this );
+  setSourceModel( mModel );
   initialize();
 }
 
@@ -750,41 +766,43 @@ void QgsStyleProxyModel::initialize()
 {
   setSortCaseSensitivity( Qt::CaseInsensitive );
 //  setSortLocaleAware( true );
-  setSourceModel( mModel );
   setDynamicSortFilter( true );
   sort( 0 );
 
-  connect( mStyle, &QgsStyle::entityTagsChanged, this, [ = ]
+  if ( mStyle )
   {
-    // update tagged symbols if filtering by tag
-    if ( mTagId >= 0 )
-      setTagId( mTagId );
-    if ( mSmartGroupId >= 0 )
-      setSmartGroupId( mSmartGroupId );
-  } );
-
-  connect( mStyle, &QgsStyle::favoritedChanged, this, [ = ]
-  {
-    // update favorited symbols if filtering by favorite
-    if ( mFavoritesOnly )
-      setFavoritesOnly( mFavoritesOnly );
-  } );
-
-  connect( mStyle, &QgsStyle::entityRenamed, this, [ = ]( QgsStyle::StyleEntity entity, const QString &, const QString & )
-  {
-    switch ( entity )
+    connect( mStyle, &QgsStyle::entityTagsChanged, this, [ = ]
     {
-      case QgsStyle::SmartgroupEntity:
-      case QgsStyle::TagEntity:
-        return;
+      // update tagged symbols if filtering by tag
+      if ( mTagId >= 0 )
+        setTagId( mTagId );
+      if ( mSmartGroupId >= 0 )
+        setSmartGroupId( mSmartGroupId );
+    } );
 
-      default:
-        break;
-    }
+    connect( mStyle, &QgsStyle::favoritedChanged, this, [ = ]
+    {
+      // update favorited symbols if filtering by favorite
+      if ( mFavoritesOnly )
+        setFavoritesOnly( mFavoritesOnly );
+    } );
 
-    if ( mSmartGroupId >= 0 )
-      setSmartGroupId( mSmartGroupId );
-  } );
+    connect( mStyle, &QgsStyle::entityRenamed, this, [ = ]( QgsStyle::StyleEntity entity, const QString &, const QString & )
+    {
+      switch ( entity )
+      {
+        case QgsStyle::SmartgroupEntity:
+        case QgsStyle::TagEntity:
+          return;
+
+        default:
+          break;
+      }
+
+      if ( mSmartGroupId >= 0 )
+        setSmartGroupId( mSmartGroupId );
+    } );
+  }
 }
 
 QgsStyleProxyModel::QgsStyleProxyModel( QgsStyleModel *model, QObject *parent )
@@ -792,15 +810,30 @@ QgsStyleProxyModel::QgsStyleProxyModel( QgsStyleModel *model, QObject *parent )
   , mModel( model )
   , mStyle( model->style() )
 {
+  setSourceModel( mModel );
   initialize();
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+QgsStyleProxyModel::QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mCombinedModel( model )
+{
+  setSourceModel( mCombinedModel );
+  initialize();
+}
+#endif
+
 bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( mFilterString.isEmpty() && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly )
+  if ( mFilterString.isEmpty()  && !mEntityFilterEnabled && !mSymbolTypeFilterEnabled && mTagId < 0 && mSmartGroupId < 0 && !mFavoritesOnly )
     return true;
 
-  QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+  const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+
+  if ( sourceModel()->data( index, QgsStyleModel::IsTitleRole ).toBool() )
+    return true;
+
   const QString name = sourceModel()->data( index ).toString();
   const QStringList tags = sourceModel()->data( index, QgsStyleModel::TagRole ).toStringList();
 
@@ -881,6 +914,18 @@ bool QgsStyleProxyModel::filterAcceptsRow( int source_row, const QModelIndex &so
   return true;
 }
 
+bool QgsStyleProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  const QString leftSource = sourceModel()->data( left, QgsStyleModel::StyleFileName ).toString();
+  const QString rightSource = sourceModel()->data( right, QgsStyleModel::StyleFileName ).toString();
+  if ( leftSource != rightSource )
+    return QString::localeAwareCompare( leftSource, rightSource ) < 0;
+
+  const QString leftName = sourceModel()->data( left, QgsStyleModel::EntityName ).toString();
+  const QString rightName = sourceModel()->data( right, QgsStyleModel::EntityName ).toString();
+  return QString::localeAwareCompare( leftName, rightName ) < 0;
+}
+
 void QgsStyleProxyModel::setFilterString( const QString &filter )
 {
   mFilterString = filter;
@@ -901,7 +946,12 @@ void QgsStyleProxyModel::setFavoritesOnly( bool favoritesOnly )
 
 void QgsStyleProxyModel::addDesiredIconSize( QSize size )
 {
-  mModel->addDesiredIconSize( size );
+  if ( mModel )
+    mModel->addDesiredIconSize( size );
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( mCombinedModel )
+    mCombinedModel->addDesiredIconSize( size );
+#endif
 }
 
 bool QgsStyleProxyModel::symbolTypeFilterEnabled() const
@@ -928,6 +978,8 @@ void QgsStyleProxyModel::setLayerType( QgsWkbTypes::GeometryType type )
 
 void QgsStyleProxyModel::setTagId( int id )
 {
+  if ( !mStyle )
+    return;
   mTagId = id;
 
   mTaggedSymbolNames.clear();
@@ -947,6 +999,9 @@ int QgsStyleProxyModel::tagId() const
 
 void QgsStyleProxyModel::setSmartGroupId( int id )
 {
+  if ( !mStyle )
+    return;
+
   mSmartGroupId = id;
 
   mSmartGroupSymbolNames.clear();
@@ -955,6 +1010,7 @@ void QgsStyleProxyModel::setSmartGroupId( int id )
     for ( QgsStyle::StyleEntity entity : ENTITIES )
       mSmartGroupSymbolNames.append( mStyle->symbolsOfSmartgroup( entity, mSmartGroupId ) );
   }
+
   invalidateFilter();
 }
 

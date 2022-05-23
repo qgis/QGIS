@@ -36,30 +36,6 @@ open within the main QGIS application.
 %End
   public:
 
-    enum class ReadFlag
-    {
-      FlagDontResolveLayers,
-      FlagDontLoadLayouts,
-      FlagTrustLayerMetadata,
-      FlagDontStoreOriginalStyles,
-      FlagDontLoad3DViews,
-    };
-    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
-
-
-    enum class FileFormat
-    {
-      Qgz,
-      Qgs,
-    };
-
-    enum class AvoidIntersectionsMode
-    {
-      AllowIntersections,
-      AvoidIntersectionsCurrentLayer,
-      AvoidIntersectionsLayers,
-    };
-
     enum DataDefinedServerProperty
     {
       NoProperty,
@@ -88,7 +64,6 @@ Set the current project singleton instance to ``project``
 
 .. versionadded:: 3.10.11
 %End
-
 
     explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 %Docstring
@@ -398,7 +373,7 @@ Clears the project, removing all settings and resetting it back to an empty, def
 .. versionadded:: 2.4
 %End
 
-    bool read( const QString &filename, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    bool read( const QString &filename, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Reads given project file from the given file.
 
@@ -408,7 +383,7 @@ Reads given project file from the given file.
 :return: ``True`` if project file has been read successfully
 %End
 
-    bool read( QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    bool read( Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Reads the project from its currently associated file (see :py:func:`~QgsProject.fileName` ).
 
@@ -673,7 +648,7 @@ Returns an empty string if the matching layer is not embedded.
 %End
 
 
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags = QgsProject::ReadFlags() );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
 
@@ -1010,14 +985,14 @@ Only used if the avoid intersection mode is set to advanced.
 .. versionadded:: 3.0
 %End
 
-    void setAvoidIntersectionsMode( const AvoidIntersectionsMode mode );
+    void setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode );
 %Docstring
 Sets the avoid intersections mode.
 
 .. versionadded:: 3.14
 %End
 
-    AvoidIntersectionsMode avoidIntersectionsMode() const;
+    Qgis::AvoidIntersectionsMode avoidIntersectionsMode() const;
 %Docstring
 Returns the current avoid intersections mode.
 
@@ -2154,9 +2129,6 @@ Stops a current editing operation on vectorLayer and discards any uncommitted ed
 %End
 
 };
-
-QFlags<QgsProject::ReadFlag> operator|(QgsProject::ReadFlag f1, QFlags<QgsProject::ReadFlag> f2);
-
 
 class QgsProjectDirtyBlocker
 {

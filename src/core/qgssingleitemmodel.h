@@ -42,7 +42,20 @@ class CORE_EXPORT QgsSingleItemModel: public QAbstractItemModel
      *
      * Custom \a flags can also be specified for the item.
      */
-    explicit QgsSingleItemModel( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &text = QString(), const QMap< int, QVariant > &data = QMap< int, QVariant >(), Qt::ItemFlags flags = Qt::NoItemFlags );
+    explicit QgsSingleItemModel( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &text = QString(),
+                                 const QMap< int, QVariant > &data = QMap< int, QVariant >(), Qt::ItemFlags flags = Qt::NoItemFlags );
+
+    /**
+     * Constructor for a multi-column QgsSingleItemModel with the specified \a parent object.
+     *
+     * The \a columnData list specifies the data which should be returned for the specified roles for each column in the model, where
+     * each entry in the list must be a QMap of Qt item role to value.
+     *
+     * Custom \a flags can also be specified for the item.
+     */
+    explicit QgsSingleItemModel( QObject *parent SIP_TRANSFERTHIS,
+                                 const QList< QMap< int, QVariant > > &columnData,
+                                 Qt::ItemFlags flags = Qt::NoItemFlags );
 
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
@@ -56,6 +69,7 @@ class CORE_EXPORT QgsSingleItemModel: public QAbstractItemModel
 
     QString mText;
     QMap< int, QVariant > mData;
+    QList< QMap< int, QVariant > > mColumnData;
     Qt::ItemFlags mFlags = Qt::NoItemFlags;
 };
 

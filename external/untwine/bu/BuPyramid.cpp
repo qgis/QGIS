@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
@@ -12,6 +13,36 @@
 #include "OctantInfo.hpp"
 #include "../untwine/Common.hpp"
 #include "../untwine/ProgressWriter.hpp"
+
+namespace
+{
+
+// PDAL's directoryList had a bug, so we've imported a working
+// version here so that we can still use older PDAL releases.
+std::vector<std::string> directoryList(const std::string& dir)
+{
+    namespace fs = std::filesystem;
+
+    std::vector<std::string> files;
+
+    try
+    {
+        fs::directory_iterator it(untwine::toNative(dir));
+        fs::directory_iterator end;
+        while (it != end)
+        {
+            files.push_back(untwine::fromNative(it->path()));
+            it++;
+        }
+    }
+    catch (fs::filesystem_error&)
+    {
+        files.clear();
+    }
+    return files;
+}
+
+} // unnamed namespace
 
 namespace untwine
 {
@@ -28,7 +59,9 @@ void BuPyramid::run(ProgressWriter& progress)
 {
     getInputFiles();
     size_t count = queueWork();
-
+    if (!count)
+        throw FatalError("No temporary files to process. I/O or directory list error?");
+    
     progress.setPercent(.6);
     progress.setIncrement(.4 / count);
     m_manager.setProgress(&progress);
@@ -63,7 +96,7 @@ void BuPyramid::writeInfo()
         }
     };
 
-    std::ofstream out(m_b.opts.outputName + "/ept.json");
+    std::ofstream out(toNative(m_b.opts.outputName + "/ept.json"));
     int maxdigits = std::numeric_limits<double>::max_digits10;
 
     out << "{\n";
@@ -164,7 +197,7 @@ void BuPyramid::getInputFiles()
         return std::make_pair(true, VoxelKey(x, y, z, level));
     };
 
-    std::vector<std::string> files = pdal::FileUtils::directoryList(m_b.opts.tempDir);
+    std::vector<std::string> files = directoryList(m_b.opts.tempDir);
 
     VoxelKey root;
     for (std::string file : files)

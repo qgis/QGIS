@@ -275,8 +275,8 @@ class QgsPostgresConn : public QObject
     void PQfinish();
     QString PQerrorMessage() const;
     int PQstatus() const;
-    PGresult *PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes );
-    PGresult *PQexecPrepared( const QString &stmtName, const QStringList &params );
+    PGresult *PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
+    PGresult *PQexecPrepared( const QString &stmtName, const QStringList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     /**
      * PQsendQuery is used for asynchronous queries (with PQgetResult)

@@ -394,7 +394,7 @@ void QgsSymbolButton::wheelEvent( QWheelEvent *event )
   {
     bool symbolChanged = false;
     const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.1 : 1 ) *
-                             event->angleDelta().y() > 0 ? 1 : -1;
+                             ( event->angleDelta().y() > 0 ? 1 : -1 );
     switch ( mSymbol->type() )
     {
       case Qgis::SymbolType::Marker:
