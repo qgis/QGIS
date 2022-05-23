@@ -205,17 +205,35 @@ QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribu
   {
     // work with added feature
     const QgsFeatureMap::const_iterator it = mBuffer->mAddedFeatures.constFind( mFid );
-    Q_ASSERT( it != mBuffer->mAddedFeatures.constEnd() );
-    if ( it.value().attribute( mFieldIndex ).isValid() )
+    if ( it != mBuffer->mAddedFeatures.constEnd() )
     {
-      mOldValue = it.value().attribute( mFieldIndex );
-      mFirstChange = false;
+      if ( it.value().attribute( mFieldIndex ).isValid() )
+      {
+        mOldValue = it.value().attribute( mFieldIndex );
+        mFirstChange = false;
+      }
+    }
+    else
+    {
+      // TODO: report a programmatic error ?
     }
   }
-  else if ( mBuffer->mChangedAttributeValues.contains( mFid ) && mBuffer->mChangedAttributeValues[mFid].contains( mFieldIndex ) )
+  else
   {
-    mOldValue = mBuffer->mChangedAttributeValues[mFid][mFieldIndex];
-    mFirstChange = false;
+    // work with existing feature
+    const QgsChangedAttributesMap::const_iterator it = mBuffer->mChangedAttributeValues.constFind( mFid );
+    if ( it != mBuffer->mChangedAttributeValues.constEnd() )
+    {
+      if ( it->contains( mFieldIndex ) )
+      {
+        mOldValue = mBuffer->mChangedAttributeValues[mFid][mFieldIndex];
+        mFirstChange = false;
+      }
+    }
+    else
+    {
+      // TODO: report a programmatic error ?
+    }
   }
 
 }
@@ -228,8 +246,16 @@ void QgsVectorLayerUndoCommandChangeAttribute::undo()
   {
     // added feature
     const QgsFeatureMap::iterator it = mBuffer->mAddedFeatures.find( mFid );
-    Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
-    it.value().setAttribute( mFieldIndex, mOldValue );
+    if ( it == mBuffer->mAddedFeatures.end() )
+    {
+      // the feature must have been removed, nothing to undo here
+      // See https://github.com/qgis/QGIS/issues/23243
+    }
+    else
+    {
+      //Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
+      it.value().setAttribute( mFieldIndex, mOldValue );
+    }
   }
   else if ( mFirstChange )
   {
