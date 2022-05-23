@@ -226,3 +226,4 @@ if (ENABLE_PGTEST)
 endif()
 
 add_subdirectory(geometry)
+add_subdirectory(vector)
