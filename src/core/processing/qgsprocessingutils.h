@@ -480,6 +480,14 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QString defaultRasterExtension();
 
+    /**
+     * Removes any raw pointer values from an input \a map, replacing them with
+     * appropriate string values where possible.
+     *
+     * \since QGIS 3.26
+     */
+    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
+
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
