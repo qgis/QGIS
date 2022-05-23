@@ -49,6 +49,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
+    QgsPointCloudIndex *clone() const override;
+
     void load( const QString &fileName ) override;
 
     bool hasNode( const IndexedPointCloudNode &n ) const override;

@@ -39,9 +39,13 @@ struct StatsProcessor
     typedef QgsPointCloudStatistics result_type;
 
     StatsProcessor( QgsPointCloudIndex *index, QgsPointCloudRequest request, QgsFeedback *feedback )
-      : mIndex( index ), mRequest( request ), mFeedback( feedback )
+      : mIndex( index->clone() ), mRequest( request ), mFeedback( feedback )
     {
+    }
 
+    StatsProcessor( const StatsProcessor &processor )
+      : mIndex( processor.mIndex->clone() ), mRequest( processor.mRequest ), mFeedback( processor.mFeedback )
+    {
     }
 
     QgsPointCloudStatistics operator()( IndexedPointCloudNode node )
@@ -140,7 +144,7 @@ struct StatsProcessor
       return QgsPointCloudStatistics( count, statsMap );
     }
   private:
-    QgsPointCloudIndex *mIndex = nullptr;
+    std::unique_ptr<QgsPointCloudIndex> mIndex = nullptr;
     QgsPointCloudRequest mRequest;
     QgsFeedback *mFeedback = nullptr;
 };
@@ -161,7 +165,6 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
   }
   mRequest.setAttributes( attributes );
 
-  //
   qint64 pointCount = 0;
   QVector<IndexedPointCloudNode> nodes;
   QQueue<IndexedPointCloudNode> queue;
@@ -185,6 +188,8 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
     }
   }
 
+  // Note: The index will cloned in each StatsProcessor object (each StatsProcessor instance will have an open file
+  // individually) to avoid causing potential concurrency issues
   mFuture = QtConcurrent::mapped( nodes, StatsProcessor( mIndex, mRequest, feedback ) );
   mFutureWatcher.setFuture( mFuture );
 

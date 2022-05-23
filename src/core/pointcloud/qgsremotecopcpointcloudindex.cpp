@@ -46,12 +46,42 @@
 
 ///@cond PRIVATE
 
-QgsRemoteCopcPointCloudIndex::QgsRemoteCopcPointCloudIndex() : QgsCopcPointCloudIndex()
-{
-
-}
+QgsRemoteCopcPointCloudIndex::QgsRemoteCopcPointCloudIndex() = default;
 
 QgsRemoteCopcPointCloudIndex::~QgsRemoteCopcPointCloudIndex() = default;
+
+QgsPointCloudIndex *QgsRemoteCopcPointCloudIndex::clone() const
+{
+  QgsRemoteCopcPointCloudIndex *clone = new QgsRemoteCopcPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+
+  // Base QgsPointCloudIndex fields
+  clone->mExtent = mExtent;
+  clone->mZMin = mZMin;
+  clone->mZMax = mZMax;
+  clone->mHierarchy = mHierarchy;
+  clone->mScale = mScale;
+  clone->mOffset = mOffset;
+  clone->mRootBounds = mRootBounds;
+  clone->mAttributes = mAttributes;
+  clone->mSpan = mSpan;
+  clone->mFilterExpression = mFilterExpression;
+
+  // QgsCopcPointCloudIndex specific fields
+  clone->mIsValid = mIsValid;
+  clone->mFileName = mFileName;
+  clone->mCopcFile.open( mFileName.toStdString(), std::ios::binary );
+  clone->mCopcInfoVlr = mCopcInfoVlr;
+  clone->mHierarchyNodePos = mHierarchyNodePos;
+  clone->mOriginalMetadata = mOriginalMetadata;
+  clone->mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+
+  // QgsRemoteCopcPointCloudIndex specific fields
+  clone->mUrl = mUrl;
+  clone->mHierarchyNodes = mHierarchyNodes;
+
+  return clone;
+}
 
 QList<IndexedPointCloudNode> QgsRemoteCopcPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {

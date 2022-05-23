@@ -48,6 +48,8 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     explicit QgsRemoteEptPointCloudIndex();
     ~QgsRemoteEptPointCloudIndex();
 
+    QgsPointCloudIndex *clone() const override;
+
     QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
     void load( const QString &fileName ) override;
