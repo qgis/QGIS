@@ -74,6 +74,7 @@ QgsStyleModel::QgsStyleModel( QgsStyle *style, QObject *parent )
   connect( mStyle, &QgsStyle::entityRemoved, this, &QgsStyleModel::onEntityRemoved );
   connect( mStyle, &QgsStyle::entityRenamed, this, &QgsStyleModel::onEntityRename );
   connect( mStyle, &QgsStyle::entityChanged, this, &QgsStyleModel::onEntityChanged );
+  connect( mStyle, &QgsStyle::favoritedChanged, this, &QgsStyleModel::onFavoriteChanged );
   connect( mStyle, &QgsStyle::entityTagsChanged, this, &QgsStyleModel::onTagsChanged );
   connect( mStyle, &QgsStyle::rebuildIconPreviews, this, &QgsStyleModel::rebuildSymbolIcons );
 
@@ -646,6 +647,13 @@ void QgsStyleModel::onEntityChanged( QgsStyle::StyleEntity type, const QString &
   emit dataChanged( i, i, QVector< int >() << Qt::DecorationRole );
 }
 
+void QgsStyleModel::onFavoriteChanged( QgsStyle::StyleEntity type, const QString &name, bool )
+{
+  const int offset = offsetForEntity( type );
+  QModelIndex i = index( offset + mEntityNames[ type ].indexOf( name ), Name );
+  emit dataChanged( i, i, QVector< int >() << Role::IsFavoriteRole );
+}
+
 void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName )
 {
   mIconCache[ type ].remove( oldName );
@@ -677,7 +685,6 @@ void QgsStyleModel::onEntityRename( QgsStyle::StyleEntity type, const QString &o
 void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStringList & )
 {
   QgsStyle::StyleEntity type = static_cast< QgsStyle::StyleEntity >( entity );
-  QModelIndex i;
   int row = mEntityNames[type].indexOf( name ) + offsetForEntity( type );
   switch ( static_cast< QgsStyle::StyleEntity >( entity ) )
   {
@@ -686,9 +693,9 @@ void QgsStyleModel::onTagsChanged( int entity, const QString &name, const QStrin
       return;
 
     default:
-      i = index( row, Tags );
+      break;
   }
-  emit dataChanged( i, i );
+  emit dataChanged( index( row, Name ), index( row, Tags ) );
 }
 
 void QgsStyleModel::rebuildSymbolIcons()
@@ -778,13 +785,6 @@ void QgsStyleProxyModel::initialize()
         setTagId( mTagId );
       if ( mSmartGroupId >= 0 )
         setSmartGroupId( mSmartGroupId );
-    } );
-
-    connect( mStyle, &QgsStyle::favoritedChanged, this, [ = ]
-    {
-      // update favorited symbols if filtering by favorite
-      if ( mFavoritesOnly )
-        setFavoritesOnly( mFavoritesOnly );
     } );
 
     connect( mStyle, &QgsStyle::entityRenamed, this, [ = ]( QgsStyle::StyleEntity entity, const QString &, const QString & )

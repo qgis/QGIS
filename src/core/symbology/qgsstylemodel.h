@@ -180,6 +180,7 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void onEntityAdded( QgsStyle::StyleEntity type, const QString &name );
     void onEntityRemoved( QgsStyle::StyleEntity type, const QString &name );
     void onEntityChanged( QgsStyle::StyleEntity type, const QString &name );
+    void onFavoriteChanged( QgsStyle::StyleEntity type, const QString &name, bool isFavorite );
     void onEntityRename( QgsStyle::StyleEntity type, const QString &oldName, const QString &newName );
     void onTagsChanged( int entity, const QString &name, const QStringList &tags );
     void rebuildSymbolIcons();
