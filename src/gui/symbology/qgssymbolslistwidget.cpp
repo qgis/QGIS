@@ -603,6 +603,9 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
 void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity, const QString &stylePath )
 {
+  if ( name.isEmpty() )
+    return;
+
   QgsStyle *style = nullptr;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( mStyle != QgsStyle::defaultStyle() )
@@ -618,6 +621,9 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::St
   ( void )stylePath;
   style = mStyle;
 #endif
+
+  if ( !style )
+    return;
 
   // get new instance of symbol from style
   std::unique_ptr< QgsSymbol > s( style->symbol( name ) );

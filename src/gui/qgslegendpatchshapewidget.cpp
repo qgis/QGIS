@@ -59,6 +59,9 @@ void QgsLegendPatchShapeWidget::setShape( const QgsLegendPatchShape &shape )
 
 void QgsLegendPatchShapeWidget::setShapeFromStyle( const QString &name, QgsStyle::StyleEntity, const QString &stylePath )
 {
+  if ( name.isEmpty() )
+    return;
+
   QgsStyle *style = nullptr;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );

@@ -1871,6 +1871,9 @@ void QgsTextFormatWidget::updateDataDefinedAlignment()
 
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
 {
+  if ( name.isEmpty() )
+    return;
+
   QgsStyle *style = nullptr;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );

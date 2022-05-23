@@ -81,6 +81,9 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
 
 void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity, const QString &stylePath )
 {
+  if ( name.isEmpty() )
+    return;
+
   QgsStyle *style = nullptr;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
