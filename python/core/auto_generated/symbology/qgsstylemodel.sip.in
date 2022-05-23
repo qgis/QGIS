@@ -262,7 +262,7 @@ Set ``id`` to -1 to disable tag filtering.
 
 .. note::
 
-   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models.
+   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models. Use :py:func:`~QgsStyleProxyModel.setTagString` instead.
 
 .. seealso:: :py:func:`tagId`
 %End
@@ -275,9 +275,32 @@ If returned value is -1, then no tag filtering is being conducted.
 
 .. note::
 
-   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models.
+   This method has no effect for models created using :py:class:`QgsCombinedStyleModel` source models. Use :py:func:`~QgsStyleProxyModel.tagString` instead.
 
 .. seealso:: :py:func:`setTagId`
+%End
+
+    void setTagString( const QString &tag );
+%Docstring
+Sets a ``tag`` to filter style entities by. Only entities with the given
+tag will be shown in the model.
+
+Set ``tag`` to an empty string to disable tag filtering.
+
+.. seealso:: :py:func:`tagString`
+
+.. versionadded:: 3.26
+%End
+
+    QString tagString() const;
+%Docstring
+Returns the tag string used to filter style entities by.
+
+If returned value is empty, then no tag filtering is being conducted.
+
+.. seealso:: :py:func:`setTagString`
+
+.. versionadded:: 3.26
 %End
 
     void setSmartGroupId( int id );
