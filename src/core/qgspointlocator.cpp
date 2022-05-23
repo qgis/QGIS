@@ -923,11 +923,11 @@ void QgsPointLocator::onInitTaskFinished()
   mSource.reset();
 
   // treat added and deleted feature while indexing
-  for ( const QgsFeatureId fid : mAddedFeatures )
+  for ( const QgsFeatureId fid : std::as_const( mAddedFeatures ) )
     onFeatureAdded( fid );
   mAddedFeatures.clear();
 
-  for ( const QgsFeatureId fid : mDeletedFeatures )
+  for ( const QgsFeatureId fid : std::as_const( mDeletedFeatures ) )
     onFeatureDeleted( fid );
   mDeletedFeatures.clear();
 
