@@ -112,6 +112,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
       int vertexIndex, beforeVertex, afterVertex;
       double sqrDist;
 
@@ -167,6 +169,8 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
 
       const QgsPointXY pt = geom->centroid().asPoint();
 
@@ -219,6 +223,9 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
+
       QgsPointXY pt;
       int afterVertex;
       const double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
@@ -277,6 +284,8 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
 
       QgsPointXY bestPoint;
       int bestVertexNumber = -1;
@@ -377,6 +386,9 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
+
       QgsPointXY pt;
       int afterVertex;
       const double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, nullptr, POINT_LOC_EPSILON );
@@ -427,6 +439,9 @@ class QgsPointLocator_VisitorArea : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *g = mLocator->mGeoms.value( id );
+      if ( !g )
+        return; // should not happen, but be safe
+
       if ( g->intersects( mGeomPt ) )
         mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, mGeomPt.asPoint() );
     }
@@ -623,6 +638,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
 
       const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
       for ( const QgsPointLocator::Match &m : segmentsInRect )
@@ -668,6 +685,8 @@ class QgsPointLocator_VisitorVerticesInRect : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
 
       for ( QgsAbstractGeometry::vertex_iterator it = geom->vertices_begin(); it != geom->vertices_end(); ++it )
       {
@@ -715,6 +734,9 @@ class QgsPointLocator_VisitorCentroidsInRect : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
+
       const QgsPointXY centroid = geom->centroid().asPoint();
       if ( mSrcRect.contains( centroid ) )
       {
@@ -757,6 +779,8 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
     {
       const QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
+      if ( !geom )
+        return; // should not happen, but be safe
 
       for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
       {
