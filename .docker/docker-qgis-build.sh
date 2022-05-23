@@ -2,6 +2,9 @@
 
 set -e
 
+CTEST_SOURCE_DIR=${CTEST_SOURCE_DIR-/root/QGIS}
+CTEST_BUILD_DIR=${CTEST_BUILD_DIR-/root/QGIS/build}
+
 ##############
 # Setup ccache
 ##############
@@ -23,9 +26,9 @@ endbold=$(tput sgr0)
 ###########
 # Configure
 ###########
-pushd /root/QGIS > /dev/null
-mkdir -p build
-pushd build > /dev/null
+pushd ${CTEST_SOURCE_DIR} > /dev/null
+mkdir -p ${CTEST_BUILD_DIR}
+pushd ${CTEST_BUILD_DIR} > /dev/null
 
 echo "${bold}Running cmake...${endbold}"
 echo "::group::cmake"
@@ -57,9 +60,9 @@ CMAKE_EXTRA_ARGS=()
 if [[ ${PATCH_QT_3D} == "true" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DQT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"
-    "-DQT5_3DEXTRA_INCLUDE_DIR=/root/QGIS/external/qt3dextra-headers"
-    "-DCMAKE_PREFIX_PATH=/root/QGIS/external/qt3dextra-headers/cmake"
-    "-DQt53DExtras_DIR=/root/QGIS/external/qt3dextra-headers/cmake/Qt53DExtras"
+    "-DQT5_3DEXTRA_INCLUDE_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers"
+    "-DCMAKE_PREFIX_PATH=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake"
+    "-DQt53DExtras_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake/Qt53DExtras"
   )
 fi
 
@@ -116,14 +119,15 @@ cmake \
 echo "::endgroup::"
 
 # Workaround https://github.com/actions/checkout/issues/760
-git config --global --add safe.directory /root/QGIS
+git config --global --add safe.directory ${CTEST_SOURCE_DIR}
+git config --global --add safe.directory ${CTEST_BUILD_DIR}
 
 #######
 # Build
 #######
 echo "${bold}Building QGIS...${endbold}"
 echo "::group::build"
-ctest -VV -S /root/QGIS/.ci/config_build.ctest
+ctest -VV -S ${CTEST_SOURCE_DIR}/.ci/config_build.ctest
 echo "::endgroup::"
 
 ########################
@@ -132,7 +136,7 @@ echo "::endgroup::"
 echo "ccache statistics"
 ccache -s
 
-popd > /dev/null # build
-popd > /dev/null # /root/QGIS
+popd > /dev/null # ${CTEST_BUILD_DIR}
+popd > /dev/null # ${CTEST_SOURCE_DIR}
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log || true
