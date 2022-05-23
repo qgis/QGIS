@@ -43,6 +43,35 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
+QgsPointCloudIndex *QgsCopcPointCloudIndex::clone() const
+{
+  QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+
+  // Base QgsPointCloudIndex fields
+  clone->mExtent = mExtent;
+  clone->mZMin = mZMin;
+  clone->mZMax = mZMax;
+  clone->mHierarchy = mHierarchy;
+  clone->mScale = mScale;
+  clone->mOffset = mOffset;
+  clone->mRootBounds = mRootBounds;
+  clone->mAttributes = mAttributes;
+  clone->mSpan = mSpan;
+  clone->mFilterExpression = mFilterExpression;
+
+  // QgsCopcPointCloudIndex specific fields
+  clone->mIsValid = mIsValid;
+  clone->mFileName = mFileName;
+  clone->mCopcFile.open( mFileName.toStdString(), std::ios::binary );
+  clone->mCopcInfoVlr = mCopcInfoVlr;
+  clone->mHierarchyNodePos = mHierarchyNodePos;
+  clone->mOriginalMetadata = mOriginalMetadata;
+  clone->mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+
+  return clone;
+}
+
 void QgsCopcPointCloudIndex::load( const QString &fileName )
 {
   mFileName = fileName;

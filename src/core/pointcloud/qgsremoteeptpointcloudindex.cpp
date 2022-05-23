@@ -53,6 +53,42 @@ QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudInd
 
 QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
 
+QgsPointCloudIndex *QgsRemoteEptPointCloudIndex::clone() const
+{
+  QgsRemoteEptPointCloudIndex *clone = new QgsRemoteEptPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+
+  // Base QgsPointCloudIndex fields
+  clone->mExtent = mExtent;
+  clone->mZMin = mZMin;
+  clone->mZMax = mZMax;
+  clone->mHierarchy = mHierarchy;
+  clone->mScale = mScale;
+  clone->mOffset = mOffset;
+  clone->mRootBounds = mRootBounds;
+  clone->mAttributes = mAttributes;
+  clone->mSpan = mSpan;
+  clone->mFilterExpression = mFilterExpression;
+
+  // QgsEptPointCloudIndex specific fields
+  clone->mIsValid = mIsValid;
+  clone->mDataType = mDataType;
+  clone->mDirectory = mDirectory;
+  clone->mWkt = mWkt;
+  clone->mPointCount = mPointCount;
+  clone->mMetadataStats = mMetadataStats;
+  clone->mAttributeClasses = mAttributeClasses;
+  clone->mOriginalMetadata = mOriginalMetadata;
+
+  // QgsRemoteEptPointCloudIndex specific fields
+  clone->mUrlDirectoryPart = mUrlDirectoryPart;
+  clone->mUrlFileNamePart = mUrlFileNamePart;
+  clone->mUrl = mUrl;
+  clone->mHierarchyNodes = mHierarchyNodes;
+
+  return clone;
+}
+
 QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
   QList<IndexedPointCloudNode> lst;
