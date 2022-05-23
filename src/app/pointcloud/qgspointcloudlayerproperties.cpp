@@ -232,7 +232,7 @@ void QgsPointCloudLayerProperties::saveDefaultStyle()
 
   // a flag passed by reference
   bool defaultSavedFlag = false;
-  // One the deprecated `saveDefaultStyle()` method is gone, just
+  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
   // remove the NOWARN_DEPRECATED tags
   Q_NOWARN_DEPRECATED_PUSH
   // after calling this the above flag will be set true for success
