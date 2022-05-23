@@ -1091,7 +1091,7 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
   }
 
   bool defaultSavedFlag = false;
-  // One the deprecated `saveDefaultStyle()` method is gone, just
+  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
   // remove the NOWARN_DEPRECATED tags
   Q_NOWARN_DEPRECATED_PUSH
   errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
