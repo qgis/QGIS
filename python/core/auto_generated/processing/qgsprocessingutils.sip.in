@@ -472,6 +472,14 @@ a fallback value of "tif".
 .. versionadded:: 3.10
 %End
 
+    static QVariantMap removePointerValuesFromMap( const QVariantMap &map );
+%Docstring
+Removes any raw pointer values from an input ``map``, replacing them with
+appropriate string values where possible.
+
+.. versionadded:: 3.26
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

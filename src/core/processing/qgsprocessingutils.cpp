@@ -1314,6 +1314,62 @@ QString QgsProcessingUtils::defaultRasterExtension()
   return QgsRasterFileWriter::supportedFormatExtensions().value( setting, QStringLiteral( "tif" ) );
 }
 
+QVariantMap QgsProcessingUtils::removePointerValuesFromMap( const QVariantMap &map )
+{
+  auto layerPointerToString = []( QgsMapLayer * layer ) -> QString
+  {
+    if ( layer && layer->providerType() == QLatin1String( "memory" ) )
+      return layer->id();
+    else if ( layer )
+      return layer->source();
+    else
+      return QString();
+  };
+
+  auto cleanPointerValues = [&layerPointerToString]( const QVariant & value ) -> QVariant
+  {
+    if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( value.value< QObject * >() ) )
+    {
+      // don't store pointers in maps for long-term storage
+      return layerPointerToString( layer );
+    }
+    else if ( value.userType() == QMetaType::type( "QPointer< QgsMapLayer >" ) )
+    {
+      // don't store pointers in maps for long-term storage
+      return layerPointerToString( value.value< QPointer< QgsMapLayer > >().data() );
+    }
+    else
+    {
+      return value;
+    }
+  };
+
+  QVariantMap res;
+  for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+  {
+    if ( it->type() == QVariant::Map )
+    {
+      res.insert( it.key(), removePointerValuesFromMap( it.value().toMap() ) );
+    }
+    else if ( it->type() == QVariant::List )
+    {
+      QVariantList dest;
+      const QVariantList source = it.value().toList();
+      dest.reserve( source.size() );
+      for ( const QVariant &v : source )
+      {
+        dest.append( cleanPointerValues( v ) );
+      }
+      res.insert( it.key(), dest );
+    }
+    else
+    {
+      res.insert( it.key(), cleanPointerValues( it.value() ) );
+    }
+  }
+  return res;
+}
+
 //
 // QgsProcessingFeatureSource
 //
