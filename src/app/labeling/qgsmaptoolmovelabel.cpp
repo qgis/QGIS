@@ -225,7 +225,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
       clearHoveredLabel();
 
       mCurrentLabel = LabelDetails( labelPos, canvas() );
-      mLabelTearFromLineThreshold = QFontMetrics( mCurrentLabel.settings.format().font() ).horizontalAdvance( 'X' ) * 5;
+      mLabelTearFromLineThreshold = QFontMetrics( mCanvas->font() ).horizontalAdvance( 'X' ) * 5;
 
       QgsVectorLayer *vlayer = mCurrentLabel.layer;
       if ( !vlayer )
