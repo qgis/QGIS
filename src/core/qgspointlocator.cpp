@@ -1122,9 +1122,16 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       SpatialIndex::Region r( rect2region( bbox ) );
       dataList << new RTree::Data( 0, nullptr, r, f.id() );
 
-      if ( mGeoms.contains( f.id() ) )
-        delete mGeoms.take( f.id() );
-      mGeoms[f.id()] = new QgsGeometry( f.geometry() );
+      auto it = mGeoms.find( f.id() );
+      if ( it != mGeoms.end() )
+      {
+        delete *it;
+        *it = new QgsGeometry( f.geometry() );
+      }
+      else
+      {
+        mGeoms[f.id()] = new QgsGeometry( f.geometry() );
+      }
       ++indexedCount;
     }
 
@@ -1249,9 +1256,16 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       const SpatialIndex::Region r( rect2region( bbox ) );
       mRTree->insertData( 0, nullptr, r, f.id() );
 
-      if ( mGeoms.contains( f.id() ) )
-        delete mGeoms.take( f.id() );
-      mGeoms[fid] = new QgsGeometry( f.geometry() );
+      auto it = mGeoms.find( f.id() );
+      if ( it != mGeoms.end() )
+      {
+        delete *it;
+        *it = new QgsGeometry( f.geometry() );
+      }
+      else
+      {
+        mGeoms[fid] = new QgsGeometry( f.geometry() );
+      }
     }
   }
 }
@@ -1275,10 +1289,12 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
   if ( !mRTree )
     return; // nothing to do if we are not initialized yet
 
-  if ( mGeoms.contains( fid ) )
+  auto it = mGeoms.find( fid );
+  if ( it != mGeoms.end() )
   {
-    mRTree->deleteData( rect2region( mGeoms[fid]->boundingBox() ), fid );
-    delete mGeoms.take( fid );
+    mRTree->deleteData( rect2region( ( *it )->boundingBox() ), fid );
+    delete *it;
+    mGeoms.erase( it );
   }
 
 }
