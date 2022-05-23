@@ -48,6 +48,14 @@ struct StatsProcessor
     {
     }
 
+    StatsProcessor &operator =( const StatsProcessor &rhs )
+    {
+      mIndex.reset( rhs.mIndex->clone() );
+      mRequest = rhs.mRequest;
+      mFeedback = rhs.mFeedback;
+      return *this;
+    }
+
     QgsPointCloudStatistics operator()( IndexedPointCloudNode node )
     {
       std::unique_ptr<QgsPointCloudBlock> block;
@@ -148,7 +156,6 @@ struct StatsProcessor
     QgsPointCloudRequest mRequest;
     QgsFeedback *mFeedback = nullptr;
 };
-
 
 QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex *index )
   : mIndex( index )
