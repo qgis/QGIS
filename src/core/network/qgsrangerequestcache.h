@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRangeRequestCache
     //! Sets the cache size
     void setCacheSize( qint64 maxBytes );
 
-    //! Returns the last error that happended when manipulating the cache.
+    //! Returns the last error that occurred when manipulating the cache.
     QString error() const { return mError; }
 
     friend class TestQgsCopcProvider;
