@@ -235,10 +235,10 @@ void TestQgsLayoutContext::geometry()
 
   QCOMPARE( context.currentGeometry().asWkt(), f.geometry().asWkt() );
   QVERIFY( !context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
-  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( 0 ), QStringLiteral( "LineString (2412169 2388563, 2500000 2277996)" ) );
+  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( -1 ), QStringLiteral( "LineString (2412170 2388560, 2500000 2277990)" ) );
 
   // should be cached
-  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( 0 ), QStringLiteral( "LineString (2412169 2388563, 2500000 2277996)" ) );
+  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( -1 ), QStringLiteral( "LineString (2412170 2388560, 2500000 2277990)" ) );
 
   // layer crs
   QCOMPARE( context.currentGeometry( layer->crs() ).asWkt(), f.geometry().asWkt() );
