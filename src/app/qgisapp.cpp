@@ -5725,7 +5725,38 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
   QgsLayerTreeGroup *group = nullptr;
   if ( !groupName.isEmpty() )
   {
-    group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+    int index { 0 };
+    QgsLayerTreeNode *currentNode { mLayerTreeView->currentNode() };
+    if ( currentNode && currentNode->parent() )
+    {
+      if ( QgsLayerTree::isGroup( currentNode ) )
+      {
+        group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
+      }
+      else if ( QgsLayerTree::isLayer( currentNode ) )
+      {
+        const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+        int nodeIdx { 0 };
+        for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+        {
+          nodeIdx++;
+          if ( child == currentNode )
+          {
+            index = nodeIdx;
+            break;
+          }
+        }
+        group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+      }
+      else
+      {
+        group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+      }
+    }
+    else
+    {
+      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+    }
   }
 
   QgsSettings settings;
