@@ -45,34 +45,12 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex() = default;
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-QgsPointCloudIndex *QgsEptPointCloudIndex::clone() const
+std::unique_ptr<QgsPointCloudIndex> QgsEptPointCloudIndex::clone() const
 {
   QgsEptPointCloudIndex *clone = new QgsEptPointCloudIndex;
   QMutexLocker locker( &mHierarchyMutex );
-
-  // Base QgsPointCloudIndex fields
-  clone->mExtent = mExtent;
-  clone->mZMin = mZMin;
-  clone->mZMax = mZMax;
-  clone->mHierarchy = mHierarchy;
-  clone->mScale = mScale;
-  clone->mOffset = mOffset;
-  clone->mRootBounds = mRootBounds;
-  clone->mAttributes = mAttributes;
-  clone->mSpan = mSpan;
-  clone->mFilterExpression = mFilterExpression;
-
-  // QgsEptPointCloudIndex specific fields
-  clone->mIsValid = mIsValid;
-  clone->mDataType = mDataType;
-  clone->mDirectory = mDirectory;
-  clone->mWkt = mWkt;
-  clone->mPointCount = mPointCount;
-  clone->mMetadataStats = mMetadataStats;
-  clone->mAttributeClasses = mAttributeClasses;
-  clone->mOriginalMetadata = mOriginalMetadata;
-
-  return clone;
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
 }
 
 void QgsEptPointCloudIndex::load( const QString &fileName )
@@ -495,6 +473,21 @@ bool QgsEptPointCloudIndex::loadHierarchy()
 bool QgsEptPointCloudIndex::isValid() const
 {
   return mIsValid;
+}
+
+void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destination ) const
+{
+  QgsPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsEptPointCloudIndex specific fields
+  destination->mIsValid = mIsValid;
+  destination->mDataType = mDataType;
+  destination->mDirectory = mDirectory;
+  destination->mWkt = mWkt;
+  destination->mPointCount = mPointCount;
+  destination->mMetadataStats = mMetadataStats;
+  destination->mAttributeClasses = mAttributeClasses;
+  destination->mOriginalMetadata = mOriginalMetadata;
 }
 
 ///@endcond

@@ -39,18 +39,18 @@ struct StatsProcessor
     typedef QgsPointCloudStatistics result_type;
 
     StatsProcessor( QgsPointCloudIndex *index, QgsPointCloudRequest request, QgsFeedback *feedback )
-      : mIndex( index->clone() ), mRequest( request ), mFeedback( feedback )
+      : mIndex( index->clone().release() ), mRequest( request ), mFeedback( feedback )
     {
     }
 
     StatsProcessor( const StatsProcessor &processor )
-      : mIndex( processor.mIndex->clone() ), mRequest( processor.mRequest ), mFeedback( processor.mFeedback )
+      : mIndex( processor.mIndex->clone().release() ), mRequest( processor.mRequest ), mFeedback( processor.mFeedback )
     {
     }
 
     StatsProcessor &operator =( const StatsProcessor &rhs )
     {
-      mIndex.reset( rhs.mIndex->clone() );
+      mIndex.reset( rhs.mIndex->clone().release() );
       mRequest = rhs.mRequest;
       mFeedback = rhs.mFeedback;
       return *this;

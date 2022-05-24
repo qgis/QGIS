@@ -49,7 +49,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
-    QgsPointCloudIndex *clone() const override;
+    std::unique_ptr<QgsPointCloudIndex> clone() const override;
 
     void load( const QString &fileName ) override;
 
@@ -66,6 +66,12 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
+
+    /**
+     * Copies common properties to the \a destination index
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
 
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
