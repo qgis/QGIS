@@ -5737,7 +5737,7 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
       {
         const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
         int nodeIdx { 0 };
-        for ( const QgsLayerTreeNode* child : std::as_const( currentNodeSiblings ) )
+        for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
         {
           nodeIdx++;
           if ( child == currentNode )
@@ -5746,7 +5746,7 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
             break;
           }
         }
-        group = static_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+        group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
       }
       else
       {
