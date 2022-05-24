@@ -36,7 +36,7 @@
 #include "qgsmarkersymbol.h"
 
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /**
  * \ingroup UnitTests
@@ -371,7 +371,7 @@ bool TestQgsSvgMarkerSymbol::imageCheck( const QString &testType )
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_svgmarker" ) );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
