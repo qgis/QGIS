@@ -104,6 +104,10 @@ void QgsCombinedStyleModel::removeStyle( QgsStyle *style )
 void QgsCombinedStyleModel::addDefaultStyle()
 {
   QgsStyle *defaultStyle = QgsStyle::defaultStyle();
+  QgsStyleModel *styleModel = QgsApplication::defaultStyleModel();
+  if ( !defaultStyle || !styleModel )
+    return;
+
   mStyles.append( defaultStyle );
 
   QgsSingleItemModel *titleModel = new QgsSingleItemModel( this,
@@ -123,8 +127,6 @@ void QgsCombinedStyleModel::addDefaultStyle()
 
   addSourceModel( titleModel );
   mTitleModels.insert( defaultStyle, titleModel );
-
-  QgsStyleModel *styleModel = QgsApplication::defaultStyleModel();
 
   for ( QSize size : std::as_const( mAdditionalSizes ) )
   {
