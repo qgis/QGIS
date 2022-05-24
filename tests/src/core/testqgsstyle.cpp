@@ -540,26 +540,26 @@ void TestStyle::testLoadColorRamps()
 
   // values for color tests
   QMultiMap< QString, QPair< double, QColor> > colorTests;
-  colorTests.insert( QStringLiteral( "test_gradient" ), qMakePair( 0.25, QColor( "#ff8080" ) ) );
-  colorTests.insert( QStringLiteral( "test_gradient" ), qMakePair( 0.66, QColor( "#aeaeff" ) ) );
+  colorTests.insert( QStringLiteral( "test_gradient" ), qMakePair( 0, QColor( "#ff0000" ) ) );
+  colorTests.insert( QStringLiteral( "test_gradient" ), qMakePair( 1, QColor( "#0000ff" ) ) );
   // cannot test random colors!
-  colorTests.insert( QStringLiteral( "test_cb1" ), qMakePair( 0.25, QColor( "#fdae61" ) ) );
-  colorTests.insert( QStringLiteral( "test_cb1" ), qMakePair( 0.66, QColor( "#abdda4" ) ) );
-  colorTests.insert( QStringLiteral( "test_cb2" ), qMakePair( 0.25, QColor( "#fc8d59" ) ) );
-  colorTests.insert( QStringLiteral( "test_cb2" ), qMakePair( 0.66, QColor( "#d9ef8b" ) ) );
+  colorTests.insert( QStringLiteral( "test_cb1" ), qMakePair( 0, QColor( "#d7191c" ) ) );
+  colorTests.insert( QStringLiteral( "test_cb1" ), qMakePair( 1, QColor( "#2b83ba" ) ) );
+  colorTests.insert( QStringLiteral( "test_cb2" ), qMakePair( 0, QColor( "#d73027" ) ) );
+  colorTests.insert( QStringLiteral( "test_cb2" ), qMakePair( 1, QColor( "#1a9850" ) ) );
 
   // cpt-city
   colorRampsTest << QStringLiteral( "test_cc1" );
-  colorTests.insert( QStringLiteral( "test_cc1" ), qMakePair( 0.25, QColor( "#d0d1e6" ) ) );
-  colorTests.insert( QStringLiteral( "test_cc1" ), qMakePair( 0.66, QColor( "#67a9cf" ) ) );
+  colorTests.insert( QStringLiteral( "test_cc1" ), qMakePair( 0, QColor( "#f6eff7" ) ) );
+  colorTests.insert( QStringLiteral( "test_cc1" ), qMakePair( 1, QColor( "#016c59" ) ) );
   colorRampsTest << QStringLiteral( "test_cc2" );
-  colorTests.insert( QStringLiteral( "test_cc2" ), qMakePair( 0.25, QColor( "#de77ae" ) ) );
-  colorTests.insert( QStringLiteral( "test_cc2" ), qMakePair( 0.66, QColor( "#b8e186" ) ) );
+  colorTests.insert( QStringLiteral( "test_cc2" ), qMakePair( 0, QColor( "#8e0152" ) ) );
+  colorTests.insert( QStringLiteral( "test_cc2" ), qMakePair( 1, QColor( "#276419" ) ) );
   colorRampsTest << QStringLiteral( "test_cc3" );
-  colorTests.insert( QStringLiteral( "test_cc3" ), qMakePair( 0.25, QColor( "#808080" ) ) );
-  colorTests.insert( QStringLiteral( "test_cc3" ), qMakePair( 0.66, QColor( "#ffae00" ) ) );
+  colorTests.insert( QStringLiteral( "test_cc3" ), qMakePair( 0, QColor( "#0000ff" ) ) );
+  colorTests.insert( QStringLiteral( "test_cc3" ), qMakePair( 1, QColor( "#ff0000" ) ) );
 
-  QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
+  QgsDebugMsg( QStringLiteral( "loaded colorRamps: " ) + colorRamps.join( ' ' ) );
 
   for ( const QString &name : colorRampsTest )
   {
