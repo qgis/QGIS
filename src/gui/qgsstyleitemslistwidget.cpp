@@ -512,35 +512,35 @@ void QgsStyleItemsListWidget::updateModelFilters()
   if ( isFreeText )
   {
     mModel->setFavoritesOnly( false );
-    mModel->setTagId( -1 );
+    mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( groupsCombo->currentText() );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "favorite" ) )
   {
     mModel->setFavoritesOnly( true );
-    mModel->setTagId( -1 );
+    mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "all" ) )
   {
     mModel->setFavoritesOnly( false );
-    mModel->setTagId( -1 );
+    mModel->setTagString( QString() );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }
   else if ( groupsCombo->currentData().toString() == QLatin1String( "smartgroup" ) )
   {
     mModel->setFavoritesOnly( false );
-    mModel->setTagId( -1 );
+    mModel->setTagString( QString() );
     mModel->setSmartGroupId( mStyle->smartgroupId( text ) );
     mModel->setFilterString( QString() );
   }
   else
   {
     mModel->setFavoritesOnly( false );
-    mModel->setTagId( mStyle->tagId( text ) );
+    mModel->setTagString( text );
     mModel->setSmartGroupId( -1 );
     mModel->setFilterString( QString() );
   }

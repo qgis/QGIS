@@ -178,21 +178,35 @@ void TestQgis::permissiveToLongLong()
 
 void TestQgis::doubleToString()
 {
-  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QString( "5.67832" ) );
-  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QString( "5.55556" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 1 ), QString( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 2 ), QString( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.2, 10 ), QString( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), QString( "12.2" ) );
-  QCOMPARE( qgsDoubleToString( 12, 1 ), QString( "12" ) );
-  QCOMPARE( qgsDoubleToString( 12, 0 ), QString( "12" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 0 ), QString( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 1 ), QString( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12000, 10 ), QString( "12000" ) );
-  QCOMPARE( qgsDoubleToString( 12345, -1 ), QString( "12345" ) );
-  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), QString( "12345.123" ) );
-  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), QString( "12345" ) );
-  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), QString( "0" ) );
+  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QStringLiteral( "5.67832" ) );
+  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QStringLiteral( "5.55556" ) );
+  QCOMPARE( qgsDoubleToString( 12.2, 1 ), QStringLiteral( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12.2, 2 ), QStringLiteral( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12.2, 10 ), QStringLiteral( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), QStringLiteral( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12, 1 ), QStringLiteral( "12" ) );
+  QCOMPARE( qgsDoubleToString( 12, 0 ), QStringLiteral( "12" ) );
+  QCOMPARE( qgsDoubleToString( 12000, 0 ), QStringLiteral( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12000, 1 ), QStringLiteral( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12000, 10 ), QStringLiteral( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12345, -1 ), QStringLiteral( "12350" ) );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -1 ), QStringLiteral( "12350" ) );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -2 ), QStringLiteral( "12300" ) );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -3 ), QStringLiteral( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -4 ), QStringLiteral( "10000" ) );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -5 ), QStringLiteral( "0" ) );
+  QCOMPARE( qgsDoubleToString( 62345.0111, -5 ), QStringLiteral( "100000" ) );
+  QCOMPARE( qgsDoubleToString( 12345.0111, -6 ), QStringLiteral( "0" ) );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -1 ), QStringLiteral( "-12350" ) );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -2 ), QStringLiteral( "-12300" ) );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -3 ), QStringLiteral( "-12000" ) );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -4 ), QStringLiteral( "-10000" ) );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -5 ), QStringLiteral( "0" ) );
+  QCOMPARE( qgsDoubleToString( -62345.0111, -5 ), QStringLiteral( "-100000" ) );
+  QCOMPARE( qgsDoubleToString( -12345.0111, -6 ), QStringLiteral( "0" ) );
+  QCOMPARE( qgsDoubleToString( 12345.12300000, 7 ), QStringLiteral( "12345.123" ) );
+  QCOMPARE( qgsDoubleToString( 12345.00011111, 2 ), QStringLiteral( "12345" ) );
+  QCOMPARE( qgsDoubleToString( -0.000000000708115, 0 ), QStringLiteral( "0" ) );
 }
 
 void TestQgis::signalBlocker()

@@ -349,6 +349,13 @@ Sets geometry column name to ``geometryColumn``
 .. versionadded:: 3.10
 %End
 
+    QSet<QString> parameterKeys() const;
+%Docstring
+Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
+
+.. versionadded:: 3.26
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );

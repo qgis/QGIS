@@ -24,6 +24,7 @@
 #include "qgswkbtypes.h"
 
 #include <QMap>
+#include <QSet>
 
 /**
  * \ingroup core
@@ -318,6 +319,12 @@ class CORE_EXPORT QgsDataSourceUri
      */
     void setGeometryColumn( const QString &geometryColumn );
 
+    /**
+     * Returns parameter keys used in the uri: specialized ones ("table", "schema", etc.) or generic parameters.
+     * \since QGIS 3.26
+     */
+    QSet<QString> parameterKeys() const;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -365,6 +372,8 @@ class CORE_EXPORT QgsDataSourceUri
     bool mUseEstimatedMetadata = false;
     //! Disable SelectAtId capability (e.g., to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled = false;
+    //! Whether mSelectAtIdDisabled has been explicitly set to true or false
+    bool mSelectAtIdDisabledSet = false;
     //! geometry type (or QgsWkbTypes::Unknown if not specified)
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     //! SRID or a null string if not specified
