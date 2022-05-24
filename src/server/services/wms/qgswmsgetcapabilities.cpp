@@ -717,6 +717,7 @@ namespace QgsWms
 
         QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
         composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( mapId ) );
+        composerMapElem.setAttribute( QStringLiteral( "itemName" ), composerMap->displayName() );
         mapId++;
         composerMapElem.setAttribute( QStringLiteral( "width" ), composerMap->rect().width() );
         composerMapElem.setAttribute( QStringLiteral( "height" ), composerMap->rect().height() );
