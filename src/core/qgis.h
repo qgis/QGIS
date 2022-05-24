@@ -2013,20 +2013,33 @@ CORE_EXPORT uint qHash( const QVariant &variant );
  */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
-  QString str = QString::number( a, 'f', precision );
+  QString str;
   if ( precision )
   {
-    if ( str.contains( QLatin1Char( '.' ) ) )
+    if ( precision < 0 )
     {
-      // remove ending 0s
-      int idx = str.length() - 1;
-      while ( str.at( idx ) == '0' && idx > 1 )
-      {
-        idx--;
-      }
-      if ( idx < str.length() - 1 )
-        str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+      const double roundFactor = std::pow( 10, -precision );
+      str = QString::number( static_cast< long long >( std::round( a / roundFactor ) * roundFactor ) );
     }
+    else
+    {
+      str = QString::number( a, 'f', precision );
+      if ( str.contains( QLatin1Char( '.' ) ) )
+      {
+        // remove ending 0s
+        int idx = str.length() - 1;
+        while ( str.at( idx ) == '0' && idx > 1 )
+        {
+          idx--;
+        }
+        if ( idx < str.length() - 1 )
+          str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+      }
+    }
+  }
+  else
+  {
+    str = QString::number( a, 'f', precision );
   }
   // avoid printing -0
   // see https://bugreports.qt.io/browse/QTBUG-71439
