@@ -5827,13 +5827,13 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
     {
       if ( QgsLayerTree::isGroup( currentNode ) )
       {
-        group = static_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
+        group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
       }
       else if ( QgsLayerTree::isLayer( currentNode ) )
       {
-        const auto children { currentNode->parent()->children() };
+        const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
         int nodeIdx { 0 };
-        for ( const auto &child : std::as_const( children ) )
+        for ( const QgsLayerTreeNode* child : std::as_const( currentNodeSiblings ) )
         {
           nodeIdx++;
           if ( child == currentNode )
