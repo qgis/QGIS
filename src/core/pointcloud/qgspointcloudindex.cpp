@@ -348,3 +348,18 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
   }
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
+
+void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination ) const
+{
+  // Base QgsPointCloudIndex fields
+  destination->mExtent = mExtent;
+  destination->mZMin = mZMin;
+  destination->mZMax = mZMax;
+  destination->mHierarchy = mHierarchy;
+  destination->mScale = mScale;
+  destination->mOffset = mOffset;
+  destination->mRootBounds = mRootBounds;
+  destination->mAttributes = mAttributes;
+  destination->mSpan = mSpan;
+  destination->mFilterExpression = mFilterExpression;
+}

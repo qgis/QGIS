@@ -43,33 +43,12 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
-QgsPointCloudIndex *QgsCopcPointCloudIndex::clone() const
+std::unique_ptr<QgsPointCloudIndex> QgsCopcPointCloudIndex::clone() const
 {
   QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
   QMutexLocker locker( &mHierarchyMutex );
-
-  // Base QgsPointCloudIndex fields
-  clone->mExtent = mExtent;
-  clone->mZMin = mZMin;
-  clone->mZMax = mZMax;
-  clone->mHierarchy = mHierarchy;
-  clone->mScale = mScale;
-  clone->mOffset = mOffset;
-  clone->mRootBounds = mRootBounds;
-  clone->mAttributes = mAttributes;
-  clone->mSpan = mSpan;
-  clone->mFilterExpression = mFilterExpression;
-
-  // QgsCopcPointCloudIndex specific fields
-  clone->mIsValid = mIsValid;
-  clone->mFileName = mFileName;
-  clone->mCopcFile.open( mFileName.toStdString(), std::ios::binary );
-  clone->mCopcInfoVlr = mCopcInfoVlr;
-  clone->mHierarchyNodePos = mHierarchyNodePos;
-  clone->mOriginalMetadata = mOriginalMetadata;
-  clone->mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
-
-  return clone;
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
 }
 
 void QgsCopcPointCloudIndex::load( const QString &fileName )
@@ -300,6 +279,20 @@ QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const Indexed
       lst.append( n2 );
   }
   return lst;
+}
+
+void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
+{
+  QgsPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsCopcPointCloudIndex specific fields
+  destination->mIsValid = mIsValid;
+  destination->mFileName = mFileName;
+  destination->mCopcFile.open( mFileName.toStdString(), std::ios::binary );
+  destination->mCopcInfoVlr = mCopcInfoVlr;
+  destination->mHierarchyNodePos = mHierarchyNodePos;
+  destination->mOriginalMetadata = mOriginalMetadata;
+  destination->mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
 }
 
 ///@endcond

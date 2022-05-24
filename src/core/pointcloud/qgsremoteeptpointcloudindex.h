@@ -48,7 +48,7 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     explicit QgsRemoteEptPointCloudIndex();
     ~QgsRemoteEptPointCloudIndex();
 
-    QgsPointCloudIndex *clone() const override;
+    std::unique_ptr<QgsPointCloudIndex> clone() const override;
 
     QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
@@ -62,6 +62,12 @@ class CORE_EXPORT QgsRemoteEptPointCloudIndex: public QgsEptPointCloudIndex
     bool isValid() const override;
 
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
+
+    /**
+     * Copies common properties to the \a destination index
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( QgsRemoteEptPointCloudIndex *destination ) const;
 
   private:
     bool loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;

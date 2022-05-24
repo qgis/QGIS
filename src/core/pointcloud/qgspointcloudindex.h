@@ -43,6 +43,7 @@ class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
 class QgsPointCloudBlockRequest;
 class QgsPointCloudStatistics;
+class QgsPointCloudIndex;
 
 /**
  * \ingroup core
@@ -179,7 +180,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      * \note It is the responsibility of the caller to handle the ownership and delete the object.
      * \since QGIS 3.26
      */
-    virtual QgsPointCloudIndex *clone() const = 0;
+    virtual std::unique_ptr<QgsPointCloudIndex> clone() const = 0;
 
     //! Loads the index from the file
     virtual void load( const QString &fileName ) = 0;
@@ -314,6 +315,12 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      * \since QGIS 3.26
      */
     QString subsetString() const;
+
+    /**
+     * Copies common properties to the \a destination index
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( QgsPointCloudIndex *destination ) const;
 
   protected: //TODO private
     //! Sets native attributes of the data
