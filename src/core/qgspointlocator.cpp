@@ -908,6 +908,8 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 void QgsPointLocator::onInitTaskFinished()
 {
+  Q_ASSERT_X( QThread::currentThread() == qApp->thread(), "QgsPointLocator::onInitTaskFinished", "was not called on main thread" );
+
   // Check that we don't call this method twice, when calling waitForFinished
   // for instance (because of taskCompleted signal)
   if ( !mIsIndexing )
@@ -973,6 +975,8 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 
 void QgsPointLocator::waitForIndexingFinished()
 {
+  disconnect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
+  disconnect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
   mInitTask->waitForFinished();
 
   if ( !mIsDestroying )
