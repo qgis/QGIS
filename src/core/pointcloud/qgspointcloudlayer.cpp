@@ -858,7 +858,7 @@ void QgsPointCloudLayer::resetRenderer()
   {
     calculateStatistics();
   }
-  if ( mRenderer->type() == QLatin1String( "extent" ) )
+  if ( !mRenderer || mRenderer->type() == QLatin1String( "extent" ) )
   {
     setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
   }
@@ -869,7 +869,8 @@ void QgsPointCloudLayer::resetRenderer()
 
 void QgsPointCloudLayer::saveCopcStatistics()
 {
-  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() )
+  // If the point cloud doesn't have a valide PDAL data provider and a valid index we don't save any statistics
+  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() || mDataProvider->name() != QStringLiteral( "pdal" ) )
     return;
   if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
   {
@@ -879,7 +880,8 @@ void QgsPointCloudLayer::saveCopcStatistics()
 
 QgsPointCloudStatistics QgsPointCloudLayer::loadCopcStatistics()
 {
-  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() )
+  // If the point cloud doesn't have a valide PDAL data provider and a valid index we don't load anything and return an empty statistics object
+  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() || mDataProvider->name() != QStringLiteral( "pdal" ) )
     return QgsPointCloudStatistics();
 
   if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )

@@ -89,12 +89,12 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
       /**
        * Set to True if the point cloud shouldn't save the calculated statistics
        */
-      bool skipSavingStatistics = true;
+      bool skipSavingStatistics = false;
 
       /**
        * Set to True if the point cloud shouldn't load the calculated statistics
        */
-      bool skipLoadingStatistics = true;
+      bool skipLoadingStatistics = false;
 
       /**
        * Set to true if the statistics calculation for this point cloud is disabled
