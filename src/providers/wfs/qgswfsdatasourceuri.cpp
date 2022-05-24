@@ -30,6 +30,7 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   // http://example.com/?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=x&SRSNAME=y&username=foo&password=
   if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_URL ) )
   {
+    mDeprecatedURI = true;
     static const QSet<QString> sFilter
     {
       QStringLiteral( "service" ),
@@ -146,6 +147,42 @@ QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
     mAuth.mPassword = mURI.password();
     mAuth.mAuthCfg = mURI.authConfigId();
   }
+}
+
+QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
+{
+  static const QSet<QString> knownKeys
+  {
+    QgsWFSConstants::URI_PARAM_URL,
+    QgsWFSConstants::URI_PARAM_USERNAME,
+    QgsWFSConstants::URI_PARAM_USER,
+    QgsWFSConstants::URI_PARAM_PASSWORD,
+    QgsWFSConstants::URI_PARAM_AUTHCFG,
+    QgsWFSConstants::URI_PARAM_VERSION,
+    QgsWFSConstants::URI_PARAM_TYPENAME,
+    QgsWFSConstants::URI_PARAM_SRSNAME,
+    QgsWFSConstants::URI_PARAM_FILTER,
+    QgsWFSConstants::URI_PARAM_OUTPUTFORMAT,
+    QgsWFSConstants::URI_PARAM_RESTRICT_TO_REQUEST_BBOX,
+    QgsWFSConstants::URI_PARAM_MAXNUMFEATURES,
+    QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION,
+    QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION,
+    QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS,
+    QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG,
+    QgsWFSConstants::URI_PARAM_PAGING_ENABLED,
+    QgsWFSConstants::URI_PARAM_PAGE_SIZE,
+    QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES
+  };
+
+  QSet<QString> l_unknownParamKeys;
+  for ( const QString &key : mURI.parameterKeys() )
+  {
+    if ( !knownKeys.contains( key ) && !( mDeprecatedURI && key == QgsWFSConstants::URI_PARAM_BBOX ) )
+    {
+      l_unknownParamKeys.insert( key );
+    }
+  }
+  return l_unknownParamKeys;
 }
 
 const QString QgsWFSDataSourceURI::uri() const

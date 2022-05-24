@@ -113,6 +113,7 @@
 #include "vertextool/qgsvertexeditor.h"
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
+#include "qgsvectorlayerutils.h"
 
 #include "options/qgscodeeditoroptions.h"
 #include "options/qgsgpsdeviceoptions.h"
@@ -5724,7 +5725,38 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
   QgsLayerTreeGroup *group = nullptr;
   if ( !groupName.isEmpty() )
   {
-    group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+    int index { 0 };
+    QgsLayerTreeNode *currentNode { mLayerTreeView->currentNode() };
+    if ( currentNode && currentNode->parent() )
+    {
+      if ( QgsLayerTree::isGroup( currentNode ) )
+      {
+        group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
+      }
+      else if ( QgsLayerTree::isLayer( currentNode ) )
+      {
+        const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+        int nodeIdx { 0 };
+        for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+        {
+          nodeIdx++;
+          if ( child == currentNode )
+          {
+            index = nodeIdx;
+            break;
+          }
+        }
+        group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+      }
+      else
+      {
+        group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+      }
+    }
+    else
+    {
+      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+    }
   }
 
   QgsSettings settings;
@@ -7100,14 +7132,18 @@ bool QgisApp::fileSave()
     const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
 
     QString exts;
-    QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
-    if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+    Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+    switch ( defaultProjectFileFormat )
     {
-      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
-    }
-    else
-    {
-      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+      case Qgis::ProjectFileFormat::Qgs:
+      {
+        exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+        break;
+      }
+      case Qgis::ProjectFileFormat::Qgz:
+      {
+        exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+      }
     }
     QString filter;
     QString path = QFileDialog::getSaveFileName(
@@ -7213,14 +7249,19 @@ void QgisApp::fileSaveAs()
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
 
   QString exts;
-  QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
-  if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+  Qgis::ProjectFileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+  switch ( defaultProjectFileFormat )
   {
-    exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
-  }
-  else
-  {
-    exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+    case Qgis::ProjectFileFormat::Qgs:
+    {
+      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+      break;
+    }
+    case Qgis::ProjectFileFormat::Qgz:
+    {
+      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+      break;
+    }
   }
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
@@ -9083,6 +9124,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
       if ( dlg.exec() )
       {
         bool resultFlag = false;
+        QString errorMessage;
 
         QgsVectorLayerProperties::StyleType type = dlg.currentStyleType();
         switch ( type )
@@ -9090,12 +9132,11 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
           case QgsVectorLayerProperties::QML:
           case QgsVectorLayerProperties::SLD:
           {
-            QString message;
             QString filePath = dlg.outputFilePath();
             if ( type == QgsVectorLayerProperties::QML )
-              message = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
+              errorMessage = vlayer->saveNamedStyle( filePath, resultFlag, dlg.styleCategories() );
             else
-              message = vlayer->saveSldStyle( filePath, resultFlag );
+              errorMessage = vlayer->saveSldStyle( filePath, resultFlag );
 
             if ( resultFlag )
             {
@@ -9103,7 +9144,7 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
             }
             else
             {
-              mInfoBar->pushMessage( tr( "Save Style" ), message, Qgis::MessageLevel::Warning );
+              mInfoBar->pushMessage( tr( "Save Style" ), errorMessage, Qgis::MessageLevel::Warning );
             }
 
             break;
@@ -9115,7 +9156,6 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
 
             QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
-            QString errorMessage;
             if ( QgsProviderRegistry::instance()->styleExists( vlayer->providerType(), vlayer->source(), dbSettings.name, errorMessage ) )
             {
               if ( QMessageBox::question( nullptr, tr( "Save style in database" ),
@@ -9131,11 +9171,25 @@ void QgisApp::saveStyleFile( QgsMapLayer *layer )
               return;
             }
 
-            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
+            vlayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError, dlg.styleCategories() );
 
             if ( !msgError.isNull() )
             {
               mInfoBar->pushMessage( infoWindowTitle, msgError, Qgis::MessageLevel::Warning );
+            }
+            else
+            {
+              mInfoBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
+            }
+            break;
+          }
+          case QgsVectorLayerProperties::Local:
+          {
+            const QString infoWindowTitle = tr( "Save default style to local database" );
+            errorMessage = vlayer->saveDefaultStyle( resultFlag, dlg.styleCategories() );
+            if ( !resultFlag )
+            {
+              mInfoBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
             }
             else
             {
@@ -10828,13 +10882,13 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
       QList<QgsVectorLayer *>  avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
       {
-        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+        case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
           avoidIntersectionsLayers.append( pasteVectorLayer );
           break;
-        case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+        case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
           avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
           break;
-        case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+        case Qgis::AvoidIntersectionsMode::AllowIntersections:
           break;
       }
       if ( avoidIntersectionsLayers.size() > 0 )
@@ -11096,43 +11150,37 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
     if ( !layer->addAttribute( f ) )
     {
       visibleMessageBar()->pushMessage( tr( "Paste features" ),
-                                        tr( "Cannot create field %1 (%2,%3)" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
+                                        tr( "Cannot create field %1 (%2,%3), falling back to string type" ).arg( f.name(), f.typeName(), QVariant::typeToName( f.type() ) ),
                                         Qgis::MessageLevel::Warning );
-      return nullptr;
+
+      // Fallback to string
+      QgsField strField { f };
+      strField.setType( QVariant::String );
+      if ( !layer->addAttribute( strField ) )
+      {
+        visibleMessageBar()->pushMessage( tr( "Paste features" ),
+                                          tr( "Cannot create field %1 (%2,%3)" ).arg( strField.name(), strField.typeName(), QVariant::typeToName( strField.type() ) ),
+                                          Qgis::MessageLevel::Critical );
+        return nullptr;
+      }
     }
   }
 
-  // Convert to multi if necessary
-  QgsFeatureList convertedFeatures;
-  convertedFeatures.reserve( features.length() );
-  for ( QgsFeature feature : features )
+  QgsFeatureList convertedFeatures { QgsVectorLayerUtils::makeFeaturesCompatible( features, layer.get() ) };
+
+  // Convert attributes
+  for ( auto it = convertedFeatures.begin(); it != convertedFeatures.end(); ++it )
   {
-    if ( !feature.hasGeometry() )
+    for ( int idx = 0; idx < layer->fields().count() && idx < it->attributeCount(); ++idx )
     {
-      convertedFeatures.append( feature );
-      continue;
+      QVariant attr = it->attribute( idx );
+      if ( layer->fields().at( idx ).convertCompatible( attr ) )
+      {
+        it->setAttribute( idx, attr );
+      }
     }
-
-    const QgsWkbTypes::Type type = feature.geometry().wkbType();
-    if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
-    {
-      convertedFeatures.append( feature );
-      continue;
-    }
-
-    if ( QgsWkbTypes::singleType( wkbType ) != QgsWkbTypes::singleType( type ) )
-    {
-      feature.clearGeometry();
-    }
-
-    if ( QgsWkbTypes::isMultiType( wkbType ) &&  QgsWkbTypes::isSingleType( type ) )
-    {
-      QgsGeometry g = feature.geometry();
-      g.convertToMultiType();
-      feature.setGeometry( g );
-    }
-    convertedFeatures.append( feature );
   }
+
   if ( ! layer->addFeatures( convertedFeatures ) || !layer->commitChanges() )
   {
     QgsDebugMsg( QStringLiteral( "Cannot add features or commit changes" ) );
@@ -13002,7 +13050,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "View Settings" ), QStringLiteral( "mViewSettingsPage" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "CRS" ), QStringLiteral( "mProjOptsCRS" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Transformations" ), QStringLiteral( "mProjTransformations" ) );
-    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Default Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Styles" ), QStringLiteral( "mProjOptsSymbols" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Data Sources" ), QStringLiteral( "mTab_DataSources" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Relations" ), QStringLiteral( "mTabRelations" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Variables" ), QStringLiteral( "mTab_Variables" ) );
@@ -14255,7 +14303,6 @@ void QgisApp::closeProject()
 
   onActiveLayerChanged( activeLayer() );
 }
-
 
 void QgisApp::changeEvent( QEvent *event )
 {
@@ -16414,7 +16461,11 @@ void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
   {
     long long minTime = QgsSettings().value( QStringLiteral( "minTaskLengthForSystemNotification" ), 5, QgsSettings::App ).toLongLong() * 1000;
     QgsTask *task = QgsApplication::taskManager()->task( taskId );
-    if ( task && !( task->flags() & QgsTask::Flag::Hidden ) && task->elapsedTime() >= minTime )
+    if ( task
+         && !(
+           ( task->flags() & QgsTask::Hidden )
+           || ( task->flags() & QgsTask::Silent ) )
+         && task->elapsedTime() >= minTime )
     {
       if ( status == QgsTask::Complete )
         showSystemNotification( tr( "Task complete" ), task->description() );

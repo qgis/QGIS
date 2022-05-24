@@ -1387,6 +1387,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( DashPatternSizeAdjustment )
 
     /**
+     * Methods for modifying symbols by range in a graduated symbol renderer.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsGraduatedSymbolRenderer::GraduatedMethod
+     *
+     * \since QGIS 3.26
+     */
+    enum class GraduatedMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsGraduatedSymbolRenderer, GraduatedMethod ) : int
+      {
+      Color SIP_MONKEYPATCH_COMPAT_NAME( GraduatedColor ), //!< Alter color of symbols
+      Size SIP_MONKEYPATCH_COMPAT_NAME( GraduatedSize ), //!< Alter size of symbols
+    };
+    Q_ENUM( GraduatedMethod )
+
+    /**
      * DpiMode enum
      * \since QGIS 3.26
      */
@@ -1727,6 +1741,63 @@ class CORE_EXPORT Qgis
     Q_ENUM( PointCloudDrawOrder )
 
     /**
+     * Flags which control how intersections of pre-existing feature are handled when digitizing new features.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsProject::AvoidIntersectionsMode
+     *
+     * \since QGIS 3.26
+     */
+    enum class AvoidIntersectionsMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, AvoidIntersectionsMode ) : int
+      {
+      AllowIntersections, //!< Overlap with any feature allowed when digitizing new features
+      AvoidIntersectionsCurrentLayer, //!< Overlap with features from the active layer when digitizing new features not allowed
+      AvoidIntersectionsLayers, //!< Overlap with features from a specified list of layers when digitizing new features not allowed
+    };
+    Q_ENUM( AvoidIntersectionsMode )
+
+    /**
+     * Flags which control project read behavior.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsProject::FileFormat
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProjectFileFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, FileFormat ) : int
+      {
+      Qgz, //!< Archive file format, supports auxiliary data
+      Qgs, //!< Project saved in a clear text, does not support auxiliary data
+    };
+    Q_ENUM( ProjectFileFormat )
+
+    /**
+     * Flags which control project read behavior.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsProject::ReadFlag
+     *
+     * \since QGIS 3.26
+     */
+    enum class ProjectReadFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, ReadFlag ) : int
+      {
+      DontResolveLayers SIP_MONKEYPATCH_COMPAT_NAME( FlagDontResolveLayers ) = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+      DontLoadLayouts SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoadLayouts ) = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+      TrustLayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustLayerMetadata ) = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
+      DontStoreOriginalStyles SIP_MONKEYPATCH_COMPAT_NAME( FlagDontStoreOriginalStyles ) = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
+      DontLoad3DViews SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoad3DViews ) = 1 << 4, //!< Skip loading 3D views (since QGIS 3.26)
+      DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (since QGIS 3.26)
+    };
+    Q_ENUM( ProjectReadFlag )
+
+    /**
+     * Project load flags.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsProject::ReadFlags.
+     *
+     * \since QGIS 3.26
+     */
+    Q_DECLARE_FLAGS( ProjectReadFlags, ProjectReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProject, ReadFlags )
+    Q_FLAG( ProjectReadFlags )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -1866,6 +1937,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::DataProviderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
 
 
 // hack to workaround warnings when casting void pointers
@@ -1941,20 +2013,33 @@ CORE_EXPORT uint qHash( const QVariant &variant );
  */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
-  QString str = QString::number( a, 'f', precision );
+  QString str;
   if ( precision )
   {
-    if ( str.contains( QLatin1Char( '.' ) ) )
+    if ( precision < 0 )
     {
-      // remove ending 0s
-      int idx = str.length() - 1;
-      while ( str.at( idx ) == '0' && idx > 1 )
-      {
-        idx--;
-      }
-      if ( idx < str.length() - 1 )
-        str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+      const double roundFactor = std::pow( 10, -precision );
+      str = QString::number( static_cast< long long >( std::round( a / roundFactor ) * roundFactor ) );
     }
+    else
+    {
+      str = QString::number( a, 'f', precision );
+      if ( str.contains( QLatin1Char( '.' ) ) )
+      {
+        // remove ending 0s
+        int idx = str.length() - 1;
+        while ( str.at( idx ) == '0' && idx > 1 )
+        {
+          idx--;
+        }
+        if ( idx < str.length() - 1 )
+          str.truncate( str.at( idx ) == '.' ? idx : idx + 1 );
+      }
+    }
+  }
+  else
+  {
+    str = QString::number( a, 'f', precision );
   }
   // avoid printing -0
   // see https://bugreports.qt.io/browse/QTBUG-71439

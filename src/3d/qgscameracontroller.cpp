@@ -123,53 +123,6 @@ void QgsCameraController::setViewport( QRect viewport )
   emit viewportChanged();
 }
 
-
-static QVector3D unproject( QVector3D v, const QMatrix4x4 &modelView, const QMatrix4x4 &projection, QRect viewport )
-{
-  // Reimplementation of QVector3D::unproject() - see qtbase/src/gui/math3d/qvector3d.cpp
-  // The only difference is that the original implementation uses tolerance 1e-5
-  // (see qFuzzyIsNull()) as a protection against division by zero. For us it is however
-  // common to get lower values (e.g. as low as 1e-8 when zoomed out to the whole Earth with web mercator).
-
-  const QMatrix4x4 inverse = QMatrix4x4( projection * modelView ).inverted();
-
-  QVector4D tmp( v, 1.0f );
-  tmp.setX( ( tmp.x() - float( viewport.x() ) ) / float( viewport.width() ) );
-  tmp.setY( ( tmp.y() - float( viewport.y() ) ) / float( viewport.height() ) );
-  tmp = tmp * 2.0f - QVector4D( 1.0f, 1.0f, 1.0f, 1.0f );
-
-  QVector4D obj = inverse * tmp;
-  if ( qgsDoubleNear( obj.w(), 0, 1e-10 ) )
-    obj.setW( 1.0f );
-  obj /= obj.w();
-  return obj.toVector3D();
-}
-
-
-float find_x_on_line( float x0, float y0, float x1, float y1, float y )
-{
-  const float d_x = x1 - x0;
-  const float d_y = y1 - y0;
-  const float k = ( y - y0 ) / d_y; // TODO: can we have d_y == 0 ?
-  return x0 + k * d_x;
-}
-
-QPointF screen_point_to_point_on_plane( QPointF pt, QRect viewport, Qt3DRender::QCamera *camera, float y )
-{
-  // get two points of the ray
-  const QVector3D l0 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 0 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
-  const QVector3D l1 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 1 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
-
-  const QVector3D p0( 0, y, 0 ); // a point on the plane
-  const QVector3D n( 0, 1, 0 ); // normal of the plane
-  const QVector3D l = l1 - l0; // vector in the direction of the line
-  const float d = QVector3D::dotProduct( p0 - l0, n ) / QVector3D::dotProduct( l, n );
-  const QVector3D p = d * l + l0;
-
-  return QPointF( p.x(), p.z() );
-}
-
-
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
   const float pitch = mCameraPose.pitchAngle();
@@ -277,35 +230,6 @@ void QgsCameraController::readXml( const QDomElement &elem )
   const float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
   const float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
   setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
-}
-
-double QgsCameraController::cameraCenterElevation()
-{
-  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
-  {
-    // something went horribly wrong but we need to at least try to fix it somehow
-    qWarning() << "camera position got NaN!";
-    return 0;
-  }
-
-  double res = 0.0;
-
-  if ( mCamera && mTerrainEntity )
-  {
-    // figure out our distance from terrain and update the camera's view center
-    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
-    QVector3D intersectionPoint;
-    QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
-    if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
-      res = intersectionPoint.y();
-    else
-      res = mTerrainEntity->terrainElevationOffset();
-  }
-
-  if ( mCamera && !mTerrainEntity )
-    res = 0.0;
-
-  return res;
 }
 
 double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int py )

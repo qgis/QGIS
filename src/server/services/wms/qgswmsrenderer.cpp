@@ -40,6 +40,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsscalecalculator.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -63,6 +64,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
+#include "qgsserverapiutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
 #include "qgsattributeeditorcontainer.h"
@@ -1210,7 +1212,7 @@ namespace QgsWms
     return image.release();
   }
 
-  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam ) const
+  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam )
   {
     if ( !paintDevice )
     {
@@ -1310,6 +1312,41 @@ namespace QgsWms
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
+
+    // Set WMS temporal properties
+    // Note that this cannot parse multiple time instants while the vector dimensions implementation can
+    const QString timeString { mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ) };
+    if ( ! timeString.isEmpty() )
+    {
+      bool isValidTemporalRange { true };
+      QgsDateTimeRange range;
+      // First try with a simple date/datetime instant
+      const QDateTime dt { QDateTime::fromString( timeString, Qt::DateFormat::ISODateWithMs ) };
+      if ( dt.isValid() )
+      {
+        range = QgsDateTimeRange( dt, dt );
+      }
+      else  // parse as an interval
+      {
+        try
+        {
+          range = QgsServerApiUtils::parseTemporalDateTimeInterval( timeString );
+        }
+        catch ( const QgsServerApiBadRequestException &ex )
+        {
+          isValidTemporalRange = false;
+          QgsMessageLog::logMessage( QStringLiteral( "Could not parse TIME parameter into a temporal range" ), "Server", Qgis::MessageLevel::Warning );
+        }
+      }
+
+      if ( isValidTemporalRange )
+      {
+        mIsTemporal = true;
+        mapSettings.setIsTemporal( true );
+        mapSettings.setTemporalRange( range );
+      }
+
+    }
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
@@ -3184,6 +3221,11 @@ namespace QgsWms
     QMap<QString, QString> dimParamValues = mContext.parameters().dimensionValues();
     for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
     {
+      // Skip temporal properties for this layer, give precedence to the dimensions implementation
+      if ( mIsTemporal && dim.name.toUpper() == QStringLiteral( "TIME" ) && layer->temporalProperties()->isActive() )
+      {
+        layer->temporalProperties()->setIsActive( false );
+      }
       // Check field index
       int fieldIndex = layer->fields().indexOf( dim.fieldName );
       if ( fieldIndex == -1 )
@@ -3572,7 +3614,7 @@ namespace QgsWms
     layer->setCustomProperty( "sldStyleName", sldStyleName );
   }
 
-  QgsLegendSettings QgsRenderer::legendSettings() const
+  QgsLegendSettings QgsRenderer::legendSettings()
   {
     // getting scale from bbox or default size
     QgsLegendSettings settings = mWmsParameters.legendSettings();

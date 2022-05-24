@@ -1322,7 +1322,12 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
 
 QString QgsMapLayer::saveDefaultStyle( bool &resultFlag )
 {
-  return saveNamedStyle( styleURI(), resultFlag );
+  return saveDefaultStyle( resultFlag, AllStyleCategories );
+}
+
+QString QgsMapLayer::saveDefaultStyle( bool &resultFlag, StyleCategories categories )
+{
+  return saveNamedStyle( styleURI(), resultFlag, categories );
 }
 
 QString QgsMapLayer::saveNamedMetadata( const QString &uri, bool &resultFlag )

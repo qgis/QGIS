@@ -24,6 +24,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+#include <QPointer>
+
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
 
@@ -106,7 +108,7 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     QgsMapCanvas *mMapCanvas = nullptr;
 
     //! pointer to map cad docker widget
-    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
+    QPointer< QgsAdvancedDigitizingDockWidget > mCadDockWidget;
 
     /**
     * event filter to track mouse position

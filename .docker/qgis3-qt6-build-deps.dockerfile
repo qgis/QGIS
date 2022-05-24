@@ -3,7 +3,7 @@ ARG DISTRO_VERSION=36
 FROM fedora:${DISTRO_VERSION} as single
 MAINTAINER Matthias Kuhn <matthias@opengis.ch>
 
-RUN dnf -y install \
+RUN dnf -y --refresh install \
     bison \
     ccache \
     clang \
@@ -26,6 +26,8 @@ RUN dnf -y install \
     netcdf-devel \
     ninja-build \
     ocl-icd-devel \
+    PDAL \
+    PDAL-libs \
     PDAL-devel \
     proj-devel \
     protobuf-devel \

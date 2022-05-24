@@ -139,6 +139,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
       }
       else if ( pname == QLatin1String( "selectatid" ) )
       {
+        mSelectAtIdDisabledSet = true;
         mSelectAtIdDisabled = pval == QLatin1String( "false" );
       }
       else if ( pname == QLatin1String( "service" ) )
@@ -356,6 +357,7 @@ bool QgsDataSourceUri::useEstimatedMetadata() const
 
 void QgsDataSourceUri::disableSelectAtId( bool flag )
 {
+  mSelectAtIdDisabledSet = true;
   mSelectAtIdDisabled = flag;
 }
 
@@ -857,4 +859,47 @@ bool QgsDataSourceUri::hasParam( const QString &key ) const
     return true;
 
   return mParams.contains( key );
+}
+
+QSet<QString> QgsDataSourceUri::parameterKeys() const
+{
+  QSet<QString> paramKeys;
+  for ( const QString &key : mParams.keys() )
+    paramKeys.insert( key );
+  if ( !mHost.isEmpty() )
+    paramKeys.insert( QLatin1String( "host" ) );
+  if ( !mPort.isEmpty() )
+    paramKeys.insert( QLatin1String( "port" ) );
+  if ( !mDriver.isEmpty() )
+    paramKeys.insert( QLatin1String( "driver" ) );
+  if ( !mService.isEmpty() )
+    paramKeys.insert( QLatin1String( "service" ) );
+  if ( !mDatabase.isEmpty() )
+    paramKeys.insert( QLatin1String( "dbname" ) );
+  if ( !mSchema.isEmpty() )
+    paramKeys.insert( QLatin1String( "schema" ) );
+  if ( !mTable.isEmpty() )
+    paramKeys.insert( QLatin1String( "table" ) );
+  // Ignore mGeometryColumn: not a key ==> embedded in table value
+  if ( !mSql.isEmpty() )
+    paramKeys.insert( QLatin1String( "sql" ) );
+  if ( !mAuthConfigId.isEmpty() )
+    paramKeys.insert( QLatin1String( "authcfg" ) );
+  if ( !mUsername.isEmpty() )
+    paramKeys.insert( QLatin1String( "username" ) );
+  if ( !mPassword.isEmpty() )
+    paramKeys.insert( QLatin1String( "password" ) );
+  if ( mSSLmode != SslPrefer )
+    paramKeys.insert( QLatin1String( "sslmode" ) );
+  if ( !mKeyColumn.isEmpty() )
+    paramKeys.insert( QLatin1String( "key" ) );
+  if ( mUseEstimatedMetadata )
+    paramKeys.insert( QLatin1String( "estimatedmetadata" ) );
+  if ( mSelectAtIdDisabledSet )
+    paramKeys.insert( QLatin1String( "selectatid" ) );
+  if ( mWkbType != QgsWkbTypes::Unknown )
+    paramKeys.insert( QLatin1String( "type" ) );
+  if ( !mSrid.isEmpty() )
+    paramKeys.insert( QLatin1String( "srid" ) );
+  return paramKeys;
 }

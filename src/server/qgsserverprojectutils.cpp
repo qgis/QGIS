@@ -523,3 +523,4 @@ bool QgsServerProjectUtils::wmsRenderMapTiles( const QgsProject &project )
 {
   return project.readBoolEntry( QStringLiteral( "RenderMapTile" ), QStringLiteral( "/" ), false );
 }
+

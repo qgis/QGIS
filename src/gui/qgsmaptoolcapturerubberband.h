@@ -38,8 +38,12 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
     //! Constructor
     QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
 
-    //! Returns the curve defined by the rubber band, the caller has to take the ownership, nullptr if no curve is defined.
-    QgsCurve *curve();
+    /**
+     * Returns the curve defined by the rubber band, or NULLPTR if no curve is defined.
+     *
+     * The caller takes onwnership of the returned object.
+     */
+    QgsCurve *curve() SIP_FACTORY;
 
     /**
      * Returns if the curve defined by the rubber band is complete :

@@ -2199,6 +2199,9 @@ QStringList QgsDxfExport::encodings()
     if ( i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
       encodings << codec.data();
   }
+
+  encodings.removeDuplicates();
+
   return encodings;
 }
 

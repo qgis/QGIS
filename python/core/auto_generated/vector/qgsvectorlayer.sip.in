@@ -116,8 +116,7 @@ WFS (web feature service) data provider (wfs)
 
 Used to access data provided by a web feature service.
 
-The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
-starting with QGIS 2.16, a URI constructed using the :py:class:`QgsDataSourceUri` class with the following parameters :
+The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or a URI constructed using the :py:class:`QgsDataSourceUri` class with the following parameters (note that parameter keys are case sensitive):
 
 - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
 - typename=string (mandatory): WFS typename
@@ -136,8 +135,7 @@ starting with QGIS 2.16, a URI constructed using the :py:class:`QgsDataSourceUri
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
 
-The ‘FILTER’ query string parameter can be used to filter
-the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+The ‘filter’ key value can either be a QGIS expression
 or an OGC XML filter. If the value is set to a QGIS expression the driver will
 turn it into OGC XML filter before passing it to the WFS server. Beware the
 QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
@@ -934,7 +932,8 @@ Resolves references to other layers (kept as layer IDs after reading XML) into l
 
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError /Out/ );
+                                      QString &msgError /Out/,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Saves named and sld style of the layer to the style table in the db.
 
@@ -942,6 +941,8 @@ Saves named and sld style of the layer to the style table in the db.
 :param description: A description of the style
 :param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
+:param msgError: will be set to a descriptive error message if any occurs
+:param categories: the style categories to be saved.
 
 .. note::
 

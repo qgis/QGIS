@@ -177,6 +177,19 @@ class BatchPanelFillWidget(QToolButton):
                 select_layer_action.triggered.connect(self.showLayerSelectionDialog)
                 self.menu.addAction(select_layer_action)
 
+    def findStartingRow(self):
+        first_row = 0
+        for row in range(self.panel.batchRowCount()):
+            wrapper = self.panel.wrappers[row][self.column]
+            if wrapper is None:
+                break
+            else:
+                value = wrapper.parameterValue()
+                if value is None:
+                    break
+                first_row += 1
+        return first_row
+
     def fillDown(self):
         """
         Copy the top value down
@@ -218,8 +231,7 @@ class BatchPanelFillWidget(QToolButton):
             files = dlg.files()
             context = dataobjects.createContext()
 
-            first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
-            self.panel.addRow(len(files))
+            first_row = self.findStartingRow()
             self.panel.tblParameters.setUpdatesEnabled(False)
             for row, file in enumerate(files):
                 self.setRowValue(first_row + row, file, context)
@@ -243,8 +255,7 @@ class BatchPanelFillWidget(QToolButton):
 
         context = dataobjects.createContext()
 
-        first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
-        self.panel.addRow(len(files))
+        first_row = self.findStartingRow()
         self.panel.tblParameters.setUpdatesEnabled(False)
         for row, file in enumerate(files):
             self.setRowValue(first_row + row, file, context)
@@ -284,8 +295,7 @@ class BatchPanelFillWidget(QToolButton):
 
         context = dataobjects.createContext()
 
-        first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
-        self.panel.addRow(len(files))
+        first_row = self.findStartingRow()
         self.panel.tblParameters.setUpdatesEnabled(False)
         for row, file in enumerate(files):
             self.setRowValue(first_row + row, file, context)
@@ -329,7 +339,7 @@ class BatchPanelFillWidget(QToolButton):
 
         context = dataobjects.createContext()
 
-        first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+        first_row = self.findStartingRow()
         for row, selected_idx in enumerate(selected):
             value = layers[selected_idx].id()
             self.setRowValue(first_row + row, value, context)
@@ -386,8 +396,7 @@ class BatchPanelFillWidget(QToolButton):
             if type(res) is not list:
                 res = [res]
 
-            first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
-            self.panel.addRow(len(res))
+            first_row = self.findStartingRow()
             self.panel.tblParameters.setUpdatesEnabled(False)
             for row, value in enumerate(res):
                 self.setRowValue(row + first_row, value, context)

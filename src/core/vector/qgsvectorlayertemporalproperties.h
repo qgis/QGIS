@@ -328,7 +328,7 @@ class CORE_EXPORT QgsVectorLayerTemporalProperties : public QgsMapLayerTemporalP
      * isVisibleInTemporalRange() when testing whether features from a layer set to the
      * ModeFixedTemporalRange should ALL be filtered out.
      */
-    QString createFilterString( QgsVectorLayerTemporalContext context, const QgsDateTimeRange &range ) const;
+    QString createFilterString( const QgsVectorLayerTemporalContext &context, const QgsDateTimeRange &range ) const;
 
     /**
      * Attempts to setup the temporal properties by scanning a set of \a fields

@@ -1522,14 +1522,25 @@ PGresult *QgsPostgresConn::PQgetResult()
   return ::PQgetResult( mConn );
 }
 
-PGresult *QgsPostgresConn::PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes )
+PGresult *QgsPostgresConn::PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes, const QString &originatorClass, const QString &queryOrigin )
 {
   QMutexLocker locker( &mLock );
 
-  return ::PQprepare( mConn, stmtName.toUtf8(), query.toUtf8(), nParams, paramTypes );
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQprepare(%1): %2 " ).arg( stmtName, query ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+
+  PGresult *res { ::PQprepare( mConn, stmtName.toUtf8(), query.toUtf8(), nParams, paramTypes ) };
+
+  const int errorStatus = PQresultStatus( res );
+
+  if ( errorStatus != PGRES_TUPLES_OK )
+  {
+    logWrapper->setError( PQresultErrorMessage( res ) );
+  }
+
+  return res;
 }
 
-PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStringList &params )
+PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStringList &params, const QString &originatorClass, const QString &queryOrigin )
 {
   QMutexLocker locker( &mLock );
 
@@ -1547,7 +1558,16 @@ PGresult *QgsPostgresConn::PQexecPrepared( const QString &stmtName, const QStrin
       param[i] = qparam[i];
   }
 
-  PGresult *res = ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 );
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( QStringLiteral( "PQexecPrepared(%1)" ).arg( stmtName ), mConnInfo, QStringLiteral( "postgres" ), originatorClass, queryOrigin );
+
+  PGresult *res { ::PQexecPrepared( mConn, stmtName.toUtf8(), params.size(), param, nullptr, nullptr, 0 ) };
+
+  const int errorStatus = PQresultStatus( res );
+
+  if ( errorStatus != PGRES_TUPLES_OK && errorStatus != PGRES_COMMAND_OK )
+  {
+    logWrapper->setError( PQresultErrorMessage( res ) );
+  }
 
   delete [] param;
 

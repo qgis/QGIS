@@ -22,7 +22,7 @@
 #include <QCursor>
 #include <QString>
 #include <QObject>
-
+#include <QPointer>
 #include <QGestureEvent>
 #include "qgis_gui.h"
 
@@ -333,7 +333,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     void setToolName( const QString &name );
 
     //! The pointer to the map canvas
-    QgsMapCanvas *mCanvas = nullptr;
+    QPointer< QgsMapCanvas > mCanvas;
 
     //! The cursor used in the map tool
     QCursor mCursor;

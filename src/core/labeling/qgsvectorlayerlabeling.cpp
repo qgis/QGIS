@@ -50,6 +50,7 @@ QgsPalLayerSettings QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( con
 {
   QgsPalLayerSettings settings;
   settings.fieldName = layer->displayField();
+  settings.setFormat( QgsStyle::defaultTextFormatForProject( layer->project() ) );
 
   switch ( layer->geometryType() )
   {

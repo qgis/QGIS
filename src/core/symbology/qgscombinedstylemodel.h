@@ -47,19 +47,12 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
   public:
 
     /**
-     * Combined model roles.
-     *
-     * \note Roles from QgsStyleModel are also available.
-     */
-    enum Role
-    {
-      IsTitleRole = Qt::UserRole + 3234, //!< True if the index corresponds to a title item
-    };
-
-    /**
      * Constructor for QgsCombinedStyleModel with the specified \a parent object.
      */
     explicit QgsCombinedStyleModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
 
     /**
      * Adds a style to the model.
@@ -68,6 +61,7 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      *
      * \see styles()
      * \see addDefaultStyle()
+     * \see removeStyle()
      */
     void addStyle( QgsStyle *style );
 
@@ -77,6 +71,13 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
      * \see addStyle()
      */
     void addDefaultStyle();
+
+    /**
+     * Removes a \a style from the model.
+     *
+     * \see addStyle()
+     */
+    void removeStyle( QgsStyle *style );
 
     /**
      * Returns a list of all styles shown in the model.

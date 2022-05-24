@@ -527,9 +527,6 @@ QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
   setWindowTitle( tr( "Vertex Editor" ) );
   setObjectName( QStringLiteral( "VertexEditor" ) );
 
-  QVBoxLayout *layout = new QVBoxLayout();
-  layout->setContentsMargins( 0, 0, 0, 0 );
-
   QgsPanelWidgetStack *stack = new QgsPanelWidgetStack();
   setWidget( stack );
 

@@ -30,6 +30,9 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsclipboard.h"
 #include "qgsvectorlayercache.h"
+#include "qgsfeatureselectionmodel.h"
+#include "qgsgui.h"
+#include "qgseditorwidgetregistry.h"
 
 /**
  * \ingroup UnitTests
@@ -61,6 +64,8 @@ class TestQgsAttributeTable : public QObject
     void testVisibleTemporal();
     void testCopySelectedRows();
     void testSortNumbers();
+    void testStartMultiEditNoChanges();
+    void testMultiEditMakeUncommittedChanges();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -75,6 +80,7 @@ void TestQgsAttributeTable::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsGui::editorWidgetRegistry()->initEditors();
   mQgisApp = new QgisApp();
 
   // setup the test QSettings environment
@@ -466,6 +472,86 @@ void TestQgsAttributeTable::testSortNumbers()
 
 }
 
+void TestQgsAttributeTable::testStartMultiEditNoChanges()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature ft1( layer->dataProvider()->fields() );
+  ft1.setAttributes( QgsAttributes() << 1 << 2 );
+  layer->dataProvider()->addFeature( ft1 );
+  QgsFeature ft2( layer->dataProvider()->fields() );
+  ft2.setAttributes( QgsAttributes() << 3 << 4 );
+  layer->dataProvider()->addFeature( ft2 );
+
+  layer->selectAll();
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  for ( int i = 0; i < 10; ++i )
+  {
+    dlg->mMainView->setCurrentEditSelection( {ft2.id()} );
+    layer->startEditing();
+    dlg->mMainView->setMultiEditEnabled( true );
+
+    // nothing should change until the user actually makes a change!
+    // see https://github.com/qgis/QGIS/issues/46306
+    QgsFeature fNew1 = layer->getFeature( ft1.id() );
+    QCOMPARE( fNew1.attributes().at( 0 ).toInt(), 1 );
+    QCOMPARE( fNew1.attributes().at( 1 ).toInt(), 2 );
+    QgsFeature fNew2 = layer->getFeature( ft2.id() );
+    QCOMPARE( fNew2.attributes().at( 0 ).toInt(), 3 );
+    QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
+
+    layer->rollBack();
+    dlg->mMainView->setCurrentEditSelection( {ft1.id()} );
+    layer->startEditing();
+    dlg->mMainView->setMultiEditEnabled( true );
+
+    // nothing should change until the user actually makes a change!
+    fNew1 = layer->getFeature( ft1.id() );
+    QCOMPARE( fNew1.attributes().at( 0 ).toInt(), 1 );
+    QCOMPARE( fNew1.attributes().at( 1 ).toInt(), 2 );
+    fNew2 = layer->getFeature( ft2.id() );
+    QCOMPARE( fNew2.attributes().at( 0 ).toInt(), 3 );
+    QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
+    layer->rollBack();
+  }
+}
+
+void TestQgsAttributeTable::testMultiEditMakeUncommittedChanges()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col0:integer&field=col1:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsFeature ft1( layer->dataProvider()->fields() );
+  ft1.setAttributes( QgsAttributes() << 1 << 2 );
+  layer->dataProvider()->addFeature( ft1 );
+  QgsFeature ft2( layer->dataProvider()->fields() );
+  ft2.setAttributes( QgsAttributes() << 3 << 4 );
+  layer->dataProvider()->addFeature( ft2 );
+
+  layer->selectAll();
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( layer.get() ) );
+
+  dlg->mMainView->setCurrentEditSelection( {ft2.id()} );
+  layer->startEditing();
+  dlg->mMainView->setMultiEditEnabled( true );
+
+  dlg->mMainView->mAttributeForm->changeAttribute( QStringLiteral( "col0" ), 99 );
+
+  // nothing should change until the multiedit changes are manually applied
+  QgsFeature fNew1 = layer->getFeature( ft1.id() );
+  QCOMPARE( fNew1.attributes().at( 0 ).toInt(), 1 );
+  QCOMPARE( fNew1.attributes().at( 1 ).toInt(), 2 );
+  QgsFeature fNew2 = layer->getFeature( ft2.id() );
+  QCOMPARE( fNew2.attributes().at( 0 ).toInt(), 3 );
+  QCOMPARE( fNew2.attributes().at( 1 ).toInt(), 4 );
+
+  layer->rollBack();
+}
+
 void TestQgsAttributeTable::testRegression15974()
 {
   // Test duplicated rows in attribute table + two crashes.
@@ -657,12 +743,16 @@ void TestQgsAttributeTable::testCopySelectedRows()
 
   const QgsFeatureList features = clipboard->copyOf();
   QCOMPARE( features.count(), 2 );
-  QCOMPARE( features.at( 0 ).attribute( 0 ), 1 );
-  QCOMPARE( features.at( 0 ).attribute( "col1" ), 2 );
-  QCOMPARE( features.at( 0 ).attribute( "col2" ), QVariant() );
-  QCOMPARE( features.at( 1 ).attribute( "pk" ), 2 );
-  QCOMPARE( features.at( 1 ).attribute( "col1" ), 4 );
-  QCOMPARE( features.at( 1 ).attribute( 2 ), QVariant() );
+
+  const int feature1Index = features.at( 0 ).attribute( 0 ).toInt() == 1 ? 0 : 1;
+  const int feature2Index = feature1Index == 0 ? 1 : 0;
+
+  QCOMPARE( features.at( feature1Index ).attribute( 0 ), 1 );
+  QCOMPARE( features.at( feature1Index ).attribute( "col1" ), 2 );
+  QCOMPARE( features.at( feature1Index ).attribute( "col2" ), QVariant() );
+  QCOMPARE( features.at( feature2Index ).attribute( "pk" ), 2 );
+  QCOMPARE( features.at( feature2Index ).attribute( "col1" ), 4 );
+  QCOMPARE( features.at( feature2Index ).attribute( 2 ), QVariant() );
 
   QCOMPARE( clipboard->crs().authid(), "EPSG:3111" );
 }

@@ -96,6 +96,17 @@ Emitted when the selected item is changed in the widget.
 :param type: Newly selected item type
 %End
 
+    void selectionChangedWithStylePath( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath );
+%Docstring
+Emitted when the selected item is changed in the widget.
+
+:param name: Newly selected item name
+:param type: Newly selected item type
+:param stylePath: file path to associated style database
+
+.. versionadded:: 3.26
+%End
+
     void saveEntity();
 %Docstring
 Emitted when the user has opted to save a new entity to the style

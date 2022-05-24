@@ -224,6 +224,12 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     const QMap<QString, QgsProcessingModelOutput> outputs = it.value().modelOutputs();
     QMap< QString, QgsModelComponentGraphicItem * > outputItems;
 
+    // offsets from algorithm item needed to correctly place output items
+    // which does not have valid position assigned (https://github.com/qgis/QGIS/issues/48132)
+    QgsProcessingModelComponent *algItem = mChildAlgorithmItems[it.value().childId()]->component();
+    const double outputOffsetX = algItem->size().width();
+    double outputOffsetY = 1.5 * algItem->size().height();
+
     for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); ++outputIt )
     {
       QgsModelComponentGraphicItem *item = createOutputGraphicItem( model, outputIt.value().clone() );
@@ -232,7 +238,15 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
       connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
 
-      const QPointF pos = outputIt.value().position();
+      // if output added not at the same time as algorithm then it does not have
+      // valid position and will be placed at (0,0). We need to calculate better position.
+      // See https://github.com/qgis/QGIS/issues/48132.
+      QPointF pos = outputIt.value().position();
+      if ( pos.isNull() )
+      {
+        pos = algItem->position() + QPointF( outputOffsetX, outputOffsetY );
+        outputOffsetY += 1.5 * outputIt.value().size().height();
+      }
       int idx = -1;
       int i = 0;
       // find the actual index of the linked output from the child algorithm it comes from

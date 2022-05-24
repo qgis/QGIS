@@ -95,6 +95,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Int ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), "integerlist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::Double ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), "doublelist" );
   mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::List, QVariant::LongLong ), QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), "integer64list" );
+  mTypeBox->addItem( QgsFields::iconForFieldType( QVariant::Map ), QgsVariantUtils::typeToDisplayString( QVariant::Map ), "map" );
   mTypeBox_currentIndexChanged( 1 );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
@@ -201,6 +202,7 @@ void QgsNewMemoryLayerDialog::mTypeBox_currentIndexChanged( int index )
     case 9: // Integerlist
     case 10: // Doublelist
     case 11: // Integer64list
+    case 12: // Map
       mWidth->clear();
       mWidth->setEnabled( false );
       mPrecision->clear();
@@ -287,6 +289,8 @@ QgsFields QgsNewMemoryLayerDialog::fields() const
       fieldType = QVariant::List;
       fieldSubType = QVariant::LongLong;
     }
+    else if ( typeName == QLatin1String( "map" ) )
+      fieldType = QVariant::Map;
 
     const QgsField field = QgsField( name, fieldType, typeName, width, precision, QString(), fieldSubType );
     fields.append( field );

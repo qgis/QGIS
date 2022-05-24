@@ -30,15 +30,13 @@ A model which contains entities from multiple :py:class:`QgsStyle` databases.
 %End
   public:
 
-    enum Role
-    {
-      IsTitleRole,
-    };
-
     explicit QgsCombinedStyleModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCombinedStyleModel with the specified ``parent`` object.
 %End
+
+     virtual QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
 
     void addStyle( QgsStyle *style );
 %Docstring
@@ -49,11 +47,20 @@ Ownership of ``style`` is not transferred.
 .. seealso:: :py:func:`styles`
 
 .. seealso:: :py:func:`addDefaultStyle`
+
+.. seealso:: :py:func:`removeStyle`
 %End
 
     void addDefaultStyle();
 %Docstring
 Adds the default style (:py:func:`QgsStyle.defaultStyle()`) to the model.
+
+.. seealso:: :py:func:`addStyle`
+%End
+
+    void removeStyle( QgsStyle *style );
+%Docstring
+Removes a ``style`` from the model.
 
 .. seealso:: :py:func:`addStyle`
 %End

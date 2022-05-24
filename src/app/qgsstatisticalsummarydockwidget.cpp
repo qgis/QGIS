@@ -79,7 +79,7 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
 
   mStatisticsMenu = new QMenu( mOptionsToolButton );
   mOptionsToolButton->setMenu( mStatisticsMenu );
-  mSyncAction = new QAction( tr( "Keep synchronized with TOC" ) );
+  mSyncAction = new QAction( tr( "Follow Selected Layer" ), this );
   mSyncAction->setCheckable( true );
   connect( mSyncAction, &QAction::toggled, this, &QgsStatisticalSummaryDockWidget::manageSyncLayer );
 
