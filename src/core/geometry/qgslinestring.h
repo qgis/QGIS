@@ -721,15 +721,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
-    * Resets the line string to match the specified point data. The line string will
-    * inherit the dimensionality of the first point in the list.
+    * Resets the line string to match the specified point data. The line string
+    * dimensionality will be based on whether \a z or \a m arrays are specified.
+    *
     * \param size point count.
     * \param x array of x data
     * \param y array of y data
-    * \param z array of z data, can be null
-    * \param m array of m data, can be null
+    * \param z array of z data, can be NULLPTR
+    * \param m array of m data, can be NULLPTR
+    *
+    * \note Not available from Python bindings
+    * \since QGIS 3.26
     */
-    void setPoints( size_t size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr );
+    void setPoints( size_t size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr ) SIP_SKIP;
 
     /**
     * Resets the line string to match the specified list of points. The line string will
@@ -999,7 +1003,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     /**
      * Calculates the minimal 3D bounding box for the geometry.
      * \see calculateBoundingBox()
-     * \since QGIS 3.22
+     * \since QGIS 3.26
      */
     QgsBox3d calculateBoundingBox3d() const;
 
