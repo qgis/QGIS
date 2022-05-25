@@ -292,7 +292,7 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
   destination->mCopcInfoVlr = mCopcInfoVlr;
   destination->mHierarchyNodePos = mHierarchyNodePos;
   destination->mOriginalMetadata = mOriginalMetadata;
-  destination->mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
+  destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
 }
 
 ///@endcond
