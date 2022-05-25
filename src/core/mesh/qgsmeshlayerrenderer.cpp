@@ -428,7 +428,7 @@ void QgsMeshLayerRenderer::renderFaceMesh(
     if ( context.renderingStopped() )
       break;
 
-    if ( i >= faces.count() )
+    if ( i < 0 || i >= faces.count() )
       continue;
 
     const QgsMeshFace &face = faces[i];
