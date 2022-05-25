@@ -77,27 +77,7 @@ Trims the given polygon to a rectangular box, by modifying the given polygon in 
 :param clipRect: clipping rectangle
 %End
 
-    static void trimPolygon( QgsLineString &polygon, const QgsBox3d &clipRect );
-%Docstring
-Trims the given polygon to a pseudo 3D box, by modifying the given polygon in place.
 
-:param polygon: polygon as 2D or 3D coordinates
-:param clipRect: clipping 3D box
-
-.. versionadded:: 3.22
-%End
-
-    static QgsLineString clipped3dLine( const QgsCurve &curve, const QgsBox3d &clipExtent );
-%Docstring
-Takes a ``curve`` with 3D coordinates and clips it to clipExtent
-
-:param curve: the linestring to clip
-:param clipExtent: clipping bounds
-
-:return: clipped line coordinates
-
-.. versionadded:: 3.22
-%End
 
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 %Docstring

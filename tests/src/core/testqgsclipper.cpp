@@ -50,77 +50,77 @@ void TestQgsClipper::initTestCase()
 void TestQgsClipper::basicWithZ()
 {
   // QgsClipper is static only
-
-  QgsLineString polygon;
-  polygon.addVertex( QgsPoint( 10.4, 20.5, 10.0 ) );
-  polygon.addVertex( QgsPoint( 20.2, 30.2, 20.0 ) );
-
   QgsBox3d clipRect( 10, 10, 11, 25, 30, 19 );
 
-  QgsClipper::trimPolygon( polygon, clipRect );
+  QVector< double > x = { 10.4, 20.2 };
+  QVector< double > y = {20.5, 30.2 };
+  QVector< double > z = {10.0, 20.0 };
+  QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // Check nothing sticks out.
-  QVERIFY( checkBoundingBox( polygon, clipRect ) );
+  QVERIFY( checkBoundingBox( QgsLineString( x, y, z ), clipRect ) );
   // Check that it didn't clip too much
   QgsBox3d clipRectInner( clipRect );
   clipRectInner.scale( 0.999 );
-  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
+  QVERIFY( ! checkBoundingBox( QgsLineString( x, y, z ), clipRectInner ) );
 
   // A more complex example
-  polygon.clear();
-  polygon.addVertex( QgsPoint( 1.0, 9.0, 1.0 ) );
-  polygon.addVertex( QgsPoint( 11.0, 11.0, 11.0 ) );
-  polygon.addVertex( QgsPoint( 9.0, 1.0, 9.0 ) );
+  x = { 1.0, 11.0, 9.0 };
+  y = { 9.0, 11.0, 1.0 };
+  z = { 1.0, 11.0, 9.0 };
   clipRect = QgsBox3d( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
 
-  QgsClipper::trimPolygon( polygon, clipRect );
+  QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // We should have 5 vertices now?
-  QCOMPARE( polygon.numPoints(), 5 );
+  QCOMPARE( x.size(), 5 );
+  QCOMPARE( y.size(), 5 );
+  QCOMPARE( z.size(), 5 );
   // Check nothing sticks out.
-  QVERIFY( checkBoundingBox( polygon, clipRect ) );
+  QVERIFY( checkBoundingBox( QgsLineString( x, y, z ), clipRect ) );
   // Check that it didn't clip too much
   clipRectInner = clipRect;
   clipRectInner.scale( 0.999 );
-  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
+  QVERIFY( ! checkBoundingBox( QgsLineString( x, y, z ), clipRectInner ) );
 }
 
 void TestQgsClipper::basicWithZInf()
 {
   // QgsClipper is static only
 
-  QgsLineString polygon;
-  polygon.addVertex( QgsPoint( 10.4, 20.5, 10.0 ) );
-  polygon.addVertex( QgsPoint( 20.2, 30.2, 20.0 ) );
+  QVector< double > x { 10.4, 20.2 };
+  QVector< double > y { 20.5, 30.2 };
+  QVector< double > z { 10.0, 20.0 };
 
   QgsBox3d clipRect( 10, 10, -HUGE_VAL, 25, 30, HUGE_VAL );
 
-  QgsClipper::trimPolygon( polygon, clipRect );
+  QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // Check nothing sticks out.
-  QVERIFY( checkBoundingBox( polygon, clipRect ) );
+  QVERIFY( checkBoundingBox( QgsLineString( x, y, z ), clipRect ) );
   // Check that it didn't clip too much
   QgsBox3d clipRectInner( clipRect );
   clipRectInner.scale( 0.999 );
-  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
+  QVERIFY( ! checkBoundingBox( QgsLineString( x, y, z ), clipRectInner ) );
 
   // A more complex example
-  polygon.clear();
-  polygon.addVertex( QgsPoint( 1.0, 9.0, 1.0 ) );
-  polygon.addVertex( QgsPoint( 11.0, 11.0, 11.0 ) );
-  polygon.addVertex( QgsPoint( 9.0, 1.0, 9.0 ) );
+  x = { 1.0, 11.0, 9.0 };
+  y = { 9.0, 11.0, 1.0 };
+  z = { 1.0, 11.0, 9.0 };
   clipRect = QgsBox3d( 0.0, 0.0, 0.0, 10.0, 10.0, 10.0 );
 
-  QgsClipper::trimPolygon( polygon, clipRect );
+  QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // We should have 5 vertices now?
-  QCOMPARE( polygon.numPoints(), 5 );
+  QCOMPARE( x.size(), 5 );
+  QCOMPARE( y.size(), 5 );
+  QCOMPARE( z.size(), 5 );
   // Check nothing sticks out.
-  QVERIFY( checkBoundingBox( polygon, clipRect ) );
+  QVERIFY( checkBoundingBox( QgsLineString( x, y, z ), clipRect ) );
   // Check that it didn't clip too much
   clipRectInner = clipRect;
   clipRectInner.scale( 0.999 );
-  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
+  QVERIFY( ! checkBoundingBox( QgsLineString( x, y, z ), clipRectInner ) );
 }
 
 void TestQgsClipper::basic()
