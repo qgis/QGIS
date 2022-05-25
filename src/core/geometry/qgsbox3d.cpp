@@ -134,15 +134,15 @@ bool QgsBox3d::operator==( const QgsBox3d &other ) const
          qgsDoubleNear( mZmax, other.mZmax );
 }
 
-void QgsBox3d::scale( double scaleFactor, const QgsPoint &c )
+void QgsBox3d::scale( double scaleFactor, const QgsPoint &center )
 {
   // scale from the center
   double centerX, centerY, centerZ;
-  if ( !c.isEmpty() )
+  if ( !center.isEmpty() )
   {
-    centerX = c.x();
-    centerY = c.y();
-    centerZ = c.z();
+    centerX = center.x();
+    centerY = center.y();
+    centerZ = center.z();
   }
   else
   {
