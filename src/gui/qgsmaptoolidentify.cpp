@@ -567,7 +567,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   if ( isSingleClick )
   {
     isPointOrRectangle = true;
-    point = selectionGeom.vertexAt( 0 );
+    point = *qgsgeometry_cast< const QgsPoint *>( selectionGeom.constGet() );
 
     commonDerivedAttributes = derivedAttributesForPoint( point );
   }
