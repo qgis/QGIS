@@ -141,7 +141,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
   QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
-  std::ifstream file( mFileName.toStdString(), std::ios::binary );
+  std::ifstream file( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
   file.seekg( blockOffset );
   file.read( rawBlockData.data(), blockSize );
 
