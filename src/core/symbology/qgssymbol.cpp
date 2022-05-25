@@ -147,7 +147,6 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
     //create x, y arrays
     const int nVertices = pointsX.size();
 
-    QString err;
     try
     {
       ct.transformCoords( nVertices, pointsX.data(), pointsY.data(), pointsZ.data(), Qgis::TransformDirection::Forward );
