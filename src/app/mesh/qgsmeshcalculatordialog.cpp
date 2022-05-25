@@ -695,7 +695,7 @@ void QgsMeshCalculatorDialog::repopulateTimeCombos()
   mEndTimeComboBox->clear();
 
   // populate combos
-  for ( auto it = times.begin(); it != times.end(); ++it )
+  for ( auto it = times.constBegin(); it != times.constEnd(); ++it )
   {
     double time = it.value();
     const QString strTime = layer->formatTime( time );
