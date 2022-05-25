@@ -458,6 +458,47 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return mM.constData();
     }
 
+    /**
+     * Returns the x vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > xVector() const SIP_SKIP
+    {
+      return mX;
+    }
+
+    /**
+     * Returns the y vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > yVector() const SIP_SKIP
+    {
+      return mY;
+    }
+
+    /**
+     * Returns the z vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > zVector() const SIP_SKIP
+    {
+      return mZ;
+    }
+
+    /**
+     * Returns the m vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > mVector() const SIP_SKIP
+    {
+      return mM;
+    }
+
+
 #ifndef SIP_RUN
 
     /**

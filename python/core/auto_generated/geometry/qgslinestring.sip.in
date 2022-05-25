@@ -358,6 +358,11 @@ corresponds to the last point in the line.
 
 
 
+
+
+
+
+
     double zAt( int index ) const;
 %Docstring
 Returns the z-coordinate of the specified node in the line string.

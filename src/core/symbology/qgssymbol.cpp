@@ -95,7 +95,9 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
 
   QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel &mtp = context.mapToPixel();
-  QgsLineString pts;
+  QVector< double > pointsX;
+  QVector< double > pointsY;
+  QVector< double > pointsZ;
 
   // apply clipping for large lines to achieve a better rendering performance
   if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
@@ -104,30 +106,51 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
     const double cw = e.width() / 10;
     const double ch = e.height() / 10;
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
-    pts = QgsClipper::clipped3dLine( curve, clipRect );
+
+    const QgsLineString *lineString = nullptr;
+    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
+    {
+      lineString = ls;
+    }
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+      lineString = segmentized.get();
+    }
+
+    QgsClipper::clipped3dLine( lineString->xVector(), lineString->yVector(), lineString->zVector(), pointsX, pointsY, pointsZ, clipRect );
   }
   else
   {
     // clone...
-    const QgsLineString *tmpLine = reinterpret_cast<const QgsLineString *>( &curve );
-    if ( dynamic_cast<const QgsLineString *>( &curve ) )
+    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
     {
-      pts.setPoints( curve.numPoints(), tmpLine->xData(), tmpLine->yData(), tmpLine->zData(), tmpLine->mData() );
+      pointsX = ls->xVector();
+      pointsY = ls->yVector();
+      pointsZ = ls->zVector();
     }
     else
     {
-      QgsPointSequence seq;
-      curve.points( seq );
-      pts.setPoints( seq );
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+
+      pointsX = segmentized->xVector();
+      pointsY = segmentized->yVector();
+      pointsZ = segmentized->zVector();
     }
   }
 
-  // transform the QPolygonF to screen coordinates
+  // transform the points to screen coordinates
   if ( ct.isValid() )
   {
+    //create x, y arrays
+    const int nVertices = pointsX.size();
+
+    QString err;
     try
     {
-      pts.transform( ct, Qgis::TransformDirection::Forward, true );
+      ct.transformCoords( nVertices, pointsX.data(), pointsY.data(), pointsZ.data(), Qgis::TransformDirection::Forward );
     }
     catch ( QgsCsException & )
     {
@@ -136,17 +159,36 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-  pts.filterVertices( []( const QgsPoint & point )
   {
-    if ( point.is3D() )
+    const int size = pointsX.size();
+
+    const double *xIn = pointsX.data();
+    const double *yIn = pointsY.data();
+    const double *zIn = pointsZ.data();
+    double *xOut = pointsX.data();
+    double *yOut = pointsY.data();
+    double *zOut = pointsZ.data();
+    int outSize = 0;
+    for ( int i = 0; i < size; ++i )
     {
-      return std::isfinite( point.x() ) && std::isfinite( point.y() ) && std::isfinite( point.z() );
+      if ( std::isfinite( *xIn ) && std::isfinite( *yIn ) && std::isfinite( *zIn ) )
+      {
+        *xOut++ = *xIn++;
+        *yOut++ = *yIn++;
+        *zOut++ = *zIn++;
+        outSize++;
+      }
+      else
+      {
+        xIn++;
+        yIn++;
+        zIn++;
+      }
     }
-    else
-    {
-      return std::isfinite( point.x() ) && std::isfinite( point.y() );
-    }
-  } );
+    pointsX.resize( outSize );
+    pointsY.resize( outSize );
+    pointsZ.resize( outSize );
+  }
 
   if ( clipToExtent && nPoints > 1 && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection )
   {
@@ -155,14 +197,27 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
     const double cw = e.width() / 10;
     const double ch = e.height() / 10;
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
-    pts = QgsClipper::clipped3dLine( pts, clipRect );
+
+    QVector< double > tempX;
+    QVector< double > tempY;
+    QVector< double > tempZ;
+    QgsClipper::clipped3dLine( pointsX, pointsY, pointsZ, tempX, tempY, tempZ, clipRect );
+    pointsX = tempX;
+    pointsY = tempY;
+    pointsZ = tempZ;
   }
 
-  QPolygonF out = pts.asQPolygonF();
-  QPointF *ptr = out.data();
-  for ( int i = 0; i < out.size(); ++i, ++ptr )
+  const int polygonSize = pointsX.size();
+  QPolygonF out( polygonSize );
+  const double *x = pointsX.constData();
+  const double *y = pointsY.constData();
+  QPointF *dest = out.data();
+  for ( int i = 0; i < polygonSize; ++i )
   {
-    mtp.transformInPlace( ptr->rx(), ptr->ry() );
+    double screenX = *x++;
+    double screenY = *y++;
+    mtp.transformInPlace( screenX, screenY );
+    *dest++ = QPointF( screenX, screenY );
   }
 
   return out;
@@ -243,40 +298,79 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
   const QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel &mtp = context.mapToPixel();
 
-  // clone...
-  QgsPointSequence seq;
-  curve.points( seq );
-  QgsLineString poly( seq );
+  QVector< double > pointsX;
+  QVector< double > pointsY;
+  QVector< double > pointsZ;
 
   if ( curve.numPoints() < 1 )
     return QPolygonF();
 
+  bool reverseRing = false;
   if ( correctRingOrientation )
   {
     // ensure consistent polygon ring orientation
     if ( ( isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise ) || ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise ) )
     {
-      poly.reversed()->points( seq );
-      poly.setPoints( seq );
+      reverseRing = true;
     }
   }
 
   //clip close to view extent, if needed
-  if ( clipToExtent && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) && !context.extent().contains( poly.boundingBox() ) )
+  if ( clipToExtent && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) && !context.extent().contains( curve.boundingBox() ) )
   {
     const QgsRectangle e = context.extent();
     const double cw = e.width() / 10;
     const double ch = e.height() / 10;
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
-    QgsClipper::trimPolygon( poly, clipRect );
+
+    const QgsLineString *lineString = nullptr;
+    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
+    {
+      lineString = ls;
+    }
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+      lineString = segmentized.get();
+    }
+
+    QgsClipper::clipped3dLine( lineString->xVector(), lineString->yVector(), lineString->zVector(), pointsX, pointsY, pointsZ, clipRect );
+  }
+  else
+  {
+    // clone...
+    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
+    {
+      pointsX = ls->xVector();
+      pointsY = ls->yVector();
+      pointsZ = ls->zVector();
+    }
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+
+      pointsX = segmentized->xVector();
+      pointsY = segmentized->yVector();
+      pointsZ = segmentized->zVector();
+    }
+  }
+
+  if ( reverseRing )
+  {
+    std::reverse( pointsX.begin(), pointsX.end() );
+    std::reverse( pointsY.begin(), pointsY.end() );
+    std::reverse( pointsZ.begin(), pointsZ.end() );
   }
 
   //transform the QPolygonF to screen coordinates
   if ( ct.isValid() )
   {
+    const int nVertices = pointsX.size();
     try
     {
-      poly.transform( ct, Qgis::TransformDirection::Forward, true );
+      ct.transformCoords( nVertices, pointsX.data(), pointsY.data(), pointsZ.data(), Qgis::TransformDirection::Forward );
     }
     catch ( QgsCsException & )
     {
@@ -285,37 +379,68 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
   }
 
   // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
-  poly.filterVertices( []( const QgsPoint point )
   {
-    if ( point.is3D() )
-    {
-      return std::isfinite( point.x() ) && std::isfinite( point.y() ) && std::isfinite( point.z() );
-    }
-    else
-    {
-      return std::isfinite( point.x() ) && std::isfinite( point.y() );
-    }
-  } );
+    const int size = pointsX.size();
 
+    const double *xIn = pointsX.data();
+    const double *yIn = pointsY.data();
+    const double *zIn = pointsZ.data();
+    double *xOut = pointsX.data();
+    double *yOut = pointsY.data();
+    double *zOut = pointsZ.data();
+    int outSize = 0;
+    for ( int i = 0; i < size; ++i )
+    {
+      if ( std::isfinite( *xIn ) && std::isfinite( *yIn ) && std::isfinite( *zIn ) )
+      {
+        *xOut++ = *xIn++;
+        *yOut++ = *yIn++;
+        *zOut++ = *zIn++;
+        outSize++;
+      }
+      else
+      {
+        xIn++;
+        yIn++;
+        zIn++;
+      }
+    }
+    pointsX.resize( outSize );
+    pointsY.resize( outSize );
+    pointsZ.resize( outSize );
+  }
 
-  if ( clipToExtent && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection && !context.mapExtent().contains( poly.boundingBox() ) )
+  if ( clipToExtent && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection && !context.mapExtent().contains( curve.boundingBox() ) )
   {
     // early clipping was not possible, so we have to apply it here after transformation
     const QgsRectangle e = context.mapExtent();
     const double cw = e.width() / 10;
     const double ch = e.height() / 10;
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
-    QgsClipper::trimPolygon( poly, clipRect );
+
+    QVector< double > tempX;
+    QVector< double > tempY;
+    QVector< double > tempZ;
+    QgsClipper::clipped3dLine( pointsX, pointsY, pointsZ, tempX, tempY, tempZ, clipRect );
+    pointsX = tempX;
+    pointsY = tempY;
+    pointsZ = tempZ;
   }
 
-  QPolygonF out = poly.asQPolygonF();
-  QPointF *ptr = out.data();
-  for ( int i = 0; i < out.size(); ++i, ++ptr )
+  const int polygonSize = pointsX.size();
+  QPolygonF out( polygonSize );
+  const double *x = pointsX.constData();
+  const double *y = pointsY.constData();
+  QPointF *dest = out.data();
+  for ( int i = 0; i < polygonSize; ++i )
   {
-    mtp.transformInPlace( ptr->rx(), ptr->ry() );
+    double screenX = *x++;
+    double screenY = *y++;
+    mtp.transformInPlace( screenX, screenY );
+    *dest++ = QPointF( screenX, screenY );
   }
 
-  if ( !out.empty() && !poly.isClosed() )
+  if ( !out.empty() && !out.isClosed() )
     out << out.at( 0 );
 
   return out;
