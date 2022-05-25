@@ -678,17 +678,15 @@ void QgsMeshCalculatorDialog::repopulateTimeCombos()
     }
   }
 
-  const QList<qint64> keys = times.keys();
-
   mStartTimeComboBox->blockSignals( true );
   mEndTimeComboBox->blockSignals( true );
   mStartTimeComboBox->clear();
   mEndTimeComboBox->clear();
 
   // populate combos
-  for ( const qint64 &key : keys )
+  for ( auto it = times.begin(); it != times.end(); ++it )
   {
-    double time = times[key];
+    double time = it.value();
     const QString strTime = layer->formatTime( time );
     mStartTimeComboBox->addItem( strTime, time );
     mEndTimeComboBox->addItem( strTime, time );
