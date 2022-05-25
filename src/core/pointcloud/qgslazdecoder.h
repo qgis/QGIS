@@ -27,6 +27,8 @@
 #include "lazperf/lazperf.hpp"
 #include "lazperf/readers.hpp"
 
+#include <string>
+
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
@@ -88,6 +90,20 @@ class QgsLazDecoder
     static QgsPointCloudBlock *decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
     static QgsPointCloudBlock *decompressCopc( const QString &filename, QgsLazInfo &lazInfo, uint64_t blockOffset, uint64_t blockSize, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
     static QgsPointCloudBlock *decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression );
+
+#if defined(_MSC_VER)
+
+    /**
+     * Converts Unicode path to MSVC's wide string (file streams in MSVC c++ library
+     * expect paths in the active code page, not UTF-8, but they provide variants
+     * with std::wstring to deal with unicode paths)
+     */
+    static std::wstring toNativePath( const QString &filename );
+#else
+    //! Converts Unicode path to UTF-8 encoded string
+    static std::string toNativePath( const QString &filename );
+#endif
+
 };
 
 ///@endcond
