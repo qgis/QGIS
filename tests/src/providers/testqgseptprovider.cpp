@@ -24,6 +24,7 @@
 #include <QDir>
 #include <fstream>
 #include <QVector>
+#include <QThreadPool>
 
 //qgis includes...
 #include "qgis.h"
@@ -92,6 +93,8 @@ void TestQgsEptProvider::initTestCase()
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport = QStringLiteral( "<h1>EPT Provider Tests</h1>\n" );
+
+  QThreadPool::globalInstance()->setMaxThreadCount( 2 );
 }
 
 //runs after all tests
