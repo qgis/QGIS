@@ -591,47 +591,28 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
 
 QgsBox3d QgsLineString::calculateBoundingBox3d() const
 {
-  QgsBox3d out;
+
   if ( mX.empty() )
   {
-    out = QgsBox3d();
+    return QgsBox3d();
   }
 
-  else if ( mBoundingBox.isNull() )
+  if ( mBoundingBox.isNull() )
   {
-    auto result = std::minmax_element( mX.begin(), mX.end() );
-    const double xmin = *result.first;
-    const double xmax = *result.second;
-    result = std::minmax_element( mY.begin(), mY.end() );
-    const double ymin = *result.first;
-    const double ymax = *result.second;
-
-    if ( is3D() )
-    {
-      result = std::minmax_element( mZ.begin(), mZ.end() );
-      const double zmin = *result.first;
-      const double zmax = *result.second;
-      out = QgsBox3d( xmin, ymin, zmin, xmax, ymax, zmax );
-    }
-    else
-    {
-      out = QgsBox3d( xmin, ymin, NAN, xmax, ymax, NAN );
-    }
+    mBoundingBox = calculateBoundingBox();
   }
 
+  QgsBox3d out;
+  if ( is3D() )
+  {
+    auto result = std::minmax_element( mZ.begin(), mZ.end() );
+    const double zmin = *result.first;
+    const double zmax = *result.second;
+    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
+  }
   else
   {
-    if ( is3D() )
-    {
-      auto result = std::minmax_element( mZ.begin(), mZ.end() );
-      const double zmin = *result.first;
-      const double zmax = *result.second;
-      out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
-    }
-    else
-    {
-      out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), NAN, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), NAN );
-    }
+    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
   }
   return out;
 }
