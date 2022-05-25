@@ -529,17 +529,6 @@ corresponds to the last point in the line.
     }
 %End
 
-    void setPoints( size_t size, const double *x, const double *y, const double *z = 0, const double *m = 0 );
-%Docstring
-Resets the line string to match the specified point data. The line string will
-inherit the dimensionality of the first point in the list.
-
-:param size: point count.
-:param x: array of x data
-:param y: array of y data
-:param z: array of z data, can be null
-:param m: array of m data, can be null
-%End
 
     void setPoints( const QgsPointSequence &points );
 %Docstring
@@ -840,7 +829,7 @@ Calculates the minimal 3D bounding box for the geometry.
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
-.. versionadded:: 3.22
+.. versionadded:: 3.26
 %End
 
   protected:
