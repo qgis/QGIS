@@ -40,7 +40,6 @@ class TestQgs3DUtils : public QObject
     void testTransforms();
     void testRayFromScreenPoint();
     void testQgsBox3DDistanceTo();
-    void testQgsBox3DScale();
     void testQgsRay3D();
   private:
 };
@@ -164,42 +163,6 @@ void TestQgs3DUtils::testQgsBox3DDistanceTo()
     const QgsBox3d box( 1, 2, 1, 4, 3, 3 );
     QCOMPARE( box.distanceTo( QVector3D( 1, 2, 1 ) ), 0.0 );
     QCOMPARE( box.distanceTo( QVector3D( 0, 0, 0 ) ), qSqrt( 6.0 ) );
-  }
-}
-
-void TestQgs3DUtils::testQgsBox3DScale()
-{
-  {
-    QgsBox3d box( -1, -1, -1, 1, 1, 1 );
-    box.scale( 3.0 );
-    QCOMPARE( box.width(), 6.0 );
-    QCOMPARE( box.height(), 6.0 );
-    QCOMPARE( box.depth(), 6.0 );
-    QCOMPARE( box.xMinimum(), -3.0 );
-    QCOMPARE( box.yMinimum(), -3.0 );
-    QCOMPARE( box.zMinimum(), -3.0 );
-  }
-  {
-    QgsBox3d box( -1, -1, -1, 1, 1, 1 );
-    QgsPoint ref( -1.0, -1.0, -1.0 );
-    box.scale( 3.0, ref );
-    QCOMPARE( box.width(), 6.0 );
-    QCOMPARE( box.height(), 6.0 );
-    QCOMPARE( box.depth(), 6.0 );
-    QCOMPARE( box.xMinimum(), -1.0 );
-    QCOMPARE( box.yMinimum(), -1.0 );
-    QCOMPARE( box.zMinimum(), -1.0 );
-  }
-  {
-    QgsBox3d box( -1, -1, -1, 1, 1, 1 );
-    QgsPoint ref( -2.0, 2.0, 0.0 );
-    box.scale( 3.0, ref );
-    QCOMPARE( box.width(), 6.0 );
-    QCOMPARE( box.height(), 6.0 );
-    QCOMPARE( box.depth(), 6.0 );
-    QCOMPARE( box.xMinimum(), 1.0 );
-    QCOMPARE( box.yMinimum(), -7.0 );
-    QCOMPARE( box.zMinimum(), -3.0 );
   }
 }
 
