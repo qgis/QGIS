@@ -1118,48 +1118,45 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
     return;
   }
 
-  //get wkb type from first point
-  bool hasZ = z != NULL;
-  bool hasM = m != NULL;
+  const bool hasZ = static_cast< bool >( z );
+  const bool hasM = static_cast< bool >( m );
 
-  if ( hasZ )
+  if ( hasZ && hasM )
   {
-    if ( hasM )
-    {
-      const QgsPoint firstPt( *x, *y, *z, *m );
-      setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
-    }
-    else
-    {
-      const QgsPoint firstPt( *x, *y, *z );
-      setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
-    }
+    mWkbType = QgsWkbTypes::LineStringZM;
+  }
+  else if ( hasZ )
+  {
+    mWkbType = QgsWkbTypes::LineStringZ;
   }
   else if ( hasM )
   {
-    const QgsPoint firstPt( *x, *y, std::numeric_limits<double>::quiet_NaN(), *m );
-    setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
+    mWkbType = QgsWkbTypes::LineStringM;
   }
   else
   {
-    const QgsPoint firstPt( *x, *y );
-    setZMTypeFromSubGeometry( &firstPt, QgsWkbTypes::LineString );
+    mWkbType = QgsWkbTypes::LineString;
   }
-
 
   mX.resize( size );
   mY.resize( size );
+  double *destX = mX.data();
+  double *destY = mY.data();
+  double *destZ = nullptr;
   if ( hasZ )
   {
     mZ.resize( size );
+    destZ = mZ.data();
   }
   else
   {
     mZ.clear();
   }
+  double *destM = nullptr;
   if ( hasM )
   {
     mM.resize( size );
+    destM = mM.data();
   }
   else
   {
@@ -1168,19 +1165,16 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
 
   for ( size_t i = 0; i < size; ++i )
   {
-    mX[i] = *x;
-    mY[i] = *y;
+    *destX++ = *x++;
+    *destY++ = *y++;
     if ( hasZ )
     {
-      mZ[i] = std::isnan( *z ) ? 0 : *z;
-      z++;
+      *destZ++ = *z++;
     }
     if ( hasM )
     {
-      mM[i] = std::isnan( *m ) ? 0 : *m;
-      m++;
+      *destM++ = *m++;
     }
-    x++; y++;
   }
 }
 
