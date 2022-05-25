@@ -216,16 +216,18 @@ class CORE_EXPORT QgsBox3d
     bool operator==( const QgsBox3d &other ) const;
 
     /**
-     * Scale the rectangle around a center QgsPoint.
+     * Scale the rectangle around a \a center QgsPoint.
      *
-     * \since QGIS 3.22
+     * If no \a center point is specified then the current center of the box will be used.
+     *
+     * \since QGIS 3.26
      */
-    void scale( double scaleFactor, const QgsPoint &c = QgsPoint() );
+    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() );
 
     /**
      * Scale the rectangle around a center coordinates.
      *
-     * \since QGIS 3.22
+     * \since QGIS 3.26
      */
     void scale( double scaleFactor, double centerX, double centerY, double centerZ );
 
