@@ -113,9 +113,6 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( !mLayer )
     return;
 
-  mContext = QgsExpressionContext();
-  mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-
   if ( !QgsWkbTypes::hasZ( mLayer->wkbType() ) )
   {
     const int clampingIndex = mComboClamping->findData( static_cast< int >( Qgis::AltitudeClamping::Relative ) );
@@ -168,6 +165,20 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mPropertyCollection = props->dataDefinedProperties();
   updateDataDefinedButtons();
 
+  mLineStyleButton->setLayer( mLayer );
+  mFillStyleButton->setLayer( mLayer );
+  mMarkerStyleButton->setLayer( mLayer );
+  mSurfaceLineStyleButton->setLayer( mLayer );
+  mSurfaceFillStyleButton->setLayer( mLayer );
+  mSurfaceMarkerStyleButton->setLayer( mLayer );
+
+  mLineStyleButton->registerExpressionContextGenerator( this );
+  mFillStyleButton->registerExpressionContextGenerator( this );
+  mMarkerStyleButton->registerExpressionContextGenerator( this );
+  mSurfaceLineStyleButton->registerExpressionContextGenerator( this );
+  mSurfaceFillStyleButton->registerExpressionContextGenerator( this );
+  mSurfaceMarkerStyleButton->registerExpressionContextGenerator( this );
+
   toggleSymbolWidgets();
 
   mBlockUpdates = false;
@@ -178,7 +189,9 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
 QgsExpressionContext QgsVectorElevationPropertiesWidget::createExpressionContext() const
 {
-  return mContext;
+  QgsExpressionContext context;
+  context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  return context;
 }
 
 void QgsVectorElevationPropertiesWidget::apply()
