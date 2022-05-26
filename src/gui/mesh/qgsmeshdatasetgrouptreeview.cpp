@@ -779,6 +779,7 @@ QVariant QgsMeshAvailableDatasetGroupTreeModel::data( const QModelIndex &index, 
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::EditRole:
     case Name:
       return textDisplayed( index );
 
