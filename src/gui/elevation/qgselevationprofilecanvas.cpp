@@ -621,7 +621,7 @@ void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
     mCrossHairsItem->setPoint( plotPoint );
     mCrossHairsItem->show();
   }
-  emit canvasPointHovered( e->pos() );
+  emit canvasPointHovered( e->pos(), plotPoint );
 }
 
 QRectF QgsElevationProfileCanvas::plotArea() const
