@@ -34,6 +34,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsprofilepoint.h"
 #include "qgsprofilesnapping.h"
+#include "qgsexpressioncontextutils.h"
 #include <QPolygonF>
 
 //
@@ -369,6 +370,7 @@ void QgsVectorLayerProfileResults::visitFeaturesInRange( const QgsDoubleRange &d
 
 void QgsVectorLayerProfileResults::renderResults( QgsProfileRenderContext &context )
 {
+  const QgsExpressionContextScopePopper scopePopper( context.renderContext().expressionContext(), mLayer ? mLayer->createExpressionContextScope() : nullptr );
   switch ( profileType )
   {
     case Qgis::VectorProfileType::IndividualFeatures:
@@ -405,7 +407,7 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
 
   const QgsRectangle clipPathRect( clipPath.boundingRect() );
 
-  auto renderResult = [painter, &context, &clipPathRect]( const Feature & profileFeature, QgsMarkerSymbol * markerSymbol, QgsLineSymbol * lineSymbol, QgsFillSymbol * fillSymbol )
+  auto renderResult = [&context, &clipPathRect]( const Feature & profileFeature, QgsMarkerSymbol * markerSymbol, QgsLineSymbol * lineSymbol, QgsFillSymbol * fillSymbol )
   {
     if ( profileFeature.crossSectionGeometry.isEmpty() )
       return;
@@ -475,9 +477,10 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
       case QgsWkbTypes::NullGeometry:
         return;
     }
-
-    transformed.constGet()->draw( *painter );
   };
+
+  QgsFeatureRequest req;
+  req.setFilterFids( qgis::listToSet( features.keys() ) );
 
   if ( respectLayerSymbology && mLayer && mLayer->renderer() )
   {
@@ -486,13 +489,16 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
 
     // if we are respecting the layer's symbology then we'll fire off a feature request and iterate through
     // features from the profile, rendering each in turn
-    QgsFeatureRequest req;
-    req.setFilterFids( qgis::listToSet( features.keys() ) );
-    req.setSubsetOfAttributes( renderer->usedAttributes( context.renderContext() ), mLayer->fields() );
+    QSet<QString> attributes = renderer->usedAttributes( context.renderContext() );
 
     std::unique_ptr< QgsMarkerSymbol > marker( mMarkerSymbol->clone() );
     std::unique_ptr< QgsLineSymbol > line( mLineSymbol->clone() );
     std::unique_ptr< QgsFillSymbol > fill( mFillSymbol->clone() );
+    attributes.unite( marker->usedAttributes( context.renderContext() ) );
+    attributes.unite( line->usedAttributes( context.renderContext() ) );
+    attributes.unite( fill->usedAttributes( context.renderContext() ) );
+
+    req.setSubsetOfAttributes( attributes, mLayer->fields() );
 
     QgsFeature feature;
     QgsFeatureIterator it = mLayer->getFeatures( req );
@@ -516,7 +522,6 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
 
       const QVector< Feature > profileFeatures = features.value( feature.id() );
       for ( const Feature &profileFeature : profileFeatures )
-
       {
         renderResult( profileFeature,
                       rendererSymbol->type() == Qgis::SymbolType::Marker ? qgis::down_cast< QgsMarkerSymbol * >( rendererSymbol ) : marker.get(),
@@ -533,14 +538,25 @@ void QgsVectorLayerProfileResults::renderResultsAsIndividualFeatures( QgsProfile
   }
   else
   {
+    QSet<QString> attributes;
+    attributes.unite( mMarkerSymbol->usedAttributes( context.renderContext() ) );
+    attributes.unite( mFillSymbol->usedAttributes( context.renderContext() ) );
+    attributes.unite( mLineSymbol->usedAttributes( context.renderContext() ) );
+
     mMarkerSymbol->startRender( context.renderContext() );
     mFillSymbol->startRender( context.renderContext() );
     mLineSymbol->startRender( context.renderContext() );
-    for ( auto featureIt = features.constBegin(); featureIt != features.constEnd(); ++featureIt )
+    req.setSubsetOfAttributes( attributes, mLayer->fields() );
+
+    QgsFeature feature;
+    QgsFeatureIterator it = mLayer->getFeatures( req );
+    while ( it.nextFeature( feature ) )
     {
-      for ( auto resultIt = ( *featureIt ).constBegin(); resultIt != ( *featureIt ).constEnd(); ++resultIt )
+      context.renderContext().expressionContext().setFeature( feature );
+      const QVector< Feature > profileFeatures = features.value( feature.id() );
+      for ( const Feature &profileFeature : profileFeatures )
       {
-        renderResult( *resultIt, mMarkerSymbol.get(), mLineSymbol.get(), mFillSymbol.get() );
+        renderResult( profileFeature, mMarkerSymbol.get(), mLineSymbol.get(), mFillSymbol.get() );
       }
     }
     mMarkerSymbol->stopRender( context.renderContext() );
