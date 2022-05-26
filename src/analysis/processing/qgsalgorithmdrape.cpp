@@ -158,8 +158,10 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
           if ( !ok )
             val = nodata;
           else
+          {
             val *= scale;
             val += offset;
+          }
         }
         catch ( QgsCsException & )
         {
