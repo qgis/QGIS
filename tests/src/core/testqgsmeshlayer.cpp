@@ -101,6 +101,8 @@ class TestQgsMeshLayer : public QObject
     void testMdalProviderQuerySublayersFastScan();
 
     void testSelectByExpression();
+
+    void testSetDataSourceRetainStyle();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1817,6 +1819,59 @@ void TestQgsMeshLayer::testSelectByExpression()
   expression = QgsExpression( QStringLiteral( " $face_area > 1100000" ) );
   selectedFacesIndexes = mMdalLayer->selectFacesByExpression( expression );
   QCOMPARE( selectedFacesIndexes.count(), 0 );
+}
+
+void TestQgsMeshLayer::testSetDataSourceRetainStyle()
+{
+  // test that changing the data source of a mesh layer retains the existing style
+  const QString uri( mDataDir + "/quad_and_triangle.2dm" );
+
+  // start with a layer with valid path
+  std::unique_ptr< QgsMeshLayer > layer = std::make_unique< QgsMeshLayer >( uri, "Triangle and Quad MDAL", "mdal" );
+  QVERIFY( layer->isValid() );
+
+  // ensure a default renderer is set automatically
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMinimum(), 10.0 );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMaximum(), 50.0 );
+  QVERIFY( !layer->rendererSettings().nativeMeshSettings().isEnabled() );
+  QCOMPARE( layer->rendererSettings().nativeMeshSettings().color().name(), QStringLiteral( "#000000" ) );
+
+  QgsMeshRendererSettings settings = layer->rendererSettings();
+
+  // change some renderer settings from their defaults
+  QgsMeshRendererScalarSettings scalarSettings = settings.scalarSettings( 0 );
+  scalarSettings.setClassificationMinimumMaximum( 1, 2 );
+  settings.setScalarSettings( 0, scalarSettings );
+  QgsMeshRendererMeshSettings meshSettings = settings.nativeMeshSettings();
+  meshSettings.setEnabled( true );
+  meshSettings.setColor( QColor( 255, 0, 0 ) );
+  settings.setNativeMeshSettings( meshSettings );
+
+  // craft a layer with a broken path
+  layer = std::make_unique< QgsMeshLayer >( QStringLiteral( "yyy" ), "Triangle and Quad MDAL", "mdal" );
+  QVERIFY( !layer->isValid() );
+  // set some renderer settings
+  layer->setRendererSettings( settings );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMinimum(), 1.0 );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMaximum(), 2.0 );
+  QVERIFY( layer->rendererSettings().nativeMeshSettings().isEnabled() );
+  QCOMPARE( layer->rendererSettings().nativeMeshSettings().color().name(), QStringLiteral( "#ff0000" ) );
+
+  // repair the layer source, renderer should not be changed
+  layer->setDataSource( uri, layer->name(), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMinimum(), 1.0 );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMaximum(), 2.0 );
+  QVERIFY( layer->rendererSettings().nativeMeshSettings().isEnabled() );
+  QCOMPARE( layer->rendererSettings().nativeMeshSettings().color().name(), QStringLiteral( "#ff0000" ) );
+
+  // set the layer source to another broken path, renderer should not be changed
+  layer->setDataSource( QStringLiteral( "yyyy" ), layer->name(), QStringLiteral( "mdal" ) );
+  QVERIFY( !layer->isValid() );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMinimum(), 1.0 );
+  QCOMPARE( layer->rendererSettings().scalarSettings( 0 ).classificationMaximum(), 2.0 );
+  QVERIFY( layer->rendererSettings().nativeMeshSettings().isEnabled() );
+  QCOMPARE( layer->rendererSettings().nativeMeshSettings().color().name(), QStringLiteral( "#ff0000" ) );
 }
 
 void TestQgsMeshLayer::test_temporal()
