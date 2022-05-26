@@ -26,7 +26,6 @@
 #include <QVector>
 #include <QTest>
 #include <QStandardPaths>
-#include <QThreadPool>
 
 //qgis includes...
 #include "qgis.h"
@@ -98,8 +97,6 @@ void TestQgsCopcProvider::initTestCase()
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport = QStringLiteral( "<h1>COPC Provider Tests</h1>\n" );
-
-  QThreadPool::globalInstance()->setMaxThreadCount( 2 );
 }
 
 //runs after all tests
