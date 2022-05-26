@@ -67,7 +67,6 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
      * Updates a specific property override \a button to reflect the widgets's current properties.
      */
     void updateDataDefinedButton( QgsPropertyOverrideButton *button );
-    QgsExpressionContext mContext;
     QgsPropertyCollection mPropertyCollection;
 
     QgsVectorLayer *mLayer = nullptr;
