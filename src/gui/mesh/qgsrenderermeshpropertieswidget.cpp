@@ -174,10 +174,10 @@ void QgsRendererMeshPropertiesWidget::syncToLayerPrivate()
   onActiveVectorGroupChanged( mMeshLayer->rendererSettings().activeVectorDatasetGroup() );
 
   const bool hasFaces = ( mMeshLayer->contains( QgsMesh::ElementType::Face ) );
-  mFaceMeshGroupBox->setVisible( hasFaces );
+  mFaceMeshGroupBox->setVisible( hasFaces || !mMeshLayer->isValid() );
 
   const bool hasEdges = ( mMeshLayer->contains( QgsMesh::ElementType::Edge ) );
-  mEdgeMeshGroupBox->setVisible( hasEdges );
+  mEdgeMeshGroupBox->setVisible( hasEdges || !mMeshLayer->isValid() );
 
   QgsSettings settings;
   if ( !settings.contains( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ) )
