@@ -57,6 +57,12 @@ void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
   scaleParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "SCALE" ), QObject::tr( "Scale factor" ), QgsPropertyDefinition::Double ) );
   scaleParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( scaleParam.release() );
+
+  auto offsetParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsProcessingParameterNumber::Double, 0.0 );
+  offsetParam->setIsDynamic( true );
+  offsetParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "OFFSET" ), QObject::tr( "Offset" ), QgsPropertyDefinition::Double ) );
+  offsetParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( offsetParam.release() );
 }
 
 bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -70,6 +76,11 @@ bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mDynamicScale = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "SCALE" ) );
   if ( mDynamicScale )
     mScaleProperty = parameters.value( QStringLiteral( "SCALE" ) ).value< QgsProperty >();
+
+  mOffset = parameterAsDouble( parameters, QStringLiteral( "OFFSET" ), context );
+  mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "OFFSET" ) );
+  if ( mDynamicOffset )
+    mOffsetProperty = parameters.value( QStringLiteral( "OFFSET" ) ).value< QgsProperty >();
 
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "RASTER" ), context );
 
@@ -125,6 +136,10 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
     if ( mDynamicScale )
       scale = mScaleProperty.valueAsDouble( context.expressionContext(), scale );
 
+    double offset = mOffset;
+    if ( mDynamicOffset )
+      offset = mOffsetProperty.valueAsDouble( context.expressionContext(), offset );
+
     prepareGeometry( geometry, nodata );
 
     // only do the "draping" if the geometry intersects the raster - otherwise skip
@@ -143,7 +158,10 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
           if ( !ok )
             val = nodata;
           else
+          {
             val *= scale;
+            val += offset;
+          }
         }
         catch ( QgsCsException & )
         {
@@ -183,7 +201,7 @@ QString QgsDrapeToZAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm sets the z value of every vertex in the feature geometry to a value sampled from a band within a raster layer." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "The raster values can optionally be scaled by a preset amount." );
+         + QObject::tr( "The raster values can optionally be scaled by a preset amount and an offset can be algebraically added." );
 }
 
 QString QgsDrapeToZAlgorithm::shortDescription() const
@@ -246,7 +264,7 @@ QString QgsDrapeToMAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm sets the M value for every vertex in the feature geometry to a value sampled from a band within a raster layer." )
          + QStringLiteral( "\n\n" )
-         + QObject::tr( "The raster values can optionally be scaled by a preset amount." );
+         + QObject::tr( "The raster values can optionally be scaled by a preset amount and an offset can be algebraically added." );
 }
 
 QString QgsDrapeToMAlgorithm::shortDescription() const
