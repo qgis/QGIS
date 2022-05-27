@@ -343,6 +343,12 @@ The development version
       NeverShow,
     };
 
+    enum class LabelOverlapHandling
+    {
+      PreventOverlap,
+      AvoidOverlapIfPossible,
+    };
+
     enum class SublayerQueryFlag
     {
       FastScan,
