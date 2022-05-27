@@ -135,9 +135,9 @@ void TestQgsLineString::constructorEmpty()
 
 void TestQgsLineString::constructorFromArrayZ()
 {
-  QVector< double > xx = QVector< double >() << 1 << 2 << 3;
-  QVector< double > yy = QVector< double >() << 11 << 12 << 13;
-  QVector< double > zz = QVector< double >() << 21 << 22 << 23;
+  QVector< double > xx( {1, 2, 3} );
+  QVector< double > yy( {11, 12, 13} );
+  QVector< double > zz( {21, 22, 23} );
 
   QgsLineString ls( xx, yy, zz );
 
@@ -169,7 +169,7 @@ void TestQgsLineString::constructorFromArrayZ()
   QCOMPARE( ls.zAt( 2 ), 23.0 );
 
   // unbalanced -> z ignored
-  zz = QVector< double >() << 21 << 22;
+  zz = QVector< double >( {21, 22} );
   ls = QgsLineString( xx, yy, zz );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineString );
@@ -182,7 +182,7 @@ void TestQgsLineString::constructorFromArrayZ()
   QCOMPARE( ls.yAt( 2 ), 13.0 );
 
   // unbalanced -> z truncated
-  zz = QVector< double >() << 21 << 22 << 23 << 24;
+  zz = QVector< double >( {21, 22, 23, 24} );
   ls = QgsLineString( xx, yy, zz );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineStringZ );
@@ -200,9 +200,9 @@ void TestQgsLineString::constructorFromArrayZ()
 
 void TestQgsLineString::constructorFromArrayM()
 {
-  QVector< double > xx = QVector< double >() << 1 << 2 << 3;
-  QVector< double > yy = QVector< double >() << 11 << 12 << 13;
-  QVector< double > mm = QVector< double >() << 21 << 22 << 23;
+  QVector< double > xx( {1, 2, 3} );
+  QVector< double > yy( {11, 12, 13} );
+  QVector< double > mm( {21, 22, 23} );
   QgsLineString ls( xx, yy, QVector< double >(), mm );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineStringM );
@@ -218,7 +218,7 @@ void TestQgsLineString::constructorFromArrayM()
   QCOMPARE( ls.mAt( 2 ), 23.0 );
 
   // unbalanced -> m ignored
-  mm = QVector< double >() << 21 << 22;
+  mm = QVector< double >( {21, 22} );
   ls = QgsLineString( xx, yy, QVector< double >(), mm );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineString );
@@ -231,7 +231,7 @@ void TestQgsLineString::constructorFromArrayM()
   QCOMPARE( ls.yAt( 2 ), 13.0 );
 
   // unbalanced -> m truncated
-  mm = QVector< double >() << 21 << 22 << 23 << 24;
+  mm = QVector< double >( {21, 22, 23, 24} );;
   ls = QgsLineString( xx, yy, QVector< double >(), mm );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineStringM );
@@ -249,10 +249,10 @@ void TestQgsLineString::constructorFromArrayM()
 
 void TestQgsLineString::constructorFromArrayZM()
 {
-  QVector< double > xx = QVector< double >() << 1 << 2 << 3;
-  QVector< double > yy = QVector< double >() << 11 << 12 << 13;
-  QVector< double > zz = QVector< double >() << 21 << 22 << 23;
-  QVector< double > mm = QVector< double >() << 31 << 32 << 33;
+  QVector< double > xx( {1, 2, 3} );
+  QVector< double > yy( {11, 12, 13} );
+  QVector< double > zz( {21, 22, 23} );
+  QVector< double > mm( {31, 32, 33} );
   QgsLineString ls( xx, yy, zz, mm );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineStringZM );
@@ -286,10 +286,8 @@ void TestQgsLineString::constructorFromArrayZM()
 
 void TestQgsLineString::constructorFromArray()
 {
-  QVector< double > xx;
-  xx << 1 << 2 << 3;
-  QVector< double > yy;
-  yy << 11 << 12 << 13;
+  QVector< double > xx( {1, 2, 3} );
+  QVector< double > yy( {11, 12, 13} );
   QgsLineString ls( xx, yy );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineString );
@@ -308,8 +306,8 @@ void TestQgsLineString::constructorFromArray()
   QCOMPARE( *( ls.yData() + 2 ), 13.0 );
 
   // unbalanced
-  xx = QVector< double >() << 1 << 2;
-  yy = QVector< double >() << 11 << 12 << 13;
+  xx = QVector< double >( {1, 2} );
+  yy = QVector< double >( {11, 12, 13} );
   ls = QgsLineString( xx, yy );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineString );
@@ -319,8 +317,8 @@ void TestQgsLineString::constructorFromArray()
   QCOMPARE( ls.xAt( 1 ), 2.0 );
   QCOMPARE( ls.yAt( 1 ), 12.0 );
 
-  xx = QVector< double >() << 1 << 2 << 3;
-  yy = QVector< double >() << 11 << 12;
+  xx = QVector< double >( {1, 2, 3} );
+  yy = QVector< double >( {11, 12} );
   ls = QgsLineString( xx, yy );
 
   QCOMPARE( ls.wkbType(), QgsWkbTypes::LineString );
@@ -2842,7 +2840,7 @@ void TestQgsLineString::visitPoints()
   QVector< double > yy;
   QVector< double > zz;
   QVector< double > mm;
-  QVector<double> pX, pY, pZ, pM, nX, nY, nZ, nM;
+  QVector< double > pX, pY, pZ, pM, nX, nY, nZ, nM;
 
   auto visitor = [ & ]( double x, double y, double z, double m, double ppx, double ppy, double ppz, double ppm, double nnx, double nny, double nnz, double nnm )->bool
   {
@@ -3004,9 +3002,7 @@ void TestQgsLineString::setPointsFromData()
   QCOMPARE( *( l8.yData() + 2 ), 4.0 );
 
   //setPoints with empty list, should clear linestring
-  double x2 [] = {};
-  double y2 [] = {};
-  l8.setPoints( 0, x2, y2 );
+  l8.setPoints( 0, nullptr, nullptr );
   QVERIFY( l8.isEmpty() );
   QCOMPARE( l8.numPoints(), 0 );
   QCOMPARE( l8.vertexCount(), 0 );
