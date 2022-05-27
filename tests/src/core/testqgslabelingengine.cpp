@@ -393,7 +393,8 @@ void TestQgsLabelingEngine::testRuleBased()
   s1.setFormat( format );
   s1.placement = QgsPalLayerSettings::OverPoint;
   s1.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
-  s1.displayAll = true;
+  s1.placementSettings().setAllowDegradedPlacement( true );
+  s1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
 
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s1 ) ) );
 
@@ -407,7 +408,8 @@ void TestQgsLabelingEngine::testRuleBased()
   s2.setFormat( format );
   s2.placement = QgsPalLayerSettings::OverPoint;
   s2.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
-  s2.displayAll = true;
+  s2.placementSettings().setAllowDegradedPlacement( true );
+  s2.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
 
   s2.dataDefinedProperties().setProperty( QgsPalLayerSettings::Size, QgsProperty::fromValue( QStringLiteral( "18" ) ) );
 
@@ -477,7 +479,9 @@ void TestQgsLabelingEngine::zOrder()
   pls1.fieldName = QStringLiteral( "Class" );
   pls1.placement = QgsPalLayerSettings::OverPoint;
   pls1.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
-  pls1.displayAll = true;
+  pls1.placementSettings().setAllowDegradedPlacement( true );
+  pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+
   QgsTextFormat format = pls1.format();
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 70 );
