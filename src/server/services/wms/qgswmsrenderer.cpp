@@ -2930,7 +2930,8 @@ namespace QgsWms
         QgsPalLayerSettings palSettings;
         palSettings.fieldName = "label"; // defined in url
         palSettings.priority = 10; // always drawn
-        palSettings.displayAll = true;
+        palSettings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+        palSettings.placementSettings().setAllowDegradedPlacement( true );
         palSettings.dist = param.mLabelDistance;
 
         if ( !qgsDoubleNear( param.mLabelRotation, 0 ) )
