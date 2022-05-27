@@ -21,12 +21,40 @@
 
 #include "qgspointcloudattribute.h"
 
+// QgsPointCloudAttributeStatistics
+
+void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAttributeStatistics &stats )
+{
+  minimum = std::min( minimum, stats.minimum );
+  maximum = std::max( maximum, stats.maximum );
+
+  double newMean = ( mean * count + stats.mean * stats.count ) / ( count + stats.count );
+  double delta1 = newMean - mean;
+  double variance1 = stDev * stDev + delta1 * delta1 - 2 * count * delta1 * mean;
+  double delta2 = newMean - stats.mean;
+  double variance2 = stats.stDev * stats.stDev + delta2 * delta2 - 2 * stats.count * delta2 * stats.mean;
+  stDev = ( variance1 * count + variance2 * stats.count ) / ( count + stats.count );
+  stDev = std::sqrt( stDev );
+
+  mean = newMean;
+  count += stats.count;
+
+  for ( int key : stats.classCount.keys() )
+  {
+    int c = classCount.value( key, 0 );
+    c += stats.classCount[ key ];
+    classCount[ key ] = c;
+  }
+}
+
+// QgsPointCloudStatistics
+
 QgsPointCloudStatistics::QgsPointCloudStatistics()
 {
 
 }
 
-QgsPointCloudStatistics::QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, AttributeStatistics> &stats )
+QgsPointCloudStatistics::QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, QgsPointCloudAttributeStatistics> &stats )
   : mSampledPointsCount( sampledPointsCount ), mStatisticsMap( stats )
 {
 
@@ -45,9 +73,9 @@ void QgsPointCloudStatistics::clear( const QVector<QgsPointCloudAttribute> &attr
   }
 }
 
-QgsPointCloudStatistics::AttributeStatistics QgsPointCloudStatistics::statisticsOf( const QString &attribute ) const
+QgsPointCloudAttributeStatistics QgsPointCloudStatistics::statisticsOf( const QString &attribute ) const
 {
-  AttributeStatistics defaultVal;
+  QgsPointCloudAttributeStatistics defaultVal;
   defaultVal.minimum = std::numeric_limits<double>::max();
   defaultVal.maximum = std::numeric_limits<double>::lowest();
   defaultVal.count = 0;
@@ -58,7 +86,7 @@ QList<int> QgsPointCloudStatistics::classesOf( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return QList<int>();
-  AttributeStatistics s = mStatisticsMap[ attribute ];
+  QgsPointCloudAttributeStatistics s = mStatisticsMap[ attribute ];
   return s.classCount.keys();
 }
 
@@ -100,9 +128,9 @@ double QgsPointCloudStatistics::stDev( const QString &attribute ) const
 
 void QgsPointCloudStatistics::combineWith( const QgsPointCloudStatistics &stats )
 {
-  for ( QString attribute : stats.mStatisticsMap.keys() )
+  for ( const QString &attribute : stats.mStatisticsMap.keys() )
   {
-    AttributeStatistics s = stats.mStatisticsMap[ attribute ];
+    QgsPointCloudAttributeStatistics s = stats.mStatisticsMap[ attribute ];
     if ( mStatisticsMap.contains( attribute ) )
     {
       s.cumulateStatistics( mStatisticsMap[ attribute ] );

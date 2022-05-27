@@ -24,6 +24,7 @@
 #include <QSet>
 #include <QFuture>
 #include <QFutureWatcher>
+#include <QEventLoop>
 
 #include "qgspointcloudrequest.h"
 #include "qgsstatisticalsummary.h"
@@ -60,8 +61,11 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
 
     //! Returns the object containing the calculated statistics
     QgsPointCloudStatistics statistics() const { return mStats; }
+
+  private slots:
+    void statisticsCalculationQtConcurrentCallFinished();
   private:
-    QgsPointCloudIndex *mIndex = nullptr;
+    std::unique_ptr<QgsPointCloudIndex> mIndex = nullptr;
 
     QgsPointCloudStatistics mStats;
     QSet<IndexedPointCloudNode> mProcessedNodes;
@@ -71,6 +75,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
 
     QFuture<QgsPointCloudStatistics> mFuture;
     QFutureWatcher<QgsPointCloudStatistics> mFutureWatcher;
+    std::unique_ptr<QEventLoop> mEventLoop = nullptr;
 };
 
 

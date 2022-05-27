@@ -67,8 +67,10 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
 
 QgsPointCloudLayer::~QgsPointCloudLayer()
 {
-  // TODO: switch to using private resources for the inner workings of the stats calculation task
-  waitForStatisticsCalculationToFinish( true );
+  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
+  {
+    task->cancel();
+  }
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
@@ -796,7 +798,7 @@ void QgsPointCloudLayer::calculateStatistics()
   connect( task, &QgsTask::taskCompleted, this, [this, task]()
   {
     mStatistics = task->calculationResults();
-    mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     mStatsCalculationTask = 0;
@@ -811,7 +813,7 @@ void QgsPointCloudLayer::calculateStatistics()
 
   mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
 
-  mStatisticsCalculationState = QgsPointCloudLayer::Calculating;
+  mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculating;
   emit statisticsCalculationStateChanged( mStatisticsCalculationState );
 }
 
@@ -835,7 +837,7 @@ void QgsPointCloudLayer::waitForStatisticsCalculationToFinish( bool cancelTask )
 void QgsPointCloudLayer::resetRenderer()
 {
   mDataProvider->loadIndex();
-  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::NotStarted )
+  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::PointCloudStatisticsCalculationState::NotStarted )
   {
     calculateStatistics();
   }
