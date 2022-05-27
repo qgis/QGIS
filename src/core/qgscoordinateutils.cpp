@@ -26,6 +26,8 @@
 #include "qgsrectangle.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgscoordinatenumericformat.h"
+
+#include <QLocale>
 #include <QRegularExpression>
 
 ///@cond NOT_STABLE_API
@@ -225,7 +227,9 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
     ok = &okValue;
   }
 
-  const QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
+  const QLocale locale;
+  const QRegularExpression dms( QStringLiteral( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:[\\.\\%1]\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$" )
+                                .arg( locale.decimalPoint() ), QRegularExpression::CaseInsensitiveOption );
   const QRegularExpressionMatch match = dms.match( string.trimmed() );
   if ( match.hasMatch() )
   {
@@ -235,7 +239,11 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
 
     double v = dms3.toDouble( ok );
     if ( *ok == false )
-      return value;
+    {
+      v = locale.toDouble( dms3, ok );
+      if ( *ok == false )
+        return value;
+    }
     // Allow for Degrees/minutes format as well as DMS
     if ( !dms2.isEmpty() )
     {
