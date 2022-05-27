@@ -5139,7 +5139,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       // miscellaneous options
       else if ( it.key() == QLatin1String( "conflictResolution" ) && it.value() == QLatin1String( "false" ) )
       {
-        settings.displayAll = true;
+        settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
       }
       else if ( it.key() == QLatin1String( "forceLeftToRight" ) && it.value() == QLatin1String( "false" ) )
       {

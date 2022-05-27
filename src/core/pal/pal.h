@@ -105,11 +105,12 @@ namespace pal
        * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled only if toLablel is TRUE
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
+       * \param overlapHandling how to handle overlapping labels
+       * \param allowDegradedPlacement whether inferior fallback placement is permitted
        *
        * \throws PalException::LayerExists
        */
-      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
+      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Qgis::LabelOverlapHandling overlapHandling = Qgis::LabelOverlapHandling::PreventOverlap, bool allowDegradedPlacement = false );
 
       /**
        * \brief remove a layer

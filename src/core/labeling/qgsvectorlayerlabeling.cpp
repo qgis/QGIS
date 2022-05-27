@@ -519,10 +519,14 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
     textSymbolizerElement.appendChild( vo );
   }
   // miscellaneous options
-  if ( settings.displayAll )
+  switch ( settings.placementSettings().overlapHandling() )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "conflictResolution" ), QStringLiteral( "false" ) );
-    textSymbolizerElement.appendChild( vo );
+    case Qgis::LabelOverlapHandling::PreventOverlap:
+      break;
+    case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
+      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "conflictResolution" ), QStringLiteral( "false" ) );
+      textSymbolizerElement.appendChild( vo );
+      break;
   }
   if ( settings.upsidedownLabels == QgsPalLayerSettings::ShowAll )
   {

@@ -480,6 +480,12 @@ Qgis.UnplacedLabelVisibility.__doc__ = 'Unplaced label visibility.\n\n.. version
 # --
 Qgis.UnplacedLabelVisibility.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LabelOverlapHandling.PreventOverlap.__doc__ = "Do not allow labels to overlap other labels"
+Qgis.LabelOverlapHandling.AvoidOverlapIfPossible.__doc__ = "Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed"
+Qgis.LabelOverlapHandling.__doc__ = 'Label overlap handling.\n\n.. versionadded:: 3.26\n\n' + '* ``PreventOverlap``: ' + Qgis.LabelOverlapHandling.PreventOverlap.__doc__ + '\n' + '* ``AvoidOverlapIfPossible``: ' + Qgis.LabelOverlapHandling.AvoidOverlapIfPossible.__doc__
+# --
+Qgis.LabelOverlapHandling.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"

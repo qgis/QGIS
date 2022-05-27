@@ -399,7 +399,17 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineSettings = mSettings.lineSettings();
 
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
-  mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
+  switch ( mSettings.placementSettings().overlapHandling() )
+  {
+    case Qgis::LabelOverlapHandling::PreventOverlap:
+      mCheckAllowOverlapping->setChecked( false );
+      break;
+    case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
+      mCheckAllowOverlapping->setChecked( true );
+      break;
+  }
+  mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
+
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mSettings.thinningSettings().minimumFeatureSize() );
   mLimitLabelChkBox->setChecked( mSettings.thinningSettings().limitNumberOfLabelsEnabled() );
@@ -576,7 +586,16 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setAnchorTextPoint( mLineSettings.anchorTextPoint() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
-  lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
+  if ( mCheckAllowOverlapping->isChecked() )
+  {
+    lyr.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+  }
+  else
+  {
+    lyr.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
+  }
+  lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
+
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();

@@ -38,6 +38,7 @@
 #include "qgsstringutils.h"
 #include "qgstextformat.h"
 #include "qgspropertycollection.h"
+#include "qgslabelplacementsettings.h"
 #include "qgslabelobstaclesettings.h"
 #include "qgslabelthinningsettings.h"
 #include "qgslabellinesettings.h"
@@ -724,9 +725,6 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     int fontMaxPixelSize = 10000;
 
-    //! If TRUE, all features will be labelled even when overlaps occur.
-    bool displayAll = false;
-
     //! Controls whether upside down labels are displayed and how they are handled.
     UpsideDownLabels upsidedownLabels = Upright;
 
@@ -756,6 +754,7 @@ class CORE_EXPORT QgsPalLayerSettings
     SIP_PROPERTY( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
     SIP_PROPERTY( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
     SIP_PROPERTY( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
+    SIP_PROPERTY( name = displayAll, get = _getDisplayAll, set = _setDisplayAll )
 #endif
 
     ///@cond PRIVATE
@@ -793,6 +792,8 @@ class CORE_EXPORT QgsPalLayerSettings
     void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mLineSettings.setOverrunDistanceUnit( unit ); }
     QgsMapUnitScale _getOverrunDistanceMapUnitScale() const { return mLineSettings.overrunDistanceMapUnitScale(); }
     void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mLineSettings.setOverrunDistanceMapUnitScale( scale ); }
+    bool _getDisplayAll() const { return mPlacementSettings.overlapHandling() == Qgis::LabelOverlapHandling::AvoidOverlapIfPossible; }
+    void _setDisplayAll( bool display ) { mPlacementSettings.setOverlapHandling( display ? Qgis::LabelOverlapHandling::AvoidOverlapIfPossible : Qgis::LabelOverlapHandling::PreventOverlap ); }
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
@@ -1016,6 +1017,28 @@ class CORE_EXPORT QgsPalLayerSettings
     void setThinningSettings( const QgsLabelThinningSettings &settings ) { mThinningSettings = settings; }
 
     /**
+     * Returns the label placement settings.
+     * \see setPlacementSettings()
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+     */
+    const QgsLabelPlacementSettings &placementSettings() const { return mPlacementSettings; } SIP_SKIP
+
+    /**
+     * Returns the label placement settings.
+     * \see setPlacementSettings()
+     * \since QGIS 3.26
+     */
+    QgsLabelPlacementSettings &placementSettings() { return mPlacementSettings; }
+
+    /**
+     * Sets the label placement \a settings.
+     * \see placementSettings()
+     * \since QGIS 3.26
+     */
+    void setPlacementSettings( const QgsLabelPlacementSettings &settings ) { mPlacementSettings = settings; }
+
+    /**
     * Returns a pixmap preview for label \a settings.
     * \param settings label settings
     * \param size target pixmap size
@@ -1136,6 +1159,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     std::unique_ptr< QgsCallout > mCallout;
 
+    QgsLabelPlacementSettings mPlacementSettings;
     QgsLabelLineSettings mLineSettings;
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelThinningSettings mThinningSettings;

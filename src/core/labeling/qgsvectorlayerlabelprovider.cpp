@@ -80,11 +80,13 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryT
 void QgsVectorLayerLabelProvider::init()
 {
   mPlacement = mSettings.placement;
+  mOverlapHandling = mSettings.placementSettings().overlapHandling();
+
   mFlags = Flags();
   if ( mSettings.drawLabels )
     mFlags |= DrawLabels;
-  if ( mSettings.displayAll )
-    mFlags |= DrawAllLabels;
+  if ( mSettings.placementSettings().allowDegradedPlacement() )
+    mFlags |= AllowDegradedPlacement;
   if ( mSettings.lineSettings().mergeLines() && !mSettings.lineSettings().addDirectionSymbol() )
     mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside )

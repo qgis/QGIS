@@ -532,6 +532,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( UnplacedLabelVisibility )
 
     /**
+     * Label overlap handling.
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelOverlapHandling : int
+    {
+      PreventOverlap, //!< Do not allow labels to overlap other labels
+      AvoidOverlapIfPossible, //!< Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed
+    };
+    Q_ENUM( LabelOverlapHandling )
+
+    /**
      * Flags which control how data providers will scan for sublayers in a dataset.
      *
      * \since QGIS 3.22

@@ -4085,7 +4085,7 @@ font-style: italic;</string>
                        <x>0</x>
                        <y>0</y>
                        <width>472</width>
-                       <height>1690</height>
+                       <height>1724</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5817,9 +5817,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>430</width>
-                       <height>708</height>
+                       <y>-56</y>
+                       <width>471</width>
+                       <height>739</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6143,9 +6143,16 @@ font-style: italic;</string>
                           </layout>
                          </item>
                          <item>
-                          <widget class="QCheckBox" name="mPalShowAllLabelsForLayerChkBx">
+                          <widget class="QCheckBox" name="mCheckAllowOverlapping">
                            <property name="text">
-                            <string>Show all labels for this layer (including colliding labels)</string>
+                            <string>Allow overlapping labels if unavoidable</string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QCheckBox" name="mCheckAllowDegradedPlacement">
+                           <property name="text">
+                            <string>Allow inferior fallback placements</string>
                            </property>
                           </widget>
                          </item>
@@ -6977,7 +6984,8 @@ font-style: italic;</string>
   <tabstop>mFontMaxPixelDDBtn</tabstop>
   <tabstop>mZIndexSpinBox</tabstop>
   <tabstop>mZIndexDDBtn</tabstop>
-  <tabstop>mPalShowAllLabelsForLayerChkBx</tabstop>
+  <tabstop>mCheckAllowOverlapping</tabstop>
+  <tabstop>mCheckAllowDegradedPlacement</tabstop>
   <tabstop>mShowLabelDDBtn</tabstop>
   <tabstop>mAlwaysShowDDBtn</tabstop>
   <tabstop>mUpsidedownRadioOff</tabstop>
@@ -6993,6 +7001,7 @@ font-style: italic;</string>
   <tabstop>mCoordRotationUnitComboBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

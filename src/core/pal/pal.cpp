@@ -77,13 +77,13 @@ void Pal::removeLayer( Layer *layer )
   mMutex.unlock();
 }
 
-Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll )
+Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, const Qgis::LabelOverlapHandling overlapHandling, bool allowDegradedPlacement )
 {
   mMutex.lock();
 
   Q_ASSERT( mLayers.find( provider ) == mLayers.end() );
 
-  std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, displayAll );
+  std::unique_ptr< Layer > layer = std::make_unique< Layer >( provider, layerName, arrangement, defaultPriority, active, toLabel, this, overlapHandling, allowDegradedPlacement );
   Layer *res = layer.get();
   mLayers.insert( std::pair<QgsAbstractLabelProvider *, std::unique_ptr< Layer >>( provider, std::move( layer ) ) );
   mMutex.unlock();
@@ -237,9 +237,9 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
         if ( !unplacedPosition )
           continue;
 
-        if ( layer->displayAll() )
+        if ( layer->allowDegradedPlacement() )
         {
-          // if we are displaying all labels, we throw the default candidate in too
+          // if we are allowing degraded placements, we throw the default candidate in too
           unplacedPosition->insertIntoIndex( allCandidatesFirstRound );
           unplacedPosition->setGlobalId( mNextCandidateId++ );
           candidates.emplace_back( std::move( unplacedPosition ) );
@@ -405,12 +405,27 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
               return false;
             } ), feat->candidates.end() );
 
-            if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() && !feat->feature->layer()->displayAll() )
+            if ( feat->candidates.size() == 1 && feat->candidates[ 0 ]->hasHardObstacleConflict() )
             {
-              // we've going to end up removing ALL candidates for this label. Oh well, that's allowed. We just need to
-              // make sure we move this last candidate to the unplaced labels list
-              prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
-              feat->candidates.clear();
+              switch ( feat->feature->layer()->overlapHandling() )
+              {
+                case Qgis::LabelOverlapHandling::PreventOverlap:
+                {
+                  if ( feat->feature->layer()->allowDegradedPlacement() )
+                  {
+                    // we're going to end up removing ALL candidates for this label. Oh well, that's allowed. We just need to
+                    // make sure we move this last candidate to the unplaced labels list
+                    prob->positionsWithNoCandidates()->emplace_back( std::move( feat->candidates.front() ) );
+                    feat->candidates.clear();
+                  }
+                  break;
+                }
+
+                case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
+                  // we can't avoid overlaps for this label, but in this mode we are allowing overlaps as a last resort.
+                  // => don't discard this last remaining candidate.
+                  break;
+              }
             }
           }
         }
@@ -418,9 +433,14 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
 
       // if we're not showing all labels (including conflicts) for this layer, then we prune the candidates
       // upfront to avoid extra work...
-      if ( !feat->feature->layer()->displayAll() )
+      switch ( feat->feature->layer()->overlapHandling() )
       {
-        pruneHardConflicts();
+        case Qgis::LabelOverlapHandling::PreventOverlap:
+          pruneHardConflicts();
+          break;
+
+        case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
+          break;
       }
 
       if ( feat->candidates.empty() )
@@ -436,11 +456,14 @@ std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const 
       // Since we've calculated all their costs and sorted them, if we've hit the situation that ALL
       // candidates have conflicts, then at least when we pick the first candidate to display it will be
       // the lowest cost (i.e. best possible) overlapping candidate...
-      if ( feat->feature->layer()->displayAll() )
+      switch ( feat->feature->layer()->overlapHandling() )
       {
-        pruneHardConflicts();
+        case Qgis::LabelOverlapHandling::PreventOverlap:
+          break;
+        case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
+          pruneHardConflicts();
+          break;
       }
-
 
       // only keep the 'maxCandidates' best candidates
       if ( maxCandidates > 0 && feat->candidates.size() > maxCandidates )

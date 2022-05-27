@@ -392,7 +392,8 @@ void QgsTextFormatWidget::initWidget()
           << mMaxCharAngleOutDSpinBox
           << mMinSizeSpinBox
           << mOffsetTypeComboBox
-          << mPalShowAllLabelsForLayerChkBx
+          << mCheckAllowDegradedPlacement
+          << mCheckAllowOverlapping
           << mPointAngleSpinBox
           << mPointOffsetUnitWidget
           << mPointOffsetXSpinBox
