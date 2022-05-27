@@ -1959,7 +1959,8 @@ void TestQgsLayoutMap::testLabelResults()
   settings.isExpression = true;
   settings.placement = QgsPalLayerSettings::OverPoint;
   settings.priority = 10;
-  settings.displayAll = true;
+  settings.placementSettings().setAllowDegradedPlacement( true );
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
 
   QgsVectorLayer *vl2 = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
 
@@ -2015,7 +2016,9 @@ void TestQgsLayoutMap::testLabelResults()
   p.addMapLayer( vl3 );
   // with unplaced labels -- all vl3 labels will be unplaced, because they are conflicting with those in vl2
   settings.priority = 1;
-  settings.displayAll = false;
+  settings.placementSettings().setAllowDegradedPlacement( true );
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+
   vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   vl3->setLabelsEnabled( true );
   map->setLayers( { vl2, vl3 } );
