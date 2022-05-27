@@ -193,13 +193,19 @@ double QgsCoordinateUtils::degreeToDecimal( const QString &string, bool *ok, boo
     ok = &okValue;
   }
 
-  QRegularExpression degreeWithSuffix( QStringLiteral( "^\\s*([0-9\\-\\.]*)\\s*([NSEWnsew])\\s*$" ) );
+  const QLocale locale;
+  QRegularExpression degreeWithSuffix( QStringLiteral( "^\\s*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?)\\s*([NSEWnsew])\\s*$" )
+                                       .arg( locale.decimalPoint() ) );
   QRegularExpressionMatch match = degreeWithSuffix.match( string );
   if ( match.hasMatch() )
   {
     const QString suffix = match.captured( 2 );
     value = std::abs( match.captured( 1 ).toDouble( ok ) );
-    if ( ok )
+    if ( *ok == false )
+    {
+      value = std::abs( locale.toDouble( match.captured( 1 ), ok ) );
+    }
+    if ( *ok )
     {
       value *= ( negative.contains( suffix ) ? -1 : 1 );
       if ( isEasting )
