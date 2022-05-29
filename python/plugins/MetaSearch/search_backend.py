@@ -226,7 +226,7 @@ class OARecSearch(SearchBase):
 
                 'bbox': None,
                 'title': rec['properties']['title'],
-                'links': rec['properties'].get('associations', [])
+                'links': rec.get('links', [])
             }
             try:
                 bbox2 = rec['properties']['extent']['spatial']['bbox'][0]
