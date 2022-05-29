@@ -325,7 +325,6 @@ void TestQgsCopcProvider::calculateZRange()
 {
   std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/copc/sunshine-coast.copc.laz" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
   QVERIFY( layer->isValid() );
-  layer->waitForStatisticsCalculationToFinish( false );
 
   QgsDoubleRange range = layer->elevationProperties()->calculateZRange( layer.get() );
   QGSCOMPARENEAR( range.lower(), 74.34, 0.01 );

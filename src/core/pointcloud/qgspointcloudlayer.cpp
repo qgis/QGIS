@@ -401,7 +401,9 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     }
   }
 
-  if ( mDataProvider && mDataProvider->isValid() && mDataProvider->hasStatisticsMetadata() && mStatistics.sampledPointsCount() == 0 )
+  // Note: we load the statistics from the data provider regardless of it being an existing metadata (do not check fot hasStatisticsMetadata)
+  // since the X, Y & Z coordinates will be in the header of the dataset
+  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 )
   {
     mStatistics = mDataProvider->metadataStatistics();
   }
@@ -798,6 +800,37 @@ void QgsPointCloudLayer::calculateStatistics()
   connect( task, &QgsTask::taskCompleted, this, [this, task]()
   {
     mStatistics = task->calculationResults();
+
+    // fetch X, Y & Z stats directly from the index
+    QVector<QString> coordinateAttributes;
+    coordinateAttributes.push_back( QStringLiteral( "X" ) );
+    coordinateAttributes.push_back( QStringLiteral( "Y" ) );
+    coordinateAttributes.push_back( QStringLiteral( "Z" ) );
+
+    QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStatistics.statisticsMap();
+    QgsPointCloudIndex *index = mDataProvider->index();
+    for ( const QString &attribute : coordinateAttributes )
+    {
+      QgsPointCloudAttributeStatistics s;
+      QVariant min = index->metadataStatistic( attribute, QgsStatisticalSummary::Min );
+      QVariant max = index->metadataStatistic( attribute, QgsStatisticalSummary::Max );
+      if ( !min.isValid() )
+        continue;
+      s.minimum = min.toDouble();
+      s.maximum = max.toDouble();
+      s.count = index->metadataStatistic( attribute, QgsStatisticalSummary::Count ).toInt();
+      s.mean = index->metadataStatistic( attribute, QgsStatisticalSummary::Mean ).toInt();
+      s.stDev = index->metadataStatistic( attribute, QgsStatisticalSummary::StDev ).toInt();
+      QVariantList classes = index->metadataClasses( attribute );
+      for ( const QVariant &c : classes )
+      {
+        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, QgsStatisticalSummary::Count ).toInt();
+      }
+      statsMap[ attribute ] = s;
+    }
+    mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
+    //
+
     mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();

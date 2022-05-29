@@ -45,6 +45,7 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
   int count = 0;
 #ifndef SIP_RUN
   QMap<int, int> classCount;
+  //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
   void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
 #endif
 };
