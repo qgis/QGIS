@@ -358,6 +358,11 @@ corresponds to the last point in the line.
 
 
 
+
+
+
+
+
     double zAt( int index ) const;
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
@@ -528,6 +533,7 @@ corresponds to the last point in the line.
         sipCpp->setMAt( count + a0, a1 );
     }
 %End
+
 
     void setPoints( const QgsPointSequence &points );
 %Docstring
@@ -821,6 +827,15 @@ corresponds to the last point in the line.
     }
 %End
 
+
+    QgsBox3d calculateBoundingBox3d() const;
+%Docstring
+Calculates the minimal 3D bounding box for the geometry.
+
+.. seealso:: :py:func:`calculateBoundingBox`
+
+.. versionadded:: 3.26
+%End
 
   protected:
 

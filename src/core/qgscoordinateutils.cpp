@@ -26,6 +26,8 @@
 #include "qgsrectangle.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgscoordinatenumericformat.h"
+
+#include <QLocale>
 #include <QRegularExpression>
 
 ///@cond NOT_STABLE_API
@@ -191,13 +193,19 @@ double QgsCoordinateUtils::degreeToDecimal( const QString &string, bool *ok, boo
     ok = &okValue;
   }
 
-  QRegularExpression degreeWithSuffix( QStringLiteral( "^\\s*([0-9\\-\\.]*)\\s*([NSEWnsew])\\s*$" ) );
+  const QLocale locale;
+  QRegularExpression degreeWithSuffix( QStringLiteral( "^\\s*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?)\\s*([NSEWnsew])\\s*$" )
+                                       .arg( locale.decimalPoint() ) );
   QRegularExpressionMatch match = degreeWithSuffix.match( string );
   if ( match.hasMatch() )
   {
     const QString suffix = match.captured( 2 );
     value = std::abs( match.captured( 1 ).toDouble( ok ) );
-    if ( ok )
+    if ( *ok == false )
+    {
+      value = std::abs( locale.toDouble( match.captured( 1 ), ok ) );
+    }
+    if ( *ok )
     {
       value *= ( negative.contains( suffix ) ? -1 : 1 );
       if ( isEasting )
@@ -225,7 +233,9 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
     ok = &okValue;
   }
 
-  const QRegularExpression dms( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$", QRegularExpression::CaseInsensitiveOption );
+  const QLocale locale;
+  const QRegularExpression dms( QStringLiteral( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:[\\.\\%1]\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$" )
+                                .arg( locale.decimalPoint() ), QRegularExpression::CaseInsensitiveOption );
   const QRegularExpressionMatch match = dms.match( string.trimmed() );
   if ( match.hasMatch() )
   {
@@ -235,7 +245,11 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
 
     double v = dms3.toDouble( ok );
     if ( *ok == false )
-      return value;
+    {
+      v = locale.toDouble( dms3, ok );
+      if ( *ok == false )
+        return value;
+    }
     // Allow for Degrees/minutes format as well as DMS
     if ( !dms2.isEmpty() )
     {

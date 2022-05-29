@@ -1142,7 +1142,30 @@ bool QgsMapToolLabel::isPinned()
 
   if ( ! mCurrentLabel.pos.isDiagram )
   {
-    rc = mCurrentLabel.pos.isPinned;
+    if ( mCurrentLabel.pos.isPinned )
+    {
+      rc = true;
+    }
+    else
+    {
+      double lineAnchor;
+      bool lineAnchorSuccess;
+      int lineAnchorCol;
+      QString lineAnchorClipping;
+      bool lineAnchorClippingSuccess;
+      int lineAnchorClippingCol;
+      QString lineAnchorType;
+      bool lineAnchorTypeSuccess;
+      int lineAnchorTypeCol;
+      QString lineAnchorTextPoint;
+      bool lineAnchorTextSuccess;
+      int lineAnchorTextCol;
+      if ( currentLabelDataDefinedLineAnchorPercent( lineAnchor, lineAnchorSuccess, lineAnchorCol, lineAnchorClipping, lineAnchorClippingSuccess, lineAnchorClippingCol,
+           lineAnchorType, lineAnchorTypeSuccess, lineAnchorTypeCol, lineAnchorTextPoint, lineAnchorTextSuccess, lineAnchorTextCol ) )
+      {
+        rc = lineAnchorSuccess;
+      }
+    }
   }
   else
   {

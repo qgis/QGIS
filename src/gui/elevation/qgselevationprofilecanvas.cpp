@@ -173,6 +173,10 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         QPainter imagePainter( &mImage );
         imagePainter.setRenderHint( QPainter::Antialiasing, true );
         QgsRenderContext rc = QgsRenderContext::fromQPainter( &imagePainter );
+
+        rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
+        rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+
         calculateOptimisedIntervals( rc );
         render( rc );
         imagePainter.end();
@@ -180,6 +184,8 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         painter->drawImage( 0, 0, mImage );
       }
     }
+
+    QgsProject *mProject = nullptr;
 
   private:
 
@@ -621,7 +627,7 @@ void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
     mCrossHairsItem->setPoint( plotPoint );
     mCrossHairsItem->show();
   }
-  emit canvasPointHovered( e->pos() );
+  emit canvasPointHovered( e->pos(), plotPoint );
 }
 
 QRectF QgsElevationProfileCanvas::plotArea() const
@@ -850,6 +856,7 @@ QgsPointXY QgsElevationProfileCanvas::plotPointToCanvasPoint( const QgsProfilePo
 void QgsElevationProfileCanvas::setProject( QgsProject *project )
 {
   mProject = project;
+  mPlotItem->mProject = project;
 }
 
 void QgsElevationProfileCanvas::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -1072,6 +1079,9 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
 {
   if ( !mCurrentJob )
     return;
+
+  context.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
+  context.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
 
   QgsElevationProfilePlot profilePlot( mCurrentJob );
 

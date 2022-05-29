@@ -825,6 +825,32 @@ class CORE_EXPORT QgsSymbol
 
     QgsPropertyCollection mDataDefinedProperties;
 
+    /**
+     * Creates a line string in screen coordinates from a QgsCurve in map coordinates
+     */
+    static QPolygonF _getLineString2d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent = true );
+
+    /**
+     * Creates a line string in screen coordinates from a QgsCurve in map coordinates
+     */
+    static QPolygonF _getLineString3d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent = true );
+
+    /**
+     * Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
+     *
+     * If \a correctRingOrientation is TRUE then the ring will be oriented to match standard ring orientation, e.g.
+     * clockwise for exterior rings and counter-clockwise for interior rings.
+     */
+    static QPolygonF _getPolygonRing2d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
+
+    /**
+     * Creates a polygon ring in screen coordinates from a QgsCurve in map coordinates.
+     *
+     * If \a correctRingOrientation is TRUE then the ring will be oriented to match standard ring orientation, e.g.
+     * clockwise for exterior rings and counter-clockwise for interior rings.
+     */
+    static QPolygonF _getPolygonRing3d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent, bool isExteriorRing = false, bool correctRingOrientation = false );
+
     Q_DISABLE_COPY( QgsSymbol )
 
 };

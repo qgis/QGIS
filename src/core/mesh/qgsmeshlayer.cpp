@@ -732,8 +732,11 @@ void QgsMeshLayer::fillNativeMesh()
 void QgsMeshLayer::onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes )
 {
   // assign default style to new dataset groups
-  for ( int i = 0; i < datasetGroupIndexes.count(); ++i )
-    assignDefaultStyleToDatasetGroup( datasetGroupIndexes.at( i ) );
+  for ( int datasetGroupIndex : datasetGroupIndexes )
+  {
+    if ( !mRendererSettings.hasSettings( datasetGroupIndex ) )
+      assignDefaultStyleToDatasetGroup( datasetGroupIndex );
+  }
 
   temporalProperties()->setIsActive( mDatasetGroupStore->hasTemporalCapabilities() );
   emit rendererChanged();

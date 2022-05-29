@@ -37,6 +37,11 @@
 #include "lazperf/las.hpp"
 #include <lazperf/lazperf.hpp>
 
+#if defined(_MSC_VER)
+#define UNICODE
+#include <locale>
+#include <codecvt>
+#endif
 
 ///@cond PRIVATE
 
@@ -545,8 +550,7 @@ QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QString &filename,
     const QgsPointCloudAttributeCollection &requestedAttributes,
     QgsPointCloudExpression &filterExpression )
 {
-  const QByteArray arr = filename.toUtf8();
-  std::ifstream file( arr.constData(), std::ios::binary );
+  std::ifstream file( toNativePath( filename ), std::ios::binary );
 
   return __decompressLaz<std::ifstream>( file, requestedAttributes, filterExpression );
 }
@@ -620,5 +624,18 @@ QgsPointCloudBlock *QgsLazDecoder::decompressCopc( const QByteArray &data, QgsLa
   block->setPointCount( pointCount - skippedPoints );
   return block.release();
 }
+
+#if defined(_MSC_VER)
+std::wstring QgsLazDecoder::toNativePath( const QString &filename )
+{
+  std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
+  return converter.from_bytes( filename.toStdString() );
+}
+#else
+std::string QgsLazDecoder::toNativePath( const QString &filename )
+{
+  return filename.toStdString();
+}
+#endif
 
 ///@endcond

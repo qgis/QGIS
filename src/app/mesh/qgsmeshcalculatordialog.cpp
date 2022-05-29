@@ -673,23 +673,21 @@ void QgsMeshCalculatorDialog::repopulateTimeCombos()
   const QgsMeshDataProvider *dp = layer->dataProvider();
 
   // extract all times from all datasets
-  QMap<QString, double> times;
+  QMap<qint64, double> times;
 
-  for ( int groupIndex = 0; groupIndex < dp->datasetGroupCount(); ++groupIndex )
+  const QList<int> groupIndexes = layer->datasetGroupsIndexes();
+  for ( int dsgi : groupIndexes )
   {
-    for ( int datasetIndex = 0; datasetIndex < dp->datasetCount( groupIndex ); ++datasetIndex )
+    int datasetCount = layer->datasetCount( QgsMeshDatasetIndex( dsgi, 0 ) );
+    for ( int datasetIndex = 0; datasetIndex < datasetCount; ++datasetIndex )
     {
-      const QgsMeshDatasetMetadata meta = dp->datasetMetadata( QgsMeshDatasetIndex( groupIndex, datasetIndex ) );
-      const double time = meta.time();
-      const QString timestr = layer->formatTime( time );
-
-      times[timestr] = time;
+      qint64 timeMs = layer->datasetRelativeTimeInMilliseconds( QgsMeshDatasetIndex( dsgi, datasetIndex ) );
+      if ( timeMs == INVALID_MESHLAYER_TIME )
+        continue;
+      const QgsMeshDatasetMetadata meta = dp->datasetMetadata( QgsMeshDatasetIndex( dsgi, datasetIndex ) );
+      times[timeMs] = meta.time();
     }
   }
-
-  // sort by text
-  auto keys = times.keys();
-  keys.sort();
 
   mStartTimeComboBox->blockSignals( true );
   mEndTimeComboBox->blockSignals( true );
@@ -697,10 +695,12 @@ void QgsMeshCalculatorDialog::repopulateTimeCombos()
   mEndTimeComboBox->clear();
 
   // populate combos
-  for ( const QString &key : keys )
+  for ( auto it = times.constBegin(); it != times.constEnd(); ++it )
   {
-    mStartTimeComboBox->addItem( key, times[key] );
-    mEndTimeComboBox->addItem( key, times[key] );
+    double time = it.value();
+    const QString strTime = layer->formatTime( time );
+    mStartTimeComboBox->addItem( strTime, time );
+    mEndTimeComboBox->addItem( strTime, time );
   }
 
   mStartTimeComboBox->blockSignals( false );

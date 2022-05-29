@@ -53,6 +53,14 @@ QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudInd
 
 QgsRemoteEptPointCloudIndex::~QgsRemoteEptPointCloudIndex() = default;
 
+std::unique_ptr<QgsPointCloudIndex> QgsRemoteEptPointCloudIndex::clone() const
+{
+  QgsRemoteEptPointCloudIndex *clone = new QgsRemoteEptPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
+}
+
 QList<IndexedPointCloudNode> QgsRemoteEptPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
   QList<IndexedPointCloudNode> lst;
@@ -238,6 +246,17 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
 bool QgsRemoteEptPointCloudIndex::isValid() const
 {
   return mIsValid;
+}
+
+void QgsRemoteEptPointCloudIndex::copyCommonProperties( QgsRemoteEptPointCloudIndex *destination ) const
+{
+  QgsEptPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsRemoteEptPointCloudIndex specific fields
+  destination->mUrlDirectoryPart = mUrlDirectoryPart;
+  destination->mUrlFileNamePart = mUrlFileNamePart;
+  destination->mUrl = mUrl;
+  destination->mHierarchyNodes = mHierarchyNodes;
 }
 
 ///@endcond

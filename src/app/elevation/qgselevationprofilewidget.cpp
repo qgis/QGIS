@@ -453,19 +453,19 @@ void QgsElevationProfileWidget::setProfileCurve( const QgsGeometry &curve, bool 
   scheduleUpdate();
 }
 
-void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &point )
+void QgsElevationProfileWidget::onCanvasPointHovered( const QgsPointXY &, const QgsProfilePoint &profilePoint )
 {
   if ( !mMapPointRubberBand )
     return;
 
-  const QgsPointXY mapPoint = mCanvas->toMapCoordinates( point );
+  const QgsGeometry mapPoint = mProfileCurve.interpolate( profilePoint.distance() );
   if ( mapPoint.isEmpty() )
   {
     mMapPointRubberBand->hide();
   }
   else
   {
-    mMapPointRubberBand->setToGeometry( QgsGeometry::fromPointXY( mapPoint ) );
+    mMapPointRubberBand->setToGeometry( mapPoint );
     mMapPointRubberBand->show();
   }
 }

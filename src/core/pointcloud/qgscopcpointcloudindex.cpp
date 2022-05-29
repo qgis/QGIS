@@ -43,6 +43,14 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
+std::unique_ptr<QgsPointCloudIndex> QgsCopcPointCloudIndex::clone() const
+{
+  QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
+}
+
 void QgsCopcPointCloudIndex::load( const QString &fileName )
 {
   mFileName = fileName;
@@ -141,7 +149,7 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
 
   QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
-  std::ifstream file( mFileName.toStdString(), std::ios::binary );
+  std::ifstream file( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
   file.seekg( blockOffset );
   file.read( rawBlockData.data(), blockSize );
 
@@ -412,6 +420,20 @@ QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const Indexed
       lst.append( n2 );
   }
   return lst;
+}
+
+void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
+{
+  QgsPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsCopcPointCloudIndex specific fields
+  destination->mIsValid = mIsValid;
+  destination->mFileName = mFileName;
+  destination->mCopcFile.open( mFileName.toStdString(), std::ios::binary );
+  destination->mCopcInfoVlr = mCopcInfoVlr;
+  destination->mHierarchyNodePos = mHierarchyNodePos;
+  destination->mOriginalMetadata = mOriginalMetadata;
+  destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
 }
 
 ///@endcond

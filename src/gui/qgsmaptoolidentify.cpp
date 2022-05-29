@@ -562,14 +562,14 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   QgsGeometry selectionGeom = geometry;
   bool isPointOrRectangle;
-  QgsPointXY point;
+  QgsPoint point;
   bool isSingleClick = selectionGeom.type() == QgsWkbTypes::PointGeometry;
   if ( isSingleClick )
   {
     isPointOrRectangle = true;
-    point = selectionGeom.asPoint();
+    point = *qgsgeometry_cast< const QgsPoint *>( selectionGeom.constGet() );
 
-    commonDerivedAttributes = derivedAttributesForPoint( QgsPoint( point ) );
+    commonDerivedAttributes = derivedAttributesForPoint( point );
   }
   else
   {
@@ -642,7 +642,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   // When not single click identify, pass an empty point so some derived attributes may still be computed
   if ( !isSingleClick )
-    point = QgsPointXY();
+    point = QgsPoint();
 
   const int featureCount = identifyVectorLayer( results, layer, featureList, filter ? renderer.get() : nullptr, commonDerivedAttributes,
                            [point, layer, this]( const QgsFeature & feature )->QMap< QString, QString >
@@ -695,18 +695,18 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
 
   QgsPoint closestPoint = geometry.vertexAt( vId );
 
-  QgsPointXY closestPointMapCoords = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( closestPoint.x(), closestPoint.y() ) );
+  QgsPoint closestPointMapCoords = mCanvas->mapSettings().layerToMapCoordinates( layer, closestPoint );
   derivedAttributes.insert( tr( "Closest vertex X" ), formatXCoordinate( closestPointMapCoords ) );
   derivedAttributes.insert( tr( "Closest vertex Y" ), formatYCoordinate( closestPointMapCoords ) );
 
   if ( closestPoint.is3D() )
   {
-    str = QLocale().toString( closestPoint.z(), 'g', 10 );
+    str = QLocale().toString( closestPointMapCoords.z(), 'g', 10 );
     derivedAttributes.insert( tr( "Closest vertex Z" ), str );
   }
   if ( closestPoint.isMeasure() )
   {
-    str = QLocale().toString( closestPoint.m(), 'g', 10 );
+    str = QLocale().toString( closestPointMapCoords.m(), 'g', 10 );
     derivedAttributes.insert( tr( "Closest vertex M" ), str );
   }
 
