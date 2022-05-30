@@ -2332,12 +2332,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       return QDomElement();
     }
 
-    if ( otherNode->hasCachedStaticValue() )
+    if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().canConvert<QgsGeometry>() )
     {
-      if ( otherNode->cachedStaticValue().canConvert<QgsGeometry>() )
-      {
-
-      }
       QgsGeometry geom = otherNode->cachedStaticValue().value<QgsGeometry>();
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
                       QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
