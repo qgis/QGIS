@@ -152,6 +152,13 @@ bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
          || ( mSymbol && mSymbol->usesMapUnits() );
 }
 
+void QgsMaskMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsMarkerSymbolLayer::setOutputUnit( unit );
+  if ( mSymbol )
+    mSymbol->setOutputUnit( unit );
+}
+
 QColor QgsMaskMarkerSymbolLayer::color() const
 {
   return QColor();
