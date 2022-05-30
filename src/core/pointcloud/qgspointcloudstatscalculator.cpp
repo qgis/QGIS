@@ -90,10 +90,10 @@ struct StatsProcessor
       int count = block->pointCount();
       int recordSize = attributesCollection.pointRecordSize();
 
-      QMap<QString, QgsPointCloudStatistics::AttributeStatistics> statsMap;
+      QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
       for ( QgsPointCloudAttribute attribute : attributes )
       {
-        QgsPointCloudStatistics::AttributeStatistics summary;
+        QgsPointCloudAttributeStatistics summary;
         summary.minimum = std::numeric_limits<double>::max();
         summary.maximum = std::numeric_limits<double>::lowest();
         summary.count = 0;
@@ -136,7 +136,7 @@ struct StatsProcessor
           double attributeValue = 0;
           int attributeOffset = attributeOffsetVector[ j ];
 
-          QgsPointCloudStatistics::AttributeStatistics &stats = statsMap[ attributeName ];
+          QgsPointCloudAttributeStatistics &stats = statsMap[ attributeName ];
           QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
@@ -227,10 +227,10 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
   coordinateAttributes.push_back( QStringLiteral( "Y" ) );
   coordinateAttributes.push_back( QStringLiteral( "Z" ) );
 
-  QMap<QString, QgsPointCloudStatistics::AttributeStatistics> statsMap = mStats.statisticsMap();
+  QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStats.statisticsMap();
   for ( QString attribute : coordinateAttributes )
   {
-    QgsPointCloudStatistics::AttributeStatistics s;
+    QgsPointCloudAttributeStatistics s;
     QVariant min = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Min );
     QVariant max = mIndex->metadataStatistic( attribute, QgsStatisticalSummary::Max );
     if ( !min.isValid() )

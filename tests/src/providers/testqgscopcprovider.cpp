@@ -709,25 +709,25 @@ void TestQgsCopcProvider::testStatsCalculator()
   QgsPointCloudStatistics stats = calculator.statistics();
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Amplitude" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Amplitude" ) );
     QCOMPARE( ( float )s.minimum, 1.1599999666214 );
     QCOMPARE( ( float )s.maximum, 19.6000003814697 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Blue" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Blue" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ClassFlags" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ClassFlags" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Classification" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Classification" ) );
     QCOMPARE( ( float )s.minimum, 2 );
     QCOMPARE( ( float )s.maximum, 18 );
     QMap<int, int> classCount = s.classCount;
@@ -742,79 +742,79 @@ void TestQgsCopcProvider::testStatsCalculator()
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Deviation" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Deviation" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 120 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "EdgeOfFlightLine" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "EdgeOfFlightLine" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "GpsTime" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "GpsTime" ) );
     QCOMPARE( ( float )s.minimum, ( float )302522581.972046196460723876953 );
     QCOMPARE( ( float )s.maximum, ( float )302522583.437068104743957519531 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Green" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Green" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Intensity" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Intensity" ) );
     QCOMPARE( ( float )s.minimum, 116 );
     QCOMPARE( ( float )s.maximum, 1960 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "NumberOfReturns" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "NumberOfReturns" ) );
     QCOMPARE( ( float )s.minimum, 1 );
     QCOMPARE( ( float )s.maximum, 5 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "PointSourceId" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "PointSourceId" ) );
     QCOMPARE( ( float )s.minimum, 15017 );
     QCOMPARE( ( float )s.maximum, 15017 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Red" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Red" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "Reflectance" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "Reflectance" ) );
     QCOMPARE( ( float )s.minimum, -21.1100006103515625 );
     QCOMPARE( ( float )s.maximum, -2.6099998950958251953125 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ReturnNumber" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ReturnNumber" ) );
     QCOMPARE( ( float )s.minimum, 1 );
     QCOMPARE( ( float )s.maximum, 5 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanAngleRank" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanAngleRank" ) );
     QCOMPARE( ( float )s.minimum, -65 );
     QCOMPARE( ( float )s.maximum, 125 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanDirectionFlag" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanDirectionFlag" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
 
   {
-    QgsPointCloudStatistics::AttributeStatistics s = stats.statisticsOf( QStringLiteral( "UserData" ) );
+    QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "UserData" ) );
     QCOMPARE( ( float )s.minimum, 0 );
     QCOMPARE( ( float )s.maximum, 0 );
   }
@@ -906,7 +906,7 @@ void TestQgsCopcProvider::testSaveLoadStats()
     QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( layer->dataProvider()->index() );
 
     calculatedStats = layer->statistics();
-    index->writeStats( calculatedStats );
+    index->writeStatistics( calculatedStats );
   }
 
   {
@@ -917,11 +917,11 @@ void TestQgsCopcProvider::testSaveLoadStats()
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
 
     QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( layer->dataProvider()->index() );
-    readStats = index->readStats();
+    readStats = index->readStatistics();
   }
 
   QVERIFY( calculatedStats.sampledPointsCount() == readStats.sampledPointsCount() );
-  QVERIFY( calculatedStats.toJson() == readStats.toJson() );
+  QVERIFY( calculatedStats.toStatisticsJson() == readStats.toStatisticsJson() );
 }
 
 QGSTEST_MAIN( TestQgsCopcProvider )

@@ -68,8 +68,19 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
 
-    void writeStats( QgsPointCloudStatistics &stats );
-    QgsPointCloudStatistics readStats();
+    /**
+     * Writes the statistics object \a stats into the COPC dataset as an Extended Variable Length Record (EVLR).
+     * Returns true if the data was written successfully.
+     * \since QGIS 3.26
+     */
+    bool writeStatistics( QgsPointCloudStatistics &stats );
+
+    /**
+     * Returns the statistics object contained in the COPC dataset.
+     * If the dataset doesn't contain statistics EVLR, an object with 0 samples will be returned.
+     * \since QGIS 3.26
+     */
+    QgsPointCloudStatistics readStatistics();
 
     /**
      * Copies common properties to the \a destination index

@@ -11,6 +11,25 @@
 
 
 
+struct QgsPointCloudAttributeStatistics
+{
+  double minimum;
+  double maximum;
+  double mean;
+  double stDev;
+  int count;
+
+  QJsonObject toStatisticsJson() const;
+%Docstring
+Converts the current statistics object into JSON object
+%End
+
+  static QgsPointCloudAttributeStatistics fromStatisticsJson( QJsonObject &stats );
+%Docstring
+Creates a statistics object from the JSON object ``stats``
+%End
+};
+
 class QgsPointCloudStatistics
 {
 %Docstring(signature="appended")
@@ -24,24 +43,9 @@ Class used to store statistics of a point cloud dataset.
 #include "qgspointcloudstatistics.h"
 %End
   public:
-    struct AttributeStatistics
-    {
-      double minimum;
-      double maximum;
-      double mean;
-      double stDev;
-      int count;
-      void cumulateStatistics( const AttributeStatistics &stats );
-    };
-
     QgsPointCloudStatistics();
 %Docstring
 Constructor
-%End
-
-    QgsPointCloudStatistics( const QJsonObject &obj );
-%Docstring
-Constructor from JSON object
 %End
 
 
@@ -60,7 +64,7 @@ Clears the statistics of all attributes
 Clears the statistics of given attributes ``attributes``
 %End
 
-    AttributeStatistics statisticsOf( const QString &attribute ) const;
+    QgsPointCloudAttributeStatistics statisticsOf( const QString &attribute ) const;
 %Docstring
 Returns the calculated statistics of attribute ``attribute``
 %End
@@ -100,19 +104,13 @@ If no matching statistic is available then NaN will be returned.
 Merges the current statistics with the statistics from ``stats``
 %End
 
-    QJsonObject toJson() const;
+    QJsonObject toStatisticsJson() const;
 %Docstring
 Converts the current statistics object into JSON object
 %End
 
-    static QJsonObject fromStatsToJson( AttributeStatistics &stats );
-%Docstring
-Creates a JSON object from the statistics measure ``stats``
-%End
-    static AttributeStatistics fromJsonToStats( QJsonObject &stats );
-%Docstring
-Creates a statistics object from the JSON object ``stats``
-%End
+    static QgsPointCloudStatistics fromStatisticsJson( QJsonObject stats );
+
 };
 
 /************************************************************************

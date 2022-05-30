@@ -103,9 +103,9 @@ class CORE_EXPORT QgsLazInfo
     int extrabytesCount() const { return mHeader.ebCount(); }
 
     //! Returns the absolute offset to the first extended point record in the LAZ file
-    uint64_t firstExtendedPointRecordOffset() const { return mHeader.evlr_offset; }
+    uint64_t firstEvlrOffset() const { return mHeader.evlr_offset; }
     //! Returns the absolute offset to the first variable length record in the LAZ file
-    uint32_t extendedVariableLengthRecordsCount() const { return mHeader.evlr_count; }
+    uint32_t evlrCount() const { return mHeader.evlr_count; }
 
     //! Returns the coordinate system stored in the LAZ file
     QgsCoordinateReferenceSystem crs() const { return mCrs; }

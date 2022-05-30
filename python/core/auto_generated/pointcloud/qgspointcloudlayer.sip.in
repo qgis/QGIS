@@ -46,10 +46,6 @@ Constructor for LayerOptions with optional ``transformContext``.
 
       bool skipIndexGeneration;
 
-      bool skipSavingStatistics;
-
-      bool skipLoadingStatistics;
-
       bool skipStatisticsCalculation;
     };
 

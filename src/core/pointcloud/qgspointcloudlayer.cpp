@@ -39,7 +39,9 @@
 #include "qgsmessagelog.h"
 #include "qgstaskmanager.h"
 #include "qgspointcloudlayerprofilegenerator.h"
+#ifdef HAVE_COPC
 #include "qgscopcpointcloudindex.h"
+#endif
 
 #include <QUrl>
 
@@ -782,16 +784,21 @@ void QgsPointCloudLayer::calculateStatistics()
     QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
     return;
   }
-  if ( !mLayerOptions.skipLoadingStatistics )
+#ifdef HAVE_COPC
+  if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QStringLiteral( "pdal" ) )
   {
-    mStatistics = loadCopcStatistics();
-    if ( mStatistics.sampledPointsCount() != 0 )
+    if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
     {
-      mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
-      emit statisticsCalculationStateChanged( mStatisticsCalculationState );
-      resetRenderer();
-      return;
+      mStatistics = index->readStatistics();
     }
+  }
+#endif
+  if ( mStatistics.sampledPointsCount() != 0 )
+  {
+    mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
+    return;
   }
 
   QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
@@ -813,10 +820,15 @@ void QgsPointCloudLayer::calculateStatistics()
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     mStatsCalculationTask = 0;
-    if ( !mLayerOptions.skipSavingStatistics && mStatistics.sampledPointsCount() != 0 )
+#ifdef HAVE_COPC
+    if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QStringLiteral( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
     {
-      this->saveCopcStatistics();
+      if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+      {
+        index->writeStatistics( mStatistics );
+      }
     }
+#endif
   } );
 
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
@@ -867,26 +879,4 @@ void QgsPointCloudLayer::resetRenderer()
   emit rendererChanged();
 }
 
-void QgsPointCloudLayer::saveCopcStatistics()
-{
-  // If the point cloud doesn't have a valide PDAL data provider and a valid index we don't save any statistics
-  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() || mDataProvider->name() != QStringLiteral( "pdal" ) )
-    return;
-  if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
-  {
-    index->writeStats( mStatistics );
-  }
-}
 
-QgsPointCloudStatistics QgsPointCloudLayer::loadCopcStatistics()
-{
-  // If the point cloud doesn't have a valide PDAL data provider and a valid index we don't load anything and return an empty statistics object
-  if ( !mDataProvider || !mDataProvider->index() || !mDataProvider->index()->isValid() || mDataProvider->name() != QStringLiteral( "pdal" ) )
-    return QgsPointCloudStatistics();
-
-  if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
-  {
-    return index->readStats();
-  }
-  return QgsPointCloudStatistics();
-}
