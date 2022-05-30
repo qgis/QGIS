@@ -850,23 +850,6 @@ void QgsPointCloudLayer::calculateStatistics()
   emit statisticsCalculationStateChanged( mStatisticsCalculationState );
 }
 
-void QgsPointCloudLayer::waitForStatisticsCalculationToFinish( bool cancelTask )
-{
-  // If the statistics calculation task is still running we need to wait for the task to get actually terminated or completed properly
-  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
-  {
-    if ( task->isActive() )
-    {
-      QEventLoop loop;
-      connect( task, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
-      connect( task, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
-      if ( cancelTask )
-        task->cancel();
-      loop.exec();
-    }
-  }
-}
-
 void QgsPointCloudLayer::resetRenderer()
 {
   mDataProvider->loadIndex();
