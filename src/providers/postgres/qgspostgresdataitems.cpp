@@ -261,7 +261,17 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
     if ( srcLayer->isValid() )
     {
-      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
+
+      // Try to get source col from uri
+      QString geomColumn { QStringLiteral( "geom" ) };
+
+      if ( ! srcLayer->dataProvider()->uri().geometryColumn().isEmpty() )
+      {
+        geomColumn = srcLayer->dataProvider()->uri().geometryColumn();
+      }
+
+      uri.setDataSource( QString(), u.name,  srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? geomColumn : QString() );
+
       QgsDebugMsg( "URI " + uri.uri( false ) );
 
       if ( !toSchema.isNull() )
