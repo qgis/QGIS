@@ -212,9 +212,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
                               provider->placement(),
                               provider->priority(),
                               true,
-                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
-                              provider->overlapHandling(),
-                              flags.testFlag( QgsAbstractLabelProvider::AllowDegradedPlacement ) );
+                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ) );
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );

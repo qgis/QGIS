@@ -250,6 +250,9 @@ Contains settings for how a map layer will be labeled.
       ZIndex,
       CalloutDraw,
 
+      AllowDegradedPlacement,
+      OverlapHandling,
+
       // (data defined only)
       Show,
       AlwaysShow

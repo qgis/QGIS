@@ -347,7 +347,8 @@ The development version
     enum class LabelOverlapHandling
     {
       PreventOverlap,
-      AvoidOverlapIfPossible,
+      AllowOverlapIfRequired,
+      AllowOverlapAtNoCost,
     };
 
     enum class SublayerQueryFlag

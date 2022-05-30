@@ -354,6 +354,9 @@ class CORE_EXPORT QgsPalLayerSettings
       ZIndex = 90,
       CalloutDraw = 100, //!< Show callout
 
+      AllowDegradedPlacement = 117, //!< Allow degraded label placements (since QGIS 3.26)
+      OverlapHandling = 118, //!< Overlap handling technique (since QGIS 3.26)
+
       // (data defined only)
       Show = 15,
       AlwaysShow = 20
@@ -792,8 +795,8 @@ class CORE_EXPORT QgsPalLayerSettings
     void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mLineSettings.setOverrunDistanceUnit( unit ); }
     QgsMapUnitScale _getOverrunDistanceMapUnitScale() const { return mLineSettings.overrunDistanceMapUnitScale(); }
     void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale ) { mLineSettings.setOverrunDistanceMapUnitScale( scale ); }
-    bool _getDisplayAll() const { return mPlacementSettings.overlapHandling() == Qgis::LabelOverlapHandling::AvoidOverlapIfPossible; }
-    void _setDisplayAll( bool display ) { mPlacementSettings.setOverlapHandling( display ? Qgis::LabelOverlapHandling::AvoidOverlapIfPossible : Qgis::LabelOverlapHandling::PreventOverlap ); }
+    bool _getDisplayAll() const { return mPlacementSettings.overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapIfRequired; }
+    void _setDisplayAll( bool display ) { mPlacementSettings.setOverlapHandling( display ? Qgis::LabelOverlapHandling::AllowOverlapIfRequired : Qgis::LabelOverlapHandling::PreventOverlap ); mPlacementSettings.setAllowDegradedPlacement( display ); }
     ///@endcond
 
     //! Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index

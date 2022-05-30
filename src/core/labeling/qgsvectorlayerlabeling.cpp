@@ -523,7 +523,8 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   {
     case Qgis::LabelOverlapHandling::PreventOverlap:
       break;
-    case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
+    case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
+    case Qgis::LabelOverlapHandling::AllowOverlapAtNoCost:
       const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "conflictResolution" ), QStringLiteral( "false" ) );
       textSymbolizerElement.appendChild( vo );
       break;

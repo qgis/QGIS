@@ -561,6 +561,46 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setMinimumSize( double size ) { mMinimumSize = size; }
 
+    /**
+     * Returns the technique to use for handling overlapping labels for the feature.
+     *
+     * \see setOverlapHandling()
+     * \since QGIS 3.26
+     */
+    Qgis::LabelOverlapHandling overlapHandling() const { return mOverlapHandling; }
+
+    /**
+     * Sets the technique to use for handling overlapping labels for the feature.
+     *
+     * \see overlapHandling()
+     * \since QGIS 3.26
+     */
+    void setOverlapHandling( Qgis::LabelOverlapHandling handling ) { mOverlapHandling = handling; }
+
+    /**
+     * Returns TRUE if the label can be placed in inferior fallback positions if it cannot otherwise
+     * be placed.
+     *
+     * For instance, this will permit a curved line label to fallback to a horizontal label at the end of the line
+     * if the label cannot otherwise be placed on the line in a curved manner.
+     *
+     * \see setAllowDegradedPlacement()
+     * \since QGIS 3.26
+     */
+    bool allowDegradedPlacement() const { return mAllowDegradedPlacement; }
+
+    /**
+     * Sets whether the label can be placed in inferior fallback positions if it cannot otherwise
+     * be placed.
+     *
+     * For instance, this will permit a curved line label to fallback to a horizontal label at the end of the line
+     * if the label cannot otherwise be placed on the line in a curved manner.
+     *
+     * \see allowDegradedPlacement()
+     * \since QGIS 3.26
+     */
+    void setAllowDegradedPlacement( bool allow ) { mAllowDegradedPlacement = allow; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
@@ -639,6 +679,9 @@ class CORE_EXPORT QgsLabelFeature
     double mLineAnchorPercent = 0.5;
     QgsLabelLineSettings::AnchorType mLineAnchorType = QgsLabelLineSettings::AnchorType::HintOnly;
     QgsLabelLineSettings::AnchorTextPoint mAnchorTextPoint = QgsLabelLineSettings::AnchorTextPoint::CenterOfText;
+
+    Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
+    bool mAllowDegradedPlacement = false;
 
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 
