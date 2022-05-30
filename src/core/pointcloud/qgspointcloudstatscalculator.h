@@ -62,20 +62,13 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     //! Returns the object containing the calculated statistics
     QgsPointCloudStatistics statistics() const { return mStats; }
 
-  private slots:
-    void statisticsCalculationQtConcurrentCallFinished();
   private:
     std::unique_ptr<QgsPointCloudIndex> mIndex = nullptr;
 
     QgsPointCloudStatistics mStats;
     QSet<IndexedPointCloudNode> mProcessedNodes;
 
-    long mStatsCalculationTaskId = 0;
     QgsPointCloudRequest mRequest;
-
-    QFuture<QgsPointCloudStatistics> mFuture;
-    QFutureWatcher<QgsPointCloudStatistics> mFutureWatcher;
-    std::unique_ptr<QEventLoop> mEventLoop = nullptr;
 };
 
 
