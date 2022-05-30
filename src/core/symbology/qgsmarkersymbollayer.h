@@ -470,6 +470,7 @@ class CORE_EXPORT QgsFilledMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     void setColor( const QColor &c ) override;
     QColor color() const override;
     bool usesMapUnits() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
 
   private:
 #ifdef SIP_RUN
@@ -905,6 +906,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
     bool usesMapUnits() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
 
     // new methods
 

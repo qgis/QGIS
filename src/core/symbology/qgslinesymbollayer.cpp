@@ -57,6 +57,9 @@ void QgsSimpleLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
   mWidthUnit = unit;
   mOffsetUnit = unit;
   mCustomDashPatternUnit = unit;
+  mDashPatternOffsetUnit = unit;
+  mTrimDistanceStartUnit = unit;
+  mTrimDistanceEndUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit  QgsSimpleLineSymbolLayer::outputUnit() const
@@ -1462,6 +1465,14 @@ QgsUnitTypes::RenderUnit QgsTemplatedLineSymbolLayerBase::outputUnit() const
   return unit;
 }
 
+void QgsTemplatedLineSymbolLayerBase::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsLineSymbolLayer::setOutputUnit( unit );
+  mIntervalUnit = unit;
+  mOffsetAlongLineUnit = unit;
+  mAverageAngleLengthUnit = unit;
+}
+
 void QgsTemplatedLineSymbolLayerBase::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   QgsLineSymbolLayer::setMapUnitScale( scale );
@@ -2677,11 +2688,8 @@ double QgsMarkerLineSymbolLayer::width( const QgsRenderContext &context ) const
 
 void QgsMarkerLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsLineSymbolLayer::setOutputUnit( unit );
+  QgsTemplatedLineSymbolLayerBase::setOutputUnit( unit );
   mMarker->setOutputUnit( unit );
-  setIntervalUnit( unit );
-  mOffsetUnit = unit;
-  setOffsetAlongLineUnit( unit );
 }
 
 bool QgsMarkerLineSymbolLayer::usesMapUnits() const
@@ -2856,11 +2864,8 @@ double QgsHashedLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
 
 void QgsHashedLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsLineSymbolLayer::setOutputUnit( unit );
+  QgsTemplatedLineSymbolLayerBase::setOutputUnit( unit );
   mHashSymbol->setOutputUnit( unit );
-  setIntervalUnit( unit );
-  mOffsetUnit = unit;
-  setOffsetAlongLineUnit( unit );
 }
 
 QSet<QString> QgsHashedLineSymbolLayer::usedAttributes( const QgsRenderContext &context ) const

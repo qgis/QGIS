@@ -50,6 +50,8 @@ Create a new QgsArrowSymbolLayer
 
     virtual bool usesMapUnits() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
 
     double arrowWidth() const;
 %Docstring

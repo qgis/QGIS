@@ -721,6 +721,7 @@ QgsMapUnitScale QgsMarkerSymbolLayer::mapUnitScale() const
 void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mWidthUnit = unit;
+  mOffsetUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit QgsLineSymbolLayer::outputUnit() const

@@ -910,6 +910,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool usesMapUnits() const override;
     QColor color() const override;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
     QgsSymbol *subSymbol() override { return nullptr; }
