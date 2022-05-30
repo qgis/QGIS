@@ -132,13 +132,11 @@ class QgsBackgroundCachedSharedData
 
     //// Actions
 
-    void setExpression( QgsExpression *expression ) {mExpression = *expression;}
-
     /**
      * Used by a QgsBackgroundCachedFeatureIterator to start a downloader and get the
      * generation counter.
     */
-    int registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect = QgsRectangle() );
+    int registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect = QgsRectangle(), const QgsExpression &expression = QgsExpression() );
 
     /**
      * Used by the rewind() method of an iterator so as to get the up-to-date

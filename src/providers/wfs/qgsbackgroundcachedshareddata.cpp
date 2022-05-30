@@ -395,7 +395,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   return true;
 }
 
-int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect )
+int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect, const QgsExpression &expression )
 {
   // This locks prevents 2 readers to register at the same time (and particularly
   // destroy the current mDownloader at the same time)
@@ -466,9 +466,15 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   {
     newDownloadNeeded = true;
   }
+  else if ( expression.isValid() )
+  {
+    qDebug() << QThread::currentThreadId() << "allways download when having an expression";
+    newDownloadNeeded = true;
+  }
   if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
+    mExpression = expression;
     mRequestLimit = ( limit > 0 && supportsLimitedFeatureCountDownloads() ) ? limit : 0;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
     mMutex.unlock();

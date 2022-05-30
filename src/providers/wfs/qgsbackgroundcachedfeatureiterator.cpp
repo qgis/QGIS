@@ -362,14 +362,9 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
   }
 
-  if ( mRequest.filterExpression() )
-  {
-    mShared->setExpression( mRequest.filterExpression() );
-  }
-
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ) );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
