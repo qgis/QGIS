@@ -42,14 +42,12 @@
 
 using namespace pal;
 
-Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, Qgis::LabelOverlapHandling overlapHandling, bool allowDegradedPlacement )
+Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal )
   : mProvider( provider )
   , mName( name )
   , mPal( pal )
   , mActive( active )
   , mLabelLayer( toLabel )
-  , mOverlapHandling( overlapHandling )
-  , mAllowDegradedPlacement( allowDegradedPlacement )
   , mCentroidInside( false )
   , mArrangement( arrangement )
   , mMergeLines( false )

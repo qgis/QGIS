@@ -545,7 +545,8 @@ class CORE_EXPORT Qgis
     enum class LabelOverlapHandling : int
     {
       PreventOverlap, //!< Do not allow labels to overlap other labels
-      AvoidOverlapIfPossible, //!< Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed
+      AllowOverlapIfRequired, //!< Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed
+      AllowOverlapAtNoCost, //!< Labels may freely overlap other labels, at no cost
     };
     Q_ENUM( LabelOverlapHandling )
 

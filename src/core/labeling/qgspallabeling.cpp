@@ -269,6 +269,8 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { QgsPalLayerSettings::AlwaysShow, QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::CalloutDraw, QgsPropertyDefinition( "CalloutDraw", QObject::tr( "Draw callout" ), QgsPropertyDefinition::Boolean, origin ) },
     { QgsPalLayerSettings::LabelAllParts, QgsPropertyDefinition( "LabelAllParts", QObject::tr( "Label all parts" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::AllowDegradedPlacement, QgsPropertyDefinition( "AllowDegradedPlacement", QObject::tr( "Allow inferior fallback placements" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::OverlapHandling, QgsPropertyDefinition( "OverlapHandling", QgsPropertyDefinition::DataTypeString, QObject::tr( "Overlap handing" ), QObject::tr( "string " ) + "[<b>Prevent</b>|<b>AllowIfNeeded</b>|<b>AlwaysAllow</b>]", origin ) },
   };
 }
 
@@ -876,11 +878,13 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   fontMaxPixelSize = layer->customProperty( QStringLiteral( "labeling/fontMaxPixelSize" ), QVariant( 10000 ) ).toInt();
   if ( layer->customProperty( QStringLiteral( "labeling/displayAll" ), QVariant( false ) ).toBool() )
   {
-    mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+    mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+    mPlacementSettings.setAllowDegradedPlacement( true );
   }
   else
   {
     mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
+    mPlacementSettings.setAllowDegradedPlacement( false );
   }
   upsidedownLabels = static_cast< UpsideDownLabels >( layer->customProperty( QStringLiteral( "labeling/upsidedownLabels" ), QVariant( Upright ) ).toUInt() );
 
@@ -1128,12 +1132,13 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
     // legacy setting
     if ( renderingElem.attribute( QStringLiteral( "displayAll" ), QStringLiteral( "0" ) ).toInt() )
     {
-      mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+      mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
       mPlacementSettings.setAllowDegradedPlacement( true );
     }
     else
     {
       mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
+      mPlacementSettings.setAllowDegradedPlacement( false );
     }
   }
   upsidedownLabels = static_cast< UpsideDownLabels >( renderingElem.attribute( QStringLiteral( "upsidedownLabels" ), QString::number( Upright ) ).toUInt() );
@@ -2795,6 +2800,34 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         labelFeature->setPriority( priorityD );
       }
     }
+  }
+
+  // data defined allow degraded placement
+  {
+    double allowDegradedPlacement = mPlacementSettings.allowDegradedPlacement();
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::AllowDegradedPlacement ) )
+    {
+      context.expressionContext().setOriginalValueVariable( allowDegradedPlacement );
+      allowDegradedPlacement = mDataDefinedProperties.valueAsBool( QgsPalLayerSettings::AllowDegradedPlacement, context.expressionContext(), allowDegradedPlacement );
+    }
+    labelFeature->setAllowDegradedPlacement( allowDegradedPlacement );
+  }
+
+  // data defined overlap handling
+  {
+    Qgis::LabelOverlapHandling overlapHandling = mPlacementSettings.overlapHandling();
+    if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OverlapHandling ) )
+    {
+      const QString handlingString = mDataDefinedProperties.valueAsString( QgsPalLayerSettings::OverlapHandling, context.expressionContext() );
+      const QString cleanedString = handlingString.trimmed();
+      if ( cleanedString.compare( QLatin1String( "prevent" ), Qt::CaseInsensitive ) == 0 )
+        overlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
+      else if ( cleanedString.compare( QLatin1String( "allowifneeded" ), Qt::CaseInsensitive ) == 0 )
+        overlapHandling = Qgis::LabelOverlapHandling::AllowOverlapIfRequired;
+      else if ( cleanedString.compare( QLatin1String( "alwaysallow" ), Qt::CaseInsensitive ) == 0 )
+        overlapHandling = Qgis::LabelOverlapHandling::AllowOverlapAtNoCost;
+    }
+    labelFeature->setOverlapHandling( overlapHandling );
   }
 
   QgsLabelObstacleSettings os = mObstacleSettings;

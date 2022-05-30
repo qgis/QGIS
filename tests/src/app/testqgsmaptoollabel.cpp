@@ -115,7 +115,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.placement = QgsPalLayerSettings::OverPoint;
       pls1.quadOffset = QgsPalLayerSettings::QuadrantOver;
       pls1.placementSettings().setAllowDegradedPlacement( true );
-      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
       QgsTextFormat format = pls1.format();
       format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
@@ -272,7 +272,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.placement = QgsPalLayerSettings::OverPoint;
       pls1.quadOffset = QgsPalLayerSettings::QuadrantOver;
       pls1.placementSettings().setAllowDegradedPlacement( true );
-      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
       QgsTextFormat format = pls1.format();
       format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
@@ -416,7 +416,7 @@ class TestQgsMapToolLabel : public QObject
       pls1.placement = QgsPalLayerSettings::OverPoint;
       pls1.quadOffset = QgsPalLayerSettings::QuadrantOver;
       pls1.placementSettings().setAllowDegradedPlacement( true );
-      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
+      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
       QgsTextFormat format = pls1.format();
       format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );

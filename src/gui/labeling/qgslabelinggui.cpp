@@ -399,15 +399,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineSettings = mSettings.lineSettings();
 
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
-  switch ( mSettings.placementSettings().overlapHandling() )
-  {
-    case Qgis::LabelOverlapHandling::PreventOverlap:
-      mCheckAllowOverlapping->setChecked( false );
-      break;
-    case Qgis::LabelOverlapHandling::AvoidOverlapIfPossible:
-      mCheckAllowOverlapping->setChecked( true );
-      break;
-  }
+
+  mComboOverlapHandling->setCurrentIndex( mComboOverlapHandling->findData( static_cast< int >( mSettings.placementSettings().overlapHandling() ) ) );
   mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
 
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
@@ -586,14 +579,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setAnchorTextPoint( mLineSettings.anchorTextPoint() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
-  if ( mCheckAllowOverlapping->isChecked() )
-  {
-    lyr.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AvoidOverlapIfPossible );
-  }
-  else
-  {
-    lyr.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
-  }
+  lyr.placementSettings().setOverlapHandling( static_cast< Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
   lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
 
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );

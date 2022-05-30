@@ -61,7 +61,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     enum Flag
     {
       DrawLabels              = 1 << 1,  //!< Whether the labels should be rendered
-      AllowDegradedPlacement  = 1 << 2,  //!< Whether inferior placement is permitted when label cannot otherwise be placed
       MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
       CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
     };
@@ -148,13 +147,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! What placement strategy to use for the labels
     QgsPalLayerSettings::Placement placement() const { return mPlacement; }
 
-    /**
-     * Returns the technique to use for handling overlapping labels for the layer.
-     *
-     * \since QGIS 3.26
-     */
-    Qgis::LabelOverlapHandling overlapHandling() const { return mOverlapHandling; }
-
     //! Default priority of labels (may be overridden by individual labels)
     double priority() const { return mPriority; }
 
@@ -192,8 +184,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     QString mProviderId;
     //! Flags altering drawing and registration of features
     Flags mFlags;
-    //! Label overlap handling
-    Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
     //! Placement strategy
     QgsPalLayerSettings::Placement mPlacement;
     //! Default priority of labels

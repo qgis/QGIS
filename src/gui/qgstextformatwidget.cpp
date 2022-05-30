@@ -196,6 +196,10 @@ void QgsTextFormatWidget::initWidget()
   mShapeTypeCmbBx->addItem( tr( "SVG" ), QgsTextBackgroundSettings::ShapeSVG );
   mShapeTypeCmbBx->addItem( tr( "Marker Symbol" ), QgsTextBackgroundSettings::ShapeMarkerSymbol );
 
+  mComboOverlapHandling->addItem( tr( "Never Overlap" ), static_cast< int >( Qgis::LabelOverlapHandling::PreventOverlap ) );
+  mComboOverlapHandling->addItem( tr( "Allow Overlaps if Required" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapIfRequired ) );
+  mComboOverlapHandling->addItem( tr( "Always Allow Overlaps" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ) );
+
   updateAvailableShadowPositions();
 
   mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
@@ -393,7 +397,7 @@ void QgsTextFormatWidget::initWidget()
           << mMinSizeSpinBox
           << mOffsetTypeComboBox
           << mCheckAllowDegradedPlacement
-          << mCheckAllowOverlapping
+          << mComboOverlapHandling
           << mPointAngleSpinBox
           << mPointOffsetUnitWidget
           << mPointOffsetXSpinBox
@@ -798,6 +802,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mLineDistanceUnitDDBtn, QgsPalLayerSettings::DistanceUnits );
   registerDataDefinedButton( mPriorityDDBtn, QgsPalLayerSettings::Priority );
   registerDataDefinedButton( mAllowOutsidePolygonsDDBtn, QgsPalLayerSettings::PolygonLabelOutside );
+  registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::AllowDegradedPlacement );
+  registerDataDefinedButton( mOverlapHandlingDBtn, QgsPalLayerSettings::OverlapHandling );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,

@@ -85,23 +85,10 @@ namespace pal
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled whether toLablel is TRUE
        * \param pal pointer to the pal object
-       * \param overlapHandling overlapping label handling mode
-       * \param allowDegradedPlacement whether inferior fallback placement is permitted
        */
-      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, Qgis::LabelOverlapHandling overlapHandling = Qgis::LabelOverlapHandling::PreventOverlap, bool allowDegradedPlacement = false );
+      Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal );
 
       virtual ~Layer();
-
-      /**
-       * Returns the label overlap handling technique for the layer.
-       */
-      Qgis::LabelOverlapHandling overlapHandling() const { return mOverlapHandling; }
-
-      /**
-       * Returns TRUE if inferior placement options are permitted if label cannot otherwise
-       * be placed.
-       */
-      bool allowDegradedPlacement() const { return mAllowDegradedPlacement; }
 
       /**
        * Returns the number of features in layer.
@@ -345,8 +332,6 @@ namespace pal
       QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
       bool mActive;
       bool mLabelLayer;
-      Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
-      bool mAllowDegradedPlacement = false;
       bool mCentroidInside;
 
       //! Optional flags used for some placement methods
