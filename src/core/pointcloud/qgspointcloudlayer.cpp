@@ -403,7 +403,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   // Note: we load the statistics from the data provider regardless of it being an existing metadata (do not check fot hasStatisticsMetadata)
   // since the X, Y & Z coordinates will be in the header of the dataset
-  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 )
+  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 && mDataProvider->indexingState() == QgsPointCloudDataProvider::Indexed )
   {
     mStatistics = mDataProvider->metadataStatistics();
   }
