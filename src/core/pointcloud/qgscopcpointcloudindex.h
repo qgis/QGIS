@@ -101,6 +101,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
      */
     virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
 
+    QByteArray fetchCopcStatisticsEvlrData();
+
     bool mIsValid = false;
     QString mFileName;
     mutable std::ifstream mCopcFile;

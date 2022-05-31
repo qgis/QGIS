@@ -48,12 +48,6 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
   //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
   void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
 #endif
-
-  //! Converts the current statistics object into JSON object
-  QJsonObject toStatisticsJson() const;
-
-  //! Creates a statistics object from the JSON object \a stats
-  static QgsPointCloudAttributeStatistics fromStatisticsJson( QJsonObject &stats );
 };
 
 /**
@@ -127,9 +121,10 @@ class CORE_EXPORT QgsPointCloudStatistics
     void combineWith( const QgsPointCloudStatistics &stats );
 
     //! Converts the current statistics object into JSON object
-    QJsonObject toStatisticsJson() const;
+    QByteArray toStatisticsJson() const;
 
-    static QgsPointCloudStatistics fromStatisticsJson( QJsonObject stats );
+    //! Creates a statistics object from the JSON object \a stats
+    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
 
 #ifndef SIP_RUN
     //! Returns a map object containing all the statistics
@@ -138,6 +133,12 @@ class CORE_EXPORT QgsPointCloudStatistics
   private:
     int mSampledPointsCount = 0;
     QMap<QString, QgsPointCloudAttributeStatistics> mStatisticsMap;
+
+    //! Converts statistics object \a stats into a JSON object
+    static QJsonObject attributeStatisticsToJson( const QgsPointCloudAttributeStatistics &stats );
+
+    //! Creates a statistics object from the JSON object \a stats
+    static QgsPointCloudAttributeStatistics fromAttributeStatisticsJson( QJsonObject &stats );
 };
 
 #endif // QGSPOINTCLOUDSTATISTICS_H

@@ -19,8 +19,10 @@
 
 #include <limits>
 #include <QJsonObject>
+#include <QJsonDocument>
 
 #include "qgspointcloudattribute.h"
+#include "qgsmessagelog.h"
 
 // QgsPointCloudAttributeStatistics
 
@@ -46,43 +48,6 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
     c += stats.classCount[ key ];
     classCount[ key ] = c;
   }
-}
-
-QJsonObject QgsPointCloudAttributeStatistics::toStatisticsJson() const
-{
-  QJsonObject obj;
-  obj.insert( QStringLiteral( "minimum" ), minimum );
-  obj.insert( QStringLiteral( "maximum" ), maximum );
-  obj.insert( QStringLiteral( "mean" ), mean );
-  if ( !std::isnan( stDev ) )
-  {
-    obj.insert( QStringLiteral( "standard-deviation" ), stDev );
-  }
-  obj.insert( QStringLiteral( "count" ), count );
-  QJsonObject classCount;
-  for ( const int &c : this->classCount.keys() )
-  {
-    classCount.insert( QString::number( c ), this->classCount[c] );
-  }
-  obj.insert( QStringLiteral( "class-count" ), classCount );
-  return obj;
-}
-
-QgsPointCloudAttributeStatistics QgsPointCloudAttributeStatistics::fromStatisticsJson( QJsonObject &statsJson )
-{
-  QgsPointCloudAttributeStatistics statsObj;
-  QVariantMap m = statsJson.toVariantMap();
-  statsObj.minimum = m.value( QStringLiteral( "minimum" ), std::numeric_limits<double>::max() ).toDouble();
-  statsObj.maximum = m.value( QStringLiteral( "maximum" ), std::numeric_limits<double>::lowest() ).toDouble();
-  statsObj.mean = m.value( QStringLiteral( "mean" ), 0 ).toDouble();
-  statsObj.stDev = m.value( QStringLiteral( "standard-deviation" ), std::numeric_limits<double>::quiet_NaN() ).toDouble();
-  statsObj.count = m.value( QStringLiteral( "count" ), 0 ).toDouble();
-  QJsonObject classCountJson = statsJson.value( QStringLiteral( "class-count" ) ).toObject();
-  for ( const QString &key : classCountJson.keys() )
-  {
-    statsObj.classCount.insert( key.toInt(), classCountJson.value( key ).toInt() );
-  }
-  return statsObj;
 }
 
 // QgsPointCloudStatistics
@@ -178,7 +143,7 @@ void QgsPointCloudStatistics::combineWith( const QgsPointCloudStatistics &stats 
   mSampledPointsCount += stats.mSampledPointsCount;
 }
 
-QJsonObject QgsPointCloudStatistics::toStatisticsJson() const
+QByteArray QgsPointCloudStatistics::toStatisticsJson() const
 {
   QJsonObject obj;
   obj.insert( QStringLiteral( "sampled-points" ), QJsonValue::fromVariant( sampledPointsCount() ) );
@@ -186,14 +151,26 @@ QJsonObject QgsPointCloudStatistics::toStatisticsJson() const
   for ( const QString &attr : mStatisticsMap.keys() )
   {
     QgsPointCloudAttributeStatistics stat = mStatisticsMap.value( attr );
-    stats.insert( attr, stat.toStatisticsJson() );
+    stats.insert( attr, attributeStatisticsToJson( stat ) );
   }
   obj.insert( QStringLiteral( "stats" ), stats );
-  return obj;
+
+  QJsonDocument statsDoc( obj );
+  return statsDoc.toJson( QJsonDocument::Compact );
 }
 
-QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( QJsonObject statsJson )
+QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( QByteArray statsByteArray )
 {
+  QJsonParseError error;
+  QJsonDocument document = QJsonDocument::fromJson( statsByteArray, &error );
+  if ( error.error != QJsonParseError::NoError )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load statistics JSON from COPC file, reason: %1" ).arg( error.errorString() ) );
+    return QgsPointCloudStatistics();
+  }
+
+  QJsonObject statsJson = document.object();
+
   QgsPointCloudStatistics stats;
   stats.mSampledPointsCount = statsJson.value( QStringLiteral( "sampled-points" ) ).toInt();
   if ( statsJson.contains( QStringLiteral( "stats" ) ) )
@@ -202,9 +179,46 @@ QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( QJsonObject
     for ( const QString &attr : statsObj.keys() )
     {
       QJsonObject obj = statsObj.value( attr ).toObject();
-      QgsPointCloudAttributeStatistics attrStats = QgsPointCloudAttributeStatistics::fromStatisticsJson( obj );
+      QgsPointCloudAttributeStatistics attrStats = fromAttributeStatisticsJson( obj );
       stats.mStatisticsMap.insert( attr, attrStats );
     }
   }
   return stats;
+}
+
+QJsonObject QgsPointCloudStatistics::attributeStatisticsToJson( const QgsPointCloudAttributeStatistics &stats )
+{
+  QJsonObject obj;
+  obj.insert( QStringLiteral( "minimum" ), stats.minimum );
+  obj.insert( QStringLiteral( "maximum" ), stats.maximum );
+  obj.insert( QStringLiteral( "mean" ), stats.mean );
+  if ( !std::isnan( stats.stDev ) )
+  {
+    obj.insert( QStringLiteral( "standard-deviation" ), stats.stDev );
+  }
+  obj.insert( QStringLiteral( "count" ), stats.count );
+  QJsonObject classCount;
+  for ( const int &c : stats.classCount.keys() )
+  {
+    classCount.insert( QString::number( c ), stats.classCount[c] );
+  }
+  obj.insert( QStringLiteral( "class-count" ), classCount );
+  return obj;
+}
+
+QgsPointCloudAttributeStatistics QgsPointCloudStatistics::fromAttributeStatisticsJson( QJsonObject &statsJson )
+{
+  QgsPointCloudAttributeStatistics statsObj;
+  QVariantMap m = statsJson.toVariantMap();
+  statsObj.minimum = m.value( QStringLiteral( "minimum" ), std::numeric_limits<double>::max() ).toDouble();
+  statsObj.maximum = m.value( QStringLiteral( "maximum" ), std::numeric_limits<double>::lowest() ).toDouble();
+  statsObj.mean = m.value( QStringLiteral( "mean" ), 0 ).toDouble();
+  statsObj.stDev = m.value( QStringLiteral( "standard-deviation" ), std::numeric_limits<double>::quiet_NaN() ).toDouble();
+  statsObj.count = m.value( QStringLiteral( "count" ), 0 ).toDouble();
+  QJsonObject classCountJson = statsJson.value( QStringLiteral( "class-count" ) ).toObject();
+  for ( const QString &key : classCountJson.keys() )
+  {
+    statsObj.classCount.insert( key.toInt(), classCountJson.value( key ).toInt() );
+  }
+  return statsObj;
 }
