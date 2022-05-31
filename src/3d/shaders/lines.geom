@@ -7,14 +7,13 @@ uniform vec2	WIN_SCALE;		// the size of the viewport in pixels
 layout( lines_adjacency ) in;
 layout( triangle_strip, max_vertices = 7 ) out;
 
-
-//in VertexData{
-//	vec3 mColor;
-//} VertexIn[4];
+in DataColor {
+    vec3 mColor;
+} VertexIn[4];
 
 out VertexData{
     vec2 mTexCoord;
-//	vec3 mColor;
+    vec3 mColor;
 } VertexOut;
 
 vec2 toScreenSpace( vec4 vertex )
@@ -108,17 +107,17 @@ void main( void )
         // close the gap
         if( dot( v0, n1 ) > 0 ) {
             VertexOut.mTexCoord = vec2( 0, 0 );
-            //VertexOut.mColor = VertexIn[1].mColor;
+            VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 + THICKNESS * n1 ) / WIN_SCALE, p1z, 1.0 );
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 0 );
-            //VertexOut.mColor = VertexIn[1].mColor;
+            VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 + THICKNESS * n0 ) / WIN_SCALE, p1z, 1.0 );
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 0.5 );
-            //VertexOut.mColor = VertexIn[1].mColor;
+            VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( p1 / WIN_SCALE, p1z, 1.0 );
             EmitVertex();
 
@@ -126,17 +125,17 @@ void main( void )
         }
         else {
             VertexOut.mTexCoord = vec2( 0, 1 );
-            //VertexOut.mColor = VertexIn[1].mColor;
+            VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 - THICKNESS * n0 ) / WIN_SCALE, p1z, 1.0 );
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 1 );
-            //VertexOut.mColor = VertexIn[1].mColor;
+            VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( ( p1 - THICKNESS * n1 ) / WIN_SCALE, p1z, 1.0 );
             EmitVertex();
 
             VertexOut.mTexCoord = vec2( 0, 0.5 );
-            //VertexOut.mColor = VertexIn[1].mColor;
+            VertexOut.mColor = VertexIn[1].mColor;
             gl_Position = vec4( p1 / WIN_SCALE, p1z, 1.0 );
             EmitVertex();
 
@@ -151,22 +150,22 @@ void main( void )
 
     // generate the triangle strip
     VertexOut.mTexCoord = vec2( 0, 0 );
-    //VertexOut.mColor = VertexIn[1].mColor;
+    VertexOut.mColor = VertexIn[1].mColor;
     gl_Position = vec4( ( p1 + length_a * miter_a ) / WIN_SCALE, p1z, 1.0 );
     EmitVertex();
 
     VertexOut.mTexCoord = vec2( 0, 1 );
-    //VertexOut.mColor = VertexIn[1].mColor;
+    VertexOut.mColor = VertexIn[1].mColor;
     gl_Position = vec4( ( p1 - length_a * miter_a ) / WIN_SCALE, p1z, 1.0 );
     EmitVertex();
 
     VertexOut.mTexCoord = vec2( 0, 0 );
-    //VertexOut.mColor = VertexIn[2].mColor;
+    VertexOut.mColor = VertexIn[2].mColor;
     gl_Position = vec4( ( p2 + length_b * miter_b ) / WIN_SCALE, p2z, 1.0 );
     EmitVertex();
 
     VertexOut.mTexCoord = vec2( 0, 1 );
-    //VertexOut.mColor = VertexIn[2].mColor;
+    VertexOut.mColor = VertexIn[2].mColor;
     gl_Position = vec4( ( p2 - length_b * miter_b ) / WIN_SCALE, p2z, 1.0 );
     EmitVertex();
 
