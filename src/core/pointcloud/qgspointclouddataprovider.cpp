@@ -176,6 +176,37 @@ bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
   return index() && index()->hasStatisticsMetadata();
 }
 
+QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
+{
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataStatistic( attribute, statistic );
+  }
+  return QVariant();
+}
+
+QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribute ) const
+{
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataClasses( attribute );
+  }
+  return QVariantList();
+}
+
+QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
+{
+  QgsPointCloudIndex *pcIndex = index();
+  if ( pcIndex )
+  {
+    return pcIndex->metadataClassStatistic( attribute, value, statistic );
+  }
+  return QVariant();
+}
+
+
 QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
 {
   QgsPointCloudIndex *pcIndex = index();
