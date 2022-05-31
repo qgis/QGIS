@@ -105,6 +105,7 @@ void QgsTextFormatWidget::initWidget()
   connect( chkLineOrientationDependent, &QCheckBox::toggled, this, &QgsTextFormatWidget::chkLineOrientationDependent_toggled );
   connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
   connect( mKerningCheckBox, &QCheckBox::toggled, this, &QgsTextFormatWidget::kerningToggled );
+  connect( mComboOverlapHandling, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::overlapModeChanged );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
@@ -198,7 +199,7 @@ void QgsTextFormatWidget::initWidget()
 
   mComboOverlapHandling->addItem( tr( "Never Overlap" ), static_cast< int >( Qgis::LabelOverlapHandling::PreventOverlap ) );
   mComboOverlapHandling->addItem( tr( "Allow Overlaps if Required" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapIfRequired ) );
-  mComboOverlapHandling->addItem( tr( "Always Allow Overlaps" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ) );
+  mComboOverlapHandling->addItem( tr( "Allow Overlaps without Penalty" ), static_cast< int >( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ) );
 
   updateAvailableShadowPositions();
 
@@ -339,6 +340,8 @@ void QgsTextFormatWidget::initWidget()
   mBackgroundEffect.reset( QgsPaintEffectRegistry::defaultStack() );
   connect( mBackgroundEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsTextFormatWidget::updatePreview );
   mBackgroundEffectWidget->setPaintEffect( mBackgroundEffect.get() );
+
+  overlapModeChanged();
 
 #ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
   mLabelStretch->hide();
@@ -1874,6 +1877,25 @@ void QgsTextFormatWidget::updateDataDefinedAlignment()
   // no data defined alignment without data defined position
   mCoordAlignmentFrame->setEnabled( ( mCoordXDDBtn->isActive() && mCoordYDDBtn->isActive() )
                                     || mCoordPointDDBtn->isActive() );
+}
+
+void QgsTextFormatWidget::overlapModeChanged()
+{
+  QString description;
+  switch ( static_cast< Qgis::LabelOverlapHandling >( mComboOverlapHandling->currentData().toInt() ) )
+  {
+    case Qgis::LabelOverlapHandling::PreventOverlap:
+      description = tr( "Overlapping labels will never be placed for the layer, even if it means some labels will be missing." );
+      break;
+    case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
+      description = tr( "If a label cannot otherwise be placed for a feature then an overlapping label is permitted." );
+      break;
+    case Qgis::LabelOverlapHandling::AllowOverlapAtNoCost:
+      description = tr( "Labels from this layer may freely overlap other labels or label obstacles without penalty." );
+      break;
+  }
+
+  mOverlapModeDescriptionLabel->setText( QStringLiteral( "<i>%1</i>" ).arg( description ) );
 }
 
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
