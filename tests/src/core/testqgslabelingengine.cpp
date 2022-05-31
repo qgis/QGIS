@@ -64,6 +64,9 @@ class TestQgsLabelingEngine : public QObject
     void testRegisterFeatureUnprojectible();
     void testRotateHidePartial();
     void testParallelLabelSmallFeature();
+    void testAllowDegradedPlacements();
+    void testOverlapHandling();
+    void testAllowOverlapsIgnoresObstacles();
     void testAdjacentParts();
     void testTouchingParts();
     void testMergingLinesWithForks();
@@ -1076,6 +1079,352 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
 
   // no need to actually check the result here -- we were just testing that no hang/crash occurred
   //  QVERIFY( imageCheck( "label_rotate_hide_partial", img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testAllowDegradedPlacements()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'long label which doesn\\'t fit'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Line;
+
+  // start without degraded placement -- no label should be shown
+  settings.placementSettings().setAllowDegradedPlacement( false );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
+  QgsFeature f( vl2->fields(), 1 );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((491129.07640071882633492 1277548.62886608019471169, 491238.41896284645190462 1277549.61172057129442692))" ) ) );
+  vl2->dataProvider()->addFeature( f );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:3148" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 490359.7, 1276862.1, 492587.8, 1278500.0 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+
+  engine.run( context );
+  p.end();
+  engine.removeProvider( provider );
+
+  QVERIFY( imageCheck( "label_long_text_short_line_no_degraded", img, 20 ) );
+
+  // allow degraded placement, label should be shown
+  settings.placementSettings().setAllowDegradedPlacement( true );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "label_long_text_short_line_with_degraded" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testOverlapHandling()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'a label'" );
+  settings.isExpression = true;
+  // start with a placement mode which allows label to move
+  settings.placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
+  settings.priority = 5;
+
+  std::unique_ptr< QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0}, {QStringLiteral( "outline_style" ), QStringLiteral( "no" )} } ) ) );
+
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl1.get(), QStringLiteral( "test" ), true, &settings );
+  QgsFeature f( vl1->fields(), 1 );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (491004 1277640)" ) ) );
+  vl1->dataProvider()->addFeature( f );
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl1->setLabelsEnabled( true );
+
+  // this layer has fixed labels, they can't move
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+  settings.quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
+  settings.priority = 10;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#ff0000" )}, {QStringLiteral( "outline_width" ), 0}, {QStringLiteral( "outline_style" ), QStringLiteral( "no" )} } ) ) );
+
+  QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
+  f = QgsFeature( vl2->fields(), 1 );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (491192 1277700)" ) ) );
+  vl2->dataProvider()->addFeature( f );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:3148" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 490359.7, 1276862.1, 492587.8, 1278500.0 ) );
+  mapSettings.setLayers( { vl1.get(), vl2.get() } );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+  engine.addProvider( provider2 );
+
+  engine.run( context );
+  p.end();
+  engine.removeProvider( provider );
+  engine.removeProvider( provider2 );
+
+  // overlaps are avoidable if we move the first label to a downgraded position
+
+  // test first with default "no overlaps" mode
+  QVERIFY( imageCheck( "label_overlap_flexible_placement", img, 20 ) );
+
+  // test again with allow overlap if required mode (but overlaps are NOT required in this case!)
+  settings.placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+  settings.priority = 5;
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+
+  // should be the same result
+  QVERIFY( imageCheck( QStringLiteral( "label_overlap_flexible_placement" ), img, 20 ) );
+
+  // if we allow overlaps without cost, then the labels should overlap so that they both get their best candidate placement
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job3( mapSettings );
+  job3.start();
+  job3.waitForFinished();
+
+  img = job3.renderedImage();
+
+  QVERIFY( imageCheck( QStringLiteral( "label_allow_overlap_flexible_placement" ), img, 20 ) );
+
+  // force a fixed position for the label instead of flexible placement
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+  settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job4( mapSettings );
+  job4.start();
+  job4.waitForFinished();
+
+  img = job4.renderedImage();
+
+  // now only the one label should be visible when preventing overlaps
+  QVERIFY( imageCheck( QStringLiteral( "label_overlap_nonflexible_placement" ), img, 20 ) );
+
+  // allow overlap if required (in this case, they are -- there's no alternative positions)
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job5( mapSettings );
+  job5.start();
+  job5.waitForFinished();
+
+  img = job5.renderedImage();
+
+  // now only the one label should be visible when preventing overlaps
+  QVERIFY( imageCheck( QStringLiteral( "label_forced_overlap_nonflexible_placement" ), img, 20 ) );
+
+  // we should get the same result now if we allow overlaps without cost
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job6( mapSettings );
+  job6.start();
+  job6.waitForFinished();
+
+  img = job6.renderedImage();
+
+  // now only the one label should be visible when preventing overlaps
+  QVERIFY( imageCheck( QStringLiteral( "label_allow_overlap_nonflexible_placement" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
+{
+  // test that when a layer is set to allow overlaps at no cost, this includes obstacles as well as other labels
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'a label'" );
+  settings.isExpression = true;
+  // use a placement mode with only one candidate
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+  settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+  settings.priority = 2;
+
+  std::unique_ptr< QgsVectorLayer> vl1( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl1->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0}, {QStringLiteral( "outline_style" ), QStringLiteral( "no" )} } ) ) );
+
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl1.get(), QStringLiteral( "test" ), true, &settings );
+  QgsFeature f( vl1->fields(), 1 );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (491004 1277640)" ) ) );
+  vl1->dataProvider()->addFeature( f );
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl1->setLabelsEnabled( true );
+
+  // this layer is an obstacle only
+  settings.drawLabels = false;
+  settings.obstacleSettings().setIsObstacle( true );
+  settings.obstacleSettings().setFactor( 10 );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "point?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsMarkerSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#ff0000" )}, {QStringLiteral( "outline_width" ), 0}, {QStringLiteral( "outline_style" ), QStringLiteral( "no" )} } ) ) );
+
+  QgsVectorLayerLabelProvider *provider2 = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
+  f = QgsFeature( vl2->fields(), 1 );
+
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (491192 1277700)" ) ) );
+  vl2->dataProvider()->addFeature( f );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:3148" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 490359.7, 1276862.1, 492587.8, 1278500.0 ) );
+  mapSettings.setLayers( { vl1.get(), vl2.get() } );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsDefaultLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+  engine.addProvider( provider2 );
+
+  engine.run( context );
+  p.end();
+  engine.removeProvider( provider );
+  engine.removeProvider( provider2 );
+
+  // overlaps are avoidable if we move the first label to a downgraded position
+
+  // test first with default "no overlaps" mode -- should be no label placed
+  QVERIFY( imageCheck( "label_avoid_overlap_with_obstacle", img, 20 ) );
+
+  // test again with allow overlap at no cost
+  settings = vl1->labeling()->settings();
+  settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
+
+  vl1->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+
+  // label should be placed -- it doesn't care about the obstacle anymore
+  QVERIFY( imageCheck( QStringLiteral( "label_allow_overlap_with_obstacle" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testAdjacentParts()
