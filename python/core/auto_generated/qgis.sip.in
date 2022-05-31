@@ -351,6 +351,71 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelPlacement
+      {
+      AroundPoint,
+      OverPoint,
+      Line,
+      Curved,
+      Horizontal,
+      Free,
+      OrderedPositionsAroundPoint,
+      PerimeterCurved,
+      OutsidePolygons,
+    };
+
+
+    enum class LabelPredefinedPointPosition
+      {
+      TopLeft,
+      TopSlightlyLeft,
+      TopMiddle,
+      TopSlightlyRight,
+      TopRight,
+      MiddleLeft,
+      MiddleRight,
+      BottomLeft,
+      BottomSlightlyLeft,
+      BottomMiddle,
+      BottomSlightlyRight,
+      BottomRight,
+    };
+
+    enum class LabelOffsetType
+      {
+      FromPoint,
+      FromSymbolBounds,
+    };
+
+    enum class LabelQuadrantPosition
+      {
+      AboveLeft,
+      Above,
+      AboveRight,
+      Left,
+      Over,
+      Right,
+      BelowLeft,
+      Below,
+      BelowRight,
+    };
+
+    enum class UpsideDownLabelHandling
+      {
+      FlipUpsideDownLabels,
+      AllowUpsideDownWhenRotationIsDefined,
+      AlwaysAllowUpsideDown
+    };
+
+    enum class LabelMultiLineAlignment
+      {
+      Left,
+      Center,
+      Right,
+      FollowPlacement,
+      Justify,
+    };
+
     enum class SublayerQueryFlag
     {
       FastScan,

@@ -90,17 +90,17 @@ using namespace pal;
   based on my preferences, and to follow Krygier and Wood's placements more closer. (I'm not going to disagree
   with Denis Wood on anything cartography related...!)
 */
-typedef QVector< QgsPalLayerSettings::PredefinedPointPosition > PredefinedPointPositionVector;
+typedef QVector< Qgis::LabelPredefinedPointPosition > PredefinedPointPositionVector;
 Q_GLOBAL_STATIC_WITH_ARGS( PredefinedPointPositionVector, DEFAULT_PLACEMENT_ORDER, (
 {
-  QgsPalLayerSettings::TopRight,
-  QgsPalLayerSettings::TopLeft,
-  QgsPalLayerSettings::BottomRight,
-  QgsPalLayerSettings::BottomLeft,
-  QgsPalLayerSettings::MiddleRight,
-  QgsPalLayerSettings::MiddleLeft,
-  QgsPalLayerSettings::TopSlightlyRight,
-  QgsPalLayerSettings::BottomSlightlyRight
+  Qgis::LabelPredefinedPointPosition::TopRight,
+  Qgis::LabelPredefinedPointPosition::TopLeft,
+  Qgis::LabelPredefinedPointPosition::BottomRight,
+  Qgis::LabelPredefinedPointPosition::BottomLeft,
+  Qgis::LabelPredefinedPointPosition::MiddleRight,
+  Qgis::LabelPredefinedPointPosition::MiddleLeft,
+  Qgis::LabelPredefinedPointPosition::TopSlightlyRight,
+  Qgis::LabelPredefinedPointPosition::BottomSlightlyRight
 } ) )
 //debugging only - don't use these placements by default
 /* << QgsPalLayerSettings::TopSlightlyLeft
@@ -550,7 +550,7 @@ void QgsPalLayerSettings::startRender( QgsRenderContext &context )
     return;
   }
 
-  if ( placement == QgsPalLayerSettings::Curved )
+  if ( placement == Qgis::LabelPlacement::Curved )
   {
     // force horizontal orientation, other orientation modes aren't unsupported for curved placement
     mFormat.setOrientation( QgsTextFormat::HorizontalOrientation );
@@ -715,12 +715,12 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   if ( layer->customProperty( QStringLiteral( "labeling" ) ).toString() != QLatin1String( "pal" ) )
   {
     if ( layer->geometryType() == QgsWkbTypes::PointGeometry )
-      placement = OrderedPositionsAroundPoint;
+      placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
 
     // for polygons the "over point" (over centroid) placement is better than the default
     // "around point" (around centroid) which is more suitable for points
     if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
-      placement = OverPoint;
+      placement = Qgis::LabelPlacement::OverPoint;
 
     return; // there's no information available
   }
@@ -748,7 +748,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   autoWrapLength = layer->customProperty( QStringLiteral( "labeling/autoWrapLength" ) ).toInt();
   useMaxLineLengthForAutoWrap = layer->customProperty( QStringLiteral( "labeling/useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toBool();
 
-  multilineAlign = static_cast< MultiLineAlign >( layer->customProperty( QStringLiteral( "labeling/multilineAlign" ), QVariant( MultiFollowPlacement ) ).toUInt() );
+  multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( layer->customProperty( QStringLiteral( "labeling/multilineAlign" ), QVariant( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) ).toUInt() );
   mLineSettings.setAddDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/addDirectionSymbol" ) ).toBool() );
   mLineSettings.setLeftDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/leftDirectionSymbol" ), QVariant( "<" ) ).toString() );
   mLineSettings.setRightDirectionSymbol( layer->customProperty( QStringLiteral( "labeling/rightDirectionSymbol" ), QVariant( ">" ) ).toString() );
@@ -759,7 +759,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   plusSign = layer->customProperty( QStringLiteral( "labeling/plussign" ) ).toBool();
 
   // placement
-  placement = static_cast< Placement >( layer->customProperty( QStringLiteral( "labeling/placement" ) ).toInt() );
+  placement = static_cast< Qgis::LabelPlacement >( layer->customProperty( QStringLiteral( "labeling/placement" ) ).toInt() );
   mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( layer->customProperty( QStringLiteral( "labeling/placementFlags" ) ).toUInt() ) );
   centroidWhole = layer->customProperty( QStringLiteral( "labeling/centroidWhole" ), QVariant( false ) ).toBool();
   centroidInside = layer->customProperty( QStringLiteral( "labeling/centroidInside" ), QVariant( false ) ).toBool();
@@ -781,8 +781,8 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   {
     distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/distMapUnitScale" ) ).toString() );
   }
-  offsetType = static_cast< OffsetType >( layer->customProperty( QStringLiteral( "labeling/offsetType" ), QVariant( FromPoint ) ).toUInt() );
-  quadOffset = static_cast< QuadrantPosition >( layer->customProperty( QStringLiteral( "labeling/quadOffset" ), QVariant( QuadrantOver ) ).toUInt() );
+  offsetType = static_cast< Qgis::LabelOffsetType >( layer->customProperty( QStringLiteral( "labeling/offsetType" ), QVariant( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
+  quadOffset = static_cast< Qgis::LabelQuadrantPosition >( layer->customProperty( QStringLiteral( "labeling/quadOffset" ), QVariant( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() );
   xOffset = layer->customProperty( QStringLiteral( "labeling/xOffset" ), QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( QStringLiteral( "labeling/yOffset" ), QVariant( 0.0 ) ).toDouble();
   if ( layer->customProperty( QStringLiteral( "labeling/labelOffsetInMapUnits" ), QVariant( true ) ).toBool() )
@@ -886,7 +886,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
     mPlacementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
     mPlacementSettings.setAllowDegradedPlacement( false );
   }
-  upsidedownLabels = static_cast< UpsideDownLabels >( layer->customProperty( QStringLiteral( "labeling/upsidedownLabels" ), QVariant( Upright ) ).toUInt() );
+  upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( layer->customProperty( QStringLiteral( "labeling/upsidedownLabels" ), QVariant( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
 
   labelPerPart = layer->customProperty( QStringLiteral( "labeling/labelPerPart" ) ).toBool();
   mLineSettings.setMergeLines( layer->customProperty( QStringLiteral( "labeling/mergeLines" ) ).toBool() );
@@ -970,7 +970,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   wrapChar = textFormatElem.attribute( QStringLiteral( "wrapChar" ) );
   autoWrapLength = textFormatElem.attribute( QStringLiteral( "autoWrapLength" ), QStringLiteral( "0" ) ).toInt();
   useMaxLineLengthForAutoWrap = textFormatElem.attribute( QStringLiteral( "useMaxLineLengthForAutoWrap" ), QStringLiteral( "1" ) ).toInt();
-  multilineAlign = static_cast< MultiLineAlign >( textFormatElem.attribute( QStringLiteral( "multilineAlign" ), QString::number( MultiFollowPlacement ) ).toUInt() );
+  multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( textFormatElem.attribute( QStringLiteral( "multilineAlign" ), QString::number( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) ).toUInt() );
   mLineSettings.setAddDirectionSymbol( textFormatElem.attribute( QStringLiteral( "addDirectionSymbol" ) ).toInt() );
   mLineSettings.setLeftDirectionSymbol( textFormatElem.attribute( QStringLiteral( "leftDirectionSymbol" ), QStringLiteral( "<" ) ) );
   mLineSettings.setRightDirectionSymbol( textFormatElem.attribute( QStringLiteral( "rightDirectionSymbol" ), QStringLiteral( ">" ) ) );
@@ -982,7 +982,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
 
   // placement
   QDomElement placementElem = elem.firstChildElement( QStringLiteral( "placement" ) );
-  placement = static_cast< Placement >( placementElem.attribute( QStringLiteral( "placement" ) ).toInt() );
+  placement = static_cast< Qgis::LabelPlacement >( placementElem.attribute( QStringLiteral( "placement" ) ).toInt() );
   mLineSettings.setPlacementFlags( static_cast< QgsLabeling::LinePlacementFlags >( placementElem.attribute( QStringLiteral( "placementFlags" ) ).toUInt() ) );
   mPolygonPlacementFlags = static_cast< QgsLabeling::PolygonPlacementFlags >( placementElem.attribute( QStringLiteral( "polygonPlacementFlags" ), QString::number( static_cast< int >( QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon ) ) ).toInt() );
 
@@ -1016,8 +1016,8 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   {
     distMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( placementElem.attribute( QStringLiteral( "distMapUnitScale" ) ) );
   }
-  offsetType = static_cast< OffsetType >( placementElem.attribute( QStringLiteral( "offsetType" ), QString::number( FromPoint ) ).toUInt() );
-  quadOffset = static_cast< QuadrantPosition >( placementElem.attribute( QStringLiteral( "quadOffset" ), QString::number( QuadrantOver ) ).toUInt() );
+  offsetType = static_cast< Qgis::LabelOffsetType >( placementElem.attribute( QStringLiteral( "offsetType" ), QString::number( static_cast< int >( Qgis::LabelOffsetType::FromPoint ) ) ).toUInt() );
+  quadOffset = static_cast< Qgis::LabelQuadrantPosition >( placementElem.attribute( QStringLiteral( "quadOffset" ), QString::number( static_cast< int >( Qgis::LabelQuadrantPosition::Over ) ) ).toUInt() );
   xOffset = placementElem.attribute( QStringLiteral( "xOffset" ), QStringLiteral( "0" ) ).toDouble();
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
@@ -1141,7 +1141,7 @@ void QgsPalLayerSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
       mPlacementSettings.setAllowDegradedPlacement( false );
     }
   }
-  upsidedownLabels = static_cast< UpsideDownLabels >( renderingElem.attribute( QStringLiteral( "upsidedownLabels" ), QString::number( Upright ) ).toUInt() );
+  upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( renderingElem.attribute( QStringLiteral( "upsidedownLabels" ), QString::number( static_cast< int >( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) ) ).toUInt() );
 
   labelPerPart = renderingElem.attribute( QStringLiteral( "labelPerPart" ) ).toInt();
   mLineSettings.setMergeLines( renderingElem.attribute( QStringLiteral( "mergeLines" ) ).toInt() );
@@ -1246,7 +1246,7 @@ QDomElement QgsPalLayerSettings::writeXml( QDomDocument &doc, const QgsReadWrite
 
   // placement
   QDomElement placementElem = doc.createElement( QStringLiteral( "placement" ) );
-  placementElem.setAttribute( QStringLiteral( "placement" ), placement );
+  placementElem.setAttribute( QStringLiteral( "placement" ), static_cast< int >( placement ) );
   placementElem.setAttribute( QStringLiteral( "polygonPlacementFlags" ), static_cast< int >( mPolygonPlacementFlags ) );
   placementElem.setAttribute( QStringLiteral( "placementFlags" ), static_cast< unsigned int >( mLineSettings.placementFlags() ) );
   placementElem.setAttribute( QStringLiteral( "centroidWhole" ), centroidWhole );
@@ -1619,7 +1619,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   }
 
   //consider the space needed for the direction symbol
-  if ( addDirSymb && placement == QgsPalLayerSettings::Line
+  if ( addDirSymb && placement == Qgis::LabelPlacement::Line
        && ( !leftDirSymb.isEmpty() || !rightDirSymb.isEmpty() ) )
   {
     QString dirSym = leftDirSymb;
@@ -2042,7 +2042,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   double maxcharanglein = 20.0; // range 20.0-60.0
   double maxcharangleout = -20.0; // range 20.0-95.0
 
-  if ( placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
+  if ( placement == Qgis::LabelPlacement::Curved || placement == Qgis::LabelPlacement::PerimeterCurved )
   {
     maxcharanglein = maxCurvedCharAngleIn;
     maxcharangleout = maxCurvedCharAngleOut;
@@ -2112,8 +2112,8 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   // whether we're going to create a centroid for polygon
-  bool centroidPoly = ( ( placement == QgsPalLayerSettings::AroundPoint
-                          || placement == QgsPalLayerSettings::OverPoint )
+  bool centroidPoly = ( ( placement == Qgis::LabelPlacement::AroundPoint
+                          || placement == Qgis::LabelPlacement::OverPoint )
                         && geom.type() == QgsWkbTypes::PolygonGeometry );
 
   // CLIP the geometry if it is bigger than the extent
@@ -2199,7 +2199,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // if using perimeter based labeling for polygons, get the polygon's
   // linear boundary and use that for the label geometry
   if ( ( geom.type() == QgsWkbTypes::PolygonGeometry )
-       && ( placement == Line || placement == PerimeterCurved ) )
+       && ( placement == Qgis::LabelPlacement::Line || placement == Qgis::LabelPlacement::PerimeterCurved ) )
   {
     geom = QgsGeometry( geom.constGet()->boundary() );
   }
@@ -2214,7 +2214,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == Qgis::LabelOffsetType::FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), lineSettings.mergeLines() ) )
     {
@@ -2276,7 +2276,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   double offsetX = 0.0, offsetY = 0.0;
   QgsPointXY anchorPosition;
 
-  if ( placement == QgsPalLayerSettings::OverPoint )
+  if ( placement == Qgis::LabelPlacement::OverPoint )
   {
     anchorPosition = geom.centroid().asPoint();
   }
@@ -2286,7 +2286,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   //data defined quadrant offset?
   bool ddFixedQuad = false;
-  QuadrantPosition quadOff = quadOffset;
+  Qgis::LabelQuadrantPosition quadOff = quadOffset;
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::OffsetQuad ) )
   {
     context.expressionContext().setOriginalValueVariable( static_cast< int >( quadOff ) );
@@ -2297,7 +2297,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
       int quadInt = exprVal.toInt( &ok );
       if ( ok && 0 <= quadInt && quadInt <= 8 )
       {
-        quadOff = static_cast< QuadrantPosition >( quadInt );
+        quadOff = static_cast< Qgis::LabelQuadrantPosition >( quadInt );
         ddFixedQuad = true;
       }
     }
@@ -2306,39 +2306,39 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // adjust quadrant offset of labels
   switch ( quadOff )
   {
-    case QuadrantAboveLeft:
+    case Qgis::LabelQuadrantPosition::AboveLeft:
       quadOffsetX = -1.0;
       quadOffsetY = 1.0;
       break;
-    case QuadrantAbove:
+    case Qgis::LabelQuadrantPosition::Above:
       quadOffsetX = 0.0;
       quadOffsetY = 1.0;
       break;
-    case QuadrantAboveRight:
+    case Qgis::LabelQuadrantPosition::AboveRight:
       quadOffsetX = 1.0;
       quadOffsetY = 1.0;
       break;
-    case QuadrantLeft:
+    case Qgis::LabelQuadrantPosition::Left:
       quadOffsetX = -1.0;
       quadOffsetY = 0.0;
       break;
-    case QuadrantRight:
+    case Qgis::LabelQuadrantPosition::Right:
       quadOffsetX = 1.0;
       quadOffsetY = 0.0;
       break;
-    case QuadrantBelowLeft:
+    case Qgis::LabelQuadrantPosition::BelowLeft:
       quadOffsetX = -1.0;
       quadOffsetY = -1.0;
       break;
-    case QuadrantBelow:
+    case Qgis::LabelQuadrantPosition::Below:
       quadOffsetX = 0.0;
       quadOffsetY = -1.0;
       break;
-    case QuadrantBelowRight:
+    case Qgis::LabelQuadrantPosition::BelowRight:
       quadOffsetX = 1.0;
       quadOffsetY = -1.0;
       break;
-    case QuadrantOver:
+    case Qgis::LabelQuadrantPosition::Over:
       break;
   }
 
@@ -2693,18 +2693,18 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   labelFeature->setMaximumCharacterAngleOutside( std::clamp( maxcharangleout, -95.0, -20.0 ) * M_PI / 180 );
   switch ( placement )
   {
-    case QgsPalLayerSettings::AroundPoint:
-    case QgsPalLayerSettings::OverPoint:
-    case QgsPalLayerSettings::Line:
-    case QgsPalLayerSettings::Horizontal:
-    case QgsPalLayerSettings::Free:
-    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
-    case QgsPalLayerSettings::OutsidePolygons:
+    case Qgis::LabelPlacement::AroundPoint:
+    case Qgis::LabelPlacement::OverPoint:
+    case Qgis::LabelPlacement::Line:
+    case Qgis::LabelPlacement::Horizontal:
+    case Qgis::LabelPlacement::Free:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OutsidePolygons:
       // these placements don't require text metrics
       break;
 
-    case QgsPalLayerSettings::Curved:
-    case QgsPalLayerSettings::PerimeterCurved:
+    case Qgis::LabelPlacement::Curved:
+    case Qgis::LabelPlacement::PerimeterCurved:
       labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, *labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, format().allowHtmlFormatting() ? &doc : nullptr ) );
       break;
   }
@@ -2745,17 +2745,17 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // when using certain placement modes, we force a tiny minimum distance. This ensures that
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
-  if ( placement == QgsPalLayerSettings::Line
-       || placement == QgsPalLayerSettings::Curved
-       || placement == QgsPalLayerSettings::PerimeterCurved )
+  if ( placement == Qgis::LabelPlacement::Line
+       || placement == Qgis::LabelPlacement::Curved
+       || placement == Qgis::LabelPlacement::PerimeterCurved )
   {
     distance = ( distance < 0 ? -1 : 1 ) * std::max( std::fabs( distance ), 1.0 );
   }
-  else if ( placement == QgsPalLayerSettings::OutsidePolygons
-            || ( ( placement == QgsPalLayerSettings::Horizontal
-                   || placement == QgsPalLayerSettings::AroundPoint
-                   || placement == QgsPalLayerSettings::OverPoint ||
-                   placement == QgsPalLayerSettings::Free ) && polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
+  else if ( placement == Qgis::LabelPlacement::OutsidePolygons
+            || ( ( placement == Qgis::LabelPlacement::Horizontal
+                   || placement == Qgis::LabelPlacement::AroundPoint
+                   || placement == Qgis::LabelPlacement::OverPoint ||
+                   placement == Qgis::LabelPlacement::Free ) && polygonPlacement & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon ) )
   {
     distance = std::max( distance, 2.0 );
   }
@@ -2836,7 +2836,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   os.setObstacleGeometry( obstacleGeometry );
   labelFeature->setObstacleSettings( os );
 
-  QVector< QgsPalLayerSettings::PredefinedPointPosition > positionOrder = predefinedPositionOrder;
+  QVector< Qgis::LabelPredefinedPointPosition > positionOrder = predefinedPositionOrder;
   if ( positionOrder.isEmpty() )
     positionOrder = *DEFAULT_PLACEMENT_ORDER();
 
@@ -3424,23 +3424,23 @@ void QgsPalLayerSettings::parseTextFormatting( QgsRenderContext &context )
       if ( !str.isEmpty() )
       {
         // "Left"
-        QgsPalLayerSettings::MultiLineAlign aligntype = QgsPalLayerSettings::MultiLeft;
+        Qgis::LabelMultiLineAlignment aligntype = Qgis::LabelMultiLineAlignment::Left;
 
         if ( str.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
         {
-          aligntype = QgsPalLayerSettings::MultiCenter;
+          aligntype = Qgis::LabelMultiLineAlignment::Center;
         }
         else if ( str.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
         {
-          aligntype = QgsPalLayerSettings::MultiRight;
+          aligntype = Qgis::LabelMultiLineAlignment::Right;
         }
         else if ( str.compare( QLatin1String( "Follow" ), Qt::CaseInsensitive ) == 0 )
         {
-          aligntype = QgsPalLayerSettings::MultiFollowPlacement;
+          aligntype = Qgis::LabelMultiLineAlignment::FollowPlacement;
         }
         else if ( str.compare( QLatin1String( "Justify" ), Qt::CaseInsensitive ) == 0 )
         {
-          aligntype = QgsPalLayerSettings::MultiJustify;
+          aligntype = Qgis::LabelMultiLineAlignment::Justify;
         }
         dataDefinedValues.insert( QgsPalLayerSettings::MultiLineAlignment, QVariant( static_cast< int >( aligntype ) ) );
       }
@@ -4176,7 +4176,7 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings &tmpLyr,
 
   if ( ddValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
   {
-    tmpLyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( ddValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
+    tmpLyr.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( ddValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
   }
 
   if ( ddValues.contains( QgsPalLayerSettings::TextOrientation ) )

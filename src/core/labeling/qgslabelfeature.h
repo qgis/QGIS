@@ -18,12 +18,14 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
-#include "qgspallabeling.h"
 #include "geos_c.h"
 #include "qgsgeos.h"
 #include "qgsmargins.h"
 #include "qgslabelobstaclesettings.h"
+#include "qgslabellinesettings.h"
 #include "qgslabeling.h"
+#include "qgsfeature.h"
+#include "qgscoordinatereferencesystem.h"
 
 namespace pal
 {
@@ -251,7 +253,7 @@ class CORE_EXPORT QgsLabelFeature
      * label candidates.
      * \see setOffsetType()
      */
-    QgsPalLayerSettings::OffsetType offsetType() const { return mOffsetType; }
+    Qgis::LabelOffsetType offsetType() const { return mOffsetType; }
 
     /**
      * Sets the offset type, which determines how offsets and distance to label
@@ -259,7 +261,7 @@ class CORE_EXPORT QgsLabelFeature
      * label candidates.
      * \see offsetType()
      */
-    void setOffsetType( QgsPalLayerSettings::OffsetType type ) { mOffsetType = type; }
+    void setOffsetType( Qgis::LabelOffsetType type ) { mOffsetType = type; }
 
     /**
      * Applies to "around point" placement strategy or linestring features.
@@ -278,14 +280,14 @@ class CORE_EXPORT QgsLabelFeature
      * is only used for OrderedPositionsAroundPoint placements.
      * \see setPredefinedPositionOrder()
      */
-    QVector< QgsPalLayerSettings::PredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
+    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
 
     /**
      * Sets the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
      * \see predefinedPositionOrder()
      */
-    void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
+    void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
 
     /**
      * Applies only to linestring features - after what distance (in map units)
@@ -640,9 +642,9 @@ class CORE_EXPORT QgsLabelFeature
     //! distance of label from the feature (only for "around point" placement or linestrings)
     double mDistLabel = 0;
     //! Offset type for certain placement modes
-    QgsPalLayerSettings::OffsetType mOffsetType = QgsPalLayerSettings::FromPoint;
+    Qgis::LabelOffsetType mOffsetType = Qgis::LabelOffsetType::FromPoint;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
-    QVector< QgsPalLayerSettings::PredefinedPointPosition > mPredefinedPositionOrder;
+    QVector< Qgis::LabelPredefinedPointPosition > mPredefinedPositionOrder;
     //! distance after which label should be repeated (only for linestrings)
     double mRepeatDistance = 0;
     //! whether to always show label - even in case of collisions

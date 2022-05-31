@@ -1818,7 +1818,7 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
   pointsLayer->setLabelsEnabled( true );
 
   settings.fieldName = QStringLiteral( "Name" );
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.zIndex = 3;
   linesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   linesLayer->setLabelsEnabled( true );
@@ -1957,7 +1957,7 @@ void TestQgsLayoutMap::testLabelResults()
 
   settings.fieldName = QStringLiteral( "\"id\"" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.priority = 10;
   settings.placementSettings().setAllowDegradedPlacement( true );
   settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );

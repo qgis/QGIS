@@ -245,8 +245,8 @@ void CostCalculator::finalizeCandidatesCosts( Feats *feat, double bbx[4], double
 
   if ( feat->feature->getGeosType() == GEOS_POLYGON )
   {
-    const int arrangement = feat->feature->layer()->arrangement();
-    if ( arrangement == QgsPalLayerSettings::Free || arrangement == QgsPalLayerSettings::Horizontal )
+    const Qgis::LabelPlacement arrangement = feat->feature->layer()->arrangement();
+    if ( arrangement == Qgis::LabelPlacement::Free || arrangement == Qgis::LabelPlacement::Horizontal )
     {
       // prefer positions closer to the pole of inaccessibilities
       calculateCandidatePolygonRingDistanceCosts( feat->candidates, bbx, bby );

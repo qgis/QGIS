@@ -486,6 +486,156 @@ Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__ = "Labels may freely over
 Qgis.LabelOverlapHandling.__doc__ = 'Label overlap handling.\n\n.. versionadded:: 3.26\n\n' + '* ``PreventOverlap``: ' + Qgis.LabelOverlapHandling.PreventOverlap.__doc__ + '\n' + '* ``AllowOverlapIfRequired``: ' + Qgis.LabelOverlapHandling.AllowOverlapIfRequired.__doc__ + '\n' + '* ``AllowOverlapAtNoCost``: ' + Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__
 # --
 Qgis.LabelOverlapHandling.baseClass = Qgis
+QgsPalLayerSettings.Placement = Qgis.LabelPlacement
+# monkey patching scoped based enum
+QgsPalLayerSettings.AroundPoint = Qgis.LabelPlacement.AroundPoint
+QgsPalLayerSettings.AroundPoint.is_monkey_patched = True
+QgsPalLayerSettings.AroundPoint.__doc__ = "Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only."
+QgsPalLayerSettings.OverPoint = Qgis.LabelPlacement.OverPoint
+QgsPalLayerSettings.OverPoint.is_monkey_patched = True
+QgsPalLayerSettings.OverPoint.__doc__ = "Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only."
+QgsPalLayerSettings.Line = Qgis.LabelPlacement.Line
+QgsPalLayerSettings.Line.is_monkey_patched = True
+QgsPalLayerSettings.Line.__doc__ = "Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only."
+QgsPalLayerSettings.Curved = Qgis.LabelPlacement.Curved
+QgsPalLayerSettings.Curved.is_monkey_patched = True
+QgsPalLayerSettings.Curved.__doc__ = "Arranges candidates following the curvature of a line feature. Applies to line layers only."
+QgsPalLayerSettings.Horizontal = Qgis.LabelPlacement.Horizontal
+QgsPalLayerSettings.Horizontal.is_monkey_patched = True
+QgsPalLayerSettings.Horizontal.__doc__ = "Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only."
+QgsPalLayerSettings.Free = Qgis.LabelPlacement.Free
+QgsPalLayerSettings.Free.is_monkey_patched = True
+QgsPalLayerSettings.Free.__doc__ = "Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only."
+QgsPalLayerSettings.OrderedPositionsAroundPoint = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+QgsPalLayerSettings.OrderedPositionsAroundPoint.is_monkey_patched = True
+QgsPalLayerSettings.OrderedPositionsAroundPoint.__doc__ = "Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only."
+QgsPalLayerSettings.PerimeterCurved = Qgis.LabelPlacement.PerimeterCurved
+QgsPalLayerSettings.PerimeterCurved.is_monkey_patched = True
+QgsPalLayerSettings.PerimeterCurved.__doc__ = "Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only."
+QgsPalLayerSettings.OutsidePolygons = Qgis.LabelPlacement.OutsidePolygons
+QgsPalLayerSettings.OutsidePolygons.is_monkey_patched = True
+QgsPalLayerSettings.OutsidePolygons.__doc__ = "Candidates are placed outside of polygon boundaries. Applies to polygon layers only. Since QGIS 3.14"
+Qgis.LabelPlacement.__doc__ = 'Placement modes which determine how label candidates are generated for a feature.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.Placement\n\n.. versionadded:: 3.26\n\n' + '* ``AroundPoint``: ' + Qgis.LabelPlacement.AroundPoint.__doc__ + '\n' + '* ``OverPoint``: ' + Qgis.LabelPlacement.OverPoint.__doc__ + '\n' + '* ``Line``: ' + Qgis.LabelPlacement.Line.__doc__ + '\n' + '* ``Curved``: ' + Qgis.LabelPlacement.Curved.__doc__ + '\n' + '* ``Horizontal``: ' + Qgis.LabelPlacement.Horizontal.__doc__ + '\n' + '* ``Free``: ' + Qgis.LabelPlacement.Free.__doc__ + '\n' + '* ``OrderedPositionsAroundPoint``: ' + Qgis.LabelPlacement.OrderedPositionsAroundPoint.__doc__ + '\n' + '* ``PerimeterCurved``: ' + Qgis.LabelPlacement.PerimeterCurved.__doc__ + '\n' + '* ``OutsidePolygons``: ' + Qgis.LabelPlacement.OutsidePolygons.__doc__
+# --
+Qgis.LabelPlacement.baseClass = Qgis
+QgsPalLayerSettings.PredefinedPointPosition = Qgis.LabelPredefinedPointPosition
+# monkey patching scoped based enum
+QgsPalLayerSettings.TopLeft = Qgis.LabelPredefinedPointPosition.TopLeft
+QgsPalLayerSettings.TopLeft.is_monkey_patched = True
+QgsPalLayerSettings.TopLeft.__doc__ = "Label on top-left of point"
+QgsPalLayerSettings.TopSlightlyLeft = Qgis.LabelPredefinedPointPosition.TopSlightlyLeft
+QgsPalLayerSettings.TopSlightlyLeft.is_monkey_patched = True
+QgsPalLayerSettings.TopSlightlyLeft.__doc__ = "Label on top of point, slightly left of center"
+QgsPalLayerSettings.TopMiddle = Qgis.LabelPredefinedPointPosition.TopMiddle
+QgsPalLayerSettings.TopMiddle.is_monkey_patched = True
+QgsPalLayerSettings.TopMiddle.__doc__ = "Label directly above point"
+QgsPalLayerSettings.TopSlightlyRight = Qgis.LabelPredefinedPointPosition.TopSlightlyRight
+QgsPalLayerSettings.TopSlightlyRight.is_monkey_patched = True
+QgsPalLayerSettings.TopSlightlyRight.__doc__ = "Label on top of point, slightly right of center"
+QgsPalLayerSettings.TopRight = Qgis.LabelPredefinedPointPosition.TopRight
+QgsPalLayerSettings.TopRight.is_monkey_patched = True
+QgsPalLayerSettings.TopRight.__doc__ = "Label on top-right of point"
+QgsPalLayerSettings.MiddleLeft = Qgis.LabelPredefinedPointPosition.MiddleLeft
+QgsPalLayerSettings.MiddleLeft.is_monkey_patched = True
+QgsPalLayerSettings.MiddleLeft.__doc__ = "Label on left of point"
+QgsPalLayerSettings.MiddleRight = Qgis.LabelPredefinedPointPosition.MiddleRight
+QgsPalLayerSettings.MiddleRight.is_monkey_patched = True
+QgsPalLayerSettings.MiddleRight.__doc__ = "Label on right of point"
+QgsPalLayerSettings.BottomLeft = Qgis.LabelPredefinedPointPosition.BottomLeft
+QgsPalLayerSettings.BottomLeft.is_monkey_patched = True
+QgsPalLayerSettings.BottomLeft.__doc__ = "Label on bottom-left of point"
+QgsPalLayerSettings.BottomSlightlyLeft = Qgis.LabelPredefinedPointPosition.BottomSlightlyLeft
+QgsPalLayerSettings.BottomSlightlyLeft.is_monkey_patched = True
+QgsPalLayerSettings.BottomSlightlyLeft.__doc__ = "Label below point, slightly left of center"
+QgsPalLayerSettings.BottomMiddle = Qgis.LabelPredefinedPointPosition.BottomMiddle
+QgsPalLayerSettings.BottomMiddle.is_monkey_patched = True
+QgsPalLayerSettings.BottomMiddle.__doc__ = "Label directly below point"
+QgsPalLayerSettings.BottomSlightlyRight = Qgis.LabelPredefinedPointPosition.BottomSlightlyRight
+QgsPalLayerSettings.BottomSlightlyRight.is_monkey_patched = True
+QgsPalLayerSettings.BottomSlightlyRight.__doc__ = "Label below point, slightly right of center"
+QgsPalLayerSettings.BottomRight = Qgis.LabelPredefinedPointPosition.BottomRight
+QgsPalLayerSettings.BottomRight.is_monkey_patched = True
+QgsPalLayerSettings.BottomRight.__doc__ = "Label on bottom right of point"
+Qgis.LabelPredefinedPointPosition.__doc__ = 'Positions for labels when using the Qgis.LabelPlacement.OrderedPositionsAroundPoint placement mode.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.PredefinedPointPosition\n\n.. versionadded:: 3.26\n\n' + '* ``TopLeft``: ' + Qgis.LabelPredefinedPointPosition.TopLeft.__doc__ + '\n' + '* ``TopSlightlyLeft``: ' + Qgis.LabelPredefinedPointPosition.TopSlightlyLeft.__doc__ + '\n' + '* ``TopMiddle``: ' + Qgis.LabelPredefinedPointPosition.TopMiddle.__doc__ + '\n' + '* ``TopSlightlyRight``: ' + Qgis.LabelPredefinedPointPosition.TopSlightlyRight.__doc__ + '\n' + '* ``TopRight``: ' + Qgis.LabelPredefinedPointPosition.TopRight.__doc__ + '\n' + '* ``MiddleLeft``: ' + Qgis.LabelPredefinedPointPosition.MiddleLeft.__doc__ + '\n' + '* ``MiddleRight``: ' + Qgis.LabelPredefinedPointPosition.MiddleRight.__doc__ + '\n' + '* ``BottomLeft``: ' + Qgis.LabelPredefinedPointPosition.BottomLeft.__doc__ + '\n' + '* ``BottomSlightlyLeft``: ' + Qgis.LabelPredefinedPointPosition.BottomSlightlyLeft.__doc__ + '\n' + '* ``BottomMiddle``: ' + Qgis.LabelPredefinedPointPosition.BottomMiddle.__doc__ + '\n' + '* ``BottomSlightlyRight``: ' + Qgis.LabelPredefinedPointPosition.BottomSlightlyRight.__doc__ + '\n' + '* ``BottomRight``: ' + Qgis.LabelPredefinedPointPosition.BottomRight.__doc__
+# --
+Qgis.LabelPredefinedPointPosition.baseClass = Qgis
+QgsPalLayerSettings.OffsetType = Qgis.LabelOffsetType
+# monkey patching scoped based enum
+QgsPalLayerSettings.FromPoint = Qgis.LabelOffsetType.FromPoint
+QgsPalLayerSettings.FromPoint.is_monkey_patched = True
+QgsPalLayerSettings.FromPoint.__doc__ = "Offset distance applies from point geometry"
+QgsPalLayerSettings.FromSymbolBounds = Qgis.LabelOffsetType.FromSymbolBounds
+QgsPalLayerSettings.FromSymbolBounds.is_monkey_patched = True
+QgsPalLayerSettings.FromSymbolBounds.__doc__ = "Offset distance applies from rendered symbol bounds"
+Qgis.LabelOffsetType.__doc__ = 'Behavior modifier for label offset and distance, only applies in some\nlabel placement modes.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.OffsetType\n\n.. versionadded:: 3.26\n\n' + '* ``FromPoint``: ' + Qgis.LabelOffsetType.FromPoint.__doc__ + '\n' + '* ``FromSymbolBounds``: ' + Qgis.LabelOffsetType.FromSymbolBounds.__doc__
+# --
+Qgis.LabelOffsetType.baseClass = Qgis
+QgsPalLayerSettings.QuadrantPosition = Qgis.LabelQuadrantPosition
+# monkey patching scoped based enum
+QgsPalLayerSettings.QuadrantAboveLeft = Qgis.LabelQuadrantPosition.AboveLeft
+QgsPalLayerSettings.QuadrantAboveLeft.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantAboveLeft.__doc__ = "Above left"
+QgsPalLayerSettings.QuadrantAbove = Qgis.LabelQuadrantPosition.Above
+QgsPalLayerSettings.QuadrantAbove.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantAbove.__doc__ = "Above center"
+QgsPalLayerSettings.QuadrantAboveRight = Qgis.LabelQuadrantPosition.AboveRight
+QgsPalLayerSettings.QuadrantAboveRight.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantAboveRight.__doc__ = "Above right"
+QgsPalLayerSettings.QuadrantLeft = Qgis.LabelQuadrantPosition.Left
+QgsPalLayerSettings.QuadrantLeft.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantLeft.__doc__ = "Left middle"
+QgsPalLayerSettings.QuadrantOver = Qgis.LabelQuadrantPosition.Over
+QgsPalLayerSettings.QuadrantOver.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantOver.__doc__ = "Center middle"
+QgsPalLayerSettings.QuadrantRight = Qgis.LabelQuadrantPosition.Right
+QgsPalLayerSettings.QuadrantRight.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantRight.__doc__ = "Right middle"
+QgsPalLayerSettings.QuadrantBelowLeft = Qgis.LabelQuadrantPosition.BelowLeft
+QgsPalLayerSettings.QuadrantBelowLeft.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantBelowLeft.__doc__ = "Below left"
+QgsPalLayerSettings.QuadrantBelow = Qgis.LabelQuadrantPosition.Below
+QgsPalLayerSettings.QuadrantBelow.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantBelow.__doc__ = "Below center"
+QgsPalLayerSettings.QuadrantBelowRight = Qgis.LabelQuadrantPosition.BelowRight
+QgsPalLayerSettings.QuadrantBelowRight.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "BelowRight"
+Qgis.LabelQuadrantPosition.__doc__ = 'Label quadrant positions\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.QuadrantPosition\n\n.. versionadded:: 3.26\n\n' + '* ``QuadrantAboveLeft``: ' + Qgis.LabelQuadrantPosition.AboveLeft.__doc__ + '\n' + '* ``QuadrantAbove``: ' + Qgis.LabelQuadrantPosition.Above.__doc__ + '\n' + '* ``QuadrantAboveRight``: ' + Qgis.LabelQuadrantPosition.AboveRight.__doc__ + '\n' + '* ``QuadrantLeft``: ' + Qgis.LabelQuadrantPosition.Left.__doc__ + '\n' + '* ``QuadrantOver``: ' + Qgis.LabelQuadrantPosition.Over.__doc__ + '\n' + '* ``QuadrantRight``: ' + Qgis.LabelQuadrantPosition.Right.__doc__ + '\n' + '* ``QuadrantBelowLeft``: ' + Qgis.LabelQuadrantPosition.BelowLeft.__doc__ + '\n' + '* ``QuadrantBelow``: ' + Qgis.LabelQuadrantPosition.Below.__doc__ + '\n' + '* ``QuadrantBelowRight``: ' + Qgis.LabelQuadrantPosition.BelowRight.__doc__
+# --
+Qgis.LabelQuadrantPosition.baseClass = Qgis
+QgsPalLayerSettings.UpsideDownLabels = Qgis.UpsideDownLabelHandling
+# monkey patching scoped based enum
+QgsPalLayerSettings.Upright = Qgis.UpsideDownLabelHandling.FlipUpsideDownLabels
+QgsPalLayerSettings.Upright.is_monkey_patched = True
+QgsPalLayerSettings.Upright.__doc__ = "Upside-down labels (90 <= angle < 270) are shown upright"
+QgsPalLayerSettings.ShowDefined = Qgis.UpsideDownLabelHandling.AllowUpsideDownWhenRotationIsDefined
+QgsPalLayerSettings.ShowDefined.is_monkey_patched = True
+QgsPalLayerSettings.ShowDefined.__doc__ = "Show upside down when rotation is layer- or data-defined"
+QgsPalLayerSettings.ShowAll = Qgis.UpsideDownLabelHandling.AlwaysAllowUpsideDown
+QgsPalLayerSettings.ShowAll.is_monkey_patched = True
+QgsPalLayerSettings.ShowAll.__doc__ = "Show upside down for all labels, including dynamic ones"
+Qgis.UpsideDownLabelHandling.__doc__ = 'Handling techniques for upside down labels.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.UpsideDownLabels\n\n.. versionadded:: 3.26\n\n' + '* ``Upright``: ' + Qgis.UpsideDownLabelHandling.FlipUpsideDownLabels.__doc__ + '\n' + '* ``ShowDefined``: ' + Qgis.UpsideDownLabelHandling.AllowUpsideDownWhenRotationIsDefined.__doc__ + '\n' + '* ``ShowAll``: ' + Qgis.UpsideDownLabelHandling.AlwaysAllowUpsideDown.__doc__
+# --
+Qgis.UpsideDownLabelHandling.baseClass = Qgis
+QgsPalLayerSettings.MultiLineAlign = Qgis.LabelMultiLineAlignment
+# monkey patching scoped based enum
+QgsPalLayerSettings.MultiLeft = Qgis.LabelMultiLineAlignment.Left
+QgsPalLayerSettings.MultiLeft.is_monkey_patched = True
+QgsPalLayerSettings.MultiLeft.__doc__ = "Left align"
+QgsPalLayerSettings.MultiCenter = Qgis.LabelMultiLineAlignment.Center
+QgsPalLayerSettings.MultiCenter.is_monkey_patched = True
+QgsPalLayerSettings.MultiCenter.__doc__ = "Center align"
+QgsPalLayerSettings.MultiRight = Qgis.LabelMultiLineAlignment.Right
+QgsPalLayerSettings.MultiRight.is_monkey_patched = True
+QgsPalLayerSettings.MultiRight.__doc__ = "Right align"
+QgsPalLayerSettings.MultiFollowPlacement = Qgis.LabelMultiLineAlignment.FollowPlacement
+QgsPalLayerSettings.MultiFollowPlacement.is_monkey_patched = True
+QgsPalLayerSettings.MultiFollowPlacement.__doc__ = "Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment"
+QgsPalLayerSettings.MultiJustify = Qgis.LabelMultiLineAlignment.Justify
+QgsPalLayerSettings.MultiJustify.is_monkey_patched = True
+QgsPalLayerSettings.MultiJustify.__doc__ = "Justified"
+Qgis.LabelMultiLineAlignment.__doc__ = 'Text alignment for multi-line labels.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.MultiLineAlign\n\n.. versionadded:: 3.26\n\n' + '* ``MultiLeft``: ' + Qgis.LabelMultiLineAlignment.Left.__doc__ + '\n' + '* ``MultiCenter``: ' + Qgis.LabelMultiLineAlignment.Center.__doc__ + '\n' + '* ``MultiRight``: ' + Qgis.LabelMultiLineAlignment.Right.__doc__ + '\n' + '* ``MultiFollowPlacement``: ' + Qgis.LabelMultiLineAlignment.FollowPlacement.__doc__ + '\n' + '* ``MultiJustify``: ' + Qgis.LabelMultiLineAlignment.Justify.__doc__
+# --
+Qgis.LabelMultiLineAlignment.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
