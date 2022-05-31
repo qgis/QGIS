@@ -60,6 +60,9 @@ class QgsLineMaterial : public Qt3DRender::QMaterial
     void setLineColor( const QColor &color );
     QColor lineColor() const;
 
+    void setUseVertexColors( bool enabled );
+    bool useVertexColors() const;
+
     void setLineWidth( float width );
     float lineWidth() const;
 
@@ -69,6 +72,7 @@ class QgsLineMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QParameter *mParameterThickness = nullptr;
     Qt3DRender::QParameter *mParameterMiterLimit = nullptr;
     Qt3DRender::QParameter *mParameterLineColor = nullptr;
+    Qt3DRender::QParameter *mParameterUseVertexColors = nullptr;
 
     Qt3DRender::QParameter *mParameterWindowScale = nullptr;
 
