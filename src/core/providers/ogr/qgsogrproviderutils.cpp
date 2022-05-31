@@ -2263,6 +2263,12 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 {
   QMutexLocker locker( sGlobalMutex() );
 
+  if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
+    invalidateCachedDatasets( dsName );
+  }
+
   // The idea is that we want to minimize the number of GDALDatasetH
   // handles openeded. But we have constraints. We do not want that 2
   // callers of getLayer() with the same input parameters get the same
@@ -2275,16 +2281,6 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   // Find if there's a list of DatasetWithLayers* that match our
   // (dsName, updateMode, options) criteria
   auto iter = sMapSharedDS.find( ident );
-  if ( iter != sMapSharedDS.end() )
-  {
-    if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
-      invalidateCachedDatasets( dsName );
-      iter = sMapSharedDS.find( ident );
-      Q_ASSERT( iter == sMapSharedDS.end() );
-    }
-  }
   if ( iter != sMapSharedDS.end() )
   {
     // Browse through this list, to look for a DatasetWithLayers*

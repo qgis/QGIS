@@ -618,8 +618,8 @@ QString QgsGdalProvider::htmlMetadata()
   }
   else
   {
-    // Origin
-    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Origin" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[0] ) + QStringLiteral( "," ) + QString::number( mGeoTransform[3] ) + QStringLiteral( "</td></tr>\n" );
+    // Origin ( 'f', 16 for consistency with QgsRectangle::toString used for extent)
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Origin" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[0], 'f', 16 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[3], 'f', 16 ) + QStringLiteral( "</td></tr>\n" );
 
     // Pixel size
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Pixel Size" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[1], 'g', 19 ) + QStringLiteral( "," ) + QString::number( mGeoTransform[5], 'g', 19 ) + QStringLiteral( "</td></tr>\n" );

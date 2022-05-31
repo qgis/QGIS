@@ -232,8 +232,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     /**
      * Emitted when the mouse hovers over the specified point (in canvas coordinates).
+     *
+     * The \a profilePoint argument gives the hovered profile point, which may be snapped.
      */
-    void canvasPointHovered( const QgsPointXY &point );
+    void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
 
   public slots:
 

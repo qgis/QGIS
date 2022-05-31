@@ -48,6 +48,7 @@ class QgsLayerTreeRegistryBridge;
 class QgsElevationProfileToolIdentify;
 class QgsElevationProfileToolMeasure;
 class QLabel;
+class QgsProfilePoint;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -80,7 +81,7 @@ class QgsElevationProfileWidget : public QWidget
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
     void setProfileCurve( const QgsGeometry &curve, bool resetView );
-    void onCanvasPointHovered( const QgsPointXY &point );
+    void onCanvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
     void updatePlot();
     void scheduleUpdate();
     void clear();

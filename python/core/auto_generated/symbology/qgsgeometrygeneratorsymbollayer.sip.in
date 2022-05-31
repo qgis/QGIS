@@ -56,6 +56,8 @@ that is created by this generator.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
     virtual QgsMapUnitScale mapUnitScale() const;
 
 
