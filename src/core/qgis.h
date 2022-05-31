@@ -551,6 +551,120 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelOverlapHandling )
 
     /**
+     * Placement modes which determine how label candidates are generated for a feature.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::Placement
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, Placement ) : int
+      {
+      AroundPoint, //!< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.
+      OverPoint, //!< Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
+      Line, //!< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
+      Curved, //!< Arranges candidates following the curvature of a line feature. Applies to line layers only.
+      Horizontal, //!< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
+      Free, //!< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
+      OrderedPositionsAroundPoint, //!< Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.
+      PerimeterCurved, //!< Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
+      OutsidePolygons, //!< Candidates are placed outside of polygon boundaries. Applies to polygon layers only. Since QGIS 3.14
+    };
+    Q_ENUM( LabelPlacement )
+
+
+    /**
+     * Positions for labels when using the Qgis::LabelPlacement::OrderedPositionsAroundPoint placement mode.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::PredefinedPointPosition
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelPredefinedPointPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, PredefinedPointPosition ) : int
+      {
+      TopLeft, //!< Label on top-left of point
+      TopSlightlyLeft, //!< Label on top of point, slightly left of center
+      TopMiddle, //!< Label directly above point
+      TopSlightlyRight, //!< Label on top of point, slightly right of center
+      TopRight, //!< Label on top-right of point
+      MiddleLeft, //!< Label on left of point
+      MiddleRight, //!< Label on right of point
+      BottomLeft, //!< Label on bottom-left of point
+      BottomSlightlyLeft, //!< Label below point, slightly left of center
+      BottomMiddle, //!< Label directly below point
+      BottomSlightlyRight, //!< Label below point, slightly right of center
+      BottomRight, //!< Label on bottom right of point
+    };
+    Q_ENUM( LabelPredefinedPointPosition )
+
+    /**
+     * Behavior modifier for label offset and distance, only applies in some
+     * label placement modes.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::OffsetType
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelOffsetType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, OffsetType ) : int
+      {
+      FromPoint, //!< Offset distance applies from point geometry
+      FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
+    };
+    Q_ENUM( LabelOffsetType )
+
+    /**
+     * Label quadrant positions
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::QuadrantPosition
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelQuadrantPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, QuadrantPosition ) : int
+      {
+      AboveLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveLeft ), //!< Above left
+      Above SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAbove ), //!< Above center
+      AboveRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveRight ), //!< Above right
+      Left SIP_MONKEYPATCH_COMPAT_NAME( QuadrantLeft ), //!< Left middle
+      Over SIP_MONKEYPATCH_COMPAT_NAME( QuadrantOver ), //!< Center middle
+      Right SIP_MONKEYPATCH_COMPAT_NAME( QuadrantRight ), //!< Right middle
+      BelowLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowLeft ), //!< Below left
+      Below SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelow ), //!< Below center
+      BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< BelowRight
+    };
+    Q_ENUM( LabelQuadrantPosition )
+
+    /**
+     * Handling techniques for upside down labels.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::UpsideDownLabels
+     *
+     * \since QGIS 3.26
+     */
+    enum class UpsideDownLabelHandling SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, UpsideDownLabels ) : int
+      {
+      FlipUpsideDownLabels SIP_MONKEYPATCH_COMPAT_NAME( Upright ), //!< Upside-down labels (90 <= angle < 270) are shown upright
+      AllowUpsideDownWhenRotationIsDefined SIP_MONKEYPATCH_COMPAT_NAME( ShowDefined ), //!< Show upside down when rotation is layer- or data-defined
+      AlwaysAllowUpsideDown SIP_MONKEYPATCH_COMPAT_NAME( ShowAll ) //!< Show upside down for all labels, including dynamic ones
+    };
+    Q_ENUM( UpsideDownLabelHandling )
+
+    /**
+     * Text alignment for multi-line labels.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::MultiLineAlign
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelMultiLineAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, MultiLineAlign ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( MultiLeft ) = 0, //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( MultiCenter ), //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( MultiRight ), //!< Right align
+      FollowPlacement SIP_MONKEYPATCH_COMPAT_NAME( MultiFollowPlacement ), //!< Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment
+      Justify SIP_MONKEYPATCH_COMPAT_NAME( MultiJustify ), //!< Justified
+    };
+    Q_ENUM( LabelMultiLineAlignment )
+
+    /**
      * Flags which control how data providers will scan for sublayers in a dataset.
      *
      * \since QGIS 3.22

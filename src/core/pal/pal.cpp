@@ -77,7 +77,7 @@ void Pal::removeLayer( Layer *layer )
   mMutex.unlock();
 }
 
-Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel )
+Layer *Pal::addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel )
 {
   mMutex.lock();
 

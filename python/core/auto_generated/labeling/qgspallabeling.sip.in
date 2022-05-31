@@ -27,43 +27,6 @@ Contains settings for how a map layer will be labeled.
 
 
 
-    enum Placement
-    {
-      AroundPoint,
-      OverPoint,
-      Line,
-      Curved,
-      Horizontal,
-      Free,
-      OrderedPositionsAroundPoint,
-      PerimeterCurved,
-      OutsidePolygons,
-    };
-
-    enum PredefinedPointPosition
-    {
-      TopLeft,
-      TopSlightlyLeft,
-      TopMiddle,
-      TopSlightlyRight,
-      TopRight,
-      MiddleLeft,
-      MiddleRight,
-      BottomLeft,
-      BottomSlightlyLeft,
-      BottomMiddle,
-      BottomSlightlyRight,
-      BottomRight,
-    };
-
-
-    enum OffsetType
-    {
-      FromPoint,
-      FromSymbolBounds,
-    };
-
-
     enum LinePlacementFlags
     {
       OnLine,
@@ -72,41 +35,11 @@ Contains settings for how a map layer will be labeled.
       MapOrientation,
     };
 
-    enum QuadrantPosition
-    {
-      QuadrantAboveLeft,
-      QuadrantAbove,
-      QuadrantAboveRight,
-      QuadrantLeft,
-      QuadrantOver,
-      QuadrantRight,
-      QuadrantBelowLeft,
-      QuadrantBelow,
-      QuadrantBelowRight,
-    };
-
-    enum UpsideDownLabels
-    {
-      Upright,
-      ShowDefined,
-      ShowAll
-    };
-
-
     enum DirectionSymbols
     {
       SymbolLeftRight,
       SymbolAbove,
       SymbolBelow
-    };
-
-    enum MultiLineAlign
-    {
-      MultiLeft,
-      MultiCenter,
-      MultiRight,
-      MultiFollowPlacement,
-      MultiJustify,
     };
 
 
@@ -337,7 +270,7 @@ Returns the :py:class:`QgsExpression` for this label settings. May be ``None`` i
 
     bool useMaxLineLengthForAutoWrap;
 
-    MultiLineAlign multilineAlign;
+    Qgis::LabelMultiLineAlignment multilineAlign;
 
     bool formatNumbers;
 
@@ -346,7 +279,7 @@ Returns the :py:class:`QgsExpression` for this label settings. May be ``None`` i
     bool plusSign;
 
 
-    Placement placement;
+    Qgis::LabelPlacement placement;
 
     QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
 %Docstring
@@ -379,7 +312,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsMapUnitScale distMapUnitScale;
 
-    OffsetType offsetType;
+    Qgis::LabelOffsetType offsetType;
 
     double repeatDistance;
 
@@ -387,7 +320,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
-    QuadrantPosition quadOffset;
+    Qgis::LabelQuadrantPosition quadOffset;
 
     double xOffset;
 
@@ -438,7 +371,7 @@ Set unit for rotation of labels.
 
     int fontMaxPixelSize;
 
-    UpsideDownLabels upsidedownLabels;
+    Qgis::UpsideDownLabelHandling upsidedownLabels;
 
     bool labelPerPart;
 

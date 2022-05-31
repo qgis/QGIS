@@ -36,7 +36,6 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
 #include <QList>
 #include <iostream>
@@ -48,6 +47,7 @@
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
 class QgsAbstractLabelProvider;
+class QgsRenderContext;
 
 namespace pal
 {
@@ -108,7 +108,7 @@ namespace pal
        *
        * \throws PalException::LayerExists
        */
-      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel );
+      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel );
 
       /**
        * \brief remove a layer

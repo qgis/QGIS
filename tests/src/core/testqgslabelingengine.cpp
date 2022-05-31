@@ -391,8 +391,8 @@ void TestQgsLabelingEngine::testRuleBased()
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 12 );
   s1.setFormat( format );
-  s1.placement = QgsPalLayerSettings::OverPoint;
-  s1.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+  s1.placement = Qgis::LabelPlacement::OverPoint;
+  s1.quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
   s1.placementSettings().setAllowDegradedPlacement( true );
   s1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -406,8 +406,8 @@ void TestQgsLabelingEngine::testRuleBased()
   format.setColor( Qt::red );
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   s2.setFormat( format );
-  s2.placement = QgsPalLayerSettings::OverPoint;
-  s2.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+  s2.placement = Qgis::LabelPlacement::OverPoint;
+  s2.quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
   s2.placementSettings().setAllowDegradedPlacement( true );
   s2.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -477,8 +477,8 @@ void TestQgsLabelingEngine::zOrder()
 
   QgsPalLayerSettings pls1;
   pls1.fieldName = QStringLiteral( "Class" );
-  pls1.placement = QgsPalLayerSettings::OverPoint;
-  pls1.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+  pls1.placement = Qgis::LabelPlacement::OverPoint;
+  pls1.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
   pls1.placementSettings().setAllowDegradedPlacement( true );
   pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
@@ -582,27 +582,27 @@ void TestQgsLabelingEngine::zOrder()
 void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
 {
   //create an ordered position list
-  QVector< QgsPalLayerSettings::PredefinedPointPosition > original;
+  QVector< Qgis::LabelPredefinedPointPosition > original;
   //make sure all placements are added here
-  original << QgsPalLayerSettings::BottomLeft << QgsPalLayerSettings::BottomSlightlyLeft
-           << QgsPalLayerSettings::BottomMiddle << QgsPalLayerSettings::BottomSlightlyRight
-           << QgsPalLayerSettings::BottomRight << QgsPalLayerSettings::MiddleRight
-           << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopLeft
-           << QgsPalLayerSettings::TopSlightlyLeft << QgsPalLayerSettings::TopMiddle
-           << QgsPalLayerSettings::TopSlightlyRight << QgsPalLayerSettings::TopRight;
+  original << Qgis::LabelPredefinedPointPosition::BottomLeft << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft
+           << Qgis::LabelPredefinedPointPosition::BottomMiddle << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight
+           << Qgis::LabelPredefinedPointPosition::BottomRight << Qgis::LabelPredefinedPointPosition::MiddleRight
+           << Qgis::LabelPredefinedPointPosition::MiddleLeft << Qgis::LabelPredefinedPointPosition::TopLeft
+           << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft << Qgis::LabelPredefinedPointPosition::TopMiddle
+           << Qgis::LabelPredefinedPointPosition::TopSlightlyRight << Qgis::LabelPredefinedPointPosition::TopRight;
   //encode list
   const QString encoded = QgsLabelingUtils::encodePredefinedPositionOrder( original );
   QVERIFY( !encoded.isEmpty() );
 
   //decode
-  QVector< QgsPalLayerSettings::PredefinedPointPosition > decoded = QgsLabelingUtils::decodePredefinedPositionOrder( encoded );
+  QVector< Qgis::LabelPredefinedPointPosition > decoded = QgsLabelingUtils::decodePredefinedPositionOrder( encoded );
   QCOMPARE( decoded, original );
 
   //test decoding with a messy string
   decoded = QgsLabelingUtils::decodePredefinedPositionOrder( QStringLiteral( ",tr,x,BSR, L, t,," ) );
-  QVector< QgsPalLayerSettings::PredefinedPointPosition > expected;
-  expected << QgsPalLayerSettings::TopRight << QgsPalLayerSettings::BottomSlightlyRight
-           << QgsPalLayerSettings::MiddleLeft << QgsPalLayerSettings::TopMiddle;
+  QVector< Qgis::LabelPredefinedPointPosition > expected;
+  expected << Qgis::LabelPredefinedPointPosition::TopRight << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight
+           << Qgis::LabelPredefinedPointPosition::MiddleLeft << Qgis::LabelPredefinedPointPosition::TopMiddle;
   QCOMPARE( decoded, expected );
 }
 
@@ -948,7 +948,7 @@ void TestQgsLabelingEngine::testRotateHidePartial()
 
   settings.fieldName = QStringLiteral( "'label'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -1024,7 +1024,7 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
 
   settings.fieldName = QStringLiteral( "'long label which doesn\\'t fit'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "linestring?crs=epsg:3148&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -1091,7 +1091,7 @@ void TestQgsLabelingEngine::testAdjacentParts()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = true;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -1143,7 +1143,7 @@ void TestQgsLabelingEngine::testTouchingParts()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXXXXXXXXXXXXXXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.lineSettings().setMergeLines( true );
 
@@ -1199,7 +1199,7 @@ void TestQgsLabelingEngine::testMergingLinesWithForks()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXXXXXXXXXXXXXXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.dist = 1;
   settings.lineSettings().setMergeLines( true );
@@ -1266,7 +1266,7 @@ void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
 
   settings.fieldName = QStringLiteral( "'XX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.lineSettings().setMergeLines( true );
   settings.thinningSettings().setMinimumFeatureSize( 90.0 );
@@ -1332,7 +1332,7 @@ void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXXXXXXXXXXXXXXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
@@ -1388,7 +1388,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXXXXXXXXXXXXXXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   settings.maxCurvedCharAngleIn = 99;
   settings.maxCurvedCharAngleOut = 99;
@@ -1455,7 +1455,7 @@ void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXXXXXXXXXXXXXXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.dist = -5;
 
@@ -1509,7 +1509,7 @@ void TestQgsLabelingEngine::testCurvedLabelOnSmallLineNearCenter()
 
   settings.fieldName = QStringLiteral( "'XXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -1560,7 +1560,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
 
@@ -1625,7 +1625,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine );
 
@@ -1690,9 +1690,9 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
-  settings.upsidedownLabels = QgsPalLayerSettings::UpsideDownLabels::ShowAll;
+  settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -1758,9 +1758,9 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
-  settings.upsidedownLabels = QgsPalLayerSettings::UpsideDownLabels::ShowAll;
+  settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
   settings.lineSettings().setLineAnchorPercent( 0.05 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
@@ -1828,7 +1828,7 @@ void TestQgsLabelingEngine::testRepeatDistanceWithSmallLine()
 
   settings.fieldName = QStringLiteral( "'XXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.repeatDistance = 55;
 
@@ -1882,7 +1882,7 @@ void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   settings.labelPerPart = false;
 
@@ -1935,7 +1935,7 @@ void TestQgsLabelingEngine::testLabelBoundary()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2004,7 +2004,7 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2088,7 +2088,7 @@ void TestQgsLabelingEngine::testLabelRotationWithReprojection()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
@@ -2192,7 +2192,7 @@ void TestQgsLabelingEngine::drawUnplaced()
 
   settings.fieldName = QStringLiteral( "'XX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.priority = 3;
   settings.obstacleSettings().setFactor( 0 );
 
@@ -2210,7 +2210,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   // second layer
   settings.fieldName = QStringLiteral( "'YY'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.priority = 5; // higher priority - YY should be placed, not XX
   settings.obstacleSettings().setFactor( 0 );
   format.setSize( 90 );
@@ -2229,7 +2229,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString(-6.250851540391068 60.6, -6.250851640391068 60.6 )" ) ) );
   QVERIFY( vl3->dataProvider()->addFeature( f ) );
 
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   vl3->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl3->setLabelsEnabled( true );
 
@@ -2273,7 +2273,7 @@ void TestQgsLabelingEngine::labelingResults()
 
   settings.fieldName = QStringLiteral( "\"id\"" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.priority = 10;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -2480,7 +2480,7 @@ void TestQgsLabelingEngine::labelingResultsCurved()
 
   settings.fieldName = QStringLiteral( "\"id\"" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.priority = 10;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -2583,7 +2583,7 @@ void TestQgsLabelingEngine::labelingResultsWithCallouts()
 
   settings.fieldName = QStringLiteral( "\"id\"" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   QgsPropertyCollection labelProps;
   labelProps.setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromField( QStringLiteral( "labelx" ) ) );
   labelProps.setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromField( QStringLiteral( "labely" ) ) );
@@ -3049,7 +3049,7 @@ void TestQgsLabelingEngine::curvedOverrun()
 
   settings.fieldName = QStringLiteral( "'XXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.labelPerPart = false;
   settings.lineSettings().setOverrunDistance( 0 );
 
@@ -3124,7 +3124,7 @@ void TestQgsLabelingEngine::parallelOverrun()
 
   settings.fieldName = QStringLiteral( "'XXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.labelPerPart = false;
   settings.lineSettings().setOverrunDistance( 0 );
 
@@ -3198,7 +3198,7 @@ void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
 
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.labelPerPart = false;
 
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
@@ -3458,7 +3458,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
   settings.fieldName = QStringLiteral( "'1234'" );
   settings.isExpression = true;
   setDefaultLabelParams( settings );
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   QgsTextFormat format = settings.format();
   format.setOrientation( QgsTextFormat::RotationBasedOrientation );
@@ -3494,7 +3494,7 @@ void TestQgsLabelingEngine::testMapUnitLetterSpacing()
 
   settings.fieldName = QStringLiteral( "'XX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   QFont font = format.font();
   font.setLetterSpacing( QFont::AbsoluteSpacing, 30 );
   format.setFont( font );
@@ -3548,7 +3548,7 @@ void TestQgsLabelingEngine::testMapUnitWordSpacing()
 
   settings.fieldName = QStringLiteral( "'X X'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   QFont font = format.font();
   font.setWordSpacing( 30 );
   format.setFont( font );
@@ -3618,7 +3618,7 @@ void TestQgsLabelingEngine::testClipping()
   settings.setFormat( format );
 
   settings.fieldName = QStringLiteral( "Name" );
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
 
   const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
@@ -3686,7 +3686,7 @@ void TestQgsLabelingEngine::testLineAnchorParallel()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -3749,7 +3749,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -3945,7 +3945,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -4014,7 +4014,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -4099,7 +4099,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -4298,7 +4298,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
 
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
 
@@ -4367,10 +4367,10 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
 
   settings.fieldName = QStringLiteral( "'XXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Curved;
+  settings.placement = Qgis::LabelPlacement::Curved;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   settings.labelPerPart = false;
-  settings.upsidedownLabels = QgsPalLayerSettings::Upright;
+  settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
   settings.lineSettings().setLineAnchorPercent( 0.5 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -4425,7 +4425,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
 
   settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Horizontal;
+  settings.placement = Qgis::LabelPlacement::Horizontal;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -4489,7 +4489,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
 
   settings.fieldName = QStringLiteral( "l" );
   settings.isExpression = false;
-  settings.placement = QgsPalLayerSettings::Horizontal;
+  settings.placement = Qgis::LabelPlacement::Horizontal;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -4581,7 +4581,7 @@ void TestQgsLabelingEngine::testLineAnchorClipping()
 
   settings.fieldName = QStringLiteral( "'x'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Horizontal;
+  settings.placement = Qgis::LabelPlacement::Horizontal;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   settings.labelPerPart = false;
   settings.lineSettings().setLineAnchorPercent( 0.5 );
@@ -4639,7 +4639,7 @@ void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
 
   settings.fieldName = QStringLiteral( "'xxxxxxxxxxxxxx'" );
   settings.isExpression = true;
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::OnLine );
   settings.obstacleSettings().setFactor( 10 );
   settings.lineSettings().setOverrunDistance( 50 );
@@ -4706,7 +4706,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 7;
 
   QgsTextFormat format;
@@ -4771,7 +4771,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor2()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 7;
 
   QgsTextFormat format;

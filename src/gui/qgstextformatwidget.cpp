@@ -186,8 +186,8 @@ void QgsTextFormatWidget::initWidget()
   mLineDistanceSpnBx->setClearValue( 0.0 );
   mSpinStretch->setClearValue( 100 );
 
-  mOffsetTypeComboBox->addItem( tr( "From Point" ), QgsPalLayerSettings::FromPoint );
-  mOffsetTypeComboBox->addItem( tr( "From Symbol Bounds" ), QgsPalLayerSettings::FromSymbolBounds );
+  mOffsetTypeComboBox->addItem( tr( "From Point" ), static_cast< int >( Qgis::LabelOffsetType::FromPoint ) );
+  mOffsetTypeComboBox->addItem( tr( "From Symbol Bounds" ), static_cast< int >( Qgis::LabelOffsetType::FromSymbolBounds ) );
 
   mShapeTypeCmbBx->addItem( tr( "Rectangle" ), QgsTextBackgroundSettings::ShapeRectangle );
   mShapeTypeCmbBx->addItem( tr( "Square" ), QgsTextBackgroundSettings::ShapeSquare );
@@ -257,15 +257,15 @@ void QgsTextFormatWidget::initWidget()
 
   // set up quadrant offset button group
   mQuadrantBtnGrp = new QButtonGroup( this );
-  mQuadrantBtnGrp->addButton( mPointOffsetAboveLeft, static_cast<int>( QgsPalLayerSettings::QuadrantAboveLeft ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetAbove, static_cast<int>( QgsPalLayerSettings::QuadrantAbove ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetAboveRight, static_cast<int>( QgsPalLayerSettings::QuadrantAboveRight ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetLeft, static_cast<int>( QgsPalLayerSettings::QuadrantLeft ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetOver, static_cast<int>( QgsPalLayerSettings::QuadrantOver ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetRight, static_cast<int>( QgsPalLayerSettings::QuadrantRight ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetBelowLeft, static_cast<int>( QgsPalLayerSettings::QuadrantBelowLeft ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetBelow, static_cast<int>( QgsPalLayerSettings::QuadrantBelow ) );
-  mQuadrantBtnGrp->addButton( mPointOffsetBelowRight, static_cast<int>( QgsPalLayerSettings::QuadrantBelowRight ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetAboveLeft, static_cast<int>( Qgis::LabelQuadrantPosition::AboveLeft ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetAbove, static_cast<int>( Qgis::LabelQuadrantPosition::Above ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetAboveRight, static_cast<int>( Qgis::LabelQuadrantPosition::AboveRight ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetLeft, static_cast<int>( Qgis::LabelQuadrantPosition::Left ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetOver, static_cast<int>( Qgis::LabelQuadrantPosition::Over ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetRight, static_cast<int>( Qgis::LabelQuadrantPosition::Right ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetBelowLeft, static_cast<int>( Qgis::LabelQuadrantPosition::BelowLeft ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetBelow, static_cast<int>( Qgis::LabelQuadrantPosition::Below ) );
+  mQuadrantBtnGrp->addButton( mPointOffsetBelowRight, static_cast<int>( Qgis::LabelQuadrantPosition::BelowRight ) );
   mQuadrantBtnGrp->setExclusive( true );
 
   // setup direction symbol(s) button group
@@ -277,9 +277,9 @@ void QgsTextFormatWidget::initWidget()
 
   // upside-down labels button group
   mUpsidedownBtnGrp = new QButtonGroup( this );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, static_cast<int>( QgsPalLayerSettings::Upright ) );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioDefined, static_cast<int>( QgsPalLayerSettings::ShowDefined ) );
-  mUpsidedownBtnGrp->addButton( mUpsidedownRadioAll, static_cast<int>( QgsPalLayerSettings::ShowAll ) );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioOff, static_cast<int>( Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels ) );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioDefined, static_cast<int>( Qgis::UpsideDownLabelHandling::AllowUpsideDownWhenRotationIsDefined ) );
+  mUpsidedownBtnGrp->addButton( mUpsidedownRadioAll, static_cast<int>( Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown ) );
   mUpsidedownBtnGrp->setExclusive( true );
 
   //mShapeCollisionsChkBx->setVisible( false ); // until implemented
@@ -1326,12 +1326,12 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
 
-  const QgsPalLayerSettings::Placement currentPlacement = static_cast< QgsPalLayerSettings::Placement >( mPlacementModeComboBox->currentData().toInt() );
-  const bool showPolygonPlacementOptions = ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement != QgsPalLayerSettings::Line && currentPlacement != QgsPalLayerSettings::PerimeterCurved && currentPlacement != QgsPalLayerSettings::OutsidePolygons );
+  const Qgis::LabelPlacement currentPlacement = static_cast< Qgis::LabelPlacement >( mPlacementModeComboBox->currentData().toInt() );
+  const bool showPolygonPlacementOptions = ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
 
   bool enableMultiLinesFrame = true;
 
-  if ( currentPlacement == QgsPalLayerSettings::AroundPoint
+  if ( currentPlacement == Qgis::LabelPlacement::AroundPoint
        && ( currentGeometryType == QgsWkbTypes::PointGeometry || currentGeometryType == QgsWkbTypes::PolygonGeometry ) )
   {
     showCentroidFrame = currentGeometryType == QgsWkbTypes::PolygonGeometry;
@@ -1339,7 +1339,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     //showRotationFrame = true; // TODO: uncomment when supported
     showQuadrantFrame = currentGeometryType == QgsWkbTypes::PointGeometry;
   }
-  else if ( currentPlacement == QgsPalLayerSettings::OverPoint
+  else if ( currentPlacement == Qgis::LabelPlacement::OverPoint
             && ( currentGeometryType == QgsWkbTypes::PointGeometry || currentGeometryType == QgsWkbTypes::PolygonGeometry ) )
   {
     showCentroidFrame = currentGeometryType == QgsWkbTypes::PolygonGeometry;
@@ -1348,16 +1348,16 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     showOffsetFrame = true;
     showRotationFrame = true;
   }
-  else if ( currentGeometryType == QgsWkbTypes::PointGeometry && currentPlacement == QgsPalLayerSettings::OrderedPositionsAroundPoint )
+  else if ( currentGeometryType == QgsWkbTypes::PointGeometry && currentPlacement == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
   {
     showDistanceFrame = true;
     showPlacementPriorityFrame = true;
     showOffsetTypeFrame  = true;
   }
-  else if ( ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Line )
-            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::Line )
-            || ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Curved )
-            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::PerimeterCurved ) )
+  else if ( ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == Qgis::LabelPlacement::Line )
+            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == Qgis::LabelPlacement::Line )
+            || ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == Qgis::LabelPlacement::Curved )
+            || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) )
   {
     showLineFrame = true;
     showDistanceFrame = true;
@@ -1367,14 +1367,14 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     chkLineOrientationDependent->setEnabled( offline );
     mPlacementDistanceFrame->setEnabled( offline );
 
-    const bool isCurved = ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == QgsPalLayerSettings::Curved )
-                          || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == QgsPalLayerSettings::PerimeterCurved );
+    const bool isCurved = ( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement == Qgis::LabelPlacement::Curved )
+                          || ( currentGeometryType == QgsWkbTypes::PolygonGeometry && currentPlacement == Qgis::LabelPlacement::PerimeterCurved );
     showMaxCharAngleFrame = isCurved;
     // TODO: enable mMultiLinesFrame when supported for curved labels
     enableMultiLinesFrame = !isCurved;
   }
   else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry
-            && ( currentPlacement == QgsPalLayerSettings::OutsidePolygons || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
+            && ( currentPlacement == Qgis::LabelPlacement::OutsidePolygons || mCheckAllowLabelsOutsidePolygons->isChecked() || mAllowOutsidePolygonsDDBtn->isActive() ) )
   {
     showDistanceFrame = true;
   }
@@ -1390,8 +1390,8 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry || ( currentGeometryType == QgsWkbTypes::PolygonGeometry &&
-                                        ( currentPlacement == QgsPalLayerSettings::Line || currentPlacement == QgsPalLayerSettings::PerimeterCurved ) ) );
-  mPlacementOverrunGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement != QgsPalLayerSettings::Horizontal );
+                                        ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
+  mPlacementOverrunGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry && currentPlacement != Qgis::LabelPlacement::Horizontal );
   mLineAnchorGroupBox->setVisible( currentGeometryType == QgsWkbTypes::LineGeometry );
   mPlacementMaxCharAngleFrame->setVisible( showMaxCharAngleFrame );
 
@@ -1401,47 +1401,47 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   QString helperText;
   switch ( currentPlacement )
   {
-    case QgsPalLayerSettings::AroundPoint:
+    case Qgis::LabelPlacement::AroundPoint:
       if ( currentGeometryType == QgsWkbTypes::PointGeometry )
         helperText = tr( "Arranges label candidates in a clockwise circle around the feature, preferring placements to the top-right of the feature." );
       else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Arranges label candidates in a cluster around the feature's centroid, preferring placements directly over the centroid." );
       break;
-    case QgsPalLayerSettings::OverPoint:
+    case Qgis::LabelPlacement::OverPoint:
       if ( currentGeometryType == QgsWkbTypes::PointGeometry )
         helperText = tr( "Arranges label candidates directly over the feature or at a preset offset from the feature." );
       else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Arranges label candidates directly over the feature's centroid, or at a preset offset from the centroid." );
       break;
-    case QgsPalLayerSettings::Line:
+    case Qgis::LabelPlacement::Line:
       if ( currentGeometryType == QgsWkbTypes::LineGeometry )
         helperText = tr( "Arranges label candidates parallel to a generalised line representing the feature. Placements which fall over straighter portions of the line are preferred." );
       else if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Arranges label candidates parallel to a generalised line representing the polygon's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
       break;
-    case QgsPalLayerSettings::Curved:
+    case Qgis::LabelPlacement::Curved:
       if ( currentGeometryType == QgsWkbTypes::LineGeometry )
         helperText = tr( "Arranges candidates following the curvature of a line feature. Placements which fall over straighter portions of the line are preferred." );
       break;
-    case QgsPalLayerSettings::Horizontal:
+    case Qgis::LabelPlacement::Horizontal:
       if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels will always be placed horizontally, with placements further from the edges of the polygon preferred." );
       else if ( currentGeometryType == QgsWkbTypes::LineGeometry )
         helperText = tr( "Label candidates are arranged horizontally along the length of the feature." );
       break;
-    case QgsPalLayerSettings::Free:
+    case Qgis::LabelPlacement::Free:
       if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Arranges label candidates scattered throughout the polygon. Labels are rotated to respect the polygon's orientation, with placements further from the edges of the polygon preferred." );
       break;
-    case QgsPalLayerSettings::OrderedPositionsAroundPoint:
+    case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
       if ( currentGeometryType == QgsWkbTypes::PointGeometry )
         helperText = tr( "Label candidates are placed in predefined positions around the features. Preference is given to positions with greatest cartographic appeal, e.g., top right and bottom right of the feature." );
       break;
-    case QgsPalLayerSettings::PerimeterCurved:
+    case Qgis::LabelPlacement::PerimeterCurved:
       if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Arranges candidates following the curvature of the feature's perimeter. Placements which fall over straighter portions of the perimeter are preferred." );
       break;
-    case QgsPalLayerSettings::OutsidePolygons:
+    case Qgis::LabelPlacement::OutsidePolygons:
       if ( currentGeometryType == QgsWkbTypes::PolygonGeometry )
         helperText = tr( "Label candidates are placed outside of the features, preferring placements which give greatest visual association between the label and the feature." );
       break;
