@@ -138,6 +138,8 @@ class QgsWMTSLayerItem : public QgsLayerItem
                       const QString &path,
                       const QgsDataSourceUri &dataSourceUri,
                       const QString &id,
+                      const QString &dimension,
+                      const QString &dimensionValue,
                       const QString &format,
                       const QString &style,
                       const QString &tileMatrixSet,
@@ -149,7 +151,14 @@ class QgsWMTSLayerItem : public QgsLayerItem
 
   private:
     QgsDataSourceUri mDataSourceUri;
-    QString mId, mFormat, mStyle, mTileMatrixSet, mCrs, mTitle;
+    QString mId;
+    QString mDimension;
+    QString mDimensionValue;
+    QString mFormat;
+    QString mStyle;
+    QString mTileMatrixSet;
+    QString mCrs;
+    QString mTitle;
 };
 
 class QgsWMSRootItem : public QgsConnectionsRootItem
