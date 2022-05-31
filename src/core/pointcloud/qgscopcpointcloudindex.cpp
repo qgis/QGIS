@@ -376,13 +376,12 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
     char buffer[60];
     mCopcFile.read( buffer, 60 );
     header.fill( buffer, 60 );
-    QByteArray evlrData( header.data_length, Qt::Initialization::Uninitialized );
-    mCopcFile.read( evlrData.data(), header.data_length );
 
     // UserID: "qgis", record id: 0
     if ( header.user_id == "qgis" && header.record_id == 0 )
     {
-      statisticsEvlrData = evlrData;
+      statisticsEvlrData = QByteArray( header.data_length, Qt::Initialization::Uninitialized );
+      mCopcFile.read( statisticsEvlrData.data(), header.data_length );
       break;
     }
 
