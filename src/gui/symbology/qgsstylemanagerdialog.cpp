@@ -2300,8 +2300,7 @@ void QgsStyleManagerDialog::exportItemsPNG()
 {
   QString dir = QFileDialog::getExistingDirectory( this, tr( "Export Selected Symbols as PNG" ),
                 QDir::home().absolutePath(),
-                QFileDialog::ShowDirsOnly
-                | QFileDialog::DontResolveSymlinks );
+                QFileDialog::DontResolveSymlinks );
   exportSelectedItemsImages( dir, QStringLiteral( "png" ), QSize( 32, 32 ) );
 }
 
@@ -2309,8 +2308,7 @@ void QgsStyleManagerDialog::exportItemsSVG()
 {
   QString dir = QFileDialog::getExistingDirectory( this, tr( "Export Selected Symbols as SVG" ),
                 QDir::home().absolutePath(),
-                QFileDialog::ShowDirsOnly
-                | QFileDialog::DontResolveSymlinks );
+                QFileDialog::DontResolveSymlinks );
   exportSelectedItemsImages( dir, QStringLiteral( "svg" ), QSize( 32, 32 ) );
 }
 
