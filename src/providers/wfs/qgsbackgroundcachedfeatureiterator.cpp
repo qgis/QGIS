@@ -283,6 +283,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
     else
     {
+      qDebug() << "not empty add it " << shared->clientSideFilterExpression();
       mRequest.combineFilterExpression( shared->clientSideFilterExpression() );
     }
   }
@@ -363,8 +364,8 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   }
 
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
@@ -398,35 +399,42 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
   }
   else
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression &&
-         // We cannot filter on geometry because the spatialite geometry is just
-         // a bounding box and not the actual geometry of the final feature
-         !mRequest.filterExpression()->needsGeometry() )
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      // We cannot forward expressions using dateTime fields, because they
-      // are stored as milliseconds since UTC epoch in the Spatialite DB.
-      bool hasDateTimeFieldInExpr = false;
-      const auto setColumns = mRequest.filterExpression()->referencedColumns();
-      for ( const auto &columnName : setColumns )
+      //update the current filter expression with the clientSide expression, what is empty if the whole expression could have been evaluated on the server
+      qDebug() << QThread::currentThreadId() << "update the expression from " << mRequest.filterExpression()->expression() << " to " << mShared->clientSideFilterExpression();
+      QgsExpression currentExpression = QgsExpression( mShared->clientSideFilterExpression() );
+      mShared->setClientSideFilterExpression( QString() );
+
+      // We cannot filter on geometry because the spatialite geometry is just
+      // a bounding box and not the actual geometry of the final feature
+      if ( currentExpression.isValid() && !currentExpression.needsGeometry() )
       {
-        int idx = fields.indexOf( columnName );
-        if ( idx >= 0 && fields[idx].type() == QVariant::DateTime )
+        // We cannot forward expressions using dateTime fields, because they
+        // are stored as milliseconds since UTC epoch in the Spatialite DB.
+        bool hasDateTimeFieldInExpr = false;
+        const auto setColumns = currentExpression.referencedColumns();
+        for ( const auto &columnName : setColumns )
         {
-          hasDateTimeFieldInExpr = true;
-          break;
+          int idx = fields.indexOf( columnName );
+          if ( idx >= 0 && fields[idx].type() == QVariant::DateTime )
+          {
+            hasDateTimeFieldInExpr = true;
+            break;
+          }
         }
-      }
-      if ( !hasDateTimeFieldInExpr )
-      {
-        // Transfer and transform context
-        requestCache.setFilterExpression( mRequest.filterExpression()->expression() );
-        QgsExpressionContext ctx { *mRequest.expressionContext( ) };
-        QgsExpressionContextScope *scope { ctx.activeScopeForVariable( QgsExpressionContext::EXPR_FIELDS ) };
-        if ( scope )
+        if ( !hasDateTimeFieldInExpr )
         {
-          scope->setVariable( QgsExpressionContext::EXPR_FIELDS, cacheDataProvider->fields() );
+          // Transfer and transform context
+          requestCache.setFilterExpression( currentExpression.expression() );
+          QgsExpressionContext ctx { *mRequest.expressionContext( ) };
+          QgsExpressionContextScope *scope { ctx.activeScopeForVariable( QgsExpressionContext::EXPR_FIELDS ) };
+          if ( scope )
+          {
+            scope->setVariable( QgsExpressionContext::EXPR_FIELDS, cacheDataProvider->fields() );
+          }
+          requestCache.setExpressionContext( ctx );
         }
-        requestCache.setExpressionContext( ctx );
       }
     }
     if ( genCounter >= 0 )
