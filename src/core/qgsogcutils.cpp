@@ -2332,7 +2332,43 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       return QDomElement();
     }
 
-    if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().canConvert<QgsGeometry>() )
+    const QgsExpressionNodeFunction *otherFn = static_cast<const QgsExpressionNodeFunction *>( otherNode );
+    QgsExpressionFunction *otherFnDef = QgsExpression::Functions()[otherFn->fnIndex()];
+    if ( otherFnDef->name() == QLatin1String( "geom_from_wkt" ) )
+    {
+      QgsExpressionNode *firstFnArg = otherFn->args()->list()[0];
+      if ( firstFnArg->nodeType() != QgsExpressionNode::ntLiteral )
+      {
+        mErrorMessage = QObject::tr( "geom_from_wkt: argument must be string literal" );
+        return QDomElement();
+      }
+      const QString wkt = static_cast<const QgsExpressionNodeLiteral *>( firstFnArg )->value().toString();
+      const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+      otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
+                      QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
+      mGeomId ++;
+    }
+    else if ( otherFnDef->name() == QLatin1String( "geom_from_gml" ) )
+    {
+      QgsExpressionNode *firstFnArg = otherFn->args()->list()[0];
+      if ( firstFnArg->nodeType() != QgsExpressionNode::ntLiteral )
+      {
+        mErrorMessage = QObject::tr( "geom_from_gml: argument must be string literal" );
+        return QDomElement();
+      }
+
+      QDomDocument geomDoc;
+      const QString gml = static_cast<const QgsExpressionNodeLiteral *>( firstFnArg )->value().toString();
+      if ( !geomDoc.setContent( gml, true ) )
+      {
+        mErrorMessage = QObject::tr( "geom_from_gml: unable to parse XML" );
+        return QDomElement();
+      }
+
+      const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
+      otherGeomElem = geomNode.toElement();
+    }
+    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().canConvert<QgsGeometry>() )
     {
       QgsGeometry geom = otherNode->cachedStaticValue().value<QgsGeometry>();
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
@@ -2341,47 +2377,8 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
     else
     {
-      const QgsExpressionNodeFunction *otherFn = static_cast<const QgsExpressionNodeFunction *>( otherNode );
-      QgsExpressionFunction *otherFnDef = QgsExpression::Functions()[otherFn->fnIndex()];
-      if ( otherFnDef->name() == QLatin1String( "geom_from_wkt" ) )
-      {
-        QgsExpressionNode *firstFnArg = otherFn->args()->list()[0];
-        if ( firstFnArg->nodeType() != QgsExpressionNode::ntLiteral )
-        {
-          mErrorMessage = QObject::tr( "geom_from_wkt: argument must be string literal" );
-          return QDomElement();
-        }
-        const QString wkt = static_cast<const QgsExpressionNodeLiteral *>( firstFnArg )->value().toString();
-        const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
-        otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
-                        QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
-        mGeomId ++;
-      }
-      else if ( otherFnDef->name() == QLatin1String( "geom_from_gml" ) )
-      {
-        QgsExpressionNode *firstFnArg = otherFn->args()->list()[0];
-        if ( firstFnArg->nodeType() != QgsExpressionNode::ntLiteral )
-        {
-          mErrorMessage = QObject::tr( "geom_from_gml: argument must be string literal" );
-          return QDomElement();
-        }
-
-        QDomDocument geomDoc;
-        const QString gml = static_cast<const QgsExpressionNodeLiteral *>( firstFnArg )->value().toString();
-        if ( !geomDoc.setContent( gml, true ) )
-        {
-          mErrorMessage = QObject::tr( "geom_from_gml: unable to parse XML" );
-          return QDomElement();
-        }
-
-        const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
-        otherGeomElem = geomNode.toElement();
-      }
-      else
-      {
-        mErrorMessage = QObject::tr( "spatial operator: unknown geometry constructor function" );
-        return QDomElement();
-      }
+      mErrorMessage = QObject::tr( "spatial operator: unknown geometry constructor function" );
+      return QDomElement();
     }
 
     mGMLUsed = true;
