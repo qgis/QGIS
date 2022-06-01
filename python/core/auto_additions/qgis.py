@@ -948,7 +948,7 @@ Qgis.TransformDirection.__doc__ = 'Indicates the direction (forward or inverse) 
 Qgis.TransformDirection.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.CoordinateTransformationFlag.BallparkTransformsAreAppropriate.__doc__ = "Indicates that approximate \"ballpark\" results are appropriate for this coordinate transform. See QgsCoordinateTransform.setBallparkTransformsAreAppropriate() for further details."
-Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__ = "Indicates that impossible transformations (such as those which attempt to transfrom between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform.transformationIsPossible() and QgsCoordinateTransfrom.isValid()."
+Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__ = "Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform.transformationIsPossible() and QgsCoordinateTransfrom.isValid()."
 Qgis.CoordinateTransformationFlag.__doc__ = 'Flags which adjust the coordinate transformations behave.\n\n.. versionadded:: 3.26\n\n' + '* ``BallparkTransformsAreAppropriate``: ' + Qgis.CoordinateTransformationFlag.BallparkTransformsAreAppropriate.__doc__ + '\n' + '* ``IgnoreImpossibleTransformations``: ' + Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__
 # --
 Qgis.CoordinateTransformationFlag.baseClass = Qgis
