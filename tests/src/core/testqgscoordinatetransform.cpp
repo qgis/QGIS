@@ -802,14 +802,14 @@ void TestQgsCoordinateTransform::testCustomProjTransform()
 
 void TestQgsCoordinateTransform::testTransformationIsPossible()
 {
-  QVERIFY( !QgsCoordinateTransform::transformationIsPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) );
-  QVERIFY( !QgsCoordinateTransform::transformationIsPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem() ) );
-  QVERIFY( !QgsCoordinateTransform::transformationIsPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem() ) );
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) );
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem() ) );
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem() ) );
 
-  QVERIFY( QgsCoordinateTransform::transformationIsPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
+  QVERIFY( QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) ) );
 #if (PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR >= 1 ) )
   // crses from two different celestial bodies => transformation is not possible
-  QVERIFY( !QgsCoordinateTransform::transformationIsPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+  QVERIFY( !QgsCoordinateTransform::isTransformationPossible( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
            QgsCoordinateReferenceSystem( QStringLiteral( "ESRI:104903" ) ) ) );
 #endif
 }
