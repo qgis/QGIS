@@ -5796,6 +5796,8 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
       layerName = QgsMapLayer::formatLayerName( layerName );
     }
 
+    const bool projectWasEmpty = QgsProject::instance()->mapLayers().empty();
+
     // if user has opted to add sublayers to a group, then we don't need to include the
     // filename in the layer's name, because the group is already titled with the filename.
     // But otherwise, we DO include the file name so that users can differentiate the source
@@ -5820,7 +5822,25 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
       QgsProject::instance()->addMapLayer( layer.release() );
     }
 
-    askUserForDatumTransform( ml->crs(), QgsProject::instance()->crs(), ml );
+    // Some of the logic relating to matching a new project's CRS to the first layer added CRS is deferred to happen when the event loop
+    // next runs -- so in those cases we can't assume that the project's CRS has been matched to the actual desired CRS yet.
+    // In these cases we don't need to show the coordinate operation selection choice, so just hardcode an exception in here to avoid that...
+    QgsCoordinateReferenceSystem projectCrsAfterLayerAdd = QgsProject::instance()->crs();
+    const QgsGui::ProjectCrsBehavior projectCrsBehavior = QgsSettings().enumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ),  QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
+    switch ( projectCrsBehavior )
+    {
+      case QgsGui::UseCrsOfFirstLayerAdded:
+      {
+        if ( projectWasEmpty )
+          projectCrsAfterLayerAdd = ml->crs();
+        break;
+      }
+
+      case QgsGui::UsePresetCrs:
+        break;
+    }
+
+    askUserForDatumTransform( ml->crs(), projectCrsAfterLayerAdd, ml );
     postProcessAddedLayer( ml );
   }
 
