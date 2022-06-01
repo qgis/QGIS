@@ -899,7 +899,6 @@ void TestQgsCopcProvider::testSaveLoadStats()
   {
     std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
     QVERIFY( layer->isValid() );
-    layer->waitForStatisticsCalculationToFinish( false );
 
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
     QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( layer->dataProvider()->index() );
@@ -911,7 +910,6 @@ void TestQgsCopcProvider::testSaveLoadStats()
   {
     std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/copc/lone-star.copc.laz" ), QStringLiteral( "layer" ), QStringLiteral( "copc" ) );
     QVERIFY( layer->isValid() );
-    layer->waitForStatisticsCalculationToFinish( false );
 
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
 

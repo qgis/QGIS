@@ -799,7 +799,7 @@ void QgsPointCloudLayer::calculateStatistics()
 #endif
   if ( mStatistics.sampledPointsCount() != 0 )
   {
-    mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     return;
