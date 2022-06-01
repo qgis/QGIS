@@ -70,8 +70,10 @@ QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
 
 QgsPointCloudLayer::~QgsPointCloudLayer()
 {
-  // If the task is still running we need to cancel it
-  waitForStatisticsCalculationToFinish( true );
+  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
+  {
+    task->cancel();
+  }
 }
 
 QgsPointCloudLayer *QgsPointCloudLayer::clone() const
@@ -402,7 +404,9 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     }
   }
 
-  if ( mDataProvider && mDataProvider->isValid() && mDataProvider->hasStatisticsMetadata() && mStatistics.sampledPointsCount() == 0 )
+  // Note: we load the statistics from the data provider regardless of it being an existing metadata (do not check fot hasStatisticsMetadata)
+  // since the X, Y & Z coordinates will be in the header of the dataset
+  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 && mDataProvider->indexingState() == QgsPointCloudDataProvider::Indexed )
   {
     mStatistics = mDataProvider->metadataStatistics();
   }
@@ -816,7 +820,38 @@ void QgsPointCloudLayer::calculateStatistics()
   connect( task, &QgsTask::taskCompleted, this, [this, task]()
   {
     mStatistics = task->calculationResults();
-    mStatisticsCalculationState = QgsPointCloudLayer::Calculated;
+
+    // fetch X, Y & Z stats directly from the index
+    QVector<QString> coordinateAttributes;
+    coordinateAttributes.push_back( QStringLiteral( "X" ) );
+    coordinateAttributes.push_back( QStringLiteral( "Y" ) );
+    coordinateAttributes.push_back( QStringLiteral( "Z" ) );
+
+    QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStatistics.statisticsMap();
+    QgsPointCloudIndex *index = mDataProvider->index();
+    for ( const QString &attribute : coordinateAttributes )
+    {
+      QgsPointCloudAttributeStatistics s;
+      QVariant min = index->metadataStatistic( attribute, QgsStatisticalSummary::Min );
+      QVariant max = index->metadataStatistic( attribute, QgsStatisticalSummary::Max );
+      if ( !min.isValid() )
+        continue;
+      s.minimum = min.toDouble();
+      s.maximum = max.toDouble();
+      s.count = index->metadataStatistic( attribute, QgsStatisticalSummary::Count ).toInt();
+      s.mean = index->metadataStatistic( attribute, QgsStatisticalSummary::Mean ).toInt();
+      s.stDev = index->metadataStatistic( attribute, QgsStatisticalSummary::StDev ).toInt();
+      QVariantList classes = index->metadataClasses( attribute );
+      for ( const QVariant &c : classes )
+      {
+        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, QgsStatisticalSummary::Count ).toInt();
+      }
+      statsMap[ attribute ] = s;
+    }
+    mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
+    //
+
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     mStatsCalculationTask = 0;
@@ -840,33 +875,14 @@ void QgsPointCloudLayer::calculateStatistics()
 
   mStatsCalculationTask = QgsApplication::taskManager()->addTask( task );
 
-  mStatisticsCalculationState = QgsPointCloudLayer::Calculating;
+  mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculating;
   emit statisticsCalculationStateChanged( mStatisticsCalculationState );
-}
-
-void QgsPointCloudLayer::waitForStatisticsCalculationToFinish( bool cancelTask )
-{
-  // If the statistics calculation task is still running we need to wait for the task to get actually terminated or completed properly
-  if ( QgsTask *task = QgsApplication::taskManager()->task( mStatsCalculationTask ) )
-  {
-    if ( task->isActive() )
-    {
-      QEventLoop loop;
-      connect( task, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
-      connect( task, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
-      if ( cancelTask )
-      {
-        task->cancel();
-      }
-      loop.exec();
-    }
-  }
 }
 
 void QgsPointCloudLayer::resetRenderer()
 {
   mDataProvider->loadIndex();
-  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::NotStarted )
+  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::PointCloudStatisticsCalculationState::NotStarted )
   {
     calculateStatistics();
   }

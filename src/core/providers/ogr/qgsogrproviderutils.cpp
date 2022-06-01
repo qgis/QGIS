@@ -1352,10 +1352,12 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
 {
   // Remove any comments
   QStringList lines {subsetString.split( QChar( '\n' ) )};
+
   lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
   {
     return line.startsWith( QLatin1String( "--" ) );
   } ), lines.end() );
+
   for ( auto &line : lines )
   {
     bool inLiteral {false};
@@ -1374,7 +1376,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       }
     }
   }
-  const QString cleanedSubsetString {lines.join( QChar( ' ' ) ).trimmed() };
+
+  const QString cleanedSubsetString {lines.join( QChar( '\n' ) ).trimmed() };
 
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );

@@ -150,7 +150,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMap, &Qgs3DMapSettings::setCameraMovementSpeed );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, this, &Qgs3DMapCanvas::cameraNavigationSpeedChanged );
-  connect( cameraController(), &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
+  connect( cameraController(), &QgsCameraController::navigationModeChanged, this, &Qgs3DMapCanvas::onNavigationModeChanged );
   connect( cameraController(), &QgsCameraController::requestDepthBufferCapture, this, &Qgs3DMapCanvas::captureDepthBuffer );
 
   connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, cameraController(), &QgsCameraController::depthBufferCaptured );
@@ -348,10 +348,9 @@ QSize Qgs3DMapCanvas::windowSize() const
   return mEngine->size();
 }
 
-void Qgs3DMapCanvas::onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode )
+void Qgs3DMapCanvas::onNavigationModeChanged( QgsCameraController::NavigationMode mode )
 {
   mMap->setCameraNavigationMode( mode );
-  mScene->cameraController()->setCameraNavigationMode( mode );
 }
 
 void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )

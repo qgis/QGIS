@@ -2249,7 +2249,7 @@ void QgsOptions::addPluginPath()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2329,7 +2329,7 @@ void QgsOptions::addTemplatePath()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2356,7 +2356,7 @@ void QgsOptions::addSVGPath()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2405,7 +2405,7 @@ void QgsOptions::browseCacheDirectory()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( mCacheDirectory->text() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( !myDir.isEmpty() )
@@ -2798,7 +2798,7 @@ void QgsOptions::addLocalizedDataPath()
                     this,
                     tr( "Choose a Directory" ),
                     QDir::homePath(),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )

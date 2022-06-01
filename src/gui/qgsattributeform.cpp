@@ -1031,10 +1031,14 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
 
   updateConstraints( eww );
 
-  //append field index here, so it's not updated recursive
-  mAlreadyUpdatedFields.append( eww->fieldIdx() );
-  updateValuesDependencies( eww->fieldIdx() );
-  mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
+  // Update dependent fields (only if form is not initializing)
+  if ( mValuesInitialized )
+  {
+    //append field index here, so it's not updated recursive
+    mAlreadyUpdatedFields.append( eww->fieldIdx() );
+    updateValuesDependencies( eww->fieldIdx() );
+    mAlreadyUpdatedFields.removeAll( eww->fieldIdx() );
+  }
 
   // Updates expression controlled labels
   updateLabels();

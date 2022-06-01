@@ -206,6 +206,7 @@ QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attri
   return QVariant();
 }
 
+
 QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
 {
   QgsPointCloudIndex *pcIndex = index();

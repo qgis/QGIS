@@ -1615,7 +1615,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
 
 void QgsSimpleMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsMarkerSymbolLayer::setOutputUnit( unit );
+  QgsSimpleMarkerSymbolLayerBase::setOutputUnit( unit );
   mStrokeWidthUnit = unit;
 }
 
@@ -1887,6 +1887,13 @@ bool QgsFilledMarkerSymbolLayer::usesMapUnits() const
   return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
          || ( mFill && mFill->usesMapUnits() );
+}
+
+void QgsFilledMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsSimpleMarkerSymbolLayerBase::setOutputUnit( unit );
+  if ( mFill )
+    mFill->setOutputUnit( unit );
 }
 
 void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path )
@@ -3623,6 +3630,12 @@ bool QgsFontMarkerSymbolLayer::usesMapUnits() const
   return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mStrokeWidthUnit == QgsUnitTypes::RenderMapUnits || mStrokeWidthUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
+}
+
+void QgsFontMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsMarkerSymbolLayer::setOutputUnit( unit );
+  mStrokeWidthUnit = unit;
 }
 
 QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )

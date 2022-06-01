@@ -77,6 +77,7 @@ void QgsCameraController::setCameraNavigationMode( QgsCameraController::Navigati
 
   mCameraNavigationMode = navigationMode;
   mIgnoreNextMouseMove = true;
+  emit navigationModeChanged( mCameraNavigationMode );
 }
 
 void QgsCameraController::setCameraMovementSpeed( double movementSpeed )
@@ -151,6 +152,7 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
   mCameraPose.setCenterPoint( viewCenter );
   mCameraPose.setPitchAngle( pitch + diffPitch );
   mCameraPose.setHeadingAngle( yaw + diffYaw );
+  updateCameraFromPose();
 }
 
 
@@ -278,21 +280,6 @@ double QgsCameraController::sampleDepthBuffer( const QImage &buffer, int px, int
 
 void QgsCameraController::updateCameraFromPose()
 {
-  // Some changes to be inserted
-  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
-  {
-    // something went horribly wrong but we need to at least try to fix it somehow
-    qWarning() << "camera position got NaN!";
-    mCameraPose.setCenterPoint( QgsVector3D( 0, 0, 0 ) );
-  }
-
-  if ( mCameraPose.pitchAngle() > 180 )
-    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
-  if ( mCameraPose.pitchAngle() < 0 )
-    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
-  if ( mCameraPose.distanceFromCenterPoint() < 10 )
-    mCameraPose.setDistanceFromCenterPoint( 10 );
-
   if ( mCamera )
     mCameraPose.updateCamera( mCamera );
   emit cameraChanged();
@@ -301,19 +288,7 @@ void QgsCameraController::updateCameraFromPose()
 void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 {
   mCameraPose.setCenterPoint( mCameraPose.centerPoint() + posDiff );
-
-  if ( mCameraPose.pitchAngle() > 180 )
-    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
-  if ( mCameraPose.pitchAngle() < 0 )
-    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
-  if ( mCameraPose.distanceFromCenterPoint() < 10 )
-    mCameraPose.setDistanceFromCenterPoint( 10 );
-
-  if ( mCamera )
-    mCameraPose.updateCamera( mCamera );
-
-  emit cameraChanged();
-
+  updateCameraFromPose();
 }
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
@@ -410,7 +385,6 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     const float diffPitch = 0.2f * dy;
     const float diffYaw = - 0.2f * dx;
     rotateCamera( diffPitch, diffYaw );
-    updateCameraFromPose();
   }
   else if ( hasLeftButton && !hasShift && !hasCtrl )
   {
@@ -696,7 +670,6 @@ void QgsCameraController::onKeyPressed( Qt3DInput::QKeyEvent *event )
         setCameraNavigationMode( NavigationMode::WalkNavigation );
         break;
     }
-    emit navigationModeHotKeyPressed( mCameraNavigationMode );
     return;
   }
 
@@ -764,7 +737,6 @@ void QgsCameraController::onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *e
       const float diffPitch = ty;   // down key = rotating camera down
       const float diffYaw = -tx;    // right key = rotating camera to the right
       rotateCamera( diffPitch, diffYaw );
-      updateCameraFromPose();
     }
   }
 
@@ -927,7 +899,6 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
 
       const float diffYaw = - 0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
-      updateCameraFromPose();
     }
     else if ( mouse->buttons() & Qt::LeftButton )
     {
@@ -944,7 +915,6 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
       }
       const float diffYaw = - 0.2f * dx;
       rotateCamera( diffPitch, diffYaw );
-      updateCameraFromPose();
     }
   }
 

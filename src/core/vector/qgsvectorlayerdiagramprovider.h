@@ -131,6 +131,8 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     //! List of generated label features (owned by the provider)
     QList<QgsLabelFeature *> mFeatures;
 
+    std::unique_ptr< QgsExpressionContextScope > mLayerScope;
+
     QgsGeometry mLabelClipFeatureGeom;
 };
 

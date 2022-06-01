@@ -25,7 +25,10 @@
 ///@cond PRIVATE
 
 QgsPointCloudStatsCalculationTask::QgsPointCloudStatsCalculationTask( QgsPointCloudIndex *index, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointLimit )
-  : QgsTask( tr( "Generating attributes statistics" ) ), mCalculator( index ), mAttributes( attributes ), mPointLimit( pointLimit )
+  : QgsTask( tr( "Generating attributes statistics" ) )
+  , mCalculator( index )
+  , mAttributes( attributes )
+  , mPointLimit( pointLimit )
 {
   mFeedback = new QgsFeedback( this );
 }
@@ -38,9 +41,8 @@ bool QgsPointCloudStatsCalculationTask::run()
 
 void QgsPointCloudStatsCalculationTask::cancel()
 {
-  QgsTask::cancel();
   mFeedback->cancel();
-  emit QgsTask::taskTerminated();
+  QgsTask::cancel();
 }
 
 QgsPointCloudStatistics QgsPointCloudStatsCalculationTask::calculationResults() const

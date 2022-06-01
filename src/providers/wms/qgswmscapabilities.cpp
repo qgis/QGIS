@@ -1551,6 +1551,10 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   QgsWmtsTileMatrix tileMatrix;
   QgsWmtsTileLayer tileLayer;
 
+  // don't allow duplicate format/style/ strings
+  QSet< QString > uniqueFormats;
+  QSet< QString > uniqueStyles;
+
   tileLayer.tileMode = WMSC;
 
   QDomNode node = element.firstChild();
@@ -1570,7 +1574,12 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else if ( tagName == QLatin1String( "Styles" ) )
       {
-        styles << nodeElement.text();
+        const QString style = nodeElement.text();
+        if ( !uniqueStyles.contains( style ) )
+        {
+          styles << style;
+          uniqueStyles.insert( style );
+        }
       }
       else if ( tagName == QLatin1String( "Width" ) )
       {
@@ -1586,7 +1595,12 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else if ( tagName == QLatin1String( "Format" ) )
       {
-        tileLayer.formats << nodeElement.text();
+        const QString format = nodeElement.text();
+        if ( !uniqueFormats.contains( format ) )
+        {
+          tileLayer.formats << format;
+          uniqueFormats.insert( format );
+        }
       }
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
@@ -1651,8 +1665,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   mTileLayersSupported.append( tileLayer );
 
   int i = 0;
-  const auto constResolutions = resolutions;
-  for ( const QString &rS : constResolutions )
+  for ( const QString &rS : std::as_const( resolutions ) )
   {
     double r = rS.toDouble();
     tileMatrix.identifier = QString::number( i );
@@ -1902,9 +1915,17 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       tileLayer.styles.insert( style.identifier, style );
     }
 
-    for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "Format" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "Format" ) ) )
     {
-      tileLayer.formats << secondChildElement.text();
+      QSet< QString > uniqueFormats;
+      for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "Format" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "Format" ) ) )
+      {
+        const QString format = secondChildElement.text();
+        if ( !uniqueFormats.contains( format ) )
+        {
+          tileLayer.formats << format;
+          uniqueFormats.insert( format );
+        }
+      }
     }
 
     for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "InfoFormat" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "InfoFormat" ) ) )
