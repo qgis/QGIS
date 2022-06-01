@@ -1105,7 +1105,7 @@ class CORE_EXPORT Qgis
     enum class CoordinateTransformationFlag  : int
     {
       BallparkTransformsAreAppropriate = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
-      IgnoreImpossibleTransformations = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::transformationIsPossible() and QgsCoordinateTransfrom::isValid().
+      IgnoreImpossibleTransformations = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::isTransformationPossible() and QgsCoordinateTransfrom::isValid().
     };
     Q_ENUM( CoordinateTransformationFlag )
 

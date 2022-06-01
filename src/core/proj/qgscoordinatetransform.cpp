@@ -71,7 +71,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   mHasContext = true;
 #endif
 
-  if ( mIgnoreImpossible && !transformationIsPossible( source, destination ) )
+  if ( mIgnoreImpossible && !isTransformationPossible( source, destination ) )
   {
     d->invalidate();
     return;
@@ -104,7 +104,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   if ( flags & Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations )
     mIgnoreImpossible = true;
 
-  if ( mIgnoreImpossible && !transformationIsPossible( source, destination ) )
+  if ( mIgnoreImpossible && !isTransformationPossible( source, destination ) )
   {
     d->invalidate();
     return;
@@ -167,7 +167,7 @@ QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTr
 
 QgsCoordinateTransform::~QgsCoordinateTransform() {} //NOLINT
 
-bool QgsCoordinateTransform::transformationIsPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
+bool QgsCoordinateTransform::isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   if ( !source.isValid() || !destination.isValid() )
     return false;
@@ -185,7 +185,7 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
   d.detach();
   d->mSourceCRS = crs;
 
-  if ( mIgnoreImpossible && !transformationIsPossible( d->mSourceCRS, d->mDestCRS ) )
+  if ( mIgnoreImpossible && !isTransformationPossible( d->mSourceCRS, d->mDestCRS ) )
   {
     d->invalidate();
     return;
@@ -208,7 +208,7 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
   d.detach();
   d->mDestCRS = crs;
 
-  if ( mIgnoreImpossible && !transformationIsPossible( d->mSourceCRS, d->mDestCRS ) )
+  if ( mIgnoreImpossible && !isTransformationPossible( d->mSourceCRS, d->mDestCRS ) )
   {
     d->invalidate();
     return;
@@ -235,7 +235,7 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
   mHasContext = true;
 #endif
 
-  if ( mIgnoreImpossible && !transformationIsPossible( d->mSourceCRS, d->mDestCRS ) )
+  if ( mIgnoreImpossible && !isTransformationPossible( d->mSourceCRS, d->mDestCRS ) )
   {
     d->invalidate();
     return;

@@ -162,7 +162,7 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \since QGIS 3.26
      */
-    static bool transformationIsPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+    static bool isTransformationPossible( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 
     /**
      * Returns TRUE if the coordinate transform is valid, ie both the source and destination
