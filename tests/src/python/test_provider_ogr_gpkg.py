@@ -2425,6 +2425,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f['my--thing\'s'] = 'my "things -- all'
         f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 1)'))
         lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['text_field'] = 'three'
+        f['my--thing\'s'] = 'my "things \n all'
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(2 2)'))
+        lyr.CreateFeature(f)
         del (lyr)
 
         def _test(subset_string):
@@ -2437,6 +2442,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         _test(' SELECT * --comment\nFROM "my--test" WHERE\ntext_field=\'one\' AND \ntext_field != \'--embedded comment\'')
         _test('SELECT * FROM "my--test" WHERE text_field=\'one\' AND text_field != \' \\\'--embedded comment\'')
         _test('select "my--thing\'s" from "my--test" where "my--thing\'s" = \'my "things -- all\'')
+        _test('select "my--thing\'s" from "my--test" where "my--thing\'s" = \'my "things \n all\'')
 
     def testIsSqlQuery(self):
         """Test that isQuery returns what it should in case of simple filters"""
