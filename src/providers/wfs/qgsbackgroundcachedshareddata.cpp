@@ -466,9 +466,11 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   {
     newDownloadNeeded = true;
   }
+  //If there's a ongoing download, when having an expression needing a geometry, then we need a new download.
+  //We do not compare expressions here, because it won't recognize geometry changes
+  //We do not compare geometries here, because of performance and usually it diverts from the one before.
   else if ( expression.isValid() )
   {
-    qDebug() << QThread::currentThreadId() << "allways download when having an expression";
     newDownloadNeeded = true;
   }
   if ( newDownloadNeeded || !mDownloader )
