@@ -878,7 +878,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
     // if annotation layer doesn't have a crs (i.e. in a newly created project), it should
     // initially inherit the project CRS
-    if ( !mMainAnnotationLayer->crs().isValid() )
+    if ( !mMainAnnotationLayer->crs().isValid() || mMainAnnotationLayer->isEmpty() )
       mMainAnnotationLayer->setCrs( crs );
 
     setDirty( true );
