@@ -683,6 +683,15 @@ The development version
       Reverse
     };
 
+    enum class CoordinateTransformationFlag
+    {
+      BallparkTransformsAreAppropriate,
+      IgnoreImpossibleTransformations,
+    };
+
+    typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
+
+
     enum class MapSettingsFlag
       {
       Antialiasing,
@@ -1193,6 +1202,9 @@ QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToo
 QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
 
 QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
+
 
 
 

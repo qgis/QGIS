@@ -1098,6 +1098,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( TransformDirection )
 
     /**
+     * Flags which adjust the coordinate transformations behave.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CoordinateTransformationFlag  : int
+    {
+      BallparkTransformsAreAppropriate = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
+      IgnoreImpossibleTransformations = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transfrom between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::transformationIsPossible() and QgsCoordinateTransfrom::isValid().
+    };
+    Q_ENUM( CoordinateTransformationFlag )
+
+    /**
+     * Coordinate transformation flags.
+     *
+     * \since QGIS 3.26
+     */
+    Q_DECLARE_FLAGS( CoordinateTransformationFlags, CoordinateTransformationFlag )
+    Q_ENUM( CoordinateTransformationFlags )
+
+    /**
      * Flags which adjust the way maps are rendered.
      *
      * \since QGIS 3.22
@@ -1938,6 +1958,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
+
 
 
 // hack to workaround warnings when casting void pointers
