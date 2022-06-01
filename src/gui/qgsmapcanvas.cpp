@@ -448,8 +448,9 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   QgsRectangle rect;
   if ( !mSettings.visibleExtent().isEmpty() )
   {
-    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
-    transform.setBallparkTransformsAreAppropriate( true );
+    const QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance(),
+                                            Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate
+                                            | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
