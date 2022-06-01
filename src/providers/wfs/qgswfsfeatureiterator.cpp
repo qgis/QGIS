@@ -179,8 +179,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
   if ( ( !rect.isNull() && !mShared->mWFSFilter.isEmpty() )
-       || ( !rect.isNull() && mShared->mExpression.isValid() )
-       || ( !mShared->mWFSFilter.isEmpty() && mShared->mExpression.isValid() ) )
+       || mShared->mExpression.isValid() )
   {
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
@@ -205,6 +204,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
     QDomDocument doc;
     QDomElement andElem = doc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
+    QDomElement filterElem = doc.createElement( "fes:Filter" );
 
 
     QString geometryAttribute( mShared->mGeometryAttribute );
@@ -212,6 +212,10 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       geometryAttribute = mShared->mURI.typeName() + "/" + geometryAttribute;
     else if ( mShared->mLayerPropertiesList.size() == 1 && !mShared->mLayerPropertiesList[0].mNamespacePrefix.isEmpty() )
       geometryAttribute = mShared->mLayerPropertiesList[0].mNamespacePrefix + QStringLiteral( ":" ) + geometryAttribute;
+
+    QDomNode bboxNode;
+    QDomNode filterNode;
+    QDomElement expressionElem;
 
     if ( !rect.isNull() )
     {
@@ -229,30 +233,46 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
                              honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
       bboxDoc.appendChild( bboxElem );
 
-      QDomNode bboxNode = bboxElem.firstChildElement();
+      bboxNode = bboxElem.firstChildElement();
       bboxNode = bboxElem.removeChild( bboxNode );
-      andElem.appendChild( bboxNode );
     }
-
     if ( !mShared->mWFSFilter.isEmpty() )
     {
       qDebug() << QThread::currentThreadId() << "we have a filter";
       QDomDocument filterDoc;
       ( void )filterDoc.setContent( mShared->mWFSFilter, true );
-      QDomNode filterNode = filterDoc.firstChildElement().firstChildElement();
+      filterNode = filterDoc.firstChildElement().firstChildElement();
       filterNode = filterDoc.firstChildElement().removeChild( filterNode );
-      andElem.appendChild( filterNode );
     }
 
     if ( mShared->mExpression.isValid() )
     {
       qDebug() << QThread::currentThreadId() << "... and an expression as well: " << mShared->mExpression.expression();
       QDomDocument expressionDoc;
-      QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( mShared->mExpression, expressionDoc, gmlVersion, filterVersion, geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
-      andElem.appendChild( expressionElem );
+      expressionElem = QgsOgcUtils::expressionToOgcExpression( mShared->mExpression, expressionDoc, gmlVersion, filterVersion, geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
+      if ( expressionElem.isNull() )
+        mShared->setClientSideFilterExpression( mShared->mExpression );
     }
 
-    doc.firstChildElement().appendChild( andElem );
+    if ( expressionElem.isNull() && bboxNode.isNull() )
+    {
+      filterElem.appendChild( filterNode );
+    }
+    else if ( expressionElem.isNull() && filterNode.isNull() )
+    {
+      filterElem.appendChild( bboxNode );
+    }
+    else
+    {
+      filterElem.appendChild( andElem );
+      if ( !expressionElem.isNull() )
+        andElem.appendChild( expressionElem );
+      if ( !bboxNode.isNull() )
+        andElem.appendChild( bboxNode );
+      if ( !filterNode.isNull() )
+        andElem.appendChild( filterNode );
+    }
+    doc.appendChild( filterElem );
 
     QString str;
     QTextStream stream( &str );
@@ -271,7 +291,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
         doc.firstChildElement().setAttributeNode( attr );
       }
     }
-
+    qDebug() << "filter is : " << sanitizeFilter( doc.toString() );
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }
   else if ( !rect.isNull() )
@@ -483,6 +503,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
       url.setQuery( query );
     }
 
+    qDebug() << url.toString();
     sendGET( url,
              QString(), // content-type
              false, /* synchronous */
