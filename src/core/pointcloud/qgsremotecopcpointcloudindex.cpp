@@ -233,4 +233,22 @@ void QgsRemoteCopcPointCloudIndex::copyCommonProperties( QgsRemoteCopcPointCloud
   destination->mHierarchyNodes = mHierarchyNodes;
 }
 
+bool QgsRemoteCopcPointCloudIndex::supportsRangeRequest( const QString &url )
+{
+  QNetworkRequest nr( url );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+  QByteArray queryRange = QStringLiteral( "bytes=0-0" ).toLocal8Bit();
+  nr.setRawHeader( "Range", queryRange );
+  nr.setRawHeader( "Content-Length", QStringLiteral( "1" ).toLocal8Bit() );
+
+  std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
+
+  QEventLoop loop;
+  connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+  loop.exec();
+
+  return reply->error() == QNetworkReply::NoError && reply->data().size() == 1;
+}
+
 ///@endcond

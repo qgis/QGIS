@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
+#include "qgsmessagelog.h"
 
 #include <QFileInfo>
 
@@ -48,6 +49,11 @@ QgsCopcProvider::QgsCopcProvider(
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
+  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) && !QgsRemoteCopcPointCloudIndex::supportsRangeRequest( uri ) )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Server doesn't support range request: " ) + uri );
+    return;
+  }
   loadIndex( );
 }
 
