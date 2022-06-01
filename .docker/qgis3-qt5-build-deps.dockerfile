@@ -22,6 +22,7 @@ RUN  apt-get update \
     cmake \
     curl \
     dh-python \
+    git \
     gdal-bin \
     gpsbabel \
     graphviz \
@@ -170,7 +171,6 @@ RUN  apt-get update \
     clang \
     cmake \
     flex \
-    git \
     grass-dev \
     libexiv2-dev \
     libexpat1-dev \
