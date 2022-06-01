@@ -41,8 +41,8 @@ bool QgsPointCloudStatsCalculationTask::run()
 
 void QgsPointCloudStatsCalculationTask::cancel()
 {
-  QgsTask::cancel();
   mFeedback->cancel();
+  QgsTask::cancel();
 }
 
 QgsPointCloudStatistics QgsPointCloudStatsCalculationTask::calculationResults() const

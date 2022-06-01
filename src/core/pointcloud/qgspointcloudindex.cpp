@@ -322,11 +322,11 @@ QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, c
 
 QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
 {
-  QMap<QString, QgsPointCloudStatistics::AttributeStatistics> statsMap;
+  QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
   for ( QgsPointCloudAttribute attribute : attributes().attributes() )
   {
     QString name = attribute.name();
-    QgsPointCloudStatistics::AttributeStatistics s;
+    QgsPointCloudAttributeStatistics s;
     QVariant min = metadataStatistic( name, QgsStatisticalSummary::Min );
     QVariant max = metadataStatistic( name, QgsStatisticalSummary::Max );
     QVariant mean = metadataStatistic( name, QgsStatisticalSummary::Mean );

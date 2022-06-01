@@ -133,16 +133,32 @@ void QgsPdalProvider::loadIndex( )
 {
   if ( mIndex->isValid() )
     return;
-
-  const QString outputFile = _outCopcFile( dataSourceUri() );
-  const QFileInfo fi( outputFile );
-  if ( fi.isFile() )
+  if ( mGenerateCopc )
   {
-    mIndex->load( outputFile );
+    const QString outputFile = _outCopcFile( dataSourceUri() );
+    const QFileInfo fi( outputFile );
+    if ( fi.isFile() )
+    {
+      mIndex->load( outputFile );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "pdalprovider: copc index %1 is not correctly loaded" ).arg( outputFile ), 2 );
+    }
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outputFile ), 2 );
+    const QString outputDir = _outEptDir( dataSourceUri() );
+    const QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( outputDir );
+    const QFileInfo fi( outEptJson );
+    if ( fi.isFile() )
+    {
+      mIndex->load( outEptJson );
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outEptJson ), 2 );
+    }
   }
 }
 

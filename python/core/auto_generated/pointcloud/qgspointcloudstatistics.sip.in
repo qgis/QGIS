@@ -11,6 +11,15 @@
 
 
 
+struct QgsPointCloudAttributeStatistics
+{
+  double minimum;
+  double maximum;
+  double mean;
+  double stDev;
+  int count;
+};
+
 class QgsPointCloudStatistics
 {
 %Docstring(signature="appended")
@@ -24,16 +33,6 @@ Class used to store statistics of a point cloud dataset.
 #include "qgspointcloudstatistics.h"
 %End
   public:
-    struct AttributeStatistics
-    {
-      double minimum;
-      double maximum;
-      double mean;
-      double stDev;
-      int count;
-      void cumulateStatistics( const AttributeStatistics &stats );
-    };
-
     QgsPointCloudStatistics();
 %Docstring
 Constructor
@@ -55,7 +54,7 @@ Clears the statistics of all attributes
 Clears the statistics of given attributes ``attributes``
 %End
 
-    AttributeStatistics statisticsOf( const QString &attribute ) const;
+    QgsPointCloudAttributeStatistics statisticsOf( const QString &attribute ) const;
 %Docstring
 Returns the calculated statistics of attribute ``attribute``
 %End

@@ -98,7 +98,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * Point cloud statistics calculation task
      * \since QGIS 3.26
      */
-    enum PointCloudStatisticsCalculationState
+    enum class PointCloudStatisticsCalculationState
     {
       NotStarted = 0, //!< The statistics calculation task has not been started
       Calculating = 1 << 0, //!< The statistics calculation task is running
@@ -244,12 +244,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * \since QGIS 3.26
      */
     PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
-
-    /**
-     * If a statistics calculation task is running wait for it to finish
-     * \since QGIS 3.26
-     */
-    void waitForStatisticsCalculationToFinish( bool cancelTask );
   signals:
 
     /**

@@ -50,7 +50,7 @@ Constructor for LayerOptions with optional ``transformContext``.
     };
 
 
-    enum PointCloudStatisticsCalculationState
+    enum class PointCloudStatisticsCalculationState
     {
       NotStarted,
       Calculating,
@@ -202,13 +202,6 @@ Returns the object containing statistics
     PointCloudStatisticsCalculationState statisticsCalculationState() const;
 %Docstring
 Returns the status of point cloud statistics calculation
-
-.. versionadded:: 3.26
-%End
-
-    void waitForStatisticsCalculationToFinish( bool cancelTask );
-%Docstring
-If a statistics calculation task is running wait for it to finish
 
 .. versionadded:: 3.26
 %End

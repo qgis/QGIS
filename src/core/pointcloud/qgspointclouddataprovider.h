@@ -313,6 +313,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     % End
 #endif
 
+
     /**
      * Returns the object containings the statistics metadata extracted from the dataset
      * \since QGIS 3.26
