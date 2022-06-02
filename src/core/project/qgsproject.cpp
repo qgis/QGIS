@@ -2362,6 +2362,8 @@ void QgsProject::cleanTransactionGroups( bool force )
 
 void QgsProject::updateTransactionGroups()
 {
+  mEditBufferGroup.clear();
+
   switch ( mTransactionMode )
   {
     case Qgis::TransactionMode::Disabled:
@@ -2369,14 +2371,14 @@ void QgsProject::updateTransactionGroups()
       cleanTransactionGroups( true );
       return;
     }
-
-    case Qgis::TransactionMode::AutomaticGroups:
+    break;
     case Qgis::TransactionMode::BufferedGroups:
+      cleanTransactionGroups( true );
+      break;
+    case Qgis::TransactionMode::AutomaticGroups:
       cleanTransactionGroups( false );
       break;
   }
-
-  mEditBufferGroup.clear();
 
   bool tgChanged = false;
   const auto constLayers = mapLayers().values();
