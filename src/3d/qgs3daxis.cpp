@@ -562,7 +562,7 @@ void Qgs3DAxis::populateMenu()
   {
     QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );
     if ( mapCanvas == nullptr )
-      qDebug() << "NO CANVAS!";
+      qWarning() << "Qgs3DAxis: no canvas defined!";
     else
     {
       QShortcut *shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
