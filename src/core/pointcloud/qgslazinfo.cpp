@@ -17,6 +17,8 @@
 
 #include "qgslazinfo.h"
 
+#include <QEventLoop>
+
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
 
@@ -298,17 +300,36 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
-    QgsBlockingNetworkRequest req;
-    QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-    if ( errCode != QgsBlockingNetworkRequest::NoError )
+
+    QNetworkAccessManager manager;
+    QNetworkReply *reply = manager.get( nr );
+
+    QEventLoop eventLoop;
+    QObject::connect( reply, &QNetworkReply::readyRead, &eventLoop, &QEventLoop::quit );
+    QObject::connect( reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit );
+    eventLoop.exec();
+
+    if ( reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) != 206 )
     {
-      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
-      lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
+      lazInfo.mError = QObject::tr( "Server of URL %1 doesn't support range queries" ).arg( url.toString() );
       return lazInfo;
     }
-    const QgsNetworkReplyContent reply = req.reply();
-    QByteArray lazHeaderData = reply.content();
 
+    if ( reply->isRunning() )
+    {
+      QEventLoop eventLoop;
+      QObject::connect( reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit );
+      eventLoop.exec();
+    }
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
+      lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( reply->errorString() );
+      return lazInfo;
+    }
+
+    QByteArray lazHeaderData = reply->readAll();
     lazInfo.parseRawHeader( lazHeaderData.data(), lazHeaderData.size() );
   }
 

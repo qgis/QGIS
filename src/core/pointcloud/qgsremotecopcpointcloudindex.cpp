@@ -97,7 +97,7 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
   }
   if ( !mIsValid )
   {
-    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url, mLazInfo->error() ) );
+    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url, mLazInfo->error() );
   }
 }
 
@@ -231,25 +231,6 @@ void QgsRemoteCopcPointCloudIndex::copyCommonProperties( QgsRemoteCopcPointCloud
   // QgsRemoteCopcPointCloudIndex specific fields
   destination->mUrl = mUrl;
   destination->mHierarchyNodes = mHierarchyNodes;
-}
-
-bool QgsRemoteCopcPointCloudIndex::supportsRangeRequest( const QString &url )
-{
-  QNetworkRequest nr( url );
-  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
-  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-  QByteArray queryRange = QStringLiteral( "bytes=0-0" ).toLocal8Bit();
-  nr.setRawHeader( "Range", queryRange );
-
-  QNetworkAccessManager networkAccessManager;
-  QNetworkReply *reply = networkAccessManager.get( nr );
-
-  QEventLoop loop;
-  connect( reply, &QNetworkReply::readyRead, &loop, &QEventLoop::quit );
-  connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
-  loop.exec();
-
-  return reply->error() == QNetworkReply::NoError && reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) == 206;
 }
 
 ///@endcond

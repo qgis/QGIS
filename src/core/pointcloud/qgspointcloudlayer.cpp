@@ -373,6 +373,7 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
   if ( !isValid() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid point cloud provider plugin %1" ).arg( QString( mDataSource.toUtf8() ) ) );
+    setError( mDataProvider->error() );
     return;
   }
 

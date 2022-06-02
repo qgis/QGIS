@@ -42,7 +42,8 @@ QgsCopcProvider::QgsCopcProvider(
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  bool isRemote = uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive );
+  if ( isRemote )
     mIndex.reset( new QgsRemoteCopcPointCloudIndex );
   else
     mIndex.reset( new QgsCopcPointCloudIndex );
@@ -51,20 +52,11 @@ QgsCopcProvider::QgsCopcProvider(
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
-  qDebug() << __PRETTY_FUNCTION__ << "checking";
-  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) && !QgsRemoteCopcPointCloudIndex::supportsRangeRequest( uri ) )
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "Server doesn't support range request: " ) + uri );
-//    QgsErrorMessage err( QStringLiteral( "Server doesn't support range request: " ) + uri );
-//    appendError( err );
-    QgsError err( QStringLiteral( "Server doesn't support range request: " ) + uri, "point cloud" );
-//    setError( err );
-    notify( err.message() );
-    qDebug() << "isn't good";
-    return;
-  }
-  qDebug() << __PRETTY_FUNCTION__ << "is remote";
   loadIndex( );
+  if ( mIndex && !mIndex->isValid() )
+  {
+    appendError( mIndex->error() );
+  }
 }
 
 QgsCopcProvider::~QgsCopcProvider() = default;

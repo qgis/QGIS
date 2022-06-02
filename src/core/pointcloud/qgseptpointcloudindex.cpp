@@ -58,7 +58,7 @@ void QgsEptPointCloudIndex::load( const QString &fileName )
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    QgsMessageLog::logMessage( tr( "Unable to open %1 for reading" ).arg( fileName ) );
+    mError = tr( "Unable to open %1 for reading" ).arg( fileName );
     mIsValid = false;
     return;
   }
@@ -437,6 +437,7 @@ bool QgsEptPointCloudIndex::loadHierarchy()
     if ( !fH.open( QIODevice::ReadOnly ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename ), 2 );
+      mError = QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename );
       return false;
     }
 
@@ -446,6 +447,7 @@ bool QgsEptPointCloudIndex::loadHierarchy()
     if ( errH.error != QJsonParseError::NoError )
     {
       QgsDebugMsgLevel( QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename ), 2 );
+      mError = QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename );
       return false;
     }
 

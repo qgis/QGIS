@@ -73,12 +73,6 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
      */
     void copyCommonProperties( QgsRemoteCopcPointCloudIndex *destination ) const;
 
-    /**
-     * Returns whether the server of the provided \a url supports range requests.
-     * \since QGIS 3.26
-     */
-    static bool supportsRangeRequest( const QString &url );
-
   protected:
     virtual bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const override;
     virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const override;
