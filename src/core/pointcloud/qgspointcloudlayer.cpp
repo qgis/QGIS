@@ -789,7 +789,7 @@ void QgsPointCloudLayer::calculateStatistics()
     return;
   }
 #ifdef HAVE_COPC
-  if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QStringLiteral( "pdal" ) )
+  if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() )
   {
     if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
     {

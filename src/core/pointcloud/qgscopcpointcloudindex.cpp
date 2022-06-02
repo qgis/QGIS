@@ -232,6 +232,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
     QgsMessageLog::logMessage( tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mFileName ) );
     return false;
   }
+  copcFile.close();
   mCopcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
   return true;
 }
