@@ -240,15 +240,16 @@ bool QgsRemoteCopcPointCloudIndex::supportsRangeRequest( const QString &url )
   nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   QByteArray queryRange = QStringLiteral( "bytes=0-0" ).toLocal8Bit();
   nr.setRawHeader( "Range", queryRange );
-  nr.setRawHeader( "Content-Length", QStringLiteral( "1" ).toLocal8Bit() );
 
-  std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
+  QNetworkAccessManager networkAccessManager;
+  QNetworkReply *reply = networkAccessManager.get( nr );
 
   QEventLoop loop;
-  connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+  connect( reply, &QNetworkReply::readyRead, &loop, &QEventLoop::quit );
+  connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
   loop.exec();
 
-  return reply->error() == QNetworkReply::NoError && reply->data().size() == 1;
+  return reply->error() == QNetworkReply::NoError && reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) == 206;
 }
 
 ///@endcond

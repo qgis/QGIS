@@ -34,6 +34,8 @@
 #define PROVIDER_KEY QStringLiteral( "copc" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "COPC point cloud data provider" )
 
+#include <QDebug>
+
 QgsCopcProvider::QgsCopcProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
@@ -49,11 +51,19 @@ QgsCopcProvider::QgsCopcProvider(
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
+  qDebug() << __PRETTY_FUNCTION__ << "checking";
   if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) && !QgsRemoteCopcPointCloudIndex::supportsRangeRequest( uri ) )
   {
     QgsMessageLog::logMessage( QStringLiteral( "Server doesn't support range request: " ) + uri );
+//    QgsErrorMessage err( QStringLiteral( "Server doesn't support range request: " ) + uri );
+//    appendError( err );
+    QgsError err( QStringLiteral( "Server doesn't support range request: " ) + uri, "point cloud" );
+//    setError( err );
+    notify( err.message() );
+    qDebug() << "isn't good";
     return;
   }
+  qDebug() << __PRETTY_FUNCTION__ << "is remote";
   loadIndex( );
 }
 
