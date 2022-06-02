@@ -170,6 +170,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorLayerTypeFlag )
     //! Vector layer type flags
     Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag )
+    Q_FLAG( VectorLayerTypeFlags )
 
     /**
      * Authorisation to run Python Macros
@@ -295,7 +296,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolRenderHint )
     //! Symbol render hints
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, RenderHints )
-
+    Q_FLAG( SymbolRenderHints )
 
     /**
      * \brief Flags controlling behavior of symbols
@@ -309,6 +310,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolFlag )
     //! Symbol flags
     Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
+    Q_FLAG( SymbolFlags )
 
     /**
      * Flags for controlling how symbol preview images are generated.
@@ -322,6 +324,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolPreviewFlag )
     //! Symbol preview flags
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, SymbolPreviewFlags )
+    Q_FLAG( SymbolPreviewFlags )
 
     /**
      * \brief Flags controlling behavior of symbol layers
@@ -335,6 +338,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolLayerFlag )
     //! Symbol layer flags
     Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
+    Q_FLAG( SymbolLayerFlags )
 
     /**
      * Browser item types.
@@ -388,6 +392,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( BrowserItemCapability )
     //! Browser item capabilities
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataItem, Capabilities )
+    Q_FLAG( BrowserItemCapabilities )
 
     /**
      * Browser item layer types
@@ -472,6 +477,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SqlLayerDefinitionCapability )
     //! SQL layer definition capabilities
     Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
+    Q_FLAG( SqlLayerDefinitionCapabilities )
 
     /**
      * SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
@@ -546,6 +552,7 @@ class CORE_EXPORT Qgis
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
     Q_ENUM( SublayerQueryFlag )
+    Q_FLAG( SublayerQueryFlags )
 
     /**
      * Flags which reflect the properties of sublayers in a dataset.
@@ -559,6 +566,7 @@ class CORE_EXPORT Qgis
     //! Sublayer flags
     Q_DECLARE_FLAGS( SublayerFlags, SublayerFlag )
     Q_ENUM( SublayerFlag )
+    Q_FLAG( SublayerFlags )
 
     /**
      * Raster pipe interface roles.
@@ -726,6 +734,7 @@ class CORE_EXPORT Qgis
     //! Babel GPS format capabilities
     Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
     Q_ENUM( BabelFormatCapability )
+    Q_FLAG( BabelFormatCapabilities )
 
     /**
      * Babel command flags, which control how commands and arguments
@@ -740,6 +749,7 @@ class CORE_EXPORT Qgis
     //! Babel command flags
     Q_DECLARE_FLAGS( BabelCommandFlags, BabelCommandFlag )
     Q_ENUM( BabelCommandFlag )
+    Q_FLAG( BabelCommandFlags )
 
     /**
      * GPS feature types.
@@ -796,6 +806,7 @@ class CORE_EXPORT Qgis
     //! Geometry validity flags
     Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsGeometry, ValidityFlags )
     Q_ENUM( GeometryValidityFlag )
+    Q_FLAG( GeometryValidityFlags )
 
     /**
      * Available engines for validating geometries.
@@ -872,6 +883,7 @@ class CORE_EXPORT Qgis
     //! File operation flags
     Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
     Q_ENUM( FileOperationFlag )
+    Q_FLAG( FileOperationFlags )
 
     /**
      * Generic map layer properties.
@@ -886,7 +898,7 @@ class CORE_EXPORT Qgis
     //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
     Q_ENUM( MapLayerProperty )
-
+    Q_FLAG( MapLayerProperties )
 
     /**
      * Generic data provider flags.
@@ -900,6 +912,7 @@ class CORE_EXPORT Qgis
     //! Data provider flags
     Q_DECLARE_FLAGS( DataProviderFlags, DataProviderFlag )
     Q_ENUM( DataProviderFlag )
+    Q_FLAG( DataProviderFlags )
 
     /**
      * Coordinate reference system axis directions.
@@ -978,6 +991,7 @@ class CORE_EXPORT Qgis
     //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
     Q_ENUM( AnnotationItemFlag )
+    Q_FLAG( AnnotationItemFlags )
 
     /**
      * Flags for controlling how an annotation item behaves in the GUI.
@@ -991,6 +1005,7 @@ class CORE_EXPORT Qgis
     //! Annotation item GUI flags
     Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
     Q_ENUM( AnnotationItemGuiFlag )
+    Q_FLAG( AnnotationItemGuiFlags )
 
     /**
      * Annotation item node types.
@@ -1124,6 +1139,7 @@ class CORE_EXPORT Qgis
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
     Q_ENUM( MapSettingsFlag )
+    Q_FLAG( MapSettingsFlags )
 
     /**
      * Flags which affect rendering operations.
@@ -1155,6 +1171,7 @@ class CORE_EXPORT Qgis
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
     Q_ENUM( RenderContextFlag )
+    Q_FLAG( RenderContextFlags )
 
     // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
     // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
