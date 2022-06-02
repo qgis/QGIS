@@ -39,6 +39,9 @@
 #include "qgsmessagelog.h"
 #include "qgstaskmanager.h"
 #include "qgspointcloudlayerprofilegenerator.h"
+#ifdef HAVE_COPC
+#include "qgscopcpointcloudindex.h"
+#endif
 
 #include <QUrl>
 
@@ -785,6 +788,23 @@ void QgsPointCloudLayer::calculateStatistics()
     QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
     return;
   }
+#ifdef HAVE_COPC
+  if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() )
+  {
+    if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+    {
+      mStatistics = index->readStatistics();
+    }
+  }
+#endif
+  if ( mStatistics.sampledPointsCount() != 0 )
+  {
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
+    return;
+  }
+
   QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
   // Do not calculate stats for X, Y & Z since the point cloud index contains that
   for ( int i = 0; i < attributes.size(); ++i )
@@ -835,6 +855,15 @@ void QgsPointCloudLayer::calculateStatistics()
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();
     mStatsCalculationTask = 0;
+#ifdef HAVE_COPC
+    if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QStringLiteral( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
+    {
+      if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
+      {
+        index->writeStatistics( mStatistics );
+      }
+    }
+#endif
   } );
 
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
@@ -857,7 +886,7 @@ void QgsPointCloudLayer::resetRenderer()
   {
     calculateStatistics();
   }
-  if ( mRenderer->type() == QLatin1String( "extent" ) )
+  if ( !mRenderer || mRenderer->type() == QLatin1String( "extent" ) )
   {
     setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
   }
@@ -865,3 +894,5 @@ void QgsPointCloudLayer::resetRenderer()
 
   emit rendererChanged();
 }
+
+

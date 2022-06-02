@@ -16,10 +16,14 @@
  ***************************************************************************/
 
 #include "qgscopcpointcloudindex.h"
+
+#include <fstream>
 #include <QFile>
 #include <QtDebug>
 #include <QQueue>
 #include <QMutexLocker>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
@@ -33,6 +37,7 @@
 
 #include "lazperf/lazperf.hpp"
 #include "lazperf/readers.hpp"
+#include "lazperf/vlr.hpp"
 
 ///@cond PRIVATE
 
@@ -181,6 +186,69 @@ bool QgsCopcPointCloudIndex::loadHierarchy()
   return true;
 }
 
+bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
+{
+  if ( mLazInfo->version() != qMakePair<uint8_t, uint8_t>( 1, 4 ) )
+  {
+    // EVLR isn't supported in the first place
+    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": laz version != 1.4" ).arg( mFileName ) );
+    return false;
+  }
+
+  QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
+  if ( !statisticsEvlrData.isEmpty() )
+  {
+    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": file already contains COPC statistics!" ).arg( mFileName ) );
+    return false;
+  }
+
+  lazperf::evlr_header statsEvlrHeader;
+  statsEvlrHeader.user_id = "qgis";
+  statsEvlrHeader.record_id = 0;
+  statsEvlrHeader.description = "Contains calculated statistics";
+  QByteArray statsJson = stats.toStatisticsJson();
+  statsEvlrHeader.data_length = statsJson.size();
+
+  // Save the EVLRs to the end of the original file (while erasing the exisitng EVLRs in the file)
+  mCopcFile.close();
+  std::fstream copcFile;
+  copcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios_base::binary | std::iostream::in | std::iostream::out );
+  if ( copcFile.is_open() && copcFile.good() )
+  {
+    // Write the new number of EVLRs
+    lazperf::header14 header = mLazInfo->header();
+    header.evlr_count = header.evlr_count + 1;
+    copcFile.seekp( 0 );
+    header.write( copcFile );
+
+    // Append EVLR data to the end
+    copcFile.seekg( 0, std::ios::end );
+
+    statsEvlrHeader.write( copcFile );
+    copcFile.write( statsJson.data(), statsEvlrHeader.data_length );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mFileName ) );
+    return false;
+  }
+  copcFile.close();
+  mCopcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
+  return true;
+}
+
+QgsPointCloudStatistics QgsCopcPointCloudIndex::readStatistics()
+{
+  QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
+
+  if ( statisticsEvlrData.isEmpty() )
+  {
+    return QgsPointCloudStatistics();
+  }
+
+  return QgsPointCloudStatistics::fromStatisticsJson( statisticsEvlrData );
+}
+
 bool QgsCopcPointCloudIndex::isValid() const
 {
   return mIsValid;
@@ -293,6 +361,35 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
   destination->mHierarchyNodePos = mHierarchyNodePos;
   destination->mOriginalMetadata = mOriginalMetadata;
   destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
+}
+
+QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
+{
+  uint64_t offset = mLazInfo->firstEvlrOffset();
+  uint32_t evlrCount = mLazInfo->evlrCount();
+
+  QByteArray statisticsEvlrData;
+
+  for ( uint32_t i = 0; i < evlrCount; ++i )
+  {
+    lazperf::evlr_header header;
+    mCopcFile.seekg( offset );
+    char buffer[60];
+    mCopcFile.read( buffer, 60 );
+    header.fill( buffer, 60 );
+
+    // UserID: "qgis", record id: 0
+    if ( header.user_id == "qgis" && header.record_id == 0 )
+    {
+      statisticsEvlrData = QByteArray( header.data_length, Qt::Initialization::Uninitialized );
+      mCopcFile.read( statisticsEvlrData.data(), header.data_length );
+      break;
+    }
+
+    offset += 60 + header.data_length;
+  }
+
+  return statisticsEvlrData;
 }
 
 ///@endcond

@@ -175,8 +175,6 @@ QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex *
 
 }
 
-#include <QThread>
-
 bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit )
 {
   if ( !mIndex->isValid() )
