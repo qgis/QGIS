@@ -394,6 +394,7 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
+          QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \
