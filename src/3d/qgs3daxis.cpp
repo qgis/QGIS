@@ -376,9 +376,9 @@ void Qgs3DAxis::createAxisScene()
     mAxisRoot->setObjectName( "3DAxis_AxisRoot" );
     mAxisRoot->addComponent( mAxisSceneLayer );
 
-    createAxis( Axis::X );
-    createAxis( Axis::Y );
-    createAxis( Axis::Z );
+    createAxis( Qt::Axis::XAxis );
+    createAxis( Qt::Axis::YAxis );
+    createAxis( Qt::Axis::ZAxis );
 
     mCubeRoot = new Qt3DCore::QEntity;
     mCubeRoot->setParent( mAxisSceneEntity );
@@ -780,7 +780,7 @@ Qt3DExtras::QText2DEntity *Qgs3DAxis::addCubeText( const QString &text, float te
   return textEntity;
 }
 
-void Qgs3DAxis::createAxis( const Qgs3DAxis::Axis &axisType )
+void Qgs3DAxis::createAxis( Qt::Axis axisType )
 {
   float cylinderRadius = 0.05 * mCylinderLength;
   float coneLength = 0.3 * mCylinderLength;
@@ -795,7 +795,7 @@ void Qgs3DAxis::createAxis( const Qgs3DAxis::Axis &axisType )
 
   switch ( axisType )
   {
-    case Axis::X:
+    case Qt::Axis::XAxis:
       mText_X = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mText_X->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
       connect( mText_X, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
@@ -812,7 +812,7 @@ void Qgs3DAxis::createAxis( const Qgs3DAxis::Axis &axisType )
       name = "3DAxis_axisX";
       break;
 
-    case Axis::Y:
+    case Qt::Axis::YAxis:
       mText_Y = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mText_Y->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
       connect( mText_Y, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
@@ -829,7 +829,7 @@ void Qgs3DAxis::createAxis( const Qgs3DAxis::Axis &axisType )
       name = "3DAxis_axisY";
       break;
 
-    case Axis::Z:
+    case Qt::Axis::ZAxis:
       mText_Z = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mText_Z->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
       connect( mText_Z, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
