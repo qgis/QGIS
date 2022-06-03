@@ -163,8 +163,10 @@ bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
   if ( !parts.contains( QStringLiteral( "path" ) ) )
     return false;
 
+  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
+
   // internal details only
-  if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  if ( fi.fileName().compare( QLatin1String( "ept-build.json" ), Qt::CaseInsensitive ) == 0 )
     return true;
 
   return false;
