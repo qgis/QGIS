@@ -318,9 +318,11 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   twoDCameraSelector->setParent( twoDLayerFilter );
   twoDCameraSelector->setCamera( mTwoDLabelCamera );
 
+  // cppcheck-suppress memleak
   Qt3DRender::QClearBuffers *clearBuffers = new Qt3DRender::QClearBuffers( twoDCameraSelector );
   clearBuffers->setBuffers( Qt3DRender::QClearBuffers::DepthBuffer );
 
+  // cppcheck-suppress memleak
   return twoDViewport;
 }
 
