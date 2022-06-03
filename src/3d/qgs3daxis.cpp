@@ -55,7 +55,7 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
   mTwoDLabelViewport = constructLabelViewport( parent3DScene, QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
   mTwoDLabelViewport->setParent( mParentWindow->activeFrameGraph() );
 
-  Qgs3DAxisSettings s = mMapSettings->get3dAxisSettings();
+  Qgs3DAxisSettings s = mMapSettings->get3DAxisSettings();
   setAxisViewportPosition( mAxisViewportSize, s.verticalPosition(), s.horizontalPosition() );
   mMode = s.mode();
 
@@ -582,25 +582,25 @@ void Qgs3DAxis::displayMenuAt( const QPoint &sourcePos )
 void Qgs3DAxis::onAxisModeChanged( Qgs3DAxis::Mode mode )
 {
   setMode( mode );
-  Qgs3DAxisSettings s = mMapSettings->get3dAxisSettings();
+  Qgs3DAxisSettings s = mMapSettings->get3DAxisSettings();
   s.setMode( mode );
-  mMapSettings->set3dAxisSettings( s );
+  mMapSettings->set3DAxisSettings( s );
 }
 
 void Qgs3DAxis::onAxisHorizPositionChanged( Qt::AnchorPoint pos )
 {
   setAxisViewportPosition( mAxisViewportSize, mAxisViewportVertPos, pos );
-  Qgs3DAxisSettings s = mMapSettings->get3dAxisSettings();
+  Qgs3DAxisSettings s = mMapSettings->get3DAxisSettings();
   s.setHorizontalPosition( pos );
-  mMapSettings->set3dAxisSettings( s );
+  mMapSettings->set3DAxisSettings( s );
 }
 
 void Qgs3DAxis::onAxisVertPositionChanged( Qt::AnchorPoint pos )
 {
   setAxisViewportPosition( mAxisViewportSize, pos, mAxisViewportHorizPos );
-  Qgs3DAxisSettings s = mMapSettings->get3dAxisSettings();
+  Qgs3DAxisSettings s = mMapSettings->get3DAxisSettings();
   s.setVerticalPosition( pos );
-  mMapSettings->set3dAxisSettings( s );
+  mMapSettings->set3DAxisSettings( s );
 }
 
 void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
