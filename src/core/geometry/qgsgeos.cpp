@@ -1901,6 +1901,28 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
+QgsAbstractGeometry *QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+  ( void )geom;
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    geos::unique_ptr concaveHull( GEOSConcaveHull_r( geosinit()->ctxt, mGeos.get(), targetPercent, allowHoles ) );
+    std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
+    return concaveHullGeom.release();
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
+
 bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const
 {
   if ( !mGeos )

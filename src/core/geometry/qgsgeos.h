@@ -544,6 +544,29 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
     /**
+     * Returns a possibly concave geometry that encloses the input geometry.
+     *
+     * The result is a single polygon, line or point.
+     *
+     * It will not contain holes unless the optional \a allowHoles argument is specified as true.
+     *
+     * One can think of a concave hull as a geometry obtained by "shrink-wrapping" a set of geometries.
+     * This is different to the convex hull, which is more like wrapping a rubber band around the geometries.
+     * It is slower to compute than the convex hull but generally has a smaller area and represents a more natural boundary for the input geometry.
+     * The \a target_percent is the percentage of area of the convex hull the solution tries to approach.
+     *
+     * A \a target_percent of 1 gives the same result as the convex hull.
+     * A \a target_percent between 0 and 0.99 produces a result that should have a smaller area than the convex hull.
+     *
+     * This method requires a QGIS build based on GEOS 3.11 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     * \see convexHull()
+     * \since QGIS 3.28
+     */
+    QgsAbstractGeometry  *concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg = nullptr ) const;
+
+    /**
      * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      */
