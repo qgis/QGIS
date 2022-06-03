@@ -530,7 +530,7 @@ void Qgs3DMapConfigWidget::init3DAxisPage()
   connect( mCbo3dAxisHorizPos, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
   connect( mCbo3dAxisVertPos, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
 
-  Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+  Qgs3DAxisSettings s = mMap->get3DAxisSettings();
 
   if ( s.mode() == Qgs3DAxis::Mode::Off )
     mGroupBox3dAxis->setChecked( false );
@@ -548,7 +548,7 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
 {
   if ( m3DMapCanvas->scene()->get3DAxis() )
   {
-    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+    Qgs3DAxisSettings s = mMap->get3DAxisSettings();
     Qgs3DAxis::Mode m = Qgs3DAxis::Mode::Off;
     if ( mGroupBox3dAxis->isChecked() )
       m = static_cast< Qgs3DAxis::Mode >( mCbo3dAxisType->currentData().toInt() );
@@ -571,7 +571,7 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
       s.setVerticalPosition( vPos );
     }
 
-    if ( s != mMap->get3dAxisSettings() )
-      mMap->set3dAxisSettings( s );
+    if ( s != mMap->get3DAxisSettings() )
+      mMap->set3DAxisSettings( s );
   }
 }

@@ -962,7 +962,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 }
 
 
-void Qgs3DMapSettings::set3dAxisSettings( const Qgs3DAxisSettings &axisSettings )
+void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings )
 {
   m3dAxisSettings = axisSettings;
   emit axisSettingsChanged();
