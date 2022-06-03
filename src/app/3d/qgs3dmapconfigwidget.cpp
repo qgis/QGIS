@@ -198,13 +198,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast< int >( Qgs3DAxis::Mode::Crs ) );
   mCbo3dAxisType->addItem( tr( "Cube" ), static_cast< int >( Qgs3DAxis::Mode::Cube ) );
 
-  mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Begin ) );
-  mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Middle ) );
-  mCbo3dAxisHorizPos->addItem( tr( "Right" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::End ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast< int >( Qt::AnchorPoint::AnchorLeft ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast< int >( Qt::AnchorPoint::AnchorHorizontalCenter ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Right" ), static_cast< int >( Qt::AnchorPoint::AnchorRight ) );
 
-  mCbo3dAxisVertPos->addItem( tr( "Top" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Begin ) );
-  mCbo3dAxisVertPos->addItem( tr( "Middle" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Middle ) );
-  mCbo3dAxisVertPos->addItem( tr( "Bottom" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::End ) );
+  mCbo3dAxisVertPos->addItem( tr( "Top" ), static_cast< int >( Qt::AnchorPoint::AnchorTop ) );
+  mCbo3dAxisVertPos->addItem( tr( "Middle" ), static_cast< int >( Qt::AnchorPoint::AnchorVerticalCenter ) );
+  mCbo3dAxisVertPos->addItem( tr( "Bottom" ), static_cast< int >( Qt::AnchorPoint::AnchorBottom ) );
 
   init3DAxisPage();
 
@@ -554,8 +554,8 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
     }
     else
     {
-      Qgs3DAxis::AxisViewportPosition hPos = static_cast< Qgs3DAxis::AxisViewportPosition >( mCbo3dAxisHorizPos->currentData().toInt() );
-      Qgs3DAxis::AxisViewportPosition vPos = static_cast< Qgs3DAxis::AxisViewportPosition >( mCbo3dAxisVertPos->currentData().toInt() );
+      const Qt::AnchorPoint hPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisHorizPos->currentData().toInt() );
+      const Qt::AnchorPoint vPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisVertPos->currentData().toInt() );
 
       if ( m3DMapCanvas->scene()->get3DAxis()->axisViewportHorizontalPosition() != hPos
            || m3DMapCanvas->scene()->get3DAxis()->axisViewportVerticalPosition() != vPos )

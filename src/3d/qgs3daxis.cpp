@@ -475,17 +475,17 @@ void Qgs3DAxis::createMenu()
   // horizontal position menu
   QAction *hPosLeftAct = new QAction( tr( "&Left" ), mMenu );
   hPosLeftAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
+  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorLeft )
     hPosLeftAct->setChecked( true );
 
   QAction *hPosMiddleAct = new QAction( tr( "&Middle" ), mMenu );
   hPosMiddleAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Middle )
+  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorHorizontalCenter )
     hPosMiddleAct->setChecked( true );
 
   QAction *hPosRightAct = new QAction( tr( "&Right" ), mMenu );
   hPosRightAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::End )
+  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorRight )
     hPosRightAct->setChecked( true );
 
   QActionGroup *hPosGroup = new QActionGroup( mMenu );
@@ -493,9 +493,9 @@ void Qgs3DAxis::createMenu()
   hPosGroup->addAction( hPosMiddleAct );
   hPosGroup->addAction( hPosRightAct );
 
-  connect( hPosLeftAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( AxisViewportPosition::Begin );} );
-  connect( hPosMiddleAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( AxisViewportPosition::Middle );} );
-  connect( hPosRightAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( AxisViewportPosition::End );} );
+  connect( hPosLeftAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( Qt::AnchorPoint::AnchorLeft );} );
+  connect( hPosMiddleAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( Qt::AnchorPoint::AnchorHorizontalCenter );} );
+  connect( hPosRightAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( Qt::AnchorPoint::AnchorRight );} );
 
   auto horizPosMenu = new QMenu( QStringLiteral( "Horizontal Position" ), mMenu );
   horizPosMenu->addAction( hPosLeftAct );
@@ -506,17 +506,17 @@ void Qgs3DAxis::createMenu()
   // vertical position menu
   QAction *vPosTopAct = new QAction( tr( "&Top" ), mMenu );
   vPosTopAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
+  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorTop )
     vPosTopAct->setChecked( true );
 
   QAction *vPosMiddleAct = new QAction( tr( "&Middle" ), mMenu );
   vPosMiddleAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Middle )
+  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorVerticalCenter )
     vPosMiddleAct->setChecked( true );
 
   QAction *vPosBottomAct = new QAction( tr( "&Bottom" ), mMenu );
   vPosBottomAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::End )
+  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorBottom )
     vPosBottomAct->setChecked( true );
 
   QActionGroup *vPosGroup = new QActionGroup( mMenu );
@@ -524,9 +524,9 @@ void Qgs3DAxis::createMenu()
   vPosGroup->addAction( vPosMiddleAct );
   vPosGroup->addAction( vPosBottomAct );
 
-  connect( vPosTopAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( AxisViewportPosition::Begin );} );
-  connect( vPosMiddleAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( AxisViewportPosition::Middle );} );
-  connect( vPosBottomAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( AxisViewportPosition::End );} );
+  connect( vPosTopAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( Qt::AnchorPoint::AnchorTop );} );
+  connect( vPosMiddleAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( Qt::AnchorPoint::AnchorVerticalCenter );} );
+  connect( vPosBottomAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( Qt::AnchorPoint::AnchorBottom );} );
 
   QMenu *vertPosMenu = new QMenu( QStringLiteral( "Vertical Position" ), mMenu );
   vertPosMenu->addAction( vPosTopAct );
@@ -608,7 +608,7 @@ void Qgs3DAxis::onAxisModeChanged( Qgs3DAxis::Mode mode )
   mMapSettings.set3dAxisSettings( s );
 }
 
-void Qgs3DAxis::onAxisHorizPositionChanged( AxisViewportPosition pos )
+void Qgs3DAxis::onAxisHorizPositionChanged( Qt::AnchorPoint pos )
 {
   setAxisViewportPosition( mAxisViewportSize, mAxisViewportVertPos, pos );
   Qgs3DAxisSettings s = mMapSettings.get3dAxisSettings();
@@ -616,7 +616,7 @@ void Qgs3DAxis::onAxisHorizPositionChanged( AxisViewportPosition pos )
   mMapSettings.set3dAxisSettings( s );
 }
 
-void Qgs3DAxis::onAxisVertPositionChanged( AxisViewportPosition pos )
+void Qgs3DAxis::onAxisVertPositionChanged( Qt::AnchorPoint pos )
 {
   setAxisViewportPosition( mAxisViewportSize, pos, mAxisViewportHorizPos );
   Qgs3DAxisSettings s = mMapSettings.get3dAxisSettings();
@@ -908,7 +908,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
 }
 
 
-void Qgs3DAxis::setAxisViewportPosition( int axisViewportSize, AxisViewportPosition axisViewportVertPos, AxisViewportPosition axisViewportHorizPos )
+void Qgs3DAxis::setAxisViewportPosition( int axisViewportSize, Qt::AnchorPoint axisViewportVertPos, Qt::AnchorPoint axisViewportHorizPos )
 {
   mAxisViewportSize = axisViewportSize;
   mAxisViewportVertPos = axisViewportVertPos;
@@ -924,16 +924,16 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
 
   float xRatio;
   float yRatio;
-  if ( mAxisViewportHorizPos == AxisViewportPosition::Begin )
+  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorLeft )
     xRatio = 0.0f;
-  else if ( mAxisViewportHorizPos == AxisViewportPosition::Middle )
+  else if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorHorizontalCenter )
     xRatio = 0.5 - widthRatio / 2.0;
   else
     xRatio = 1.0 - widthRatio;
 
-  if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
+  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorTop )
     yRatio = 0.0f;
-  else if ( mAxisViewportVertPos == AxisViewportPosition::Middle )
+  else if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorVerticalCenter )
     yRatio = 0.5 - heightRatio / 2.0;
   else
     yRatio = 1.0 - heightRatio;
