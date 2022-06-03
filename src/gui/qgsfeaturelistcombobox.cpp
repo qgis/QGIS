@@ -209,7 +209,7 @@ void QgsFeatureListComboBox::setIdentifierFields( const QStringList &identifierF
 
 QModelIndex QgsFeatureListComboBox::currentModelIndex() const
 {
-  return mModel->index( mModel->extraIdentifierValueIndex(), 0, QModelIndex() );
+  return mModel->index( currentIndex(), 0, QModelIndex() );
 }
 
 void QgsFeatureListComboBox::focusOutEvent( QFocusEvent *event )
