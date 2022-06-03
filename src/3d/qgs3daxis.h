@@ -150,7 +150,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onCameraViewChangeSouth() { onCameraViewChange( 90.0, 0.0 ); }
     void onCameraViewChangeWest() { onCameraViewChange( 90.0, -90.0 ); }
     void onCameraViewChangeBottom() { onCameraViewChange( 180.0, 0.0 ); }
-    void populateMenu();
 
   private:
 
@@ -169,7 +168,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     // axis picking and menu
     void init3DObjectPicking( );
     bool eventFilter( QObject *watched, QEvent *event ) override;
-
+    void createMenu();
     void hideMenu();
     void displayMenuAt( const QPoint &position );
 

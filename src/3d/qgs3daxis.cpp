@@ -67,8 +67,7 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
 
   createAxisScene();
 
-  mMenu = new QMenu();
-  connect( mMenu, &QMenu::aboutToShow, this, &Qgs3DAxis::populateMenu );
+  createMenu();
 
   init3DObjectPicking();
 }
@@ -413,9 +412,9 @@ void Qgs3DAxis::createAxisScene()
   }
 }
 
-void Qgs3DAxis::populateMenu()
+void Qgs3DAxis::createMenu()
 {
-  mMenu->clear();
+  mMenu = new QMenu();
 
   // axis type menu
   QAction *typeOffAct = new QAction( tr( "&Off" ), mMenu );
