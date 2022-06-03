@@ -294,42 +294,31 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
 QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
 {
   QgsLazInfo lazInfo;
+
+  if ( !supportsRangeQueries( url ) )
+  {
+    lazInfo.mError = QStringLiteral( "The server of submitted URL doesn't support range queries" );
+    return lazInfo;
+  }
+
   // Fetch header data
   {
     QNetworkRequest nr( url );
     nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
     nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
     nr.setRawHeader( "Range", "bytes=0-374" );
-
-    QNetworkAccessManager manager;
-    QNetworkReply *reply = manager.get( nr );
-
-    QEventLoop eventLoop;
-    QObject::connect( reply, &QNetworkReply::readyRead, &eventLoop, &QEventLoop::quit );
-    QObject::connect( reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit );
-    eventLoop.exec();
-
-    if ( reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ) != 206 )
-    {
-      lazInfo.mError = QObject::tr( "Server of URL %1 doesn't support range queries" ).arg( url.toString() );
-      return lazInfo;
-    }
-
-    if ( reply->isRunning() )
-    {
-      QEventLoop eventLoop;
-      QObject::connect( reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit );
-      eventLoop.exec();
-    }
-
-    if ( reply->error() != QNetworkReply::NoError )
+    QgsBlockingNetworkRequest req;
+    QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
+    if ( errCode != QgsBlockingNetworkRequest::NoError )
     {
       QgsDebugMsg( QStringLiteral( "Request failed: " ) + url.toString() );
-      lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( reply->errorString() );
+      lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
 
-    QByteArray lazHeaderData = reply->readAll();
+    const QgsNetworkReplyContent reply = req.reply();
+    QByteArray lazHeaderData = reply.content();
+
     lazInfo.parseRawHeader( lazHeaderData.data(), lazHeaderData.size() );
   }
 
@@ -359,3 +348,16 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   return lazInfo;
 }
 
+bool QgsLazInfo::supportsRangeQueries( QUrl &url )
+{
+  QNetworkRequest nr( url );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  nr.setRawHeader( "Range", "bytes=0-0" );
+  QgsBlockingNetworkRequest req;
+  QgsBlockingNetworkRequest::ErrorCode errCode = req.head( nr );
+  QgsNetworkReplyContent reply = req.reply();
+
+  QString acceptRangesHeader = reply.rawHeader( QStringLiteral( "Accept-Ranges" ).toLocal8Bit() );
+  return errCode == QgsBlockingNetworkRequest::NoError && acceptRangesHeader.compare( QStringLiteral( "bytes" ), Qt::CaseSensitivity::CaseInsensitive ) == 0;
+}
