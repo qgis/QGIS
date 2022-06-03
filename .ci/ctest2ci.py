@@ -78,12 +78,12 @@ for line in p.stdout:
     # remove non printable characters https://stackoverflow.com/a/8689826/1548052
     filter(lambda x: x in printable, updated_line)
     if re.match('Run dashboard with model Experimental', updated_line):
-        start_fold('build')
+        start_fold('Run tests')
         updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'yellow', attrs=['bold']),
                                                 line=updated_line)
 
     elif re.match('Test project /home/runner/QGIS/QGIS/build', updated_line):
-        end_fold()  # tag=build
+        end_fold()  # tag=Run tests
         start_test_fold()
 
     if re.search(r'\*\*\*Failed', updated_line) or re.search(r'\*\*\*Timeout', updated_line):
