@@ -126,7 +126,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * @param destSize main qt3d window size
      * @return
      */
-    QVector3D from3dTo2dLabelPosition( const QVector3D &sourcePos,
+    QVector3D from3DTo2DLabelPosition( const QVector3D &sourcePos,
                                        Qt3DRender::QCamera *sourceCamera, Qt3DRender::QViewport *sourceViewport,
                                        Qt3DRender::QCamera *destCamera, Qt3DRender::QViewport *destViewport,
                                        const QSize &destSize );
