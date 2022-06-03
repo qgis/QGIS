@@ -195,6 +195,17 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // ==================
   // Page: 3D axis
+  mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast< int >( Qgs3DAxis::Mode::Crs ) );
+  mCbo3dAxisType->addItem( tr( "Cube" ), static_cast< int >( Qgs3DAxis::Mode::Cube ) );
+
+  mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Begin ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Middle ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Right" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::End ) );
+
+  mCbo3dAxisVertPos->addItem( tr( "Top" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Begin ) );
+  mCbo3dAxisVertPos->addItem( tr( "Middle" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::Middle ) );
+  mCbo3dAxisVertPos->addItem( tr( "Bottom" ), static_cast< int >( Qgs3DAxis::AxisViewportPosition::End ) );
+
   init3DAxisPage();
 
   // ==================
@@ -508,11 +519,10 @@ void Qgs3DMapConfigWidget::validate()
 
 void Qgs3DMapConfigWidget::init3DAxisPage()
 {
-  connect( mGroupBox3dAxis, &QGroupBox::toggled, this, &Qgs3DMapConfigWidget::on3DAxisChanged ); // skip-keyword-check
-  connect( mCbo3dAxisType, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged ); // skip-keyword-check
-  connect( mCbo3dAxisHorizPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged ); // skip-keyword-check
-  connect( mCbo3dAxisVertPos, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );  // skip-keyword-check
-
+  connect( mGroupBox3dAxis, &QGroupBox::toggled, this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+  connect( mCbo3dAxisType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+  connect( mCbo3dAxisHorizPos, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+  connect( mCbo3dAxisVertPos, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
 
   Qgs3DAxisSettings s = mMap->get3dAxisSettings();
 
@@ -521,11 +531,11 @@ void Qgs3DMapConfigWidget::init3DAxisPage()
   else
   {
     mGroupBox3dAxis->setChecked( true );
-    mCbo3dAxisType->setCurrentIndex( ( int )s.mode() - 2 );
+    mCbo3dAxisType->setCurrentIndex( mCbo3dAxisType->findData( static_cast< int >( s.mode() ) ) );
   }
 
-  mCbo3dAxisHorizPos->setCurrentIndex( ( int )s.horizontalPosition() - 1 );
-  mCbo3dAxisVertPos->setCurrentIndex( ( int )s.verticalPosition() - 1 );
+  mCbo3dAxisHorizPos->setCurrentIndex( mCbo3dAxisHorizPos->findData( static_cast< int >( s.horizontalPosition() ) ) );
+  mCbo3dAxisVertPos->setCurrentIndex( mCbo3dAxisVertPos->findData( static_cast< int >( s.verticalPosition() ) ) );
 }
 
 void Qgs3DMapConfigWidget::on3DAxisChanged()
@@ -533,11 +543,9 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
   if ( m3DMapCanvas->scene()->get3DAxis() )
   {
     Qgs3DAxisSettings s = mMap->get3dAxisSettings();
-    Qgs3DAxis::Mode m;
+    Qgs3DAxis::Mode m = Qgs3DAxis::Mode::Off;
     if ( mGroupBox3dAxis->isChecked() )
-      m = ( Qgs3DAxis::Mode )( mCbo3dAxisType->currentIndex() + 2 );
-    else
-      m = Qgs3DAxis::Mode::Off;
+      m = static_cast< Qgs3DAxis::Mode >( mCbo3dAxisType->currentData().toInt() );
 
     if ( m3DMapCanvas->scene()->get3DAxis()->mode() != m )
     {
@@ -546,8 +554,8 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
     }
     else
     {
-      Qgs3DAxis::AxisViewportPosition hPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisHorizPos->currentIndex() + 1 );
-      Qgs3DAxis::AxisViewportPosition vPos = ( Qgs3DAxis::AxisViewportPosition )( mCbo3dAxisVertPos->currentIndex() + 1 );
+      Qgs3DAxis::AxisViewportPosition hPos = static_cast< Qgs3DAxis::AxisViewportPosition >( mCbo3dAxisHorizPos->currentData().toInt() );
+      Qgs3DAxis::AxisViewportPosition vPos = static_cast< Qgs3DAxis::AxisViewportPosition >( mCbo3dAxisVertPos->currentData().toInt() );
 
       if ( m3DMapCanvas->scene()->get3DAxis()->axisViewportHorizontalPosition() != hPos
            || m3DMapCanvas->scene()->get3DAxis()->axisViewportVerticalPosition() != vPos )
@@ -559,6 +567,5 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
 
     if ( s != mMap->get3dAxisSettings() )
       mMap->set3dAxisSettings( s );
-
   }
 }
