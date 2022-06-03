@@ -67,7 +67,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * @param map 3D map settings
      */
     Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,  Qt3DCore::QEntity *parent3DScene,
-               Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings &map );
+               Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings *map );
     ~Qgs3DAxis() override;
 
     /**
@@ -173,7 +173,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void hideMenu();
     void displayMenuAt( const QPoint &position );
 
-    Qgs3DMapSettings &mMapSettings;
+    Qgs3DMapSettings *mMapSettings = nullptr;
     Qt3DExtras::Qt3DWindow *mParentWindow = nullptr;
     Qgs3DMapScene *mMapScene = nullptr;
     QgsCameraController *mCameraController = nullptr;
@@ -194,15 +194,15 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Qt3DCore::QEntity *mCubeRoot = nullptr;
     QList<Qt3DExtras::QText2DEntity *> mCubeLabels;
 
-    Qt3DExtras::QText2DEntity *mText_X = nullptr;
-    Qt3DExtras::QText2DEntity *mText_Y = nullptr;
-    Qt3DExtras::QText2DEntity *mText_Z = nullptr;
-    QVector3D mTextCoord_X;
-    QVector3D mTextCoord_Y;
-    QVector3D mTextCoord_Z;
-    Qt3DCore::QTransform *mTextTransform_X = nullptr;
-    Qt3DCore::QTransform *mTextTransform_Y = nullptr;
-    Qt3DCore::QTransform *mTextTransform_Z = nullptr;
+    Qt3DExtras::QText2DEntity *mTextX = nullptr;
+    Qt3DExtras::QText2DEntity *mTextY = nullptr;
+    Qt3DExtras::QText2DEntity *mTextZ = nullptr;
+    QVector3D mTextCoordX;
+    QVector3D mTextCoordY;
+    QVector3D mTextCoordZ;
+    Qt3DCore::QTransform *mTextTransformX = nullptr;
+    Qt3DCore::QTransform *mTextTransformY = nullptr;
+    Qt3DCore::QTransform *mTextTransformZ = nullptr;
     QgsCoordinateReferenceSystem mCrs;
     QVector3D mPreviousVector;
 
@@ -235,7 +235,7 @@ class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
      * \brief Defaul Qgs3DWiredMesh constructor
      */
     Qgs3DWiredMesh( Qt3DCore::QNode *parent = nullptr );
-    ~Qgs3DWiredMesh();
+    ~Qgs3DWiredMesh() override;
 
     /**
      * \brief add or replace mesh vertices coordinates
