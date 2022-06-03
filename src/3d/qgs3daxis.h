@@ -71,17 +71,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     ~Qgs3DAxis() override;
 
     /**
-     * \brief The AxisViewportPosition enum
-     */
-    enum class AxisViewportPosition
-    {
-      Begin = 1, //!< Top or left
-      Middle = 2, //!< Middle
-      End = 3, //!< Bottom or right
-    };
-    Q_ENUM( AxisViewportPosition )
-
-    /**
      * \brief The Mode enum
      */
     enum class Mode
@@ -109,7 +98,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * @param axisViewportVertPos start vertical position
      * @param axisViewportHorizPos start horizontal position
      */
-    void setAxisViewportPosition( int axisViewportSize, AxisViewportPosition axisViewportVertPos, AxisViewportPosition axisViewportHorizPos );
+    void setAxisViewportPosition( int axisViewportSize, Qt::AnchorPoint axisViewportVertPos, Qt::AnchorPoint axisViewportHorizPos );
 
     /**
      * \brief Returns axis viewport size
@@ -119,12 +108,12 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     /**
      * \brief Returns axis viewport horizontal position
      */
-    AxisViewportPosition axisViewportHorizontalPosition() const { return mAxisViewportHorizPos;}
+    Qt::AnchorPoint axisViewportHorizontalPosition() const { return mAxisViewportHorizPos;}
 
     /**
      * \brief Returns axis viewport vertical position
      */
-    AxisViewportPosition axisViewportVerticalPosition() const { return mAxisViewportVertPos;}
+    Qt::AnchorPoint axisViewportVerticalPosition() const { return mAxisViewportVertPos;}
 
     /**
      * \brief project a 3D position from sourceCamera (in sourceViewport) to a 2D position for destCamera (in destViewport). destCamera and the destViewport act as a billboarding layer. The labels displayed by this process will always face the camera.
@@ -150,8 +139,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     // axis picking and menu
     void onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits );
     void onAxisModeChanged( Qgs3DAxis::Mode mode );
-    void onAxisHorizPositionChanged( AxisViewportPosition pos );
-    void onAxisVertPositionChanged( AxisViewportPosition pos );
+    void onAxisHorizPositionChanged( Qt::AnchorPoint pos );
+    void onAxisVertPositionChanged( Qt::AnchorPoint pos );
     void onCameraViewChange( float pitch, float yaw );
 
     void onCameraViewChangeHome( ) { onCameraViewChange( 45.0, 45.0 ); }
@@ -190,8 +179,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     float mCylinderLength = 40.0f;
     int mAxisViewportSize = 4.0 * mCylinderLength;
-    AxisViewportPosition mAxisViewportVertPos = AxisViewportPosition::Begin;
-    AxisViewportPosition mAxisViewportHorizPos = AxisViewportPosition::End;
+    Qt::AnchorPoint mAxisViewportVertPos = Qt::AnchorPoint::AnchorTop;
+    Qt::AnchorPoint mAxisViewportHorizPos = Qt::AnchorPoint::AnchorRight;
     int mFontSize = 10;
 
     Qt3DCore::QEntity *mAxisSceneEntity = nullptr;

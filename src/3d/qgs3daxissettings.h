@@ -59,20 +59,20 @@ class _3D_EXPORT Qgs3DAxisSettings
     void setMode( Qgs3DAxis::Mode type ) { mMode = type; }
 
     //! Returns the horizontal position for the 3d axis
-    Qgs3DAxis::AxisViewportPosition horizontalPosition() const { return mHorizontalPosition; }
+    Qt::AnchorPoint horizontalPosition() const { return mHorizontalPosition; }
     //! Sets the horizontal position for the 3d axis
-    void setHorizontalPosition( const Qgs3DAxis::AxisViewportPosition &position ) { mHorizontalPosition = position; }
+    void setHorizontalPosition( Qt::AnchorPoint position ) { mHorizontalPosition = position; }
 
     //! Returns the vertical position for the 3d axis
-    Qgs3DAxis::AxisViewportPosition verticalPosition() const { return mVerticalPosition; }
+    Qt::AnchorPoint verticalPosition() const { return mVerticalPosition; }
     //! Sets the vertical position for the 3d axis
-    void setVerticalPosition( const Qgs3DAxis::AxisViewportPosition &position ) { mVerticalPosition = position; }
+    void setVerticalPosition( Qt::AnchorPoint position ) { mVerticalPosition = position; }
 
   private:
     Qgs3DAxis::Mode mMode = Qgs3DAxis::Mode::Crs;
-    Qgs3DAxis::AxisViewportPosition mHorizontalPosition = Qgs3DAxis::AxisViewportPosition::End;
-    Qgs3DAxis::AxisViewportPosition mVerticalPosition = Qgs3DAxis::AxisViewportPosition::Begin;
-    ;
+    Qt::AnchorPoint mHorizontalPosition = Qt::AnchorPoint::AnchorRight;
+    Qt::AnchorPoint mVerticalPosition = Qt::AnchorPoint::AnchorTop;
+
 };
 
 #endif // QGS3DAXISSETTINGS_H

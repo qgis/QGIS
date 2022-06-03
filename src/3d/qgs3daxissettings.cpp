@@ -61,20 +61,20 @@ void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteC
     mMode = Qgs3DAxis::Mode::Cube;
 
   const QString horizontalStr = element.attribute( QStringLiteral( "horizontal" ) );
-  if ( horizontalStr == QLatin1String( "Begin" ) )
-    mHorizontalPosition = Qgs3DAxis::AxisViewportPosition::Begin;
+  if ( horizontalStr == QLatin1String( "Left" ) )
+    mHorizontalPosition = Qt::AnchorPoint::AnchorLeft;
   else if ( horizontalStr == QLatin1String( "Middle" ) )
-    mHorizontalPosition = Qgs3DAxis::AxisViewportPosition::Middle;
-  else if ( horizontalStr == QLatin1String( "End" ) )
-    mHorizontalPosition = Qgs3DAxis::AxisViewportPosition::End;
+    mHorizontalPosition = Qt::AnchorPoint::AnchorHorizontalCenter;
+  else if ( horizontalStr == QLatin1String( "Right" ) )
+    mHorizontalPosition = Qt::AnchorPoint::AnchorRight;
 
   const QString verticalStr = element.attribute( QStringLiteral( "vertical" ) );
-  if ( verticalStr == QLatin1String( "Begin" ) )
-    mVerticalPosition = Qgs3DAxis::AxisViewportPosition::Begin;
+  if ( verticalStr == QLatin1String( "Top" ) )
+    mVerticalPosition = Qt::AnchorPoint::AnchorTop;
   else if ( verticalStr == QLatin1String( "Middle" ) )
-    mVerticalPosition = Qgs3DAxis::AxisViewportPosition::Middle;
-  else if ( verticalStr == QLatin1String( "End" ) )
-    mVerticalPosition = Qgs3DAxis::AxisViewportPosition::End;
+    mVerticalPosition = Qt::AnchorPoint::AnchorVerticalCenter;
+  else if ( verticalStr == QLatin1String( "Bottom" ) )
+    mVerticalPosition = Qt::AnchorPoint::AnchorBottom;
 }
 
 void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
@@ -98,13 +98,13 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 
   switch ( mHorizontalPosition )
   {
-    case Qgs3DAxis::AxisViewportPosition::Begin:
-      str = QLatin1String( "Begin" );
+    case Qt::AnchorPoint::AnchorLeft:
+      str = QLatin1String( "Left" );
       break;
-    case Qgs3DAxis::AxisViewportPosition::Middle:
+    case Qt::AnchorPoint::AnchorHorizontalCenter:
       str = QLatin1String( "Middle" );
       break;
-    case Qgs3DAxis::AxisViewportPosition::End:
+    case Qt::AnchorPoint::AnchorRight:
     default:
       str = QLatin1String( "End" );
       break;
@@ -113,15 +113,15 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 
   switch ( mVerticalPosition )
   {
-    case Qgs3DAxis::AxisViewportPosition::Begin:
-      str = QLatin1String( "Begin" );
+    case Qt::AnchorPoint::AnchorBottom:
+      str = QLatin1String( "Bottom" );
       break;
-    case Qgs3DAxis::AxisViewportPosition::Middle:
+    case Qt::AnchorPoint::AnchorVerticalCenter:
       str = QLatin1String( "Middle" );
       break;
-    case Qgs3DAxis::AxisViewportPosition::End:
+    case Qt::AnchorPoint::AnchorTop:
     default:
-      str = QLatin1String( "End" );
+      str = QLatin1String( "Top" );
       break;
   }
   element.setAttribute( QStringLiteral( "vertical" ), str );
