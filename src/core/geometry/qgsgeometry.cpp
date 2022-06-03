@@ -2399,6 +2399,24 @@ QgsGeometry QgsGeometry::convexHull() const
   return QgsGeometry( std::move( cHull ) );
 }
 
+QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError ) );
+  if ( !concaveHull )
+  {
+    QgsGeometry geom;
+    geom.mLastError = mLastError;
+    return geom;
+  }
+  return QgsGeometry( std::move( concaveHull ) );
+}
+
 QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry &extent, double tolerance, bool edgesOnly ) const
 {
   if ( !d->geometry )
