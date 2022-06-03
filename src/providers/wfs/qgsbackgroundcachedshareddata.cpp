@@ -469,6 +469,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   //If there's a ongoing download, when having an expression needing a geometry, then we need a new download.
   //We do not compare expressions here, because it won't recognize geometry changes
   //We do not compare geometries here, because of performance and usually it diverts from the one before.
+  //Maybe it makes sense since this value is sometimes on adding feature reevaluated on attribute change...
   else if ( expression.isValid() )
   {
     newDownloadNeeded = true;

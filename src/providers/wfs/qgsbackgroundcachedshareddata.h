@@ -165,9 +165,6 @@ class QgsBackgroundCachedSharedData
     //! Set whether the progress dialog should be hidden
     void setHideProgressDialog( bool b ) { mHideProgressDialog = b; }
 
-    //! Set filter expression to apply on client side
-    void setClientSideFilterExpression( const QString &expression ) {mClientSideFilterExpression = expression; }
-
     //////// Pure virtual methods
 
     //! Instantiate a new feature downloader implementation.
