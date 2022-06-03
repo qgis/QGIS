@@ -87,6 +87,8 @@ Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = 'Vector layer type flags.\n\n.. versionadded:: 3.24\n\n' + '* ``SqlQuery``: ' + Qgis.VectorLayerTypeFlag.SqlQuery.__doc__
 # --
 Qgis.VectorLayerTypeFlag.baseClass = Qgis
+Qgis.VectorLayerTypeFlags.baseClass = Qgis
+VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.Never = Qgis.PythonMacroMode.Never
 Qgis.Never.is_monkey_patched = True
@@ -234,11 +236,15 @@ Qgis.SymbolRenderHint.__doc__ = 'Flags controlling behavior of symbols during re
 # --
 Qgis.SymbolRenderHint.baseClass = Qgis
 QgsSymbol.RenderHints = Qgis.SymbolRenderHints
+Qgis.SymbolRenderHints.baseClass = Qgis
+SymbolRenderHints = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
 Qgis.SymbolFlag.__doc__ = 'Flags controlling behavior of symbols\n\n.. versionadded:: 3.20\n\n' + '* ``RendererShouldUseSymbolLevels``: ' + Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__
 # --
 Qgis.SymbolFlag.baseClass = Qgis
+Qgis.SymbolFlags.baseClass = Qgis
+SymbolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsSymbol.PreviewFlag = Qgis.SymbolPreviewFlag
 # monkey patching scoped based enum
 QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols = Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols
@@ -248,11 +254,15 @@ Qgis.SymbolPreviewFlag.__doc__ = 'Flags for controlling how symbol preview image
 # --
 Qgis.SymbolPreviewFlag.baseClass = Qgis
 QgsSymbol.SymbolPreviewFlags = Qgis.SymbolPreviewFlags
+Qgis.SymbolPreviewFlags.baseClass = Qgis
+SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
 Qgis.SymbolLayerFlag.__doc__ = 'Flags controlling behavior of symbol layers\n\n.. versionadded:: 3.22\n\n' + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
 # --
 Qgis.SymbolLayerFlag.baseClass = Qgis
+Qgis.SymbolLayerFlags.baseClass = Qgis
+SymbolLayerFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsDataItem.Type = Qgis.BrowserItemType
 # monkey patching scoped based enum
 QgsDataItem.Collection = Qgis.BrowserItemType.Collection
@@ -332,6 +342,8 @@ Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionad
 # --
 Qgis.BrowserItemCapability.baseClass = Qgis
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
+Qgis.BrowserItemCapabilities.baseClass = Qgis
+BrowserItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
 # monkey patching scoped based enum
 QgsLayerItem.NoType = Qgis.BrowserLayerType.NoType
@@ -438,6 +450,8 @@ Qgis.SqlLayerDefinitionCapability.UnstableFeatureIds.__doc__ = "SQL layer defini
 Qgis.SqlLayerDefinitionCapability.__doc__ = 'SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.\n\n.. versionadded:: 3.22\n\n' + '* ``SubsetStringFilter``: ' + Qgis.SqlLayerDefinitionCapability.SubsetStringFilter.__doc__ + '\n' + '* ``GeometryColumn``: ' + Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ + '\n' + '* ``PrimaryKeys``: ' + Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ + '\n' + '* ``UnstableFeatureIds``: ' + Qgis.SqlLayerDefinitionCapability.UnstableFeatureIds.__doc__
 # --
 Qgis.SqlLayerDefinitionCapability.baseClass = Qgis
+Qgis.SqlLayerDefinitionCapabilities.baseClass = Qgis
+SqlLayerDefinitionCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SqlKeywordCategory.Keyword.__doc__ = "SQL keyword"
 Qgis.SqlKeywordCategory.Constant.__doc__ = "SQL constant"
@@ -487,11 +501,15 @@ Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__ = "Include system or internal
 Qgis.SublayerQueryFlag.__doc__ = 'Flags which control how data providers will scan for sublayers in a dataset.\n\n.. versionadded:: 3.22\n\n' + '* ``FastScan``: ' + Qgis.SublayerQueryFlag.FastScan.__doc__ + '\n' + '* ``ResolveGeometryType``: ' + Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ + '\n' + '* ``CountFeatures``: ' + Qgis.SublayerQueryFlag.CountFeatures.__doc__ + '\n' + '* ``IncludeSystemTables``: ' + Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__
 # --
 Qgis.SublayerQueryFlag.baseClass = Qgis
+Qgis.SublayerQueryFlags.baseClass = Qgis
+SublayerQueryFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SublayerFlag.SystemTable.__doc__ = "Sublayer is a system or internal table, which should be hidden by default"
 Qgis.SublayerFlag.__doc__ = 'Flags which reflect the properties of sublayers in a dataset.\n\n.. versionadded:: 3.22\n\n' + '* ``SystemTable``: ' + Qgis.SublayerFlag.SystemTable.__doc__
 # --
 Qgis.SublayerFlag.baseClass = Qgis
+Qgis.SublayerFlags.baseClass = Qgis
+SublayerFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRasterPipe.Role = Qgis.RasterPipeInterfaceRole
 # monkey patching scoped based enum
 QgsRasterPipe.UnknownRole = Qgis.RasterPipeInterfaceRole.Unknown
@@ -640,11 +658,15 @@ Qgis.BabelFormatCapability.Tracks.__doc__ = "Format supports tracks"
 Qgis.BabelFormatCapability.__doc__ = 'Babel GPS format capabilities.\n\n.. versionadded:: 3.22\n\n' + '* ``Import``: ' + Qgis.BabelFormatCapability.Import.__doc__ + '\n' + '* ``Export``: ' + Qgis.BabelFormatCapability.Export.__doc__ + '\n' + '* ``Waypoints``: ' + Qgis.BabelFormatCapability.Waypoints.__doc__ + '\n' + '* ``Routes``: ' + Qgis.BabelFormatCapability.Routes.__doc__ + '\n' + '* ``Tracks``: ' + Qgis.BabelFormatCapability.Tracks.__doc__
 # --
 Qgis.BabelFormatCapability.baseClass = Qgis
+Qgis.BabelFormatCapabilities.baseClass = Qgis
+BabelFormatCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.BabelCommandFlag.QuoteFilePaths.__doc__ = "File paths should be enclosed in quotations and escaped"
 Qgis.BabelCommandFlag.__doc__ = 'Babel command flags, which control how commands and arguments\nare generated for executing GPSBabel processes.\n\n.. versionadded:: 3.22\n\n' + '* ``QuoteFilePaths``: ' + Qgis.BabelCommandFlag.QuoteFilePaths.__doc__
 # --
 Qgis.BabelCommandFlag.baseClass = Qgis
+Qgis.BabelCommandFlags.baseClass = Qgis
+BabelCommandFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.GpsFeatureType.Waypoint.__doc__ = "Waypoint"
 Qgis.GpsFeatureType.Route.__doc__ = "Route"
@@ -711,6 +733,8 @@ Qgis.GeometryValidityFlag.__doc__ = 'Geometry validity check flags.\n\n.. versio
 # --
 QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
 Qgis.GeometryValidityFlag.baseClass = Qgis
+Qgis.GeometryValidityFlags.baseClass = Qgis
+GeometryValidityFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsGeometry.ValidationMethod = Qgis.GeometryValidationEngine
 # monkey patching scoped based enum
 QgsGeometry.ValidatorQgisInternal = Qgis.GeometryValidationEngine.QgisInternal
@@ -774,17 +798,23 @@ Qgis.FileOperationFlag.IncludeStyleFile.__doc__ = "Indicates that any associated
 Qgis.FileOperationFlag.__doc__ = 'File operation flags.\n\n.. versionadded:: 3.22\n\n' + '* ``IncludeMetadataFile``: ' + Qgis.FileOperationFlag.IncludeMetadataFile.__doc__ + '\n' + '* ``IncludeStyleFile``: ' + Qgis.FileOperationFlag.IncludeStyleFile.__doc__
 # --
 Qgis.FileOperationFlag.baseClass = Qgis
+Qgis.FileOperationFlags.baseClass = Qgis
+FileOperationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22."
 Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26."
 Qgis.MapLayerProperty.__doc__ = 'Generic map layer properties.\n\n.. versionadded:: 3.22\n\n' + '* ``UsersCannotToggleEditing``: ' + Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ + '\n' + '* ``IsBasemapLayer``: ' + Qgis.MapLayerProperty.IsBasemapLayer.__doc__
 # --
 Qgis.MapLayerProperty.baseClass = Qgis
+Qgis.MapLayerProperties.baseClass = Qgis
+MapLayerProperties = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
 Qgis.DataProviderFlag.__doc__ = 'Generic data provider flags.\n\n.. versionadded:: 3.26\n\n' + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__
 # --
 Qgis.DataProviderFlag.baseClass = Qgis
+Qgis.DataProviderFlags.baseClass = Qgis
+DataProviderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.CrsAxisDirection.North.__doc__ = "North"
 Qgis.CrsAxisDirection.NorthNorthEast.__doc__ = "North North East"
@@ -841,11 +871,15 @@ Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box
 Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadded:: 3.22\n\n' + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
 # --
 Qgis.AnnotationItemFlag.baseClass = Qgis
+Qgis.AnnotationItemFlags.baseClass = Qgis
+AnnotationItemFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__ = "Do not show item creation tools for the item type"
 Qgis.AnnotationItemGuiFlag.__doc__ = 'Flags for controlling how an annotation item behaves in the GUI.\n\n.. versionadded:: 3.22\n\n' + '* ``FlagNoCreationTools``: ' + Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__
 # --
 Qgis.AnnotationItemGuiFlag.baseClass = Qgis
+Qgis.AnnotationItemGuiFlags.baseClass = Qgis
+AnnotationItemGuiFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipulating vertices"
 Qgis.AnnotationItemNodeType.__doc__ = 'Annotation item node types.\n\n.. versionadded:: 3.22\n\n' + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__
@@ -1000,6 +1034,8 @@ Qgis.MapSettingsFlag.__doc__ = 'Flags which adjust the way maps are rendered.\n\
 # --
 QgsMapSettings.Flags = Qgis.MapSettingsFlags
 Qgis.MapSettingsFlag.baseClass = Qgis
+Qgis.MapSettingsFlags.baseClass = Qgis
+MapSettingsFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.Flag = Qgis.RenderContextFlag
 # monkey patching scoped based enum
 QgsRenderContext.DrawEditingInfo = Qgis.RenderContextFlag.DrawEditingInfo
@@ -1063,6 +1099,8 @@ Qgis.RenderContextFlag.__doc__ = 'Flags which affect rendering operations.\n\n..
 # --
 QgsRenderContext.Flags = Qgis.RenderContextFlags
 Qgis.RenderContextFlag.baseClass = Qgis
+Qgis.RenderContextFlags.baseClass = Qgis
+RenderContextFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.TextRenderFormat = Qgis.TextRenderFormat
 # monkey patching scoped based enum
 QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines

@@ -195,7 +195,6 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
-
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
@@ -551,7 +550,6 @@ The development version
       IsBasemapLayer,
     };
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
-
 
 
     enum class DataProviderFlag
