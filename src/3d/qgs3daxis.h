@@ -160,7 +160,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
                                        const QSize &destSize );
 
   private slots:
-    // ========= private slots
+
     void onCameraUpdate( );
     void onAxisViewportSizeUpdate( int val = 0 );
 
@@ -180,7 +180,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onCameraViewChangeBottom( UNUSED bool fake = true ) {onCameraViewChange( 180.0, 0.0 );}
 
   private:
-    // ========= private functions
+
     void createAxisScene();
     void createAxis( const Axis &axis );
     void createCube( );
@@ -195,12 +195,11 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     // axis picking and menu
     void init3DObjectPicking( );
-    virtual bool eventFilter( QObject *watched, QEvent *event );
+    bool eventFilter( QObject *watched, QEvent *event ) override;
     void createMenu();
     void hideMenu();
     void displayMenuAt( const QPoint &position );
 
-    // ========= private attributes
     Qgs3DMapSettings &mMapSettings;
     Qt3DExtras::Qt3DWindow *mParentWindow = nullptr;
     Qgs3DMapScene *mMapScene = nullptr;
