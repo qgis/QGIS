@@ -1703,26 +1703,27 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     // we don't want multiple signals!
     ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
 
-    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+    // need to check whether the default style included a legend, and if not, we need to make a default legend
+    // later...
+    mSetLegendFromStyle = false;
+
+    // first check if there is a default style / propertysheet defined
+    // for this layer and if so apply it
+    // this should take precedence over all
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
     {
-      // first try to create a renderer directly from the data provider
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+
+    if ( loadDefaultStyleFlag && !defaultLoadedFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+    {
+      // if we didn't load a default style for this layer, try to create a renderer directly from the data provider
       std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
       if ( defaultRenderer )
       {
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
       }
-    }
-
-    // need to check whether the default style included a legend, and if not, we need to make a default legend
-    // later...
-    mSetLegendFromStyle = false;
-
-    // else check if there is a default style / propertysheet defined
-    // for this layer and if so apply it
-    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
-    {
-      loadDefaultStyle( defaultLoadedFlag );
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
@@ -1752,9 +1753,14 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
 
 QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 {
+  // first try to load a user-defined default style - this should always take precedence
+  QString res = QgsMapLayer::loadDefaultStyle( resultFlag );
+  if ( resultFlag )
+    return res;
+
   if ( isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
   {
-    // first try to create a renderer directly from the data provider
+    // otherwise try to create a renderer directly from the data provider
     std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
     if ( defaultRenderer )
     {
@@ -1764,9 +1770,8 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     }
   }
 
-  return QgsMapLayer::loadDefaultStyle( resultFlag );
+  return QString();
 }
-
 
 bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {

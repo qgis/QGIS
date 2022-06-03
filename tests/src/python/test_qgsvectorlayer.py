@@ -79,6 +79,7 @@ from qgis.core import (Qgis,
                        QgsAnimatedMarkerSymbolLayer,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
+                       QgsEmbeddedSymbolRenderer,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -3902,6 +3903,46 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
 
         # should not be any repaint requests now
         self.assertEqual(len(spy), 0)
+
+    def testQmlDefaultTakesPrecedenceOverProviderDefaultRenderer(self):
+        """
+        Test that a user created QML default style takes precedence over a default style
+        created by a provider
+        """
+
+        with tempfile.TemporaryDirectory() as temp:
+            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.DAT', temp + '/fill_styles.DAT')
+            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.ID', temp + '/fill_styles.ID')
+            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.MAP', temp + '/fill_styles.MAP')
+            shutil.copy(TEST_DATA_DIR + '/mapinfo/fill_styles.TAB', temp + '/fill_styles.TAB')
+
+            layer = QgsVectorLayer(temp + '/fill_styles.TAB', 'test', 'ogr')
+            self.assertTrue(layer.isValid())
+            # should take a default embedded renderer from provider
+            self.assertIsInstance(layer.renderer(), QgsEmbeddedSymbolRenderer)
+
+            from qgis.core import QgsFillSymbol
+            symbol = QgsFillSymbol.createSimple({'color': '#ff00ff'})
+            layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+            message, ok = layer.saveDefaultStyle()
+            self.assertTrue(ok)
+
+            del layer
+            layer = QgsVectorLayer(temp + '/fill_styles.TAB', 'test', 'ogr')
+            self.assertTrue(layer.isValid())
+            # now we should load the .qml default style instead of the provider default
+            self.assertIsInstance(layer.renderer(), QgsSingleSymbolRenderer)
+            self.assertEqual(layer.renderer().symbol().color().name(), '#ff00ff')
+
+            # remove qml default
+            os.remove(temp + '/fill_styles.qml')
+            del layer
+            layer = QgsVectorLayer(temp + '/fill_styles.TAB', 'test', 'ogr')
+            self.assertTrue(layer.isValid())
+
+            # should return to a default embedded renderer from provider
+            self.assertIsInstance(layer.renderer(), QgsEmbeddedSymbolRenderer)
 
     def testLayerWithoutProvider(self):
         """Test that we don't crash when invoking methods on a layer with a broken provider"""
