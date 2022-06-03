@@ -86,7 +86,7 @@ static QString _outCopcFile( const QString &filename )
 {
   const QFileInfo fi( filename );
   const QDir directory = fi.absoluteDir();
-  const QString outputFile = QStringLiteral( "%1/copc_%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.baseName() );
+  const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.baseName() );
   return outputFile;
 }
 

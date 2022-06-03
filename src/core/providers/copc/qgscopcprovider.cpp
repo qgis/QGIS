@@ -128,7 +128,7 @@ QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, co
 QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );
@@ -146,7 +146,7 @@ QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const
 int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return 100;
 
   return 0;
@@ -155,7 +155,7 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
   return QList< QgsMapLayerType>();
@@ -163,9 +163,10 @@ QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QSt
 
 QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
+  QUrl url = QUrl::fromUserInput( uri );
+  uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
+  uriComponents.insert( QStringLiteral( "path" ), uri );
   return uriComponents;
 }
 
