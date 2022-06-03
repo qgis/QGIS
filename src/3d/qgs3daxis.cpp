@@ -445,9 +445,9 @@ void Qgs3DAxis::createMenu()
   if ( mMode == Mode::Off )
     typeOffAct->setChecked( true );
 
-  QAction *typeCrsAct = new QAction( tr( "Cr&s" ), mMenu );
+  QAction *typeCrsAct = new QAction( tr( "Coordinate Reference &System" ), mMenu );
   typeCrsAct->setCheckable( true );
-  typeCrsAct->setStatusTip( tr( "Crs 3D axis" ) );
+  typeCrsAct->setStatusTip( tr( "Coordinate Reference System 3D axis" ) );
   if ( mMode == Mode::Crs )
     typeCrsAct->setChecked( true );
 
@@ -478,7 +478,7 @@ void Qgs3DAxis::createMenu()
   if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorLeft )
     hPosLeftAct->setChecked( true );
 
-  QAction *hPosMiddleAct = new QAction( tr( "&Middle" ), mMenu );
+  QAction *hPosMiddleAct = new QAction( tr( "&Center" ), mMenu );
   hPosMiddleAct->setCheckable( true );
   if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorHorizontalCenter )
     hPosMiddleAct->setChecked( true );
