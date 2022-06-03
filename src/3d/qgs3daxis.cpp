@@ -438,7 +438,7 @@ void Qgs3DAxis::createMenu()
 {
   mMenu = new QMenu();
 
-  // ============== axis type menu
+  // axis type menu
   QAction *typeOffAct = new QAction( tr( "&Off" ), mMenu );
   typeOffAct->setCheckable( true );
   typeOffAct->setStatusTip( tr( "Disable 3D axis" ) );
@@ -472,7 +472,7 @@ void Qgs3DAxis::createMenu()
   typeMenu->addAction( typeCubeAct );
   mMenu->addMenu( typeMenu );
 
-  // ============== horizontal position menu
+  // horizontal position menu
   QAction *hPosLeftAct = new QAction( tr( "&Left" ), mMenu );
   hPosLeftAct->setCheckable( true );
   if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
@@ -503,7 +503,7 @@ void Qgs3DAxis::createMenu()
   horizPosMenu->addAction( hPosRightAct );
   mMenu->addMenu( horizPosMenu );
 
-  // ============== vertical position menu
+  // vertical position menu
   QAction *vPosTopAct = new QAction( tr( "&Top" ), mMenu );
   vPosTopAct->setCheckable( true );
   if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
@@ -534,7 +534,7 @@ void Qgs3DAxis::createMenu()
   vertPosMenu->addAction( vPosBottomAct );
   mMenu->addMenu( vertPosMenu );
 
-  // ============== axis view menu
+  // axis view menu
   QAction *viewHomeAct = new QAction( tr( "&Home" ) + "\t Ctrl+1", mMenu );
   QAction *viewTopAct = new QAction( tr( "&Top" ) + "\t Ctrl+5", mMenu );
   QAction *viewNorthAct = new QAction( tr( "&North" ) + "\t Ctrl+8", mMenu );

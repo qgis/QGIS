@@ -36,7 +36,6 @@
 #include <QtWidgets/QMenu>
 
 #define SIP_NO_FILE
-#define UNUSED __attribute__((__unused__))
 
 class QgsCameraController;
 class Qgs3DMapSettings;
@@ -76,9 +75,9 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      */
     enum class Axis
     {
-      X = 1,
-      Y = 2,
-      Z = 3
+      X = 1, //!< X Axis
+      Y = 2, //!< Y Axis
+      Z = 3, //!< Z Axis
     };
     Q_ENUM( Axis )
 
@@ -87,11 +86,9 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      */
     enum class AxisViewportPosition
     {
-      //! top or left
-      Begin = 1,
-      Middle = 2,
-      //! bottom or right
-      End = 3
+      Begin = 1, //!< Top or left
+      Middle = 2, //!< Middle
+      End = 3, //!< Bottom or right
     };
     Q_ENUM( AxisViewportPosition )
 
@@ -100,12 +97,9 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      */
     enum class Mode
     {
-      //! disabled
-      Off = 1,
-      //! CRS specific.
-      Crs = 2,
-      //! Cube with label
-      Cube = 3
+      Off = 1, //!< Hide 3d axis
+      Crs = 2, //!< Respect CRS directions
+      Cube = 3, //!< Abstract cube mode
     };
     Q_ENUM( Mode )
 
@@ -171,13 +165,13 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onAxisVertPositionChanged( AxisViewportPosition pos );
     void onCameraViewChange( float pitch, float yaw );
 
-    void onCameraViewChangeHome( UNUSED bool fake = true ) { onCameraViewChange( 45.0, 45.0 ); }
-    void onCameraViewChangeTop( UNUSED bool fake = true ) {onCameraViewChange( 0.0, 90.0 );}
-    void onCameraViewChangeNorth( UNUSED bool fake = true ) {onCameraViewChange( 90.0, 180.0 );}
-    void onCameraViewChangeEast( UNUSED bool fake = true ) {onCameraViewChange( 90.0, 90.0 );}
-    void onCameraViewChangeSouth( UNUSED bool fake = true ) {onCameraViewChange( 90.0, 0.0 );}
-    void onCameraViewChangeWest( UNUSED bool fake = true ) {onCameraViewChange( 90.0, -90.0 );}
-    void onCameraViewChangeBottom( UNUSED bool fake = true ) {onCameraViewChange( 180.0, 0.0 );}
+    void onCameraViewChangeHome( ) { onCameraViewChange( 45.0, 45.0 ); }
+    void onCameraViewChangeTop( ) {onCameraViewChange( 0.0, 90.0 );}
+    void onCameraViewChangeNorth( ) {onCameraViewChange( 90.0, 180.0 );}
+    void onCameraViewChangeEast( ) {onCameraViewChange( 90.0, 90.0 );}
+    void onCameraViewChangeSouth( ) {onCameraViewChange( 90.0, 0.0 );}
+    void onCameraViewChangeWest( ) {onCameraViewChange( 90.0, -90.0 );}
+    void onCameraViewChangeBottom() {onCameraViewChange( 180.0, 0.0 );}
 
   private:
 
