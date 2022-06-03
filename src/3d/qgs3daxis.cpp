@@ -108,10 +108,11 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
     // limit ray caster usage to the axis viewport
     QPointF normalizedPos( ( float )lastClickEvent->pos().x() / mParentWindow->width(),
                            ( float )lastClickEvent->pos().y() / mParentWindow->height() );
-#ifdef DEBUG
+
     if ( event->type() == QEvent::MouseButtonRelease )
-      qDebug() << "normalized pos:" << normalizedPos << "/ viewport:" << mAxisViewport->normalizedRect();
-#endif
+    {
+      QgsDebugMsgLevel( QString( "QGS3DAxis: normalized pos: (%1x%2) / viewport: (%3x%4)" ).arg( normalizedPos.x() ).arg( normalizedPos.y() ).arg( mAxisViewport->normalizedRect().x() ).arg( mAxisViewport->normalizedRect().y() ), 2 );
+    }
 
     if ( mAxisViewport->normalizedRect().contains( normalizedPos ) )
     {
@@ -138,16 +139,14 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   int mHitsFound = -1;
   if ( !hits.empty() )
   {
-#ifdef DEBUG
-    qDebug() << hits.length() << "hit(s) at " << mLastClickedPos << "with" << mLastClickedButton;
+    QgsDebugMsgLevel( QString( "Qgs3DAxis::onTouchedByRay %1 hits at (%2x%3) with %4 " ).arg( hits.length() ).arg( mLastClickedPos.x() ).arg( mLastClickedPos.y() ).arg( mLastClickedButton ), 2 );
     for ( int i = 0; i < hits.length(); ++i )
     {
-      qDebug() << "\tHit Type: " << hits.at( i ).type();
-      qDebug() << "\tHit triangle id: " << hits.at( i ).primitiveIndex();
-      qDebug() << "\tHit distance: " << hits.at( i ).distance();
-      qDebug() << "\tHit entity name: " << hits.at( i ).entity()->objectName();
+      QgsDebugMsgLevel( QString( "\tHit Type: %1" ).arg( hits.at( i ).type() ), 2 );
+      QgsDebugMsgLevel( QString( "\tHit triangle id: %1" ).arg( hits.at( i ).primitiveIndex() ), 2 );
+      QgsDebugMsgLevel( QString( "\tHit distance: %1" ).arg( hits.at( i ).distance() ), 2 );
+      QgsDebugMsgLevel( QString( "\tHit entity name: %1" ).arg( hits.at( i ).entity()->objectName() ), 2 );
     }
-#endif
 
     for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
     {
@@ -182,57 +181,35 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
     {
       if ( hits.at( mHitsFound ).entity() == mCubeRoot || hits.at( mHitsFound ).entity()->parent() == mCubeRoot )
       {
-#ifdef DEBUG
-        switch ( hits.at( mHitsFound ).primitiveIndex() / 2 )
-        {
-          case 0:
-            qDebug() << "East face";
-            break;
-
-          case 1:
-            qDebug() << "West face ";
-            break;
-
-          case 2:
-            qDebug() << "North face ";
-            break;
-
-          case 3:
-            qDebug() << "South face";
-            break;
-
-          case 4:
-            qDebug() << "Top face ";
-            break;
-
-          case 5:
-            qDebug() << "Bottom face ";
-            break;
-        }
-#endif
         switch ( hits.at( mHitsFound ).primitiveIndex() / 2 )
         {
           case 0: // "East face";
+            QgsDebugMsgLevel( "Qgs3DAxis: East face clicked", 2 );
             onCameraViewChangeEast();
             break;
 
           case 1: // "West face ";
+            QgsDebugMsgLevel( "Qgs3DAxis: West face clicked", 2 );
             onCameraViewChangeWest();
             break;
 
           case 2: // "North face ";
+            QgsDebugMsgLevel( "Qgs3DAxis: North face clicked", 2 );
             onCameraViewChangeNorth();
             break;
 
           case 3: // "South face";
+            QgsDebugMsgLevel( "Qgs3DAxis: South face clicked", 2 );
             onCameraViewChangeSouth();
             break;
 
           case 4: // "Top face ";
+            QgsDebugMsgLevel( "Qgs3DAxis: Top face clicked", 2 );
             onCameraViewChangeTop();
             break;
 
           case 5: // "Bottom face ";
+            QgsDebugMsgLevel( "Qgs3DAxis: Bottom face clicked", 2 );
             onCameraViewChangeBottom();
             break;
 
@@ -348,9 +325,7 @@ QVector3D Qgs3DAxis::from3dTo2dLabelPosition( const QVector3D &sourcePos,
   destPos.setY( destPos.y() - viewTranslation.y() );
   destPos.setZ( 0.0f );
 
-#ifdef DEBUG
-  qDebug() << "from3dTo2dLabelPosition: sourcePos" << sourcePos << " with" << viewTranslation << "corrected destPos" << destPos;
-#endif
+  QgsDebugMsgLevel( QString( "Qgs3DAxis::from3DTo2DLabelPosition: sourcePos (%1x%2) with (%3x%4) corrected destPos (%5x%6)" ).arg( sourcePos.x() ).arg( sourcePos.y() ).arg( viewTranslation.x() ).arg( viewTranslation.y() ).arg( destPos.x() ).arg( destPos.y() ), 2 );
   return destPos;
 }
 
@@ -371,9 +346,7 @@ void Qgs3DAxis::createAxisScene()
 {
   if ( mAxisRoot == nullptr || mCubeRoot == nullptr )
   {
-#ifdef DEBUG
-    qDebug() << "Should recreate mAxisRoot" << mMode;
-#endif
+    QgsDebugMsgLevel( QString( "Qgs3DAxis: Should recreate mAxisRoot with mode %1" ).arg( QMetaEnum::fromType<Qgs3DAxis::Mode>().valueToKey( int( mMode ) ) ), 2 );
     mAxisRoot = new Qt3DCore::QEntity;
     mAxisRoot->setParent( mAxisSceneEntity );
     mAxisRoot->setObjectName( "3DAxis_AxisRoot" );
@@ -945,9 +918,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   else
     yRatio = 1.0 - heightRatio;
 
-#ifdef DEBUG
-  qDebug() << "Axis, update viewport" << xRatio << yRatio << widthRatio << heightRatio;
-#endif
+  QgsDebugMsgLevel( QString( "Qgs3DAxis: update viewport: %1x%1x%3x%4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ), 2 );
   mAxisViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
 
   mTwoDLabelCamera->lens()->setOrthographicProjection(
