@@ -1248,7 +1248,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
   QgsExpressionContext expressionContext = mMapGrid->createExpressionContext();
   expressionContext.setHighlightedFunctions( QStringList() << QStringLiteral( "to_dms" ) << QStringLiteral( "to_dm" ) );
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, mMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer(), mMapGrid->annotationExpression(), this, QStringLiteral( "generic" ), expressionContext );
   exprDlg.setWindowTitle( tr( "Expression Based Annotation" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
