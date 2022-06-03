@@ -1885,7 +1885,7 @@ void QgsTextFormatWidget::overlapModeChanged()
   switch ( static_cast< Qgis::LabelOverlapHandling >( mComboOverlapHandling->currentData().toInt() ) )
   {
     case Qgis::LabelOverlapHandling::PreventOverlap:
-      description = tr( "Overlapping labels will never be placed for the layer, even if it means some labels will be missing." );
+      description = tr( "Overlapping labels will never be placed for the layer, even if it means some labels will be missing. (To see unplaced labels use the \"Show Unplaced Labels\" toolbar action.)" );
       break;
     case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
       description = tr( "If a label cannot otherwise be placed for a feature then an overlapping label is permitted." );
