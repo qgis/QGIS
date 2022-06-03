@@ -303,7 +303,7 @@ Qt3DRender::QViewport *Qgs3DAxis::constructLabelViewport( Qt3DCore::QEntity *par
   return twoDViewport;
 }
 
-QVector3D Qgs3DAxis::from3dTo2dLabelPosition( const QVector3D &sourcePos,
+QVector3D Qgs3DAxis::from3DTo2DLabelPosition( const QVector3D &sourcePos,
     Qt3DRender::QCamera *sourceCamera, Qt3DRender::QViewport *sourceViewport,
     Qt3DRender::QCamera *destCamera, Qt3DRender::QViewport *destViewport,
     const QSize &destSize )
@@ -965,13 +965,13 @@ void Qgs3DAxis::updateAxisLabelPosition()
 {
   if ( mTextTransformX && mTextTransformY && mTextTransformZ )
   {
-    mTextTransformX->setTranslation( from3dTo2dLabelPosition( mTextCoordX, mAxisCamera, mAxisViewport,
+    mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX, mAxisCamera, mAxisViewport,
                                      mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
-    mTextTransformY->setTranslation( from3dTo2dLabelPosition( mTextCoordY, mAxisCamera, mAxisViewport,
+    mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY, mAxisCamera, mAxisViewport,
                                      mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
-    mTextTransformZ->setTranslation( from3dTo2dLabelPosition( mTextCoordZ, mAxisCamera, mAxisViewport,
+    mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ, mAxisCamera, mAxisViewport,
                                      mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
   }
