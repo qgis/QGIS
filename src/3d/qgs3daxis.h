@@ -202,9 +202,9 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     // ========= private attributes
     Qgs3DMapSettings &mMapSettings;
-    Qt3DExtras::Qt3DWindow *mParentWindow;
-    Qgs3DMapScene *mMapScene;
-    QgsCameraController *mCameraController;
+    Qt3DExtras::Qt3DWindow *mParentWindow = nullptr;
+    Qgs3DMapScene *mMapScene = nullptr;
+    QgsCameraController *mCameraController = nullptr;
 
     float mCylinderLength = 40.0f;
     int mAxisViewportSize = 4.0 * mCylinderLength;
@@ -212,32 +212,38 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     AxisViewportPosition mAxisViewportHorizPos = AxisViewportPosition::End;
     int mFontSize = 10;
 
-    Qt3DCore::QEntity *mAxisSceneEntity;
-    Qt3DRender::QLayer *mAxisSceneLayer;
-    Qt3DRender::QCamera *mAxisCamera;
-    Qt3DRender::QViewport *mAxisViewport;
+    Qt3DCore::QEntity *mAxisSceneEntity = nullptr;
+    Qt3DRender::QLayer *mAxisSceneLayer = nullptr;
+    Qt3DRender::QCamera *mAxisCamera = nullptr;
+    Qt3DRender::QViewport *mAxisViewport = nullptr;
 
     Qgs3DAxis::Mode mMode = Mode::Crs;
     Qt3DCore::QEntity *mAxisRoot = nullptr;
     Qt3DCore::QEntity *mCubeRoot = nullptr;
     QList<Qt3DExtras::QText2DEntity *> mCubeLabels;
 
-    Qt3DExtras::QText2DEntity *mText_X, *mText_Y, *mText_Z;
-    QVector3D mTextCoord_X, mTextCoord_Y, mTextCoord_Z;
-    Qt3DCore::QTransform *mTextTransform_X = nullptr, *mTextTransform_Y = nullptr, *mTextTransform_Z = nullptr;
+    Qt3DExtras::QText2DEntity *mText_X = nullptr;
+    Qt3DExtras::QText2DEntity *mText_Y = nullptr;
+    Qt3DExtras::QText2DEntity *mText_Z = nullptr;
+    QVector3D mTextCoord_X;
+    QVector3D mTextCoord_Y;
+    QVector3D mTextCoord_Z;
+    Qt3DCore::QTransform *mTextTransform_X = nullptr;
+    Qt3DCore::QTransform *mTextTransform_Y = nullptr;
+    Qt3DCore::QTransform *mTextTransform_Z = nullptr;
     QgsCoordinateReferenceSystem mCrs;
     QVector3D mPreviousVector;
 
-    Qt3DRender::QCamera *mTwoDLabelCamera;
-    Qt3DCore::QEntity *mTwoDLabelSceneEntity;
-    Qt3DRender::QViewport *mTwoDLabelViewport;
+    Qt3DRender::QCamera *mTwoDLabelCamera  = nullptr;
+    Qt3DCore::QEntity *mTwoDLabelSceneEntity = nullptr;
+    Qt3DRender::QViewport *mTwoDLabelViewport = nullptr;
 
     // axis picking and menu
-    Qt3DRender::QScreenRayCaster *mScreenRayCaster;
+    Qt3DRender::QScreenRayCaster *mScreenRayCaster = nullptr;
     QPoint mLastClickedPos;
     Qt::MouseButton mLastClickedButton;
-    QCursor mPreviousCursor;
-    QMenu *mMenu;
+    QCursor mPreviousCursor = Qt::ArrowCursor;
+    QMenu *mMenu = nullptr;
 
 };
 
