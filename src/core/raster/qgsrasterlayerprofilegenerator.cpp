@@ -178,7 +178,8 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   int subRegionHeight = 0;
   int subRegionLeft = 0;
   int subRegionTop = 0;
-  const QgsRectangle rasterSubRegion = QgsRasterIterator::subRegion(
+  const QgsRectangle rasterSubRegion = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0 ?
+                                       QgsRasterIterator::subRegion(
                                          mRasterProvider->extent(),
                                          mRasterProvider->xSize(),
                                          mRasterProvider->ySize(),
@@ -186,7 +187,17 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
                                          subRegionWidth,
                                          subRegionHeight,
                                          subRegionLeft,
-                                         subRegionTop );
+                                         subRegionTop ) : transformedCurve->boundingBox();
+
+  if ( mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0 )
+  {
+    // e.g. XYZ tile source -- this is a rough hack for https://github.com/qgis/QGIS/issues/48806, which results
+    // in pretty poor curves ;)
+    const double curveLengthInPixels = sourceCurve->length() / context.mapUnitsPerDistancePixel();
+    const double conversionFactor = curveLengthInPixels / transformedCurve->length();
+    subRegionWidth = 2 * conversionFactor * rasterSubRegion.width();
+    subRegionHeight = 2 * conversionFactor * rasterSubRegion.height();
+  }
 
   // iterate over the raster blocks, throwing away any which don't intersect the profile curve
   QgsRasterIterator it( mRasterProvider.get() );
