@@ -873,7 +873,7 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
 void QgsExpressionItemSearchProxy::setFilterString( const QString &string )
 {
   mFilterString = string;
-  invalidateFilter();
+  invalidate();
 }
 
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex &left, const QModelIndex &right ) const
