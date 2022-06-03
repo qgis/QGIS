@@ -1233,15 +1233,16 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
 
 void Qgs3DMapScene::on3DAxisSettingsChanged()
 {
-  if ( m3DAxis == nullptr )
+  if ( !m3DAxis )
   {
-    QgsWindow3DEngine *eng = dynamic_cast<QgsWindow3DEngine *>( mEngine );
-    if ( eng )
-      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( eng->window() ),
-                               eng->root(),
+    if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
+    {
+      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+                               engine->root(),
                                this,
                                mCameraController,
-                               mMap );
+                               &mMap );
+    }
   }
 }
 
