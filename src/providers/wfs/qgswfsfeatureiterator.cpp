@@ -250,8 +250,6 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       qDebug() << QThread::currentThreadId() << "... and an expression as well: " << mShared->mExpression.expression();
       QDomDocument expressionDoc;
       expressionElem = QgsOgcUtils::expressionToOgcExpression( mShared->mExpression, expressionDoc, gmlVersion, filterVersion, geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
-      if ( expressionElem.isNull() )
-        mShared->setClientSideFilterExpression( mShared->mExpression );
     }
 
     if ( expressionElem.isNull() && bboxNode.isNull() )
@@ -276,8 +274,8 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
     QString str;
     QTextStream stream( &str );
-    andElem.save( stream, 4 );
-    qDebug() << "andElem is:\n " << str;
+    filterElem.save( stream, 4 );
+    qDebug() << "filterElem is:\n\n" << str << "\n\n";
 
     QSet<QString> setNamespaceURI;
     for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
