@@ -55,17 +55,16 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
   mTwoDLabelViewport = constructLabelViewport( parent3DScene, QRectF( 0.0f, 0.0f, 1.0f, 1.0f ) );
   mTwoDLabelViewport->setParent( mParentWindow->activeFrameGraph() );
 
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdateVoid );
+  connect( this, &Qgs3DAxis::axisModeChanged, this, &Qgs3DAxis::createAxisScene );
+
   Qgs3DAxisSettings s = mMapSettings->get3DAxisSettings();
-  setAxisViewportPosition( mAxisViewportSize, s.verticalPosition(), s.horizontalPosition() );
-  mMode = s.mode();
+  setMode( s.mode() ); // will create the scene
+  setAxisViewportPosition( mAxisViewportSize, s.verticalPosition(), s.horizontalPosition() ); // will update viewports and labels
 
   connect( cameraCtrl, &QgsCameraController::cameraChanged, this, &Qgs3DAxis::onCameraUpdate );
-  connect( mParentWindow, &Qt3DExtras::Qt3DWindow::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
-  connect( mParentWindow, &Qt3DExtras::Qt3DWindow::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdate );
-
-  onAxisViewportSizeUpdate();
-
-  createAxisScene();
+  connect( mParentWindow, &Qt3DExtras::Qt3DWindow::widthChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdateInt );
+  connect( mParentWindow, &Qt3DExtras::Qt3DWindow::heightChanged, this, &Qgs3DAxis::onAxisViewportSizeUpdateInt );
 
   createMenu();
 
@@ -410,6 +409,8 @@ void Qgs3DAxis::createAxisScene()
 
     updateAxisLabelPosition();
   }
+
+  mParentWindow->requestUpdate();
 }
 
 void Qgs3DAxis::createMenu()
@@ -420,20 +421,29 @@ void Qgs3DAxis::createMenu()
   QAction *typeOffAct = new QAction( tr( "&Off" ), mMenu );
   typeOffAct->setCheckable( true );
   typeOffAct->setStatusTip( tr( "Disable 3D axis" ) );
-  if ( mMode == Mode::Off )
-    typeOffAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisModeChanged, this, [typeOffAct, this]()
+  {
+    if ( mMode == Mode::Off )
+      typeOffAct->setChecked( true );
+  } );
 
   QAction *typeCrsAct = new QAction( tr( "Coordinate Reference &System" ), mMenu );
   typeCrsAct->setCheckable( true );
   typeCrsAct->setStatusTip( tr( "Coordinate Reference System 3D axis" ) );
-  if ( mMode == Mode::Crs )
-    typeCrsAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisModeChanged, this, [typeCrsAct, this]()
+  {
+    if ( mMode == Mode::Crs )
+      typeCrsAct->setChecked( true );
+  } );
 
   QAction *typeCubeAct = new QAction( tr( "&Cube" ), mMenu );
   typeCubeAct->setCheckable( true );
   typeCubeAct->setStatusTip( tr( "Cube 3D axis" ) );
-  if ( mMode == Mode::Cube )
-    typeCubeAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisModeChanged, this, [typeCubeAct, this]()
+  {
+    if ( mMode == Mode::Cube )
+      typeCubeAct->setChecked( true );
+  } );
 
   QActionGroup *typeGroup = new QActionGroup( mMenu );
   typeGroup->addAction( typeOffAct );
@@ -453,18 +463,27 @@ void Qgs3DAxis::createMenu()
   // horizontal position menu
   QAction *hPosLeftAct = new QAction( tr( "&Left" ), mMenu );
   hPosLeftAct->setCheckable( true );
-  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorLeft )
-    hPosLeftAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, [hPosLeftAct, this]()
+  {
+    if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorLeft )
+      hPosLeftAct->setChecked( true );
+  } );
 
   QAction *hPosMiddleAct = new QAction( tr( "&Center" ), mMenu );
   hPosMiddleAct->setCheckable( true );
-  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorHorizontalCenter )
-    hPosMiddleAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, [hPosMiddleAct, this]()
+  {
+    if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorHorizontalCenter )
+      hPosMiddleAct->setChecked( true );
+  } );
 
   QAction *hPosRightAct = new QAction( tr( "&Right" ), mMenu );
   hPosRightAct->setCheckable( true );
-  if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorRight )
-    hPosRightAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, [hPosRightAct, this]()
+  {
+    if ( mAxisViewportHorizPos == Qt::AnchorPoint::AnchorRight )
+      hPosRightAct->setChecked( true );
+  } );
 
   QActionGroup *hPosGroup = new QActionGroup( mMenu );
   hPosGroup->addAction( hPosLeftAct );
@@ -484,18 +503,27 @@ void Qgs3DAxis::createMenu()
   // vertical position menu
   QAction *vPosTopAct = new QAction( tr( "&Top" ), mMenu );
   vPosTopAct->setCheckable( true );
-  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorTop )
-    vPosTopAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, [vPosTopAct, this]()
+  {
+    if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorTop )
+      vPosTopAct->setChecked( true );
+  } );
 
   QAction *vPosMiddleAct = new QAction( tr( "&Middle" ), mMenu );
   vPosMiddleAct->setCheckable( true );
-  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorVerticalCenter )
-    vPosMiddleAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, [vPosMiddleAct, this]()
+  {
+    if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorVerticalCenter )
+      vPosMiddleAct->setChecked( true );
+  } );
 
   QAction *vPosBottomAct = new QAction( tr( "&Bottom" ), mMenu );
   vPosBottomAct->setCheckable( true );
-  if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorBottom )
-    vPosBottomAct->setChecked( true );
+  connect( this, &Qgs3DAxis::axisViewportPositionChanged, this, [vPosBottomAct, this]()
+  {
+    if ( mAxisViewportVertPos == Qt::AnchorPoint::AnchorBottom )
+      vPosBottomAct->setChecked( true );
+  } );
 
   QActionGroup *vPosGroup = new QActionGroup( mMenu );
   vPosGroup->addAction( vPosTopAct );
@@ -566,6 +594,10 @@ void Qgs3DAxis::createMenu()
   viewMenu->addAction( viewWestAct );
   viewMenu->addAction( viewBottomAct );
   mMenu->addMenu( viewMenu );
+
+  // update checkable items
+  emit axisViewportPositionChanged();
+  emit axisModeChanged();
 }
 
 void Qgs3DAxis::hideMenu()
@@ -892,11 +924,16 @@ void Qgs3DAxis::setAxisViewportPosition( int axisViewportSize, Qt::AnchorPoint a
   mAxisViewportSize = axisViewportSize;
   mAxisViewportVertPos = axisViewportVertPos;
   mAxisViewportHorizPos = axisViewportHorizPos;
-  onAxisViewportSizeUpdate();
-  mParentWindow->requestUpdate();
+
+  emit axisViewportPositionChanged();
 }
 
-void Qgs3DAxis::onAxisViewportSizeUpdate( int )
+void Qgs3DAxis::onAxisViewportSizeUpdateVoid( )
+{
+  onAxisViewportSizeUpdateInt( 0 );
+}
+
+void Qgs3DAxis::onAxisViewportSizeUpdateInt( int )
 {
   float widthRatio = ( float )mAxisViewportSize / mParentWindow->width();
   float heightRatio = ( float )mAxisViewportSize / mParentWindow->height();
@@ -926,6 +963,8 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     mTwoDLabelCamera->lens()->nearPlane(), mTwoDLabelCamera->lens()->farPlane() );
 
   updateAxisLabelPosition();
+
+  mParentWindow->requestUpdate();
 }
 
 void Qgs3DAxis::onCameraUpdate( )
@@ -981,8 +1020,7 @@ void Qgs3DAxis::setMode( Mode axisMode )
   if ( mMode != axisMode )
   {
     mMode = axisMode;
-    createAxisScene();
-    mParentWindow->requestUpdate();
+    emit axisModeChanged();
   }
 }
 

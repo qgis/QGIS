@@ -131,10 +131,17 @@ class _3D_EXPORT Qgs3DAxis : public QObject
                                        Qt3DRender::QCamera *destCamera, Qt3DRender::QViewport *destViewport,
                                        const QSize &destSize );
 
+  signals:
+    //! Emitted when viewport configuration is changed
+    void axisViewportPositionChanged();
+    //! Emitted when axis mode is changed
+    void axisModeChanged();
+
   private slots:
 
     void onCameraUpdate( );
-    void onAxisViewportSizeUpdate( int val = 0 );
+    void onAxisViewportSizeUpdateInt( int val = 0 );
+    void onAxisViewportSizeUpdateVoid( );
 
     // axis picking and menu
     void onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits );
