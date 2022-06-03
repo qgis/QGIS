@@ -212,7 +212,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh elements" ), this );
+  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh Elements" ), this );
   mActionDigitizing->setCheckable( true );
 
   mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select Mesh Elements by Polygon" ), this );
@@ -1866,7 +1866,7 @@ void QgsMapToolEditMeshFrame::reindexMesh()
   if ( !mCurrentLayer || !mCurrentLayer->isEditable() )
     return;
 
-  if ( QMessageBox::question( canvas(), tr( "Reindex the Mesh" ),
+  if ( QMessageBox::question( canvas(), tr( "Reindex Mesh" ),
                               tr( "Do you want to reindex the faces and vertices of the mesh layer %1?" ).arg( mCurrentLayer->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
        == QMessageBox::No )
@@ -2114,29 +2114,29 @@ void QgsMapToolEditMeshFrame::prepareSelection()
 
   if ( mSelectedVertices.count() == 1 )
   {
-    mActionRemoveVerticesFillingHole->setText( tr( "Remove selected vertex and fill hole" ) );
-    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove selected vertex without filling hole" ) );
+    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertex and Fill Hole" ) );
+    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertex without Filling Hole" ) );
   }
   else if ( mSelectedVertices.count() > 1 )
   {
-    mActionRemoveVerticesFillingHole->setText( tr( "Remove selected vertices and fill hole(s)" ) );
-    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove selected vertices without filling hole(s)" ) );
+    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertices and Fill Hole(s)" ) );
+    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertices without Filling Hole(s)" ) );
   }
 
   if ( mSelectedFaces.count() == 1 )
   {
-    mActionRemoveFaces->setText( tr( "Remove selected face" ) );
-    mActionFacesRefinement->setText( tr( "Refine selected face" ) );
+    mActionRemoveFaces->setText( tr( "Remove Selected Face" ) );
+    mActionFacesRefinement->setText( tr( "Refine Selected Face" ) );
   }
   else if ( mSelectedFaces.count() > 1 )
   {
-    mActionRemoveFaces->setText( tr( "Remove %n selected face(s)", nullptr, mSelectedFaces.count() ) );
-    mActionFacesRefinement->setText( tr( "Refine %n selected face(s)", nullptr, mSelectedFaces.count() ) );
+    mActionRemoveFaces->setText( tr( "Remove %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
+    mActionFacesRefinement->setText( tr( "Refine %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
   }
   else
   {
-    mActionRemoveFaces->setText( tr( "Remove current face" ) );
-    mActionFacesRefinement->setText( tr( "Refine current face" ) );
+    mActionRemoveFaces->setText( tr( "Remove Current Face" ) );
+    mActionFacesRefinement->setText( tr( "Refine Current Face" ) );
   }
 
   mSplittableFaceCount = 0;
@@ -2147,11 +2147,11 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   if ( mSplittableFaceCount == 1 )
-    mActionSplitFaces->setText( tr( "Split selected face" ) );
+    mActionSplitFaces->setText( tr( "Split Selected Face" ) );
   else if ( mSplittableFaceCount > 1 )
-    mActionSplitFaces->setText( tr( "Split %n selected face(s)", nullptr, mSplittableFaceCount ) );
+    mActionSplitFaces->setText( tr( "Split %n Selected Face(s)", nullptr, mSplittableFaceCount ) );
   else
-    mActionSplitFaces->setText( tr( "Split current face" ) );
+    mActionSplitFaces->setText( tr( "Split Current Face" ) );
 
   emit selectionChange( mCurrentLayer, mSelectedVertices.keys() );
 }
