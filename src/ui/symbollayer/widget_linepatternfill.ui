@@ -223,6 +223,8 @@
   <tabstop>mDistanceDDBtn</tabstop>
   <tabstop>mOffsetSpinBox</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mClipModeComboBox</tabstop>
+  <tabstop>mClippingDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>
