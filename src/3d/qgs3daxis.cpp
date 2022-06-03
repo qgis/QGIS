@@ -47,7 +47,6 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow
   , mMapScene( mapScene )
   , mCameraController( cameraCtrl )
   , mCrs( map.crs() )
-  , mPreviousCursor( Qt::ArrowCursor )
 {
   mAxisViewport = constructAxisViewport( parent3DScene );
   mAxisViewport->setParent( mParentWindow->activeFrameGraph() );
@@ -70,6 +69,12 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow
   createMenu();
 
   init3DObjectPicking();
+}
+
+Qgs3DAxis::~Qgs3DAxis()
+{
+  delete mMenu;
+  mMenu = nullptr;
 }
 
 void Qgs3DAxis::init3DObjectPicking( )
@@ -431,24 +436,28 @@ void Qgs3DAxis::createAxisScene()
 
 void Qgs3DAxis::createMenu()
 {
-  mMenu = new QMenu;
+  mMenu = new QMenu();
+
   // ============== axis type menu
-  auto typeOffAct = new QAction( tr( "&Off" ), this );
+  QAction *typeOffAct = new QAction( tr( "&Off" ), mMenu );
   typeOffAct->setCheckable( true );
   typeOffAct->setStatusTip( tr( "Disable 3D axis" ) );
-  if ( mMode == Mode::Off ) typeOffAct->setChecked( true );
+  if ( mMode == Mode::Off )
+    typeOffAct->setChecked( true );
 
-  auto typeCrsAct = new QAction( tr( "Cr&s" ), this );
+  QAction *typeCrsAct = new QAction( tr( "Cr&s" ), mMenu );
   typeCrsAct->setCheckable( true );
   typeCrsAct->setStatusTip( tr( "Crs 3D axis" ) );
-  if ( mMode == Mode::Crs ) typeCrsAct->setChecked( true );
+  if ( mMode == Mode::Crs )
+    typeCrsAct->setChecked( true );
 
-  auto typeCubeAct = new QAction( tr( "&Cube" ), this );
+  QAction *typeCubeAct = new QAction( tr( "&Cube" ), mMenu );
   typeCubeAct->setCheckable( true );
   typeCubeAct->setStatusTip( tr( "Cube 3D axis" ) );
-  if ( mMode == Mode::Cube ) typeCubeAct->setChecked( true );
+  if ( mMode == Mode::Cube )
+    typeCubeAct->setChecked( true );
 
-  auto typeGroup = new QActionGroup( this );
+  QActionGroup *typeGroup = new QActionGroup( mMenu );
   typeGroup->addAction( typeOffAct );
   typeGroup->addAction( typeCrsAct );
   typeGroup->addAction( typeCubeAct );
@@ -457,26 +466,29 @@ void Qgs3DAxis::createMenu()
   connect( typeCrsAct, &QAction::triggered, this, [this]( bool ) {onAxisModeChanged( Mode::Crs );} );
   connect( typeCubeAct, &QAction::triggered, this, [this]( bool ) {onAxisModeChanged( Mode::Cube );} );
 
-  auto typeMenu = new QMenu( QStringLiteral( "Axis type" ) );
+  QMenu *typeMenu = new QMenu( QStringLiteral( "Axis Type" ), mMenu );
   typeMenu->addAction( typeOffAct );
   typeMenu->addAction( typeCrsAct );
   typeMenu->addAction( typeCubeAct );
   mMenu->addMenu( typeMenu );
 
   // ============== horizontal position menu
-  auto hPosLeftAct = new QAction( tr( "&Left" ), this );
+  QAction *hPosLeftAct = new QAction( tr( "&Left" ), mMenu );
   hPosLeftAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Begin ) hPosLeftAct->setChecked( true );
+  if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
+    hPosLeftAct->setChecked( true );
 
-  auto hPosMiddleAct = new QAction( tr( "&Middle" ), this );
+  QAction *hPosMiddleAct = new QAction( tr( "&Middle" ), mMenu );
   hPosMiddleAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Middle ) hPosMiddleAct->setChecked( true );
+  if ( mAxisViewportVertPos == AxisViewportPosition::Middle )
+    hPosMiddleAct->setChecked( true );
 
-  auto hPosRightAct = new QAction( tr( "&Right" ), this );
+  QAction *hPosRightAct = new QAction( tr( "&Right" ), mMenu );
   hPosRightAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::End ) hPosRightAct->setChecked( true );
+  if ( mAxisViewportVertPos == AxisViewportPosition::End )
+    hPosRightAct->setChecked( true );
 
-  auto hPosGroup = new QActionGroup( this );
+  QActionGroup *hPosGroup = new QActionGroup( mMenu );
   hPosGroup->addAction( hPosLeftAct );
   hPosGroup->addAction( hPosMiddleAct );
   hPosGroup->addAction( hPosRightAct );
@@ -485,26 +497,29 @@ void Qgs3DAxis::createMenu()
   connect( hPosMiddleAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( AxisViewportPosition::Middle );} );
   connect( hPosRightAct, &QAction::triggered, this, [this]( bool ) {onAxisHorizPositionChanged( AxisViewportPosition::End );} );
 
-  auto horizPosMenu = new QMenu( QStringLiteral( "Horizontal position" ) );
+  auto horizPosMenu = new QMenu( QStringLiteral( "Horizontal Position" ), mMenu );
   horizPosMenu->addAction( hPosLeftAct );
   horizPosMenu->addAction( hPosMiddleAct );
   horizPosMenu->addAction( hPosRightAct );
   mMenu->addMenu( horizPosMenu );
 
   // ============== vertical position menu
-  auto vPosTopAct = new QAction( tr( "&Top" ), this );
+  QAction *vPosTopAct = new QAction( tr( "&Top" ), mMenu );
   vPosTopAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Begin ) vPosTopAct->setChecked( true );
+  if ( mAxisViewportVertPos == AxisViewportPosition::Begin )
+    vPosTopAct->setChecked( true );
 
-  auto vPosMiddleAct = new QAction( tr( "&Middle" ), this );
+  QAction *vPosMiddleAct = new QAction( tr( "&Middle" ), mMenu );
   vPosMiddleAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::Middle ) vPosMiddleAct->setChecked( true );
+  if ( mAxisViewportVertPos == AxisViewportPosition::Middle )
+    vPosMiddleAct->setChecked( true );
 
-  auto vPosBottomAct = new QAction( tr( "&Bottom" ), this );
+  QAction *vPosBottomAct = new QAction( tr( "&Bottom" ), mMenu );
   vPosBottomAct->setCheckable( true );
-  if ( mAxisViewportVertPos == AxisViewportPosition::End ) vPosBottomAct->setChecked( true );
+  if ( mAxisViewportVertPos == AxisViewportPosition::End )
+    vPosBottomAct->setChecked( true );
 
-  auto vPosGroup = new QActionGroup( this );
+  QActionGroup *vPosGroup = new QActionGroup( mMenu );
   vPosGroup->addAction( vPosTopAct );
   vPosGroup->addAction( vPosMiddleAct );
   vPosGroup->addAction( vPosBottomAct );
@@ -513,20 +528,20 @@ void Qgs3DAxis::createMenu()
   connect( vPosMiddleAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( AxisViewportPosition::Middle );} );
   connect( vPosBottomAct, &QAction::triggered, this, [this]( bool ) {onAxisVertPositionChanged( AxisViewportPosition::End );} );
 
-  auto vertPosMenu = new QMenu( QStringLiteral( "Vertical position" ) );
+  QMenu *vertPosMenu = new QMenu( QStringLiteral( "Vertical Position" ), mMenu );
   vertPosMenu->addAction( vPosTopAct );
   vertPosMenu->addAction( vPosMiddleAct );
   vertPosMenu->addAction( vPosBottomAct );
   mMenu->addMenu( vertPosMenu );
 
   // ============== axis view menu
-  auto viewHomeAct = new QAction( tr( "&Home" ) + "\t Ctrl+1", this );
-  auto viewTopAct = new QAction( tr( "&Top" ) + "\t Ctrl+5", this );
-  auto viewNorthAct = new QAction( tr( "&North" ) + "\t Ctrl+8", this );
-  auto viewEastAct = new QAction( tr( "&East" ) + "\t Ctrl+6", this );
-  auto viewSouthAct = new QAction( tr( "&South" ) + "\t Ctrl+2", this );
-  auto viewWestAct = new QAction( tr( "&West" ) + "\t Ctrl+4", this );
-  auto viewBottomAct = new QAction( tr( "&Bottom" ), this );
+  QAction *viewHomeAct = new QAction( tr( "&Home" ) + "\t Ctrl+1", mMenu );
+  QAction *viewTopAct = new QAction( tr( "&Top" ) + "\t Ctrl+5", mMenu );
+  QAction *viewNorthAct = new QAction( tr( "&North" ) + "\t Ctrl+8", mMenu );
+  QAction *viewEastAct = new QAction( tr( "&East" ) + "\t Ctrl+6", mMenu );
+  QAction *viewSouthAct = new QAction( tr( "&South" ) + "\t Ctrl+2", mMenu );
+  QAction *viewWestAct = new QAction( tr( "&West" ) + "\t Ctrl+4", mMenu );
+  QAction *viewBottomAct = new QAction( tr( "&Bottom" ), mMenu );
 
   connect( viewHomeAct, &QAction::triggered, this, &Qgs3DAxis::onCameraViewChangeHome );
   connect( viewTopAct, &QAction::triggered, this, &Qgs3DAxis::onCameraViewChangeTop );
@@ -544,27 +559,27 @@ void Qgs3DAxis::createMenu()
       qDebug() << "NO CANVAS!";
     else
     {
-      auto shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
+      QShortcut *shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
       connect( shortcutHome, &QShortcut::activated, this, [this]( ) {onCameraViewChangeHome();} );
 
-      auto shortcutTop = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_5 ), mapCanvas );
+      QShortcut *shortcutTop = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_5 ), mapCanvas );
       connect( shortcutTop, &QShortcut::activated, this, [this]( ) {onCameraViewChangeTop();} );
 
-      auto shortcutNorth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_8 ), mapCanvas );
+      QShortcut *shortcutNorth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_8 ), mapCanvas );
       connect( shortcutNorth, &QShortcut::activated, this, [this]( ) {onCameraViewChangeNorth();} );
 
-      auto shortcutEast = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_6 ), mapCanvas );
+      QShortcut *shortcutEast = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_6 ), mapCanvas );
       connect( shortcutEast, &QShortcut::activated, this, [this]( ) {onCameraViewChangeEast();} );
 
-      auto shortcutSouth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_2 ), mapCanvas );
+      QShortcut *shortcutSouth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_2 ), mapCanvas );
       connect( shortcutSouth, &QShortcut::activated, this, [this]( ) {onCameraViewChangeSouth();} );
 
-      auto shortcutWest = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_4 ), mapCanvas );
+      QShortcut *shortcutWest = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_4 ), mapCanvas );
       connect( shortcutWest, &QShortcut::activated, this, [this]( ) {onCameraViewChangeWest();} );
     }
   }
 
-  auto viewMenu = new QMenu( QStringLiteral( "Camera view" ) );
+  QMenu *viewMenu = new QMenu( QStringLiteral( "Camera View" ), mMenu );
   viewMenu->addAction( viewHomeAct );
   viewMenu->addAction( viewTopAct );
   viewMenu->addAction( viewNorthAct );
