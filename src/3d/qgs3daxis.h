@@ -71,17 +71,6 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     ~Qgs3DAxis() override;
 
     /**
-     * \brief The Axis enum
-     */
-    enum class Axis
-    {
-      X = 1, //!< X Axis
-      Y = 2, //!< Y Axis
-      Z = 3, //!< Z Axis
-    };
-    Q_ENUM( Axis )
-
-    /**
      * \brief The AxisViewportPosition enum
      */
     enum class AxisViewportPosition
@@ -176,7 +165,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
   private:
 
     void createAxisScene();
-    void createAxis( const Axis &axis );
+    void createAxis( Qt::Axis axis );
     void createCube( );
     void setEnableCube( bool show );
     void setEnableAxis( bool show );
