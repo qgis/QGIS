@@ -137,15 +137,6 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
     return;
   }
 
-  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ==
-       QgsContrastEnhancement::NoEnhancement )
-  {
-    r->setRedContrastEnhancement( nullptr );
-    r->setGreenContrastEnhancement( nullptr );
-    r->setBlueContrastEnhancement( nullptr );
-    return;
-  }
-
   QgsContrastEnhancement *redEnhancement = nullptr;
   QgsContrastEnhancement *greenEnhancement = nullptr;
   QgsContrastEnhancement *blueEnhancement = nullptr;
@@ -217,6 +208,7 @@ void QgsMultiBandColorRendererWidget::onBandChanged( int index )
 
 void QgsMultiBandColorRendererWidget::mRedMinLineEdit_textChanged( const QString & )
 {
+  qDebug() << "CHANGED";
   minMaxModified();
 }
 
@@ -247,6 +239,7 @@ void QgsMultiBandColorRendererWidget::mBlueMaxLineEdit_textChanged( const QStrin
 
 void QgsMultiBandColorRendererWidget::minMaxModified()
 {
+  qDebug() << "999";
   if ( !mDisableMinMaxWidgetRefresh )
   {
     if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
@@ -400,9 +393,11 @@ QString QgsMultiBandColorRendererWidget::max( int index )
 void QgsMultiBandColorRendererWidget::setMin( const QString &value, int index )
 {
   mDisableMinMaxWidgetRefresh = true;
+  qDebug() << "000";
   switch ( index )
   {
     case 0:
+      qDebug() << "111";
       mRedMinLineEdit->setText( value );
       break;
     case 1:
