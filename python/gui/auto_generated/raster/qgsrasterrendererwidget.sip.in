@@ -85,6 +85,20 @@ Load programmatically with current values
 Returns min/max widget when it exists.
 %End
 
+    virtual QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
+%Docstring
+Returns the constrast enhancement ``algorithm`` to be used by the raster renderer.
+
+.. versionadded:: 3.26
+%End
+
+    virtual void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm );
+%Docstring
+Sets the constrast enhancement ``algorithm`` to be used by the raster renderer.
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void widgetChanged();

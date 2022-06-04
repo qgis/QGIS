@@ -40,6 +40,12 @@ Sets the widget state from the specified renderer.
 
     virtual int selectedBand( int index = 0 );
 
+
+    virtual QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
+
+    virtual void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm );
+
+
     virtual void doComputations();
 
     virtual QgsRasterMinMaxWidget *minMaxWidget();
