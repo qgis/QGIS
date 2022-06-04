@@ -7,11 +7,13 @@ command -v git > /dev/null || {
   exit 2
 }
 
+git -C ${srcdir} status -uno > .gitstatus-full || exit 1
+
 if test "$1" = "log"; then
-  git -C ${srcdir} status -uno | grep 'modified: ' | sort -u > .gitstatus
+  grep 'modified: ' .gitstatus-full | sort -u > .gitstatus
   exit 0
 elif test "$1" = "check"; then
-  if git -C ${srcdir} status -uno | grep 'modified: ' | sort -u | diff - .gitstatus; then
+  if grep 'modified: ' .gitstatus-full | sort -u | diff - .gitstatus; then
     exit 0
   else
     echo "Source files (printed above) were modified. Diff follows:"
