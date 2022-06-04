@@ -247,7 +247,7 @@ QString QgsDissolveAlgorithm::shortHelpString() const
                       "all features can be dissolved in a single one.\n\n"
                       "All output geometries will be converted to multi geometries. "
                       "In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.\n\n"
-                      "If enabled, the optional \"Keep disjoint features separate\" setting will cause disjoint features and parts to be exported "
+                      "If enabled, the optional \"Keep disjoint features separate\" setting will cause features and parts that do not overlap or touch to be exported "
                       "as separate features (instead of parts of a single multipart feature)." );
 }
 
