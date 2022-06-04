@@ -898,7 +898,7 @@ int GRASS_LIB_EXPORT G_get_map_row_nomask( int fd, CELL *buf, int row )
   return G_get_map_row( fd, buf, row );
 }
 
-int QgsGrassGisLib::G_get_null_value_row( int fd, char *flags, int row )
+int QgsGrassGisLib::G_get_null_value_row( int fd, char *flags, int row ) const
 {
   FCELL *buf = G_allocate_f_raster_buf();
   QgsGrassGisLib::instance()->readRasterRow( fd, buf, row, FCELL_TYPE, false );

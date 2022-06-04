@@ -27,6 +27,7 @@ QgsPointCloudBlock::QgsPointCloudBlock(
 )
   : mPointCount( count )
   , mAttributes( attributes )
+  , mRecordSize( mAttributes.pointRecordSize() )
   , mStorage( data )
   , mScale( scale )
   , mOffset( offset )

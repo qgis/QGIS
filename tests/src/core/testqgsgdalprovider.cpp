@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <limits>
+#include "gdal.h"
 
 #include "qgstest.h"
 #include <QObject>
@@ -625,6 +626,19 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   // metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/esri_tin/metadata.xml" );
   QVERIFY( res.empty() );
+
+  // SAFE format zip file
+  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/S2A_MSIL2A_0000.zip" );
+  QCOMPARE( res.count(), 4 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).description(), QString( "Bands B2, B3, B4, B8 with 10m resolution, UTM 34N" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "SENTINEL2" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
@@ -647,7 +661,11 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+#else
   QVERIFY( !res.at( 0 ).skippedContainerScan() );
+#endif
 
   // geopackage with two raster layers
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg", Qgis::SublayerQueryFlag::FastScan );

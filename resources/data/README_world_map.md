@@ -42,6 +42,12 @@ crossing the 180˚ meridian. Those would be rendered as large invalid polygons c
 This layer was created by importing data source [2] as-is. 
 
 ##### Manual clean-up of attribute tables (all layers)
-Finally, in the GeoPackage the less meaningful fields in the attribute tables were dropped. 
+In the GeoPackage the less meaningful fields in the attribute tables were dropped.
 
+And finally Crimea and Sevastopol were restored to belong to the Ukraine using
 
+```sql
+update states_provinces set iso_a2='UA',sov_a3='UA',adm0_a3='UA',admin='Ukraine',gu_a3='UKR' where name IN ('Crimea','Sevastopol');
+update countries set geom=st_union(geom, (select st_union(geom) from states_provinces where name IN ('Crimea','Sevastopol'))) where name='Ukraine';
+update countries set geom=st_difference(geom, (select st_union(geom) from states_provinces where name IN ('Crimea','Sevastopol'))) where name='Russia';
+```

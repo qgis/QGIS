@@ -11,7 +11,7 @@
 
 
 
-class QgsMeshLayer : QgsMapLayer
+class QgsMeshLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 
@@ -135,6 +135,8 @@ QgsMeshLayer cannot be copied.
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
      virtual bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -152,6 +154,8 @@ QgsMeshLayer cannot be copied.
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
+
+    virtual QgsMapLayerElevationProperties *elevationProperties();
 
     virtual void reload();
 

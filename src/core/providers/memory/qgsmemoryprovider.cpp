@@ -115,6 +115,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
 
+                  // complex types
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Map ), QStringLiteral( "map" ), QVariant::Map, -1, -1, -1, -1 )
                 );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
@@ -563,6 +565,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
+  bool fieldWasAdded { false };
   for ( QgsField field : attributes )
   {
     if ( !supportedType( field ) )
@@ -597,6 +600,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 
     // add new field as a last one
     mFields.append( field );
+    fieldWasAdded = true;
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
@@ -606,7 +610,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       f.setAttributes( attr );
     }
   }
-  return true;
+  return fieldWasAdded;
 }
 
 bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )

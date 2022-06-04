@@ -108,7 +108,7 @@ void QgsLocalizedDataPathRegistry::readFromSettings()
   setPaths( settingsLocalizedDataPaths.value() );
 }
 
-void QgsLocalizedDataPathRegistry::writeToSettings()
+void QgsLocalizedDataPathRegistry::writeToSettings() const
 {
   settingsLocalizedDataPaths.setValue( paths() );
 }

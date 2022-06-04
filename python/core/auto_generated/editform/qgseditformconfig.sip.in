@@ -85,7 +85,7 @@ Copy constructor
 %End
     ~QgsEditFormConfig();
 
-    bool operator==( const QgsEditFormConfig &o );
+    bool operator==( const QgsEditFormConfig &o ) const;
 
     void addTab( QgsAttributeEditorElement *data /Transfer/ );
 %Docstring

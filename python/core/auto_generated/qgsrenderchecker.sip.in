@@ -47,7 +47,7 @@ Sets the base ``path`` containing the reference images.
 .. versionadded:: 3.18
 %End
 
-    QString report();
+    QString report() const;
 %Docstring
 Returns the HTML report describing the results of the test run.
 %End
@@ -67,7 +67,7 @@ Returns the number of pixels which did not match the control image.
 Returns the total number of pixels in the control image.
 %End
 
-    int elapsedTime();
+    int elapsedTime() const;
 %Docstring
 Returns the total elapsed time for the rendering test.
 

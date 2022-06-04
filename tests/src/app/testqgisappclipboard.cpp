@@ -51,6 +51,7 @@ class TestQgisAppClipboard : public QObject
 
     void copyPaste();
     void copyToText();
+    void copyToTextNoFields();
     void pasteWkt();
     void pasteGeoJson();
     void retrieveFields();
@@ -223,6 +224,40 @@ void TestQgisAppClipboard::copyToText()
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ) );
 
+}
+
+void TestQgisAppClipboard::copyToTextNoFields()
+{
+  //set clipboard to some QgsFeatures with only geometries, no fields
+  QgsFields fields;
+  QgsFeature feat( fields, 5 );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
+  QgsFeature feat2( fields, 6 );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
+  QgsFeatureStore feats;
+  feats.addFeature( feat );
+  feats.addFeature( feat2 );
+  feats.setFields( fields );
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+
+  QgsSettings settings;
+  QString result, resultHtml;
+
+  // attributes with WKT
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  QCOMPARE( result, QStringLiteral( "Point (5 6)\nPoint (7 8)" ) );
+
+  // HTML test
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+  result = mQgisApp->clipboard()->data( "text/html" );
+  QCOMPARE( result, QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkt_geom</td></tr><tr><td>Point (5 6)</td></tr><tr><td>Point (7 8)</td></tr></table></body></html>" ) );
+
+  // GeoJSON
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
+  mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
+  const QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
+  QCOMPARE( result, expected );
 }
 
 void TestQgisAppClipboard::pasteWkt()

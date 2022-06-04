@@ -76,6 +76,30 @@ class QgsRaiseWarningAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native raise message algorithm.
+ */
+class QgsRaiseMessageAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+    QgsRaiseMessageAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    Flags flags() const override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsRaiseMessageAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+
+};
 
 ///@endcond PRIVATE
 

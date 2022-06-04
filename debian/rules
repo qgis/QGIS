@@ -40,7 +40,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"buster bullseye bionic focal groovy hirsute impish"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bullseye focal hirsute impish jammy"))
 	DISTRIBUTION := sid
 endif
 
@@ -73,11 +73,7 @@ else
 TESTMAKE=ninja $(NINJA_OPTS)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"focal groovy hirsute impish sid"))
-PYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's,-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$,\1/lib\2.so,')
-else
 PYTHON_LIBRARY=$(shell python3-config --ldflags --embed | sed -e 's,-L\(.*\) -L[^ ]* -l\([^ ]*\) .*$$,\1/lib\2.so,')
-endif
 
 CMAKE_OPTS := \
 	-G Ninja \
@@ -102,7 +98,6 @@ CMAKE_OPTS := \
 	-DWITH_3D=TRUE \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
 	-DWITH_HANA=TRUE \
-	-DWITH_PDAL=TRUE \
 	-DWITH_EPT=TRUE \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS"
 
@@ -110,15 +105,15 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifeq ($(GRASSVER),7)
-	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS7=TRUE \
-		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
+ifeq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -DWITH_PDAL=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
-	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
+ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
+	CMAKE_OPTS += \
+		-DWITH_GRASS=TRUE \
+		-DWITH_GRASS$(GRASSVER)=TRUE \
+		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
 $(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)
@@ -143,10 +138,6 @@ endif
 		-DWITH_ORACLE=TRUE \
 		-DORACLE_LIBDIR=$(ORACLE_LIBDIR) \
 		-DORACLE_INCLUDEDIR=$(ORACLE_INCLUDEDIR)
-endif
-
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
-	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
@@ -329,7 +320,7 @@ override_dh_auto_install:
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis_process
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid impish"))
+ifneq (,$(findstring $(DISTRIBUTION),"impish jammy sid"))
 	mkdir -p $(CURDIR)/debian/libqgis-dev
 	cd $(CURDIR)/debian/tmp && find . -name "*.sip" | tar --remove-files -cf - -T - | tar -C $(CURDIR)/debian/libqgis-dev -xf - --xform 's,\./usr/lib/python./dist-packages/qgis,usr/share/sip/qgis,'
 	find $(CURDIR)/debian/tmp/ -depth -empty -type d -delete
@@ -355,7 +346,7 @@ override_dh_installmime:
 override_dh_python3:
 	dh_python3
 	dh_python3 usr/share/qgis/grass/scripts
-ifeq (,$(findstring $(DISTRIBUTION),"sid impish"))
+ifeq (,$(findstring $(DISTRIBUTION),"impish jammy sid"))
 	dh_sip3 -ppython3-qgis
 endif
 

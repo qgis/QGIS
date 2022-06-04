@@ -58,7 +58,9 @@ class TestQgsImageCache : public QObject
     void dpi();
     void cachesize();
     void frameCount();
+    void nextFrameDelay();
     void imageFrames();
+    void preseedAnimation();
 };
 
 
@@ -147,7 +149,7 @@ void TestQgsImageCache::broken()
   QgsImageCache cache;
   bool inCache = false;
   bool missingImage = false;
-  const QImage img = cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
+  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
   QVERIFY( missingImage );
   cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
   QVERIFY( missingImage );
@@ -346,6 +348,32 @@ void TestQgsImageCache::frameCount()
   QCOMPARE( cache.totalFrameCount( animatedImage ), 4 );
 }
 
+void TestQgsImageCache::nextFrameDelay()
+{
+  QgsImageCache cache;
+
+  // not an animated image
+  const QString notAnimatedImage = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
+
+  QCOMPARE( cache.nextFrameDelay( notAnimatedImage ), -1 );
+  // call twice to test caching
+  QCOMPARE( cache.nextFrameDelay( notAnimatedImage ), -1 );
+
+  const QString animatedImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  QCOMPARE( cache.nextFrameDelay( animatedImage ), 100 );
+  // call twice to test caching
+  QCOMPARE( cache.nextFrameDelay( animatedImage ), 100 );
+
+  // different frame
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 1 ), 100 );
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 1 ), 100 );
+
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 5 ), -1 );
+  QCOMPARE( cache.nextFrameDelay( animatedImage, 5 ), -1 );
+
+}
+
 void TestQgsImageCache::imageFrames()
 {
   QgsImageCache cache;
@@ -355,6 +383,55 @@ void TestQgsImageCache::imageFrames()
 
   // call twice to test caching
   img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_0" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 1 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 1 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_1" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 2 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 2 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_2" ), img, 0 ) );
+
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 3 );
+  QVERIFY( !img.isNull() );
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 3 );
+  QVERIFY( !img.isNull() );
+  QVERIFY( imageCheck( QStringLiteral( "imagecache_animation_3" ), img, 0 ) );
+
+  // invalid frame
+  img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 4 );
+  QVERIFY( img.isNull() );
+}
+
+void TestQgsImageCache::preseedAnimation()
+{
+  QgsImageCache cache;
+  const QString originalImage = TEST_DATA_DIR + QStringLiteral( "/qgis_logo_animated.gif" );
+
+  const QString tempDir = cache.mTemporaryDir->path();
+  QVERIFY( QFile::exists( tempDir ) );
+
+  QStringList entries = QDir( tempDir ).entryList( QDir::Dirs | QDir::Filter::NoDotAndDotDot );
+  QVERIFY( entries.isEmpty() );
+
+  cache.prepareAnimation( originalImage );
+
+  entries = QDir( tempDir ).entryList( QDir::Dirs | QDir::Filter::NoDotAndDotDot );
+  QCOMPARE( entries.size(), 1 );
+  QStringList files = QDir( QDir( tempDir ).filePath( entries.at( 0 ) ) ).entryList( QDir::Files | QDir::Filter::NoDotAndDotDot );
+  QCOMPARE( files.size(), 4 );
+
+  // call twice to test caching
+  bool inCache = false;
+  QImage img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
   QVERIFY( !img.isNull() );
   img = cache.pathAsImage( originalImage, QSize(), true, 1.0, inCache, false, 96, 0 );
   QVERIFY( !img.isNull() );

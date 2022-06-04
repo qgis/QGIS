@@ -75,7 +75,7 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
-  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() )
+  if ( !mRelation.isValid() || !widget() || !widget()->isVisible() || mRelation.referencingLayer() ==  mRelation.referencedLayer() || ( mNmRelation.isValid() && mNmRelation.referencedLayer() ==  mRelation.referencedLayer() ) )
     return;
 
   // If the layer is already saved before, return
@@ -162,6 +162,10 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   if ( !w )
   {
     w = QgsGui::relationWidgetRegistry()->create( mRelationEditorId, widgetConfig(), editor );
+    if ( ! editor->layout() )
+    {
+      editor->setLayout( new QVBoxLayout( editor ) );
+    }
     editor->layout()->addWidget( w );
   }
 

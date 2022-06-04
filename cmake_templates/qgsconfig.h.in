@@ -98,6 +98,8 @@
 
 #cmakedefine HAVE_EPT
 
+#cmakedefine HAVE_COPC
+
 #cmakedefine HAVE_PDAL_QGIS
 #define PDAL_VERSION "${PDAL_VERSION}"
 #define PDAL_VERSION_MAJOR_INT ${PDAL_VERSION_MAJOR}

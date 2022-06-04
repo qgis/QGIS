@@ -64,6 +64,7 @@
 #include <QInputDialog>
 #include <QBuffer>
 #include <QRegularExpression>
+#include <QMovie>
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {
@@ -89,6 +90,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_index" ), 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_frame" ), 1, true ) );
 
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
@@ -106,7 +108,7 @@ QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
              << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
              << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
              << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
-             << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" );
+             << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) << QStringLiteral( "symbol_frame" );
 
 
   if ( expContext.hasVariable( QStringLiteral( "zoom_level" ) ) )
@@ -4201,6 +4203,289 @@ void QgsRasterMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexCha
 }
 
 void QgsRasterMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+
+///////////
+
+QgsAnimatedMarkerSymbolLayerWidget::QgsAnimatedMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
+{
+  mLayer = nullptr;
+
+  setupUi( this );
+
+  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "/UI/lastAnimatedMarkerImageDir" ) );
+
+  connect( mImageSourceLineEdit, &QgsImageSourceLineEdit::sourceChanged, this, &QgsAnimatedMarkerSymbolLayerWidget::imageSourceChanged );
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnimatedMarkerSymbolLayerWidget::mOffsetUnitWidget_changed );
+  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::setAngle );
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsAnimatedMarkerSymbolLayerWidget::mSizeUnitWidget_changed );
+  connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::setWidth );
+  connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::setHeight );
+  connect( mLockAspectRatio, static_cast < void ( QgsRatioLockButton::* )( bool ) > ( &QgsRatioLockButton::lockChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::setLockAspectRatio );
+
+  mFrameRateSpin->setClearValue( 10 );
+  mFrameRateSpin->setShowClearButton( true );
+  connect( mFrameRateSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
+    mLayer->setFrameRate( value );
+    emit changed();
+  } );
+
+  mSizeUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits
+                             << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches << QgsUnitTypes::RenderPercentage );
+  mOffsetUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                               << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  mSpinOffsetX->setClearValue( 0.0 );
+  mSpinOffsetY->setClearValue( 0.0 );
+  mRotationSpinBox->setClearValue( 0.0 );
+
+  connect( mSpinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::setOffset );
+  connect( mSpinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::setOffset );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsAnimatedMarkerSymbolLayerWidget::setOpacity );
+
+  connect( mHorizontalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged );
+  connect( mVerticalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAnimatedMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged );
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != QLatin1String( "AnimatedMarker" ) )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsAnimatedMarkerSymbolLayer *>( layer );
+
+  // set values
+  whileBlocking( mImageSourceLineEdit )->setSource( mLayer->path() );
+
+  const double firstFrameTime = QgsApplication::imageCache()->nextFrameDelay( mLayer->path() );
+  if ( firstFrameTime > 0 )
+  {
+    mFrameRateSpin->setClearValue( 1000 / firstFrameTime );
+  }
+  else
+  {
+    mFrameRateSpin->setClearValue( 10 );
+  }
+
+  whileBlocking( mWidthSpinBox )->setValue( mLayer->size() );
+  const bool preservedAspectRatio = mLayer->preservedAspectRatio();
+  mHeightSpinBox->blockSignals( true );
+  if ( preservedAspectRatio )
+  {
+    mHeightSpinBox->setValue( mLayer->size() );
+  }
+  else
+  {
+    mHeightSpinBox->setValue( mLayer->size() * mLayer->fixedAspectRatio() );
+  }
+  mHeightSpinBox->setEnabled( mLayer->defaultAspectRatio() > 0.0 );
+  mHeightSpinBox->blockSignals( false );
+  whileBlocking( mLockAspectRatio )->setLocked( preservedAspectRatio );
+
+  whileBlocking( mRotationSpinBox )->setValue( mLayer->angle() );
+  whileBlocking( mOpacityWidget )->setOpacity( mLayer->opacity() );
+
+  whileBlocking( mSpinOffsetX )->setValue( mLayer->offset().x() );
+  whileBlocking( mSpinOffsetY )->setValue( mLayer->offset().y() );
+
+  whileBlocking( mFrameRateSpin )->setValue( mLayer->frameRate() );
+
+  mSizeUnitWidget->blockSignals( true );
+  mSizeUnitWidget->setUnit( mLayer->sizeUnit() );
+  mSizeUnitWidget->setMapUnitScale( mLayer->sizeMapUnitScale() );
+  mSizeUnitWidget->blockSignals( false );
+  mOffsetUnitWidget->blockSignals( true );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  mOffsetUnitWidget->blockSignals( false );
+
+  //anchor points
+  whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+
+  registerDataDefinedButton( mWidthDDBtn, QgsSymbolLayer::PropertyWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsSymbolLayer::PropertyHeight );
+  registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
+  registerDataDefinedButton( mOpacityDDBtn, QgsSymbolLayer::PropertyOpacity );
+  registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::PropertyOffset );
+  registerDataDefinedButton( mFilenameDDBtn, QgsSymbolLayer::PropertyName );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::PropertyHorizontalAnchor );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::PropertyVerticalAnchor );
+
+  updatePreviewImage();
+}
+
+QgsSymbolLayer *QgsAnimatedMarkerSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setContext( const QgsSymbolWidgetContext &context )
+{
+  QgsSymbolLayerWidget::setContext( context );
+  mImageSourceLineEdit->setMessageBar( context.messageBar() );
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::imageSourceChanged( const QString &text )
+{
+  mLayer->setPath( text );
+
+  const double firstFrameTime = QgsApplication::imageCache()->nextFrameDelay( text );
+  if ( firstFrameTime > 0 )
+  {
+    mFrameRateSpin->setClearValue( 1000 / firstFrameTime );
+  }
+  else
+  {
+    mFrameRateSpin->setClearValue( 10 );
+  }
+  updatePreviewImage();
+  emit changed();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::updatePreviewImage()
+{
+  if ( mPreviewMovie )
+  {
+    mLabelImagePreview->setMovie( nullptr );
+    mPreviewMovie->deleteLater();
+    mPreviewMovie = nullptr;
+  }
+
+  mPreviewMovie = new QMovie( mLayer->path(), QByteArray(), this );
+  mPreviewMovie->setScaledSize( QSize( 150, 150 ) );
+  mLabelImagePreview->setMovie( mPreviewMovie );
+  mPreviewMovie->start();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setWidth()
+{
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  mHeightSpinBox->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    mHeightSpinBox->setValue( mWidthSpinBox->value() );
+  }
+  else if ( mLockAspectRatio->locked() )
+  {
+    mHeightSpinBox->setValue( mWidthSpinBox->value() * defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = mHeightSpinBox->value() / mWidthSpinBox->value();
+  }
+  mHeightSpinBox->blockSignals( false );
+  mLayer->setSize( mWidthSpinBox->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setHeight()
+{
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
+  double fixedAspectRatio = 0.0;
+  mWidthSpinBox->blockSignals( true );
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    mWidthSpinBox->setValue( mHeightSpinBox->value() );
+  }
+  else if ( mLockAspectRatio->locked() )
+  {
+    mWidthSpinBox->setValue( mHeightSpinBox->value() / defaultAspectRatio );
+  }
+  else
+  {
+    fixedAspectRatio = mHeightSpinBox->value() / mWidthSpinBox->value();
+  }
+  mWidthSpinBox->blockSignals( false );
+  mLayer->setSize( mWidthSpinBox->value() );
+  mLayer->setFixedAspectRatio( fixedAspectRatio );
+  emit changed();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setLockAspectRatio( const bool locked )
+{
+  const double defaultAspectRatio = mLayer->defaultAspectRatio();
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    whileBlocking( mLockAspectRatio )->setLocked( true );
+  }
+  else if ( locked )
+  {
+    mLayer->setFixedAspectRatio( 0.0 );
+    setWidth();
+  }
+  else
+  {
+    mLayer->setFixedAspectRatio( mHeightSpinBox->value() / mWidthSpinBox->value() );
+  }
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setAngle()
+{
+  mLayer->setAngle( mRotationSpinBox->value() );
+  emit changed();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setOpacity( double value )
+{
+  mLayer->setOpacity( value );
+  emit changed();
+  updatePreviewImage();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::setOffset()
+{
+  mLayer->setOffset( QPointF( mSpinOffsetX->value(), mSpinOffsetY->value() ) );
+  emit changed();
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::mSizeUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit( mSizeUnitWidget->unit() );
+    mLayer->setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::mOffsetUnitWidget_changed()
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit( mOffsetUnitWidget->unit() );
+    mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( index ) );
+    emit changed();
+  }
+}
+
+void QgsAnimatedMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {

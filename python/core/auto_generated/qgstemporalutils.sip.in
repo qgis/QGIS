@@ -58,6 +58,8 @@ The returned list may be non-contiguous and have gaps in the ranges. The ranges 
 
       QList<QgsMapDecoration *> decorations;
 
+      double frameRate;
+
     };
 
     static bool exportAnimation( const QgsMapSettings &mapSettings, const AnimationExportSettings &settings, QString &error /Out/, QgsFeedback *feedback = 0 );

@@ -198,7 +198,7 @@ double QgsPointCloudExpressionNodeBinaryOperator::evalNode( QgsPointCloudExpress
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-bool QgsPointCloudExpressionNodeBinaryOperator::compare( double diff )
+bool QgsPointCloudExpressionNodeBinaryOperator::compare( double diff ) const
 {
   switch ( mOp )
   {

@@ -1,0 +1,72 @@
+tests:
+
+  - name: Difference (multiple overlays)
+    algorithm: native:multidifference
+    params:
+      INPUT:
+        name: custom/multi_overlay_A.shp
+        type: vector
+      OVERLAYS:
+        params:
+        - name: custom/multi_overlay_B.shp
+          type: vector
+        - name: custom/multi_overlay_C.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/multi_difference.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            normalize: True
+
+  - name: Intersection (multiple overlays)
+    algorithm: native:multiintersection
+    params:
+      INPUT:
+        name: custom/multi_overlay_A.shp
+        type: vector
+      OVERLAYS:
+        params:
+        - name: custom/multi_overlay_B.shp
+          type: vector
+        - name: custom/multi_overlay_C.shp
+          type: vector
+        type: multi
+      OVERLAY_FIELDS_PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/multi_intersection.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            normalize: True
+
+  - name: Union (multiple overlays)
+    algorithm: native:multiunion
+    params:
+      INPUT:
+        name: custom/multi_overlay_A.shp
+        type: vector
+      OVERLAYS:
+        params:
+        - name: custom/multi_overlay_B.shp
+          type: vector
+        - name: custom/multi_overlay_C.shp
+          type: vector
+        type: multi
+      OVERLAY_FIELDS_PREFIX: ''
+    results:
+      OUTPUT:
+        name: expected/multi_union.gml
+        type: vector
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            normalize: True

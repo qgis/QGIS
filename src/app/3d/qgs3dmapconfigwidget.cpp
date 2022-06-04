@@ -35,6 +35,7 @@
 #include "qgsshadowrenderingsettingswidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
+#include "qgs3daxis.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )
@@ -161,7 +162,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   QgsPhongMaterialSettings terrainShadingMaterial = mMap->terrainShadingMaterial();
   widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
-  widgetLights->setLights( mMap->pointLights(), mMap->directionalLights() );
+  widgetLights->setLights( mMap->lightSources() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -172,22 +173,51 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   onTerrainTypeChanged();
 
+  // ==================
+  // Page: Skybox
   mSkyboxSettingsWidget = new QgsSkyboxRenderingSettingsWidget( this );
   mSkyboxSettingsWidget->setSkyboxSettings( map->skyboxSettings() );
   groupSkyboxSettings->layout()->addWidget( mSkyboxSettingsWidget );
   groupSkyboxSettings->setChecked( mMap->isSkyboxEnabled() );
 
-  mShadowSetiingsWidget = new QgsShadowRenderingSettingsWidget( this );
-  mShadowSetiingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLights().count() );
-  mShadowSetiingsWidget->setShadowSettings( map->shadowSettings() );
-  groupShadowRendering->layout()->addWidget( mShadowSetiingsWidget );
-  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSetiingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
+  // ==================
+  // Page: Shadows
+  mShadowSettingsWidget = new QgsShadowRenderingSettingsWidget( this );
+  mShadowSettingsWidget->onDirectionalLightsCountChanged( widgetLights->directionalLightCount() );
+  mShadowSettingsWidget->setShadowSettings( map->shadowSettings() );
+  groupShadowRendering->layout()->addWidget( mShadowSettingsWidget );
+  connect( widgetLights, &QgsLightsWidget::directionalLightsCountChanged, mShadowSettingsWidget, &QgsShadowRenderingSettingsWidget::onDirectionalLightsCountChanged );
 
   connect( widgetLights, &QgsLightsWidget::lightsAdded, this, &Qgs3DMapConfigWidget::validate );
   connect( widgetLights, &QgsLightsWidget::lightsRemoved, this, &Qgs3DMapConfigWidget::validate );
 
   groupShadowRendering->setChecked( map->shadowSettings().renderShadows() );
 
+  // ==================
+  // Page: 3D axis
+  mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast< int >( Qgs3DAxis::Mode::Crs ) );
+  mCbo3dAxisType->addItem( tr( "Cube" ), static_cast< int >( Qgs3DAxis::Mode::Cube ) );
+
+  mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast< int >( Qt::AnchorPoint::AnchorLeft ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast< int >( Qt::AnchorPoint::AnchorHorizontalCenter ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Right" ), static_cast< int >( Qt::AnchorPoint::AnchorRight ) );
+
+  mCbo3dAxisVertPos->addItem( tr( "Top" ), static_cast< int >( Qt::AnchorPoint::AnchorTop ) );
+  mCbo3dAxisVertPos->addItem( tr( "Middle" ), static_cast< int >( Qt::AnchorPoint::AnchorVerticalCenter ) );
+  mCbo3dAxisVertPos->addItem( tr( "Bottom" ), static_cast< int >( Qt::AnchorPoint::AnchorBottom ) );
+
+  init3DAxisPage();
+
+  // ==================
+  // Page: 2D/3D canvas sync
+  mSync2DTo3DCheckbox->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
+  mSync3DTo2DCheckbox->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
+  mVisualizeExtentCheckBox->setChecked( map->viewFrustumVisualizationEnabled() );
+
+  // ==================
+  // Page: Advanced
+
+  // EyeDomeLight
   edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
   edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
@@ -315,7 +345,7 @@ void Qgs3DMapConfigWidget::apply()
     break;
   }
 
-  if ( needsUpdateOrigin && mMap->terrainGenerator() )
+  if ( needsUpdateOrigin && mMap->terrainRenderingEnabled() && mMap->terrainGenerator() )
   {
     const QgsRectangle te = m3DMapCanvas->scene()->sceneExtent();
 
@@ -326,7 +356,6 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
   mMap->setCameraNavigationMode( static_cast<QgsCameraController::NavigationMode>( mCameraNavigationModeCombo->currentData().toInt() ) );
-  m3DMapCanvas->scene()->cameraController()->setCameraNavigationMode( mMap->cameraNavigationMode() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->setMapTileResolution( spinMapResolution->value() );
@@ -346,17 +375,22 @@ void Qgs3DMapConfigWidget::apply()
   if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
-  mMap->setPointLights( widgetLights->pointLights() );
-  mMap->setDirectionalLights( widgetLights->directionalLights() );
+  mMap->setLightSources( widgetLights->lightSources() );
   mMap->setIsSkyboxEnabled( groupSkyboxSettings->isChecked() );
   mMap->setSkyboxSettings( mSkyboxSettingsWidget->toSkyboxSettings() );
-  QgsShadowSettings shadowSettings = mShadowSetiingsWidget->toShadowSettings();
+  QgsShadowSettings shadowSettings = mShadowSettingsWidget->toShadowSettings();
   shadowSettings.setRenderShadows( groupShadowRendering->isChecked() );
   mMap->setShadowSettings( shadowSettings );
 
   mMap->setEyeDomeLightingEnabled( edlGroupBox->isChecked() );
   mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
+
+  Qgis::ViewSyncModeFlags viewSyncMode;
+  viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, mSync2DTo3DCheckbox->isChecked() );
+  viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, mSync3DTo2DCheckbox->isChecked() );
+  mMap->setViewSyncMode( viewSyncMode );
+  mMap->setViewFrustumVisualizationEnabled( mVisualizeExtentCheckBox->isChecked() );
 
   mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
   mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
@@ -368,6 +402,8 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
 
   labelTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
   spinTerrainResolution->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
+  labelTerrainScale->setVisible( genType != QgsTerrainGenerator::Flat );
+  spinTerrainScale->setVisible( genType != QgsTerrainGenerator::Flat );
   labelTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
   spinTerrainSkirtHeight->setVisible( !( genType == QgsTerrainGenerator::Flat || genType == QgsTerrainGenerator::Mesh ) );
   labelTerrainLayer->setVisible( genType == QgsTerrainGenerator::Dem || genType == QgsTerrainGenerator::Mesh );
@@ -473,7 +509,7 @@ void Qgs3DMapConfigWidget::validate()
       break;
   }
 
-  if ( valid && widgetLights->directionalLights().empty() && widgetLights->pointLights().empty() )
+  if ( valid && widgetLights->lightSourceCount() == 0 )
   {
     mMessageBar->pushMessage( tr( "No lights exist in the scene" ), Qgis::MessageLevel::Warning );
   }
@@ -481,3 +517,55 @@ void Qgs3DMapConfigWidget::validate()
   emit isValidChanged( valid );
 }
 
+void Qgs3DMapConfigWidget::init3DAxisPage()
+{
+  connect( mGroupBox3dAxis, &QGroupBox::toggled, this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+  connect( mCbo3dAxisType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+  connect( mCbo3dAxisHorizPos, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+  connect( mCbo3dAxisVertPos, qOverload<int>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::on3DAxisChanged );
+
+  Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+
+  if ( s.mode() == Qgs3DAxis::Mode::Off )
+    mGroupBox3dAxis->setChecked( false );
+  else
+  {
+    mGroupBox3dAxis->setChecked( true );
+    mCbo3dAxisType->setCurrentIndex( mCbo3dAxisType->findData( static_cast< int >( s.mode() ) ) );
+  }
+
+  mCbo3dAxisHorizPos->setCurrentIndex( mCbo3dAxisHorizPos->findData( static_cast< int >( s.horizontalPosition() ) ) );
+  mCbo3dAxisVertPos->setCurrentIndex( mCbo3dAxisVertPos->findData( static_cast< int >( s.verticalPosition() ) ) );
+}
+
+void Qgs3DMapConfigWidget::on3DAxisChanged()
+{
+  if ( m3DMapCanvas->scene()->get3DAxis() )
+  {
+    Qgs3DAxisSettings s = mMap->get3dAxisSettings();
+    Qgs3DAxis::Mode m = Qgs3DAxis::Mode::Off;
+    if ( mGroupBox3dAxis->isChecked() )
+      m = static_cast< Qgs3DAxis::Mode >( mCbo3dAxisType->currentData().toInt() );
+
+    if ( m3DMapCanvas->scene()->get3DAxis()->mode() != m )
+    {
+      m3DMapCanvas->scene()->get3DAxis()->setMode( m );
+      s.setMode( m );
+    }
+    else
+    {
+      const Qt::AnchorPoint hPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisHorizPos->currentData().toInt() );
+      const Qt::AnchorPoint vPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisVertPos->currentData().toInt() );
+
+      if ( m3DMapCanvas->scene()->get3DAxis()->axisViewportHorizontalPosition() != hPos
+           || m3DMapCanvas->scene()->get3DAxis()->axisViewportVerticalPosition() != vPos )
+        m3DMapCanvas->scene()->get3DAxis()->setAxisViewportPosition( m3DMapCanvas->scene()->get3DAxis()->axisViewportSize(),
+            vPos, hPos );
+      s.setHorizontalPosition( hPos );
+      s.setVerticalPosition( vPos );
+    }
+
+    if ( s != mMap->get3dAxisSettings() )
+      mMap->set3dAxisSettings( s );
+  }
+}

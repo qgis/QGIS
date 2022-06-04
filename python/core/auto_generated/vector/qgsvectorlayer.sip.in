@@ -18,7 +18,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 Represents a vector layer which manages a vector based data sets.
@@ -116,8 +116,7 @@ WFS (web feature service) data provider (wfs)
 
 Used to access data provided by a web feature service.
 
-The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
-starting with QGIS 2.16, a URI constructed using the :py:class:`QgsDataSourceUri` class with the following parameters :
+The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or a URI constructed using the :py:class:`QgsDataSourceUri` class with the following parameters (note that parameter keys are case sensitive):
 
 - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
 - typename=string (mandatory): WFS typename
@@ -136,8 +135,7 @@ starting with QGIS 2.16, a URI constructed using the :py:class:`QgsDataSourceUri
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
 
-The ‘FILTER’ query string parameter can be used to filter
-the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+The ‘filter’ key value can either be a QGIS expression
 or an OGC XML filter. If the value is set to a QGIS expression the driver will
 turn it into OGC XML filter before passing it to the WFS server. Beware the
 QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
@@ -513,6 +511,8 @@ Uses :py:class:`QgsExpression`
 
     virtual QgsMapLayerElevationProperties *elevationProperties();
 
+    virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
+
 
     void setProviderEncoding( const QString &encoding );
 %Docstring
@@ -661,13 +661,14 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection );
+    void selectByExpression( const QString &expression, Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection, QgsExpressionContext *context = 0 );
 %Docstring
 Selects matching features using an expression.
 
 :param expression: expression to evaluate to select features
 :param behavior: selection type, allows adding to current selection, removing
                  from selection, etc.
+:param context: since QGIS 3.26, specifies an optional expression context to use when selecting features. If not specified a default one will be built.
 
 .. seealso:: :py:func:`selectByRect`
 
@@ -931,7 +932,8 @@ Resolves references to other layers (kept as layer IDs after reading XML) into l
 
     virtual void saveStyleToDatabase( const QString &name, const QString &description,
                                       bool useAsDefault, const QString &uiFileContent,
-                                      QString &msgError /Out/ );
+                                      QString &msgError /Out/,
+                                      QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 %Docstring
 Saves named and sld style of the layer to the style table in the db.
 
@@ -939,6 +941,8 @@ Saves named and sld style of the layer to the style table in the db.
 :param description: A description of the style
 :param useAsDefault: Set to ``True`` if style should be used as the default style for the layer
 :param uiFileContent:
+:param msgError: will be set to a descriptive error message if any occurs
+:param categories: the style categories to be saved.
 
 .. note::
 
@@ -1286,7 +1290,7 @@ Deletes a vertex from a feature.
 .. versionadded:: 2.14
 %End
 
-    bool deleteSelectedFeatures( int *deletedCount = 0, DeleteContext *context = 0 );
+    bool deleteSelectedFeatures( int *deletedCount = 0, QgsVectorLayer::DeleteContext *context = 0 );
 %Docstring
 Deletes the selected features
 
@@ -2739,7 +2743,7 @@ Sets the coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
-    virtual SpatialIndexPresence hasSpatialIndex() const;
+    virtual QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const;
 
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;

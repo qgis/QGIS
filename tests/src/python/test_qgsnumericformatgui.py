@@ -19,6 +19,7 @@ from qgis.core import (QgsFallbackNumericFormat,
                        QgsPercentageNumericFormat,
                        QgsScientificNumericFormat,
                        QgsCurrencyNumericFormat,
+                       QgsGeographicCoordinateNumericFormat,
                        QgsNumericFormatRegistry,
                        QgsNumericFormat,
                        QgsApplication)
@@ -188,6 +189,28 @@ class TestQgsNumericFormatGui(unittest.TestCase):
         self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
         self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
         self.assertEqual(new.directionFormat(), original.directionFormat())
+
+    def testGeographicCoordinateFormat(self):
+        w = QgsNumericFormatSelectorWidget()
+
+        original = QgsGeographicCoordinateNumericFormat()
+        original.setNumberDecimalPlaces(4)
+        original.setShowTrailingZeros(True)
+        original.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+        original.setShowDirectionalSuffix(True)
+        original.setShowLeadingZeros(True)
+        original.setShowDegreeLeadingZeros(True)
+
+        w.setFormat(original)
+        new = w.format()
+
+        self.assertIsInstance(new, QgsGeographicCoordinateNumericFormat)
+        self.assertEqual(new.numberDecimalPlaces(), original.numberDecimalPlaces())
+        self.assertEqual(new.showTrailingZeros(), original.showTrailingZeros())
+        self.assertEqual(new.showDirectionalSuffix(), original.showDirectionalSuffix())
+        self.assertEqual(new.angleFormat(), original.angleFormat())
+        self.assertEqual(new.showLeadingZeros(), original.showLeadingZeros())
+        self.assertEqual(new.showDegreeLeadingZeros(), original.showDegreeLeadingZeros())
 
     def testPercentageFormat(self):
         w = QgsNumericFormatSelectorWidget()

@@ -257,7 +257,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->PQexec( sql ) );
+    std::unique_ptr<QgsPostgresResult> res = std::make_unique<QgsPostgresResult>( conn->LoggedPQexec( "QgsPostgresProviderConnection", sql ) );
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     results.setQueryExecutionTime( std::chrono::duration_cast<std::chrono::milliseconds>( end - begin ).count() );
 

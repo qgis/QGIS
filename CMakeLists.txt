@@ -286,6 +286,8 @@ if(WITH_CORE)
 
   set (WITH_EPT TRUE CACHE BOOL "Determines whether Entwine Point Cloud (EPT) support should be built")
 
+  set (WITH_COPC TRUE CACHE BOOL "Determines whether Cloud Optimized Point Cloud (COPC) support should be built")
+
   set (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
   mark_as_advanced(WITH_THREAD_LOCAL)
 
@@ -409,13 +411,23 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
-  if (WITH_EPT)  # EPT provider
-    find_package(ZSTD REQUIRED) # for decompression of point clouds
-    find_package(LazPerf) # for decompression of point clouds
+  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy")
+  if (WITH_EPT OR WITH_COPC)
+    if (NOT WITH_INTERNAL_LAZPERF)
+      find_package(LazPerf) # for decompression of point clouds
+    endif()
     if (NOT LazPerf_FOUND)
       message(STATUS "Using embedded laz-perf")
     endif()
+  endif()
+
+  if (WITH_EPT)  # EPT provider
+    find_package(ZSTD REQUIRED) # for decompression of point clouds
     set(HAVE_EPT TRUE)  # used in qgsconfig.h
+  endif()
+
+  if (WITH_COPC)  # COPC provider
+    set(HAVE_COPC TRUE)  # used in qgsconfig.h
   endif()
 
   if (WITH_PDAL)
@@ -621,6 +633,9 @@ if (PEDANTIC)
 
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     set(_warnings "${_warnings} -Wno-redundant-move")
+
+    # disable misleading-indentation warning -- it's slow to parse the sip files and not needed since we have the automated code styling rules
+    set(_warnings "${_warnings} -Wno-misleading-indentation")
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
       # heaps of these thrown by Qt headers at the moment (sep 2019)
@@ -854,12 +869,21 @@ if (WITH_CORE)
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   include(GenerateExportHeader)
 
-  set (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
-  mark_as_advanced (ADD_CLAZY_CHECKS)
-  if (ADD_CLAZY_CHECKS)
-  set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
-  set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lambda-in-connect,lowercase-qml-type-name,qcolor-from-literal,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,missing-qobject-macro,isempty-vs-count")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+  set (WITH_CLAZY FALSE CACHE BOOL "Determines whether Clazy checks should be enabled")
+  mark_as_advanced (WITH_CLAZY)
+  if (WITH_CLAZY)
+    set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
+    #  qcolor-from-literal crashes clang with clazy 1.11
+    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+
+    if (WERROR AND NOT ${QGISDEBUG})
+      message(FATAL_ERROR "Don't activate both WERROR and ADD_CLAZY_CHECKS in Release mode, you will get many false positive errors")
+    endif()
+
+    if (WERROR AND ("$ENV{CLAZY_IGNORE_DIRS}" STREQUAL ""))
+      message(WARNING "WERROR and ADD_CLAZY_CHECKS are activated. To avoid unwanted Clazy error, please set the CLAZY_IGNORE_DIRS environment variable like this : \nexport CLAZY_IGNORE_DIRS=\"(.*/external/.*)|(.*sip_.*part.*)\"")
+    endif()
   endif()
 endif()
 
@@ -955,7 +979,7 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 16)
+  set(SIP_CONCAT_PARTS 19)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
     set(Python_SITEARCH ${QGIS_DATA_DIR}/python)

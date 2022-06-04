@@ -925,6 +925,18 @@ void QgsInterpolatedLineSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &co
 
 }
 
+QColor QgsInterpolatedLineSymbolLayer::color() const
+{
+  switch ( mLineRender.interpolatedColor().coloringMethod() )
+  {
+    case QgsInterpolatedLineColor::SingleColor:
+      return mLineRender.interpolatedColor().singleColor();
+    case QgsInterpolatedLineColor::ColorRamp:
+      return QColor();
+  }
+  BUILTIN_UNREACHABLE
+}
+
 
 void QgsInterpolatedLineSymbolLayer::setExpressionsStringForWidth( const QString &start, const QString &end )
 {

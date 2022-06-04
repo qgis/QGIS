@@ -407,7 +407,7 @@ QVector<double> QgsTriangle::angles() const
   return angles;
 }
 
-bool QgsTriangle::isDegenerate()
+bool QgsTriangle::isDegenerate() const
 {
   if ( isEmpty() )
     return true;

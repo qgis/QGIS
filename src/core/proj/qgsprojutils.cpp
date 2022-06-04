@@ -64,7 +64,7 @@ PJ_CONTEXT *QgsProjContext::get()
 #endif
 }
 
-void QgsProjUtils::ProjPJDeleter::operator()( PJ *object )
+void QgsProjUtils::ProjPJDeleter::operator()( PJ *object ) const
 {
   proj_destroy( object );
 }
@@ -430,4 +430,3 @@ QStringList QgsProjUtils::searchPaths()
   }
   return res;
 }
-

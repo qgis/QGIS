@@ -194,12 +194,13 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
       const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
       for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
       {
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
-        if ( entity == nullptr ) continue;
+        Qt3DCore::QEntity *parentEntity = qobject_cast<Qt3DCore::QEntity *>( renderer->parent() );
+        if ( !parentEntity )
+          continue;
         Qgs3DExportObject *object = processGeometryRenderer( renderer, layer->name() + QStringLiteral( "_" ) );
         if ( object == nullptr ) continue;
         if ( mExportTextures )
-          processEntityMaterial( entity, object );
+          processEntityMaterial( parentEntity, object );
         mObjects.push_back( object );
       }
       return true;
@@ -207,9 +208,14 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
     else
     {
       QgsVectorLayer3DRenderer *vectorLayerRenderer = dynamic_cast< QgsVectorLayer3DRenderer *>( abstractVectorRenderer );
-      const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
-      const bool exported = symbol->exportGeometries( this, entity, layer->name() + QStringLiteral( "_" ) );
-      return exported;
+      if ( vectorLayerRenderer )
+      {
+        const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
+        const bool exported = symbol->exportGeometries( this, entity, layer->name() + QStringLiteral( "_" ) );
+        return exported;
+      }
+      else
+        return false;
     }
   }
   return false;
@@ -245,6 +251,9 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const  QString &layerName )
 {
   const Qgs3DMapSettings &settings = terrain->map3D();
+  if ( !settings.terrainRenderingEnabled() )
+    return;
+
   QgsChunkNode *node = terrain->rootNode();
 
   QgsTerrainGenerator *generator = settings.terrainGenerator();
@@ -392,9 +401,6 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
   const QByteArray indexBytes = indexAttribute->buffer()->data();
   const QVector<unsigned int> indexBuffer = getIndexData( indexAttribute, indexBytes );
-
-  QString objectNamePrefix = layerName;
-  if ( objectNamePrefix != QString() ) objectNamePrefix += QStringLiteral( "_" );
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( layerName + QStringLiteral( "DEM_tile" ) ) );
   mObjects.push_back( object );

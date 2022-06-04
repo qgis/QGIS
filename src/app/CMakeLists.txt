@@ -163,12 +163,31 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
+  devtools/qgsdevtoolsmodelnode.cpp
   devtools/networklogger/qgsnetworklogger.cpp
   devtools/networklogger/qgsnetworkloggernode.cpp
   devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
+  devtools/querylogger/qgsappquerylogger.cpp
+  devtools/querylogger/qgsdatabasequeryloggernode.cpp
+  devtools/querylogger/qgsqueryloggerpanelwidget.cpp
+  devtools/querylogger/qgsqueryloggerwidgetfactory.cpp
+
+  dwg/qgsdwgimportdialog.cpp
+  dwg/qgsdwgimporter.cpp
+
+  elevation/qgselevationprofileexportsettingswidget.cpp
+  elevation/qgselevationprofileimageexportdialog.cpp
+  elevation/qgselevationprofilelayertreemodel.cpp
+  elevation/qgselevationprofilelayertreeview.cpp
+  elevation/qgselevationprofilepdfexportdialog.cpp
+  elevation/qgselevationprofiletoolidentify.cpp
+  elevation/qgselevationprofiletoolmeasure.cpp
+  elevation/qgselevationprofilewidget.cpp
+  elevation/qgsmaptoolprofilecurve.cpp
+  elevation/qgsmaptoolprofilecurvefromfeature.cpp
 
   georeferencer/qgsvalidateddoublespinbox.cpp
 
@@ -240,9 +259,6 @@ set(QGIS_APP_SRCS
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 
-  dwg/qgsdwgimportdialog.cpp
-  dwg/qgsdwgimporter.cpp
-
   project/qgsprojectelevationsettingswidget.cpp
 
   pluginmanager/qgspluginmanager.cpp
@@ -259,6 +275,7 @@ set(QGIS_APP_SRCS
   mesh/qgsmeshcalculatordialog.cpp
   mesh/qgsnewmeshlayerdialog.cpp
   mesh/qgsmaptooleditmeshframe.cpp
+  mesh/qgsmeshelevationpropertieswidget.cpp
   mesh/qgsmeshtransformcoordinatesdockwidget.cpp
   mesh/qgsmeshselectbyexpressiondialog.cpp
 

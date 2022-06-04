@@ -53,7 +53,7 @@ class CORE_EXPORT QgsScaleCalculator
      * Returns the DPI (dots per inch) used in scale calculations.
      * \see setDpi()
      */
-    double dpi();
+    double dpi() const;
 
     /**
      * Set the map units

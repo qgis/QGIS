@@ -25,6 +25,8 @@
 #include "qgscoordinatetransform.h"
 
 #include <Qt3DRender/QTexture>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QCullFace>
 
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DExtras/QDiffuseSpecularMaterial>
@@ -74,7 +76,6 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     {
       Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseSpecularMaterial;
       diffuseMapMaterial->setDiffuse( QVariant::fromValue( texture ) );
-      material = diffuseMapMaterial;
       diffuseMapMaterial->setAmbient( shadingMaterial.ambient() );
       diffuseMapMaterial->setSpecular( shadingMaterial.specular() );
       diffuseMapMaterial->setShininess( shadingMaterial.shininess() );
@@ -95,6 +96,19 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     phongMaterial->setSpecular( shadingMaterial.specular() );
     phongMaterial->setShininess( shadingMaterial.shininess() );
     material = phongMaterial;
+  }
+
+  // no backface culling on terrain, to allow terrain to be viewed from underground
+  const QVector<Qt3DRender::QTechnique *> techniques = material->effect()->techniques();
+  for ( Qt3DRender::QTechnique *techique : techniques )
+  {
+    const QVector<Qt3DRender::QRenderPass *> passes = techique->renderPasses();
+    for ( Qt3DRender::QRenderPass *pass : passes )
+    {
+      Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+      cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
+      pass->addRenderState( cullFace );
+    }
   }
 
   entity->addComponent( material ); // takes ownership if the component has no parent

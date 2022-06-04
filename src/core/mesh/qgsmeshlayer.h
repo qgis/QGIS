@@ -28,6 +28,7 @@
 #include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
 #include "qgscoordinatetransform.h"
+#include "qgsabstractprofilesource.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -39,6 +40,7 @@ class QgsMesh3dAveragingMethod;
 class QgsMeshLayerTemporalProperties;
 class QgsMeshDatasetGroupStore;
 class QgsMeshEditor;
+class QgsMeshLayerElevationProperties;
 
 /**
  * \ingroup core
@@ -93,7 +95,7 @@ class QgsMeshEditor;
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
+class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSource
 {
     Q_OBJECT
   public:
@@ -175,6 +177,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
@@ -186,6 +189,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QgsMapLayerTemporalProperties *temporalProperties() override;
+    QgsMapLayerElevationProperties *elevationProperties() override;
     void reload() override;
     QStringList subLayers() const override;
     QString htmlMetadata() const override;
@@ -956,6 +960,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshSimplificationSettings mSimplificationSettings;
 
     QgsMeshLayerTemporalProperties *mTemporalProperties = nullptr;
+    QgsMeshLayerElevationProperties *mElevationProperties = nullptr;
 
     //! Temporal unit used by the provider
     QgsUnitTypes::TemporalUnit mTemporalUnit = QgsUnitTypes::TemporalHours;

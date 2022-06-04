@@ -28,6 +28,9 @@
 #include "qgspoint.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvertexid.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettings.h"
+#include "qgspanelwidget.h"
 
 class QLabel;
 class QTableView;
@@ -35,7 +38,8 @@ class QTableView;
 class QgsMapCanvas;
 class QgsLockedFeature;
 class QgsVectorLayer;
-
+class QCheckBox;
+class QStackedWidget;
 
 class APP_EXPORT QgsVertexEntry
 {
@@ -96,11 +100,12 @@ class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 
 };
 
-class APP_EXPORT QgsVertexEditor : public QgsDockWidget
+class APP_EXPORT QgsVertexEditorWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-    QgsVertexEditor( QgsMapCanvas *canvas );
+
+    QgsVertexEditorWidget( QgsMapCanvas *canvas );
 
     void updateEditor( QgsLockedFeature *lockedFeature );
     QgsLockedFeature *mLockedFeature = nullptr;
@@ -108,13 +113,14 @@ class APP_EXPORT QgsVertexEditor : public QgsDockWidget
     QTableView *mTableView = nullptr;
     QgsVertexEditorModel *mVertexModel = nullptr;
 
+    QMenu *menuButtonMenu() override;
+    QString menuButtonTooltip() const override;
+
   signals:
     void deleteSelectedRequested();
-    void editorClosed();
 
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
-    void closeEvent( QCloseEvent *event ) override;
 
   private slots:
     void updateTableSelection();
@@ -123,9 +129,38 @@ class APP_EXPORT QgsVertexEditor : public QgsDockWidget
   private:
 
     QLabel *mHintLabel = nullptr;
+    QStackedWidget *mStackedWidget = nullptr;
+    QWidget *mPageHint = nullptr;
+    QWidget *mPageTable = nullptr;
+
+    QMenu *mWidgetMenu = nullptr;
 
     bool mUpdatingTableSelection = false;
     bool mUpdatingVertexSelection = false;
+};
+
+class APP_EXPORT QgsVertexEditor : public QgsDockWidget
+{
+    Q_OBJECT
+  public:
+
+    static const inline QgsSettingsEntryBool settingAutoPopupVertexEditorDock = QgsSettingsEntryBool( QStringLiteral( "auto_popup_vertex_editor_dock" ), QgsSettings::Prefix::QGIS_DIGITIZING, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
+
+    QgsVertexEditor( QgsMapCanvas *canvas );
+
+    void updateEditor( QgsLockedFeature *lockedFeature );
+
+  signals:
+    void deleteSelectedRequested();
+    void editorClosed();
+
+  protected:
+    void closeEvent( QCloseEvent *event ) override;
+
+  private:
+
+    QgsVertexEditorWidget *mWidget = nullptr;
+
 };
 
 

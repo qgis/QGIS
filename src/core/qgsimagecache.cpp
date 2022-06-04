@@ -40,6 +40,8 @@
 #include <QBuffer>
 #include <QImageReader>
 #include <QSvgRenderer>
+#include <QTemporaryDir>
+#include <QUuid>
 
 ///@cond PRIVATE
 
@@ -86,15 +88,28 @@ void QgsImageCacheEntry::dump() const
 
 ///@endcond
 
-static const int DEFAULT_IMAGE_CACHE_MAX_BYTES = 104857600;
-
 QgsImageCache::QgsImageCache( QObject *parent )
-  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ),  DEFAULT_IMAGE_CACHE_MAX_BYTES )
+  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
 {
-  int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
+  mTemporaryDir.reset( new QTemporaryDir() );
+
+  const int bytes = QgsSettings().value( QStringLiteral( "/qgis/maxImageCacheSize" ), 0 ).toInt();
   if ( bytes > 0 )
   {
     mMaxCacheSize = bytes;
+  }
+  else
+  {
+    const int sysMemory = QgsApplication::systemMemorySizeMb();
+    if ( sysMemory > 0 )
+    {
+      if ( sysMemory >= 32000 ) // 32 gb RAM (or more) = 500mb cache size
+        mMaxCacheSize = 500000000;
+      else if ( sysMemory >= 16000 ) // 16 gb RAM = 250mb cache size
+        mMaxCacheSize = 250000000;
+      else
+        mMaxCacheSize = 104857600; // otherwise default to 100mb cache size
+    }
   }
 
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
@@ -117,15 +132,18 @@ QgsImageCache::QgsImageCache( QObject *parent )
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsImageCache::remoteImageFetched );
 }
 
+QgsImageCache::~QgsImageCache() = default;
+
 QImage QgsImageCache::pathAsImage( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing )
 {
   int totalFrameCount = -1;
-  return pathAsImagePrivate( f, size, keepAspectRatio, opacity, fitsInCache, blocking, targetDpi, frameNumber, isMissing, totalFrameCount );
+  int nextFrameDelayMs = 0;
+  return pathAsImagePrivate( f, size, keepAspectRatio, opacity, fitsInCache, blocking, targetDpi, frameNumber, isMissing, totalFrameCount, nextFrameDelayMs );
 }
 
-QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount )
+QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs )
 {
-  const QString file = f.trimmed();
+  QString file = f.trimmed();
   if ( isMissing )
     *isMissing = true;
 
@@ -133,6 +151,13 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
     return QImage();
 
   const QMutexLocker locker( &mMutex );
+
+  const auto extractedAnimationIt = mExtractedAnimationPaths.constFind( file );
+  if ( extractedAnimationIt != mExtractedAnimationPaths.constEnd() )
+  {
+    file = QDir( extractedAnimationIt.value() ).filePath( QStringLiteral( "frame_%1.png" ).arg( frameNumber ) );
+    frameNumber = -1;
+  }
 
   fitsInCache = true;
 
@@ -147,7 +172,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
   {
     long cachedDataSize = 0;
     bool isBroken = false;
-    result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, frameNumber, isBroken, totalFrameCount, blocking );
+    result = renderImage( file, size, keepAspectRatio, opacity, targetDpi, frameNumber, isBroken, totalFrameCount, nextFrameDelayMs, blocking );
     cachedDataSize += result.sizeInBytes();
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
@@ -159,6 +184,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
       mTotalSize += result.sizeInBytes();
       currentEntry->image = result;
       currentEntry->totalFrameCount = totalFrameCount;
+      currentEntry->nextFrameDelay = nextFrameDelayMs;
     }
 
     if ( isMissing )
@@ -171,6 +197,7 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
   {
     result = currentEntry->image;
     totalFrameCount = currentEntry->totalFrameCount;
+    nextFrameDelayMs = currentEntry->nextFrameDelay;
     if ( isMissing )
       *isMissing = currentEntry->isMissingImage;
   }
@@ -223,15 +250,105 @@ int QgsImageCache::totalFrameCount( const QString &path, bool blocking )
 
   const QMutexLocker locker( &mMutex );
 
+  auto it = mTotalFrameCounts.find( path );
+  if ( it != mTotalFrameCounts.end() )
+    return it.value(); // already prepared
+
   int res = -1;
+  int nextFrameDelayMs = 0;
   bool fitsInCache = false;
   bool isMissing = false;
-  ( void )pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res );
+  ( void )pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res, nextFrameDelayMs );
 
   return res;
 }
 
-QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, bool blocking ) const
+int QgsImageCache::nextFrameDelay( const QString &path, int currentFrame, bool blocking )
+{
+  const QString file = path.trimmed();
+
+  if ( file.isEmpty() )
+    return -1;
+
+  const QMutexLocker locker( &mMutex );
+
+  auto it = mImageDelays.find( path );
+  if ( it != mImageDelays.end() )
+    return it.value().value( currentFrame ); // already prepared
+
+  int frameCount = -1;
+  int nextFrameDelayMs = 0;
+  bool fitsInCache = false;
+  bool isMissing = false;
+  const QImage res = pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, currentFrame, &isMissing, frameCount, nextFrameDelayMs );
+
+  return nextFrameDelayMs <= 0 || res.isNull() ? -1 : nextFrameDelayMs;
+}
+
+void QgsImageCache::prepareAnimation( const QString &path )
+{
+  const QMutexLocker locker( &mMutex );
+
+  auto it = mExtractedAnimationPaths.find( path );
+  if ( it != mExtractedAnimationPaths.end() )
+    return; // already prepared
+
+  QString filePath;
+  std::unique_ptr< QImageReader > reader;
+  std::unique_ptr< QBuffer > buffer;
+
+  if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
+  {
+    const QString basePart = QFileInfo( path ).baseName();
+    int id = 1;
+    filePath = mTemporaryDir->filePath( QStringLiteral( "%1_%2" ).arg( basePart ).arg( id ) );
+    while ( QFile::exists( filePath ) )
+      filePath = mTemporaryDir->filePath( QStringLiteral( "%1_%2" ).arg( basePart ).arg( ++id ) );
+
+    reader = std::make_unique< QImageReader >( path );
+  }
+  else
+  {
+    QByteArray ba = getContent( path, QByteArray( "broken" ), QByteArray( "fetching" ), false );
+    if ( ba == "broken" || ba == "fetching" )
+    {
+      return;
+    }
+    else
+    {
+      const QString path = QUuid::createUuid().toString( QUuid::WithoutBraces );
+      filePath = mTemporaryDir->filePath( path );
+
+      buffer = std::make_unique< QBuffer >( &ba );
+      buffer->open( QIODevice::ReadOnly );
+      reader = std::make_unique< QImageReader> ( buffer.get() );
+    }
+  }
+
+  QDir().mkpath( filePath );
+  mExtractedAnimationPaths.insert( path, filePath );
+
+  const QDir frameDirectory( filePath );
+  // extract all the frames to separate images
+
+  reader->setAutoTransform( true );
+  int frameNumber = 0;
+  while ( true )
+  {
+    const QImage frame = reader->read();
+    if ( frame.isNull() )
+      break;
+
+    mImageDelays[ path ].append( reader->nextImageDelay() );
+
+    const QString framePath = frameDirectory.filePath( QStringLiteral( "frame_%1.png" ).arg( frameNumber++ ) );
+    frame.save( framePath, "PNG" );
+  }
+
+  mTotalFrameCounts.insert( path, frameNumber );
+}
+
+QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking ) const
 {
   QImage im;
   isBroken = false;
@@ -263,6 +380,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     }
 
     totalFrameCount = reader.imageCount();
+
     if ( frameNumber == -1 )
     {
       im = reader.read();
@@ -271,6 +389,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
     {
       im = getFrameFromReader( reader, frameNumber );
     }
+    nextFrameDelayMs = reader.nextImageDelay();
   }
   else
   {
@@ -358,6 +477,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
       {
         im = getFrameFromReader( reader, frameNumber );
       }
+      nextFrameDelayMs = reader.nextImageDelay();
     }
   }
 

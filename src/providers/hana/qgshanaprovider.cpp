@@ -37,11 +37,13 @@
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 
+#include <QtGlobal>
+
 #include "odbc/PreparedStatement.h"
 #include "odbc/ResultSet.h"
 #include "odbc/ResultSetMetaDataUnicode.h"
 
-using namespace odbc;
+using namespace NS_ODBC;
 using namespace std;
 
 namespace
@@ -246,7 +248,7 @@ namespace
         else
         {
           QTime t = value.toTime();
-          stmt->setTime( paramIndex, makeNullable<odbc::time>( t.hour(), t.minute(), t.second() ) );
+          stmt->setTime( paramIndex, makeNullable<NS_ODBC::time>( t.hour(), t.minute(), t.second() ) );
         }
         break;
       case SQLDataTypes::Timestamp:
@@ -258,7 +260,7 @@ namespace
           QDateTime dt = value.toDateTime();
           QDate d = dt.date();
           QTime t = dt.time();
-          stmt->setTimestamp( paramIndex, makeNullable<odbc::timestamp>( d.year(),
+          stmt->setTimestamp( paramIndex, makeNullable<NS_ODBC::timestamp>( d.year(),
                               d.month(), d.day(), t.hour(), t.minute(), t.second(), t.msec() ) );
         }
         break;
@@ -372,12 +374,6 @@ QgsHanaProvider::QgsHanaProvider(
     this->appendError( QgsErrorMessage( message, QStringLiteral( "SAP HANA" ) ) );
   };
 
-  if ( mSchemaName.isEmpty() || mTableName.isEmpty() )
-  {
-    appendError( tr( "Schema or table name cannot be empty" ) );
-    return;
-  }
-
   QgsHanaConnectionRef conn( mUri );
   if ( conn.isNull() )
   {
@@ -393,6 +389,12 @@ QgsHanaProvider::QgsHanaProvider(
   }
   else
   {
+    if ( mSchemaName.isEmpty() || mTableName.isEmpty() )
+    {
+      appendError( tr( "Schema or table name cannot be empty" ) );
+      return;
+    }
+
     mIsQuery = false;
     mQuerySource = QStringLiteral( "%1.%2" ).arg(
                      QgsHanaUtils::quotedIdentifier( mSchemaName ),
@@ -776,7 +778,7 @@ bool QgsHanaProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           ResultSetRef rsIdentity = stmtIdentityValue->executeQuery();
           if ( rsIdentity->next() )
           {
-            odbc::Long id = rsIdentity->getLong( 1 );
+            NS_ODBC::Long id = rsIdentity->getLong( 1 );
             if ( !id.isNull() )
               feature.setId( static_cast<QgsFeatureId>( *id ) );
           }
@@ -1624,6 +1626,14 @@ Qgis::VectorExportResult QgsHanaProvider::createEmptyLayer(
     return Qgis::VectorExportResult::ErrorCreatingLayer;
   }
 
+  if ( wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry &&
+       !QgsHanaUtils::isGeometryTypeSupported( wkbType ) )
+  {
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Geometry type '%1' is not supported" ).arg( QgsWkbTypes::displayString( wkbType ) );
+    return Qgis::VectorExportResult::ErrorCreatingLayer;
+  }
+
   QString geometryColumn = dsUri.geometryColumn();
   QString schemaTableName = QgsHanaUtils::quotedIdentifier( schemaName ) + '.' +
                             QgsHanaUtils::quotedIdentifier( tableName );
@@ -1784,6 +1794,26 @@ void QgsHanaProviderMetadata::cleanupProvider()
 QgsHanaProvider *QgsHanaProviderMetadata::createProvider(
   const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
+  QgsDataSourceUri dsUri { uri };
+  QgsHanaDriver *drv = QgsHanaDriver::instance();
+
+  auto isDriverValid = [&drv]( const QString & driver )
+  {
+#ifdef Q_OS_WIN
+    return drv->isInstalled( driver );
+#else
+    return drv->isInstalled( driver ) || QgsHanaDriver::isValidPath( driver );
+#endif
+  };
+
+  // The following block is intended to resolve an issue when a data source was created under
+  // another operating system. In this case, the driver parameter may differ.
+  if ( !drv->driver().isEmpty() && drv->driver() != dsUri.driver() &&
+       !isDriverValid( dsUri.driver() ) && isDriverValid( drv->driver() ) )
+  {
+    dsUri.setDriver( drv->driver() );
+    return new QgsHanaProvider( dsUri.uri(), options, flags );
+  }
   return new QgsHanaProvider( uri, options, flags );
 }
 

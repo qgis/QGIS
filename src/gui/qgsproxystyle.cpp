@@ -75,7 +75,7 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
         QgsImageOperation::multiplyOpacity( im, 0.3 );
         return QPixmap::fromImage( im );
       }
-      break;
+      return pixmap;
     }
 
     case QIcon::Normal:
@@ -83,7 +83,7 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
     case QIcon::Selected:
       return pixmap;
   }
-  BUILTIN_UNREACHABLE
+
   return QProxyStyle::generatedIconPixmap( iconMode, pixmap, opt );
 }
 

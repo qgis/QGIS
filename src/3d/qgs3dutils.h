@@ -25,6 +25,8 @@ class QgsFeedback;
 class QgsAbstract3DEngine;
 class QgsAbstract3DSymbol;
 class Qgs3DMapScene;
+class QgsPointCloudRenderer;
+class QgsPointCloudLayer3DRenderer;
 
 namespace Qt3DExtras
 {
@@ -89,7 +91,7 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.8
      */
     static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                 const Qgs3DMapSettings &mapSettings,
+                                 Qgs3DMapSettings &mapSettings,
                                  int framesPerSecond,
                                  const QString &outputDirectory,
                                  const QString &fileNameTemplate,
@@ -229,6 +231,13 @@ class _3D_EXPORT Qgs3DUtils
     {
       return ( ( qRed( pixel ) / 255.0 + qGreen( pixel ) ) / 255.0 + qBlue( pixel ) ) / 255.0;
     }
+
+    /**
+     * Creates a QgsPointCloudLayer3DRenderer matching the symbol settings of a given QgsPointCloudRenderer
+     * \note This function was formerly in Qgs3DAppUtils
+     * \since QGIS 3.26
+     */
+    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 };
 
 #endif // QGS3DUTILS_H

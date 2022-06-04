@@ -34,6 +34,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsexpressioncontextutils.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayertemporalproperties.h"
+#include "qgsmapcanvasutils.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -264,16 +265,9 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     r->startRender( context, vlayer->fields() );
   }
 
-  QString temporalFilter;
-  if ( canvas->mapSettings().isTemporal() )
-  {
-    if ( !vlayer->temporalProperties()->isVisibleInTemporalRange( canvas->temporalRange() ) )
-      return newSelectedFeatures;
-
-    QgsVectorLayerTemporalContext temporalContext;
-    temporalContext.setLayer( vlayer );
-    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( vlayer->temporalProperties() )->createFilterString( temporalContext, canvas->temporalRange() );
-  }
+  const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( canvas, vlayer );
+  if ( canvasFilter == QLatin1String( "FALSE" ) )
+    return newSelectedFeatures;
 
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
@@ -283,8 +277,8 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   else
     request.setNoAttributes();
 
-  if ( !temporalFilter.isEmpty() )
-    request.setFilterExpression( temporalFilter );
+  if ( !canvasFilter.isEmpty() )
+    request.setFilterExpression( canvasFilter );
   if ( r )
   {
     const QString filterExpression = r->filter( vlayer->fields() );
@@ -415,23 +409,16 @@ void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::populateMenu( QMenu *me
 
 void QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::startFeatureSearch()
 {
-  QString temporalFilter;
-  if ( mCanvas->mapSettings().isTemporal() )
-  {
-    if ( !mVectorLayer->temporalProperties()->isVisibleInTemporalRange( mCanvas->temporalRange() ) )
-      return;
-
-    QgsVectorLayerTemporalContext temporalContext;
-    temporalContext.setLayer( mVectorLayer );
-    temporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( mVectorLayer->temporalProperties() )->createFilterString( temporalContext, mCanvas->temporalRange() );
-  }
+  const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mCanvas, mVectorLayer );
+  if ( canvasFilter == QLatin1String( "FALSE" ) )
+    return;
 
   mJobData = std::make_shared<DataForSearchingJob>();
   mJobData->isCanceled = false;
   mJobData->source.reset( new QgsVectorLayerFeatureSource( mVectorLayer ) );
   mJobData->selectGeometry = mSelectGeometry;
   mJobData->context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
-  mJobData->filterString = temporalFilter;
+  mJobData->filterString = canvasFilter;
   mJobData->ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mVectorLayer->crs(), mJobData->context.transformContext() );
   mJobData->featureRenderer.reset( mVectorLayer->renderer()->clone() );
 

@@ -128,6 +128,17 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
   mHandler->finalize( entity, mContext );
+
+  // fix the vertical range of the node from the estimated vertical range to the true range
+  if ( mHandler->zMinimum() != std::numeric_limits<float>::max() && mHandler->zMaximum() != std::numeric_limits<float>::min() )
+  {
+    QgsAABB box = mNode->bbox();
+    box.yMin = mHandler->zMinimum();
+    box.yMax = mHandler->zMaximum();
+    mNode->setExactBbox( box );
+    mNode->updateParentBoundingBoxesRecursively();
+  }
+
   return entity;
 }
 

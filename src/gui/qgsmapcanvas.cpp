@@ -73,6 +73,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsmapthemecollection.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatereferencesystemutils.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgsexpressioncontextutils.h"
@@ -93,6 +94,8 @@ email                : sherman at mrcc.com
 #include "qgsmaplayerutils.h"
 #include "qgssettingsregistrygui.h"
 #include "qgsrendereditemresults.h"
+#include "qgstemporalnavigationobject.h"
+#include "qgssymbollayerutils.h"
 
 /**
  * \ingroup gui
@@ -271,7 +274,6 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::cancelJobs()
 {
-
   // rendering job may still end up writing into canvas map item
   // so kill it before deleting canvas items
   if ( mJob )
@@ -281,8 +283,7 @@ void QgsMapCanvas::cancelJobs()
     mJob = nullptr;
   }
 
-  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
-  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  for ( auto previewJob = mPreviewJobs.constBegin(); previewJob != mPreviewJobs.constEnd(); ++previewJob )
   {
     if ( *previewJob )
     {
@@ -290,8 +291,8 @@ void QgsMapCanvas::cancelJobs()
       delete *previewJob;
     }
   }
+  mPreviewJobs.clear();
 }
-
 
 void QgsMapCanvas::setMagnificationFactor( double factor, const QgsPointXY *center )
 {
@@ -405,6 +406,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
+      disconnect( vlayer, &QgsVectorLayer::rendererChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     }
   }
 
@@ -420,6 +422,7 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
+      connect( vlayer, &QgsVectorLayer::rendererChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     }
   }
 
@@ -445,8 +448,9 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   QgsRectangle rect;
   if ( !mSettings.visibleExtent().isEmpty() )
   {
-    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
-    transform.setBallparkTransformsAreAppropriate( true );
+    const QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance(),
+                                            Qgis::CoordinateTransformationFlag::BallparkTransformsAreAppropriate
+                                            | Qgis::CoordinateTransformationFlag::IgnoreImpossibleTransformations );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
@@ -481,9 +485,42 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   if ( mController )
     disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  {
+    disconnect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+
+    // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+    // might be in control of these!
+    mSettings.setFrameRate( -1 );
+    mSettings.setCurrentFrame( -1 );
+  }
 
   mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+    connect( temporalNavigationObject, &QgsTemporalNavigationObject::navigationModeChanged, this, &QgsMapCanvas::temporalControllerModeChanged );
+}
+
+void QgsMapCanvas::temporalControllerModeChanged()
+{
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = qobject_cast< QgsTemporalNavigationObject * >( mController ) )
+  {
+    switch ( temporalNavigationObject->navigationMode() )
+    {
+      case QgsTemporalNavigationObject::Animated:
+        mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
+        mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
+        break;
+
+      case QgsTemporalNavigationObject::NavigationOff:
+      case QgsTemporalNavigationObject::FixedRange:
+        // clear any existing animation settings from map settings. We don't do this on every render, as a 3rd party plugin
+        // might be in control of these!
+        mSettings.setFrameRate( -1 );
+        mSettings.setCurrentFrame( -1 );
+        break;
+    }
+  }
 }
 
 const QgsTemporalController *QgsMapCanvas::temporalController() const
@@ -644,6 +681,23 @@ void QgsMapCanvas::refreshMap()
   stopPreviewJobs();
 
   mSettings.setExpressionContext( createExpressionContext() );
+
+  // if using the temporal controller in animation mode, get the frame settings from that
+  if ( QgsTemporalNavigationObject *temporalNavigationObject = dynamic_cast < QgsTemporalNavigationObject * >( mController ) )
+  {
+    switch ( temporalNavigationObject->navigationMode() )
+    {
+      case QgsTemporalNavigationObject::Animated:
+        mSettings.setFrameRate( temporalNavigationObject->framesPerSecond() );
+        mSettings.setCurrentFrame( temporalNavigationObject->currentFrameNumber() );
+        break;
+
+      case QgsTemporalNavigationObject::NavigationOff:
+      case QgsTemporalNavigationObject::FixedRange:
+        break;
+    }
+  }
+
   mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
@@ -892,6 +946,20 @@ void QgsMapCanvas::clearTemporalCache()
     const QList<QgsMapLayer *> layerList = mapSettings().layers();
     for ( QgsMapLayer *layer : layerList )
     {
+      bool alreadyInvalidatedThisLayer = false;
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+      {
+        if ( vl->renderer() && QgsSymbolLayerUtils::rendererFrameRate( vl->renderer() ) > -1 )
+        {
+          // layer has an animated symbol assigned, so we have to redraw it regardless of whether
+          // or not it has temporal settings
+          mCache->invalidateCacheForLayer( layer );
+          alreadyInvalidatedThisLayer = true;
+          // we can't shortcut and "continue" here, as we still need to check whether the layer
+          // will cause label invalidation using the logic below
+        }
+      }
+
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
       {
         if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
@@ -903,7 +971,8 @@ void QgsMapCanvas::clearTemporalCache()
         if ( layer->temporalProperties()->flags() & QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges )
           continue;
 
-        mCache->invalidateCacheForLayer( layer );
+        if ( !alreadyInvalidatedThisLayer )
+          mCache->invalidateCacheForLayer( layer );
       }
     }
 
@@ -996,16 +1065,36 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
         displayPrecision = crs.mapUnits() == QgsUnitTypes::DistanceDegrees ? 5 : 3;
       }
 
-      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%3 (%1, %2)" ).arg(
-            QString::number( transformedPoint.x(), 'f', displayPrecision ),
-            QString::number( transformedPoint.y(), 'f', displayPrecision ),
-            identifier ), &menu );
+      const QList< Qgis::CrsAxisDirection > axisList = crs.axisOrdering();
+      QString firstSuffix;
+      QString secondSuffix;
+      if ( axisList.size() >= 2 )
+      {
+        firstSuffix = QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisList.at( 0 ) );
+        secondSuffix = QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisList.at( 1 ) );
+      }
 
-      connect( copyCoordinateAction, &QAction::triggered, this, [displayPrecision, transformedPoint]
+      QString firstNumber;
+      QString secondNumber;
+      if ( QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( crs ) == Qgis::CoordinateOrder::YX )
+      {
+        firstNumber = QString::number( transformedPoint.y(), 'f', displayPrecision );
+        secondNumber = QString::number( transformedPoint.x(), 'f', displayPrecision );
+      }
+      else
+      {
+        firstNumber = QString::number( transformedPoint.x(), 'f', displayPrecision );
+        secondNumber = QString::number( transformedPoint.y(), 'f', displayPrecision );
+      }
+
+      QAction *copyCoordinateAction = new QAction( QStringLiteral( "%5 (%1%2, %3%4)" ).arg(
+            firstNumber, firstSuffix, secondNumber, secondSuffix, identifier ), &menu );
+
+      connect( copyCoordinateAction, &QAction::triggered, this, [firstNumber, secondNumber, transformedPoint]
       {
         QClipboard *clipboard = QApplication::clipboard();
 
-        const QString coordinates = QString::number( transformedPoint.x(), 'f', displayPrecision ) + ',' + QString::number( transformedPoint.y(), 'f', displayPrecision );
+        const QString coordinates = firstNumber + ',' + secondNumber;
 
         //if we are on x11 system put text into selection ready for middle button pasting
         if ( clipboard->supportsSelection() )
@@ -1023,9 +1112,10 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     }
   };
 
-  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) ), mSettings.destinationCrs() );
-  if ( mSettings.destinationCrs() != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
-    addCoordinateFormat( tr( "WGS84" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  addCoordinateFormat( tr( "Map CRS — %1" ).arg( mSettings.destinationCrs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ) ), mSettings.destinationCrs() );
+  QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
+  if ( mSettings.destinationCrs() != wgs84 )
+    addCoordinateFormat( wgs84.userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ), wgs84 );
 
   QgsSettings settings;
   const QString customCrsString = settings.value( QStringLiteral( "qgis/custom_coordinate_crs" ) ).toString();
@@ -1034,7 +1124,7 @@ void QgsMapCanvas::showContextMenu( QgsMapMouseEvent *event )
     QgsCoordinateReferenceSystem customCrs( customCrsString );
     if ( customCrs != mSettings.destinationCrs() && customCrs != QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) )
     {
-      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), customCrs );
+      addCoordinateFormat( customCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::MediumString ), customCrs );
     }
   }
   copyCoordinateMenu->addSeparator();
@@ -2017,11 +2107,19 @@ void QgsMapCanvas::beginZoomRect( QPoint pos )
   mZoomRect.setTopLeft( pos );
 }
 
+void QgsMapCanvas::stopZoomRect()
+{
+  if ( mZoomDragging )
+  {
+    mZoomDragging = false;
+    mZoomRubberBand.reset( nullptr );
+    mTemporaryCursorOverride.reset();
+  }
+}
+
 void QgsMapCanvas::endZoomRect( QPoint pos )
 {
-  mZoomDragging = false;
-  mZoomRubberBand.reset( nullptr );
-  mTemporaryCursorOverride.reset();
+  stopZoomRect();
 
   // store the rectangle
   mZoomRect.setRight( pos.x() );
@@ -2049,6 +2147,26 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   refresh();
 }
 
+void QgsMapCanvas::startPan()
+{
+  if ( !mCanvasProperties->panSelectorDown )
+  {
+    mCanvasProperties->panSelectorDown = true;
+    mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
+    panActionStart( mCanvasProperties->mouseLastXY );
+  }
+}
+
+void QgsMapCanvas::stopPan()
+{
+  if ( mCanvasProperties->panSelectorDown )
+  {
+    mCanvasProperties->panSelectorDown = false;
+    mTemporaryCursorOverride.reset();
+    panActionEnd( mCanvasProperties->mouseLastXY );
+  }
+}
+
 void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
 {
   // use shift+middle mouse button for zooming, map tools won't receive any events in that case
@@ -2061,15 +2179,15 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    if ( !mCanvasProperties->panSelectorDown )
-    {
-      mCanvasProperties->panSelectorDown = true;
-      mTemporaryCursorOverride.reset( new QgsTemporaryCursorOverride( Qt::ClosedHandCursor ) );
-      panActionStart( mCanvasProperties->mouseLastXY );
-    }
+    startPan();
   }
   else
   {
+    // If doing a middle-button-click, followed by a right-button-click,
+    // cancel the pan or zoomRect action started above.
+    stopPan();
+    stopZoomRect();
+
     // call handler of current map tool
     if ( mMapTool )
     {
@@ -2114,12 +2232,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent *e )
   //use middle mouse button for panning, map tools won't receive any events in that case
   else if ( e->button() == Qt::MiddleButton )
   {
-    if ( mCanvasProperties->panSelectorDown )
-    {
-      mCanvasProperties->panSelectorDown = false;
-      mTemporaryCursorOverride.reset();
-      panActionEnd( mCanvasProperties->mouseLastXY );
-    }
+    stopPan();
   }
   else if ( e->button() == Qt::BackButton )
   {
@@ -2605,8 +2718,28 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   const auto layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
+    int layerRefreshInterval = 0;
+
     if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
-      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+    {
+      layerRefreshInterval = layer->autoRefreshInterval();
+    }
+    else if ( QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( layer ) )
+    {
+      if ( const QgsFeatureRenderer *renderer = vectorLayer->renderer() )
+      {
+        const double rendererRefreshRate = QgsSymbolLayerUtils::rendererFrameRate( renderer );
+        if ( rendererRefreshRate > 0 )
+        {
+          layerRefreshInterval = 1000 / rendererRefreshRate;
+        }
+      }
+    }
+
+    if ( layerRefreshInterval == 0 )
+      continue;
+
+    minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layerRefreshInterval, minAutoRefreshInterval ) : layerRefreshInterval;
   }
 
   if ( minAutoRefreshInterval > 0 )
@@ -2736,16 +2869,21 @@ void QgsMapCanvas::showEvent( QShowEvent *event )
   Q_UNUSED( event )
   updateDevicePixelFromScreen();
   // keep device pixel ratio up to date on screen or resolution change
-  if ( window()->windowHandle() )
+  QWindow *l_window = window()->windowHandle();
+  if ( l_window )
   {
-    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
+    connect( l_window, &QWindow::screenChanged, this, [ = ]( QScreen * )
     {
       disconnect( mScreenDpiChangedConnection );
-      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
-      updateDevicePixelFromScreen();
+      QWindow *windowInLambda = window()->windowHandle();
+      if ( windowInLambda )
+      {
+        mScreenDpiChangedConnection = connect( windowInLambda->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
+        updateDevicePixelFromScreen();
+      }
     } );
 
-    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
+    mScreenDpiChangedConnection = connect( l_window->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
   }
 }
 
@@ -3159,14 +3297,13 @@ void QgsMapCanvas::startPreviewJob( int number )
 void QgsMapCanvas::stopPreviewJobs()
 {
   mPreviewTimer.stop();
-  const auto previewJobs = mPreviewJobs;
-  for ( auto previewJob : previewJobs )
+  for ( auto previewJob = mPreviewJobs.constBegin(); previewJob != mPreviewJobs.constEnd(); ++previewJob )
   {
-    if ( previewJob )
+    if ( *previewJob )
     {
-      disconnect( previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
-      connect( previewJob, &QgsMapRendererQImageJob::finished, previewJob, &QgsMapRendererQImageJob::deleteLater );
-      previewJob->cancelWithoutBlocking();
+      disconnect( *previewJob, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
+      connect( *previewJob, &QgsMapRendererQImageJob::finished, *previewJob, &QgsMapRendererQImageJob::deleteLater );
+      ( *previewJob )->cancelWithoutBlocking();
     }
   }
   mPreviewJobs.clear();

@@ -102,6 +102,7 @@ done:
 %Feature HAVE_GUI
 %Feature ANDROID
 %Feature VECTOR_MAPPED_TYPE
+%Feature CONCATENATED_TABLES_MODEL
 
 %Include conversions.sip
 %Include qgsexception.sip

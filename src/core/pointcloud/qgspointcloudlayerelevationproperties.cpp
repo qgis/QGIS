@@ -17,10 +17,14 @@
 
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgspointcloudlayer.h"
+#include "qgssymbollayerutils.h"
+#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
 
 QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )
 {
+  mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 }
 
 bool QgsPointCloudLayerElevationProperties::hasElevation() const
@@ -28,21 +32,77 @@ bool QgsPointCloudLayerElevationProperties::hasElevation() const
   return true;
 }
 
-QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & )
+QDomElement QgsPointCloudLayerElevationProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
   QDomElement element = document.createElement( QStringLiteral( "elevation" ) );
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  writeCommonProperties( element, document, context );
+
+  element.setAttribute( QStringLiteral( "max_screen_error" ), qgsDoubleToString( mMaximumScreenError ) );
+  element.setAttribute( QStringLiteral( "max_screen_error_unit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
+  element.setAttribute( QStringLiteral( "point_size" ), qgsDoubleToString( mPointSize ) );
+  element.setAttribute( QStringLiteral( "point_size_unit" ), QgsUnitTypes::encodeUnit( mPointSizeUnit ) );
+  element.setAttribute( QStringLiteral( "point_symbol" ), qgsEnumValueToKey( mPointSymbol ) );
+  element.setAttribute( QStringLiteral( "point_color" ), QgsSymbolLayerUtils::encodeColor( mPointColor ) );
+  element.setAttribute( QStringLiteral( "respect_layer_colors" ), mRespectLayerColors ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "opacity_by_distance" ), mApplyOpacityByDistanceEffect ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
   parentElement.appendChild( element );
   return element;
 }
 
-bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QDomElement elevationElement = element.firstChildElement( QStringLiteral( "elevation" ) ).toElement();
-  mZOffset = elevationElement.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = elevationElement.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+  readCommonProperties( elevationElement, context );
+
+  mMaximumScreenError = elevationElement.attribute( QStringLiteral( "max_screen_error" ), QStringLiteral( "0.3" ) ).toDouble();
+  bool ok = false;
+  mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( elevationElement.attribute( QStringLiteral( "max_screen_error_unit" ) ), &ok );
+  if ( !ok )
+    mMaximumScreenErrorUnit = QgsUnitTypes::RenderMillimeters;
+  mPointSize = elevationElement.attribute( QStringLiteral( "point_size" ), QStringLiteral( "0.6" ) ).toDouble();
+  mPointSizeUnit = QgsUnitTypes::decodeRenderUnit( elevationElement.attribute( QStringLiteral( "point_size_unit" ) ), &ok );
+  if ( !ok )
+    mPointSizeUnit = QgsUnitTypes::RenderMillimeters;
+  mPointSymbol = qgsEnumKeyToValue( elevationElement.attribute( QStringLiteral( "point_symbol" ) ), Qgis::PointCloudSymbol::Square );
+  const QString colorString = elevationElement.attribute( QStringLiteral( "point_color" ) );
+  if ( !colorString.isEmpty() )
+  {
+    mPointColor = QgsSymbolLayerUtils::decodeColor( elevationElement.attribute( QStringLiteral( "point_color" ) ) );
+  }
+  else
+  {
+    mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+  }
+  mRespectLayerColors = elevationElement.attribute( QStringLiteral( "respect_layer_colors" ), QStringLiteral( "1" ) ).toInt();
+  mApplyOpacityByDistanceEffect = elevationElement.attribute( QStringLiteral( "opacity_by_distance" ) ).toInt();
+
   return true;
+}
+
+QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::clone() const
+{
+  std::unique_ptr< QgsPointCloudLayerElevationProperties > res = std::make_unique< QgsPointCloudLayerElevationProperties >( nullptr );
+  res->copyCommonProperties( this );
+
+  res->mMaximumScreenError = mMaximumScreenError;
+  res->mMaximumScreenErrorUnit = mMaximumScreenErrorUnit;
+  res->mPointSize = mPointSize;
+  res->mPointSizeUnit = mPointSizeUnit;
+  res->mPointSymbol = mPointSymbol;
+  res->mPointColor = mPointColor;
+  res->mRespectLayerColors = mRespectLayerColors;
+  res->mApplyOpacityByDistanceEffect = mApplyOpacityByDistanceEffect;
+
+  return res.release();
+}
+
+QString QgsPointCloudLayerElevationProperties::htmlSummary() const
+{
+  QStringList properties;
+  properties << tr( "Scale: %1" ).arg( mZScale );
+  properties << tr( "Offset: %1" ).arg( mZOffset );
+  return QStringLiteral( "<ul><li>%1</li></ul>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
 bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
@@ -57,15 +117,117 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
   {
     if ( pcLayer->dataProvider() )
     {
+      const QgsPointCloudStatistics stats = pcLayer->statistics();
+
       // try to fetch z range from provider metadata
-      const QVariant zMin = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-      const QVariant zMax = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
-      if ( zMin.isValid() && zMax.isValid() )
+      const double zMin = stats.minimum( QStringLiteral( "Z" ) );
+      const double zMax = stats.maximum( QStringLiteral( "Z" ) );
+      if ( !std::isnan( zMin ) && !std::isnan( zMax ) )
       {
-        return QgsDoubleRange( zMin.toDouble() * mZScale + mZOffset, zMax.toDouble() * mZScale + mZOffset );
+        return QgsDoubleRange( zMin * mZScale + mZOffset, zMax * mZScale + mZOffset );
       }
     }
   }
 
   return QgsDoubleRange();
+}
+
+bool QgsPointCloudLayerElevationProperties::showByDefaultInElevationProfilePlots() const
+{
+  return true;
+}
+
+void QgsPointCloudLayerElevationProperties::setMaximumScreenError( double error )
+{
+  if ( qgsDoubleNear( error, mMaximumScreenError ) )
+    return;
+
+  mMaximumScreenError = error;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit )
+{
+  if ( unit == mMaximumScreenErrorUnit )
+    return;
+
+  mMaximumScreenErrorUnit = unit;
+  emit changed();
+  emit profileGenerationPropertyChanged();
+}
+
+Qgis::PointCloudSymbol QgsPointCloudLayerElevationProperties::pointSymbol() const
+{
+  return mPointSymbol;
+}
+
+void QgsPointCloudLayerElevationProperties::setPointSymbol( Qgis::PointCloudSymbol symbol )
+{
+  if ( mPointSymbol == symbol )
+    return;
+
+  mPointSymbol = symbol;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setPointColor( const QColor &color )
+{
+  if ( color == mPointColor )
+    return;
+
+  mPointColor = color;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setApplyOpacityByDistanceEffect( bool apply )
+{
+  if ( apply == mApplyOpacityByDistanceEffect )
+    return;
+
+  mApplyOpacityByDistanceEffect = apply;
+  emit changed();
+
+  // turning ON opacity by distance requires a profile regeneration, turning it off does not.
+  if ( mApplyOpacityByDistanceEffect )
+    emit profileGenerationPropertyChanged();
+  else
+    emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setPointSize( double size )
+{
+  if ( qgsDoubleNear( size, mPointSize ) )
+    return;
+
+  mPointSize = size;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setPointSizeUnit( const QgsUnitTypes::RenderUnit units )
+{
+  if ( mPointSizeUnit == units )
+    return;
+
+  mPointSizeUnit = units;
+  emit changed();
+  emit profileRenderingPropertyChanged();
+}
+
+void QgsPointCloudLayerElevationProperties::setRespectLayerColors( bool enabled )
+{
+  if ( mRespectLayerColors == enabled )
+    return;
+
+  mRespectLayerColors = enabled;
+  emit changed();
+
+  // turning ON respect layer colors requires a profile regeneration, turning it off does not.
+  if ( mRespectLayerColors )
+    emit profileGenerationPropertyChanged();
+  else
+    emit profileRenderingPropertyChanged();
 }

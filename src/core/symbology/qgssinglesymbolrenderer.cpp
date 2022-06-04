@@ -327,6 +327,20 @@ QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature 
   return QSet< QString >() << QStringLiteral( "0" );
 }
 
+QString QgsSingleSymbolRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *, bool &ok ) const
+{
+  if ( key == QLatin1String( "0" ) )
+  {
+    ok = true;
+    return QStringLiteral( "TRUE" );
+  }
+  else
+  {
+    ok = false;
+    return QString();
+  }
+}
+
 void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
   Q_UNUSED( key )

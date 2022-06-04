@@ -11,6 +11,7 @@
 
 
 
+
 %Feature ARM // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
 
 
@@ -45,7 +46,9 @@ magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
       XMax,
       XMin,
       YMax,
-      YMin
+      YMin,
+      ZMax,
+      ZMin,
     };
 
 %If (!ARM) // Not available on ARM sip bindings because of qreal issues
@@ -67,6 +70,14 @@ an open shape (linestring).
 %End
 
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
+%Docstring
+Trims the given polygon to a rectangular box, by modifying the given polygon in place.
+
+:param pts: polygon as 2D coordinates
+:param clipRect: clipping rectangle
+%End
+
+
 
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 %Docstring
@@ -80,12 +91,38 @@ Takes a linestring and clips it to clipExtent
 
     static QPolygonF clippedLine( const QPolygonF &curve, const QgsRectangle &clipExtent );
 %Docstring
-Takes a ``curve`` and clips it to clipExtent.
+Takes a 2D ``curve`` and clips it to clipExtent.
+
+:param curve: the linestring
+:param clipExtent: clipping bounds
+
+:return: clipped line coordinates
 
 .. versionadded:: 3.16
 %End
 
+    static bool clipLineSegment( double left, double right, double bottom, double top, double &x0 /In,Out/, double &y0 /In,Out/, double &x1 /In,Out/, double &y1 /In,Out/ );
+%Docstring
+Clips a line segment to a rectangle.
+
+An implementation of the 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467).
+
+:param left: x-coordinate of left side of rectangle
+:param right: x-coordinate of right side of rectangle
+:param bottom: y-coordinate of bottom side of rectangle
+:param top: y-coordinate of top side of rectangle
+:param x0: x-coordinate of start of line
+:param y0: y-coordinate of start of line
+:param x1: x-coordinate of end of line
+:param y1: y-coordinate of end of line
+
+:return: ``True`` if line was clipped.
+
+.. versionadded:: 3.26
+%End
+
 };
+
 
 
 

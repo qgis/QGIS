@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_equals('regions')",
-    "returns": "true if the current feature is spatially equal to a region"
+    "returns": "TRUE if the current feature is spatially equal to a region"
   }, {
     "expression": "overlay_equals('regions', filter:= population > 10000)",
-    "returns": "true if the current feature is spatially equal to a region with a population greater than 10000"
+    "returns": "TRUE if the current feature is spatially equal to a region with a population greater than 10000"
   }, {
     "expression": "overlay_equals('regions', name)",
     "returns": "an array of names, for the regions spatially equal to the current feature"

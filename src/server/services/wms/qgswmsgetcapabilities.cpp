@@ -32,6 +32,7 @@
 #include "qgslayoutpagecollection.h"
 
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayertemporalproperties.h"
 
 #include "qgsexception.h"
 #include "qgsexpressionnodeimpl.h"
@@ -1209,6 +1210,8 @@ namespace QgsWms
             layerElem.appendChild( metaUrlElem );
           }
 
+          bool timeDimensionAdded { false };
+
           // Add dimensions
           if ( l->type() == QgsMapLayerType::VectorLayer )
           {
@@ -1217,6 +1220,7 @@ namespace QgsWms
             const QList<QgsMapLayerServerProperties::WmsDimensionInfo> wmsDims = serverProperties->wmsDimensions();
             for ( const  QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
             {
+
               int fieldIndex = vl->fields().indexOf( dim.fieldName );
               // Check field index
               if ( fieldIndex == -1 )
@@ -1243,6 +1247,12 @@ namespace QgsWms
 
               QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
               dimElem.setAttribute( QStringLiteral( "name" ), dim.name );
+
+              if ( dim.name.toUpper() == QStringLiteral( "TIME" ) )
+              {
+                timeDimensionAdded = true;
+              }
+
               if ( !dim.units.isEmpty() )
               {
                 dimElem.setAttribute( QStringLiteral( "units" ), dim.units );
@@ -1265,6 +1275,11 @@ namespace QgsWms
               }
               dimElem.setAttribute( QStringLiteral( "multipleValues" ), QStringLiteral( "1" ) );
               dimElem.setAttribute( QStringLiteral( "nearestValue" ), QStringLiteral( "0" ) );
+              if ( projectSettings )
+              {
+                dimElem.setAttribute( QStringLiteral( "fieldName" ), dim.fieldName );
+                dimElem.setAttribute( QStringLiteral( "endFieldName" ), dim.endFieldName );
+              }
               // values list
               QStringList strValues;
               for ( const QVariant &v : values )
@@ -1275,6 +1290,87 @@ namespace QgsWms
               dimElem.appendChild( dimValuesText );
               layerElem.appendChild( dimElem );
             }
+          }
+
+          // Add WMS time dimension if not already added
+          if ( ! timeDimensionAdded
+               && l->temporalProperties()
+               && l->temporalProperties()->isActive() )
+          {
+
+            QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
+            dimElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
+            dimElem.setAttribute( QStringLiteral( "units" ), QStringLiteral( "ISO8601" ) );
+
+            // TODO: set "default" (reference value)
+
+            // Add all values
+            const QList<QgsDateTimeRange> allRanges { l->temporalProperties()->allTemporalRanges( l ) };
+
+            // Apparently, for vectors allTemporalRanges is always empty :/
+            // there is no way to know the type of range or the individual instants
+
+            bool isDateList { true };
+            bool isInstantList { true };
+
+            QList<QDateTime> values;
+            for ( const auto &r : std::as_const( allRanges ) )
+            {
+              if ( r.isInstant() )
+              {
+                if ( r.begin().time() != QTime( 0, 0, 0, 0 ) )
+                {
+                  isDateList = false;
+                }
+                values.append( r.begin() );
+              }
+              else
+              {
+                isInstantList = false;
+                break;
+              }
+            }
+
+            // Only list individual values for list of instants,
+            // otherwise only the extent will be shown
+            if ( isInstantList )
+            {
+              // values list
+              QStringList strValues;
+              for ( const auto &v : values )
+              {
+                if ( isDateList )
+                {
+                  strValues << v.date().toString( Qt::DateFormat::ISODate );
+                }
+                else
+                {
+                  strValues << v.toString( Qt::DateFormat::ISODate );
+                }
+              }
+              QDomText dimValuesText = doc.createTextNode( strValues.join( QChar( ',' ) ) );
+              dimElem.appendChild( dimValuesText );
+            }
+
+            layerElem.appendChild( dimElem );
+
+            QDomElement timeExtentElem = doc.createElement( QStringLiteral( "Extent" ) );
+            timeExtentElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "TIME" ) );
+
+            const QgsDateTimeRange timeExtent { l->temporalProperties()->calculateTemporalExtent( l ) };
+            QString extent;
+            if ( isDateList )
+            {
+              extent = QStringLiteral( "%1/%2" ).arg( timeExtent.begin().date().toString( Qt::DateFormat::ISODate ), timeExtent.end().date().toString( Qt::DateFormat::ISODate ) );
+            }
+            else
+            {
+              extent = QStringLiteral( "%1/%2" ).arg( timeExtent.begin().toString( Qt::DateFormat::ISODate ), timeExtent.end().toString( Qt::DateFormat::ISODate ) );
+            }
+            QDomText extentValueText = doc.createTextNode( extent );
+            timeExtentElem.appendChild( extentValueText );
+            layerElem.appendChild( timeExtentElem );
+
           }
 
           if ( projectSettings )

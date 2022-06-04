@@ -11,7 +11,7 @@
 
 
 
-class QgsPointCloudLayer3DRenderer : QgsAbstract3DRenderer
+class QgsPointCloudLayer3DRenderer : QgsAbstractPointCloud3DRenderer
 {
 %Docstring(signature="appended")
 3D renderer that renders all points from a point cloud layer
@@ -101,6 +101,9 @@ Returns the maximum number of points that will be rendered to the scene
 %Docstring
 Sets the maximum number of points to be rendered in the scene
 %End
+
+    virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer );
+
 
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );

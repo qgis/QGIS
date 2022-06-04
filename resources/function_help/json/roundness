@@ -2,7 +2,7 @@
   "name": "roundness",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Calculates how close a polygon shape is to a circle. The function returns 1 when the polygon shape is a perfect circle and 0 when it is completely flat.",
+  "description": "Calculates how close a polygon shape is to a circle. The function Returns TRUE when the polygon shape is a perfect circle and 0 when it is completely flat.",
   "arguments": [{
     "arg": "geometry",
     "description": "a polygon"

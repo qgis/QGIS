@@ -57,6 +57,9 @@ void QgsSimpleLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
   mWidthUnit = unit;
   mOffsetUnit = unit;
   mCustomDashPatternUnit = unit;
+  mDashPatternOffsetUnit = unit;
+  mTrimDistanceStartUnit = unit;
+  mTrimDistanceEndUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit  QgsSimpleLineSymbolLayer::outputUnit() const
@@ -1209,7 +1212,7 @@ class MyLine
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
     }
 
-    double length() { return mLength; }
+    double length() const { return mLength; }
 
   protected:
     bool mVertical;
@@ -1460,6 +1463,14 @@ QgsUnitTypes::RenderUnit QgsTemplatedLineSymbolLayerBase::outputUnit() const
     return QgsUnitTypes::RenderUnknownUnit;
   }
   return unit;
+}
+
+void QgsTemplatedLineSymbolLayerBase::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsLineSymbolLayer::setOutputUnit( unit );
+  mIntervalUnit = unit;
+  mOffsetAlongLineUnit = unit;
+  mAverageAngleLengthUnit = unit;
 }
 
 void QgsTemplatedLineSymbolLayerBase::setMapUnitScale( const QgsMapUnitScale &scale )
@@ -2677,11 +2688,8 @@ double QgsMarkerLineSymbolLayer::width( const QgsRenderContext &context ) const
 
 void QgsMarkerLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsLineSymbolLayer::setOutputUnit( unit );
+  QgsTemplatedLineSymbolLayerBase::setOutputUnit( unit );
   mMarker->setOutputUnit( unit );
-  setIntervalUnit( unit );
-  mOffsetUnit = unit;
-  setOffsetAlongLineUnit( unit );
 }
 
 bool QgsMarkerLineSymbolLayer::usesMapUnits() const
@@ -2856,11 +2864,8 @@ double QgsHashedLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
 
 void QgsHashedLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsLineSymbolLayer::setOutputUnit( unit );
+  QgsTemplatedLineSymbolLayerBase::setOutputUnit( unit );
   mHashSymbol->setOutputUnit( unit );
-  setIntervalUnit( unit );
-  mOffsetUnit = unit;
-  setOffsetAlongLineUnit( unit );
 }
 
 QSet<QString> QgsHashedLineSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
@@ -3421,7 +3426,7 @@ void QgsRasterLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   double opacity = mOpacity * context.opacity();
   bool cached = false;
   mLineImage = QgsApplication::imageCache()->pathAsImage( mPath,
-               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+               QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
                       static_cast< int >( std::ceil( scaledHeight ) ) ),
                true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
 }
@@ -3466,7 +3471,7 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
     bool cached = false;
     sourceImage = QgsApplication::imageCache()->pathAsImage( path,
-                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * scaledHeight ) ),
+                  QSize( static_cast< int >( std::round( originalSize.width() / originalSize.height() * std::max( 1.0, scaledHeight ) ) ),
                          static_cast< int >( std::ceil( scaledHeight ) ) ),
                   true, opacity, cached, ( context.renderContext().flags() & Qgis::RenderContextFlag::RenderBlocking ) );
   }
@@ -3523,6 +3528,11 @@ QgsMapUnitScale QgsRasterLineSymbolLayer::mapUnitScale() const
 double QgsRasterLineSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QColor QgsRasterLineSymbolLayer::color() const
+{
+  return QColor();
 }
 
 
@@ -3760,6 +3770,11 @@ QgsMapUnitScale QgsLineburstSymbolLayer::mapUnitScale() const
 double QgsLineburstSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
 {
   return ( mWidth / 2.0 ) + mOffset;
+}
+
+QColor QgsLineburstSymbolLayer::color() const
+{
+  return QColor();
 }
 
 QgsColorRamp *QgsLineburstSymbolLayer::colorRamp()

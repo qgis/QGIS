@@ -86,6 +86,8 @@ Constructor for QgsPointDistanceRenderer.
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const;
+
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
@@ -287,7 +289,7 @@ Returns the map unit scale object for the distance tolerance. This is only used 
 
 
 
-    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group );
+    void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group ) const;
 %Docstring
 Renders the labels for a group.
 
@@ -302,7 +304,7 @@ Renders the labels for a group.
 %End
 
   private:
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) const = 0;
 %Docstring
 Draws a group of clustered points.
 

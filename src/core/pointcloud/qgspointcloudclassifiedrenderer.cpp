@@ -31,13 +31,21 @@ QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &col
 {
 }
 
+bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) const
+{
+  return mValue == other.value() &&
+         mColor == other.color() &&
+         mLabel == other.label() &&
+         mRender == other.renderState();
+}
 
 //
 // QgsPointCloudClassifiedRenderer
 //
 
-QgsPointCloudClassifiedRenderer::QgsPointCloudClassifiedRenderer()
-  :  mCategories( defaultCategories() )
+QgsPointCloudClassifiedRenderer::QgsPointCloudClassifiedRenderer( const QString &attributeName, const QgsPointCloudCategoryList &categories )
+  : mAttribute( attributeName )
+  , mCategories( categories )
 {
 }
 
@@ -183,7 +191,8 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 
 QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
 {
-  return QgsPointCloudCategoryList() << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
+  return QgsPointCloudCategoryList() << QgsPointCloudCategory( 0, QColor( "#BABABA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 0 ) )
+         << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
          << QgsPointCloudCategory( 2, QColor( "#AA5500" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 2 ) )
          << QgsPointCloudCategory( 3, QColor( "#00AAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 3 ) )
          << QgsPointCloudCategory( 4, QColor( "#55FF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 4 ) )
@@ -200,7 +209,7 @@ QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
          << QgsPointCloudCategory( 15, QColor( "#FF55FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 15 ) )
          << QgsPointCloudCategory( 16, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 16 ) )
          << QgsPointCloudCategory( 17, QColor( "#5555FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 17 ) )
-         << QgsPointCloudCategory( 18, QColor( 100, 100, 100 ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 18 ) );
+         << QgsPointCloudCategory( 18, QColor( "#646464" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 18 ) );
 }
 
 QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -313,4 +322,44 @@ void QgsPointCloudClassifiedRenderer::addCategory( const QgsPointCloudCategory &
 {
   mCategories.append( category );
 }
+
+std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudClassifiedRenderer::prepare()
+{
+  std::unique_ptr< QgsPointCloudClassifiedRendererPreparedData > data = std::make_unique< QgsPointCloudClassifiedRendererPreparedData >();
+  data->attributeName = mAttribute;
+
+  for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
+  {
+    if ( !category.renderState() )
+      continue;
+
+    data->colors.insert( category.value(), category.color() );
+  }
+
+  return data;
+}
+
+QSet<QString> QgsPointCloudClassifiedRendererPreparedData::usedAttributes() const
+{
+  return { attributeName };
+}
+
+bool QgsPointCloudClassifiedRendererPreparedData::prepareBlock( const QgsPointCloudBlock *block )
+{
+  const QgsPointCloudAttributeCollection attributes = block->attributes();
+  const QgsPointCloudAttribute *attribute = attributes.find( attributeName, attributeOffset );
+  if ( !attribute )
+    return false;
+
+  attributeType = attribute->type();
+  return true;
+}
+
+QColor QgsPointCloudClassifiedRendererPreparedData::pointColor( const QgsPointCloudBlock *block, int i, double )
+{
+  int attributeValue = 0;
+  QgsPointCloudRenderContext::getAttribute( block->data(), i * block->pointRecordSize() + attributeOffset, attributeType, attributeValue );
+  return colors.value( attributeValue );
+}
+
 

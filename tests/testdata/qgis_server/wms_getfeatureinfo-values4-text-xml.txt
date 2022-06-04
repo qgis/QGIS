@@ -1,4 +1,4 @@
-*****
+Content-Length: 1400
 Content-Type: text/xml; charset=utf-8
 
 <GetFeatureInfoResponse>

@@ -58,6 +58,7 @@
 #include "qgsorganizetablecolumnsdialog.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgstransactiongroup.h"
+#include "qgsdockablewidgethelper.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -75,6 +76,25 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
   return expContext;
 }
 
+QDomElement QgsAttributeTableDialog::writeXml( QDomDocument &document )
+{
+  QDomElement element = document.createElement( QStringLiteral( "attributeTable" ) );
+  mDockableWidgetHelper->writeXml( element );
+
+  element.setAttribute( QStringLiteral( "layer" ), mLayer ? mLayer->id() : QString() );
+  element.setAttribute( QStringLiteral( "filterMode" ), qgsEnumValueToKey( mMainView->filterMode() ) );
+  element.setAttribute( QStringLiteral( "view" ), qgsEnumValueToKey( mMainView->view() ) );
+
+  return element;
+}
+
+void QgsAttributeTableDialog::readXml( const QDomElement &element )
+{
+  mDockableWidgetHelper->readXml( element );
+
+  mMainView->setView( qgsEnumKeyToValue( element.attribute( QStringLiteral( "view" ) ), QgsDualView::ViewMode::AttributeTable ) );
+}
+
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
   if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout ) )
@@ -88,10 +108,9 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked )
   : QDialog( parent, flags )
   , mLayer( layer )
-
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );
@@ -141,12 +160,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     settings.value( QStringLiteral( "/qgis/attributeTableLastAddFeatureMethod" ) ) == QStringLiteral( "attributeForm" )
     ? mActionAddFeatureViaAttributeForm->icon()
     : mActionAddFeatureViaAttributeTable->icon() );
-
-  const QgsFields fields = mLayer->fields();
-  for ( const QgsField &field : fields )
-  {
-    mVisibleFields.append( field.name() );
-  }
 
   // Fix selection color on losing focus (Windows)
   setStyleSheet( QgisApp::instance()->styleSheet() );
@@ -255,17 +268,40 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [ = ] { QgisApp::instance()->saveEdits(); } );
 
-  const bool dockTable = settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
-  if ( dockTable )
+  const bool isDocked = initiallyDocked ? *initiallyDocked : settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
+  mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, windowTitle(), this, QgisApp::instance(),
+      Qt::BottomDockWidgetArea,  QStringList(), !initiallyDocked, QStringLiteral( "Windows/BetterAttributeTable/geometry" ) );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
   {
-    mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
-    mDock->setWidget( this );
-    connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
-  }
-  mActionDockUndock->setChecked( dockTable );
-  connect( mActionDockUndock, &QAction::toggled, this, &QgsAttributeTableDialog::toggleDockMode );
-  installEventFilter( this );
+    close();
+  } );
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::dockModeToggled, this, [ = ]( bool docked )
+  {
+    if ( docked )
+    {
+      // To prevent "QAction::event: Ambiguous shortcut overload"
+      QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
+      mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
+      mActionRemoveSelection->setShortcut( QKeySequence() );
+      // duplicated on Main Window, with different semantics
+      mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
+      mActionSearchForm->setShortcut( QKeySequence() );
+    }
+    else
+    {
+      // restore attribute table shortcuts in window mode
+      QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
+      // duplicated on Main Window
+      mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
+      mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
+      // duplicated on Main Window, with different semantics
+      mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
+      mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
+    }
+  } );
+
+  mActionDockUndock = mDockableWidgetHelper->createDockUndockAction( tr( "Dock Attribute Table" ), this );
+  mToolbar->addAction( mActionDockUndock );
 
   updateTitle();
 
@@ -392,21 +428,23 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   }
 }
 
+QgsAttributeTableDialog::~QgsAttributeTableDialog()
+{
+  delete mDockableWidgetHelper;
+}
+
 void QgsAttributeTableDialog::updateTitle()
 {
   if ( ! mLayer )
   {
     return;
   }
-  QWidget *w = mDock ? qobject_cast<QWidget *>( mDock )
-               : mDialog ? qobject_cast<QWidget *>( mDialog )
-               : qobject_cast<QWidget *>( this );
-  w->setWindowTitle( tr( " %1 — Features Total: %L2, Filtered: %L3, Selected: %L4" )
-                     .arg( mLayer->name() )
-                     .arg( std::max( static_cast< long long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
-                     .arg( mMainView->filteredFeatureCount() )
-                     .arg( mLayer->selectedFeatureCount() )
-                   );
+  const QString title = tr( " %1 — Features Total: %L2, Filtered: %L3, Selected: %L4" )
+                        .arg( mLayer->name() )
+                        .arg( std::max( static_cast< long long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
+                        .arg( mMainView->filteredFeatureCount() )
+                        .arg( mLayer->selectedFeatureCount() );
+  mDockableWidgetHelper->setWindowTitle( title );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
     mRunFieldCalc->setText( tr( "Update All" ) );
@@ -435,20 +473,6 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent *event )
   {
     QgisApp::instance()->deleteSelected( mLayer, this );
   }
-}
-
-bool QgsAttributeTableDialog::eventFilter( QObject *object, QEvent *ev )
-{
-  if ( ev->type() == QEvent::Close && !mDock && ( !mDialog || mDialog == object ) )
-  {
-    if ( QWidget *w = qobject_cast< QWidget * >( object ) )
-    {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "Windows/BetterAttributeTable/geometry" ), w->saveGeometry() );
-    }
-  }
-
-  return QDialog::eventFilter( object, ev );
 }
 
 void QgsAttributeTableDialog::updateFieldFromExpression()
@@ -1026,72 +1050,6 @@ void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFea
   }
 }
 
-void QgsAttributeTableDialog::toggleDockMode( bool docked )
-{
-  if ( docked )
-  {
-    // going from window -> dock, so save current window geometry
-    QgsSettings().setValue( QStringLiteral( "Windows/BetterAttributeTable/geometry" ), mDialog ? mDialog->saveGeometry() : saveGeometry() );
-    if ( mDialog )
-    {
-      mDialog->removeEventFilter( this );
-      mDialog->setLayout( nullptr );
-      mDialog->deleteLater();
-      mDialog = nullptr;
-    }
-
-    mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
-    mDock->setWidget( this );
-    connect( this, &QObject::destroyed, mDock, &QWidget::close );
-    QgisApp::instance()->addTabifiedDockWidget( Qt::BottomDockWidgetArea, mDock, QStringList(), true );
-    updateTitle();
-
-    // To prevent "QAction::event: Ambiguous shortcut overload"
-    QgsDebugMsgLevel( QStringLiteral( "Remove shortcuts from attribute table already defined in main window" ), 2 );
-    mActionZoomMapToSelectedRows->setShortcut( QKeySequence() );
-    mActionRemoveSelection->setShortcut( QKeySequence() );
-    // duplicated on Main Window, with different semantics
-    mActionPanMapToSelectedRows->setShortcut( QKeySequence() );
-    mActionSearchForm->setShortcut( QKeySequence() );
-  }
-  else
-  {
-    // going from dock -> window
-
-    mDialog = new QDialog( QgisApp::instance(), Qt::Window );
-    mDialog->setAttribute( Qt::WA_DeleteOnClose );
-
-    QVBoxLayout *vl = new QVBoxLayout();
-    vl->setContentsMargins( 0, 0, 0, 0 );
-    vl->addWidget( this );
-    mDialog->setLayout( vl );
-
-    if ( mDock )
-    {
-      mDock->setWidget( nullptr );
-      disconnect( this, &QObject::destroyed, mDock, &QWidget::close );
-      mDock->deleteLater();
-      mDock = nullptr;
-    }
-
-    // subscribe to close events, so that we can save window geometry
-    mDialog->installEventFilter( this );
-
-    updateTitle();
-    mDialog->restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
-    mDialog->show();
-
-    // restore attribute table shortcuts in window mode
-    QgsDebugMsgLevel( QStringLiteral( "Restore attribute table dialog shortcuts in window mode" ), 2 );
-    // duplicated on Main Window
-    mActionZoomMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+J" ) );
-    mActionRemoveSelection->setShortcut( QStringLiteral( "Ctrl+Shift+A" ) );
-    // duplicated on Main Window, with different semantics
-    mActionPanMapToSelectedRows->setShortcut( QStringLiteral( "Ctrl+P" ) );
-    mActionSearchForm->setShortcut( QStringLiteral( "Ctrl+F" ) );
-  }
-}
-
 void QgsAttributeTableDialog::updateLayerModifiedActions()
 {
   bool saveEnabled { mActionToggleEditing->isEnabled() &&mLayer->isEditable() &&mLayer->isModified() };
@@ -1107,20 +1065,4 @@ void QgsAttributeTableDialog::updateLayerModifiedActions()
     }
   }
   mActionSaveEdits->setEnabled( saveEnabled );
-}
-
-//
-// QgsAttributeTableDock
-//
-
-QgsAttributeTableDock::QgsAttributeTableDock( const QString &title, QWidget *parent, Qt::WindowFlags flags )
-  : QgsDockWidget( title, parent, flags )
-{
-  setObjectName( QStringLiteral( "AttributeTable" ) ); // set object name so the position can be saved
-}
-
-void QgsAttributeTableDock::closeEvent( QCloseEvent *ev )
-{
-  Q_UNUSED( ev )
-  deleteLater();
 }

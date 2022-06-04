@@ -284,7 +284,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 .. versionadded:: 3.10
 %End
 
- QFunctionPointer function( const QString &providerKey, const QString &functionName ) /Deprecated/;
+ QFunctionPointer function( const QString &providerKey, const QString &functionName ) const /Deprecated/;
 %Docstring
 Gets pointer to provider function
 
@@ -658,7 +658,6 @@ register a new vector data provider from its ``providerMetadata``
   private:
     QgsProviderRegistry( const QString &pluginPath );
 }; // class QgsProviderRegistry
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "5 = 4",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "4 = 4",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "5 = NULL",
     "returns": "NULL"

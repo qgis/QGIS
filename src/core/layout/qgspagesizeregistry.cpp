@@ -108,7 +108,7 @@ QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
   return QString();
 }
 
-bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSize &pageSize )
+bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSize &pageSize ) const
 {
   const QList< QgsPageSize > matches = find( pageSizeName.trimmed() );
   if ( matches.length() > 0 )

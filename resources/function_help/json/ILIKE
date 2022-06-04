@@ -2,7 +2,7 @@
   "name": "ILIKE",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.",
+  "description": "Returns TRUE if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.",
   "arguments": [{
     "arg": "string/number",
     "description": "string to search"
@@ -12,49 +12,49 @@
   }],
   "examples": [{
     "expression": "'A' ILIKE 'A'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'A' ILIKE 'a'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'A' ILIKE 'B'",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "'ABC' ILIKE 'b'",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "'ABC' ILIKE 'B'",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "'ABC' ILIKE '_b_'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABC' ILIKE '_B_'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABCD' ILIKE '_b_'",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "'ABCD' ILIKE '_B_'",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "'ABCD' ILIKE '_b%'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABCD' ILIKE '_B%'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABCD' ILIKE '%b%'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABCD' ILIKE '%B%'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABCD%' ILIKE 'abcd\\\\\\\\%'",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'ABCD' ILIKE '%B\\\\\\\\%'",
-    "returns": "0"
+    "returns": "FALSE"
   }],
   "tags": ["compare", "numbers", "insensitive", "first", "match", "sensitive", "supplied", "parameter", "case", "matches", "pattern"]
 }

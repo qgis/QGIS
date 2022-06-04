@@ -101,8 +101,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                     if not group:
                         group = details.project.layerTreeRoot().insertGroup(0, group_name)
 
-                    details.project.addMapLayer(mapLayer, False)
-                    group.addLayer(mapLayer)
+                    details.project.addMapLayer(mapLayer, False)  # Add to registry
+                    group.insertLayer(0, mapLayer)
                 else:
                     details.project.addMapLayer(mapLayer)
 

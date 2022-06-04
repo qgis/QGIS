@@ -56,6 +56,16 @@ uses a data provider which does not specify paths in a layer URI.
 .. versionadded:: 3.22
 %End
 
+    static QList< QgsMapLayer * > sortLayersByType( const QList< QgsMapLayer * > &layers, const QList< QgsMapLayerType > &order );
+%Docstring
+Sorts a list of map ``layers`` by their layer type, respecting the ``order`` of types specified.
+
+Layer types which appear earlier in the ``order`` list will result in matching layers appearing earlier in the
+result list.
+
+.. versionadded:: 3.26
+%End
+
 
 };
 

@@ -38,6 +38,7 @@
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
 %Include auto_generated/qgsdbfilterproxymodel.sip
+%Include auto_generated/qgsdbquerylog.sip
 %Include auto_generated/qgsdefaultvalue.sip
 %Include auto_generated/qgsdiagramrenderer.sip
 %Include auto_generated/qgsdistancearea.sip
@@ -118,6 +119,7 @@
 %Include auto_generated/qgsmapunitscale.sip
 %Include auto_generated/qgsmargins.sip
 %Include auto_generated/qgsmaskidprovider.sip
+%Include auto_generated/qgsmaskpaintdevice.sip
 %Include auto_generated/qgsmessagelog.sip
 %Include auto_generated/qgsmessageoutput.sip
 %Include auto_generated/qgsmimedatautils.sip
@@ -163,6 +165,7 @@
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
 %Include auto_generated/qgssimplifymethod.sip
+%Include auto_generated/qgssingleitemmodel.sip
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgssnappingutils.sip
 %Include auto_generated/qgsspatialindex.sip
@@ -209,6 +212,7 @@
 %Include auto_generated/./3d/qgs3dsymbolregistry.sip
 %Include auto_generated/./3d/qgsabstract3dsymbol.sip
 %Include auto_generated/./3d/qgsabstract3drenderer.sip
+%Include auto_generated/./3d/qgsabstractpointcloud3drenderer.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationitem.sip
 %Include auto_generated/annotations/qgsannotationitemeditoperation.sip
@@ -247,6 +251,7 @@
 %Include auto_generated/callouts/qgscalloutsregistry.sip
 %Include auto_generated/classification/qgsclassificationcustom.sip
 %Include auto_generated/classification/qgsclassificationequalinterval.sip
+%Include auto_generated/classification/qgsclassificationfixedinterval.sip
 %Include auto_generated/classification/qgsclassificationjenks.sip
 %Include auto_generated/classification/qgsclassificationlogarithmic.sip
 %Include auto_generated/classification/qgsclassificationmethod.sip
@@ -268,6 +273,12 @@
 %Include auto_generated/editform/qgsattributeeditorrelation.sip
 %Include auto_generated/editform/qgsattributeeditorhtmlelement.sip
 %Include auto_generated/editform/qgsattributeeditorqmlelement.sip
+%Include auto_generated/elevation/qgsabstractprofilegenerator.sip
+%Include auto_generated/elevation/qgsabstractprofilesource.sip
+%Include auto_generated/elevation/qgsprofilepoint.sip
+%Include auto_generated/elevation/qgsprofilerenderer.sip
+%Include auto_generated/elevation/qgsprofilerequest.sip
+%Include auto_generated/elevation/qgsprofilesnapping.sip
 %Include auto_generated/elevation/qgsterrainprovider.sip
 %Include auto_generated/externalstorage/qgsexternalstorage.sip
 %Include auto_generated/externalstorage/qgsexternalstorageregistry.sip
@@ -347,6 +358,7 @@
 %Include auto_generated/labeling/qgslabelingresults.sip
 %Include auto_generated/labeling/qgslabellinesettings.sip
 %Include auto_generated/labeling/qgslabelobstaclesettings.sip
+%Include auto_generated/labeling/qgslabelplacementsettings.sip
 %Include auto_generated/labeling/qgslabelposition.sip
 %Include auto_generated/labeling/qgslabelsearchtree.sip
 %Include auto_generated/labeling/qgslabelthinningsettings.sip
@@ -439,6 +451,7 @@
 %Include auto_generated/mesh/qgsmeshdataprovidertemporalcapabilities.sip
 %Include auto_generated/mesh/qgsmeshdataset.sip
 %Include auto_generated/mesh/qgsmeshlayer.sip
+%Include auto_generated/mesh/qgsmeshlayerelevationproperties.sip
 %Include auto_generated/mesh/qgsmeshlayerinterpolator.sip
 %Include auto_generated/mesh/qgsmeshlayertemporalproperties.sip
 %Include auto_generated/mesh/qgsmeshrenderersettings.sip
@@ -448,6 +461,7 @@
 %Include auto_generated/mesh/qgsmeshcalculator.sip
 %Include auto_generated/mesh/qgsmeshadvancedediting.sip
 %Include auto_generated/mesh/qgsmeshforcebypolylines.sip
+%Include auto_generated/plot/qgsplot.sip
 %Include auto_generated/pointcloud/qgspointcloudattribute.sip
 %Include auto_generated/pointcloud/qgspointcloudattributebyramprenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudattributemodel.sip
@@ -460,9 +474,11 @@
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip
 %Include auto_generated/pointcloud/qgspointcloudrgbrenderer.sip
+%Include auto_generated/pointcloud/qgspointcloudstatistics.sip
 %Include auto_generated/proj/qgscelestialbody.sip
 %Include auto_generated/proj/qgscoordinatereferencesystem.sip
 %Include auto_generated/proj/qgscoordinatereferencesystemregistry.sip
+%Include auto_generated/proj/qgscoordinatereferencesystemutils.sip
 %Include auto_generated/proj/qgscoordinatetransform.sip
 %Include auto_generated/proj/qgscoordinatetransformcontext.sip
 %Include auto_generated/proj/qgsdatums.sip
@@ -489,6 +505,7 @@
 %Include auto_generated/network/qgshttpheaders.sip
 %Include auto_generated/numericformats/qgsbasicnumericformat.sip
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
+%Include auto_generated/numericformats/qgscoordinatenumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip
 %Include auto_generated/numericformats/qgsfallbacknumericformat.sip
 %Include auto_generated/numericformats/qgsfractionnumericformat.sip
@@ -532,6 +549,7 @@
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip
 %Include auto_generated/project/qgsprojectstorageregistry.sip
+%Include auto_generated/project/qgsprojectstylesettings.sip
 %Include auto_generated/project/qgsprojecttimesettings.sip
 %Include auto_generated/project/qgsprojecttranslator.sip
 %Include auto_generated/project/qgsprojectutils.sip
@@ -612,6 +630,9 @@
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
+%If ( CONCATENATED_TABLES_MODEL )
+%Include auto_generated/symbology/qgscombinedstylemodel.sip
+%End
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
 %Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip

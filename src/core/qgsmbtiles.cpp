@@ -77,7 +77,7 @@ bool QgsMbTiles::create()
   return true;
 }
 
-QString QgsMbTiles::metadataValue( const QString &key )
+QString QgsMbTiles::metadataValue( const QString &key ) const
 {
   if ( !mDatabase )
   {
@@ -103,7 +103,7 @@ QString QgsMbTiles::metadataValue( const QString &key )
   return preparedStatement.columnAsText( 0 );
 }
 
-void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
+void QgsMbTiles::setMetadataValue( const QString &key, const QString &value ) const
 {
   if ( !mDatabase )
   {
@@ -127,7 +127,7 @@ void QgsMbTiles::setMetadataValue( const QString &key, const QString &value )
   }
 }
 
-QgsRectangle QgsMbTiles::extent()
+QgsRectangle QgsMbTiles::extent() const
 {
   const QString boundsStr = metadataValue( "bounds" );
   if ( boundsStr.isEmpty() )
@@ -140,7 +140,7 @@ QgsRectangle QgsMbTiles::extent()
                        boundsArray[2].toDouble(), boundsArray[3].toDouble() );
 }
 
-QByteArray QgsMbTiles::tileData( int z, int x, int y )
+QByteArray QgsMbTiles::tileData( int z, int x, int y ) const
 {
   if ( !mDatabase )
   {
@@ -159,14 +159,15 @@ QByteArray QgsMbTiles::tileData( int z, int x, int y )
 
   if ( preparedStatement.step() != SQLITE_ROW )
   {
-    QgsDebugMsg( QStringLiteral( "MBTile not found: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ) );
+    // this is not entirely unexpected -- user may have just requested a tile outside of the extent of the mbtiles package
+    QgsDebugMsgLevel( QStringLiteral( "MBTile not found: z=%1 x=%2 y=%3" ).arg( z ).arg( x ).arg( y ), 2 );
     return QByteArray();
   }
 
   return preparedStatement.columnAsBlob( 0 );
 }
 
-QImage QgsMbTiles::tileDataAsImage( int z, int x, int y )
+QImage QgsMbTiles::tileDataAsImage( int z, int x, int y ) const
 {
   QImage tileImage;
   const QByteArray tileBlob = tileData( z, x, y );
@@ -178,7 +179,7 @@ QImage QgsMbTiles::tileDataAsImage( int z, int x, int y )
   return tileImage;
 }
 
-void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data )
+void QgsMbTiles::setTileData( int z, int x, int y, const QByteArray &data ) const
 {
   if ( !mDatabase )
   {

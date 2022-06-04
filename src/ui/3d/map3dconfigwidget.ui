@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>775</width>
-    <height>620</height>
+    <width>881</width>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,7 +179,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="mPageTerrain">
           <layout class="QVBoxLayout" name="verticalLayout_61">
@@ -205,8 +205,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>709</width>
-                <height>604</height>
+                <width>280</width>
+                <height>301</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -319,9 +319,9 @@
                    </widget>
                   </item>
                   <item row="5" column="0">
-                   <widget class="QLabel" name="label_12">
+                   <widget class="QLabel" name="labelterrainElevationOffset">
                     <property name="text">
-                     <string>Terrain elevation offset</string>
+                     <string>Offset</string>
                     </property>
                    </widget>
                   </item>
@@ -417,7 +417,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>77</width>
-                <height>43</height>
+                <height>47</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -500,8 +500,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>149</width>
-                <height>43</height>
+                <width>151</width>
+                <height>47</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -590,8 +590,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>234</width>
-                <height>220</height>
+                <width>816</width>
+                <height>649</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -674,6 +674,78 @@
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="mGroupBox3dAxis">
+                 <property name="title">
+                  <string>Show 3D Axis</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QFormLayout" name="formLayout_2">
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="mLabel3dAxisType_2">
+                    <property name="text">
+                     <string>Axis type</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QComboBox" name="mCbo3dAxisType"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="mLabel3dAxisHorizPos_2">
+                    <property name="text">
+                     <string>Horizontal position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QComboBox" name="mCbo3dAxisHorizPos"/>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="mLabel3dAxisVertPos_2">
+                    <property name="text">
+                     <string>Vertical position</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QComboBox" name="mCbo3dAxisVertPos"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox">
+                 <property name="title">
+                  <string>Navigation Synchronization</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_8">
+                  <item row="0" column="0">
+                   <widget class="QCheckBox" name="mSync2DTo3DCheckbox">
+                    <property name="text">
+                     <string>2D Map View Follows 3D Camera</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QCheckBox" name="mSync3DTo2DCheckbox">
+                    <property name="text">
+                     <string>3D Camera Follows 2D Map View</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QCheckBox" name="mVisualizeExtentCheckBox">
+                    <property name="text">
+                     <string>Show Visible Camera Area in 2D Map View</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QGroupBox" name="groupSkyboxSettings">
                  <property name="title">
                   <string>Show Skybox</string>
@@ -730,8 +802,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>695</width>
-                <height>690</height>
+                <width>802</width>
+                <height>732</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -1054,6 +1126,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -1062,12 +1140,6 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
@@ -1133,6 +1205,7 @@
   <tabstop>mDebugDepthMapSizeSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

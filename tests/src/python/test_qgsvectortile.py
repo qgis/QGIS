@@ -28,6 +28,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsDataSourceUri,
                        QgsTileXYZ,
                        QgsProviderRegistry,
+                       QgsVectorTileLayer,
                        QgsProviderMetadata)
 
 from pathlib import Path
@@ -116,6 +117,15 @@ class TestVectorTile(unittest.TestCase):
         parts['url'] = 'https://fake.new.server/{x}/{y}/{z}.png'
         uri = md.encodeUri(parts)
         self.assertEqual(uri, 'referer=https://qgis.org/&serviceType=arcgis&styleUrl=https://qgis.org/&type=xyz&url=https://fake.new.server/%7Bx%7D/%7By%7D/%7Bz%7D.png&zmax=2')
+
+    def testZoomRange(self):
+        """
+        Test retrieval of zoom range from URI
+        """
+        vl = QgsVectorTileLayer('type=xyz&url=https://wxs.ign.fr/parcellaire/geoportail/tms/1.0.0/PCI/%7Bz%7D/%7Bx%7D/%7By%7D.pbf&zmax=19&zmin=5', 'test')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.sourceMinZoom(), 5)
+        self.assertEqual(vl.sourceMaxZoom(), 19)
 
 
 if __name__ == '__main__':

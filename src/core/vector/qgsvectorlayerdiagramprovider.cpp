@@ -23,6 +23,7 @@
 #include "qgsgeos.h"
 #include "qgslabelingresults.h"
 #include "qgsrendercontext.h"
+#include "qgsexpressioncontextutils.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -37,6 +38,9 @@ QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer *la
   , mOwnsSource( ownFeatureLoop )
 {
   init();
+
+  // we have to create an expression context scope for the layer in advance, while we still have access to the layer itself
+  mLayerScope.reset( layer->createExpressionContextScope() );
 }
 
 
@@ -44,7 +48,7 @@ void QgsVectorLayerDiagramProvider::init()
 {
   mName = mLayerId;
   mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
-  mPlacement = QgsPalLayerSettings::Placement( mSettings.placement() );
+  mPlacement = static_cast< Qgis::LabelPlacement >( mSettings.placement() );
 }
 
 
@@ -122,6 +126,9 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
   feature.setId( label->getFeaturePart()->featureId() );
   feature.setAttributes( dlf->attributes() );
 
+  // at time of drawing labels the expression context won't contain a layer scope -- so we manually add it here so that
+  // associated variables work correctly
+  QgsExpressionContextScopePopper layerScopePopper( context.expressionContext(), new QgsExpressionContextScope( *mLayerScope ) );
   context.expressionContext().setFeature( feature );
 
   //calculate top-left point for diagram
@@ -143,9 +150,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
 
   //insert into label search tree to manipulate position interactively
   mEngine->results()->mLabelSearchTree->insertLabel( label, label->getFeaturePart()->featureId(), mLayerId, QString(), QFont(), true, false );
-
 }
-
 
 bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
 {

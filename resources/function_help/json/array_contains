@@ -2,7 +2,7 @@
   "name": "array_contains",
   "type": "function",
   "groups": ["Arrays"],
-  "description": "Returns true if an array contains the given value.",
+  "description": "Returns TRUE if an array contains the given value.",
   "arguments": [{
     "arg": "array",
     "description": "an array"
@@ -12,7 +12,7 @@
   }],
   "examples": [{
     "expression": "array_contains(array(1,2,3),2)",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["array", "search", "contains"]
 }

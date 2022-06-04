@@ -464,6 +464,7 @@
         <file>themes/default/mActionZoomToSelected.svg</file>
         <file>themes/default/mActionFilterTableFields.svg</file>
         <file>themes/default/mActionFirst.svg</file>
+        <file>themes/default/mIcon3dAxis.svg</file>
         <file>themes/default/mIconAtlas.svg</file>
         <file>themes/default/mIconAutoPlacementSettings.svg</file>
         <file>themes/default/mIconCamera.svg</file>
@@ -591,6 +592,7 @@
         <file>themes/default/propertyicons/attributes.svg</file>
         <file>themes/default/propertyicons/CRS.svg</file>
         <file>themes/default/propertyicons/datadefined.svg</file>
+        <file>themes/default/propertyicons/database.svg</file>
         <file>themes/default/propertyicons/diagram.svg</file>
         <file>themes/default/propertyicons/digitizing.svg</file>
         <file>themes/default/propertyicons/display.svg</file>
@@ -950,6 +952,12 @@
         <file>themes/default/mActionEditItalic.svg</file>
         <file>themes/default/mActionEditUnderline.svg</file>
         <file>themes/default/mActionStrikeOut.svg</file>
+        <file>themes/default/mActionZoomInXAxis.svg</file>
+        <file>themes/default/mActionCaptureCurveFromFeature.svg</file>
+        <file>themes/default/mIconLayerTree.svg</file>
+        <file>themes/default/mIconSurfaceElevationFillBelow.svg</file>
+        <file>themes/default/mIconSurfaceElevationLine.svg</file>
+        <file>themes/default/classification_methods/mClassificationFixedInterval.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

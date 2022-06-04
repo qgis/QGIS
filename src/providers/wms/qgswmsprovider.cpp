@@ -52,6 +52,7 @@
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
+#include "qgstiledownloadmanager.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -660,10 +661,16 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode,
       break;
   }
 
+  if ( feedback && feedback->isCanceled() )
+    return;
+
   QList<QRectF> missingRectsToDelete;
   const auto constRequests = requests;
   for ( const TileRequest &r : constRequests )
   {
+    if ( feedback && feedback->isCanceled() )
+      return;
+
     QImage localImage;
     if ( ! QgsTileCache::tile( r.url, localImage ) )
       continue;
@@ -683,6 +690,9 @@ void QgsWmsProvider::fetchOtherResTiles( QgsTileMode tileMode,
       }
     }
   }
+
+  if ( feedback && feedback->isCanceled() )
+    return;
 
   // remove all the rectangles we have completely covered by tiles from this resolution
   // so we will not use tiles from multiple resolutions for one missing tile (to save time)
@@ -898,6 +908,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
         return image;
     }
 
+    if ( feedback && feedback->isCanceled() )
+      return image;
+
     QList<TileImage> tileImages;  // in the correct resolution
     QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
 
@@ -915,6 +928,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
     const auto constRequests = requests;
     for ( const TileRequest &r : constRequests )
     {
+      if ( feedback && feedback->isCanceled() )
+        return image;
+
       QImage localImage;
 
       if ( mbtilesReader && !QgsTileCache::tile( r.url, localImage ) )
@@ -955,6 +971,9 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
       }
     }
 
+    if ( feedback && feedback->isCanceled() )
+      return image;
+
     if ( sourceResolution < 0 )
       effectiveViewExtent = viewExtent;
 
@@ -977,9 +996,15 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
       // first we check lower resolution tiles: one level back, then two levels back (if there is still some area not covered),
       // finally (in the worst case we use one level higher resolution tiles). This heuristic should give
       // good overviews while not spending too much time drawing cached tiles from resolutions far away.
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 1, lowerResTiles );
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 2, lowerResTiles2 );
-      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, -1, higherResTiles );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 1, lowerResTiles, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, 2, lowerResTiles2, feedback );
+      fetchOtherResTiles( tileMode, effectiveViewExtent, image->width(), missing, tm->tres, -1, higherResTiles, feedback );
+
+      if ( feedback && feedback->isCanceled() )
+      {
+        p.end();
+        return image;
+      }
 
       // draw the cached tiles lowest to highest resolution
       const auto constLowerResTiles2 = lowerResTiles2;
@@ -1004,10 +1029,22 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
 
     int t1 = t.elapsed() - t0;
 
+    if ( feedback && feedback->isCanceled() )
+    {
+      p.end();
+      return image;
+    }
+
     // draw composite in this resolution
     const auto constTileImages = tileImages;
     for ( const TileImage &ti : constTileImages )
     {
+      if ( feedback && feedback->isCanceled() )
+      {
+        p.end();
+        return image;
+      }
+
       if ( ti.smooth && mSettings.mSmoothPixmapTransform )
         p.setRenderHint( QPainter::SmoothPixmapTransform, true );
       p.drawImage( ti.rect, ti.img );
@@ -1701,7 +1738,7 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri, const QgsRectangl
     tm.topLeft = topLeft;
     tm.tileWidth = tm.tileHeight = 256 * tilePixelRatio;
     tm.matrixWidth = tm.matrixHeight = 1 << zoom;
-    tm.tres = xspan / ( tm.tileWidth * tm.matrixWidth );
+    tm.tres = xspan / ( static_cast< qgssize >( tm.tileWidth ) * tm.matrixWidth );
     tm.scaleDenom = 0.0;
 
     mCaps.mTileMatrixSets[tms.identifier].tileMatrices[tm.tres] = tm;
@@ -2203,13 +2240,9 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  // Prevent prefetch of XYZ openstreetmap images, see: https://github.com/qgis/QGIS/issues/34813
-  // But also prevent prefetching if service is a true WMS (mSettings.mTiled = True)
-  // See https://github.com/qgis/QGIS/issues/34813
-  if ( mSettings.mTiled && !( mSettings.mXyz && dataSourceUri().contains( QStringLiteral( "openstreetmap.org" ) ) ) )
+  if ( mSettings.mXyz )
   {
-    // March 2021: *never* prefetch tile based layers, see: https://github.com/qgis/QGIS/pull/41953
-    // capability |= Capability::Prefetch;
+    capability |= Capability::Prefetch;
   }
 
   if ( mSettings.mTiled || mSettings.mXyz )
@@ -4449,11 +4482,8 @@ QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString 
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRect ), r.rect );
     request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), 0 );
 
-    QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
-    connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
-
-    QString reqString = r.url.url();
-
+    QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
+    connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
     mReplies << reply;
   }
 }
@@ -4475,7 +4505,7 @@ void QgsWmsTiledImageDownloadHandler::downloadBlocking()
 
 void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+  QgsTileDownloadManagerReply *reply = qobject_cast<QgsTileDownloadManagerReply *>( sender() );
 
 #if defined(QGISDEBUG)
   bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
@@ -4554,10 +4584,10 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
       reply->deleteLater();
 
       QgsDebugMsgLevel( QStringLiteral( "redirected gettile: %1" ).arg( redirect.toString() ), 2 );
-      reply = QgsNetworkAccessManager::instance()->get( request );
-      mReplies << reply;
 
-      connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
+      QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
+      connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
+      mReplies << reply;
 
       return;
     }
@@ -4582,7 +4612,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     if ( !contentType.isEmpty() && !contentType.startsWith( QLatin1String( "image/" ), Qt::CaseInsensitive ) &&
          contentType.compare( QLatin1String( "application/octet-stream" ), Qt::CaseInsensitive ) != 0 )
     {
-      QByteArray text = reply->readAll();
+      QByteArray text = reply->data();
       QString errorTitle, errorText;
       if ( contentType.compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0 && QgsWmsProvider::parseServiceExceptionReportDom( text, errorTitle, errorText ) )
       {
@@ -4619,9 +4649,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
     // only take results from current request number
     if ( mTileReqNo == tileReqNo )
     {
-      QgsDebugMsgLevel( QStringLiteral( "tile reply: length %1" ).arg( reply->bytesAvailable() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "tile reply: length %1" ).arg( reply->data().size() ), 2 );
 
-      QImage myLocalImage = QImage::fromData( reply->readAll() );
+      QImage myLocalImage = QImage::fromData( reply->data() );
 
       if ( !myLocalImage.isNull() )
       {
@@ -4691,7 +4721,7 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 
           QString errorMessage;
           if ( contentType.startsWith( QLatin1String( "text/plain" ) ) )
-            errorMessage = reply->readAll();
+            errorMessage = reply->data();
           else
             errorMessage = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString();
 
@@ -4721,12 +4751,9 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
 void QgsWmsTiledImageDownloadHandler::canceled()
 {
   QgsDebugMsgLevel( QStringLiteral( "Caught canceled() signal" ), 3 );
-  const auto constMReplies = mReplies;
-  for ( QNetworkReply *reply : constMReplies )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Aborting tiled network request" ), 3 );
-    reply->abort();
-  }
+  qDeleteAll( mReplies );
+  mReplies.clear();
+  finish();
 }
 
 
@@ -4769,9 +4796,9 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   QgsDebugMsgLevel( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ), 2 );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
 
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
+  QgsTileDownloadManagerReply *reply = QgsApplication::tileDownloadManager()->get( request );
+  connect( reply, &QgsTileDownloadManagerReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
   mReplies << reply;
-  connect( reply, &QNetworkReply::finished, this, &QgsWmsTiledImageDownloadHandler::tileReplyFinished );
 }
 
 double QgsWmsTiledImageDownloadHandler::sourceResolution() const

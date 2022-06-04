@@ -36,8 +36,8 @@ class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnn
     void mBrowseToolButton_clicked();
     void deleteItem();
     void mButtonBox_clicked( QAbstractButton *button );
-    void on_mFileRadioButton_toggled( bool checked );
-    void on_mSourceRadioButton_toggled( bool checked );
+    void fileRadioButtonToggled( bool checked );
+    void sourceRadioButtonToggled( bool checked );
     void showHelp();
 };
 

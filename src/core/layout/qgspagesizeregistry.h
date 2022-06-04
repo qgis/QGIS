@@ -109,7 +109,7 @@ class CORE_EXPORT QgsPageSizeRegistry
      * The decoded page size will be stored in the \a size argument.
      * \returns TRUE if string was successfully decoded
     */
-    bool decodePageSize( const QString &string, QgsPageSize &size );
+    bool decodePageSize( const QString &string, QgsPageSize &size ) const;
 
   private:
 

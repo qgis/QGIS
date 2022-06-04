@@ -803,6 +803,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
     QgsUnitTypes::RenderUnit outputUnit() const FINAL;
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
     QgsMapUnitScale mapUnitScale() const FINAL;
     QVariantMap properties() const override;
@@ -1258,6 +1259,7 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QColor color() const override;
 
   protected:
     QString mPath;
@@ -1308,6 +1310,7 @@ class CORE_EXPORT QgsLineburstSymbolLayer : public QgsAbstractBrushedLineSymbolL
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    QColor color() const override;
 
     /**
      * Returns the gradient color mode, which controls how gradient color stops are created.

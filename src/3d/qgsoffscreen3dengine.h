@@ -80,9 +80,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
     QSurface *surface() const override;
-  signals:
-    //! Emitted after a call to requestCaptureImage() to return the captured image.
-    void imageCaptured( const QImage &image );
+
   private:
 
     QSize mSize = QSize( 640, 480 );

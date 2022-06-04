@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
@@ -23,27 +22,82 @@
 
 #include <QFile>
 
+QgsConfigCache *QgsConfigCache::sInstance = nullptr;
+
+
+QgsAbstractCacheStrategy *getStrategyFromSettings( QgsServerSettings *settings )
+{
+  QgsAbstractCacheStrategy *strategy;
+  if ( settings && settings->projectCacheStrategy() == QLatin1String( "periodic" ) )
+  {
+    strategy = new QgsPeriodicCacheStrategy( settings->projectCacheCheckInterval() );
+    QgsMessageLog::logMessage(
+      QStringLiteral( "Initializing 'periodic' cache strategy" ),
+      QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  }
+  else if ( settings && settings->projectCacheStrategy() == QLatin1String( "off" ) )
+  {
+    strategy = new QgsNullCacheStrategy();
+    QgsMessageLog::logMessage(
+      QStringLiteral( "Initializing 'off' cache strategy" ),
+      QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  }
+  else
+  {
+    strategy = new QgsFileSystemCacheStrategy();
+    QgsMessageLog::logMessage(
+      QStringLiteral( "Initializing 'filesystem' cache strategy" ),
+      QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
+  }
+
+  return strategy;
+}
+
+
+void QgsConfigCache::initialize( QgsServerSettings *settings )
+{
+  if ( sInstance )
+  {
+    QgsMessageLog::logMessage(
+      QStringLiteral( "Project's cache is already initialized" ),
+      QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+    return;
+  }
+
+  sInstance = new QgsConfigCache( getStrategyFromSettings( settings ) );
+}
+
 QgsConfigCache *QgsConfigCache::instance()
 {
-  static QgsConfigCache *sInstance = nullptr;
-
   if ( !sInstance )
-    sInstance = new QgsConfigCache();
-
+  {
+    qFatal( "QgsConfigCache must be initialized before accessing QgsConfigCache instance." );
+    Q_ASSERT( false );
+  }
   return sInstance;
 }
 
-QgsConfigCache::QgsConfigCache()
+QgsConfigCache::QgsConfigCache( QgsServerSettings *settings )
+  : QgsConfigCache( getStrategyFromSettings( settings ) )
 {
-  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsConfigCache::removeChangedEntry );
+
 }
 
+QgsConfigCache::QgsConfigCache( QgsAbstractCacheStrategy *strategy )
+  : mStrategy( strategy )
+{
+  mStrategy->attach( this );
+}
+
+QgsConfigCache::QgsConfigCache() : QgsConfigCache( new QgsFileSystemCacheStrategy() )
+{
+
+}
 
 const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
-  if ( ! mProjectCache[ path ] )
+  if ( !mProjectCache[ path ] )
   {
-
     std::unique_ptr<QgsProject> prj( new QgsProject() );
 
     // This is required by virtual layers that call QgsProject::instance() inside the constructor :(
@@ -53,18 +107,20 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     prj->setBadLayerHandler( badLayerHandler );
 
     // Always skip original styles storage
-    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
+    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles
+                                       | Qgis::ProjectReadFlag::DontLoad3DViews
+                                       | Qgis::ProjectReadFlag::DontLoadProjectStyles;
     if ( settings )
     {
       // Activate trust layer metadata flag
       if ( settings->trustLayerMetadata() )
       {
-        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+        readFlags |= Qgis::ProjectReadFlag::TrustLayerMetadata;
       }
       // Activate don't load layouts flag
       if ( settings->getPrintDisabled() )
       {
-        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+        readFlags |= Qgis::ProjectReadFlag::DontLoadLayouts;
       }
     }
 
@@ -107,8 +163,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
           }
         }
       }
-      mProjectCache.insert( path, prj.release() );
-      mFileSystemWatcher.addPath( path );
+      cacheProject( path, prj.release() );
     }
     else
     {
@@ -117,7 +172,9 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
         QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
     }
   }
-  return mProjectCache[ path ];
+
+  auto entry = mProjectCache[ path ];
+  return entry ? entry->second.get() : nullptr;
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
@@ -152,25 +209,129 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
       return nullptr;
     }
     mXmlDocumentCache.insert( filePath, xmlDoc );
-    mFileSystemWatcher.addPath( filePath );
     xmlDoc = mXmlDocumentCache.object( filePath );
     Q_ASSERT( xmlDoc );
   }
   return xmlDoc;
 }
 
-void QgsConfigCache::removeChangedEntry( const QString &path )
+
+void QgsConfigCache::cacheProject( const QString &path, QgsProject *project )
+{
+  mProjectCache.insert( path, new std::pair<QDateTime, std::unique_ptr<QgsProject> >( project->lastModified(),  std::unique_ptr<QgsProject>( project ) ) );
+
+  mStrategy->entryInserted( path );
+}
+
+void QgsConfigCache::removeEntry( const QString &path )
 {
   mProjectCache.remove( path );
 
   //xml document must be removed last, as other config cache destructors may require it
   mXmlDocumentCache.remove( path );
 
+  mStrategy->entryRemoved( path );
+}
+
+// slots
+
+void QgsConfigCache::removeChangedEntry( const QString &path )
+{
+  removeEntry( path );
+}
+
+
+void QgsConfigCache::removeChangedEntries()
+{
+  // QCache::keys returns a QList so it is safe
+  // to mutate while iterating
+  const auto constKeys {  mProjectCache.keys() };
+  for ( const auto &path : std::as_const( constKeys ) )
+  {
+    const auto entry = mProjectCache[ path ];
+    if ( entry && entry->first < entry->second->lastModified() )
+    {
+      removeEntry( path );
+    }
+  }
+}
+
+// File system invalidation strategy
+
+
+
+QgsFileSystemCacheStrategy::QgsFileSystemCacheStrategy()
+{
+}
+
+void QgsFileSystemCacheStrategy::attach( QgsConfigCache *cache )
+{
+  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, cache, &QgsConfigCache::removeChangedEntry );
+}
+
+void QgsFileSystemCacheStrategy::entryRemoved( const QString &path )
+{
   mFileSystemWatcher.removePath( path );
 }
 
-
-void QgsConfigCache::removeEntry( const QString &path )
+void QgsFileSystemCacheStrategy::entryInserted( const QString &path )
 {
-  removeChangedEntry( path );
+  mFileSystemWatcher.addPath( path );
 }
+
+// Periodic invalidation strategy
+
+QgsPeriodicCacheStrategy::QgsPeriodicCacheStrategy( int interval )
+  : mInterval( interval )
+{
+}
+
+void QgsPeriodicCacheStrategy::attach( QgsConfigCache *cache )
+{
+  QObject::connect( &mTimer, &QTimer::timeout, cache, &QgsConfigCache::removeChangedEntries );
+}
+
+
+
+void QgsPeriodicCacheStrategy::entryRemoved( const QString &path )
+{
+  Q_UNUSED( path )
+  // No-op
+}
+
+void QgsPeriodicCacheStrategy::entryInserted( const QString &path )
+{
+  Q_UNUSED( path )
+  if ( !mTimer.isActive() )
+  {
+    mTimer.start( mInterval );
+  }
+}
+
+void QgsPeriodicCacheStrategy::setCheckInterval( int msec )
+{
+  if ( mTimer.isActive() )
+  {
+    // Restart timer
+    mTimer.start( msec );
+  }
+}
+
+
+// Null strategy
+
+void QgsNullCacheStrategy::attach( QgsConfigCache *cache )
+{
+  Q_UNUSED( cache )
+}
+
+void QgsNullCacheStrategy::entryRemoved( const QString &path )
+{
+  Q_UNUSED( path )
+}
+
+void QgsNullCacheStrategy::entryInserted( const QString &path )
+{
+  Q_UNUSED( path )
+}
+

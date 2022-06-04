@@ -70,7 +70,13 @@ class GUI_EXPORT QgsHighlight : public QgsMapCanvasItem
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsHighlight *>( sipCpp ) )
+    {
       sipType = sipType_QgsHighlight;
+      // We need to tweak the pointer as sip believes it is single inheritance
+      // from QgsMapCanvasItem, but the raw address of QgsHighlight (sipCpp)
+      // is actually a QObject
+      *sipCppRet = dynamic_cast<QgsHighlight *>( sipCpp );
+    }
     else
       sipType = nullptr;
     SIP_END

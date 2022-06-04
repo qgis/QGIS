@@ -20,6 +20,11 @@
 QgsTabWidget::QgsTabWidget( QWidget *parent )
   : QTabWidget( parent )
 {
+  QgsTabBar *qgsTabBar = new QgsTabBar( this );
+  setTabBar( qgsTabBar );
+  mTabBarStyle = new QgsTabBarProxyStyle( tabBar() );
+  qgsTabBar->setTabBarStyle( mTabBarStyle );
+  setStyle( mTabBarStyle );
 }
 
 void QgsTabWidget::hideTab( QWidget *tab )
@@ -67,6 +72,11 @@ int QgsTabWidget::realTabIndex( QWidget *widget )
     ++realIndex;
   }
   return -1;
+}
+
+void QgsTabWidget::setTabStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &labelStyle )
+{
+  mTabBarStyle->addStyle( tabIndex, labelStyle );
 }
 
 void QgsTabWidget::tabInserted( int index )

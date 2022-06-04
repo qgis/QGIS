@@ -1091,7 +1091,11 @@ void QgsVectorLayerProperties::saveDefaultStyle_clicked()
   }
 
   bool defaultSavedFlag = false;
+  // TODO Once the deprecated `saveDefaultStyle()` method is gone, just
+  // remove the NOWARN_DEPRECATED tags
+  Q_NOWARN_DEPRECATED_PUSH
   errorMsg = mLayer->saveDefaultStyle( defaultSavedFlag );
+  Q_NOWARN_DEPRECATED_POP
   if ( !defaultSavedFlag )
   {
     QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
@@ -1213,6 +1217,7 @@ void QgsVectorLayerProperties::saveStyleAs()
     apply();
 
     bool defaultLoadedFlag = false;
+    QString errorMessage;
 
     StyleType type = dlg.currentStyleType();
     switch ( type )
@@ -1220,12 +1225,11 @@ void QgsVectorLayerProperties::saveStyleAs()
       case QML:
       case SLD:
       {
-        QString message;
         QString filePath = dlg.outputFilePath();
         if ( type == QML )
-          message = mLayer->saveNamedStyle( filePath, defaultLoadedFlag, dlg.styleCategories() );
+          errorMessage = mLayer->saveNamedStyle( filePath, defaultLoadedFlag, dlg.styleCategories() );
         else
-          message = mLayer->saveSldStyle( filePath, defaultLoadedFlag );
+          errorMessage = mLayer->saveSldStyle( filePath, defaultLoadedFlag );
 
         //reset if the default style was loaded OK only
         if ( defaultLoadedFlag )
@@ -1235,7 +1239,7 @@ void QgsVectorLayerProperties::saveStyleAs()
         else
         {
           //let the user know what went wrong
-          QMessageBox::information( this, tr( "Save Style" ), message );
+          QMessageBox::information( this, tr( "Save Style" ), errorMessage );
         }
 
         break;
@@ -1243,11 +1247,9 @@ void QgsVectorLayerProperties::saveStyleAs()
       case DB:
       {
         QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( mLayer->providerType() );
-        QString msgError;
 
         QgsVectorLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
 
-        QString errorMessage;
         if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
         {
           if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
@@ -1263,11 +1265,25 @@ void QgsVectorLayerProperties::saveStyleAs()
           return;
         }
 
-        mLayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
+        mLayer->saveStyleToDatabase( dbSettings.name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, errorMessage, dlg.styleCategories() );
 
-        if ( !msgError.isNull() )
+        if ( !errorMessage.isNull() )
         {
-          mMessageBar->pushMessage( infoWindowTitle, msgError, Qgis::MessageLevel::Warning );
+          mMessageBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
+        }
+        else
+        {
+          mMessageBar->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::MessageLevel::Success );
+        }
+        break;
+      }
+      case Local:
+      {
+        QString infoWindowTitle = tr( "Save default style to local database" );
+        errorMessage = mLayer->saveDefaultStyle( defaultLoadedFlag, dlg.styleCategories() );
+        if ( !defaultLoadedFlag )
+        {
+          mMessageBar->pushMessage( infoWindowTitle, errorMessage, Qgis::MessageLevel::Warning );
         }
         else
         {
@@ -1393,7 +1409,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
               return;
             }
 
-            mLayer->saveStyleToDatabase( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError );
+            mLayer->saveStyleToDatabase( name, dbSettings.description, dbSettings.isDefault, dbSettings.uiFileContent, msgError, dlg.styleCategories() );
 
             if ( !msgError.isNull() )
             {
@@ -1406,6 +1422,8 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             }
             break;
           }
+          case Local:
+            break;
         }
         styleIndex ++;
       }
@@ -1461,21 +1479,20 @@ void QgsVectorLayerProperties::loadStyle()
     mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
     QgsMapLayer::StyleCategories categories = dlg.styleCategories();
     StyleType type = dlg.currentStyleType();
+    bool defaultLoadedFlag = false;
     switch ( type )
     {
       case QML:
       case SLD:
       {
-        QString message;
-        bool defaultLoadedFlag = false;
         QString filePath = dlg.filePath();
         if ( type == SLD )
         {
-          message = mLayer->loadSldStyle( filePath, defaultLoadedFlag );
+          errorMsg = mLayer->loadSldStyle( filePath, defaultLoadedFlag );
         }
         else
         {
-          message = mLayer->loadNamedStyle( filePath, defaultLoadedFlag, true, categories );
+          errorMsg = mLayer->loadNamedStyle( filePath, defaultLoadedFlag, true, categories );
         }
         //reset if the default style was loaded OK only
         if ( defaultLoadedFlag )
@@ -1485,7 +1502,7 @@ void QgsVectorLayerProperties::loadStyle()
         else
         {
           //let the user know what went wrong
-          QMessageBox::warning( this, tr( "Load Style" ), message );
+          QMessageBox::warning( this, tr( "Load Style" ), errorMsg );
         }
         break;
       }
@@ -1512,6 +1529,20 @@ void QgsVectorLayerProperties::loadStyle()
           QMessageBox::warning( this, tr( "Load Styles from Database" ),
                                 tr( "The retrieved style is not a valid named style. Error message: %1" )
                                 .arg( errorMsg ) );
+        }
+        break;
+      }
+      case Local:
+      {
+        errorMsg = mLayer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true, categories );
+        //reset if the default style was loaded OK only
+        if ( defaultLoadedFlag )
+        {
+          syncToLayer();
+        }
+        else
+        {
+          QMessageBox::warning( this, tr( "Load Default Style" ), errorMsg );
         }
         break;
       }

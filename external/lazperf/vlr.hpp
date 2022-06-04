@@ -152,7 +152,7 @@ public:
     std::vector<ebfield> items;
 
     eb_vlr();
-    [[deprecated]] eb_vlr(int ebCount);
+    eb_vlr(int ebCount);
     virtual ~eb_vlr();
 
     static eb_vlr create(std::istream& in, int byteSize);

@@ -1132,6 +1132,53 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
   return QSet< QString >();
 }
 
+QString QgsCategorizedSymbolRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
+{
+  ok = false;
+  int ruleIndex = key.toInt( &ok );
+  if ( !ok || ruleIndex < 0 || ruleIndex >= mCategories.size() )
+  {
+    ok = false;
+    return QString();
+  }
+
+  const int fieldIndex = layer ? layer->fields().lookupField( mAttrName ) : -1;
+  const bool isNumeric = layer && fieldIndex >= 0 ? layer->fields().at( fieldIndex ).isNumeric() : false;
+  const QVariant::Type fieldType = layer && fieldIndex >= 0 ? layer->fields().at( fieldIndex ).type() : QVariant::Invalid;
+  const QString attributeComponent = QgsExpression::quoteFieldExpression( mAttrName, layer );
+
+  ok = true;
+  const QgsRendererCategory &cat = mCategories[ ruleIndex ];
+  if ( cat.value().type() == QVariant::List )
+  {
+    const QVariantList list = cat.value().toList();
+    QStringList parts;
+    parts.reserve( list.size() );
+    for ( const QVariant &v : list )
+    {
+      parts.append( QgsExpression::quotedValue( v ) );
+    }
+
+    return QStringLiteral( "%1 IN (%2)" ).arg( attributeComponent, parts.join( QLatin1String( ", " ) ) );
+  }
+  else
+  {
+    // Numeric NULL cat value is stored as an empty string
+    QVariant value = cat.value();
+    if ( isNumeric && value.toString().isEmpty() )
+    {
+      value = QVariant();
+    }
+
+    if ( value.isNull() )
+      return QStringLiteral( "%1 IS NULL" ).arg( attributeComponent );
+    else if ( fieldType == QVariant::Type::Invalid )
+      return QStringLiteral( "%1 = %2" ).arg( attributeComponent, QgsExpression::quotedValue( value ) );
+    else
+      return QStringLiteral( "%1 = %2" ).arg( attributeComponent, QgsExpression::quotedValue( value, fieldType ) );
+  }
+}
+
 QgsSymbol *QgsCategorizedSymbolRenderer::sourceSymbol()
 {
   return mSourceSymbol.get();

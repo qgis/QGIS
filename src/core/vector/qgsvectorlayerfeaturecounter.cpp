@@ -20,7 +20,7 @@
 #include "qgsrendercontext.h"
 
 QgsVectorLayerFeatureCounter::QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context, bool storeSymbolFids )
-  : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt )
+  : QgsTask( tr( "Counting features in %1" ).arg( layer->name() ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mSource( new QgsVectorLayerFeatureSource( layer ) )
   , mRenderer( layer->renderer()->clone() )
   , mExpressionContext( context )

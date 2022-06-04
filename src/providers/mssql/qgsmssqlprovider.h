@@ -176,6 +176,8 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
 
   private:
 
+    bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
+
     //! Fields
     QgsFields mAttributeFields;
     QMap<int, QString> mDefaultValues;
@@ -327,6 +329,10 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+
+  private:
+
+    bool execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin = QString() ) const;
 
 };
 

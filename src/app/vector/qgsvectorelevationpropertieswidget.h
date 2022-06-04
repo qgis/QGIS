@@ -18,12 +18,14 @@
 
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmaplayerelevationproperties.h"
 
 #include "ui_qgsvectorelevationpropertieswidgetbase.h"
 
 class QgsVectorLayer;
+class QgsPropertyOverrideButton;
 
-class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsVectorElevationPropertiesWidgetBase
+class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsVectorElevationPropertiesWidgetBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
   public:
@@ -31,6 +33,8 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
     QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) override;
+
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
     void apply() override;
@@ -40,8 +44,30 @@ class QgsVectorElevationPropertiesWidget : public QgsMapLayerConfigWidget, priva
     void onChanged();
     void clampingChanged();
     void bindingChanged();
+    void toggleSymbolWidgets();
+    void updateProperty();
 
   private:
+
+    // TODO -- consider moving these to a common elevation properties widget base class
+
+    /**
+     * Registers a property override button, setting up its initial value, connections and description.
+     * \param button button to register
+     * \param key corresponding data defined property key
+     */
+    void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsMapLayerElevationProperties::Property key );
+
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+    QgsPropertyCollection mPropertyCollection;
 
     QgsVectorLayer *mLayer = nullptr;
     bool mBlockUpdates = false;

@@ -1,7 +1,7 @@
 #include <odbc/RefCounted.h>
 #include <cstddef>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 RefCounted::RefCounted() : refcount_(1)
 {
@@ -25,4 +25,4 @@ void RefCounted::decRef() const
     }
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

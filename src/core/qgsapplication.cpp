@@ -77,6 +77,7 @@
 #include "qgslocator.h"
 #include "qgsreadwritelocker.h"
 #include "qgsbabelformatregistry.h"
+#include "qgsdbquerylog.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -136,6 +137,9 @@
 
 #include <proj.h>
 
+#if defined(Q_OS_LINUX)
+#include <sys/sysinfo.h>
+#endif
 
 #define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
@@ -262,6 +266,7 @@ void QgsApplication::init( QString profileFolder )
   std::call_once( sMetaTypesRegistered, []
   {
     qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+    qRegisterMetaType<QgsDatabaseQueryLogEntry>( "QgsDatabaseQueryLogEntry" );
     qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
     qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
     qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
@@ -306,6 +311,9 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QPainter::CompositionMode>( "QPainter::CompositionMode" );
     qRegisterMetaType<QgsDateTimeRange>( "QgsDateTimeRange" );
     qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
+    qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
+    qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
+    qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
   } );
 
   ( void ) resolvePkgPath();
@@ -435,8 +443,10 @@ void QgsApplication::init( QString profileFolder )
     bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
   }
 
+  // trigger creation of default style
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle();
   if ( !members()->mStyleModel )
-    members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+    members()->mStyleModel = new QgsStyleModel( defaultStyle );
 
   ABISYM( mInitialized ) = true;
 }
@@ -1287,6 +1297,42 @@ QString QgsApplication::osName()
   return QLatin1String( "unix" );
 #else
   return QLatin1String( "unknown" );
+#endif
+}
+
+int QgsApplication::systemMemorySizeMb()
+{
+#if defined(Q_OS_ANDROID)
+  return -1;
+#elif defined(Q_OS_MAC)
+  return -1;
+#elif defined(Q_OS_WIN)
+  MEMORYSTATUSEX memoryStatus;
+  ZeroMemory( &memoryStatus, sizeof( MEMORYSTATUSEX ) );
+  memoryStatus.dwLength = sizeof( MEMORYSTATUSEX );
+  if ( GlobalMemoryStatusEx( &memoryStatus ) )
+  {
+    return memoryStatus.ullTotalPhys / ( 1024 * 1024 );
+  }
+  else
+  {
+    return -1;
+  }
+#elif defined(Q_OS_LINUX)
+  constexpr int megabyte = 1024 * 1024;
+  struct sysinfo si;
+  sysinfo( &si );
+  return si.totalram / megabyte;
+#elif defined(Q_OS_FREEBSD)
+  return -1;
+#elif defined(Q_OS_OPENBSD)
+  return -1;
+#elif defined(Q_OS_NETBSD)
+  return -1;
+#elif defined(Q_OS_UNIX)
+  return -1;
+#else
+  return -1;
 #endif
 }
 
@@ -2391,6 +2437,11 @@ QgsRecentStyleHandler *QgsApplication::recentStyleHandler()
   return members()->mRecentStyleHandler;
 }
 
+QgsDatabaseQueryLog *QgsApplication::databaseQueryLog()
+{
+  return members()->mQueryLogger;
+}
+
 QgsStyleModel *QgsApplication::defaultStyleModel()
 {
   return members()->mStyleModel;
@@ -2470,6 +2521,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mMessageLog = new QgsMessageLog();
   QgsRuntimeProfiler *profiler = QgsRuntimeProfiler::threadLocalInstance();
 
+  {
+    profiler->start( tr( "Create query logger" ) );
+    mQueryLogger = new QgsDatabaseQueryLog();
+    profiler->end();
+  }
   {
     profiler->start( tr( "Setup coordinate reference system registry" ) );
     mCrsRegistry = new QgsCoordinateReferenceSystemRegistry();
@@ -2684,6 +2740,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mConnectionRegistry;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
+  delete mQueryLogger;
   delete mSettingsRegistryCore;
 }
 

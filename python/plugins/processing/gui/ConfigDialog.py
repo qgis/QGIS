@@ -132,14 +132,13 @@ class ConfigDialog(BASE, WIDGET):
             text = str(text.lower())
         else:
             text = str(self.searchBox.text().lower())
-        found = self._filterItem(self.model.invisibleRootItem(), text)
+        found = self._filterItem(self.model.invisibleRootItem(), text, False if text else True)
 
         self.auto_adjust_columns = False
         if text:
             self.tree.expandAll()
         else:
             self.tree.collapseAll()
-
         self.adjustColumns()
         self.auto_adjust_columns = True
 

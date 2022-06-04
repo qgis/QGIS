@@ -177,5 +177,17 @@ private:
 };
 
 using IndexedStats = std::vector<std::pair<pdal::Dimension::Id, Stats>>;
+using StatsMap = std::unordered_map<pdal::Dimension::Id, Stats>;
 } // namespace untwine
+
+namespace std
+{
+    template<> struct hash<pdal::Dimension::Id>
+    {
+        std::size_t operator()(const pdal::Dimension::Id& id) const noexcept
+        {
+            return std::hash<int>()((int)id);
+        }
+    };
+}
 

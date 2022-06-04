@@ -108,7 +108,7 @@ Calls the panelAccepeted signal on the active widget.
 
     void acceptAllPanels();
 %Docstring
-Accepts all panel widgets open in the stack in turn until until only the :py:func:`~QgsPanelWidgetStack.mainPanel`
+Accepts all panel widgets open in the stack in turn until only the :py:func:`~QgsPanelWidgetStack.mainPanel`
 remains.
 
 .. seealso:: :py:func:`acceptCurrentPanel`

@@ -38,7 +38,7 @@ Sets the ``dpi`` (dots per inch) for the output resolution, to be used in scale 
 .. seealso:: :py:func:`dpi`
 %End
 
-    double dpi();
+    double dpi() const;
 %Docstring
 Returns the DPI (dots per inch) used in scale calculations.
 

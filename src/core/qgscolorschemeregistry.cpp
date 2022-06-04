@@ -183,5 +183,3 @@ bool QgsColorSchemeRegistry::removeColorScheme( QgsColorScheme *scheme )
   //not found
   return false;
 }
-
-

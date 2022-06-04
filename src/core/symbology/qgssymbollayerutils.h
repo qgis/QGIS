@@ -866,6 +866,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QSet<const QgsSymbolLayer *> toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds );
 
     /**
+     * Calculates the frame rate (in frames per second) at which the given \a renderer must be redrawn.
+     *
+     * Returns -1 if the \a renderer is not animated.
+     *
+     * \since QGIS 3.26
+     */
+    static double rendererFrameRate( const QgsFeatureRenderer *renderer );
+
+    /**
      * \brief Creates a new symbol with size restricted to min/max size if original size is out of min/max range
      * \param s the original symbol
      * \param minSize the minimum size in mm

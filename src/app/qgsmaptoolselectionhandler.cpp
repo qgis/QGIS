@@ -248,45 +248,7 @@ void QgsMapToolSelectionHandler::selectPolygonPressEvent( QgsMapMouseEvent *e )
   // Handle immediate right-click on feature to show context menu
   if ( !mSelectionRubberBand && ( e->button() == Qt::RightButton ) )
   {
-    QList<QgsMapToolIdentify::IdentifyResult> results;
-    const QMap< QString, QString > derivedAttributes;
-
-    const QgsPointXY mapPoint = toMapCoordinates( e->pos() );
-    double x = mapPoint.x(), y = mapPoint.y();
-    const double sr = QgsMapTool::searchRadiusMU( mCanvas );
-
-    const QList<QgsMapLayer *> layers = mCanvas->layers( true );
-    for ( auto layer : layers )
-    {
-      if ( layer->type() == QgsMapLayerType::VectorLayer )
-      {
-        auto vectorLayer = static_cast<QgsVectorLayer *>( layer );
-        if ( vectorLayer->geometryType() == QgsWkbTypes::PolygonGeometry )
-        {
-          QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
-          QgsCoordinateTransform transform = mCanvas->mapSettings().layerTransform( vectorLayer );
-          transform.setBallparkTransformsAreAppropriate( true );
-
-          try
-          {
-            rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
-          }
-          catch ( QgsCsException & )
-          {
-            QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
-          }
-
-          QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                   .setFilterRect( rect )
-                                   .setFlags( QgsFeatureRequest::ExactIntersect ) );
-          QgsFeature f;
-          while ( fit.nextFeature( f ) )
-          {
-            results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
-          }
-        }
-      }
-    }
+    const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { QgsWkbTypes::PolygonGeometry } );
 
     const QPoint globalPos = mCanvas->mapToGlobal( QPoint( e->pos().x() + 5, e->pos().y() + 5 ) );
     const QList<QgsMapToolIdentify::IdentifyResult> selectedFeatures = mIdentifyMenu->exec( results, globalPos );

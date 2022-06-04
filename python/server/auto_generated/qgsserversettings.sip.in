@@ -59,6 +59,8 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_WCS_SERVICE_URL,
       QGIS_SERVER_WMTS_SERVICE_URL,
       QGIS_SERVER_LANDING_PAGE_PREFIX,
+      QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
+      QGIS_SERVER_PROJECT_CACHE_STRATEGY,
     };
 };
 
@@ -125,7 +127,7 @@ Returns the log level.
 :return: the log level.
 %End
 
-    bool logProfile();
+    bool logProfile() const;
 %Docstring
 Returns ``True`` if profile information has to be added to the logs, default value is ``False``.
 
@@ -293,6 +295,28 @@ variable QGIS_SERVER_DISABLE_GETPRINT.
 Returns the service URL from the setting.
 
 .. versionadded:: 3.20
+%End
+
+    int projectCacheCheckInterval() const;
+%Docstring
+Returns the config cache check interval for the 'periodic' strategy.
+
+.. versionadded:: 3.26
+%End
+
+    QString projectCacheStrategy() const;
+%Docstring
+Returns the project's cache strategy
+The default value is 'filesystem', the value can be changed by setting the environment
+variable QGIS_SERVER_PROJECT_CACHE_STRATEGY.
+Possible values are:
+
+- 'filesystem': Use file system watcher for notifying projects change. Note that it works
+  only with projects stored in files and not across mounted NFS volumes on Linux.
+- 'periodic': Timer based periodic check for project's changes. Works with all storage backend.
+- 'off': Disable completely internal project's cache handling
+
+.. versionadded:: 3.26
 %End
 
     static QString name( QgsServerSettingsEnv::EnvVar env );

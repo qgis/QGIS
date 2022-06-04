@@ -20,7 +20,9 @@
 #include "qgspainteffect.h"
 #include "qgspainterswapper.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerreference.h"
+#include "qgsmaskpaintdevice.h"
 
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
@@ -150,43 +152,52 @@ bool QgsMaskMarkerSymbolLayer::usesMapUnits() const
          || ( mSymbol && mSymbol->usesMapUnits() );
 }
 
+void QgsMaskMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsMarkerSymbolLayer::setOutputUnit( unit );
+  if ( mSymbol )
+    mSymbol->setOutputUnit( unit );
+}
+
+QColor QgsMaskMarkerSymbolLayer::color() const
+{
+  return QColor();
+}
+
 void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &context )
 {
-  if ( !context.renderContext().painter() )
+  QgsRenderContext &renderContext = context.renderContext();
+  if ( !renderContext.painter() )
     return;
 
-  if ( context.renderContext().isGuiPreview() )
+  if ( renderContext.isGuiPreview() )
   {
-    mSymbol->renderPoint( point, context.feature(), context.renderContext(), /* layer = */ -1, /* selected = */ false );
+    mSymbol->renderPoint( point, context.feature(), renderContext, /* layer = */ -1, /* selected = */ false );
     return;
   }
 
-  if ( ! context.renderContext().maskPainter() )
+  if ( !renderContext.maskPainter() )
     return;
 
   if ( mMaskedSymbolLayers.isEmpty() )
     return;
 
-  {
-    // Otherwise switch to the mask painter before rendering
-    const QgsPainterSwapper swapper( context.renderContext(), context.renderContext().maskPainter() );
+  // Otherwise switch to the mask painter before rendering
+  const QgsPainterSwapper swapper( renderContext, renderContext.maskPainter() );
 
-    // Special case when an effect is defined on this mask symbol layer
-    // (effects defined on sub symbol's layers do not need special handling)
-    if ( mEffect && mEffect->enabled() )
-    {
-      QgsEffectPainter p( context.renderContext() );
-      // translate operates on the mask painter, which is what we want
-      p->translate( point );
-      p.setEffect( mEffect.get() );
-      mSymbol->renderPoint( QPointF( 0, 0 ), context.feature(), context.renderContext(), /* layer = */ -1, /* selected = */ false );
-      // the translation will be canceled at the end of scope here
-    }
-    else
-    {
-      mSymbol->renderPoint( point, context.feature(), context.renderContext(), /* layer = */ -1, /* selected = */ false );
-    }
+  // Special case when an effect is defined on this mask symbol layer
+  // (effects defined on sub symbol's layers do not need special handling)
+  if ( mEffect && mEffect->enabled() )
+  {
+    QgsEffectPainter p( renderContext );
+    // translate operates on the mask painter, which is what we want
+    p->translate( point );
+    p.setEffect( mEffect.get() );
+    mSymbol->renderPoint( QPointF( 0, 0 ), context.feature(), renderContext, /* layer = */ -1, /* selected = */ false );
+    // the translation will be canceled at the end of scope here
+  }
+  else
+  {
+    mSymbol->renderPoint( point, context.feature(), renderContext, /* layer = */ -1, /* selected = */ false );
   }
 }
-
-

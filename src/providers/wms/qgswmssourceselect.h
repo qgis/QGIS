@@ -160,9 +160,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! URI for selected connection
     QgsDataSourceUri mUri;
 
-    //! layer name derived from latest layer selection (updated as long it's not edited manually)
-    QString mLastLayerName;
-
     //! The widget that controls the image format radio buttons
     QButtonGroup *mImageFormatGroup = nullptr;
 

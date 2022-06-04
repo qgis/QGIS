@@ -858,7 +858,7 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     json.insert( QStringLiteral( "provider_details" ), providerJson );
   }
 
-
+  QgsProcessingContext context;
   QVariantMap parametersJson;
   const QgsProcessingParameterDefinitions defs = alg->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *p : defs )
@@ -869,7 +869,18 @@ int QgsProcessingExec::showAlgorithmHelp( const QString &inputId, bool useJson )
     QVariantMap parameterJson;
 
     if ( !useJson )
-      std::cout << QStringLiteral( "%1: %2\n" ).arg( p->name(), p->description() ).toLocal8Bit().constData();
+    {
+      QString line = QStringLiteral( "%1: %2" ).arg( p->name(), p->description() );
+      if ( p->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        line += QLatin1String( " (optional)" );
+      std::cout << QStringLiteral( "%1\n" ).arg( line ).toLocal8Bit().constData();
+
+      if ( p->defaultValue().isValid() )
+      {
+        bool ok = false;
+        std::cout << QStringLiteral( "\tDefault value:\t%1\n" ).arg( p->valueAsString( p->defaultValue(), context, ok ) ).toLocal8Bit().constData();
+      }
+    }
     else
     {
       parameterJson.insert( QStringLiteral( "name" ), p->name() );

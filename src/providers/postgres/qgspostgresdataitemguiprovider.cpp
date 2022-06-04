@@ -252,7 +252,7 @@ void QgsPostgresDataItemGuiProvider::createSchema( QgsDataItem *item, QgsDataIte
   //create the schema
   const QString sql = QStringLiteral( "CREATE SCHEMA %1" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     notify( tr( "New Schema" ), tr( "Unable to create schema '%1'\n%2" ).arg( schemaName,
@@ -284,7 +284,7 @@ void QgsPostgresDataItemGuiProvider::deleteSchema( QgsPGSchemaItem *schemaItem, 
   }
 
   const QString sql = QStringLiteral( "SELECT table_name FROM information_schema.tables WHERE table_schema='%1'" ).arg( schemaItem->name() );
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     notify( tr( "Delete Schema" ), tr( "Unable to delete schema." ), context, Qgis::MessageLevel::Warning );
@@ -360,7 +360,7 @@ void QgsPostgresDataItemGuiProvider::renameSchema( QgsPGSchemaItem *schemaItem, 
   const QString sql = QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
                       .arg( schemaName, QgsPostgresConn::quotedIdentifier( dlg.name() ) );
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     notify( tr( "Rename Schema" ), tr( "Unable to rename schema '%1'\n%2" ).arg( schemaItem->name(),
@@ -418,7 +418,7 @@ void QgsPostgresDataItemGuiProvider::renameLayer( QgsPGLayerItem *layerItem, Qgs
     sql = QStringLiteral( "ALTER TABLE %1 RENAME TO %2" ).arg( oldName, newName );
   }
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     notify( tr( "Rename %1" ).arg( typeName ), tr( "Unable to rename '%1' %2\n%3" ).arg( lowerTypeName, layerItem->name(),
@@ -463,7 +463,7 @@ void QgsPostgresDataItemGuiProvider::truncateTable( QgsPGLayerItem *layerItem, Q
 
   const QString sql = QStringLiteral( "TRUNCATE TABLE %1" ).arg( tableRef );
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     notify( tr( "Truncate Table" ), tr( "Unable to truncate '%1'\n%2" ).arg( tableName,
@@ -503,7 +503,7 @@ void QgsPostgresDataItemGuiProvider::refreshMaterializedView( QgsPGLayerItem *la
 
   const QString sql = QStringLiteral( "REFRESH MATERIALIZED VIEW CONCURRENTLY %1" ).arg( tableRef );
 
-  QgsPostgresResult result( conn->PQexec( sql ) );
+  QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
   if ( result.PQresultStatus() != PGRES_COMMAND_OK )
   {
     notify( tr( "Refresh View" ), tr( "Unable to refresh the view '%1'\n%2" ).arg( tableRef,

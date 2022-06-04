@@ -114,6 +114,8 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QgsVectorLayer *mLayer = nullptr;
 
     QMap< int, QAction * > mStatsActions;
+    QMap< QString, QString > mLastExpression;
+    QAction *mSyncAction;
 
     void updateNumericStatistics();
     void updateStringStatistics();
@@ -123,6 +125,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QgsExpressionContext createExpressionContext() const override;
 
     void refreshStatisticsMenu();
+    void manageSyncLayer( bool checked );
     DataType fieldType( const QString &fieldName );
 
     QMenu *mStatisticsMenu = nullptr;

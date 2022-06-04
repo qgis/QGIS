@@ -212,8 +212,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
                               provider->placement(),
                               provider->priority(),
                               true,
-                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ),
-                              flags.testFlag( QgsAbstractLabelProvider::DrawAllLabels ) );
+                              flags.testFlag( QgsAbstractLabelProvider::DrawLabels ) );
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( flags.testFlag( QgsAbstractLabelProvider::MergeConnectedLines ) );
@@ -225,21 +224,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
   l->setCentroidInside( flags.testFlag( QgsAbstractLabelProvider::CentroidMustBeInside ) );
 
   // set how to show upside-down labels
-  pal::Layer::UpsideDownLabels upsdnlabels = pal::Layer::ShowAll;
-  switch ( provider->upsidedownLabels() )
-  {
-    case QgsPalLayerSettings::Upright:
-      upsdnlabels = pal::Layer::Upright;
-      break;
-    case QgsPalLayerSettings::ShowDefined:
-      upsdnlabels = pal::Layer::ShowDefined;
-      break;
-    case QgsPalLayerSettings::ShowAll:
-      upsdnlabels = pal::Layer::ShowAll;
-      break;
-  }
-  l->setUpsidedownLabels( upsdnlabels );
-
+  l->setUpsidedownLabels( provider->upsidedownLabels() );
 
   const QList<QgsLabelFeature *> features = provider->labelFeatures( context );
 
@@ -647,10 +632,6 @@ QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QS
   : mLayerId( layer ? layer->id() : QString() )
   , mLayer( layer )
   , mProviderId( providerId )
-  , mFlags( DrawLabels )
-  , mPlacement( QgsPalLayerSettings::AroundPoint )
-  , mPriority( 0.5 )
-  , mUpsidedownLabels( QgsPalLayerSettings::Upright )
 {
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
   {
@@ -697,48 +678,48 @@ QgsExpressionContextScope *QgsAbstractLabelProvider::layerExpressionContextScope
 // QgsLabelingUtils
 //
 
-QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLayerSettings::PredefinedPointPosition> &positions )
+QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<Qgis::LabelPredefinedPointPosition> &positions )
 {
   QStringList predefinedOrderString;
   const auto constPositions = positions;
-  for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
+  for ( Qgis::LabelPredefinedPointPosition position : constPositions )
   {
     switch ( position )
     {
-      case QgsPalLayerSettings::TopLeft:
+      case Qgis::LabelPredefinedPointPosition::TopLeft:
         predefinedOrderString << QStringLiteral( "TL" );
         break;
-      case QgsPalLayerSettings::TopSlightlyLeft:
+      case Qgis::LabelPredefinedPointPosition::TopSlightlyLeft:
         predefinedOrderString << QStringLiteral( "TSL" );
         break;
-      case QgsPalLayerSettings::TopMiddle:
+      case Qgis::LabelPredefinedPointPosition::TopMiddle:
         predefinedOrderString << QStringLiteral( "T" );
         break;
-      case QgsPalLayerSettings::TopSlightlyRight:
+      case Qgis::LabelPredefinedPointPosition::TopSlightlyRight:
         predefinedOrderString << QStringLiteral( "TSR" );
         break;
-      case QgsPalLayerSettings::TopRight:
+      case Qgis::LabelPredefinedPointPosition::TopRight:
         predefinedOrderString << QStringLiteral( "TR" );
         break;
-      case QgsPalLayerSettings::MiddleLeft:
+      case Qgis::LabelPredefinedPointPosition::MiddleLeft:
         predefinedOrderString << QStringLiteral( "L" );
         break;
-      case QgsPalLayerSettings::MiddleRight:
+      case Qgis::LabelPredefinedPointPosition::MiddleRight:
         predefinedOrderString << QStringLiteral( "R" );
         break;
-      case QgsPalLayerSettings::BottomLeft:
+      case Qgis::LabelPredefinedPointPosition::BottomLeft:
         predefinedOrderString << QStringLiteral( "BL" );
         break;
-      case QgsPalLayerSettings::BottomSlightlyLeft:
+      case Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft:
         predefinedOrderString << QStringLiteral( "BSL" );
         break;
-      case QgsPalLayerSettings::BottomMiddle:
+      case Qgis::LabelPredefinedPointPosition::BottomMiddle:
         predefinedOrderString << QStringLiteral( "B" );
         break;
-      case QgsPalLayerSettings::BottomSlightlyRight:
+      case Qgis::LabelPredefinedPointPosition::BottomSlightlyRight:
         predefinedOrderString << QStringLiteral( "BSR" );
         break;
-      case QgsPalLayerSettings::BottomRight:
+      case Qgis::LabelPredefinedPointPosition::BottomRight:
         predefinedOrderString << QStringLiteral( "BR" );
         break;
     }
@@ -746,38 +727,38 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<QgsPalLay
   return predefinedOrderString.join( ',' );
 }
 
-QVector<QgsPalLayerSettings::PredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString &positionString )
+QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPositionOrder( const QString &positionString )
 {
-  QVector<QgsPalLayerSettings::PredefinedPointPosition> result;
+  QVector<Qgis::LabelPredefinedPointPosition> result;
   const QStringList predefinedOrderList = positionString.split( ',' );
   result.reserve( predefinedOrderList.size() );
   for ( const QString &position : predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
     if ( cleaned == QLatin1String( "TL" ) )
-      result << QgsPalLayerSettings::TopLeft;
+      result << Qgis::LabelPredefinedPointPosition::TopLeft;
     else if ( cleaned == QLatin1String( "TSL" ) )
-      result << QgsPalLayerSettings::TopSlightlyLeft;
+      result << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft;
     else if ( cleaned == QLatin1String( "T" ) )
-      result << QgsPalLayerSettings::TopMiddle;
+      result << Qgis::LabelPredefinedPointPosition::TopMiddle;
     else if ( cleaned == QLatin1String( "TSR" ) )
-      result << QgsPalLayerSettings::TopSlightlyRight;
+      result << Qgis::LabelPredefinedPointPosition::TopSlightlyRight;
     else if ( cleaned == QLatin1String( "TR" ) )
-      result << QgsPalLayerSettings::TopRight;
+      result << Qgis::LabelPredefinedPointPosition::TopRight;
     else if ( cleaned == QLatin1String( "L" ) )
-      result << QgsPalLayerSettings::MiddleLeft;
+      result << Qgis::LabelPredefinedPointPosition::MiddleLeft;
     else if ( cleaned == QLatin1String( "R" ) )
-      result << QgsPalLayerSettings::MiddleRight;
+      result << Qgis::LabelPredefinedPointPosition::MiddleRight;
     else if ( cleaned == QLatin1String( "BL" ) )
-      result << QgsPalLayerSettings::BottomLeft;
+      result << Qgis::LabelPredefinedPointPosition::BottomLeft;
     else if ( cleaned == QLatin1String( "BSL" ) )
-      result << QgsPalLayerSettings::BottomSlightlyLeft;
+      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft;
     else if ( cleaned == QLatin1String( "B" ) )
-      result << QgsPalLayerSettings::BottomMiddle;
+      result << Qgis::LabelPredefinedPointPosition::BottomMiddle;
     else if ( cleaned == QLatin1String( "BSR" ) )
-      result << QgsPalLayerSettings::BottomSlightlyRight;
+      result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
     else if ( cleaned == QLatin1String( "BR" ) )
-      result << QgsPalLayerSettings::BottomRight;
+      result << Qgis::LabelPredefinedPointPosition::BottomRight;
   }
   return result;
 }

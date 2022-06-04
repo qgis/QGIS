@@ -61,6 +61,7 @@ bool QgsOracleTableModel::searchableColumn( int column ) const
     case DbtmSelectAtId:
       return false;
   }
+  return false;
 }
 
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )

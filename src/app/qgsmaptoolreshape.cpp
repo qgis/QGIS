@@ -185,13 +185,13 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           QList<QgsVectorLayer *>  avoidIntersectionsLayers;
           switch ( QgsProject::instance()->avoidIntersectionsMode() )
           {
-            case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+            case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
               avoidIntersectionsLayers.append( vlayer );
               break;
-            case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+            case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
               avoidIntersectionsLayers = QgsProject::instance()->avoidIntersectionsLayers();
               break;
-            case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+            case Qgis::AvoidIntersectionsMode::AllowIntersections:
               break;
           }
           int res = -1;

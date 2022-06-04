@@ -55,10 +55,12 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayerUtils,
                        QgsMarkerLineSymbolLayer,
                        QgsArrowSymbolLayer,
+                       QgsGeometryGeneratorSymbolLayer,
                        QgsSymbol,
                        Qgis,
                        QgsSymbolLayer,
-                       QgsProperty
+                       QgsProperty,
+                       QgsRasterFillSymbolLayer
                        )
 
 from qgis.testing import unittest, start_app
@@ -170,6 +172,29 @@ class TestQgsSymbol(unittest.TestCase):
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.PolygonGeometry), QgsSymbol.Fill)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.NullGeometry), QgsSymbol.Hybrid)
         self.assertEqual(QgsSymbol.symbolTypeForGeometryType(QgsWkbTypes.UnknownGeometry), QgsSymbol.Hybrid)
+
+    def testColor(self):
+        """
+        Test QgsSymbol.color() logic
+        """
+        symbol = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#ffffff'})
+        self.assertEqual(symbol.color().name(), '#ff00ff')
+
+        # insert a new first layer, symbol color should be taken from that layer
+        second_fill = QgsSimpleFillSymbolLayer(QColor(0, 255, 0))
+        symbol.insertSymbolLayer(0, second_fill)
+        self.assertEqual(symbol.color().name(), '#00ff00')
+
+        # lock the first layer -- locked color layers are ignored, so symbol color should come from second layer
+        second_fill.setLocked(True)
+        self.assertEqual(symbol.color().name(), '#ff00ff')
+
+        # add a symbol layer which does not have colors (raster fill)
+        raster_fill = QgsRasterFillSymbolLayer()
+        symbol.insertSymbolLayer(0, raster_fill)
+        self.assertFalse(raster_fill.color().isValid())
+        # raster fill does not have a valid color, so should be ignored and the 3rd symbol layer color will be returned
+        self.assertEqual(symbol.color().name(), '#ff00ff')
 
     def testFlags(self):
         """
@@ -612,6 +637,28 @@ class TestQgsSymbol(unittest.TestCase):
 
         assert self.imageCheck('Reprojection errors linestring', 'reprojection_errors_linestring', image)
 
+    def test_animation_settings(self):
+        s = QgsFillSymbol()
+        self.assertFalse(s.animationSettings().isAnimated())
+        s.animationSettings().setIsAnimated(True)
+        self.assertTrue(s.animationSettings().isAnimated())
+
+        s.animationSettings().setFrameRate(30)
+        self.assertEqual(s.animationSettings().frameRate(), 30)
+
+        s.setForceRHR(True)
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        element = QgsSymbolLayerUtils.saveSymbol('test', s, doc, context)
+
+        s2 = QgsSymbolLayerUtils.loadSymbol(element, context)
+        self.assertTrue(s2.animationSettings().isAnimated())
+        self.assertEqual(s2.animationSettings().frameRate(), 30)
+
+        s3 = s2.clone()
+        self.assertTrue(s3.animationSettings().isAnimated())
+        self.assertEqual(s3.animationSettings().frameRate(), 30)
+
     def renderCollection(self, geom, symbol):
         f = QgsFeature()
         f.setGeometry(geom)
@@ -787,6 +834,34 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         self.assertAlmostEqual(markerSymbol.size(context), 45, 3)
         self.assertAlmostEqual(markerSymbol.size(context2), 45, 3)
 
+    def testGeometryGeneratorSize(self):
+        # test marker symbol size propagation to geometry generated sub marker symbols
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Marker)
+        geomGeneratorSymbolLayer.subSymbol().setSize(2.5)
+
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.deleteSymbolLayer(0)
+        markerSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(markerSymbol.size(), 2.5)
+
+        markerSymbol.setSize(10.5)
+        self.assertEqual(markerSymbol.size(), 10.5)
+
+    def testGeometryGeneratorWidth(self):
+        # test line symbol width propagation to geometry generated sub line symbols
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Line)
+        geomGeneratorSymbolLayer.subSymbol().setWidth(2.5)
+
+        lineSymbol = QgsLineSymbol()
+        lineSymbol.deleteSymbolLayer(0)
+        lineSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(lineSymbol.width(), 2.5)
+
+        lineSymbol.setWidth(10.5)
+        self.assertEqual(lineSymbol.width(), 10.5)
+
     def testAngle(self):
         # test angle and setAngle
 
@@ -902,7 +977,24 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         rendered_image = self.renderGeometry(s, g, QgsMapSettings.DrawSymbolBounds)
         self.assertTrue(self.imageCheck('marker_bounds_layer_disabled', 'marker_bounds_layer_disabled', rendered_image))
 
-    def renderGeometry(self, symbol, geom, flags=QgsMapSettings.Flags()):
+    def test_animation(self):
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.deleteSymbolLayer(0)
+        markerSymbol.appendSymbolLayer(
+            QgsSimpleMarkerSymbolLayer(QgsSimpleMarkerSymbolLayerBase.Triangle, color=QColor(255, 0, 0),
+                                       strokeColor=QColor(0, 255, 0), size=10, angle=0))
+        markerSymbol[0].setStrokeStyle(Qt.NoPen)
+
+        markerSymbol.animationSettings().setIsAnimated(True)
+
+        markerSymbol[0].setDataDefinedProperty(QgsSymbolLayer.PropertyAngle, QgsProperty.fromExpression('@symbol_frame * 90'))
+        g = QgsGeometry.fromWkt('Point(1 1)')
+        rendered_image = self.renderGeometry(markerSymbol, g, frame=0)
+        self.assertTrue(self.imageCheck('animated_frame1', 'animated_frame1', rendered_image))
+        rendered_image = self.renderGeometry(markerSymbol, g, frame=1)
+        self.assertTrue(self.imageCheck('animated_frame2', 'animated_frame2', rendered_image))
+
+    def renderGeometry(self, symbol, geom, flags=QgsMapSettings.Flags(), frame=None):
         f = QgsFeature()
         f.setGeometry(geom)
 
@@ -921,6 +1013,9 @@ class TestQgsMarkerSymbol(unittest.TestCase):
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())
+        if frame is not None:
+            ms.setFrameRate(10)
+            ms.setCurrentFrame(frame)
         context = QgsRenderContext.fromMapSettings(ms)
         context.setPainter(painter)
         context.setScaleFactor(96 / 25.4)  # 96 DPI

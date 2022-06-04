@@ -387,7 +387,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns A list of rules
          */
-        const QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
+        const QgsRuleBasedRenderer::RuleList &children() const { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
@@ -524,6 +524,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
 
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsLegendSymbolList legendSymbolItems() const override;

@@ -9,10 +9,10 @@
   }],
   "examples": [{
     "expression": "NOT 1",
-    "returns": "0"
+    "returns": "FALSE"
   }, {
     "expression": "NOT 0",
-    "returns": "1"
+    "returns": "TRUE"
   }],
   "tags": ["negates", "condition"]
 }

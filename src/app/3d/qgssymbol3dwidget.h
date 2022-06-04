@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <memory>
+#include "qgsstyle.h"
 
 class QLabel;
 class QStackedWidget;
@@ -51,7 +52,7 @@ class QgsSymbol3DWidget : public QWidget
 
   private slots:
 
-    void setSymbolFromStyle( const QString &name );
+    void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity entity, const QString &stylePath );
     void saveSymbol();
 
   private:

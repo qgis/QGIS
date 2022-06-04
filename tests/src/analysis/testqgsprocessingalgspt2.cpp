@@ -125,8 +125,6 @@ class TestQgsProcessingAlgsPt2: public QObject
     QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
-
-    void exportToSpreadsheet( const QString &outputPath );
 };
 
 std::unique_ptr<QgsProcessingFeatureBasedAlgorithm> TestQgsProcessingAlgsPt2::featureBasedAlg( const QString &id )
@@ -243,71 +241,6 @@ QVariantMap pkgAlg( const QStringList &layers, const QString &outputGpkg, bool o
   parameters.insert( QStringLiteral( "SELECTED_FEATURES_ONLY" ), selectedFeaturesOnly );
   parameters.insert( QStringLiteral( "SAVE_METADATA" ), saveMetadata );
   return package->run( parameters, *context, &feedback, ok );
-}
-
-void TestQgsProcessingAlgsPt2::exportToSpreadsheet( const QString &outputPath )
-{
-  if ( QFile::exists( outputPath ) )
-    QFile::remove( outputPath );
-
-  QVariantMap parameters;
-  const QStringList layers = QStringList() << mPointsLayer->id() << mPolygonLayer->id();
-  bool ok = false;
-
-  const QgsProcessingAlgorithm *alg( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:exporttospreadsheet" ) ) );
-
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
-  context->setProject( QgsProject::instance() );
-
-  QgsProcessingFeedback feedback;
-
-  parameters.insert( QStringLiteral( "LAYERS" ), layers );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPath );
-  parameters.insert( QStringLiteral( "OVERWRITE" ), false );
-  const QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( ok );
-
-  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr< QgsVectorLayer > pointLayer = std::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
-  QVERIFY( pointLayer->isValid() );
-  QCOMPARE( pointLayer->featureCount(), mPointsLayer->featureCount() );
-  pointLayer.reset();
-  std::unique_ptr< QgsVectorLayer > polygonLayer = std::make_unique< QgsVectorLayer >( outputPath + "|layername=polygons", "polygons", "ogr" );
-  QVERIFY( polygonLayer->isValid() );
-  QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
-  polygonLayer.reset();
-
-  std::unique_ptr<QgsVectorLayer> rectangles = std::make_unique<QgsVectorLayer>( QStringLiteral( TEST_DATA_DIR ) + "/rectangles.shp",
-      QStringLiteral( "rectangles" ), QStringLiteral( "ogr" ) );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << rectangles.get() );
-
-  // Test adding an additional layer (overwrite disabled)
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << rectangles->id() );
-  const QVariantMap results2 = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( ok );
-
-  QVERIFY( !results2.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  std::unique_ptr< QgsVectorLayer > rectanglesPackagedLayer = std::make_unique< QgsVectorLayer >( outputPath + "|layername=rectangles", "points", "ogr" );
-  QVERIFY( rectanglesPackagedLayer->isValid() );
-  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
-  rectanglesPackagedLayer.reset();
-
-  pointLayer = std::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
-  QVERIFY( pointLayer->isValid() );
-  pointLayer.reset();
-
-  // And finally, test with overwrite enabled
-  parameters.insert( QStringLiteral( "OVERWRITE" ), true );
-  const QVariantMap results3 = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( ok );
-
-  QVERIFY( !results3.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
-  rectanglesPackagedLayer = std::make_unique< QgsVectorLayer >( outputPath + "|layername=rectangles", "points", "ogr" );
-  QVERIFY( rectanglesPackagedLayer->isValid() );
-  QCOMPARE( rectanglesPackagedLayer->featureCount(), rectangles->featureCount() );
-
-  pointLayer = std::make_unique< QgsVectorLayer >( outputPath + "|layername=points", "points", "ogr" );
-  QVERIFY( !pointLayer->isValid() ); // It's gone -- the xlsx was recreated with a single layer
 }
 
 #ifndef QT_NO_PRINTER
@@ -637,7 +570,6 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
   QCOMPARE( resultLayer->featureCount(), 5l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "VertexVectorDataset_x" ) );
@@ -720,7 +652,6 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PolygonGeometry );
   QCOMPARE( resultLayer->featureCount(), 2l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "FaceVectorDataset_x" ) );
@@ -782,7 +713,6 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::LineGeometry );
   QCOMPARE( resultLayer->featureCount(), 3l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 5 );
   QCOMPARE( resultLayer->fields().at( 0 ).name(), QStringLiteral( "EdgeScalarDataset" ) );
   QCOMPARE( resultLayer->fields().at( 1 ).name(), QStringLiteral( "EdgeVectorDataset_x" ) );
@@ -858,7 +788,6 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
   QVERIFY( resultLayer->isValid() );
   QVERIFY( resultLayer->geometryType() == QgsWkbTypes::PointGeometry );
   QCOMPARE( resultLayer->featureCount(), 205l );
-  const QgsAttributeList attributeList = resultLayer->attributeList();
   QCOMPARE( resultLayer->fields().count(), 21 );
   QStringList fieldsName;
   fieldsName << QStringLiteral( "Bed Elevation" ) << QStringLiteral( "temperature" ) << QStringLiteral( "temperature/Maximums" )
@@ -1789,7 +1718,7 @@ void TestQgsProcessingAlgsPt2::splitVectorLayer()
   f.setAttributes( QgsAttributes() << 1 << QVariant() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 0)" ) ) );
   layer->dataProvider()->addFeature( f );
-  f.setAttributes( QgsAttributes() << 2 << QStringLiteral( "" ) );
+  f.setAttributes( QgsAttributes() << 2 << QLatin1String( "" ) );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point (0 1)" ) ) );
   layer->dataProvider()->addFeature( f );
   f.setAttributes( QgsAttributes() << 3 << QStringLiteral( "value" ) );

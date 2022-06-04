@@ -144,8 +144,8 @@ static QByteArray createIndexData( const QgsTriangularMesh &mesh )
     const QgsMeshFace &face = mesh.triangles().at( i );
     if ( face.isEmpty() )
       continue;
-    for ( int i = 0; i < 3; ++i )
-      *indexPtr++ = quint32( face.at( i ) );
+    for ( int j = 0; j < 3; ++j )
+      *indexPtr++ = quint32( face.at( j ) );
   }
 
   return indexBytes;
@@ -181,8 +181,8 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMesh
     if ( !isActive )
       continue;
     const QgsMeshFace &face = mesh.triangles().at( i );
-    for ( int i = 0; i < 3; ++i )
-      *indexPtr++ = quint32( face.at( i ) );
+    for ( int j = 0; j < 3; ++j )
+      *indexPtr++ = quint32( face.at( j ) );
   }
 
   return indexBytes;

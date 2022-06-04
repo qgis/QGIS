@@ -27,6 +27,7 @@
 #include <QMenu>
 #include <QToolButton>
 #include <QUrl>
+#include <QMovie>
 
 //
 // QgsAbstractFileContentSourceLineEdit
@@ -306,6 +307,17 @@ QString QgsPictureSourceLineEditBase::fileFilter() const
       }
       return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
     }
+
+    case AnimatedImage:
+    {
+      QStringList formatsFilter;
+      const QByteArrayList supportedFormats = QMovie::supportedFormats();
+      for ( const auto &format : supportedFormats )
+      {
+        formatsFilter.append( QString( QStringLiteral( "*.%1" ) ).arg( QString( format ) ) );
+      }
+      return QString( "%1 (%2);;%3 (*.*)" ).arg( tr( "Animated Images" ), formatsFilter.join( QLatin1Char( ' ' ) ), tr( "All files" ) );
+    }
   }
   BUILTIN_UNREACHABLE
 }
@@ -318,6 +330,8 @@ QString QgsPictureSourceLineEditBase::selectFileTitle() const
       return tr( "Select SVG File" );
     case Image:
       return tr( "Select Image File" );
+    case AnimatedImage:
+      return tr( "Select Animated Image File" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -330,6 +344,8 @@ QString QgsPictureSourceLineEditBase::fileFromUrlTitle() const
       return tr( "SVG From URL" );
     case Image:
       return tr( "Image From URL" );
+    case AnimatedImage:
+      return tr( "Animated Image From URL" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -342,6 +358,8 @@ QString QgsPictureSourceLineEditBase::fileFromUrlText() const
       return tr( "Enter SVG URL" );
     case Image:
       return tr( "Enter image URL" );
+    case AnimatedImage:
+      return tr( "Enter animated image URL" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -354,6 +372,8 @@ QString QgsPictureSourceLineEditBase::embedFileTitle() const
       return tr( "Embed SVG File" );
     case Image:
       return tr( "Embed Image File" );
+    case AnimatedImage:
+      return tr( "Embed Animated Image File" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -366,6 +386,8 @@ QString QgsPictureSourceLineEditBase::extractFileTitle() const
       return tr( "Extract SVG File" );
     case Image:
       return tr( "Extract Image File" );
+    case AnimatedImage:
+      return tr( "Extract Animated Image File" );
   }
   BUILTIN_UNREACHABLE
 }
@@ -378,6 +400,8 @@ QString QgsPictureSourceLineEditBase::defaultSettingsKey() const
       return QStringLiteral( "/UI/lastSVGDir" );
     case Image:
       return QStringLiteral( "/UI/lastImageDir" );
+    case AnimatedImage:
+      return QStringLiteral( "/UI/lastAnimatedImageDir" );
   }
   BUILTIN_UNREACHABLE
 }

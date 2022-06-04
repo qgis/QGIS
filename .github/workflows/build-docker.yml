@@ -29,7 +29,7 @@ jobs:
           if [[ "${GITHUB_REF}" =~ ^refs/tags ]]; then
             echo "::set-output name=matrix::{\"branch\":[\"${GITHUB_REF##*/}\"]}"
           else
-            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_16\", \"release-3_22\"]}"
+            echo "::set-output name=matrix::{\"branch\":[\"master\", \"release-3_22\", \"release-3_24\"]}"
           fi
 
   build-docker:
@@ -64,7 +64,7 @@ jobs:
 
       - name: Cache
         id: cache
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.3
         with:
           path: ~/.ccache
           key: docker-build-${{ matrix.branch }}-${{ github.sha }}

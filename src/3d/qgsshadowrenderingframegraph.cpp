@@ -26,7 +26,10 @@
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QGraphicsApiFilter>
-
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QBlendEquationArguments>
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPreviewPass()
 {
@@ -46,6 +49,14 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructTexturesPrev
 
 Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRenderPass()
 {
+  // The branch structure:
+  // mMainCameraSelector
+  // mForwardRenderLayerFilter
+  // mForwardRenderTargetSelector
+  // opaqueObjectsFilter       | transparentObjectsLayerFilter
+  // forwaredRenderStateSet    | sortPolicy
+  // mFrustumCulling           | transparentObjectsRenderStateSet
+  // mForwardClearBuffers      |
   mMainCameraSelector = new Qt3DRender::QCameraSelector;
   mMainCameraSelector->setCamera( mMainCamera );
 
@@ -85,12 +96,11 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
   mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mForwardRenderLayerFilter );
   mForwardRenderTargetSelector->setTarget( forwardRenderTarget );
 
-  mForwardClearBuffers = new Qt3DRender::QClearBuffers( mForwardRenderTargetSelector );
-  mForwardClearBuffers->setClearColor( QColor::fromRgbF( 0.0, 0.0, 1.0, 1.0 ) );
-  mForwardClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
-  mForwardClearBuffers->setClearDepthValue( 1.0f );
+  Qt3DRender::QLayerFilter *opaqueObjectsFilter = new Qt3DRender::QLayerFilter( mForwardRenderTargetSelector );
+  opaqueObjectsFilter->addLayer( mTransparentObjectsPassLayer );
+  opaqueObjectsFilter->setFilterMode( Qt3DRender::QLayerFilter::DiscardAnyMatchingLayers );
 
-  Qt3DRender::QRenderStateSet *forwaredRenderStateSet = new Qt3DRender::QRenderStateSet( mForwardClearBuffers );
+  Qt3DRender::QRenderStateSet *forwaredRenderStateSet = new Qt3DRender::QRenderStateSet( opaqueObjectsFilter );
 
   Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
   depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
@@ -102,6 +112,47 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructForwardRende
 
   mFrustumCulling = new Qt3DRender::QFrustumCulling( forwaredRenderStateSet );
 
+  mForwardClearBuffers = new Qt3DRender::QClearBuffers( mFrustumCulling );
+  mForwardClearBuffers->setClearColor( QColor::fromRgbF( 0.0, 0.0, 1.0, 1.0 ) );
+  mForwardClearBuffers->setBuffers( Qt3DRender::QClearBuffers::ColorDepthBuffer );
+  mForwardClearBuffers->setClearDepthValue( 1.0f );
+
+  Qt3DRender::QLayerFilter *transparentObjectsLayerFilter = new Qt3DRender::QLayerFilter( mForwardRenderTargetSelector );
+  transparentObjectsLayerFilter->addLayer( mTransparentObjectsPassLayer );
+  transparentObjectsLayerFilter->setFilterMode( Qt3DRender::QLayerFilter::AcceptAnyMatchingLayers );
+
+  Qt3DRender::QSortPolicy *sortPolicy = new Qt3DRender::QSortPolicy( transparentObjectsLayerFilter );
+  QVector<Qt3DRender::QSortPolicy::SortType> sortTypes;
+  sortTypes.push_back( Qt3DRender::QSortPolicy::BackToFront );
+  sortPolicy->setSortTypes( sortTypes );
+
+  Qt3DRender::QRenderStateSet *transparentObjectsRenderStateSet = new Qt3DRender::QRenderStateSet( sortPolicy );
+  {
+    Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
+    depthTest->setDepthFunction( Qt3DRender::QDepthTest::Less );
+    transparentObjectsRenderStateSet->addRenderState( depthTest );
+
+    Qt3DRender::QNoDepthMask *noDepthMask = new Qt3DRender::QNoDepthMask;
+    transparentObjectsRenderStateSet->addRenderState( noDepthMask );
+
+    Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+    cullFace->setMode( Qt3DRender::QCullFace::CullingMode::NoCulling );
+    transparentObjectsRenderStateSet->addRenderState( cullFace );
+
+    Qt3DRender::QBlendEquation *blendEquation = new Qt3DRender::QBlendEquation;
+    blendEquation->setBlendFunction( Qt3DRender::QBlendEquation::Add );
+    transparentObjectsRenderStateSet->addRenderState( blendEquation );
+
+    Qt3DRender::QBlendEquationArguments *blenEquationArgs = new Qt3DRender::QBlendEquationArguments;
+    blenEquationArgs->setSourceRgb( Qt3DRender::QBlendEquationArguments::Blending::One );
+    blenEquationArgs->setDestinationRgb( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
+    blenEquationArgs->setSourceAlpha( Qt3DRender::QBlendEquationArguments::Blending::One );
+    blenEquationArgs->setDestinationAlpha( Qt3DRender::QBlendEquationArguments::Blending::OneMinusSource1Alpha );
+    transparentObjectsRenderStateSet->addRenderState( blenEquationArgs );
+  }
+
+  // cppcheck wrongly believes transparentObjectsRenderStateSet will leak
+  // cppcheck-suppress memleak
   return mMainCameraSelector;
 }
 
@@ -352,13 +403,14 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   mCastShadowsLayer = new Qt3DRender::QLayer;
   mForwardRenderLayer = new Qt3DRender::QLayer;
   mDepthRenderPassLayer = new Qt3DRender::QLayer;
-
+  mTransparentObjectsPassLayer = new Qt3DRender::QLayer;
 
   mPostprocessPassLayer->setRecursive( true );
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
   mDepthRenderPassLayer->setRecursive( true );
+  mTransparentObjectsPassLayer->setRecursive( true );
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
 

@@ -72,7 +72,7 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   //point position in screen coords
   QgsGeometry geom = feature.geometry();
   const QgsWkbTypes::Type geomType = geom.wkbType();
-  if ( QgsWkbTypes::flatType( geomType ) != QgsWkbTypes::Point )
+  if ( QgsWkbTypes::geometryType( geomType ) != QgsWkbTypes::PointGeometry )
   {
     //can only render point type
     return false;
@@ -93,53 +93,61 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   }
 
   const double searchDistance = context.convertToMapUnits( mTolerance, mToleranceUnit, mToleranceMapUnitScale );
-  const QgsPointXY point = transformedFeature.geometry().asPoint();
-  const QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
-  if ( intersectList.empty() )
+
+  const QgsGeometry transformedGeometry = transformedFeature.geometry();
+  for ( auto partIt = transformedGeometry.const_parts_begin(); partIt != transformedGeometry.const_parts_end(); ++partIt )
   {
-    mSpatialIndex->addFeature( transformedFeature );
-    // create new group
-    ClusteredGroup newGroup;
-    newGroup << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
-    mClusteredGroups.push_back( newGroup );
-    // add to group index
-    mGroupIndex.insert( transformedFeature.id(), mClusteredGroups.count() - 1 );
-    mGroupLocations.insert( transformedFeature.id(), point );
-  }
-  else
-  {
-    // find group with closest location to this point (may be more than one within search tolerance)
-    QgsFeatureId minDistFeatureId = intersectList.at( 0 );
-    double minDist = mGroupLocations.value( minDistFeatureId ).distance( point );
-    for ( int i = 1; i < intersectList.count(); ++i )
+    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( *partIt );
+    // create a new feature which is JUST this point, no other parts from the multi-point
+    QgsFeature pointFeature = transformedFeature;
+    pointFeature.setGeometry( QgsGeometry( point->clone() ) );
+    const QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( point, searchDistance ) );
+    if ( intersectList.empty() )
     {
-      const QgsFeatureId candidateId = intersectList.at( i );
-      const double newDist = mGroupLocations.value( candidateId ).distance( point );
-      if ( newDist < minDist )
-      {
-        minDist = newDist;
-        minDistFeatureId = candidateId;
-      }
+      mSpatialIndex->addFeature( pointFeature );
+      // create new group
+      ClusteredGroup newGroup;
+      newGroup << GroupedFeature( pointFeature, symbol->clone(), selected, label );
+      mClusteredGroups.push_back( newGroup );
+      // add to group index
+      mGroupIndex.insert( pointFeature.id(), mClusteredGroups.count() - 1 );
+      mGroupLocations.insert( pointFeature.id(), QgsPointXY( *point ) );
     }
+    else
+    {
+      // find group with closest location to this point (may be more than one within search tolerance)
+      QgsFeatureId minDistFeatureId = intersectList.at( 0 );
+      double minDist = mGroupLocations.value( minDistFeatureId ).distance( point->x(), point->y() );
+      for ( int i = 1; i < intersectList.count(); ++i )
+      {
+        const QgsFeatureId candidateId = intersectList.at( i );
+        const double newDist = mGroupLocations.value( candidateId ).distance( point->x(), point->y() );
+        if ( newDist < minDist )
+        {
+          minDist = newDist;
+          minDistFeatureId = candidateId;
+        }
+      }
 
-    const int groupIdx = mGroupIndex[ minDistFeatureId ];
-    ClusteredGroup &group = mClusteredGroups[groupIdx];
+      const int groupIdx = mGroupIndex[ minDistFeatureId ];
+      ClusteredGroup &group = mClusteredGroups[groupIdx];
 
-    // calculate new centroid of group
-    const QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
-    mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point.x() ) / ( group.size() + 1.0 ),
-                                          ( oldCenter.y() * group.size() + point.y() ) / ( group.size() + 1.0 ) );
+      // calculate new centroid of group
+      const QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
+      mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ),
+                                            ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
 
-    // add to a group
-    group << GroupedFeature( transformedFeature, symbol->clone(), selected, label );
-    // add to group index
-    mGroupIndex.insert( transformedFeature.id(), groupIdx );
+      // add to a group
+      group << GroupedFeature( pointFeature, symbol->clone(), selected, label );
+      // add to group index
+      mGroupIndex.insert( pointFeature.id(), groupIdx );
+    }
   }
 
   return true;
 }
 
-void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRenderContext &context )
+void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRenderContext &context ) const
 {
   //calculate centroid of all points, this will be center of group
   QgsMultiPoint *groupMultiPoint = new QgsMultiPoint();
@@ -292,6 +300,14 @@ QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( const QgsFeature
   return mRenderer->legendKeysForFeature( feature, context );
 }
 
+QString QgsPointDistanceRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
+{
+  ok = false;
+  if ( !mRenderer )
+    return QString();
+  return mRenderer->legendKeyToExpression( key, layer, ok );
+}
+
 bool QgsPointDistanceRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
@@ -365,9 +381,9 @@ QgsLegendSymbolList QgsPointDistanceRenderer::legendSymbolItems() const
   return QgsLegendSymbolList();
 }
 
-QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPointXY &p, double distance ) const
+QgsRectangle QgsPointDistanceRenderer::searchRect( const QgsPoint *p, double distance ) const
 {
-  return QgsRectangle( p.x() - distance, p.y() - distance, p.x() + distance, p.y() + distance );
+  return QgsRectangle( p->x() - distance, p->y() - distance, p->x() + distance, p->y() + distance );
 }
 
 void QgsPointDistanceRenderer::printGroupInfo() const
@@ -398,7 +414,7 @@ QString QgsPointDistanceRenderer::getLabel( const QgsFeature &feature ) const
   return attribute;
 }
 
-void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group )
+void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group ) const
 {
   QPainter *p = context.renderContext().painter();
   if ( !p )

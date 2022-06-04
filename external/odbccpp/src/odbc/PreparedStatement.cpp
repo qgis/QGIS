@@ -15,7 +15,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 PreparedStatement::PreparedStatement(Connection* parent) : StatementBase(parent)
 {
@@ -402,4 +402,4 @@ void PreparedStatement::verifyAllParametersValid() const
     }
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

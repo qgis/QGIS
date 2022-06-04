@@ -44,6 +44,11 @@ Abstract base class for terrain providers
     virtual ~QgsAbstractTerrainProvider();
 
 
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const = 0;
+%Docstring
+Returns ``True`` if the provider is equal to ``other``.
+%End
+
     virtual void resolveReferences( const QgsProject *project );
 %Docstring
 Resolves reference to layers from stored layer ID (if it has not been resolved already)
@@ -73,6 +78,14 @@ Returns the unique type ID string for the provider.
 Creates a clone of the provider and returns the new object.
 
 Ownership is transferred to the caller.
+%End
+
+    virtual void prepare() = 0 /Factory/;
+%Docstring
+Called on the main thread prior to accessing the provider from a background thread.
+
+Subclasses must implement suitable logic in order to prepare for thread-safe calculation of
+terrain heights on background threads.
 %End
 
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -178,6 +191,10 @@ Constructor for QgsFlatTerrainProvider.
 
     virtual QgsFlatTerrainProvider *clone() const /Factory/;
 
+    virtual void prepare();
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
 };
 
 class QgsRasterDemTerrainProvider : QgsAbstractTerrainProvider
@@ -198,6 +215,7 @@ A terrain provider where the terrain source is a raster DEM layer.
 Constructor for QgsRasterDemTerrainProvider.
 %End
 
+
     virtual QString type() const;
 
     virtual void resolveReferences( const QgsProject *project );
@@ -211,6 +229,10 @@ Constructor for QgsRasterDemTerrainProvider.
     virtual double heightAt( double x, double y ) const;
 
     virtual QgsRasterDemTerrainProvider *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+    virtual void prepare();
 
 
     void setLayer( QgsRasterLayer *layer );
@@ -249,6 +271,7 @@ A terrain provider that uses the Z values of a mesh layer to build a terrain sur
 Constructor for QgsMeshTerrainProvider.
 %End
 
+
     virtual QString type() const;
 
     virtual void resolveReferences( const QgsProject *project );
@@ -262,6 +285,10 @@ Constructor for QgsMeshTerrainProvider.
     virtual double heightAt( double x, double y ) const;
 
     virtual QgsMeshTerrainProvider *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const;
+
+    virtual void prepare();
 
 
     void setLayer( QgsMeshLayer *layer );

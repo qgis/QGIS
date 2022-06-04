@@ -1365,15 +1365,22 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOracleProviderConnection::
 
   QSqlQuery qry( *pconn.get() );
   std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+  QgsDatabaseQueryLogWrapper logWrapper { sql, uri(), providerKey(), QStringLiteral( "QgsAbstractDatabaseProviderConnection" ), QGS_QUERY_LOG_ORIGIN };
+
   if ( !qry.exec( sql ) )
   {
+    logWrapper.setError( qry.lastError().text() );
     throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 returned %2" )
                                           .arg( qry.lastQuery(),
                                               qry.lastError().text() ) );
   }
 
   if ( feedback && feedback->isCanceled() )
+  {
+    logWrapper.setCanceled();
     return QgsAbstractDatabaseProviderConnection::QueryResult();
+  }
 
   if ( qry.isActive() )
   {

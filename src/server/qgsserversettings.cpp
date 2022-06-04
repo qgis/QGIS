@@ -125,7 +125,7 @@ void QgsServerSettings::initSettings()
                                QStringLiteral( "Specify the cache size" ),
                                QStringLiteral( "/cache/size" ),
                                QVariant::LongLong,
-                               QVariant( 50 * 1024 * 1024 ),
+                               QVariant( 256 * 1024 * 1024 ),
                                QVariant()
                              };
   mSettings[ sCacheSize.envVar ] = sCacheSize;
@@ -333,6 +333,29 @@ void QgsServerSettings::initSettings()
                                     QVariant()
                                   };
   mSettings[ sServiceUrl.envVar ] = sWmtsServiceUrl;
+
+  // the default config cache check interval
+  const Setting sConfigCacheCheckInterval = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
+                                              QgsServerSettingsEnv::DEFAULT_VALUE,
+                                              QStringLiteral( "The default project cache check interval" ),
+                                              QStringLiteral( "/qgis/server_project_cache_check_interval" ),
+                                              QVariant::Int,
+                                              QVariant( 0 ),
+                                              QVariant()
+                                            };
+  mSettings[ sConfigCacheCheckInterval.envVar ] = sConfigCacheCheckInterval;
+
+  // the default config cache strategy
+  const Setting sProjectCacheStrategy = { QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY,
+                                          QgsServerSettingsEnv::DEFAULT_VALUE,
+                                          QStringLiteral( "Project's cache strategy. Possible values are 'off','filesystem' or 'periodic'" ),
+                                          QStringLiteral( "/qgis/server_project_cache_strategy" ),
+                                          QVariant::String,
+                                          QVariant( "" ),
+                                          QVariant()
+                                        };
+  mSettings[ sProjectCacheStrategy.envVar ] = sProjectCacheStrategy;
+
 }
 
 void QgsServerSettings::load()
@@ -583,7 +606,7 @@ bool QgsServerSettings::getPrintDisabled() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_DISABLE_GETPRINT ).toBool();
 }
 
-bool QgsServerSettings::logProfile()
+bool QgsServerSettings::logProfile() const
 {
   return value( QgsServerSettingsEnv::QGIS_SERVER_LOG_PROFILE, false ).toBool();
 }
@@ -615,3 +638,22 @@ QString QgsServerSettings::serviceUrl( const QString &service ) const
 
   return result;
 }
+
+int QgsServerSettings::projectCacheCheckInterval() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL ).toInt();
+}
+
+QString QgsServerSettings::projectCacheStrategy() const
+{
+  QString result = value( QgsServerSettingsEnv::QGIS_SERVER_PROJECT_CACHE_STRATEGY ).toString();
+  if ( result.compare( QLatin1String( "filesystem" ) ) &&
+       result.compare( QLatin1String( "periodic" ) ) &&
+       result.compare( QLatin1String( "off" ) ) )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Invalid cache strategy, expecting 'filesystem', 'periodic' or 'off'. Using 'filesystem' as default." ), "Server", Qgis::MessageLevel::Warning );
+    result = QStringLiteral( "filesystem" );
+  }
+  return result;
+}
+

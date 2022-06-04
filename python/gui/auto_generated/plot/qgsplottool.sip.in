@@ -1,0 +1,255 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottool.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+%ModuleHeaderCode
+#include "qgsplottool.h"
+#include "qgsplottoolpan.h"
+#include "qgsplottoolzoom.h"
+%End
+
+
+class QgsPlotTool : QObject
+{
+%Docstring(signature="appended")
+Abstract base class for all interactive plot tools.
+
+Plot tools are user tools for manipulating and interacting with a :py:class:`QgsPlotCanvas`.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottool.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsPlotToolPan *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotToolPan;
+    else if ( qobject_cast<QgsPlotToolZoom *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotToolZoom;
+    else if ( qobject_cast<QgsPlotTool *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPlotTool;
+    else
+      sipType = nullptr;
+%End
+  public:
+
+    ~QgsPlotTool();
+
+    virtual Qgis::PlotToolFlags flags() const;
+%Docstring
+Returns the flags for the plot tool.
+%End
+
+    QString toolName() const;
+%Docstring
+Returns a user-visible, translated name for the tool.
+%End
+
+    virtual void plotMoveEvent( QgsPlotMouseEvent *event );
+%Docstring
+Mouse move ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual void plotDoubleClickEvent( QgsPlotMouseEvent *event );
+%Docstring
+Mouse double-click ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual void plotPressEvent( QgsPlotMouseEvent *event );
+%Docstring
+Mouse press ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual void plotReleaseEvent( QgsPlotMouseEvent *event );
+%Docstring
+Mouse release ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual void wheelEvent( QWheelEvent *event );
+%Docstring
+Mouse wheel ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual void keyPressEvent( QKeyEvent *event );
+%Docstring
+Key press ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+%Docstring
+Key release ``event`` for overriding.
+
+The default implementation does nothing. When subclasses implement this method
+and have acted on the event, they must explicitly call event->:py:func:`~QgsPlotTool.accept` to prevent
+the event from being passed on to other widgets.
+%End
+
+    virtual bool gestureEvent( QGestureEvent *event );
+%Docstring
+Gesture ``event`` for overriding.
+
+Returns ``True`` if the event was handled by the tool and should not be propagated further.
+%End
+
+    virtual bool canvasToolTipEvent( QHelpEvent *event );
+%Docstring
+Tooltip ``event`` for overriding.
+
+Returns ``True`` if the event was handled by the tool and should not be propagated further.
+%End
+
+    bool isActive() const;
+%Docstring
+Returns ``True`` if this tool is the current tool active on the plot canvas.
+%End
+
+    virtual void activate();
+%Docstring
+Called when the tool is set as the currently active plot tool.
+%End
+
+    virtual void deactivate();
+%Docstring
+Called when the tool is being deactivated.
+%End
+
+    QgsPlotCanvas *canvas() const;
+%Docstring
+Returns the tool's plot canvas.
+%End
+
+    void setAction( QAction *action );
+%Docstring
+Associates an ``action`` with this tool. When the setTool
+method of :py:class:`QgsPlotCanvas` is called the action's state will be set to on.
+Usually this will cause a toolbutton to appear pressed in and
+the previously used toolbutton to pop out.
+
+.. seealso:: :py:func:`action`
+%End
+
+    QAction *action();
+%Docstring
+Returns the action associated with the tool or ``None`` if no action is associated.
+
+.. seealso:: :py:func:`setAction`
+%End
+
+    void setCursor( const QCursor &cursor );
+%Docstring
+Sets a user defined ``cursor`` for use when the tool is active.
+%End
+
+    virtual bool populateContextMenuWithEvent( QMenu *menu, QgsPlotMouseEvent *event );
+%Docstring
+Allows the tool to populate and customize the given ``menu``,
+prior to showing it in response to a right-mouse button click.
+
+``menu`` will be initially populated with a set of default, generic actions.
+Any new actions added to the menu should be correctly parented to ``menu``.
+
+A pointer to the plot mouse ``event`` can be provided to allow particular behavior depending on the plot tool.
+
+This method can return ``True`` to inform the caller that the menu was effectively populated.
+
+The default implementation does nothing and returns ``False``.
+
+.. note::
+
+   The context menu is only shown when the ShowContextMenu flag
+   is present in :py:func:`~QgsPlotTool.flags`.
+%End
+
+  signals:
+
+    void activated();
+%Docstring
+Emitted when the tool is activated.
+%End
+
+    void deactivated();
+%Docstring
+Emitted when the tool is deactivated
+%End
+
+  protected:
+
+    QgsPlotTool( QgsPlotCanvas *canvas /TransferThis/, const QString &name );
+%Docstring
+Constructor takes a plot canvas as a parameter.
+%End
+
+    QgsPoint toMapCoordinates( const QgsPointXY &point ) const;
+%Docstring
+Converts a ``point`` on the canvas to the associated map coordinate.
+
+May return an empty point if the canvas point cannot be converted to a map point.
+%End
+
+    QgsPointXY toCanvasCoordinates( const QgsPoint &point ) const;
+%Docstring
+Converts a ``point`` in map coordinates to the associated canvas point.
+
+May return an empty point if the map point cannot be converted to a canvas point.
+%End
+
+    bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
+%Docstring
+Returns ``True`` if a mouse press/release operation which started at
+``startViewPoint`` and ended at ``endViewPoint`` should be considered
+a "click and drag". If ``False`` is returned, the operation should be
+instead treated as just a click on ``startViewPoint``.
+%End
+
+    static QPointF constrainPointToRect( QPointF point, const QRectF &rect );
+%Docstring
+Constrains a point to force it to fall within the specified rectangle.
+%End
+
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottool.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

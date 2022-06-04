@@ -299,6 +299,7 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
     QgsInterpolatedLineSymbolLayer *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+    QColor color() const override;
 
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;

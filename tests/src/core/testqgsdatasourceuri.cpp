@@ -28,6 +28,7 @@ class TestQgsDataSourceUri: public QObject
     void checkparser();
     void checkparser_data();
     void checkAuthParams();
+    void checkParameterKeys();
 };
 
 void TestQgsDataSourceUri::checkparser_data()
@@ -186,7 +187,6 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QgsDataSourceUri::SslMode, sslmode );
   QFETCH( QString, sql );
   QFETCH( QString, myparam );
-  QFETCH( QString, schema );
 
   const QgsDataSourceUri ds( uri );
   QCOMPARE( ds.table(), table );
@@ -292,6 +292,13 @@ void TestQgsDataSourceUri::checkAuthParams()
 
 }
 
+void TestQgsDataSourceUri::checkParameterKeys()
+{
+  QgsDataSourceUri uri( QLatin1String( "dbname='foo' bar='baz'" ) );
+  QCOMPARE( uri.parameterKeys().size(), 2 );
+  QVERIFY( uri.parameterKeys().contains( QLatin1String( "dbname" ) ) );
+  QVERIFY( uri.parameterKeys().contains( QLatin1String( "bar" ) ) );
+}
 
 QGSTEST_MAIN( TestQgsDataSourceUri )
 #include "testqgsdatasourceuri.moc"

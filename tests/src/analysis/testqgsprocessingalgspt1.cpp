@@ -60,7 +60,6 @@
 #include "qgsmeshlayer.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
-#include "qgsalgorithmgpsbabeltools.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgscolorrampimpl.h"
@@ -157,6 +156,7 @@ class TestQgsProcessingAlgsPt1: public QObject
 
     void raiseException();
     void raiseWarning();
+    void raiseMessage();
 
     void randomFloatingPointDistributionRaster_data();
     void randomFloatingPointDistributionRaster();
@@ -512,7 +512,7 @@ void TestQgsProcessingAlgsPt1::rasterLayerProperties()
   QCOMPARE( results.value( QStringLiteral( "EXTENT" ) ).toString(), QStringLiteral( "0.0000000000000000,0.0000000000000000 : 4.0000000000000000,4.0000000000000000" ) );
   QCOMPARE( results.value( QStringLiteral( "PIXEL_WIDTH" ) ).toDouble(), 1.0 );
   QCOMPARE( results.value( QStringLiteral( "PIXEL_HEIGHT" ) ).toDouble(), 1.0 );
-  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QStringLiteral( "" ) );
+  QCOMPARE( results.value( QStringLiteral( "CRS_AUTHID" ) ).toString(), QString() );
   QCOMPARE( results.value( QStringLiteral( "WIDTH_IN_PIXELS" ) ).toInt(), 4 );
   QCOMPARE( results.value( QStringLiteral( "HEIGHT_IN_PIXELS" ) ).toInt(), 4 );
   QCOMPARE( results.value( QStringLiteral( "BAND_COUNT" ) ).toInt(), 1 );
@@ -1497,7 +1497,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 2" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::Byte
       << "EPSG:4326"
       << 1.0
@@ -1517,7 +1517,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 3" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::Byte
       << "EPSG:4326"
       << 1.0
@@ -1555,7 +1555,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 5" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::Int16
       << "EPSG:4326"
       << 1.0
@@ -1574,7 +1574,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 6" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::Int16
       << "EPSG:4326"
       << 1.0
@@ -1612,7 +1612,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 8" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::UInt16
       << "EPSG:4326"
       << 1.0
@@ -1631,7 +1631,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 9" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::UInt16
       << "EPSG:4326"
       << 1.0
@@ -1688,7 +1688,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 11" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::Int32
       << "EPSG:4326"
       << 1.0
@@ -1707,7 +1707,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 12" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::Int32
       << "EPSG:4326"
       << 1.0
@@ -1745,7 +1745,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 14" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::UInt32
       << "EPSG:4326"
       << 1.0
@@ -1764,7 +1764,7 @@ void TestQgsProcessingAlgsPt1::createConstantRaster_data()
    */
   QTest::newRow( "testcase 14" )
       << "-3.000000000,7.000000000,-4.000000000,6.000000000 [EPSG:4326]"
-      << QStringLiteral( "" )
+      << QString()
       << Qgis::DataType::UInt32
       << "EPSG:4326"
       << 1.0
@@ -2152,7 +2152,7 @@ void TestQgsProcessingAlgsPt1::lineDensity_data()
       << QStringLiteral( "/linedensity_testcase2.tif" )
       << 3.0
       << 2.0
-      << QStringLiteral( "" );
+      << QString();
 
 }
 
@@ -5021,9 +5021,14 @@ class TestProcessingFeedback : public QgsProcessingFeedback
     {
       warnings << warning;
     }
+    void pushInfo( const QString &message ) override
+    {
+      messages << message;
+    }
 
     QStringList errors;
     QStringList warnings;
+    QStringList messages;
 
 };
 
@@ -5093,6 +5098,40 @@ void TestQgsProcessingAlgsPt1::raiseWarning()
   QVERIFY( ok );
 
   QCOMPARE( feedback.warnings, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+}
+
+void TestQgsProcessingAlgsPt1::raiseMessage()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:raisemessage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "nothing screwed up boy, congrats" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.messages, QStringList() << QStringLiteral( "nothing screwed up boy, congrats" ) );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "FALSE" ) );
+  feedback.messages.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.messages, QStringList() );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "TRUE" ) );
+  feedback.messages.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.messages, QStringList() << QStringLiteral( "nothing screwed up boy, congrats" ) );
 }
 
 void TestQgsProcessingAlgsPt1::randomFloatingPointDistributionRaster_data()
@@ -5555,8 +5594,6 @@ void TestQgsProcessingAlgsPt1::randomRaster()
   //prepare input params
   QgsProject p;
   std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:createrandomuniformrasterlayer" ) ) );
-
-  const QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
 
   //set project crs and ellipsoid from input layer
   p.setCrs( QgsCoordinateReferenceSystem( crs ), true );

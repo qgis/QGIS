@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 StatementBase::StatementBase(Connection* parent)
 : parent_(parent, true)
@@ -48,4 +48,4 @@ void StatementBase::setQueryTimeout(unsigned long seconds)
         (SQLPOINTER)(ptrdiff_t)seconds, SQL_IS_UINTEGER);
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

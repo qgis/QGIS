@@ -24,7 +24,7 @@ or render time.
 
     QgsRasterChecker();
 
-    QString report();
+    QString report() const;
 
     bool runTest( const QString &verifiedKey, QString verifiedUri,
                   const QString &expectedKey, QString expectedUri );

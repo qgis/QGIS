@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 ResultSetMetaData::ResultSetMetaData(StatementBase* stmt)
     : ResultSetMetaDataBase(stmt)
@@ -73,4 +73,4 @@ string ResultSetMetaData::getStringColAttribute(unsigned short columnIndex,
     return string(&buffer[0]);
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

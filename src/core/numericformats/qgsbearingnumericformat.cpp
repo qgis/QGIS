@@ -34,7 +34,7 @@ QString QgsBearingNumericFormat::visibleName() const
 
 int QgsBearingNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return DEFAULT_SORT_KEY;
 }
 
 double QgsBearingNumericFormat::suggestSampleValue() const

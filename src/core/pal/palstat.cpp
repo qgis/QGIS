@@ -44,17 +44,17 @@ pal::PalStat::~PalStat()
   delete[] layersNbLabelledObjects;
 }
 
-int pal::PalStat::getNbObjects()
+int pal::PalStat::getNbObjects() const
 {
   return nbObjects;
 }
 
-int pal::PalStat::getNbLabelledObjects()
+int pal::PalStat::getNbLabelledObjects() const
 {
   return nbLabelledObjects;
 }
 
-int pal::PalStat::getNbLayers()
+int pal::PalStat::getNbLayers() const
 {
   return nbLayers;
 }
@@ -67,7 +67,7 @@ QString pal::PalStat::getLayerName( int layerId )
     return QString();
 }
 
-int pal::PalStat::getLayerNbObjects( int layerId )
+int pal::PalStat::getLayerNbObjects( int layerId ) const
 {
   if ( layerId >= 0 && layerId < nbLayers )
     return layersNbObjects[layerId];
@@ -75,7 +75,7 @@ int pal::PalStat::getLayerNbObjects( int layerId )
     return -1;
 }
 
-int pal::PalStat::getLayerNbLabelledObjects( int layerId )
+int pal::PalStat::getLayerNbLabelledObjects( int layerId ) const
 {
   if ( layerId >= 0 && layerId < nbLayers )
     return layersNbLabelledObjects[layerId];

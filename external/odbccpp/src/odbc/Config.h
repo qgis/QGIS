@@ -1,6 +1,12 @@
 #ifndef ODBC_CONFIG_H_INCLUDED
 #define ODBC_CONFIG_H_INCLUDED
 //------------------------------------------------------------------------------
+#ifndef NS_ODBC
+#    define NS_ODBC odbc
+#    define NS_ODBC_START namespace odbc {
+#    define NS_ODBC_END }
+#endif
+//------------------------------------------------------------------------------
 #ifndef ODBC_EXPORT
 #    ifdef ODBC_STATIC
 #        define ODBC_EXPORT

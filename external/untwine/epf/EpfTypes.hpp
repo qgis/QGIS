@@ -41,10 +41,14 @@ constexpr int NumFileProcessors = 8;
 
 struct FileInfo
 {
+    FileInfo() : numPoints(0), start(0)
+    {}
+
     std::string filename;
     std::string driver;
     DimInfoList dimInfo;
     uint64_t numPoints;
+    uint64_t start;
     pdal::BOX3D bounds;
     pdal::SpatialReference srs;
 

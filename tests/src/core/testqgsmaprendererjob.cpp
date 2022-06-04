@@ -772,13 +772,13 @@ void TestQgsMapRendererJob::stagedRendererWithStagedLabeling()
   pointsLayer->setLabelsEnabled( true );
 
   settings.fieldName = QStringLiteral( "Name" );
-  settings.placement = QgsPalLayerSettings::Line;
+  settings.placement = Qgis::LabelPlacement::Line;
   settings.zIndex = 3;
   linesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
   linesLayer->setLabelsEnabled( true );
 
   settings.fieldName = QStringLiteral( "Name" );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.zIndex = 2;
   settings.obstacleSettings().setType( QgsLabelObstacleSettings::PolygonInterior );
   polygonsLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );

@@ -518,6 +518,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
     if ( ! param.mExternalUri.isEmpty() && ( mFlags & AddExternalLayers ) )
     {
+
       std::unique_ptr<QgsMapLayer> layer = std::make_unique< QgsRasterLayer >( param.mExternalUri, param.mNickname, QStringLiteral( "wms" ) );
 
       if ( layer->isValid() )
@@ -818,7 +819,7 @@ bool QgsWmsRenderContext::isExternalLayer( const QString &name ) const
 {
   for ( const auto &layer : mExternalLayers )
   {
-    if ( layer->name().compare( name ) == 0 )
+    if ( layerNickname( *layer ).compare( name ) == 0 )
       return true;
   }
 

@@ -405,10 +405,10 @@ void QgsHighlight::paint( QPainter *p )
             sizeUnit = QgsUnitTypes::RenderPixels;
             switch ( pcRenderer->pointSymbol() )
             {
-              case QgsPointCloudRenderer::PointSymbol::Circle:
+              case Qgis::PointCloudSymbol::Circle:
                 symbol = Circle;
                 break;
-              case QgsPointCloudRenderer::PointSymbol::Square:
+              case Qgis::PointCloudSymbol::Square:
                 symbol = Square;
                 break;
             }

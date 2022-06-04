@@ -28,12 +28,17 @@
  * OF SUCH DAMAGE.
  ****************************************************************************/
 
+//ABELL - This exists here because older version of PDAL don't have it and the QGIS
+//  crew wanted things to work with older versions of PDAL.
+
 #pragma once
+
+#include <fcntl.h>
 
 #ifdef _WIN32
 #include <Windows.h>
+#include <io.h>
 #else
-#include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #endif

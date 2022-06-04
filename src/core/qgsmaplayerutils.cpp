@@ -137,3 +137,20 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
   layer->setDataSource( newUri, layer->name(), layer->providerType() );
   return true;
 }
+
+QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<QgsMapLayerType> &order )
+{
+  QList< QgsMapLayer * > res = layers;
+  std::sort( res.begin(), res.end(), [&order]( const QgsMapLayer * a, const QgsMapLayer * b ) -> bool
+  {
+    for ( QgsMapLayerType type : order )
+    {
+      if ( a->type() == type && b->type() != type )
+        return true;
+      else if ( b->type() == type )
+        return false;
+    }
+    return false;
+  } );
+  return res;
+}

@@ -2,17 +2,17 @@
   "name": "is_directory",
   "type": "function",
   "groups": ["Files and Paths"],
-  "description": "Returns true if a path corresponds to a directory.",
+  "description": "Returns TRUE if a path corresponds to a directory.",
   "arguments": [{
     "arg": "path",
     "description": "a file path or a map layer value. If a map layer value is specified then the file source of the layer will be used."
   }],
   "examples": [{
     "expression": "is_directory('/home/qgis/data/country_boundaries.shp')",
-    "returns": "false"
+    "returns": "FALSE"
   }, {
     "expression": "is_directory('/home/qgis/data/')",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["path", "directory", "folder"]
 }

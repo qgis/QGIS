@@ -42,6 +42,7 @@ from qgis.core import (Qgis,
                        QgsProcessing,
                        QgsProject,
                        QgsProcessingModelParameter,
+                       QgsProcessingModelAlgorithm,
                        QgsSettings,
                        QgsProcessingContext,
                        QgsFileUtils
@@ -272,9 +273,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         Automatically generates and sets a new parameter's name, based on the parameter's
         description and ensuring that it is unique for the model.
         """
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        safeName = ''.join(c for c in parameter.description() if c in validChars)
+        safeName = QgsProcessingModelAlgorithm.safeName(parameter.description())
         name = safeName.lower()
         i = 2
         while self.model().parameterDefinition(name):

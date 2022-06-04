@@ -1115,6 +1115,87 @@ void QgsRuleBasedRenderer::checkLegendSymbolItem( const QString &key, bool state
     rule->setActive( state );
 }
 
+QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *, bool &ok ) const
+{
+  ok = false;
+  Rule *rule = mRootRule->findRuleByKey( key );
+  if ( !rule )
+    return QString();
+
+  std::function<QString( Rule *rule )> ruleToExpression;
+  ruleToExpression = [&ruleToExpression]( Rule * rule ) -> QString
+  {
+    if ( rule->isElse() && rule->parent() )
+    {
+      // gather the expressions for all other rules on this level and invert them
+
+      QStringList otherRules;
+      const QList<QgsRuleBasedRenderer::Rule *> siblings = rule->parent()->children();
+      for ( Rule *sibling : siblings )
+      {
+        if ( sibling == rule )
+          continue;
+
+        const QString siblingExpression = ruleToExpression( sibling );
+        if ( siblingExpression.isEmpty() )
+          return QStringLiteral( "FALSE" ); // nothing will match this rule
+
+        otherRules.append( siblingExpression );
+      }
+
+      if ( otherRules.empty() )
+        return QStringLiteral( "TRUE" ); // all features will match the else rule
+      else
+        return (
+                 otherRules.size() > 1
+                 ?  QStringLiteral( "NOT ((%1))" ).arg( otherRules.join( QLatin1String( ") OR (" ) ) )
+                 : QStringLiteral( "NOT (%1)" ).arg( otherRules.at( 0 ) )
+               );
+    }
+    else
+    {
+      QStringList ruleParts;
+      if ( !rule->filterExpression().isEmpty() )
+        ruleParts.append( rule->filterExpression() );
+
+      if ( !qgsDoubleNear( rule->minimumScale(), 0.0 ) )
+        ruleParts.append( QStringLiteral( "@map_scale <= %1" ).arg( rule->minimumScale() ) );
+
+      if ( !qgsDoubleNear( rule->maximumScale(), 0.0 ) )
+        ruleParts.append( QStringLiteral( "@map_scale >= %1" ).arg( rule->maximumScale() ) );
+
+      if ( !ruleParts.empty() )
+      {
+        return (
+                 ruleParts.size() > 1
+                 ?  QStringLiteral( "(%1)" ).arg( ruleParts.join( QLatin1String( ") AND (" ) ) )
+                 : ruleParts.at( 0 )
+               );
+      }
+      else
+      {
+        return QString();
+      }
+    }
+  };
+
+  QStringList parts;
+  while ( rule )
+  {
+    const QString ruleFilter = ruleToExpression( rule );
+    if ( !ruleFilter.isEmpty() )
+      parts.append( ruleFilter );
+
+    rule = rule->parent();
+  }
+
+  ok = true;
+  return parts.empty() ? QStringLiteral( "TRUE" )
+         : ( parts.size() > 1
+             ?  QStringLiteral( "(%1)" ).arg( parts.join( QLatin1String( ") AND (" ) ) )
+             : parts.at( 0 ) );
+}
+
 void QgsRuleBasedRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
 {
   Rule *rule = mRootRule->findRuleByKey( key );

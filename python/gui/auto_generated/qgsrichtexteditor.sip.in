@@ -79,6 +79,15 @@ The ``text`` can either be a plain text string or a HTML document.
 Clears the current text from the widget.
 %End
 
+  signals:
+
+    void textChanged();
+%Docstring
+Emitted when the text contents are changed.
+
+.. versionadded:: 3.26
+%End
+
   protected:
     virtual void focusInEvent( QFocusEvent *event );
 

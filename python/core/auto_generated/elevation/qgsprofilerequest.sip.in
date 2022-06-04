@@ -1,0 +1,192 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilerequest.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProfileRequest
+{
+%Docstring(signature="appended")
+Encapsulates properties and constraints relating to fetching elevation profiles from different sources.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilerequest.h"
+%End
+  public:
+
+    QgsProfileRequest( QgsCurve *curve /Transfer/ );
+%Docstring
+Constructor for QgsProfileRequest.
+
+The ``curve`` argument specifies the line along which the profile should be generated. Ownership is transferred
+to the request.
+%End
+
+    QgsProfileRequest( const QgsProfileRequest &other );
+%Docstring
+Copy constructor.
+%End
+
+    ~QgsProfileRequest();
+
+
+    bool operator==( const QgsProfileRequest &other ) const;
+    bool operator!=( const QgsProfileRequest &other ) const;
+
+    QgsProfileRequest &setProfileCurve( QgsCurve *curve /Transfer/ );
+%Docstring
+Sets the cross section profile ``curve``, which represents the line along which the profile should be generated.
+
+Ownership of ``curve`` is transferred to the request.
+
+The coordinate reference system of the ``curve`` is set via :py:func:`~QgsProfileRequest.setCrs`.
+
+.. seealso:: :py:func:`profileCurve`
+%End
+
+    QgsCurve *profileCurve() const;
+%Docstring
+Returns the cross section profile curve, which represents the line along which the profile should be generated.
+
+The coordinate reference system of the curve is retrieved via :py:func:`~QgsProfileRequest.crs`.
+
+.. seealso:: :py:func:`setProfileCurve`
+%End
+
+    QgsProfileRequest &setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the desired Coordinate Reference System (``crs``) for the profile.
+
+This also represents the CRS associated with the :py:func:`~QgsProfileRequest.profileCurve`.
+
+.. seealso:: :py:func:`crs`
+%End
+
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the desired Coordinate Reference System for the profile.
+
+This also represents the CRS associated with the :py:func:`~QgsProfileRequest.profileCurve`.
+
+.. seealso:: :py:func:`setCrs`
+%End
+
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the transform context, for use when transforming coordinates from a source
+to the request's :py:func:`~QgsProfileRequest.crs`
+
+.. seealso:: :py:func:`setTransformContext`
+%End
+
+    QgsProfileRequest &setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the transform ``context``, for use when transforming coordinates from a source
+to the request's :py:func:`~QgsProfileRequest.crs`
+
+.. seealso:: :py:func:`transformContext`
+%End
+
+    QgsProfileRequest &setTolerance( double tolerance );
+%Docstring
+Sets the tolerance of the request (in :py:func:`~QgsProfileRequest.crs` units).
+
+This value determines how far from the :py:func:`~QgsProfileRequest.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results. Other sources may completely
+ignore this tolerance if it is not appropriate for the particular source.
+
+.. seealso:: :py:func:`tolerance`
+%End
+
+    double tolerance() const;
+%Docstring
+Returns the tolerance of the request (in :py:func:`~QgsProfileRequest.crs` units).
+
+This value determines how far from the :py:func:`~QgsProfileRequest.profileCurve` is appropriate for inclusion of results. For instance,
+when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the results. Other sources may completely
+ignore this tolerance if it is not appropriate for the particular source.
+
+.. seealso:: :py:func:`setTolerance`
+%End
+
+    QgsProfileRequest &setTerrainProvider( QgsAbstractTerrainProvider *provider /Transfer/ );
+%Docstring
+Sets the terrain ``provider``.
+
+Ownership of ``provider`` is transferred to the request.
+
+.. seealso:: :py:func:`terrainProvider`
+%End
+
+    QgsAbstractTerrainProvider *terrainProvider() const;
+%Docstring
+Returns the terrain provider.
+
+.. seealso:: :py:func:`setTerrainProvider`
+%End
+
+    QgsProfileRequest &setStepDistance( double distance );
+%Docstring
+Sets the profile step ``distance`` (in :py:func:`~QgsProfileRequest.crs` units).
+
+This value determines the approximate distance between sampled points along the :py:func:`~QgsProfileRequest.profileCurve`.
+Depending on the sources sampled, smaller step distances may be used in some circumstances.
+Effectively, this value is the "smallest permissible maximum distance between sampled points".
+
+Smaller distances will take longer to calculate.
+
+A NaN ``distance`` value will cause an appropriate step distance to be automatically calculated.
+
+.. seealso:: :py:func:`stepDistance`
+%End
+
+    double stepDistance() const;
+%Docstring
+Returns the profile step distance (in :py:func:`~QgsProfileRequest.crs` units).
+
+This value determines the approximate distance between sampled points along the :py:func:`~QgsProfileRequest.profileCurve`.
+Depending on the sources sampled, smaller step distances may be used in some circumstances.
+Effectively, this value is the "smallest permissible maximum distance between sampled points".
+
+Smaller distances will take longer to calculate.
+
+A NaN distance value indicates that an appropriate step distance will be automatically calculated.
+
+.. seealso:: :py:func:`setStepDistance`
+%End
+
+    QgsExpressionContext &expressionContext();
+%Docstring
+Returns the expression context used to evaluate expressions.
+
+.. seealso:: :py:func:`setExpressionContext`
+%End
+
+
+    QgsProfileRequest &setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression context used to evaluate expressions.
+
+.. seealso:: :py:func:`expressionContext`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilerequest.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -20,7 +20,6 @@
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
-#include "qgssettings.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
@@ -30,9 +29,7 @@ QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &
   : mConnName( connName )
 {
   mSettingsKey = settingsKey;
-  const QgsSettings settings;
-  const QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
-  mPath = settings.value( key ).toString();
+  mPath = settingsOgrConnectionPath.value( {settingsKey, mConnName} );
 }
 
 QgsDataSourceUri QgsOgrDbConnection::uri()
@@ -49,8 +46,7 @@ void QgsOgrDbConnection::setPath( const QString &path )
 
 void QgsOgrDbConnection::save( )
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1/%2/path" ).arg( connectionsPath( mSettingsKey ), mConnName ), mPath );
+  settingsOgrConnectionPath.setValue( mPath, {mSettingsKey, mConnName} );
 }
 
 bool QgsOgrDbConnection::allowProjectsInDatabase()
@@ -58,33 +54,21 @@ bool QgsOgrDbConnection::allowProjectsInDatabase()
   return mSettingsKey == QLatin1String( "GPKG" );
 }
 
-QString QgsOgrDbConnection::fullKey( const QString &settingsKey )
-{
-  return QStringLiteral( "providers/ogr/%1" ).arg( settingsKey );
-}
-
-QString QgsOgrDbConnection::connectionsPath( const QString &settingsKey )
-{
-  return QStringLiteral( "%1/connections" ).arg( fullKey( settingsKey ) );
-}
-
 const QStringList QgsOgrDbConnection::connectionList( const QString &driverName )
 {
   QgsSettings settings;
-  settings.beginGroup( connectionsPath( driverName ) );
+  settings.beginGroup( QStringLiteral( "providers/ogr/%1/connections" ).arg( driverName ) );
   return settings.childGroups();
 }
 
-QString QgsOgrDbConnection::selectedConnection( const QString &settingsKey )
+QString QgsOgrDbConnection::selectedConnection( const QString &driverName )
 {
-  const QgsSettings settings;
-  return settings.value( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ) ).toString();
+  return settingsOgrConnectionSelected.value( driverName );
 }
 
-void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &settingsKey )
+void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &driverName )
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ), connName );
+  settingsOgrConnectionSelected.setValue( connName, {driverName} );
 }
 
 void QgsOgrDbConnection::deleteConnection( const QString &connName )

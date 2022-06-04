@@ -35,7 +35,7 @@ QString QgsScientificNumericFormat::visibleName() const
 
 int QgsScientificNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return DEFAULT_SORT_KEY;
 }
 
 QString QgsScientificNumericFormat::formatDouble( double value, const QgsNumericFormatContext &context ) const

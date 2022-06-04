@@ -73,6 +73,12 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     //! Returns shininess of the surface
     float shininess() const { return mShininess; }
 
+    /**
+     * Returns the opacity of the surface
+     * \since QGIS 3.26
+     */
+    float opacity() const { return mOpacity; }
+
     QMap<QString, QString> toExportParameters() const override;
 
     //! Sets ambient color component
@@ -83,6 +89,14 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
+
+    /**
+     * Sets shininess of the surface
+     * \since QGIS 3.26
+     */
+    void setOpacity( float opacity ) { mOpacity = opacity; }
+
+
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -110,6 +124,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
     QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     float mShininess = 0.0f;
+    float mOpacity = 1.0f;
 
     //! Constructs a material from shader files
     Qt3DRender::QMaterial *dataDefinedMaterial() const;

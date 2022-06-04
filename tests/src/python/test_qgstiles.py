@@ -11,6 +11,7 @@ __date__ = '04/03/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsTileXYZ,
@@ -21,7 +22,8 @@ from qgis.core import (
     QgsTileMatrixSet,
     QgsVectorTileMatrixSet,
     QgsReadWriteContext,
-    Qgis
+    Qgis,
+    QgsRectangle,
 )
 from qgis.testing import start_app, unittest
 
@@ -77,6 +79,12 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(matrix_set.minimumZoom(), 1)
         self.assertEqual(matrix_set.maximumZoom(), 1)
         self.assertEqual(matrix_set.crs().authid(), 'EPSG:4326')
+
+        # should not apply any special logic here, and return scales unchanged
+        self.assertEqual(matrix_set.calculateTileScaleForMap(1000, QgsCoordinateReferenceSystem('EPSG:4326'),
+                                                             QgsRectangle(0, 2, 20, 12), QSize(20, 10), 96), 1000)
+        self.assertEqual(matrix_set.calculateTileScaleForMap(1000, QgsCoordinateReferenceSystem('EPSG:3857'),
+                                                             QgsRectangle(0, 2, 20, 12), QSize(20, 10), 96), 1000)
 
         self.assertEqual(matrix_set.tileMatrix(1).zoomLevel(), 1)
         # zoom level not present in matrix!
@@ -356,6 +364,18 @@ class TestQgsTiles(unittest.TestCase):
         vector_tile_set = QgsVectorTileMatrixSet()
         self.assertFalse(vector_tile_set.fromEsriJson({}))
         self.assertTrue(vector_tile_set.fromEsriJson(esri_metadata))
+
+        # should not apply any special logic here for non-geographic CRS, and return scales unchanged
+        self.assertEqual(vector_tile_set.calculateTileScaleForMap(1000, QgsCoordinateReferenceSystem('EPSG:3857'),
+                                                                  QgsRectangle(0, 2, 20, 12), QSize(20, 10), 96), 1000)
+
+        # for geographic CRS the scale should be calculated using the scale at the equator.
+        # see https://support.esri.com/en/technical-article/000007211,
+        # https://gis.stackexchange.com/questions/33270/how-does-arcmap-calculate-scalebar-inside-a-wgs84-layout
+        self.assertAlmostEqual(vector_tile_set.calculateTileScaleForMap(420735075, QgsCoordinateReferenceSystem('EPSG:4326'),
+                                                                        QgsRectangle(0, 2, 20, 12), QSize(2000, 1000), 96), 4207351, 0)
+        self.assertAlmostEqual(vector_tile_set.calculateTileScaleForMap(420735075, QgsCoordinateReferenceSystem('EPSG:4326'),
+                                                                        QgsRectangle(0, 62, 20, 72), QSize(2000, 1000), 96), 4207351, 0)
 
         # we should NOT apply the tile scale doubling hack to ESRI tiles, otherwise our scales
         # are double what ESRI use for the same tile sets

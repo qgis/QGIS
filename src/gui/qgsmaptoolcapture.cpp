@@ -48,6 +48,8 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   , mCaptureMode( mode )
   , mCaptureModeFromLayer( mode == CaptureNone )
 {
+  mTempRubberBand.setParentOwner( canvas );
+
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
@@ -76,7 +78,10 @@ QgsMapToolCapture::~QgsMapToolCapture()
   // we call stop capturing. Otherwise stopCapturing tries to access members
   // from the mapcanvas, which is likely already being destroyed and triggering
   // the deletion of this object...
-  mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+  if ( mCanvas )
+  {
+    mCanvas->snappingUtils()->removeExtraSnapLayer( mExtraSnapLayer );
+  }
   mExtraSnapLayer->deleteLater();
   mExtraSnapLayer = nullptr;
 
@@ -313,7 +318,15 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
                                    QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.value(),
                                    QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.value()
                                  );
-      mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+      if ( QgsWkbTypes::flatType( curved.wkbType() ) != QgsWkbTypes::CompoundCurve )
+      {
+        mCaptureCurve.clear();
+        mCaptureCurve.addCurve( qgsgeometry_cast< const QgsCurve * >( curved.constGet() )->clone() );
+      }
+      else
+      {
+        mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+      }
     }
   }
 
@@ -353,6 +366,7 @@ void QgsMapToolCapture::resetRubberBand()
   if ( !mRubberBand )
     return;
   QgsLineString *lineString = mCaptureCurve.curveToLine();
+
   mRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   mRubberBand->addGeometry( QgsGeometry( lineString ), layer() );
 }
@@ -432,7 +446,7 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
     mCurrentShapeMapTool->deleteLater();
   }
 
-  mCurrentShapeMapTool = shapeMapToolMetadata ? shapeMapToolMetadata->factory( this ) : nullptr;
+  mCurrentShapeMapTool.reset( shapeMapToolMetadata ? shapeMapToolMetadata->factory( this ) : nullptr );
 
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && isActive() )
   {
@@ -675,6 +689,10 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       }
     }
   }
+  else
+  {
+    layerPoint = QgsPoint( point );
+  }
   const QgsPoint mapPoint = toMapCoordinates( layer(), layerPoint );
 
   if ( mCaptureMode == CapturePoint )
@@ -715,10 +733,9 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
       mTempRubberBand->movePoint( mapPoint ); //move the last point of the temp rubberband before operating with it
       if ( mTempRubberBand->curveIsComplete() ) //2 points for line and 3 points for circular
       {
-        const QgsCurve *curve = mTempRubberBand->curve();
-        if ( curve )
+        if ( QgsCurve *curve = mTempRubberBand->curve() )
         {
-          addCurve( curve->clone() );
+          addCurve( curve );
           // add curve append only invalid match to mSnappingMatches,
           // so we need to remove them and add the one from here if it is valid
           if ( match.isValid() && mSnappingMatches.count() > 0 && !mSnappingMatches.last().isValid() )

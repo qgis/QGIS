@@ -139,7 +139,7 @@ Returns whether random colors option is shown in the button's drop-down menu.
 
     bool isRandomColorRamp() const;
 %Docstring
-Returns ``True`` if the current color is null.
+Returns ``True`` if the current color ramp is random.
 
 .. seealso:: :py:func:`setShowNull`
 
@@ -168,7 +168,7 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
 
     bool isNull() const;
 %Docstring
-Returns ``True`` if the current color is null.
+Returns ``True`` if the current color ramp is null.
 
 .. seealso:: :py:func:`setShowNull`
 

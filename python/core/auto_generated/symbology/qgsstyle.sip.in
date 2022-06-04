@@ -81,9 +81,9 @@ class QgsStyle : QObject
 %End
   public:
 
-    QgsStyle();
+    QgsStyle( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsStyle.
+Constructor for QgsStyle, with the specified ``parent`` object.
 %End
     ~QgsStyle();
 
@@ -98,6 +98,52 @@ Constructor for QgsStyle.
       LegendPatchShapeEntity,
       Symbol3DEntity,
     };
+
+    QString name() const;
+%Docstring
+Returns the name of the style.
+
+.. seealso:: :py:func:`setName`
+
+.. versionadded:: 3.26
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the ``name`` of the style.
+
+.. seealso:: :py:func:`name`
+
+.. versionadded:: 3.26
+%End
+
+    bool isReadOnly() const;
+%Docstring
+Returns ``True`` if the style is considered a read-only library.
+
+.. note::
+
+   This flag is used to control GUI operations, and does not prevent calling functions
+   which mutate the style directly via the API.
+
+.. seealso:: :py:func:`setReadOnly`
+
+.. versionadded:: 3.26
+%End
+
+    void setReadOnly( bool readOnly );
+%Docstring
+Sets whether the style is considered a read-only library.
+
+.. note::
+
+   This flag is used to control GUI operations, and does not prevent calling functions
+   which mutate the style directly via the API.
+
+.. seealso:: :py:func:`isReadOnly`
+
+.. versionadded:: 3.26
+%End
 
     bool addEntity( const QString &name, const QgsStyleEntityInterface *entity, bool update = false );
 %Docstring
@@ -715,6 +761,13 @@ Returns the default text format to use for new text based objects in the specifi
 .. versionadded:: 3.20
 %End
 
+    static QgsTextFormat defaultTextFormatForProject( QgsProject *project,  QgsStyle::TextFormatContext context = QgsStyle::TextFormatContext::Labeling );
+%Docstring
+Returns the default text format to use for new text based objects for the specified ``project``, in the specified ``context``.
+
+.. versionadded:: 3.26
+%End
+
     bool saveSymbol3D( const QString &name, QgsAbstract3DSymbol *symbol /Transfer/, bool favorite, const QStringList &tags );
 %Docstring
 Adds a 3d ``symbol`` to the database.
@@ -792,22 +845,61 @@ This function will load an on-disk database and populate styles.
 
 :param filename: location of the database to load styles from
 
-:return: returns the success state of the database being loaded
+:return: ``True`` if the database was successfully loaded. If ``False`` is
+         returned then a detailed error message can be retrieved via :py:func:`~QgsStyle.errorString`.
+
+.. seealso:: :py:func:`errorString`
 %End
 
-    bool save( QString filename = QString() );
+ bool save( const QString &filename = QString() ) /Deprecated/;
 %Docstring
-Saves style into a file (will use current filename if empty string is passed)
+Saves style into a file.
+
+The current :py:func:`~QgsStyle.fileName` will be used if no explicit ``filename`` is specified.
+
+:return: ``True`` if the style was successfully saved. If ``False`` is
+         returned then a detailed error message can be retrieved via :py:func:`~QgsStyle.errorString`.
+
+.. seealso:: :py:func:`fileName`
+
+.. seealso:: :py:func:`load`
+
+.. seealso:: :py:func:`errorString`
+
+
+.. deprecated::
+   This function has no effect.
 %End
 
-    QString errorString();
+    QString errorString() const;
 %Docstring
-Returns last error from load/save operation
+Returns the last error from a :py:func:`~QgsStyle.load` operation.
+
+.. seealso:: :py:func:`load`
 %End
 
-    QString fileName();
+    QString fileName() const;
 %Docstring
-Returns current file name of the style
+Returns the current file name of the style database.
+
+The filename will always represent the actual source of the style - e.g. the .db file
+for styles associated with a database, or the original source .xml file for styles
+directly loaded from a .xml export.
+
+.. seealso:: :py:func:`setFileName`
+%End
+
+    void setFileName( const QString &filename );
+%Docstring
+Sets the current file name of the style database.
+
+The filename should always represent the actual source of the style - e.g. the .db file
+for styles associated with a database, or the original source .xml file for styles
+directly loaded from a .xml export.
+
+Calling :py:func:`~QgsStyle.load` automatically sets the filename to the .db file path.
+
+.. versionadded:: 3.26
 %End
 
     QStringList findSymbols( StyleEntity type, const QString &qword );
@@ -899,7 +991,20 @@ large xml files.
 .. versionadded:: 3.6
 %End
 
+  public slots:
+
   signals:
+
+    void aboutToBeDestroyed();
+%Docstring
+Emitted just before the style object is destroyed.
+
+Emitted in the destructor when the style is about to be deleted,
+but it is still in a perfectly valid state: the last chance for
+other pieces of code for some cleanup if they use the style.
+
+.. versionadded:: 3.26
+%End
 
     void symbolSaved( const QString &name, QgsSymbol *symbol );
 %Docstring
@@ -1122,6 +1227,13 @@ name or tag changes.
 .. seealso:: :py:func:`labelSettingsAdded`
 
 .. versionadded:: 3.10
+%End
+
+    void rebuildIconPreviews();
+%Docstring
+Emitted whenever icon previews for entities in the style must be rebuilt.
+
+.. versionadded:: 3.26
 %End
 
 };

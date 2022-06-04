@@ -208,40 +208,41 @@ void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::D
     case QgsPointCloudAttribute::UChar:
     case QgsPointCloudAttribute::Char:
       value = *( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::UInt32:
       value = *reinterpret_cast< const quint32 * >( data + offset );
-      break;
+      return;
+
     case QgsPointCloudAttribute::Int32:
       value = *reinterpret_cast< const qint32 * >( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::UInt64:
       value = *reinterpret_cast< const quint64 * >( data + offset );
-      break;
+      return;
+
     case QgsPointCloudAttribute::Int64:
       value = *reinterpret_cast< const qint64 * >( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::Short:
-    {
       value = *reinterpret_cast< const short * >( data + offset );
-    }
-    break;
+      return;
 
     case QgsPointCloudAttribute::UShort:
       value = *reinterpret_cast< const unsigned short * >( data + offset );
-      break;
+      return;
 
     case QgsPointCloudAttribute::Float:
       value = static_cast< T >( *reinterpret_cast< const float * >( data + offset ) );
-      break;
+      return;
 
     case QgsPointCloudAttribute::Double:
       value = *reinterpret_cast< const double * >( data + offset );
-      break;
+      return;
   }
+  BUILTIN_UNREACHABLE
 }
 
 double QgsPointCloudAttribute::convertValueToDouble( const char *ptr ) const

@@ -424,6 +424,8 @@ Filter nodes from :py:class:`QgsMapLayerLegend` according to the current filteri
 
 
 
+
+
 };
 
 QFlags<QgsLayerTreeModel::Flag> operator|(QgsLayerTreeModel::Flag f1, QFlags<QgsLayerTreeModel::Flag> f2);

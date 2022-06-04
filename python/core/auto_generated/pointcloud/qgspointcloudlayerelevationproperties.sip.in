@@ -34,10 +34,186 @@ Constructor for QgsPointCloudLayerElevationProperties, with the specified ``pare
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
+    virtual QgsPointCloudLayerElevationProperties *clone() const /Factory/;
+
+    virtual QString htmlSummary() const;
+
     virtual bool isVisibleInZRange( const QgsDoubleRange &range ) const;
 
     virtual QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const;
 
+    virtual bool showByDefaultInElevationProfilePlots() const;
+
+
+    double maximumScreenError() const;
+%Docstring
+Returns the maximum screen error allowed when generating elevation profiles for the point cloud.
+
+Larger values result in a faster generation with less points included.
+
+Units are retrieved via :py:func:`~QgsPointCloudLayerElevationProperties.maximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+
+.. versionadded:: 3.26
+%End
+
+    void setMaximumScreenError( double error );
+%Docstring
+Sets the maximum screen ``error`` allowed when generating elevation profiles for the point cloud.
+
+Larger values result in a faster generation with less points included.
+
+Units are set via :py:func:`~QgsPointCloudLayerElevationProperties.setMaximumScreenErrorUnit`.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+
+.. versionadded:: 3.26
+%End
+
+    QgsUnitTypes::RenderUnit maximumScreenErrorUnit() const;
+%Docstring
+Returns the unit for the maximum screen error allowed when generating elevation profiles for the point cloud.
+
+.. seealso:: :py:func:`maximumScreenError`
+
+.. seealso:: :py:func:`setMaximumScreenErrorUnit`
+
+.. versionadded:: 3.26
+%End
+
+    void setMaximumScreenErrorUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the maximum screen error allowed when generating elevation profiles for the point cloud.
+
+.. seealso:: :py:func:`setMaximumScreenError`
+
+.. seealso:: :py:func:`maximumScreenErrorUnit`
+
+.. versionadded:: 3.26
+%End
+
+    Qgis::PointCloudSymbol pointSymbol() const;
+%Docstring
+Returns the symbol used drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`setPointSymbol`
+
+.. versionadded:: 3.26
+%End
+
+    void setPointSymbol( Qgis::PointCloudSymbol symbol );
+%Docstring
+Sets the ``symbol`` used drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`pointSymbol`
+
+.. versionadded:: 3.26
+%End
+
+    QColor pointColor() const;
+%Docstring
+Returns the color used drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`setPointColor`
+
+.. versionadded:: 3.26
+%End
+
+    void setPointColor( const QColor &color );
+%Docstring
+Sets the ``color`` used drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`pointColor`
+
+.. versionadded:: 3.26
+%End
+
+    bool applyOpacityByDistanceEffect() const;
+%Docstring
+Returns ``True`` if a reduced opacity by distance from profile curve effect should
+be applied when drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`setApplyOpacityByDistanceEffect`
+
+.. versionadded:: 3.26
+%End
+
+    void setApplyOpacityByDistanceEffect( bool apply );
+%Docstring
+Sets whether a reduced opacity by distance from profile curve effect should
+be applied when drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`applyOpacityByDistanceEffect`
+
+.. versionadded:: 3.26
+%End
+
+    void setPointSize( double size );
+%Docstring
+Sets the point ``size`` used for drawing points in elevation profile charts.
+
+Point size units are specified via :py:func:`~QgsPointCloudLayerElevationProperties.setPointSizeUnit`.
+
+.. seealso:: :py:func:`pointSize`
+
+.. seealso:: :py:func:`setPointSizeUnit`
+
+.. versionadded:: 3.26
+%End
+
+    double pointSize() const;
+%Docstring
+Returns the point size used for drawing points in elevation profile charts.
+
+The point size units are retrieved by calling :py:func:`~QgsPointCloudLayerElevationProperties.pointSizeUnit`.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. versionadded:: 3.26
+%End
+
+    void setPointSizeUnit( const QgsUnitTypes::RenderUnit units );
+%Docstring
+Sets the ``units`` used for the point size used for drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`setPointSize`
+
+.. seealso:: :py:func:`pointSizeUnit`
+
+.. versionadded:: 3.26
+%End
+
+    QgsUnitTypes::RenderUnit pointSizeUnit() const;
+%Docstring
+Returns the units used for the point size used for drawing points in elevation profile charts.
+
+.. seealso:: :py:func:`setPointSizeUnit`
+
+.. seealso:: :py:func:`pointSize`
+
+.. versionadded:: 3.26
+%End
+
+    bool respectLayerColors() const;
+%Docstring
+Returns ``True`` if layer coloring should be respected when rendering elevation profile plots.
+
+.. seealso:: :py:func:`setRespectLayerColors`
+%End
+
+    void setRespectLayerColors( bool enabled );
+%Docstring
+Sets whether layer coloring should be respected when rendering elevation profile plots.
+
+.. seealso:: :py:func:`respectLayerColors`
+%End
 
 };
 

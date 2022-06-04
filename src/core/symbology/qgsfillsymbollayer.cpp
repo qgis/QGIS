@@ -1878,7 +1878,6 @@ void QgsSVGFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
   QgsImageFillSymbolLayer::setMapUnitScale( scale );
   mPatternWidthMapUnitScale = scale;
   mSvgStrokeWidthMapUnitScale = scale;
-  mStrokeWidthMapUnitScale = scale;
 }
 
 QgsMapUnitScale QgsSVGFillSymbolLayer::mapUnitScale() const
@@ -2576,6 +2575,9 @@ void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit
   mDistanceUnit = unit;
   mLineWidthUnit = unit;
   mOffsetUnit = unit;
+
+  if ( mFillLineSymbol )
+    mFillLineSymbol->setOutputUnit( unit );
 }
 
 QgsUnitTypes::RenderUnit QgsLinePatternFillSymbolLayer::outputUnit() const
@@ -4859,6 +4861,18 @@ bool QgsRasterFillSymbolLayer::usesMapUnits() const
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
+QColor QgsRasterFillSymbolLayer::color() const
+{
+  return QColor();
+}
+
+void QgsRasterFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsImageFillSymbolLayer::setOutputUnit( unit );
+  mOffsetUnit = unit;
+  mWidthUnit = unit;
+}
+
 void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
 {
   mImageFilePath = imagePath;
@@ -5318,6 +5332,7 @@ void QgsRandomMarkerFillSymbolLayer::stopFeatureRender( const QgsFeature &featur
 
 void QgsRandomMarkerFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
+  mDensityAreaUnit = unit;
   if ( mMarker )
   {
     mMarker->setOutputUnit( unit );

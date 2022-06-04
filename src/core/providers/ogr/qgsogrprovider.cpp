@@ -2926,10 +2926,27 @@ void QgsOgrProvider::computeCapabilities()
         ability &= ~( AddAttributes | DeleteFeatures );
       }
     }
-    else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
-              mGDALDriverName == QLatin1String( "SQLite" ) )
+    else if ( mGDALDriverName == QLatin1String( "GPKG" ) )
     {
       ability |= CreateSpatialIndex;
+      ability |= CreateAttributeIndex;
+    }
+    else if ( mGDALDriverName == QLatin1String( "SQLite" ) )
+    {
+      // Spatial index can only be created on Spatialite enabled datasources.
+      QString sql = QStringLiteral( "SELECT 1 FROM sqlite_master WHERE name='spatialite_history' AND type='table'" );
+      bool isSpatialite = false;
+      if ( QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql.toLocal8Bit().constData() ) )
+      {
+        gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
+        if ( f )
+        {
+          isSpatialite = true;
+        }
+      }
+
+      if ( isSpatialite )
+        ability |= CreateSpatialIndex;
       ability |= CreateAttributeIndex;
     }
 
@@ -3348,14 +3365,14 @@ void QgsOgrProvider::recalculateFeatureCount() const
     mOgrLayer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
     const OGRwkbGeometryType flattenGeomTypeFilter =
-      QgsOgrProviderUtils::ogrWkbSingleFlatten( mOgrGeometryTypeFilter );
+      QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( mOgrGeometryTypeFilter );
     while ( fet.reset( mOgrLayer->GetNextFeature() ), fet )
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
       if ( geom )
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
-        gType = QgsOgrProviderUtils::ogrWkbSingleFlatten( gType );
+        gType = QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( gType );
         if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
       }
     }
@@ -3434,6 +3451,10 @@ void QgsOgrProvider::open( OpenMode mode )
 
   const bool bIsGpkg = QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+  bool forceWAL = false;
+#endif
+
   // first try to open in update mode (unless specified otherwise)
   QString errCause;
   if ( !openReadOnly )
@@ -3445,7 +3466,12 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-    if ( bIsGpkg && mode == OpenModeInitial )
+    if ( bIsGpkg && options.contains( "QGIS_FORCE_WAL=ON" ) )
+    {
+      // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
+      forceWAL = true;
+    }
+    if ( bIsGpkg && mode == OpenModeInitial && !forceWAL && QgsOgrProviderUtils::IsLocalFile( mFilePath ) )
     {
       // A hint to QgsOgrProviderUtils::GDALOpenWrapper() to not force WAL
       // as in OpenModeInitial we are not going to do anything besides getting capabilities
@@ -3574,7 +3600,7 @@ void QgsOgrProvider::open( OpenMode mode )
        ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
          mGDALDriverName == QLatin1String( "MapInfo File" )
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-         || mGDALDriverName == QLatin1String( "GPKG" )
+         || ( !forceWAL && mGDALDriverName == QLatin1String( "GPKG" ) && QgsOgrProviderUtils::IsLocalFile( mFilePath ) )
 #endif
        ) )
   {
@@ -3617,6 +3643,10 @@ void QgsOgrProvider::open( OpenMode mode )
         mSubsetString.clear();
         mValid = _setSubsetString( origSubsetString, false, false );
       }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Cannot reopen %1: %2" ).arg( mFilePath ).arg( errCause ), tr( "OGR" ) );
     }
   }
 

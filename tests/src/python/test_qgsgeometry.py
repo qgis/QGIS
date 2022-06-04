@@ -5871,7 +5871,7 @@ class TestQgsGeometry(unittest.TestCase):
         tests = [
             [
                 "LINESTRING Z (3 3 3,2.4142135623731 1.58578643762691 3,1 1 3,-0.414213562373092 1.5857864376269 3,-1 2.99999999999999 3,-0.414213562373101 4.41421356237309 3,0.999999999999991 5 3,2.41421356237309 4.4142135623731 3,3 3 3)",
-                "CompoundCurveZ (CircularStringZ (3 3 3, -1 2.99999999999998979 3, 3 3 3))", 0.00000001, 0.0000001],
+                "CircularStringZ (3 3 3, -1 2.99999999999998979 3, 3 3 3)", 0.00000001, 0.0000001],
             ["LINESTRING(0 0,10 0,10 10,0 10,0 0)", "CompoundCurve((0 0,10 0,10 10,0 10,0 0))", 0.00000001, 0.00000001],
             ["LINESTRING(0 0,10 0,10 10,0 10)", "CompoundCurve((0 0,10 0,10 10,0 10))", 0.00000001, 0.00000001],
             ["LINESTRING(10 10,0 10,0 0,10 0)", "CompoundCurve((10 10,0 10,0 0,10 0))", 0.0000001, 0.00000001],
@@ -5880,7 +5880,7 @@ class TestQgsGeometry(unittest.TestCase):
              "MultiCurve (CompoundCurve ((10 10, 10 11)),CompoundCurve ((10 11, 11 11)),CompoundCurve ((11 11, 10 10)))",
              0.000001, 0.000001],
             ["GEOMETRYCOLLECTION(LINESTRING(4 4,4 8),CIRCULARSTRING(4 8,6 10,8 8),LINESTRING(8 8,8 4))",
-             "MultiCurve (CompoundCurve ((4 4, 4 8)),CompoundCurve (CircularString (4 8, 6 10, 8 8)),CompoundCurve ((8 8, 8 4)))",
+             "MultiCurve (CompoundCurve ((4 4, 4 8)),CircularString (4 8, 6 10, 8 8),CompoundCurve ((8 8, 8 4)))",
              0.0000001, 0.0000001],
             [
                 "LINESTRING(-13151357.927248 3913656.64539871,-13151419.0845266 3913664.12016378,-13151441.323537 3913666.61175286,-13151456.8908442 3913666.61175286,-13151476.9059536 3913666.61175286,-13151496.921063 3913666.61175287,-13151521.3839744 3913666.61175287,-13151591.4368571 3913665.36595828)",
@@ -5891,13 +5891,16 @@ class TestQgsGeometry(unittest.TestCase):
             # A polygon converts to curve
             [
                 "POLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))",
-                "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001,
+                "CurvePolygon (CircularString (3 3, -1 2.99999999999998979, 3 3))", 0.00000001,
                 0.00000001],
             # The same polygon, even if already CURVEPOLYGON, still converts to curve
             [
                 "CURVEPOLYGON((3 3,2.4142135623731 1.58578643762691,1 1,-0.414213562373092 1.5857864376269,-1 2.99999999999999,-0.414213562373101 4.41421356237309,0.999999999999991 5,2.41421356237309 4.4142135623731,3 3))",
-                "CURVEPOLYGON(COMPOUNDCURVE(CircularString(3 3, -1 2.99999999999998979, 3 3)))", 0.00000001,
+                "CurvePolygon (CircularString (3 3, -1 2.99999999999998979, 3 3))", 0.00000001,
                 0.00000001],
+            ["CurvePolygon (CompoundCurve (CircularString (2613627 1178798, 2613639 1178805, 2613648 1178794),(2613648 1178794, 2613627 1178798)))",
+             "CurvePolygon (CompoundCurve (CircularString (2613627 1178798, 2613639 1178805, 2613648 1178794),(2613648 1178794, 2613627 1178798)))",
+             0.00000001, 0.000000001]
         ]
         for t in tests:
             g1 = QgsGeometry.fromWkt(t[0])

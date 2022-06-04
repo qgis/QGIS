@@ -47,9 +47,9 @@ unsigned int color_diff_bits(const las::rgb& this_val, const las::rgb& last)
                     (__flag_diff(a.g, b.g, 0xFF00) << 3) |
                     (__flag_diff(a.b, b.b, 0x00FF) << 4) |
                     (__flag_diff(a.b, b.b, 0xFF00) << 5) |
-                    (__flag_diff(b.r, b.g, 0x00FF) |
-                     __flag_diff(b.r, b.b, 0x00FF) |
-                     __flag_diff(b.r, b.g, 0xFF00) |
+                    (__flag_diff(b.r, b.g, 0x00FF) ||
+                     __flag_diff(b.r, b.b, 0x00FF) ||
+                     __flag_diff(b.r, b.g, 0xFF00) ||
                      __flag_diff(b.r, b.b, 0xFF00)) << 6;
 #undef __flag_diff
 

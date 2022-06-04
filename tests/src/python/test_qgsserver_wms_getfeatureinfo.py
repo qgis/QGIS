@@ -861,6 +861,24 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         self.assertEqual(response_body.decode('utf8'), '<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">\n <ServiceException code="InvalidParameterValue">Filter not valid for layer testlayer èé: check the filter syntax and the field names.</ServiceException>\n</ServiceExceptionReport>\n')
 
+    def testGetFeatureInfoSortedByDesignerWithJoinLayer(self):
+        """Test GetFeatureInfo resolves DRAG&DROP Designer order when use attribute form settings for GetFeatureInfo
+        with a column from a Joined Layer when the option is checked, see https://github.com/qgis/QGIS/pull/41031
+        """
+        mypath = self.testdata_path + "test_project_values.qgz"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer2&styles=&' +
+                                 'VERSION=1.3.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=926&height=787&srs=EPSG%3A4326' +
+                                 '&bbox=912217,5605059,914099,5606652' +
+                                 '&CRS=EPSG:3857' +
+                                 '&FEATURE_COUNT=10' +
+                                 '&WITH_GEOMETRY=True' +
+                                 '&QUERY_LAYERS=layer4&I=487&J=308',
+                                 'wms_getfeatureinfo-values4-text-xml',
+                                 'test_project_values.qgz')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -10,19 +10,29 @@ __author__ = 'Nyall Dawson'
 __date__ = '2018-30-10'
 __copyright__ = 'Copyright 2018, Nyall Dawson'
 
+import math
 import os
+import struct
 
+from osgeo import gdal
 from qgis.core import (
+    Qgis,
+    QgsPointXY,
     QgsProviderRegistry,
     QgsRasterLayer,
     QgsRectangle,
 )
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QTemporaryDir
 
 from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
 class PyQgsGdalProvider(unittest.TestCase):
@@ -166,6 +176,82 @@ class PyQgsGdalProvider(unittest.TestCase):
                           '/home/me/special.aux.xml', '/home/me/special.sdat.aux.xml', '/home/me/special.vat.dbf',
                           '/home/me/special.sdat.vat.dbf', '/home/me/special.ovr', '/home/me/special.sdat.ovr',
                           '/home/me/special.wld', '/home/me/special.sdat.wld'])
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5.0 required")
+    def testInt64(self):
+        """Test Int64 support"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testInt64.tif')
+        ds = gdal.GetDriverByName('GTiff').Create(tmpfile, 2, 2, 1, gdal.GDT_Int64)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack('q' * 4, -1234567890123, 1234567890123, -(1 << 63), (1 << 63) - 1))
+        ds = None
+
+        raster_layer = QgsRasterLayer(tmpfile, 'test')
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Float64)
+
+        extent = raster_layer.extent()
+        block = raster_layer.dataProvider().block(1, extent, 2, 2)
+
+        full_content = [
+            -1234567890123, 1234567890123, float(-(1 << 63)), float((1 << 63) - 1)
+        ]
+        self.checkBlockContents(block, full_content)
+
+        pos = QgsPointXY(0, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[0])
+
+        pos = QgsPointXY(1, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[1])
+
+        pos = QgsPointXY(0, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertTrue(value_sample, full_content[2])
+
+        pos = QgsPointXY(1, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertTrue(math.isnan(value_sample))  # (1 << 63) - 1 not exactly representable as double
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 5, 0), "GDAL 3.5.0 required")
+    def testUInt64(self):
+        """Test Int64 support"""
+
+        tmp_dir = QTemporaryDir()
+        tmpfile = os.path.join(tmp_dir.path(), 'testUInt64.tif')
+        ds = gdal.GetDriverByName('GTiff').Create(tmpfile, 2, 2, 1, gdal.GDT_UInt64)
+        ds.WriteRaster(0, 0, 2, 2, struct.pack('Q' * 4, 1, 1234567890123, 0, (1 << 64) - 1))
+        ds = None
+
+        raster_layer = QgsRasterLayer(tmpfile, 'test')
+        self.assertTrue(raster_layer.isValid())
+        self.assertEqual(raster_layer.dataProvider().dataType(1), Qgis.Float64)
+
+        extent = raster_layer.extent()
+        block = raster_layer.dataProvider().block(1, extent, 2, 2)
+
+        full_content = [
+            1, 1234567890123, 0, float((1 << 64) - 1)
+        ]
+        self.checkBlockContents(block, full_content)
+
+        pos = QgsPointXY(0, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[0])
+
+        pos = QgsPointXY(1, 0)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[1])
+
+        pos = QgsPointXY(0, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertEqual(value_sample, full_content[2])
+
+        pos = QgsPointXY(1, -1)
+        value_sample = raster_layer.dataProvider().sample(pos, 1)[0]
+        self.assertTrue(math.isnan(value_sample))
 
 
 if __name__ == '__main__':

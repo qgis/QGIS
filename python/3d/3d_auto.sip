@@ -6,11 +6,12 @@
 %Include auto_generated/qgsabstractvectorlayer3drenderer.sip
 %Include auto_generated/qgscamerapose.sip
 %Include auto_generated/qgslayoutitem3dmap.sip
-%Include auto_generated/qgspointlightsettings.sip
-%Include auto_generated/qgsdirectionallightsettings.sip
 %Include auto_generated/qgsrulebased3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip
 %Include auto_generated/qgspointcloudlayer3drenderer.sip
+%Include auto_generated/lights/qgsdirectionallightsettings.sip
+%Include auto_generated/lights/qgslightsource.sip
+%Include auto_generated/lights/qgspointlightsettings.sip
 %Include auto_generated/materials/qgsabstractmaterialsettings.sip
 %Include auto_generated/materials/qgsgoochmaterialsettings.sip
 %Include auto_generated/materials/qgsmaterialregistry.sip

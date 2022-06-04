@@ -72,6 +72,7 @@ class QgsPointCloudRendererRegistry;
 class QgsTileDownloadManager;
 class QgsCoordinateReferenceSystemRegistry;
 class QgsRecentStyleHandler;
+class QgsDatabaseQueryLog;
 
 /**
  * \ingroup core
@@ -456,6 +457,15 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString osName();
 
     /**
+     * Returns the size of the system memory (RAM) in megabytes.
+     *
+     * This is only supported on some platforms, and will return -1 if not supported.
+     *
+     * \since QGIS 3.26
+     */
+    static int systemMemorySizeMb();
+
+    /**
      * Returns the QGIS platform name, e.g., "desktop", "server", "qgis_process" or "external" (for external CLI scripts).
      * \see osName()
      * \since QGIS 2.14
@@ -812,6 +822,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRecentStyleHandler *recentStyleHandler() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the database query log.
+     *
+     * \since QGIS 3.24
+     */
+    static QgsDatabaseQueryLog *databaseQueryLog() SIP_KEEPREFERENCE;
+
+    /**
      * Returns a shared QgsStyleModel containing the default style library (see QgsStyle::defaultStyle()).
      *
      * Using this shared model instead of creating a new QgsStyleModel improves performance.
@@ -1127,6 +1144,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsTileDownloadManager *mTileDownloadManager = nullptr;
       QgsStyleModel *mStyleModel = nullptr;
       QgsRecentStyleHandler *mRecentStyleHandler = nullptr;
+      QgsDatabaseQueryLog *mQueryLogger = nullptr;
       QString mNullRepresentation;
       QStringList mSvgPathCache;
       bool mSvgPathCacheValid = false;

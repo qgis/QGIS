@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottoolpan.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPlotToolPan : QgsPlotTool
+{
+%Docstring(signature="appended")
+Plot tool for panning/zoom/navigating plots.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplottoolpan.h"
+%End
+  public:
+
+    QgsPlotToolPan( QgsPlotCanvas *canvas );
+%Docstring
+Constructor for QgsPlotToolPan, with the associated ``canvas``.
+%End
+
+    virtual Qgis::PlotToolFlags flags() const;
+
+    virtual void plotMoveEvent( QgsPlotMouseEvent *event );
+
+    virtual void plotPressEvent( QgsPlotMouseEvent *event );
+
+    virtual void plotReleaseEvent( QgsPlotMouseEvent *event );
+
+    virtual void deactivate();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/plot/qgsplottoolpan.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

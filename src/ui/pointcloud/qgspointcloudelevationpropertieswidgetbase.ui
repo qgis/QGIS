@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>270</height>
+    <width>413</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -129,6 +129,143 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="mLayerRenderingGroupBox">
+     <property name="title">
+      <string>Profile Chart Accuracy</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2,1,0">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <item row="0" column="1" colspan="2">
+       <widget class="QgsDoubleSpinBox" name="mMaxErrorSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="maximum">
+         <double>99999999999.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.300000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QgsUnitSelectionWidget" name="mMaxErrorUnitWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblTransparency_2">
+        <property name="text">
+         <string>Maximum error</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Profile Chart Appearance</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" columnstretch="1,2,1">
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="maximum">
+         <double>99999999999.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QCheckBox" name="mOpacityByDistanceCheckBox">
+        <property name="text">
+         <string>Apply opacity by distance from curve effect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="mPointStyleComboBox"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QgsColorButton" name="mPointColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="lblTransparency_4">
+        <property name="text">
+         <string>Point size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Style</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <widget class="QCheckBox" name="mCheckBoxRespectLayerColors">
+        <property name="text">
+         <string>Respect layer's coloring</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -154,6 +291,18 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

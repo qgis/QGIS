@@ -67,6 +67,9 @@ QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
 
 void QgsPointCloudLayer3DRendererWidget::apply()
 {
+  QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mLayer );
+  bool syncWith2DRenderer = pcLayer->sync3DRendererTo2DRenderer();
+
   QgsPointCloudLayer3DRenderer *r = nullptr;
   r = renderer();
   if ( r )
@@ -74,6 +77,11 @@ void QgsPointCloudLayer3DRendererWidget::apply()
     r->setSymbol( mWidgetPointCloudSymbol->symbol() );
   }
   mLayer->setRenderer3D( r );
+
+  if ( syncWith2DRenderer )
+  {
+    pcLayer->setSync3DRendererTo2DRenderer( true );
+  }
 }
 
 void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )

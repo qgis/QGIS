@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 ParameterData::ParameterData()
     : state_(UNINITIALIZED)
@@ -187,4 +187,4 @@ void ParameterData::setValueOnHeap(const void* value, size_t size)
     size_ = size;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

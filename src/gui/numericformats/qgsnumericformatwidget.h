@@ -162,6 +162,68 @@ class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
 };
 
 
+#include "ui_qgsgeographiccoordinatenumericformatwidgetbase.h"
+
+class QgsGeographicCoordinateNumericFormat;
+
+/**
+ * \ingroup gui
+ * \class QgsGeographicCoordinateNumericFormatWidget
+ * \brief A widget which allow control over the properties of a QgsGeographicCoordinateNumericFormat.
+ * \since QGIS 3.26
+ */
+class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsGeographicCoordinateNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified \a format.
+     */
+    QgsGeographicCoordinateNumericFormatWidget( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsGeographicCoordinateNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
+
+
+/**
+ * \ingroup gui
+ * \class QgsGeographicCoordinateNumericFormatDialog
+ * \brief A dialog which allow control over the properties of a QgsGeographicCoordinateNumericFormat.
+ * \since QGIS 3.26
+ */
+class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified \a format.
+     */
+    QgsGeographicCoordinateNumericFormatDialog( const QgsNumericFormat *format, bool hidePrecisionControl = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Returns the format defined by the current settings in the dialog.
+     *
+     * Ownership of the returned object is transferred to the caller
+     */
+    QgsGeographicCoordinateNumericFormat *format() SIP_FACTORY;
+
+  private:
+
+    QgsGeographicCoordinateNumericFormatWidget *mWidget = nullptr;
+};
+
 
 
 #include "ui_qgscurrencynumericformatwidgetbase.h"

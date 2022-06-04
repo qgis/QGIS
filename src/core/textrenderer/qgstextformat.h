@@ -223,6 +223,58 @@ class CORE_EXPORT QgsTextFormat
     void setNamedStyle( const QString &style );
 
     /**
+     * Returns TRUE if the format is set to force a bold style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in bold regardless of whether the font family actually has a bold variant. A
+     * "faux bold" effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see setForcedBold()
+     * \since QGIS 3.26
+     */
+    bool forcedBold() const;
+
+    /**
+     * Sets whether the format is set to force a bold style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in bold regardless of whether the font family actually has a bold variant. A
+     * "faux bold" effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see forcedBold()
+     * \since QGIS 3.26
+     */
+    void setForcedBold( bool forced );
+
+    /**
+     * Returns TRUE if the format is set to force an italic style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in italic regardless of whether the font family actually has an italic variant. A
+     * "faux italic" slanted text effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see setForcedItalic()
+     * \since QGIS 3.26
+     */
+    bool forcedItalic() const;
+
+    /**
+     * Sets whether the format is set to force an italic style.
+     *
+     * \warning Unlike setting a font's style via setNamedStyle(), this will ensure that a font is
+     * always rendered in italic regardless of whether the font family actually has an italic variant. A
+     * "faux italic" slanted text effect will be emulated, which may result in poor quality font rendering. For this
+     * reason it is greatly preferred to call setNamedStyle() instead.
+     *
+     * \see forcedItalic()
+     * \since QGIS 3.26
+     */
+    void setForcedItalic( bool forced );
+
+    /**
      * Returns the list of font families to use when restoring the text format, in order of precedence.
      *
      * \warning The list of families returned by this method is ONLY used when restoring the text format

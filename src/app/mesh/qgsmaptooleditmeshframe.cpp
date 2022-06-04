@@ -212,7 +212,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh elements" ), this );
+  mActionDigitizing = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh Elements" ), this );
   mActionDigitizing->setCheckable( true );
 
   mActionSelectByPolygon = new QAction( QgsApplication::getThemePixmap( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select Mesh Elements by Polygon" ), this );
@@ -694,69 +694,15 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
     case SelectingByPolygon:
     case ForceByLines:
       return QgsMapTool::Flags();
-      break;
   }
 
   return QgsMapTool::Flags();
 }
 
-static QList<QgsMapToolIdentify::IdentifyResult> searchFeatureOnMap( QgsMapMouseEvent *e, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geomType )
-{
-  QList<QgsMapToolIdentify::IdentifyResult> results;
-  const QMap< QString, QString > derivedAttributes;
-
-  QgsPointXY mapPoint = e->mapPoint();
-  double x = mapPoint.x(), y = mapPoint.y();
-  const double sr = QgsMapTool::searchRadiusMU( canvas );
-
-  const QList<QgsMapLayer *> layers = canvas->layers( true );
-  for ( QgsMapLayer *layer : layers )
-  {
-    if ( layer->type() == QgsMapLayerType::VectorLayer )
-    {
-      QgsVectorLayer *vectorLayer = static_cast<QgsVectorLayer *>( layer );
-
-      bool typeIsSelectable = false;
-      for ( const QgsWkbTypes::GeometryType &type : geomType )
-        if ( vectorLayer->geometryType() == type )
-        {
-          typeIsSelectable = true;
-          break;
-        }
-      if ( typeIsSelectable )
-      {
-        QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
-        QgsCoordinateTransform transform = canvas->mapSettings().layerTransform( vectorLayer );
-        transform.setBallparkTransformsAreAppropriate( true );
-
-        try
-        {
-          rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
-        }
-        catch ( QgsCsException & )
-        {
-          QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
-        }
-
-        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                 .setFilterRect( rect )
-                                 .setFlags( QgsFeatureRequest::ExactIntersect ) );
-        QgsFeature f;
-        while ( fit.nextFeature( f ) )
-        {
-          results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
-        }
-      }
-    }
-  }
-
-  return results;
-}
-
 void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e )
 {
   const QList<QgsMapToolIdentify::IdentifyResult> &results =
-    searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry );
+    QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry << QgsWkbTypes::LineGeometry );
 
   QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
   menu->setExecWithSingleResult( true );
@@ -821,7 +767,7 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
           // The workaround is to check if a feature exist under the mouse before sending the event to the selection handler.
           // This is not ideal because that leads to a double search but no better idea for now to allow the editing context menu with selecting by polygon
 
-          bool hasSelectableFeature = !searchFeatureOnMap( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
+          bool hasSelectableFeature = ! QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ).isEmpty();
 
           if ( hasSelectableFeature || mIsSelectingPolygonInProgress )
             mSelectionHandler->canvasPressEvent( e );
@@ -1920,7 +1866,7 @@ void QgsMapToolEditMeshFrame::reindexMesh()
   if ( !mCurrentLayer || !mCurrentLayer->isEditable() )
     return;
 
-  if ( QMessageBox::question( canvas(), tr( "Reindex the Mesh" ),
+  if ( QMessageBox::question( canvas(), tr( "Reindex Mesh" ),
                               tr( "Do you want to reindex the faces and vertices of the mesh layer %1?" ).arg( mCurrentLayer->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
        == QMessageBox::No )
@@ -2168,29 +2114,29 @@ void QgsMapToolEditMeshFrame::prepareSelection()
 
   if ( mSelectedVertices.count() == 1 )
   {
-    mActionRemoveVerticesFillingHole->setText( tr( "Remove selected vertex and fill hole" ) );
-    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove selected vertex without filling hole" ) );
+    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertex and Fill Hole" ) );
+    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertex without Filling Hole" ) );
   }
   else if ( mSelectedVertices.count() > 1 )
   {
-    mActionRemoveVerticesFillingHole->setText( tr( "Remove selected vertices and fill hole(s)" ) );
-    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove selected vertices without filling hole(s)" ) );
+    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertices and Fill Hole(s)" ) );
+    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertices without Filling Hole(s)" ) );
   }
 
   if ( mSelectedFaces.count() == 1 )
   {
-    mActionRemoveFaces->setText( tr( "Remove selected face" ) );
-    mActionFacesRefinement->setText( tr( "Refine selected face" ) );
+    mActionRemoveFaces->setText( tr( "Remove Selected Face" ) );
+    mActionFacesRefinement->setText( tr( "Refine Selected Face" ) );
   }
   else if ( mSelectedFaces.count() > 1 )
   {
-    mActionRemoveFaces->setText( tr( "Remove %n selected face(s)", nullptr, mSelectedFaces.count() ) );
-    mActionFacesRefinement->setText( tr( "Refine %n selected face(s)", nullptr, mSelectedFaces.count() ) );
+    mActionRemoveFaces->setText( tr( "Remove %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
+    mActionFacesRefinement->setText( tr( "Refine %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
   }
   else
   {
-    mActionRemoveFaces->setText( tr( "Remove current face" ) );
-    mActionFacesRefinement->setText( tr( "Refine current face" ) );
+    mActionRemoveFaces->setText( tr( "Remove Current Face" ) );
+    mActionFacesRefinement->setText( tr( "Refine Current Face" ) );
   }
 
   mSplittableFaceCount = 0;
@@ -2201,11 +2147,11 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   }
 
   if ( mSplittableFaceCount == 1 )
-    mActionSplitFaces->setText( tr( "Split selected face" ) );
+    mActionSplitFaces->setText( tr( "Split Selected Face" ) );
   else if ( mSplittableFaceCount > 1 )
-    mActionSplitFaces->setText( tr( "Split %n selected face(s)", nullptr, mSplittableFaceCount ) );
+    mActionSplitFaces->setText( tr( "Split %n Selected Face(s)", nullptr, mSplittableFaceCount ) );
   else
-    mActionSplitFaces->setText( tr( "Split current face" ) );
+    mActionSplitFaces->setText( tr( "Split Current Face" ) );
 
   emit selectionChange( mCurrentLayer, mSelectedVertices.keys() );
 }

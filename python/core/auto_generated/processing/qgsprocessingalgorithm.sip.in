@@ -739,7 +739,7 @@ This function creates a new object and the caller takes responsibility for delet
 %End
 
     QString parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name,
-        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0 );
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0 ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a source vector layer file path of compatible format.
 
@@ -757,7 +757,7 @@ to use :py:func:`~QgsProcessingAlgorithm.parameterAsCompatibleSourceLayerPathAnd
 %End
 
     QString parameterAsCompatibleSourceLayerPathAndLayerName( const QVariantMap &parameters, const QString &name,
-        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0, QString *layerName /Out/ = 0 );
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = 0, QString *layerName /Out/ = 0 ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a source vector layer file path and layer name of compatible format.
 
@@ -855,7 +855,7 @@ reprojected so that it is in the specified ``crs``. In this case the extent of t
 %End
 
     QgsGeometry parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
-                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a rectangular extent, and returns a geometry covering this extent.
 
@@ -867,7 +867,7 @@ just the extent of the reprojected rectangle).
 .. seealso:: :py:func:`parameterAsExtent`
 %End
 
-    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Returns the coordinate reference system associated with an extent parameter value.
 
@@ -885,7 +885,7 @@ reprojected so that it is in the specified ``crs``.
 .. seealso:: :py:func:`parameterAsPointCrs`
 %End
 
-    QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Returns the coordinate reference system associated with an point parameter value.
 
@@ -903,7 +903,7 @@ reprojected so that it is in the specified ``crs``.
 .. seealso:: :py:func:`parameterAsGeometryCrs`
 %End
 
-    QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Returns the coordinate reference system associated with a geometry parameter value.
 
@@ -967,35 +967,35 @@ Evaluates the parameter with matching ``name`` to a print layout item, taken fro
 .. versionadded:: 3.8
 %End
 
-    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a color, or returns an invalid color if the parameter was not set.
 
 .. versionadded:: 3.10
 %End
 
-    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a connection name string.
 
 .. versionadded:: 3.14
 %End
 
-    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a database schema name string.
 
 .. versionadded:: 3.14
 %End
 
-    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a database table name string.
 
 .. versionadded:: 3.14
 %End
 
-    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
 Evaluates the parameter with matching ``name`` to a DateTime, or returns an invalid date time if the parameter was not set.
 
@@ -1302,8 +1302,6 @@ Read the source from ``parameters`` and ``context`` and set it
         const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
 
 };
-
-
 
 
 /************************************************************************

@@ -699,7 +699,6 @@ void TestQgsVectorFileWriter::testExportCustomFieldNames()
   options.driverName = "GPKG";
   options.layerName = "test";
   options.attributesExportNames << "firstfield" << "customfieldname";
-  QString newFilename;
   QgsVectorFileWriter::prepareWriteAsVectorFormat( &ml, options, details );
   QCOMPARE( details.outputFields.at( 0 ).name(), "firstfield" );
   QCOMPARE( details.outputFields.at( 1 ).name(), "customfieldname" );

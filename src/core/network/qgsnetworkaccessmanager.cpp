@@ -55,6 +55,7 @@
 QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 
 static std::vector< std::pair< QString, std::function< void( QNetworkRequest * ) > > > sCustomPreprocessors;
+static std::vector< std::pair< QString, std::function< void( const QNetworkRequest &, QNetworkReply * ) > > > sCustomReplyPreprocessors;
 
 /// @cond PRIVATE
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -369,6 +370,11 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 #ifndef QT_NO_SSL
   connect( reply, &QNetworkReply::sslErrors, this, &QgsNetworkAccessManager::onReplySslErrors );
 #endif
+
+  for ( const auto &replyPreprocessor :  sCustomReplyPreprocessors )
+  {
+    replyPreprocessor.second( req, reply );
+  }
 
   // The timer will call abortRequest slot to abort the connection if needed.
   // The timer is stopped by the finished signal and is restarted on downloadProgress and
@@ -752,7 +758,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   QString cacheDirectory = settings.value( QStringLiteral( "cache/directory" ) ).toString();
   if ( cacheDirectory.isEmpty() )
     cacheDirectory = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
-  const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toLongLong();
+  const qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
   QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
@@ -820,6 +826,23 @@ bool QgsNetworkAccessManager::removeRequestPreprocessor( const QString &id )
     return a.first == id;
   } ), sCustomPreprocessors.end() );
   return prevCount != sCustomPreprocessors.size();
+}
+
+QString QgsNetworkAccessManager::setReplyPreprocessor( const std::function<void ( const QNetworkRequest &, QNetworkReply * )> &processor )
+{
+  QString id = QUuid::createUuid().toString();
+  sCustomReplyPreprocessors.emplace_back( std::make_pair( id, processor ) );
+  return id;
+}
+
+bool QgsNetworkAccessManager::removeReplyPreprocessor( const QString &id )
+{
+  const size_t prevCount = sCustomReplyPreprocessors.size();
+  sCustomReplyPreprocessors.erase( std::remove_if( sCustomReplyPreprocessors.begin(), sCustomReplyPreprocessors.end(), [id]( std::pair< QString, std::function< void( const QNetworkRequest &, QNetworkReply * ) > > &a )
+  {
+    return a.first == id;
+  } ), sCustomReplyPreprocessors.end() );
+  return prevCount != sCustomReplyPreprocessors.size();
 }
 
 void QgsNetworkAccessManager::preprocessRequest( QNetworkRequest *req ) const

@@ -36,7 +36,6 @@
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
-#include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
 #include <QList>
 #include <iostream>
@@ -48,6 +47,7 @@
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
 class QgsAbstractLabelProvider;
+class QgsRenderContext;
 
 namespace pal
 {
@@ -105,11 +105,10 @@ namespace pal
        * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * \param active is the layer is active (currently displayed)
        * \param toLabel the layer will be labeled only if toLablel is TRUE
-       * \param displayAll if TRUE, all features will be labelled even though overlaps occur
        *
        * \throws PalException::LayerExists
        */
-      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
+      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel );
 
       /**
        * \brief remove a layer
@@ -327,13 +326,13 @@ namespace pal
        * Returns the minimum number of iterations used for POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN.
        * \see getMaxIt()
        */
-      int getMinIt();
+      int getMinIt() const;
 
       /**
        * Returns the maximum number of iterations allowed for POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN.
        * \see getMinIt()
        */
-      int getMaxIt();
+      int getMaxIt() const;
 
   };
 

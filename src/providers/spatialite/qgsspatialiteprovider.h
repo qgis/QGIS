@@ -193,6 +193,11 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     QgsSqliteHandle *mHandle = nullptr;
 
+    /**
+     * Sqlite exec sql wrapper for SQL logging
+     */
+    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, char *errMsg = nullptr, const QString &origin = QString() );
+
   private:
 
     //! Loads fields from input file to member mAttributeFields
@@ -396,11 +401,6 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      * Handles an error encountered while executing an sql statement.
      */
     void handleError( const QString &sql, char *errorMessage, const QString &savepointId );
-
-    /**
-     * Sqlite exec sql wrapper for SQL logging
-     */
-    int exec_sql( const QString &sql, char *errMsg = nullptr );
 
     /**
      * Returns the sqlite handle to be used, if we are inside a transaction it will be the transaction's handle

@@ -47,8 +47,6 @@ email                : nyall dot dawson at gmail dot com
 
 ///@cond PRIVATE
 
-static bool IsLocalFile( const QString &path );
-
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGlobalMutex, ( QMutex::Recursive ) )
 #else
@@ -998,20 +996,26 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   QString filePath( QString::fromUtf8( pszPath ) );
 
   bool bIsGpkg = QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0;
-  bool bIsLocalGpkg = false;
+  const bool bIsLocalGpkg = bIsGpkg &&
+                            IsLocalFile( filePath ) &&
+                            !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
+                            QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool();
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
-  if ( bIsGpkg && !bUpdate )
+  if ( bIsGpkg )
   {
-    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "NOLOCK", "ON" );
+    // Hack use for qgsofflineediting / https://github.com/qgis/QGIS/issues/48012
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "QGIS_FORCE_WAL", nullptr );
   }
+
+  if ( bIsLocalGpkg )
+  {
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,2)
+    if ( !bUpdate )
+    {
+      papszOpenOptions = CSLSetNameValue( papszOpenOptions, "NOLOCK", "ON" );
+    }
 #endif
 
-  if ( bIsGpkg &&
-       IsLocalFile( filePath ) &&
-       !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
-       QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
-  {
     // Starting with GDAL 3.4.2, QgsOgrProvider::open(OpenModeInitial) will set
     // a fake DO_NOT_ENABLE_WAL=ON when doing the initial open in update mode
     // to indicate that we should not enable WAL.
@@ -1030,7 +1034,6 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
 #endif
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     }
-    bIsLocalGpkg = true;
   }
   else if ( bIsGpkg )
   {
@@ -1118,7 +1121,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   return hDS;
 }
 
-static bool IsLocalFile( const QString &path )
+bool QgsOgrProviderUtils::IsLocalFile( const QString &path )
 {
   QString dirName( QFileInfo( path ).absolutePath() );
   // Start with the OS specific methods since the QT >= 5.4 method just
@@ -1349,10 +1352,12 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
 {
   // Remove any comments
   QStringList lines {subsetString.split( QChar( '\n' ) )};
+
   lines.erase( std::remove_if( lines.begin(), lines.end(), []( const QString & line )
   {
     return line.startsWith( QLatin1String( "--" ) );
   } ), lines.end() );
+
   for ( auto &line : lines )
   {
     bool inLiteral {false};
@@ -1371,7 +1376,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       }
     }
   }
-  const QString cleanedSubsetString {lines.join( QChar( ' ' ) ).trimmed() };
+
+  const QString cleanedSubsetString {lines.join( QChar( '\n' ) ).trimmed() };
 
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH driver = GDALGetDatasetDriver( ds );
@@ -1979,6 +1985,16 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QStrin
     return wkbMultiPolygon;
   else if ( typeName == QLatin1String( "GeometryCollection" ) )
     return wkbGeometryCollection;
+  else if ( typeName == QLatin1String( "CircularString" ) )
+    return wkbCircularString;
+  else if ( typeName == QLatin1String( "CompoundCurve" ) )
+    return wkbCompoundCurve;
+  else if ( typeName == QLatin1String( "CurvePolygon" ) )
+    return wkbCurvePolygon;
+  else if ( typeName == QLatin1String( "MultiCurve" ) )
+    return wkbMultiCurve;
+  else if ( typeName == QLatin1String( "MultiSurface" ) )
+    return wkbMultiSurface;
   else if ( typeName == QLatin1String( "None" ) )
     return wkbNone;
   else if ( typeName == QLatin1String( "Point25D" ) )
@@ -1995,6 +2011,16 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbGeometryTypeFromName( const QStrin
     return wkbMultiPolygon25D;
   else if ( typeName == QLatin1String( "GeometryCollection25D" ) )
     return wkbGeometryCollection25D;
+  else if ( typeName == QLatin1String( "CircularStringZ" ) )
+    return wkbCircularStringZ;
+  else if ( typeName == QLatin1String( "CompoundCurveZ" ) )
+    return wkbCompoundCurveZ;
+  else if ( typeName == QLatin1String( "CurvePolygonZ" ) )
+    return wkbCurvePolygonZ;
+  else if ( typeName == QLatin1String( "MultiCurveZ" ) )
+    return wkbMultiCurveZ;
+  else if ( typeName == QLatin1String( "MultiSurfaceZ" ) )
+    return wkbMultiSurfaceZ;
 
   QgsDebugMsg( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
   return wkbUnknown;
@@ -2015,6 +2041,21 @@ OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbSingleFlatten( OGRwkbGeometryType 
       return wkbCompoundCurve;
     case wkbMultiSurface:
       return wkbCurvePolygon;
+    default:
+      return type;
+  }
+}
+
+OGRwkbGeometryType QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( OGRwkbGeometryType type )
+{
+  type = ogrWkbSingleFlatten( type );
+  switch ( type )
+  {
+    case wkbCircularString:
+    case wkbCompoundCurve:
+      return wkbLineString;
+    case wkbCurvePolygon:
+      return wkbPolygon;
     default:
       return type;
   }
@@ -2225,6 +2266,12 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 {
   QMutexLocker locker( sGlobalMutex() );
 
+  if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
+    invalidateCachedDatasets( dsName );
+  }
+
   // The idea is that we want to minimize the number of GDALDatasetH
   // handles openeded. But we have constraints. We do not want that 2
   // callers of getLayer() with the same input parameters get the same
@@ -2237,16 +2284,6 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   // Find if there's a list of DatasetWithLayers* that match our
   // (dsName, updateMode, options) criteria
   auto iter = sMapSharedDS.find( ident );
-  if ( iter != sMapSharedDS.end() )
-  {
-    if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
-    {
-      QgsDebugMsg( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
-      invalidateCachedDatasets( dsName );
-      iter = sMapSharedDS.find( ident );
-      Q_ASSERT( iter == sMapSharedDS.end() );
-    }
-  }
   if ( iter != sMapSharedDS.end() )
   {
     // Browse through this list, to look for a DatasetWithLayers*
@@ -2822,26 +2859,126 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
   if ( driverName == QLatin1String( "GPKG" ) )
   {
-    CPLPushErrorHandler( CPLQuietErrorHandler );
-    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
-                            ds->hDS, "SELECT 1 FROM gpkg_ogr_contents LIMIT 0", nullptr, nullptr );
-    CPLPopErrorHandler();
-    if ( hSqlLayer )
-    {
-      GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-      return OGR_L_GetFeatureCount( hLayer, TRUE );
-    }
+    // use feature count from meta data
+    GIntBig totalFeatureCount = GetTotalFeatureCountFromMetaData();
 
-    // Enumerate features up to a limit of 100000.
-    const GIntBig nLimit = CPLAtoGIntBig(
-                             CPLGetConfigOption( "QGIS_GPKG_FC_THRESHOLD", "100000" ) );
-    QByteArray layerName = OGR_L_GetName( hLayer );
-    QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
-    sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-    sql += " LIMIT ";
-    sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
-    sql += ")";
-    hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+    // Get features up to a limit of 100.000 for enumeration or when meta data couldn't be obtained (return value == -1)
+    if ( totalFeatureCount < 100000 )
+    {
+      CPLPushErrorHandler( CPLQuietErrorHandler );
+      OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
+                              ds->hDS, "SELECT 1 FROM gpkg_ogr_contents LIMIT 0", nullptr, nullptr );
+      CPLPopErrorHandler();
+      if ( hSqlLayer )
+      {
+        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+        // try an inexpensive count first
+        GIntBig featureCount = OGR_L_GetFeatureCount( hLayer, FALSE ); // FALSE to not force an expensive count
+        if ( featureCount != -1 )
+        {
+          return featureCount;
+        }
+        else // if inexpensive count was not successful
+        {
+          return OGR_L_GetFeatureCount( hLayer, TRUE );
+        }
+      }
+
+      // Enumerate features up to a limit of 100.000.
+      const GIntBig nLimit = CPLAtoGIntBig(
+                               CPLGetConfigOption( "QGIS_GPKG_FC_THRESHOLD", "100000" ) );
+      QByteArray layerName = OGR_L_GetName( hLayer );
+      QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
+      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+      sql += " LIMIT ";
+      sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
+      sql += ")";
+      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+      GIntBig res = -1;
+      if ( hSqlLayer )
+      {
+        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+        if ( fet )
+        {
+          res = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+        }
+        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      }
+      if ( res >= 0 && res < nLimit )
+      {
+        // Less than 100000 features ? This is the final count
+        return res;
+      }
+      if ( res == nLimit )
+      {
+        // If we reach the threshold, then use the min and max values of the rowid
+        // hoping there are not a lot of holes.
+        // Do it in 2 separate SQL queries otherwise SQLite apparently does a
+        // full table scan...
+        sql = "SELECT MAX(ROWID) FROM ";
+        sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+        hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+        GIntBig maxrowid = -1;
+        if ( hSqlLayer )
+        {
+          gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+          if ( fet )
+          {
+            maxrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+          }
+          GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+        }
+
+        sql = "SELECT MIN(ROWID) FROM ";
+        sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+        hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+        GIntBig minrowid = 0;
+        if ( hSqlLayer )
+        {
+          gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+          if ( fet )
+          {
+            minrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+          }
+          GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+        }
+
+        if ( maxrowid >= minrowid )
+        {
+          return maxrowid - minrowid + 1;
+        }
+      }
+    }
+    else    // use feature count from meta data for large layers > 100000 features
+      return totalFeatureCount;
+  }
+  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
+  {
+    return -1;
+  }
+
+  return OGR_L_GetFeatureCount( hLayer, TRUE );
+}
+
+/**
+ * Returns the total (unfiltered) feature count according to OGRGeoPackageTableLayer::GetFeatureCount used by GDAL's ogrinfo.
+ */
+
+GIntBig QgsOgrLayer::GetTotalFeatureCountFromMetaData() const
+{
+  // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
+  QByteArray layerName = OGR_L_GetName( hLayer );
+
+  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
+  if ( driverName == QLatin1String( "GPKG" ) )
+  {
+    QByteArray sql( "SELECT feature_count FROM gpkg_ogr_contents WHERE " );
+    sql += "lower(table_name) = lower(" + QgsOgrProviderUtils::quotedIdentifier( layerName, driverName ) + ") LIMIT 2";
+
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+    CPLPopErrorHandler();
+
     GIntBig res = -1;
     if ( hSqlLayer )
     {
@@ -2851,58 +2988,10 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
         res = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
       }
       GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-    }
-    if ( res >= 0 && res < nLimit )
-    {
-      // Less than 100000 features ? This is the final count
       return res;
     }
-    if ( res == nLimit )
-    {
-      // If we reach the threshold, then use the min and max values of the rowid
-      // hoping there are not a lot of holes.
-      // Do it in 2 separate SQL queries otherwise SQLite apparently does a
-      // full table scan...
-      sql = "SELECT MAX(ROWID) FROM ";
-      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
-      GIntBig maxrowid = -1;
-      if ( hSqlLayer )
-      {
-        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
-        if ( fet )
-        {
-          maxrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
-        }
-        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-      }
-
-      sql = "SELECT MIN(ROWID) FROM ";
-      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
-      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
-      GIntBig minrowid = 0;
-      if ( hSqlLayer )
-      {
-        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
-        if ( fet )
-        {
-          minrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
-        }
-        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
-      }
-
-      if ( maxrowid >= minrowid )
-      {
-        return maxrowid - minrowid + 1;
-      }
-    }
   }
-  if ( driverName == QLatin1String( "OAPIF" ) || driverName == QLatin1String( "WFS3" ) )
-  {
-    return -1;
-  }
-
-  return OGR_L_GetFeatureCount( hLayer, TRUE );
+  return -1;
 }
 
 OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
@@ -2924,9 +3013,9 @@ void QgsOgrLayer::SetSpatialFilter( OGRGeometryH hGeometry )
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QMutex *&mutex )
+GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QMutex *&mutex ) const
 #else
-GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex )
+GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const
 #endif
 {
   mutex = &( ds->mutex );
@@ -2934,9 +3023,9 @@ GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex )
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-OGRLayerH QgsOgrLayer::getHandleAndMutex( QMutex *&mutex )
+OGRLayerH QgsOgrLayer::getHandleAndMutex( QMutex *&mutex ) const
 #else
-OGRLayerH QgsOgrLayer::getHandleAndMutex( QRecursiveMutex *&mutex )
+OGRLayerH QgsOgrLayer::getHandleAndMutex( QRecursiveMutex *&mutex ) const
 #endif
 {
   mutex = &( ds->mutex );
@@ -3204,7 +3293,7 @@ bool QgsOgrProviderUtils::deleteLayer( const QString &uri, QString &errCause )
   return false;
 }
 
-void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer )
+void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer ) const
 {
   QgsOgrProviderUtils::release( layer );
 }

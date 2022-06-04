@@ -71,7 +71,7 @@ class CORE_EXPORT QgsStringReplacement
      */
     QString process( const QString &input ) const;
 
-    bool operator==( const QgsStringReplacement &other )
+    bool operator==( const QgsStringReplacement &other ) const
     {
       return mMatch == other.mMatch
              && mReplacement == other.mReplacement

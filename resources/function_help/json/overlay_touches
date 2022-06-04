@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_touches('regions')",
-    "returns": "true if the current feature spatially touches a region"
+    "returns": "TRUE if the current feature spatially touches a region"
   }, {
     "expression": "overlay_touches('regions', filter:= population > 10000)",
-    "returns": "true if the current feature spatially touches a region with a population greater than 10000"
+    "returns": "TRUE if the current feature spatially touches a region with a population greater than 10000"
   }, {
     "expression": "overlay_touches('regions', name)",
     "returns": "an array of names, for the regions touched by the current feature"

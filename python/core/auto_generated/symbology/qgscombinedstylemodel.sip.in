@@ -1,0 +1,91 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgscombinedstylemodel.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsCombinedStyleModel: QConcatenateTablesProxyModel
+{
+%Docstring(signature="appended")
+
+A model which contains entities from multiple :py:class:`QgsStyle` databases.
+
+.. note::
+
+   Only available in builds based on Qt 5.13 or later
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgscombinedstylemodel.h"
+%End
+  public:
+
+    explicit QgsCombinedStyleModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCombinedStyleModel with the specified ``parent`` object.
+%End
+
+     virtual QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
+
+    void addStyle( QgsStyle *style );
+%Docstring
+Adds a style to the model.
+
+Ownership of ``style`` is not transferred.
+
+.. seealso:: :py:func:`styles`
+
+.. seealso:: :py:func:`addDefaultStyle`
+
+.. seealso:: :py:func:`removeStyle`
+%End
+
+    void addDefaultStyle();
+%Docstring
+Adds the default style (:py:func:`QgsStyle.defaultStyle()`) to the model.
+
+.. seealso:: :py:func:`addStyle`
+%End
+
+    void removeStyle( QgsStyle *style );
+%Docstring
+Removes a ``style`` from the model.
+
+.. seealso:: :py:func:`addStyle`
+%End
+
+    QList< QgsStyle * > styles() const;
+%Docstring
+Returns a list of all styles shown in the model.
+
+.. seealso:: :py:func:`addStyle`
+%End
+
+    void addDesiredIconSize( QSize size );
+%Docstring
+Adds an additional icon ``size`` to generate for Qt.DecorationRole data.
+
+This allows style icons to be generated at an icon size which
+corresponds exactly to the view's icon size in which this model is used.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgscombinedstylemodel.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

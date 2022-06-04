@@ -69,6 +69,7 @@ def find_dependencies(plugin_id, plugin_data=None, plugin_deps=None, installed_p
                 'version_installed': None,
                 'version_required': None,
                 'version_available': None,
+                'use_stable_version': None,
                 'action': None,
                 'error': 'missing_id'
             }})

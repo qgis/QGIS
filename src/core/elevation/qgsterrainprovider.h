@@ -23,6 +23,7 @@
 #include "qgsmaplayerref.h"
 #include "qgsrasterlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgstriangularmesh.h"
 
 #include <QObject>
 
@@ -70,6 +71,11 @@ class CORE_EXPORT QgsAbstractTerrainProvider
     QgsAbstractTerrainProvider &operator=( const QgsAbstractTerrainProvider &other ) = delete;
 
     /**
+     * Returns TRUE if the provider is equal to \a other.
+     */
+    virtual bool equals( const QgsAbstractTerrainProvider *other ) const = 0;
+
+    /**
      * Resolves reference to layers from stored layer ID (if it has not been resolved already)
      */
     virtual void resolveReferences( const QgsProject *project );
@@ -97,6 +103,14 @@ class CORE_EXPORT QgsAbstractTerrainProvider
      * Ownership is transferred to the caller.
      */
     virtual QgsAbstractTerrainProvider *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Called on the main thread prior to accessing the provider from a background thread.
+     *
+     * Subclasses must implement suitable logic in order to prepare for thread-safe calculation of
+     * terrain heights on background threads.
+     */
+    virtual void prepare() = 0 SIP_FACTORY;
 
     /**
      * Returns the native coordinate reference system of the terrain provider.
@@ -203,6 +217,8 @@ class CORE_EXPORT QgsFlatTerrainProvider : public QgsAbstractTerrainProvider
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsFlatTerrainProvider *clone() const override SIP_FACTORY;
+    void prepare() override;
+    bool equals( const QgsAbstractTerrainProvider *other ) const override;
 };
 
 /**
@@ -220,6 +236,11 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
      */
     QgsRasterDemTerrainProvider() = default;
 
+#ifndef SIP_RUN
+    //! QgsRasterDemTerrainProvider cannot be assigned
+    const QgsRasterDemTerrainProvider *operator=( const QgsRasterDemTerrainProvider &other ) = delete;
+#endif
+
     QString type() const override;
     void resolveReferences( const QgsProject *project ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -227,6 +248,8 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsRasterDemTerrainProvider *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractTerrainProvider *other ) const override;
+    void prepare() override;
 
     /**
      * Sets the raster \a layer with elevation model to be used as the terrain source.
@@ -244,8 +267,10 @@ class CORE_EXPORT QgsRasterDemTerrainProvider : public QgsAbstractTerrainProvide
 
 
   private:
+    QgsRasterDemTerrainProvider( const QgsRasterDemTerrainProvider &other );
 
     _LayerRef<QgsRasterLayer> mRasterLayer;
+    std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
 
 };
 
@@ -265,6 +290,11 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
      */
     QgsMeshTerrainProvider() = default;
 
+#ifndef SIP_RUN
+    //! QgsMeshTerrainProvider cannot be assigned
+    const QgsMeshTerrainProvider *operator=( const QgsMeshTerrainProvider &other ) = delete;
+#endif
+
     QString type() const override;
     void resolveReferences( const QgsProject *project ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -272,6 +302,8 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     QgsCoordinateReferenceSystem crs() const override;
     double heightAt( double x, double y ) const override;
     QgsMeshTerrainProvider *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractTerrainProvider *other ) const override;
+    void prepare() override;
 
     /**
      * Sets the mesh \a layer to be used as the terrain source.
@@ -288,9 +320,10 @@ class CORE_EXPORT QgsMeshTerrainProvider : public QgsAbstractTerrainProvider
     QgsMeshLayer *layer() const;
 
   private:
+    QgsMeshTerrainProvider( const QgsMeshTerrainProvider &other );
 
     _LayerRef<QgsMeshLayer> mMeshLayer;
-
+    QgsTriangularMesh mTriangularMesh;
 };
 
 #endif // QGSTERRAINPROVIDER_H

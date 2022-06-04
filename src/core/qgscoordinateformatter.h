@@ -96,14 +96,18 @@ class CORE_EXPORT QgsCoordinateFormatter
      * The \a precision argument gives the number of decimal places to include for coordinates.
      *
      * Optional \a flags can be specified to control the output format.
+     *
+     * Since QGIS 3.26 the optional \a order argument can be used to control the order of the coordinates.
      */
-    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
+    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 
     /**
      * Formats coordinates as an "\a x,\a y" pair, with optional decimal \a precision (number
      * of decimal places to include).
+     *
+     * Since QGIS 3.26 the optional \a order argument can be used to control the order of the coordinates.
      */
-    static QString asPair( double x, double y, int precision = 12 );
+    static QString asPair( double x, double y, int precision = 12, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 
     /**
      * Returns the character used as X/Y separator, this is a `,` on locales that do not use

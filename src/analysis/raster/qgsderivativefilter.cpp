@@ -23,7 +23,7 @@ QgsDerivativeFilter::QgsDerivativeFilter( const QString &inputFile, const QStrin
 
 }
 
-float QgsDerivativeFilter::calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 )
+float QgsDerivativeFilter::calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) const
 {
   //the basic formula would be simple, but we need to test for nodata values...
   //return (( (*x31 - *x11) + 2 * (*x32 - *x12) + (*x33 - *x13) ) / (8 * mCellSizeX));
@@ -90,7 +90,7 @@ float QgsDerivativeFilter::calcFirstDerX( float *x11, float *x21, float *x31, fl
   return sum / ( weight * mCellSizeX ) * mZFactor;
 }
 
-float QgsDerivativeFilter::calcFirstDerY( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 )
+float QgsDerivativeFilter::calcFirstDerY( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) const
 {
   //the basic formula would be simple, but we need to test for nodata values...
   //return (((*x11 - *x13) + 2 * (*x21 - *x23) + (*x31 - *x33)) / ( 8 * mCellSizeY));

@@ -58,7 +58,17 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
     invalidateCache();
     update();
   } );
-  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, &QgsLayoutItemLegend::refresh );
+  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [ = ]
+  {
+    // NOTE -- we do NOT connect to ::refresh here, as we don't want to trigger the call to onAtlasFeature() which sets mFilterAskedForUpdate to true,
+    // causing an endless loop.
+
+    // TODO -- the call to QgsLayoutItem::refresh() is probably NOT required!
+    QgsLayoutItem::refresh();
+
+    // (this one is definitely required)
+    clearLegendCachedData();
+  } );
 }
 
 QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )

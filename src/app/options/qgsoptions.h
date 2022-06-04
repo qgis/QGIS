@@ -34,6 +34,7 @@ class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
 class QgsAuthConfigSelect;
 class QgsBearingNumericFormat;
+class QgsGeographicCoordinateNumericFormat;
 class QStandardItemModel;
 
 /**
@@ -298,6 +299,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void updateSampleLocaleText();
 
     void customizeBearingFormat();
+    void customizeCoordinateFormat();
 
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
@@ -313,6 +315,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mCoordinateFormat;
 
     QStandardItemModel *mTreeModel = nullptr;
 

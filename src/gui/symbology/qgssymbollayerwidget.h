@@ -715,6 +715,68 @@ class GUI_EXPORT QgsRasterMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
 };
 
+
+///////////
+
+#include "ui_widget_animatedmarker.h"
+
+class QgsAnimatedMarkerSymbolLayer;
+
+/**
+ * \ingroup gui
+ * \class QgsAnimatedMarkerSymbolLayerWidget
+ * \brief Widget for configuring QgsAnimatedMarkerSymbolLayer symbol layers.
+ * \since QGIS 3.26
+ */
+class GUI_EXPORT QgsAnimatedMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetAnimatedMarker
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsAnimatedMarkerSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsAnimatedMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Creates a new QgsAnimatedMarkerSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsAnimatedMarkerSymbolLayerWidget( vl ); }
+
+    // from base class
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
+
+  protected:
+
+    QgsAnimatedMarkerSymbolLayer *mLayer = nullptr;
+
+  private slots:
+    void imageSourceChanged( const QString &text );
+    void mSizeUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void setWidth();
+    void setHeight();
+    void setLockAspectRatio( bool locked );
+    void setAngle();
+    void setOffset();
+    void setOpacity( double value );
+    void updatePreviewImage();
+
+  private:
+
+    QMovie *mPreviewMovie = nullptr;
+
+};
+
+
 ///////////
 
 #include "ui_widget_rasterfill.h"

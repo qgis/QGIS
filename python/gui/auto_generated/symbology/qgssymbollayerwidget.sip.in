@@ -539,6 +539,51 @@ Creates a new QgsRasterMarkerSymbolLayerWidget.
 
 
 
+
+class QgsAnimatedMarkerSymbolLayerWidget : QgsSymbolLayerWidget
+{
+%Docstring(signature="appended")
+Widget for configuring :py:class:`QgsAnimatedMarkerSymbolLayer` symbol layers.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerwidget.h"
+%End
+  public:
+
+    QgsAnimatedMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAnimatedMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+:param parent: parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Creates a new QgsAnimatedMarkerSymbolLayerWidget.
+
+:param vl: associated vector layer
+%End
+
+    virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
+    virtual QgsSymbolLayer *symbolLayer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+  protected:
+
+
+};
+
+
+
+
+
 class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 {
 

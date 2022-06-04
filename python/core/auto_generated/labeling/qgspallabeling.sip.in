@@ -27,43 +27,6 @@ Contains settings for how a map layer will be labeled.
 
 
 
-    enum Placement
-    {
-      AroundPoint,
-      OverPoint,
-      Line,
-      Curved,
-      Horizontal,
-      Free,
-      OrderedPositionsAroundPoint,
-      PerimeterCurved,
-      OutsidePolygons,
-    };
-
-    enum PredefinedPointPosition
-    {
-      TopLeft,
-      TopSlightlyLeft,
-      TopMiddle,
-      TopSlightlyRight,
-      TopRight,
-      MiddleLeft,
-      MiddleRight,
-      BottomLeft,
-      BottomSlightlyLeft,
-      BottomMiddle,
-      BottomSlightlyRight,
-      BottomRight,
-    };
-
-
-    enum OffsetType
-    {
-      FromPoint,
-      FromSymbolBounds,
-    };
-
-
     enum LinePlacementFlags
     {
       OnLine,
@@ -72,41 +35,11 @@ Contains settings for how a map layer will be labeled.
       MapOrientation,
     };
 
-    enum QuadrantPosition
-    {
-      QuadrantAboveLeft,
-      QuadrantAbove,
-      QuadrantAboveRight,
-      QuadrantLeft,
-      QuadrantOver,
-      QuadrantRight,
-      QuadrantBelowLeft,
-      QuadrantBelow,
-      QuadrantBelowRight,
-    };
-
-    enum UpsideDownLabels
-    {
-      Upright,
-      ShowDefined,
-      ShowAll
-    };
-
-
     enum DirectionSymbols
     {
       SymbolLeftRight,
       SymbolAbove,
       SymbolBelow
-    };
-
-    enum MultiLineAlign
-    {
-      MultiLeft,
-      MultiCenter,
-      MultiRight,
-      MultiFollowPlacement,
-      MultiJustify,
     };
 
 
@@ -250,6 +183,9 @@ Contains settings for how a map layer will be labeled.
       ZIndex,
       CalloutDraw,
 
+      AllowDegradedPlacement,
+      OverlapHandling,
+
       // (data defined only)
       Show,
       AlwaysShow
@@ -334,7 +270,7 @@ Returns the :py:class:`QgsExpression` for this label settings. May be ``None`` i
 
     bool useMaxLineLengthForAutoWrap;
 
-    MultiLineAlign multilineAlign;
+    Qgis::LabelMultiLineAlignment multilineAlign;
 
     bool formatNumbers;
 
@@ -343,7 +279,7 @@ Returns the :py:class:`QgsExpression` for this label settings. May be ``None`` i
     bool plusSign;
 
 
-    Placement placement;
+    Qgis::LabelPlacement placement;
 
     QgsLabeling::PolygonPlacementFlags polygonPlacementFlags() const;
 %Docstring
@@ -376,7 +312,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsMapUnitScale distMapUnitScale;
 
-    OffsetType offsetType;
+    Qgis::LabelOffsetType offsetType;
 
     double repeatDistance;
 
@@ -384,7 +320,7 @@ Sets the polygon placement ``flags``, which dictate how polygon labels can be pl
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 
-    QuadrantPosition quadOffset;
+    Qgis::LabelQuadrantPosition quadOffset;
 
     double xOffset;
 
@@ -435,9 +371,7 @@ Set unit for rotation of labels.
 
     int fontMaxPixelSize;
 
-    bool displayAll;
-
-    UpsideDownLabels upsidedownLabels;
+    Qgis::UpsideDownLabelHandling upsidedownLabels;
 
     bool labelPerPart;
 
@@ -459,6 +393,7 @@ Set unit for rotation of labels.
 %Property( name = overrunDistance, get = _getOverrunDistance, set = _setOverrunDistance )
 %Property( name = overrunDistanceUnit, get = _getOverrunDistanceUnit, set = _setOverrunDistanceUnit )
 %Property( name = overrunDistanceMapUnitScale, get = _getOverrunDistanceMapUnitScale, set = _setOverrunDistanceMapUnitScale )
+%Property( name = displayAll, get = _getDisplayAll, set = _setDisplayAll )
 
     bool _limitNumLabels() const;
     void _setLimitNumLabels( bool limit );
@@ -492,6 +427,8 @@ Set unit for rotation of labels.
     void _setOverrunDistanceUnit( QgsUnitTypes::RenderUnit unit );
     QgsMapUnitScale _getOverrunDistanceMapUnitScale() const;
     void _setOverrunDistanceMapUnitScale( const QgsMapUnitScale &scale );
+    bool _getDisplayAll() const;
+    void _setDisplayAll( bool display );
 
     double zIndex;
 
@@ -678,6 +615,25 @@ Sets the label thinning ``settings``.
 .. seealso:: :py:func:`thinningSettings`
 
 .. versionadded:: 3.12
+%End
+
+
+    QgsLabelPlacementSettings &placementSettings();
+%Docstring
+Returns the label placement settings.
+
+.. seealso:: :py:func:`setPlacementSettings`
+
+.. versionadded:: 3.26
+%End
+
+    void setPlacementSettings( const QgsLabelPlacementSettings &settings );
+%Docstring
+Sets the label placement ``settings``.
+
+.. seealso:: :py:func:`placementSettings`
+
+.. versionadded:: 3.26
 %End
 
     static QPixmap labelSettingsPreviewPixmap( const QgsPalLayerSettings &settings, QSize size, const QString &previewText = QString(), int padding = 0 );

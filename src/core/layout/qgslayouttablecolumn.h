@@ -190,7 +190,7 @@ class CORE_EXPORT QgsLayoutTableColumn
      */
     Q_DECL_DEPRECATED QgsLayoutTableColumn *clone() SIP_DEPRECATED SIP_FACTORY {return new QgsLayoutTableColumn( *this );}
 
-    bool operator==( const QgsLayoutTableColumn &other )
+    bool operator==( const QgsLayoutTableColumn &other ) const
     {
       return mHeading == other.mHeading
              && mAttribute == other.mAttribute

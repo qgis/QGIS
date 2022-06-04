@@ -32,7 +32,7 @@
     }],
     "examples": [{
       "expression": "relate( geom_from_wkt( 'LINESTRING(40 40,120 120)' ), geom_from_wkt( 'LINESTRING(40 40,60 120)' ), '**1F001**' )",
-      "returns": true
+      "returns": "TRUE"
     }]
   }],
   "tags": ["dimensional", "relationship", "extended", "intersection", "representation", "model", "tests"]

@@ -264,7 +264,7 @@
            </widget>
           </item>
           <item row="4" column="2">
-           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -319,19 +319,6 @@
        <item row="2" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <widget class="QgsFilterLineEdit" name="mLayersFilterLineEdit">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -339,7 +326,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="showSearchIcon" stdset="0">
+           <property name="showSearchIcon">
             <bool>true</bool>
            </property>
            <property name="qgisRelation" stdset="0">
@@ -421,19 +408,6 @@
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <widget class="QgsFilterLineEdit" name="mTilesetsFilterLineEdit">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -441,7 +415,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="showSearchIcon" stdset="0">
+           <property name="showSearchIcon">
             <bool>true</bool>
            </property>
            <property name="qgisRelation" stdset="0">

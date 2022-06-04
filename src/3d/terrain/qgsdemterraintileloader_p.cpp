@@ -124,6 +124,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
   mNode->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
+  mNode->updateParentBoundingBoxesRecursively();
 
   entity->setEnabled( false );
   entity->setParent( parent );
@@ -153,7 +154,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
   : mDtm( dtm )
-  , mClonedProvider( dtm ? ( QgsRasterDataProvider * )dtm->dataProvider()->clone() : nullptr )
+  , mClonedProvider( dtm ? qgis::down_cast<QgsRasterDataProvider *>( dtm->dataProvider()->clone() ) : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
   , mLastJobId( 0 )

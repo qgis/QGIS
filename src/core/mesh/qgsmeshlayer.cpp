@@ -43,14 +43,17 @@
 #include "qgsmesheditor.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmeshlayerprofilegenerator.h"
+#include "qgsmeshlayerelevationproperties.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
                             const QgsMeshLayer::LayerOptions &options )
-  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath ),
-    mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) ),
-    mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
+  : QgsMapLayer( QgsMapLayerType::MeshLayer, baseName, meshLayerPath )
+  , mDatasetGroupStore( new QgsMeshDatasetGroupStore( this ) )
+  , mTemporalProperties( new QgsMeshLayerTemporalProperties( this ) )
+  , mElevationProperties( new QgsMeshLayerElevationProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -168,6 +171,10 @@ QgsMeshLayer *QgsMeshLayer::clone() const
   }
   QgsMeshLayer *layer = new QgsMeshLayer( source(), name(), mProviderKey,  options );
   QgsMapLayer::clone( layer );
+
+  layer->mElevationProperties = mElevationProperties->clone();
+  layer->mElevationProperties->setParent( layer );
+
   return layer;
 }
 
@@ -725,8 +732,11 @@ void QgsMeshLayer::fillNativeMesh()
 void QgsMeshLayer::onDatasetGroupsAdded( const QList<int> &datasetGroupIndexes )
 {
   // assign default style to new dataset groups
-  for ( int i = 0; i < datasetGroupIndexes.count(); ++i )
-    assignDefaultStyleToDatasetGroup( datasetGroupIndexes.at( i ) );
+  for ( int datasetGroupIndex : datasetGroupIndexes )
+  {
+    if ( !mRendererSettings.hasSettings( datasetGroupIndex ) )
+      assignDefaultStyleToDatasetGroup( datasetGroupIndex );
+  }
 
   temporalProperties()->setIsActive( mDatasetGroupStore->hasTemporalCapabilities() );
   emit rendererChanged();
@@ -1399,6 +1409,11 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
 
+QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProfileRequest &request )
+{
+  return new QgsMeshLayerProfileGenerator( this, request );
+}
+
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
                                   QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
@@ -1798,4 +1813,9 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
 QgsMapLayerTemporalProperties *QgsMeshLayer::temporalProperties()
 {
   return mTemporalProperties;
+}
+
+QgsMapLayerElevationProperties *QgsMeshLayer::elevationProperties()
+{
+  return mElevationProperties;
 }

@@ -2,7 +2,7 @@
   "name": "map_exist",
   "type": "function",
   "groups": ["Maps"],
-  "description": "Returns true if the given key exists in the map.",
+  "description": "Returns TRUE if the given key exists in the map.",
   "arguments": [{
     "arg": "map",
     "description": "a map"
@@ -12,7 +12,7 @@
   }],
   "examples": [{
     "expression": "map_exist(map('1','one','2','two'),'3')",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["map", "exists", "key"]
 }

@@ -2,26 +2,26 @@
   "name": "is_empty_or_null",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns true if a geometry is NULL or empty (without coordinates) or false otherwise. This function is like the expression '$geometry IS NULL or is_empty($geometry)'",
+  "description": "Returns TRUE if a geometry is NULL or empty (without coordinates) or false otherwise. This function is like the expression '$geometry IS NULL or is_empty($geometry)'",
   "arguments": [{
     "arg": "geometry",
     "description": "a geometry"
   }],
   "examples": [{
     "expression": "is_empty_or_null(NULL)",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)'))",
-    "returns": "false"
+    "returns": "FALSE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('LINESTRING EMPTY'))",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('POINT(7 4)'))",
-    "returns": "false"
+    "returns": "FALSE"
   }, {
     "expression": "is_empty_or_null(geom_from_wkt('POINT EMPTY'))",
-    "returns": "true"
+    "returns": "TRUE"
   }],
   "tags": ["empty", "is_empty", "coordinates", "false"]
 }

@@ -31,7 +31,7 @@
 bool QgsGpsInformation::isValid() const
 {
   bool valid = false;
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid || qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     valid = false;
   }
@@ -39,7 +39,7 @@ bool QgsGpsInformation::isValid() const
   {
     valid = true;
   }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || quality > 0 ) // good
+  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid && qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
   {
     valid = true;
   }
@@ -52,7 +52,7 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
   FixStatus fixStatus = NoData;
 
   // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid || qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     fixStatus = NoFix;
   }
@@ -60,7 +60,7 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
   {
     fixStatus = Fix2D;
   }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || quality > 0 ) // good
+  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid && qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
   {
     fixStatus = Fix3D;
   }
@@ -69,35 +69,36 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
 
 QString QgsGpsInformation::qualityDescription() const
 {
-  switch ( quality )
+  switch ( qualityIndicator )
   {
-    case 8:
+    case Qgis::GpsQualityIndicator::Simulation:
       return QCoreApplication::translate( "QgsGpsInformation", "Simulation mode" );
 
-    case 7:
+    case Qgis::GpsQualityIndicator::Manual:
       return QCoreApplication::translate( "QgsGpsInformation", "Manual input mode" );
 
-    case 6:
+    case Qgis::GpsQualityIndicator::Estimated:
       return QCoreApplication::translate( "QgsGpsInformation", "Estimated" );
 
-    case 5:
+    case Qgis::GpsQualityIndicator::FloatRTK:
       return QCoreApplication::translate( "QgsGpsInformation", "Float RTK" );
 
-    case 4:
+    case Qgis::GpsQualityIndicator::RTK:
       return QCoreApplication::translate( "QgsGpsInformation", "Fixed RTK" );
 
-    case 3:
+    case Qgis::GpsQualityIndicator::PPS:
       return QCoreApplication::translate( "QgsGpsInformation", "PPS" );
 
-    case 2:
+    case Qgis::GpsQualityIndicator::DGPS:
       return QCoreApplication::translate( "QgsGpsInformation", "DGPS" );
 
-    case 1:
+    case Qgis::GpsQualityIndicator::GPS:
       return QCoreApplication::translate( "QgsGpsInformation", "Autonomous" );
 
-    case 0:
+    case Qgis::GpsQualityIndicator::Invalid:
       return QCoreApplication::translate( "QgsGpsInformation", "Invalid" );
 
+    case Qgis::GpsQualityIndicator::Unknown:
     default:
       return QCoreApplication::translate( "QgsGpsInformation", "Unknown (%1)" ).arg( QString::number( quality ) );
   }

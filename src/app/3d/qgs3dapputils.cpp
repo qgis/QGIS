@@ -27,12 +27,6 @@
 #include "qgssimplelinematerialwidget.h"
 #include "qgsnullmaterialwidget.h"
 #include "qgs3dicongenerator.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloud3dsymbol.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgspointcloudrgbrenderer.h"
-#include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
 
 void Qgs3DAppUtils::initialize()
 {
@@ -47,51 +41,4 @@ void Qgs3DAppUtils::initialize()
   qgis::down_cast< QgsMaterialSettingsMetadata * >( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "simpleline" ) ) )->setWidgetFunction( QgsSimpleLineMaterialWidget::create );
 
   QgsStyleModel::setIconGenerator( new Qgs3DIconGenerator( QgsApplication::defaultStyleModel() ) );
-}
-
-std::unique_ptr<QgsPointCloudLayer3DRenderer> Qgs3DAppUtils::convert2dPointCloudRendererTo3d( QgsPointCloudRenderer *renderer )
-{
-  if ( !renderer )
-    return nullptr;
-
-  std::unique_ptr< QgsPointCloud3DSymbol > symbol3D;
-  if ( renderer->type() == QLatin1String( "ramp" ) )
-  {
-    const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( renderer );
-    symbol3D = std::make_unique< QgsColorRampPointCloud3DSymbol >();
-    QgsColorRampPointCloud3DSymbol *symbol = static_cast< QgsColorRampPointCloud3DSymbol * >( symbol3D.get() );
-    symbol->setAttribute( renderer2d->attribute() );
-    symbol->setColorRampShaderMinMax( renderer2d->minimum(), renderer2d->maximum() );
-    symbol->setColorRampShader( renderer2d->colorRampShader() );
-  }
-  else if ( renderer->type() == QLatin1String( "rgb" ) )
-  {
-    const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast< const QgsPointCloudRgbRenderer * >( renderer );
-    symbol3D = std::make_unique< QgsRgbPointCloud3DSymbol >();
-    QgsRgbPointCloud3DSymbol *symbol = static_cast< QgsRgbPointCloud3DSymbol * >( symbol3D.get() );
-    symbol->setRedAttribute( renderer2d->redAttribute() );
-    symbol->setGreenAttribute( renderer2d->greenAttribute() );
-    symbol->setBlueAttribute( renderer2d->blueAttribute() );
-
-    symbol->setRedContrastEnhancement( renderer2d->redContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->redContrastEnhancement() ) : nullptr );
-    symbol->setGreenContrastEnhancement( renderer2d->greenContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->greenContrastEnhancement() ) : nullptr );
-    symbol->setBlueContrastEnhancement( renderer2d->blueContrastEnhancement() ? new QgsContrastEnhancement( *renderer2d->blueContrastEnhancement() ) : nullptr );
-  }
-  else if ( renderer->type() == QLatin1String( "classified" ) )
-  {
-
-    const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( renderer );
-    symbol3D = std::make_unique< QgsClassificationPointCloud3DSymbol >();
-    QgsClassificationPointCloud3DSymbol *symbol = static_cast< QgsClassificationPointCloud3DSymbol * >( symbol3D.get() );
-    symbol->setAttribute( renderer2d->attribute() );
-    symbol->setCategoriesList( renderer2d->categories() );
-  }
-
-  if ( symbol3D )
-  {
-    std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = std::make_unique< QgsPointCloudLayer3DRenderer >();
-    renderer3D->setSymbol( symbol3D.release() );
-    return renderer3D;
-  }
-  return nullptr;
 }

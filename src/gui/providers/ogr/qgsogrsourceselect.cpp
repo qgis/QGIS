@@ -691,6 +691,11 @@ void QgsOgrSourceSelect::fillOpenOptions()
          !EQUAL( pszOptionName, "PRELUDE_STATEMENTS" ) )
       continue;
 
+    // The NOLOCK option is automatically set by the OGR provider. Do not
+    // expose it
+    if ( bIsGPKG && EQUAL( pszOptionName, "NOLOCK" ) )
+      continue;
+
     // Do not list database options already asked in the database dialog
     if ( radioSrcDatabase->isChecked() &&
          ( EQUAL( pszOptionName, "USER" ) ||
@@ -703,6 +708,12 @@ void QgsOgrSourceSelect::fillOpenOptions()
     {
       continue;
     }
+
+    // QGIS data model doesn't support the OGRFeature native data concept
+    // (typically used for GeoJSON "foreign" members). Hide it to avoid setting
+    // wrong expectations to users (https://github.com/qgis/QGIS/issues/48004)
+    if ( EQUAL( pszOptionName, "NATIVE_DATA" ) )
+      continue;
 
     const char *pszType = CPLGetXMLValue( psItem, "type", nullptr );
     QStringList options;

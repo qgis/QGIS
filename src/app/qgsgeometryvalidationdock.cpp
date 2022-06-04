@@ -50,9 +50,6 @@ QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsM
   connect( mZoomToProblemButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::zoomToProblem );
   connect( mZoomToFeatureButton, &QToolButton::clicked, this, &QgsGeometryValidationDock::zoomToFeature );
   connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::onCurrentLayerChanged );
-  connect( mMapCanvas, &QgsMapCanvas::currentLayerChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
-  connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsGeometryValidationDock::updateLayerTransform );
 
   mFeatureRubberband = new QgsRubberBand( mMapCanvas );
   mErrorRubberband = new QgsRubberBand( mMapCanvas );
@@ -120,7 +117,7 @@ void QgsGeometryValidationDock::zoomToProblem()
     return;
 
   const QgsRectangle problemExtent = currentIndex().data( QgsGeometryValidationModel::ProblemExtentRole ).value<QgsRectangle>();
-  QgsRectangle mapExtent = mLayerTransform.transform( problemExtent );
+  QgsRectangle mapExtent = layerTransform().transform( problemExtent );
   mMapCanvas->zoomToFeatureExtent( mapExtent );
 }
 
@@ -133,17 +130,19 @@ void QgsGeometryValidationDock::zoomToFeature()
   const QgsRectangle featureExtent = currentIndex().data( QgsGeometryValidationModel::FeatureExtentRole ).value<QgsRectangle>();
   if ( !featureExtent.isEmpty() )
   {
-    QgsRectangle mapExtent = mLayerTransform.transform( featureExtent );
+    QgsRectangle mapExtent = layerTransform().transform( featureExtent );
     mMapCanvas->zoomToFeatureExtent( mapExtent );
   }
 }
 
-void QgsGeometryValidationDock::updateLayerTransform()
+QgsCoordinateTransform QgsGeometryValidationDock::layerTransform() const
 {
   if ( !mMapCanvas->currentLayer() )
-    return;
+    return QgsCoordinateTransform();
 
-  mLayerTransform = QgsCoordinateTransform( mMapCanvas->currentLayer()->crs(), mMapCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().transformContext() );
+  return QgsCoordinateTransform( mMapCanvas->currentLayer()->crs(),
+                                 mMapCanvas->mapSettings().destinationCrs(),
+                                 mMapCanvas->mapSettings().transformContext() );
 }
 
 void QgsGeometryValidationDock::onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles )
@@ -388,3 +387,4 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     mErrorLocationRubberband->setToGeometry( QgsGeometry( std::make_unique<QgsPoint>( locationGeometry ) ) );
   }
 }
+

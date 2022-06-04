@@ -1,0 +1,401 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsplot.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPlot
+{
+%Docstring(signature="appended")
+Base class for plot/chart/graphs.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsPlot();
+%Docstring
+Constructor for QgsPlot.
+%End
+
+    virtual ~QgsPlot();
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+%Docstring
+Writes the plot's properties into an XML ``element``.
+%End
+
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+%Docstring
+Reads the plot's properties from an XML ``element``.
+%End
+
+};
+
+class QgsPlotAxis
+{
+%Docstring(signature="appended")
+Encapsulates the properties of a plot axis.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsPlotAxis();
+    ~QgsPlotAxis();
+
+
+    bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+%Docstring
+Writes the axis' properties into an XML ``element``.
+%End
+
+    bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+%Docstring
+Reads the axis' properties from an XML ``element``.
+%End
+
+    double gridIntervalMinor() const;
+%Docstring
+Returns the interval of minor grid lines for the axis.
+
+.. seealso:: :py:func:`setGridIntervalMinor`
+%End
+
+    void setGridIntervalMinor( double interval );
+%Docstring
+Sets the ``interval`` of minor grid lines for the axis.
+
+.. seealso:: :py:func:`gridIntervalMinor`
+%End
+
+    double gridIntervalMajor() const;
+%Docstring
+Returns the interval of major grid lines for the axis.
+
+.. seealso:: :py:func:`setGridIntervalMajor`
+%End
+
+    void setGridIntervalMajor( double interval );
+%Docstring
+Sets the ``interval`` of major grid lines for the axis.
+
+.. seealso:: :py:func:`gridIntervalMajor`
+%End
+
+    double labelInterval() const;
+%Docstring
+Returns the interval of labels for the axis.
+
+.. seealso:: :py:func:`setLabelInterval`
+%End
+
+    void setLabelInterval( double interval );
+%Docstring
+Sets the ``interval`` of labels for the axis.
+
+.. seealso:: :py:func:`labelInterval`
+%End
+
+    QgsLineSymbol *gridMajorSymbol();
+%Docstring
+Returns the line symbol used to render the major lines in the axis grid.
+
+.. seealso:: :py:func:`setGridMajorSymbol`
+%End
+
+    void setGridMajorSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the major lines in the axis grid.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`gridMajorSymbol`
+%End
+
+    QgsLineSymbol *gridMinorSymbol();
+%Docstring
+Returns the line symbol used to render the minor lines in the axis grid.
+
+.. seealso:: :py:func:`setGridMinorSymbol`
+%End
+
+    void setGridMinorSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the minor lines in the axis grid.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`gridMinorSymbol`
+%End
+
+    QgsTextFormat textFormat() const;
+%Docstring
+Returns the text format used for the axis labels.
+
+.. seealso:: :py:func:`setTextFormat`
+%End
+
+    void setTextFormat( const QgsTextFormat &format );
+%Docstring
+Sets the text ``format`` used for the axis labels.
+
+.. seealso:: :py:func:`textFormat`
+%End
+
+    QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for the axis labels.
+
+.. seealso:: :py:func:`setNumericFormat`
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for the axis labels.
+
+Ownership of ``format`` is transferred to the plot.
+
+.. seealso:: :py:func:`numericFormat`
+%End
+
+  private:
+    QgsPlotAxis( const QgsPlotAxis &other );
+};
+
+class Qgs2DPlot : QgsPlot
+{
+%Docstring(signature="appended")
+Base class for 2-dimensional plot/chart/graphs.
+
+The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
+can implement the :py:func:`~QgsPlotAxis.renderContent` method to render their actual plot content.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    Qgs2DPlot();
+%Docstring
+Constructor for Qgs2DPlot.
+%End
+
+    ~Qgs2DPlot();
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, QgsReadWriteContext &context ) const;
+
+%Docstring
+Qgs2DPlot cannot be copied
+%End
+    virtual bool readXml( const QDomElement &element, QgsReadWriteContext &context );
+
+
+    void render( QgsRenderContext &context );
+%Docstring
+Renders the plot.
+%End
+
+    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea );
+%Docstring
+Renders the plot content.
+
+Subclasses can implement this method to render the actual plot content (e.g. bar charts, scatter plots).
+This method will be called after the chart background and grid are rendered, but before the chart border is rendered.
+
+The default implementation does nothing.
+
+The ``plotArea`` argument specifies that area of the plot which corresponds to the actual plot content. Implementations
+should take care to scale values accordingly to render points correctly inside this plot area.
+%End
+
+    QSizeF size() const;
+%Docstring
+Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
+
+.. seealso:: :py:func:`setSize`
+%End
+
+    void setSize( QSizeF size );
+%Docstring
+Sets the overall ``size`` of the plot (including titles and over components which sit outside the plot area).
+
+.. seealso:: :py:func:`size`
+%End
+
+    QRectF interiorPlotArea( QgsRenderContext &context ) const;
+%Docstring
+Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
+outside the plot area).
+%End
+
+    void calculateOptimisedIntervals( QgsRenderContext &context );
+%Docstring
+Automatically sets the grid and label intervals to optimal values
+for display in the given render ``context``.
+
+Intervals will be calculated in order to avoid overlapping axis labels and to ensure
+round values are shown.
+%End
+
+    double xMinimum() const;
+%Docstring
+Returns the minimum value of the x axis.
+
+.. seealso:: :py:func:`setXMinimum`
+%End
+
+    void setXMinimum( double minimum );
+%Docstring
+Sets the ``minimum`` value of the x axis.
+
+.. seealso:: :py:func:`xMinimum`
+%End
+
+    double yMinimum() const;
+%Docstring
+Returns the minimum value of the y axis.
+
+.. seealso:: :py:func:`setYMinimum`
+%End
+
+    void setYMinimum( double minimum );
+%Docstring
+Sets the ``minimum`` value of the y axis.
+
+.. seealso:: :py:func:`yMinimum`
+%End
+
+    double xMaximum() const;
+%Docstring
+Returns the maximum value of the x axis.
+
+.. seealso:: :py:func:`setXMaximum`
+%End
+
+    void setXMaximum( double maximum );
+%Docstring
+Sets the ``maximum`` value of the x axis.
+
+.. seealso:: :py:func:`xMaximum`
+%End
+
+    double yMaximum() const;
+%Docstring
+Returns the maximum value of the y axis.
+
+.. seealso:: :py:func:`setYMaximum`
+%End
+
+    void setYMaximum( double maximum );
+%Docstring
+Sets the ``maximum`` value of the y axis.
+
+.. seealso:: :py:func:`yMaximum`
+%End
+
+    QgsPlotAxis &xAxis();
+%Docstring
+Returns a reference to the plot's x axis.
+
+.. seealso:: :py:func:`yAxis`
+%End
+
+
+    QgsPlotAxis &yAxis();
+%Docstring
+Returns a reference to the plot's y axis.
+
+.. seealso:: :py:func:`xAxis`
+%End
+
+
+
+    QgsFillSymbol *chartBackgroundSymbol();
+%Docstring
+Returns the fill symbol used to render the background of the chart.
+
+.. seealso:: :py:func:`setChartBackgroundSymbol`
+%End
+
+    void setChartBackgroundSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render the background of the chart.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`chartBackgroundSymbol`
+%End
+
+    QgsFillSymbol *chartBorderSymbol();
+%Docstring
+Returns the symbol used to render the border of the chart.
+
+.. seealso:: :py:func:`setChartBorderSymbol`
+%End
+
+    void setChartBorderSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to render the border of the chart.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. seealso:: :py:func:`chartBorderSymbol`
+%End
+
+    const QgsMargins &margins() const;
+%Docstring
+Returns the margins of the plot area (in millimeters)
+
+.. seealso:: :py:func:`setMargins`
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the ``margins`` of the plot area (in millimeters)
+
+.. seealso:: :py:func:`setMargins`
+%End
+
+  private:
+    Qgs2DPlot( const Qgs2DPlot &other );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsplot.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

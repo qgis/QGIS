@@ -27,6 +27,7 @@
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsiconutils.h"
+#include "qgsmapmouseevent.h"
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
@@ -47,6 +48,61 @@ QgsIdentifyMenu::~QgsIdentifyMenu()
   deleteRubberBands();
 }
 
+QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+{
+  QList<QgsMapToolIdentify::IdentifyResult> results;
+  const QMap< QString, QString > derivedAttributes;
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->toMapCoordinates( event->pos() ) ;
+  const double x = mapPoint.x();
+  const double y = mapPoint.y();
+  const double sr = QgsMapTool::searchRadiusMU( canvas );
+
+  const QList<QgsMapLayer *> layers = canvas->layers( true );
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( layer->type() == QgsMapLayerType::VectorLayer )
+    {
+      QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+
+      bool typeIsSelectable = false;
+      for ( QgsWkbTypes::GeometryType type : geometryTypes )
+      {
+        if ( vectorLayer->geometryType() == type )
+        {
+          typeIsSelectable = true;
+          break;
+        }
+      }
+      if ( typeIsSelectable )
+      {
+        QgsRectangle rect( x - sr, y - sr, x + sr, y + sr );
+        QgsCoordinateTransform transform = canvas->mapSettings().layerTransform( vectorLayer );
+        transform.setBallparkTransformsAreAppropriate( true );
+
+        try
+        {
+          rect = transform.transformBoundingBox( rect, Qgis::TransformDirection::Reverse );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugMsg( QStringLiteral( "Could not transform geometry to layer CRS" ) );
+        }
+
+        QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
+                                 .setFilterRect( rect )
+                                 .setFlags( QgsFeatureRequest::ExactIntersect ) );
+        QgsFeature f;
+        while ( fit.nextFeature( f ) )
+        {
+          results << QgsMapToolIdentify::IdentifyResult( vectorLayer, f, derivedAttributes );
+        }
+      }
+    }
+  }
+
+  return results;
+}
 
 void QgsIdentifyMenu::setMaxLayerDisplay( int maxLayerDisplay )
 {

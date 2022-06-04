@@ -44,7 +44,7 @@ namespace gdal
     /**
      * Destroys an OGR data \a source, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRDataSourceH source );
+    void CORE_EXPORT operator()( OGRDataSourceH source ) const;
 
   };
 
@@ -57,7 +57,7 @@ namespace gdal
     /**
      * Destroys an OGR \a geometry, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRGeometryH geometry );
+    void CORE_EXPORT operator()( OGRGeometryH geometry ) const;
 
   };
 
@@ -70,7 +70,7 @@ namespace gdal
     /**
      * Destroys an OGR field \a definition, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFieldDefnH definition );
+    void CORE_EXPORT operator()( OGRFieldDefnH definition ) const;
 
   };
 
@@ -83,7 +83,7 @@ namespace gdal
     /**
      * Destroys an OGR \a feature, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFeatureH feature );
+    void CORE_EXPORT operator()( OGRFeatureH feature ) const;
 
   };
 
@@ -96,7 +96,7 @@ namespace gdal
     /**
      * Destroys an gdal \a dataset, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALDatasetH datasource );
+    void CORE_EXPORT operator()( GDALDatasetH datasource ) const;
 
   };
 
@@ -109,7 +109,7 @@ namespace gdal
     /**
      * Destroys GDAL warp \a options, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALWarpOptions *options );
+    void CORE_EXPORT operator()( GDALWarpOptions *options ) const;
 
   };
 

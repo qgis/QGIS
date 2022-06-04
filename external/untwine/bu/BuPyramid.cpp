@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
@@ -12,6 +13,63 @@
 #include "OctantInfo.hpp"
 #include "../untwine/Common.hpp"
 #include "../untwine/ProgressWriter.hpp"
+
+namespace
+{
+
+// PDAL's directoryList had a bug, so we've imported a working
+// version here so that we can still use older PDAL releases.
+
+#ifndef __APPLE_CC__
+std::vector<std::string> directoryList(const std::string& dir)
+{
+    namespace fs = std::filesystem;
+
+    std::vector<std::string> files;
+
+    try
+    {
+        fs::directory_iterator it(untwine::toNative(dir));
+        fs::directory_iterator end;
+        while (it != end)
+        {
+            files.push_back(untwine::fromNative(it->path()));
+            it++;
+        }
+    }
+    catch (fs::filesystem_error&)
+    {
+        files.clear();
+    }
+    return files;
+}
+#else
+
+#include <dirent.h>
+
+// Provide simple opendir/readdir solution for OSX because directory_iterator is
+// not available until OSX 10.15
+std::vector<std::string> directoryList(const std::string& dir)
+{
+
+    DIR *dpdf;
+    struct dirent *epdf;
+
+    std::vector<std::string> files;
+    dpdf = opendir(dir.c_str());
+    if (dpdf != NULL){
+       while ((epdf = readdir(dpdf))){
+           files.push_back(untwine::fromNative(epdf->d_name));
+       }
+    }
+    closedir(dpdf);
+
+    return files;
+
+}
+#endif
+
+} // unnamed namespace
 
 namespace untwine
 {
@@ -24,21 +82,25 @@ BuPyramid::BuPyramid(BaseInfo& common) : m_b(common), m_manager(m_b)
 {}
 
 
-void BuPyramid::run(const Options& options, ProgressWriter& progress)
+void BuPyramid::run(ProgressWriter& progress)
 {
-    m_b.inputDir = options.tempDir;
-    m_b.outputDir = options.outputDir;
-    m_b.stats = options.stats;
-
     getInputFiles();
     size_t count = queueWork();
-    
+    if (!count)
+        throw FatalError("No temporary files to process. I/O or directory list error?");
+
     progress.setPercent(.6);
     progress.setIncrement(.4 / count);
     m_manager.setProgress(&progress);
+    //ABELL - Not sure why this was being run in a separate thread. The current thread
+    // would block in join() anyway.
+    /**
     std::thread runner(&PyramidManager::run, &m_manager);
     runner.join();
-    writeInfo();
+    **/
+    m_manager.run();
+    if (!m_b.opts.singleFile)
+        writeInfo();
 }
 
 
@@ -61,14 +123,15 @@ void BuPyramid::writeInfo()
         }
     };
 
-    std::ofstream out(m_b.outputDir + "/ept.json");
+    std::ofstream out(toNative(m_b.opts.outputName + "/ept.json"));
+    int maxdigits = std::numeric_limits<double>::max_digits10;
 
     out << "{\n";
 
     pdal::BOX3D& b = m_b.bounds;
 
     // Set fixed output for bounds output to get sufficient precision.
-    out << std::fixed;
+    out << std::fixed << std::setprecision(maxdigits);
     out << "\"bounds\": [" <<
         b.minx << ", " << b.miny << ", " << b.minz << ", " <<
         b.maxx << ", " << b.maxy << ", " << b.maxz << "],\n";
@@ -93,14 +156,16 @@ void BuPyramid::writeInfo()
         out << "\t{";
             out << "\"name\": \"" << fdi.name << "\", ";
             out << "\"type\": \"" << typeString(pdal::Dimension::base(fdi.type)) << "\", ";
+            out << std::fixed << std::setprecision(maxdigits);
             if (fdi.name == "X")
                 out << "\"scale\": " << m_b.scale[0] << ", \"offset\": " << m_b.offset[0] << ", ";
             if (fdi.name == "Y")
                 out << "\"scale\": " << m_b.scale[1] << ", \"offset\": " << m_b.offset[1] << ", ";
             if (fdi.name == "Z")
                 out << "\"scale\": " << m_b.scale[2] << ", \"offset\": " << m_b.offset[2] << ", ";
+            out << std::defaultfloat;
             out << "\"size\": " << pdal::Dimension::size(fdi.type);
-            const Stats *stats = m_manager.stats(fdi.name);
+            const Stats *stats = m_manager.stats(fdi.dim);
             if (stats)
             {
                 const Stats::EnumMap& v = stats->values();
@@ -118,11 +183,13 @@ void BuPyramid::writeInfo()
                     out << "], ";
                 }
                 out << "\"count\": " << m_manager.totalPoints() << ", ";
+                out << std::fixed << std::setprecision(maxdigits);
                 out << "\"maximum\": " << stats->maximum() << ", ";
                 out << "\"minimum\": " << stats->minimum() << ", ";
                 out << "\"mean\": " << stats->average() << ", ";
                 out << "\"stddev\": " << stats->stddev() << ", ";
                 out << "\"variance\": " << stats->variance();
+                out << std::defaultfloat;
             }
         out << "}";
         if (di + 1 != m_b.dimInfo.end())
@@ -157,7 +224,7 @@ void BuPyramid::getInputFiles()
         return std::make_pair(true, VoxelKey(x, y, z, level));
     };
 
-    std::vector<std::string> files = pdal::FileUtils::directoryList(m_b.inputDir);
+    std::vector<std::string> files = directoryList(m_b.opts.tempDir);
 
     VoxelKey root;
     for (std::string file : files)

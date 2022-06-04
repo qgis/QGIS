@@ -22,7 +22,7 @@
 #include <QTime>
 #include <QDateTime>
 
-using namespace odbc;
+using namespace NS_ODBC;
 
 namespace
 {
@@ -337,6 +337,24 @@ QVariant QgsHanaUtils::toVariant( const Binary &value )
 const char16_t *QgsHanaUtils::toUtf16( const QString &sql )
 {
   return reinterpret_cast<const char16_t *>( sql.utf16() );
+}
+
+bool QgsHanaUtils::isGeometryTypeSupported( QgsWkbTypes::Type wkbType )
+{
+  switch ( QgsWkbTypes::flatType( wkbType ) )
+  {
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::CircularString:
+    case QgsWkbTypes::GeometryCollection:
+      return true;
+    default:
+      return false;
+  }
 }
 
 QgsWkbTypes::Type QgsHanaUtils::toWkbType( const String &type, const Int &hasZ, const Int &hasM )

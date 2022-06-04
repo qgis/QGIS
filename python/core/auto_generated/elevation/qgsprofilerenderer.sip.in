@@ -1,0 +1,171 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilerenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProfilePlotRenderer : QObject
+{
+%Docstring(signature="appended")
+Generates and renders elevation profile plots.
+
+This class has two roles:
+
+1. Extraction and generation of the raw elevation profiles from a list of :py:class:`QgsAbstractProfileSource` objects.
+2. Rendering the results
+
+Step 1, involving the generation of the elevation profiles only needs to occur once. This is done via
+a call to :py:func:`~startGeneration`, which commences generation of the profiles from each source in a separate
+background thread. When the generation is completed for all sources the :py:func:`~generationFinished` signal is
+emitted.
+
+After the profile is generated, it can be rendered. The rendering step may be undertaken multiple times
+(e.g. to render to different image sizes or data ranges) without having to re-generate the raw profile
+data.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsprofilerenderer.h"
+%End
+  public:
+
+    QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
+                            const QgsProfileRequest &request );
+%Docstring
+Constructor for QgsProfilePlotRenderer, using the provided list of profile ``sources`` to generate the
+results.
+%End
+
+    ~QgsProfilePlotRenderer();
+
+    QStringList sourceIds() const;
+%Docstring
+Returns the ordered list of source IDs for the sources used by the renderer.
+%End
+
+    void startGeneration();
+%Docstring
+Start the generation job and immediately return.
+Does nothing if the generation is already in progress.
+%End
+
+    void cancelGeneration();
+%Docstring
+Stop the generation job - does not return until the job has terminated.
+Does nothing if the generation is not active.
+%End
+
+    void cancelGenerationWithoutBlocking();
+%Docstring
+Triggers cancellation of the generation job without blocking. The generation job will continue
+to operate until it is able to cancel, at which stage the :py:func:`~QgsProfilePlotRenderer.generationFinished` signal will be emitted.
+Does nothing if the generation is not active.
+%End
+
+    void waitForFinished();
+%Docstring
+Block until the current job has finished.
+%End
+
+    bool isActive() const;
+%Docstring
+Returns ``True`` if the generation job is currently running in background.
+%End
+
+    void setContext( const QgsProfileGenerationContext &context );
+%Docstring
+Sets the ``context`` in which the profile generation will occur.
+
+Depending on the sources present, this may trigger automatically a regeneration of results.
+%End
+
+    void invalidateAllRefinableSources();
+%Docstring
+Invalidates previous results from all refinable sources.
+%End
+
+    void replaceSource( QgsAbstractProfileSource *source );
+%Docstring
+Replaces the existing source with matching ID.
+
+The matching stored source will be deleted and replaced with ``source``.
+%End
+
+    bool invalidateResults( QgsAbstractProfileSource *source );
+%Docstring
+Invalidates the profile results from the source with matching ID.
+
+The matching stored source will be deleted and replaced with ``source``.
+
+Returns ``True`` if results were previously stored for the matching source and have been invalidated.
+
+.. seealso:: :py:func:`regenerateInvalidatedResults`
+%End
+
+    void regenerateInvalidatedResults();
+%Docstring
+Starts a background regeneration of any invalidated results and immediately returns.
+
+Does nothing if the generation is already in progress.
+
+.. seealso:: :py:func:`invalidateResults`
+%End
+
+    QgsDoubleRange zRange() const;
+%Docstring
+Returns the limits of the retrieved elevation values.
+%End
+
+    QImage renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
+%Docstring
+Renders a portion of the profile to an image with the given ``width`` and ``height``.
+
+If ``sourceId`` is empty then all sources will be rendered, otherwise only the matching source will be rendered.
+%End
+
+    void render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId = QString() );
+%Docstring
+Renders a portion of the profile using the specified render ``context``.
+
+If ``sourceId`` is empty then all sources will be rendered, otherwise only the matching source will be rendered.
+%End
+
+    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
+%Docstring
+Snap a ``point`` to the results.
+%End
+
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context );
+%Docstring
+Identify results visible at the specified profile ``point``.
+%End
+
+    QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context );
+%Docstring
+Identify results visible within the specified ranges.
+%End
+
+  signals:
+
+    void generationFinished();
+%Docstring
+Emitted when the profile generation is finished (or canceled).
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/elevation/qgsprofilerenderer.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

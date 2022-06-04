@@ -4,7 +4,7 @@
 #include <atomic>
 #include <odbc/Config.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 template<typename T>
 class Reference;
@@ -81,6 +81,16 @@ public:
     Reference(const Reference<T>& other) { set_(other.ptr_); }
 
     /**
+     * Move constructor moving an existing reference.
+     *
+     * @param other  Another reference
+     */
+    Reference(Reference<T>&& other) noexcept : ptr_(other.ptr_)
+    {
+        other.ptr_ = nullptr;
+    }
+
+    /**
      * Destructor decreasing the reference-count of the managed object.
      */
     ~Reference() { free_(); }
@@ -93,10 +103,27 @@ public:
      * the reference-count of the newly managed object is incremented.
      *
      * @param other  Another reference.
+     * @return       Returns a reference to this object.
      */
     Reference& operator=(const Reference<T>& other)
     {
         reset_(other.ptr_);
+        return *this;
+    }
+
+    /**
+     * Move-assigns another reference to this reference.
+     *
+     * The reference-count of the currently held object is decreased.
+     *
+     * @param other  Another reference.
+     * @return       Returns a reference to this object.
+     */
+    Reference& operator=(Reference<T>&& other) noexcept
+    {
+        free_();
+        ptr_ = other.ptr_;
+        other.ptr_ = nullptr;
         return *this;
     }
 
@@ -214,6 +241,6 @@ private:
     T* ptr_;
 };
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

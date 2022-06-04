@@ -22,6 +22,7 @@
 #include "qgslabelingengine.h"
 #include "qgsrenderer.h"
 #include "qgstextrenderer.h"
+#include "qgspallabeling.h"
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;

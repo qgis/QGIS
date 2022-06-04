@@ -313,7 +313,7 @@ void TestQgsCallout::calloutsInLabeling()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -376,7 +376,7 @@ void TestQgsCallout::calloutsBlend()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -429,7 +429,7 @@ void TestQgsCallout::calloutsWithRotation()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -468,7 +468,7 @@ void TestQgsCallout::calloutsInLayout()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 5;
 
   QgsTextFormat format;
@@ -528,7 +528,7 @@ void TestQgsCallout::calloutsDisabled()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -579,7 +579,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -631,7 +631,7 @@ void TestQgsCallout::calloutDataDefinedSymbol()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -683,7 +683,7 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -735,7 +735,7 @@ void TestQgsCallout::calloutMinimumDistance()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelDistance, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 20 else 5 end" ) ) );
 
   QgsTextFormat format;
@@ -787,7 +787,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -840,7 +840,7 @@ void TestQgsCallout::calloutOffsetFromAnchor()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -892,7 +892,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -944,7 +944,7 @@ void TestQgsCallout::calloutOffsetFromLabel()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -997,7 +997,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1050,7 +1050,7 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1081,7 +1081,7 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1119,7 +1119,7 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1150,7 +1150,7 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1187,7 +1187,7 @@ void TestQgsCallout::calloutLabelAnchorTop()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1218,7 +1218,7 @@ void TestQgsCallout::calloutLabelAnchorTop()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1255,7 +1255,7 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1286,7 +1286,7 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1323,7 +1323,7 @@ void TestQgsCallout::calloutLabelAnchorBottom()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1354,7 +1354,7 @@ void TestQgsCallout::calloutLabelAnchorBottom()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1391,7 +1391,7 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1422,7 +1422,7 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1459,7 +1459,7 @@ void TestQgsCallout::calloutLabelAnchorLeft()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1490,7 +1490,7 @@ void TestQgsCallout::calloutLabelAnchorLeft()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1527,7 +1527,7 @@ void TestQgsCallout::calloutLabelAnchorRight()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1558,7 +1558,7 @@ void TestQgsCallout::calloutLabelAnchorRight()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1595,7 +1595,7 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1626,7 +1626,7 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
 
   img = job.renderedImage();
   p.begin( &img );
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromValue( 15 ) );
@@ -1663,7 +1663,7 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -1717,7 +1717,7 @@ void TestQgsCallout::calloutBehindLabel()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
@@ -1773,7 +1773,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionX, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().x() ) ) );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::PositionY, QgsProperty::fromExpression( QStringLiteral( "case when $id = 1 then %1 end" ).arg( mapSettings.extent().center().y() ) ) );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::ZIndex, QgsProperty::fromExpression( QStringLiteral( "100 - $id" ) ) );
@@ -2291,7 +2291,7 @@ void TestQgsCallout::manhattan()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -2344,7 +2344,7 @@ void TestQgsCallout::manhattanRotated()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 20;
 
   QgsTextFormat format;
@@ -3971,7 +3971,7 @@ void TestQgsCallout::balloonCallout()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 7;
 
   QgsTextFormat format;
@@ -4025,7 +4025,7 @@ void TestQgsCallout::balloonCalloutMargin()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -4080,7 +4080,7 @@ void TestQgsCallout::balloonCalloutWedgeWidth()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;
@@ -4135,7 +4135,7 @@ void TestQgsCallout::balloonCalloutCornerRadius()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "Class" );
-  settings.placement = QgsPalLayerSettings::AroundPoint;
+  settings.placement = Qgis::LabelPlacement::AroundPoint;
   settings.dist = 10;
 
   QgsTextFormat format;

@@ -215,9 +215,16 @@ class CORE_EXPORT QgsGpsInformation
     int fixType = 0;
 
     /**
-     * GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+     * GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive, etc.)
+     * \deprecated use qualityIndicator instead
      */
     int quality = -1;
+
+    /**
+     * Returns the signal quality indicator
+     * \since QGIS 3.22.6
+     */
+    Qgis::GpsQualityIndicator qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
 
     /**
      * Count of satellites used in obtaining the fix.

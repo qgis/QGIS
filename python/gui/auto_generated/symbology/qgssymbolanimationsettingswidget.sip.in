@@ -1,0 +1,89 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgssymbolanimationsettingswidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsSymbolAnimationSettingsWidget: QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget for customising animation settings for a symbol.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgssymbolanimationsettingswidget.h"
+%End
+  public:
+
+    QgsSymbolAnimationSettingsWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSymbolAnimationSettingsWidget
+%End
+
+    void setAnimationSettings( const QgsSymbolAnimationSettings &settings );
+%Docstring
+Sets the animation ``settings`` to show in the widget.
+
+.. seealso:: :py:func:`animationSettings`
+%End
+
+    QgsSymbolAnimationSettings animationSettings() const;
+%Docstring
+Returns the animation settings as defined in the widget.
+
+.. seealso:: :py:func:`setAnimationSettings`
+%End
+
+};
+
+class QgsSymbolAnimationSettingsDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog for customising animation settings for a symbol.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgssymbolanimationsettingswidget.h"
+%End
+  public:
+
+    QgsSymbolAnimationSettingsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsSymbolAnimationSettingsDialog
+%End
+
+    void setAnimationSettings( const QgsSymbolAnimationSettings &settings );
+%Docstring
+Sets the animation ``settings`` to show in the dialog.
+
+.. seealso:: :py:func:`animationSettings`
+%End
+
+    QgsSymbolAnimationSettings animationSettings() const;
+%Docstring
+Returns the animation settings as defined in the dialog.
+
+.. seealso:: :py:func:`setAnimationSettings`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgssymbolanimationsettingswidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

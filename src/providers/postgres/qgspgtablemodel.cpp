@@ -117,7 +117,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QStandardItem *typeItem = nullptr;
     if ( layerProperty.isRaster )
     {
-      typeItem = new QStandardItem( QgsApplication::getThemeIcon( "/mIconRasterLayer.svg" ), tr( "Raster" ) );
+      typeItem = new QStandardItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLayer.svg" ) ), tr( "Raster" ) );
     }
     else
     {
@@ -189,7 +189,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     // checkPkUnicity has only effect on views and materialized views, so we can safely disable it
     if ( layerProperty.isView || layerProperty.isMaterializedView )
     {
-      checkPkUnicityItem->setCheckState( QgsProject::instance( )->trustLayerMetadata() ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+      checkPkUnicityItem->setCheckState( ( QgsProject::instance( )->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
       checkPkUnicityItem->setToolTip( headerData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
     }
     else
@@ -351,7 +351,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    const QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
+    const QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -482,8 +482,8 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   QgsDataSourceUri uri( connInfo );
 
   QStringList cols;
-  const auto constS1 = s1;
-  for ( const QString &col : constS1 )
+  cols.reserve( s1.size() );
+  for ( const QString &col : s1 )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }
@@ -495,7 +495,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
-  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QLatin1String( "1" ) : QLatin1String( "0" ) );
+  uri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), checkPrimaryKeyUnicity ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   QgsDebugMsg( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );

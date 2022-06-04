@@ -14,13 +14,20 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0">
-    <widget class="QLabel" name="lblShininess">
+   <item row="1" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mAmbientDataDefinedButton">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lblDiffuse">
      <property name="toolTip">
-      <string>How shiny smooth surfaces are.</string>
+      <string>Color of light reflected from rough surfaces.</string>
      </property>
      <property name="text">
-      <string>Shininess</string>
+      <string>Diffuse</string>
      </property>
     </widget>
    </item>
@@ -56,6 +63,30 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lblShininess">
+     <property name="toolTip">
+      <string>How shiny smooth surfaces are.</string>
+     </property>
+     <property name="text">
+      <string>Shininess</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="lblSpecular">
      <property name="toolTip">
@@ -63,23 +94,6 @@
      </property>
      <property name="text">
       <string>Specular</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblDiffuse">
-     <property name="toolTip">
-      <string>Color of light reflected from rough surfaces.</string>
-     </property>
-     <property name="text">
-      <string>Diffuse</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsDoubleSpinBox" name="spinShininess">
-     <property name="maximum">
-      <double>1000.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -109,24 +123,20 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mDiffuseDataDefinedButton">
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblOpacity">
      <property name="text">
-      <string>...</string>
+      <string>Opacity</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mAmbientDataDefinedButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
+   <item row="4" column="1" colspan="2">
+    <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true"/>
    </item>
-   <item row="2" column="2">
-    <widget class="QgsPropertyOverrideButton" name="mSpecularDataDefinedButton">
-     <property name="text">
-      <string>...</string>
+   <item row="3" column="1" colspan="2">
+    <widget class="QgsDoubleSpinBox" name="spinShininess">
+     <property name="maximum">
+      <double>1000.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -147,6 +157,12 @@
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1094,6 +1094,23 @@
           3.166700
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Andrea Giudiceandrea",
+        "Committer": "No",
+        "First Commit Message": "Fixes a typo in syncDb()",
+        "First Commit Date": "24-01-2018",
+        "GIT Nickname": "agiudiceandrea"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.708350,
+          41.052098
+        ]
+      }
     }
   ]
 }

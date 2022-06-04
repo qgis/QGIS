@@ -40,6 +40,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsscalecalculator.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -63,6 +64,7 @@
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
 #include "qgsserverexception.h"
+#include "qgsserverapiutils.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
 #include "qgsattributeeditorcontainer.h"
@@ -465,7 +467,7 @@ namespace QgsWms
     filters.addProvider( mContext.accessControl() );
 #endif
 
-    QMap<const QgsVectorLayer *, QStringList> fltrs;
+    QHash<const QgsVectorLayer *, QStringList> fltrs;
     for ( QgsMapLayer *l : lyrs )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l ) )
@@ -1210,7 +1212,7 @@ namespace QgsWms
     return image.release();
   }
 
-  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam ) const
+  void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings, bool mandatoryCrsParam )
   {
     if ( !paintDevice )
     {
@@ -1310,6 +1312,41 @@ namespace QgsWms
 
     // set selection color
     mapSettings.setSelectionColor( mProject->selectionColor() );
+
+    // Set WMS temporal properties
+    // Note that this cannot parse multiple time instants while the vector dimensions implementation can
+    const QString timeString { mWmsParameters.dimensionValues().value( QStringLiteral( "TIME" ), QString() ) };
+    if ( ! timeString.isEmpty() )
+    {
+      bool isValidTemporalRange { true };
+      QgsDateTimeRange range;
+      // First try with a simple date/datetime instant
+      const QDateTime dt { QDateTime::fromString( timeString, Qt::DateFormat::ISODateWithMs ) };
+      if ( dt.isValid() )
+      {
+        range = QgsDateTimeRange( dt, dt );
+      }
+      else  // parse as an interval
+      {
+        try
+        {
+          range = QgsServerApiUtils::parseTemporalDateTimeInterval( timeString );
+        }
+        catch ( const QgsServerApiBadRequestException &ex )
+        {
+          isValidTemporalRange = false;
+          QgsMessageLog::logMessage( QStringLiteral( "Could not parse TIME parameter into a temporal range" ), "Server", Qgis::MessageLevel::Warning );
+        }
+      }
+
+      if ( isValidTemporalRange )
+      {
+        mIsTemporal = true;
+        mapSettings.setIsTemporal( true );
+        mapSettings.setTemporalRange( range );
+      }
+
+    }
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
@@ -1868,7 +1905,11 @@ namespace QgsWms
           const QgsAttributeEditorField *editorField = dynamic_cast<const QgsAttributeEditorField *>( child );
           if ( editorField )
           {
-            writeVectorLayerAttribute( editorField->idx(), layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext, attributes );
+            const int idx { fields.indexFromName( editorField->name() ) };
+            if ( idx >= 0 )
+            {
+              writeVectorLayerAttribute( idx, layer, fields, featureAttributes, doc, nameElem.isNull() ? parentElem : nameElem, renderContext, attributes );
+            }
           }
         }
       }
@@ -2889,7 +2930,8 @@ namespace QgsWms
         QgsPalLayerSettings palSettings;
         palSettings.fieldName = "label"; // defined in url
         palSettings.priority = 10; // always drawn
-        palSettings.displayAll = true;
+        palSettings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+        palSettings.placementSettings().setAllowDegradedPlacement( true );
         palSettings.dist = param.mLabelDistance;
 
         if ( !qgsDoubleNear( param.mLabelRotation, 0 ) )
@@ -2898,14 +2940,14 @@ namespace QgsWms
           palSettings.dataDefinedProperties().setProperty( pR, param.mLabelRotation );
         }
 
-        QgsPalLayerSettings::Placement placement = QgsPalLayerSettings::AroundPoint;
+        Qgis::LabelPlacement placement = Qgis::LabelPlacement::AroundPoint;
         switch ( param.mGeom.type() )
         {
           case QgsWkbTypes::PointGeometry:
           {
             if ( param.mHali.isEmpty() || param.mVali.isEmpty() || QgsWkbTypes::flatType( param.mGeom.wkbType() ) != QgsWkbTypes::Point )
             {
-              placement = QgsPalLayerSettings::AroundPoint;
+              placement = Qgis::LabelPlacement::AroundPoint;
               palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlags() );
             }
             else //set label directly on point if there is hali/vali
@@ -2929,7 +2971,7 @@ namespace QgsWms
           {
             QgsGeometry point = param.mGeom.pointOnSurface();
             QgsPointXY pt = point.asPoint();
-            placement = QgsPalLayerSettings::AroundPoint;
+            placement = Qgis::LabelPlacement::AroundPoint;
 
             QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
             QVariant x( pt.x() );
@@ -2950,7 +2992,7 @@ namespace QgsWms
           }
           default:
           {
-            placement = QgsPalLayerSettings::Line;
+            placement = Qgis::LabelPlacement::Line;
             palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
             break;
           }
@@ -3180,6 +3222,11 @@ namespace QgsWms
     QMap<QString, QString> dimParamValues = mContext.parameters().dimensionValues();
     for ( const QgsMapLayerServerProperties::WmsDimensionInfo &dim : wmsDims )
     {
+      // Skip temporal properties for this layer, give precedence to the dimensions implementation
+      if ( mIsTemporal && dim.name.toUpper() == QStringLiteral( "TIME" ) && layer->temporalProperties()->isActive() )
+      {
+        layer->temporalProperties()->setIsActive( false );
+      }
       // Check field index
       int fieldIndex = layer->fields().indexOf( dim.fieldName );
       if ( fieldIndex == -1 )
@@ -3568,7 +3615,7 @@ namespace QgsWms
     layer->setCustomProperty( "sldStyleName", sldStyleName );
   }
 
-  QgsLegendSettings QgsRenderer::legendSettings() const
+  QgsLegendSettings QgsRenderer::legendSettings()
   {
     // getting scale from bbox or default size
     QgsLegendSettings settings = mWmsParameters.legendSettings();

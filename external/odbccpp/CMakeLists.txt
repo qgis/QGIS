@@ -7,4 +7,3 @@ project(odbccpp)
 find_package(ODBC REQUIRED)
 
 add_subdirectory(src)
-

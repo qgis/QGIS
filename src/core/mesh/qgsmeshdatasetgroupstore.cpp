@@ -141,7 +141,7 @@ QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupStore::datasetGroupTreeItem() co
   return mDatasetGroupTreeRootItem.get();
 }
 
-void QgsMeshDatasetGroupStore::setDatasetGroupTreeItem( QgsMeshDatasetGroupTreeItem *rootItem )
+void QgsMeshDatasetGroupStore::setDatasetGroupTreeItem( const QgsMeshDatasetGroupTreeItem *rootItem )
 {
   if ( rootItem )
     mDatasetGroupTreeRootItem.reset( rootItem->clone() );
@@ -362,7 +362,10 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
 
   QDomElement rootTreeItemElem = storeElem.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
   if ( !rootTreeItemElem.isNull() )
-    setDatasetGroupTreeItem( new QgsMeshDatasetGroupTreeItem( rootTreeItemElem, context ) );
+  {
+    const QgsMeshDatasetGroupTreeItem groupTreeItem( rootTreeItemElem, context );
+    setDatasetGroupTreeItem( &groupTreeItem );
+  }
 }
 
 int QgsMeshDatasetGroupStore::globalDatasetGroupIndexInSource( QgsMeshDatasetSourceInterface *source, int nativeGroupIndex ) const

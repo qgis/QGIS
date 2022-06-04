@@ -117,7 +117,7 @@ void QgsAmsLegendFetcher::handleFinished()
   QJsonDocument doc = QJsonDocument::fromJson( mQueryReply, &err );
   if ( doc.isNull() )
   {
-    emit error( QStringLiteral( "Parsing error:" ).arg( err.errorString() ) );
+    emit error( QStringLiteral( "Parsing error: %1" ).arg( err.errorString() ) );
   }
   QVariantMap queryResults = doc.object().toVariantMap();
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
@@ -1011,7 +1011,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
     }
     cmd.setRawHeaders( hl );
 
-    QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+    QgsDebugMsgLevel( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ), 2 );
     if ( cmd.expirationDate().isNull() )
     {
       QgsSettings s;
@@ -1050,7 +1050,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       mReplies.removeOne( reply );
       reply->deleteLater();
 
-      QgsDebugMsg( QStringLiteral( "redirected gettile: %1" ).arg( redirect.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "redirected gettile: %1" ).arg( redirect.toString() ), 2 );
       reply = QgsNetworkAccessManager::instance()->get( request );
       mReplies << reply;
 
@@ -1072,7 +1072,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
     }
 
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
-    QgsDebugMsg( "contentType: " + contentType );
+    QgsDebugMsgLevel( "contentType: " + contentType, 2 );
     if ( !contentType.isEmpty() && !contentType.startsWith( QLatin1String( "image/" ), Qt::CaseInsensitive ) &&
          contentType.compare( QLatin1String( "application/octet-stream" ), Qt::CaseInsensitive ) != 0 )
     {
@@ -1131,7 +1131,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
     // only take results from current request number
     if ( mTileReqNo == tileReqNo )
     {
-      QgsDebugMsg( QStringLiteral( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
+      QgsDebugMsgLevel( QStringLiteral( "tile reply: length %1" ).arg( reply->bytesAvailable() ), 2 );
 
       QImage myLocalImage = QImage::fromData( reply->readAll() );
 
@@ -1160,7 +1160,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Reply too late [%1]" ).arg( reply->url().toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Reply too late [%1]" ).arg( reply->url().toString() ), 2 );
     }
 
     mReplies.removeOne( reply );
@@ -1193,11 +1193,11 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
 
 void QgsAmsTiledImageDownloadHandler::canceled()
 {
-  QgsDebugMsg( QStringLiteral( "Caught canceled() signal" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Caught canceled() signal" ), 2 );
   const auto constMReplies = mReplies;
   for ( QNetworkReply *reply : constMReplies )
   {
-    QgsDebugMsg( QStringLiteral( "Aborting tiled network request" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Aborting tiled network request" ), 2 );
     reply->abort();
   }
 }
@@ -1231,7 +1231,7 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
     QgsMessageLog::logMessage( error, tr( "Network" ) );
     return;
   }
-  QgsDebugMsg( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ) );
+  QgsDebugMsgLevel( QStringLiteral( "repeat tileRequest %1 %2(retry %3) for url: %4" ).arg( tileReqNo ).arg( tileNo ).arg( retry ).arg( url ), 2 );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( TileRetry ), retry );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );

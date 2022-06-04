@@ -28,7 +28,7 @@ class QgsHanaDriver
     ~QgsHanaDriver();
 
   public:
-    odbc::ConnectionRef createConnection();
+    NS_ODBC::ConnectionRef createConnection();
     const QString &driver() const;
 
     static QgsHanaDriver *instance();
@@ -39,7 +39,7 @@ class QgsHanaDriver
     Q_DISABLE_COPY( QgsHanaDriver )
 
   private:
-    odbc::EnvironmentRef mEnv;
+    NS_ODBC::EnvironmentRef mEnv;
     QString mDriver;
 };
 

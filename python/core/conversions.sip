@@ -22,6 +22,108 @@ which are not wrapped by PyQt:
 - NULL QVariant which is missing in PyQt5 with sip.enableautoconversion
 */
 
+// adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+%MappedType QList<QgsMapLayerType>
+        /TypeHintIn="Iterable[QgsMapLayerType]",
+        TypeHintOut="List[QgsMapLayerType]", TypeHintValue="[]"/
+{
+%TypeHeaderCode
+#include "qgis.h"
+%End
+
+%ConvertFromTypeCode
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return 0;
+
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        PyObject *eobj = sipConvertFromEnum(static_cast<int>(sipCpp->at(i)),
+                sipType_QgsMapLayerType);
+
+        if (!eobj)
+        {
+            Py_DECREF(l);
+
+            return 0;
+        }
+
+        PyList_SetItem(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *iter = PyObject_GetIter(sipPy);
+
+    if (!sipIsErr)
+    {
+        PyErr_Clear();
+        Py_XDECREF(iter);
+
+        return (iter && !PyBytes_Check(sipPy) && !PyUnicode_Check(sipPy));
+    }
+
+    if (!iter)
+    {
+        *sipIsErr = 1;
+
+        return 0;
+    }
+
+    QList<QgsMapLayerType> *ql = new QList<QgsMapLayerType>;
+
+    for (Py_ssize_t i = 0; ; ++i)
+    {
+        PyErr_Clear();
+        PyObject *itm = PyIter_Next(iter);
+
+        if (!itm)
+        {
+            if (PyErr_Occurred())
+            {
+                delete ql;
+                Py_DECREF(iter);
+                *sipIsErr = 1;
+
+                return 0;
+            }
+
+            break;
+        }
+
+        int v = sipConvertToEnum(itm, sipType_QgsMapLayerType);
+
+        if (PyErr_Occurred())
+        {
+            PyErr_Format(PyExc_TypeError,
+                    "index %zd has type '%s' but 'QgsMapLayerType' is expected",
+                    i, sipPyTypeName(Py_TYPE(itm)));
+
+            Py_DECREF(itm);
+            delete ql;
+            Py_DECREF(iter);
+            *sipIsErr = 1;
+
+            return 0;
+        }
+
+        ql->append(static_cast<QgsMapLayerType>(v));
+
+        Py_DECREF(itm);
+    }
+
+    Py_DECREF(iter);
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
 
 template <TYPE>
 %MappedType QVector< QVector<TYPE> >
@@ -297,7 +399,6 @@ template <TYPE>
   return sipGetState(sipTransferObj);
 %End
 };
-
 
 %MappedType QList<long>
 {
@@ -664,6 +765,134 @@ template<TYPE>
 %End
 };
 
+template<TYPE>
+%MappedType QList<QMap<int, TYPE>>
+{
+%TypeHeaderCode
+#include <qmap.h>
+#include <qlist.h>
+%End
+
+%ConvertFromTypeCode
+
+    // Create the list
+    PyObject *l = PyList_New(sipCpp->size());
+
+    if (!l)
+        return NULL;
+
+    // Set the list elements.
+    QList<QMap<int, TYPE>>::const_iterator it = sipCpp->constBegin();
+    int i = 0;
+    while (it != sipCpp->constEnd())
+    {
+        // Create the dictionary.
+        PyObject *d = PyDict_New();
+        if (!d)
+        {
+            Py_DECREF(l);
+            return NULL;
+        }
+
+        QMap<int, TYPE>::const_iterator mapIt = it->constBegin();
+        while (mapIt != it->constEnd())
+        {
+            TYPE *t = new TYPE(mapIt.value());
+
+            PyObject *kobj = PyLong_FromLong(mapIt.key());
+            PyObject *tobj = sipConvertFromNewType(t, sipType_TYPE, sipTransferObj);
+
+            if (kobj == NULL || tobj == NULL || PyDict_SetItem(d, kobj, tobj) < 0)
+            {
+                Py_DECREF(d);
+
+                if (kobj)
+                {
+                    Py_DECREF(kobj);
+                }
+
+                if (tobj)
+                {
+                    Py_DECREF(tobj);
+                }
+                else
+                {
+                    delete t;
+                }
+
+                Py_DECREF(l);
+                return NULL;
+            }
+
+            Py_DECREF(kobj);
+            Py_DECREF(tobj);
+
+            ++mapIt;
+        }
+
+        PyList_SET_ITEM(l, i, d);
+        ++i;
+        ++it;
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    PyObject *kobj, *tobj;
+    SIP_SSIZE_T i = 0;
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyList_Check(sipPy))
+          return 0;
+
+        for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+        {
+            if (!PyDict_Check(PyList_GET_ITEM(sipPy, i)))
+                return 0;
+
+            Py_ssize_t j = 0;
+            while (PyDict_Next(PyList_GET_ITEM(sipPy, i), &j, &kobj, &tobj))
+                if (!sipCanConvertToType(tobj, sipType_TYPE, SIP_NOT_NONE))
+                    return 0;
+        }
+
+        return 1;
+    }
+
+    QList< QMap<int, TYPE> >* ql = new QList< QMap<int, TYPE> >;
+    for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+    {
+        Py_ssize_t j = 0;
+        QMap<int, TYPE> qm;
+        while (PyDict_Next(PyList_GET_ITEM(sipPy, i), &j, &kobj, &tobj))
+        {
+            int state;
+            int k = PyLong_AsLong(kobj);
+            TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(tobj, sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+            if (*sipIsErr)
+            {
+                sipReleaseType(t, sipType_TYPE, state);
+
+                delete ql;
+                return 0;
+            }
+
+            qm.insert(k, *t);
+            sipReleaseType(t, sipType_TYPE, state);
+        }
+        ql->append( qm );
+    }
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 
 %MappedType QMap<QString, int>
 {
@@ -959,6 +1188,168 @@ template<double, TYPE>
 %End
 };
 
+
+%MappedType QHash<double, double>
+{
+%TypeHeaderCode
+#include <QHash>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    // Set the dictionary elements.
+    QHash<double, double>::iterator i;
+
+    for (i = sipCpp->begin(); i != sipCpp->end(); ++i)
+    {
+        PyObject *t1obj = PyFloat_FromDouble(i.key());
+        PyObject *t2obj = PyFloat_FromDouble(i.value());
+
+        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (t1obj)
+                Py_DECREF(t1obj);
+
+            if (t2obj)
+                Py_DECREF(t2obj);
+
+            return NULL;
+        }
+
+        Py_DECREF(t1obj);
+        Py_DECREF(t2obj);
+   }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+    Py_ssize_t i = 0;
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
+
+        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+        {
+            if (!PyFloat_Check(t1obj))
+                return 0;
+
+           if (!PyFloat_Check(t2obj))
+                return 0;
+        }
+
+        return 1;
+    }
+
+    QHash<double, double> *qm = new QHash<double, double>;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state;
+
+        double k = PyFloat_AsDouble(t1obj);
+        double v = PyFloat_AsDouble(t2obj);
+
+        qm->insert(k, v);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+%MappedType QMap<double, double>
+{
+%TypeHeaderCode
+#include <QMap>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    // Set the dictionary elements.
+    QMap<double, double>::iterator i;
+
+    for (i = sipCpp->begin(); i != sipCpp->end(); ++i)
+    {
+        PyObject *t1obj = PyFloat_FromDouble(i.key());
+        PyObject *t2obj = PyFloat_FromDouble(i.value());
+
+        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (t1obj)
+                Py_DECREF(t1obj);
+
+            if (t2obj)
+                Py_DECREF(t2obj);
+
+            return NULL;
+        }
+
+        Py_DECREF(t1obj);
+        Py_DECREF(t2obj);
+   }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+    Py_ssize_t i = 0;
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
+
+        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+        {
+            if (!PyFloat_Check(t1obj))
+                return 0;
+
+           if (!PyFloat_Check(t2obj))
+                return 0;
+        }
+
+        return 1;
+    }
+
+    QMap<double, double> *qm = new QMap<double, double>;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state;
+
+        double k = PyFloat_AsDouble(t1obj);
+        double v = PyFloat_AsDouble(t2obj);
+
+        qm->insert(k, v);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 template<TYPE2>
 %MappedType QMap<QString, QList<TYPE2> >
@@ -1505,6 +1896,44 @@ template <TYPE>
 %End
 };
 %End
+
+
+%MappedType QPointer< QgsMapLayer >
+{
+%TypeHeaderCode
+#include <QPointer>
+%End
+
+%ConvertFromTypeCode
+    QgsMapLayer *t = sipCpp->data();
+    PyObject *tobj = sipConvertFromType(t, sipType_QgsMapLayer, sipTransferObj);
+    if (tobj == NULL)
+    {
+        Py_DECREF(tobj);
+        return NULL;
+    }
+    return tobj;
+%End
+
+%ConvertToTypeCode
+    int state;
+
+    QgsMapLayer *t = reinterpret_cast<QgsMapLayer *>(sipConvertToType(sipPy, sipType_QgsMapLayer, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+    if (*sipIsErr)
+    {
+      sipReleaseType(t, sipType_QgsMapLayer, state);
+      return 0;
+    }
+    QPointer<QgsMapLayer> *v = new QPointer<QgsMapLayer>( t );
+    sipReleaseType(t, sipType_QgsMapLayer, state);
+
+    *sipCppPtr = v;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 
 %MappedType QMap<qint64, QgsFeature*>
 {

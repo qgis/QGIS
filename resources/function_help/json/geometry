@@ -15,7 +15,7 @@
     "returns": "the geometry in WKT of the feature with the id 1 on the layer \"streets\", e.g. 'POINT(6 50)'"
   }, {
     "expression": "intersects( $geometry, geometry( get_feature( 'streets', 'name', 'Main St.' ) ) )",
-    "returns": "true if the current feature spatially intersects the 'Main St.' named feature in the \"streets\" layer"
+    "returns": "TRUE if the current feature spatially intersects the 'Main St.' named feature in the \"streets\" layer"
   }],
   "tags": []
 }

@@ -163,6 +163,7 @@ The development version
     enum class SettingsOption
     {
       SaveFormerValue,
+      SaveEnumFlagAsInt,
     };
     typedef QFlags<Qgis::SettingsOption> SettingsOptions;
 
@@ -192,7 +193,6 @@ The development version
       DynamicRotation,
     };
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
-
 
 
     enum class SymbolFlag
@@ -343,6 +343,78 @@ The development version
       NeverShow,
     };
 
+    enum class LabelOverlapHandling
+    {
+      PreventOverlap,
+      AllowOverlapIfRequired,
+      AllowOverlapAtNoCost,
+    };
+
+    enum class LabelPlacement
+      {
+      AroundPoint,
+      OverPoint,
+      Line,
+      Curved,
+      Horizontal,
+      Free,
+      OrderedPositionsAroundPoint,
+      PerimeterCurved,
+      OutsidePolygons,
+    };
+
+
+    enum class LabelPredefinedPointPosition
+      {
+      TopLeft,
+      TopSlightlyLeft,
+      TopMiddle,
+      TopSlightlyRight,
+      TopRight,
+      MiddleLeft,
+      MiddleRight,
+      BottomLeft,
+      BottomSlightlyLeft,
+      BottomMiddle,
+      BottomSlightlyRight,
+      BottomRight,
+    };
+
+    enum class LabelOffsetType
+      {
+      FromPoint,
+      FromSymbolBounds,
+    };
+
+    enum class LabelQuadrantPosition
+      {
+      AboveLeft,
+      Above,
+      AboveRight,
+      Left,
+      Over,
+      Right,
+      BelowLeft,
+      Below,
+      BelowRight,
+    };
+
+    enum class UpsideDownLabelHandling
+      {
+      FlipUpsideDownLabels,
+      AllowUpsideDownWhenRotationIsDefined,
+      AlwaysAllowUpsideDown
+    };
+
+    enum class LabelMultiLineAlignment
+      {
+      Left,
+      Center,
+      Right,
+      FollowPlacement,
+      Justify,
+    };
+
     enum class SublayerQueryFlag
     {
       FastScan,
@@ -436,6 +508,20 @@ The development version
       Finished,
       Failed,
       Canceled,
+    };
+
+    enum class GpsQualityIndicator
+    {
+      Unknown,
+      Invalid,
+      GPS,
+      DGPS,
+      PPS,
+      RTK,
+      FloatRTK,
+      Estimated,
+      Manual,
+      Simulation,
     };
 
     enum class BabelFormatCapability
@@ -538,13 +624,63 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
-
     enum class DataProviderFlag
     {
       IsBasemapSource,
     };
     typedef QFlags<Qgis::DataProviderFlag> DataProviderFlags;
 
+
+    enum class CrsAxisDirection
+    {
+      North,
+      NorthNorthEast,
+      NorthEast,
+      EastNorthEast,
+      East,
+      EastSouthEast,
+      SouthEast,
+      SouthSouthEast,
+      South,
+      SouthSouthWest,
+      SouthWest,
+      WestSouthWest,
+      West,
+      WestNorthWest,
+      NorthWest,
+      NorthNorthWest,
+      GeocentricX,
+      GeocentricY,
+      GeocentricZ,
+      Up,
+      Down,
+      Forward,
+      Aft,
+      Port,
+      Starboard,
+      Clockwise,
+      CounterClockwise,
+      ColumnPositive,
+      ColumnNegative,
+      RowPositive,
+      RowNegative,
+      DisplayRight,
+      DisplayLeft,
+      DisplayUp,
+      DisplayDown,
+      Future,
+      Past,
+      Towards,
+      AwayFrom,
+      Unspecified,
+    };
+
+    enum class CoordinateOrder
+    {
+      Default,
+      XY,
+      YX,
+    };
 
     enum class AnnotationItemFlag
     {
@@ -616,6 +752,15 @@ The development version
       Forward,
       Reverse
     };
+
+    enum class CoordinateTransformationFlag
+    {
+      BallparkTransformsAreAppropriate,
+      IgnoreImpossibleTransformations,
+    };
+
+    typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
+
 
     enum class MapSettingsFlag
       {
@@ -795,6 +940,21 @@ The development version
       ScaleGapOnly,
     };
 
+    enum class GraduatedMethod
+      {
+      Color,
+      Size,
+    };
+
+    enum class DpiMode
+    {
+      All,
+      Off,
+      QGIS,
+      UMN,
+      GeoServer,
+    };
+
 
 
     enum class Capitalization
@@ -834,6 +994,14 @@ The development version
       Export,
       Unknown,
     };
+
+    enum class ViewSyncModeFlag
+    {
+      Sync3DTo2D,
+      Sync2DTo3D,
+    };
+    typedef QFlags<Qgis::ViewSyncModeFlag> ViewSyncModeFlags;
+
 
     enum class HistoryProviderBackend
     {
@@ -901,8 +1069,91 @@ The development version
     {
       BeforeVertex,
       AfterVertex,
-      NoVertex
+      NoVertex,
     };
+
+    enum class ProjectFlag
+    {
+      EvaluateDefaultValuesOnProviderSide,
+      TrustStoredLayerStatistics,
+      RememberLayerEditStatusBetweenSessions,
+      RememberAttributeTableWindowsBetweenSessions,
+    };
+    typedef QFlags<Qgis::ProjectFlag> ProjectFlags;
+
+
+    enum class PlotToolFlag
+    {
+      ShowContextMenu,
+    };
+    typedef QFlags<Qgis::PlotToolFlag> PlotToolFlags;
+
+
+    enum class LightSourceType
+    {
+      Point,
+      Directional,
+    };
+
+    enum class ProfileSurfaceSymbology
+    {
+      Line,
+      FillBelow,
+    };
+
+    enum class VectorProfileType
+    {
+      IndividualFeatures,
+      ContinuousSurface,
+    };
+
+    enum class ProfileGeneratorFlag
+    {
+      RespectsMaximumErrorMapUnit,
+      RespectsDistanceRange,
+      RespectsElevationRange,
+    };
+    typedef QFlags<Qgis::ProfileGeneratorFlag> ProfileGeneratorFlags;
+
+
+    enum class PointCloudSymbol
+      {
+      Square,
+      Circle,
+    };
+
+    enum class PointCloudDrawOrder
+      {
+      Default,
+      BottomToTop,
+      TopToBottom,
+    };
+
+    enum class AvoidIntersectionsMode
+      {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
+    enum class ProjectFileFormat
+      {
+      Qgz,
+      Qgs,
+    };
+
+    enum class ProjectReadFlag
+      {
+      DontResolveLayers,
+      DontLoadLayouts,
+      TrustLayerMetadata,
+      DontStoreOriginalStyles,
+      DontLoad3DViews,
+      DontLoadProjectStyles,
+    };
+
+    typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
+
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
@@ -1015,6 +1266,15 @@ QFlags<Qgis::MapLayerProperty> operator|(Qgis::MapLayerProperty f1, QFlags<Qgis:
 QFlags<Qgis::DataProviderFlag> operator|(Qgis::DataProviderFlag f1, QFlags<Qgis::DataProviderFlag> f2);
 
 QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::SnappingType> f2);
+
+QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
+
+QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
+
+QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
+
 
 
 

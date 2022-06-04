@@ -125,7 +125,7 @@ class CORE_EXPORT QgsEditFormConfig
 
     QgsEditFormConfig &operator=( const QgsEditFormConfig &o );
     // TODO c++20 - replace with = default
-    bool operator==( const QgsEditFormConfig &o );
+    bool operator==( const QgsEditFormConfig &o ) const;
 
     /**
      * Adds a new element to the invisible root container in the layout.

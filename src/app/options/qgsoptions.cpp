@@ -63,6 +63,7 @@
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
 #include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgssublayersdialog.h"
 #include "options/qgsadvancedoptions.h"
 #include "qgslayout.h"
@@ -123,9 +124,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "propertyicons/rendering.svg" ) ) );
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QCoreApplication::translate( "QgsOptionsBase", "Canvas and legend" ), QStringLiteral( "propertyicons/overlay.svg" ) ) );
-  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QCoreApplication::translate( "QgsOptionsBase", "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) ) );
+
+  QStandardItem *mapTools = createItem( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QCoreApplication::translate( "QgsOptionsBase", "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) );
+  mTreeModel->appendRow( mapTools );
+  mapTools->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "propertyicons/digitizing.svg" ) ) );
+
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QCoreApplication::translate( "QgsOptionsBase", "Colors" ), QStringLiteral( "propertyicons/colors.svg" ) ) );
-  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "propertyicons/digitizing.svg" ) ) );
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Layouts" ), QCoreApplication::translate( "QgsOptionsBase", "Print layouts" ), QStringLiteral( "mIconLayout.svg" ) ) );
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QCoreApplication::translate( "QgsOptionsBase", "Variables" ), QStringLiteral( "mIconExpression.svg" ) ) );
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QCoreApplication::translate( "QgsOptionsBase", "Authentication" ), QStringLiteral( "locked.svg" ) ) );
@@ -478,7 +482,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mCacheSize->setMinimum( 0 );
   mCacheSize->setMaximum( std::numeric_limits<int>::max() );
   mCacheSize->setSingleStep( 1024 );
-  qint64 cacheSize = mSettings->value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toLongLong();
+  qint64 cacheSize = mSettings->value( QStringLiteral( "cache/size" ), 256 * 1024 * 1024 ).toLongLong();
   mCacheSize->setValue( static_cast<int>( cacheSize / 1024 ) );
   mCacheSize->setClearValue( 50 * 1024 );
   connect( mBrowseCacheDirectory, &QAbstractButton::clicked, this, &QgsOptions::browseCacheDirectory );
@@ -772,6 +776,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // but the checkbox is true to use QPixmap
   chkAddedVisibility->setChecked( mSettings->value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
   cbxLegendClassifiers->setChecked( mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() );
+  mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.value() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
   cbxShowNews->setChecked( !mSettings->value( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
   mDataSourceManagerNonModal->setChecked( mSettings->value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() );
@@ -897,9 +902,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     )
   );
 
-  QgsProject::FileFormat defaultProjectFileFormat = mSettings->enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
-  mFileFormatQgzButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgz );
-  mFileFormatQgsButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgs );
+  Qgis::ProjectFileFormat defaultProjectFileFormat = mSettings->enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), Qgis::ProjectFileFormat::Qgz );
+  mFileFormatQgzButton->setChecked( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgz );
+  mFileFormatQgsButton->setChecked( defaultProjectFileFormat == Qgis::ProjectFileFormat::Qgs );
 
   // templates
   cbxProjectDefaultNew->setChecked( mSettings->value( QStringLiteral( "/qgis/newProjectDefault" ), QVariant( false ) ).toBool() );
@@ -1365,7 +1370,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
   mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  mCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeBearingFormat );
+  connect( mCustomizeCoordinateFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeCoordinateFormat );
 
   restoreOptionsBaseUi();
 
@@ -1667,6 +1674,7 @@ void QgsOptions::saveOptions()
 
   bool showLegendClassifiers = mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool();
   mSettings->setValue( QStringLiteral( "/qgis/showLegendClassifiers" ), cbxLegendClassifiers->isChecked() );
+  QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.setValue( mShowFeatureCountByDefaultCheckBox->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/hideSplash" ), cbxHideSplash->isChecked() );
   mSettings->setValue( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
@@ -1754,7 +1762,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/defaultProjectPathsRelative" ),
                        static_cast< Qgis::FilePathType >( mDefaultPathsComboBox->currentData().toInt() ) == Qgis::FilePathType::Relative );
 
-  mSettings->setEnumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), mFileFormatQgsButton->isChecked() ? QgsProject::FileFormat::Qgs : QgsProject::FileFormat::Qgz );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), mFileFormatQgsButton->isChecked() ? Qgis::ProjectFileFormat::Qgs : Qgis::ProjectFileFormat::Qgz );
 
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
@@ -1982,6 +1990,7 @@ void QgsOptions::saveOptions()
   QgsApplication::settingsLocaleShowGroupSeparator.setValue( cbShowGroupSeparator->isChecked( ) );
 
   QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.get() );
+  QgsLocalDefaultSettings::setGeographicCoordinateFormat( mCoordinateFormat.get() );
 
 #ifdef HAVE_OPENCL
   // OpenCL settings
@@ -2240,7 +2249,7 @@ void QgsOptions::addPluginPath()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2320,7 +2329,7 @@ void QgsOptions::addTemplatePath()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2347,7 +2356,7 @@ void QgsOptions::addSVGPath()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( QDir::homePath() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2396,7 +2405,7 @@ void QgsOptions::browseCacheDirectory()
                     this,
                     tr( "Choose a directory" ),
                     QDir::toNativeSeparators( mCacheDirectory->text() ),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( !myDir.isEmpty() )
@@ -2789,7 +2798,7 @@ void QgsOptions::addLocalizedDataPath()
                     this,
                     tr( "Choose a Directory" ),
                     QDir::homePath(),
-                    QFileDialog::ShowDirsOnly
+                    QFileDialog::Options()
                   );
 
   if ( ! myDir.isEmpty() )
@@ -2998,5 +3007,15 @@ void QgsOptions::customizeBearingFormat()
   if ( dlg.exec() )
   {
     mBearingFormat.reset( dlg.format() );
+  }
+}
+
+void QgsOptions::customizeCoordinateFormat()
+{
+  QgsGeographicCoordinateNumericFormatDialog dlg( mCoordinateFormat.get(), false, this );
+  dlg.setWindowTitle( tr( "Coordinate Format" ) );
+  if ( dlg.exec() )
+  {
+    mCoordinateFormat.reset( dlg.format() );
   }
 }

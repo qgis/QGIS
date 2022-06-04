@@ -493,6 +493,14 @@ QSet<QString> QgsMergedFeatureRenderer::legendKeysForFeature( const QgsFeature &
   return mSubRenderer->legendKeysForFeature( feature, context );
 }
 
+QString QgsMergedFeatureRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const
+{
+  ok = false;
+  if ( !mSubRenderer )
+    return QString();
+  return mSubRenderer->legendKeyToExpression( key, layer, ok );
+}
+
 QgsSymbolList QgsMergedFeatureRenderer::symbols( QgsRenderContext &context ) const
 {
   if ( !mSubRenderer )

@@ -1971,8 +1971,21 @@ namespace QgsWms
     return param;
   }
 
-  QString QgsWmsParameters::externalWMSUri( const QString &id ) const
+  QString QgsWmsParameters::externalWMSUri( const QString &layerId ) const
   {
+
+    // Param names may be uppercased.
+    QString id { layerId };
+
+    for ( auto it = mExternalWMSParameters.cbegin(); it != mExternalWMSParameters.cend(); ++it )
+    {
+      if ( it.key().compare( id, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      {
+        id = it.key();
+        break;
+      }
+    }
+
     if ( !mExternalWMSParameters.contains( id ) )
     {
       return QString();

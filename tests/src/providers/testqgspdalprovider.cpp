@@ -31,7 +31,7 @@
 #include "qgspdalprovider.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
-#include "qgspdaleptgenerationtask.h"
+#include "qgspdalindexingtask.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsgeometry.h"
 
@@ -58,6 +58,7 @@ class TestQgsPdalProvider : public QObject
     void brokenPath();
     void validLayer();
     void testEptGeneration();
+    void testCopcGeneration();
 
   private:
     QString mTestDataDir;
@@ -218,16 +219,26 @@ void TestQgsPdalProvider::validLayer()
 
   QCOMPARE( layer->dataProvider()->pointCount(), 253 );
   QCOMPARE( layer->pointCount(), 253 );
-  QVERIFY( layer->dataProvider()->indexingState() == QgsPointCloudDataProvider::NotIndexed );
 }
 
 void TestQgsPdalProvider::testEptGeneration()
 {
   const QTemporaryDir dir;
   QVERIFY( dir.isValid() );
-  QgsPdalEptGenerationTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path() );
+  QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), dir.path(), QgsPdalIndexingTask::OutputFormat::Ept );
   QVERIFY( task.run() );
   const QFileInfo fi( dir.path() + "/ept.json" );
+  QVERIFY( fi.exists() );
+}
+
+void TestQgsPdalProvider::testCopcGeneration()
+{
+  const QTemporaryDir dir;
+  QString outputPath = dir.path() + QDir::separator() + "cloud.copc.laz";
+  QVERIFY( dir.isValid() );
+  QgsPdalIndexingTask task( mTestDataDir + QStringLiteral( "point_clouds/las/cloud.las" ), outputPath,  QgsPdalIndexingTask::OutputFormat::Copc );
+  QVERIFY( task.run() );
+  const QFileInfo fi( outputPath );
   QVERIFY( fi.exists() );
 }
 

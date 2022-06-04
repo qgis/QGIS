@@ -36,6 +36,17 @@ Flashes features from the specified ``layer`` which match the given ``filter`` e
 The total count of matching features will be returned.
 %End
 
+    static QString filterForLayer( QgsMapCanvas *canvas, QgsVectorLayer *layer );
+%Docstring
+Constructs a filter to use for selecting features from the given ``layer``, in order to
+apply filters which prevent some features from being displayed (e.g. as a result
+of temporal range of the canvas and the layer's temporal settings).
+
+Will return an empty string if no filtering is required, or "``False``" if ALL features are filtered
+out by the canvas.
+
+.. versionadded:: 3.26
+%End
 };
 
 /************************************************************************

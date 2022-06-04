@@ -134,6 +134,18 @@ class CORE_EXPORT QgsRendererCategory
      */
     void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = !sipCpp->value().isValid()
+                        ? QStringLiteral( "<QgsRendererCategory>" )
+                        : sipCpp->label().isEmpty()
+                        ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
+                        : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   protected:
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
@@ -316,6 +328,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
     QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
 
     /**
      * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying

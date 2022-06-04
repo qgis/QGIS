@@ -79,6 +79,9 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mDevicePixelRatio( rh.mDevicePixelRatio )
   , mImageFormat( rh.mImageFormat )
   , mRendererUsage( rh.mRendererUsage )
+  , mFrameRate( rh.mFrameRate )
+  , mCurrentFrame( rh.mCurrentFrame )
+  , mSymbolLayerClipPaths( rh.mSymbolLayerClipPaths )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -125,6 +128,9 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mImageFormat = rh.mImageFormat;
   setIsTemporal( rh.isTemporal() );
   mRendererUsage = rh.mRendererUsage;
+  mFrameRate = rh.mFrameRate;
+  mCurrentFrame = rh.mCurrentFrame;
+  mSymbolLayerClipPaths = rh.mSymbolLayerClipPaths;
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
@@ -280,6 +286,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.mClippingRegions = mapSettings.clippingRegions();
 
   ctx.mRendererUsage = mapSettings.rendererUsage();
+  ctx.mFrameRate = mapSettings.frameRate();
+  ctx.mCurrentFrame = mapSettings.currentFrame();
 
   return ctx;
 }
@@ -674,4 +682,32 @@ QSize QgsRenderContext::deviceOutputSize() const
   return outputSize() * mDevicePixelRatio;
 }
 
+double QgsRenderContext::frameRate() const
+{
+  return mFrameRate;
+}
 
+void QgsRenderContext::setFrameRate( double rate )
+{
+  mFrameRate = rate;
+}
+
+long long QgsRenderContext::currentFrame() const
+{
+  return mCurrentFrame;
+}
+
+void QgsRenderContext::setCurrentFrame( long long frame )
+{
+  mCurrentFrame = frame;
+}
+
+void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )
+{
+  mSymbolLayerClipPaths[ symbolLayer ].append( path );
+}
+
+QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const
+{
+  return mSymbolLayerClipPaths[ symbolLayer ];
+}

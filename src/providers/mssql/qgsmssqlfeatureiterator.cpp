@@ -20,6 +20,7 @@
 #include "qgsmssqlprovider.h"
 #include "qgsmssqltransaction.h"
 #include "qgslogger.h"
+#include "qgsdbquerylog.h"
 #include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgsmssqldatabase.h"
@@ -525,7 +526,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
       case PktFidMap:
       {
         QVariantList primaryKeyVals;
-        for ( int idx : mSource->mPrimaryKeyAttrs )
+        for ( int idx : std::as_const( mSource->mPrimaryKeyAttrs ) )
         {
           QgsField fld = mSource->mFields.at( idx );
 
@@ -607,35 +608,60 @@ bool QgsMssqlFeatureIterator::rewind()
   mQuery->clear();
   mQuery->setForwardOnly( true );
 
-  bool result = mQuery->exec( mOrderByClause.isEmpty() ? mStatement : mStatement + mOrderByClause );
-  if ( !result && !mFallbackStatement.isEmpty() )
+  QString sql { mOrderByClause.isEmpty() ? mStatement : mStatement + mOrderByClause };
+  std::unique_ptr<QgsDatabaseQueryLogWrapper> logWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( sql, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
+
+  bool result = mQuery->exec( sql );
+  if ( !result )
   {
-    //try with fallback statement
-    result = mQuery->exec( mOrderByClause.isEmpty() ? mFallbackStatement : mFallbackStatement + mOrderByClause );
-    if ( result )
+    logWrapper->setError( mQuery->lastError().text() );
+    if ( !mFallbackStatement.isEmpty() )
     {
-      mExpressionCompiled = false;
-      mCompileStatus = NoCompilation;
+      //try with fallback statement
+      sql = mOrderByClause.isEmpty() ? mFallbackStatement : mFallbackStatement + mOrderByClause;
+      logWrapper.reset( new QgsDatabaseQueryLogWrapper( sql, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) );
+      result = mQuery->exec( sql );
+      if ( result )
+      {
+        mExpressionCompiled = false;
+        mCompileStatus = NoCompilation;
+      }
+      else
+      {
+        logWrapper->setError( mQuery->lastError().text() );
+      }
     }
   }
 
   if ( !result && !mOrderByClause.isEmpty() )
   {
     //try without order by clause
+    logWrapper.reset( new QgsDatabaseQueryLogWrapper( mStatement, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) );
     result = mQuery->exec( mStatement );
     if ( result )
+    {
       mOrderByCompiled = false;
+    }
+    else
+    {
+      logWrapper->setError( mQuery->lastError().text() );
+    }
   }
 
   if ( !result && !mFallbackStatement.isEmpty() && !mOrderByClause.isEmpty() )
   {
     //try with fallback statement and without order by clause
+    logWrapper.reset( new QgsDatabaseQueryLogWrapper( mFallbackStatement, mSource->connInfo(), QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) );
     result = mQuery->exec( mFallbackStatement );
     if ( result )
     {
       mExpressionCompiled = false;
       mOrderByCompiled = false;
       mCompileStatus = NoCompilation;
+    }
+    else
+    {
+      logWrapper->setError( mQuery->lastError().text() );
     }
   }
 
@@ -689,9 +715,15 @@ QgsMssqlFeatureSource::QgsMssqlFeatureSource( const QgsMssqlProvider *p )
   , mDisableInvalidGeometryHandling( p->mDisableInvalidGeometryHandling )
   , mCrs( p->crs() )
   , mTransactionConn( p->transaction() ? static_cast<QgsMssqlTransaction *>( p->transaction() )->conn() : std::shared_ptr<QgsMssqlDatabase>() )
+  , mConnInfo( p->uri().uri( ) )
 {}
 
 QgsFeatureIterator QgsMssqlFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( this, false, request ) );
+}
+
+const QString &QgsMssqlFeatureSource::connInfo() const
+{
+  return mConnInfo;
 }

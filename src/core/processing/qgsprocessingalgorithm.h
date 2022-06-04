@@ -758,7 +758,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * to use parameterAsCompatibleSourceLayerPathAndLayerName() which may avoid conversion in more situations.
      */
     QString parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name,
-        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr );
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a source vector layer file path and layer name of compatible format.
@@ -790,7 +790,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \since QGIS 3.10
      */
     QString parameterAsCompatibleSourceLayerPathAndLayerName( const QVariantMap &parameters, const QString &name,
-        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr );
+        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a map layer.
@@ -867,14 +867,14 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see parameterAsExtent()
      */
     QgsGeometry parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
-                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 
     /**
      * Returns the coordinate reference system associated with an extent parameter value.
      *
      * \see parameterAsExtent()
      */
-    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a point.
@@ -892,7 +892,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \see parameterAsPoint()
      */
-    QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a geometry.
@@ -910,7 +910,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \see parameterAsGeometry()
      */
-    QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QgsCoordinateReferenceSystem parameterAsGeometryCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a file/folder name.
@@ -970,35 +970,35 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * \since QGIS 3.10
      */
-    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a connection name string.
      *
      * \since QGIS 3.14
      */
-    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a database schema name string.
      *
      * \since QGIS 3.14
      */
-    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a database table name string.
      *
      * \since QGIS 3.14
      */
-    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a DateTime, or returns an invalid date time if the parameter was not set.
      *
      * \since QGIS 3.14
      */
-    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a point cloud layer.
@@ -1314,5 +1314,3 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 // clazy:excludeall=qstring-allocations
 
 #endif // QGSPROCESSINGALGORITHM_H
-
-

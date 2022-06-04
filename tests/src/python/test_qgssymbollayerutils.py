@@ -39,7 +39,10 @@ from qgis.core import (
     QgsSymbolLayer,
     QgsProperty,
     QgsMapUnitScale,
-    Qgis
+    Qgis,
+    QgsSingleSymbolRenderer,
+    QgsAnimatedMarkerSymbolLayer,
+    QgsSimpleMarkerSymbolLayer
 )
 from qgis.testing import unittest, start_app
 
@@ -606,6 +609,39 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         self.assertEqual(fill.strokeWidthMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(fill.penJoinStyle(), Qt.MiterJoin)
         self.assertEqual(fill.strokeStyle(), Qt.DashDotDotLine)
+
+    def test_renderer_frame_rate(self):
+        # renderer without an animated symbol
+        marker_symbol = QgsMarkerSymbol.createSimple({})
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+
+        # renderer with an animated symbol
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
+
+        # renderer with two animated symbol layers
+        marker_symbol = QgsMarkerSymbol()
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(30)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        animated_marker = QgsAnimatedMarkerSymbolLayer()
+        animated_marker.setFrameRate(60)
+        marker_symbol.appendSymbolLayer(animated_marker)
+        renderer = QgsSingleSymbolRenderer(marker_symbol)
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 60)
+
+        s = QgsMarkerSymbol()
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), -1)
+        s.animationSettings().setIsAnimated(True)
+        s.animationSettings().setFrameRate(30)
+        renderer = QgsSingleSymbolRenderer(s.clone())
+        self.assertEqual(QgsSymbolLayerUtils.rendererFrameRate(renderer), 30)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

@@ -1513,6 +1513,59 @@ class TestQgsProject(unittest.TestCase):
 
         project.removeAllMapLayers()
 
+    def test_remember_editable_status(self):
+        """
+        Test a project with remember editable layers flag set
+        """
+        project = QgsProject()
+        project.removeAllMapLayers()
+
+        layer_a = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+        layer_b = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+        layer_c = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+
+        project.addMapLayers([layer_a, layer_b, layer_c])
+
+        layer_a.startEditing()
+        layer_c.startEditing()
+
+        tmp_dir = QTemporaryDir()
+        tmp_project_file = "{}/project.qgs".format(tmp_dir.path())
+        self.assertTrue(project.write(tmp_project_file))
+
+        # project did NOT have remember editable layers flag set, so layers should NOT be editable
+        project2 = QgsProject()
+        self.assertTrue(project2.read(tmp_project_file))
+
+        self.assertFalse(project2.mapLayer(layer_a.id()).isEditable())
+        self.assertFalse(project2.mapLayer(layer_b.id()).isEditable())
+        self.assertFalse(project2.mapLayer(layer_c.id()).isEditable())
+
+        # set remember edits status flag
+        project.setFlag(Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions)
+        tmp_project_file2 = "{}/project2.qgs".format(tmp_dir.path())
+        self.assertTrue(project.write(tmp_project_file2))
+
+        project3 = QgsProject()
+        self.assertTrue(project3.read(tmp_project_file2))
+        self.assertTrue(project3.flags() & Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions)
+        # the layers should be made immediately editable
+        self.assertTrue(project3.mapLayer(layer_a.id()).isEditable())
+        self.assertFalse(project3.mapLayer(layer_b.id()).isEditable())
+        self.assertTrue(project3.mapLayer(layer_c.id()).isEditable())
+
+        # turn off flag and re-save project
+        project3.setFlag(Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions, False)
+        tmp_project_file3 = "{}/project2.qgs".format(tmp_dir.path())
+        self.assertTrue(project3.write(tmp_project_file3))
+
+        project4 = QgsProject()
+        self.assertTrue(project4.read(tmp_project_file3))
+        self.assertFalse(project4.flags() & Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions)
+        self.assertFalse(project4.mapLayer(layer_a.id()).isEditable())
+        self.assertFalse(project4.mapLayer(layer_b.id()).isEditable())
+        self.assertFalse(project4.mapLayer(layer_c.id()).isEditable())
+
 
 if __name__ == '__main__':
     unittest.main()

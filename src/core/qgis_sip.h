@@ -151,6 +151,11 @@
 #define SIP_PYARGREMOVE
 
 /*
+ * rename argument in SIP method
+ */
+#define SIP_PYARGRENAME(pyname)
+
+/*
  * https://www.riverbankcomputing.com/static/Docs/sip/annotations.html?highlight=keepreference#function-annotation-ReleaseGIL
  */
 #define SIP_RELEASEGIL

@@ -43,6 +43,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgssymbollayerreference.h"
+#include "qgsmarkersymbollayer.h"
 
 #include <QColor>
 #include <QFont>
@@ -1307,6 +1308,9 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     flags |= Qgis::SymbolFlag::RendererShouldUseSymbolLevels;
   symbol->setFlags( flags );
 
+  symbol->animationSettings().setIsAnimated( element.attribute( QStringLiteral( "is_animated" ), QStringLiteral( "0" ) ).toInt() );
+  symbol->animationSettings().setFrameRate( element.attribute( QStringLiteral( "frame_rate" ), QStringLiteral( "10" ) ).toDouble() );
+
   const QDomElement ddProps = element.firstChildElement( QStringLiteral( "data_defined_properties" ) );
   if ( !ddProps.isNull() )
   {
@@ -1400,6 +1404,9 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "force_rhr" ), symbol->forceRHR() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( symbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
     symEl.setAttribute( QStringLiteral( "renderer_should_use_levels" ), QStringLiteral( "1" ) );
+
+  symEl.setAttribute( QStringLiteral( "is_animated" ), symbol->animationSettings().isAnimated() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  symEl.setAttribute( QStringLiteral( "frame_rate" ), qgsDoubleToString( symbol->animationSettings().frameRate() ) );
 
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
@@ -4944,6 +4951,69 @@ QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeat
   SymbolLayerVisitor visitor( symbolLayerIds );
   renderer->accept( &visitor );
   return visitor.mSymbolLayers;
+}
+
+double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *renderer )
+{
+  class SymbolRefreshRateVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      SymbolRefreshRateVisitor()
+      {}
+
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+        {
+          return true;
+        }
+        return false;
+      }
+
+      void visitSymbol( const QgsSymbol *symbol )
+      {
+        // symbol may be marked as animated on a symbol level (e.g. when it implements animation
+        // via data defined properties)
+        if ( symbol->animationSettings().isAnimated() )
+        {
+          if ( symbol->animationSettings().frameRate() > refreshRate )
+            refreshRate = symbol->animationSettings().frameRate();
+        }
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( const QgsAnimatedMarkerSymbolLayer *animatedMarker = dynamic_cast< const QgsAnimatedMarkerSymbolLayer *>( sl ) )
+          {
+            // this is a bit of a short cut -- if a symbol has multiple layers with different frame rates,
+            // there's no guarantee that they will be even multiples of each other! But given we are looking for
+            // a single frame rate for a whole renderer, it's an acceptable compromise...
+            if ( refreshRate == -1 || ( animatedMarker->frameRate() > refreshRate ) )
+              refreshRate = animatedMarker->frameRate();
+          }
+
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol() )
+            visitSymbol( subSymbol );
+        }
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          if ( QgsSymbol *symbol = qgis::down_cast<const QgsStyleSymbolEntity *>( leaf.entity )->symbol() )
+          {
+            visitSymbol( symbol );
+          }
+        }
+        return true;
+      }
+
+      double refreshRate = -1;
+  };
+
+  SymbolRefreshRateVisitor visitor;
+  renderer->accept( &visitor );
+  return visitor.refreshRate;
 }
 
 QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )

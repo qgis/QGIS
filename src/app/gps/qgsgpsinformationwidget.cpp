@@ -752,7 +752,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   FixStatus fixStatus = NoData;
 
   // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
-  if ( info.status == 'V' || info.fixType == NMEA_FIX_BAD || info.quality == 0 ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( info.status == 'V' || info.fixType == NMEA_FIX_BAD || info.qualityIndicator == Qgis::GpsQualityIndicator::Invalid || info.qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     fixStatus = NoFix;
   }
@@ -761,7 +761,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     fixStatus = Fix2D;
     validFlag = true;
   }
-  else if ( info.status == 'A' || info.fixType == NMEA_FIX_3D || info.quality > 0 ) // good
+  else if ( info.status == 'A' || info.fixType == NMEA_FIX_3D || ( info.qualityIndicator != Qgis::GpsQualityIndicator::Invalid && info.qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
   {
     fixStatus = Fix3D;
     validFlag = true;

@@ -782,7 +782,7 @@ void QgsLabelingRulePropsWidget::buildExpression()
 
 void QgsLabelingRulePropsWidget::apply()
 {
-  const QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  const QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text().trimmed();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
   mRule->setMinimumScale( groupScale->isChecked() ? mScaleRangeWidget->minimumScale() : 0 );

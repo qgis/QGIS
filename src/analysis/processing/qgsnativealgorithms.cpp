@@ -116,8 +116,11 @@
 #include "qgsalgorithmmergelines.h"
 #include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
+#include "qgsalgorithmmultidifference.h"
+#include "qgsalgorithmmultiintersection.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmmultiringconstantbuffer.h"
+#include "qgsalgorithmmultiunion.h"
 #include "qgsalgorithmnearestneighbouranalysis.h"
 #include "qgsalgorithmoffsetlines.h"
 #include "qgsalgorithmorderbyexpression.h"
@@ -383,8 +386,11 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeshExportCrossSection );
   addAlgorithm( new QgsMeshExportTimeSeries );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
+  addAlgorithm( new QgsMultiDifferenceAlgorithm() );
+  addAlgorithm( new QgsMultiIntersectionAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );
+  addAlgorithm( new QgsMultiUnionAlgorithm() );
   addAlgorithm( new QgsNearestNeighbourAnalysisAlgorithm() );
   addAlgorithm( new QgsOffsetLinesAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
@@ -405,6 +411,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRaiseExceptionAlgorithm() );
   addAlgorithm( new QgsRaiseWarningAlgorithm() );
+  addAlgorithm( new QgsRaiseMessageAlgorithm() );
   addAlgorithm( new QgsRandomBinomialRasterAlgorithm() );
   addAlgorithm( new QgsRandomExponentialRasterAlgorithm() );
   addAlgorithm( new QgsRandomExtractAlgorithm() );

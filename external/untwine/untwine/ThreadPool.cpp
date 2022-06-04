@@ -32,8 +32,6 @@
  * OF SUCH DAMAGE.
  ****************************************************************************/
 
-#include <iostream>
-
 #include "ThreadPool.hpp"
 
 namespace untwine
@@ -76,22 +74,23 @@ void ThreadPool::work()
 
             std::string err;
 
-            task();
-
-            /**
-            try
+            if (m_trap)
             {
+                try
+                {
+                    task();
+                }
+                catch (std::exception& e)
+                {
+                    err = e.what();
+                }
+                catch (...)
+                {
+                    err = m_catchall;
+                }
+            }
+            else
                 task();
-            }
-            catch (std::exception& e)
-            {
-                err = e.what();
-            }
-            catch (...)
-            {
-                err = "Unknown error";
-            }
-            **/
 
             lock.lock();
             --m_outstanding;

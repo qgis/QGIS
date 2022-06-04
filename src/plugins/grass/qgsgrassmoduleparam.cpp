@@ -112,7 +112,7 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
   mId = qdesc.attribute( QStringLiteral( "id" ) );
 }
 
-bool QgsGrassModuleParam::hidden()
+bool QgsGrassModuleParam::hidden() const
 {
   return mHidden;
 }

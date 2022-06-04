@@ -126,7 +126,7 @@ const QgsGeometryCheckerUtils::LayerFeature &QgsGeometryCheckerUtils::LayerFeatu
   return *mCurrentFeature;
 }
 
-bool QgsGeometryCheckerUtils::LayerFeatures::iterator::operator!=( const QgsGeometryCheckerUtils::LayerFeatures::iterator &other )
+bool QgsGeometryCheckerUtils::LayerFeatures::iterator::operator!=( const QgsGeometryCheckerUtils::LayerFeatures::iterator &other ) const
 {
   return mLayerIt != other.mLayerIt || mFeatureIt != other.mFeatureIt;
 }

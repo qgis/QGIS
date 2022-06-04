@@ -67,8 +67,8 @@ void QgsSplitVectorLayerAlgorithm::initAlgorithm( const QVariantMap & )
                 QVariant(), QStringLiteral( "INPUT" ) ) );
 
   const QStringList options = QgsVectorFileWriter::supportedFormatExtensions();
-  auto fileTypeParam = std::make_unique < QgsProcessingParameterEnum >( QStringLiteral( "FILE_TYPE" ), QObject::tr( "Output file type" ), options, false, QVariantList() << 0, true );
-  fileTypeParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  auto fileTypeParam = std::make_unique < QgsProcessingParameterEnum >( QStringLiteral( "FILE_TYPE" ), QObject::tr( "Output file type" ), options, false, 0, true );
+  fileTypeParam->setFlags( fileTypeParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( fileTypeParam.release() );
 
   addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ) ) );

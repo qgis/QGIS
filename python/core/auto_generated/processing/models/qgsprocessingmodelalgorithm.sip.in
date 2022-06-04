@@ -583,6 +583,15 @@ Given a child algorithm ID and output name, attempts to match it to a parameter 
 .. versionadded:: 3.26
 %End
 
+    static QString safeName( const QString &name, bool capitalize = false );
+%Docstring
+Makes a name "safe", by replacing any non-alphanumeric characters with underscores.
+
+If ``capitalize`` is ``True`` then the string will be converted to a camel case string.
+
+.. versionadded:: 3.26
+%End
+
 
   protected:
 

@@ -863,8 +863,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 cat = get_catalog_service(self.catalog_url,  # spellok
                                           catalog_type=self.catalog_type,
                                           timeout=self.timeout,
-                                          username=self.catalog_username,
-                                          password=self.catalog_password,
+                                          username=self.catalog_username or None,
+                                          password=self.catalog_password or None,
                                           auth=auth)
                 record = cat.get_record(identifier)
                 if cat.type == 'OGC API - Records':
@@ -957,8 +957,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             try:
                 self.catalog = get_catalog_service(
                     self.catalog_url, catalog_type=self.catalog_type,
-                    timeout=self.timeout, username=self.catalog_username,
-                    password=self.catalog_password, auth=auth)
+                    timeout=self.timeout, username=self.catalog_username or None,
+                    password=self.catalog_password or None, auth=auth)
                 return True
             except Exception as err:
                 msg = self.tr('Error connecting to service: {0}').format(err)

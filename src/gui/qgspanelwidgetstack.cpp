@@ -43,6 +43,7 @@ void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
            Qt::UniqueConnection );
   mStackedWidget->insertWidget( 0, panel );
   mStackedWidget->setCurrentIndex( 0 );
+  updateMenuButton();
 }
 
 QgsPanelWidget *QgsPanelWidgetStack::mainPanel()

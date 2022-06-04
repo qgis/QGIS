@@ -170,6 +170,14 @@ class PyQgsTextRenderer(unittest.TestCase):
         t.dataDefinedProperties().setProperty(QgsPalLayerSettings.Bold, QgsProperty.fromValue(True))
         self.assertTrue(t.isValid())
 
+        t = QgsTextFormat()
+        t.setForcedBold(True)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
+        t.setForcedItalic(True)
+        self.assertTrue(t.isValid())
+
     def testAlignmentConversion(self):
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignLeft), QgsTextRenderer.AlignLeft)
         self.assertEqual(QgsTextRenderer.convertQtHAlignment(Qt.AlignRight), QgsTextRenderer.AlignRight)
@@ -711,6 +719,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setAllowHtmlFormatting(True)
+        s.setForcedBold(True)
+        s.setForcedItalic(True)
 
         s.setStretchFactor(110)
 
@@ -804,6 +814,14 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
+        s.setForcedBold(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
+        s.setForcedItalic(False)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
         s.setCapitalization(QgsStringUtils.ForceFirstLetterToCapital)
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
@@ -845,6 +863,8 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
         self.assertTrue(s.allowHtmlFormatting())
         self.assertEqual(s.dataDefinedProperties().property(QgsPalLayerSettings.Bold).expressionString(), '1>2')
+        self.assertTrue(s.forcedBold())
+        self.assertTrue(s.forcedItalic())
 
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
@@ -1389,6 +1409,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         qfont = s.toQFont()
         self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
 
+        self.assertFalse(qfont.bold())
+        s.setForcedBold(True)
+        qfont = s.toQFont()
+        self.assertTrue(qfont.bold())
+
+        self.assertFalse(qfont.italic())
+        s.setForcedItalic(True)
+        qfont = s.toQFont()
+        self.assertTrue(qfont.italic())
+
         if int(QT_VERSION_STR.split('.')[0]) > 6 or (
                 int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) >= 3):
             s.setStretchFactor(115)
@@ -1549,6 +1579,16 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setFont(getTestFont('bold'))
         format.setSize(1100)
         assert self.checkRender(format, 'massive_font', rect=QRectF(-800, -600, 1000, 1000), text=['a t'], image_size=800)
+
+    def testDrawForcedItalic(self):
+        """
+        Test drawing with forced italic
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont())
+        format.setSize(30)
+        format.setForcedItalic(True)
+        assert self.checkRender(format, 'forced_italic', text=['Forced italic'])
 
     @unittest.skipIf(int(QT_VERSION_STR.split('.')[0]) < 6 or (int(QT_VERSION_STR.split('.')[0]) == 6 and int(QT_VERSION_STR.split('.')[1]) < 3), 'Too old Qt')
     def testDrawSmallCaps(self):

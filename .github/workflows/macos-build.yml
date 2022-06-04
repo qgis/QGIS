@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Prepare build cache for pull request
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: pat-s/always-upload-cache@v3.0.1
         if: github.event_name == 'pull_request'
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Prepare build cache for branch/tag
         # use a fork of actions/cache@v2 to upload cache even when the build or test failed
-        uses: pat-s/always-upload-cache@v2.1.5
+        uses: pat-s/always-upload-cache@v3.0.1
         if: github.event_name != 'pull_request'
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -58,7 +58,7 @@ jobs:
       # Qt caching
       - name: Cache Qt
         id: cache-qt
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.3
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/Qt/${{ env.QT_VERSION }}
           key: mac-qt-${{ env.QT_VERSION }}
@@ -81,7 +81,7 @@ jobs:
       # QGIS-deps caching
       - name: Cache qgis-deps
         id: cache-deps
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3.0.3
         with:
           path: ${{ env.DEPS_CACHE_DIR }}/QGIS/qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}
           key: mac-qgis-deps-${{ env.QGIS_DEPS_VERSION }}.${{ env.QGIS_DEPS_PATCH_VERSION }}

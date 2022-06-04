@@ -53,11 +53,11 @@
   "examples": [
     {
       "expression": "overlay_intersects('regions')",
-      "returns": "true if the current feature spatially intersects a region"
+      "returns": "TRUE if the current feature spatially intersects a region"
     },
     {
       "expression": "overlay_intersects('regions', filter:= population > 10000)",
-      "returns": "true if the current feature spatially intersects a region with a population greater than 10000"
+      "returns": "TRUE if the current feature spatially intersects a region with a population greater than 10000"
     },
     {
       "expression": "overlay_intersects('regions', name)",
@@ -77,11 +77,11 @@
     },
     {
       "expression": "overlay_intersects(layer:='regions', min_overlap:=0.54)",
-      "returns": "true if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54"
+      "returns": "TRUE if the current feature spatially intersects a region and the intersection area (of at least one of the parts in case of multipolygons) is greater or equal to 0.54"
     },
     {
       "expression": "overlay_intersects(layer:='regions', min_inscribed_circle_radius:=0.54)",
-      "returns": "true if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to 0.54"
+      "returns": "TRUE if the current feature spatially intersects a region and the intersection area maximum inscribed circle's radius (of at least one of the parts in case of multipart) is greater or equal to 0.54"
     },
     {
       "expression": "overlay_intersects(layer:='regions', expression:= geom_to_wkt($geometry), return_details:=true)",

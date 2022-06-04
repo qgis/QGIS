@@ -39,6 +39,7 @@ class GRASS_LIB_EXPORT QgsGrassDataFile : public QFile
   public:
     explicit QgsGrassDataFile( QObject *parent = nullptr );
     // We need FILE* to be able to test feof but QFile::open(FILE *, OpenMode) is not virtual
+    using QFile::open;
     bool open( FILE *fh );
     // Block until all data are read
     qint64 readData( char *data, qint64 len ) override;

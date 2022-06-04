@@ -2,7 +2,7 @@
   "name": "disjoint",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Tests whether geometries do not spatially intersect. Returns true if the geometries do not share any space together.",
+  "description": "Tests whether geometries do not spatially intersect. Returns TRUE if the geometries do not share any space together.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"
@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "disjoint( geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0 ))' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "disjoint( geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ), geom_from_wkt( 'POINT(4 4)' ))",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["share", "intersect", "tests", "space"]
 }

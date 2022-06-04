@@ -5,7 +5,7 @@
 #include <odbc/internal/Macros.h>
 #include <odbc/internal/Odbc.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 using namespace std;
 //------------------------------------------------------------------------------
@@ -123,4 +123,4 @@ unsigned short DatabaseMetaDataBase::getUSmallIntTypeInfo(
     return ret;
 }
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END

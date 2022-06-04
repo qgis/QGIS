@@ -1523,14 +1523,14 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     labelSettings.isExpression = true;
   }
 
-  labelSettings.placement = QgsPalLayerSettings::OverPoint;
+  labelSettings.placement = Qgis::LabelPlacement::OverPoint;
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::PointGeometry;
   if ( jsonLayout.contains( QStringLiteral( "symbol-placement" ) ) )
   {
     const QString symbolPlacement = jsonLayout.value( QStringLiteral( "symbol-placement" ) ).toString();
     if ( symbolPlacement == QLatin1String( "line" ) )
     {
-      labelSettings.placement = QgsPalLayerSettings::Curved;
+      labelSettings.placement = Qgis::LabelPlacement::Curved;
       labelSettings.lineSettings().setPlacementFlags( QgsLabeling::OnLine );
       geometryType = QgsWkbTypes::LineGeometry;
 
@@ -1539,11 +1539,11 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         const QString textRotationAlignment = jsonLayout.value( QStringLiteral( "text-rotation-alignment" ) ).toString();
         if ( textRotationAlignment == QLatin1String( "viewport" ) )
         {
-          labelSettings.placement = QgsPalLayerSettings::Horizontal;
+          labelSettings.placement = Qgis::LabelPlacement::Horizontal;
         }
       }
 
-      if ( labelSettings.placement == QgsPalLayerSettings::Curved )
+      if ( labelSettings.placement == Qgis::LabelPlacement::Curved )
       {
         QPointF textOffset;
         QgsProperty textOffsetProperty;
@@ -1633,20 +1633,20 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
 
     if ( textAlign == QLatin1String( "left" ) )
-      labelSettings.multilineAlign = QgsPalLayerSettings::MultiLeft;
+      labelSettings.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
     else if ( textAlign == QLatin1String( "right" ) )
-      labelSettings.multilineAlign = QgsPalLayerSettings::MultiRight;
+      labelSettings.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
     else if ( textAlign == QLatin1String( "center" ) )
-      labelSettings.multilineAlign = QgsPalLayerSettings::MultiCenter;
+      labelSettings.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
     else if ( textAlign == QLatin1String( "follow" ) )
-      labelSettings.multilineAlign = QgsPalLayerSettings::MultiFollowPlacement;
+      labelSettings.multilineAlign = Qgis::LabelMultiLineAlignment::FollowPlacement;
   }
   else
   {
-    labelSettings.multilineAlign = QgsPalLayerSettings::MultiCenter;
+    labelSettings.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
   }
 
-  if ( labelSettings.placement == QgsPalLayerSettings::OverPoint )
+  if ( labelSettings.placement == Qgis::LabelPlacement::OverPoint )
   {
     if ( jsonLayout.contains( QStringLiteral( "text-anchor" ) ) )
     {
@@ -1686,23 +1686,23 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       }
 
       if ( textAnchor == QLatin1String( "center" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantOver;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Over;
       else if ( textAnchor == QLatin1String( "left" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantRight;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Right;
       else if ( textAnchor == QLatin1String( "right" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantLeft;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Left;
       else if ( textAnchor == QLatin1String( "top" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantBelow;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Below;
       else if ( textAnchor == QLatin1String( "bottom" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAbove;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::Above;
       else if ( textAnchor == QLatin1String( "top-left" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
       else if ( textAnchor == QLatin1String( "top-right" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
       else if ( textAnchor == QLatin1String( "bottom-left" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
       else if ( textAnchor == QLatin1String( "bottom-right" ) )
-        labelSettings.quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+        labelSettings.quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
     }
 
     QPointF textOffset;
@@ -1738,7 +1738,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   if ( jsonLayout.contains( QStringLiteral( "icon-image" ) ) &&
-       ( labelSettings.placement == QgsPalLayerSettings::Horizontal || labelSettings.placement == QgsPalLayerSettings::Curved ) )
+       ( labelSettings.placement == Qgis::LabelPlacement::Horizontal || labelSettings.placement == Qgis::LabelPlacement::Curved ) )
   {
     QSize spriteSize;
     QString spriteProperty, spriteSizeProperty;

@@ -80,6 +80,8 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
        || d->orientation != other.orientation()
        || d->previewBackgroundColor != other.previewBackgroundColor()
        || d->allowHtmlFormatting != other.allowHtmlFormatting()
+       || d->forcedBold != other.forcedBold()
+       || d->forcedItalic != other.forcedItalic()
        || d->capitalization != other.capitalization()
        || mBufferSettings != other.mBufferSettings
        || mBackgroundSettings != other.mBackgroundSettings
@@ -222,6 +224,30 @@ void QgsTextFormat::setNamedStyle( const QString &style )
   d->isValid = true;
   QgsFontUtils::updateFontViaStyle( d->textFont, style );
   d->textNamedStyle = style;
+}
+
+bool QgsTextFormat::forcedBold() const
+{
+  return d->forcedBold;
+}
+
+void QgsTextFormat::setForcedBold( bool forced )
+{
+  d->isValid = true;
+  d->textFont.setBold( forced );
+  d->forcedBold = true;
+}
+
+bool QgsTextFormat::forcedItalic() const
+{
+  return d->forcedItalic;
+}
+
+void QgsTextFormat::setForcedItalic( bool forced )
+{
+  d->isValid = true;
+  d->textFont.setItalic( forced );
+  d->forcedItalic = true;
 }
 
 QStringList QgsTextFormat::families() const
@@ -548,6 +574,8 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->textFont.setPointSizeF( d->fontSize ); //double precision needed because of map units
   d->textNamedStyle = QgsFontUtils::translateNamedStyle( textStyleElem.attribute( QStringLiteral( "namedStyle" ) ) );
   QgsFontUtils::updateFontViaStyle( d->textFont, d->textNamedStyle ); // must come after textFont.setPointSizeF()
+  d->forcedBold = textStyleElem.attribute( QStringLiteral( "forcedBold" ) ).toInt();
+  d->forcedItalic = textStyleElem.attribute( QStringLiteral( "forcedItalic" ) ).toInt();
   d->textFont.setUnderline( textStyleElem.attribute( QStringLiteral( "fontUnderline" ) ).toInt() );
   d->textFont.setStrikeOut( textStyleElem.attribute( QStringLiteral( "fontStrikeout" ) ).toInt() );
   d->textFont.setKerning( textStyleElem.attribute( QStringLiteral( "fontKerning" ), QStringLiteral( "1" ) ).toInt() );
@@ -663,6 +691,8 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "fontItalic" ), d->textFont.italic() );
   textStyleElem.setAttribute( QStringLiteral( "fontStrikeout" ), d->textFont.strikeOut() );
   textStyleElem.setAttribute( QStringLiteral( "fontUnderline" ), d->textFont.underline() );
+  textStyleElem.setAttribute( QStringLiteral( "forcedBold" ), d->forcedBold );
+  textStyleElem.setAttribute( QStringLiteral( "forcedItalic" ), d->forcedItalic );
   textStyleElem.setAttribute( QStringLiteral( "textColor" ), QgsSymbolLayerUtils::encodeColor( d->textColor ) );
   textStyleElem.setAttribute( QStringLiteral( "previewBkgrdColor" ), QgsSymbolLayerUtils::encodeColor( d->previewBackgroundColor ) );
   textStyleElem.setAttribute( QStringLiteral( "fontLetterSpacing" ), d->textFont.letterSpacing() );

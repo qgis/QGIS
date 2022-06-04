@@ -7,7 +7,7 @@
 #include <odbc/Forwards.h>
 #include <odbc/Types.h>
 //------------------------------------------------------------------------------
-namespace odbc {
+NS_ODBC_START
 //------------------------------------------------------------------------------
 /**
  * Provides information about the database.
@@ -340,6 +340,6 @@ private:
     std::u16string getStringTypeInfoW(unsigned short typeInfo);
 };
 //------------------------------------------------------------------------------
-} // namespace odbc
+NS_ODBC_END
 //------------------------------------------------------------------------------
 #endif

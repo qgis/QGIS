@@ -353,7 +353,7 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
     }
   }
 
-  if ( mLF->layer()->arrangement() == QgsPalLayerSettings::AroundPoint )
+  if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::AroundPoint )
   {
     //if in "around point" placement mode, then we use the label distance to determine
     //the label's offset
@@ -430,7 +430,7 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
   return std::make_unique< LabelPosition >( 0, px, py, getLabelWidth(), getLabelHeight(), 0.0, 0.0, this, false, LabelPosition::QuadrantOver );
 }
 
-void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, QgsPalLayerSettings::PredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset, double angle )
+void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, LabelPosition::Quadrant &quadrant, double x, double y, double labelWidth, double labelHeight, Qgis::LabelPredefinedPointPosition position, double distanceToLabel, const QgsMargins &visualMargin, double symbolWidthOffset, double symbolHeightOffset, double angle )
 {
   double alpha = 0.0;
   double deltaX = 0;
@@ -438,84 +438,84 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
 
   switch ( position )
   {
-    case QgsPalLayerSettings::TopLeft:
+    case Qgis::LabelPredefinedPointPosition::TopLeft:
       quadrant = LabelPosition::QuadrantAboveLeft;
       alpha = 3 * M_PI_4;
       deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::TopSlightlyLeft:
+    case Qgis::LabelPredefinedPointPosition::TopSlightlyLeft:
       quadrant = LabelPosition::QuadrantAboveRight; //right quadrant, so labels are left-aligned
       alpha = M_PI_2;
       deltaX = -labelWidth / 4.0 - visualMargin.left();
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::TopMiddle:
+    case Qgis::LabelPredefinedPointPosition::TopMiddle:
       quadrant = LabelPosition::QuadrantAbove;
       alpha = M_PI_2;
       deltaX = -labelWidth / 2.0;
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::TopSlightlyRight:
+    case Qgis::LabelPredefinedPointPosition::TopSlightlyRight:
       quadrant = LabelPosition::QuadrantAboveLeft; //left quadrant, so labels are right-aligned
       alpha = M_PI_2;
       deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::TopRight:
+    case Qgis::LabelPredefinedPointPosition::TopRight:
       quadrant = LabelPosition::QuadrantAboveRight;
       alpha = M_PI_4;
       deltaX = - visualMargin.left() + symbolWidthOffset;
       deltaY = -visualMargin.bottom() + symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::MiddleLeft:
+    case Qgis::LabelPredefinedPointPosition::MiddleLeft:
       quadrant = LabelPosition::QuadrantLeft;
       alpha = M_PI;
       deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
       deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
       break;
 
-    case QgsPalLayerSettings::MiddleRight:
+    case Qgis::LabelPredefinedPointPosition::MiddleRight:
       quadrant = LabelPosition::QuadrantRight;
       alpha = 0.0;
       deltaX = -visualMargin.left() + symbolWidthOffset;
       deltaY = -labelHeight / 2.0;// TODO - should this be adjusted by visual margin??
       break;
 
-    case QgsPalLayerSettings::BottomLeft:
+    case Qgis::LabelPredefinedPointPosition::BottomLeft:
       quadrant = LabelPosition::QuadrantBelowLeft;
       alpha = 5 * M_PI_4;
       deltaX = -labelWidth + visualMargin.right() - symbolWidthOffset;
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::BottomSlightlyLeft:
+    case Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft:
       quadrant = LabelPosition::QuadrantBelowRight; //right quadrant, so labels are left-aligned
       alpha = 3 * M_PI_2;
       deltaX = -labelWidth / 4.0 - visualMargin.left();
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::BottomMiddle:
+    case Qgis::LabelPredefinedPointPosition::BottomMiddle:
       quadrant = LabelPosition::QuadrantBelow;
       alpha = 3 * M_PI_2;
       deltaX = -labelWidth / 2.0;
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::BottomSlightlyRight:
+    case Qgis::LabelPredefinedPointPosition::BottomSlightlyRight:
       quadrant = LabelPosition::QuadrantBelowLeft; //left quadrant, so labels are right-aligned
       alpha = 3 * M_PI_2;
       deltaX = -labelWidth * 3.0 / 4.0 + visualMargin.right();
       deltaY = -labelHeight + visualMargin.top() - symbolHeightOffset;
       break;
 
-    case QgsPalLayerSettings::BottomRight:
+    case Qgis::LabelPredefinedPointPosition::BottomRight:
       quadrant = LabelPosition::QuadrantBelowRight;
       alpha = 7 * M_PI_4;
       deltaX = -visualMargin.left() + symbolWidthOffset;
@@ -539,21 +539,21 @@ void createCandidateAtOrderedPositionOverPoint( double &labelX, double &labelY, 
 
 std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
-  const QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
+  const QVector< Qgis::LabelPredefinedPointPosition > positions = mLF->predefinedPositionOrder();
   double labelWidth = getLabelWidth( angle );
   double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
   const QgsMargins &visualMargin = mLF->visualMargin();
 
-  double symbolWidthOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().width() / 2.0 : 0.0 );
-  double symbolHeightOffset = ( mLF->offsetType() == QgsPalLayerSettings::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
+  double symbolWidthOffset = ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds ? mLF->symbolSize().width() / 2.0 : 0.0 );
+  double symbolHeightOffset = ( mLF->offsetType() == Qgis::LabelOffsetType::FromSymbolBounds ? mLF->symbolSize().height() / 2.0 : 0.0 );
 
   double cost = 0.0001;
   std::size_t i = lPos.size();
 
   const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
   std::size_t created = 0;
-  for ( QgsPalLayerSettings::PredefinedPointPosition position : positions )
+  for ( Qgis::LabelPredefinedPointPosition position : positions )
   {
     LabelPosition::Quadrant quadrant = LabelPosition::QuadrantAboveLeft;
 
@@ -1055,7 +1055,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
       labelHeight = getLabelHeight( angle );
       beta = angle + M_PI_2;
 
-      if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
+      if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Line )
       {
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
@@ -1089,7 +1089,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
           }
         }
       }
-      else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
+      else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
       {
         lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, false, LabelPosition::QuadrantOver ) ); // Line
       }
@@ -1257,7 +1257,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
     labelHeight = getLabelHeight( angle );
     beta = angle + M_PI_2;
 
-    if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Line )
+    if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Line )
     {
       // find out whether the line direction for this candidate is from right to left
       bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
@@ -1291,7 +1291,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
         }
       }
     }
-    else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
+    else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
     {
       lPos.emplace_back( std::make_unique< LabelPosition >( i, candidateStartX - labelWidth / 2, candidateStartY - labelHeight / 2, labelWidth, labelHeight, 0, cost, this, false, LabelPosition::QuadrantOver ) ); // Line
     }
@@ -1766,7 +1766,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
           continue;
         }
 
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal && mLF->permissibleZonePrepared() )
+        if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal && mLF->permissibleZonePrepared() )
         {
           //check width/height of bbox is sufficient for label
           if ( mLF->permissibleZone().boundingBox().width() < labelWidth ||
@@ -1778,7 +1778,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
         }
 
         bool enoughPlace = false;
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Free )
+        if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Free )
         {
           enoughPlace = true;
           px = ( box.x[0] + box.x[2] ) / 2 - labelWidth;
@@ -1806,7 +1806,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
 
         } // arrangement== FREE ?
 
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal || enoughPlace )
+        if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal || enoughPlace )
         {
           alpha = 0.0; // HORIZ
         }
@@ -2001,7 +2001,7 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
   const double labelAngle = 0;
 
   std::size_t i = lPos.size();
-  auto addCandidate = [&]( double x, double y, QgsPalLayerSettings::PredefinedPointPosition position )
+  auto addCandidate = [&]( double x, double y, Qgis::LabelPredefinedPointPosition position )
   {
     double labelX = 0;
     double labelY = 0;
@@ -2050,61 +2050,61 @@ std::size_t FeaturePart::createCandidatesOutsidePolygon( std::vector<std::unique
     // adapted fom Rylov & Reimer figure 9
     if ( angle >= 0 && angle <= 5 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::TopMiddle );
-      addCandidate( x, y, QgsPalLayerSettings::TopLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopMiddle );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopLeft );
     }
     else if ( angle <= 85 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::TopLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopLeft );
     }
     else if ( angle <= 90 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::TopLeft );
-      addCandidate( x, y, QgsPalLayerSettings::MiddleLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::MiddleLeft );
     }
 
     else if ( angle <= 95 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::MiddleLeft );
-      addCandidate( x, y, QgsPalLayerSettings::BottomLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::MiddleLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomLeft );
     }
     else if ( angle <= 175 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::BottomLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomLeft );
     }
     else if ( angle <= 180 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::BottomLeft );
-      addCandidate( x, y, QgsPalLayerSettings::BottomMiddle );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomLeft );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomMiddle );
     }
 
     else if ( angle <= 185 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::BottomMiddle );
-      addCandidate( x, y, QgsPalLayerSettings::BottomRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomMiddle );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomRight );
     }
     else if ( angle <= 265 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::BottomRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomRight );
     }
     else if ( angle <= 270 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::BottomRight );
-      addCandidate( x, y, QgsPalLayerSettings::MiddleRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::BottomRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::MiddleRight );
     }
     else if ( angle <= 275 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::MiddleRight );
-      addCandidate( x, y, QgsPalLayerSettings::TopRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::MiddleRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopRight );
     }
     else if ( angle <= 355 )
     {
-      addCandidate( x, y, QgsPalLayerSettings::TopRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopRight );
     }
     else
     {
-      addCandidate( x, y, QgsPalLayerSettings::TopRight );
-      addCandidate( x, y, QgsPalLayerSettings::TopMiddle );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopRight );
+      addCandidate( x, y, Qgis::LabelPredefinedPointPosition::TopMiddle );
     }
 
     return !pal->isCanceled();
@@ -2127,16 +2127,16 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
     switch ( type )
     {
       case GEOS_POINT:
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OrderedPositionsAroundPoint )
+        if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OrderedPositionsAroundPoint )
           createCandidatesAtOrderedPositionsOverPoint( x[0], y[0], lPos, angle );
-        else if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint || mLF->hasFixedQuadrant() )
+        else if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OverPoint || mLF->hasFixedQuadrant() )
           createCandidatesOverPoint( x[0], y[0], lPos, angle );
         else
           createCandidatesAroundPoint( x[0], y[0], lPos, angle );
         break;
 
       case GEOS_LINESTRING:
-        if ( mLF->layer()->arrangement() == QgsPalLayerSettings::Horizontal )
+        if ( mLF->layer()->arrangement() == Qgis::LabelPlacement::Horizontal )
           createHorizontalCandidatesAlongLine( lPos, this, pal );
         else if ( mLF->layer()->isCurved() )
           createCurvedCandidatesAlongLine( lPos, this, true, pal );
@@ -2153,7 +2153,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
         const bool allowInside =  mLF->polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementInsideOfPolygon;
         //check width/height of bbox is sufficient for label
 
-        if ( ( allowOutside && !allowInside ) || ( mLF->layer()->arrangement() == QgsPalLayerSettings::OutsidePolygons ) )
+        if ( ( allowOutside && !allowInside ) || ( mLF->layer()->arrangement() == Qgis::LabelPlacement::OutsidePolygons ) )
         {
           // only allowed to place outside of polygon
           createCandidatesOutsidePolygon( lPos, pal );
@@ -2171,7 +2171,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
           {
             switch ( mLF->layer()->arrangement() )
             {
-              case QgsPalLayerSettings::AroundPoint:
+              case Qgis::LabelPlacement::AroundPoint:
               {
                 double cx, cy;
                 getCentroid( cx, cy, mLF->layer()->centroidInside() );
@@ -2180,17 +2180,17 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
                 created += createCandidatesAroundPoint( cx, cy, lPos, angle );
                 break;
               }
-              case QgsPalLayerSettings::OverPoint:
+              case Qgis::LabelPlacement::OverPoint:
               {
                 double cx, cy;
                 getCentroid( cx, cy, mLF->layer()->centroidInside() );
                 created += createCandidatesOverPoint( cx, cy, lPos, angle );
                 break;
               }
-              case QgsPalLayerSettings::Line:
+              case Qgis::LabelPlacement::Line:
                 created += createCandidatesAlongLine( lPos, this, false, pal );
                 break;
-              case QgsPalLayerSettings::PerimeterCurved:
+              case Qgis::LabelPlacement::PerimeterCurved:
                 created += createCurvedCandidatesAlongLine( lPos, this, false, pal );
                 break;
               default:
@@ -2218,7 +2218,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
   return lPos;
 }
 
-void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
+void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] ) const
 {
   if ( !mGeos )
     createGeosGeom();
@@ -2369,25 +2369,22 @@ double FeaturePart::calculatePriority() const
 
 bool FeaturePart::onlyShowUprightLabels() const
 {
-  bool uprightLabel = false;
+  bool result = false;
 
   switch ( mLF->layer()->upsidedownLabels() )
   {
-    case Layer::Upright:
-      uprightLabel = true;
+    case Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels:
+      result = true;
       break;
-    case Layer::ShowDefined:
+    case Qgis::UpsideDownLabelHandling::AllowUpsideDownWhenRotationIsDefined:
       // upright only dynamic labels
       if ( !hasFixedRotation() || ( !hasFixedPosition() && fixedAngle() == 0.0 ) )
       {
-        uprightLabel = true;
+        result = true;
       }
       break;
-    case Layer::ShowAll:
+    case Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown:
       break;
-    default:
-      uprightLabel = true;
   }
-  return uprightLabel;
+  return result;
 }
-

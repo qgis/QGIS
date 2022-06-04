@@ -323,6 +323,21 @@ Sets the symbol to be used for a legend symbol item.
 .. versionadded:: 2.14
 %End
 
+    virtual QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok /Out/ ) const;
+%Docstring
+Attempts to convert the specified legend rule ``key`` to a QGIS expression matching
+the features displayed using that key.
+
+:param key: legend key
+:param layer: associated vector layer
+
+:return: - QGIS expression string for matching features with the specified key
+         - ok: will be set to ``True`` if legend key was successfully converted to a filter expression
+
+
+.. versionadded:: 3.26
+%End
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
 %Docstring
 Returns a list of symbology items for the legend

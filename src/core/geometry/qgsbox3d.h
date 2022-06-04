@@ -23,7 +23,7 @@
 
 #include <QVector3D>
 
-class QgsPoint;
+#include "qgspoint.h"
 
 /**
  * \ingroup core
@@ -214,6 +214,22 @@ class CORE_EXPORT QgsBox3d
     double distanceTo( const  QVector3D &point ) const;
 
     bool operator==( const QgsBox3d &other ) const;
+
+    /**
+     * Scale the rectangle around a \a center QgsPoint.
+     *
+     * If no \a center point is specified then the current center of the box will be used.
+     *
+     * \since QGIS 3.26
+     */
+    void scale( double scaleFactor, const QgsPoint &center = QgsPoint() );
+
+    /**
+     * Scale the rectangle around a center coordinates.
+     *
+     * \since QGIS 3.26
+     */
+    void scale( double scaleFactor, double centerX, double centerY, double centerZ );
 
   private:
 

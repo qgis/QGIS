@@ -793,6 +793,101 @@ bool QgsCoordinateReferenceSystem::hasAxisInverted() const
   return d->mAxisInverted;
 }
 
+QList<Qgis::CrsAxisDirection> QgsCoordinateReferenceSystem::axisOrdering() const
+{
+  const PJ *projObject = d->threadLocalProjObject();
+  if ( !projObject )
+    return {};
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QgsProjUtils::proj_pj_unique_ptr pjCs( proj_crs_get_coordinate_system( context, projObject ) );
+  if ( !pjCs )
+    return {};
+
+  const thread_local QMap< Qgis::CrsAxisDirection, QString > mapping =
+  {
+    { Qgis::CrsAxisDirection::North, QStringLiteral( "north" ) },
+    { Qgis::CrsAxisDirection::NorthNorthEast, QStringLiteral( "northNorthEast" ) },
+    { Qgis::CrsAxisDirection::NorthEast, QStringLiteral( "northEast" ) },
+    { Qgis::CrsAxisDirection::EastNorthEast, QStringLiteral( "eastNorthEast" ) },
+    { Qgis::CrsAxisDirection::East, QStringLiteral( "east" ) },
+    { Qgis::CrsAxisDirection::EastSouthEast, QStringLiteral( "eastSouthEast" ) },
+    { Qgis::CrsAxisDirection::SouthEast, QStringLiteral( "southEast" ) },
+    { Qgis::CrsAxisDirection::SouthSouthEast, QStringLiteral( "southSouthEast" ) },
+    { Qgis::CrsAxisDirection::South, QStringLiteral( "south" ) },
+    { Qgis::CrsAxisDirection::SouthSouthWest, QStringLiteral( "southSouthWest" ) },
+    { Qgis::CrsAxisDirection::SouthWest, QStringLiteral( "southWest" ) },
+    { Qgis::CrsAxisDirection::WestSouthWest, QStringLiteral( "westSouthWest" ) },
+    { Qgis::CrsAxisDirection::West, QStringLiteral( "west" ) },
+    { Qgis::CrsAxisDirection::WestNorthWest, QStringLiteral( "westNorthWest" ) },
+    { Qgis::CrsAxisDirection::NorthWest, QStringLiteral( "northWest" ) },
+    { Qgis::CrsAxisDirection::NorthNorthWest, QStringLiteral( "northNorthWest" ) },
+    { Qgis::CrsAxisDirection::GeocentricX, QStringLiteral( "geocentricX" ) },
+    { Qgis::CrsAxisDirection::GeocentricY, QStringLiteral( "geocentricY" ) },
+    { Qgis::CrsAxisDirection::GeocentricZ, QStringLiteral( "geocentricZ" ) },
+    { Qgis::CrsAxisDirection::Up, QStringLiteral( "up" ) },
+    { Qgis::CrsAxisDirection::Down, QStringLiteral( "down" ) },
+    { Qgis::CrsAxisDirection::Forward, QStringLiteral( "forward" ) },
+    { Qgis::CrsAxisDirection::Aft, QStringLiteral( "aft" ) },
+    { Qgis::CrsAxisDirection::Port, QStringLiteral( "port" ) },
+    { Qgis::CrsAxisDirection::Starboard, QStringLiteral( "starboard" ) },
+    { Qgis::CrsAxisDirection::Clockwise, QStringLiteral( "clockwise" ) },
+    { Qgis::CrsAxisDirection::CounterClockwise, QStringLiteral( "counterClockwise" ) },
+    { Qgis::CrsAxisDirection::ColumnPositive, QStringLiteral( "columnPositive" ) },
+    { Qgis::CrsAxisDirection::ColumnNegative, QStringLiteral( "columnNegative" ) },
+    { Qgis::CrsAxisDirection::RowPositive, QStringLiteral( "rowPositive" ) },
+    { Qgis::CrsAxisDirection::RowNegative, QStringLiteral( "rowNegative" ) },
+    { Qgis::CrsAxisDirection::DisplayRight, QStringLiteral( "displayRight" ) },
+    { Qgis::CrsAxisDirection::DisplayLeft, QStringLiteral( "displayLeft" ) },
+    { Qgis::CrsAxisDirection::DisplayUp, QStringLiteral( "displayUp" ) },
+    { Qgis::CrsAxisDirection::DisplayDown, QStringLiteral( "displayDown" ) },
+    { Qgis::CrsAxisDirection::Future, QStringLiteral( "future" ) },
+    { Qgis::CrsAxisDirection::Past, QStringLiteral( "past" ) },
+    { Qgis::CrsAxisDirection::Towards, QStringLiteral( "towards" ) },
+    { Qgis::CrsAxisDirection::AwayFrom, QStringLiteral( "awayFrom" ) },
+  };
+
+  QList< Qgis::CrsAxisDirection > res;
+  const int axisCount = proj_cs_get_axis_count( context, pjCs.get() );
+  if ( axisCount > 0 )
+  {
+    res.reserve( axisCount );
+
+    for ( int i = 0; i < axisCount; ++i )
+    {
+      const char *outDirection = nullptr;
+      proj_cs_get_axis_info( context, pjCs.get(), i,
+                             nullptr,
+                             nullptr,
+                             &outDirection,
+                             nullptr,
+                             nullptr,
+                             nullptr,
+                             nullptr
+                           );
+      // get first word of direction only
+      const thread_local QRegularExpression rx( QStringLiteral( "([^\\s]+).*" ) );
+      const QRegularExpressionMatch match = rx.match( QString( outDirection ) );
+      if ( !match.hasMatch() )
+        continue;
+
+      const QString direction = match.captured( 1 );
+      Qgis::CrsAxisDirection dir = Qgis::CrsAxisDirection::Unspecified;
+      for ( auto it = mapping.constBegin(); it != mapping.constEnd(); ++it )
+      {
+        if ( it.value().compare( direction, Qt::CaseInsensitive ) == 0 )
+        {
+          dir = it.key();
+          break;
+        }
+      }
+
+      res.append( dir );
+    }
+  }
+  return res;
+}
+
 bool QgsCoordinateReferenceSystem::createFromWkt( const QString &wkt )
 {
   return createFromWktInternal( wkt, QString() );
@@ -2048,7 +2143,7 @@ void QgsCoordinateReferenceSystem::setValidationHint( const QString &html )
   mValidationHint = html;
 }
 
-QString QgsCoordinateReferenceSystem::validationHint()
+QString QgsCoordinateReferenceSystem::validationHint() const
 {
   return mValidationHint;
 }

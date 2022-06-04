@@ -1255,6 +1255,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 
     void startPreviewJob( int number );
 
+    void temporalControllerModeChanged();
+
   private:
 
     // Restore scale RAII
@@ -1457,6 +1459,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.16
      */
     void endZoomRect( QPoint pos );
+
+    //! Stop/cancel zooming via rectangle
+    void stopZoomRect();
+
+    //! Start map pan
+    void startPan();
+
+    //! Stop map pan
+    void stopPan();
 
     /**
      * Returns bounding box of feature list (in canvas coordinates)

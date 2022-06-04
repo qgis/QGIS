@@ -48,7 +48,7 @@ struct QgsOgrLayerReleaser
   /**
    * Releases a QgsOgrLayer \a layer.
    */
-  void operator()( QgsOgrLayer *layer );
+  void operator()( QgsOgrLayer *layer ) const;
 };
 
 /**
@@ -133,6 +133,9 @@ class CORE_EXPORT QgsOgrProviderUtils
     static QStringList fileExtensions();
     static QStringList directoryExtensions();
     static QStringList wildcards();
+
+    //! Whether the file is a local file.
+    static bool IsLocalFile( const QString &path );
 
     /**
      * Creates an empty data source
@@ -238,6 +241,9 @@ class CORE_EXPORT QgsOgrProviderUtils
 
     //! Gets single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
+
+    //! Gets single flatten and linear geometry type
+    static OGRwkbGeometryType ogrWkbSingleFlattenAndLinear( OGRwkbGeometryType type );
 
     static QString ogrWkbGeometryTypeName( OGRwkbGeometryType type );
 
@@ -443,6 +449,9 @@ class QgsOgrLayer
     //! Return an approximate feature count
     GIntBig GetApproxFeatureCount();
 
+    //! Return an total feature count based on meta data from package container
+    GIntBig GetTotalFeatureCountFromMetaData() const;
+
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );
 
@@ -487,16 +496,16 @@ class QgsOgrLayer
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     //! Returns native GDALDatasetH object with the mutex to lock when using it
-    GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex );
+    GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex ) const;
 
     //! Returns native OGRLayerH object with the mutex to lock when using it
-    OGRLayerH getHandleAndMutex( QMutex *&mutex );
+    OGRLayerH getHandleAndMutex( QMutex *&mutex ) const;
 #else
     //! Returns native GDALDatasetH object with the mutex to lock when using it
-    GDALDatasetH getDatasetHandleAndMutex( QRecursiveMutex *&mutex );
+    GDALDatasetH getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const;
 
     //! Returns native OGRLayerH object with the mutex to lock when using it
-    OGRLayerH getHandleAndMutex( QRecursiveMutex *&mutex );
+    OGRLayerH getHandleAndMutex( QRecursiveMutex *&mutex ) const;
 #endif
 
 

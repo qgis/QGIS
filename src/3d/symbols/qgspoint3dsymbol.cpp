@@ -222,8 +222,11 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
   else if ( shape() == QgsPoint3DSymbol::Billboard )
   {
     Qgs3DExportObject *obj = exporter->processPoints( entity, objectNamePrefix );
-    if ( obj != nullptr ) exporter->mObjects << obj;
-    if ( obj != nullptr ) return true;
+    if ( obj != nullptr )
+    {
+      exporter->mObjects << obj;
+      return true;
+    }
   }
   else
   {

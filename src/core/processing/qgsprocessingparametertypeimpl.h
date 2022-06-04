@@ -480,7 +480,7 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A geographic point parameter." );
+      return QCoreApplication::translate( "Processing", "A point geometry parameter." );
     }
 
     QString name() const override

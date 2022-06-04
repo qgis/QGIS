@@ -42,7 +42,7 @@ public:
     Epf(BaseInfo& common);
     ~Epf();
 
-    void run(const Options& options, ProgressWriter& progress);
+    void run(ProgressWriter& progress);
 
 private:
     PointCount createFileInfo(const StringList& input, StringList dimNames,

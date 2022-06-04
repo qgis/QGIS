@@ -120,7 +120,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
     dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
   }
 
-  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a Directory" ), dir, QFileDialog::ShowDirsOnly );
+  const QString rootName = QFileDialog::getExistingDirectory( this, tr( "Select a Directory" ), dir, QFileDialog::Options() );
 
   if ( !rootName.isNull() )
     mRootPath->setText( rootName );

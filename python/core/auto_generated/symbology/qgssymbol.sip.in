@@ -11,6 +11,58 @@
 
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
+class QgsSymbolAnimationSettings
+{
+%Docstring(signature="appended")
+
+Contains settings relating to symbol animation.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgssymbol.h"
+%End
+  public:
+
+    void setIsAnimated( bool animated );
+%Docstring
+Sets whether the symbol is animated.
+
+This is a user-facing setting for symbols, which allows users to define whether a
+symbol is animated, and allows for creation of animated symbols via data
+defined properties.
+
+.. seealso:: :py:func:`isAnimated`
+%End
+
+    bool isAnimated() const;
+%Docstring
+Returns ``True`` if the symbol is animated.
+
+This is a user-facing setting for symbols, which allows users to define whether a
+symbol is animated, and allows for creation of animated symbols via data
+defined properties.
+
+.. seealso:: :py:func:`setIsAnimated`
+%End
+
+    void setFrameRate( double rate );
+%Docstring
+Sets the symbol animation frame ``rate`` (in frames per second).
+
+.. seealso:: :py:func:`frameRate`
+%End
+
+    double frameRate() const;
+%Docstring
+Returns the symbol animation frame rate (in frames per second).
+
+.. seealso:: :py:func:`setFrameRate`
+%End
+
+};
+
 class QgsSymbol
 {
 %Docstring(signature="appended")
@@ -259,7 +311,7 @@ Ends the rendering process. This should be called after rendering all desired fe
 .. seealso:: :py:func:`startRender`
 %End
 
-    void setColor( const QColor &color );
+    void setColor( const QColor &color ) const;
 %Docstring
 Sets the ``color`` for the symbol.
 
@@ -387,7 +439,7 @@ Returns ``True`` if the symbol has any components which use map unit based sizes
 .. versionadded:: 3.18
 %End
 
-    void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+    void setOutputUnit( QgsUnitTypes::RenderUnit unit ) const;
 %Docstring
 Sets the units to use for sizes and widths within the symbol. Individual
 symbol definitions will interpret this in different ways, e.g., a marker symbol
@@ -410,7 +462,7 @@ a default constructed map unit scale is returned.
 .. seealso:: :py:func:`setMapUnitScale`
 %End
 
-    void setMapUnitScale( const QgsMapUnitScale &scale );
+    void setMapUnitScale( const QgsMapUnitScale &scale ) const;
 %Docstring
 Sets the map unit ``scale`` for the symbol.
 
@@ -522,6 +574,25 @@ direction.
 .. seealso:: :py:func:`setForceRHR`
 
 .. versionadded:: 3.6
+%End
+
+    QgsSymbolAnimationSettings &animationSettings();
+%Docstring
+Returns a reference to the symbol animation settings.
+
+.. seealso:: :py:func:`setAnimationSettings`
+
+.. versionadded:: 3.26
+%End
+
+
+    void setAnimationSettings( const QgsSymbolAnimationSettings &settings );
+%Docstring
+Sets a the symbol animation ``settings``.
+
+.. seealso:: :py:func:`animationSettings`
+
+.. versionadded:: 3.26
 %End
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
@@ -697,6 +768,7 @@ Render editing vertex marker at specified point
 
 .. versionadded:: 2.16
 %End
+
 
 
 

@@ -62,7 +62,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::clone() const
   return r;
 }
 
-void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group )
+void QgsPointClusterRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) const
 {
   if ( group.size() > 1 )
   {

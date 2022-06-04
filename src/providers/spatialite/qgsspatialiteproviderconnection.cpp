@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgsdbquerylog.h"
 
 #include <QRegularExpression>
 #include <QTextCodec>
@@ -360,7 +361,8 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         QgsSpatiaLiteProviderConnection::TableProperty property;
         property.setTableName( tableName );
         // Create a layer and get information from it
-        std::unique_ptr< QgsVectorLayer > vl = std::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1String( "spatialite" ) );
+        // Use OGR because it's way faster
+        std::unique_ptr< QgsVectorLayer > vl = std::make_unique<QgsVectorLayer>( dsUri.database() + "|layername=" + dsUri.table(), QString(), QLatin1String( "ogr" ), QgsVectorLayer::LayerOptions( false, true ) );
         if ( vl->isValid() )
         {
           if ( vl->isSpatial() )
@@ -465,8 +467,11 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
 
+  QgsDatabaseQueryLogWrapper logWrapper( sql, uri(), providerKey(), QStringLiteral( "QgsSpatiaLiteProviderConnection" ), QGS_QUERY_LOG_ORIGIN );
+
   if ( feedback && feedback->isCanceled() )
   {
+    logWrapper.setCanceled();
     return QgsAbstractDatabaseProviderConnection::QueryResult();
   }
 
@@ -477,6 +482,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
     if ( feedback && feedback->isCanceled() )
     {
+      logWrapper.setCanceled();
       return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
@@ -539,6 +545,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
       if ( ! errCause.isEmpty() )
       {
+        logWrapper.setError( errCause );
         throw QgsProviderConnectionException( QObject::tr( "Error executing SQL statement %1: %2" ).arg( sql, errCause ) );
       }
 
@@ -561,6 +568,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
   if ( !errCause.isEmpty() )
   {
+    logWrapper.setError( errCause );
     throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
   }
 

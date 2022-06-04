@@ -67,7 +67,8 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
   private:
 
     QString formattedHelp() const;
-    QString helpComponent( const QString &name ) const;
+
+    void storeCurrentValue();
 
     QVariantMap mHelpContent;
 

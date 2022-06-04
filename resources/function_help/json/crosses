@@ -2,7 +2,7 @@
   "name": "crosses",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Tests whether a geometry crosses another. Returns true if the supplied geometries have some, but not all, interior points in common.",
+  "description": "Tests whether a geometry crosses another. Returns TRUE if the supplied geometries have some, but not all, interior points in common.",
   "arguments": [{
     "arg": "geometry1",
     "description": "a geometry"
@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "crosses( geom_from_wkt( 'LINESTRING(3 5, 4 4, 5 3)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
-    "returns": "true"
+    "returns": "TRUE"
   }, {
     "expression": "crosses( geom_from_wkt( 'POINT(4 5)' ), geom_from_wkt( 'LINESTRING(3 3, 4 4, 5 5)' ) )",
-    "returns": "false"
+    "returns": "FALSE"
   }],
   "tags": ["common", "supplied", "crosses", "tests", "interior", "points"]
 }

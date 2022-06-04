@@ -58,7 +58,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the roof color
      */
-    void setRoofColor( const QColor &roofColor );
+    void setRoofColor( const QColor &roofColor ) const;
 
     /**
      * Gets the wall color
@@ -68,12 +68,12 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the wall color
      */
-    void setWallColor( const QColor &wallColor );
+    void setWallColor( const QColor &wallColor ) const;
 
     /**
      * Set wall shading enabled
      */
-    void setWallShadingEnabled( bool enabled );
+    void setWallShadingEnabled( bool enabled ) const;
 
     /**
      * Gets wall shading enabled
@@ -88,7 +88,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the shadow's color
      */
-    void setShadowColor( const QColor &shadowColor );
+    void setShadowColor( const QColor &shadowColor ) const;
 
     /**
      * Gets the shadow's spread distance in map units
@@ -98,7 +98,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Set the shadow's spread distance in map units
      */
-    void setShadowSpread( double shadowSpread );
+    void setShadowSpread( double shadowSpread ) const;
 
     /**
      * Try to convert from an existing renderer. If it is not of the same type
@@ -115,7 +115,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     /**
      * Enable or disable the shadow
      */
-    void setShadowEnabled( bool value );
+    void setShadowEnabled( bool value ) const;
 
   private:
 

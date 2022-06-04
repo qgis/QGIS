@@ -77,6 +77,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_WCS_SERVICE_URL, //!< To set the WCS service URL if it's not present in the project. (since QGIS 3.20).
       QGIS_SERVER_WMTS_SERVICE_URL, //!< To set the WMTS service URL if it's not present in the project. (since QGIS 3.20).
       QGIS_SERVER_LANDING_PAGE_PREFIX, //! Prefix of the path component of the landing page base URL, default is empty (since QGIS 3.20).
+      QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL, //! Set the interval for cache invalidation strategy 'interval', default to 0 which select the legacy File system watcher  (since QGIS 3.26).
+      QGIS_SERVER_PROJECT_CACHE_STRATEGY, //! Set the project cache strategy. Possible values are 'filesystem', 'periodic' or 'off' (since QGIS 3.26).
     };
     Q_ENUM( EnvVar )
 };
@@ -153,7 +155,7 @@ class SERVER_EXPORT QgsServerSettings
      * \see logLevel()
      * \since QGIS 3.18
      */
-    bool logProfile();
+    bool logProfile() const;
 
     /**
      * Returns the QGS project file to use.
@@ -293,6 +295,27 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.20
      */
     QString serviceUrl( const QString &service ) const;
+
+    /**
+     * Returns the config cache check interval for the 'periodic' strategy.
+     * \since QGIS 3.26
+     */
+    int projectCacheCheckInterval() const;
+
+    /**
+     * Returns the project's cache strategy
+     * The default value is 'filesystem', the value can be changed by setting the environment
+     * variable QGIS_SERVER_PROJECT_CACHE_STRATEGY.
+     * Possible values are:
+     *
+     * - 'filesystem': Use file system watcher for notifying projects change. Note that it works
+     *   only with projects stored in files and not across mounted NFS volumes on Linux.
+     * - 'periodic': Timer based periodic check for project's changes. Works with all storage backend.
+     * - 'off': Disable completely internal project's cache handling
+     *
+     * \since QGIS 3.26
+     */
+    QString projectCacheStrategy() const;
 
     /**
      * Returns the string representation of a setting.

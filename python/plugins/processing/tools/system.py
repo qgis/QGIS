@@ -70,23 +70,6 @@ def getTempFilename(ext=None):
     return filename
 
 
-def getTempDirInTempFolder():
-    """Returns a temporary directory, putting it into a temp folder.
-    """
-
-    path = QgsProcessingUtils.tempFolder()
-    path = os.path.join(path, uuid.uuid4().hex)
-    mkdir(path)
-    return path
-
-
-def removeInvalidChars(string):
-    validChars = \
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:.'
-    string = ''.join(c for c in string if c in validChars)
-    return string
-
-
 def getNumExportedLayers():
     global numExported
     numExported += 1

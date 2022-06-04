@@ -158,7 +158,7 @@ int main( int argc, char **argv )
 
     if ( byteArray.size() != expectedSize )
     {
-      G_fatal_error( "Wrong byte array size, expected %d bytes, got %d, row %d / %d", expectedSize, byteArray.size(), row, rows );
+      G_fatal_error( "Wrong byte array size, expected %d bytes, got %lld, row %d / %d", expectedSize, static_cast<long long>( byteArray.size() ), row, rows );
       return 1;
     }
 

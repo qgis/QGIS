@@ -2,7 +2,7 @@
   "name": "IN",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Returns 1 if value is found within a list of values.",
+  "description": "Returns TRUE if value is found within a list of values.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -12,10 +12,10 @@
   }],
   "examples": [{
     "expression": "'A' IN ('A','B')",
-    "returns": "1"
+    "returns": "TRUE"
   }, {
     "expression": "'A' IN ('C','B')",
-    "returns": "0"
+    "returns": "FALSE"
   }],
   "tags": ["list", "contained", "found"]
 }

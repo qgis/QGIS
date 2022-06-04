@@ -22,6 +22,7 @@
 
 #include "qgsrange.h"
 #include "qgscameracontroller.h"
+#include "qgsrectangle.h"
 
 namespace Qt3DExtras
 {
@@ -40,7 +41,7 @@ class QgsWindow3DEngine;
 class QgsPointXY;
 class Qgs3DNavigationWidget;
 class QgsTemporalController;
-
+class QgsRubberBand;
 
 class Qgs3DMapCanvas : public QWidget
 {
@@ -68,7 +69,7 @@ class Qgs3DMapCanvas : public QWidget
     void setViewFromTop( const QgsPointXY &center, float distance, float rotation = 0 );
 
     //! Saves the current scene as an image
-    void saveAsImage( QString fileName, QString fileFormat );
+    void saveAsImage( const QString &fileName, const QString &fileFormat );
 
     /**
      * Sets the active map tool that will receive events from the 3D canvas. Does not transfer ownership.
@@ -81,6 +82,11 @@ class Qgs3DMapCanvas : public QWidget
      * If the tool is NULLPTR, events will be used for camera manipulation.
      */
     Qgs3DMapTool *mapTool() const { return mMapTool; }
+
+    /**
+     * Returns the 3D engine.
+     */
+    QgsWindow3DEngine *engine() const { return mEngine; }
 
     /**
      * Sets the visibility of on-screen navigation widget.
@@ -99,6 +105,20 @@ class Qgs3DMapCanvas : public QWidget
      */
     QSize windowSize() const;
 
+    /**
+     * Resets camera view to show the extent \a extent (top view)
+     *
+     * \since QGIS 3.26
+     */
+    void setViewFrom2DExtent( const QgsRectangle &extent );
+
+    /**
+     * Calculates the 2D extent viewed by the 3D camera as the vertices of the viewed trapezoid
+     *
+     * \since QGIS 3.26
+     */
+    QVector<QgsPointXY> viewFrustum2DExtent();
+
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( const QString &fileName );
@@ -112,6 +132,13 @@ class Qgs3DMapCanvas : public QWidget
     void fpsCounterEnabledChanged( bool enabled );
 
     /**
+     * Emitted when the viewed 2D extent seen by the 3D camera has changed
+     *
+     * \since QGIS 3.26
+     */
+    void viewed2DExtentFrom3DChanged( QVector<QgsPointXY> extent );
+
+    /**
      * Emitted when the camera navigation \a speed is changed.
      *
      * \since QGIS 3.18
@@ -122,7 +149,7 @@ class Qgs3DMapCanvas : public QWidget
 
   private slots:
     void updateTemporalRange( const QgsDateTimeRange &timeRange );
-    void onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode );
+    void onNavigationModeChanged( QgsCameraController::NavigationMode mode );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
