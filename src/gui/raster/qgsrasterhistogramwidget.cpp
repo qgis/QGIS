@@ -933,9 +933,9 @@ void QgsRasterHistogramWidget::applyHistoMin()
     return;
 
   const int bandNo = cboHistoBand->currentIndex() + 1;
-  const QList< int > mySelectedBands = rendererSelectedBands();
+  const QList< int > selectedBands = rendererSelectedBands();
   QString min;
-  for ( int i = 0; i <= mySelectedBands.size(); i++ )
+  for ( int i = 0; i <= selectedBands.size(); i++ )
   {
     if ( bandNo == mRendererWidget->selectedBand( i ) )
     {
@@ -943,6 +943,10 @@ void QgsRasterHistogramWidget::applyHistoMin()
       if ( mHistoUpdateStyleToMinMax && mRendererWidget->min( i ) != min )
       {
         mRendererWidget->setMin( min, i );
+        if ( mRendererWidget->contrastEnhancementAlgorithm() == QgsContrastEnhancement::NoEnhancement )
+        {
+          mRendererWidget->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+        }
         if ( mRendererWidget->minMaxWidget() )
         {
           mRendererWidget->minMaxWidget()->userHasSetManualMinMaxValues();
@@ -978,6 +982,10 @@ void QgsRasterHistogramWidget::applyHistoMax()
       if ( mHistoUpdateStyleToMinMax && mRendererWidget->max( i ) != max )
       {
         mRendererWidget->setMax( max, i );
+        if ( mRendererWidget->contrastEnhancementAlgorithm() == QgsContrastEnhancement::NoEnhancement )
+        {
+          mRendererWidget->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+        }
         if ( mRendererWidget->minMaxWidget() )
         {
           mRendererWidget->minMaxWidget()->userHasSetManualMinMaxValues();
@@ -1165,7 +1173,8 @@ QList< int > QgsRasterHistogramWidget::rendererSelectedBands()
     return mySelectedBands;
   }
 
-  if ( mRendererName == QLatin1String( "singlebandgray" ) )
+  if ( mRendererName == QLatin1String( "singlebandgray" ) ||
+       mRendererName == QLatin1String( "singlebandpseudocolor" ) )
   {
     mySelectedBands << mRendererWidget->selectedBand();
   }
@@ -1187,7 +1196,8 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int bandNo )
   if ( ! mRendererWidget )
     return myMinMax;
 
-  if ( mRendererName == QLatin1String( "singlebandgray" ) )
+  if ( mRendererName == QLatin1String( "singlebandgray" ) ||
+       mRendererName == QLatin1String( "singlebandpseudocolor" ) )
   {
     if ( bandNo == mRendererWidget->selectedBand() )
     {
