@@ -3049,6 +3049,11 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
 
   sql += " ORDER BY " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " ASC";
 
+  if ( limit > 0 )
+  {
+    sql += " LIMIT " + QString::number( limit ).toLocal8Bit();
+  }
+
   QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ), 2 );
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
@@ -3121,6 +3126,11 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   }
 
   sql += " ORDER BY " + quotedIdentifier( textEncoding()->fromUnicode( fld.name() ) ) + " ASC";
+
+  if ( limit > 0 )
+  {
+    sql += " LIMIT " + QString::number( limit ).toLocal8Bit();
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ), 2 );
   QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
