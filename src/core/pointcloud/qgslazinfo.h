@@ -126,7 +126,7 @@ class CORE_EXPORT QgsLazInfo
     //! Returns the LAZPERF header object
     lazperf::header14 header() const { return mHeader; }
 #endif
-  
+
     //! Static function to parse the raw extrabytes VLR into a list of recognizable extrabyte attributes
     static QVector<ExtraBytesAttributeDetails> parseExtrabytes( char *rawData, int length, int pointRecordLength );
 
