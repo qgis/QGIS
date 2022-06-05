@@ -170,6 +170,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( VectorLayerTypeFlag )
     //! Vector layer type flags
     Q_DECLARE_FLAGS( VectorLayerTypeFlags, VectorLayerTypeFlag )
+    Q_FLAG( VectorLayerTypeFlags )
 
     /**
      * Authorisation to run Python Macros
@@ -295,7 +296,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolRenderHint )
     //! Symbol render hints
     Q_DECLARE_FLAGS( SymbolRenderHints, SymbolRenderHint ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, RenderHints )
-
+    Q_FLAG( SymbolRenderHints )
 
     /**
      * \brief Flags controlling behavior of symbols
@@ -309,6 +310,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolFlag )
     //! Symbol flags
     Q_DECLARE_FLAGS( SymbolFlags, SymbolFlag )
+    Q_FLAG( SymbolFlags )
 
     /**
      * Flags for controlling how symbol preview images are generated.
@@ -322,6 +324,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolPreviewFlag )
     //! Symbol preview flags
     Q_DECLARE_FLAGS( SymbolPreviewFlags, SymbolPreviewFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsSymbol, SymbolPreviewFlags )
+    Q_FLAG( SymbolPreviewFlags )
 
     /**
      * \brief Flags controlling behavior of symbol layers
@@ -335,6 +338,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SymbolLayerFlag )
     //! Symbol layer flags
     Q_DECLARE_FLAGS( SymbolLayerFlags, SymbolLayerFlag )
+    Q_FLAG( SymbolLayerFlags )
 
     /**
      * Browser item types.
@@ -388,6 +392,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( BrowserItemCapability )
     //! Browser item capabilities
     Q_DECLARE_FLAGS( BrowserItemCapabilities, BrowserItemCapability ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataItem, Capabilities )
+    Q_FLAG( BrowserItemCapabilities )
 
     /**
      * Browser item layer types
@@ -472,6 +477,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( SqlLayerDefinitionCapability )
     //! SQL layer definition capabilities
     Q_DECLARE_FLAGS( SqlLayerDefinitionCapabilities, SqlLayerDefinitionCapability )
+    Q_FLAG( SqlLayerDefinitionCapabilities )
 
     /**
      * SqlKeywordCategory enum represents the categories of the SQL keywords used by the SQL query editor.
@@ -532,6 +538,133 @@ class CORE_EXPORT Qgis
     Q_ENUM( UnplacedLabelVisibility )
 
     /**
+     * Label overlap handling.
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelOverlapHandling : int
+    {
+      PreventOverlap, //!< Do not allow labels to overlap other labels
+      AllowOverlapIfRequired, //!< Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed
+      AllowOverlapAtNoCost, //!< Labels may freely overlap other labels, at no cost
+    };
+    Q_ENUM( LabelOverlapHandling )
+
+    /**
+     * Placement modes which determine how label candidates are generated for a feature.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::Placement
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelPlacement SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, Placement ) : int
+      {
+      AroundPoint, //!< Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only.
+      OverPoint, //!< Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only.
+      Line, //!< Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only.
+      Curved, //!< Arranges candidates following the curvature of a line feature. Applies to line layers only.
+      Horizontal, //!< Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only.
+      Free, //!< Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only.
+      OrderedPositionsAroundPoint, //!< Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only.
+      PerimeterCurved, //!< Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only.
+      OutsidePolygons, //!< Candidates are placed outside of polygon boundaries. Applies to polygon layers only. Since QGIS 3.14
+    };
+    Q_ENUM( LabelPlacement )
+
+
+    /**
+     * Positions for labels when using the Qgis::LabelPlacement::OrderedPositionsAroundPoint placement mode.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::PredefinedPointPosition
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelPredefinedPointPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, PredefinedPointPosition ) : int
+      {
+      TopLeft, //!< Label on top-left of point
+      TopSlightlyLeft, //!< Label on top of point, slightly left of center
+      TopMiddle, //!< Label directly above point
+      TopSlightlyRight, //!< Label on top of point, slightly right of center
+      TopRight, //!< Label on top-right of point
+      MiddleLeft, //!< Label on left of point
+      MiddleRight, //!< Label on right of point
+      BottomLeft, //!< Label on bottom-left of point
+      BottomSlightlyLeft, //!< Label below point, slightly left of center
+      BottomMiddle, //!< Label directly below point
+      BottomSlightlyRight, //!< Label below point, slightly right of center
+      BottomRight, //!< Label on bottom right of point
+    };
+    Q_ENUM( LabelPredefinedPointPosition )
+
+    /**
+     * Behavior modifier for label offset and distance, only applies in some
+     * label placement modes.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::OffsetType
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelOffsetType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, OffsetType ) : int
+      {
+      FromPoint, //!< Offset distance applies from point geometry
+      FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
+    };
+    Q_ENUM( LabelOffsetType )
+
+    /**
+     * Label quadrant positions
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::QuadrantPosition
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelQuadrantPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, QuadrantPosition ) : int
+      {
+      AboveLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveLeft ), //!< Above left
+      Above SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAbove ), //!< Above center
+      AboveRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantAboveRight ), //!< Above right
+      Left SIP_MONKEYPATCH_COMPAT_NAME( QuadrantLeft ), //!< Left middle
+      Over SIP_MONKEYPATCH_COMPAT_NAME( QuadrantOver ), //!< Center middle
+      Right SIP_MONKEYPATCH_COMPAT_NAME( QuadrantRight ), //!< Right middle
+      BelowLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowLeft ), //!< Below left
+      Below SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelow ), //!< Below center
+      BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< BelowRight
+    };
+    Q_ENUM( LabelQuadrantPosition )
+
+    /**
+     * Handling techniques for upside down labels.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::UpsideDownLabels
+     *
+     * \since QGIS 3.26
+     */
+    enum class UpsideDownLabelHandling SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, UpsideDownLabels ) : int
+      {
+      FlipUpsideDownLabels SIP_MONKEYPATCH_COMPAT_NAME( Upright ), //!< Upside-down labels (90 <= angle < 270) are shown upright
+      AllowUpsideDownWhenRotationIsDefined SIP_MONKEYPATCH_COMPAT_NAME( ShowDefined ), //!< Show upside down when rotation is layer- or data-defined
+      AlwaysAllowUpsideDown SIP_MONKEYPATCH_COMPAT_NAME( ShowAll ) //!< Show upside down for all labels, including dynamic ones
+    };
+    Q_ENUM( UpsideDownLabelHandling )
+
+    /**
+     * Text alignment for multi-line labels.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::MultiLineAlign
+     *
+     * \since QGIS 3.26
+     */
+    enum class LabelMultiLineAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPalLayerSettings, MultiLineAlign ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( MultiLeft ) = 0, //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( MultiCenter ), //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( MultiRight ), //!< Right align
+      FollowPlacement SIP_MONKEYPATCH_COMPAT_NAME( MultiFollowPlacement ), //!< Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment
+      Justify SIP_MONKEYPATCH_COMPAT_NAME( MultiJustify ), //!< Justified
+    };
+    Q_ENUM( LabelMultiLineAlignment )
+
+    /**
      * Flags which control how data providers will scan for sublayers in a dataset.
      *
      * \since QGIS 3.22
@@ -546,6 +679,7 @@ class CORE_EXPORT Qgis
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
     Q_ENUM( SublayerQueryFlag )
+    Q_FLAG( SublayerQueryFlags )
 
     /**
      * Flags which reflect the properties of sublayers in a dataset.
@@ -559,6 +693,7 @@ class CORE_EXPORT Qgis
     //! Sublayer flags
     Q_DECLARE_FLAGS( SublayerFlags, SublayerFlag )
     Q_ENUM( SublayerFlag )
+    Q_FLAG( SublayerFlags )
 
     /**
      * Raster pipe interface roles.
@@ -726,6 +861,7 @@ class CORE_EXPORT Qgis
     //! Babel GPS format capabilities
     Q_DECLARE_FLAGS( BabelFormatCapabilities, BabelFormatCapability )
     Q_ENUM( BabelFormatCapability )
+    Q_FLAG( BabelFormatCapabilities )
 
     /**
      * Babel command flags, which control how commands and arguments
@@ -740,6 +876,7 @@ class CORE_EXPORT Qgis
     //! Babel command flags
     Q_DECLARE_FLAGS( BabelCommandFlags, BabelCommandFlag )
     Q_ENUM( BabelCommandFlag )
+    Q_FLAG( BabelCommandFlags )
 
     /**
      * GPS feature types.
@@ -796,6 +933,7 @@ class CORE_EXPORT Qgis
     //! Geometry validity flags
     Q_DECLARE_FLAGS( GeometryValidityFlags, GeometryValidityFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsGeometry, ValidityFlags )
     Q_ENUM( GeometryValidityFlag )
+    Q_FLAG( GeometryValidityFlags )
 
     /**
      * Available engines for validating geometries.
@@ -872,6 +1010,7 @@ class CORE_EXPORT Qgis
     //! File operation flags
     Q_DECLARE_FLAGS( FileOperationFlags, FileOperationFlag )
     Q_ENUM( FileOperationFlag )
+    Q_FLAG( FileOperationFlags )
 
     /**
      * Generic map layer properties.
@@ -886,7 +1025,7 @@ class CORE_EXPORT Qgis
     //! Map layer properties
     Q_DECLARE_FLAGS( MapLayerProperties, MapLayerProperty )
     Q_ENUM( MapLayerProperty )
-
+    Q_FLAG( MapLayerProperties )
 
     /**
      * Generic data provider flags.
@@ -900,6 +1039,7 @@ class CORE_EXPORT Qgis
     //! Data provider flags
     Q_DECLARE_FLAGS( DataProviderFlags, DataProviderFlag )
     Q_ENUM( DataProviderFlag )
+    Q_FLAG( DataProviderFlags )
 
     /**
      * Coordinate reference system axis directions.
@@ -978,6 +1118,7 @@ class CORE_EXPORT Qgis
     //! Annotation item flags
     Q_DECLARE_FLAGS( AnnotationItemFlags, AnnotationItemFlag )
     Q_ENUM( AnnotationItemFlag )
+    Q_FLAG( AnnotationItemFlags )
 
     /**
      * Flags for controlling how an annotation item behaves in the GUI.
@@ -991,6 +1132,7 @@ class CORE_EXPORT Qgis
     //! Annotation item GUI flags
     Q_DECLARE_FLAGS( AnnotationItemGuiFlags, AnnotationItemGuiFlag )
     Q_ENUM( AnnotationItemGuiFlag )
+    Q_FLAG( AnnotationItemGuiFlags )
 
     /**
      * Annotation item node types.
@@ -1098,6 +1240,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( TransformDirection )
 
     /**
+     * Flags which adjust the coordinate transformations behave.
+     *
+     * \since QGIS 3.26
+     */
+    enum class CoordinateTransformationFlag  : int
+    {
+      BallparkTransformsAreAppropriate = 1 << 0, //!< Indicates that approximate "ballpark" results are appropriate for this coordinate transform. See QgsCoordinateTransform::setBallparkTransformsAreAppropriate() for further details.
+      IgnoreImpossibleTransformations = 1 << 1, //!< Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform::isTransformationPossible() and QgsCoordinateTransform::isValid().
+    };
+    Q_ENUM( CoordinateTransformationFlag )
+
+    /**
+     * Coordinate transformation flags.
+     *
+     * \since QGIS 3.26
+     */
+    Q_DECLARE_FLAGS( CoordinateTransformationFlags, CoordinateTransformationFlag )
+    Q_ENUM( CoordinateTransformationFlags )
+
+    /**
      * Flags which adjust the way maps are rendered.
      *
      * \since QGIS 3.22
@@ -1124,6 +1286,7 @@ class CORE_EXPORT Qgis
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
     Q_ENUM( MapSettingsFlag )
+    Q_FLAG( MapSettingsFlags )
 
     /**
      * Flags which affect rendering operations.
@@ -1155,6 +1318,7 @@ class CORE_EXPORT Qgis
     //! Render context flags
     Q_DECLARE_FLAGS( RenderContextFlags, RenderContextFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsRenderContext, Flags )
     Q_ENUM( RenderContextFlag )
+    Q_FLAG( RenderContextFlags )
 
     // refs for below dox: https://github.com/qgis/QGIS/pull/1286#issuecomment-39806854
     // https://github.com/qgis/QGIS/pull/8573#issuecomment-445585826
@@ -1938,6 +2102,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
+
 
 
 // hack to workaround warnings when casting void pointers

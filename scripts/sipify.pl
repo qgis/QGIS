@@ -1122,6 +1122,7 @@ while ($LINE_IDX < $LINE_COUNT){
                     my $comment = $+{co};
                     # replace :: with . (changes c++ style namespace/class directives to Python style)
                     $comment =~ s/::/./g;
+                    $comment =~ s/\"/\\"/g;
                     my $compat_name = $+{compat} ? $+{compat} : $enum_member;
                     dbg_info("is_scope_based:$is_scope_based enum_mk_base:$enum_mk_base monkeypatch:$monkeypatch");
                     if ($is_scope_based eq "1" and $enum_member ne "") {

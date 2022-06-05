@@ -43,6 +43,7 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgs3daxis.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsaabb.h"
@@ -84,7 +85,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
-Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
+Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
 {
@@ -146,6 +147,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
 
+  connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -237,6 +239,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
+
+  on3DAxisSettingsChanged();
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -1226,3 +1230,19 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
     mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
   } );
 }
+
+void Qgs3DMapScene::on3DAxisSettingsChanged()
+{
+  if ( !m3DAxis )
+  {
+    if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
+    {
+      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+                               engine->root(),
+                               this,
+                               mCameraController,
+                               &mMap );
+    }
+  }
+}
+

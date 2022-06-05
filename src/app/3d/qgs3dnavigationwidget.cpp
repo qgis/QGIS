@@ -29,6 +29,7 @@ Q_NOWARN_DEPRECATED_POP
 
 #include "qgscameracontroller.h"
 #include "qgs3dnavigationwidget.h"
+#include "qgs3daxis.h"
 
 #include <Qt3DRender/QCamera>
 

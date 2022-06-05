@@ -267,6 +267,11 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
   if ( this->probFeat == lp->probFeat ) // bugfix #1
     return false; // always overlaping itself !
 
+  // if either this label doesn't cause collisions, or the other one doesn't, then we don't conflict!
+  if ( this->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ||
+       lp->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost )
+    return false;
+
   if ( !nextPart() && !lp->nextPart() )
   {
     if ( qgsDoubleNear( alpha, 0 ) && qgsDoubleNear( lp->alpha, 0 ) )

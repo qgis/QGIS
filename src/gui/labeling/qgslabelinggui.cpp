@@ -241,10 +241,10 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
     initCalloutWidgets();
   } );
 
-  mFontMultiLineAlignComboBox->addItem( tr( "Left" ), QgsPalLayerSettings::MultiLeft );
-  mFontMultiLineAlignComboBox->addItem( tr( "Center" ), QgsPalLayerSettings::MultiCenter );
-  mFontMultiLineAlignComboBox->addItem( tr( "Right" ), QgsPalLayerSettings::MultiRight );
-  mFontMultiLineAlignComboBox->addItem( tr( "Justify" ), QgsPalLayerSettings::MultiJustify );
+  mFontMultiLineAlignComboBox->addItem( tr( "Left" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Left ) );
+  mFontMultiLineAlignComboBox->addItem( tr( "Center" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Center ) );
+  mFontMultiLineAlignComboBox->addItem( tr( "Right" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Right ) );
+  mFontMultiLineAlignComboBox->addItem( tr( "Justify" ), static_cast< int >( Qgis::LabelMultiLineAlignment::Justify ) );
 
   mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleDegrees ), QgsUnitTypes::AngleDegrees );
   mCoordRotationUnitComboBox->addItem( QgsUnitTypes::toString( QgsUnitTypes::AngleRadians ), QgsUnitTypes::AngleRadians );
@@ -358,7 +358,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineDistanceSpnBx->setValue( mSettings.dist );
   mLineDistanceUnitWidget->setUnit( mSettings.distUnits );
   mLineDistanceUnitWidget->setMapUnitScale( mSettings.distMapUnitScale );
-  mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( mSettings.offsetType ) );
+  mOffsetTypeComboBox->setCurrentIndex( mOffsetTypeComboBox->findData( static_cast< int >( mSettings.offsetType ) ) );
   mQuadrantBtnGrp->button( static_cast<int>( mSettings.quadOffset ) )->setChecked( true );
   mPointOffsetXSpinBox->setValue( mSettings.xOffset );
   mPointOffsetYSpinBox->setValue( mSettings.yOffset );
@@ -372,7 +372,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mCheckAllowLabelsOutsidePolygons->setChecked( mSettings.polygonPlacementFlags() & QgsLabeling::PolygonPlacementFlag::AllowPlacementOutsideOfPolygon );
 
-  const int placementIndex = mPlacementModeComboBox->findData( mSettings.placement );
+  const int placementIndex = mPlacementModeComboBox->findData( static_cast< int >( mSettings.placement ) );
   if ( placementIndex >= 0 )
   {
     mPlacementModeComboBox->setCurrentIndex( placementIndex );
@@ -399,7 +399,10 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mLineSettings = mSettings.lineSettings();
 
   chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
-  mPalShowAllLabelsForLayerChkBx->setChecked( mSettings.displayAll );
+
+  mComboOverlapHandling->setCurrentIndex( mComboOverlapHandling->findData( static_cast< int >( mSettings.placementSettings().overlapHandling() ) ) );
+  mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
+
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mSettings.thinningSettings().minimumFeatureSize() );
   mLimitLabelChkBox->setChecked( mSettings.thinningSettings().limitNumberOfLabelsEnabled() );
@@ -423,9 +426,9 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   mAutoWrapLengthSpinBox->setValue( mSettings.autoWrapLength );
   mAutoWrapTypeComboBox->setCurrentIndex( mSettings.useMaxLineLengthForAutoWrap ? 0 : 1 );
 
-  if ( mFontMultiLineAlignComboBox->findData( mSettings.multilineAlign ) != -1 )
+  if ( mFontMultiLineAlignComboBox->findData( static_cast< int >( mSettings.multilineAlign ) ) != -1 )
   {
-    mFontMultiLineAlignComboBox->setCurrentIndex( mFontMultiLineAlignComboBox->findData( mSettings.multilineAlign ) );
+    mFontMultiLineAlignComboBox->setCurrentIndex( mFontMultiLineAlignComboBox->findData( static_cast< int >( mSettings.multilineAlign ) ) );
   }
   else
   {
@@ -533,10 +536,10 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = mLineDistanceSpnBx->value();
   lyr.distUnits = mLineDistanceUnitWidget->unit();
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
-  lyr.offsetType = static_cast< QgsPalLayerSettings::OffsetType >( mOffsetTypeComboBox->currentData().toInt() );
+  lyr.offsetType = static_cast< Qgis::LabelOffsetType >( mOffsetTypeComboBox->currentData().toInt() );
   if ( mQuadrantBtnGrp )
   {
-    lyr.quadOffset = static_cast< QgsPalLayerSettings::QuadrantPosition >( mQuadrantBtnGrp->checkedId() );
+    lyr.quadOffset = static_cast< Qgis::LabelQuadrantPosition >( mQuadrantBtnGrp->checkedId() );
   }
   lyr.xOffset = mPointOffsetXSpinBox->value();
   lyr.yOffset = mPointOffsetYSpinBox->value();
@@ -555,7 +558,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     linePlacementFlags |= QgsLabeling::LinePlacementFlag::MapOrientation;
   lyr.lineSettings().setPlacementFlags( linePlacementFlags );
 
-  lyr.placement = static_cast< QgsPalLayerSettings::Placement >( mPlacementModeComboBox->currentData().toInt() );
+  lyr.placement = static_cast< Qgis::LabelPlacement >( mPlacementModeComboBox->currentData().toInt() );
 
   lyr.repeatDistance = mRepeatDistanceSpinBox->value();
   lyr.repeatDistanceUnit = mRepeatDistanceUnitWidget->unit();
@@ -576,7 +579,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.lineSettings().setAnchorTextPoint( mLineSettings.anchorTextPoint() );
 
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
-  lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
+  lyr.placementSettings().setOverlapHandling( static_cast< Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
+  lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
+
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();
@@ -603,7 +608,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   if ( mUpsidedownBtnGrp )
   {
-    lyr.upsidedownLabels = static_cast< QgsPalLayerSettings::UpsideDownLabels >( mUpsidedownBtnGrp->checkedId() );
+    lyr.upsidedownLabels = static_cast< Qgis::UpsideDownLabelHandling >( mUpsidedownBtnGrp->checkedId() );
   }
 
   lyr.maxCurvedCharAngleIn = mMaxCharAngleInDSpinBox->value();
@@ -620,7 +625,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.wrapChar = wrapCharacterEdit->text();
   lyr.autoWrapLength = mAutoWrapLengthSpinBox->value();
   lyr.useMaxLineLengthForAutoWrap = mAutoWrapTypeComboBox->currentIndex() == 0;
-  lyr.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( mFontMultiLineAlignComboBox->currentData().toInt() );
+  lyr.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( mFontMultiLineAlignComboBox->currentData().toInt() );
   lyr.preserveRotation = chkPreserveRotation->isChecked();
   lyr.setRotationUnit( static_cast< QgsUnitTypes::AngleUnit >( mCoordRotationUnitComboBox->currentData().toInt() ) );
   lyr.geometryGenerator = mGeometryGenerator->text();
@@ -837,31 +842,31 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
   mPolygonFeatureOptionsFrame->setVisible( geometryType == QgsWkbTypes::PolygonGeometry );
 
 
-  const QgsPalLayerSettings::Placement prevPlacement = static_cast< QgsPalLayerSettings::Placement >( mPlacementModeComboBox->currentData().toInt() );
+  const Qgis::LabelPlacement prevPlacement = static_cast< Qgis::LabelPlacement >( mPlacementModeComboBox->currentData().toInt() );
   mPlacementModeComboBox->clear();
 
   switch ( geometryType )
   {
     case QgsWkbTypes::PointGeometry:
-      mPlacementModeComboBox->addItem( tr( "Cartographic" ), QgsPalLayerSettings::OrderedPositionsAroundPoint );
-      mPlacementModeComboBox->addItem( tr( "Around Point" ), QgsPalLayerSettings::AroundPoint );
-      mPlacementModeComboBox->addItem( tr( "Offset from Point" ), QgsPalLayerSettings::OverPoint );
+      mPlacementModeComboBox->addItem( tr( "Cartographic" ), static_cast< int >( Qgis::LabelPlacement::OrderedPositionsAroundPoint ) );
+      mPlacementModeComboBox->addItem( tr( "Around Point" ), static_cast< int >( Qgis::LabelPlacement::AroundPoint ) );
+      mPlacementModeComboBox->addItem( tr( "Offset from Point" ), static_cast< int >( Qgis::LabelPlacement::OverPoint ) );
       break;
 
     case QgsWkbTypes::LineGeometry:
-      mPlacementModeComboBox->addItem( tr( "Parallel" ), QgsPalLayerSettings::Line );
-      mPlacementModeComboBox->addItem( tr( "Curved" ), QgsPalLayerSettings::Curved );
-      mPlacementModeComboBox->addItem( tr( "Horizontal" ), QgsPalLayerSettings::Horizontal );
+      mPlacementModeComboBox->addItem( tr( "Parallel" ), static_cast< int >( Qgis::LabelPlacement::Line ) );
+      mPlacementModeComboBox->addItem( tr( "Curved" ), static_cast< int >( Qgis::LabelPlacement::Curved ) );
+      mPlacementModeComboBox->addItem( tr( "Horizontal" ), static_cast< int >( Qgis::LabelPlacement::Horizontal ) );
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      mPlacementModeComboBox->addItem( tr( "Offset from Centroid" ), QgsPalLayerSettings::OverPoint );
-      mPlacementModeComboBox->addItem( tr( "Around Centroid" ), QgsPalLayerSettings::AroundPoint );
-      mPlacementModeComboBox->addItem( tr( "Horizontal" ), QgsPalLayerSettings::Horizontal );
-      mPlacementModeComboBox->addItem( tr( "Free (Angled)" ), QgsPalLayerSettings::Free );
-      mPlacementModeComboBox->addItem( tr( "Using Perimeter" ), QgsPalLayerSettings::Line );
-      mPlacementModeComboBox->addItem( tr( "Using Perimeter (Curved)" ), QgsPalLayerSettings::PerimeterCurved );
-      mPlacementModeComboBox->addItem( tr( "Outside Polygons" ), QgsPalLayerSettings::OutsidePolygons );
+      mPlacementModeComboBox->addItem( tr( "Offset from Centroid" ), static_cast< int >( Qgis::LabelPlacement::OverPoint ) );
+      mPlacementModeComboBox->addItem( tr( "Around Centroid" ), static_cast< int >( Qgis::LabelPlacement::AroundPoint ) );
+      mPlacementModeComboBox->addItem( tr( "Horizontal" ), static_cast< int >( Qgis::LabelPlacement::Horizontal ) );
+      mPlacementModeComboBox->addItem( tr( "Free (Angled)" ), static_cast< int >( Qgis::LabelPlacement::Free ) );
+      mPlacementModeComboBox->addItem( tr( "Using Perimeter" ), static_cast< int >( Qgis::LabelPlacement::Line ) );
+      mPlacementModeComboBox->addItem( tr( "Using Perimeter (Curved)" ), static_cast< int >( Qgis::LabelPlacement::PerimeterCurved ) );
+      mPlacementModeComboBox->addItem( tr( "Outside Polygons" ), static_cast< int >( Qgis::LabelPlacement::OutsidePolygons ) );
       break;
 
     case QgsWkbTypes::NullGeometry:
@@ -870,20 +875,20 @@ void QgsLabelingGui::updateGeometryTypeBasedWidgets()
       qFatal( "unknown geometry type unexpected" );
   }
 
-  if ( mPlacementModeComboBox->findData( prevPlacement ) != -1 )
+  if ( mPlacementModeComboBox->findData( static_cast< int >( prevPlacement ) ) != -1 )
   {
-    mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( prevPlacement ) );
+    mPlacementModeComboBox->setCurrentIndex( mPlacementModeComboBox->findData( static_cast< int >( prevPlacement ) ) );
   }
 
   if ( geometryType == QgsWkbTypes::PointGeometry || geometryType == QgsWkbTypes::PolygonGeometry )
   {
     // follow placement alignment is only valid for point or polygon layers
-    if ( mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement ) == -1 )
-      mFontMultiLineAlignComboBox->addItem( tr( "Follow Label Placement" ), QgsPalLayerSettings::MultiFollowPlacement );
+    if ( mFontMultiLineAlignComboBox->findData( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) ) == -1 )
+      mFontMultiLineAlignComboBox->addItem( tr( "Follow Label Placement" ), static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) );
   }
   else
   {
-    const int idx = mFontMultiLineAlignComboBox->findData( QgsPalLayerSettings::MultiFollowPlacement );
+    const int idx = mFontMultiLineAlignComboBox->findData( static_cast< int >( Qgis::LabelMultiLineAlignment::FollowPlacement ) );
     if ( idx >= 0 )
       mFontMultiLineAlignComboBox->removeItem( idx );
   }

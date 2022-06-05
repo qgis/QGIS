@@ -48,7 +48,7 @@ void QgsVectorLayerDiagramProvider::init()
 {
   mName = mLayerId;
   mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
-  mPlacement = QgsPalLayerSettings::Placement( mSettings.placement() );
+  mPlacement = static_cast< Qgis::LabelPlacement >( mSettings.placement() );
 }
 
 

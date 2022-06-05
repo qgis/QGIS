@@ -746,7 +746,7 @@ void TestQgsDxfExport::testTextQuadrant()
 
   QgsPalLayerSettings settings;
   settings.fieldName = QStringLiteral( "text" );
-  settings.placement = QgsPalLayerSettings::Placement::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
 
   QgsPropertyCollection props = settings.dataDefinedProperties();
   QgsProperty offsetQuadProp = QgsProperty();

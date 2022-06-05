@@ -91,6 +91,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mDebugDepthMapSize( other.mDebugDepthMapSize )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
   , mRendererUsage( other.mRendererUsage )
+  , m3dAxisSettings( other.m3dAxisSettings )
+
 {
   for ( QgsAbstract3DRenderer *renderer : std::as_const( other.mRenderers ) )
   {
@@ -318,6 +320,10 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "start" ) ), Qt::ISODate );
   QDateTime end = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "end" ) ), Qt::ISODate );
   setTemporalRange( QgsDateTimeRange( start, end ) );
+
+  QDomElement elem3dAxis = elem.firstChildElement( QStringLiteral( "axis3d" ) );
+  m3dAxisSettings.readXml( elem3dAxis, context );
+
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -445,6 +451,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemTemporalRange = doc.createElement( QStringLiteral( "temporal-range" ) );
   elemTemporalRange.setAttribute( QStringLiteral( "start" ), temporalRange().begin().toString( Qt::ISODate ) );
   elemTemporalRange.setAttribute( QStringLiteral( "end" ), temporalRange().end().toString( Qt::ISODate ) );
+
+  QDomElement elem3dAxis = doc.createElement( QStringLiteral( "axis3d" ) );
+  m3dAxisSettings.writeXml( elem3dAxis, context );
+  elem.appendChild( elem3dAxis );
 
   return elem;
 }
@@ -939,4 +949,12 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+}
+
+
+void Qgs3DMapSettings::set3dAxisSettings( const Qgs3DAxisSettings &axisSettings )
+{
+  m3dAxisSettings = axisSettings;
+  emit axisSettingsChanged();
 }

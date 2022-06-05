@@ -112,9 +112,11 @@ class TestQgsMapToolLabel : public QObject
       // add some labels
       QgsPalLayerSettings pls1;
       pls1.fieldName = QStringLiteral( "text" );
-      pls1.placement = QgsPalLayerSettings::OverPoint;
-      pls1.quadOffset = QgsPalLayerSettings::QuadrantOver;
-      pls1.displayAll = true;
+      pls1.placement = Qgis::LabelPlacement::OverPoint;
+      pls1.quadOffset = Qgis::LabelQuadrantPosition::Over;
+      pls1.placementSettings().setAllowDegradedPlacement( true );
+      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+
       QgsTextFormat format = pls1.format();
       format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
       format.setSize( 12 );
@@ -267,9 +269,11 @@ class TestQgsMapToolLabel : public QObject
       QgsPalLayerSettings pls1;
       pls1.fieldName = QStringLiteral( "'label'" );
       pls1.isExpression = true;
-      pls1.placement = QgsPalLayerSettings::OverPoint;
-      pls1.quadOffset = QgsPalLayerSettings::QuadrantOver;
-      pls1.displayAll = true;
+      pls1.placement = Qgis::LabelPlacement::OverPoint;
+      pls1.quadOffset = Qgis::LabelQuadrantPosition::Over;
+      pls1.placementSettings().setAllowDegradedPlacement( true );
+      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+
       QgsTextFormat format = pls1.format();
       format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
       format.setSize( 12 );
@@ -409,9 +413,11 @@ class TestQgsMapToolLabel : public QObject
       QgsPalLayerSettings pls1;
       pls1.fieldName = QStringLiteral( "'label'" );
       pls1.isExpression = true;
-      pls1.placement = QgsPalLayerSettings::OverPoint;
-      pls1.quadOffset = QgsPalLayerSettings::QuadrantOver;
-      pls1.displayAll = true;
+      pls1.placement = Qgis::LabelPlacement::OverPoint;
+      pls1.quadOffset = Qgis::LabelQuadrantPosition::Over;
+      pls1.placementSettings().setAllowDegradedPlacement( true );
+      pls1.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+
       QgsTextFormat format = pls1.format();
       format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
       format.setSize( 12 );
@@ -443,14 +449,14 @@ class TestQgsMapToolLabel : public QObject
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::HalfCenter );
 
       // defaults to bottom left if qudrant is not relevant
-      pls1.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
+      pls1.placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::BottomLeft );
 
       // now try with quadrant property
-      pls1.placement = QgsPalLayerSettings::OverPoint;
-      pls1.quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+      pls1.placement = Qgis::LabelPlacement::OverPoint;
+      pls1.quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
       tool->mCurrentLabel.settings = pls1;
       labelAlignment = tool->currentAlignment();
       QCOMPARE( labelAlignment, QgsMapToolLabel::LabelAlignment::TopRight );

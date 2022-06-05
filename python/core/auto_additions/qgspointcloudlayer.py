@@ -5,3 +5,4 @@ QgsPointCloudLayer.PointCloudStatisticsCalculationState.Calculating.__doc__ = "T
 QgsPointCloudLayer.PointCloudStatisticsCalculationState.Calculated.__doc__ = "The statistics calculation task is done and statistics are available"
 QgsPointCloudLayer.PointCloudStatisticsCalculationState.__doc__ = 'Point cloud statistics calculation task\n\n.. versionadded:: 3.26\n\n' + '* ``NotStarted``: ' + QgsPointCloudLayer.PointCloudStatisticsCalculationState.NotStarted.__doc__ + '\n' + '* ``Calculating``: ' + QgsPointCloudLayer.PointCloudStatisticsCalculationState.Calculating.__doc__ + '\n' + '* ``Calculated``: ' + QgsPointCloudLayer.PointCloudStatisticsCalculationState.Calculated.__doc__
 # --
+QgsPointCloudLayer.PointCloudStatisticsCalculationState.baseClass = QgsPointCloudLayer

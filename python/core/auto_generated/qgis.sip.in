@@ -195,7 +195,6 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
-
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
@@ -342,6 +341,78 @@ The development version
     {
       FollowEngineSetting,
       NeverShow,
+    };
+
+    enum class LabelOverlapHandling
+    {
+      PreventOverlap,
+      AllowOverlapIfRequired,
+      AllowOverlapAtNoCost,
+    };
+
+    enum class LabelPlacement
+      {
+      AroundPoint,
+      OverPoint,
+      Line,
+      Curved,
+      Horizontal,
+      Free,
+      OrderedPositionsAroundPoint,
+      PerimeterCurved,
+      OutsidePolygons,
+    };
+
+
+    enum class LabelPredefinedPointPosition
+      {
+      TopLeft,
+      TopSlightlyLeft,
+      TopMiddle,
+      TopSlightlyRight,
+      TopRight,
+      MiddleLeft,
+      MiddleRight,
+      BottomLeft,
+      BottomSlightlyLeft,
+      BottomMiddle,
+      BottomSlightlyRight,
+      BottomRight,
+    };
+
+    enum class LabelOffsetType
+      {
+      FromPoint,
+      FromSymbolBounds,
+    };
+
+    enum class LabelQuadrantPosition
+      {
+      AboveLeft,
+      Above,
+      AboveRight,
+      Left,
+      Over,
+      Right,
+      BelowLeft,
+      Below,
+      BelowRight,
+    };
+
+    enum class UpsideDownLabelHandling
+      {
+      FlipUpsideDownLabels,
+      AllowUpsideDownWhenRotationIsDefined,
+      AlwaysAllowUpsideDown
+    };
+
+    enum class LabelMultiLineAlignment
+      {
+      Left,
+      Center,
+      Right,
+      FollowPlacement,
+      Justify,
     };
 
     enum class SublayerQueryFlag
@@ -553,7 +624,6 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
-
     enum class DataProviderFlag
     {
       IsBasemapSource,
@@ -682,6 +752,15 @@ The development version
       Forward,
       Reverse
     };
+
+    enum class CoordinateTransformationFlag
+    {
+      BallparkTransformsAreAppropriate,
+      IgnoreImpossibleTransformations,
+    };
+
+    typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
+
 
     enum class MapSettingsFlag
       {
@@ -1193,6 +1272,9 @@ QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToo
 QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
 
 QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
+
 
 
 

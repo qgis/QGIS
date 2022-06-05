@@ -84,6 +84,11 @@ class Qgs3DMapCanvas : public QWidget
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
     /**
+     * Returns the 3D engine.
+     */
+    QgsWindow3DEngine *engine() const { return mEngine; }
+
+    /**
      * Sets the visibility of on-screen navigation widget.
      */
     void setOnScreenNavigationVisibility( bool visibility );

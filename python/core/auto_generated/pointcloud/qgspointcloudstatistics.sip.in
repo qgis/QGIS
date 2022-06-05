@@ -94,6 +94,16 @@ If no matching statistic is available then NaN will be returned.
 Merges the current statistics with the statistics from ``stats``
 %End
 
+    QByteArray toStatisticsJson() const;
+%Docstring
+Converts the current statistics object into JSON object
+%End
+
+    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
+%Docstring
+Creates a statistics object from the JSON object ``stats``
+%End
+
 };
 
 /************************************************************************

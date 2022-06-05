@@ -2930,7 +2930,8 @@ namespace QgsWms
         QgsPalLayerSettings palSettings;
         palSettings.fieldName = "label"; // defined in url
         palSettings.priority = 10; // always drawn
-        palSettings.displayAll = true;
+        palSettings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+        palSettings.placementSettings().setAllowDegradedPlacement( true );
         palSettings.dist = param.mLabelDistance;
 
         if ( !qgsDoubleNear( param.mLabelRotation, 0 ) )
@@ -2939,14 +2940,14 @@ namespace QgsWms
           palSettings.dataDefinedProperties().setProperty( pR, param.mLabelRotation );
         }
 
-        QgsPalLayerSettings::Placement placement = QgsPalLayerSettings::AroundPoint;
+        Qgis::LabelPlacement placement = Qgis::LabelPlacement::AroundPoint;
         switch ( param.mGeom.type() )
         {
           case QgsWkbTypes::PointGeometry:
           {
             if ( param.mHali.isEmpty() || param.mVali.isEmpty() || QgsWkbTypes::flatType( param.mGeom.wkbType() ) != QgsWkbTypes::Point )
             {
-              placement = QgsPalLayerSettings::AroundPoint;
+              placement = Qgis::LabelPlacement::AroundPoint;
               palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlags() );
             }
             else //set label directly on point if there is hali/vali
@@ -2970,7 +2971,7 @@ namespace QgsWms
           {
             QgsGeometry point = param.mGeom.pointOnSurface();
             QgsPointXY pt = point.asPoint();
-            placement = QgsPalLayerSettings::AroundPoint;
+            placement = Qgis::LabelPlacement::AroundPoint;
 
             QgsPalLayerSettings::Property pX = QgsPalLayerSettings::PositionX;
             QVariant x( pt.x() );
@@ -2991,7 +2992,7 @@ namespace QgsWms
           }
           default:
           {
-            placement = QgsPalLayerSettings::Line;
+            placement = Qgis::LabelPlacement::Line;
             palSettings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
             break;
           }
