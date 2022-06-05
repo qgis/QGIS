@@ -56,8 +56,6 @@ QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
 
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
-  Q_ASSERT( meshLayer() );
-
   return new QgsMeshTerrainTileLoader( mTerrain, node, mTriangularMesh, symbol() );
 }
 
