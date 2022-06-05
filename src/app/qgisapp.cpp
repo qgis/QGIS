@@ -12164,12 +12164,11 @@ void QgisApp::removingLayers( const QStringList &layers )
   const auto constLayers = layers;
   for ( const QString &layerId : constLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>(
-                               QgsProject::instance()->mapLayer( layerId ) );
-    if ( !vlayer || !vlayer->isEditable() )
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+    if ( !layer || !layer->isEditable() )
       return;
 
-    toggleEditing( vlayer, false );
+    toggleEditing( layer, false );
   }
 }
 
