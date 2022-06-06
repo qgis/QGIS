@@ -134,6 +134,13 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
 
   connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+
+  mPointSizeSpinBox->setToolTip( tr( "The size of 1 dataset point in pixels" ) );
+  labelPointSize->setToolTip( tr( "The size of 1 dataset point in pixels" ) );
+  mMaxScreenErrorSpinBox->setToolTip( tr( "Represents the size of the smallest chunk to be rendered in pixels, the less the value the more chunks will be rendered" ) );
+  labelMaxScreenError->setToolTip( tr( "Represents the size of the smallest chunk to be rendered in pixels, the less the value the more chunks will be rendered" ) );
+  mPointBudgetSpinBox->setToolTip( tr( "Sets the number of points that will be renderered simultaniously at most" ) );
+  labelPointBudget->setToolTip( tr( "Sets the number of points that will be renderered simultaniously at most" ) );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
