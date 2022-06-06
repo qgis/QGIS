@@ -60,6 +60,7 @@ class TestQgsMeshLayer : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void test_write_read_project();
+    void test_path();
 
     void test_read_1d_edge_vector_dataset();
     void test_read_1d_edge_scalar_dataset();
@@ -958,6 +959,78 @@ void TestQgsMeshLayer::test_write_read_project()
   QVERIFY( prj2.read() );
   const QVector<QgsMapLayer *> layers = prj2.layers<QgsMapLayer *>();
   QVERIFY( layers.size() == 2 );
+}
+
+void TestQgsMeshLayer::test_path()
+{
+  QDir dir1( QDir::tempPath() + QStringLiteral( "/mesh_layer_test/dir1" ) );
+  dir1.mkpath( dir1.path() );
+  Q_ASSERT( dir1.exists() );
+  QFile meshLayerFile( mDataDir + QStringLiteral( "/quad_and_triangle.2dm" ) );
+  QFile datasetFile( mDataDir + QStringLiteral( "/quad_and_triangle_vertex_scalar_with_inactive_face.dat" ) );
+  meshLayerFile.copy( dir1.filePath( QStringLiteral( "quad_and_triangle.2dm" ) ) );
+  datasetFile.copy( dir1.filePath( QStringLiteral( "dataseGroup.dat" ) ) );
+
+  QString meshLayerUri = QStringLiteral( "2DM:\"" ) + dir1.filePath( QStringLiteral( "quad_and_triangle.2dm" ) ) + QStringLiteral( "\"" );
+  std::unique_ptr<QgsMeshLayer> meshLayer = std::make_unique<QgsMeshLayer>(
+        meshLayerUri,
+        QStringLiteral( "mesh layer" ),
+        QStringLiteral( "mdal" ) );
+  Q_ASSERT( meshLayer->isValid() );
+  meshLayer->addDatasets( dir1.filePath( QStringLiteral( "dataseGroup.dat" ) ) );
+
+  QCOMPARE( meshLayer->datasetGroupCount(), 2 );
+  QgsProject project1;
+  project1.addMapLayer( meshLayer.release() );
+  // write project with absolute path
+  project1.setFilePathStorage( Qgis::FilePathType::Absolute );
+  project1.write( dir1.filePath( QStringLiteral( "project.qgz" ) ) );
+  project1.clear();
+
+  // Open another project with the project file, set to relative and save the project under another name
+  QgsProject project2;
+  project2.read( dir1.filePath( QStringLiteral( "project.qgz" ) ) );
+  project2.setFilePathStorage( Qgis::FilePathType::Relative );
+  project2.write( dir1.filePath( QStringLiteral( "project_2.qgz" ) ) );
+
+  // Move relative project and mesh layer files to another folder
+  QDir dir2( QDir::tempPath() + QStringLiteral( "/mesh_layer_test/dir2" ) );
+  dir2.mkpath( dir2.path() );
+  Q_ASSERT( dir2.exists() );
+  QFileInfoList dir1Files = dir1.entryInfoList();
+  for ( const QFileInfo &fileInfo : std::as_const( dir1Files ) )
+  {
+    if ( fileInfo.fileName() != QStringLiteral( "project.qgz" ) )
+    {
+      QFile::copy( fileInfo.filePath(), dir2.filePath( fileInfo.fileName() ) );
+      QFile::remove( fileInfo.filePath() );
+    }
+  }
+
+  // Reopen the absolute project
+  project1.read( dir1.filePath( QStringLiteral( "project.qgz" ) ) );
+  QMap<QString, QgsMapLayer *> layers1 = project1.mapLayers();
+  QCOMPARE( layers1.count(), 1 );
+
+  // Check if the mesh is still here but invalid
+  QgsMeshLayer *meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.values().at( 0 ) );
+  QVERIFY( meshLayer1 );
+  QVERIFY( !meshLayer1->isValid() );
+  QCOMPARE( meshLayer1->name(), QStringLiteral( "mesh layer" ) );
+  QCOMPARE( meshLayer1->datasetGroupCount(), 0 );
+  dir1.removeRecursively();
+
+  // Read the relative project
+  project2.read( dir2.filePath( QStringLiteral( "project_2.qgz" ) ) );
+  QMap<QString, QgsMapLayer *> layers2 = project2.mapLayers();
+  QCOMPARE( layers2.count(), 1 );
+
+  QgsMeshLayer *meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.values().at( 0 ) );
+  QVERIFY( meshLayer2 );
+  QVERIFY( meshLayer2->isValid() );
+  QCOMPARE( meshLayer2->name(), QStringLiteral( "mesh layer" ) );
+  QCOMPARE( meshLayer2->datasetGroupCount(), 2 );
+  dir2.removeRecursively();
 }
 
 void TestQgsMeshLayer::test_reload()
