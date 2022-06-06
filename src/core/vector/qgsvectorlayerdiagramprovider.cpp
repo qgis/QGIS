@@ -119,12 +119,7 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::L
 #endif
 
   QgsDiagramLabelFeature *dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
-
-  QgsFeature feature;
-  feature.setFields( mFields );
-  feature.setValid( true );
-  feature.setId( label->getFeaturePart()->featureId() );
-  feature.setAttributes( dlf->attributes() );
+  const QgsFeature feature = dlf->feature();
 
   // at time of drawing labels the expression context won't contain a layer scope -- so we manually add it here so that
   // associated variables work correctly
@@ -189,7 +184,7 @@ void QgsVectorLayerDiagramProvider::setClipFeatureGeometry( const QgsGeometry &g
   mLabelClipFeatureGeom = geometry;
 }
 
-QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
+QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
   const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
@@ -301,7 +296,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     }
   }
 
-  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), QgsGeos::asGeos( geom ), QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat, QgsGeos::asGeos( geom ), QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
@@ -311,12 +306,6 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   os.setIsObstacle( isObstacle );
   os.setObstacleGeometry( preparedObstacleGeom );
   lf->setObstacleSettings( os );
-
-  if ( dr )
-  {
-    //append the diagram attributes to lbl
-    lf->setAttributes( feat.attributes() );
-  }
 
   // data defined priority?
   if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Priority )
