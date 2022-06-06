@@ -1918,7 +1918,7 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   spinOffset->setClearValue( 0.0 );
-
+  mSpinOffsetAlongLine->setClearValue( 0.0 );
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
   connect( spinInterval, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setInterval );
@@ -2165,7 +2165,7 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   spinOffset->setClearValue( 0.0 );
-
+  mSpinOffsetAlongLine->setClearValue( 0.0 );
   mHashRotationSpinBox->setClearValue( 0 );
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
