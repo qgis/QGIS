@@ -399,7 +399,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QList<QgsFeatureId> mInsertedRowsChanges;
 
     //! TRUE if triggered by afterRollback()
-    bool mIsRollingBack = false;
+    bool mIsCleaningUpAfterRollback = false;
 
     friend class TestQgsAttributeTable;
 

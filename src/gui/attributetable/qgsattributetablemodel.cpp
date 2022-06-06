@@ -76,9 +76,9 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( mLayer, &QgsVectorLayer::beforeRollBack, this,  &QgsAttributeTableModel::bulkEditCommandStarted );
   connect( mLayer, &QgsVectorLayer::afterRollBack, this, [ = ]
   {
-    mIsRollingBack = true;
+    mIsCleaningUpAfterRollback = true;
     bulkEditCommandEnded();
-    mIsRollingBack = false;
+    mIsCleaningUpAfterRollback = false;
   } );
 
   connect( mLayer, &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
@@ -865,7 +865,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
                     3 );
 
   // Remove added rows on rollback
-  if ( mIsRollingBack )
+  if ( mIsCleaningUpAfterRollback )
   {
     for ( const int fid : std::as_const( mInsertedRowsChanges ) )
     {
