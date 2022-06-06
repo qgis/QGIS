@@ -87,6 +87,8 @@ fi
 
 if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
 
+  echo "::group::Setup PostgreSQL"
+
   ############################
   # Restore postgres test data
   ############################
@@ -113,9 +115,13 @@ if [ ${RUN_POSTGRES:-"NO"} == "YES" ]; then
   echo "Postgres test data restored ..."
   popd > /dev/null # /root/QGIS
 
+  echo "::endgroup::"
+
 fi
 
 if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
+
+  echo "::group::Setup Oracle"
 
   ##############################
   # Restore Oracle test data
@@ -147,9 +153,13 @@ if [ ${RUN_ORACLE:-"NO"} == "YES" ]; then
     popd > /dev/null # /root/QGIS
   fi
 
+  echo "::endgroup::"
+
 fi
 
 if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
+
+  echo "::group::Setup SQL Server"
 
   ##############################
   # Restore SQL Server test data
@@ -181,6 +191,8 @@ Description  = Test SQL Server
 Server       = mssql
 EOT
 
+  echo "::endgroup::"
+
 fi
 
 #######################################
@@ -188,6 +200,8 @@ fi
 #######################################
 
 if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
+
+  echo "::group::Setup WebDAV"
 
   echo "Wait for webdav to be ready..."
   COUNT=0
@@ -204,6 +218,8 @@ if [ $# -eq 0 ] || [ $1 = "ALL_BUT_PROVIDERS" ] || [ $1 = "ALL" ] ; then
   else
     echo "done"
   fi
+
+  echo "::endgroup::"
 fi
 
 ###########
@@ -218,10 +234,12 @@ else
 fi
 echo "List of skipped tests: $EXCLUDE_TESTS"
 
-echo "Print disk space"
+echo "::group::Print disk space before running tests"
 df -h
+echo "::endgroup::"
 
 python3 ${SRCDIR}/.ci/ctest2ci.py xvfb-run ctest -V $CTEST_OPTIONS -E "${EXCLUDE_TESTS}" -S ${SRCDIR}/.ci/config_test.ctest --output-on-failure
 
-echo "Print disk space"
+echo "::group::Print disk space after running tests"
 df -h
+echo "::endgroup::"
