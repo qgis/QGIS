@@ -3,6 +3,11 @@
 set -e
 
 SRCDIR=${CTEST_SOURCE_DIR-/root/QGIS}
+cd ${SRCDIR}
+
+# This is needed for `git status` to work, see
+# https://github.com/qgis/QGIS/runs/6733585841?check_suite_focus=true#step:13:89
+git config --global --add safe.directory ${SRCDIR}
 
 # Debug env
 echo "::group::Print env"
