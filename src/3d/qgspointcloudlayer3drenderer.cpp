@@ -174,8 +174,8 @@ void QgsPointCloudLayer3DRenderer::readXml( const QDomElement &elem, const QgsRe
 
   const QString symbolType = elemSymbol.attribute( QStringLiteral( "type" ) );
   mShowBoundingBoxes = elem.attribute( QStringLiteral( "show-bounding-boxes" ), QStringLiteral( "0" ) ).toInt();
-  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "1.0" ) ).toDouble();
-  mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "1000000" ) ).toInt();
+  mMaximumScreenError = elem.attribute( QStringLiteral( "max-screen-error" ), QStringLiteral( "3.0" ) ).toDouble();
+  mPointBudget = elem.attribute( QStringLiteral( "point-budget" ), QStringLiteral( "5000000" ) ).toInt();
 
   if ( symbolType == QLatin1String( "single-color" ) )
     mSymbol.reset( new QgsSingleColorPointCloud3DSymbol );
