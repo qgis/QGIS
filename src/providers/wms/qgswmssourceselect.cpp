@@ -593,9 +593,6 @@ void QgsWMSSourceSelect::addButtonClicked()
       uri.setParam( QStringLiteral( "tileDimensions" ), dimString );
     }
   }
-
-  uri.setParam( QStringLiteral( "layers" ), layers );
-  uri.setParam( QStringLiteral( "styles" ), styles );
   uri.setParam( QStringLiteral( "format" ), format );
   uri.setParam( QStringLiteral( "crs" ), crs );
   QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
@@ -609,10 +606,30 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
 
   uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
+  if ( mLoadLayersIndividuallyCheckBox->isChecked() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "layers=%1 " ).arg( layers.join( ", " ) ), 2 );
+    for ( int i = 0; i < layers.count(); i++ )
+    {
+      QgsDataSourceUri individualUri( uri );
+      individualUri.setParam( QStringLiteral( "layers" ), layers.at( i ) );
+      individualUri.setParam( QStringLiteral( "styles" ), styles.at( i ) );
 
-  emit addRasterLayer( uri.encodedUri(),
-                       leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
-                       QStringLiteral( "wms" ) );
+      emit addRasterLayer( individualUri.encodedUri(),
+                           layers.at( i ),
+                           QStringLiteral( "wms" ) );
+    }
+
+  }
+  else
+  {
+    uri.setParam( QStringLiteral( "layers" ), layers );
+    uri.setParam( QStringLiteral( "styles" ), styles );
+
+    emit addRasterLayer( uri.encodedUri(),
+                         leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
+                         QStringLiteral( "wms" ) );
+  }
 }
 
 void QgsWMSSourceSelect::reset()

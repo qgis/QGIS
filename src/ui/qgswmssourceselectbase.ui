@@ -24,13 +24,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Help</set>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="labelStatus">
      <property name="sizePolicy">
@@ -70,7 +63,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabLayers">
       <attribute name="title">
@@ -264,7 +257,7 @@
            </widget>
           </item>
           <item row="4" column="2">
-           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -326,7 +319,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="showSearchIcon">
+           <property name="showSearchIcon" stdset="0">
             <bool>true</bool>
            </property>
            <property name="qgisRelation" stdset="0">
@@ -415,7 +408,7 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="showSearchIcon">
+           <property name="showSearchIcon" stdset="0">
             <bool>true</bool>
            </property>
            <property name="qgisRelation" stdset="0">
@@ -493,6 +486,20 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="mLoadLayersIndividuallyCheckBox">
+     <property name="text">
+      <string>Load layers individually</string>
+     </property>
     </widget>
    </item>
   </layout>
