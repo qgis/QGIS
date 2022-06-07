@@ -5625,8 +5625,14 @@ void TestProcessingGui::testExtentWrapper()
     QVERIFY( !wrapper2.widgetValue().isValid() );
     QVERIFY( !static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->isValid() );
 
-    wrapper2.setWidgetValue( "1,3,4,7", context );
+    // simulate a user manually entering an extent by hand
+    qgis::down_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->mCondensedLineEdit->setText( "372830.001,373830.001,372830.001,373830.001" );
+    qgis::down_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->setOutputExtentFromCondensedLineEdit();
     QCOMPARE( spy2.count(), 4 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "372830.001000000,373830.001000000,372830.001000000,373830.001000000 [EPSG:3111]" ) );
+    QCOMPARE( qgis::down_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputExtent(), QgsRectangle( 372830.001, 372830.001, 373830.001, 373830.001 ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+
     wrapper2.setWidgetValue( "", context );
     QCOMPARE( spy2.count(), 5 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
