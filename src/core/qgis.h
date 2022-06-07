@@ -1228,6 +1228,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( TemporalIntervalMatchMethod )
 
     /**
+     * Flags for raster layer temporal capabilities.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RasterTemporalCapabilityFlag : int
+    {
+      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges = 1 << 0, //!< If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities::allAvailableTemporalRanges().
+    };
+    Q_ENUM( RasterTemporalCapabilityFlag )
+
+    /**
+     * Flags for raster layer temporal capabilities.
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( RasterTemporalCapabilityFlags, RasterTemporalCapabilityFlag )
+    Q_ENUM( RasterTemporalCapabilityFlags )
+
+    /**
      * Indicates the direction (forward or inverse) of a transform.
      *
      * \since QGIS 3.22
@@ -2103,7 +2122,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 
 
 // hack to workaround warnings when casting void pointers

@@ -484,6 +484,32 @@ class TestQgsWmsCapabilities: public QObject
       QVERIFY( capabilities.identifyCapabilities() == capability );
     }
 
+
+    void wmtsTimeDimensionValue_data()
+    {
+      QTest::addColumn<QString>( "value" );
+      QTest::addColumn<QgsDateTimeRange>( "range" );
+      QTest::addColumn<int>( "format" );
+
+      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDate( 2021, 1, 3 ).startOfDay(), QDate( 2021, 1, 3 ).endOfDay() ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
+      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDate( 2021, 1, 3 ).startOfDay(), QDate( 2021, 1, 3 ).endOfDay() ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
+      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDate( 2021, 1, 1 ).startOfDay(), QDate( 2021, 12, 31 ).endOfDay() ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
+      QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" ) << QString( "2018-03-01T16:23:44Z" ) << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
+    }
+
+    void wmtsTimeDimensionValue()
+    {
+      QFETCH( QString, value );
+      QFETCH( QgsDateTimeRange, range );
+      QFETCH( int, format );
+
+      QgsWmtsTileLayer::WmtsTimeFormat resFormat;
+      QgsDateTimeRange res = QgsWmsSettings::parseWmtsTimeValue( value, resFormat );
+      QCOMPARE( res.begin(), range.begin() );
+      QCOMPARE( res.end(), range.end() );
+      QCOMPARE( static_cast< int >( resFormat ), format );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

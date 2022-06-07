@@ -399,6 +399,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
           for ( const QString &format : l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
+            item->setIcon( QgsApplication::getThemeIcon( l.timeDimensionIdentifier.isEmpty() ? QStringLiteral( "/mIconRaster.svg" ) : QStringLiteral( "/mIconTemporalRaster.svg" ) ) );
             item->setData( Qt::UserRole + 0, l.identifier );
             item->setData( Qt::UserRole + 1, format );
             item->setData( Qt::UserRole + 2, style.identifier );
@@ -568,7 +569,7 @@ void QgsWMSSourceSelect::addButtonClicked()
     if ( !layer )
       return;
 
-    if ( !layer->dimensions.isEmpty() )
+    if ( layer->dimensions.size() > 1 || ( layer->dimensions.size() == 1 && layer->dimensions.constBegin()->identifier != layer->timeDimensionIdentifier ) )
     {
       QgsWmtsDimensions *dlg = new QgsWmtsDimensions( *layer, this );
       if ( dlg->exec() != QDialog::Accepted )
@@ -577,8 +578,7 @@ void QgsWMSSourceSelect::addButtonClicked()
         return;
       }
 
-      QHash<QString, QString> dims;
-      dlg->selectedDimensions( dims );
+      const QHash<QString, QString> dims = dlg->selectedDimensions();
 
       QString dimString;
       QString delim;
