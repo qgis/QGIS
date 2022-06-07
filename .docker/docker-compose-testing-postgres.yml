@@ -23,6 +23,5 @@ services:
     environment:
       - LANG=C.UTF-8
       - LC_ALL=en_US.UTF-8
-      - QGIS_TEST_ACCEPT_GITSTATUS_CHECK_FAILURE=1
     cap_add:
       - NET_ADMIN
