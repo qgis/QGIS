@@ -590,6 +590,41 @@ struct QgsWmtsTileLayer
 
   QHash<QString, QString> getTileURLs;
   QHash<QString, QString> getFeatureInfoURLs;
+
+  //! Dimension identifier for time dimension
+  QString timeDimensionIdentifier;
+
+  /**
+   * Types of date range formatting found on WMTS implementations.
+   *
+   * Note that the WMTS specification does not mandate any particular formats,
+   * so feel free to add newly encountered ones to this list!
+   */
+  enum class WmtsTimeFormat
+  {
+    yyyyMMdd, //!< YyyyMMdd e.g. 20210304
+    yyyy_MM_dd, //!< Yyyy-MM-dd e.g. 2021-03-04
+    yyyy, //!< Yyyy e.g. 2021
+    yyyyMMddyyyyMMddPxx, //!< YyyyMMddyyyyMMddPxx (WMS(t) style) e.g. 2021030420210306P10M
+    yyyyMMddThhmmssZ, //!< YyyyMMddThhmmssZ e.g. 20200304T121500Z
+  };
+
+  //! All available temporal ranges, taken from the TIME dimension if present
+  QList< QgsDateTimeRange > allTimeRanges;
+
+  //! Overall available temporal range
+  QgsDateTimeRange temporalExtent;
+
+  //! Temporal interval associated with TIME dimension
+  QgsInterval temporalInterval;
+
+  WmtsTimeFormat timeFormat = WmtsTimeFormat::yyyyMMdd;
+
+  //! Temporal capability flags
+  Qgis::RasterTemporalCapabilityFlags temporalCapabilityFlags;
+
+  //! Default value for time dimension
+  QString defaultTimeDimensionValue;
 };
 
 //! Capability Property structure
@@ -743,14 +778,21 @@ class QgsWmsSettings
      *
      * \since QGIS 3.14
      */
-    QgsTimeDuration parseWmstResolution( const QString &item );
+    static QgsTimeDuration parseWmstResolution( const QString &item );
 
     /**
      * Parse the given string item into QDateTime instant.
      *
      * \since QGIS 3.14
      */
-    QDateTime parseWmstDateTimes( const QString &item );
+    static QDateTime parseWmstDateTimes( const QString &item );
+
+    /**
+     * Parse the given dimension \a value corresponding to a WMTS time dimension.
+     *
+     * \since QGIS 3.28
+     */
+    static QgsDateTimeRange parseWmtsTimeValue( const QString &value, QgsWmtsTileLayer::WmtsTimeFormat &format );
 
     /**
      * Finds the least closest datetime from list of available dimension temporal ranges

@@ -125,7 +125,35 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     {
       const QString title = l.title.isEmpty() ? l.identifier : l.title;
 
-      QgsDataItem *dimensionItem = ( l.dimensions.empty() || ( l.dimensions.size() == 1 && l.dimensions.constBegin()->values.size() < 2 ) ) ? qobject_cast< QgsDataItem *>( this ) : new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier );
+      QHash<QString, QgsWmtsDimension> dimensions;
+      bool hasTimeDimension = false;
+      for ( auto it = l.dimensions.constBegin(); it != l.dimensions.constEnd(); ++it )
+      {
+        if ( it.key().compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 && !it.value().values.empty() )
+        {
+          // we will use temporal framework if there's multiple time dimension values, OR if a single time dimension value is itself an interval
+          if ( it.value().values.size() > 1 )
+          {
+            hasTimeDimension = true;
+          }
+          else
+          {
+            const thread_local QRegularExpression rxPeriod( QStringLiteral( ".*/P.*" ) );
+            const QRegularExpressionMatch match = rxPeriod.match( it.value().values.constFirst() );
+            if ( match.hasMatch() )
+            {
+              hasTimeDimension = true;
+            }
+          }
+
+          if ( hasTimeDimension )
+            continue; // time dimension gets special handling by temporal framework
+        }
+
+        dimensions.insert( it.key(), it.value() );
+      }
+
+      QgsDataItem *dimensionItem = ( dimensions.empty() || ( dimensions.size() == 1 && dimensions.constBegin()->values.size() < 2 ) ) ? qobject_cast< QgsDataItem *>( this ) : new QgsWMTSRootItem( this, title, mPath + '/' + l.identifier );
       if ( dimensionItem != this )
       {
         dimensionItem->setCapabilities( dimensionItem->capabilities2() & ~ Qgis::BrowserItemCapabilities( Qgis::BrowserItemCapability::Fertile ) );
@@ -134,7 +162,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
         children << dimensionItem;
       }
 
-      QStringList dimensionIds = l.dimensions.keys();
+      QStringList dimensionIds = dimensions.keys();
       std::sort( dimensionIds.begin(), dimensionIds.end(), []( const QString & a, const QString & b )->bool
       {
         return QString::localeAwareCompare( a, b ) < 0;
@@ -148,7 +176,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
 
       for ( const QString &dimensionId : std::as_const( dimensionIds ) )
       {
-        const QgsWmtsDimension dimension = l.dimensions.value( dimensionId );
+        const QgsWmtsDimension dimension = dimensions.value( dimensionId );
         QString dimensionName = dimension.title.isEmpty() ? dimension.identifier : dimension.title;
         if ( dimensionItem == this )
           dimensionName = title;  // just one dimension so no need to display it
@@ -296,6 +324,13 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
                     dimensionValue,
                     format, style.identifier, setLink.tileMatrixSet, tileMatrixSets[ setLink.tileMatrixSet ].crs, title );
                 tileLayerItem->setToolTip( name );
+
+
+                if ( hasTimeDimension )
+                {
+                  tileLayerItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTemporalRaster.svg" ) ) );
+                }
+
                 if ( linkItem == this )
                 {
                   children << tileLayerItem;
