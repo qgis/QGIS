@@ -64,11 +64,16 @@ class TestQgsGdalProvider : public QObject
     void scale0(); //test when data has scale 0 (#20493)
     void transformCoordinates();
     void testGdalProviderQuerySublayers();
+    void testGdalProviderQuerySublayers_NetCDF();
     void testGdalProviderQuerySublayersFastScan();
+    void testGdalProviderQuerySublayersFastScan_NetCDF();
 
   private:
     QString mTestDataDir;
     QString mReport;
+    bool mSupportsNetCDF;
+    QgsProviderMetadata *mGdalMetadata;
+
 };
 
 //runs before all tests
@@ -80,6 +85,11 @@ void TestQgsGdalProvider::initTestCase()
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   mReport = QStringLiteral( "<h1>GDAL Provider Tests</h1>\n" );
+
+  mGdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
+
+  mSupportsNetCDF = static_cast< bool >( GDALGetDriverByName( "netcdf" ) );
+
 }
 
 //runs after all tests
@@ -480,50 +490,6 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
-  // netcdf file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
-  QCOMPARE( res.count(), 8 );
-  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cell_node" ) );
-  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "[320x4] cell_node (32-bit integer)" ) );
-  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":cell_node" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
-  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
-  QVERIFY( rl->isValid() );
-  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
-  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
-  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "[37x3520] layerface_Z (32-bit floating-point)" ) );
-  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":layerface_Z" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
-  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
-  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
-  QVERIFY( rl->isValid() );
-
-  // netcdf with open options
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
-  QCOMPARE( res.count(), 8 );
-  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cell_node" ) );
-  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "[320x4] cell_node (32-bit integer)" ) );
-  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":cell_node|option:HONOUR_VALID_RANGE=YES" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
-  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
-  QVERIFY( rl->isValid() );
-  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
-  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
-  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "[37x3520] layerface_Z (32-bit floating-point)" ) );
-  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":layerface_Z|option:HONOUR_VALID_RANGE=YES" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
-  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
-  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
-  QVERIFY( rl->isValid() );
-
   // aigrid file
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid" );
   QCOMPARE( res.count(), 1 );
@@ -553,14 +519,15 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   // zip archive, only 1 file
   res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/landsat_b1.zip" );
   QCOMPARE( res.count(), 1 );
-  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
-  QCOMPARE( res.at( 0 ).description(), QString() );
-  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/landsat_b1.zip/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
-  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  const QgsProviderSublayerDetails &sl = res.at( 0 );
+  QCOMPARE( sl.layerNumber(), 1 );
+  QCOMPARE( sl.name(), QStringLiteral( "landsat_b1.tif" ) );
+  QCOMPARE( sl.description(), QString() );
+  QCOMPARE( sl.uri(), QStringLiteral( "/vsizip/%1/zip/landsat_b1.zip/landsat_b1.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( sl.providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( sl.type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( sl.driverName(), QStringLiteral( "GTiff" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( sl.toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // multi-layer archive
@@ -627,6 +594,62 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( res.empty() );
 }
 
+void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
+{
+  if ( ! mSupportsNetCDF )
+  {
+    QSKIP( "NetCDF based tests require the netcdf GDAL driver" );
+  }
+
+  QList< QgsProviderSublayerDetails > res;
+  std::unique_ptr< QgsRasterLayer > rl;
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+
+  // netcdf file
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
+  QCOMPARE( res.count(), 8 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cell_node" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "[320x4] cell_node (32-bit integer)" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":cell_node" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "[37x3520] layerface_Z (32-bit floating-point)" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":layerface_Z" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+
+  // netcdf with open options
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
+  QCOMPARE( res.count(), 8 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "cell_node" ) );
+  QCOMPARE( res.at( 0 ).description(), QStringLiteral( "[320x4] cell_node (32-bit integer)" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":cell_node|option:HONOUR_VALID_RANGE=YES" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+  QCOMPARE( res.at( 1 ).layerNumber(), 2 );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
+  QCOMPARE( res.at( 1 ).description(), QStringLiteral( "[37x3520] layerface_Z (32-bit floating-point)" ) );
+  QCOMPARE( res.at( 1 ).uri(), QStringLiteral( "NETCDF:\"%1/mesh/trap_steady_05_3D.nc\":layerface_Z|option:HONOUR_VALID_RANGE=YES" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 1 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
+  QVERIFY( rl->isValid() );
+}
+
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
 {
   // test querying sub layers for a mesh layer
@@ -654,24 +677,6 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mixed_layers" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg" );
-  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  QVERIFY( res.at( 0 ).skippedContainerScan() );
-
-  // netcdf file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc", Qgis::SublayerQueryFlag::FastScan );
-  QCOMPARE( res.count(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
-  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
-  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
-  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  QVERIFY( res.at( 0 ).skippedContainerScan() );
-
-  // netcdf with open options
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES", Qgis::SublayerQueryFlag::FastScan );
-  QCOMPARE( res.count(), 1 );
-  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
-  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
@@ -721,6 +726,42 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   // multi-layer archive, format not supported by gdal
   res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 0 );
+}
+
+void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
+{
+  if ( ! mSupportsNetCDF )
+  {
+    QSKIP( "NetCDF based tests require the netcdf GDAL driver" );
+  }
+
+  QList< QgsProviderSublayerDetails > res;
+  std::unique_ptr< QgsRasterLayer > rl;
+
+  // netcdf file
+  res = mGdalMetadata->querySublayers(
+          QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc",
+          Qgis::SublayerQueryFlag::FastScan
+        );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
+  // netcdf with open options
+  res = mGdalMetadata->querySublayers(
+          QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES",
+          Qgis::SublayerQueryFlag::FastScan
+        );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QVERIFY( res.at( 0 ).skippedContainerScan() );
+
 }
 
 QGSTEST_MAIN( TestQgsGdalProvider )
