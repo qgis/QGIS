@@ -146,6 +146,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
+  connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
@@ -1088,6 +1089,12 @@ void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   shadowRenderingFrameGraph->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
+}
+
+void Qgs3DMapScene::onDebugOverlayEnabledChanged()
+{
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
+  shadowRenderingFrameGraph->setDebugOverlayEnabled( mMap.isDebugOverlayEnabled() );
 }
 
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()

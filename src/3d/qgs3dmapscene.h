@@ -206,6 +206,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
+    void onDebugOverlayEnabledChanged();
 
     void on3DAxisSettingsChanged();
 
