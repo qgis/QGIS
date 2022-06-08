@@ -15,6 +15,10 @@
 
 #include <limits>
 
+// GDAL includes
+#include <gdal.h>
+#include <cpl_conv.h>
+
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
@@ -89,6 +93,11 @@ void TestQgsGdalProvider::initTestCase()
   mGdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
 
   mSupportsNetCDF = static_cast< bool >( GDALGetDriverByName( "netcdf" ) );
+
+  // Disable creation of .aux.xml (stats) files during test run,
+  // to avoid modifying .zip files.
+  // See https://github.com/qgis/QGIS/issues/48846
+  CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
 
 }
 
