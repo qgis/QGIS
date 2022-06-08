@@ -724,6 +724,14 @@ void TestQgsProcessing::initTestCase()
   QgsSettings settings;
   settings.clear();
 
+  /* Make sure geopackages are not written-to, during tests
+   * See https://github.com/qgis/QGIS/issues/25830
+   * NOTE: this needs to happen _after_
+   * QgsApplication::initQgis()
+   *       as any previously-set value would otherwise disappear.
+   */
+  settings.setValue( "qgis/walForSqlite3", false );
+
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
 
