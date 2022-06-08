@@ -71,7 +71,7 @@ QgsRectangle QgsPdalProvider::extent() const
 
 QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 {
-  return mIndex.get() ? mIndex->attributes() : QgsPointCloudAttributeCollection();
+  return mIndex ? mIndex->attributes() : QgsPointCloudAttributeCollection();
 }
 
 static QString _outEptDir( const QString &filename )
@@ -92,7 +92,7 @@ static QString _outCopcFile( const QString &filename )
 
 void QgsPdalProvider::generateIndex()
 {
-  if ( mRunningIndexingTask || ( mIndex.get() && mIndex->isValid() ) )
+  if ( mRunningIndexingTask || ( mIndex && mIndex->isValid() ) )
     return;
 
   if ( anyIndexingTaskExists() )
@@ -121,7 +121,7 @@ void QgsPdalProvider::generateIndex()
 
 QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::indexingState()
 {
-  if ( mIndex.get() && mIndex->isValid() )
+  if ( mIndex && mIndex->isValid() )
     return PointCloudIndexGenerationState::Indexed;
   else if ( mRunningIndexingTask )
     return PointCloudIndexGenerationState::Indexing;
@@ -131,10 +131,10 @@ QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::index
 
 void QgsPdalProvider::loadIndex( )
 {
-  if ( mIndex.get() && mIndex->isValid() )
+  if ( mIndex && mIndex->isValid() )
     return;
   // Try to load copc index
-  if ( !mIndex.get() || !mIndex->isValid() )
+  if ( !mIndex || !mIndex->isValid() )
   {
     const QString outputFile = _outCopcFile( dataSourceUri() );
     const QFileInfo fi( outputFile );
@@ -145,7 +145,7 @@ void QgsPdalProvider::loadIndex( )
     }
   }
   // Try to load ept index
-  if ( !mIndex.get() || !mIndex->isValid() )
+  if ( !mIndex || !mIndex->isValid() )
   {
     const QString outputDir = _outEptDir( dataSourceUri() );
     const QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( outputDir );
@@ -156,7 +156,7 @@ void QgsPdalProvider::loadIndex( )
       mIndex->load( outEptJson );
     }
   }
-  if ( !mIndex.get() || !mIndex->isValid() )
+  if ( !mIndex || !mIndex->isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "pdalprovider: neither copc or ept index for dataset %1 is not correctly loaded" ).arg( dataSourceUri() ), 2 );
   }
