@@ -77,6 +77,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mLayersFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterLayers );
   connect( mTilesetsFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterTiles );
+  connect( mLoadLayersIndividuallyCheckBox, &QCheckBox::toggled, leLayerName, &QLineEdit::setDisabled );
+
+  leLayerName->setDisabled( mLoadLayersIndividuallyCheckBox->isChecked() );
 
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
