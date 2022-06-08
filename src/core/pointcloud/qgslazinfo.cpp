@@ -17,8 +17,6 @@
 
 #include "qgslazinfo.h"
 
-#include <QEventLoop>
-
 #include "qgslogger.h"
 #include "qgsblockingnetworkrequest.h"
 

@@ -135,7 +135,7 @@ class CORE_EXPORT QgsLazInfo
     //! Static function to create a QgsLazInfo class from a file over network
     static QgsLazInfo fromUrl( QUrl &url );
 
-    //! Static functions to check whether the server of URL \a url supports range queries
+    //! Static function to check whether the server of URL \a url supports range queries
     static bool supportsRangeQueries( QUrl &url );
 
   private:

@@ -25,16 +25,11 @@
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
-#include "qgsmessagelog.h"
-
-#include <QFileInfo>
 
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "copc" )
 #define PROVIDER_DESCRIPTION QStringLiteral( "COPC point cloud data provider" )
-
-#include <QDebug>
 
 QgsCopcProvider::QgsCopcProvider(
   const QString &uri,
