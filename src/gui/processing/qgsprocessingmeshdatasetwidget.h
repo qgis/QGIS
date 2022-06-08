@@ -97,7 +97,6 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper  : public QgsAbstra
 
   private:
     QgsProcessingMeshDatasetGroupsWidget *mWidget = nullptr;
-    std::unique_ptr<QgsMeshLayer> mTemporarytMeshLayer;
 
     friend class TestProcessingGui;
 };
@@ -202,10 +201,10 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper  : public QgsAbstract
     friend class TestProcessingGui;
 };
 
-class GUI_EXPORT QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+class GUI_EXPORT QgsProcessingMeshDatasetTimeParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {
   public:
-    QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget( QgsProcessingContext &context,
+    QgsProcessingMeshDatasetTimeParameterDefinitionWidget( QgsProcessingContext &context,
         const QgsProcessingParameterWidgetContext &widgetContext,
         const QgsProcessingParameterDefinition *definition = nullptr,
         const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );

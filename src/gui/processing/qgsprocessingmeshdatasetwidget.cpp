@@ -383,7 +383,7 @@ void QgsProcessingMeshDatasetTimeWidgetWrapper::postInitialize( const QList<QgsA
 
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshDatasetTimeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
-  return new QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  return new QgsProcessingMeshDatasetTimeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 void QgsProcessingMeshDatasetTimeWidgetWrapper::setMeshLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *wrapper )
@@ -805,10 +805,7 @@ QgsProcessingParameterDefinition *QgsProcessingMeshDatasetGroupsParameterDefinit
   return param.release();
 }
 
-
-///@endcond
-
-QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget(
+QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetTimeParameterDefinitionWidget(
   QgsProcessingContext &context,
   const QgsProcessingParameterWidgetContext &widgetContext,
   const QgsProcessingParameterDefinition *definition,
@@ -859,7 +856,7 @@ QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget::QgsProcessingMeshD
   setLayout( vlayout );
 }
 
-QgsProcessingParameterDefinition *QgsProcessingMeshDatasetDatasetTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+QgsProcessingParameterDefinition *QgsProcessingMeshDatasetTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
   std::unique_ptr<QgsProcessingParameterMeshDatasetTime> param = std::make_unique<QgsProcessingParameterMeshDatasetTime>(
         name, description, mMeshLayerParameterName, mParentDatasetComboBox->currentData().toString() );
@@ -867,3 +864,6 @@ QgsProcessingParameterDefinition *QgsProcessingMeshDatasetDatasetTimeParameterDe
   param->setFlags( flags );
   return param.release();
 }
+
+///@endcond
+

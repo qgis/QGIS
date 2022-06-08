@@ -10043,6 +10043,22 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   timeWrapper.setWidgetValue( QVariant::fromValue( QDateTime( QDate( 2020, 02, 01 ), QTime( 3, 2, 1 ) ) ).toString(), context );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 2, 1), QTime(3, 2, 1))}" ) );
+
+  // parameter definition widget
+  std::unique_ptr<QgsProcessingAbstractParameterDefinitionWidget> paramWidgetGroup( groupsWrapper.createParameterDefinitionWidget( context, widgetContext, &groupsDefinition, nullptr ) );
+  QgsProcessingParameterDefinition::Flags flags;
+  std::unique_ptr<QgsProcessingParameterDefinition> paramDefGroup( paramWidgetGroup->createParameter( QStringLiteral( "my_param_name" ), QStringLiteral( "my_param_descr" ), flags ) );
+  QVERIFY( paramDefGroup );
+  QCOMPARE( paramDefGroup->name(), QStringLiteral( "my_param_name" ) );
+  QCOMPARE( paramDefGroup->description(), QStringLiteral( "my_param_descr" ) );
+  QCOMPARE( paramDefGroup->type(), QgsProcessingParameterMeshDatasetGroups::typeName() );
+
+  std::unique_ptr<QgsProcessingAbstractParameterDefinitionWidget> paramWidgetTime( timeWrapper.createParameterDefinitionWidget( context, widgetContext, &timeDefinition, nullptr ) );
+  std::unique_ptr<QgsProcessingParameterDefinition> paramDefTime( paramWidgetTime->createParameter( QStringLiteral( "my_param_name" ), QStringLiteral( "my_param_descr" ), flags ) );
+  QVERIFY( paramDefTime );
+  QCOMPARE( paramDefTime->name(), QStringLiteral( "my_param_name" ) );
+  QCOMPARE( paramDefTime->description(), QStringLiteral( "my_param_descr" ) );
+  QCOMPARE( paramDefTime->type(), QgsProcessingParameterMeshDatasetTime::typeName() );
 }
 
 void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
