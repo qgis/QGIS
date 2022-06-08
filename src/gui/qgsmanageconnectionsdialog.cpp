@@ -34,11 +34,11 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
 
   // additional buttons
   QPushButton *pb = nullptr;
-  pb = new QPushButton( tr( "Select all" ) );
+  pb = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::selectAll );
 
-  pb = new QPushButton( tr( "Clear selection" ) );
+  pb = new QPushButton( tr( "Clear Selection" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::clearSelection );
 
