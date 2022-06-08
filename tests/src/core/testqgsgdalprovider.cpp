@@ -442,19 +442,16 @@ void TestQgsGdalProvider::transformCoordinates()
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayers()
 {
-  // test querying sub layers for a mesh layer
-  QgsProviderMetadata *gdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
-
   // invalid uri
-  QList< QgsProviderSublayerDetails >res = gdalMetadata->querySublayers( QString() );
+  QList< QgsProviderSublayerDetails >res = mGdalMetadata->querySublayers( QString() );
   QVERIFY( res.empty() );
 
   // not a raster
-  res = gdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  res = mGdalMetadata->querySublayers( QString( TEST_DATA_DIR ) + "/lines.shp" );
   QVERIFY( res.empty() );
 
   // single layer raster
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat" ) );
@@ -470,7 +467,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // geopackage with two raster layers
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg" );
   QCOMPARE( res.count(), 2 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "band1" ) );
@@ -492,7 +489,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // aigrid file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "aigrid" ) );
@@ -505,7 +502,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // aigrid, pointing to .adf file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid/hdr.adf" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid/hdr.adf" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "aigrid" ) );
@@ -518,7 +515,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // zip archive, only 1 file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/landsat_b1.zip" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/landsat_b1.zip" );
   QCOMPARE( res.count(), 1 );
   const QgsProviderSublayerDetails &sl = res.at( 0 );
   QCOMPARE( sl.layerNumber(), 1 );
@@ -532,7 +529,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // multi-layer archive
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz" );
   QCOMPARE( res.count(), 3 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "folder/folder2/landsat_b2.tif" ) );
@@ -563,7 +560,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // multi-layer archive, but with specific suffix specified
-  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/folder/folder2/landsat_b2.tif" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/folder/folder2/landsat_b2.tif" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "folder/folder2/landsat_b2.tif" ) );
@@ -574,7 +571,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
-  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif" );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
@@ -587,15 +584,15 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QVERIFY( rl->isValid() );
 
   // multi-layer archive, format not supported by gdal
-  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml" );
   QCOMPARE( res.count(), 0 );
 
   // metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/esri_tin/metadata.xml" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/esri_tin/metadata.xml" );
   QVERIFY( res.empty() );
 
   // SAFE format zip file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/S2A_MSIL2A_0000.zip" );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/zip/S2A_MSIL2A_0000.zip" );
   QCOMPARE( res.count(), 4 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
@@ -666,19 +663,16 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
 {
-  // test querying sub layers for a mesh layer
-  QgsProviderMetadata *gdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
-
   // invalid uri
-  QList< QgsProviderSublayerDetails >res = gdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
+  QList< QgsProviderSublayerDetails >res = mGdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
   QVERIFY( res.empty() );
 
   // not a raster
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp", Qgis::SublayerQueryFlag::FastScan );
   QVERIFY( res.empty() );
 
   // single layer raster
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
@@ -691,7 +685,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
 #endif
 
   // geopackage with two raster layers
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "mixed_layers" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mixed_layers.gpkg" );
@@ -700,7 +694,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QVERIFY( res.at( 0 ).skippedContainerScan() );
 
   // aigrid, pointing to .adf file
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid/hdr.adf", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/aigrid/hdr.adf", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "aigrid" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "%1/aigrid/hdr.adf" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
@@ -709,11 +703,11 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QVERIFY( !res.at( 0 ).skippedContainerScan() );
 
   // vector vrt
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/vector_vrt.vrt", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 0 );
 
   // raster vrt
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "hub13263" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/raster/hub13263.vrt" );
@@ -722,18 +716,18 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QVERIFY( res.at( 0 ).skippedContainerScan() );
 
   // metadata.xml file next to tdenv?.adf file -- this is a subcomponent of an ESRI tin layer, should not be exposed
-  res = gdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/esri_tin/metadata.xml", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/esri_tin/metadata.xml", Qgis::SublayerQueryFlag::FastScan );
   QVERIFY( res.empty() );
 
   // multi-layer archive, but with specific suffix specified
-  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/folder/folder2/landsat_b2.tif", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/folder/folder2/landsat_b2.tif", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b2.tif" ) );
   QCOMPARE( res.at( 0 ).description(), QString() );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsitar/%1/zip/testtar.tgz/folder/folder2/landsat_b2.tif" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
-  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.tif" ) );
   QCOMPARE( res.at( 0 ).description(), QString() );
@@ -742,7 +736,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
 
   // multi-layer archive, format not supported by gdal
-  res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml", Qgis::SublayerQueryFlag::FastScan );
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 0 );
 }
 
