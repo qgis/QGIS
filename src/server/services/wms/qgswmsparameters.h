@@ -54,6 +54,7 @@ namespace QgsWms
     QStringList mSelection; // list of string fid
     QString mStyle;
     QString mExternalUri;
+    int mMapId = -1;
   };
 
   struct QgsWmsParametersExternalLayer
@@ -319,7 +320,9 @@ namespace QgsWms
       static QgsWmsParameter::Name name( const QString &name );
 
       QgsWmsParameter::Name mName;
-      int mId = -1;
+
+      //! Map id for prefixed parameters (e.g. "0" for "map0:LAYERS" in GetPrint requests)
+      int mapId = -1;
   };
 
   /**
@@ -533,6 +536,12 @@ namespace QgsWms
        * \returns nickname of layers
        */
       QStringList allLayersNickname() const;
+
+      /**
+       * Returns a list of nicknames of layers found in LAYER and LAYERS parameters with their mapId prefix (or -1 if there is no prefix).
+       * \returns a map with nickname of layers and mapId prefixes for that layer
+       */
+      QMultiMap<QString, int > allLayersNicknameWithMapId() const;
 
       /**
        * Returns nickname of layers found in QUERY_LAYERS parameter.

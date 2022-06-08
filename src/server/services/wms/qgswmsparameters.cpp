@@ -594,7 +594,7 @@ namespace QgsWms
       {
         QgsWmsParameter param = mWmsParameters[name];
         param.mValue = value;
-        param.mId = mapId;
+        param.mapId = mapId;
 
         if ( ! param.isValid() )
         {
@@ -646,9 +646,9 @@ namespace QgsWms
       {
         QString name = QgsWmsParameter::name( parameter.first );
 
-        if ( parameter.second.mId >= 0 )
+        if ( parameter.second.mapId >= 0 )
         {
-          name = QStringLiteral( "%1:%2" ).arg( QString::number( parameter.second.mId ), name );
+          name = QStringLiteral( "%1:%2" ).arg( QString::number( parameter.second.mapId ), name );
         }
 
         log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
@@ -1449,6 +1449,28 @@ namespace QgsWms
     return layer << layers;
   }
 
+  QMultiMap<QString, int > QgsWmsParameters::allLayersNicknameWithMapId() const
+  {
+    QMultiMap<QString, int > result;
+    const QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
+    for ( const QgsWmsParameter &param : std::as_const( cLayer ) )
+    {
+      for ( const QString &layerName : param.toStringList() )
+      {
+        result.insert( layerName, param.mapId );
+      }
+    }
+    const QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
+    for ( const QgsWmsParameter &param : std::as_const( cLayers ) )
+    {
+      for ( const QString &layerName : param.toStringList() )
+      {
+        result.insert( layerName, param.mapId );
+      }
+    }
+    return result;
+  }
+
   QStringList QgsWmsParameters::queryLayersNickname() const
   {
     return mWmsParameters[ QgsWmsParameter::QUERY_LAYERS ].toStringList();
@@ -1544,11 +1566,13 @@ namespace QgsWms
 
   QList<QgsWmsParametersLayer> QgsWmsParameters::layersParameters() const
   {
-    const QStringList layers = allLayersNickname();
+    const QMultiMap<QString, int > layersWithMapId { allLayersNicknameWithMapId() };
+    const QStringList layers = layersWithMapId.uniqueKeys();
     const QStringList styles = allStyles();
     const QStringList selection = selections();
     const QList<int> opacities = opacitiesAsInt();
     const QMultiMap<QString, QgsWmsParametersFilter> filters = layerFilters( layers );
+
 
     // selection format: "LayerName:id0,id1;LayerName2:id0,id1;..."
     // several filters can be defined for one layer
@@ -1574,6 +1598,19 @@ namespace QgsWms
 
       QgsWmsParametersLayer param;
       param.mNickname = layer;
+
+      // Get mapId, if the same layer comes from different LAYER(S) with or without prefix
+      // we will assign -1 as mapId, because there are methods to retrieve the layer params
+      // associated with a particular mapId
+      if ( layersWithMapId.contains( layer ) )
+      {
+        const QList<int> mapIds { layersWithMapId.value( layer ) };
+        param.mMapId = *std::min_element( mapIds.cbegin(), mapIds.cend() );
+      }
+      else
+      {
+        param.mMapId = -1;
+      }
 
       if ( i < opacities.count() )
         param.mOpacity = opacities[i];
@@ -2068,9 +2105,10 @@ namespace QgsWms
   {
     QgsWmsParameter p;
 
-    for ( const auto &param : mWmsParameters.values( name ) )
+    const auto cWmsParams = mWmsParameters.values( name );
+    for ( const auto &param : std::as_const( cWmsParams ) )
     {
-      if ( param.mId == id )
+      if ( param.mapId == id )
       {
         p = param;
       }

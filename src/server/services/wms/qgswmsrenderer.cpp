@@ -694,11 +694,19 @@ namespace QgsWms
         QList<QgsMapLayer *> layerSet;
         if ( cMapParams.mLayers.isEmpty() )
         {
-          layerSet = mapSettings.layers();
+          // What we really want here are only the LAYERS without prefix, let's check mapId
+          const QList<QgsWmsParametersLayer> constParams { mContext.parameters().layersParameters() };
+          for ( const QgsWmsParametersLayer &param : std::as_const( constParams ) )
+          {
+            if ( param.mMapId == -1 && mContext.layer( param.mNickname ) )
+            {
+              layerSet.append( mContext.layer( param.mNickname ) );
+            }
+          }
         }
         else
         {
-          for ( auto layer : cMapParams.mLayers )
+          for ( const auto &layer : std::as_const( cMapParams.mLayers ) )
           {
             if ( mContext.isValidGroup( layer.mNickname ) )
             {
