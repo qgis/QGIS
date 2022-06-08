@@ -49,8 +49,6 @@ void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3D
     mWidgetPointCloudSymbol->setMaximumScreenError( renderer->maximumScreenError() );
     mWidgetPointCloudSymbol->setShowBoundingBoxes( renderer->showBoundingBoxes() );
   }
-  if ( layer )
-    mWidgetPointCloudSymbol->setPointCloudSize( layer->pointCount() );
 }
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
