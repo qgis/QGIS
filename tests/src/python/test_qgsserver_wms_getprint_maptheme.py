@@ -172,15 +172,15 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         image = QImage.fromData(response.body(), "PNG")
         # Expected: green and red
         # map1 (top map)
-        self._assertRed(image.pixelColor(325, 184)) # RED
-        self._assertWhite(image.pixelColor(474, 184)) # GREEN
-        self._assertWhite(image.pixelColor(332, 262)) # BLUE
-        self._assertWhite(image.pixelColor(485, 258)) # BLACK
+        self._assertRed(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertWhite(image.pixelColor(485, 258))  # BLACK
         # map0 (bottom map)
-        self._assertWhite(image.pixelColor(315, 461)) # RED
-        self._assertGreen(image.pixelColor(475, 473)) # GREEN
-        self._assertWhite(image.pixelColor(329, 553)) # BLUE
-        self._assertWhite(image.pixelColor(481, 553)) # BLACK
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertGreen(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertWhite(image.pixelColor(481, 553))  # BLACK
 
         # Black LAYERS
         params["LAYERS"] = "points_black"
@@ -191,15 +191,15 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         image = QImage.fromData(response.body(), "PNG")
         # Expected black
         # map1 (top map)
-        self._assertWhite(image.pixelColor(325, 184)) # RED
-        self._assertWhite(image.pixelColor(474, 184)) # GREEN
-        self._assertWhite(image.pixelColor(332, 262)) # BLUE
-        self._assertBlack(image.pixelColor(485, 258)) # BLACK
+        self._assertWhite(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertBlack(image.pixelColor(485, 258))  # BLACK
         # map0 (bottom map)
-        self._assertWhite(image.pixelColor(315, 461)) # RED
-        self._assertWhite(image.pixelColor(475, 473)) # GREEN
-        self._assertWhite(image.pixelColor(329, 553)) # BLUE
-        self._assertBlack(image.pixelColor(481, 553)) # BLACK
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertWhite(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertBlack(image.pixelColor(481, 553))  # BLACK
 
         # Black map0:LAYERS
         del params["LAYERS"]
@@ -211,15 +211,15 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         image = QImage.fromData(response.body(), "PNG")
         # Expected black on map0, green on map1
         # map1 (top map)
-        self._assertRed(image.pixelColor(325, 184)) # RED
-        self._assertWhite(image.pixelColor(474, 184)) # GREEN
-        self._assertWhite(image.pixelColor(332, 262)) # BLUE
-        self._assertWhite(image.pixelColor(485, 258)) # BLACK
+        self._assertRed(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertWhite(image.pixelColor(485, 258))  # BLACK
         #  map0 (bottom map)
-        self._assertWhite(image.pixelColor(315, 461)) # RED
-        self._assertWhite(image.pixelColor(475, 473)) # GREEN
-        self._assertWhite(image.pixelColor(329, 553)) # BLUE
-        self._assertBlack(image.pixelColor(481, 553)) # BLACK
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertWhite(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertBlack(image.pixelColor(481, 553))  # BLACK
 
         # Conflicting information: Black LAYERS and Green map0:LAYERS
         # The second gets precedence on map0 while LAYERS is applied to map1
@@ -232,15 +232,15 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         image = QImage.fromData(response.body(), "PNG")
         # Expected green on map0, black on map1
         # map1 (top map)
-        self._assertWhite(image.pixelColor(325, 184)) # RED
-        self._assertWhite(image.pixelColor(474, 184)) # GREEN
-        self._assertWhite(image.pixelColor(332, 262)) # BLUE
-        self._assertBlack(image.pixelColor(485, 258)) # BLACK
+        self._assertWhite(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertBlack(image.pixelColor(485, 258))  # BLACK
         #  map0 (bottom map)
-        self._assertWhite(image.pixelColor(315, 461)) # RED
-        self._assertGreen(image.pixelColor(475, 473)) # GREEN
-        self._assertWhite(image.pixelColor(329, 553)) # BLUE
-        self._assertWhite(image.pixelColor(481, 553)) # BLACK
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertGreen(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertWhite(image.pixelColor(481, 553))  # BLACK
 
     def test_wms_getprint_maptheme_higlights(self):
         """Test templates green and red have 2 layers: red and green
