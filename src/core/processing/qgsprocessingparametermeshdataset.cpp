@@ -26,6 +26,7 @@ QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups
   mMeshLayerParameterName( meshLayerParameterName ),
   mSupportedDataType( supportedDataType )
 {
+  int a = 1;
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetGroups::clone() const
@@ -137,6 +138,28 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
   }
 
   return ret;
+}
+
+QVariantMap QgsProcessingParameterMeshDatasetGroups::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "mesh_layer" ), mMeshLayerParameterName );
+  QVariantList dataType;
+  for ( int v : mSupportedDataType )
+    dataType.append( v );
+  map.insert( QStringLiteral( "suppoted_data_type" ), dataType );
+  return map;
+}
+
+bool QgsProcessingParameterMeshDatasetGroups::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mMeshLayerParameterName = map.value( QStringLiteral( "mesh_layer" ) ).toString();
+  const QVariantList dataType = map.value( QStringLiteral( "suppoted_data_type" ) ).toList();
+  mSupportedDataType.clear();
+  for ( const QVariant &var : dataType )
+    mSupportedDataType.insert( var.toInt() );
+  return true;
 }
 
 bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant &input, bool allowEmpty )
@@ -256,6 +279,22 @@ QStringList QgsProcessingParameterMeshDatasetTime::dependsOnOtherParameters() co
     otherParameters << mMeshLayerParameterName << mDatasetGroupParameterName;
 
   return otherParameters;
+}
+
+QVariantMap QgsProcessingParameterMeshDatasetTime::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "mesh_layer" ), mMeshLayerParameterName );
+  map.insert( QStringLiteral( "dataset_groups" ), mDatasetGroupParameterName );
+  return map;
+}
+
+bool QgsProcessingParameterMeshDatasetTime::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mMeshLayerParameterName = map.value( QStringLiteral( "mesh_layer" ) ).toString();
+  mDatasetGroupParameterName = map.value( QStringLiteral( "dataset_groups" ) ).toString();
+  return true;
 }
 
 QString QgsProcessingParameterMeshDatasetTime::meshLayerParameterName() const
