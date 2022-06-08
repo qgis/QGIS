@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>744</width>
-    <height>592</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -497,6 +497,9 @@
    </item>
    <item row="3" column="0">
     <widget class="QCheckBox" name="mLoadLayersIndividuallyCheckBox">
+     <property name="toolTip">
+      <string>Load each selected layer as an individual layer</string>
+     </property>
      <property name="text">
       <string>Load as separate layers</string>
      </property>
