@@ -9789,6 +9789,15 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', meshLayerParameterName='layer parameter', supportedDataType=[QgsMeshDatasetGroupMetadata.DataOnFaces,QgsMeshDatasetGroupMetadata.DataOnVertices], optional=True)" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterMeshDatasetGroups fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.meshLayerParameterName(), def->meshLayerParameterName() );
 }
 
 void TestQgsProcessing::parameterMeshDatasetTime()
@@ -9898,6 +9907,16 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( !def->dependsOnOtherParameters().isEmpty() );
   QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
   QCOMPARE( def->datasetGroupParameterName(), QStringLiteral( "dataset group parameter" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterMeshDatasetTime fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.meshLayerParameterName(), def->meshLayerParameterName() );
+  QCOMPARE( fromMap.datasetGroupParameterName(), def->datasetGroupParameterName() );
 }
 
 void TestQgsProcessing::parameterDateTime()
