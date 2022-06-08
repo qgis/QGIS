@@ -242,7 +242,7 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self._assertWhite(image.pixelColor(329, 553))  # BLUE
         self._assertWhite(image.pixelColor(481, 553))  # BLACK
 
-    def test_wms_getprint_maptheme_higlights(self):
+    def test_wms_getprint_maptheme_highlight(self):
         """Test templates green and red have 2 layers: red and green
             template red: follow map theme red
             template green: follow map theme green
