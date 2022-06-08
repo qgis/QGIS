@@ -26,7 +26,6 @@ QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups
   mMeshLayerParameterName( meshLayerParameterName ),
   mSupportedDataType( supportedDataType )
 {
-  int a = 1;
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetGroups::clone() const
@@ -147,7 +146,7 @@ QVariantMap QgsProcessingParameterMeshDatasetGroups::toVariantMap() const
   QVariantList dataType;
   for ( int v : mSupportedDataType )
     dataType.append( v );
-  map.insert( QStringLiteral( "suppoted_data_type" ), dataType );
+  map.insert( QStringLiteral( "supported_data_type" ), dataType );
   return map;
 }
 
@@ -155,7 +154,7 @@ bool QgsProcessingParameterMeshDatasetGroups::fromVariantMap( const QVariantMap 
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mMeshLayerParameterName = map.value( QStringLiteral( "mesh_layer" ) ).toString();
-  const QVariantList dataType = map.value( QStringLiteral( "suppoted_data_type" ) ).toList();
+  const QVariantList dataType = map.value( QStringLiteral( "supported_data_type" ) ).toList();
   mSupportedDataType.clear();
   for ( const QVariant &var : dataType )
     mSupportedDataType.insert( var.toInt() );
