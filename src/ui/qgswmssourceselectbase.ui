@@ -498,7 +498,7 @@
    <item row="3" column="0">
     <widget class="QCheckBox" name="mLoadLayersIndividuallyCheckBox">
      <property name="text">
-      <string>Load layers individually</string>
+      <string>Load as separate layers</string>
      </property>
     </widget>
    </item>
