@@ -616,7 +616,7 @@ void QgsWMSSourceSelect::addButtonClicked()
       individualUri.setParam( QStringLiteral( "styles" ), styles.at( i ) );
 
       emit addRasterLayer( individualUri.encodedUri(),
-                           layers.at( i ),
+                           titles.at( i ),
                            QStringLiteral( "wms" ) );
     }
 
