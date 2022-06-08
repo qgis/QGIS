@@ -157,6 +157,11 @@ QgsPointCloudBlock *QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNod
   std::ifstream file( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
   file.seekg( blockOffset );
   file.read( rawBlockData.data(), blockSize );
+  if ( !file )
+  {
+    QgsDebugMsg( QStringLiteral( "Could not read file %1" ).arg( mFileName ) );
+    return nullptr;
+  }
 
   return QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression );
 }
