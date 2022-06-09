@@ -10058,6 +10058,7 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QCOMPARE( paramDefGroup->name(), QStringLiteral( "my_param_name" ) );
   QCOMPARE( paramDefGroup->description(), QStringLiteral( "my_param_descr" ) );
   QCOMPARE( paramDefGroup->type(), QgsProcessingParameterMeshDatasetGroups::typeName() );
+  QCOMPARE( static_cast<QgsProcessingParameterMeshDatasetGroups *>( paramDefGroup.get() )->meshLayerParameterName(), QStringLiteral( "layer" ) );
 
   std::unique_ptr<QgsProcessingAbstractParameterDefinitionWidget> paramWidgetTime( timeWrapper.createParameterDefinitionWidget( context, widgetContext, &timeDefinition, nullptr ) );
   std::unique_ptr<QgsProcessingParameterDefinition> paramDefTime( paramWidgetTime->createParameter( QStringLiteral( "my_param_name" ), QStringLiteral( "my_param_descr" ), flags ) );
@@ -10065,6 +10066,8 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QCOMPARE( paramDefTime->name(), QStringLiteral( "my_param_name" ) );
   QCOMPARE( paramDefTime->description(), QStringLiteral( "my_param_descr" ) );
   QCOMPARE( paramDefTime->type(), QgsProcessingParameterMeshDatasetTime::typeName() );
+  QCOMPARE( static_cast<QgsProcessingParameterMeshDatasetTime *>( paramDefTime.get() )->meshLayerParameterName(), QStringLiteral( "layer" ) );
+  QCOMPARE( static_cast<QgsProcessingParameterMeshDatasetTime *>( paramDefTime.get() )->datasetGroupParameterName(), QStringLiteral( "groups" ) );
 }
 
 void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()
