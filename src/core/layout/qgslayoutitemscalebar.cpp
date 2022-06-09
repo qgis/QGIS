@@ -294,8 +294,6 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
 {
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSegmentWidth ) )
   {
-    mDataDefinedProperties.prepare( *context );
-
     double unitsPerSegment = mSettings.unitsPerSegment();
 
     mHasExpressionError = false;
@@ -316,8 +314,6 @@ void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *
 {
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMinWidth ) )
   {
-    mDataDefinedProperties.prepare( *context );
-
     double minimumBarWidth = mSettings.minimumBarWidth();
 
     mHasExpressionError = false;
@@ -338,8 +334,6 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
 {
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMaxWidth ) )
   {
-    mDataDefinedProperties.prepare( *context );
-
     double maximumBarWidth = mSettings.maximumBarWidth();
 
     mHasExpressionError = false;
@@ -360,8 +354,6 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionCont
 {
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarLeftSegments ) )
   {
-    mDataDefinedProperties.prepare( *context );
-
     int leftSegments = mSettings.numberOfSegmentsLeft();
 
     mHasExpressionError = false;
@@ -382,8 +374,6 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight( const QgsExpressionCon
 {
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarRightSegments ) )
   {
-    mDataDefinedProperties.prepare( *context );
-
     int rightSegments = mSettings.numberOfSegments();
 
     mHasExpressionError = false;
