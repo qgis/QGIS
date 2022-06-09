@@ -63,11 +63,11 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinimumWidth );
   registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaximumWidth );
 
-  mSegmentsLeftDDBtn->registerLinkedWidget( mSegmentsLeftSpinBox );
-  mSegmentsRightDDBtn->registerLinkedWidget( mNumberOfSegmentsSpinBox );
-  mSegmentSizeDDBtn->registerLinkedWidget( mSegmentSizeSpinBox );
-  mMinWidthDDBtn->registerLinkedWidget( mMinWidthSpinBox );
-  mMaxWidthDDBtn->registerLinkedWidget( mMaxWidthSpinBox );
+  mSegmentsLeftDDBtn->registerEnabledWidget( mSegmentsLeftSpinBox, false );
+  mSegmentsRightDDBtn->registerEnabledWidget( mNumberOfSegmentsSpinBox, false );
+  mSegmentSizeDDBtn->registerEnabledWidget( mSegmentSizeSpinBox, false );
+  mMinWidthDDBtn->registerEnabledWidget( mMinWidthSpinBox, false );
+  mMaxWidthDDBtn->registerEnabledWidget( mMaxWidthSpinBox, false );
 
   setPanelTitle( tr( "Scalebar Properties" ) );
 
@@ -802,10 +802,4 @@ void QgsLayoutScaleBarWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mSegmentSizeDDBtn );
   updateDataDefinedButton( mMinWidthDDBtn );
   updateDataDefinedButton( mMaxWidthDDBtn );
-
-  mSegmentsLeftSpinBox->setEnabled( !mSegmentsLeftDDBtn->isActive() );
-  mNumberOfSegmentsSpinBox->setEnabled( !mSegmentsRightDDBtn->isActive() );
-  mSegmentSizeSpinBox->setEnabled( !mSegmentSizeDDBtn->isActive() );
-  mMinWidthSpinBox->setEnabled( !mMinWidthDDBtn->isActive() );
-  mMaxWidthSpinBox->setEnabled( !mMaxWidthDDBtn->isActive() );
 }
