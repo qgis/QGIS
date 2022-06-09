@@ -619,7 +619,7 @@ void TestQgsLayoutScaleBar::dataDefined()
   scalebar->setUnitsPerSegment( 500 );
   scalebar->setNumberOfSegmentsLeft( 4 );
   scalebar->setNumberOfSegments( 6 );
-  scalebar->setHeight( 20 );
+  scalebar->setHeight( 40 );
   scalebar->setMinimumBarWidth( 11 );
   scalebar->setMaximumBarWidth( 13 );
 
@@ -653,6 +653,10 @@ void TestQgsLayoutScaleBar::dataDefined()
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarSegmentWidth, QgsProperty::fromExpression( QStringLiteral( "1000.0 * 2.0" ) ) );  // basic math expression -> 2
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMinimumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0')" ) ) );   // basic conversion expression -> 50
   scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMaximumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0') * 3" ) ) ); // basic conversion with math expression -> 150
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarHeight, QgsProperty::fromExpression( QStringLiteral( "20" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarSubdivisionHeight, QgsProperty::fromExpression( QStringLiteral( "30" ) ) );
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarRightSegmentSubdivisions, QgsProperty::fromExpression( QStringLiteral( "40" ) ) );
+
   scalebar->refreshDataDefinedProperty();
 
   // test that data defined values were correctly set -- while the render test will confirm some of these, not all of the properties are used in the render
@@ -661,6 +665,8 @@ void TestQgsLayoutScaleBar::dataDefined()
   QCOMPARE( scalebar->unitsPerSegment(), 2000.0 );
   QCOMPARE( scalebar->minimumBarWidth(), 50.0 );
   QCOMPARE( scalebar->maximumBarWidth(), 150.0 );
+  QCOMPARE( scalebar->subdivisionsHeight(), 30.0 );
+  QCOMPARE( scalebar->numberOfSubdivisions(), 40 );
 
   QgsLayoutChecker checker2( QStringLiteral( "layoutscalebar_datadefined" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );

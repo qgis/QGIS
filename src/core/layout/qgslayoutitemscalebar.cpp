@@ -395,6 +395,46 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
 
   bool forceUpdate = false;
 
+  if ( ( property == QgsLayoutObject::ScalebarHeight || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarHeight ) ) )
+  {
+    double height = mSettings.height();
+
+    bool ok = false;
+    height = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarHeight, context, height, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Scalebar height expression eval error" ) );
+    }
+    else
+    {
+      setHeight( height );
+    }
+
+    forceUpdate = true;
+  }
+
+  if ( ( property == QgsLayoutObject::ScalebarSubdivisionHeight || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSubdivisionHeight ) ) )
+  {
+    double height = mSettings.subdivisionsHeight();
+
+    bool ok = false;
+    height = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSubdivisionHeight, context, height, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Scalebar subdivision height expression eval error" ) );
+    }
+    else
+    {
+      setSubdivisionsHeight( height );
+    }
+
+    forceUpdate = true;
+  }
+
   if ( property == QgsLayoutObject::ScalebarLeftSegments || property == QgsLayoutObject::AllProperties )
   {
     refreshNumberOfSegmentsLeft( &context );
@@ -406,6 +446,27 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     refreshNumberOfSegmentsRight( &context );
     forceUpdate = true;
   }
+
+  if ( ( property == QgsLayoutObject::ScalebarRightSegmentSubdivisions || property == QgsLayoutObject::AllProperties )
+       && ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarRightSegmentSubdivisions ) ) )
+  {
+    int segments = mSettings.numberOfSubdivisions();
+
+    bool ok = false;
+    segments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegmentSubdivisions, context, segments, &ok );
+
+    if ( !ok )
+    {
+      QgsMessageLog::logMessage( tr( "Scalebar number of subdivisions expression eval error" ) );
+    }
+    else
+    {
+      setNumberOfSubdivisions( segments );
+    }
+
+    forceUpdate = true;
+  }
+
 
   if ( property == QgsLayoutObject::ScalebarSegmentWidth || property == QgsLayoutObject::AllProperties )
   {
