@@ -80,10 +80,6 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void textFormatChanged();
     void changeNumberFormat();
 
-  protected slots:
-    //! Initializes data defined buttons to current atlas coverage layer
-    void populateDataDefinedButtons();
-
   private:
     QPointer< QgsLayoutItemScaleBar > mScalebar;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
@@ -98,6 +94,8 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
 
     void connectUpdateSignal();
     void disconnectUpdateSignal();
+    void populateDataDefinedButtons();
+
 };
 
 #endif //QGSLAYOUTSCALEBARWIDGET_H
