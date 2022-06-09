@@ -576,7 +576,8 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
   QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
 
   mUri = createUri();
-  mIconName = QStringLiteral( "mIconWms.svg" );
+
+  mIconName = mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ? QStringLiteral( "mIconTemporalRaster.svg" ) : QStringLiteral( "mIconRaster.svg" );
   setState( Qgis::BrowserItemState::Populated );
 }
 
