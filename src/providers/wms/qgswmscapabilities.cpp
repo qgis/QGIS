@@ -404,7 +404,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
   // no standards here, we just have to be flexible..!
   // because we have to reconstruct values in the same exact formats later, each format match
   // must be specific to ONE SINGULAR format only! (ie. we can't make these formats tolerant to - vs /, etc --
-  // each one must be handled seperately).
+  // each one must be handled individually).
 
   // YYYYMMDD format, eg
   // 20210101
