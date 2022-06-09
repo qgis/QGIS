@@ -60,8 +60,8 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   registerDataDefinedButton( mSegmentsLeftDDBtn, QgsLayoutObject::ScalebarLeftSegments );
   registerDataDefinedButton( mSegmentsRightDDBtn, QgsLayoutObject::ScalebarRightSegments );
   registerDataDefinedButton( mSegmentSizeDDBtn, QgsLayoutObject::ScalebarSegmentWidth );
-  registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinWidth );
-  registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaxWidth );
+  registerDataDefinedButton( mMinWidthDDBtn, QgsLayoutObject::ScalebarMinimumWidth );
+  registerDataDefinedButton( mMaxWidthDDBtn, QgsLayoutObject::ScalebarMaximumWidth );
 
   mSegmentsLeftDDBtn->registerLinkedWidget( mSegmentsLeftSpinBox );
   mSegmentsRightDDBtn->registerLinkedWidget( mNumberOfSegmentsSpinBox );
