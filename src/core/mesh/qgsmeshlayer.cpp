@@ -1501,13 +1501,14 @@ bool QgsMeshLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsRe
 QString QgsMeshLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
   QString src( source );
-  if ( provider == QLatin1String( "mdal" ) )
+
+  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( provider, source );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
   {
-    QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "mdal" ), source );
     QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
     filePath = context.pathResolver().readPath( filePath );
     uriParts.insert( QStringLiteral( "path" ), filePath );
-    src = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "mdal" ), uriParts );
+    src = QgsProviderRegistry::instance()->encodeUri( provider, uriParts );
   }
 
   return src;
@@ -1516,13 +1517,13 @@ QString QgsMeshLayer::decodedSource( const QString &source, const QString &provi
 QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QString src( source );
-  if ( providerType() == QLatin1String( "mdal" ) )
+  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, source );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
   {
-    QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "mdal" ), source );
     QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
     filePath = context.pathResolver().writePath( filePath );
     uriParts.insert( QStringLiteral( "path" ), filePath );
-    src = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "mdal" ), uriParts );
+    src = QgsProviderRegistry::instance()->encodeUri( mProviderKey, uriParts );
   }
   return src;
 }
