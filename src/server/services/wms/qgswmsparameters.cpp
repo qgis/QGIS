@@ -1774,13 +1774,13 @@ namespace QgsWms
     return mWmsParameters[ QgsWmsParameter::TEMPLATE ].toString();
   }
 
-  QgsWmsParametersComposerMap QgsWmsParameters::composerMapParameters( const int mapId ) const
+  QgsWmsParametersComposerMap QgsWmsParameters::composerMapParameters( const int mapId, bool isAtlas ) const
   {
     QgsWmsParameter wmsParam;
     QgsWmsParametersComposerMap param;
     param.mId = mapId;
 
-    //map extent is mandatory
+    //map extent is mandatory (but not for atlas)
     QString extentStr;
     wmsParam = idParameter( QgsWmsParameter::EXTENT, mapId );
     if ( wmsParam.isValid() )
@@ -1788,7 +1788,7 @@ namespace QgsWms
       extentStr = wmsParam.toString();
     }
 
-    if ( extentStr.isEmpty() )
+    if ( ! isAtlas && extentStr.isEmpty() )
     {
       return param;
     }
@@ -1802,7 +1802,7 @@ namespace QgsWms
       extent = wmsParam.toRectangle();
     }
 
-    if ( extent.isEmpty() )
+    if ( ! isAtlas && extent.isEmpty() )
       return param;
 
     param.mHasExtent = !extent.isEmpty();

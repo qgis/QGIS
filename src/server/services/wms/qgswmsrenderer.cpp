@@ -650,10 +650,10 @@ namespace QgsWms
 
     for ( const auto &map : std::as_const( maps ) )
     {
-      QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( mapId );
+      QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( mapId, atlasPrint );
       mapId++;
 
-      if ( !atlasPrint || !map->atlasDriven() ) //No need to extent, scal, rotation set with atlas feature
+      if ( !atlasPrint || !map->atlasDriven() ) //No need to extent, scale, rotation set with atlas feature
       {
         //map extent is mandatory
         if ( !cMapParams.mHasExtent )

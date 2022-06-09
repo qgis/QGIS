@@ -1267,7 +1267,7 @@ namespace QgsWms
        * \returns parameters for the composer map.
        * \throws QgsBadRequestException
        */
-      QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
+      QgsWmsParametersComposerMap composerMapParameters( int mapId, bool isAtlas ) const;
 
       /**
        * Returns the external WMS uri
