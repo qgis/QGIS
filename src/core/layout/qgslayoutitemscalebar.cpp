@@ -302,7 +302,10 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
     {
       QgsMessageLog::logMessage( tr( "Scalebar units per segment expression eval error" ) );
     }
-    setUnitsPerSegment( unitsPerSegment );
+    else
+    {
+      setUnitsPerSegment( unitsPerSegment );
+    }
   }
 }
 
@@ -319,7 +322,10 @@ void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *
     {
       QgsMessageLog::logMessage( tr( "Scalebar minimum segment width expression eval error" ) );
     }
-    setMinimumBarWidth( minimumBarWidth );
+    else
+    {
+      setMinimumBarWidth( minimumBarWidth );
+    }
   }
 }
 
@@ -336,7 +342,10 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
     {
       QgsMessageLog::logMessage( tr( "Scalebar maximum segment width expression eval error" ) );
     }
-    setMaximumBarWidth( maximumBarWidth );
+    else
+    {
+      setMaximumBarWidth( maximumBarWidth );
+    }
   }
 }
 
@@ -353,7 +362,10 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionCont
     {
       QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
     }
-    setNumberOfSegmentsLeft( leftSegments );
+    else
+    {
+      setNumberOfSegmentsLeft( leftSegments );
+    }
   }
 }
 
@@ -370,7 +382,10 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight( const QgsExpressionCon
     {
       QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
     }
-    setNumberOfSegments( rightSegments );
+    else
+    {
+      setNumberOfSegments( rightSegments );
+    }
   }
 }
 
@@ -429,13 +444,10 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-
   if ( forceUpdate )
   {
     refreshItemSize();
     update();
-    //FIXME: @nyall said this is not necessary
-    //emit changed();
   }
 
   QgsLayoutItem::refreshDataDefinedProperty( property );
