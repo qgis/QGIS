@@ -311,12 +311,12 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
 
 void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMinWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMinimumWidth ) )
   {
     double minimumBarWidth = mSettings.minimumBarWidth();
 
     bool ok = false;
-    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinWidth, *context, minimumBarWidth, &ok );
+    minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinimumWidth, *context, minimumBarWidth, &ok );
 
     if ( !ok )
     {
@@ -331,12 +331,12 @@ void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *
 
 void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *context )
 {
-  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMaxWidth ) )
+  if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarMaximumWidth ) )
   {
     double maximumBarWidth = mSettings.maximumBarWidth();
 
     bool ok = false;
-    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaxWidth, *context, maximumBarWidth, &ok );
+    maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaximumWidth, *context, maximumBarWidth, &ok );
 
     if ( !ok )
     {
@@ -413,13 +413,13 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-  if ( property == QgsLayoutObject::ScalebarMinWidth || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::ScalebarMinimumWidth || property == QgsLayoutObject::AllProperties )
   {
     refreshMinimumBarWidth( &context );
     forceUpdate = true;
   }
 
-  if ( property == QgsLayoutObject::ScalebarMaxWidth || property == QgsLayoutObject::AllProperties )
+  if ( property == QgsLayoutObject::ScalebarMaximumWidth || property == QgsLayoutObject::AllProperties )
   {
     refreshMaximumBarWidth( &context );
     forceUpdate = true;

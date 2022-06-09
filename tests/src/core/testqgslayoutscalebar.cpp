@@ -646,11 +646,11 @@ void TestQgsLayoutScaleBar::dataDefined()
 
   // New Data Defined Properties (as of QGIS 3.26)
   // The values should equal the manually set values previous
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLeftSegments, QgsProperty::fromExpression( QStringLiteral( "0" )));               // hard-coded value -> 0
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarRightSegments, QgsProperty::fromExpression( QStringLiteral( "length('Hi')" )));   // basic expression -> 2
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarSegmentWidth, QgsProperty::fromExpression( QStringLiteral( "1000.0 * 2.0" )));    // basic math expression -> 2
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMinWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0')" )));     // basic conversion expression -> 50
-  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMaxWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0') * 3" ))); // basic conversion with math expression -> 150
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLeftSegments, QgsProperty::fromExpression( QStringLiteral( "0" ) ) );             // hard-coded value -> 0
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarRightSegments, QgsProperty::fromExpression( QStringLiteral( "length('Hi')" ) ) ); // basic expression -> 2
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarSegmentWidth, QgsProperty::fromExpression( QStringLiteral( "1000.0 * 2.0" ) ) );  // basic math expression -> 2
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMinimumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0')" ) ) );   // basic conversion expression -> 50
+  scalebar->dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarMaximumWidth, QgsProperty::fromExpression( QStringLiteral( "to_real('50.0') * 3" ) ) ); // basic conversion with math expression -> 150
   scalebar->refreshDataDefinedProperty();
 
   QgsLayoutChecker checker2( QStringLiteral( "layoutscalebar_datadefined" ), &l );
