@@ -65,9 +65,12 @@ QgsPointCloudRgbRendererWidget::QgsPointCloudRgbRendererWidget( QgsPointCloudLay
   if ( layer )
   {
     // set nice initial values
+    mBlockChangedSignal = true;
     redAttributeChanged();
     greenAttributeChanged();
     blueAttributeChanged();
+    mBlockChangedSignal = false;
+    minMaxModified();
   }
 }
 
