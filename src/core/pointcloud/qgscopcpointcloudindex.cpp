@@ -63,7 +63,7 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
 
   if ( !mCopcFile.is_open() || !mCopcFile.good() )
   {
-    QgsMessageLog::logMessage( tr( "Unable to open %1 for reading" ).arg( fileName ) );
+    mError = tr( "Unable to open %1 for reading" ).arg( fileName );
     mIsValid = false;
     return;
   }
@@ -76,7 +76,7 @@ void QgsCopcPointCloudIndex::load( const QString &fileName )
   }
   if ( !mIsValid )
   {
-    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName, mLazInfo->error() ) );
+    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName, mLazInfo->error() );
     return;
   }
 
@@ -88,7 +88,7 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   QByteArray copcInfoVlrData = lazInfo.vlrData( QStringLiteral( "copc" ), 1 );
   if ( copcInfoVlrData.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Invalid COPC file" ) );
+    mError = tr( "Invalid COPC file" );
     return false;
   }
   mCopcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );

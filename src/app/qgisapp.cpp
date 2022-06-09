@@ -6007,7 +6007,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   {
     if ( guiWarning )
     {
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
+      QString msg = tr( "%1 is not a valid or recognized data source, error: \"%2\"" ).arg( uri ).arg( layer->error().message( QgsErrorMessage::Format::Text ) );
       visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
     }
 

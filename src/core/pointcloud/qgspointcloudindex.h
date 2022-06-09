@@ -189,6 +189,12 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     virtual bool isValid() const = 0;
 
     /**
+     * Returns the error that occurred during the loading of the index.
+     * \since QGIS 3.26
+     */
+    QString error() const { return mError; }
+
+    /**
      * Returns the access type of the data
      * If the access type is Remote, data will be fetched from an HTTP server either synchronously or asynchronously
      * If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
@@ -337,6 +343,8 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
     int mSpan;  //!< Number of points in one direction in a single node
     QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
+
+    QString mError;
 };
 
 #endif // QGSPOINTCLOUDINDEX_H

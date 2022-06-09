@@ -26,8 +26,6 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 
-#include <QFileInfo>
-
 ///@cond PRIVATE
 
 #define PROVIDER_KEY QStringLiteral( "copc" )
@@ -39,7 +37,8 @@ QgsCopcProvider::QgsCopcProvider(
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  bool isRemote = uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive );
+  if ( isRemote )
     mIndex.reset( new QgsRemoteCopcPointCloudIndex );
   else
     mIndex.reset( new QgsCopcPointCloudIndex );
@@ -49,6 +48,10 @@ QgsCopcProvider::QgsCopcProvider(
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
+  if ( mIndex && !mIndex->isValid() )
+  {
+    appendError( mIndex->error() );
+  }
 }
 
 QgsCopcProvider::~QgsCopcProvider() = default;
