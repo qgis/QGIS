@@ -295,15 +295,11 @@ void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::ScalebarSegmentWidth ) )
   {
     double unitsPerSegment = mSettings.unitsPerSegment();
-
-    mHasExpressionError = false;
-
     bool ok = false;
     unitsPerSegment = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarSegmentWidth, *context, unitsPerSegment, &ok );
 
     if ( !ok )
     {
-      mHasExpressionError = true;
       QgsMessageLog::logMessage( tr( "Scalebar units per segment expression eval error" ) );
     }
     setUnitsPerSegment( unitsPerSegment );
@@ -316,14 +312,11 @@ void QgsLayoutItemScaleBar::refreshMinimumBarWidth( const QgsExpressionContext *
   {
     double minimumBarWidth = mSettings.minimumBarWidth();
 
-    mHasExpressionError = false;
-
     bool ok = false;
     minimumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMinWidth, *context, minimumBarWidth, &ok );
 
     if ( !ok )
     {
-      mHasExpressionError = true;
       QgsMessageLog::logMessage( tr( "Scalebar minimum segment width expression eval error" ) );
     }
     setMinimumBarWidth( minimumBarWidth );
@@ -336,14 +329,11 @@ void QgsLayoutItemScaleBar::refreshMaximumBarWidth( const QgsExpressionContext *
   {
     double maximumBarWidth = mSettings.maximumBarWidth();
 
-    mHasExpressionError = false;
-
     bool ok = false;
     maximumBarWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ScalebarMaxWidth, *context, maximumBarWidth, &ok );
 
     if ( !ok )
     {
-      mHasExpressionError = true;
       QgsMessageLog::logMessage( tr( "Scalebar maximum segment width expression eval error" ) );
     }
     setMaximumBarWidth( maximumBarWidth );
@@ -356,14 +346,11 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsLeft( const QgsExpressionCont
   {
     int leftSegments = mSettings.numberOfSegmentsLeft();
 
-    mHasExpressionError = false;
-
     bool ok = false;
     leftSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarLeftSegments, *context, leftSegments, &ok );
 
     if ( !ok )
     {
-      mHasExpressionError = true;
       QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
     }
     setNumberOfSegmentsLeft( leftSegments );
@@ -376,14 +363,11 @@ void QgsLayoutItemScaleBar::refreshNumberOfSegmentsRight( const QgsExpressionCon
   {
     int rightSegments = mSettings.numberOfSegments();
 
-    mHasExpressionError = false;
-
     bool ok = false;
     rightSegments = mDataDefinedProperties.valueAsInt( QgsLayoutObject::ScalebarRightSegments, *context, rightSegments, &ok );
 
     if ( !ok )
     {
-      mHasExpressionError = true;
       QgsMessageLog::logMessage( tr( "Scalebar left segment count expression eval error" ) );
     }
     setNumberOfSegments( rightSegments );

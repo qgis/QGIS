@@ -675,8 +675,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsLayoutItemMap *mMap = nullptr;
     QString mMapUuid;
 
-    bool mHasExpressionError;
-
     QgsScaleBarSettings mSettings;
 
     //! Scalebar style
