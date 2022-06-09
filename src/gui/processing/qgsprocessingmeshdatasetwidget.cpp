@@ -819,6 +819,13 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
   QWidget *parent )
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
+  if ( definition )
+  {
+    const QgsProcessingParameterMeshDatasetTime *datasetTimeDef =
+      static_cast< const QgsProcessingParameterMeshDatasetTime *>( definition );
+    mMeshLayerParameterName = datasetTimeDef->meshLayerParameterName();
+  }
+
   QVBoxLayout *vlayout = new QVBoxLayout();
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
@@ -827,7 +834,8 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
   mParentDatasetComboBox = new QComboBox();
   vlayout->addWidget( mParentDatasetComboBox );
 
-  if ( QgsProcessingModelAlgorithm *model = widgetContext.model() )
+  QgsProcessingModelAlgorithm *model = widgetContext.model();
+  if ( model )
   {
     const QMap<QString, QgsProcessingModelParameter> components = model->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
@@ -836,22 +844,25 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
       if ( def && def->type() == QgsProcessingParameterMeshDatasetGroups::typeName() )
         mParentDatasetComboBox->addItem( def->description(), def->name() );
     }
+  }
 
-    if ( definition )
+  if ( definition )
+  {
+    const QgsProcessingParameterMeshDatasetTime *datasetTimeDef =
+      static_cast< const QgsProcessingParameterMeshDatasetTime *>( definition );
+    int currentIndex = mParentDatasetComboBox->findData( datasetTimeDef->datasetGroupParameterName() );
+    if ( currentIndex != -1 )
+      mParentDatasetComboBox->setCurrentIndex( currentIndex );
+    else if ( !datasetTimeDef->meshLayerParameterName().isEmpty() )
     {
-      const QgsProcessingParameterMeshDatasetTime *datasetTimeDef =
-        static_cast< const QgsProcessingParameterMeshDatasetTime *>( definition );
-      int currentIndex = mParentDatasetComboBox->findData( datasetTimeDef->datasetGroupParameterName() );
-      if ( currentIndex != -1 )
-        mParentDatasetComboBox->setCurrentIndex( currentIndex );
-      else if ( !datasetTimeDef->meshLayerParameterName().isEmpty() )
-      {
-        // if no layer parameter candidates found, we just add the existing one as a placeholder
-        mParentDatasetComboBox->addItem( datasetTimeDef->meshLayerParameterName(), datasetTimeDef->meshLayerParameterName() );
-        mParentDatasetComboBox->setCurrentIndex( mParentDatasetComboBox->count() - 1 );
-      }
+      // if no layer parameter candidates found, we just add the existing one as a placeholder
+      mParentDatasetComboBox->addItem( datasetTimeDef->datasetGroupParameterName(), datasetTimeDef->datasetGroupParameterName() );
+      mParentDatasetComboBox->setCurrentIndex( mParentDatasetComboBox->count() - 1 );
     }
+  }
 
+  if ( model )
+  {
     const QgsProcessingParameterDefinition *currentDef = model->parameterDefinition( mParentDatasetComboBox->currentData().toString() );
     if ( currentDef )
       mMeshLayerParameterName = static_cast<const QgsProcessingParameterMeshDatasetGroups *>( currentDef )->meshLayerParameterName();
@@ -862,7 +873,6 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
       if ( currentDef )
         mMeshLayerParameterName = static_cast<const QgsProcessingParameterMeshDatasetGroups *>( currentDef )->meshLayerParameterName();
     } );
-
   }
 
   setLayout( vlayout );
