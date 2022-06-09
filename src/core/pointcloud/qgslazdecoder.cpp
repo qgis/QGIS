@@ -472,78 +472,89 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   t.start();
 #endif
 
-  lazperf::reader::generic_file f( file );
-
-  // output file formats from entwine/untwine:
-  // - older versions write LAZ 1.2 files with point formats 0, 1, 2 or 3
-  // - newer versions write LAZ 1.4 files with point formats 6, 7 or 8
-
-  int lasPointFormat = f.header().pointFormat();
-  if ( lasPointFormat != 0 && lasPointFormat != 1 && lasPointFormat != 2 && lasPointFormat != 3 &&
-       lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
+  // lazperf may throw exceptions
+  try
   {
-    QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
-    return nullptr;
-  }
+    lazperf::reader::generic_file f( file );
 
-  const size_t count = f.header().point_count;
-  const QgsVector3D scale( f.header().scale.x, f.header().scale.y, f.header().scale.z );
-  const QgsVector3D offset( f.header().offset.x, f.header().offset.y, f.header().offset.z );
 
-  QByteArray bufArray( f.header().point_record_length, 0 );
-  char *buf = bufArray.data();
+    // output file formats from entwine/untwine:
+    // - older versions write LAZ 1.2 files with point formats 0, 1, 2 or 3
+    // - newer versions write LAZ 1.4 files with point formats 6, 7 or 8
 
-  const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
-  QByteArray data;
-  data.resize( requestedPointRecordSize * count );
-  char *dataBuffer = data.data();
-
-  std::size_t outputOffset = 0;
-
-  std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-        count,
-        requestedAttributes,
-        data, scale, offset
-      );
-
-  int skippedPoints = 0;
-  const bool filterIsValid = filterExpression.isValid();
-  if ( !filterExpression.prepare( block.get() ) && filterIsValid )
-  {
-    // skip processing if the expression cannot be prepared
-    block->setPointCount( 0 );
-    return block.release();
-  }
-
-  std::vector<char> rawExtrabytes = f.vlrData( "LASF_Spec", 4 );
-  QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = QgsLazInfo::parseExtrabytes( rawExtrabytes.data(), rawExtrabytes.size(), f.header().point_record_length );
-  std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
-
-  for ( size_t i = 0 ; i < count ; i ++ )
-  {
-    f.readPoint( buf ); // read the point out
-
-    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
-
-    // check if point needs to be filtered out
-    if ( filterIsValid )
+    int lasPointFormat = f.header().pointFormat();
+    if ( lasPointFormat != 0 && lasPointFormat != 1 && lasPointFormat != 2 && lasPointFormat != 3 &&
+         lasPointFormat != 6 && lasPointFormat != 7 && lasPointFormat != 8 )
     {
-      // we're always evaluating the last written point in the buffer
-      double eval = filterExpression.evaluate( i - skippedPoints );
-      if ( !eval || std::isnan( eval ) )
+      QgsDebugMsg( QStringLiteral( "Unexpected point format record (%1) - only 0, 1, 2, 3, 6, 7, 8 are supported" ).arg( lasPointFormat ) );
+      return nullptr;
+    }
+
+    const size_t count = f.header().point_count;
+    const QgsVector3D scale( f.header().scale.x, f.header().scale.y, f.header().scale.z );
+    const QgsVector3D offset( f.header().offset.x, f.header().offset.y, f.header().offset.z );
+
+    QByteArray bufArray( f.header().point_record_length, 0 );
+    char *buf = bufArray.data();
+
+    const size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
+    QByteArray data;
+    data.resize( requestedPointRecordSize * count );
+    char *dataBuffer = data.data();
+
+    std::size_t outputOffset = 0;
+
+    std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
+          count,
+          requestedAttributes,
+          data, scale, offset
+        );
+
+    int skippedPoints = 0;
+    const bool filterIsValid = filterExpression.isValid();
+    if ( !filterExpression.prepare( block.get() ) && filterIsValid )
+    {
+      // skip processing if the expression cannot be prepared
+      block->setPointCount( 0 );
+      return block.release();
+    }
+
+    std::vector<char> rawExtrabytes = f.vlrData( "LASF_Spec", 4 );
+    QVector<QgsLazInfo::ExtraBytesAttributeDetails> extrabyteAttributesDetails = QgsLazInfo::parseExtrabytes( rawExtrabytes.data(), rawExtrabytes.size(), f.header().point_record_length );
+    std::vector< QgsLazDecoder::RequestedAttributeDetails > requestedAttributeDetails = __prepareRequestedAttributeDetails( requestedAttributes, extrabyteAttributesDetails );
+
+    for ( size_t i = 0 ; i < count ; i ++ )
+    {
+      f.readPoint( buf ); // read the point out
+
+      decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
+
+      // check if point needs to be filtered out
+      if ( filterIsValid )
       {
-        // if the point is filtered out, rewind the offset so the next point is written over it
-        outputOffset -= requestedPointRecordSize;
-        ++skippedPoints;
+        // we're always evaluating the last written point in the buffer
+        double eval = filterExpression.evaluate( i - skippedPoints );
+        if ( !eval || std::isnan( eval ) )
+        {
+          // if the point is filtered out, rewind the offset so the next point is written over it
+          outputOffset -= requestedPointRecordSize;
+          ++skippedPoints;
+        }
       }
     }
-  }
 
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t.elapsed() / 1000. ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "LAZ-PERF Read through the points in %1 seconds." ).arg( t.elapsed() / 1000. ), 2 );
 #endif
-  block->setPointCount( count - skippedPoints );
-  return block.release();
+    block->setPointCount( count - skippedPoints );
+    return block.release();
+  }
+  catch ( std::exception &e )
+  {
+    Q_UNUSED( e )
+    QgsDebugMsg( "Error decompressing laz file: " + QString::fromLatin1( e.what() ) );
+    return nullptr;
+  }
 }
 
 QgsPointCloudBlock *QgsLazDecoder::decompressLaz( const QString &filename,
