@@ -32,6 +32,7 @@ class TestQgsServerWmsParameters : public QObject
     void percent_encoding();
     void version_negotiation();
     void get_capabilities_version();
+    void prefixed_layers();
 };
 
 void TestQgsServerWmsParameters::initTestCase()
@@ -189,6 +190,28 @@ void TestQgsServerWmsParameters::get_capabilities_version()
   query.addQueryItem( "REQUEST", "capabilities" );
   parameters = QgsWms::QgsWmsParameters( query );
   QCOMPARE( parameters.request(), QStringLiteral( "GetCapabilities" ) );
+}
+
+void TestQgsServerWmsParameters::prefixed_layers()
+{
+  QUrlQuery query;
+
+  query.addQueryItem( "LAYERS", "a,b" );
+  query.addQueryItem( "map0:LAYERS", "b,c" );
+  query.addQueryItem( "map1:LAYERS", "c,d" );
+
+  QgsWms::QgsWmsParameters parameters( query );
+  QCOMPARE( parameters.allLayersNickname().toSet(), QSet<QString>()
+            << QStringLiteral( "a" )
+            << QStringLiteral( "b" )
+            << QStringLiteral( "c" )
+            << QStringLiteral( "d" ) );
+  QMap<QString, int> nickNames = parameters.allLayersNicknameWithMapId();
+  QCOMPARE( nickNames.values( QStringLiteral( "a" ) ).toSet(), QSet<int>() << -1 ); // clazy:exclude=container-anti-pattern
+  QCOMPARE( nickNames.values( QStringLiteral( "b" ) ).toSet(), QSet<int>() << -1 << 0 ); // clazy:exclude=container-anti-pattern
+  QCOMPARE( nickNames.values( QStringLiteral( "c" ) ).toSet(), QSet<int>() << 0 << 1 ); // clazy:exclude=container-anti-pattern
+  QCOMPARE( nickNames.values( QStringLiteral( "d" ) ).toSet(), QSet<int>() << 1 ); // clazy:exclude=container-anti-pattern
+
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )

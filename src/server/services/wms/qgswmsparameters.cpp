@@ -1444,9 +1444,29 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allLayersNickname() const
   {
-    QStringList layer = mWmsParameters[ QgsWmsParameter::LAYER ].toStringList();
-    const QStringList layers = mWmsParameters[ QgsWmsParameter::LAYERS ].toStringList();
-    return layer << layers;
+    // We don't want duplicates but order does matter, so no QSet
+    QStringList result;
+    const QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
+    for ( const QgsWmsParameter &param : std::as_const( cLayer ) )
+    {
+      const QStringList layersList { param.toStringList() };
+      for ( const QString &layerName : std::as_const( layersList ) )
+      {
+        if ( ! result.contains( layerName ) )
+          result.append( layerName );
+      }
+    }
+    const QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
+    for ( const QgsWmsParameter &param : std::as_const( cLayers ) )
+    {
+      const QStringList layersList { param.toStringList() };
+      for ( const QString &layerName : std::as_const( layersList ) )
+      {
+        if ( ! result.contains( layerName ) )
+          result.append( layerName );
+      }
+    }
+    return result;
   }
 
   QMultiMap<QString, int > QgsWmsParameters::allLayersNicknameWithMapId() const
@@ -1455,7 +1475,8 @@ namespace QgsWms
     const QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
     for ( const QgsWmsParameter &param : std::as_const( cLayer ) )
     {
-      for ( const QString &layerName : param.toStringList() )
+      const QStringList layersList { param.toStringList() };
+      for ( const QString &layerName : std::as_const( layersList ) )
       {
         result.insert( layerName, param.mapId );
       }
@@ -1463,7 +1484,8 @@ namespace QgsWms
     const QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
     for ( const QgsWmsParameter &param : std::as_const( cLayers ) )
     {
-      for ( const QString &layerName : param.toStringList() )
+      const QStringList layersList { param.toStringList() };
+      for ( const QString &layerName : std::as_const( layersList ) )
       {
         result.insert( layerName, param.mapId );
       }

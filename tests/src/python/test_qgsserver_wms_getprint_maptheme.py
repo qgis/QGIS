@@ -32,8 +32,7 @@ from utilities import unitTestDataPath
 
 
 class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
-    """Tests for issue GH #34178 QGIS Server GetPrint:
-    HIGHLIGHT_GEOM is not printed if map layers are configured to follow a map theme"""
+    """Tests for GetPrint layouts following map themes"""
 
     @classmethod
     def setUpClass(cls):
@@ -223,13 +222,14 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
 
         # Conflicting information: Black LAYERS and Green map0:LAYERS
         # The second gets precedence on map0 while LAYERS is applied to map1
-        params["map0:LAYERS"] = "points_green"
+        params["map0:LAYERS"] = "points_blue"
         params["LAYERS"] = "points_black"
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
+        image.save('/tmp/tmp.png')
         # Expected green on map0, black on map1
         # map1 (top map)
         self._assertWhite(image.pixelColor(325, 184))  # RED
@@ -238,8 +238,8 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self._assertBlack(image.pixelColor(485, 258))  # BLACK
         #  map0 (bottom map)
         self._assertWhite(image.pixelColor(315, 461))  # RED
-        self._assertGreen(image.pixelColor(475, 473))  # GREEN
-        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertWhite(image.pixelColor(475, 473))  # GREEN
+        self._assertBlue(image.pixelColor(329, 553))  # BLUE
         self._assertWhite(image.pixelColor(481, 553))  # BLACK
 
     def test_wms_getprint_maptheme_highlight(self):
