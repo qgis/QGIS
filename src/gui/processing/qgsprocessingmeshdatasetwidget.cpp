@@ -785,6 +785,12 @@ QgsProcessingMeshDatasetGroupsParameterDefinitionWidget::QgsProcessingMeshDatase
   int currentIndex = mParentLayerComboBox->findData( datasetGroupDef->meshLayerParameterName() );
   if ( currentIndex != -1 )
     mParentLayerComboBox->setCurrentIndex( currentIndex );
+  else if ( !datasetGroupDef->meshLayerParameterName().isEmpty() )
+  {
+    // if no layer parameter candidates found, we just add the existing one as a placeholder
+    mParentLayerComboBox->addItem( datasetGroupDef->meshLayerParameterName(), datasetGroupDef->meshLayerParameterName() );
+    mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+  }
 
   setLayout( vlayout );
 }
@@ -838,6 +844,12 @@ QgsProcessingMeshDatasetTimeParameterDefinitionWidget::QgsProcessingMeshDatasetT
       int currentIndex = mParentDatasetComboBox->findData( datasetTimeDef->datasetGroupParameterName() );
       if ( currentIndex != -1 )
         mParentDatasetComboBox->setCurrentIndex( currentIndex );
+      else if ( !datasetTimeDef->meshLayerParameterName().isEmpty() )
+      {
+        // if no layer parameter candidates found, we just add the existing one as a placeholder
+        mParentDatasetComboBox->addItem( datasetTimeDef->meshLayerParameterName(), datasetTimeDef->meshLayerParameterName() );
+        mParentDatasetComboBox->setCurrentIndex( mParentDatasetComboBox->count() - 1 );
+      }
     }
 
     const QgsProcessingParameterDefinition *currentDef = model->parameterDefinition( mParentDatasetComboBox->currentData().toString() );
