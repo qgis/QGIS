@@ -1567,7 +1567,7 @@ namespace QgsWms
   QList<QgsWmsParametersLayer> QgsWmsParameters::layersParameters() const
   {
     const QMultiMap<QString, int > layersWithMapId { allLayersNicknameWithMapId() };
-    const QStringList layers = layersWithMapId.uniqueKeys();
+    const QStringList layers = allLayersNickname();
     const QStringList styles = allStyles();
     const QStringList selection = selections();
     const QList<int> opacities = opacitiesAsInt();
