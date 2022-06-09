@@ -585,9 +585,9 @@ class TestQgsWmsCapabilities: public QObject
       QTest::addColumn<QgsDateTimeRange>( "range" );
       QTest::addColumn<int>( "format" );
 
-      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDate( 2021, 1, 3 ).startOfDay(), QDate( 2021, 1, 3 ).endOfDay() ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
-      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDate( 2021, 1, 3 ).startOfDay(), QDate( 2021, 1, 3 ).endOfDay() ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
-      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDate( 2021, 1, 1 ).startOfDay(), QDate( 2021, 12, 31 ).endOfDay() ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
+      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
+      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
+      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 12, 31 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
       QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" ) << QString( "2018-03-01T16:23:44Z" ) << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
     }
 
