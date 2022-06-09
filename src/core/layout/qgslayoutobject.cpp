@@ -106,6 +106,9 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarSegmentWidth, QgsPropertyDefinition( "dataDefinedScalebarSegmentWidth", QObject::tr( "Length of a segment in map units" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarMinimumWidth, QgsPropertyDefinition( "dataDefinedScalebarMinWidth", QObject::tr( "Minimum length of a segment in mm" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsLayoutObject::ScalebarMaximumWidth, QgsPropertyDefinition( "dataDefinedScalebarMaxWidth", QObject::tr( "Maximum length of a segment in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarHeight, QgsPropertyDefinition( "dataDefinedScalebarHeight", QObject::tr( "Scalebar height in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarSubdivisionHeight, QgsPropertyDefinition( "dataDefinedScalebarSubdivisionHeight", QObject::tr( "Subdivision height in mm" ), QgsPropertyDefinition::DoublePositive ) },
+    { QgsLayoutObject::ScalebarRightSegmentSubdivisions, QgsPropertyDefinition( "dataDefinedScalebarRightSegmentSubdivisions", QObject::tr( "Number of subdivisions in segments to the right of 0" ), QgsPropertyDefinition::IntegerPositive ) },
   };
 }
 
@@ -186,6 +189,9 @@ bool QgsLayoutObject::propertyAssociatesWithParentMultiframe( QgsLayoutObject::D
     case QgsLayoutObject::ScalebarSegmentWidth:
     case QgsLayoutObject::ScalebarMinimumWidth:
     case QgsLayoutObject::ScalebarMaximumWidth:
+    case QgsLayoutObject::ScalebarHeight:
+    case QgsLayoutObject::ScalebarRightSegmentSubdivisions:
+    case QgsLayoutObject::ScalebarSubdivisionHeight:
     case QgsLayoutObject::MapCrs:
     case QgsLayoutObject::StartDateTime:
     case QgsLayoutObject::EndDateTime:
