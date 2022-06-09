@@ -68,58 +68,13 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
-  if ( isValid() )
-    setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
+  if ( isValid() && options.loadDefaultStyle )
+  {
+    bool result = false;
+    loadDefaultStyle( result );
+  }
 
   connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
-}
-
-
-void QgsMeshLayer::setDefaultRendererSettings( const QList<int> &groupIndexes )
-{
-  QgsMeshRendererMeshSettings meshSettings;
-  if ( groupIndexes.count() > 0 )
-  {
-    // Show data from the first dataset group
-    mRendererSettings.setActiveScalarDatasetGroup( 0 );
-    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
-    const QgsMeshDatasetGroupMetadata &meta = datasetGroupMetadata( 0 );
-    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
-         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
-      meshSettings.setEnabled( true );
-  }
-  else
-  {
-    // show at least the mesh by default
-    meshSettings.setEnabled( true );
-    return;
-  }
-  mRendererSettings.setNativeMeshSettings( meshSettings );
-
-  // Sets default resample method for scalar dataset
-  for ( const int i : groupIndexes )
-  {
-    const QgsMeshDatasetGroupMetadata meta = datasetGroupMetadata( i );
-    QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( i );
-    switch ( meta.dataType() )
-    {
-      case QgsMeshDatasetGroupMetadata::DataOnFaces:
-      case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
-        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
-        break;
-      case QgsMeshDatasetGroupMetadata::DataOnVertices:
-        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
-        break;
-      case QgsMeshDatasetGroupMetadata::DataOnEdges:
-        break;
-    }
-
-    //override color ramp if the values in the dataset group are classified
-    applyClassificationOnScalarSettings( meta, scalarSettings );
-
-    mRendererSettings.setScalarSettings( i, scalarSettings );
-  }
-
 }
 
 void QgsMeshLayer::createSimplifiedMeshes()
@@ -215,6 +170,51 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
   {
     emit rendererChanged();
     emitStyleChanged();
+  }
+
+  QgsMeshRendererMeshSettings meshSettings;
+  if ( groupsList.count() > 0 )
+  {
+    // Show data from the first dataset group
+    mRendererSettings.setActiveScalarDatasetGroup( 0 );
+    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
+    const QgsMeshDatasetGroupMetadata &meta = datasetGroupMetadata( 0 );
+    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
+         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
+      meshSettings.setEnabled( true );
+  }
+  else
+  {
+    // show at least the mesh by default
+    meshSettings.setEnabled( true );
+  }
+
+  mRendererSettings.setNativeMeshSettings( meshSettings );
+
+  for ( const int i : groupsList )
+  {
+    assignDefaultStyleToDatasetGroup( i );
+
+    // Sets default resample method for scalar dataset
+    const QgsMeshDatasetGroupMetadata meta = datasetGroupMetadata( i );
+    QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( i );
+    switch ( meta.dataType() )
+    {
+      case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+        break;
+      case QgsMeshDatasetGroupMetadata::DataOnVertices:
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+        break;
+      case QgsMeshDatasetGroupMetadata::DataOnEdges:
+        break;
+    }
+
+    //override color ramp if the values in the dataset group are classified
+    applyClassificationOnScalarSettings( meta, scalarSettings );
+
+    mRendererSettings.setScalarSettings( i, scalarSettings );
   }
 
   return QgsMapLayer::loadDefaultStyle( resultFlag );

@@ -915,7 +915,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     void fillNativeMesh();
     void assignDefaultStyleToDatasetGroup( int groupIndex );
-    void setDefaultRendererSettings( const QList<int> &groupIndexes );
     void createSimplifiedMeshes();
     int levelsOfDetailsIndex( double partOfMeshInView ) const;
 
