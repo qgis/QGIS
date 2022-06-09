@@ -2112,7 +2112,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
               }
               else
               {
-                QgsDebugMsg( QStringLiteral( "Could not interpret TIME dimension value %1 as a time range" ).arg( value ) );
+                QgsMessageLog::logMessage( QObject::tr( "Could not interpret TIME dimension value %1 as a time range" ).arg( value ) );
               }
               continue;
             }
@@ -2128,7 +2128,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
             }
             else
             {
-              QgsDebugMsg( QStringLiteral( "Could not interpret TIME dimension value %1 as a time range" ).arg( value ) );
+              QgsMessageLog::logMessage( QObject::tr( "Could not interpret TIME dimension value %1 as a time range" ).arg( value ) );
             }
           }
           if ( minTime.isValid() )
