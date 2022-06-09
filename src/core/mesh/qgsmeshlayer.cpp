@@ -166,14 +166,9 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
   for ( const int index : groupsList )
     assignDefaultStyleToDatasetGroup( index );
 
-  if ( !groupsList.isEmpty() )
-  {
-    emit rendererChanged();
-    emitStyleChanged();
-  }
 
   QgsMeshRendererMeshSettings meshSettings;
-  if ( groupsList.count() > 0 )
+  if ( !groupsList.isEmpty() )
   {
     // Show data from the first dataset group
     mRendererSettings.setActiveScalarDatasetGroup( 0 );
@@ -215,6 +210,12 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
     applyClassificationOnScalarSettings( meta, scalarSettings );
 
     mRendererSettings.setScalarSettings( i, scalarSettings );
+  }
+
+  if ( !groupsList.isEmpty() )
+  {
+    emit rendererChanged();
+    emitStyleChanged();
   }
 
   return QgsMapLayer::loadDefaultStyle( resultFlag );
