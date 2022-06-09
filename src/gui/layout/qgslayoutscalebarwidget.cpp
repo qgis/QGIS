@@ -339,6 +339,9 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   }
   mMinWidthSpinBox->setValue( mScalebar->minimumBarWidth() );
   mMaxWidthSpinBox->setValue( mScalebar->maximumBarWidth() );
+
+  populateDataDefinedButtons();
+
   blockMemberSignals( false );
 }
 
