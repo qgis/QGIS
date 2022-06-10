@@ -295,6 +295,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsPointCloudStatistics mStatistics;
     PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;
+
+    bool mUsingDefaultRenderer = false;
 };
 
 
