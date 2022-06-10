@@ -218,6 +218,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 
     // axis picking and menu
     Qt3DRender::QScreenRayCaster *mScreenRayCaster = nullptr;
+    bool mIsDragging = false;
+    bool mHasClicked = false;
     QPoint mLastClickedPos;
     Qt::MouseButton mLastClickedButton;
     QCursor mPreviousCursor = Qt::ArrowCursor;
