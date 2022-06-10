@@ -306,7 +306,7 @@ class QgsServerTestBase(unittest.TestCase):
     def _assertBlack(self, color: QColor):
         self.assertEqual(color.red(), 0)
         self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self.assertEqual(color.blue(), 0)
 
     def _assertWhite(self, color: QColor):
         self.assertEqual(color.red(), 255)
