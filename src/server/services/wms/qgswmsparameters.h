@@ -1264,6 +1264,7 @@ namespace QgsWms
        * converted like EXTENT, SCALE, ROTATION, GRID_INTERVAL_X and
        * GRID_INTERVAL_Y.
        * \param mapId the composer map id.
+       * \param isAtlas TRUE if this is an atlas controlled map.
        * \returns parameters for the composer map.
        * \throws QgsBadRequestException
        */

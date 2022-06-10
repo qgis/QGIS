@@ -197,11 +197,17 @@ void TestQgsServerWmsParameters::prefixed_layers()
   QUrlQuery query;
 
   query.addQueryItem( "LAYERS", "a,b" );
+
+  QgsWms::QgsWmsParameters parameters1( query );
+  QCOMPARE( parameters1.allLayersNickname(), QStringList()
+            << QStringLiteral( "a" )
+            << QStringLiteral( "b" ) );
+
   query.addQueryItem( "map0:LAYERS", "b,c" );
   query.addQueryItem( "map1:LAYERS", "c,d" );
 
   QgsWms::QgsWmsParameters parameters( query );
-  QCOMPARE( parameters.allLayersNickname().toSet(), QSet<QString>()
+  QCOMPARE( parameters.allLayersNickname(), QStringList()
             << QStringLiteral( "a" )
             << QStringLiteral( "b" )
             << QStringLiteral( "c" )

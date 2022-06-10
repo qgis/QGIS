@@ -1446,7 +1446,11 @@ namespace QgsWms
   {
     // We don't want duplicates but order does matter, so no QSet
     QStringList result;
-    const QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
+
+    // LAYER
+    QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
+    // Sort by map id
+    std::sort( cLayer.begin(), cLayer.end(), []( const QgsWmsParameter & a, const QgsWmsParameter & b ) -> bool { return a.mapId < b.mapId; } );
     for ( const QgsWmsParameter &param : std::as_const( cLayer ) )
     {
       const QStringList layersList { param.toStringList() };
@@ -1456,7 +1460,11 @@ namespace QgsWms
           result.append( layerName );
       }
     }
-    const QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
+
+    // LAYERS
+    QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
+    // Sort by map id
+    std::sort( cLayers.begin(), cLayers.end(), []( const QgsWmsParameter & a, const QgsWmsParameter & b ) -> bool { return a.mapId < b.mapId; } );
     for ( const QgsWmsParameter &param : std::as_const( cLayers ) )
     {
       const QStringList layersList { param.toStringList() };
