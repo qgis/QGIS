@@ -99,35 +99,65 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
   if ( watched != mParentWindow )
     return false;
 
-  // handle QEvent::MouseButtonRelease as it represents the end of click and QEvent::MouseMove.
-  if ( event->type() == QEvent::MouseButtonRelease || event->type() == QEvent::MouseMove )
+  if ( event->type() == QEvent::MouseButtonPress )
   {
-    QMouseEvent *lastClickEvent = static_cast<QMouseEvent *>( event );
-    // limit ray caster usage to the axis viewport
-    QPointF normalizedPos( ( float )lastClickEvent->pos().x() / mParentWindow->width(),
-                           ( float )lastClickEvent->pos().y() / mParentWindow->height() );
+    // registrer mouse click to detect dragging
+    mHasClicked = true;
+    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+    mLastClickedPos = mouseEvent->pos();
+  }
 
-    if ( QgsLogger::isTraceEnabled() && event->type() == QEvent::MouseButtonRelease )
+  // handle QEvent::MouseButtonRelease as it represents the end of click and QEvent::MouseMove.
+  else if ( event->type() == QEvent::MouseButtonRelease || event->type() == QEvent::MouseMove )
+  {
+    QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+
+    // user has clicked and move ==> dragging start
+    if ( event->type() == QEvent::MouseMove &&
+         ( ( mHasClicked  && mouseEvent->pos() != mLastClickedPos ) || mIsDragging ) )
     {
-      std::ostringstream os;
-      os << "QGS3DAxis: normalized pos:" << normalizedPos << " / viewport: " << mAxisViewport->normalizedRect();
-      QgsTraceMsg( os.str().c_str() );
+      mIsDragging = true;
     }
 
-    if ( mAxisViewport->normalizedRect().contains( normalizedPos ) )
+    // user has released ==> dragging ends
+    else if ( mIsDragging && event->type() == QEvent::MouseButtonRelease )
     {
-      mLastClickedButton = lastClickEvent->button();
-      mLastClickedPos = lastClickEvent->pos();
-
-      // if casted ray from pos matches an entity, call onTouchedByRay
-      mScreenRayCaster->trigger( mLastClickedPos );
+      mIsDragging = false;
+      mHasClicked = false;
     }
 
-    // when we exit the viewport, reset the mouse cursor if needed
-    else if ( mPreviousCursor != Qt::ArrowCursor && mParentWindow->cursor() == Qt::ArrowCursor )
+    // user is moving or has released but not dragging
+    else if ( ! mIsDragging )
     {
-      mParentWindow->setCursor( mPreviousCursor );
-      mPreviousCursor = Qt::ArrowCursor;
+      // limit ray caster usage to the axis viewport
+      QPointF normalizedPos( ( float )mouseEvent->pos().x() / mParentWindow->width(),
+                             ( float )mouseEvent->pos().y() / mParentWindow->height() );
+
+      if ( QgsLogger::isTraceEnabled() && event->type() == QEvent::MouseButtonRelease )
+      {
+        std::ostringstream os;
+        os << "QGS3DAxis: normalized pos:" << normalizedPos << " / viewport: " << mAxisViewport->normalizedRect();
+        QgsTraceMsg( os.str().c_str() );
+      }
+
+      if ( mAxisViewport->normalizedRect().contains( normalizedPos ) )
+      {
+        mLastClickedButton = mouseEvent->button();
+        mLastClickedPos = mouseEvent->pos();
+
+        // if casted ray from pos matches an entity, call onTouchedByRay
+        mScreenRayCaster->trigger( mLastClickedPos );
+      }
+
+      // when we exit the viewport, reset the mouse cursor if needed
+      else if ( mPreviousCursor != Qt::ArrowCursor && mParentWindow->cursor() == Qt::ArrowCursor )
+      {
+        mParentWindow->setCursor( mPreviousCursor );
+        mPreviousCursor = Qt::ArrowCursor;
+      }
+
+      mIsDragging = false; // drag ends
+      mHasClicked = false;
     }
   }
 
@@ -171,6 +201,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       {
         mPreviousCursor = mParentWindow->cursor();
         mParentWindow->setCursor( Qt::ArrowCursor );
+        QgsTraceMsg( "Enabling arrow cursor" );
       }
     }
   }
