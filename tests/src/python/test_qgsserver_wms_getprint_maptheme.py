@@ -229,7 +229,6 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         self.server.handleRequest(request, response, project)
 
         image = QImage.fromData(response.body(), "PNG")
-        image.save('/tmp/tmp.png')
         # Expected green on map0, black on map1
         # map1 (top map)
         self._assertWhite(image.pixelColor(325, 184))  # RED
