@@ -432,7 +432,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
     format = QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return QgsDateTimeRange( QDateTime( date, QTime( 0, 0, 0 ) ) ), QDateTime( date, QTime( 23, 59, 59, 999 ) ) );
+    return QgsDateTimeRange( QDateTime( date, QTime( 0, 0, 0 ) ), QDateTime( date, QTime( 23, 59, 59, 999 ) ) );
 #else
     return QgsDateTimeRange( date.startOfDay(), date.endOfDay( ) );
 #endif
@@ -448,7 +448,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
     const QDate endDate( match.captured( 1 ).toInt(), 12, 31 );
     format = QgsWmtsTileLayer::WmtsTimeFormat::yyyy;
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return QgsDateTimeRange( QDateTime( startDate, QTime( 0, 0, 0 ) ) ), QDateTime( endDate, QTime( 23, 59, 59, 999 ) ) );
+    return QgsDateTimeRange( QDateTime( startDate, QTime( 0, 0, 0 ) ), QDateTime( endDate, QTime( 23, 59, 59, 999 ) ) );
 #else
     return QgsDateTimeRange( startDate.startOfDay(), endDate.endOfDay( ) );
 #endif
