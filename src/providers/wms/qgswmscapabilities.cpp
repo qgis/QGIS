@@ -416,7 +416,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
     format = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return QgsDateTimeRange( QDateTime( date, QTime( 0, 0, 0 ) ) ), QDateTime( date, QTime( 23, 59, 59, 999 ) ) );
+    return QgsDateTimeRange( QDateTime( date, QTime( 0, 0, 0 ) ), QDateTime( date, QTime( 23, 59, 59, 999 ) ) );
 #else
     return QgsDateTimeRange( date.startOfDay(), date.endOfDay( ) );
 #endif
