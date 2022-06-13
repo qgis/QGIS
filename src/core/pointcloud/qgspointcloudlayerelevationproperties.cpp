@@ -25,6 +25,15 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
   : QgsMapLayerElevationProperties( parent )
 {
   mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+
+  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
+  {
+    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this]
+    {
+      if ( mRespectLayerColors )
+        emit profileGenerationPropertyChanged();
+    } );
+  }
 }
 
 bool QgsPointCloudLayerElevationProperties::hasElevation() const
