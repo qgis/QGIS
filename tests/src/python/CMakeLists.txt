@@ -3,11 +3,6 @@ set (ENABLE_ORACLETEST FALSE CACHE BOOL "Enable Oracle provider tests")
 set (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
 
 include(UsePythonTest)
-# Run one of the two server tests at the beginning so they don't run in
-# parallel
-if (WITH_SERVER)
-  ADD_PYTHON_TEST(PyQgsLocalServer test_qgis_local_server.py)
-endif()
 
 ADD_PYTHON_TEST(PyCoreAdditions test_core_additions.py)
 ADD_PYTHON_TEST(PyPythonRepr test_python_repr.py)

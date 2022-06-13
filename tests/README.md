@@ -80,13 +80,13 @@ For example if the output of `make check` ends like this:
 
 ```
    The following tests FAILED:
-         77 - PyQgsLocalServer (Failed)
+         77 - PyQgsFeature (Failed)
 ```
 
 You could re-run the failing test with:
 
 ```
-   ctest -V -R PyQgsLocalServer
+   ctest -V -R PyQgsFeature
 ```
 
 The parameter `-V` enables verbose mode and `-R` takes a regular expression as
