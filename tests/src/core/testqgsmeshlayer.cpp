@@ -1000,7 +1000,7 @@ void TestQgsMeshLayer::test_path()
   QFileInfoList dir1Files = dir1.entryInfoList();
   for ( const QFileInfo &fileInfo : std::as_const( dir1Files ) )
   {
-    if ( fileInfo.fileName() != QStringLiteral( "project.qgz" ) )
+    if ( fileInfo.fileName() != QLatin1String( "project.qgz" ) )
     {
       QFile::copy( fileInfo.filePath(), dir2.filePath( fileInfo.fileName() ) );
       QFile::remove( fileInfo.filePath() );
