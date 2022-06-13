@@ -201,6 +201,19 @@ class CORE_EXPORT QgsLayoutTableColumn
              && mVAlignment == other.mVAlignment;
     }
 
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str;
+    if ( sipCpp->heading() != sipCpp->attribute() && !sipCpp->heading().isEmpty() )
+      str = QStringLiteral( "<QgsLayoutTableColumn: %1 (\"%2\")>" ).arg( sipCpp->attribute(), sipCpp->heading() );
+    else
+      str = QStringLiteral( "<QgsLayoutTableColumn: %1>" ).arg( sipCpp->attribute() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
+
   private:
 
     QString mHeading;
