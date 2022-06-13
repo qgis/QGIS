@@ -1249,7 +1249,7 @@ namespace QgsWms
               QDomElement dimElem = doc.createElement( QStringLiteral( "Dimension" ) );
               dimElem.setAttribute( QStringLiteral( "name" ), dim.name );
 
-              if ( dim.name.toUpper() == QStringLiteral( "TIME" ) )
+              if ( dim.name.toUpper() == QLatin1String( "TIME" ) )
               {
                 timeDimensionAdded = true;
               }

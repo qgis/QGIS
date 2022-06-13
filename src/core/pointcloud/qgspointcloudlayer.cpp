@@ -811,7 +811,7 @@ void QgsPointCloudLayer::calculateStatistics()
   // Do not calculate stats for X, Y & Z since the point cloud index contains that
   for ( int i = 0; i < attributes.size(); ++i )
   {
-    if ( attributes[i].name() == QStringLiteral( "X" ) || attributes[i].name() == QStringLiteral( "Y" ) || attributes[i].name() == QStringLiteral( "Z" ) )
+    if ( attributes[i].name() == QLatin1String( "X" ) || attributes[i].name() == QLatin1String( "Y" ) || attributes[i].name() == QLatin1String( "Z" ) )
     {
       attributes.remove( i );
       --i;
@@ -858,7 +858,7 @@ void QgsPointCloudLayer::calculateStatistics()
     resetRenderer();
     mStatsCalculationTask = 0;
 #ifdef HAVE_COPC
-    if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QStringLiteral( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
+    if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QLatin1String( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
     {
       if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
       {
