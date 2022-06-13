@@ -1,5 +1,4 @@
 # black list
-PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
