@@ -28,7 +28,12 @@ from qgis.core import (QgsLayoutItemMap,
                        QgsFillSymbol,
                        QgsSingleSymbolRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsLayoutItemMapOverview)
+                       QgsLayoutItemMapOverview,
+                       QgsFeature,
+                       QgsSymbolLayer,
+                       QgsProperty,
+                       QgsGeometry,
+                       QgsPointXY)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -340,6 +345,64 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         overviewMap.overview().setStackingLayer(self.raster_layer)
 
         checker = QgsLayoutChecker('composermap_overview_abovemap', l)
+        checker.setColorTolerance(6)
+        checker.setControlPathPrefix("composer_mapoverview")
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
+    def testOverviewExpressionContextStacking(self):
+        atlas_layer = QgsVectorLayer("Point?crs=epsg:4326&field=attr:int(1)&field=label:string(20)", "points", "memory")
+
+        atlas_feature1 = QgsFeature(atlas_layer.fields())
+        atlas_feature1.setAttributes([5, 'a'])
+        atlas_feature1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(55, 55)))
+        atlas_layer.dataProvider().addFeature(atlas_feature1)
+        atlas_feature2 = QgsFeature(atlas_layer.fields())
+        atlas_feature2.setAttributes([15, 'b'])
+        atlas_feature2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(55, 55)))
+        atlas_layer.dataProvider().addFeature(atlas_feature2)
+
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
+        map.setFrameEnabled(True)
+        map.setLayers([atlas_layer])
+        l.addLayoutItem(map)
+
+        overviewMap = QgsLayoutItemMap(l)
+        overviewMap.attemptSetSceneRect(QRectF(20, 130, 70, 70))
+        l.addLayoutItem(overviewMap)
+        overviewMap.setFrameEnabled(True)
+        overviewMap.setLayers([atlas_layer])
+        # zoom in
+        myRectangle = QgsRectangle(96, -152, 160, -120)
+        map.setExtent(myRectangle)
+        myRectangle2 = QgsRectangle(-20, -276, 276, 20)
+        overviewMap.setExtent(myRectangle2)
+        overviewMap.overview().setLinkedMap(map)
+        overviewMap.overview().setStackingPosition(QgsLayoutItemMapItem.StackAboveMapLayer)
+        overviewMap.overview().setStackingLayer(atlas_layer)
+
+        fill_symbol = QgsFillSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no'})
+        fill_symbol[0].setDataDefinedProperty(QgsSymbolLayer.PropertyFillColor, QgsProperty.fromExpression('case when label=\'a\' then \'red\' else \'green\' end'))
+
+        overviewMap.overview().setFrameSymbol(fill_symbol)
+
+        l.reportContext().setLayer(atlas_layer)
+        l.reportContext().setFeature(atlas_feature1)
+
+        checker = QgsLayoutChecker('composermap_overview_atlas_1', l)
+        checker.setColorTolerance(6)
+        checker.setControlPathPrefix("composer_mapoverview")
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
+        l.reportContext().setFeature(atlas_feature2)
+
+        checker = QgsLayoutChecker('composermap_overview_atlas_2', l)
         checker.setColorTolerance(6)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
