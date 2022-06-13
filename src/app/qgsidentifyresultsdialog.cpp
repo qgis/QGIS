@@ -707,7 +707,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
-    if ( attrs.at( i ).isNull() && QgsSettings().value( QStringLiteral( "/Map/hideNullValues" ), false ).toBool() )
+    if ( attrs.at( i ).isNull() && QgsIdentifyResultsDialog::settingHideNullValues.value() )
     {
       continue;
     }
@@ -2411,8 +2411,7 @@ void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checke
 
 void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Map/hideNullValues" ), checked );
+  QgsIdentifyResultsDialog::settingHideNullValues.setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
