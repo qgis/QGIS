@@ -60,12 +60,7 @@ void QgsCameraPose::setDistanceFromCenterPoint( float distance )
 void QgsCameraPose::setPitchAngle( float pitch )
 {
   // prevent going over the head
-  if ( pitch > 180.0f )
-    mPitchAngle = 180.0f;
-  else if ( pitch < 0.0f )
-    mPitchAngle = 0.0f;
-  else
-    mPitchAngle = pitch;
+  mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
 }
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
