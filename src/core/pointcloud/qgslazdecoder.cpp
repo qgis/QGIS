@@ -551,7 +551,6 @@ QgsPointCloudBlock *__decompressLaz( FileType &file, const QgsPointCloudAttribut
   }
   catch ( std::exception &e )
   {
-    Q_UNUSED( e )
     QgsDebugMsg( "Error decompressing laz file: " + QString::fromLatin1( e.what() ) );
     return nullptr;
   }
