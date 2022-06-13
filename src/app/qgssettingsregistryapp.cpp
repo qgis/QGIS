@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
+#include "qgsidentifyresultsdialog.h"
 #include "georeferencer/qgsgeorefmainwindow.h"
 #include "georeferencer/qgstransformsettingsdialog.h"
 #include "vertextool/qgsvertexeditor.h"
@@ -48,6 +49,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
   addSettingsEntry( &QgsElevationProfileWidget::settingTolerance );
   addSettingsEntry( &QgsElevationProfileWidget::settingShowLayerTree );
+
+  addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
 }

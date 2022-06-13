@@ -27,6 +27,7 @@
 #include "qgswebview.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmaptoolselectionhandler.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QWidget>
 #include <QList>
@@ -132,6 +133,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
     ~QgsIdentifyResultsDialog() override;
+
+    static const inline QgsSettingsEntryBool settingHideNullValues = QgsSettingsEntryBool( QStringLiteral( "hideNullValues" ), QgsSettings::Prefix::MAP, false, QStringLiteral( "Whether hide or show attribute with NULL values in the identify feature result" ) );
 
     //! Adds feature from vector layer
     void addFeature( QgsVectorLayer *layer,
