@@ -707,15 +707,16 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
+    if ( attrs.at( i ).isNull() && QgsSettings().value( QStringLiteral( "/Map/hideNullValues" ), false ).toBool() )
+    {
+      continue;
+    }
     QString defVal;
     if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
       defVal = vlayer->dataProvider()->defaultValueClause( fields.fieldOriginIndex( i ) );
 
     const QString originalValue = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
-    if ( originalValue.size() == 0 && QgsSettings().value( QStringLiteral( "/Map/hideNullValues" ), false ).toBool() )
-    {
-      continue;
-    }
+
     QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << originalValue );
     featItem->addChild( attrItem );
 
