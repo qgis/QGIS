@@ -28,6 +28,8 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 
+#include <QMimeData>
+
 QgsElevationProfileLayerTreeModel::QgsElevationProfileLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
@@ -226,6 +228,32 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
       break;
   }
   return QgsLayerTreeModel::data( index, role );
+}
+
+bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+{
+  if ( action == Qt::IgnoreAction )
+    return true;
+
+  if ( !data->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    return false;
+
+  // don't accept drags from other layer trees -- only allow internal drag
+  const QString source = data->data( QStringLiteral( "application/qgis.layertree.source" ) );
+  if ( source.isEmpty() || source != QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ) )
+    return false;
+
+  return QgsLayerTreeModel::dropMimeData( data, action, row, column, parent );
+}
+
+QMimeData *QgsElevationProfileLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = QgsLayerTreeModel::mimeData( indexes );
+  if ( mimeData )
+  {
+    mimeData->setData( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ), "QgsElevationProfileLayerTreeModel" );
+  }
+  return mimeData;
 }
 
 
