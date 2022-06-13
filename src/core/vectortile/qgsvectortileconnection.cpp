@@ -50,10 +50,10 @@ QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProvider
     uri.setUsername( conn.username );
   if ( !conn.password.isEmpty() )
     uri.setPassword( conn.password );
-  if ( !conn.referer.isEmpty() )
-    uri.setParam( QStringLiteral( "referer" ),  conn.referer );
   if ( !conn.styleUrl.isEmpty() )
     uri.setParam( QStringLiteral( "styleUrl" ),  conn.styleUrl );
+
+  uri.setHttpHeaders( conn.httpHeaders );
 
   switch ( conn.serviceType )
   {
@@ -80,8 +80,9 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::decodedUr
   conn.authCfg = dsUri.authConfigId();
   conn.username = dsUri.username();
   conn.password = dsUri.password();
-  conn.referer = dsUri.param( QStringLiteral( "referer" ) );
   conn.styleUrl = dsUri.param( QStringLiteral( "styleUrl" ) );
+
+  conn.httpHeaders = dsUri.httpHeaders();
 
   if ( dsUri.hasParam( QStringLiteral( "serviceType" ) ) )
   {
@@ -118,10 +119,10 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
     uri.setUsername( conn.username );
   if ( !conn.password.isEmpty() )
     uri.setPassword( conn.password );
-  if ( !conn.referer.isEmpty() )
-    uri.setParam( QStringLiteral( "referer" ),  conn.referer );
   if ( !conn.styleUrl.isEmpty() )
     uri.setParam( QStringLiteral( "styleUrl" ),  conn.styleUrl );
+
+  uri.setHttpHeaders( conn.httpHeaders );
 
   switch ( conn.serviceType )
   {
@@ -160,8 +161,9 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   conn.authCfg = settings.value( QStringLiteral( "authcfg" ) ).toString();
   conn.username = settings.value( QStringLiteral( "username" ) ).toString();
   conn.password = settings.value( QStringLiteral( "password" ) ).toString();
-  conn.referer = QgsHttpHeaders( settings )[ QStringLiteral( "referer" ) ].toString();
   conn.styleUrl = settings.value( QStringLiteral( "styleUrl" ) ).toString();
+
+  conn.httpHeaders = QgsHttpHeaders( settings );
 
   if ( settings.contains( QStringLiteral( "serviceType" ) ) )
   {
@@ -189,8 +191,9 @@ void QgsVectorTileProviderConnection::addConnection( const QString &name, QgsVec
   settings.setValue( QStringLiteral( "authcfg" ), conn.authCfg );
   settings.setValue( QStringLiteral( "username" ), conn.username );
   settings.setValue( QStringLiteral( "password" ), conn.password );
-  QgsHttpHeaders( QVariantMap( { {QStringLiteral( "referer" ), conn.referer}} ) ).updateSettings( settings );
   settings.setValue( QStringLiteral( "styleUrl" ), conn.styleUrl );
+
+  conn.httpHeaders.updateSettings( settings );
 
   switch ( conn.serviceType )
   {

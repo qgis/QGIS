@@ -23,6 +23,7 @@ services:
     image: qgis3-build-deps-binary-image
     volumes:
       - ${QGIS_WORKSPACE}:/root/QGIS
+      - ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR}
     links:
     #  - mssql
       - webdav
@@ -33,3 +34,4 @@ services:
       - LANG=C.UTF-8
       - LC_ALL=en_US.UTF-8
       - QGIS_HTTPBIN_HOST=httpbin
+      - QGIS_TEST_ACCEPT_GITSTATUS_CHECK_FAILURE=1

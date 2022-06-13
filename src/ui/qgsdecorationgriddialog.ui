@@ -29,7 +29,7 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="10" column="1">
+      <item row="7" column="1">
        <widget class="QLabel" name="mOffsetYLabel">
         <property name="text">
          <string>Y</string>
@@ -42,8 +42,8 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="0" rowspan="2">
-       <widget class="QLabel" name="mOffsetXLabel">
+      <item row="6" column="0" rowspan="2">
+       <widget class="QLabel" name="mOffsetLabel">
         <property name="text">
          <string>Offset</string>
         </property>
@@ -52,7 +52,7 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="2">
+      <item row="7" column="2">
        <widget class="QgsDoubleSpinBox" name="mOffsetYEdit">
         <property name="minimum">
          <double>-10000000000000000.000000000000000</double>
@@ -106,7 +106,7 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="0" colspan="3">
+      <item row="9" column="0" colspan="3">
        <layout class="QGridLayout" name="gridLayout_4">
         <property name="leftMargin">
          <number>9</number>
@@ -136,7 +136,7 @@
         </item>
        </layout>
       </item>
-      <item row="7" column="2">
+      <item row="5" column="2">
        <widget class="QgsDoubleSpinBox" name="mIntervalYEdit">
         <property name="maximum">
          <double>10000000000000000.000000000000000</double>
@@ -226,7 +226,7 @@
         </layout>
        </widget>
       </item>
-      <item row="9" column="2">
+      <item row="6" column="2">
        <widget class="QgsDoubleSpinBox" name="mOffsetXEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -242,7 +242,7 @@
         </property>
        </widget>
       </item>
-      <item row="12" column="0" colspan="3">
+      <item row="8" column="0" colspan="3">
        <widget class="QLabel" name="mUpdateIntervalOffsetLabel">
         <property name="text">
          <string>Update Interval / Offset from</string>
@@ -276,8 +276,8 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0" rowspan="4">
-       <widget class="QLabel" name="mIntervalXLabel">
+      <item row="4" column="0" rowspan="2">
+       <widget class="QLabel" name="mIntervalLabel">
         <property name="text">
          <string>Interval</string>
         </property>
@@ -286,7 +286,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="5" column="1">
        <widget class="QLabel" name="mIntervalYLabel">
         <property name="text">
          <string>Y</string>
@@ -338,8 +338,8 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="1">
-       <widget class="QLabel" name="label">
+      <item row="6" column="1">
+       <widget class="QLabel" name="mOffsetXLabel">
         <property name="text">
          <string>X</string>
         </property>
@@ -349,7 +349,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="mIntervalXLabel">
         <property name="text">
          <string>X</string>
         </property>

@@ -995,11 +995,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   // load GUI: actions, menus, toolbars
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
-  // because mActionToggleMapOnly can hide the menu (thereby disabling menu actions),
-  //  we attach the following actions to the MainWindow too (to be able to come back)
-  this->addAction( mActionToggleFullScreen );
-  this->addAction( mActionTogglePanelsVisibility );
-  this->addAction( mActionToggleMapOnly );
   endProfile();
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
@@ -6012,7 +6007,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
   {
     if ( guiWarning )
     {
-      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
+      QString msg = tr( "%1 is not a valid or recognized data source, error: \"%2\"" ).arg( uri ).arg( layer->error().message( QgsErrorMessage::Format::Text ) );
       visibleMessageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
     }
 
@@ -8029,9 +8024,12 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
           // remember the active toolbars
           toolBarsActive << toolBar->windowTitle();
           toolBar->setVisible( false );
+          // Adding the toolBar's actions to the main window allows us to keep using them while the toolBar is invisible
+          this->addActions( toolBar->actions() );
         }
       }
-
+      // Adding the menuBar's actions to the main window allows us to keep using them while the menuBar is invisible
+      this->addActions( this->menuBar()->actions() );
       this->menuBar()->setVisible( false );
       this->statusBar()->setVisible( false );
 
@@ -8086,7 +8084,21 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       if ( toolBarsActive.contains( toolBar->windowTitle() ) )
       {
         toolBar->setVisible( true );
+        // Let's remove the toolBar's actions from the main window.
+        // They were only there for use while the toolBar was invisible
+        const QList<QAction *> actions = toolBar->actions();
+        for ( QAction *action : actions )
+        {
+          this->removeAction( action );
+        }
       }
+    }
+    // Let's remove the menuBar's actions from the main window.
+    // They were only there for use while the menuBar was invisible
+    const QList<QAction *> actions = this->menuBar()->actions();
+    for ( QAction *action : actions )
+    {
+      this->removeAction( action );
     }
     this->menuBar()->setVisible( true );
     this->statusBar()->setVisible( true );
@@ -12316,12 +12328,11 @@ void QgisApp::removingLayers( const QStringList &layers )
   const auto constLayers = layers;
   for ( const QString &layerId : constLayers )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>(
-                               QgsProject::instance()->mapLayer( layerId ) );
-    if ( !vlayer || !vlayer->isEditable() )
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+    if ( !layer || !layer->isEditable() )
       return;
 
-    toggleEditing( vlayer, false );
+    toggleEditing( layer, false );
   }
 }
 

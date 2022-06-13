@@ -34,6 +34,9 @@
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderCapture>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+#include <Qt3DRender/QDebugOverlay>
+#endif
 
 #include "qgspointlightsettings.h"
 
@@ -146,6 +149,13 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.18
      */
     bool renderCaptureEnabled() const { return mRenderCaptureEnabled; }
+
+    /**
+     * Sets whether debug overlay is enabled
+     * \since QGIS 3.26
+     */
+    void setDebugOverlayEnabled( bool enabled );
+
   private:
     Qt3DRender::QRenderSurfaceSelector *mRenderSurfaceSelector = nullptr;
     Qt3DRender::QViewport *mMainViewPort = nullptr;
@@ -163,6 +173,10 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     // Forward rendering pass texture related objects:
     Qt3DRender::QTexture2D *mForwardColorTexture = nullptr;
     Qt3DRender::QTexture2D *mForwardDepthTexture = nullptr;
+    // QDebugOverlay added in the forward pass
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
+#endif
 
     // Shadow rendering pass branch nodes:
     Qt3DRender::QCameraSelector *mLightCameraSelectorShadowPass = nullptr;

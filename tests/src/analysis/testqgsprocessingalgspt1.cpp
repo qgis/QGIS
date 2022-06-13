@@ -275,6 +275,15 @@ void TestQgsProcessingAlgsPt1::initTestCase()
   meshLayer1d->addDatasets( dataDir + "/mesh/lines_els_scalar.dat" );
   meshLayer1d->addDatasets( dataDir + "/mesh/lines_els_vector.dat" );
   QCOMPARE( meshLayer1d->datasetGroupCount(), 3 );
+
+  /* Make sure geopackages are not written-to, during tests
+   * See https://github.com/qgis/QGIS/issues/25830
+   * NOTE: this needs to happen _after_
+   * QgsApplication::initQgis()
+   *       as any previously-set value would otherwise disappear.
+   */
+  QgsSettings().setValue( "qgis/walForSqlite3", false );
+
 }
 
 void TestQgsProcessingAlgsPt1::cleanupTestCase()

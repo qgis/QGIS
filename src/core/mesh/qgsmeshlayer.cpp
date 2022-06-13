@@ -72,57 +72,12 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
   if ( isValid() && options.loadDefaultStyle )
-    setDefaultRendererSettings( mDatasetGroupStore->datasetGroupIndexes() );
+  {
+    bool result = false;
+    loadDefaultStyle( result );
+  }
 
   connect( mDatasetGroupStore.get(), &QgsMeshDatasetGroupStore::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
-}
-
-
-void QgsMeshLayer::setDefaultRendererSettings( const QList<int> &groupIndexes )
-{
-  QgsMeshRendererMeshSettings meshSettings;
-  if ( groupIndexes.count() > 0 )
-  {
-    // Show data from the first dataset group
-    mRendererSettings.setActiveScalarDatasetGroup( 0 );
-    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
-    const QgsMeshDatasetGroupMetadata &meta = datasetGroupMetadata( 0 );
-    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
-         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
-      meshSettings.setEnabled( true );
-  }
-  else
-  {
-    // show at least the mesh by default
-    meshSettings.setEnabled( true );
-    return;
-  }
-  mRendererSettings.setNativeMeshSettings( meshSettings );
-
-  // Sets default resample method for scalar dataset
-  for ( const int i : groupIndexes )
-  {
-    const QgsMeshDatasetGroupMetadata meta = datasetGroupMetadata( i );
-    QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( i );
-    switch ( meta.dataType() )
-    {
-      case QgsMeshDatasetGroupMetadata::DataOnFaces:
-      case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
-        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
-        break;
-      case QgsMeshDatasetGroupMetadata::DataOnVertices:
-        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
-        break;
-      case QgsMeshDatasetGroupMetadata::DataOnEdges:
-        break;
-    }
-
-    //override color ramp if the values in the dataset group are classified
-    applyClassificationOnScalarSettings( meta, scalarSettings );
-
-    mRendererSettings.setScalarSettings( i, scalarSettings );
-  }
-
 }
 
 void QgsMeshLayer::createSimplifiedMeshes()
@@ -217,6 +172,52 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
 
   for ( const int index : groupsList )
     assignDefaultStyleToDatasetGroup( index );
+
+
+  QgsMeshRendererMeshSettings meshSettings;
+  if ( !groupsList.isEmpty() )
+  {
+    // Show data from the first dataset group
+    mRendererSettings.setActiveScalarDatasetGroup( 0 );
+    // If the first dataset group has nan min/max, display the mesh to avoid nothing displayed
+    const QgsMeshDatasetGroupMetadata &meta = datasetGroupMetadata( 0 );
+    if ( meta.maximum() == std::numeric_limits<double>::quiet_NaN() &&
+         meta.minimum() == std::numeric_limits<double>::quiet_NaN() )
+      meshSettings.setEnabled( true );
+  }
+  else
+  {
+    // show at least the mesh by default
+    meshSettings.setEnabled( true );
+  }
+
+  mRendererSettings.setNativeMeshSettings( meshSettings );
+
+  for ( const int i : groupsList )
+  {
+    assignDefaultStyleToDatasetGroup( i );
+
+    // Sets default resample method for scalar dataset
+    const QgsMeshDatasetGroupMetadata meta = datasetGroupMetadata( i );
+    QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( i );
+    switch ( meta.dataType() )
+    {
+      case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+        break;
+      case QgsMeshDatasetGroupMetadata::DataOnVertices:
+        scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+        break;
+      case QgsMeshDatasetGroupMetadata::DataOnEdges:
+        break;
+    }
+
+    //override color ramp if the values in the dataset group are classified
+    applyClassificationOnScalarSettings( meta, scalarSettings );
+
+    mRendererSettings.setScalarSettings( i, scalarSettings );
+  }
 
   if ( !groupsList.isEmpty() )
   {
@@ -1185,7 +1186,7 @@ void QgsMeshLayer::updateActiveDatasetGroups()
   QgsMeshDatasetGroupTreeItem *activeScalarItem =
     treeItem->childFromDatasetGroupIndex( oldActiveScalar );
 
-  if ( !activeScalarItem && treeItem->childCount() > 0 )
+  if ( !activeScalarItem && treeItem->childCount() > 0 && oldActiveScalar != -1 )
     activeScalarItem = treeItem->child( 0 );
 
   if ( activeScalarItem && !activeScalarItem->isEnabled() )
@@ -1501,19 +1502,29 @@ bool QgsMeshLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsRe
 QString QgsMeshLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const
 {
   QString src( source );
-  if ( provider == QLatin1String( "mdal" ) )
+
+  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( provider, source );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
   {
-    src = context.pathResolver().readPath( src );
+    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    filePath = context.pathResolver().readPath( filePath );
+    uriParts.insert( QStringLiteral( "path" ), filePath );
+    src = QgsProviderRegistry::instance()->encodeUri( provider, uriParts );
   }
+
   return src;
 }
 
 QString QgsMeshLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
 {
   QString src( source );
-  if ( providerType() == QLatin1String( "mdal" ) )
+  QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, source );
+  if ( uriParts.contains( QStringLiteral( "path" ) ) )
   {
-    src = context.pathResolver().writePath( src );
+    QString filePath = uriParts.value( QStringLiteral( "path" ) ).toString();
+    filePath = context.pathResolver().writePath( filePath );
+    uriParts.insert( QStringLiteral( "path" ), filePath );
+    src = QgsProviderRegistry::instance()->encodeUri( mProviderKey, uriParts );
   }
   return src;
 }

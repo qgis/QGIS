@@ -44,11 +44,28 @@ while test -n "$1"; do
 done
 
 cd $(dirname $0)/.. || exit 1
+#echo "--=[ PWD is $PWD"
 
 export QGIS_BUILDDIR=build-ci
-export QGIS_WORKSPACE=${PWD}
-#echo "--=[ PWD is $PWD"
+
+QGIS_WORKSPACE="$(pwd -P)"
+export QGIS_WORKSPACE
 echo "--=[ QGIS_WORKSPACE is $QGIS_WORKSPACE"
+
+QGIS_WORKSPACE_MOUNTPOINT=${QGIS_WORKSPACE} # was /root/QGIS
+export QGIS_WORKSPACE_MOUNTPOINT
+echo "--=[ QGIS_WORKSPACE_MOUNTPOINT is $QGIS_WORKSPACE_MOUNTPOINT"
+
+QGIS_GIT_DIR="$(git rev-parse --git-dir)"
+if test -f ${QGIS_GIT_DIR}/commondir; then
+  QGIS_COMMON_GIT_DIR="$(cat ${QGIS_GIT_DIR}/commondir)"
+else
+  QGIS_COMMON_GIT_DIR=${QGIS_WORKSPACE}
+fi
+QGIS_COMMON_GIT_DIR="$(cd ${QGIS_COMMON_GIT_DIR} && pwd -P)"
+export QGIS_COMMON_GIT_DIR
+echo "--=[ QGIS_COMMON_GIT_DIR is $QGIS_COMMON_GIT_DIR"
+
 
 
 #
@@ -69,7 +86,8 @@ else
   echo "--=[ Building qgis inside the dependencies container"
   docker run -t --name qgis_container \
     --rm \
-    -v $(pwd):/root/QGIS \
+    -v ${QGIS_WORKSPACE}:${QGIS_WORKSPACE} \
+    -v ${QGIS_COMMON_GIT_DIR}:${QGIS_COMMON_GIT_DIR} \
     --env-file .docker/docker-variables.env \
     --env PUSH_TO_CDASH=false \
     --env WITH_QT5=true \
@@ -77,9 +95,10 @@ else
     --env WITH_QUICK=false \
     --env WITH_3D=false \
     --env PATCH_QT_3D=false \
-    --env CTEST_BUILD_DIR=/root/QGIS/${QGIS_BUILDDIR} \
+    --env CTEST_SOURCE_DIR=${QGIS_WORKSPACE} \
+    --env CTEST_BUILD_DIR=${QGIS_WORKSPACE}/${QGIS_BUILDDIR} \
     ${IMAGE_BUILD_DEPS} \
-    /root/QGIS/.docker/docker-qgis-build.sh ||
+    ${QGIS_WORKSPACE_MOUNTPOINT}/.docker/docker-qgis-build.sh ||
     exit 1
 
   test -d ${QGIS_BUILDDIR} || {
@@ -95,24 +114,19 @@ fi
 
 if test "${INTERACTIVE}" = "no"; then
   echo "--=[ Running tests via docker-compose"
-  docker-compose \
-    -f .docker/docker-compose-testing.yml \
-    run \
-    -e PUSH_TO_CDASH=false \
-    -e CTEST_BUILD_DIR=/root/QGIS/${QGIS_BUILDDIR} \
-    qgis-deps \
-    /root/QGIS/.docker/docker-qgis-test.sh \
-    ${TESTS_TO_RUN}
+  COMMAND=${QGIS_WORKSPACE_MOUNTPOINT}/.docker/docker-qgis-test.sh
+  COMMAND_ARGS="${TESTS_TO_RUN}"
 else
-  echo "--=[ Starting tests environment via docker-compose"
-  docker-compose \
-    -f .docker/docker-compose-testing.yml \
-    run \
-    -e CTEST_BUILD_DIR=/root/QGIS/${QGIS_BUILDDIR} \
-    qgis-deps \
-    bash
+  echo "--=[ Starting interactive shell into test environment"
+  COMMAND=bash
 fi
 
-
-#echo "Not implemented yet" >&2
-#exit 1
+docker-compose \
+  -f .docker/docker-compose-testing.yml \
+  run \
+  -w "${QGIS_WORKSPACE_MOUNTPOINT}" \
+  -e PUSH_TO_CDASH=false \
+  -e CTEST_SOURCE_DIR="${QGIS_WORKSPACE}" \
+  -e CTEST_BUILD_DIR="${QGIS_WORKSPACE}/${QGIS_BUILDDIR}" \
+  qgis-deps \
+  ${COMMAND} ${COMMAND_ARGS}

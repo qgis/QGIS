@@ -137,15 +137,6 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
     return;
   }
 
-  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ==
-       QgsContrastEnhancement::NoEnhancement )
-  {
-    r->setRedContrastEnhancement( nullptr );
-    r->setGreenContrastEnhancement( nullptr );
-    r->setBlueContrastEnhancement( nullptr );
-    return;
-  }
-
   QgsContrastEnhancement *redEnhancement = nullptr;
   QgsContrastEnhancement *greenEnhancement = nullptr;
   QgsContrastEnhancement *blueEnhancement = nullptr;
@@ -451,4 +442,16 @@ int QgsMultiBandColorRendererWidget::selectedBand( int index )
       break;
   }
   return -1;
+}
+
+QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsMultiBandColorRendererWidget::contrastEnhancementAlgorithm() const
+{
+  return static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>( mContrastEnhancementAlgorithmComboBox->currentData().toInt() );
+}
+
+void QgsMultiBandColorRendererWidget::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm )
+{
+  mDisableMinMaxWidgetRefresh = true;
+  mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData( static_cast<int>( algorithm ) ) );
+  mDisableMinMaxWidgetRefresh = false;
 }

@@ -72,6 +72,7 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
      * \since QGIS 3.26
      */
     void copyCommonProperties( QgsRemoteCopcPointCloudIndex *destination ) const;
+
   protected:
     virtual bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const override;
     virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const override;

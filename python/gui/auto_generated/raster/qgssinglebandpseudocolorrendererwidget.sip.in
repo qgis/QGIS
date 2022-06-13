@@ -42,15 +42,18 @@ Creates new raster renderer widget
     virtual QgsRasterMinMaxWidget *minMaxWidget();
 
 
-    int currentBand() const;
-%Docstring
-Returns the current raster band number
-%End
-
     void setFromRenderer( const QgsRasterRenderer *r );
 %Docstring
 Sets the widget state from the specified renderer.
 %End
+
+    virtual QString min( int index = 0 );
+    virtual QString max( int index = 0 );
+    virtual void setMin( const QString &value, int index = 0 );
+
+    virtual void setMax( const QString &value, int index = 0 );
+
+    virtual int selectedBand( int index = 0 );
 
   public slots:
     void loadMinMax( int bandNo, double min, double max );

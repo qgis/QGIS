@@ -81,16 +81,12 @@ void QgsAmsLegendFetcher::start()
     // http://sampleserver5.arcgisonline.com/arcgis/rest/services/CommunityAddressing/MapServer/legend?f=pjson
     QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
     const QString authCfg = dataSource.authConfigId();
-    const QString referer = dataSource.param( QStringLiteral( "referer" ) );
-    QgsStringMap headers;
-    if ( !referer.isEmpty() )
-      headers[ QStringLiteral( "referer" )] = referer;
 
     QUrl queryUrl( dataSource.param( QStringLiteral( "url" ) ) + "/legend" );
     QUrlQuery query( queryUrl );
     query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
     queryUrl.setQuery( query );
-    mQuery->start( queryUrl, authCfg, &mQueryReply, false, headers );
+    mQuery->start( queryUrl, authCfg, &mQueryReply, false, dataSource.httpHeaders() );
   }
   else
   {
@@ -196,9 +192,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   : QgsRasterDataProvider( uri, options, flags )
 {
   QgsDataSourceUri dataSource( dataSourceUri() );
-  const QString referer = dataSource.param( QStringLiteral( "referer" ) );
-  if ( !referer.isEmpty() )
-    mRequestHeaders[ QStringLiteral( "referer" )] = referer;
+  mRequestHeaders = dataSource.httpHeaders();
 
   mLegendFetcher = new QgsAmsLegendFetcher( this, QImage() );
 
@@ -1258,10 +1252,8 @@ QVariantMap QgsAmsProviderMetadata::decodeUri( const QString &uri ) const
   QVariantMap components;
   components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
 
-  if ( !dsUri.param( QStringLiteral( "referer" ) ).isEmpty() )
-  {
-    components.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
-  }
+  dsUri.httpHeaders().updateMap( components );
+
   if ( !dsUri.param( QStringLiteral( "crs" ) ).isEmpty() )
   {
     components.insert( QStringLiteral( "crs" ), dsUri.param( QStringLiteral( "crs" ) ) );
@@ -1291,10 +1283,9 @@ QString QgsAmsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   {
     dsUri.setParam( QStringLiteral( "crs" ), parts.value( QStringLiteral( "crs" ) ).toString() );
   }
-  if ( !parts.value( QStringLiteral( "referer" ) ).toString().isEmpty() )
-  {
-    dsUri.setParam( QStringLiteral( "referer" ), parts.value( QStringLiteral( "referer" ) ).toString() );
-  }
+
+  dsUri.httpHeaders().setFromMap( parts );
+
   if ( !parts.value( QStringLiteral( "authcfg" ) ).toString().isEmpty() )
   {
     dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );

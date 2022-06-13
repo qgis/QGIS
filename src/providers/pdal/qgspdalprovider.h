@@ -62,7 +62,7 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
     qint64 mPointCount = 0;
 
     QVariantMap mOriginalMetadata;
-    std::unique_ptr<QgsCopcPointCloudIndex> mIndex;
+    std::unique_ptr<QgsPointCloudIndex> mIndex;
     QgsPdalIndexingTask *mRunningIndexingTask = nullptr;
     bool mGenerateCopc = true;
     static QQueue<QgsPdalProvider *> sIndexingQueue;

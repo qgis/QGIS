@@ -45,7 +45,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( layer->source() );
   mAuthCfg = dsUri.authConfigId();
-  mHeaders [QStringLiteral( "referer" ) ] = dsUri.param( QStringLiteral( "referer" ) );
+  mHeaders = dsUri.httpHeaders();
 
   if ( QgsLabelingEngine *engine = context.labelingEngine() )
   {

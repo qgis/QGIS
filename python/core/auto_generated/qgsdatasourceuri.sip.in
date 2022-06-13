@@ -356,6 +356,28 @@ Returns parameter keys used in the uri: specialized ones ("table", "schema", etc
 .. versionadded:: 3.26
 %End
 
+
+    QgsHttpHeaders &httpHeaders();
+%Docstring
+Returns http headers
+
+.. versionadded:: 3.26
+%End
+
+    QString httpHeader( const QString &key );
+%Docstring
+Returns the http header value according to ``key``
+
+.. versionadded:: 3.26
+%End
+
+    void setHttpHeaders( const QgsHttpHeaders &headers );
+%Docstring
+Sets headers to ``headers``
+
+.. versionadded:: 3.26
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
@@ -363,7 +385,6 @@ Returns parameter keys used in the uri: specialized ones ("table", "schema", etc
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

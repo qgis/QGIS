@@ -25,6 +25,8 @@ if (ENABLE_TESTS)
     if (DEFINED ARG_QGIS_TEST_LABELS)
       set_tests_properties(${TESTNAME} PROPERTIES LABELS ${ARG_QGIS_TEST_LABELS})
     endif()
+
+    set_tests_properties(${TESTNAME} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
   endmacro()
 
 

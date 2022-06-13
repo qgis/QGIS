@@ -55,6 +55,10 @@ Constructor
 
     virtual QStringList dependsOnOtherParameters() const;
 
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
 
     static QString typeName();
 %Docstring
@@ -127,6 +131,10 @@ Constructor
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
     virtual QStringList dependsOnOtherParameters() const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
 
 
     static QString typeName();

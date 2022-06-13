@@ -415,10 +415,11 @@ void QgsLayoutColumnAlignmentDelegate::updateEditorGeometry( QWidget *editor, co
 
 // QgsLayoutColumnSourceDelegate
 
-QgsLayoutColumnSourceDelegate::QgsLayoutColumnSourceDelegate( QgsVectorLayer *vlayer, QObject *parent, const QgsLayoutObject *layoutObject )
+QgsLayoutColumnSourceDelegate::QgsLayoutColumnSourceDelegate( QgsVectorLayer *vlayer, QObject *parent, const QgsLayoutObject *layoutObject, bool forceExpressions )
   : QItemDelegate( parent )
   , mVectorLayer( vlayer )
   , mLayoutObject( layoutObject )
+  , mForceExpressions( forceExpressions )
 {
 
 }
@@ -462,7 +463,8 @@ void QgsLayoutColumnSourceDelegate::setEditorData( QWidget *editor, const QModel
 void QgsLayoutColumnSourceDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsFieldExpressionWidget *fieldExpression = static_cast<QgsFieldExpressionWidget *>( editor );
-  const QString field = fieldExpression->expression();
+  const QString field = mForceExpressions ? fieldExpression->asExpression() : fieldExpression->currentField();
+
   model->setData( index, field, Qt::EditRole );
 }
 
@@ -630,7 +632,7 @@ QgsLayoutAttributeSelectionDialog::QgsLayoutAttributeSelectionDialog( QgsLayoutI
     mSortColumnModel = new QgsLayoutTableSortModel( mTable, mSortColumnTableView );
     mSortColumnTableView->setModel( mSortColumnModel );
     mSortColumnTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
-    mSortColumnSourceDelegate = new QgsLayoutColumnSourceDelegate( vLayer, mSortColumnTableView, mTable );
+    mSortColumnSourceDelegate = new QgsLayoutColumnSourceDelegate( vLayer, mSortColumnTableView, mTable, true );
     mSortColumnTableView->setItemDelegateForColumn( 0, mSortColumnSourceDelegate );
     mSortColumnOrderDelegate = new QgsLayoutColumnSortOrderDelegate( mSortColumnTableView );
     mSortColumnTableView->setItemDelegateForColumn( 1, mSortColumnOrderDelegate );

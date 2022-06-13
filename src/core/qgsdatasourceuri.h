@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgswkbtypes.h"
+#include "qgshttpheaders.h"
 
 #include <QMap>
 #include <QSet>
@@ -325,6 +326,29 @@ class CORE_EXPORT QgsDataSourceUri
      */
     QSet<QString> parameterKeys() const;
 
+#ifndef SIP_RUN
+    //! Returns http headers
+    QgsHttpHeaders httpHeaders() const { return mHttpHeaders; }
+#endif
+
+    /**
+     * Returns http headers
+     * \since QGIS 3.26
+     */
+    QgsHttpHeaders &httpHeaders() { return mHttpHeaders; }
+
+    /**
+     * Returns the http header value according to \a key
+     * \since QGIS 3.26
+     */
+    QString httpHeader( const QString &key ) { return mHttpHeaders[key].toString(); }
+
+    /**
+     * Sets headers to \a headers
+     * \since QGIS 3.26
+     */
+    void setHttpHeaders( const QgsHttpHeaders &headers ) { mHttpHeaders = headers; }
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -380,7 +404,8 @@ class CORE_EXPORT QgsDataSourceUri
     QString mSrid;
     //! Generic params store
     QMultiMap<QString, QString> mParams;
+    //! http header store
+    QgsHttpHeaders mHttpHeaders;
 };
 
 #endif //QGSDATASOURCEURI_H
-

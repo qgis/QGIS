@@ -97,7 +97,7 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
   }
   if ( !mIsValid )
   {
-    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url, mLazInfo->error() ) );
+    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url, mLazInfo->error() );
   }
 }
 

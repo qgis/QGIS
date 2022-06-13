@@ -122,6 +122,11 @@ class CORE_EXPORT QgsLazInfo
     //! Returns the list of extrabytes contained in the LAZ file
     QVector<ExtraBytesAttributeDetails> extrabytes() const { return mExtrabyteAttributes; }
 
+#ifndef SIP_RUN
+    //! Returns the LAZPERF header object
+    lazperf::header14 header() const { return mHeader; }
+#endif
+
     //! Static function to parse the raw extrabytes VLR into a list of recognizable extrabyte attributes
     static QVector<ExtraBytesAttributeDetails> parseExtrabytes( char *rawData, int length, int pointRecordLength );
 
@@ -130,10 +135,8 @@ class CORE_EXPORT QgsLazInfo
     //! Static function to create a QgsLazInfo class from a file over network
     static QgsLazInfo fromUrl( QUrl &url );
 
-#ifndef SIP_RUN
-    //! Returns the LAZPERF header object
-    lazperf::header14 header() const { return mHeader; }
-#endif
+    //! Static function to check whether the server of URL \a url supports range queries
+    static bool supportsRangeQueries( QUrl &url );
 
   private:
     void parseHeader( lazperf::header14 &header );

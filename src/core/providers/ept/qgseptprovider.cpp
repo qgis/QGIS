@@ -124,8 +124,7 @@ QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, cons
 QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );
@@ -143,8 +142,7 @@ QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const 
 int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
     return 100;
 
   return 0;
@@ -153,8 +151,7 @@ int QgsEptProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( fi.fileName().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
   return QList< QgsMapLayerType>();
@@ -177,9 +174,10 @@ bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
 
 QVariantMap QgsEptProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
+  QUrl url = QUrl::fromUserInput( uri );
+  uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
+  uriComponents.insert( QStringLiteral( "path" ), uri );
   return uriComponents;
 }
 

@@ -46,7 +46,7 @@ QgsPdalProvider::QgsPdalProvider(
   const QgsDataProvider::ProviderOptions &options,
   QgsDataProvider::ReadFlags flags, bool generateCopc )
   : QgsPointCloudDataProvider( uri, options, flags )
-  , mIndex( new QgsCopcPointCloudIndex )
+  , mIndex( nullptr )
   , mGenerateCopc( generateCopc )
 {
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -71,7 +71,7 @@ QgsRectangle QgsPdalProvider::extent() const
 
 QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 {
-  return mIndex->attributes();
+  return mIndex ? mIndex->attributes() : QgsPointCloudAttributeCollection();
 }
 
 static QString _outEptDir( const QString &filename )
@@ -86,13 +86,13 @@ static QString _outCopcFile( const QString &filename )
 {
   const QFileInfo fi( filename );
   const QDir directory = fi.absoluteDir();
-  const QString outputFile = QStringLiteral( "%1/copc_%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.baseName() );
+  const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( directory.absolutePath() ).arg( fi.baseName() );
   return outputFile;
 }
 
 void QgsPdalProvider::generateIndex()
 {
-  if ( mRunningIndexingTask || mIndex->isValid() )
+  if ( mRunningIndexingTask || ( mIndex && mIndex->isValid() ) )
     return;
 
   if ( anyIndexingTaskExists() )
@@ -121,7 +121,7 @@ void QgsPdalProvider::generateIndex()
 
 QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::indexingState()
 {
-  if ( mIndex->isValid() )
+  if ( mIndex && mIndex->isValid() )
     return PointCloudIndexGenerationState::Indexed;
   else if ( mRunningIndexingTask )
     return PointCloudIndexGenerationState::Indexing;
@@ -131,34 +131,34 @@ QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::index
 
 void QgsPdalProvider::loadIndex( )
 {
-  if ( mIndex->isValid() )
+  if ( mIndex && mIndex->isValid() )
     return;
-  if ( mGenerateCopc )
+  // Try to load copc index
+  if ( !mIndex || !mIndex->isValid() )
   {
     const QString outputFile = _outCopcFile( dataSourceUri() );
     const QFileInfo fi( outputFile );
     if ( fi.isFile() )
     {
+      mIndex.reset( new QgsCopcPointCloudIndex );
       mIndex->load( outputFile );
     }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "pdalprovider: copc index %1 is not correctly loaded" ).arg( outputFile ), 2 );
-    }
   }
-  else
+  // Try to load ept index
+  if ( !mIndex || !mIndex->isValid() )
   {
     const QString outputDir = _outEptDir( dataSourceUri() );
     const QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( outputDir );
     const QFileInfo fi( outEptJson );
     if ( fi.isFile() )
     {
+      mIndex.reset( new QgsEptPointCloudIndex );
       mIndex->load( outEptJson );
     }
-    else
-    {
-      QgsDebugMsgLevel( QStringLiteral( "pdalprovider: ept index %1 is not correctly loaded" ).arg( outEptJson ), 2 );
-    }
+  }
+  if ( !mIndex || !mIndex->isValid() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "pdalprovider: neither copc or ept index for dataset %1 is not correctly loaded" ).arg( dataSourceUri() ), 2 );
   }
 }
 

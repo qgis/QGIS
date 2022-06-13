@@ -112,16 +112,16 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
   mDiagramTypeComboBox->blockSignals( true );
-  QPixmap pix = QgsApplication::getThemePixmap( QStringLiteral( "diagramNone" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "No Diagrams" ), "None" );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "pie-chart" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "text" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "histogram" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
-  pix = QgsApplication::getThemePixmap( QStringLiteral( "stacked-bar" ) );
-  mDiagramTypeComboBox->addItem( pix, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
+  QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "No Diagrams" ), "None" );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Pie Chart" ), DIAGRAM_NAME_PIE );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Text Diagram" ), DIAGRAM_NAME_TEXT );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  icon = QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) );
+  mDiagramTypeComboBox->addItem( icon, tr( "Stacked Bars" ), DIAGRAM_NAME_STACKED );
   mDiagramTypeComboBox->blockSignals( false );
 
   mAxisLineStyleButton->setSymbolType( Qgis::SymbolType::Line );

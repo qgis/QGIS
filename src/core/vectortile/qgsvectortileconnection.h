@@ -61,8 +61,8 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
       QString username;
       //! HTTP Basic password
       QString password;
-      //! Referer
-      QString referer;
+      //! HTTP headers
+      QgsHttpHeaders httpHeaders;
 
       //! Optional style URL (will override any default styles)
       QString styleUrl;

@@ -656,10 +656,10 @@ struct QgsWmsParserSettings
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &referer = QString(), const QString &authcfg = QString() )
+  QgsWmsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
     : mUserName( userName )
     , mPassword( password )
-    , mReferer( referer )
+    , mHttpHeaders( httpHeaders )
     , mAuthCfg( authcfg )
   {}
 
@@ -674,10 +674,8 @@ struct QgsWmsAuthorization
       request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
     }
 
-    if ( !mReferer.isEmpty() )
-    {
-      request.setRawHeader( "Referer", mReferer.toLatin1() );
-    }
+    mHttpHeaders.updateNetworkRequest( request );
+
     return true;
   }
   //! Sets authorization reply
@@ -696,8 +694,8 @@ struct QgsWmsAuthorization
   //! Password for basic http authentication
   QString mPassword;
 
-  //! Referer for http requests
-  QString mReferer;
+  //! headers for http requests
+  QgsHttpHeaders mHttpHeaders;
 
   //! Authentication configuration ID
   QString mAuthCfg;
