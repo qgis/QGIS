@@ -9,13 +9,16 @@ cd ${SRCDIR}
 # https://github.com/qgis/QGIS/runs/6733585841?check_suite_focus=true#step:13:89
 git config --global --add safe.directory ${SRCDIR}
 
-# Debug env
-echo "::group::Print env"
-env
-echo "::endgroup::"
-
-# Temporarily uncomment to debug ccache issues
-# cat /tmp/cache.debug
+usage() {
+  echo "Usage; $(basename $0) [<TEST_BATCHNAME>]"
+  echo "TEST_BATCHNAME can be any of:"
+  echo "  HANA                Test the HANA provider"
+  echo "  POSTGRES            Test the PostgreSQL provider"
+  echo "  ORACLE              Test the Oracle provider"
+  echo "  SQLSERVER           Test the SQL Server provider"
+  echo "  ALL_BUT_PROVIDERS   Skip all providers tests"
+  echo "  ALL                 (default) Run all tests"
+}
 
 if [ $# -eq 1 ] && [ $1 = "HANA" ]; then
   LABELS_TO_RUN="HANA"
@@ -37,7 +40,8 @@ elif [ $# -eq 1 ] && [ $1 = "ALL_BUT_PROVIDERS" ]; then
   LABELS_TO_EXCLUDE="HANA|POSTGRES|ORACLE|SQLSERVER"
 
 elif [ $# -gt 0 ] &&  [ $1 != "ALL" ]; then
-  echo "Invalid argument, expected values: ALL, ALL_BUT_PROVIDERS, POSTGRES, HANA, ORACLE, SQLSERVER"
+  echo "Invalid argument"
+  usage >&2
   exit 1
 
 else
@@ -46,6 +50,15 @@ else
   RUN_ORACLE=YES
   RUN_SQLSERVER=YES
 fi
+
+# Debug env
+echo "::group::Print env"
+env
+echo "::endgroup::"
+
+# Temporarily uncomment to debug ccache issues
+# cat /tmp/cache.debug
+
 
 if [ -n "$LABELS_TO_RUN" ]; then
   echo "Only following test labels will be run: $LABELS_TO_RUN"
