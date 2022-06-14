@@ -2038,6 +2038,11 @@ QString QgsWcsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return query.toString();
 }
 
+QList<QgsMapLayerType> QgsWcsProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::RasterLayer };
+}
+
 
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

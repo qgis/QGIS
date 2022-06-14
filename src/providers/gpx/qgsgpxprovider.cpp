@@ -582,3 +582,8 @@ QVariantMap QgsGpxProviderMetadata::decodeUri( const QString &uri ) const
 {
   return QgsGPXProvider::decodeUri( uri );
 }
+
+QList<QgsMapLayerType> QgsGpxProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}

@@ -125,6 +125,7 @@ class QgsGpxProviderMetadata final: public QgsProviderMetadata
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif

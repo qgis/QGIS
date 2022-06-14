@@ -3962,6 +3962,11 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
   return res;
 }
 
+QList<QgsMapLayerType> QgsGdalProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::RasterLayer };
+}
+
 QgsGdalProviderMetadata::QgsGdalProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {

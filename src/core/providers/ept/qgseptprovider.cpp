@@ -202,6 +202,11 @@ QgsProviderMetadata::ProviderCapabilities QgsEptProviderMetadata::providerCapabi
   return FileBasedUris;
 }
 
+QList<QgsMapLayerType> QgsEptProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::PointCloudLayer };
+}
+
 QString QgsEptProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();

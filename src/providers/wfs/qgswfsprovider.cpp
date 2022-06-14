@@ -2056,6 +2056,11 @@ QgsWFSProvider *QgsWfsProviderMetadata::createProvider( const QString &uri, cons
   return new QgsWFSProvider( uri, options );
 }
 
+QList<QgsMapLayerType> QgsWfsProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;

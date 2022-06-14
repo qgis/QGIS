@@ -32,6 +32,10 @@ class QgsGrassRasterProviderMetadata: public QgsProviderMetadata
       Q_UNUSED( flags );
       return new QgsGrassRasterProvider( uri );
     }
+    QList< QgsMapLayerType > supportedLayerTypes() const override
+    {
+      return { QgsMapLayerType::RasterLayer };
+    }
 };
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

@@ -201,6 +201,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif // QGSHANAPROVIDER_H

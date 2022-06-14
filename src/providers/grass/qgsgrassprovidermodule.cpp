@@ -1328,3 +1328,8 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
   return new QgsGrassProviderMetadata();
 }
 
+
+QList<QgsMapLayerType> QgsGrassProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}

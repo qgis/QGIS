@@ -171,16 +171,14 @@ class PdalUnusableUriHandlerInterface : public QgsProviderRegistry::UnusableUriH
 void QgsProviderRegistry::init()
 {
   // add static providers
-  Q_NOWARN_DEPRECATED_PUSH
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create memory layer provider" ) );
-    mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
+    mProviders[ QgsMemoryProvider::providerKey() ] = new QgsMemoryProviderMetadata();
   }
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create mesh memory layer provider" ) );
-    mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription(), &QgsMeshMemoryDataProvider::createProvider );
+    mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsMeshMemoryProviderMetadata();
   }
-  Q_NOWARN_DEPRECATED_POP
   {
     const QgsScopedRuntimeProfile profile( QObject::tr( "Create GDAL provider" ) );
     mProviders[ QgsGdalProvider::providerKey() ] = new QgsGdalProviderMetadata();

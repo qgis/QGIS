@@ -138,6 +138,7 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
   public:
     QgsVirtualLayerProviderMetadata();
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 // clazy:excludeall=qstring-allocations

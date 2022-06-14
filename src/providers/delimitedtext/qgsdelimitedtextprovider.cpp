@@ -1458,6 +1458,11 @@ QgsProviderMetadata::ProviderCapabilities QgsDelimitedTextProviderMetadata::prov
   return FileBasedUris;
 }
 
+QList<QgsMapLayerType> QgsDelimitedTextProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QgsDataProvider *QgsDelimitedTextProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsDelimitedTextProvider( uri, options, flags );
