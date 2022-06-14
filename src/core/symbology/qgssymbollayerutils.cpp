@@ -720,6 +720,11 @@ QString QgsSymbolLayerUtils::encodeSldUom( QgsUnitTypes::RenderUnit unit, double
         *scaleFactor = 0.001; // from millimeters to meters
       return QStringLiteral( "http://www.opengeospatial.org/se/units/metre" );
 
+    case QgsUnitTypes::RenderMetersInMapUnits:
+      if ( scaleFactor )
+        *scaleFactor = 1.0; // from meters to meters
+      return QStringLiteral( "http://www.opengeospatial.org/se/units/metre" );
+
     case QgsUnitTypes::RenderMillimeters:
     default:
       // pixel is the SLD default uom. The "standardized rendering pixel

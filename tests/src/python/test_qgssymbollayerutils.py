@@ -319,6 +319,11 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMapUnits)
         self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 0.001))
 
+        # meters at scale
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 1.0))
+
     def testDecodeSldUom(self):
         """
         Test Decodes a SLD unit of measure string to a render unit
