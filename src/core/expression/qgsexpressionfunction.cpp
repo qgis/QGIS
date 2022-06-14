@@ -6953,6 +6953,105 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     }
   }
 
+  // //////////////////////////////////////////////////////////////////
+  // Helper functions for geometry tests
+
+  // Test function for linestring geometries, returns TRUE if test passes
+  auto testLinestring = [ = ]( const QgsGeometry intersection, double & overlapValue ) -> bool
+  {
+    bool testResult { false };
+    // For return measures:
+    QVector<double> overlapValues;
+    for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+    {
+      const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
+      // Check min overlap for intersection (if set)
+      if ( minOverlap != -1  || requireMeasures )
+      {
+        overlapValue = geom->length();
+        overlapValues.append( overlapValue );
+        if ( minOverlap != -1 )
+        {
+          if ( overlapValue >= minOverlap )
+          {
+            testResult = true;
+          }
+          else
+          {
+            continue;
+          }
+        }
+      }
+    }
+
+    if ( ! overlapValues.isEmpty() )
+    {
+      overlapValue = *std::max_element( overlapValues.cbegin(), overlapValues.cend() );
+    }
+
+    return testResult;
+  };
+
+  // Test function for polygon geometries, returns TRUE if test passes
+  auto testPolygon = [ = ]( const QgsGeometry intersection, double & radiusValue, double & overlapValue ) -> bool
+  {
+    // overlap and inscribed circle tests must be checked both (if the values are != -1)
+    bool testResult { false };
+    // For return measures:
+    QVector<double> overlapValues;
+    QVector<double> radiusValues;
+    for ( auto it = intersection.const_parts_begin(); ( ! testResult || requireMeasures ) && it != intersection.const_parts_end(); ++it )
+    {
+      const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
+      // Check min overlap for intersection (if set)
+      if ( minOverlap != -1 || requireMeasures )
+      {
+        overlapValue = geom->area();
+        overlapValues.append( geom->area() );
+        if ( minOverlap != - 1 )
+        {
+          if ( overlapValue >= minOverlap )
+          {
+            testResult = true;
+          }
+          else
+          {
+            continue;
+          }
+        }
+      }
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+      // Check min inscribed circle radius for intersection (if set)
+      if ( minInscribedCircleRadius != -1 || requireMeasures )
+      {
+        const QgsRectangle bbox = geom->boundingBox();
+        const double width = bbox.width();
+        const double height = bbox.height();
+        const double size = width > height ? width : height;
+        const double tolerance = size / 100.0;
+        radiusValue = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
+        testResult = radiusValue >= minInscribedCircleRadius;
+        radiusValues.append( radiusValues );
+      }
+#endif
+    } // end for parts
+
+    // Get the max values
+    if ( !radiusValues.isEmpty() )
+    {
+      radiusValue = *std::max_element( radiusValues.cbegin(), radiusValues.cend() );
+    }
+
+    if ( ! overlapValues.isEmpty() )
+    {
+      overlapValue = *std::max_element( overlapValues.cbegin(), overlapValues.cend() );
+    }
+
+    return testResult;
+
+  };
+
 
   bool found = false;
   int foundCount = 0;
@@ -6961,7 +7060,9 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
   QListIterator<QgsFeature> i( features );
   while ( i.hasNext() && ( sortByMeasure || limit == -1 || foundCount < limit ) )
   {
+
     QgsFeature feat2 = i.next();
+
 
     if ( ! relationFunction || ( geometry.*relationFunction )( feat2.geometry() ) ) // Calls the method provided as template argument for the function (e.g. QgsGeometry::intersects)
     {
@@ -6983,57 +7084,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           {
 
             // overlap and inscribed circle tests must be checked both (if the values are != -1)
-            bool testResult { false };
-            // For return measures:
-            QVector<double> overlapValues;
-            QVector<double> radiusValues;
-            for ( auto it = intersection.const_parts_begin(); ( ! testResult || requireMeasures ) && it != intersection.const_parts_end(); ++it )
-            {
-              const QgsCurvePolygon *geom = qgsgeometry_cast< const QgsCurvePolygon * >( *it );
-              // Check min overlap for intersection (if set)
-              if ( minOverlap != -1 || requireMeasures )
-              {
-                overlapValue = geom->area();
-                overlapValues.append( geom->area() );
-                if ( minOverlap != - 1 )
-                {
-                  if ( overlapValue >= minOverlap )
-                  {
-                    testResult = true;
-                  }
-                  else
-                  {
-                    continue;
-                  }
-                }
-              }
-
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
-              // Check min inscribed circle radius for intersection (if set)
-              if ( minInscribedCircleRadius != -1 || requireMeasures )
-              {
-                const QgsRectangle bbox = geom->boundingBox();
-                const double width = bbox.width();
-                const double height = bbox.height();
-                const double size = width > height ? width : height;
-                const double tolerance = size / 100.0;
-                radiusValue = QgsGeos( geom ).maximumInscribedCircle( tolerance )->length();
-                testResult = radiusValue >= minInscribedCircleRadius;
-                radiusValues.append( radiusValues );
-              }
-#endif
-            }
-
-            // Get the max values
-            if ( !radiusValues.isEmpty() )
-            {
-              radiusValue = *std::max_element( radiusValues.cbegin(), radiusValues.cend() );
-            }
-
-            if ( ! overlapValues.isEmpty() )
-            {
-              overlapValue = *std::max_element( overlapValues.cbegin(), overlapValues.cend() );
-            }
+            bool testResult { testPolygon( intersection, radiusValue, overlapValue ) };
 
             if ( ! testResult && overlapOrRadiusFilter )
             {
@@ -7042,37 +7093,11 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
             break;
           }
+
           case QgsWkbTypes::GeometryType::LineGeometry:
           {
-            bool testResult { false };
-            // For return measures:
-            QVector<double> overlapValues;
-            for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
-            {
-              const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
-              // Check min overlap for intersection (if set)
-              if ( minOverlap != -1  || requireMeasures )
-              {
-                overlapValue = geom->length();
-                overlapValues.append( overlapValue );
-                if ( minOverlap != -1 )
-                {
-                  if ( overlapValue >= minOverlap )
-                  {
-                    testResult = true;
-                  }
-                  else
-                  {
-                    continue;
-                  }
-                }
-              }
-            }
 
-            if ( ! overlapValues.isEmpty() )
-            {
-              overlapValue = *std::max_element( overlapValues.cbegin(), overlapValues.cend() );
-            }
+            const bool testResult { testLinestring( intersection, overlapValue ) };
 
             if ( ! testResult && overlapOrRadiusFilter )
             {
@@ -7081,9 +7106,11 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
             break;
           }
+
           case QgsWkbTypes::GeometryType::PointGeometry:
           {
-            if ( minOverlap != -1  || requireMeasures )
+            bool testResult { false };
+            if ( minOverlap != -1 || requireMeasures )
             {
               // Initially set this to 0 because it's a point intersection...
               overlapValue = 0;
@@ -7103,18 +7130,18 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
                   }
                   case QgsWkbTypes::GeometryType::LineGeometry:
                   {
-                    overlapValue = feat2.geometry().length();
+                    testResult = testLinestring( feat2.geometry(), overlapValue );
                     break;
                   }
                   case QgsWkbTypes::GeometryType::PolygonGeometry:
                   {
-                    overlapValue = feat2.geometry().area();
+                    testResult = testPolygon( feat2.geometry(), radiusValue, overlapValue );
                     break;
                   }
                 }
               }
 
-              if ( minOverlap != -1 && overlapValue < minOverlap )
+              if ( ! testResult && overlapOrRadiusFilter )
               {
                 continue;
               }
@@ -7122,6 +7149,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
             }
             break;
           }
+
           case QgsWkbTypes::GeometryType::NullGeometry:
           case QgsWkbTypes::GeometryType::UnknownGeometry:
           {
