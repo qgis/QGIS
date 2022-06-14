@@ -448,13 +448,15 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( element, offset );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), QString() );
-  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
-  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
-  strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
+  double scaleFactor = 1.0;
+  const QString uom = element.attribute( QStringLiteral( "uom" ) );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  offset.setX( offset.x() * scaleFactor );
+  offset.setY( offset.y() * scaleFactor );
+  strokeWidth = strokeWidth * scaleFactor;
 
   std::unique_ptr< QgsSimpleFillSymbolLayer > sl = std::make_unique< QgsSimpleFillSymbolLayer >( color, fillStyle, strokeColor, strokeStyle, strokeWidth );
-  sl->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  sl->setOutputUnit( sldUnitSize );
   sl->setOffset( offset );
   return sl.release();
 }
@@ -2336,9 +2338,11 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
   QgsSymbolLayerUtils::lineFromSld( graphicElem, penStyle, strokeColor, strokeWidth );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
-  strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
+  double scaleFactor = 1.0;
+  const QString uom = element.attribute( QStringLiteral( "uom" ) );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
+  strokeWidth = strokeWidth * scaleFactor;
 
   double angle = 0.0;
   QString angleFunc;
@@ -2351,7 +2355,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   }
 
   std::unique_ptr< QgsSVGFillSymbolLayer > sl = std::make_unique< QgsSVGFillSymbolLayer >( path, size, angle );
-  sl->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  sl->setOutputUnit( sldUnitSize );
   sl->setSvgFillColor( fillColor );
   sl->setSvgStrokeColor( strokeColor );
   sl->setSvgStrokeWidth( strokeWidth );
@@ -3405,12 +3409,14 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
     offset = std::sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
   }
 
-  QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
-  lineWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, lineWidth );
+  double scaleFactor = 1.0;
+  const QString uom = element.attribute( QStringLiteral( "uom" ) );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
+  lineWidth = lineWidth * scaleFactor;
 
   std::unique_ptr< QgsLinePatternFillSymbolLayer > sl = std::make_unique< QgsLinePatternFillSymbolLayer >();
-  sl->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  sl->setOutputUnit( sldUnitSize );
   sl->setColor( lineColor );
   sl->setLineWidth( lineWidth );
   sl->setLineAngle( angle );

@@ -737,27 +737,23 @@ QgsUnitTypes::RenderUnit QgsSymbolLayerUtils::decodeSldUom( const QString &str, 
   if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/metre" ) )
   {
     if ( scaleFactor )
-      *scaleFactor = 1000.0;  // from meters to millimeters
-    return QgsUnitTypes::RenderMapUnits;
+      *scaleFactor = 1.0;  // from meters to meters
+    return QgsUnitTypes::RenderMetersInMapUnits;
   }
   else if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/foot" ) )
   {
     if ( scaleFactor )
-      *scaleFactor = 304.8; // from feet to meters
-    return QgsUnitTypes::RenderMapUnits;
+      *scaleFactor = 0.3048; // from feet to meters
+    return QgsUnitTypes::RenderMetersInMapUnits;
   }
-  else if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/pixel" ) )
+  // pixel is the SLD default uom so it's used if no uom attribute is available or
+  // if uom="http://www.opengeospatial.org/se/units/pixel"
+  else
   {
     if ( scaleFactor )
       *scaleFactor = 1.0; // from pixels to pixels
     return QgsUnitTypes::RenderPixels;
   }
-
-  // pixel is the SLD default uom. The "standardized rendering pixel
-  // size" is defined to be 0.28mm x 0.28mm (millimeters).
-  if ( scaleFactor )
-    *scaleFactor = 1 / 0.00028; // from pixels to millimeters
-  return QgsUnitTypes::RenderMillimeters;
 }
 
 QString QgsSymbolLayerUtils::encodeRealVector( const QVector<qreal> &v )

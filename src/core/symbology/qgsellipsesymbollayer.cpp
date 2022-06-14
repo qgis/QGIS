@@ -508,9 +508,11 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return nullptr;
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
-  strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
+  strokeWidth = strokeWidth * scaleFactor;
 
   double angle = 0.0;
   QString angleFunc;
@@ -523,7 +525,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   }
 
   QgsEllipseSymbolLayer *m = new QgsEllipseSymbolLayer();
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setShape( decodeShape( name ) );
   m->setFillColor( fillColor );
   m->setStrokeColor( strokeColor );
