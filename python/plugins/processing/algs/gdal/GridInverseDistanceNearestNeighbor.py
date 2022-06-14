@@ -82,17 +82,20 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
 
         self.addParameter(QgsProcessingParameterEnum(self.UNITS,
                                                      self.tr('Output raster size units'),
-                                                     self.units))
+                                                     self.units,
+                                                     optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.WIDTH,
                                                        self.tr('Width/Horizontal resolution'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
-                                                       defaultValue=0.0))
+                                                       defaultValue=0.0,
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.HEIGHT,
                                                        self.tr('Height/Vertical resolution'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
-                                                       defaultValue=0.0))
+                                                       defaultValue=0.0,
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Output extent'),
                                                        optional=True))
