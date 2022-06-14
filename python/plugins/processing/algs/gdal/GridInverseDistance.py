@@ -30,6 +30,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
@@ -43,6 +44,14 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class GridInverseDistance(GdalAlgorithm):
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
+    WIDTH = 'WIDTH'
+    HEIGHT = 'HEIGHT'
+    UNITS = 'UNITS'
+    EXTENT = 'EXTENT'
+    WIDTH = 'WIDTH'
+    HEIGHT = 'HEIGHT'
+    UNITS = 'UNITS'
+    EXTENT = 'EXTENT'
     POWER = 'POWER'
     SMOOTHING = 'SMOOTHING'
     RADIUS_1 = 'RADIUS_1'
@@ -62,6 +71,8 @@ class GridInverseDistance(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+        self.units = [self.tr("Pixels"),
+                self.tr("Georeferenced units")]
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Point layer'),
                                                               [QgsProcessing.TypeVectorPoint]))
@@ -74,6 +85,23 @@ class GridInverseDistance(GdalAlgorithm):
                                                     optional=True)
         z_field_param.setFlags(z_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(z_field_param)
+
+        self.addParameter(QgsProcessingParameterEnum(self.UNITS,
+                                                     self.tr('Output raster size units'),
+                                                     self.units))
+        self.addParameter(QgsProcessingParameterNumber(self.WIDTH,
+                                                       self.tr('Width/Horizontal resolution'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.HEIGHT,
+                                                       self.tr('Height/Vertical resolution'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Output extent'),
+                                                       optional=True))
 
         self.addParameter(QgsProcessingParameterNumber(self.POWER,
                                                        self.tr('Weighting power'),
@@ -174,6 +202,23 @@ class GridInverseDistance(GdalAlgorithm):
         if fieldName:
             arguments.append('-zfield')
             arguments.append(fieldName)
+
+        units = self.parameterAsEnum(parameters, self.UNITS, context)
+        if units == 0:
+            arguments.append('-outsize')
+        else:
+            arguments.append('-tr')
+        arguments.append(self.parameterAsDouble(parameters, self.WIDTH, context))
+        arguments.append(self.parameterAsDouble(parameters, self.HEIGHT, context))
+
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        if not extent.isNull():
+            arguments.append('-txe')
+            arguments.append(extent.xMinimum())
+            arguments.append(extent.xMaximum())
+            arguments.append('-tye')
+            arguments.append(extent.yMinimum())
+            arguments.append(extent.yMaximum())
 
         params = 'invdist'
         params += ':power={}'.format(self.parameterAsDouble(parameters, self.POWER, context))
