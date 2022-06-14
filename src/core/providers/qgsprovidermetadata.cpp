@@ -62,6 +62,11 @@ QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilit
   return QgsProviderMetadata::ProviderCapabilities();
 }
 
+QList<QgsMapLayerType> QgsProviderMetadata::supportedLayerTypes() const
+{
+  return {};
+}
+
 QString QgsProviderMetadata::library() const
 {
   return mLibrary;

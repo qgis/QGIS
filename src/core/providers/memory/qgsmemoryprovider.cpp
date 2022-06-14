@@ -243,13 +243,6 @@ QString QgsMemoryProvider::providerDescription()
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QgsMemoryProvider *QgsMemoryProvider::createProvider( const QString &uri,
-    const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
-{
-  return new QgsMemoryProvider( uri, options, flags );
-}
-
 QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const
 {
   return new QgsMemoryFeatureSource( this );
@@ -812,6 +805,23 @@ QString QgsMemoryProvider::name() const
 QString QgsMemoryProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
+}
+
+
+QgsMemoryProviderMetadata::QgsMemoryProviderMetadata()
+  : QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription() )
+{
+
+}
+
+QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsMemoryProvider( uri, options, flags );
+}
+
+QList<QgsMapLayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
 }
 
 ///@endcond

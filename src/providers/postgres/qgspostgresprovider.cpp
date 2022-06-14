@@ -6045,3 +6045,8 @@ QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
   return dsUri.uri( false );
 }
+
+QList<QgsMapLayerType> QgsPostgresProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}

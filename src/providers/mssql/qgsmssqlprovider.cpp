@@ -3081,6 +3081,11 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
   return dsUri.uri();
 }
 
+QList<QgsMapLayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 bool QgsMssqlProviderMetadata::execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin ) const
 {
   QgsDatabaseQueryLogWrapper logWrapper{ sql, uri, QStringLiteral( "mssql" ), QStringLiteral( "QgsMssqlProviderMetadata" ),  queryOrigin };

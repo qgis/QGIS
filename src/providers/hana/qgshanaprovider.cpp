@@ -1998,3 +1998,8 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsHanaProviderMetadata();
 }
+
+QList<QgsMapLayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}

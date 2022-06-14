@@ -1505,6 +1505,11 @@ QStringList QgsOgrProviderMetadata::sidecarFilesForUri( const QString &uri ) con
   return res;
 }
 
+QList<QgsMapLayerType> QgsOgrProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QMap<QString, QgsAbstractProviderConnection *> QgsOgrProviderMetadata::connections( bool cached )
 {
   return connectionsProtected<QgsGeoPackageProviderConnection, QgsOgrDbConnection>( cached );

@@ -817,5 +817,10 @@ QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, 
   return new QgsOapifProvider( uri, options, flags );
 }
 
+QList<QgsMapLayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():
   QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION ) {}

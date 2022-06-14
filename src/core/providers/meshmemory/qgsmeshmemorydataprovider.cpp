@@ -71,13 +71,6 @@ QString QgsMeshMemoryDataProvider::providerDescription()
   return TEXT_PROVIDER_DESCRIPTION;
 }
 
-QgsMeshMemoryDataProvider *QgsMeshMemoryDataProvider::createProvider( const QString &uri,
-    const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
-{
-  return new QgsMeshMemoryDataProvider( uri, options, flags );
-}
-
 bool QgsMeshMemoryDataProvider::splitMeshSections( const QString &uri )
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
@@ -658,5 +651,20 @@ QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
 }
 
 
+QgsMeshMemoryProviderMetadata::QgsMeshMemoryProviderMetadata()
+  : QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription() )
+{
+
+}
+
+QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsMeshMemoryDataProvider( uri, options, flags );
+}
+
+QList<QgsMapLayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::MeshLayer };
+}
 
 ///@endcond

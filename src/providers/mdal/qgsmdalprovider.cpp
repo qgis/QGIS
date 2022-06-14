@@ -1215,6 +1215,11 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
   return res;
 }
 
+QList<QgsMapLayerType> QgsMdalProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::MeshLayer };
+}
+
 QString QgsMdalProviderMetadata::filters( FilterType type )
 {
   switch ( type )

@@ -475,6 +475,11 @@ QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, cons
   return new QgsAfsProvider( uri, options, flags );
 }
 
+QList<QgsMapLayerType> QgsAfsProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()

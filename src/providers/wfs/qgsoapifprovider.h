@@ -124,6 +124,7 @@ class QgsOapifProviderMetadata final: public QgsProviderMetadata
   public:
     QgsOapifProviderMetadata();
     QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 //! Class shared between provider and feature source

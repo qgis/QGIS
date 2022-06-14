@@ -382,6 +382,11 @@ QgsProviderMetadata::ProviderCapabilities QgsPdalProviderMetadata::providerCapab
   return FileBasedUris;
 }
 
+QList<QgsMapLayerType> QgsPdalProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::PointCloudLayer };
+}
+
 QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();

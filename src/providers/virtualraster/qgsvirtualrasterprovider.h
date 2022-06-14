@@ -94,6 +94,7 @@ class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
   public:
     QgsVirtualRasterProviderMetadata();
     QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif // QGSVIRTUALRASTERPROVIDER_H

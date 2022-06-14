@@ -4153,3 +4153,8 @@ void QgsOracleProviderMetadata::saveConnection( const QgsAbstractProviderConnect
 }
 
 // vim: set sw=2
+
+QList<QgsMapLayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
