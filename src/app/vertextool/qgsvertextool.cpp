@@ -826,6 +826,7 @@ void QgsVertexTool::removeTemporaryRubberBands()
   mFeatureBandFid = QgsFeatureId();
   mVertexBand->setVisible( false );
   mEdgeBand->setVisible( false );
+  mEdgeCenterMarker->setVisible( false );
   mEndpointMarkerCenter.reset();
   mEndpointMarker->setVisible( false );
 }
