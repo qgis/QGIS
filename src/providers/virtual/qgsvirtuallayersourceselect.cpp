@@ -22,6 +22,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
+#include "qgsprovidermetadata.h"
 #include "qgsprojectionselectiondialog.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
@@ -191,7 +192,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   for ( int i = 0; i < mLayersTable->rowCount(); i++ )
   {
     const QString name = mLayersTable->item( i, 0 )->text();
-    const QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 1 ) )->currentText();
+    const QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 1 ) )->currentData().toString();
     const QString encoding = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 2 ) )->currentText();
     const QString source = mLayersTable->item( i, 3 )->text();
     def.addSource( name, source, provider, encoding );
@@ -268,8 +269,12 @@ void QgsVirtualLayerSourceSelect::addLayer()
   mLayersTable->setItem( mLayersTable->rowCount() - 1, 3, new QTableWidgetItem() );
 
   QComboBox *providerCombo = new QComboBox();
-  providerCombo->addItems( mProviderList );
-  providerCombo->setCurrentText( QStringLiteral( "ogr" ) );
+  for ( const QString &key : std::as_const( mProviderList ) )
+  {
+    QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( key );
+    providerCombo->addItem( metadata->description(), key );
+  }
+  providerCombo->setCurrentIndex( providerCombo->findData( QStringLiteral( "ogr" ) ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 1, providerCombo );
 
   QComboBox *encodingCombo = new QComboBox();
@@ -378,7 +383,7 @@ void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const Q
   mLayersTable->item( n, 3 )->setText( source );
   // provider
   QComboBox *providerCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, 1 ) );
-  providerCombo->setCurrentIndex( providerCombo->findText( provider ) );
+  providerCombo->setCurrentIndex( providerCombo->findData( provider ) );
   // encoding
   QComboBox *encodingCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, 2 ) );
   encodingCombo->setCurrentIndex( encodingCombo->findText( encoding ) );
