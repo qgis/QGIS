@@ -914,7 +914,6 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   {
     categoriesValues.push_back( c.value() );
   }
-  std::sort( categoriesValues.begin(), categoriesValues.end() );
 
   const QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
@@ -953,13 +952,14 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     else
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
 
-    if ( filteredOutValues.contains( ( int ) iParam ) )
+    if ( filteredOutValues.contains( ( int ) iParam ) ||
+         ! categoriesValues.contains( ( int ) iParam ) )
       continue;
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
 
     // find iParam actual index in the categories list
-    float iParam2 = std::lower_bound( categoriesValues.begin(), categoriesValues.end(), ( int )iParam ) - categoriesValues.begin();
-    outNormal.parameter.push_back( iParam2 + 1 );
+    float iParam2 = categoriesValues.indexOf( ( int )iParam ) + 1;
+    outNormal.parameter.push_back( iParam2 );
   }
 }
 
