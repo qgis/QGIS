@@ -62,6 +62,7 @@ QgsWFSSharedData *QgsWFSSharedData::clone() const
   copy->mWKBType = mWKBType;
   copy->mWFSFilter = mWFSFilter;
   copy->mSortBy = mSortBy;
+  QgsBackgroundCachedSharedData::copyStateToClone( copy );
 
   return copy;
 }

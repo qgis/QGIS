@@ -218,6 +218,9 @@ class QgsBackgroundCachedSharedData
 
     //////////// Methods
 
+    //! To be used by the clone() method of derived classes
+    void copyStateToClone( QgsBackgroundCachedSharedData *clone ) const;
+
     //! Should be called in the destructor of the implementation of this class !
     void cleanup();
 
