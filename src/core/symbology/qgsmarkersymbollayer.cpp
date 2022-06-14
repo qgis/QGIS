@@ -1391,13 +1391,15 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
 
   const Qgis::MarkerShape shape = decodeShape( name );
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
-  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
-  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
+  offset.setX( offset.x() * scaleFactor );
+  offset.setY( offset.y() * scaleFactor );
 
   QgsSimpleMarkerSymbolLayer *m = new QgsSimpleMarkerSymbolLayer( shape, size );
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setColor( color );
   m->setStrokeColor( strokeColor );
   m->setAngle( angle );
@@ -2544,8 +2546,10 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
     return nullptr;
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
 
   if ( mimeType != QLatin1String( "image/svg+xml" ) )
     return nullptr;
@@ -2564,7 +2568,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
   QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( path, size );
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setFillColor( fillColor );
   //m->setStrokeColor( strokeColor );
   //m->setStrokeWidth( strokeWidth );
@@ -3710,13 +3714,15 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
-  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  offset.setX( offset.x() * scaleFactor );
+  offset.setY( offset.y() * scaleFactor );
+  size = size * scaleFactor;
 
   QgsMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, QChar( chr ), size, color );
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setAngle( angle );
   m->setOffset( offset );
   return m;

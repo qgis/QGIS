@@ -327,12 +327,12 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # meter
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/metre")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 1000.0))
+        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 1.0))
 
         # foot
         decode = None
         decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/foot")
-        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 304.8))
+        self.assertEqual(decode, (QgsUnitTypes.RenderMetersInMapUnits, 0.3048))
 
         # pixel
         decode = None
