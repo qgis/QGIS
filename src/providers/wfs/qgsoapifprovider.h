@@ -143,6 +143,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 
     bool isRestrictedToRequestBBOX() const override;
 
+    //! Creates a deep copy of this shared data
+    QgsOapifSharedData *clone() const;
+
   signals:
 
     //! Raise error
