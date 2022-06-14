@@ -776,9 +776,6 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   if ( theSQL == mSubsetString )
     return true;
 
-  // We must not change the subset string of the shared data used in another iterator/data provider ...
-  mShared.reset( mShared->clone() );
-
   // Invalid and cancel current download before altering fields, etc...
   // (crashes might happen if not done at the beginning)
   mShared->invalidateCache();
@@ -1341,7 +1338,8 @@ bool QgsWFSProvider::empty() const
 
 void QgsWFSProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
-  mShared = qobject_cast<QgsWFSProvider *>( source )->mShared;
+  // We must not change the subset string of the shared data used in another iterator/data provider ...
+  mShared.reset( qobject_cast<QgsWFSProvider *>( source )->mShared->clone() );
 };
 
 bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )

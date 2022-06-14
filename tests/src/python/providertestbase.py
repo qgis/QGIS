@@ -225,6 +225,9 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertTrue(all_valid)
 
         # Subset string AND filter fid
+        # Note: this test is somewhat fragile with the WFS provider. It passes when running all tests
+        # but not when isolated. The reason is that fid stability with WFS is not natural: the
+        # WFS provider builds a temporary gml:id -> QGIS fid cache
         ids = {f[self.pk_name]: f.id() for f in self.source.getFeatures()}
         self.source.setSubsetString(subset)
         request = QgsFeatureRequest().setFilterFid(4)
