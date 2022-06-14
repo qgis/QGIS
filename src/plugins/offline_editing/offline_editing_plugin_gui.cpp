@@ -254,16 +254,12 @@ void QgsOfflineEditingPluginGui::restoreState()
 
 void QgsOfflineEditingPluginGui::selectAll()
 {
-  const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *nodeLayer : layers )
-    nodeLayer->setItemVisibilityChecked( true );
+  mLayerTree->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( true );
 }
 
 void QgsOfflineEditingPluginGui::deSelectAll()
 {
-  const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
-  for ( QgsLayerTreeLayer *nodeLayer : layers )
-    nodeLayer->setItemVisibilityChecked( false );
+  mLayerTree->layerTreeModel()->rootGroup()->setItemVisibilityCheckedRecursive( false );
 }
 
 void QgsOfflineEditingPluginGui::datatypeChanged( int index )
