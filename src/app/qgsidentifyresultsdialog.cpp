@@ -446,7 +446,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   settingsMenu->addAction( mActionHideDerivedAttributes );
   mActionHideDerivedAttributes->setChecked( mySettings.value( QStringLiteral( "Map/hideDerivedAttributes" ), false ).toBool() );
   settingsMenu->addAction( mActionHideNullValues );
-  mActionHideNullValues->setChecked( mySettings.value( QStringLiteral( "Map/hideNullValues" ), false ).toBool() );
+  mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues.value() );
 
 }
 
