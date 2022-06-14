@@ -54,17 +54,10 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
 
   // prepare provider list
-  const auto constProviderList = QgsProviderRegistry::instance()->providerList();
-  for ( const QString &pk : constProviderList )
-  {
-    // we cannot know before trying to actually load a dataset
-    // if the provider is raster or vector
-    // so we manually exclude well-known raster providers
-    if ( pk != QLatin1String( "gdal" ) && pk != QLatin1String( "ows" ) && pk != QLatin1String( "wcs" ) && pk != QLatin1String( "wms" ) )
-    {
-      mProviderList << pk;
-    }
-  }
+  const QSet< QString > vectorLayerProviders = QgsProviderRegistry::instance()->providersForLayerType( QgsMapLayerType::VectorLayer );
+  mProviderList = qgis::setToList( vectorLayerProviders );
+  std::sort( mProviderList.begin(), mProviderList.end() );
+
   // It needs to find the layertree view without relying on the parent
   // being the main window
   const QList< QWidget * > widgets = qApp->allWidgets();
