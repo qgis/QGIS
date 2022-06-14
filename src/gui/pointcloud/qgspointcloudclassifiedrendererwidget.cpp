@@ -490,19 +490,9 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
   const QList<int> providerCategories = stats.classesOf( currentAttribute );
 
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
-  if ( ! currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive ) )
-  {
-    mBlockChangedSignal = true;
-    const QgsPointCloudCategoryList defaultLayerCategories = QgsPointCloudRendererRegistry::classificationAttributeCategories( mLayer );
-    for ( const QgsPointCloudCategory &category : defaultLayerCategories )
-    {
-      if ( !currentCategories.contains( category ) )
-        mModel->addCategory( category );
-    }
-    mBlockChangedSignal = false;
-    emitWidgetChanged();
-    return;
-  }
+
+  const bool isClassificationAttribute = ! currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive );
+  const QgsPointCloudCategoryList defaultLayerCategories = isClassificationAttribute ? QgsPointCloudRendererRegistry::classificationAttributeCategories( mLayer ) : QgsPointCloudCategoryList();
 
   mBlockChangedSignal = true;
   for ( const int &providerCategory : providerCategories )
@@ -521,7 +511,20 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     if ( found )
       continue;
 
-    mModel->addCategory( QgsPointCloudCategory( providerCategory, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString::number( providerCategory ) ) );
+    QgsPointCloudCategory category;
+    if ( isClassificationAttribute )
+    {
+      for ( const QgsPointCloudCategory &c : defaultLayerCategories )
+      {
+        if ( c.value() == providerCategory )
+          category = c;
+      }
+    }
+    else
+    {
+      category = QgsPointCloudCategory( providerCategory, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString::number( providerCategory ) );
+    }
+    mModel->addCategory( category );
   }
   mBlockChangedSignal = false;
   emitWidgetChanged();
