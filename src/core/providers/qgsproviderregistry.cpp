@@ -875,6 +875,17 @@ QgsProviderMetadata *QgsProviderRegistry::providerMetadata( const QString &provi
   return findMetadata_( mProviders, providerKey );
 }
 
+QSet<QString> QgsProviderRegistry::providersForLayerType( QgsMapLayerType type ) const
+{
+  QSet<QString> lst;
+  for ( Providers::const_iterator it = mProviders.begin(); it != mProviders.end(); ++it )
+  {
+    if ( it->second->supportedLayerTypes().contains( type ) )
+      lst.insert( it->first );
+  }
+  return lst;
+}
+
 QList<QgsProviderRegistry::ProviderCandidateDetails> QgsProviderRegistry::preferredProvidersForUri( const QString &uri ) const
 {
   QList< QgsProviderRegistry::ProviderCandidateDetails > res;

@@ -320,6 +320,14 @@ Returns list of available providers by their keys
 Returns metadata of the provider or ``None`` if not found
 %End
 
+    QSet< QString > providersForLayerType( QgsMapLayerType type ) const;
+%Docstring
+Returns a list of the provider keys for available providers which handle the specified
+layer ``type``.
+
+.. versionadded:: 3.26
+%End
+
     class ProviderCandidateDetails
 {
 %Docstring(signature="appended")
