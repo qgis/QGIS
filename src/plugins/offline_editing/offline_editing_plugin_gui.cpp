@@ -256,14 +256,14 @@ void QgsOfflineEditingPluginGui::selectAll()
 {
   const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
   for ( QgsLayerTreeLayer *nodeLayer : layers )
-    nodeLayer->setItemVisibilityChecked( true );
+    nodeLayer->setItemVisibilityCheckedParentRecursive( true );
 }
 
 void QgsOfflineEditingPluginGui::deSelectAll()
 {
   const QList<QgsLayerTreeLayer *> layers = mLayerTree->layerTreeModel()->rootGroup()->findLayers();
   for ( QgsLayerTreeLayer *nodeLayer : layers )
-    nodeLayer->setItemVisibilityChecked( false );
+    nodeLayer->setItemVisibilityCheckedParentRecursive( false );
 }
 
 void QgsOfflineEditingPluginGui::datatypeChanged( int index )
