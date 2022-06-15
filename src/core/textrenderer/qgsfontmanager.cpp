@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfontmanager.h"
+#include "qgsreadwritelocker.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
@@ -36,11 +37,13 @@ QgsFontManager::QgsFontManager( QObject *parent )
 
 QMap<QString, QString> QgsFontManager::fontFamilyReplacements() const
 {
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
   return mFamilyReplacements;
 }
 
 void QgsFontManager::addFontFamilyReplacement( const QString &original, const QString &replacement )
 {
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
   if ( !replacement.isEmpty() )
   {
     mFamilyReplacements.insert( original, replacement );
@@ -56,6 +59,7 @@ void QgsFontManager::addFontFamilyReplacement( const QString &original, const QS
 
 void QgsFontManager::setFontFamilyReplacements( const QMap<QString, QString> &replacements )
 {
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
   mFamilyReplacements = replacements;
   mLowerCaseFamilyReplacements.clear();
   for ( auto it = mFamilyReplacements.constBegin(); it != mFamilyReplacements.constEnd(); ++it )
@@ -66,6 +70,7 @@ void QgsFontManager::setFontFamilyReplacements( const QMap<QString, QString> &re
 
 QString QgsFontManager::processFontFamilyName( const QString &name ) const
 {
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
   auto it = mLowerCaseFamilyReplacements.constFind( name.toLower() );
   if ( it != mLowerCaseFamilyReplacements.constEnd() )
     return it.value();

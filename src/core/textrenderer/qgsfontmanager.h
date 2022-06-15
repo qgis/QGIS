@@ -21,6 +21,7 @@
 #include "qgssettingsentryimpl.h"
 #include <QObject>
 #include <QMap>
+#include <QReadWriteLock>
 
 /**
  * \ingroup core
@@ -60,6 +61,8 @@ class CORE_EXPORT QgsFontManager : public QObject
      * The map keys are the original font family names, and the values are the alternative
      * replacement family to use for the font.
      *
+     * \note This method is thread safe.
+     *
      * \see addFontFamilyReplacement()
      * \see setFontFamilyReplacements()
      */
@@ -76,6 +79,8 @@ class CORE_EXPORT QgsFontManager : public QObject
      *
      * If \a replacement is an empty string then any existing mapping for the \a original
      * family will be removed.
+     *
+     * \note This method is thread safe.
      *
      * \see fontFamilyReplacements()
      * \see setFontFamilyReplacements()
@@ -94,6 +99,8 @@ class CORE_EXPORT QgsFontManager : public QObject
      *
      * The replacement map is stored locally and persists across QGIS sessions.
      *
+     * \note This method is thread safe.
+     *
      * \see fontFamilyReplacements()
      * \see addFontFamilyReplacement()
      */
@@ -102,6 +109,8 @@ class CORE_EXPORT QgsFontManager : public QObject
     /**
      * Processes a font family \a name, applying any matching fontFamilyReplacements()
      * to the name.
+     *
+     * \note This method is thread safe.
      */
     QString processFontFamilyName( const QString &name ) const;
 
@@ -109,6 +118,7 @@ class CORE_EXPORT QgsFontManager : public QObject
 
     QMap< QString, QString > mFamilyReplacements;
     QMap< QString, QString > mLowerCaseFamilyReplacements;
+    mutable QReadWriteLock mReplacementLock;
 
     void storeFamilyReplacements();
 
