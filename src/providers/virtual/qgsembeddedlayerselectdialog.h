@@ -22,8 +22,6 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <QDialog>
 
-class QMainWindow;
-class QgsMapLayerModel;
 class QgsMapLayerProxyModel;
 
 class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLayerSelectDialog

@@ -16,18 +16,17 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsembeddedlayerselectdialog.h"
-
-#include <QMainWindow>
-
-#include "qgsvectorlayer.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayermodel.h"
+#include "qgsgui.h"
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent )
   : QDialog( parent )
   , mLayerProxyModel( new QgsMapLayerProxyModel( this ) )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
 
   mLayerProxyModel->setFilters( QgsMapLayerProxyModel::Filter::VectorLayer );
   mLayers->setModel( mLayerProxyModel );
