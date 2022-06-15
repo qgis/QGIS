@@ -11,16 +11,19 @@ __date__ = '29/07/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
-from qgis.PyQt.QtCore import QSize
+from qgis.PyQt.QtCore import QSize, QCoreApplication
 from qgis.PyQt.QtGui import (QColor, QImage)
 from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsMapBoxGlStyleConversionContext,
                        QgsSymbolLayer,
-                       QgsWkbTypes
+                       QgsWkbTypes,
+                       QgsApplication,
+                       QgsFontManager,
+                       QgsSettings
                        )
 from qgis.testing import start_app, unittest
 
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, getTestFont
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -28,6 +31,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
     maxDiff = 100000
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestQgsMapBoxGlStyleConverter.com")
+        QCoreApplication.setApplicationName("QGIS_TestQgsMapBoxGlStyleConverter")
+        QgsSettings().clear()
+        start_app()
 
     def testNoLayer(self):
         c = QgsMapBoxGlStyleConverter()
@@ -617,6 +629,43 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(labeling.labelSettings().fieldName,
                          '''lower(concat(concat("name_en",' - ',"name_fr"),"bar"))''')
         self.assertTrue(labeling.labelSettings().isExpression)
+
+    def testFontFamilyReplacement(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "text-field": "{name_en}",
+                "text-font": [
+                    "not a font",
+                    "also not a font"
+                ],
+                "text-max-width": 8,
+                "text-anchor": "top",
+                "text-size": 11,
+                "icon-size": 1
+            },
+            "type": "symbol",
+            "id": "poi_label",
+            "paint": {
+                "text-color": "#666",
+                "text-halo-width": 1.5,
+                "text-halo-color": "rgba(255,255,255,0.95)",
+                "text-halo-blur": 1
+            },
+            "source-layer": "poi_label"
+        }
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        test_font = getTestFont()
+        self.assertNotEqual(labeling.labelSettings().format().font().family(), test_font.family())
+
+        # with a font replacement
+        QgsApplication.fontManager().addFontFamilyReplacement('not a font', test_font.family())
+        renderer, has_renderer, labeling, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertFalse(has_renderer)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling.labelSettings().format().font().family(), test_font.family())
 
     def testDataDefinedIconRotate(self):
         """ Test icon-rotate property that depends on a data attribute """

@@ -36,6 +36,8 @@
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsapplication.h"
+#include "qgsfontmanager.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
@@ -1100,20 +1102,23 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       const QStringList textFontParts = fontName.split( ' ' );
       for ( int i = 1; i < textFontParts.size(); ++i )
       {
-        const QString candidateFontName = textFontParts.mid( 0, i ).join( ' ' );
+        const QString candidateFontFamily = textFontParts.mid( 0, i ).join( ' ' );
         const QString candidateFontStyle = textFontParts.mid( i ).join( ' ' );
-        if ( QgsFontUtils::fontFamilyHasStyle( candidateFontName, candidateFontStyle ) )
+
+        const QString processedFontFamily = QgsApplication::fontManager()->processFontFamilyName( candidateFontFamily );
+        if ( QgsFontUtils::fontFamilyHasStyle( processedFontFamily, candidateFontStyle ) )
         {
-          family = candidateFontName;
+          family = processedFontFamily;
           style = candidateFontStyle;
           return true;
         }
       }
 
-      if ( QFontDatabase().hasFamily( fontName ) )
+      const QString processedFontFamily = QgsApplication::fontManager()->processFontFamilyName( fontName );
+      if ( QFontDatabase().hasFamily( processedFontFamily ) )
       {
         // the json isn't following the spec correctly!!
-        family = fontName;
+        family = processedFontFamily;
         style.clear();
         return true;
       }
