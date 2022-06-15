@@ -303,6 +303,7 @@ set(QGIS_CORE_SRCS
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
+  textrenderer/qgsfontmanager.cpp
   textrenderer/qgstextbackgroundsettings.cpp
   textrenderer/qgstextblock.cpp
   textrenderer/qgstextbuffersettings.cpp
@@ -1799,6 +1800,7 @@ set(QGIS_CORE_HDRS
   symbology/qgssymbolrendercontext.h
   symbology/qgsvectorfieldsymbollayer.h
 
+  textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
   textrenderer/qgstextblock.h
   textrenderer/qgstextbuffersettings.h
