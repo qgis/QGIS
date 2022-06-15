@@ -251,6 +251,7 @@ set(QGIS_APP_SRCS
   options/qgsadvancedoptions.cpp
   options/qgscodeeditoroptions.cpp
   options/qgscustomprojectionoptions.cpp
+  options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
