@@ -58,6 +58,15 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
 
 
   private:
+
+    enum LayerColumn
+    {
+      Name = 0,
+      Provider = 1,
+      Encoding = 2,
+      Source = 3
+    };
+
     QgsVirtualLayerDefinition getVirtualLayerDef();
     long mSrid = 0;
     QStringList mProviderList;

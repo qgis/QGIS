@@ -195,10 +195,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   // add embedded layers
   for ( int i = 0; i < mLayersTable->rowCount(); i++ )
   {
-    const QString name = mLayersTable->item( i, 0 )->text();
-    const QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 1 ) )->currentData().toString();
-    const QString encoding = static_cast<QComboBox *>( mLayersTable->cellWidget( i, 2 ) )->currentText();
-    const QString source = mLayersTable->item( i, 3 )->text();
+    const QString name = mLayersTable->item( i, LayerColumn::Name )->text();
+    const QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, LayerColumn::Provider ) )->currentData().toString();
+    const QString encoding = static_cast<QComboBox *>( mLayersTable->cellWidget( i, LayerColumn::Encoding ) )->currentText();
+    const QString source = mLayersTable->item( i, LayerColumn::Source )->text();
     def.addSource( name, source, provider, encoding );
   }
 
@@ -269,8 +269,8 @@ void QgsVirtualLayerSourceSelect::addLayer()
 {
   mLayersTable->insertRow( mLayersTable->rowCount() );
 
-  mLayersTable->setItem( mLayersTable->rowCount() - 1, 0, new QTableWidgetItem() );
-  mLayersTable->setItem( mLayersTable->rowCount() - 1, 3, new QTableWidgetItem() );
+  mLayersTable->setItem( mLayersTable->rowCount() - 1, LayerColumn::Name, new QTableWidgetItem() );
+  mLayersTable->setItem( mLayersTable->rowCount() - 1, LayerColumn::Source, new QTableWidgetItem() );
 
   QComboBox *providerCombo = new QComboBox();
   for ( const QString &key : std::as_const( mProviderList ) )
@@ -279,13 +279,13 @@ void QgsVirtualLayerSourceSelect::addLayer()
     providerCombo->addItem( metadata->description(), key );
   }
   providerCombo->setCurrentIndex( providerCombo->findData( QStringLiteral( "ogr" ) ) );
-  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 1, providerCombo );
+  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Provider, providerCombo );
 
   QComboBox *encodingCombo = new QComboBox();
   encodingCombo->addItems( QgsVectorDataProvider::availableEncodings() );
   const QString defaultEnc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
   encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
-  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 2, encodingCombo );
+  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Encoding, encodingCombo );
 }
 
 void QgsVirtualLayerSourceSelect::removeLayer()
@@ -370,14 +370,14 @@ void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const Q
   addLayer();
   const int n = mLayersTable->rowCount() - 1;
   // local name
-  mLayersTable->item( n, 0 )->setText( name );
+  mLayersTable->item( n, LayerColumn::Name )->setText( name );
   // source
-  mLayersTable->item( n, 3 )->setText( source );
+  mLayersTable->item( n, LayerColumn::Source )->setText( source );
   // provider
-  QComboBox *providerCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, 1 ) );
+  QComboBox *providerCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Provider ) );
   providerCombo->setCurrentIndex( providerCombo->findData( provider ) );
   // encoding
-  QComboBox *encodingCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, 2 ) );
+  QComboBox *encodingCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Encoding ) );
   encodingCombo->setCurrentIndex( encodingCombo->findText( encoding ) );
 }
 
