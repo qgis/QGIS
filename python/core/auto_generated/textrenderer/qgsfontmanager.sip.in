@@ -1,0 +1,98 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgsfontmanager.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFontManager : QObject
+{
+%Docstring(signature="appended")
+
+Manages available fonts and font installation for a QGIS instance.
+
+.. note::
+
+   :py:class:`QgsFontManager` is not usually directly created, but rather accessed through :py:func:`QgsApplication.fontManager()`.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsfontmanager.h"
+%End
+  public:
+
+    explicit QgsFontManager( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFontManager, with the specified ``parent`` object.
+
+.. note::
+
+   QgsFontManager is not usually directly created, but rather accessed through :py:func:`QgsApplication.fontManager()`.
+%End
+
+    QMap< QString, QString > fontFamilyReplacements() const;
+%Docstring
+Returns the map of automatic font family replacements.
+
+This map is used to transparently map an original font family to an alternative
+font family, e.g. to permit graceful handling of opening projects which reference
+fonts which are not available on the system.
+
+The map keys are the original font family names, and the values are the alternative
+replacement family to use for the font.
+
+.. seealso:: :py:func:`addFontFamilyReplacement`
+
+.. seealso:: :py:func:`setFontFamilyReplacements`
+%End
+
+    void addFontFamilyReplacement( const QString &original, const QString &replacement );
+%Docstring
+Adds a new font replacement from the ``original`` font family to a ``replacement`` font family.
+
+This is used to transparently map an original font family to an alternative
+font family, e.g. to permit graceful handling of opening projects which reference
+fonts which are not available on the system.
+
+The replacement map is stored locally and persists across QGIS sessions.
+
+If ``replacement`` is an empty string then any existing mapping for the ``original``
+family will be removed.
+
+.. seealso:: :py:func:`fontFamilyReplacements`
+
+.. seealso:: :py:func:`setFontFamilyReplacements`
+%End
+
+    void setFontFamilyReplacements( const QMap< QString, QString> &replacements );
+%Docstring
+Sets the map of automatic font family ``replacements``.
+
+This map is used to transparently map an original font family to an alternative
+font family, e.g. to permit graceful handling of opening projects which reference
+fonts which are not available on the system.
+
+The map keys are the original font family names, and the values are the alternative
+replacement family to use for the font.
+
+The replacement map is stored locally and persists across QGIS sessions.
+
+.. seealso:: :py:func:`fontFamilyReplacements`
+
+.. seealso:: :py:func:`addFontFamilyReplacement`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/textrenderer/qgsfontmanager.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
