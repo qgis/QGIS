@@ -19,7 +19,7 @@
 #include <QString>
 #include <QMap>
 
-#include "qgs3daxis.h"
+#include "qgis_3d.h"
 
 class QgsReadWriteContext;
 class QDomElement;
@@ -35,6 +35,17 @@ class QDomElement;
 class _3D_EXPORT Qgs3DAxisSettings
 {
   public:
+
+    /**
+     * \brief The Mode enum
+     */
+    enum class Mode
+    {
+      Off = 1, //!< Hide 3d axis
+      Crs = 2, //!< Respect CRS directions
+      Cube = 3, //!< Abstract cube mode
+    };
+
     //! default constructor
     Qgs3DAxisSettings() = default;
     //! copy constructor
@@ -53,10 +64,15 @@ class _3D_EXPORT Qgs3DAxisSettings
     //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
+    //! Returns axis viewport size
+    int viewportSize() const { return mViewportSize;}
+    //! Sets the axis viewport size
+    void setViewportSize( int size ) { mViewportSize = size; }
+
     //! Returns the type of the 3daxis
-    Qgs3DAxis::Mode mode() const { return mMode; }
+    Qgs3DAxisSettings::Mode mode() const { return mMode; }
     //! Sets the type of the 3daxis
-    void setMode( Qgs3DAxis::Mode type ) { mMode = type; }
+    void setMode( Qgs3DAxisSettings::Mode type ) { mMode = type; }
 
     //! Returns the horizontal position for the 3d axis
     Qt::AnchorPoint horizontalPosition() const { return mHorizontalPosition; }
@@ -69,7 +85,8 @@ class _3D_EXPORT Qgs3DAxisSettings
     void setVerticalPosition( Qt::AnchorPoint position ) { mVerticalPosition = position; }
 
   private:
-    Qgs3DAxis::Mode mMode = Qgs3DAxis::Mode::Crs;
+    int mViewportSize = 160;
+    Qgs3DAxisSettings::Mode mMode = Qgs3DAxisSettings::Mode::Crs;
     Qt::AnchorPoint mHorizontalPosition = Qt::AnchorPoint::AnchorRight;
     Qt::AnchorPoint mVerticalPosition = Qt::AnchorPoint::AnchorTop;
 

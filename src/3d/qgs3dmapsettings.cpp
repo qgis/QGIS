@@ -962,8 +962,21 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
 }
 
 
-void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings )
+void Qgs3DMapSettings::set3DAxisSettings( const Qgs3DAxisSettings &axisSettings, bool force )
 {
-  m3dAxisSettings = axisSettings;
-  emit axisSettingsChanged();
+  if ( axisSettings == m3dAxisSettings )
+  {
+    if ( force )
+    {
+      // ie. refresh. We nned to disconnect and to reconnect to avoid 'dirty' project
+      disconnect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+      emit axisSettingsChanged();
+      connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+    }
+  }
+  else
+  {
+    m3dAxisSettings = axisSettings;
+    emit axisSettingsChanged();
+  }
 }

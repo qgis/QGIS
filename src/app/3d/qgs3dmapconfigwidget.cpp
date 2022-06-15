@@ -200,8 +200,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // ==================
   // Page: 3D axis
-  mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast< int >( Qgs3DAxis::Mode::Crs ) );
-  mCbo3dAxisType->addItem( tr( "Cube" ), static_cast< int >( Qgs3DAxis::Mode::Cube ) );
+  mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast< int >( Qgs3DAxisSettings::Mode::Crs ) );
+  mCbo3dAxisType->addItem( tr( "Cube" ), static_cast< int >( Qgs3DAxisSettings::Mode::Cube ) );
 
   mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast< int >( Qt::AnchorPoint::AnchorLeft ) );
   mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast< int >( Qt::AnchorPoint::AnchorHorizontalCenter ) );
@@ -532,7 +532,7 @@ void Qgs3DMapConfigWidget::init3DAxisPage()
 
   Qgs3DAxisSettings s = mMap->get3DAxisSettings();
 
-  if ( s.mode() == Qgs3DAxis::Mode::Off )
+  if ( s.mode() == Qgs3DAxisSettings::Mode::Off )
     mGroupBox3dAxis->setChecked( false );
   else
   {
@@ -546,32 +546,29 @@ void Qgs3DMapConfigWidget::init3DAxisPage()
 
 void Qgs3DMapConfigWidget::on3DAxisChanged()
 {
-  if ( m3DMapCanvas->scene()->get3DAxis() )
+  Qgs3DAxisSettings s = mMap->get3DAxisSettings();
+  Qgs3DAxisSettings::Mode m;
+
+  if ( mGroupBox3dAxis->isChecked() )
+    m = static_cast< Qgs3DAxisSettings::Mode >( mCbo3dAxisType->currentData().toInt() );
+  else
+    m = Qgs3DAxisSettings::Mode::Off;
+
+  if ( s.mode() != m )
   {
-    Qgs3DAxisSettings s = mMap->get3DAxisSettings();
-    Qgs3DAxis::Mode m = Qgs3DAxis::Mode::Off;
-    if ( mGroupBox3dAxis->isChecked() )
-      m = static_cast< Qgs3DAxis::Mode >( mCbo3dAxisType->currentData().toInt() );
+    s.setMode( m );
+  }
+  else
+  {
+    const Qt::AnchorPoint hPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisHorizPos->currentData().toInt() );
+    const Qt::AnchorPoint vPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisVertPos->currentData().toInt() );
 
-    if ( m3DMapCanvas->scene()->get3DAxis()->mode() != m )
+    if ( s.horizontalPosition() != hPos || s.verticalPosition() != vPos )
     {
-      m3DMapCanvas->scene()->get3DAxis()->setMode( m );
-      s.setMode( m );
-    }
-    else
-    {
-      const Qt::AnchorPoint hPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisHorizPos->currentData().toInt() );
-      const Qt::AnchorPoint vPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisVertPos->currentData().toInt() );
-
-      if ( m3DMapCanvas->scene()->get3DAxis()->axisViewportHorizontalPosition() != hPos
-           || m3DMapCanvas->scene()->get3DAxis()->axisViewportVerticalPosition() != vPos )
-        m3DMapCanvas->scene()->get3DAxis()->setAxisViewportPosition( m3DMapCanvas->scene()->get3DAxis()->axisViewportSize(),
-            vPos, hPos );
       s.setHorizontalPosition( hPos );
       s.setVerticalPosition( vPos );
     }
-
-    if ( s != mMap->get3DAxisSettings() )
-      mMap->set3DAxisSettings( s );
   }
+
+  mMap->set3DAxisSettings( s );
 }
