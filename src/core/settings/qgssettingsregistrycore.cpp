@@ -112,6 +112,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionCredentialsGroup );
 
   addSettingsEntry( &QgsFontManager::settingsFontFamilyReplacements );
+  addSettingsEntry( &QgsFontManager::settingsDownloadMissingFonts );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
