@@ -99,9 +99,16 @@ class CORE_EXPORT QgsFontManager : public QObject
      */
     void setFontFamilyReplacements( const QMap< QString, QString> &replacements );
 
+    /**
+     * Processes a font family \a name, applying any matching fontFamilyReplacements()
+     * to the name.
+     */
+    QString processFontFamilyName( const QString &name ) const;
+
   private:
 
     QMap< QString, QString > mFamilyReplacements;
+    QMap< QString, QString > mLowerCaseFamilyReplacements;
 
     void storeFamilyReplacements();
 

@@ -88,6 +88,12 @@ The replacement map is stored locally and persists across QGIS sessions.
 .. seealso:: :py:func:`addFontFamilyReplacement`
 %End
 
+    QString processFontFamilyName( const QString &name ) const;
+%Docstring
+Processes a font family ``name``, applying any matching :py:func:`~QgsFontManager.fontFamilyReplacements`
+to the name.
+%End
+
 };
 
 /************************************************************************

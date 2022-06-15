@@ -40,31 +40,69 @@ class TestQgsFontManager(unittest.TestCase):
     def test_family_replacement(self):
         manager = QgsFontManager()
         self.assertFalse(manager.fontFamilyReplacements())
+        self.assertEqual(manager.processFontFamilyName('xxx'), 'xxx')
 
         manager.addFontFamilyReplacement('comic sans', 'something better')
         self.assertEqual(manager.fontFamilyReplacements(), {'comic sans': 'something better'})
+        self.assertEqual(manager.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager.processFontFamilyName('comic sans'), 'something better')
+        # process font family name should be case insensitive
+        self.assertEqual(manager.processFontFamilyName('Comic Sans'), 'something better')
 
         # make sure replacements are persisted locally
         manager2 = QgsFontManager()
         self.assertEqual(manager2.fontFamilyReplacements(), {'comic sans': 'something better'})
+        self.assertEqual(manager2.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager2.processFontFamilyName('comic sans'), 'something better')
+        self.assertEqual(manager2.processFontFamilyName('Comic Sans'), 'something better')
 
         manager.addFontFamilyReplacement('arial', 'something else better')
         self.assertEqual(manager.fontFamilyReplacements(), {'arial': 'something else better', 'comic sans': 'something better'})
+        self.assertEqual(manager.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager.processFontFamilyName('comic sans'), 'something better')
+        self.assertEqual(manager.processFontFamilyName('Comic Sans'), 'something better')
+        self.assertEqual(manager.processFontFamilyName('arial'), 'something else better')
+        self.assertEqual(manager.processFontFamilyName('arIAl'), 'something else better')
 
         manager2 = QgsFontManager()
         self.assertEqual(manager2.fontFamilyReplacements(), {'arial': 'something else better', 'comic sans': 'something better'})
+        self.assertEqual(manager2.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager2.processFontFamilyName('comic sans'), 'something better')
+        self.assertEqual(manager2.processFontFamilyName('Comic Sans'), 'something better')
+        self.assertEqual(manager2.processFontFamilyName('arial'), 'something else better')
+        self.assertEqual(manager2.processFontFamilyName('arIAl'), 'something else better')
 
         manager.addFontFamilyReplacement('arial', 'comic sans')
         self.assertEqual(manager.fontFamilyReplacements(), {'arial': 'comic sans', 'comic sans': 'something better'})
 
+        self.assertEqual(manager.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager.processFontFamilyName('comic sans'), 'something better')
+        self.assertEqual(manager.processFontFamilyName('Comic Sans'), 'something better')
+        self.assertEqual(manager.processFontFamilyName('arial'), 'comic sans')
+        self.assertEqual(manager.processFontFamilyName('arIAl'), 'comic sans')
+
         manager.addFontFamilyReplacement('arial', '')
         self.assertEqual(manager.fontFamilyReplacements(), {'comic sans': 'something better'})
+        self.assertEqual(manager.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager.processFontFamilyName('comic sans'), 'something better')
+        self.assertEqual(manager.processFontFamilyName('Comic Sans'), 'something better')
+        self.assertEqual(manager.processFontFamilyName('arial'), 'arial')
 
         manager.setFontFamilyReplacements({'arial': 'something else better2', 'comic sans': 'something better2'})
         self.assertEqual(manager.fontFamilyReplacements(), {'arial': 'something else better2', 'comic sans': 'something better2'})
+        self.assertEqual(manager.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager.processFontFamilyName('comic sans'), 'something better2')
+        self.assertEqual(manager.processFontFamilyName('Comic Sans'), 'something better2')
+        self.assertEqual(manager.processFontFamilyName('arial'), 'something else better2')
+        self.assertEqual(manager.processFontFamilyName('arIAl'), 'something else better2')
 
         manager2 = QgsFontManager()
         self.assertEqual(manager2.fontFamilyReplacements(), {'arial': 'something else better2', 'comic sans': 'something better2'})
+        self.assertEqual(manager2.processFontFamilyName('xxx'), 'xxx')
+        self.assertEqual(manager2.processFontFamilyName('comic sans'), 'something better2')
+        self.assertEqual(manager2.processFontFamilyName('Comic Sans'), 'something better2')
+        self.assertEqual(manager2.processFontFamilyName('arial'), 'something else better2')
+        self.assertEqual(manager2.processFontFamilyName('arIAl'), 'something else better2')
 
 
 if __name__ == '__main__':
