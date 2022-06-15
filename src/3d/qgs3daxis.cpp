@@ -66,8 +66,11 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
 
 Qgs3DAxis::~Qgs3DAxis()
 {
-  delete mMenu;
-  mMenu = nullptr;
+  if ( mMenu )
+  {
+    delete mMenu;
+    mMenu = nullptr;
+  }
 }
 
 void Qgs3DAxis::init3DObjectPicking( )
@@ -206,8 +209,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   }
   else if ( mLastClickedButton == Qt::MouseButton::LeftButton ) // handle cube face clicks
   {
-    if ( mMenu->isVisible() )
-      hideMenu();
+    hideMenu();
 
     if ( mHitsFound != -1 )
     {
@@ -656,7 +658,8 @@ void Qgs3DAxis::createMenu()
 
 void Qgs3DAxis::hideMenu()
 {
-  mMenu->hide();
+  if ( mMenu && mMenu->isVisible() )
+    mMenu->hide();
 }
 
 void Qgs3DAxis::displayMenuAt( const QPoint &sourcePos )
