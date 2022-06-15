@@ -254,6 +254,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfileutils.h"
+#include "qgsfontmanager.h"
 #include "qgsformannotation.h"
 #include "qgsgeos.h"
 #include "qgsguiutils.h"
@@ -1896,6 +1897,44 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 #ifdef HAVE_3D
   m3DOptionsWidgetFactory.reset( std::make_unique< Qgs3DOptionsFactory >() );
 #endif
+
+  connect( QgsApplication::fontManager(), &QgsFontManager::fontDownloaded, this, [ = ]( const QStringList & families, const QString & licenseDetails )
+  {
+    const QString shortMessage = tr( "Installed font %1" ).arg( families.join( QStringLiteral( ", " ) ) );
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
+    if ( !licenseDetails.isEmpty() )
+    {
+      QPushButton *detailsButton = new QPushButton( tr( "View License" ) );
+      connect( detailsButton, &QPushButton::clicked, this, [detailsButton, licenseDetails]
+      {
+        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+        dialog->setTitle( tr( "Font License" ) );
+        dialog->setMessage( licenseDetails, QgsMessageOutput::MessageText );
+        dialog->showMessage();
+      } );
+      messageWidget->layout()->addWidget( detailsButton );
+    }
+    messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Info, 0 );
+  } );
+  connect( QgsApplication::fontManager(), &QgsFontManager::fontDownloadErrorOccurred, this, [ = ]( const QUrl &, const QString & identifier, const QString & error )
+  {
+    const QString shortMessage = identifier.isEmpty() ? tr( "Font installation failed" )
+                                 : tr( "%1 font installation failed" ).arg( identifier );
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
+    if ( !error.isEmpty() )
+    {
+      QPushButton *detailsButton = new QPushButton( tr( "View Error" ) );
+      connect( detailsButton, &QPushButton::clicked, this, [detailsButton, error]
+      {
+        QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
+        dialog->setTitle( tr( "Font Install Failed" ) );
+        dialog->setMessage( error, QgsMessageOutput::MessageText );
+        dialog->showMessage();
+      } );
+      messageWidget->layout()->addWidget( detailsButton );
+    }
+    messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
+  } );
 }
 
 QgisApp::QgisApp()

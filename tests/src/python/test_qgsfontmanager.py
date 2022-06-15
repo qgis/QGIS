@@ -10,6 +10,8 @@ __author__ = 'Nyall Dawson'
 __date__ = '15/06/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
+import os.path
+
 import qgis  # NOQA
 
 from qgis.core import (
@@ -19,7 +21,7 @@ from qgis.core import (
     QgsTextFormat,
     QgsReadWriteContext
 )
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -27,6 +29,7 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from utilities import getTestFont
+import tempfile
 
 start_app()
 
@@ -135,6 +138,49 @@ class TestQgsFontManager(unittest.TestCase):
         t3.readXml(parent, context)
         self.assertTrue(t3.fontFound())
         self.assertEqual(t3.font().family(), 'QGIS Vera Sans')
+
+    def test_install_font(self):
+        manager = QgsFontManager()
+        with tempfile.TemporaryDirectory() as user_font_dir:
+            manager.setUserFontDirectory(user_font_dir)
+
+            spy_installed = QSignalSpy(manager.fontDownloaded)
+            spy_failed = QSignalSpy(manager.fontDownloadErrorOccurred)
+
+            manager.downloadAndInstallFont(QUrl.fromLocalFile('xxxx'))
+            spy_failed.wait()
+            self.assertEqual(len(spy_failed), 1)
+            self.assertEqual(len(spy_installed), 0)
+
+            manager.downloadAndInstallFont(QUrl.fromLocalFile(unitTestDataPath() + '/fascinate.ttf'))
+            spy_installed.wait()
+            self.assertEqual(len(spy_failed), 1)
+            self.assertEqual(len(spy_installed), 1)
+            self.assertEqual(spy_installed[0][0], ['Fascinate'])
+
+            self.assertTrue(os.path.exists(os.path.join(user_font_dir, 'Fascinate')))
+
+    def test_install_zipped_font(self):
+        manager = QgsFontManager()
+        with tempfile.TemporaryDirectory() as user_font_dir:
+            manager.setUserFontDirectory(user_font_dir)
+
+            spy_installed = QSignalSpy(manager.fontDownloaded)
+            spy_failed = QSignalSpy(manager.fontDownloadErrorOccurred)
+
+            manager.downloadAndInstallFont(QUrl.fromLocalFile('xxxx'))
+            spy_failed.wait()
+            self.assertEqual(len(spy_failed), 1)
+            self.assertEqual(len(spy_installed), 0)
+
+            manager.downloadAndInstallFont(QUrl.fromLocalFile(unitTestDataPath() + '/zipped_font.zip'))
+            spy_installed.wait()
+            self.assertEqual(len(spy_failed), 1)
+            self.assertEqual(len(spy_installed), 1)
+            self.assertEqual(spy_installed[0][0], ['Fresca'])
+            self.assertTrue(spy_installed[0][1].startswith('Copyright (c) 2011'))
+
+            self.assertTrue(os.path.exists(os.path.join(user_font_dir, 'Fresca-Regular.ttf')))
 
 
 if __name__ == '__main__':

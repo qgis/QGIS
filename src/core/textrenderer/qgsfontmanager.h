@@ -42,6 +42,9 @@ class CORE_EXPORT QgsFontManager : public QObject
 #ifndef SIP_RUN
     //! Settings entry for font family replacements
     static const inline QgsSettingsEntryStringList settingsFontFamilyReplacements = QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettings::Prefix::FONTS, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
+
+    //! Settings entry for font family replacements
+    static const inline QgsSettingsEntryBool settingsDownloadMissingFonts = QgsSettingsEntryBool( QStringLiteral( "downloadMissingFonts" ), QgsSettings::Prefix::FONTS, true, QStringLiteral( "Automatically download missing fonts whenever possible" ) );
 #endif
 
     /**
@@ -121,11 +124,71 @@ class CORE_EXPORT QgsFontManager : public QObject
      */
     void installUserFonts() SIP_SKIP;
 
+    /**
+     * Downloads a font and installs in the user's profile/fonts directory as an application font.
+     *
+     * The download will proceed in a background task.
+     *
+     * The optional \a identifier string can be used to specify a user-friendly name for the download
+     * tasks, e.g. the font family name if known.
+     *
+     * \see fontDownloaded()
+     * \see fontDownloadErrorOccurred()
+     */
+    void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() );
+
+    /**
+     * Installs local user fonts from the specified raw \a data.
+     *
+     * The \a data array may correspond to the contents of a TTF or OTF font file,
+     * or a zipped archive of font files.
+     *
+     * \param data raw font data or zipped font data
+     * \param errorMessage will be set to a descriptive error message if the installation fails
+     * \param families will be populated with a list of font families installed from the data
+     * \param licenseDetails will be populated with font license details, if found
+     *
+     * \returns TRUE if installation was successful.
+     */
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage SIP_OUT, QStringList &families SIP_OUT, QString &licenseDetails SIP_OUT );
+
+    /**
+     * Sets the \a directory to use for user fonts.
+     *
+     * This directory will be scanned for any TTF or OTF font files, which will automatically be added and made
+     * available for use in the QGIS session. Additionally, any fonts downloaded via downloadAndInstallFont() will be
+     * installed into this directory.
+     */
+    void setUserFontDirectory( const QString &directory );
+
+  signals:
+
+    /**
+     * Emitted when a font has downloaded and been locally loaded.
+     *
+     * The \a families list specifies the font families contained in the downloaded font.
+     *
+     * If found, the \a licenseDetails string will be populated with corresponding font license details.
+     *
+     * \see downloadAndInstallFont()
+     * \see fontDownloadErrorOccurred()
+     */
+    void fontDownloaded( const QStringList &families, const QString &licenseDetails );
+
+    /**
+     * Emitted when an error occurs during font downloading.
+     *
+     * \see downloadAndInstallFont()
+     * \see fontDownloaded()
+     */
+    void fontDownloadErrorOccurred( const QUrl &url, const QString &identifier, const QString &error );
+
   private:
 
     QMap< QString, QString > mFamilyReplacements;
     QMap< QString, QString > mLowerCaseFamilyReplacements;
     mutable QReadWriteLock mReplacementLock;
+    QString mUserFontDirectory;
 
     void storeFamilyReplacements();
 };

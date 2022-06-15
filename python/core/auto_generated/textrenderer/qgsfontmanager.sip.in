@@ -111,6 +111,68 @@ to the name.
 %End
 
 
+    void downloadAndInstallFont( const QUrl &url, const QString &identifier = QString() );
+%Docstring
+Downloads a font and installs in the user's profile/fonts directory as an application font.
+
+The download will proceed in a background task.
+
+The optional ``identifier`` string can be used to specify a user-friendly name for the download
+tasks, e.g. the font family name if known.
+
+.. seealso:: :py:func:`fontDownloaded`
+
+.. seealso:: :py:func:`fontDownloadErrorOccurred`
+%End
+
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage /Out/, QStringList &families /Out/, QString &licenseDetails /Out/ );
+%Docstring
+Installs local user fonts from the specified raw ``data``.
+
+The ``data`` array may correspond to the contents of a TTF or OTF font file,
+or a zipped archive of font files.
+
+:param data: raw font data or zipped font data
+
+:return: - ``True`` if installation was successful.
+         - errorMessage: will be set to a descriptive error message if the installation fails
+         - families: will be populated with a list of font families installed from the data
+         - licenseDetails: will be populated with font license details, if found
+%End
+
+    void setUserFontDirectory( const QString &directory );
+%Docstring
+Sets the ``directory`` to use for user fonts.
+
+This directory will be scanned for any TTF or OTF font files, which will automatically be added and made
+available for use in the QGIS session. Additionally, any fonts downloaded via :py:func:`~QgsFontManager.downloadAndInstallFont` will be
+installed into this directory.
+%End
+
+  signals:
+
+    void fontDownloaded( const QStringList &families, const QString &licenseDetails );
+%Docstring
+Emitted when a font has downloaded and been locally loaded.
+
+The ``families`` list specifies the font families contained in the downloaded font.
+
+If found, the ``licenseDetails`` string will be populated with corresponding font license details.
+
+.. seealso:: :py:func:`downloadAndInstallFont`
+
+.. seealso:: :py:func:`fontDownloadErrorOccurred`
+%End
+
+    void fontDownloadErrorOccurred( const QUrl &url, const QString &identifier, const QString &error );
+%Docstring
+Emitted when an error occurs during font downloading.
+
+.. seealso:: :py:func:`downloadAndInstallFont`
+
+.. seealso:: :py:func:`fontDownloaded`
+%End
+
 };
 
 /************************************************************************
