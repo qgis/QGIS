@@ -319,7 +319,9 @@ namespace QgsWms
       static QgsWmsParameter::Name name( const QString &name );
 
       QgsWmsParameter::Name mName;
-      int mId = -1;
+
+      //! Map id for prefixed parameters (e.g. "0" for "map0:LAYERS" in GetPrint requests)
+      int mMapId = -1;
   };
 
   /**

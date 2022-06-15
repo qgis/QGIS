@@ -594,7 +594,7 @@ namespace QgsWms
       {
         QgsWmsParameter param = mWmsParameters[name];
         param.mValue = value;
-        param.mId = mapId;
+        param.mMapId = mapId;
 
         if ( ! param.isValid() )
         {
@@ -646,9 +646,9 @@ namespace QgsWms
       {
         QString name = QgsWmsParameter::name( parameter.first );
 
-        if ( parameter.second.mId >= 0 )
+        if ( parameter.second.mMapId >= 0 )
         {
-          name = QStringLiteral( "%1:%2" ).arg( QString::number( parameter.second.mId ), name );
+          name = QStringLiteral( "%1:%2" ).arg( QString::number( parameter.second.mMapId ), name );
         }
 
         log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
@@ -1444,9 +1444,37 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allLayersNickname() const
   {
-    QStringList layer = mWmsParameters[ QgsWmsParameter::LAYER ].toStringList();
-    const QStringList layers = mWmsParameters[ QgsWmsParameter::LAYERS ].toStringList();
-    return layer << layers;
+    // We don't want duplicates but order does matter, so no QSet
+    QStringList result;
+
+    // LAYER
+    QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
+    // Sort by map id
+    std::sort( cLayer.begin(), cLayer.end(), []( const QgsWmsParameter & a, const QgsWmsParameter & b ) -> bool { return a.mMapId < b.mMapId; } );
+    for ( const QgsWmsParameter &param : std::as_const( cLayer ) )
+    {
+      const QStringList layersList { param.toStringList() };
+      for ( const QString &layerName : std::as_const( layersList ) )
+      {
+        if ( ! result.contains( layerName ) )
+          result.append( layerName );
+      }
+    }
+
+    // LAYERS
+    QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
+    // Sort by map id
+    std::sort( cLayers.begin(), cLayers.end(), []( const QgsWmsParameter & a, const QgsWmsParameter & b ) -> bool { return a.mMapId < b.mMapId; } );
+    for ( const QgsWmsParameter &param : std::as_const( cLayers ) )
+    {
+      const QStringList layersList { param.toStringList() };
+      for ( const QString &layerName : std::as_const( layersList ) )
+      {
+        if ( ! result.contains( layerName ) )
+          result.append( layerName );
+      }
+    }
+    return result;
   }
 
   QStringList QgsWmsParameters::queryLayersNickname() const
@@ -1541,6 +1569,7 @@ namespace QgsWms
 
     return noMText;
   }
+
 
   QList<QgsWmsParametersLayer> QgsWmsParameters::layersParameters() const
   {
@@ -1721,19 +1750,6 @@ namespace QgsWms
     QgsWmsParametersComposerMap param;
     param.mId = mapId;
 
-    //map extent is mandatory
-    QString extentStr;
-    wmsParam = idParameter( QgsWmsParameter::EXTENT, mapId );
-    if ( wmsParam.isValid() )
-    {
-      extentStr = wmsParam.toString();
-    }
-
-    if ( extentStr.isEmpty() )
-    {
-      return param;
-    }
-
     QString pMapId = QStringLiteral( "MAP" ) + QString::number( mapId );
 
     wmsParam = idParameter( QgsWmsParameter::EXTENT, mapId );
@@ -1742,9 +1758,6 @@ namespace QgsWms
     {
       extent = wmsParam.toRectangle();
     }
-
-    if ( extent.isEmpty() )
-      return param;
 
     param.mHasExtent = !extent.isEmpty();
     param.mExtent = extent;
@@ -2070,7 +2083,7 @@ namespace QgsWms
 
     for ( const auto &param : mWmsParameters.values( name ) )
     {
-      if ( param.mId == id )
+      if ( param.mMapId == id )
       {
         p = param;
       }
