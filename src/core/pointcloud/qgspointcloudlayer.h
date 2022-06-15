@@ -291,7 +291,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     LayerOptions mLayerOptions;
 
-    bool mSync3DRendererTo2DRenderer = false;
+    bool mSync3DRendererTo2DRenderer = true;
     QgsPointCloudStatistics mStatistics;
     PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
     long mStatsCalculationTask = 0;

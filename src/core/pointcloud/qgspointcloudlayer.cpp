@@ -242,7 +242,6 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     if ( !mRenderer )
     {
       setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
-      setSync3DRendererTo2DRenderer( true );
     }
   }
 
@@ -433,7 +432,6 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
       {
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
-        setSync3DRendererTo2DRenderer( true );
       }
     }
 
@@ -446,7 +444,6 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     {
       // all else failed, create default renderer
       setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
-      setSync3DRendererTo2DRenderer( true );
     }
   }
 }
@@ -514,7 +511,6 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
     {
       resultFlag = true;
       setRenderer( defaultRenderer.release() );
-      setSync3DRendererTo2DRenderer( true );
       return QString();
     }
   }
@@ -898,7 +894,6 @@ void QgsPointCloudLayer::resetRenderer()
   if ( !mRenderer || mRenderer->type() == QLatin1String( "extent" ) )
   {
     setRenderer( QgsPointCloudRendererRegistry::defaultRenderer( this ) );
-    setSync3DRendererTo2DRenderer( true );
   }
   triggerRepaint();
 
