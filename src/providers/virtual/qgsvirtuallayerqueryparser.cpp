@@ -18,6 +18,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayersqlitehelper.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgslogger.h"
+
 #include "sqlite3.h"
 
 #include <QRegularExpression>
