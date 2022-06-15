@@ -27,7 +27,10 @@ QgsFontManager::QgsFontManager( QObject *parent )
     const thread_local QRegularExpression rxReplacement( QStringLiteral( "(.*?):(.*)" ) );
     const QRegularExpressionMatch match = rxReplacement.match( replacement );
     if ( match.hasMatch() )
+    {
       mFamilyReplacements.insert( match.captured( 1 ), match.captured( 2 ) );
+      mLowerCaseFamilyReplacements.insert( match.captured( 1 ).toLower(), match.captured( 2 ) );
+    }
   }
 }
 
@@ -39,16 +42,35 @@ QMap<QString, QString> QgsFontManager::fontFamilyReplacements() const
 void QgsFontManager::addFontFamilyReplacement( const QString &original, const QString &replacement )
 {
   if ( !replacement.isEmpty() )
+  {
     mFamilyReplacements.insert( original, replacement );
+    mLowerCaseFamilyReplacements.insert( original.toLower(), replacement );
+  }
   else
+  {
     mFamilyReplacements.remove( original );
+    mLowerCaseFamilyReplacements.remove( original.toLower() );
+  }
   storeFamilyReplacements();
 }
 
 void QgsFontManager::setFontFamilyReplacements( const QMap<QString, QString> &replacements )
 {
   mFamilyReplacements = replacements;
+  mLowerCaseFamilyReplacements.clear();
+  for ( auto it = mFamilyReplacements.constBegin(); it != mFamilyReplacements.constEnd(); ++it )
+    mLowerCaseFamilyReplacements.insert( it.key().toLower(), it.value() );
+
   storeFamilyReplacements();
+}
+
+QString QgsFontManager::processFontFamilyName( const QString &name ) const
+{
+  auto it = mLowerCaseFamilyReplacements.constFind( name.toLower() );
+  if ( it != mLowerCaseFamilyReplacements.constEnd() )
+    return it.value();
+  else
+    return name;
 }
 
 void QgsFontManager::storeFamilyReplacements()
