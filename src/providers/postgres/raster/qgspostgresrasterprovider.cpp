@@ -678,7 +678,7 @@ QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
 
 QList<QgsMapLayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() const
 {
-  return { QgsMapLayerType::RasterLayer};
+  return { QgsMapLayerType::RasterLayer };
 }
 
 QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

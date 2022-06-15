@@ -124,7 +124,7 @@ QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) con
 
 QList<QgsMapLayerType> QgsVectorTileProviderMetadata::supportedLayerTypes() const
 {
-  return {QgsMapLayerType::VectorTileLayer };
+  return { QgsMapLayerType::VectorTileLayer };
 }
 
 ///@endcond

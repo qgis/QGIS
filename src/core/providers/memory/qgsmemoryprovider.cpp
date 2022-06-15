@@ -811,7 +811,6 @@ QString QgsMemoryProvider::description() const
 QgsMemoryProviderMetadata::QgsMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription() )
 {
-
 }
 
 QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
