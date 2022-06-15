@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgssettingsentryimpl.h"
 #include <QObject>
 #include <QMap>
 
@@ -36,6 +37,11 @@ class CORE_EXPORT QgsFontManager : public QObject
     Q_OBJECT
 
   public:
+
+#ifndef SIP_RUN
+    //! Settings entry for font family replacements
+    static const inline QgsSettingsEntryStringList settingsFontFamilyReplacements = QgsSettingsEntryStringList( QStringLiteral( "fontFamilyReplacements" ), QgsSettings::Prefix::FONTS, QStringList(), QStringLiteral( "Automatic font family replacements" ) );
+#endif
 
     /**
      * Constructor for QgsFontManager, with the specified \a parent object.
@@ -96,6 +102,8 @@ class CORE_EXPORT QgsFontManager : public QObject
   private:
 
     QMap< QString, QString > mFamilyReplacements;
+
+    void storeFamilyReplacements();
 
 };
 
