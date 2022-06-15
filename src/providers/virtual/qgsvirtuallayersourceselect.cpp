@@ -64,25 +64,19 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   const QList< QWidget * > widgets = qApp->allWidgets();
   for ( const QWidget *widget : widgets )
   {
-    if ( ! mTreeView )
+    if ( !mTreeView )
     {
       mTreeView = widget->findChild<QgsLayerTreeView *>( QStringLiteral( "theLayerTreeView" ) );
     }
   }
+
   updateLayersList();
   connect( mLayerNameCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVirtualLayerSourceSelect::layerComboChanged );
   layerComboChanged( mLayerNameCombo->currentIndex() );
 
-  // Prepare embedded layer selection dialog and
-  // connect to model changes in the treeview
-  if ( mTreeView )
-  {
-    // Queued connection here prevents the updateLayerList to run before the tree layer
-    // pointer points to the effective layer.
-    connect( mTreeView->model(), &QAbstractItemModel::rowsInserted, this, &QgsVirtualLayerSourceSelect::updateLayersList, Qt::QueuedConnection );
-    connect( mTreeView->model(), &QAbstractItemModel::rowsRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
-    connect( mTreeView->model(), &QAbstractItemModel::dataChanged, this, &QgsVirtualLayerSourceSelect::updateLayersList );
-  }
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsVirtualLayerSourceSelect::updateLayersList );
+  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
+
   // There is no validation logic to enable/disable the buttons
   // so they must be enabled by default
   emit enableButtons( true );
@@ -300,19 +294,13 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
 {
   mLayerNameCombo->clear();
 
-  if ( mTreeView )
+  const QVector<QgsVectorLayer *> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer *>();
+  for ( QgsVectorLayer *vl : vectorLayers )
   {
-    QgsLayerTreeProxyModel *proxyModel = qobject_cast<QgsLayerTreeProxyModel *>( mTreeView->model( ) );
-    QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( proxyModel->sourceModel() );
-    const auto constFindLayers = model->rootGroup()->findLayers();
-    for ( QgsLayerTreeLayer *layer : constFindLayers )
+    if ( vl && vl->providerType() == QLatin1String( "virtual" ) )
     {
-      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
-      if ( vl && vl->providerType() == QLatin1String( "virtual" ) )
-      {
-        // store layer's id as user data
-        mLayerNameCombo->addItem( layer->layer()->name(), layer->layer()->id() );
-      }
+      // store layer's id as user data
+      mLayerNameCombo->addItem( vl->name(), vl->id() );
     }
   }
 
