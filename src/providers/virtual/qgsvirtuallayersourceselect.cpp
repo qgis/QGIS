@@ -29,7 +29,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "layertree/qgslayertreelayer.h"
 #include "layertree/qgslayertree.h"
 #include "qgsproviderregistry.h"
-
+#include "qgsiconutils.h"
 #include "qgsembeddedlayerselectdialog.h"
 
 #include <QUrl>
@@ -44,6 +44,13 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   setupUi( this );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVirtualLayerSourceSelect::showHelp );
+
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point" ), static_cast< long long >( QgsWkbTypes::Point ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString" ), static_cast< long long >( QgsWkbTypes::LineString ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon" ), static_cast< long long >( QgsWkbTypes::Polygon ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiPoint ), tr( "MultiPoint" ), static_cast< long long >( QgsWkbTypes::MultiPoint ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiLineString ), tr( "MultiLineString" ), static_cast< long long >( QgsWkbTypes::MultiLineString ) );
+  mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::MultiPolygon ), tr( "MultiPolygon" ), static_cast< long long >( QgsWkbTypes::MultiPolygon ) );
 
   mQueryEdit->setLineNumbersVisible( true );
 
@@ -122,7 +129,7 @@ void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
     const QgsCoordinateReferenceSystem crs( def.geometrySrid() );
     Q_NOWARN_DEPRECATED_POP
     mCRS->setText( crs.authid() );
-    mGeometryType->setCurrentIndex( static_cast<long>( def.geometryWkbType() ) - 1 );
+    mGeometryType->setCurrentIndex( mGeometryType->findData( static_cast<long long>( def.geometryWkbType() ) ) );
     mGeometryField->setText( def.geometryField() );
   }
 
@@ -175,7 +182,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   }
   else if ( mGeometryRadio->isChecked() )
   {
-    const QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentIndex() + 1 ) : QgsWkbTypes::NoGeometry;
+    const QgsWkbTypes::Type t = mGeometryType->currentIndex() > -1 ? static_cast<QgsWkbTypes::Type>( mGeometryType->currentData().toLongLong() ) : QgsWkbTypes::NoGeometry;
     def.setGeometryWkbType( t );
     def.setGeometryField( mGeometryField->text() );
     def.setGeometrySrid( mSrid );
