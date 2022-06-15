@@ -26,6 +26,7 @@ Manages available fonts and font installation for a QGIS instance.
 %End
   public:
 
+
     explicit QgsFontManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFontManager, with the specified ``parent`` object.

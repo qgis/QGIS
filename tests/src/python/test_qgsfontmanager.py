@@ -44,8 +44,15 @@ class TestQgsFontManager(unittest.TestCase):
         manager.addFontFamilyReplacement('comic sans', 'something better')
         self.assertEqual(manager.fontFamilyReplacements(), {'comic sans': 'something better'})
 
+        # make sure replacements are persisted locally
+        manager2 = QgsFontManager()
+        self.assertEqual(manager2.fontFamilyReplacements(), {'comic sans': 'something better'})
+
         manager.addFontFamilyReplacement('arial', 'something else better')
         self.assertEqual(manager.fontFamilyReplacements(), {'arial': 'something else better', 'comic sans': 'something better'})
+
+        manager2 = QgsFontManager()
+        self.assertEqual(manager2.fontFamilyReplacements(), {'arial': 'something else better', 'comic sans': 'something better'})
 
         manager.addFontFamilyReplacement('arial', 'comic sans')
         self.assertEqual(manager.fontFamilyReplacements(), {'arial': 'comic sans', 'comic sans': 'something better'})
@@ -55,6 +62,9 @@ class TestQgsFontManager(unittest.TestCase):
 
         manager.setFontFamilyReplacements({'arial': 'something else better2', 'comic sans': 'something better2'})
         self.assertEqual(manager.fontFamilyReplacements(), {'arial': 'something else better2', 'comic sans': 'something better2'})
+
+        manager2 = QgsFontManager()
+        self.assertEqual(manager2.fontFamilyReplacements(), {'arial': 'something else better2', 'comic sans': 'something better2'})
 
 
 if __name__ == '__main__':
