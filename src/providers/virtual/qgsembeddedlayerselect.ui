@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QListWidget" name="mLayers">
+    <widget class="QListView" name="mLayers">
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
@@ -67,22 +67,6 @@
     <hint type="destinationlabel">
      <x>157</x>
      <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mLayers</sender>
-   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
-   <receiver>QgsEmbeddedLayerSelectDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>210</x>
-     <y>166</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>210</x>
-     <y>182</y>
     </hint>
    </hints>
   </connection>
