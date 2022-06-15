@@ -66,6 +66,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
 
   public:
     QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsVirtualLayerSourceSelect() override;
 
     void setBrowserModel( QgsBrowserModel *model ) override;
 
@@ -92,9 +93,9 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     enum LayerColumn
     {
       Name = 0,
-      Provider = 1,
-      Encoding = 2,
-      Source = 3
+      Source = 1,
+      Provider = 2,
+      Encoding = 3,
     };
 
     QgsVirtualLayerDefinition getVirtualLayerDef();
