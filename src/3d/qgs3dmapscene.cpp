@@ -1263,7 +1263,11 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
 
 void Qgs3DMapScene::on3DAxisSettingsChanged()
 {
-  if ( !m3DAxis )
+  if ( m3DAxis )
+  {
+    m3DAxis->onAxisSettingsChanged();
+  }
+  else
   {
     if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
     {
