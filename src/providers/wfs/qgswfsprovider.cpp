@@ -1338,8 +1338,14 @@ bool QgsWFSProvider::empty() const
 
 void QgsWFSProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
+  disconnect( mShared.get(), &QgsWFSSharedData::raiseError, this, &QgsWFSProvider::pushErrorSlot );
+  disconnect( mShared.get(), &QgsWFSSharedData::extentUpdated, this, &QgsWFSProvider::fullExtentCalculated );
+
   // We must not change the subset string of the shared data used in another iterator/data provider ...
   mShared.reset( qobject_cast<QgsWFSProvider *>( source )->mShared->clone() );
+
+  connect( mShared.get(), &QgsWFSSharedData::raiseError, this, &QgsWFSProvider::pushErrorSlot );
+  connect( mShared.get(), &QgsWFSSharedData::extentUpdated, this, &QgsWFSProvider::fullExtentCalculated );
 };
 
 bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )

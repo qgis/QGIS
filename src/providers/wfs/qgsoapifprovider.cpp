@@ -337,8 +337,14 @@ const QString &QgsOapifProvider::clientSideFilterExpression() const
 
 void QgsOapifProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
+  disconnect( mShared.get(), &QgsOapifSharedData::raiseError, this, &QgsOapifProvider::pushErrorSlot );
+  disconnect( mShared.get(), &QgsOapifSharedData::extentUpdated, this, &QgsOapifProvider::fullExtentCalculated );
+
   // We must not change the subset string of the shared data used in another iterator/data provider ...
   mShared.reset( qobject_cast<QgsOapifProvider *>( source )->mShared->clone() );
+
+  connect( mShared.get(), &QgsOapifSharedData::raiseError, this, &QgsOapifProvider::pushErrorSlot );
+  connect( mShared.get(), &QgsOapifSharedData::extentUpdated, this, &QgsOapifProvider::fullExtentCalculated );
 }
 
 QString QgsOapifProvider::name() const
