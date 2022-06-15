@@ -428,6 +428,11 @@ void QgsApplication::init( QString profileFolder )
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
 
+  {
+    QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );
+    fontManager()->installUserFonts();
+  }
+
   // set max. thread count to -1
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
