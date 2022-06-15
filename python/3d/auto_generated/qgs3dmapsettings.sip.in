@@ -642,6 +642,8 @@ Sets whether the camera's view frustum is visualized on the 2D map canvas
 .. versionadded:: 3.26
 %End
 
+
+
     bool isDebugOverlayEnabled() const;
 %Docstring
 Returns whether debug overlay is enabled
