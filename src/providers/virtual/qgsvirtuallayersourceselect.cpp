@@ -48,6 +48,32 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
 
   QgsGui::enableAutoGeometryRestore( this );
 
+  mLayersTable->setColumnCount( 4 );
+  mLayersTable->setHorizontalHeaderItem( LayerColumn::Name, new QTableWidgetItem( tr( "Local Name" ) ) );
+  mLayersTable->setHorizontalHeaderItem( LayerColumn::Source, new QTableWidgetItem( tr( "Source" ) ) );
+  mLayersTable->setHorizontalHeaderItem( LayerColumn::Provider, new QTableWidgetItem( tr( "Provider" ) ) );
+  mLayersTable->setHorizontalHeaderItem( LayerColumn::Encoding, new QTableWidgetItem( tr( "Encoding" ) ) );
+
+  // annoying dance to get nice default column sizes
+  QgsSettings settings;
+  const QByteArray ba = settings.value( "/Windows/VirtualLayer/layerTableHeaderState" ).toByteArray();
+  if ( !ba.isNull() )
+  {
+    mLayersTable->horizontalHeader()->restoreState( ba );
+  }
+  else
+  {
+    const QFontMetrics fm( font() );
+    mLayersTable->horizontalHeader()->setSectionResizeMode( LayerColumn::Name, QHeaderView::Interactive );
+    mLayersTable->horizontalHeader()->resizeSection( LayerColumn::Name, fm.horizontalAdvance( 'X' ) * 25 );
+    mLayersTable->horizontalHeader()->setSectionResizeMode( LayerColumn::Provider, QHeaderView::Interactive );
+    mLayersTable->horizontalHeader()->resizeSection( LayerColumn::Provider, fm.horizontalAdvance( 'X' ) * 25 );
+    mLayersTable->horizontalHeader()->setSectionResizeMode( LayerColumn::Encoding, QHeaderView::Interactive );
+    mLayersTable->horizontalHeader()->resizeSection( LayerColumn::Encoding, fm.horizontalAdvance( 'X' ) * 15 );
+    mLayersTable->horizontalHeader()->setSectionResizeMode( LayerColumn::Source, QHeaderView::Interactive );
+    mLayersTable->horizontalHeader()->resizeSection( LayerColumn::Source, fm.horizontalAdvance( 'X' ) * 50 );
+  }
+
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVirtualLayerSourceSelect::showHelp );
 
@@ -93,6 +119,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   // There is no validation logic to enable/disable the buttons
   // so they must be enabled by default
   emit enableButtons( true );
+}
+
+QgsVirtualLayerSourceSelect::~QgsVirtualLayerSourceSelect()
+{
+  QgsSettings settings;
+  settings.setValue( "/Windows/VirtualLayer/layerTableHeaderState", mLayersTable->horizontalHeader()->saveState() );
 }
 
 void QgsVirtualLayerSourceSelect::setBrowserModel( QgsBrowserModel *model )

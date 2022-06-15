@@ -65,32 +65,9 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
         <property name="selectionBehavior">
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
-        <column>
-         <property name="text">
-          <string>Local name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Provider</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Encoding</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Source</string>
-         </property>
-        </column>
        </widget>
       </item>
       <item>
