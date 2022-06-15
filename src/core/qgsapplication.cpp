@@ -78,6 +78,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgsbabelformatregistry.h"
 #include "qgsdbquerylog.h"
+#include "qgsfontmanager.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2447,6 +2448,11 @@ QgsStyleModel *QgsApplication::defaultStyleModel()
   return members()->mStyleModel;
 }
 
+QgsFontManager *QgsApplication::fontManager()
+{
+  return members()->mFontManager;
+}
+
 QgsMessageLog *QgsApplication::messageLog()
 {
   return members()->mMessageLog;
@@ -2534,6 +2540,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Create connection registry" ) );
     mConnectionRegistry = new QgsConnectionRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Create font manager" ) );
+    mFontManager = new QgsFontManager();
     profiler->end();
   }
   {
@@ -2738,6 +2749,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
   delete mConnectionRegistry;
+  delete mFontManager;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
   delete mQueryLogger;
