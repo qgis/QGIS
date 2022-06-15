@@ -15,14 +15,31 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QListView" name="mLayers">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
+     <property name="bottomMargin">
+      <number>0</number>
      </property>
-    </widget>
+     <item>
+      <widget class="QgsFilterLineEdit" name="mSearchLineEdit">
+       <property name="placeholderText">
+        <string>Search…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="mLayers">
+       <property name="selectionMode">
+        <enum>QAbstractItemView::ExtendedSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -36,6 +53,17 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
+  <tabstop>mLayers</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
