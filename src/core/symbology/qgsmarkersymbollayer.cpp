@@ -28,6 +28,7 @@
 #include "qgsunittypes.h"
 #include "qgssymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsfontmanager.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -3298,7 +3299,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
-  mFont = QFont( mFontFamily );
+  mFont = QFont( QgsApplication::fontManager()->processFontFamilyName( mFontFamily ) );
   if ( !mFontStyle.isEmpty() )
   {
     mFont.setStyleName( QgsFontUtils::translateNamedStyle( mFontStyle ) );
@@ -3504,7 +3505,8 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   {
     context.setOriginalValueVariable( mFontFamily );
     const QString fontFamily = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontFamily, context.renderContext().expressionContext(), mFontFamily, &ok );
-    mFont.setFamily( ok ? fontFamily : mFontFamily );
+    const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( ok ? fontFamily : mFontFamily );
+    mFont.setFamily( processedFamily );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
   {
@@ -3731,9 +3733,10 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
 void QgsFontMarkerSymbolLayer::resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   const QString fontFamily = properties.value( QStringLiteral( "font" ), DEFAULT_FONTMARKER_FONT ).toString();
-  if ( !QgsFontUtils::fontFamilyMatchOnSystem( fontFamily ) )
+  const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( fontFamily );
+  if ( !QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) )
   {
-    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( fontFamily ) );
+    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( processedFamily ) );
   }
 }
 

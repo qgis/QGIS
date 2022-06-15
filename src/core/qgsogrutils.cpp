@@ -36,6 +36,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfielddomain.h"
+#include "qgsfontmanager.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -1637,10 +1638,11 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       QString fontFamily;
       for ( const QString &family : std::as_const( families ) )
       {
-        if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+        const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) )
         {
           familyFound = true;
-          fontFamily = family;
+          fontFamily = processedFamily;
           break;
         }
       }

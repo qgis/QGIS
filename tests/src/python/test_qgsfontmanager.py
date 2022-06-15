@@ -14,14 +14,19 @@ import qgis  # NOQA
 
 from qgis.core import (
     QgsFontManager,
-    QgsSettings
+    QgsSettings,
+    QgsApplication,
+    QgsTextFormat,
+    QgsReadWriteContext
 )
 from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
-
+from utilities import getTestFont
 
 start_app()
 
@@ -103,6 +108,33 @@ class TestQgsFontManager(unittest.TestCase):
         self.assertEqual(manager2.processFontFamilyName('Comic Sans'), 'something better2')
         self.assertEqual(manager2.processFontFamilyName('arial'), 'something else better2')
         self.assertEqual(manager2.processFontFamilyName('arIAl'), 'something else better2')
+
+    def test_replacements(self):
+        manager = QgsApplication.fontManager()
+        format = QgsTextFormat()
+        font = QFont('original family')
+        format.setFont(font)
+
+        self.assertEqual(format.font().family(), 'original family')
+
+        doc = QDomDocument()
+        context = QgsReadWriteContext()
+        elem = format.writeXml(doc, context)
+        parent = doc.createElement("settings")
+        parent.appendChild(elem)
+        t2 = QgsTextFormat()
+        t2.readXml(parent, context)
+        self.assertFalse(t2.fontFound())
+        self.assertEqual(context.takeMessages()[0].message(), 'Font “original family” not available on system')
+
+        # with a font replacement in place
+        test_font = getTestFont()
+        manager.addFontFamilyReplacement('original Family', test_font.family())
+
+        t3 = QgsTextFormat()
+        t3.readXml(parent, context)
+        self.assertTrue(t3.fontFound())
+        self.assertEqual(t3.font().family(), 'QGIS Vera Sans')
 
 
 if __name__ == '__main__':
