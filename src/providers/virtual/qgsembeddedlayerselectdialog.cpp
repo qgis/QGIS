@@ -30,6 +30,11 @@ QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent )
 
   mLayerProxyModel->setFilters( QgsMapLayerProxyModel::Filter::VectorLayer );
   mLayers->setModel( mLayerProxyModel );
+
+  mSearchLineEdit->setShowSearchIcon( true );
+  mSearchLineEdit->setShowClearButton( true );
+  connect( mSearchLineEdit, &QLineEdit::textChanged, mLayerProxyModel, &QgsMapLayerProxyModel::setFilterString );
+  mSearchLineEdit->setFocus();
 }
 
 QStringList QgsEmbeddedLayerSelectDialog::layers() const
