@@ -32,12 +32,42 @@ class QMainWindow;
 class QgsEmbeddedLayerSelectDialog;
 class QgsLayerTreeView;
 
+class QgsVirtualLayerSourceWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsVirtualLayerSourceWidget( QWidget *parent = nullptr );
+    void setBrowserModel( QgsBrowserModel *model );
+
+    void setSource( const QString &source, const QString &provider );
+    QString source() const;
+    QString provider() const;
+
+  signals:
+
+    void sourceChanged( const QString &source, const QString &provider );
+
+  private slots:
+
+    void browseForLayer();
+  private:
+
+    QLineEdit *mLineEdit = nullptr;
+    QString mProvider;
+    QgsBrowserModel *mBrowserModel = nullptr;
+};
+
+
 class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsVirtualLayerSourceSelectBase
 {
     Q_OBJECT
 
   public:
     QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
+    void setBrowserModel( QgsBrowserModel *model ) override;
 
   public slots:
     //! Triggered when the provider's connections need to be refreshed
@@ -55,7 +85,7 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void tableRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void updateLayersList();
     void showHelp();
-
+    void rowSourceChanged();
 
   private:
 

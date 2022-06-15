@@ -28,7 +28,7 @@ and add layers.
 %End
   public:
 
-    void setBrowserModel( QgsBrowserModel *model );
+    virtual void setBrowserModel( QgsBrowserModel *model );
 %Docstring
 Sets a browser ``model`` to use with the widget.
 
