@@ -114,6 +114,13 @@ class CORE_EXPORT QgsFontManager : public QObject
      */
     QString processFontFamilyName( const QString &name ) const;
 
+    /**
+     * Installs user fonts from the profile/fonts directory as application fonts.
+     *
+     * \note Not available in Python bindings
+     */
+    void installUserFonts() SIP_SKIP;
+
   private:
 
     QMap< QString, QString > mFamilyReplacements;
@@ -121,7 +128,6 @@ class CORE_EXPORT QgsFontManager : public QObject
     mutable QReadWriteLock mReplacementLock;
 
     void storeFamilyReplacements();
-
 };
 
 #endif // QGSFONTMANAGER_H

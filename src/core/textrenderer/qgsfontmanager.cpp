@@ -15,9 +15,12 @@
 
 #include "qgsfontmanager.h"
 #include "qgsreadwritelocker.h"
+#include "qgsapplication.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QDir>
+#include <QFontDatabase>
 
 QgsFontManager::QgsFontManager( QObject *parent )
   : QObject( parent )
@@ -84,4 +87,26 @@ void QgsFontManager::storeFamilyReplacements()
   for ( auto it = mFamilyReplacements.constBegin(); it != mFamilyReplacements.constEnd(); ++it )
     replacements << QStringLiteral( "%1:%2" ).arg( it.key(), it.value() );
   settingsFontFamilyReplacements.setValue( replacements );
+}
+
+void QgsFontManager::installUserFonts()
+{
+  const QString userFontsDir = QgsApplication::qgisSettingsDirPath() + "fonts";
+
+  const QDir localDir;
+  if ( !localDir.mkpath( userFontsDir ) )
+  {
+    QgsDebugMsg( QStringLiteral( "Cannot create local fonts dir: %1" ).arg( userFontsDir ) );
+    return;
+  }
+
+  const QFileInfoList fileInfoList = QDir( userFontsDir ).entryInfoList( QStringList( QStringLiteral( "*.*" ) ), QDir::Files );
+  QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
+  for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
+  {
+    if ( QFontDatabase::addApplicationFont( infoIt->filePath() ) == -1 )
+    {
+      QgsDebugMsg( QStringLiteral( "The user font %1 could not be installed" ).arg( infoIt->filePath() ) );
+    }
+  }
 }
