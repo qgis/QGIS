@@ -77,7 +77,6 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   // connect to model changes in the treeview
   if ( mTreeView )
   {
-    mEmbeddedSelectionDialog = new QgsEmbeddedLayerSelectDialog( this );
     // Queued connection here prevents the updateLayerList to run before the tree layer
     // pointer points to the effective layer.
     connect( mTreeView->model(), &QAbstractItemModel::rowsInserted, this, &QgsVirtualLayerSourceSelect::updateLayersList, Qt::QueuedConnection );
@@ -385,14 +384,14 @@ void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const Q
 
 void QgsVirtualLayerSourceSelect::importLayer()
 {
-  if ( mEmbeddedSelectionDialog && mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
+  QgsEmbeddedLayerSelectDialog dialog( this );
+  if ( dialog.exec() == QDialog::Accepted )
   {
-    const QStringList ids = mEmbeddedSelectionDialog->layers();
-    const auto constIds = ids;
-    for ( const QString &id : constIds )
+    const QStringList ids = dialog.layers();
+    for ( const QString &id : ids )
     {
-      QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) );
-      addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( id ) ) )
+        addEmbeddedLayer( vl->name(), vl->providerType(), vl->dataProvider()->encoding(), vl->source() );
     }
   }
 }
