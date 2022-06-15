@@ -47,6 +47,10 @@ fonts which are not available on the system.
 The map keys are the original font family names, and the values are the alternative
 replacement family to use for the font.
 
+.. note::
+
+   This method is thread safe.
+
 .. seealso:: :py:func:`addFontFamilyReplacement`
 
 .. seealso:: :py:func:`setFontFamilyReplacements`
@@ -64,6 +68,10 @@ The replacement map is stored locally and persists across QGIS sessions.
 
 If ``replacement`` is an empty string then any existing mapping for the ``original``
 family will be removed.
+
+.. note::
+
+   This method is thread safe.
 
 .. seealso:: :py:func:`fontFamilyReplacements`
 
@@ -83,6 +91,10 @@ replacement family to use for the font.
 
 The replacement map is stored locally and persists across QGIS sessions.
 
+.. note::
+
+   This method is thread safe.
+
 .. seealso:: :py:func:`fontFamilyReplacements`
 
 .. seealso:: :py:func:`addFontFamilyReplacement`
@@ -92,6 +104,10 @@ The replacement map is stored locally and persists across QGIS sessions.
 %Docstring
 Processes a font family ``name``, applying any matching :py:func:`~QgsFontManager.fontFamilyReplacements`
 to the name.
+
+.. note::
+
+   This method is thread safe.
 %End
 
 };
