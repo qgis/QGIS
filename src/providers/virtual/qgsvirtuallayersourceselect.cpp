@@ -32,6 +32,8 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsiconutils.h"
 #include "qgsembeddedlayerselectdialog.h"
 #include "qgsgui.h"
+#include "qgsdatasourceselectdialog.h"
+#include "qgsfileutils.h"
 
 #include <QUrl>
 #include <QWidget>
@@ -91,6 +93,15 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   // There is no validation logic to enable/disable the buttons
   // so they must be enabled by default
   emit enableButtons( true );
+}
+
+void QgsVirtualLayerSourceSelect::setBrowserModel( QgsBrowserModel *model )
+{
+  QgsAbstractDataSourceWidget::setBrowserModel( model );
+  for ( int i = 0; i < mLayersTable->rowCount(); i++ )
+  {
+    qobject_cast< QgsVirtualLayerSourceWidget * >( mLayersTable->cellWidget( i, LayerColumn::Source ) )->setBrowserModel( model );
+  }
 }
 
 void QgsVirtualLayerSourceSelect::refresh()
@@ -196,9 +207,9 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   for ( int i = 0; i < mLayersTable->rowCount(); i++ )
   {
     const QString name = mLayersTable->item( i, LayerColumn::Name )->text();
-    const QString provider = static_cast<QComboBox *>( mLayersTable->cellWidget( i, LayerColumn::Provider ) )->currentData().toString();
-    const QString encoding = static_cast<QComboBox *>( mLayersTable->cellWidget( i, LayerColumn::Encoding ) )->currentText();
-    const QString source = mLayersTable->item( i, LayerColumn::Source )->text();
+    const QString provider = qobject_cast<QComboBox *>( mLayersTable->cellWidget( i, LayerColumn::Provider ) )->currentData().toString();
+    const QString encoding = qobject_cast<QComboBox *>( mLayersTable->cellWidget( i, LayerColumn::Encoding ) )->currentText();
+    const QString source = qobject_cast< QgsVirtualLayerSourceWidget * >( mLayersTable->cellWidget( i, LayerColumn::Source ) )->source();
     def.addSource( name, source, provider, encoding );
   }
 
@@ -270,7 +281,11 @@ void QgsVirtualLayerSourceSelect::addLayer()
   mLayersTable->insertRow( mLayersTable->rowCount() );
 
   mLayersTable->setItem( mLayersTable->rowCount() - 1, LayerColumn::Name, new QTableWidgetItem() );
-  mLayersTable->setItem( mLayersTable->rowCount() - 1, LayerColumn::Source, new QTableWidgetItem() );
+
+  QgsVirtualLayerSourceWidget *sourceWidget = new QgsVirtualLayerSourceWidget();
+  sourceWidget->setBrowserModel( browserModel() );
+  mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Source, sourceWidget );
+  connect( sourceWidget, &QgsVirtualLayerSourceWidget::sourceChanged, this, &QgsVirtualLayerSourceSelect::rowSourceChanged );
 
   QComboBox *providerCombo = new QComboBox();
   for ( const QString &key : std::as_const( mProviderList ) )
@@ -372,12 +387,13 @@ void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const Q
   // local name
   mLayersTable->item( n, LayerColumn::Name )->setText( name );
   // source
-  mLayersTable->item( n, LayerColumn::Source )->setText( source );
+  QgsVirtualLayerSourceWidget *sourceWidget = qobject_cast<QgsVirtualLayerSourceWidget *>( mLayersTable->cellWidget( n, LayerColumn::Source ) );
+  sourceWidget->setSource( source, provider );
   // provider
-  QComboBox *providerCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Provider ) );
+  QComboBox *providerCombo = qobject_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Provider ) );
   providerCombo->setCurrentIndex( providerCombo->findData( provider ) );
   // encoding
-  QComboBox *encodingCombo = static_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Encoding ) );
+  QComboBox *encodingCombo = qobject_cast<QComboBox *>( mLayersTable->cellWidget( n, LayerColumn::Encoding ) );
   encodingCombo->setCurrentIndex( encodingCombo->findText( encoding ) );
 }
 
@@ -448,4 +464,87 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
 void QgsVirtualLayerSourceSelect::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-virtual-layers" ) );
+}
+
+void QgsVirtualLayerSourceSelect::rowSourceChanged()
+{
+  QgsVirtualLayerSourceWidget *widget = qobject_cast< QgsVirtualLayerSourceWidget * >( sender() );
+  // we have to find the matching row for the source widget which was changed
+  for ( int row = 0; row < mLayersTable->rowCount(); row++ )
+  {
+    QgsVirtualLayerSourceWidget *rowSourceWidget = qobject_cast< QgsVirtualLayerSourceWidget * >( mLayersTable->cellWidget( row, LayerColumn::Source ) );
+    if ( rowSourceWidget == widget )
+    {
+      // automatically update provider to match
+      QComboBox *providerCombo = qobject_cast<QComboBox *>( mLayersTable->cellWidget( row, LayerColumn::Provider ) );
+      providerCombo->setCurrentIndex( providerCombo->findData( widget->provider() ) );
+      break;
+    }
+  }
+}
+
+//
+// QgsVirtualLayerSourceWidget
+//
+QgsVirtualLayerSourceWidget::QgsVirtualLayerSourceWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  QHBoxLayout *layout = new QHBoxLayout();
+  layout->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  layout->addWidget( mLineEdit, 1 );
+
+  QPushButton *browseButton = new QPushButton( tr( "…" ) );
+  browseButton->setToolTip( tr( "Browse for Layer" ) );
+  connect( browseButton, &QPushButton::clicked, this, &QgsVirtualLayerSourceWidget::browseForLayer );
+  layout->addWidget( browseButton );
+
+  setLayout( layout );
+}
+
+void QgsVirtualLayerSourceWidget::setBrowserModel( QgsBrowserModel *model )
+{
+  mBrowserModel = model;
+}
+
+void QgsVirtualLayerSourceWidget::setSource( const QString &source, const QString &provider )
+{
+  mLineEdit->setText( source );
+  mProvider = provider;
+}
+
+QString QgsVirtualLayerSourceWidget::source() const
+{
+  return mLineEdit->text();
+}
+
+QString QgsVirtualLayerSourceWidget::provider() const
+{
+  return mProvider;
+}
+
+void QgsVirtualLayerSourceWidget::browseForLayer()
+{
+  QgsDataSourceSelectDialog dlg( qobject_cast< QgsBrowserGuiModel * >( mBrowserModel ), true, QgsMapLayerType::VectorLayer, this );
+  dlg.setWindowTitle( tr( "Select Layer Source" ) );
+
+  QString source = mLineEdit->text();
+  const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( mProvider, source );
+  if ( sourceParts.contains( QStringLiteral( "path" ) ) )
+  {
+    const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+    const QString closestPath = QFile::exists( path ) ? path : QgsFileUtils::findClosestExistingPath( path );
+    source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
+                    path ) );
+  }
+  dlg.setDescription( tr( "Current source: %1" ).arg( source ) );
+
+  if ( !dlg.exec() )
+    return;
+
+  mLineEdit->setText( dlg.uri().uri );
+  mProvider = dlg.uri().providerKey;
+
+  emit sourceChanged( dlg.uri().uri, dlg.uri().providerKey );
 }

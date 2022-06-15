@@ -52,7 +52,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * \see browserModel()
      * \since QGIS 3.18
      */
-    void setBrowserModel( QgsBrowserModel *model );
+    virtual void setBrowserModel( QgsBrowserModel *model );
 
     /**
      * Returns the dialog map canvas
