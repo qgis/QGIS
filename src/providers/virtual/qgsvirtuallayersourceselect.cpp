@@ -31,6 +31,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsproviderregistry.h"
 #include "qgsiconutils.h"
 #include "qgsembeddedlayerselectdialog.h"
+#include "qgsgui.h"
 
 #include <QUrl>
 #include <QWidget>
@@ -42,6 +43,9 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
+
+  QgsGui::enableAutoGeometryRestore( this );
+
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVirtualLayerSourceSelect::showHelp );
 
