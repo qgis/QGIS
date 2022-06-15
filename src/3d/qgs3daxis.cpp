@@ -35,6 +35,7 @@
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgswindow3dengine.h"
+#include "qgsraycastingutils_p.h"
 
 Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
                       Qt3DCore::QEntity *parent3DScene,
@@ -695,10 +696,23 @@ void Qgs3DAxis::onAxisVertPositionChanged( Qt::AnchorPoint pos )
 void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
 {
   QgsVector3D pos = mCameraController->lookingAtPoint();
+  double elevation = 0.0;
   if ( mMapSettings->terrainRenderingEnabled() )
-    pos.set( pos.x(), mMapScene->terrainEntity()->terrainElevationOffset(), pos.z() );
-  else
-    pos.set( pos.x(), 0.0, pos.z() );
+  {
+    QgsTraceMsg( "Checking elevation from terrain..." );
+    QVector3D intersectionPoint;
+    QVector3D camPos = mCameraController->camera()->position();
+    QgsRayCastingUtils::Ray3D r( camPos, pos.toVector3D() - camPos );
+    if ( mMapScene->terrainEntity()->rayIntersection( r, intersectionPoint ) )
+    {
+      elevation = intersectionPoint.y();
+      QgsTraceMsg( QString( "Computed elevation from terrain: %1" ).arg( elevation ) );
+    }
+    else
+      QgsTraceMsg( "Unable to obtain elevation from terrain" );
+
+  }
+  pos.set( pos.x(), elevation, pos.z() );
 
   mCameraController->setLookingAtPoint( pos, ( mCameraController->camera()->position() - pos.toVector3D() ).length(),
                                         pitch, yaw );
