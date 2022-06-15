@@ -77,7 +77,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   // connect to model changes in the treeview
   if ( mTreeView )
   {
-    mEmbeddedSelectionDialog = new QgsEmbeddedLayerSelectDialog( this, mTreeView );
+    mEmbeddedSelectionDialog = new QgsEmbeddedLayerSelectDialog( this );
     // Queued connection here prevents the updateLayerList to run before the tree layer
     // pointer points to the effective layer.
     connect( mTreeView->model(), &QAbstractItemModel::rowsInserted, this, &QgsVirtualLayerSourceSelect::updateLayersList, Qt::QueuedConnection );
@@ -364,12 +364,6 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
   apis->prepare();
   mQueryEdit->lexer()->setAPIs( apis );
   mQueryEdit->setWrapMode( QsciScintilla::WrapWord );
-
-  // Update the layer selection list
-  if ( mEmbeddedSelectionDialog )
-  {
-    mEmbeddedSelectionDialog->updateLayersList();
-  }
 }
 
 void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source )
