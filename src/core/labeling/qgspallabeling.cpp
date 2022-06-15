@@ -77,6 +77,7 @@
 #include "callouts/qgscalloutsregistry.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilebasiclabeling.h"
+#include "qgsfontmanager.h"
 
 using namespace pal;
 
@@ -3121,6 +3122,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont &labelFont,
       QString family = exprVal.toString().trimmed();
       QgsDebugMsgLevel( QStringLiteral( "exprVal Font family:%1" ).arg( family ), 4 );
 
+      family = QgsApplication::fontManager()->processFontFamilyName( family );
       if ( labelFont.family() != family )
       {
         // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature

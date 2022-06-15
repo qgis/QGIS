@@ -23,6 +23,7 @@
 #include "qgstextrendererutils.h"
 #include "qgspallabeling.h"
 #include "qgsconfig.h"
+#include "qgsfontmanager.h"
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QWidget>
@@ -405,7 +406,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 {
   d->isValid = true;
   QFont appFont = QApplication::font();
-  mTextFontFamily = layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString();
+  mTextFontFamily = QgsApplication::fontManager()->processFontFamilyName( layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString() );
   QString fontFamily = mTextFontFamily;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
@@ -494,7 +495,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   else
     textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
-  mTextFontFamily = textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() );
+  mTextFontFamily = QgsApplication::fontManager()->processFontFamilyName( textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() ) );
   QString fontFamily = mTextFontFamily;
 
   const QDomElement familiesElem = textStyleElem.firstChildElement( QStringLiteral( "families" ) );
@@ -513,10 +514,11 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     for ( const QString &family : std::as_const( families ) )
     {
-      if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+      const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
+      if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) )
       {
         mTextFontFound = true;
-        fontFamily = family;
+        fontFamily = processedFamily;
         break;
       }
     }
@@ -870,6 +872,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( !exprVal.isNull() )
   {
     QString family = exprVal.toString().trimmed();
+    family = QgsApplication::fontManager()->processFontFamilyName( family );
     if ( d->textFont.family() != family )
     {
       // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature
