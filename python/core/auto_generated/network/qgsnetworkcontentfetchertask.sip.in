@@ -34,20 +34,26 @@ without danger of the task being first removed by the :py:class:`QgsTaskManager`
 %End
   public:
 
-    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
+    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
+                                  const QString &description = QString() );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches
 the specified ``url``.
 
 Optionally, authentication configuration can be set via the ``authcfg`` argument.
+
+Since QGIS 3.28 the optional ``description`` can be explicitly set. If not specified, a default task description will be generated.
 %End
 
-    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
+    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
+                                  const QString &description = QString() );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches
 the specified network ``request``.
 
 Optionally, authentication configuration can be set via the ``authcfg`` argument.
+
+Since QGIS 3.28 the optional ``description`` can be explicitly set. If not specified, a default task description will be generated.
 %End
 
     ~QgsNetworkContentFetcherTask();
