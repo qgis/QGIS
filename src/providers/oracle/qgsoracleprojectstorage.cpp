@@ -38,9 +38,9 @@ static bool parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::
 
   const QJsonObject docObj = doc.object();
   metadata.lastModified = QDateTime();
-  if ( docObj.contains( "last_modified_time" ) )
+  if ( docObj.contains( QStringLiteral( "last_modified_time" ) ) )
   {
-    const QString lastModifiedTimeStr = docObj["last_modified_time"].toString();
+    const QString lastModifiedTimeStr = docObj[ QStringLiteral( "last_modified_time" )].toString();
     if ( !lastModifiedTimeStr.isEmpty() )
     {
       QDateTime lastModifiedUtc = QDateTime::fromString( lastModifiedTimeStr, Qt::ISODate );
@@ -164,12 +164,10 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  QString metadataExpr = QStringLiteral( "%1 || to_char(current_timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS.FF5') || %2 || sys_context('USERENV', 'CURRENT_USER') || %3" ).arg(
-                           QgsOracleConn::quotedValue( "{ \"last_modified_time\": \"" ),
-                           QgsOracleConn::quotedValue( "\", \"last_modified_user\": \"" ),
-                           QgsOracleConn::quotedValue( "\" }" )
-                         );
-
+  const QString metadataExpr = QStringLiteral( "%1 || to_char(current_timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI:SS.FF5') || %2 || sys_context('USERENV', 'CURRENT_USER') || %3" ).arg(
+                                 QgsOracleConn::quotedValue( "{ \"last_modified_time\": \"" ),
+                                 QgsOracleConn::quotedValue( "\", \"last_modified_user\": \"" ),
+                                 QgsOracleConn::quotedValue( "\" }" ) );
 
   const QString sql( QStringLiteral( "MERGE INTO %1.\"qgis_projects\" "
                                      "USING dual "
@@ -251,7 +249,7 @@ bool QgsOracleProjectStorage::readProjectStorageMetadata( const QString &uri, Qg
   {
     metadata.name = projectUri.projectName;
     const QString metadataStr = qry.value( 0 ).toString();
-    QJsonDocument doc( QJsonDocument::fromJson( metadataStr.toUtf8() ) );
+    const QJsonDocument doc( QJsonDocument::fromJson( metadataStr.toUtf8() ) );
     return parseMetadataDocument( doc, metadata );
   }
   else
@@ -264,7 +262,7 @@ QString QgsOracleProjectStorage::encodeUri( const QgsOracleProjectUri &postUri )
   QUrl u;
   QUrlQuery urlQuery;
 
-  u.setScheme( "oracle" );
+  u.setScheme( QStringLiteral( "oracle" ) );
   u.setHost( postUri.connInfo.host() );
   if ( !postUri.connInfo.port().isEmpty() )
     u.setPort( postUri.connInfo.port().toInt() );
@@ -272,15 +270,15 @@ QString QgsOracleProjectStorage::encodeUri( const QgsOracleProjectUri &postUri )
   u.setPassword( postUri.connInfo.password() );
 
   if ( !postUri.connInfo.service().isEmpty() )
-    urlQuery.addQueryItem( "service", postUri.connInfo.service() );
+    urlQuery.addQueryItem( QStringLiteral( "service" ), postUri.connInfo.service() );
   if ( !postUri.connInfo.authConfigId().isEmpty() )
-    urlQuery.addQueryItem( "authcfg", postUri.connInfo.authConfigId() );
+    urlQuery.addQueryItem( QStringLiteral( "authcfg" ), postUri.connInfo.authConfigId() );
 
-  urlQuery.addQueryItem( "dbname", postUri.connInfo.database() );
+  urlQuery.addQueryItem( QStringLiteral( "dbname" ), postUri.connInfo.database() );
 
-  urlQuery.addQueryItem( "schema", postUri.owner );
+  urlQuery.addQueryItem( QStringLiteral( "schema" ), postUri.owner );
   if ( !postUri.projectName.isEmpty() )
-    urlQuery.addQueryItem( "project", postUri.projectName );
+    urlQuery.addQueryItem( QStringLiteral( "project" ), postUri.projectName );
 
   u.setQuery( urlQuery );
 
@@ -296,13 +294,13 @@ QgsOracleProjectUri QgsOracleProjectStorage::decodeUri( const QString &uri )
   QgsOracleProjectUri projectUri;
   projectUri.valid = u.isValid();
 
-  QString host = u.host();
-  QString port = u.port() != -1 ? QString::number( u.port() ) : QString();
-  QString username = u.userName();
-  QString password = u.password();
-  QString authConfigId = urlQuery.queryItemValue( "authcfg" );
-  QString dbName = urlQuery.queryItemValue( "dbname" );
-  QString service = urlQuery.queryItemValue( "service" );
+  const QString host = u.host();
+  const QString port = u.port() != -1 ? QString::number( u.port() ) : QString();
+  const QString username = u.userName();
+  const QString password = u.password();
+  const QString authConfigId = urlQuery.queryItemValue( QStringLiteral( "authcfg" ) );
+  const QString dbName = urlQuery.queryItemValue( QStringLiteral( "dbname" ) );
+  const QString service = urlQuery.queryItemValue( QStringLiteral( "service" ) );
   if ( !service.isEmpty() )
     projectUri.connInfo.setConnection( service, dbName, username, password,
                                        QgsDataSourceUri::SslPrefer /* meaningless for oracle */,
@@ -312,7 +310,7 @@ QgsOracleProjectUri QgsOracleProjectStorage::decodeUri( const QString &uri )
                                        QgsDataSourceUri::SslPrefer /* meaningless for oracle */,
                                        authConfigId );
 
-  projectUri.owner = urlQuery.queryItemValue( "schema" );
-  projectUri.projectName = urlQuery.queryItemValue( "project" );
+  projectUri.owner = urlQuery.queryItemValue( QStringLiteral( "schema" ) );
+  projectUri.projectName = urlQuery.queryItemValue( QStringLiteral( "project" ) );
   return projectUri;
 }
