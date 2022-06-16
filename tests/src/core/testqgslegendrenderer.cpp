@@ -85,7 +85,7 @@ static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendMod
   const int dpi = 96;
   const qreal dpmm = dpi / 25.4;
   const QSize s( size.width() * dpmm, size.height() * dpmm );
-  qDebug() << QStringLiteral( "testName:%1 size=%2x%3 dpmm=%4 s=%5x%6" ).arg( testName ).arg( size.width() ).arg( size.height() ).arg( dpmm ).arg( s.width() ).arg( s.height() );
+  // qDebug() << QStringLiteral( "testName:%1 size=%2x%3 dpmm=%4 s=%5x%6" ).arg( testName ).arg( size.width() ).arg( size.height() ).arg( dpmm ).arg( s.width() ).arg( s.height() );
   QImage img( s, QImage::Format_ARGB32_Premultiplied );
   img.fill( Qt::white );
 
@@ -93,11 +93,13 @@ static void _renderLegend( const QString &testName, QgsLayerTreeModel *legendMod
   painter.setRenderHint( QPainter::Antialiasing, true );
   QgsRenderContext context = QgsRenderContext::fromQPainter( &painter );
 
-  const QgsScopedRenderContextScaleToMm scaleToMm( context );
-  context.setRendererScale( 1000 );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( 0.1 * context.scaleFactor() ) ) );
+  {
+    const QgsScopedRenderContextScaleToMm scaleToMm( context );
+    context.setRendererScale( 1000 );
+    context.setMapToPixel( QgsMapToPixel( 1 / ( 0.1 * context.scaleFactor() ) ) );
 
-  legendRenderer.drawLegend( context );
+    legendRenderer.drawLegend( context );
+  }
   painter.end();
 
   img.save( _fileNameForTest( testName ) );
