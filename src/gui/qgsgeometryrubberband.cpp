@@ -177,11 +177,15 @@ QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
   qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
 
   QgsRectangle r;  // in canvas units
-  QgsVertexIterator vit = mGeometry->vertices();
-  while ( vit.hasNext() )
+  QgsRectangle rectMap = mGeometry->boundingBox();  // in map units
+  QList<QgsPointXY> pl;
+  pl << QgsPointXY( rectMap.xMinimum(), rectMap.yMinimum() )
+     << QgsPointXY( rectMap.xMinimum(), rectMap.yMaximum() )
+     << QgsPointXY( rectMap.xMaximum(), rectMap.yMaximum() )
+     << QgsPointXY( rectMap.xMaximum(), rectMap.yMinimum() );
+
+  for ( QgsPointXY &p : pl )
   {
-    const QgsPoint point = vit.next();
-    QgsPointXY p( point.x(), point.y() );
     p = toCanvasCoordinates( p );
     // no need to normalize the rectangle -- we know it is already normal
     QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w, false );
