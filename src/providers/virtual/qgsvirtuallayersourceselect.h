@@ -49,7 +49,7 @@ class QgsVirtualLayerSourceWidget : public QWidget
 
     void sourceChanged( const QString &source, const QString &provider );
 
-  private slots:
+  public slots:
 
     void browseForLayer();
   private:

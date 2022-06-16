@@ -333,6 +333,8 @@ void QgsVirtualLayerSourceSelect::addLayer()
   const QString defaultEnc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
   encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Encoding, encodingCombo );
+
+  sourceWidget->browseForLayer();
 }
 
 void QgsVirtualLayerSourceSelect::removeLayer()
@@ -510,6 +512,25 @@ void QgsVirtualLayerSourceSelect::rowSourceChanged()
       // automatically update provider to match
       QComboBox *providerCombo = qobject_cast<QComboBox *>( mLayersTable->cellWidget( row, LayerColumn::Provider ) );
       providerCombo->setCurrentIndex( providerCombo->findData( widget->provider() ) );
+
+      // if no layer name set yet, try to pick a good starting point
+      if ( mLayersTable->item( row, LayerColumn::Name )->text().isEmpty() )
+      {
+        const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( widget->provider(), widget->source() );
+        if ( !sourceParts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() )
+        {
+          const QString layerName = sourceParts.value( QStringLiteral( "layerName" ) ).toString();
+          mLayersTable->item( row, LayerColumn::Name )->setText( layerName );
+        }
+        else if ( !sourceParts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+        {
+          const QFileInfo fi( sourceParts.value( QStringLiteral( "path" ) ).toString() );
+          if ( !fi.baseName().isEmpty() )
+          {
+            mLayersTable->item( row, LayerColumn::Name )->setText( fi.baseName() );
+          }
+        }
+      }
       break;
     }
   }
