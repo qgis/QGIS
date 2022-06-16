@@ -139,11 +139,21 @@ class CORE_EXPORT QgsFontManager : public QObject
      * returns immediately. Connect to fontDownloaded() in order to respond when the
      * font is installed and available for use.
      *
+     * \warning Before calling this method a QgsApplication must be fully initialized
+     * and a call to enableFontDownloadsForSession() made.
+     *
      * \param family input font family name to try to match to known fonts
      * \param matchedFamily will be set to found font family if a match was successful
      * \returns TRUE if match was successful and the download will occur
      */
     bool tryToDownloadFontFamily( const QString &family, QString &matchedFamily SIP_OUT );
+
+    /**
+     * Enables font downloads the the current QGIS session.
+     *
+     * \warning Ensure that the QgsApplication is fully initialized before calling this method.
+     */
+    void enableFontDownloadsForSession();
 
     /**
      * Returns the URL at which the font \a family can be downloaded.
@@ -239,7 +249,9 @@ class CORE_EXPORT QgsFontManager : public QObject
     mutable QReadWriteLock mReplacementLock;
     QStringList mUserFontDirectories;
 
+    bool mEnableFontDownloads = false;
     QMap< QString, QString > mPendingFontDownloads;
+    QMap< QString, QString > mDeferredFontDownloads;
 
     void storeFamilyReplacements();
 };

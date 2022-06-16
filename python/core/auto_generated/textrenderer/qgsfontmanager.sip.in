@@ -126,10 +126,24 @@ The actual download operation occurs in a background task, and this method
 returns immediately. Connect to :py:func:`~QgsFontManager.fontDownloaded` in order to respond when the
 font is installed and available for use.
 
+.. warning::
+
+   Before calling this method a :py:class:`QgsApplication` must be fully initialized
+   and a call to :py:func:`~QgsFontManager.enableFontDownloadsForSession` made.
+
 :param family: input font family name to try to match to known fonts
 
 :return: - ``True`` if match was successful and the download will occur
          - matchedFamily: will be set to found font family if a match was successful
+%End
+
+    void enableFontDownloadsForSession();
+%Docstring
+Enables font downloads the the current QGIS session.
+
+.. warning::
+
+   Ensure that the :py:class:`QgsApplication` is fully initialized before calling this method.
 %End
 
     QString urlForFontDownload( const QString &family, QString &matchedFamily /Out/ ) const;

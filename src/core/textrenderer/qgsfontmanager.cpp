@@ -151,8 +151,34 @@ bool QgsFontManager::tryToDownloadFontFamily( const QString &family, QString &ma
 
   locker.changeMode( QgsReadWriteLocker::Write );
   mPendingFontDownloads.insert( family, matchedFamily );
-  downloadAndInstallFont( QUrl( url ), family );
+  if ( !mEnableFontDownloads )
+  {
+    mDeferredFontDownloads.insert( url, family );
+  }
+  else
+  {
+    locker.unlock();
+    downloadAndInstallFont( QUrl( url ), family );
+  }
   return true;
+}
+
+void QgsFontManager::enableFontDownloadsForSession()
+{
+  if ( mEnableFontDownloads )
+    return;
+
+  mEnableFontDownloads = true;
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
+  if ( !mDeferredFontDownloads.isEmpty() )
+  {
+    locker.changeMode( QgsReadWriteLocker::Write );
+    for ( auto it = mDeferredFontDownloads.constBegin(); it != mDeferredFontDownloads.constEnd(); ++it )
+    {
+      downloadAndInstallFont( QUrl( it.key() ), it.value() );
+    }
+    mDeferredFontDownloads.clear();
+  }
 }
 
 QString QgsFontManager::urlForFontDownload( const QString &family, QString &matchedFamily ) const

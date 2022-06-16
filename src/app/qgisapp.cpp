@@ -1941,6 +1941,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     }
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
   } );
+  QgsApplication::fontManager()->enableFontDownloadsForSession();
 }
 
 QgisApp::QgisApp()
