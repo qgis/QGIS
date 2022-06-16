@@ -19,6 +19,8 @@
 #include "qgsapplication.h"
 #include "qgsfontmanager.h"
 
+#include <QDir>
+
 //
 // QgsFontOptionsWidget
 //
@@ -30,6 +32,9 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
 
   mTableReplacements->setHorizontalHeaderLabels( {tr( "Font Family" ), tr( "Replacement Family" ) } );
   mTableReplacements->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+
+  mTableUserFonts->setHorizontalHeaderLabels( {tr( "File" ), tr( "Font Families" ) } );
+  mTableUserFonts->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
   const QMap< QString, QString > replacements = QgsApplication::fontManager()->fontFamilyReplacements();
   mTableReplacements->setRowCount( replacements.size() );
@@ -64,6 +69,39 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
   } );
 
   mCheckBoxDownloadFonts->setChecked( QgsFontManager::settingsDownloadMissingFonts.value() );
+
+  const QMap< QString, QStringList > userFonts = QgsApplication::fontManager()->userFontToFamilyMap();
+  mTableUserFonts->setRowCount( userFonts.size() );
+  mTableUserFonts->setSelectionBehavior( QAbstractItemView::SelectRows );
+  row = 0;
+  for ( auto it = userFonts.constBegin(); it != userFonts.constEnd(); ++it )
+  {
+    QTableWidgetItem *item = new QTableWidgetItem( QDir::toNativeSeparators( it.key() ) );
+    item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
+    item->setData( Qt::UserRole, it.key() );
+    mTableUserFonts->setItem( row, 0, item );
+
+    item = new QTableWidgetItem( it.value().join( QObject::tr( ", " ) ) );
+    item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
+    mTableUserFonts->setItem( row, 1, item );
+    row++;
+  }
+
+  connect( mButtonRemoveUserFont, &QToolButton::clicked, this, [ = ]
+  {
+    const QModelIndexList selection = mTableUserFonts->selectionModel()->selectedRows();
+    QList< int > selectedRows;
+    for ( const QModelIndex &index : selection )
+      selectedRows.append( index.row() );
+
+    std::sort( selectedRows.begin(), selectedRows.end() );
+    for ( int i = selectedRows.size() - 1; i >= 0; i-- )
+    {
+      int row = selectedRows.at( i );
+      mTableUserFonts->removeRow( row );
+    }
+  } );
+
 }
 
 void QgsFontOptionsWidget::apply()
@@ -81,6 +119,21 @@ void QgsFontOptionsWidget::apply()
   QgsApplication::fontManager()->setFontFamilyReplacements( replacements );
 
   QgsFontManager::settingsDownloadMissingFonts.setValue( mCheckBoxDownloadFonts->isChecked() );
+
+  const QMap< QString, QStringList > userFonts = QgsApplication::fontManager()->userFontToFamilyMap();
+  QSet< QString > remainingUserFonts;
+  for ( int row = 0; row < mTableUserFonts->rowCount(); ++row )
+  {
+    const QString fileName = mTableUserFonts->item( row, 0 )->data( Qt::UserRole ).toString();
+    remainingUserFonts.insert( fileName );
+  }
+  for ( auto it = userFonts.constBegin(); it != userFonts.constEnd(); ++it )
+  {
+    if ( !remainingUserFonts.contains( it.key() ) )
+    {
+      QgsApplication::fontManager()->removeUserFont( it.key() );
+    }
+  }
 }
 
 //
