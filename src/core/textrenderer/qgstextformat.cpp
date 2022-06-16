@@ -510,9 +510,10 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->families = families;
 
   mTextFontFound = false;
+  QString matched;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
-    if ( QgsApplication::fontManager()->tryToDownloadFontFamily( mTextFontFamily ) )
+    if ( QgsApplication::fontManager()->tryToDownloadFontFamily( mTextFontFamily, matched ) )
     {
       mTextFontFound = true;
     }
@@ -522,7 +523,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
       {
         const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
         if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
-             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily ) )
+             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
         {
           mTextFontFound = true;
           fontFamily = processedFamily;

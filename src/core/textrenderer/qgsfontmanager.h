@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMap>
 #include <QReadWriteLock>
+#include <QSet>
 
 /**
  * \ingroup core
@@ -137,16 +138,24 @@ class CORE_EXPORT QgsFontManager : public QObject
      * The actual download operation occurs in a background task, and this method
      * returns immediately. Connect to fontDownloaded() in order to respond when the
      * font is installed and available for use.
+     *
+     * \param family input font family name to try to match to known fonts
+     * \param matchedFamily will be set to found font family if a match was successful
+     * \returns TRUE if match was successful and the download will occur
      */
-    bool tryToDownloadFontFamily( const QString &family );
+    bool tryToDownloadFontFamily( const QString &family, QString &matchedFamily SIP_OUT );
 
     /**
      * Returns the URL at which the font \a family can be downloaded.
      *
      * This method relies on a hardcoded list of available freely licensed fonts, and will
      * return an empty string for any font families not present in this list.
+     *
+     * \param family input font family name to try to match to known fonts
+     * \param matchedFamily will be set to found font family if a match was successful
+     * \returns URL to download font, or an empty string if no URL is available
      */
-    QString urlForFontDownload( const QString &family ) const;
+    QString urlForFontDownload( const QString &family, QString &matchedFamily SIP_OUT ) const;
 
     /**
      * Downloads a font and installs in the user's profile/fonts directory as an application font.
@@ -229,6 +238,8 @@ class CORE_EXPORT QgsFontManager : public QObject
     QMap< QString, int > mUserFontToIdMap;
     mutable QReadWriteLock mReplacementLock;
     QStringList mUserFontDirectories;
+
+    QMap< QString, QString > mPendingFontDownloads;
 
     void storeFamilyReplacements();
 };

@@ -130,20 +130,32 @@ void QgsFontManager::installUserFonts()
   }
 }
 
-bool QgsFontManager::tryToDownloadFontFamily( const QString &family )
+bool QgsFontManager::tryToDownloadFontFamily( const QString &family, QString &matchedFamily )
 {
+  matchedFamily.clear();
   if ( !settingsDownloadMissingFonts.value() )
     return false;
 
-  const QString url = urlForFontDownload( family );
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
+  auto it = mPendingFontDownloads.constFind( family );
+  if ( it != mPendingFontDownloads.constEnd() )
+  {
+    matchedFamily = it.value();
+    return true;
+  }
+  locker.unlock();
+
+  const QString url = urlForFontDownload( family, matchedFamily );
   if ( url.isEmpty() )
     return false;
 
+  locker.changeMode( QgsReadWriteLocker::Write );
+  mPendingFontDownloads.insert( family, matchedFamily );
   downloadAndInstallFont( QUrl( url ), family );
   return true;
 }
 
-QString QgsFontManager::urlForFontDownload( const QString &family ) const
+QString QgsFontManager::urlForFontDownload( const QString &family, QString &matchedFamily ) const
 {
   const thread_local QStringList sGoogleFonts
   {
@@ -866,6 +878,7 @@ QString QgsFontManager::urlForFontDownload( const QString &family ) const
     return processed.replace( charsToRemove, QString() );
   };
 
+  matchedFamily.clear();
   const QString cleanedFamily = cleanFontFamily( family );
   for ( const QString &candidate : sGoogleFonts )
   {
@@ -873,6 +886,7 @@ QString QgsFontManager::urlForFontDownload( const QString &family ) const
     {
       QString paramName = candidate;
       paramName.replace( ' ', '+' );
+      matchedFamily = candidate;
       return QStringLiteral( "https://fonts.google.com/download?family=%1" ).arg( paramName );
     }
   }
@@ -894,6 +908,7 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
   QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( url, QString(), QgsTask::CanCancel, description );
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [ = ]
   {
+
     if ( task->reply()->error() != QNetworkReply::NoError )
     {
       emit fontDownloadErrorOccurred( url, identifier, task->reply()->errorString() );
@@ -905,10 +920,18 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
       QString licenseDetails;
       if ( installFontsFromData( task->reply()->readAll(), errorMessage, families, licenseDetails ) )
       {
+        QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
+        mPendingFontDownloads.remove( identifier );
+        locker.unlock();
+
         emit fontDownloaded( families, licenseDetails );
       }
       else
       {
+        QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
+        mPendingFontDownloads.remove( identifier );
+        locker.unlock();
+
         emit fontDownloadErrorOccurred( url, identifier, errorMessage );
       }
     }
