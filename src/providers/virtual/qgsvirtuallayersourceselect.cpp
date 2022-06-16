@@ -323,7 +323,7 @@ void QgsVirtualLayerSourceSelect::addLayer()
   for ( const QString &key : std::as_const( mProviderList ) )
   {
     QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( key );
-    providerCombo->addItem( metadata->description(), key );
+    providerCombo->addItem( metadata->icon(), metadata->description(), key );
   }
   providerCombo->setCurrentIndex( providerCombo->findData( QStringLiteral( "ogr" ) ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Provider, providerCombo );
