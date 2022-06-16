@@ -5005,6 +5005,11 @@ QgsWmsProviderMetadata::QgsWmsProviderMetadata()
 {
 }
 
+QIcon QgsWmsProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWms.svg" ) );
+}
+
 QList<QgsDataItemProvider *> QgsWmsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;

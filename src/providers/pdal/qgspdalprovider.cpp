@@ -293,6 +293,11 @@ QgsPdalProviderMetadata::QgsPdalProviderMetadata():
 {
 }
 
+QIcon QgsPdalProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
+}
+
 QgsPdalProvider *QgsPdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsPdalProvider( uri, options, flags );

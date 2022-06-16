@@ -20,7 +20,10 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
+#include "qgsapplication.h"
+
 #include <cstring>
+#include <QIcon>
 
 #define TEXT_PROVIDER_KEY QStringLiteral( "mesh_memory" )
 #define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Mesh memory provider" )
@@ -655,6 +658,11 @@ QgsMeshMemoryProviderMetadata::QgsMeshMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription() )
 {
 
+}
+
+QIcon QgsMeshMemoryProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMeshLayer.svg" ) );
 }
 
 QgsDataProvider *QgsMeshMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

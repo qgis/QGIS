@@ -174,6 +174,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsHanaProviderMetadata();
+    QIcon icon() const override;
 
     void cleanupProvider() override;
 

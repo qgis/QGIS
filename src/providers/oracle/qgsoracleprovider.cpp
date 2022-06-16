@@ -38,6 +38,7 @@
 #include "qgsoracleconnpool.h"
 #include "qgsoracletransaction.h"
 #include "qgsoracleproviderconnection.h"
+#include "qgsapplication.h"
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -4157,4 +4158,9 @@ void QgsOracleProviderMetadata::saveConnection( const QgsAbstractProviderConnect
 QList<QgsMapLayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
 {
   return { QgsMapLayerType::VectorLayer };
+}
+
+QIcon QgsOracleProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
 }

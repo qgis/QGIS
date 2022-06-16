@@ -2072,6 +2072,11 @@ QList<QgsDataItemProvider *> QgsWfsProviderMetadata::dataItemProviders() const
 QgsWfsProviderMetadata::QgsWfsProviderMetadata():
   QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
 
+QIcon QgsWfsProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
+}
+
 
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN void *multipleProviderMetadataFactory()

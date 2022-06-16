@@ -245,6 +245,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     QString description() const;
 
     /**
+     * Returns an icon representing the provider.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QIcon icon() const;
+
+    /**
      * Returns the provider metadata capabilities.
      *
      * \since QGIS 3.18

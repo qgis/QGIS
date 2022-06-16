@@ -6512,6 +6512,11 @@ QgsSpatiaLiteProviderMetadata::QgsSpatiaLiteProviderMetadata():
 {
 }
 
+QIcon QgsSpatiaLiteProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconSpatialite.svg" ) );
+}
+
 QList< QgsDataItemProvider * > QgsSpatiaLiteProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;

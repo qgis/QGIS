@@ -1046,6 +1046,11 @@ QgsOgrProviderMetadata::QgsOgrProviderMetadata()
 
 }
 
+QIcon QgsOgrProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVector.svg" ) );
+}
+
 QString QgsOgrProviderMetadata::filters( FilterType type )
 {
   switch ( type )

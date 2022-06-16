@@ -27,6 +27,7 @@
 #include "qgsproviderutils.h"
 
 #include <QFileInfo>
+#include <QIcon>
 
 ///@cond PRIVATE
 
@@ -114,6 +115,11 @@ void QgsEptProvider::generateIndex()
 QgsEptProviderMetadata::QgsEptProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
+}
+
+QIcon QgsEptProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
 }
 
 QgsEptProvider *QgsEptProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

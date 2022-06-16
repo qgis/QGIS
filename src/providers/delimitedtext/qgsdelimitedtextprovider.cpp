@@ -1474,6 +1474,11 @@ QgsDelimitedTextProviderMetadata::QgsDelimitedTextProviderMetadata():
 {
 }
 
+QIcon QgsDelimitedTextProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconDelimitedText.svg" ) );
+}
+
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

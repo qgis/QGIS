@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgsprovidermetadata.h"
 #include "qgsgeonodedataitems.h"
+#include "qgsapplication.h"
 
 static const QString PROVIDER_KEY = QStringLiteral( "geonode" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GeoNode provider" );
@@ -29,6 +30,10 @@ class QgsGeoNodeProviderMetadata: public QgsProviderMetadata
   public:
     QgsGeoNodeProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
 
+    QIcon icon() const override
+    {
+      return QgsApplication::getThemeIcon( QStringLiteral( "mIconGeonode.svg" ) );
+    }
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };
 

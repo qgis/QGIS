@@ -1992,6 +1992,11 @@ QList< QgsDataItemProvider * > QgsWcsProviderMetadata::dataItemProviders() const
 QgsWcsProviderMetadata::QgsWcsProviderMetadata():
   QgsProviderMetadata( QgsWcsProvider::WCS_KEY, QgsWcsProvider::WCS_DESCRIPTION ) {}
 
+QIcon QgsWcsProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWcs.svg" ) );
+}
+
 QVariantMap QgsWcsProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QUrlQuery query { uri };

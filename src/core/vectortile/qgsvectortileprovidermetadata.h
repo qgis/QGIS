@@ -31,6 +31,7 @@ class QgsVectorTileProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsVectorTileProviderMetadata();
+    QIcon icon() const override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 
     // handling of stored connections

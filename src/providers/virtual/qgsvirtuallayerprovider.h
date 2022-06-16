@@ -137,6 +137,7 @@ class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsVirtualLayerProviderMetadata();
+    QIcon icon() const override;
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
