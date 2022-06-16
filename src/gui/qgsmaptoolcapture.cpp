@@ -296,7 +296,15 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
                                    QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance.value(),
                                    QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance.value()
                                  );
-      mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+      if ( QgsWkbTypes::flatType( curved.wkbType() ) != QgsWkbTypes::CompoundCurve )
+      {
+        mCaptureCurve.clear();
+        mCaptureCurve.addCurve( qgsgeometry_cast< const QgsCurve * >( curved.constGet() )->clone() );
+      }
+      else
+      {
+        mCaptureCurve = *qgsgeometry_cast<QgsCompoundCurve *>( curved.constGet() );
+      }
     }
   }
 
