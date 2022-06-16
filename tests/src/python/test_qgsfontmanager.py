@@ -191,56 +191,56 @@ class TestQgsFontManager(unittest.TestCase):
 
     def test_font_download_url(self):
         manager = QgsFontManager()
-        self.assertFalse(manager.urlForFontDownload('xxx'))
-        self.assertEqual(manager.urlForFontDownload('Alegreya SC'), 'https://fonts.google.com/download?family=Alegreya+SC')
-        self.assertEqual(manager.urlForFontDownload('AlegreyaSC'), 'https://fonts.google.com/download?family=Alegreya+SC')
-        self.assertEqual(manager.urlForFontDownload('alegreya_sc'), 'https://fonts.google.com/download?family=Alegreya+SC')
+        self.assertEqual(manager.urlForFontDownload('xxx'), ('', ''))
+        self.assertEqual(manager.urlForFontDownload('Alegreya SC'), ('https://fonts.google.com/download?family=Alegreya+SC', 'Alegreya SC'))
+        self.assertEqual(manager.urlForFontDownload('AlegreyaSC'), ('https://fonts.google.com/download?family=Alegreya+SC', 'Alegreya SC'))
+        self.assertEqual(manager.urlForFontDownload('alegreya_sc'), ('https://fonts.google.com/download?family=Alegreya+SC', 'Alegreya SC'))
 
         self.assertEqual(manager.urlForFontDownload('Roboto'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
 
         self.assertEqual(manager.urlForFontDownload('Open Sans'),
-                         'https://fonts.google.com/download?family=Open+Sans')
+                         ('https://fonts.google.com/download?family=Open+Sans', 'Open Sans'))
 
         self.assertEqual(manager.urlForFontDownload('Open Sans Condensed'),
-                         'https://fonts.google.com/download?family=Open+Sans+Condensed')
+                         ('https://fonts.google.com/download?family=Open+Sans+Condensed', 'Open Sans Condensed'))
 
         self.assertEqual(manager.urlForFontDownload('Noto Sans'),
-                         'https://fonts.google.com/download?family=Noto+Sans')
+                         ('https://fonts.google.com/download?family=Noto+Sans', 'Noto Sans'))
 
-        self.assertEqual(manager.urlForFontDownload('Roboto Condensed'), 'https://fonts.google.com/download?family=Roboto+Condensed')
+        self.assertEqual(manager.urlForFontDownload('Roboto Condensed'), ('https://fonts.google.com/download?family=Roboto+Condensed', 'Roboto Condensed'))
 
         # variants for font names typically seen in vector tile styles
-        self.assertEqual(manager.urlForFontDownload('RobotoCondensedRegular'), 'https://fonts.google.com/download?family=Roboto+Condensed')
-        self.assertEqual(manager.urlForFontDownload('Roboto Condensed Regular'), 'https://fonts.google.com/download?family=Roboto+Condensed')
+        self.assertEqual(manager.urlForFontDownload('RobotoCondensedRegular'), ('https://fonts.google.com/download?family=Roboto+Condensed', 'Roboto Condensed'))
+        self.assertEqual(manager.urlForFontDownload('Roboto Condensed Regular'), ('https://fonts.google.com/download?family=Roboto+Condensed', 'Roboto Condensed'))
         self.assertEqual(manager.urlForFontDownload('Roboto_Condensed_Regular'),
-                         'https://fonts.google.com/download?family=Roboto+Condensed')
+                         ('https://fonts.google.com/download?family=Roboto+Condensed', 'Roboto Condensed'))
 
         # with style names
         self.assertEqual(manager.urlForFontDownload('Roboto Black'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Black Italic'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Bold'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Bold Italic'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Italic'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Light'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Light Italic'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Medium'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Medium Italic'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Regular'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Thin'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
         self.assertEqual(manager.urlForFontDownload('Roboto Thin Italic'),
-                         'https://fonts.google.com/download?family=Roboto')
+                         ('https://fonts.google.com/download?family=Roboto', 'Roboto'))
 
 
 if __name__ == '__main__':

@@ -1099,6 +1099,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   {
     auto splitFontFamily = []( const QString & fontName, QString & family, QString & style ) -> bool
     {
+      QString matchedFamily;
       const QStringList textFontParts = fontName.split( ' ' );
       for ( int i = 1; i < textFontParts.size(); ++i )
       {
@@ -1112,6 +1113,26 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
           style = candidateFontStyle;
           return true;
         }
+        else if ( QgsApplication::fontManager()->tryToDownloadFontFamily( processedFontFamily, matchedFamily ) )
+        {
+          if ( processedFontFamily == matchedFamily )
+          {
+            family = processedFontFamily;
+            style = candidateFontStyle;
+          }
+          else
+          {
+            family = matchedFamily;
+            style = processedFontFamily;
+            style.replace( matchedFamily, QString() );
+            style = style.trimmed();
+            if ( !style.isEmpty() && !candidateFontStyle.isEmpty() )
+            {
+              style += QStringLiteral( " %1" ).arg( candidateFontStyle );
+            }
+          }
+          return true;
+        }
       }
 
       const QString processedFontFamily = QgsApplication::fontManager()->processFontFamilyName( fontName );
@@ -1119,6 +1140,12 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
       {
         // the json isn't following the spec correctly!!
         family = processedFontFamily;
+        style.clear();
+        return true;
+      }
+      else if ( QgsApplication::fontManager()->tryToDownloadFontFamily( processedFontFamily, matchedFamily ) )
+      {
+        family = matchedFamily;
         style.clear();
         return true;
       }
