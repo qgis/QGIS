@@ -142,7 +142,7 @@ class TestQgsFontManager(unittest.TestCase):
     def test_install_font(self):
         manager = QgsFontManager()
         with tempfile.TemporaryDirectory() as user_font_dir:
-            manager.setUserFontDirectory(user_font_dir)
+            manager.addUserFontDirectory(user_font_dir)
 
             spy_installed = QSignalSpy(manager.fontDownloaded)
             spy_failed = QSignalSpy(manager.fontDownloadErrorOccurred)
@@ -159,11 +159,12 @@ class TestQgsFontManager(unittest.TestCase):
             self.assertEqual(spy_installed[0][0], ['Fascinate'])
 
             self.assertTrue(os.path.exists(os.path.join(user_font_dir, 'Fascinate')))
+            self.assertEqual(manager.userFontToFamilyMap(), {os.path.join(user_font_dir, 'Fascinate'): ['Fascinate']})
 
     def test_install_zipped_font(self):
         manager = QgsFontManager()
         with tempfile.TemporaryDirectory() as user_font_dir:
-            manager.setUserFontDirectory(user_font_dir)
+            manager.addUserFontDirectory(user_font_dir)
 
             spy_installed = QSignalSpy(manager.fontDownloaded)
             spy_failed = QSignalSpy(manager.fontDownloadErrorOccurred)
@@ -181,6 +182,8 @@ class TestQgsFontManager(unittest.TestCase):
             self.assertTrue(spy_installed[0][1].startswith('Copyright (c) 2011'))
 
             self.assertTrue(os.path.exists(os.path.join(user_font_dir, 'Fresca-Regular.ttf')))
+
+            self.assertEqual(manager.userFontToFamilyMap(), {os.path.join(user_font_dir, 'Fresca-Regular.ttf'): ['Fresca']})
 
     def test_font_download_url(self):
         manager = QgsFontManager()

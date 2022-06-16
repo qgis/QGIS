@@ -164,13 +164,22 @@ or a zipped archive of font files.
          - licenseDetails: will be populated with font license details, if found
 %End
 
-    void setUserFontDirectory( const QString &directory );
+    void addUserFontDirectory( const QString &directory );
 %Docstring
-Sets the ``directory`` to use for user fonts.
+Adds a ``directory`` to use for user fonts.
 
 This directory will be scanned for any TTF or OTF font files, which will automatically be added and made
-available for use in the QGIS session. Additionally, any fonts downloaded via :py:func:`~QgsFontManager.downloadAndInstallFont` will be
+available for use in the QGIS session.
+
+Additionally, if this is the first user font directory added, any fonts downloaded via :py:func:`~QgsFontManager.downloadAndInstallFont` will be
 installed into this directory.
+%End
+
+    QMap< QString, QStringList > userFontToFamilyMap() const;
+%Docstring
+Returns the mapping of installed user fonts to font families.
+
+The map keys are the file names, the values are a list of families provided by the file.
 %End
 
   signals:

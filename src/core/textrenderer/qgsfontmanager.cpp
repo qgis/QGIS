@@ -95,11 +95,11 @@ void QgsFontManager::storeFamilyReplacements()
 
 void QgsFontManager::installUserFonts()
 {
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
   const QString userProfileFontsDir = QgsApplication::qgisSettingsDirPath() + "fonts";
   QStringList fontDirs { userProfileFontsDir };
 
-  if ( !mUserFontDirectory.isEmpty() )
-    fontDirs << mUserFontDirectory;
+  fontDirs.append( mUserFontDirectories );
 
   for ( const QString &dir : std::as_const( fontDirs ) )
   {
@@ -114,9 +114,15 @@ void QgsFontManager::installUserFonts()
     QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
     for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
     {
-      if ( QFontDatabase::addApplicationFont( infoIt->filePath() ) == -1 )
+      const int id = QFontDatabase::addApplicationFont( infoIt->filePath() );
+      if ( id == -1 )
       {
         QgsDebugMsg( QStringLiteral( "The user font %1 could not be installed" ).arg( infoIt->filePath() ) );
+        mUserFontToFamilyMap.remove( infoIt->filePath() );
+      }
+      else
+      {
+        mUserFontToFamilyMap.insert( infoIt->filePath(), QFontDatabase::applicationFontFamilies( id ) );
       }
     }
   }
@@ -916,7 +922,11 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
 
   QTemporaryFile tempFile;
   QTemporaryDir tempDir;
-  const QString userFontsDir = mUserFontDirectory.isEmpty() ? ( QgsApplication::qgisSettingsDirPath() + "fonts" ) : mUserFontDirectory;
+
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
+  const QString userFontsDir = mUserFontDirectories.empty() ? ( QgsApplication::qgisSettingsDirPath() + "fonts" ) : mUserFontDirectories.at( 0 );
+  locker.unlock();
+
   const QDir fontsDir( userFontsDir );
 
   if ( !tempFile.open() )
@@ -962,7 +972,11 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
       errorMessage = tr( "Could not install font from %1" ).arg( destPath );
       return false;
     }
-
+    else
+    {
+      locker.changeMode( QgsReadWriteLocker::Write );
+      mUserFontToFamilyMap.insert( destPath, foundFamilies );
+    }
     return true;
   }
   else
@@ -971,6 +985,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
     QStringList files;
     if ( QgsZipUtils::unzip( tempFile.fileName(), tempDir.path(), files ) )
     {
+      locker.changeMode( QgsReadWriteLocker::Write );
       for ( const QString &file : std::as_const( files ) )
       {
         const QFileInfo fi( file );
@@ -1006,6 +1021,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
               return false;
             }
             const QStringList foundFamilies = QFontDatabase::applicationFontFamilies( id );
+            mUserFontToFamilyMap.insert( destPath, foundFamilies );
             for ( const QString &found : foundFamilies )
             {
               if ( !families.contains( found ) )
@@ -1022,8 +1038,20 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
   return false;
 }
 
-void QgsFontManager::setUserFontDirectory( const QString &directory )
+void QgsFontManager::addUserFontDirectory( const QString &directory )
 {
-  mUserFontDirectory = directory;
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
+  if ( mUserFontDirectories.contains( directory ) )
+    return;
+
+  locker.changeMode( QgsReadWriteLocker::Write );
+  mUserFontDirectories.append( directory );
+  locker.unlock();
   installUserFonts();
+}
+
+QMap<QString, QStringList> QgsFontManager::userFontToFamilyMap() const
+{
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
+  return mUserFontToFamilyMap;
 }

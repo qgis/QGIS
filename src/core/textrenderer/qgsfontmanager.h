@@ -177,13 +177,22 @@ class CORE_EXPORT QgsFontManager : public QObject
     bool installFontsFromData( const QByteArray &data, QString &errorMessage SIP_OUT, QStringList &families SIP_OUT, QString &licenseDetails SIP_OUT );
 
     /**
-     * Sets the \a directory to use for user fonts.
+     * Adds a \a directory to use for user fonts.
      *
      * This directory will be scanned for any TTF or OTF font files, which will automatically be added and made
-     * available for use in the QGIS session. Additionally, any fonts downloaded via downloadAndInstallFont() will be
+     * available for use in the QGIS session.
+     *
+     * Additionally, if this is the first user font directory added, any fonts downloaded via downloadAndInstallFont() will be
      * installed into this directory.
      */
-    void setUserFontDirectory( const QString &directory );
+    void addUserFontDirectory( const QString &directory );
+
+    /**
+     * Returns the mapping of installed user fonts to font families.
+     *
+     * The map keys are the file names, the values are a list of families provided by the file.
+     */
+    QMap< QString, QStringList > userFontToFamilyMap() const;
 
   signals:
 
@@ -211,8 +220,9 @@ class CORE_EXPORT QgsFontManager : public QObject
 
     QMap< QString, QString > mFamilyReplacements;
     QMap< QString, QString > mLowerCaseFamilyReplacements;
+    QMap< QString, QStringList > mUserFontToFamilyMap;
     mutable QReadWriteLock mReplacementLock;
-    QString mUserFontDirectory;
+    QStringList mUserFontDirectories;
 
     void storeFamilyReplacements();
 };
