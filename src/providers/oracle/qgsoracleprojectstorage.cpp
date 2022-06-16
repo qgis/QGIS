@@ -36,7 +36,7 @@ static bool parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::
   if ( !doc.isObject() )
     return false;
 
-  QJsonObject docObj = doc.object();
+  const QJsonObject docObj = doc.object();
   metadata.lastModified = QDateTime();
   if ( docObj.contains( "last_modified_time" ) )
   {
