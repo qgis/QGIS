@@ -62,6 +62,15 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QTableWidget" name="mTableReplacements">
+        <property name="columnCount">
+         <number>2</number>
+        </property>
+        <column/>
+        <column/>
+       </widget>
+      </item>
       <item row="0" column="2">
        <widget class="QToolButton" name="mButtonRemoveReplacement">
         <property name="toolTip">
@@ -76,13 +85,23 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QTableWidget" name="mTableReplacements">
-        <property name="columnCount">
-         <number>2</number>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>User Fonts</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="mCheckBoxDownloadFonts">
+        <property name="toolTip">
+         <string>If checked, known freely licensed fonts which are not installed locally but are referenced in a project or style will be automatically downloaded and made available for use.</string>
         </property>
-        <column/>
-        <column/>
+        <property name="text">
+         <string>Automatically download missing, freely-licensed fonts</string>
+        </property>
        </widget>
       </item>
      </layout>

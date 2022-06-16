@@ -62,6 +62,8 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
       mTableReplacements->removeRow( row );
     }
   } );
+
+  mCheckBoxDownloadFonts->setChecked( QgsFontManager::settingsDownloadMissingFonts.value() );
 }
 
 void QgsFontOptionsWidget::apply()
@@ -77,6 +79,8 @@ void QgsFontOptionsWidget::apply()
     replacements.insert( original, replacement );
   }
   QgsApplication::fontManager()->setFontFamilyReplacements( replacements );
+
+  QgsFontManager::settingsDownloadMissingFonts.setValue( mCheckBoxDownloadFonts->isChecked() );
 }
 
 //
