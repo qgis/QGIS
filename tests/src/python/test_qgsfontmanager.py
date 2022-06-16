@@ -161,6 +161,10 @@ class TestQgsFontManager(unittest.TestCase):
             self.assertTrue(os.path.exists(os.path.join(user_font_dir, 'Fascinate')))
             self.assertEqual(manager.userFontToFamilyMap(), {os.path.join(user_font_dir, 'Fascinate'): ['Fascinate']})
 
+            manager.removeUserFont(os.path.join(user_font_dir, 'Fascinate'))
+            self.assertFalse(manager.userFontToFamilyMap())
+            self.assertFalse(os.path.exists(os.path.join(user_font_dir, 'Fascinate')))
+
     def test_install_zipped_font(self):
         manager = QgsFontManager()
         with tempfile.TemporaryDirectory() as user_font_dir:
