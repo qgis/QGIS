@@ -5778,6 +5778,11 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   }
   else if ( QString::compare( layerProperty, QStringLiteral( "distance_units" ), Qt::CaseInsensitive ) == 0 )
     return QgsUnitTypes::encodeUnit( layer->crs().mapUnits() );
+  else if ( QString::compare( layerProperty, QStringLiteral( "path" ), Qt::CaseInsensitive ) == 0 )
+  {
+    const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+    return decodedUri.value( QStringLiteral( "path" ) );
+  }
   else if ( QString::compare( layerProperty, QStringLiteral( "type" ), Qt::CaseInsensitive ) == 0 )
   {
     switch ( layer->type() )
@@ -5812,14 +5817,6 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QgsWkbTypes::geometryDisplayString( vLayer->geometryType() );
       else if ( QString::compare( layerProperty, QStringLiteral( "feature_count" ), Qt::CaseInsensitive ) == 0 )
         return QVariant::fromValue( vLayer->featureCount() );
-      else if ( QString::compare( layerProperty, QStringLiteral( "path" ), Qt::CaseInsensitive ) == 0 )
-      {
-        if ( vLayer->dataProvider() )
-        {
-          const QVariantMap decodedUri = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->dataProvider()->dataSourceUri() );
-          return decodedUri.value( QStringLiteral( "path" ) );
-        }
-      }
     }
   }
 
