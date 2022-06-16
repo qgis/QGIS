@@ -3523,7 +3523,8 @@ void QgsOracleProviderMetadata::initProvider()
 
 void QgsOracleProviderMetadata::cleanupProvider()
 {
-  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gOracleProjectStorage );  // destroys the object
+  // destroys the object
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gOracleProjectStorage );
   gOracleProjectStorage = nullptr;
 
   QgsOracleConnPool::cleanupInstance();
