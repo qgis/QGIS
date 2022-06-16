@@ -161,6 +161,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Qt3DCore::QTransform *mTextTransformZ = nullptr;
     QgsCoordinateReferenceSystem mCrs;
     QVector3D mPreviousVector;
+    double mAxisScaleFactor = 1.0;
 
     Qt3DRender::QCamera *mTwoDLabelCamera  = nullptr;
     Qt3DCore::QEntity *mTwoDLabelSceneEntity = nullptr;

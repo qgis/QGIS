@@ -52,9 +52,17 @@ bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs ) const
 
 void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
-  const QString sizeStr = element.attribute( QStringLiteral( "viewportSize" ) );
+  QString sizeStr = element.attribute( QStringLiteral( "defaultViewportSize" ) );
   if ( !sizeStr.isEmpty() )
-    mViewportSize = sizeStr.toInt();
+    mDefaultViewportSize = sizeStr.toInt();
+
+  sizeStr = element.attribute( QStringLiteral( "minViewportRatio" ) );
+  if ( !sizeStr.isEmpty() )
+    mMinViewportRatio = sizeStr.toInt();
+
+  sizeStr = element.attribute( QStringLiteral( "maxViewportRatio" ) );
+  if ( !sizeStr.isEmpty() )
+    mMaxViewportRatio = sizeStr.toInt();
 
   const QString modeStr = element.attribute( QStringLiteral( "mode" ) );
   if ( modeStr == QLatin1String( "Off" ) )
@@ -85,8 +93,14 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 {
   QString str;
 
-  str = QString( "%1" ).arg( mViewportSize );
-  element.setAttribute( QStringLiteral( "viewportSize" ), str );
+  str = QString( "%1" ).arg( mDefaultViewportSize );
+  element.setAttribute( QStringLiteral( "defaultViewportSize" ), str );
+
+  str = QString( "%1" ).arg( mMinViewportRatio );
+  element.setAttribute( QStringLiteral( "minViewportRatio" ), str );
+
+  str = QString( "%1" ).arg( mMaxViewportRatio );
+  element.setAttribute( QStringLiteral( "maxViewportRatio" ), str );
 
   switch ( mMode )
   {

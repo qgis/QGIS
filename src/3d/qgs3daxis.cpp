@@ -1000,34 +1000,78 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
 {
   Qgs3DAxisSettings settings = mMapSettings->get3DAxisSettings();
 
-  float widthRatio = ( float )settings.viewportSize() / mParentWindow->width();
-  float heightRatio = ( float )settings.viewportSize() / mParentWindow->height();
+  double windowWidth = ( double )mParentWindow->width();
+  double windowHeight = ( double )mParentWindow->height();
 
-  float xRatio = 1.0;
-  float yRatio = 1.0;
-  if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorLeft )
-    xRatio = 0.0f;
-  else if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorHorizontalCenter )
-    xRatio = 0.5 - widthRatio / 2.0;
+  // default ratio, axis will start to grow when:
+  // window height or width > settings.defaultViewportSize() / settings.minViewportRatio()
+  double widthRatio = settings.minViewportRatio();
+  double heightRatio = widthRatio * windowWidth / windowHeight;
+
+  if ( widthRatio * windowWidth < ( double )settings.defaultViewportSize() )
+  {
+    widthRatio = settings.defaultViewportSize() / windowWidth;
+    heightRatio = widthRatio * windowWidth / windowHeight;
+    QgsTraceMsg( QString( "3DAxis viewport ratios adjusted to width: %1%% / height: %2%%" ).arg( widthRatio ).arg( heightRatio ) );
+  }
+  if ( heightRatio * windowHeight < ( double )settings.defaultViewportSize() )
+  {
+    heightRatio = settings.defaultViewportSize() / windowHeight;
+    widthRatio = heightRatio * windowWidth / windowHeight;
+    QgsTraceMsg( QString( "3DAxis viewport ratios adjusted to width: %1%% / height: %2%%" ).arg( widthRatio ).arg( heightRatio ) );
+  }
+
+  if ( heightRatio > settings.maxViewportRatio() || widthRatio > settings.maxViewportRatio() )
+  {
+    QgsTraceMsg( "viewport takes too much place into the 3d view, disabling it" );
+    // take too much place into the 3d view
+    mAxisViewport->setEnabled( false );
+    setEnableCube( false );
+    setEnableAxis( false );
+  }
   else
-    xRatio = 1.0 - widthRatio;
+  {
+    // will be used to adjust the axis label translations
+    mAxisScaleFactor = heightRatio * windowHeight / settings.defaultViewportSize();
 
-  if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorTop )
-    yRatio = 0.0f;
-  else if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorVerticalCenter )
-    yRatio = 0.5 - heightRatio / 2.0;
-  else
-    yRatio = 1.0 - heightRatio;
+    if ( ! mAxisViewport->isEnabled() )
+    {
+      if ( settings.mode() == Qgs3DAxisSettings::Mode::Crs )
+        setEnableAxis( true );
+      else if ( settings.mode() == Qgs3DAxisSettings::Mode::Cube )
+        setEnableCube( true );
+    }
+    mAxisViewport->setEnabled( true );
 
-  QgsTraceMsg( QString( "Qgs3DAxis: update viewport: %1 x %2 x %3 x %4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ) );
-  mAxisViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
+    float xRatio = 1.0;
+    float yRatio = 1.0;
+    if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorLeft )
+      xRatio = 0.0f;
+    else if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorHorizontalCenter )
+      xRatio = 0.5 - widthRatio / 2.0;
+    else
+      xRatio = 1.0 - widthRatio;
 
-  mTwoDLabelCamera->lens()->setOrthographicProjection(
-    -mParentWindow->width() / 2.0f, mParentWindow->width() / 2.0f,
-    -mParentWindow->height() / 2.0f, mParentWindow->height() / 2.0f,
-    mTwoDLabelCamera->lens()->nearPlane(), mTwoDLabelCamera->lens()->farPlane() );
+    if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorTop )
+      yRatio = 0.0f;
+    else if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorVerticalCenter )
+      yRatio = 0.5 - heightRatio / 2.0;
+    else
+      yRatio = 1.0 - heightRatio;
 
-  updateAxisLabelPosition();
+    QgsTraceMsg( QString( "Qgs3DAxis: update viewport: %1 x %2 x %3 x %4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ) );
+    mAxisViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
+
+    if ( settings.mode() == Qgs3DAxisSettings::Mode::Crs )
+    {
+      mTwoDLabelCamera->lens()->setOrthographicProjection(
+        -windowWidth / 2.0f, windowWidth / 2.0f,
+        -windowHeight / 2.0f, windowHeight / 2.0f,
+        mTwoDLabelCamera->lens()->nearPlane(), mTwoDLabelCamera->lens()->farPlane() );
+
+      updateAxisLabelPosition();
+    }
+  }
 
   mParentWindow->requestUpdate();
 }
@@ -1068,14 +1112,14 @@ void Qgs3DAxis::updateAxisLabelPosition()
 {
   if ( mTextTransformX && mTextTransformY && mTextTransformZ )
   {
-    mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX, mAxisCamera, mAxisViewport,
-                                     mTwoDLabelCamera, mTwoDLabelViewport,
+    mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX * mAxisScaleFactor, mAxisCamera,
+                                     mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
-    mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY, mAxisCamera, mAxisViewport,
-                                     mTwoDLabelCamera, mTwoDLabelViewport,
+    mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY * mAxisScaleFactor, mAxisCamera,
+                                     mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
-    mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ, mAxisCamera, mAxisViewport,
-                                     mTwoDLabelCamera, mTwoDLabelViewport,
+    mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ * mAxisScaleFactor, mAxisCamera,
+                                     mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
   }
 }
