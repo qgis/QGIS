@@ -851,7 +851,11 @@ QString QgsFontManager::urlForFontDownload( const QString &family ) const
   auto cleanFontFamily = []( const QString & family ) -> QString
   {
     const thread_local QRegularExpression charsToRemove( QStringLiteral( "[^a-z]" ) );
-    return family.toLower().replace( charsToRemove, QString() );
+    const thread_local QRegularExpression styleNames( QStringLiteral( "(?:normal|regular|light|bold|black|demi|italic|oblique|medium|thin)" ) );
+
+    QString processed = family.toLower();
+    processed.replace( styleNames, QString() );
+    return processed.replace( charsToRemove, QString() );
   };
 
   const QString cleanedFamily = cleanFontFamily( family );
