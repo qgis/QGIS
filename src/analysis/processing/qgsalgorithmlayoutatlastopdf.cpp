@@ -69,6 +69,10 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   forceVectorParam->setFlags( forceVectorParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( forceVectorParam.release() );
 
+  std::unique_ptr< QgsProcessingParameterBoolean > forceRasterParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "FORCE_RASTER" ), QObject::tr( "Always export as raster" ), false );
+  forceRasterParam->setFlags( forceRasterParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( forceRasterParam.release() );
+
   std::unique_ptr< QgsProcessingParameterBoolean > appendGeorefParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Append georeference information" ), true );
   appendGeorefParam->setFlags( appendGeorefParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( appendGeorefParam.release() );
@@ -148,6 +152,7 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithmBase::processAlgorithm( const QVariantMa
     settings.dpi = parameterAsDouble( parameters, QStringLiteral( "DPI" ), context );
   }
   settings.forceVectorOutput = parameterAsBool( parameters, QStringLiteral( "FORCE_VECTOR" ), context );
+  settings.rasterizeWholeImage = parameterAsBool( parameters, QStringLiteral( "FORCE_RASTER" ), context );
   settings.appendGeoreference = parameterAsBool( parameters, QStringLiteral( "GEOREFERENCE" ), context );
   settings.exportMetadata = parameterAsBool( parameters, QStringLiteral( "INCLUDE_METADATA" ), context );
   settings.simplifyGeometries = parameterAsBool( parameters, QStringLiteral( "SIMPLIFY" ), context );
