@@ -125,6 +125,30 @@ class CORE_EXPORT QgsFontManager : public QObject
     void installUserFonts() SIP_SKIP;
 
     /**
+     * Tries to download and install the specified font \a family.
+     *
+     * This method will attempt to download missing fonts, if the font download URL
+     * is known and the font is freely licensed.
+     *
+     * Returns TRUE if a download link for the family is known and the
+     * download has commenced, or FALSE if the family is not known and cannot be
+     * automatically downloaded.
+     *
+     * The actual download operation occurs in a background task, and this method
+     * returns immediately. Connect to fontDownloaded() in order to respond when the
+     * font is installed and available for use.
+     */
+    bool tryToDownloadFontFamily( const QString &family );
+
+    /**
+     * Returns the URL at which the font \a family can be downloaded.
+     *
+     * This method relies on a hardcoded list of available freely licensed fonts, and will
+     * return an empty string for any font families not present in this list.
+     */
+    QString urlForFontDownload( const QString &family ) const;
+
+    /**
      * Downloads a font and installs in the user's profile/fonts directory as an application font.
      *
      * The download will proceed in a background task.

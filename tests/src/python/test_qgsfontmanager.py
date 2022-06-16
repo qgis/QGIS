@@ -182,6 +182,13 @@ class TestQgsFontManager(unittest.TestCase):
 
             self.assertTrue(os.path.exists(os.path.join(user_font_dir, 'Fresca-Regular.ttf')))
 
+    def test_font_download_url(self):
+        manager = QgsFontManager()
+        self.assertFalse(manager.urlForFontDownload('xxx'))
+        self.assertEqual(manager.urlForFontDownload('Alegreya SC'), 'https://fonts.google.com/download?family=Alegreya+SC')
+        self.assertEqual(manager.urlForFontDownload('AlegreyaSC'), 'https://fonts.google.com/download?family=Alegreya+SC')
+        self.assertEqual(manager.urlForFontDownload('alegreya_sc'), 'https://fonts.google.com/download?family=Alegreya+SC')
+
 
 if __name__ == '__main__':
     unittest.main()
