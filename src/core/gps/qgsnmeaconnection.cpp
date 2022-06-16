@@ -404,7 +404,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     for ( int i = 0; i < NMEA_MAXSAT; i++ )
     {
       //mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
-      if (result.sat_prn[ i ] != null)
+      if (result.sat_prn[ i ] >0)
         {
           mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
           mLastGPSInformation.satellitesUsed += 1;
