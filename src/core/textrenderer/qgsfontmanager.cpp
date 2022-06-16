@@ -119,10 +119,12 @@ void QgsFontManager::installUserFonts()
       {
         QgsDebugMsg( QStringLiteral( "The user font %1 could not be installed" ).arg( infoIt->filePath() ) );
         mUserFontToFamilyMap.remove( infoIt->filePath() );
+        mUserFontToIdMap.remove( infoIt->filePath() );
       }
       else
       {
         mUserFontToFamilyMap.insert( infoIt->filePath(), QFontDatabase::applicationFontFamilies( id ) );
+        mUserFontToIdMap.insert( infoIt->filePath(), id );
       }
     }
   }
@@ -976,6 +978,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
     {
       locker.changeMode( QgsReadWriteLocker::Write );
       mUserFontToFamilyMap.insert( destPath, foundFamilies );
+      mUserFontToIdMap.insert( destPath, id );
     }
     return true;
   }
@@ -1022,6 +1025,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
             }
             const QStringList foundFamilies = QFontDatabase::applicationFontFamilies( id );
             mUserFontToFamilyMap.insert( destPath, foundFamilies );
+            mUserFontToIdMap.insert( destPath, id );
             for ( const QString &found : foundFamilies )
             {
               if ( !families.contains( found ) )
@@ -1054,4 +1058,16 @@ QMap<QString, QStringList> QgsFontManager::userFontToFamilyMap() const
 {
   QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Read );
   return mUserFontToFamilyMap;
+}
+
+bool QgsFontManager::removeUserFont( const QString &path )
+{
+  QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
+  const int id = mUserFontToIdMap.value( path, -1 );
+  if ( id != -1 )
+    QFontDatabase::removeApplicationFont( id );
+  QFile::remove( path );
+  mUserFontToIdMap.remove( path );
+  mUserFontToFamilyMap.remove( path );
+  return true;
 }

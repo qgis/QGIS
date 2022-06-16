@@ -194,6 +194,11 @@ class CORE_EXPORT QgsFontManager : public QObject
      */
     QMap< QString, QStringList > userFontToFamilyMap() const;
 
+    /**
+     * Removes the user font at the specified \a path.
+     */
+    bool removeUserFont( const QString &path );
+
   signals:
 
     /**
@@ -221,6 +226,7 @@ class CORE_EXPORT QgsFontManager : public QObject
     QMap< QString, QString > mFamilyReplacements;
     QMap< QString, QString > mLowerCaseFamilyReplacements;
     QMap< QString, QStringList > mUserFontToFamilyMap;
+    QMap< QString, int > mUserFontToIdMap;
     mutable QReadWriteLock mReplacementLock;
     QStringList mUserFontDirectories;
 

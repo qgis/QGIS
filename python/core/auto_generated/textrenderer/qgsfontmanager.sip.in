@@ -182,6 +182,11 @@ Returns the mapping of installed user fonts to font families.
 The map keys are the file names, the values are a list of families provided by the file.
 %End
 
+    bool removeUserFont( const QString &path );
+%Docstring
+Removes the user font at the specified ``path``.
+%End
+
   signals:
 
     void fontDownloaded( const QStringList &families, const QString &licenseDetails );
