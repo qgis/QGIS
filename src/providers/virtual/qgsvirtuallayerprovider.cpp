@@ -594,6 +594,7 @@ void QgsVirtualLayerProvider::updateStatistics() const
 void QgsVirtualLayerProvider::invalidateStatistics()
 {
   mCachedStatistics = false;
+  emit dataChanged();
 }
 
 QgsFields QgsVirtualLayerProvider::fields() const
