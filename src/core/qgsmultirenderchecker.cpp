@@ -20,7 +20,7 @@
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {
   if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
-    mEmitCdashMessages = true;
+    mIsCiRun = true;
 }
 
 void QgsMultiRenderChecker::setControlName( const QString &name )
@@ -87,7 +87,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     mReport += checker.report();
   }
 
-  if ( !successful && mEmitCdashMessages )
+  if ( !successful && mIsCiRun )
   {
     const auto constDartMeasurements = dartMeasurements;
     for ( const QgsDartMeasurement &measurement : constDartMeasurements )

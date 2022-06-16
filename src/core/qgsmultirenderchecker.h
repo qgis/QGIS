@@ -146,7 +146,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     int mMaxSizeDifferenceY = 0;
     QgsMapSettings mMapSettings;
 
-    bool mEmitCdashMessages = false;
+    bool mIsCiRun = false;
 };
 
 SIP_FEATURE( TESTS )
