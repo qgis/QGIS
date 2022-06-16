@@ -59,7 +59,7 @@ std::unique_ptr<QgsPointCloudIndex> QgsCopcPointCloudIndex::clone() const
 void QgsCopcPointCloudIndex::load( const QString &fileName )
 {
   mFileName = fileName;
-  mCopcFile.open( fileName.toStdString(), std::ios::binary );
+  mCopcFile.open( QgsLazDecoder::toNativePath( fileName ), std::ios::binary );
 
   if ( !mCopcFile.is_open() || !mCopcFile.good() )
   {
@@ -361,7 +361,7 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
   // QgsCopcPointCloudIndex specific fields
   destination->mIsValid = mIsValid;
   destination->mFileName = mFileName;
-  destination->mCopcFile.open( mFileName.toStdString(), std::ios::binary );
+  destination->mCopcFile.open( QgsLazDecoder::toNativePath( mFileName ), std::ios::binary );
   destination->mCopcInfoVlr = mCopcInfoVlr;
   destination->mHierarchyNodePos = mHierarchyNodePos;
   destination->mOriginalMetadata = mOriginalMetadata;
