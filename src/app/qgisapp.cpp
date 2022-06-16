@@ -1915,6 +1915,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
       messageWidget->layout()->addWidget( detailsButton );
     }
     messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Info, 0 );
+
+    // refresh canvas to get proper rendering using that font
+    const QList< QgsMapCanvas * > canvases = mapCanvases();
+    for ( QgsMapCanvas *canvas : canvases )
+      canvas->refreshAllLayers();
+
   } );
   connect( QgsApplication::fontManager(), &QgsFontManager::fontDownloadErrorOccurred, this, [ = ]( const QUrl &, const QString & identifier, const QString & error )
   {
