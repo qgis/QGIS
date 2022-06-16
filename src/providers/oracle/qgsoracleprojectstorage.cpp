@@ -40,7 +40,7 @@ static bool parseMetadataDocument( const QJsonDocument &doc, QgsProjectStorage::
   metadata.lastModified = QDateTime();
   if ( docObj.contains( "last_modified_time" ) )
   {
-    QString lastModifiedTimeStr = docObj["last_modified_time"].toString();
+    const QString lastModifiedTimeStr = docObj["last_modified_time"].toString();
     if ( !lastModifiedTimeStr.isEmpty() )
     {
       QDateTime lastModifiedUtc = QDateTime::fromString( lastModifiedTimeStr, Qt::ISODate );
