@@ -88,7 +88,7 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
 
   connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
-  connect( mAddLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::addLayer );
+  connect( mAddLayerBtn, &QAbstractButton::clicked, this, [ = ] { addLayer( true ); } );
   connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::removeLayer );
   connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::importLayer );
   connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
@@ -308,7 +308,7 @@ void QgsVirtualLayerSourceSelect::testQuery()
   }
 }
 
-void QgsVirtualLayerSourceSelect::addLayer()
+void QgsVirtualLayerSourceSelect::addLayer( bool browseForLayer )
 {
   mLayersTable->insertRow( mLayersTable->rowCount() );
 
@@ -334,7 +334,10 @@ void QgsVirtualLayerSourceSelect::addLayer()
   encodingCombo->setCurrentIndex( encodingCombo->findText( defaultEnc ) );
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, LayerColumn::Encoding, encodingCombo );
 
-  sourceWidget->browseForLayer();
+  if ( browseForLayer )
+  {
+    sourceWidget->browseForLayer();
+  }
 }
 
 void QgsVirtualLayerSourceSelect::removeLayer()
