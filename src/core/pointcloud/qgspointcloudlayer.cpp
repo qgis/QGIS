@@ -81,11 +81,14 @@ QgsPointCloudLayer *QgsPointCloudLayer::clone() const
   QgsPointCloudLayer *layer = new QgsPointCloudLayer( source(), name(), mProviderKey, mLayerOptions );
   QgsMapLayer::clone( layer );
 
+  if ( mRenderer )
+    layer->setRenderer( mRenderer->clone() );
+
   layer->mElevationProperties = mElevationProperties->clone();
   layer->mElevationProperties->setParent( layer );
 
-  if ( mRenderer )
-    layer->setRenderer( mRenderer->clone() );
+  layer->mLayerOptions = mLayerOptions;
+  layer->mSync3DRendererTo2DRenderer = mSync3DRendererTo2DRenderer;
 
   return layer;
 }

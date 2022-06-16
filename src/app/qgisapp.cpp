@@ -5910,26 +5910,12 @@ void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
       if ( !layer->renderer3D() )
       {
         QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer );
-        // for point clouds we default to a 3d renderer. it just makes sense :)
-        std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2DPointCloudRendererTo3D( pcLayer->renderer() );
-        if ( renderer3D )
-          layer->setRenderer3D( renderer3D.release() );
-        else
+        // If the layer has no 3D renderer and syncing 3D to 2D renderer is enabled, we create a renderer and set it up with the 2D renderer
+        if ( pcLayer->sync3DRendererTo2DRenderer() )
         {
-          // maybe waiting on an index...
-          if ( pcLayer->dataProvider()->indexingState() != QgsPointCloudDataProvider::Indexed )
-          {
-            QPointer< QgsPointCloudLayer > layerPointer( pcLayer );
-            connect( pcLayer->dataProvider(), &QgsPointCloudDataProvider::indexGenerationStateChanged, this, [layerPointer]( QgsPointCloudDataProvider::PointCloudIndexGenerationState state )
-            {
-              if ( !layerPointer || state != QgsPointCloudDataProvider::Indexed )
-                return;
-
-              std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2DPointCloudRendererTo3D( layerPointer->renderer() );
-              if ( renderer3D )
-                layerPointer->setRenderer3D( renderer3D.release() );
-            } );
-          }
+          std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = std::make_unique< QgsPointCloudLayer3DRenderer >();
+          renderer3D->convertFrom2DRenderer( pcLayer->renderer() );
+          layer->setRenderer3D( renderer3D.release() );
         }
       }
 #endif
