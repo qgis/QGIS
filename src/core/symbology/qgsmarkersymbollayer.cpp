@@ -3734,7 +3734,8 @@ void QgsFontMarkerSymbolLayer::resolveFonts( const QVariantMap &properties, cons
 {
   const QString fontFamily = properties.value( QStringLiteral( "font" ), DEFAULT_FONTMARKER_FONT ).toString();
   const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( fontFamily );
-  if ( !QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) )
+  if ( !QgsFontUtils::fontFamilyMatchOnSystem( processedFamily )
+       && !QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily ) )
   {
     context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( processedFamily ) );
   }

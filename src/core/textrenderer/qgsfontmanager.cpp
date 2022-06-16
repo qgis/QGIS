@@ -110,7 +110,7 @@ void QgsFontManager::installUserFonts()
       return;
     }
 
-    const QFileInfoList fileInfoList = QDir( dir ).entryInfoList( QStringList( QStringLiteral( "*.*" ) ), QDir::Files );
+    const QFileInfoList fileInfoList = QDir( dir ).entryInfoList( QStringList( QStringLiteral( "*" ) ), QDir::Files );
     QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
     for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
     {
