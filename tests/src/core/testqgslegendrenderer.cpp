@@ -1607,6 +1607,13 @@ void TestQgsLegendRenderer::testLabelLegend()
 {
   const QString testName( "test_label_legend" );
   QgsPalLayerSettings *labelSettings = new QgsPalLayerSettings();
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 255, 0, 255 ) );
+  labelSettings->setFormat( format );
+
   labelSettings->fieldName = QStringLiteral( "test_attr" );
   QgsRuleBasedLabeling::Rule *rootRule = new QgsRuleBasedLabeling::Rule( nullptr ); //root rule
   QgsRuleBasedLabeling::Rule *labelingRule = new QgsRuleBasedLabeling::Rule( labelSettings, 0, 0, QString(), QStringLiteral( "labelingRule" ) );
