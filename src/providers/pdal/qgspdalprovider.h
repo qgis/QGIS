@@ -72,6 +72,7 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsPdalProviderMetadata();
+    QIcon icon() const override;
     QgsPdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QString encodeUri( const QVariantMap &parts ) const override;

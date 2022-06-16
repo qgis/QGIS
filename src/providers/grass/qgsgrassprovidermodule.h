@@ -281,6 +281,7 @@ class QgsGrassProviderMetadata: public QgsProviderMetadata
 
   public:
     QgsGrassProviderMetadata();
+    QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     void initProvider() override;

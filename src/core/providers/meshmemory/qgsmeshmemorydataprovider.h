@@ -191,6 +191,7 @@ class QgsMeshMemoryProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsMeshMemoryProviderMetadata();
+    QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsMapLayerType > supportedLayerTypes() const override;
 };

@@ -31,7 +31,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
   public:
 
     QgsOgrProviderMetadata();
-
+    QIcon icon() const override;
     void initProvider() override;
     void cleanupProvider() override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;

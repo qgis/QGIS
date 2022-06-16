@@ -2894,6 +2894,11 @@ QgsMssqlProviderMetadata::QgsMssqlProviderMetadata():
 {
 }
 
+QIcon QgsMssqlProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMssql.svg" ) );
+}
+
 QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   const QgsDataSourceUri dsUri( uri );

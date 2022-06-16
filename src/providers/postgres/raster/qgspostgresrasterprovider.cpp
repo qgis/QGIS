@@ -23,6 +23,7 @@
 #include "qgspostgresprovider.h"
 #include "qgsgdalutils.h"
 #include "qgsstringutils.h"
+#include "qgsapplication.h"
 
 #include <QRegularExpression>
 
@@ -544,6 +545,11 @@ QgsPostgresRasterProviderMetadata::QgsPostgresRasterProviderMetadata()
   : QgsProviderMetadata( QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY, QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION )
 {
 
+}
+
+QIcon QgsPostgresRasterProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 
 QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri ) const

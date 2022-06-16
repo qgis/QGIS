@@ -449,6 +449,7 @@ class QgsWcsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWcsProviderMetadata();
+    QIcon icon() const override;
     QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;

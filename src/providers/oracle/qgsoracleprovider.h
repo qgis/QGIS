@@ -439,6 +439,7 @@ class QgsOracleProviderMetadata final: public QgsProviderMetadata
 
   public:
     QgsOracleProviderMetadata();
+    QIcon icon() const override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;

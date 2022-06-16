@@ -23,10 +23,12 @@
 #include "qgsspatialindex.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvariantutils.h"
+#include "qgsapplication.h"
 
 #include <QUrl>
 #include <QUrlQuery>
 #include <QRegularExpression>
+#include <QIcon>
 
 ///@cond PRIVATE
 
@@ -811,6 +813,11 @@ QString QgsMemoryProvider::description() const
 QgsMemoryProviderMetadata::QgsMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription() )
 {
+}
+
+QIcon QgsMemoryProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMemory.svg" ) );
 }
 
 QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

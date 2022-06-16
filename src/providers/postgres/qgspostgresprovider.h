@@ -601,6 +601,7 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsPostgresProviderMetadata();
+    QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, QgsWkbTypes::Type wkbType,

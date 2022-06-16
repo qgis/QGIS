@@ -5947,6 +5947,11 @@ QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
 {
 }
 
+QIcon QgsPostgresProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
+}
+
 #ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

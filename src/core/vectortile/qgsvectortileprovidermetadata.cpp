@@ -17,6 +17,7 @@
 
 #include "qgsvectortileconnection.h"
 #include "qgsvectortiledataitems.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -26,6 +27,11 @@
 QgsVectorTileProviderMetadata::QgsVectorTileProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
+}
+
+QIcon QgsVectorTileProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
 }
 
 QList<QgsDataItemProvider *> QgsVectorTileProviderMetadata::dataItemProviders() const

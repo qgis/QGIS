@@ -372,6 +372,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsGdalProviderMetadata();
+    QIcon icon() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     bool uriIsBlocklisted( const QString &uri ) const override;

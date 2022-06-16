@@ -1240,6 +1240,11 @@ QgsAmsProviderMetadata::QgsAmsProviderMetadata()
 {
 }
 
+QIcon QgsAmsProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconAms.svg" ) );
+}
+
 QgsAmsProvider *QgsAmsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsAmsProvider( uri, options, flags );

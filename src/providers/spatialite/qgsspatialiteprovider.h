@@ -423,6 +423,7 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsSpatiaLiteProviderMetadata();
+    QIcon icon() const override;
 
     void cleanupProvider() override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;

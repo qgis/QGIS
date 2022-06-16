@@ -15,9 +15,11 @@
  ***************************************************************************/
 
 #include <QString>
+#include <QIcon>
 
 #include "qgsgrassrasterprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsapplication.h"
 
 static const QString PROVIDER_KEY = QStringLiteral( "grassraster" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
@@ -36,7 +38,12 @@ class QgsGrassRasterProviderMetadata: public QgsProviderMetadata
     {
       return { QgsMapLayerType::RasterLayer };
     }
+    QIcon icon() const override
+    {
+      return QgsApplication::getThemeIcon( QStringLiteral( "providerGrass.svg" ) );
+    }
 };
+
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

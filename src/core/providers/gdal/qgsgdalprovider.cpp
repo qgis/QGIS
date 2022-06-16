@@ -3972,5 +3972,10 @@ QgsGdalProviderMetadata::QgsGdalProviderMetadata():
 {
 }
 
+QIcon QgsGdalProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) );
+}
+
 ///@endcond
 

@@ -400,6 +400,11 @@ QgsAfsProviderMetadata::QgsAfsProviderMetadata():
 {
 }
 
+QIcon QgsAfsProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconAfs.svg" ) );
+}
+
 QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
 {
   QList<QgsDataItemProvider *> providers;

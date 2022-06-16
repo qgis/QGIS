@@ -187,6 +187,13 @@ This returns descriptive text for the provider
 This is used to provide a descriptive list of available data providers.
 %End
 
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon representing the provider.
+
+.. versionadded:: 3.26
+%End
+
     virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
 %Docstring
 Returns the provider metadata capabilities.

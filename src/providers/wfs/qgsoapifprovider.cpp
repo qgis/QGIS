@@ -25,6 +25,7 @@
 #include "qgswfsutils.h" // for isCompatibleType()
 
 #include <algorithm>
+#include <QIcon>
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
@@ -824,3 +825,8 @@ QList<QgsMapLayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
 
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():
   QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION ) {}
+
+QIcon QgsOapifProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
+}
