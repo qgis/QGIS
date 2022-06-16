@@ -94,6 +94,29 @@
       <string>User Fonts</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="1">
+       <widget class="QToolButton" name="mButtonRemoveUserFont">
+        <property name="toolTip">
+         <string>Remove selected fonts</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QTableWidget" name="mTableUserFonts">
+        <property name="columnCount">
+         <number>2</number>
+        </property>
+        <column/>
+        <column/>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QCheckBox" name="mCheckBoxDownloadFonts">
         <property name="toolTip">
