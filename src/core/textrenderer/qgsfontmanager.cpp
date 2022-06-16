@@ -969,7 +969,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
   int id = QFontDatabase::addApplicationFont( sourcePath );
   if ( id != -1 )
   {
-    // succesfully loaded data as a font
+    // successfully loaded data as a font
     const QStringList foundFamilies = QFontDatabase::applicationFontFamilies( id );
     // remove the application font, as we'll copy it to the final destination and re-add from there
     QFontDatabase::removeApplicationFont( id );
