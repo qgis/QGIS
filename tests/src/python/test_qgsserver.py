@@ -40,7 +40,7 @@ import difflib
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerParameterDefinition
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsMultiRenderChecker, QgsSettings
 from qgis.testing import unittest, start_app
 from qgis.PyQt.QtCore import QSize, QUrlQuery
 from qgis.PyQt.QtGui import QColor
@@ -134,6 +134,7 @@ class QgsServerTestBase(unittest.TestCase):
             except KeyError:
                 pass
 
+        QgsSettings().setValue("/qgis/walForSqlite3", False)
         self.server = QgsServer()
 
         # Disable landing page API to test standard legacy XML responses in case of errors
