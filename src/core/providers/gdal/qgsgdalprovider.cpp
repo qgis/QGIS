@@ -3081,7 +3081,10 @@ void QgsGdalProvider::initBaseDataset()
 
   if ( !mGdalTransformerArg )
   {
+    // silence GDAL "ERROR 1: The transformation is already "north up" or a transformation between pixel/line and georeferenced coordinates cannot be computed" warnings
+    CPLPushErrorHandler( CPLQuietErrorHandler );
     mGdalTransformerArg = GDALCreateGenImgProjTransformer( mGdalBaseDataset, nullptr, nullptr, nullptr, TRUE, 1.0, 0 );
+    CPLPopErrorHandler();
   }
 
   if ( !hasGeoTransform )
