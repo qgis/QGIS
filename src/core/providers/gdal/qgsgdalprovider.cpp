@@ -3014,6 +3014,18 @@ bool QgsGdalProvider::initIfNeeded()
   return mValid;
 }
 
+void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo, const char *msg )
+{
+  // silence GDAL "ERROR 1: The transformation is already "north up" or a transformation between pixel/line and georeferenced coordinates cannot be computed" warnings,
+  // but raise other warnings
+  // see https://github.com/qgis/QGIS/pull/49041#discussion_r899644794
+
+  const thread_local QRegularExpression re( QStringLiteral( ".*north up.*" ) );
+  if ( !re.match( msg ).hasMatch() )
+  {
+    std::cerr << "GDAL ERROR " <<  errNo << ": " << msg << std::endl;
+  }
+}
 
 void QgsGdalProvider::initBaseDataset()
 {
@@ -3081,8 +3093,7 @@ void QgsGdalProvider::initBaseDataset()
 
   if ( !mGdalTransformerArg )
   {
-    // silence GDAL "ERROR 1: The transformation is already "north up" or a transformation between pixel/line and georeferenced coordinates cannot be computed" warnings
-    CPLPushErrorHandler( CPLQuietErrorHandler );
+    CPLPushErrorHandler( showErrorsExceptTransformationAlreadyNorthUp );
     mGdalTransformerArg = GDALCreateGenImgProjTransformer( mGdalBaseDataset, nullptr, nullptr, nullptr, TRUE, 1.0, 0 );
     CPLPopErrorHandler();
   }
