@@ -68,7 +68,7 @@ QStringList QgsOracleProjectStorage::listProjects( const QString &uri )
 {
   QStringList lst;
 
-  QgsOracleProjectUri projectUri = decodeUri( uri );
+  const QgsOracleProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
     return lst;
 
@@ -93,17 +93,17 @@ QStringList QgsOracleProjectStorage::listProjects( const QString &uri )
 
 bool QgsOracleProjectStorage::readProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context )
 {
-  QgsOracleProjectUri projectUri = decodeUri( uri );
+  const QgsOracleProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for Oracle provider: " ) + uri, Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for Oracle provider: %1" ).arg( uri ), Qgis::MessageLevel::Critical );
     return false;
   }
 
   QgsPoolOracleConn pconn( projectUri.connInfo.connectionInfo( false ) );
   if ( !pconn.get() )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: %1" ).arg( projectUri.connInfo.connectionInfo( false ) ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -138,14 +138,14 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
   const QgsOracleProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
-    context.pushMessage( QObject::tr( "Invalid URI for Oracle provider: " ) + uri, Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Invalid URI for Oracle provider: %1" ).arg( uri ), Qgis::MessageLevel::Critical );
     return false;
   }
 
   QgsPoolOracleConn pconn( projectUri.connInfo.connectionInfo( false ) );
   if ( !pconn.get() )
   {
-    context.pushMessage( QObject::tr( "Could not connect to the database: " ) + projectUri.connInfo.connectionInfo( false ), Qgis::MessageLevel::Critical );
+    context.pushMessage( QObject::tr( "Could not connect to the database: %1" ).arg( projectUri.connInfo.connectionInfo( false ) ), Qgis::MessageLevel::Critical );
     return false;
   }
 
@@ -209,7 +209,7 @@ bool QgsOracleProjectStorage::writeProject( const QString &uri, QIODevice *devic
 
 bool QgsOracleProjectStorage::removeProject( const QString &uri )
 {
-  QgsOracleProjectUri projectUri = decodeUri( uri );
+  const QgsOracleProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
     return false;
 
@@ -230,7 +230,7 @@ bool QgsOracleProjectStorage::removeProject( const QString &uri )
 
 bool QgsOracleProjectStorage::readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
 {
-  QgsOracleProjectUri projectUri = decodeUri( uri );
+  const QgsOracleProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
     return false;
 
