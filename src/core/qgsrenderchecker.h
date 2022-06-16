@@ -248,6 +248,7 @@ class CORE_EXPORT QgsRenderChecker
     QString mControlExtension = QStringLiteral( "png" );
     QString mControlPathPrefix;
     QString mControlPathSuffix;
+    bool mEmitCdashMessages = false;
     QVector<QgsDartMeasurement> mDashMessages;
     bool mBufferDashMessages = false;
 }; // class QgsRenderChecker

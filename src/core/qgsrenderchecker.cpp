@@ -31,6 +31,8 @@
 QgsRenderChecker::QgsRenderChecker()
   : mBasePath( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/control_images/" ) ) //defined in CmakeLists.txt
 {
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
+    mEmitCdashMessages = true;
 }
 
 QString QgsRenderChecker::controlImagePath() const
@@ -145,6 +147,9 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
 
 void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement &dashMessage )
 {
+  if ( !mEmitCdashMessages )
+    return;
+
   if ( mBufferDashMessages )
     mDashMessages << dashMessage;
   else
