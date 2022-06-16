@@ -1639,7 +1639,8 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
       for ( const QString &family : std::as_const( families ) )
       {
         const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
-        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) )
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
+             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily ) )
         {
           familyFound = true;
           fontFamily = processedFamily;

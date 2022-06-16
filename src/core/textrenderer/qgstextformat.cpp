@@ -512,21 +512,29 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   mTextFontFound = false;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
-    for ( const QString &family : std::as_const( families ) )
+    if ( QgsApplication::fontManager()->tryToDownloadFontFamily( mTextFontFamily ) )
     {
-      const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
-      if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) )
-      {
-        mTextFontFound = true;
-        fontFamily = processedFamily;
-        break;
-      }
+      mTextFontFound = true;
     }
-
-    if ( !mTextFontFound )
+    else
     {
-      // couldn't even find a matching font in the backup list -- substitute default instead
-      fontFamily = appFont.family();
+      for ( const QString &family : std::as_const( families ) )
+      {
+        const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
+             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily ) )
+        {
+          mTextFontFound = true;
+          fontFamily = processedFamily;
+          break;
+        }
+      }
+
+      if ( !mTextFontFound )
+      {
+        // couldn't even find a matching font in the backup list -- substitute default instead
+        fontFamily = appFont.family();
+      }
     }
   }
   else
