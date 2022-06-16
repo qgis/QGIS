@@ -136,7 +136,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
 
   mPointSizeSpinBox->setToolTip( tr( "The size of each point in pixels" ) );
-  mMaxScreenErrorSpinBox->setToolTip( tr( "The size in pixels of the smallest chunk to be rendered.\nRaising this value will result in a less detailed scene which can improve performance" ) );
+  mMaxScreenErrorSpinBox->setToolTip( tr( "The distance in pixels between the points of the smallest chunk to be rendered.\nRaising this value will result in a less detailed scene which can improve performance" ) );
   mPointBudgetSpinBox->setToolTip( tr( "The maximum number of points that will be rendered simultaneously.\nRaising this value may allow missing chunks to be rendered while lowering it may improve performance" ) );
 }
 
