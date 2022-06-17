@@ -608,7 +608,7 @@ QRadioButton::indicator:hover
 }
 
 /* ==================================================================================== */
-/* GROUP                                                                                */
+/* GROUP / FRAME                                                                        */
 /* ==================================================================================== */
 
 QGroupBox {
@@ -645,6 +645,10 @@ QGroupBox::indicator:checked {
 
 QGroupBox::indicator:checked:disabled {
     image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
+}
+
+QFrame, QFrame:disabled {
+    border:1px solid rgba(0,0,0,0);
 }
 
 /* ==================================================================================== */
