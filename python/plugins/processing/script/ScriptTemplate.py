@@ -191,13 +191,11 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
                 'DISSOLVE': False,
                 'OUTPUT': 'memory:'
             }, context=context, feedback=feedback, is_child_algorithm=True)['OUTPUT']
-            
             # For child algorithms, we disable the default post-processing step where
             # layer ownership is transferred from the context to the caller. In this
             # case, we NEED the ownership to remain with the context, so that further
             # steps in the algorithm have guaranteed access to the layer.
             # If we know for certain that no other parts of the algorithm (or models containing this algorithm) will require the layer, then we can take ownership directly by calling context.takeResultLayer. This causes the layer's ownership to be transferred to Python, so that the normal Python variable scope and garbage collection rules apply.
-            
             buffered_layer = context.takeResultLayer(buffered)
 
         # Return the results of the algorithm. In this case our only result is
