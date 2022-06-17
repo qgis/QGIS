@@ -33,9 +33,9 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QgsCollapsibleGroupBox" name="mOverrideLabelColorGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mOverrideLabelFormatGroupBox">
      <property name="title">
-      <string>Override Label Color</string>
+      <string>Override Label Format</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -43,65 +43,11 @@
      <property name="checked">
       <bool>false</bool>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_6">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Color</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsColorButton" name="btnTextColor">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>10</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QgsCollapsibleGroupBox" name="mOverrideLabelFontGroupBox">
-     <property name="title">
-      <string>Override Label Font</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
        <widget class="QToolButton" name="mFontBoldBtn">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="minimumSize">
          <size>
           <width>24</width>
@@ -120,8 +66,7 @@
          </font>
         </property>
         <property name="toolTip">
-         <string>Bold text
-(data defined only, overrides Style)</string>
+         <string>Bold text</string>
         </property>
         <property name="text">
          <string>B</string>
@@ -133,9 +78,6 @@
       </item>
       <item>
        <widget class="QToolButton" name="mFontItalicBtn">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="minimumSize">
          <size>
           <width>24</width>
@@ -155,8 +97,7 @@
          </font>
         </property>
         <property name="toolTip">
-         <string>Italic text
-(data defined only, overrides Style)</string>
+         <string>Italic text</string>
         </property>
         <property name="text">
          <string>I</string>
@@ -168,9 +109,6 @@
       </item>
       <item>
        <widget class="QToolButton" name="mFontUnderlineBtn">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="minimumSize">
          <size>
           <width>24</width>
@@ -202,9 +140,6 @@
       </item>
       <item>
        <widget class="QToolButton" name="mFontStrikethroughBtn">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
         <property name="minimumSize">
          <size>
           <width>24</width>
@@ -238,23 +173,47 @@
        <widget class="QFontComboBox" name="mFontFamilyCmbBx"/>
       </item>
      </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Color</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsColorButton" name="btnTextColor">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>10</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>43</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
@@ -273,11 +232,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mOverrideLabelFormatGroupBox</tabstop>
   <tabstop>mFontBoldBtn</tabstop>
   <tabstop>mFontItalicBtn</tabstop>
   <tabstop>mFontUnderlineBtn</tabstop>
   <tabstop>mFontStrikethroughBtn</tabstop>
   <tabstop>mFontFamilyCmbBx</tabstop>
+  <tabstop>btnTextColor</tabstop>
  </tabstops>
  <resources/>
  <connections/>
