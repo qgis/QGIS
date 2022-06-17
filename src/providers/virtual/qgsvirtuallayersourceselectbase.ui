@@ -45,6 +45,16 @@
     </layout>
    </item>
    <item>
+     <widget class="QLabel" name="mInformationLabel">
+     <property name="text">
+       <string>Build a layer by referring to the current project's vector layer names and/or any configured embedded layer names as tables in the custom SQL query.</string>
+     </property>
+     <property name="wordWrap">
+       <bool>true</bool>
+     </property>
+     </widget>
+   </item>
+   <item>
     <widget class="QgsCollapsibleGroupBox" name="mEmbeddedlLayersGroup">
      <property name="title">
       <string>Embedded layers</string>
