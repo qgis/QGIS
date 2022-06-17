@@ -77,6 +77,10 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVirtualLayerSourceSelect::showHelp );
 
+  QPushButton *pbn = new QPushButton( tr( "Test" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
+
   mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Point ), tr( "Point" ), static_cast< long long >( QgsWkbTypes::Point ) );
   mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::LineString ), tr( "LineString" ), static_cast< long long >( QgsWkbTypes::LineString ) );
   mGeometryType->addItem( QgsIconUtils::iconForWkbType( QgsWkbTypes::Polygon ), tr( "Polygon" ), static_cast< long long >( QgsWkbTypes::Polygon ) );
@@ -86,7 +90,6 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
 
   mQueryEdit->setLineNumbersVisible( true );
 
-  connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
   connect( mAddLayerBtn, &QAbstractButton::clicked, this, [ = ] { addLayer( true ); } );
   connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::removeLayer );
@@ -489,7 +492,7 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
     }
     else
     {
-      emit addVectorLayer( def.toString(), layerName );
+      emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
     }
   }
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )

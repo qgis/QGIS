@@ -274,25 +274,14 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <item>
-      <widget class="QPushButton" name="mTestButton">
-       <property name="text">
-        <string>Test</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::NoButton</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QDialogButtonBox" name="buttonBox">
+      <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+      <set>QDialogButtonBox::NoButton</set>
+      </property>
+    </widget>
    </item>
   </layout>
  </widget>
