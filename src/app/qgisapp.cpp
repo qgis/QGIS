@@ -6207,10 +6207,8 @@ void QgisApp::addVirtualLayer()
   }
   dts->setMapCanvas( mMapCanvas );
   dts->setBrowserModel( mBrowserModel );
-  connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
-           this, SLOT( onVirtualLayerAdded( QString, QString ) ) );
-  connect( dts, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),
-           this, SLOT( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
+  connect( dts, &QgsAbstractDataSourceWidget::addVectorLayer, this, &QgisApp::addVectorLayer );
+  connect( dts, &QgsAbstractDataSourceWidget::replaceVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
   dts->exec();
   delete dts;
 }
@@ -14948,11 +14946,6 @@ int QgisApp::addDatabaseToolBarIcon( QAction *qAction )
 {
   mDatabaseToolBar->addAction( qAction );
   return 0;
-}
-
-void QgisApp::onVirtualLayerAdded( const QString &uri, const QString &layerName )
-{
-  addVectorLayer( uri, layerName, QStringLiteral( "virtual" ) );
 }
 
 QAction *QgisApp::addDatabaseToolBarWidget( QWidget *widget )
