@@ -116,7 +116,7 @@ QVariant QgsExpressionNodeUnaryOperator::evalNode( QgsExpression *parent, const 
     {
       QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( val, parent );
       ENSURE_NO_EVAL_ERROR
-      return QgsExpressionUtils::tvl2variant( QgsExpressionUtils::NOT[tvl] );
+      return QgsExpressionUtils::tvl2variant( QgsExpressionUtils::NOT[static_cast<int >( tvl )] );
     }
 
     case uoMinus:
@@ -207,9 +207,9 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
   {
     QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent );
     ENSURE_NO_EVAL_ERROR
-    if ( mOp == boAnd && tvlL == QgsExpressionUtils::False )
+    if ( mOp == boAnd && tvlL == QgsExpressionUtils::TVL::False )
       return TVL_False;  // shortcut -- no need to evaluate right-hand side
-    if ( mOp == boOr && tvlL == QgsExpressionUtils::True )
+    if ( mOp == boOr && tvlL == QgsExpressionUtils::TVL::True )
       return TVL_True;  // shortcut -- no need to evaluate right-hand side
   }
 
@@ -335,14 +335,14 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
     {
       QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent ), tvlR = QgsExpressionUtils::getTVLValue( vR, parent );
       ENSURE_NO_EVAL_ERROR
-      return  QgsExpressionUtils::tvl2variant( QgsExpressionUtils::AND[tvlL][tvlR] );
+      return  QgsExpressionUtils::tvl2variant( QgsExpressionUtils::AND[static_cast< int >( tvlL )][static_cast< int >( tvlR )] );
     }
 
     case boOr:
     {
       QgsExpressionUtils::TVL tvlL = QgsExpressionUtils::getTVLValue( vL, parent ), tvlR = QgsExpressionUtils::getTVLValue( vR, parent );
       ENSURE_NO_EVAL_ERROR
-      return  QgsExpressionUtils::tvl2variant( QgsExpressionUtils::OR[tvlL][tvlR] );
+      return  QgsExpressionUtils::tvl2variant( QgsExpressionUtils::OR[static_cast< int >( tvlL )][static_cast< int >( tvlR )] );
     }
 
     case boEQ:
@@ -855,7 +855,7 @@ bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const Qgs
         if ( mOpLeft->hasCachedStaticValue() )
         {
           QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::True )
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::TVL::True )
           {
             mCachedStaticValue = true;
             mHasCachedValue = true;
@@ -869,7 +869,7 @@ bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const Qgs
         if ( mOpRight->hasCachedStaticValue() )
         {
           QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::True )
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::TVL::True )
           {
             mCachedStaticValue = true;
             mHasCachedValue = true;
@@ -891,7 +891,7 @@ bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const Qgs
         if ( mOpLeft->hasCachedStaticValue() )
         {
           QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpLeft->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::False )
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::TVL::False )
           {
             mCachedStaticValue = false;
             mHasCachedValue = true;
@@ -905,7 +905,7 @@ bool QgsExpressionNodeBinaryOperator::isStatic( QgsExpression *parent, const Qgs
         if ( mOpRight->hasCachedStaticValue() )
         {
           QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( mOpRight->cachedStaticValue(), parent );
-          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::False )
+          if ( !parent->hasEvalError() && tvl == QgsExpressionUtils::TVL::False )
           {
             mCachedStaticValue = false;
             mHasCachedValue = true;
@@ -1563,7 +1563,7 @@ QVariant QgsExpressionNodeCondition::evalNode( QgsExpression *parent, const QgsE
     QVariant vWhen = cond->mWhenExp->eval( parent, context );
     QgsExpressionUtils::TVL tvl = QgsExpressionUtils::getTVLValue( vWhen, parent );
     ENSURE_NO_EVAL_ERROR
-    if ( tvl == QgsExpressionUtils::True )
+    if ( tvl == QgsExpressionUtils::TVL::True )
     {
       QVariant vRes = cond->mThenExp->eval( parent, context );
       ENSURE_NO_EVAL_ERROR
@@ -1593,7 +1593,7 @@ bool QgsExpressionNodeCondition::prepareNode( QgsExpression *parent, const QgsEx
       return false;
 
     foundAnyNonStaticConditions |= !cond->mWhenExp->hasCachedStaticValue();
-    if ( !foundAnyNonStaticConditions && QgsExpressionUtils::getTVLValue( cond->mWhenExp->cachedStaticValue(), parent ) == QgsExpressionUtils::True )
+    if ( !foundAnyNonStaticConditions && QgsExpressionUtils::getTVLValue( cond->mWhenExp->cachedStaticValue(), parent ) == QgsExpressionUtils::TVL::True )
     {
       // ok, we now that we'll ALWAYS be picking the same condition, as the "WHEN" clause for this condition (and all previous conditions) is a static
       // value, and the static value for this WHEN clause is True.

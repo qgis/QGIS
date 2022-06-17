@@ -24,18 +24,18 @@
 QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] =
 {
   // false  true    unknown
-  { False, False,   False },   // false
-  { False, True,    Unknown }, // true
-  { False, Unknown, Unknown }  // unknown
+  { TVL::False, TVL::False,   TVL::False },   // false
+  { TVL::False, TVL::True,    TVL::Unknown }, // true
+  { TVL::False, TVL::Unknown, TVL::Unknown }  // unknown
 };
 QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
 {
-  { False,   True, Unknown },  // false
-  { True,    True, True },     // true
-  { Unknown, True, Unknown }   // unknown
+  { TVL::False,   TVL::True, TVL::Unknown },  // false
+  { TVL::True,    TVL::True, TVL::True },     // true
+  { TVL::Unknown, TVL::True, TVL::Unknown }   // unknown
 };
 
-QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
+QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { TVL::True, TVL::False, TVL::Unknown };
 
 
 QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpression *parent, bool report_error )

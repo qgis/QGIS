@@ -52,11 +52,11 @@ class CORE_EXPORT QgsExpressionUtils
 /// @cond PRIVATE
 ///////////////////////////////////////////////
 // three-value logic
-    enum TVL
+    enum class TVL : int
     {
-      False,
-      True,
-      Unknown
+      False = 0,
+      True = 1,
+      Unknown = 2
     };
 
 
@@ -66,22 +66,22 @@ class CORE_EXPORT QgsExpressionUtils
 
     static TVL NOT[3];
 
-#define TVL_True QVariant( 1 )
-#define TVL_False QVariant( 0 )
+#define TVL_True QVariant( true )
+#define TVL_False QVariant( false )
 #define TVL_Unknown QVariant()
 
     static QVariant tvl2variant( TVL v )
     {
       switch ( v )
       {
-        case False:
+        case TVL::False:
           return TVL_False;
-        case True:
+        case TVL::True:
           return TVL_True;
-        case Unknown:
-        default:
+        case TVL::Unknown:
           return TVL_Unknown;
       }
+      BUILTIN_UNREACHABLE
     }
 
 // this handles also NULL values
@@ -89,33 +89,33 @@ class CORE_EXPORT QgsExpressionUtils
     {
       // we need to convert to TVL
       if ( value.isNull() )
-        return Unknown;
+        return TVL::Unknown;
 
       //handle some special cases
       if ( value.canConvert<QgsGeometry>() )
       {
         //geom is false if empty
         const QgsGeometry geom = value.value<QgsGeometry>();
-        return geom.isNull() ? False : True;
+        return geom.isNull() ? TVL::False : TVL::True;
       }
       else if ( value.canConvert<QgsFeature>() )
       {
         //feat is false if non-valid
         const QgsFeature feat = value.value<QgsFeature>();
-        return feat.isValid() ? True : False;
+        return feat.isValid() ? TVL::True : TVL::False;
       }
 
       if ( value.type() == QVariant::Int )
-        return value.toInt() != 0 ? True : False;
+        return value.toInt() != 0 ? TVL::True : TVL::False;
 
       bool ok;
       const double x = value.toDouble( &ok );
       if ( !ok )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
-        return Unknown;
+        return TVL::Unknown;
       }
-      return !qgsDoubleNear( x, 0.0 ) ? True : False;
+      return !qgsDoubleNear( x, 0.0 ) ? TVL::True : TVL::False;
     }
 
 
