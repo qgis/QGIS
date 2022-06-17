@@ -98,6 +98,16 @@ void QgsLayoutAtlasToPdfAlgorithmBase::initAlgorithm( const QVariantMap & )
   std::unique_ptr< QgsProcessingParameterEnum > textFormat = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "TEXT_FORMAT" ), QObject::tr( "Text export" ), textExportOptions, false, 0 );
   textFormat->setFlags( textFormat->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( textFormat.release() );
+
+  const QStringList imageCompressionOptions
+  {
+    QObject::tr( "Lossy (JPEG)" ),
+    QObject::tr( "Lossless" )
+  };
+
+  std::unique_ptr< QgsProcessingParameterEnum > imageCompression = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "IMAGE_COMPRESSION" ), QObject::tr( "Image compression" ), imageCompressionOptions, false, 0 );
+  imageCompression->setFlags( imageCompression->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( imageCompression.release() );
 }
 
 QVariantMap QgsLayoutAtlasToPdfAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -162,6 +172,11 @@ QVariantMap QgsLayoutAtlasToPdfAlgorithmBase::processAlgorithm( const QVariantMa
     settings.flags = settings.flags | QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
   else
     settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagDisableTiledRasterLayerRenders;
+
+  if ( parameterAsEnum( parameters, QStringLiteral( "IMAGE_COMPRESSION" ), context ) == 1 )
+    settings.flags = settings.flags | QgsLayoutRenderContext::FlagLosslessImageRendering;
+  else
+    settings.flags = settings.flags & ~QgsLayoutRenderContext::FlagLosslessImageRendering;
 
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get() );
 
