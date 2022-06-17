@@ -37,12 +37,10 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
     @classmethod
     def setUpClass(cls):
 
-        cls.tmp_dir = QTemporaryDir()
-        shutil.copyfile(os.path.join(unitTestDataPath('qgis_server'), 'test_project_mapthemes.qgs'), os.path.join(cls.tmp_dir.path(), 'test_project_mapthemes.qgs'))
-        shutil.copyfile(os.path.join(unitTestDataPath('qgis_server'), 'test_project_mapthemes.gpkg'), os.path.join(cls.tmp_dir.path(), 'test_project_mapthemes.gpkg'))
+        super().setUpClass()
 
         project = QgsProject()
-        assert (project.read(os.path.join(cls.tmp_dir.path(), 'test_project_mapthemes.qgs')))
+        assert (project.read(os.path.join(cls.temporary_path, 'qgis_server', 'test_project_mapthemes.qgs')))
 
         cls.project = project
         cls.polygon = 'POLYGON((7.09769689415099325 44.92867722467413216, 7.37818833364500737 44.92867722467413216, 7.37818833364500737 45.0714498943264914, 7.09769689415099325 45.0714498943264914, 7.09769689415099325 44.92867722467413216))'
