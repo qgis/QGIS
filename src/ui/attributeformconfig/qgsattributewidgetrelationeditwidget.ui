@@ -7,13 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>340</width>
-    <height>316</height>
+    <height>197</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Widget Relation Edit Widget</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="mLabelLabel">
      <property name="text">
@@ -54,6 +57,16 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mCardinalityLabel_2">
+     <property name="text">
+      <string>Widget Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="mWidgetTypeComboBox"/>
+   </item>
    <item row="4" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mWidgetTypeGroupBox">
      <property name="title">
@@ -64,29 +77,6 @@
        <layout class="QVBoxLayout" name="mWidgetTypePlaceholderLayout"/>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
-    <spacer name="mVerticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="mWidgetTypeComboBox"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mCardinalityLabel_2">
-     <property name="text">
-      <string>Widget Type</string>
-     </property>
     </widget>
    </item>
   </layout>

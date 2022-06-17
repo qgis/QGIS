@@ -37,6 +37,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
     case QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
       QGridLayout *layout = new QGridLayout;
+      layout->setContentsMargins( 0, 0, 0, 0);
       QgsAttributeWidgetRelationEditWidget *editWidget = new QgsAttributeWidgetRelationEditWidget( this );
       editWidget->setRelationEditorConfiguration( itemData.relationEditorConfiguration(), itemData.name() );
       mSpecificEditWidget = editWidget;
