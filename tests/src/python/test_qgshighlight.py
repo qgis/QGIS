@@ -17,26 +17,38 @@ import shutil
 
 from qgis.PyQt.QtCore import (
     QSize,
-    Qt
+    Qt,
+    QDir,
+
 )
 from qgis.PyQt.QtGui import (
     QColor,
     QImage,
     QPainter,
-    QResizeEvent
+    QResizeEvent,
+    QPixmap
 )
 from qgis.core import (
     QgsVectorLayer,
     QgsProject,
     QgsRectangle,
-    QgsRenderChecker
+    QgsRenderChecker,
+    QgsCoordinateReferenceSystem,
+    QgsMultiRenderChecker,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsFillSymbol,
+    QgsSingleSymbolRenderer,
+    QgsSymbol
 )
-from qgis.gui import QgsHighlight
+from qgis.gui import (
+    QgsHighlight,
+    QgsMapCanvas
+)
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 from utilities import unitTestDataPath
 
-start_app()
+app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -48,8 +60,13 @@ class TestQgsHighlight(unittest.TestCase):
         self.iface.mapCanvas().viewport().resize(400, 400)
         # For some reason the resizeEvent is not delivered, fake it
         self.iface.mapCanvas().resizeEvent(QResizeEvent(QSize(400, 400), self.iface.mapCanvas().size()))
+        self.report = "<h1>Python QgsMapCanvas Tests</h1>\n"
 
     def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
         QgsProject.instance().removeAllMapLayers()
 
     def runTestForLayer(self, layer, testname):
@@ -114,6 +131,70 @@ class TestQgsHighlight(unittest.TestCase):
             self.assertTrue(found)
         finally:
             self.iface.mapCanvas().scene().removeItem(highlight)
+
+    def test_feature_transformation(self):
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        layer = QgsVectorLayer(poly_shp, 'Layer', 'ogr')
+
+        sub_symbol = QgsFillSymbol.createSimple({'color': '#8888ff', 'outline_style': 'no'})
+
+        sym = QgsFillSymbol()
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create(
+            {'geometryModifier': 'buffer($geometry, -0.4)'})
+        buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.setSubSymbol(sub_symbol)
+        sym.changeSymbolLayer(0, buffer_layer)
+        layer.setRenderer(QgsSingleSymbolRenderer(sym))
+
+        canvas = QgsMapCanvas()
+        canvas.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        canvas.setFrameStyle(0)
+        canvas.resize(600, 400)
+        self.assertEqual(canvas.width(), 600)
+        self.assertEqual(canvas.height(), 400)
+
+        canvas.setLayers([layer])
+        canvas.setExtent(QgsRectangle(-11960254, 4247568, -11072454, 4983088))
+        canvas.show()
+
+        # need to wait until first redraw can occur (note that we first need to wait till drawing starts!)
+        while not canvas.isDrawing():
+            app.processEvents()
+        canvas.waitWhileRendering()
+
+        feature = layer.getFeature(1)
+        self.assertTrue(feature.isValid())
+
+        highlight = QgsHighlight(canvas, feature, layer)
+        color = QColor(Qt.red)
+        highlight.setColor(color)
+        color.setAlpha(50)
+        highlight.setFillColor(color)
+        highlight.show()
+        highlight.show()
+
+        self.assertTrue(self.canvasImageCheck('highlight_transform', 'highlight_transform', canvas))
+
+    def canvasImageCheck(self, name, reference_image, canvas):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'rendered_' + name + ".png"
+
+        image = QImage(canvas.size(), QImage.Format_ARGB32)
+        painter = QPainter(image)
+        canvas.render(painter)
+        painter.end()
+        image.save(file_name)
+
+        checker = QgsMultiRenderChecker()
+        checker.setControlPathPrefix("highlight")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.runTest(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':
