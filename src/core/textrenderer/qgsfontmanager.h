@@ -254,6 +254,7 @@ class CORE_EXPORT QgsFontManager : public QObject
     QMap< QString, QString > mDeferredFontDownloads;
 
     void storeFamilyReplacements();
+    void installFontsFromDirectory( const QString &dir );
 };
 
 #endif // QGSFONTMANAGER_H
