@@ -88,6 +88,13 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     QNetworkReply *reply();
 
     /**
+     * Returns the associated filename from the reply's content disposition header, if present.
+     *
+     * \since QGIS 3.28
+     */
+    QString contentDispositionFilename() const;
+
+    /**
      * Returns the fetched content as a string
      *
      * \warning This should only be accessed from a slot connected directly to

@@ -18,6 +18,7 @@
 
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"
+#include "qgsnetworkreply.h"
 #include <QEventLoop>
 
 QgsNetworkContentFetcherTask::QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg, QgsTask::Flags flags, const QString &description )
@@ -88,6 +89,11 @@ void QgsNetworkContentFetcherTask::cancel()
 QNetworkReply *QgsNetworkContentFetcherTask::reply()
 {
   return mFetcher ? mFetcher->reply() : nullptr;
+}
+
+QString QgsNetworkContentFetcherTask::contentDispositionFilename() const
+{
+  return mFetcher ? mFetcher->contentDispositionFilename() : QString();
 }
 
 QString QgsNetworkContentFetcherTask::contentAsString() const
