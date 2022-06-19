@@ -96,6 +96,11 @@ QNetworkReply *QgsNetworkContentFetcher::reply()
   return mReply;
 }
 
+QString QgsNetworkContentFetcher::contentDispositionFilename() const
+{
+  return mReply ? QgsNetworkReplyContent::extractFilenameFromContentDispositionHeader( mReply ) : QString();
+}
+
 QString QgsNetworkContentFetcher::contentAsString() const
 {
   if ( !mContentLoaded || !mReply )
