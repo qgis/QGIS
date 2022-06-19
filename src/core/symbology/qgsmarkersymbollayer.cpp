@@ -1528,7 +1528,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
   t.translate( shift.x() + off.x(), shift.y() - off.y() );
 
   if ( !qgsDoubleNear( angle, 0.0 ) )
-    t.rotate( angle );
+    t.rotate( -angle );
 
   QPolygonF polygon;
   if ( shapeToPolygon( shape, polygon ) )
