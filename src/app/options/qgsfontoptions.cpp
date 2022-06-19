@@ -142,7 +142,6 @@ void QgsFontOptionsWidget::apply()
 QgsFontOptionsFactory::QgsFontOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon() )
 {
-
 }
 
 QIcon QgsFontOptionsFactory::icon() const

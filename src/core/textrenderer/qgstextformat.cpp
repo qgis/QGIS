@@ -24,6 +24,7 @@
 #include "qgspallabeling.h"
 #include "qgsconfig.h"
 #include "qgsfontmanager.h"
+
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QWidget>

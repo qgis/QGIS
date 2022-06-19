@@ -1920,8 +1920,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     const QList< QgsMapCanvas * > canvases = mapCanvases();
     for ( QgsMapCanvas *canvas : canvases )
       canvas->refreshAllLayers();
-
   } );
+
   connect( QgsApplication::fontManager(), &QgsFontManager::fontDownloadErrorOccurred, this, [ = ]( const QUrl &, const QString & identifier, const QString & error )
   {
     const QString shortMessage = identifier.isEmpty() ? tr( "Font installation failed" )
