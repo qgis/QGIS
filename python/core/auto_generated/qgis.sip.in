@@ -1179,6 +1179,17 @@ The development version
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
 
 
+    enum class MapBoxGlStyleSourceType
+    {
+      Vector,
+      Raster,
+      RasterDem,
+      GeoJson,
+      Image,
+      Video,
+      Unknown,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

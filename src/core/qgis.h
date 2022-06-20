@@ -2014,6 +2014,23 @@ class CORE_EXPORT Qgis
     Q_FLAG( ProjectReadFlags )
 
     /**
+     * Available MapBox GL style source types.
+     *
+     * \since QGIS 3.28
+     */
+    enum class MapBoxGlStyleSourceType : int
+    {
+      Vector, //!< Vector source
+      Raster, //!< Raster source
+      RasterDem, //!< Raster DEM source
+      GeoJson, //!< GeoJSON source
+      Image, //!< Image source
+      Video, //!< Video source
+      Unknown, //!< Other/unknown source type
+    };
+    Q_ENUM( MapBoxGlStyleSourceType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
