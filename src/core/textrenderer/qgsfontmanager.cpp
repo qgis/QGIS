@@ -938,7 +938,6 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
   QgsNetworkContentFetcherTask *task = new QgsNetworkContentFetcherTask( url, QString(), QgsTask::CanCancel, description );
   connect( task, &QgsNetworkContentFetcherTask::fetched, this, [ = ]
   {
-
     if ( task->reply()->error() != QNetworkReply::NoError )
     {
       emit fontDownloadErrorOccurred( url, identifier, task->reply()->errorString() );
@@ -948,7 +947,7 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
       QString errorMessage;
       QStringList families;
       QString licenseDetails;
-      if ( installFontsFromData( task->reply()->readAll(), errorMessage, families, licenseDetails ) )
+      if ( installFontsFromData( task->reply()->readAll(), errorMessage, families, licenseDetails, task->contentDispositionFilename() ) )
       {
         QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
         mPendingFontDownloads.remove( identifier );
@@ -969,7 +968,7 @@ void QgsFontManager::downloadAndInstallFont( const QUrl &url, const QString &ide
   QgsApplication::taskManager()->addTask( task );
 }
 
-bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &errorMessage, QStringList &families, QString &licenseDetails )
+bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &errorMessage, QStringList &families, QString &licenseDetails, const QString &filename )
 {
   errorMessage.clear();
   families.clear();
@@ -1014,7 +1013,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
     families = foundFamilies;
     // guess a good name for the file, by taking the first family name from the font
     const QString family = families.at( 0 );
-    const QString destPath = fontsDir.filePath( family );
+    const QString destPath = fontsDir.filePath( filename.isEmpty() ? family : filename );
     if ( !QFile::copy( sourcePath, destPath ) )
     {
       errorMessage = tr( "Could not copy font to %1" ).arg( destPath );

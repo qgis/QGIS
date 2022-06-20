@@ -190,10 +190,11 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \param errorMessage will be set to a descriptive error message if the installation fails
      * \param families will be populated with a list of font families installed from the data
      * \param licenseDetails will be populated with font license details, if found
+     * \param filename filename hint for destination file. Will be ignored for archived content (e.g. zip file data)
      *
      * \returns TRUE if installation was successful.
      */
-    bool installFontsFromData( const QByteArray &data, QString &errorMessage SIP_OUT, QStringList &families SIP_OUT, QString &licenseDetails SIP_OUT );
+    bool installFontsFromData( const QByteArray &data, QString &errorMessage SIP_OUT, QStringList &families SIP_OUT, QString &licenseDetails SIP_OUT, const QString &filename = QString() );
 
     /**
      * Adds a \a directory to use for user fonts.
