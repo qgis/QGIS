@@ -212,14 +212,6 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   if ( !hDriver )
     return;
 
-  mCapabilities =
-  {
-    Capability::DeleteField, // No generic way in GDAL to test this per driver/dataset yet
-    Capability::AddField, // No generic way in GDAL to test this per driver/dataset yet
-    Capability::CreateVectorTable, // No generic way in GDAL to test this per driver yet, only by opening the dataset in advance in update mode
-    Capability::DropVectorTable, // No generic way in GDAL to test this per driver yet, only by opening the dataset in advance in update mode
-  };
-
   mGeometryColumnCapabilities =
   {
     GeometryColumnCapability::Z, // No generic way in GDAL to test these per driver/dataset yet
@@ -239,6 +231,18 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
     if ( OGR_DS_TestCapability( hDS.get(), ODsCMeasuredGeometries ) )
       mGeometryColumnCapabilities |= GeometryColumnCapability::M;
+
+    if ( OGR_DS_TestCapability( hDS.get(), ODsCCreateLayer ) )
+      mCapabilities |= CreateVectorTable;
+
+    if ( OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer ) )
+      mCapabilities |= DropVectorTable;
+
+    if ( OGR_DS_TestCapability( hDS.get(), OLCCreateField ) )
+      mCapabilities |= AddField;
+
+    if ( OGR_DS_TestCapability( hDS.get(), OLCDeleteField ) )
+      mCapabilities |= DeleteField;
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
