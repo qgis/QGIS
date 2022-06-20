@@ -2309,7 +2309,8 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
       QString error;
       QStringList warnings;
-      bool res = layer->loadDefaultStyle( error, warnings );
+      QList< QgsMapLayer * > subLayers;
+      bool res = layer->loadDefaultStyleAndSubLayers( error, warnings, subLayers );
       if ( res && !warnings.empty() )
       {
         QString message = QStringLiteral( "<p>%1</p>" ).arg( tr( "The following warnings were generated while converting the vector tile style:" ) );
@@ -2327,6 +2328,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
                                message, Qgis::MessageLevel::Warning );
       }
       addMapLayer( layer );
+
+      for ( QgsMapLayer *subLayer : std::as_const( subLayers ) )
+        addMapLayer( subLayer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
