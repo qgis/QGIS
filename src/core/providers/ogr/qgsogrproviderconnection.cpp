@@ -29,6 +29,7 @@
 #include "qgsogrproviderutils.h"
 #include "qgsgdalutils.h"
 #include "qgsdbquerylog.h"
+#include "qgsprovidersublayerdetails.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -183,6 +184,31 @@ QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name
   return QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->encodeUri( parts );
 }
 
+QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsOgrProviderConnection::tables( const QString &, const TableFlags &flags ) const
+{
+  QList<QgsAbstractDatabaseProviderConnection::TableProperty> tableInfo;
+
+  QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  const QList< QgsProviderSublayerDetails > subLayers = metadata->querySublayers( uri(), Qgis::SublayerQueryFlag::IncludeSystemTables, nullptr );
+
+  tableInfo.reserve( subLayers.size() );
+  for ( const QgsProviderSublayerDetails &subLayer : subLayers )
+  {
+    tableInfo.append( table( QString(), subLayer.name() ) );
+  }
+
+  // Filters
+  if ( flags )
+  {
+    tableInfo.erase( std::remove_if( tableInfo.begin(), tableInfo.end(), [ & ]( const QgsAbstractDatabaseProviderConnection::TableProperty & ti )
+    {
+      return !( ti.flags() & flags );
+    } ), tableInfo.end() );
+  }
+
+  return tableInfo;
+}
+
 QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::table( const QString &, const QString &table ) const
 {
   const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
@@ -331,7 +357,8 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   char **driverMetadata = GDALGetMetadata( hDriver, nullptr );
 
   mCapabilities = Capability::SqlLayers
-                  | Capability::ExecuteSql;
+                  | Capability::ExecuteSql
+                  | Capability::Tables;
 
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
     mCapabilities |= Capability::Spatial;
