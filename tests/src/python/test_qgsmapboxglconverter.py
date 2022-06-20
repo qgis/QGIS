@@ -874,6 +874,34 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertFalse(labeling_style.labelSettings().isExpression)
         self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
 
+    def testLabelWithStops(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": {
+                    "stops": [
+                        [
+                            6,
+                            ""
+                        ],
+                        [
+                            15,
+                            "my {class} and {stuff}"
+                        ]
+                    ]
+                }
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertTrue(labeling_style.labelSettings().isExpression)
+        self.assertEqual(labeling_style.labelSettings().fieldName, 'CASE WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom < 15 THEN concat(\'my \',"class",\' and \',"stuff") WHEN @vector_tile_zoom >= 15 THEN concat(\'my \',"class",\' and \',"stuff") ELSE \'\' END')
+
 
 if __name__ == '__main__':
     unittest.main()
