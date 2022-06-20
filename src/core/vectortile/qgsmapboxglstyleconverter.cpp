@@ -1090,7 +1090,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     {
       QString matchedFamily;
       const QStringList textFontParts = fontName.split( ' ' );
-      for ( int i = 1; i < textFontParts.size(); ++i )
+      for ( int i = textFontParts.size() - 1; i >= 1; --i )
       {
         const QString candidateFontFamily = textFontParts.mid( 0, i ).join( ' ' );
         const QString candidateFontStyle = textFontParts.mid( i ).join( ' ' );
