@@ -1072,7 +1072,8 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
           {
             QFontDatabase::removeApplicationFont( id );
             const QString destPath = fontsDir.filePath( fi.fileName() );
-            if ( !QFile::copy( sourcePath, destPath ) )
+            // dest path may already exist for zip files -- e.g if a single zip contains a number of font variants
+            if ( !QFile::exists( destPath ) && !QFile::copy( sourcePath, destPath ) )
             {
               errorMessage = tr( "Could not copy font to %1" ).arg( destPath );
               return false;
