@@ -2327,10 +2327,59 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
         showLayerLoadWarnings( tr( "Vector tiles" ), tr( "Style could not be completely converted" ),
                                message, Qgis::MessageLevel::Warning );
       }
-      addMapLayer( layer );
 
-      for ( QgsMapLayer *subLayer : std::as_const( subLayers ) )
-        addMapLayer( subLayer );
+      if ( subLayers.empty() )
+      {
+        addMapLayer( layer );
+      }
+      else
+      {
+        // if there's any sublayers, we add them all to a group to keep things together
+        const QString groupName = layer->name();
+        QgsLayerTreeGroup *group = nullptr;
+        int index { 0 };
+        QgsLayerTreeNode *currentNode { mLayerTreeView->currentNode() };
+        if ( currentNode && currentNode->parent() )
+        {
+          if ( QgsLayerTree::isGroup( currentNode ) )
+          {
+            group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
+          }
+          else if ( QgsLayerTree::isLayer( currentNode ) )
+          {
+            const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+            int nodeIdx { 0 };
+            for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+            {
+              nodeIdx++;
+              if ( child == currentNode )
+              {
+                index = nodeIdx;
+                break;
+              }
+            }
+            group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+          }
+          else
+          {
+            group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+          }
+        }
+        else
+        {
+          group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+        }
+
+        // sublayers get added first, because we want them to render on top of the vector tile layer (for now, maybe in future we can add support
+        // for rendering them amongst the vector tile layers(!) or for rendering them below the vector tile layer)
+        for ( QgsMapLayer *subLayer : std::as_const( subLayers ) )
+        {
+          QgsProject::instance()->addMapLayer( subLayer, false );
+          group->addLayer( subLayer );
+        }
+        QgsProject::instance()->addMapLayer( layer, false );
+        group->addLayer( layer );
+      }
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
