@@ -41,6 +41,7 @@
 #include "qgis.h"
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterpipe.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
@@ -116,6 +117,22 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
 
     const QString styleId = jsonLayer.value( QStringLiteral( "id" ) ).toString();
     context->setLayerId( styleId );
+
+    if ( layerType.compare( QLatin1String( "raster" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QgsMapBoxGlStyleRasterSubLayer raster( styleId, jsonLayer.value( QStringLiteral( "source" ) ).toString() );
+      const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
+      if ( jsonPaint.contains( QStringLiteral( "raster-opacity" ) ) )
+      {
+        const QVariant jsonRasterOpacity = jsonPaint.value( QStringLiteral( "raster-opacity" ) );
+        double defaultOpacity = 1;
+        raster.dataDefinedProperties().setProperty( QgsRasterPipe::Property::RendererOpacity, parseInterpolateByZoom( jsonRasterOpacity.toMap(), *context, 100, &defaultOpacity ) );
+      }
+
+      mRasterSubLayers.append( raster );
+      continue;
+    }
+
     const QString layerName = jsonLayer.value( QStringLiteral( "source-layer" ) ).toString();
 
     const int minZoom = jsonLayer.value( QStringLiteral( "minzoom" ), QStringLiteral( "-1" ) ).toInt();
@@ -3381,12 +3398,42 @@ QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
   return mLabeling ? mLabeling->clone() : nullptr;
 }
 
-QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::takeSources()
+QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::sources()
 {
-  QList< QgsMapBoxGlStyleAbstractSource * > sources = mSources;
-  mSources.clear();
-  return sources;
+  return mSources;
 }
+
+QList<QgsMapBoxGlStyleRasterSubLayer> QgsMapBoxGlStyleConverter::rasterSubLayers() const
+{
+  return mRasterSubLayers;
+}
+
+QList<QgsMapLayer *> QgsMapBoxGlStyleConverter::createSubLayers() const
+{
+  QList<QgsMapLayer *> subLayers;
+  for ( const QgsMapBoxGlStyleRasterSubLayer &subLayer : mRasterSubLayers )
+  {
+    const QString sourceName = subLayer.source();
+    std::unique_ptr< QgsRasterLayer > rl;
+    for ( const QgsMapBoxGlStyleAbstractSource *source : mSources )
+    {
+      if ( source->type() == Qgis::MapBoxGlStyleSourceType::Raster && source->name() == sourceName )
+      {
+        const QgsMapBoxGlStyleRasterSource *rasterSource = qgis::down_cast< const QgsMapBoxGlStyleRasterSource * >( source );
+        rl.reset( rasterSource->toRasterLayer() );
+        rl->pipe()->setDataDefinedProperties( subLayer.dataDefinedProperties() );
+        break;
+      }
+    }
+
+    if ( rl )
+    {
+      subLayers.append( rl.release() );
+    }
+  }
+  return subLayers;
+}
+
 
 void QgsMapBoxGlStyleConverter::parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context )
 {
@@ -3600,4 +3647,14 @@ QgsRasterLayer *QgsMapBoxGlStyleRasterSource::toRasterLayer() const
 
   std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts ), name(), QStringLiteral( "wms" ) );
   return rl.release();
+}
+
+//
+// QgsMapBoxGlStyleRasterSubLayer
+//
+QgsMapBoxGlStyleRasterSubLayer::QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source )
+  : mId( id )
+  , mSource( source )
+{
+
 }
