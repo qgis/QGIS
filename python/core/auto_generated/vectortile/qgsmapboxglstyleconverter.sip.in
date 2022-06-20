@@ -263,14 +263,55 @@ The caller takes ownership of the returned layer.
 
 
 
+class QgsMapBoxGlStyleRasterSubLayer
+{
+%Docstring(signature="appended")
+Encapsulates a MapBox GL style raster sub layer.
+
+.. warning::
+
+   This is private API only, and may change in future QGIS versions
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsmapboxglstyleconverter.h"
+%End
+  public:
+
+    QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source );
+%Docstring
+Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given ``id`` and ``source``.
+%End
+
+    QString id() const;
+%Docstring
+Returns the layer's ID.
+%End
+
+    QString source() const;
+%Docstring
+Returns the layer's source.
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the layer's data defined properties.
+%End
+
+
+};
+
+
 class QgsMapBoxGlStyleConverter
 {
 %Docstring(signature="appended")
 Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
 settings.
 
-Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleRasterSource.convert` with either a JSON map or JSON
-string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleRasterSource.renderer` or :py:func:`~QgsMapBoxGlStyleRasterSource.labeling`
+Conversions are performed by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.convert` with either a JSON map or JSON
+string value, and then retrieving the results by calling :py:func:`~QgsMapBoxGlStyleRasterSubLayer.renderer` or :py:func:`~QgsMapBoxGlStyleRasterSubLayer.labeling`
 respectively.
 
 .. versionadded:: 3.16
@@ -360,11 +401,25 @@ Returns a new instance of a vector tile labeling representing the converted styl
 or ``None`` if the style could not be converted successfully.
 %End
 
-    QList< QgsMapBoxGlStyleAbstractSource * > takeSources() /Factory/;
+    QList< QgsMapBoxGlStyleAbstractSource * > sources();
 %Docstring
 Returns the list of converted sources.
 
-Ownership is transferred to the caller.
+.. versionadded:: 3.28
+%End
+
+    QList< QgsMapBoxGlStyleRasterSubLayer > rasterSubLayers() const;
+%Docstring
+Returns a list of raster sub layers contained in the style.
+
+.. versionadded:: 3.28
+%End
+
+    QList< QgsMapLayer * > createSubLayers() const /Factory/;
+%Docstring
+Returns a list of new map layers corresponding to sublayers of the style, e.g. raster layers.
+
+The caller takes ownership of the returned layers.
 
 .. versionadded:: 3.28
 %End

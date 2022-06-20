@@ -22,7 +22,8 @@ from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsFontManager,
                        QgsSettings,
                        Qgis,
-                       QgsRasterLayer
+                       QgsRasterLayer,
+                       QgsRasterPipe
                        )
 from qgis.testing import start_app, unittest
 
@@ -959,13 +960,51 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                     "attribution": "© 2022",
                 }
             },
-            "layers": []
+            "layers": [
+                {
+                    "layout": {
+                        "visibility": "visible"
+                    },
+                    "paint": {
+                        "raster-brightness-min": 0,
+                        "raster-opacity": {
+                            "stops": [
+                                [
+                                    1,
+                                    0.35
+                                ],
+                                [
+                                    7,
+                                    0.35
+                                ],
+                                [
+                                    8,
+                                    0.65
+                                ],
+                                [
+                                    15,
+                                    0.65
+                                ],
+                                [
+                                    16,
+                                    0.3
+                                ]
+                            ]
+                        },
+                        "raster-resampling": "nearest",
+                        "raster-contrast": 0
+                    },
+                    "id": "texture-relief-combined",
+                    "source": "Texture-Relief",
+                    "type": "raster"
+                },
+            ]
         }
 
         converter = QgsMapBoxGlStyleConverter()
         converter.convert(style, context)
 
-        sources = converter.takeSources()
+        sources = converter.sources()
         self.assertEqual(len(sources), 1)
 
         raster_source = sources[0]
@@ -984,6 +1023,15 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertIsInstance(rl, QgsRasterLayer)
         self.assertEqual(rl.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
         self.assertEqual(rl.providerType(), 'wms')
+
+        # raster sublayers
+        sub_layers = converter.createSubLayers()
+        self.assertEqual(len(sub_layers), 1)
+        raster_layer = sub_layers[0]
+        self.assertIsInstance(raster_layer, QgsRasterLayer)
+        self.assertEqual(raster_layer.name(), 'Texture-Relief')
+        self.assertEqual(raster_layer.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
+        self.assertEqual(raster_layer.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity).asExpression(), 'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 7 THEN 35 WHEN @vector_tile_zoom > 7 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,7,8,0.35,0.65) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 15 THEN 65 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,15,16,0.65,0.3) * 100 WHEN @vector_tile_zoom > 16 THEN 30 END')
 
     def testLabelWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()

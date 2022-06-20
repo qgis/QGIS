@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsproperty.h"
+#include "qgspropertycollection.h"
 #include <QVariantMap>
 #include <memory>
 #include <QImage>
@@ -281,6 +282,50 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstract
 
 
 /**
+ * Encapsulates a MapBox GL style raster sub layer.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsMapBoxGlStyleRasterSubLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given \a id and \a source.
+     */
+    QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source );
+
+    /**
+     * Returns the layer's ID.
+     */
+    QString id() const { return mId; }
+
+    /**
+     * Returns the layer's source.
+     */
+    QString source() const { return mSource; }
+
+    /**
+     * Returns a reference to the layer's data defined properties.
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the layer's data defined properties.
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+  private:
+
+    QString mId;
+    QString mSource;
+    QgsPropertyCollection mDataDefinedProperties;
+
+};
+
+
+/**
  * \ingroup core
  * \brief Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
  * settings.
@@ -386,11 +431,25 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     /**
      * Returns the list of converted sources.
      *
-     * Ownership is transferred to the caller.
+     * \since QGIS 3.28
+     */
+    QList< QgsMapBoxGlStyleAbstractSource * > sources();
+
+    /**
+     * Returns a list of raster sub layers contained in the style.
      *
      * \since QGIS 3.28
      */
-    QList< QgsMapBoxGlStyleAbstractSource * > takeSources() SIP_FACTORY;
+    QList< QgsMapBoxGlStyleRasterSubLayer > rasterSubLayers() const;
+
+    /**
+     * Returns a list of new map layers corresponding to sublayers of the style, e.g. raster layers.
+     *
+     * The caller takes ownership of the returned layers.
+     *
+     * \since QGIS 3.28
+     */
+    QList< QgsMapLayer * > createSubLayers() const SIP_FACTORY;
 
   protected:
 
@@ -726,6 +785,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     std::unique_ptr< QgsVectorTileLabeling > mLabeling;
 
     QList< QgsMapBoxGlStyleAbstractSource * > mSources;
+    QList< QgsMapBoxGlStyleRasterSubLayer> mRasterSubLayers;
 
 };
 
