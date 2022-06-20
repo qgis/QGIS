@@ -252,6 +252,13 @@ Returns the associated tile size.
 Returns the list of tile sources.
 %End
 
+    QgsRasterLayer *toRasterLayer() const /Factory/;
+%Docstring
+Returns a new raster layer representing the raster source, or ``None`` if the source cannot be represented as a raster layer.
+
+The caller takes ownership of the returned layer.
+%End
+
 };
 
 

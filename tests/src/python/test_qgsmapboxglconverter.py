@@ -21,7 +21,8 @@ from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsApplication,
                        QgsFontManager,
                        QgsSettings,
-                       Qgis
+                       Qgis,
+                       QgsRasterLayer
                        )
 from qgis.testing import start_app, unittest
 
@@ -977,6 +978,12 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(raster_source.maximumZoom(), 20)
         self.assertEqual(raster_source.tileSize(), 256)
         self.assertEqual(raster_source.tiles(), ['https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/{z}/{x}/{y}.webp'])
+
+        # convert to raster layer
+        rl = raster_source.toRasterLayer()
+        self.assertIsInstance(rl, QgsRasterLayer)
+        self.assertEqual(rl.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
+        self.assertEqual(rl.providerType(), 'wms')
 
     def testLabelWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()
