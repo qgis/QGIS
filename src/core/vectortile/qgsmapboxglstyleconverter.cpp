@@ -183,12 +183,6 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
 
 bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, QgsVectorTileBasicRendererStyle &style, QgsMapBoxGlStyleConversionContext &context, bool isBackgroundStyle )
 {
-  if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
-  {
-    context.pushWarning( QObject::tr( "%1: Layer has no paint property, skipping" ).arg( jsonLayer.value( QStringLiteral( "id" ) ).toString() ) );
-    return false;
-  }
-
   const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
 
   QgsPropertyCollection ddProperties;
@@ -984,11 +978,6 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     return;
   }
 
-  if ( !jsonLayer.contains( QStringLiteral( "paint" ) ) )
-  {
-    context.pushWarning( QObject::tr( "%1: Style layer has no paint property, skipping" ).arg( context.layerId() ) );
-    return;
-  }
   const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
 
   QgsPropertyCollection ddLabelProperties;
