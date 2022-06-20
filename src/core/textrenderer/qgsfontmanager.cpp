@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsziputils.h"
+#include "qgsfontutils.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
@@ -152,6 +153,13 @@ bool QgsFontManager::tryToDownloadFontFamily( const QString &family, QString &ma
   const QString url = urlForFontDownload( family, matchedFamily );
   if ( url.isEmpty() )
     return false;
+
+  // It's possible that the font family laundering applied in urlForFontDownload has cleaned up the font
+  // family to a valid font which already exists on the system. In this case we shouldn't try to download
+  // the font again.
+  const QFont testFont( matchedFamily );
+  if ( testFont.exactMatch() )
+    return true;
 
   locker.changeMode( QgsReadWriteLocker::Write );
   mPendingFontDownloads.insert( family, matchedFamily );
