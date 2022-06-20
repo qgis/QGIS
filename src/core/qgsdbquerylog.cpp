@@ -64,13 +64,13 @@ void QgsDatabaseQueryLog::finished( const QgsDatabaseQueryLogEntry &query )
 
 void QgsDatabaseQueryLog::queryStartedPrivate( const QgsDatabaseQueryLogEntry &query )
 {
-  QgsDebugMsg( query.query );
+  QgsDebugMsgLevel( query.query, 2 );
   emit queryStarted( query );
 }
 
 void QgsDatabaseQueryLog::queryFinishedPrivate( const QgsDatabaseQueryLogEntry &query )
 {
-  QgsDebugMsg( query.query );
+  QgsDebugMsgLevel( query.query, 2 );
   emit queryFinished( query );
 }
 
