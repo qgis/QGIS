@@ -210,6 +210,8 @@ class QgsChunkNode
     //! called when bounding box
     void setExactBbox( const QgsAABB &box );
 
+    const QTime entityCreatedTime() const { return mEntityCreatedTime; }
+
     /**
      * Triggers a recursive update of the node's parent's bounding boxes to ensure
      * that the parent bounding box represents the extent of all child bounding boxes.

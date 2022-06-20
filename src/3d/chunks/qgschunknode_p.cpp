@@ -63,9 +63,8 @@ bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
       return false;  // not even a skeleton
     if ( mChildren[i]->mHasData && !mChildren[i]->mEntity )
       return false;  // no there yet
-    Q_UNUSED( currentTime ) // seems we do not need this extra time (it just brings extra problems)
-    //if (children[i]->entityCreatedTime.msecsTo(currentTime) < 100)
-    //  return false;  // allow some time for upload of stuff within Qt3D (TODO: better way to check it is ready?)
+    if ( mChildren[i]->entityCreatedTime().msecsTo( currentTime ) < 100 )
+      return false;  // allow some time for upload of stuff within Qt3D (TODO: better way to check it is ready?)
   }
   return true;
 }
