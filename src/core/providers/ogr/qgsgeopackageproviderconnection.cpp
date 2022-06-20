@@ -74,6 +74,21 @@ void QgsGeoPackageProviderConnection::remove( const QString &name ) const
   settings.remove( name );
 }
 
+QgsAbstractDatabaseProviderConnection::TableProperty QgsGeoPackageProviderConnection::table( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::Tables );
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
+  for ( const auto &t : constTables )
+  {
+    if ( t.tableName() == name )
+    {
+      return t;
+    }
+  }
+  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                        .arg( name, schema ) );
+}
+
 QString QgsGeoPackageProviderConnection::tableUri( const QString &schema, const QString &name ) const
 {
   const auto tableInfo { table( schema, name ) };

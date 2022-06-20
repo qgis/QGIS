@@ -66,6 +66,7 @@ class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
   public:
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
