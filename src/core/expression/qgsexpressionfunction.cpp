@@ -7080,7 +7080,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           case QgsWkbTypes::GeometryType::PolygonGeometry:
           {
 
-            // overlap and inscribed circle tests must be checked both (if the values are != -1)
+            // Overlap and inscribed circle tests must be checked both (if the values are != -1)
             bool testResult { testPolygon( intersection, radiusValue, overlapValue ) };
 
             if ( ! testResult && overlapOrRadiusFilter )
@@ -7094,6 +7094,14 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           case QgsWkbTypes::GeometryType::LineGeometry:
           {
 
+            // If the intersection is a linestring and a minimum circle is required
+            // we can discard this result immediately.
+            if ( minInscribedCircleRadius != -1 )
+            {
+              continue;
+            }
+
+            // Otherwise a test for the overlap value is performed.
             const bool testResult { testLinestring( intersection, overlapValue ) };
 
             if ( ! testResult && overlapOrRadiusFilter )
@@ -7106,6 +7114,14 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
           case QgsWkbTypes::GeometryType::PointGeometry:
           {
+
+            // If the intersection is a point and a minimum circle is required
+            // we can discard this result immediately.
+            if ( minInscribedCircleRadius != -1 )
+            {
+              continue;
+            }
+
             bool testResult { false };
             if ( minOverlap != -1 || requireMeasures )
             {
@@ -7150,7 +7166,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
           case QgsWkbTypes::GeometryType::NullGeometry:
           case QgsWkbTypes::GeometryType::UnknownGeometry:
           {
-            break;
+            continue;
           }
         }
       }
