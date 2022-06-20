@@ -26,6 +26,7 @@
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
+#include "qgsogrproviderutils.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -65,8 +66,95 @@ void QgsOgrProviderConnection::remove( const QString & ) const
 QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name ) const
 {
   QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
-  parts.insert( QStringLiteral( "layerName" ), name );
+
+  QString errCause;
+  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( parts.value( QStringLiteral( "path" ) ).toString(), false, {}, 0, errCause, true );
+  if ( !firstLayer )
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
+
+  const int layerCount = firstLayer->GetLayerCount();
+  const bool singleLayerOnly = layerCount == 1;
+
+  if ( !singleLayerOnly )
+    parts.insert( QStringLiteral( "layerName" ), name );
+
   return QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->encodeUri( parts );
+}
+
+QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::table( const QString &, const QString &table ) const
+{
+  const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+
+  QString errCause;
+  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( path, false, {}, 0, errCause, true );
+  if ( !firstLayer )
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
+
+  const int layerCount = firstLayer->GetLayerCount();
+  const bool singleLayerOnly = layerCount == 1;
+
+  QgsAbstractDatabaseProviderConnection::TableProperty property;
+  if ( !singleLayerOnly )
+    property.setTableName( table );
+
+  QgsOgrLayerUniquePtr userLayer;
+  if ( !singleLayerOnly )
+  {
+    firstLayer.reset();
+    userLayer = QgsOgrProviderUtils::getLayer( path, table, errCause );
+    if ( !userLayer )
+      throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
+  }
+  else
+  {
+    userLayer = std::move( firstLayer );
+  }
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  OGRLayerH layer = userLayer->getHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
+  const QString abstract = GDALGetMetadataItem( layer, "DESCRIPTION", "" );
+  if ( !abstract.isEmpty() )
+    property.setComment( abstract );
+
+  const QByteArray fidColumn( userLayer->GetFIDColumn() );
+  if ( !fidColumn.isEmpty() )
+  {
+    property.setPrimaryKeyColumns( { QString( fidColumn )} );
+  }
+
+  QgsOgrFeatureDefn &fdef = userLayer->GetLayerDefn();
+  property.setGeometryColumnCount( fdef.GetGeomFieldCount() );
+  if ( property.geometryColumnCount() > 0 )
+  {
+    OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( 0 );
+    property.setGeometryColumn( QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) ) );
+  }
+
+  QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType geomType;
+  if ( OGRSpatialReferenceH spatialRefSys = userLayer->GetSpatialRef() )
+  {
+    geomType.crs = QgsOgrUtils::OGRSpatialReferenceToCrs( spatialRefSys );
+  }
+  geomType.wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( fdef.GetGeomType() );
+
+  if ( geomType.wkbType != QgsWkbTypes::NoGeometry )
+  {
+    property.setGeometryColumnTypes( { geomType } );
+    property.setFlag( TableFlag::Vector );
+  }
+  else
+  {
+    property.setFlag( TableFlag::Aspatial );
+  }
+
+  return property;
 }
 
 void QgsOgrProviderConnection::createVectorTable( const QString &schema,
