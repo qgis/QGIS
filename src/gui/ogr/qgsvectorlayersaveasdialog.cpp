@@ -190,7 +190,6 @@ void QgsVectorLayerSaveAsDialog::setup()
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
     if ( !filePath.isEmpty() && leLayername->isEnabled() )
     {
-      QFileInfo fileInfo( filePath );
       leLayername->setText( mLayer->name() );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
