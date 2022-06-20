@@ -27,6 +27,7 @@
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
 #include "qgsogrproviderutils.h"
+#include "qgsgdalutils.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -67,15 +68,7 @@ QString QgsOgrProviderConnection::tableUri( const QString &, const QString &name
 {
   QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
 
-  QString errCause;
-  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( parts.value( QStringLiteral( "path" ) ).toString(), false, {}, 0, errCause, true );
-  if ( !firstLayer )
-    throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
-
-  const int layerCount = firstLayer->GetLayerCount();
-  const bool singleLayerOnly = layerCount == 1;
-
-  if ( !singleLayerOnly )
+  if ( !mSingleTableDataset )
     parts.insert( QStringLiteral( "layerName" ), name );
 
   return QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->encodeUri( parts );
@@ -86,30 +79,23 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::t
   const QVariantMap parts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
   const QString path = parts.value( QStringLiteral( "path" ) ).toString();
 
-  QString errCause;
-  QgsOgrLayerUniquePtr firstLayer = QgsOgrProviderUtils::getLayer( path, false, {}, 0, errCause, true );
-  if ( !firstLayer )
-    throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
-
-  const int layerCount = firstLayer->GetLayerCount();
-  const bool singleLayerOnly = layerCount == 1;
-
   QgsAbstractDatabaseProviderConnection::TableProperty property;
-  if ( !singleLayerOnly )
+  if ( !mSingleTableDataset )
     property.setTableName( table );
 
   QgsOgrLayerUniquePtr userLayer;
-  if ( !singleLayerOnly )
+  QString errCause;
+  if ( !mSingleTableDataset )
   {
-    firstLayer.reset();
     userLayer = QgsOgrProviderUtils::getLayer( path, table, errCause );
-    if ( !userLayer )
-      throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
   }
   else
   {
-    userLayer = std::move( firstLayer );
+    userLayer = QgsOgrProviderUtils::getLayer( path, false, {}, 0, errCause, true );
   }
+
+  if ( !userLayer )
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   QMutex *mutex = nullptr;
@@ -223,6 +209,23 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
     mCapabilities |= Capability::Spatial;
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(13,4,0)
+  mSingleTableDataset = GDALGetMetadataItem( driverMetadata, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) != nullptr;
+#else
+  {
+    const QVariantMap uriParts = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->decodeUri( uri() );
+    const QFileInfo pathInfo( uriParts.value( QStringLiteral( "path" ) ).toString() );
+    const QString suffix = uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty()
+                           ? pathInfo.suffix().toLower()
+                           : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
+    mSingleTableDataset = !QgsGdalUtils::multiLayerFileExtensions().contains( suffix );
+  }
+#endif
+
+  // No generic way in GDAL to test these per driver/dataset yet
+  mCapabilities |= AddField;
+  mCapabilities |= DeleteField;
+
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
@@ -232,17 +235,14 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
     if ( OGR_DS_TestCapability( hDS.get(), ODsCMeasuredGeometries ) )
       mGeometryColumnCapabilities |= GeometryColumnCapability::M;
 
-    if ( OGR_DS_TestCapability( hDS.get(), ODsCCreateLayer ) )
-      mCapabilities |= CreateVectorTable;
+    if ( !mSingleTableDataset )
+    {
+      if ( OGR_DS_TestCapability( hDS.get(), ODsCCreateLayer ) )
+        mCapabilities |= CreateVectorTable;
 
-    if ( OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer ) )
-      mCapabilities |= DropVectorTable;
-
-    if ( OGR_DS_TestCapability( hDS.get(), OLCCreateField ) )
-      mCapabilities |= AddField;
-
-    if ( OGR_DS_TestCapability( hDS.get(), OLCDeleteField ) )
-      mCapabilities |= DeleteField;
+      if ( OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer ) )
+        mCapabilities |= DropVectorTable;
+    }
   }
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)

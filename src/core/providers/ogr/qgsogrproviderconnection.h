@@ -56,6 +56,9 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
 
     void setDefaultCapabilities();
 
+  private:
+    bool mSingleTableDataset = false;
+
 };
 
 
