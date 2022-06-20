@@ -152,6 +152,22 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      */
     bool loadDefaultStyle( QString &error, QStringList &warnings ) SIP_SKIP;
 
+    /**
+     * Loads the default style for the layer, and returns TRUE if the style was
+     * successfully loaded. Also loads any sub layers (such as raster terrain layers) associated
+     * with the layer's default style.
+     *
+     * The \a error string will be filled with a translated error message if an error
+     * occurs during the style load. The \a warnings list will be populated with any
+     * warning messages generated during the style load (e.g. default style properties
+     * which could not be converted).
+     *
+     * Ownership of the \a subLayers is transferrred to the caller.
+     *
+     * \since QGIS 3.28
+     */
+    bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList< QgsMapLayer * > &subLayers SIP_OUT SIP_TRANSFERBACK );
+
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
@@ -296,6 +312,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+
+    bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
+
 
 };
 

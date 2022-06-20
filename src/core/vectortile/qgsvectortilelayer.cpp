@@ -37,6 +37,7 @@
 #include "qgsselectioncontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsvectortilemvtdecoder.h"
+#include "qgsrasterlayer.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -493,6 +494,16 @@ Qgis::MapLayerProperties QgsVectorTileLayer::properties() const
 
 bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings )
 {
+  return loadDefaultStyleAndSubLayersPrivate( error, warnings, nullptr );
+}
+
+bool QgsVectorTileLayer::loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList<QgsMapLayer *> &subLayers )
+{
+  return loadDefaultStyleAndSubLayersPrivate( error, warnings, &subLayers );
+}
+
+bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers )
+{
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDataSource );
 
@@ -633,6 +644,12 @@ bool QgsVectorTileLayer::loadDefaultStyle( QString &error, QStringList &warnings
     setRenderer( converter.renderer() );
     setLabeling( converter.labeling() );
     warnings = converter.warnings();
+
+    if ( subLayers )
+    {
+      *subLayers = converter.createSubLayers();
+    }
+
     return true;
   }
   else

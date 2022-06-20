@@ -119,6 +119,22 @@ Constructs a new vector tile layer
 
 
 
+    bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList< QgsMapLayer * > &subLayers /Out,TransferBack/ );
+%Docstring
+Loads the default style for the layer, and returns ``True`` if the style was
+successfully loaded. Also loads any sub layers (such as raster terrain layers) associated
+with the layer's default style.
+
+The ``error`` string will be filled with a translated error message if an error
+occurs during the style load. The ``warnings`` list will be populated with any
+warning messages generated during the style load (e.g. default style properties
+which could not be converted).
+
+Ownership of the ``subLayers`` is transferrred to the caller.
+
+.. versionadded:: 3.28
+%End
+
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
 
 
