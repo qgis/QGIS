@@ -39,6 +39,8 @@
 #include "qgsapplication.h"
 #include "qgsfontmanager.h"
 #include "qgis.h"
+#include "qgsrasterlayer.h"
+#include "qgsproviderregistry.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
@@ -3580,4 +3582,22 @@ bool QgsMapBoxGlStyleRasterSource::setFromJson( const QVariantMap &json, QgsMapB
   }
 
   return true;
+}
+
+QgsRasterLayer *QgsMapBoxGlStyleRasterSource::toRasterLayer() const
+{
+  QVariantMap parts;
+  parts.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  parts.insert( QStringLiteral( "url" ), mTiles.value( 0 ) );
+
+  if ( mTileSize == 256 )
+    parts.insert( QStringLiteral( "tilePixelRation" ), QStringLiteral( "1" ) );
+  else if ( mTileSize == 512 )
+    parts.insert( QStringLiteral( "tilePixelRation" ), QStringLiteral( "2" ) );
+
+  parts.insert( QStringLiteral( "zmax" ), QString::number( mMaxZoom ) );
+  parts.insert( QStringLiteral( "zmin" ), QString::number( mMinZoom ) );
+
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts ), name(), QStringLiteral( "wms" ) );
+  return rl.release();
 }

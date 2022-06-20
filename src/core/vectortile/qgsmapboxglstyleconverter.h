@@ -27,6 +27,7 @@ class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
 class QgsVectorTileBasicRendererStyle;
 class QgsVectorTileBasicLabelingStyle;
+class QgsRasterLayer;
 
 /**
  * Context for a MapBox GL style conversion operation.
@@ -249,7 +250,7 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstract
      *
      * \see minimumZoom()
      */
-    int maximumZoom() const { return mMinZoom; }
+    int maximumZoom() const { return mMaxZoom; }
 
     /**
      * Returns the associated tile size.
@@ -260,6 +261,13 @@ class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstract
      * Returns the list of tile sources.
      */
     QStringList tiles() const { return mTiles; }
+
+    /**
+     * Returns a new raster layer representing the raster source, or NULLPTR if the source cannot be represented as a raster layer.
+     *
+     * The caller takes ownership of the returned layer.
+     */
+    QgsRasterLayer *toRasterLayer() const SIP_FACTORY;
 
   private:
 
