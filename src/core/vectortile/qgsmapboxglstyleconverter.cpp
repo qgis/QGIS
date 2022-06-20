@@ -1438,52 +1438,6 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   // convert field name
-
-  auto processLabelField = []( const QString & string, bool & isExpression )->QString
-  {
-    // {field_name} is permitted in string -- if multiple fields are present, convert them to an expression
-    // but if single field is covered in {}, return it directly
-    const QRegularExpression singleFieldRx( QStringLiteral( "^{([^}]+)}$" ) );
-    const QRegularExpressionMatch match = singleFieldRx.match( string );
-    if ( match.hasMatch() )
-    {
-      isExpression = false;
-      return match.captured( 1 );
-    }
-
-    const QRegularExpression multiFieldRx( QStringLiteral( "(?={[^}]+})" ) );
-    const QStringList parts = string.split( multiFieldRx );
-    if ( parts.size() > 1 )
-    {
-      isExpression = true;
-
-      QStringList res;
-      for ( const QString &part : parts )
-      {
-        if ( part.isEmpty() )
-          continue;
-
-        if ( !part.contains( '{' ) )
-        {
-          res << QgsExpression::quotedValue( part );
-          continue;
-        }
-
-        // part will start at a {field} reference
-        const QStringList split = part.split( '}' );
-        res << QgsExpression::quotedColumnRef( split.at( 0 ).mid( 1 ) );
-        if ( !split.at( 1 ).isEmpty() )
-          res << QgsExpression::quotedValue( split.at( 1 ) );
-      }
-      return QStringLiteral( "concat(%1)" ).arg( res.join( ',' ) );
-    }
-    else
-    {
-      isExpression = false;
-      return string;
-    }
-  };
-
   if ( jsonLayout.contains( QStringLiteral( "text-field" ) ) )
   {
     const QVariant jsonTextField = jsonLayout.value( QStringLiteral( "text-field" ) );
@@ -1531,6 +1485,21 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
            */
           labelSettings.fieldName = parseExpression( textFieldList, context );
           labelSettings.isExpression = true;
+        }
+        break;
+      }
+
+      case QVariant::Map:
+      {
+        const QVariantList stops = jsonTextField.toMap().value( QStringLiteral( "stops" ) ).toList();
+        if ( !stops.empty() )
+        {
+          labelSettings.fieldName = parseLabelStops( stops, context );
+          labelSettings.isExpression = true;
+        }
+        else
+        {
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-field dictionary" ).arg( context.layerId() ) );
         }
         break;
       }
@@ -2519,6 +2488,70 @@ QString QgsMapBoxGlStyleConverter::parseStringStops( const QVariantList &stops, 
   return caseString;
 }
 
+QString QgsMapBoxGlStyleConverter::parseLabelStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context )
+{
+  QString caseString = QStringLiteral( "CASE " );
+
+  bool isExpression = false;
+  for ( int i = 0; i < stops.length() - 1; ++i )
+  {
+    // bottom zoom and value
+    const QVariant bz = stops.value( i ).toList().value( 0 );
+    if ( bz.type() == QVariant::List || bz.type() == QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "%1: Lists in label interpolation function are not supported, skipping." ).arg( context.layerId() ) );
+      return QString();
+    }
+
+    // top zoom
+    const QVariant tz = stops.value( i + 1 ).toList().value( 0 );
+    if ( tz.type() == QVariant::List || tz.type() == QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "%1: Lists in label interpolation function are not supported, skipping." ).arg( context.layerId() ) );
+      return QString();
+    }
+
+    QString fieldPart = processLabelField( stops.constLast().toList().value( 1 ).toString(), isExpression );
+    if ( fieldPart.isEmpty() )
+      fieldPart = QStringLiteral( "''" );
+    else if ( !isExpression )
+      fieldPart = QgsExpression::quotedColumnRef( fieldPart );
+
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom < %2 "
+                                  "THEN %3 " ).arg( bz.toString(),
+                                      tz.toString(),
+                                      fieldPart ) ;
+  }
+
+  {
+    const QVariant bz = stops.constLast().toList().value( 0 );
+    if ( bz.type() == QVariant::List || bz.type() == QVariant::StringList )
+    {
+      context.pushWarning( QObject::tr( "%1: Lists in label interpolation function are not supported, skipping." ).arg( context.layerId() ) );
+      return QString();
+    }
+
+    QString fieldPart = processLabelField( stops.constLast().toList().value( 1 ).toString(), isExpression );
+    if ( fieldPart.isEmpty() )
+      fieldPart = QStringLiteral( "''" );
+    else if ( !isExpression )
+      fieldPart = QgsExpression::quotedColumnRef( fieldPart );
+
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom >= %1 "
+                                  "THEN %3 " ).arg( bz.toString(),
+                                      fieldPart ) ;
+  }
+
+  QString defaultPart = processLabelField( stops.constFirst().toList().value( 1 ).toString(), isExpression );
+  if ( defaultPart.isEmpty() )
+    defaultPart = QStringLiteral( "''" );
+  else if ( !isExpression )
+    defaultPart = QgsExpression::quotedColumnRef( defaultPart );
+  caseString += QStringLiteral( "ELSE %1 END" ).arg( defaultPart );
+
+  return caseString;
+}
+
 QgsProperty QgsMapBoxGlStyleConverter::parseValueList( const QVariantList &json, QgsMapBoxGlStyleConverter::PropertyType type, QgsMapBoxGlStyleConversionContext &context, double multiplier, int maxOpacity, QColor *defaultColor, double *defaultNumber )
 {
   const QString method = json.value( 0 ).toString();
@@ -3258,6 +3291,51 @@ QString QgsMapBoxGlStyleConverter::parseKey( const QVariant &value, QgsMapBoxGlS
     return parseExpression( value.toList(), context );
   }
   return QgsExpression::quotedColumnRef( value.toString() );
+}
+
+QString QgsMapBoxGlStyleConverter::processLabelField( const QString &string, bool &isExpression )
+{
+  // {field_name} is permitted in string -- if multiple fields are present, convert them to an expression
+  // but if single field is covered in {}, return it directly
+  const QRegularExpression singleFieldRx( QStringLiteral( "^{([^}]+)}$" ) );
+  const QRegularExpressionMatch match = singleFieldRx.match( string );
+  if ( match.hasMatch() )
+  {
+    isExpression = false;
+    return match.captured( 1 );
+  }
+
+  const QRegularExpression multiFieldRx( QStringLiteral( "(?={[^}]+})" ) );
+  const QStringList parts = string.split( multiFieldRx );
+  if ( parts.size() > 1 )
+  {
+    isExpression = true;
+
+    QStringList res;
+    for ( const QString &part : parts )
+    {
+      if ( part.isEmpty() )
+        continue;
+
+      if ( !part.contains( '{' ) )
+      {
+        res << QgsExpression::quotedValue( part );
+        continue;
+      }
+
+      // part will start at a {field} reference
+      const QStringList split = part.split( '}' );
+      res << QgsExpression::quotedColumnRef( split.at( 0 ).mid( 1 ) );
+      if ( !split.at( 1 ).isEmpty() )
+        res << QgsExpression::quotedValue( split.at( 1 ) );
+    }
+    return QStringLiteral( "concat(%1)" ).arg( res.join( ',' ) );
+  }
+  else
+  {
+    isExpression = false;
+    return string;
+  }
 }
 
 QgsVectorTileRenderer *QgsMapBoxGlStyleConverter::renderer() const

@@ -393,7 +393,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
         const QVariantMap &conversionMap,
         QString *defaultString SIP_OUT = nullptr );
 
-
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
      * to interpolate point/offset values.
@@ -433,6 +432,16 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                      const QVariantMap &conversionMap,
                                      QString *defaultString SIP_OUT = nullptr );
 
+
+    /**
+     * Parses a list of interpolation stops containing label values.
+     *
+     * \param stops definition of interpolation stops
+     * \param context conversion context
+     *
+     * \returns converted expression
+     */
+    static QString parseLabelStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Parses and converts a value list (e.g. an interpolate list).
@@ -547,6 +556,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
     static QString parseValue( const QVariant &value, QgsMapBoxGlStyleConversionContext &context, bool colorExpected = false );
 
     static QString parseKey( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
+
+    static QString processLabelField( const QString &string, bool &isExpression );
 
     /**
      * Checks if interpolation bottom/top values are numeric values
