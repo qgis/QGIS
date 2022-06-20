@@ -73,6 +73,27 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
   return children;
 }
 
+QgsAbstractDatabaseProviderConnection *QgsProviderSublayerItem::databaseConnection() const
+{
+  if ( parent() )
+  {
+    if ( QgsAbstractDatabaseProviderConnection *connection = parent()->databaseConnection() )
+      return connection;
+  }
+
+  if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+  {
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), path() );
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
+    }
+  }
+
+  return nullptr;
+}
+
 Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer )
 {
   switch ( sublayer.type() )
