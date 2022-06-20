@@ -43,6 +43,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
+    QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
