@@ -2546,6 +2546,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
         self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
 
+        tables = conn.tables('unused')
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertFalse(table.tableName())
+        self.assertFalse(table.primaryKeyColumns())
+        self.assertEqual(table.geometryColumnCount(), 1)
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+        self.assertEqual(table.geometryColumnTypes()[0].crs, layer.crs())
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+
     def test_provider_connection_gdb(self):
         """
         Test creating connections for OGR provider
@@ -2575,6 +2586,16 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(table.geometryColumnCount(), 0)
         self.assertFalse(table.geometryColumnTypes())
         self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial)
+
+        tables = conn.tables('unused')
+        self.assertEqual(len(tables), 12)
+        table = [t for t in tables if t.tableName() == 'aliases'][0]
+        self.assertEqual(table.tableName(), 'aliases')
+        self.assertEqual(table.primaryKeyColumns(), ['OBJECTID'])
+        self.assertEqual(table.geometryColumnCount(), 1)
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.MultiPolygon)
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
 
 
 if __name__ == '__main__':
