@@ -407,7 +407,10 @@ void Qgs3DAxis::createAxisScene()
 
       const QList< Qgis::CrsAxisDirection > axisDirections = mCrs.axisOrdering();
 
-      mTextX->setText( QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisDirections.at( 0 ) ) );
+      if ( axisDirections.length() > 0 )
+        mTextX->setText( QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisDirections.at( 0 ) ) );
+      else
+        mTextY->setText( "X?" );
 
       if ( axisDirections.length() > 1 )
         mTextY->setText( QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisDirections.at( 1 ) ) );
