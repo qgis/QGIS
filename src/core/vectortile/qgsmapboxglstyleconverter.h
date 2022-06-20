@@ -158,6 +158,120 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
     QVariantMap mSpriteDefinitions;
 };
 
+
+
+
+/**
+ * Abstract base class for MapBox GL style sources.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
+{
+  public:
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+
+    switch ( sipCpp->type() )
+    {
+      case Qgis::MapBoxGlStyleSourceType::Raster:
+        sipType = sipType_QgsMapBoxGlStyleRasterSource;
+        break;
+      default:
+        sipType = 0;
+        break;
+    }
+    SIP_END
+#endif
+
+    /**
+     * Constructor for QgsMapBoxGlStyleAbstractSource.
+     */
+    QgsMapBoxGlStyleAbstractSource( const QString &name );
+
+    virtual ~QgsMapBoxGlStyleAbstractSource();
+
+    /**
+     * Returns the source type.
+     */
+    virtual Qgis::MapBoxGlStyleSourceType type() const = 0;
+
+    /**
+     * Sets the source's state from a \a json map.
+     */
+    virtual bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) = 0;
+
+    /**
+     * Returns the source's name.
+     */
+    QString name() const;
+
+  private:
+
+    QString mName;
+};
+
+
+/**
+ * Encapsulates a MapBox GL style raster source.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstractSource
+{
+  public:
+
+    /**
+     * Constructor for QgsMapBoxGlStyleRasterSource.
+     */
+    QgsMapBoxGlStyleRasterSource( const QString &name );
+
+    Qgis::MapBoxGlStyleSourceType type() const override;
+    bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) override;
+
+    /**
+     * Returns the source's attribution text.
+     */
+    QString attribution() const { return mAttribution; }
+
+    /**
+     * Returns the minimum tile zoom for which tiles are available.
+     *
+     * \see maximumZoom()
+     */
+    int minimumZoom() const { return mMinZoom; }
+
+    /**
+     * Returns the maximum tile zoom for which tiles are available.
+     *
+     * \see minimumZoom()
+     */
+    int maximumZoom() const { return mMinZoom; }
+
+    /**
+     * Returns the associated tile size.
+     */
+    int tileSize() const { return mTileSize; }
+
+    /**
+     * Returns the list of tile sources.
+     */
+    QStringList tiles() const { return mTiles; }
+
+  private:
+
+    QStringList mTiles;
+    QString mAttribution;
+    int mMinZoom = 0;
+    int mMaxZoom = 22;
+    int mTileSize = 512;
+};
+
+
+
 /**
  * \ingroup core
  * \brief Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
@@ -171,6 +285,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
  */
 class CORE_EXPORT QgsMapBoxGlStyleConverter
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -191,6 +307,19 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
       Success = 0, //!< Conversion was successful
       NoLayerList = 1, //!< No layer list was found in JSON input
     };
+
+    /**
+     * Property types, for interpolated value conversion
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    enum class PropertyType
+    {
+      Color, //!< Color property
+      Numeric, //!< Numeric property (e.g. line width, text size)
+      Opacity, //!< Opacity property
+      Point, //!< Point/offset property
+    };
+    Q_ENUM( PropertyType )
 
     /**
      * Converts a JSON \a style map, and returns the resultant status of the conversion.
@@ -246,19 +375,32 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     QgsVectorTileLabeling *labeling() const SIP_FACTORY;
 
+    /**
+     * Returns the list of converted sources.
+     *
+     * Ownership is transferred to the caller.
+     *
+     * \since QGIS 3.28
+     */
+    QList< QgsMapBoxGlStyleAbstractSource * > takeSources() SIP_FACTORY;
+
   protected:
 
     /**
-     * Property types, for interpolated value conversion
+     * Parse list of \a sources from JSON.
      * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \since QGIS 3.28
      */
-    enum PropertyType
-    {
-      Color, //!< Color property
-      Numeric, //!< Numeric property (e.g. line width, text size)
-      Opacity, //!< Opacity property
-      Point, //!< Point/offset property
-    };
+    void parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context = nullptr );
+
+    /**
+     * Parse a raster \a source from JSON.
+     * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \since QGIS 3.28
+     */
+    void parseRasterSource( const QVariantMap &source, const QString &name, QgsMapBoxGlStyleConversionContext *context = nullptr );
 
     /**
      * Parse list of \a layers from JSON.
@@ -574,6 +716,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
     std::unique_ptr< QgsVectorTileRenderer > mRenderer;
     std::unique_ptr< QgsVectorTileLabeling > mLabeling;
+
+    QList< QgsMapBoxGlStyleAbstractSource * > mSources;
 
 };
 

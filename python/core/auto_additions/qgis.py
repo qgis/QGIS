@@ -1815,3 +1815,14 @@ Qgis.ProjectReadFlag.baseClass = Qgis
 QgsProject.ReadFlags = Qgis.ProjectReadFlags
 Qgis.ProjectReadFlags.baseClass = Qgis
 ProjectReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.MapBoxGlStyleSourceType.Vector.__doc__ = "Vector source"
+Qgis.MapBoxGlStyleSourceType.Raster.__doc__ = "Raster source"
+Qgis.MapBoxGlStyleSourceType.RasterDem.__doc__ = "Raster DEM source"
+Qgis.MapBoxGlStyleSourceType.GeoJson.__doc__ = "GeoJSON source"
+Qgis.MapBoxGlStyleSourceType.Image.__doc__ = "Image source"
+Qgis.MapBoxGlStyleSourceType.Video.__doc__ = "Video source"
+Qgis.MapBoxGlStyleSourceType.Unknown.__doc__ = "Other/unknown source type"
+Qgis.MapBoxGlStyleSourceType.__doc__ = 'Available MapBox GL style source types.\n\n.. versionadded:: 3.28\n\n' + '* ``Vector``: ' + Qgis.MapBoxGlStyleSourceType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.MapBoxGlStyleSourceType.Raster.__doc__ + '\n' + '* ``RasterDem``: ' + Qgis.MapBoxGlStyleSourceType.RasterDem.__doc__ + '\n' + '* ``GeoJson``: ' + Qgis.MapBoxGlStyleSourceType.GeoJson.__doc__ + '\n' + '* ``Image``: ' + Qgis.MapBoxGlStyleSourceType.Image.__doc__ + '\n' + '* ``Video``: ' + Qgis.MapBoxGlStyleSourceType.Video.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.MapBoxGlStyleSourceType.Unknown.__doc__
+# --
+Qgis.MapBoxGlStyleSourceType.baseClass = Qgis
