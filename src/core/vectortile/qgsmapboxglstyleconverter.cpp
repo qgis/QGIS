@@ -619,18 +619,50 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       case QVariant::List:
       case QVariant::StringList:
       {
-        if ( ( !lineWidthProperty.asExpression().isEmpty() ) )
+        const QVariantList dashSource = jsonLineDashArray.toList();
+
+        QVector< double > rawDashVectorSizes;
+        rawDashVectorSizes.reserve( dashSource.size() );
+        for ( const QVariant &v : dashSource )
         {
+          rawDashVectorSizes << v.toDouble();
+        }
+
+        // handle non-compliant dash vector patterns
+        if ( rawDashVectorSizes.size() == 1 )
+        {
+          // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
+          rawDashVectorSizes.clear();
+        }
+        else if ( rawDashVectorSizes.size() % 2 == 1 )
+        {
+          // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
+          // MapBox seems to add the extra dash element to the first dash size
+          rawDashVectorSizes[0] = rawDashVectorSizes[0] + rawDashVectorSizes[rawDashVectorSizes.size() - 1];
+          rawDashVectorSizes.resize( rawDashVectorSizes.size() - 1 );
+        }
+
+        if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
+        {
+          QStringList dashArrayStringParts;
+          dashArrayStringParts.reserve( rawDashVectorSizes.size() );
+          for ( double v : std::as_const( rawDashVectorSizes ) )
+          {
+            dashArrayStringParts << qgsDoubleToString( v );
+          }
+
           QString arrayExpression = QStringLiteral( "array_to_string(array_foreach(array(%1),@element * (%2)), ';')" ) // skip-keyword-check
-                                    .arg( jsonLineDashArray.toStringList().join( ',' ),
+                                    .arg( dashArrayStringParts.join( ',' ),
                                           lineWidthProperty.asExpression() );
           ddProperties.setProperty( QgsSymbolLayer::PropertyCustomDash, QgsProperty::fromExpression( arrayExpression ) );
         }
-        const QVariantList dashSource = jsonLineDashArray.toList();
-        for ( const QVariant &v : dashSource )
+
+        // dash vector sizes for QGIS symbols must be multiplied by the target line width
+        for ( double v : std::as_const( rawDashVectorSizes ) )
         {
-          dashVector << v.toDouble() * lineWidth;
+          dashVector << v *lineWidth;
         }
+
         break;
       }
 
