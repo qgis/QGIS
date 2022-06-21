@@ -259,7 +259,6 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QgsExpression exp( expression );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   const QVariant result = exp.evaluate( &context );
-  qDebug() << result;
   QCOMPARE( result, expectedResult );
 
 }
