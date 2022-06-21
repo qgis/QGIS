@@ -239,7 +239,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      */
     void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
                            Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
-                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect );
+                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+                           Qgis::SelectionFlags flags = Qgis::SelectionFlags() );
 
   public slots:
 

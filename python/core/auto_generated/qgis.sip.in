@@ -491,6 +491,16 @@ The development version
       Within,
     };
 
+    enum class SelectionFlag
+    {
+      SingleFeatureSelection,
+      ToggleSelection,
+    };
+
+    typedef QFlags<Qgis::SelectionFlag> SelectionFlags;
+
+
+
     enum class VectorEditResult
       {
       Success,
@@ -1290,6 +1300,8 @@ QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::P
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
 QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+
+QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
 
 
 

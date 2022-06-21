@@ -861,7 +861,7 @@ int QgsVectorTileLayer::selectedFeatureCount() const
   return mSelectedFeatures.size();
 }
 
-void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship )
+void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags )
 {
   if ( !isInScaleRange( context.scale() ) )
   {
@@ -874,15 +874,18 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
     prevSelection.insert( it.key() );
 
-  switch ( behavior )
+  if ( !( flags & Qgis::SelectionFlag::ToggleSelection ) )
   {
-    case Qgis::SelectBehavior::SetSelection:
-      mSelectedFeatures.clear();
+    switch ( behavior )
+    {
+      case Qgis::SelectBehavior::SetSelection:
+        mSelectedFeatures.clear();
 
-    case Qgis::SelectBehavior::IntersectSelection:
-    case Qgis::SelectBehavior::AddToSelection:
-    case Qgis::SelectBehavior::RemoveFromSelection:
-      break;
+      case Qgis::SelectBehavior::IntersectSelection:
+      case Qgis::SelectBehavior::AddToSelection:
+      case Qgis::SelectBehavior::RemoveFromSelection:
+        break;
+    }
   }
 
   QgsGeometry selectionGeom = geometry;
@@ -902,6 +905,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   }
 
   std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
+  QList< QgsFeature > singleSelectCandidates;
 
   QgsRectangle r;
   if ( isSinglePoint )
@@ -976,7 +980,10 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
                 if ( selectFeature )
                 {
-                  mSelectedFeatures.insert( f.id(), f );
+                  if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
+                    singleSelectCandidates << f;
+                  else
+                    mSelectedFeatures.insert( f.id(), f );
                 }
               }
             }
@@ -1019,8 +1026,13 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
           }
         }
 
-        if ( ( matchesGeometry && behavior == Qgis::SelectBehavior::IntersectSelection )
-             || ( !matchesGeometry && behavior == Qgis::SelectBehavior::RemoveFromSelection ) )
+        if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
+        {
+          singleSelectCandidates << it.value();
+          it++;
+        }
+        else if ( ( matchesGeometry && behavior == Qgis::SelectBehavior::IntersectSelection )
+                  || ( !matchesGeometry && behavior == Qgis::SelectBehavior::RemoveFromSelection ) )
         {
           it++;
         }
@@ -1030,6 +1042,132 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
         }
       }
       break;
+    }
+  }
+
+  if ( ( flags & Qgis::SelectionFlag::SingleFeatureSelection ) && !singleSelectCandidates.empty() )
+  {
+    QgsFeature bestCandidate;
+
+    if ( flags & Qgis::SelectionFlag::ToggleSelection )
+    {
+      // when toggling a selection, we first check to see if we can remove a feature from the current selection -- that takes precedence over adding new features to the selection
+
+      // find smallest feature in the current selection
+      double smallestArea = std::numeric_limits< double >::max();
+      double smallestLength = std::numeric_limits< double >::max();
+      for ( const QgsFeature &candidate : std::as_const( singleSelectCandidates ) )
+      {
+        if ( !mSelectedFeatures.contains( candidate.id() ) )
+          continue;
+
+        switch ( candidate.geometry().type() )
+        {
+          case QgsWkbTypes::PointGeometry:
+            bestCandidate = candidate;
+            break;
+          case QgsWkbTypes::LineGeometry:
+          {
+            const double length = candidate.geometry().length();
+            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            {
+              bestCandidate = candidate;
+              smallestLength = length;
+            }
+            break;
+          }
+          case QgsWkbTypes::PolygonGeometry:
+          {
+            const double area = candidate.geometry().area();
+            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            {
+              bestCandidate = candidate;
+              smallestArea = area;
+            }
+            break;
+          }
+          case QgsWkbTypes::UnknownGeometry:
+          case QgsWkbTypes::NullGeometry:
+            break;
+        }
+      }
+    }
+
+    if ( !bestCandidate.isValid() )
+    {
+      // find smallest feature (ie. pick the "hardest" one to click on)
+      double smallestArea = std::numeric_limits< double >::max();
+      double smallestLength = std::numeric_limits< double >::max();
+      for ( const QgsFeature &candidate : std::as_const( singleSelectCandidates ) )
+      {
+        switch ( candidate.geometry().type() )
+        {
+          case QgsWkbTypes::PointGeometry:
+            bestCandidate = candidate;
+            break;
+          case QgsWkbTypes::LineGeometry:
+          {
+            const double length = candidate.geometry().length();
+            if ( length < smallestLength && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry )
+            {
+              bestCandidate = candidate;
+              smallestLength = length;
+            }
+            break;
+          }
+          case QgsWkbTypes::PolygonGeometry:
+          {
+            const double area = candidate.geometry().area();
+            if ( area < smallestArea && bestCandidate.geometry().type() != QgsWkbTypes::PointGeometry && bestCandidate.geometry().type() != QgsWkbTypes::LineGeometry )
+            {
+              bestCandidate = candidate;
+              smallestArea = area;
+            }
+            break;
+          }
+          case QgsWkbTypes::UnknownGeometry:
+          case QgsWkbTypes::NullGeometry:
+            break;
+        }
+      }
+    }
+
+    if ( flags & Qgis::SelectionFlag::ToggleSelection )
+    {
+      if ( prevSelection.contains( bestCandidate.id() ) )
+        mSelectedFeatures.remove( bestCandidate.id() );
+      else
+        mSelectedFeatures.insert( bestCandidate.id(), bestCandidate );
+    }
+    else
+    {
+      switch ( behavior )
+      {
+        case Qgis::SelectBehavior::SetSelection:
+        case Qgis::SelectBehavior::AddToSelection:
+          mSelectedFeatures.insert( bestCandidate.id(), bestCandidate );
+          break;
+
+        case Qgis::SelectBehavior::IntersectSelection:
+        {
+          if ( mSelectedFeatures.contains( bestCandidate.id() ) )
+          {
+            mSelectedFeatures.clear();
+            mSelectedFeatures.insert( bestCandidate.id(), bestCandidate );
+          }
+          else
+          {
+            mSelectedFeatures.clear();
+          }
+          break;
+        }
+
+        case Qgis::SelectBehavior::RemoveFromSelection:
+        {
+          mSelectedFeatures.remove( bestCandidate.id() );
+          break;
+        }
+      }
     }
   }
 
