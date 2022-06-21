@@ -10742,19 +10742,17 @@ void QgisApp::deselectAll()
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
-    if ( !vl )
-      continue;
-
-    vl->removeSelection();
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+      vl->removeSelection();
+    else if ( QgsVectorTileLayer *vtl = qobject_cast<QgsVectorTileLayer *>( it.value() ) )
+      vtl->removeSelection();
   }
 }
 
 void QgisApp::deselectActiveLayer()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
-
-  if ( !vlayer )
+  QgsMapLayer *layer = activeLayer();
+  if ( !layer )
   {
     visibleMessageBar()->pushMessage(
       tr( "No active vector layer" ),
@@ -10763,7 +10761,36 @@ void QgisApp::deselectActiveLayer()
     return;
   }
 
-  vlayer->removeSelection();
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      vlayer->removeSelection();
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsVectorTileLayer *vtlayer = qobject_cast<QgsVectorTileLayer *>( layer );
+      vtlayer->removeSelection();
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
+    {
+      visibleMessageBar()->pushMessage(
+        tr( "No active vector layer" ),
+        tr( "To deselect all features, choose a vector layer in the legend" ),
+        Qgis::MessageLevel::Info );
+      break;
+    }
+  }
 }
 
 void QgisApp::invertSelection()
@@ -10867,7 +10894,6 @@ void QgisApp::fillRing()
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::FillRing ) );
 }
 
-
 void QgisApp::addPart()
 {
   mMapCanvas->setMapTool( mMapTools->mapTool( QgsAppMapTools::AddPart ) );
@@ -10898,12 +10924,30 @@ void QgisApp::cutSelectionToClipboard( QgsMapLayer *layerContainingSelection )
 
 void QgisApp::copySelectionToClipboard( QgsMapLayer *layerContainingSelection )
 {
-  QgsVectorLayer *selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
-  if ( !selectionVectorLayer )
+  if ( !layerContainingSelection )
+    layerContainingSelection = activeLayer();
+
+  if ( !layerContainingSelection )
     return;
 
-  // Test for feature support in this layer
-  clipboard()->replaceWithCopyOf( selectionVectorLayer );
+  switch ( layerContainingSelection->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      clipboard()->replaceWithCopyOf( qobject_cast<QgsVectorLayer *>( layerContainingSelection ) );
+      break;
+
+    case QgsMapLayerType::VectorTileLayer:
+      clipboard()->replaceWithCopyOf( qobject_cast<QgsVectorTileLayer *>( layerContainingSelection ) );
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
+      return; // not supported
+  }
 }
 
 void QgisApp::clipboardChanged()
@@ -15328,35 +15372,59 @@ QgsClipboard *QgisApp::clipboard()
 
 void QgisApp::selectionChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer )
+  if ( layer )
   {
-    const int selectedCount = vlayer->selectedFeatureCount();
-    if ( selectedCount == 1 )
+    switch ( layer->type() )
     {
-      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
-      QgsExpression exp = vlayer->displayExpression();
-      exp.prepare( &context );
-
-      QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
-      if ( !exp.needsGeometry() )
-        request.setFlags( request.flags() | QgsFeatureRequest::NoGeometry );
-
-      QgsFeature feat;
-      QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );
-      while ( featureIt.nextFeature( feat ) )
+      case QgsMapLayerType::VectorLayer:
       {
-        context.setFeature( feat );
-        QString featureTitle = exp.evaluate( &context ).toString();
-        showStatusMessage( tr( "1 feature selected on layer %1 (%2)." ).arg( vlayer->name(), featureTitle ) );
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        const int selectedCount = vlayer->selectedFeatureCount();
+        if ( selectedCount == 1 )
+        {
+          QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
+          QgsExpression exp = vlayer->displayExpression();
+          exp.prepare( &context );
+
+          QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
+          if ( !exp.needsGeometry() )
+            request.setFlags( request.flags() | QgsFeatureRequest::NoGeometry );
+
+          QgsFeature feat;
+          QgsFeatureIterator featureIt = vlayer->getSelectedFeatures( request );
+          while ( featureIt.nextFeature( feat ) )
+          {
+            context.setFeature( feat );
+            QString featureTitle = exp.evaluate( &context ).toString();
+            showStatusMessage( tr( "1 feature selected on layer %1 (%2)." ).arg( layer->name(), featureTitle ) );
+            break;
+          }
+        }
+        else
+        {
+          showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", selectedCount ).arg( layer->name() ) );
+        }
         break;
       }
-    }
-    else
-    {
-      showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", selectedCount ).arg( vlayer->name() ) );
+
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
+        const int selectedCount = vtLayer->selectedFeatureCount();
+        showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", selectedCount ).arg( layer->name() ) );
+        break;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;   // not supported
     }
   }
+
   if ( layer == activeLayer() )
   {
     activateDeactivateLayerRelatedActions( layer );
@@ -15466,18 +15534,60 @@ bool QgisApp::selectedLayersHaveSelection()
   // If no selected layers, use active layer
   if ( layers.empty() && activeLayer() )
   {
-    if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() ) )
-      return layer->selectedFeatureCount() > 0;
+    switch ( activeLayer()->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+        return layer->selectedFeatureCount() > 0;
+      }
+
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        QgsVectorTileLayer *layer = qobject_cast<QgsVectorTileLayer *>( activeLayer() );
+        return layer->selectedFeatureCount() > 0;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        return false;
+    }
   }
 
   for ( QgsMapLayer *mapLayer : layers )
   {
-    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
-
-    if ( !layer || !layer->isSpatial() || layer->selectedFeatureCount() == 0 )
+    if ( !mapLayer || !mapLayer->isSpatial() )
       continue;
 
-    return true;
+    switch ( mapLayer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer );
+        if ( layer->selectedFeatureCount() > 0 )
+          return true;
+        break;
+      }
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        QgsVectorTileLayer *layer = qobject_cast<QgsVectorTileLayer *>( mapLayer );
+        if ( layer->selectedFeatureCount() > 0 )
+          return true;
+        break;
+      }
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
   }
 
   return false;
@@ -16074,6 +16184,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     break;
 
     case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
+      const bool layerHasSelection = vtLayer->selectedFeatureCount() > 0;
       mActionLocalHistogramStretch->setEnabled( false );
       mActionFullHistogramStretch->setEnabled( false );
       mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -16086,10 +16199,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDecreaseGamma->setEnabled( false );
       mActionLayerSubsetString->setEnabled( false );
       mActionFeatureAction->setEnabled( false );
-      mActionSelectFeatures->setEnabled( false );
-      mActionSelectPolygon->setEnabled( false );
-      mActionSelectFreehand->setEnabled( false );
-      mActionSelectRadius->setEnabled( false );
+      mActionSelectFeatures->setEnabled( true );
+      mActionSelectPolygon->setEnabled( true );
+      mActionSelectFreehand->setEnabled( true );
+      mActionSelectRadius->setEnabled( true );
       mActionZoomActualSize->setEnabled( false );
       mActionZoomToLayer->setEnabled( true );
       mActionOpenTable->setEnabled( false );
@@ -16123,7 +16236,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRotateFeature->setEnabled( false );
       mActionScaleFeature->setEnabled( false );
       mActionOffsetCurve->setEnabled( false );
-      mActionCopyFeatures->setEnabled( false );
+      mActionCopyFeatures->setEnabled( layerHasSelection );
       mActionCutFeatures->setEnabled( false );
       mActionPasteFeatures->setEnabled( false );
       mActionRotatePointSymbols->setEnabled( false );
@@ -16140,6 +16253,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
       enableMeshEditingTools( false );
       break;
+    }
 
     case QgsMapLayerType::PointCloudLayer:
     {
