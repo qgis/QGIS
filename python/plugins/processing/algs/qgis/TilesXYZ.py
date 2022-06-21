@@ -424,7 +424,6 @@ class MBTilesWriter:
         self._zoom_ds = None
         bounds = ','.join(map(str, self.extent))
         self._execute_sqlite("UPDATE metadata SET value='{}' WHERE name='bounds'".format(bounds))
-
         # Set Journal Mode back to default
         self._execute_sqlite("PRAGMA journal_mode=DELETE")
 
