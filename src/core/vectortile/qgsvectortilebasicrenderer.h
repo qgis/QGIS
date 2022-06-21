@@ -138,6 +138,7 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     void stopRender( QgsRenderContext &context ) override;
     void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
     void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context ) override;
+    bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 

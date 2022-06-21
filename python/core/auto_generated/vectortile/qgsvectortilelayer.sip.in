@@ -224,9 +224,13 @@ Returns the number of features that are selected in this layer.
     void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
                            Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
                            Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
-                           Qgis::SelectionFlags flags = Qgis::SelectionFlags() );
+                           Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+                           QgsRenderContext *renderContext = 0 );
 %Docstring
 Selects features found within the search ``geometry`` (in layer's coordinates).
+
+A render context can optionally be specified in order to avoid selecting features which are
+not currently rendered.
 
 .. seealso:: :py:func:`selectedFeatures`
 

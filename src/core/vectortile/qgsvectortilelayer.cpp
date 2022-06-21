@@ -861,7 +861,7 @@ int QgsVectorTileLayer::selectedFeatureCount() const
   return mSelectedFeatures.size();
 }
 
-void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags )
+void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship, Qgis::SelectionFlags flags, QgsRenderContext *renderContext )
 {
   if ( !isInScaleRange( context.scale() ) )
   {
@@ -962,6 +962,9 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
             const QVector<QgsFeature> &layerFeatures = features[layerName];
             for ( const QgsFeature &f : layerFeatures )
             {
+              if ( renderContext && mRenderer && !mRenderer->willRenderFeature( f, tileZoom, layerName, *renderContext ) )
+                continue;
+
               if ( f.geometry().intersects( r ) )
               {
                 bool selectFeature = true;

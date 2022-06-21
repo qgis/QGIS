@@ -232,6 +232,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     /**
      * Selects features found within the search \a geometry (in layer's coordinates).
      *
+     * A render context can optionally be specified in order to avoid selecting features which are
+     * not currently rendered.
+     *
      * \see selectedFeatures()
      * \see removeSelection()
      * \see selectionChanged()
@@ -240,7 +243,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
                            Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
                            Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
-                           Qgis::SelectionFlags flags = Qgis::SelectionFlags() );
+                           Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+                           QgsRenderContext *renderContext = nullptr );
 
   public slots:
 
