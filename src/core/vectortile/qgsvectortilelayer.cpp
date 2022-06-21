@@ -877,10 +877,9 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
   switch ( behavior )
   {
     case Qgis::SelectBehavior::SetSelection:
-    case Qgis::SelectBehavior::IntersectSelection:
       mSelectedFeatures.clear();
-      break;
 
+    case Qgis::SelectBehavior::IntersectSelection:
     case Qgis::SelectBehavior::AddToSelection:
     case Qgis::SelectBehavior::RemoveFromSelection:
       break;
@@ -920,81 +919,117 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
     }
   }
 
-  const int tileZoom = tileMatrixSet().scaleToZoomLevel( context.scale() );
-  const QgsTileMatrix tileMatrix = tileMatrixSet().tileMatrix( tileZoom );
-  const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
-
-  for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+  switch ( behavior )
   {
-    for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+    case Qgis::SelectBehavior::SetSelection:
+    case Qgis::SelectBehavior::AddToSelection:
     {
-      QgsTileXYZ tileID( col, row, tileZoom );
-      QByteArray data = getRawTile( tileID );
-      if ( data.isEmpty() )
-        continue;  // failed to get data
+      // when adding to or setting a selection, we retrieve the tile data for the current scale
+      const int tileZoom = tileMatrixSet().scaleToZoomLevel( context.scale() );
+      const QgsTileMatrix tileMatrix = tileMatrixSet().tileMatrix( tileZoom );
+      const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
 
-      QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
-      if ( !decoder.decode( tileID, data ) )
-        continue;  // failed to decode
-
-      QMap<QString, QgsFields> perLayerFields;
-      const QStringList layerNames = decoder.layers();
-      for ( const QString &layerName : layerNames )
+      for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
       {
-        QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
-        perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
-      }
-
-      const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
-      const QStringList featuresLayerNames = features.keys();
-      for ( const QString &layerName : featuresLayerNames )
-      {
-        const QgsFields fFields = perLayerFields[layerName];
-        const QVector<QgsFeature> &layerFeatures = features[layerName];
-        for ( const QgsFeature &f : layerFeatures )
+        for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
         {
-          if ( f.geometry().intersects( r ) )
+          QgsTileXYZ tileID( col, row, tileZoom );
+          QByteArray data = getRawTile( tileID );
+          if ( data.isEmpty() )
+            continue;  // failed to get data
+
+          QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
+          if ( !decoder.decode( tileID, data ) )
+            continue;  // failed to decode
+
+          QMap<QString, QgsFields> perLayerFields;
+          const QStringList layerNames = decoder.layers();
+          for ( const QString &layerName : layerNames )
           {
-            bool selectFeature = true;
-            if ( selectionGeomPrepared )
-            {
-              switch ( relationship )
-              {
-                case Qgis::SelectGeometryRelationship::Intersect:
-                  selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
-                  break;
-                case Qgis::SelectGeometryRelationship::Within:
-                  selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
-                  break;
-              }
-            }
+            QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+            perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+          }
 
-            if ( selectFeature )
+          const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+          const QStringList featuresLayerNames = features.keys();
+          for ( const QString &layerName : featuresLayerNames )
+          {
+            const QgsFields fFields = perLayerFields[layerName];
+            const QVector<QgsFeature> &layerFeatures = features[layerName];
+            for ( const QgsFeature &f : layerFeatures )
             {
-              switch ( behavior )
+              if ( f.geometry().intersects( r ) )
               {
-                case Qgis::SelectBehavior::SetSelection:
-                case Qgis::SelectBehavior::AddToSelection:
-                  mSelectedFeatures.insert( f.id(), f );
-                  break;
-
-                case Qgis::SelectBehavior::IntersectSelection:
+                bool selectFeature = true;
+                if ( selectionGeomPrepared )
                 {
-                  if ( prevSelection.contains( f.id() ) )
-                    mSelectedFeatures.insert( f.id(), f );
-                  break;
+                  switch ( relationship )
+                  {
+                    case Qgis::SelectGeometryRelationship::Intersect:
+                      selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
+                      break;
+                    case Qgis::SelectGeometryRelationship::Within:
+                      selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
+                      break;
+                  }
                 }
 
-                case Qgis::SelectBehavior::RemoveFromSelection:
+                if ( selectFeature )
                 {
-                  mSelectedFeatures.remove( f.id() );
-                  break;
+                  mSelectedFeatures.insert( f.id(), f );
                 }
               }
             }
           }
         }
       }
+      break;
+    }
+
+    case Qgis::SelectBehavior::IntersectSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
+    {
+      // when removing from the selection, we instead just iterate over the current selection and test against the geometry
+      // we do this as we don't want the selection removal operation to depend at all on the tile zoom
+      for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); )
+      {
+        bool matchesGeometry = false;
+        if ( selectionGeomPrepared )
+        {
+          switch ( relationship )
+          {
+            case Qgis::SelectGeometryRelationship::Intersect:
+              matchesGeometry = selectionGeomPrepared->intersects( it->geometry().constGet() );
+              break;
+            case Qgis::SelectGeometryRelationship::Within:
+              matchesGeometry = selectionGeomPrepared->contains( it->geometry().constGet() );
+              break;
+          }
+        }
+        else
+        {
+          switch ( relationship )
+          {
+            case Qgis::SelectGeometryRelationship::Intersect:
+              matchesGeometry = it->geometry().intersects( r );
+              break;
+            case Qgis::SelectGeometryRelationship::Within:
+              matchesGeometry = r.contains( it->geometry().boundingBox() );
+              break;
+          }
+        }
+
+        if ( ( matchesGeometry && behavior == Qgis::SelectBehavior::IntersectSelection )
+             || ( !matchesGeometry && behavior == Qgis::SelectBehavior::RemoveFromSelection ) )
+        {
+          it++;
+        }
+        else
+        {
+          it = mSelectedFeatures.erase( it );
+        }
+      }
+      break;
     }
   }
 
