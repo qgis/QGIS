@@ -880,6 +880,7 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
     {
       case Qgis::SelectBehavior::SetSelection:
         mSelectedFeatures.clear();
+        break;
 
       case Qgis::SelectBehavior::IntersectSelection:
       case Qgis::SelectBehavior::AddToSelection:
