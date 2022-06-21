@@ -289,9 +289,11 @@ void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature>
       sym->startRender( context, feature.fields() );
 
       const QgsWkbTypes::GeometryType featureType = feature.geometry().type();
+      bool renderedFeature = false;
       if ( featureType == layerStyle.geometryType() )
       {
         sym->renderFeature( feature, context, -1, true );
+        renderedFeature = true;
       }
       else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::LineGeometry )
       {
@@ -300,6 +302,7 @@ void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature>
         QgsFeature exterior = feature;
         exterior.setGeometry( QgsGeometry( feature.geometry().constGet()->boundary() ) );
         sym->renderFeature( exterior, context, -1, true );
+        renderedFeature = true;
       }
       else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::PointGeometry )
       {
@@ -309,10 +312,12 @@ void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature>
         const QgsRectangle boundingBox = feature.geometry().boundingBox();
         centroid.setGeometry( feature.geometry().poleOfInaccessibility( std::min( boundingBox.width(), boundingBox.height() ) / 20 ) );
         sym->renderFeature( centroid, context, -1, true );
+        renderedFeature = true;
       }
       sym->stopRender( context );
 
-      break;
+      if ( renderedFeature )
+        break;
     }
   }
 }
