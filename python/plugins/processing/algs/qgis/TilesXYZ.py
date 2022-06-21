@@ -373,7 +373,7 @@ class MBTilesWriter:
     def _execute_sqlite(self, *commands):
         # wait_timeout = default timeout is 5 seconds increase it for slower disk access and more Threads to 120 seconds
         # isolation_level = None Uses sqlite AutoCommit and disable phyton transaction management feature. https://docs.python.org/3/library/sqlite3.html#sqlite3-controlling-transactions
-        conn = sqlite3.connect(self.filename, timeout = 120, isolation_level = None)
+        conn = sqlite3.connect(self.filename, timeout=120, isolation_level=None)
         for cmd in commands:
             conn.execute(cmd)
         conn.commit()
@@ -424,7 +424,7 @@ class MBTilesWriter:
         self._zoom_ds = None
         bounds = ','.join(map(str, self.extent))
         self._execute_sqlite("UPDATE metadata SET value='{}' WHERE name='bounds'".format(bounds))
-        
+
         # Set Journal Mode back to default
         self._execute_sqlite("PRAGMA journal_mode=DELETE")
 
