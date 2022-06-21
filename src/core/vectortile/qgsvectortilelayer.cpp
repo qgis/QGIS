@@ -905,6 +905,17 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
     isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
   }
 
+  auto addDerivedFields = []( QgsFeature & feature, const int tileZoom, const QString & layer )
+  {
+    QgsFields fields = feature.fields();
+    fields.append( QgsField( QStringLiteral( "tile_zoom" ), QVariant::Int ) );
+    fields.append( QgsField( QStringLiteral( "tile_layer" ), QVariant::String ) );
+    QgsAttributes attributes = feature.attributes();
+    attributes << tileZoom << layer;
+    feature.setFields( fields );
+    feature.setAttributes( attributes );
+  };
+
   std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
   QList< QgsFeature > singleSelectCandidates;
 
@@ -984,10 +995,12 @@ void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const Qg
 
                 if ( selectFeature )
                 {
+                  QgsFeature derivedFeature = f;
+                  addDerivedFields( derivedFeature, tileZoom, layerName );
                   if ( flags & Qgis::SelectionFlag::SingleFeatureSelection )
-                    singleSelectCandidates << f;
+                    singleSelectCandidates << derivedFeature;
                   else
-                    mSelectedFeatures.insert( f.id(), f );
+                    mSelectedFeatures.insert( derivedFeature.id(), derivedFeature );
                 }
               }
             }
