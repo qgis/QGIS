@@ -38,6 +38,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mRenderer( layer->renderer()->clone() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
+  , mSelectedFeatures( layer->selectedFeatures() )
   , mLayerOpacity( layer->opacity() )
   , mTileMatrixSet( layer->tileMatrixSet() )
 {
@@ -204,6 +205,9 @@ bool QgsVectorTileLayerRenderer::render()
     if ( !asyncLoader->error().isEmpty() )
       mErrors.append( asyncLoader->error() );
   }
+
+  if ( ctx.flags() & Qgis::RenderContextFlag::DrawSelection )
+    mRenderer->renderSelectedFeatures( mSelectedFeatures, ctx );
 
   mRenderer->stopRender( ctx );
 

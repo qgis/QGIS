@@ -55,6 +55,8 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
   renderer->setStyles( QgsVectorTileBasicRenderer::simpleStyleWithRandomColors() );
   setRenderer( renderer );
+
+  connect( this, &QgsVectorTileLayer::selectionChanged, this, [ = ] { triggerRepaint(); } );
 }
 
 void QgsVectorTileLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &, const QgsDataProvider::ProviderOptions &, QgsDataProvider::ReadFlags )

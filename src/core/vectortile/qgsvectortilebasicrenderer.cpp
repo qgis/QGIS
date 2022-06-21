@@ -261,6 +261,62 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
   }
 }
 
+void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature> &selection, QgsRenderContext &context )
+{
+  // this is a little cheaty -- because we don't know what zoom level the selected features belong to, we just
+  // find the first matching layer style for each feature regardless of zoom level, and use that to render the feature
+
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
+  QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
+
+  for ( const QgsFeature &feature : selection )
+  {
+    for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
+    {
+      if ( !layerStyle.symbol() || layerStyle.layerName() == QLatin1String( "background" ) )
+        continue;
+
+      scope->setFields( feature.fields() );
+
+      QgsExpression filterExpression( layerStyle.filterExpression() );
+      filterExpression.prepare( &context.expressionContext() );
+
+      scope->setFeature( feature );
+      if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )
+        continue;
+
+      QgsSymbol *sym = layerStyle.symbol();
+      sym->startRender( context, feature.fields() );
+
+      const QgsWkbTypes::GeometryType featureType = feature.geometry().type();
+      if ( featureType == layerStyle.geometryType() )
+      {
+        sym->renderFeature( feature, context, -1, true );
+      }
+      else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::LineGeometry )
+      {
+        // be tolerant and permit rendering polygons with a line layer style, as some style definitions use this approach
+        // to render the polygon borders only
+        QgsFeature exterior = feature;
+        exterior.setGeometry( QgsGeometry( feature.geometry().constGet()->boundary() ) );
+        sym->renderFeature( exterior, context, -1, true );
+      }
+      else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::PointGeometry )
+      {
+        // be tolerant and permit rendering polygons with a point layer style, as some style definitions use this approach
+        // to render the polygon center
+        QgsFeature centroid = feature;
+        const QgsRectangle boundingBox = feature.geometry().boundingBox();
+        centroid.setGeometry( feature.geometry().poleOfInaccessibility( std::min( boundingBox.width(), boundingBox.height() ) / 20 ) );
+        sym->renderFeature( centroid, context, -1, true );
+      }
+      sym->stopRender( context );
+
+      break;
+    }
+  }
+}
+
 void QgsVectorTileBasicRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
