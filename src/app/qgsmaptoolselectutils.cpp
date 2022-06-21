@@ -268,7 +268,12 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
       if ( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier )
         flags |= Qgis::SelectionFlag::ToggleSelection;
 
-      vtLayer->selectByGeometry( selectGeomTrans, context, behavior, Qgis::SelectGeometryRelationship::Intersect, flags );
+      QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
+      QgsExpressionContext expressionContext = canvas->createExpressionContext();
+      expressionContext << QgsExpressionContextUtils::layerScope( vtLayer );
+      renderContext.setExpressionContext( expressionContext );
+
+      vtLayer->selectByGeometry( selectGeomTrans, context, behavior, Qgis::SelectGeometryRelationship::Intersect, flags, &renderContext );
       break;
     }
 
@@ -316,7 +321,12 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
         break;
       }
 
-      vtLayer->selectByGeometry( selectGeomTrans, context, selectBehavior, doContains ? Qgis::SelectGeometryRelationship::Within : Qgis::SelectGeometryRelationship::Intersect );
+      QgsRenderContext renderContext = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
+      QgsExpressionContext expressionContext = canvas->createExpressionContext();
+      expressionContext << QgsExpressionContextUtils::layerScope( vtLayer );
+      renderContext.setExpressionContext( expressionContext );
+
+      vtLayer->selectByGeometry( selectGeomTrans, context, selectBehavior, doContains ? Qgis::SelectGeometryRelationship::Within : Qgis::SelectGeometryRelationship::Intersect, Qgis::SelectionFlags(), &renderContext );
       break;
     }
 

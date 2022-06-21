@@ -139,6 +139,13 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) = 0;
 
     /**
+     * Returns TRUE if the specified \a feature will be rendered in the given render \a context.
+     *
+     * \since QGIS 3.28
+     */
+    virtual bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context ) = 0;
+
+    /**
      * Renders the specified features in a selected state.
      *
      * This will be called after rendering the tiles, so that the selected features are always visible on the top of the layer.

@@ -322,6 +322,51 @@ void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature>
   }
 }
 
+bool QgsVectorTileBasicRenderer::willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
+  scope->setFields( feature.fields() );
+  scope->setFeature( feature );
+  QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
+
+  for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
+  {
+    if ( !layerStyle.isActive( tileZoom ) || !layerStyle.symbol() )
+      continue;
+
+    if ( layerStyle.layerName() == QLatin1String( "background" ) )
+      continue;
+
+    if ( !layerStyle.layerName().isEmpty() && layerStyle.layerName() != layerName )
+      continue;
+
+    QgsExpression filterExpression( layerStyle.filterExpression() );
+    filterExpression.prepare( &context.expressionContext() );
+
+    if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )
+      continue;
+
+    const QgsWkbTypes::GeometryType featureType = QgsWkbTypes::geometryType( feature.geometry().wkbType() );
+    if ( featureType == layerStyle.geometryType() )
+    {
+      return true;
+    }
+    else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::LineGeometry )
+    {
+      // be tolerant and permit rendering polygons with a line layer style, as some style definitions use this approach
+      // to render the polygon borders only
+      return true;
+    }
+    else if ( featureType == QgsWkbTypes::PolygonGeometry && layerStyle.geometryType() == QgsWkbTypes::PointGeometry )
+    {
+      // be tolerant and permit rendering polygons with a point layer style, as some style definitions use this approach
+      // to render the polygon center
+      return true;
+    }
+  }
+  return false;
+}
+
 void QgsVectorTileBasicRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();

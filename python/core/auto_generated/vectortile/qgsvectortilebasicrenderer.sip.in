@@ -165,6 +165,8 @@ Constructs renderer with no styles
 
     virtual void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context );
 
+    virtual bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context );
+
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

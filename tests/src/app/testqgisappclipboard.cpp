@@ -556,7 +556,7 @@ void TestQgisAppClipboard::testVectorTileLayer()
   {
     if ( feature.fields().lookupField( QStringLiteral( "maritime" ) ) > -1 )
       maritimeId = feature.id();
-    else if ( feature.fields().lookupField( QStringLiteral( "class" ) ) > -1 )
+    else if ( feature.attribute( QStringLiteral( "class" ) ).toString() == QStringLiteral( "ocean" ) )
       oceanId = feature.id();
   }
 
