@@ -191,6 +191,73 @@ Sets whether to render also borders of tiles (useful for debugging)
 Returns whether to render also borders of tiles (useful for debugging)
 %End
 
+    QList< QgsFeature > selectedFeatures() const;
+%Docstring
+Returns the list of features currently selected in the layer.
+
+.. seealso:: :py:func:`selectedFeatureCount`
+
+.. seealso:: :py:func:`selectByGeometry`
+
+.. seealso:: :py:func:`removeSelection`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+    int selectedFeatureCount() const;
+%Docstring
+Returns the number of features that are selected in this layer.
+
+.. seealso:: :py:func:`selectedFeatures`
+
+.. seealso:: :py:func:`selectByGeometry`
+
+.. seealso:: :py:func:`removeSelection`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+    void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
+                           Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect );
+%Docstring
+Selects features found within the search ``geometry`` (in layer's coordinates).
+
+.. seealso:: :py:func:`selectedFeatures`
+
+.. seealso:: :py:func:`removeSelection`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+  public slots:
+
+    void removeSelection();
+%Docstring
+Clear selection
+
+.. seealso:: :py:func:`selectByGeometry`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+  signals:
+
+    void selectionChanged();
+%Docstring
+Emitted whenever the selected features in the layer are changed.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 

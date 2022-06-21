@@ -749,6 +749,12 @@ QgsVectorLayer.RemoveFromSelection.__doc__ = "Remove from current selection"
 Qgis.SelectBehavior.__doc__ = 'Specifies how a selection should be applied.\n\n.. versionadded:: 3.22\n\n' + '* ``SetSelection``: ' + Qgis.SelectBehavior.SetSelection.__doc__ + '\n' + '* ``AddToSelection``: ' + Qgis.SelectBehavior.AddToSelection.__doc__ + '\n' + '* ``IntersectSelection``: ' + Qgis.SelectBehavior.IntersectSelection.__doc__ + '\n' + '* ``RemoveFromSelection``: ' + Qgis.SelectBehavior.RemoveFromSelection.__doc__
 # --
 Qgis.SelectBehavior.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SelectGeometryRelationship.Intersect.__doc__ = "Select where features intersect the reference geometry"
+Qgis.SelectGeometryRelationship.Within.__doc__ = "Select where features are within the reference geometry"
+Qgis.SelectGeometryRelationship.__doc__ = 'Geometry relationship test to apply for selecting features.\n\n.. versionadded:: 3.28\n\n' + '* ``Intersect``: ' + Qgis.SelectGeometryRelationship.Intersect.__doc__ + '\n' + '* ``Within``: ' + Qgis.SelectGeometryRelationship.Within.__doc__
+# --
+Qgis.SelectGeometryRelationship.baseClass = Qgis
 QgsVectorLayer.EditResult = Qgis.VectorEditResult
 # monkey patching scoped based enum
 QgsVectorLayer.Success = Qgis.VectorEditResult.Success

@@ -784,6 +784,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( SelectBehavior )
 
     /**
+     * Geometry relationship test to apply for selecting features.
+     *
+     * \since QGIS 3.28
+     */
+    enum class SelectGeometryRelationship : int
+    {
+      Intersect, //!< Select where features intersect the reference geometry
+      Within, //!< Select where features are within the reference geometry
+    };
+    Q_ENUM( SelectGeometryRelationship )
+
+    /**
      * Specifies the result of a vector layer edit operation
      *
      * \since QGIS 3.22

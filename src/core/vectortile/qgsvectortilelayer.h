@@ -21,11 +21,15 @@
 
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
+#include "qgsfeatureid.h"
 
 class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
 
 class QgsTileXYZ;
+class QgsFeature;
+class QgsGeometry;
+class QgsSelectionContext;
 
 /**
  * \ingroup core
@@ -203,6 +207,60 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Returns whether to render also borders of tiles (useful for debugging)
     bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
 
+    /**
+     * Returns the list of features currently selected in the layer.
+     *
+     * \see selectedFeatureCount()
+     * \see selectByGeometry()
+     * \see removeSelection()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    QList< QgsFeature > selectedFeatures() const;
+
+    /**
+     * Returns the number of features that are selected in this layer.
+     *
+     * \see selectedFeatures()
+     * \see selectByGeometry()
+     * \see removeSelection()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    int selectedFeatureCount() const;
+
+    /**
+     * Selects features found within the search \a geometry (in layer's coordinates).
+     *
+     * \see selectedFeatures()
+     * \see removeSelection()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
+                           Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect );
+
+  public slots:
+
+    /**
+     * Clear selection
+     *
+     * \see selectByGeometry()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    void removeSelection();
+
+  signals:
+
+    /**
+     * Emitted whenever the selected features in the layer are changed.
+     *
+     * \since QGIS 3.28
+     */
+    void selectionChanged();
+
   private:
     bool loadDataSource();
 
@@ -226,6 +284,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     QgsCoordinateTransformContext mTransformContext;
 
     std::unique_ptr< QgsDataProvider > mDataProvider;
+
+    QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
 
     bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
 
