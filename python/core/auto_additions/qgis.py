@@ -755,6 +755,14 @@ Qgis.SelectGeometryRelationship.Within.__doc__ = "Select where features are with
 Qgis.SelectGeometryRelationship.__doc__ = 'Geometry relationship test to apply for selecting features.\n\n.. versionadded:: 3.28\n\n' + '* ``Intersect``: ' + Qgis.SelectGeometryRelationship.Intersect.__doc__ + '\n' + '* ``Within``: ' + Qgis.SelectGeometryRelationship.Within.__doc__
 # --
 Qgis.SelectGeometryRelationship.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SelectionFlag.SingleFeatureSelection.__doc__ = "Select only a single feature, picking the \"best\" match for the selection geometry"
+Qgis.SelectionFlag.ToggleSelection.__doc__ = "Enables a \"toggle\" selection mode, where previously selected matching features will be deselected and previously deselected features will be selected. This flag works only when the SingleFeatureSelection flag is also set."
+Qgis.SelectionFlag.__doc__ = 'Flags which control feature selection behavior.\n\n.. versionadded:: 3.28\n\n' + '* ``SingleFeatureSelection``: ' + Qgis.SelectionFlag.SingleFeatureSelection.__doc__ + '\n' + '* ``ToggleSelection``: ' + Qgis.SelectionFlag.ToggleSelection.__doc__
+# --
+Qgis.SelectionFlag.baseClass = Qgis
+Qgis.SelectionFlags.baseClass = Qgis
+SelectionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsVectorLayer.EditResult = Qgis.VectorEditResult
 # monkey patching scoped based enum
 QgsVectorLayer.Success = Qgis.VectorEditResult.Success

@@ -156,6 +156,57 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const 
   setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
+bool transformSelectGeometry( const QgsGeometry &selectGeometry, QgsGeometry &selectGeomTrans, const QgsCoordinateTransform &ct )
+{
+  selectGeomTrans = selectGeometry;
+  try
+  {
+    if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
+    {
+      // convert add more points to the edges of the rectangle
+      // improve transformation result
+      QgsPolygonXY poly( selectGeomTrans.asPolygon() );
+      if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
+      {
+        const QgsPolylineXY &ringIn = poly.at( 0 );
+
+        QgsPolygonXY newpoly( 1 );
+        newpoly[0].resize( 41 );
+        QgsPolylineXY &ringOut = newpoly[0];
+
+        ringOut[ 0 ] = ringIn.at( 0 );
+
+        int i = 1;
+        for ( int j = 1; j < 5; j++ )
+        {
+          QgsVector v( ( ringIn.at( j ) - ringIn.at( j - 1 ) ) / 10.0 );
+          for ( int k = 0; k < 9; k++ )
+          {
+            ringOut[ i ] = ringOut[ i - 1 ] + v;
+            i++;
+          }
+          ringOut[ i++ ] = ringIn.at( j );
+        }
+        selectGeomTrans = QgsGeometry::fromPolygonXY( newpoly );
+      }
+    }
+
+    selectGeomTrans.transform( ct );
+    return true;
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse )
+    // catch exception for 'invalid' point and leave existing selection unchanged
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
+    QgisApp::instance()->messageBar()->pushMessage(
+      QObject::tr( "CRS Exception" ),
+      QObject::tr( "Selection extends beyond layer's coordinate system" ),
+      Qgis::MessageLevel::Warning );
+    return false;
+  }
+}
+
 void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
   QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( canvas );
@@ -213,7 +264,11 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
         break;
       }
 
-      vtLayer->selectByGeometry( selectGeomTrans, context, behavior );
+      Qgis::SelectionFlags flags = Qgis::SelectionFlag::SingleFeatureSelection;
+      if ( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier )
+        flags |= Qgis::SelectionFlag::ToggleSelection;
+
+      vtLayer->selectByGeometry( selectGeomTrans, context, behavior, Qgis::SelectGeometryRelationship::Intersect, flags );
       break;
     }
 
@@ -275,57 +330,6 @@ void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const Qgs
   }
 
   QApplication::restoreOverrideCursor();
-}
-
-static bool QgsMapToolSelectUtils::transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeometry &selectGeomTrans, const QgsCoordinateTransform &ct )
-{
-  selectGeomTrans = selectGeometry;
-  try
-  {
-    if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
-    {
-      // convert add more points to the edges of the rectangle
-      // improve transformation result
-      QgsPolygonXY poly( selectGeomTrans.asPolygon() );
-      if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
-      {
-        const QgsPolylineXY &ringIn = poly.at( 0 );
-
-        QgsPolygonXY newpoly( 1 );
-        newpoly[0].resize( 41 );
-        QgsPolylineXY &ringOut = newpoly[0];
-
-        ringOut[ 0 ] = ringIn.at( 0 );
-
-        int i = 1;
-        for ( int j = 1; j < 5; j++ )
-        {
-          QgsVector v( ( ringIn.at( j ) - ringIn.at( j - 1 ) ) / 10.0 );
-          for ( int k = 0; k < 9; k++ )
-          {
-            ringOut[ i ] = ringOut[ i - 1 ] + v;
-            i++;
-          }
-          ringOut[ i++ ] = ringIn.at( j );
-        }
-        selectGeomTrans = QgsGeometry::fromPolygonXY( newpoly );
-      }
-    }
-
-    selectGeomTrans.transform( ct );
-    return true;
-  }
-  catch ( QgsCsException &cse )
-  {
-    Q_UNUSED( cse )
-    // catch exception for 'invalid' point and leave existing selection unchanged
-    QgsDebugMsg( QStringLiteral( "Caught CRS exception " ) );
-    QgisApp::instance()->messageBar()->pushMessage(
-      QObject::tr( "CRS Exception" ),
-      QObject::tr( "Selection extends beyond layer's coordinate system" ),
-      Qgis::MessageLevel::Warning );
-    return false;
-  }
 }
 
 QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, bool doContains, bool singleSelect )

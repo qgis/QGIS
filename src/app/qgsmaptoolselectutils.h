@@ -201,10 +201,6 @@ namespace QgsMapToolSelectUtils
       void chooseOneCandidateFeature( QgsFeatureId id );
       void highlightOneFeature( QgsFeatureId id );
   };
-
-  static bool transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeometry &selectGeomTrans, const QgsCoordinateTransform &ct );
-
-
 }
 
 #endif

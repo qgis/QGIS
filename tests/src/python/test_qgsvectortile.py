@@ -253,6 +253,42 @@ class TestVectorTile(unittest.TestCase):
         self.assertFalse(layer.selectedFeatures())
         self.assertEqual(len(spy), 8)
 
+        # single feature selection
+        selection_geometry = QgsGeometry.fromWkt('Polygon ((-10486370.9139375202357769 3807467.1023839432746172, -10528246.57568679377436638 3799853.34570225700736046, -10490177.79227836430072784 3735136.41390792420133948, -10486370.9139375202357769 3807467.1023839432746172))')
+        layer.selectByGeometry(selection_geometry, context, Qgis.SelectBehavior.SetSelection,
+                               Qgis.SelectGeometryRelationship.Intersect, Qgis.SelectionFlags(Qgis.SelectionFlag.SingleFeatureSelection))
+        self.assertEqual(len(layer.selectedFeatures()), 1)
+        self.assertCountEqual(set(f.id() for f in layer.selectedFeatures()),
+                              {33554436})
+
+        self.assertCountEqual(set(f.geometry().asWkt(-3) for f in layer.selectedFeatures()), {'Polygon ((-10958000 3835000, -10958000 3796000, -10919000 3835000, -10841000 3874000, -10684000 3992000, -10567000 4031000, -10410000 4031000, -10332000 3992000, -10254000 3914000, -10136000 3914000, -10058000 3874000, -10019000 3796000, -10019000 3757000, -10058000 3718000, -10097000 3718000, -10254000 3796000, -10332000 3796000, -10371000 3757000, -10371000 3718000, -10371000 3679000, -10332000 3640000, -10332000 3561000, -10410000 3483000, -10449000 3405000, -10488000 3366000, -10645000 3327000, -10723000 3366000, -10762000 3405000, -10801000 3444000, -10762000 3483000, -10801000 3522000, -10841000 3561000, -10919000 3561000, -10958000 3600000, -10958000 3640000, -10958000 3679000, -10958000 3718000, -10997000 3796000, -10958000 3835000))'})
+        self.assertEqual(len(spy), 9)
+
+        # select again
+        layer.selectByGeometry(selection_geometry, context, Qgis.SelectBehavior.SetSelection,
+                               Qgis.SelectGeometryRelationship.Intersect, Qgis.SelectionFlags(Qgis.SelectionFlag.SingleFeatureSelection))
+        self.assertEqual(len(layer.selectedFeatures()), 1)
+        self.assertCountEqual(set(f.id() for f in layer.selectedFeatures()),
+                              {33554436})
+
+        self.assertCountEqual(set(f.geometry().asWkt(-3) for f in layer.selectedFeatures()), {'Polygon ((-10958000 3835000, -10958000 3796000, -10919000 3835000, -10841000 3874000, -10684000 3992000, -10567000 4031000, -10410000 4031000, -10332000 3992000, -10254000 3914000, -10136000 3914000, -10058000 3874000, -10019000 3796000, -10019000 3757000, -10058000 3718000, -10097000 3718000, -10254000 3796000, -10332000 3796000, -10371000 3757000, -10371000 3718000, -10371000 3679000, -10332000 3640000, -10332000 3561000, -10410000 3483000, -10449000 3405000, -10488000 3366000, -10645000 3327000, -10723000 3366000, -10762000 3405000, -10801000 3444000, -10762000 3483000, -10801000 3522000, -10841000 3561000, -10919000 3561000, -10958000 3600000, -10958000 3640000, -10958000 3679000, -10958000 3718000, -10997000 3796000, -10958000 3835000))'})
+        self.assertEqual(len(spy), 9)
+
+        # with toggle mode
+        layer.selectByGeometry(selection_geometry, context, Qgis.SelectBehavior.SetSelection,
+                               Qgis.SelectGeometryRelationship.Intersect, Qgis.SelectionFlags(Qgis.SelectionFlag.SingleFeatureSelection | Qgis.SelectionFlag.ToggleSelection))
+        self.assertFalse(layer.selectedFeatures())
+        self.assertEqual(len(spy), 10)
+
+        layer.selectByGeometry(selection_geometry, context, Qgis.SelectBehavior.SetSelection,
+                               Qgis.SelectGeometryRelationship.Intersect, Qgis.SelectionFlags(Qgis.SelectionFlag.SingleFeatureSelection | Qgis.SelectionFlag.ToggleSelection))
+        self.assertEqual(len(layer.selectedFeatures()), 1)
+        self.assertCountEqual(set(f.id() for f in layer.selectedFeatures()),
+                              {33554436})
+
+        self.assertCountEqual(set(f.geometry().asWkt(-3) for f in layer.selectedFeatures()), {'Polygon ((-10958000 3835000, -10958000 3796000, -10919000 3835000, -10841000 3874000, -10684000 3992000, -10567000 4031000, -10410000 4031000, -10332000 3992000, -10254000 3914000, -10136000 3914000, -10058000 3874000, -10019000 3796000, -10019000 3757000, -10058000 3718000, -10097000 3718000, -10254000 3796000, -10332000 3796000, -10371000 3757000, -10371000 3718000, -10371000 3679000, -10332000 3640000, -10332000 3561000, -10410000 3483000, -10449000 3405000, -10488000 3366000, -10645000 3327000, -10723000 3366000, -10762000 3405000, -10801000 3444000, -10762000 3483000, -10801000 3522000, -10841000 3561000, -10919000 3561000, -10958000 3600000, -10958000 3640000, -10958000 3679000, -10958000 3718000, -10997000 3796000, -10958000 3835000))'})
+        self.assertEqual(len(spy), 11)
+
 
 if __name__ == '__main__':
     unittest.main()

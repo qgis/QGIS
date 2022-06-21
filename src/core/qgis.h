@@ -796,6 +796,27 @@ class CORE_EXPORT Qgis
     Q_ENUM( SelectGeometryRelationship )
 
     /**
+     * Flags which control feature selection behavior.
+     *
+     * \since QGIS 3.28
+     */
+    enum class SelectionFlag : int
+    {
+      SingleFeatureSelection = 1 << 0, //!< Select only a single feature, picking the "best" match for the selection geometry
+      ToggleSelection = 1 << 1, //!< Enables a "toggle" selection mode, where previously selected matching features will be deselected and previously deselected features will be selected. This flag works only when the SingleFeatureSelection flag is also set.
+    };
+
+    /**
+     * Flags which control feature selection behavior.
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( SelectionFlags, SelectionFlag )
+
+    Q_ENUM( SelectionFlag )
+    Q_FLAG( SelectionFlags )
+
+    /**
      * Specifies the result of a vector layer edit operation
      *
      * \since QGIS 3.22
@@ -2135,6 +2156,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
 
 
 // hack to workaround warnings when casting void pointers
