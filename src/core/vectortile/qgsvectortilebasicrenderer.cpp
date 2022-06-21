@@ -263,17 +263,24 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 
 void QgsVectorTileBasicRenderer::renderSelectedFeatures( const QList<QgsFeature> &selection, QgsRenderContext &context )
 {
-  // this is a little cheaty -- because we don't know what zoom level the selected features belong to, we just
-  // find the first matching layer style for each feature regardless of zoom level, and use that to render the feature
-
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
   QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
 
   for ( const QgsFeature &feature : selection )
   {
+    bool ok = false;
+    int featureTileZoom = feature.attribute( QStringLiteral( "tile_zoom" ) ).toInt( &ok );
+    if ( !ok )
+      featureTileZoom = -1;
+    const QString featureTileLayer = feature.attribute( QStringLiteral( "tile_layer" ) ).toString();
+
     for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
     {
-      if ( !layerStyle.symbol() || layerStyle.layerName() == QLatin1String( "background" ) )
+      if ( ( featureTileZoom >= 0 && !layerStyle.isActive( featureTileZoom ) )
+           || !layerStyle.symbol() || layerStyle.layerName() == QLatin1String( "background" ) )
+        continue;
+
+      if ( !layerStyle.layerName().isEmpty() && !featureTileLayer.isEmpty() && layerStyle.layerName() != featureTileLayer )
         continue;
 
       scope->setFields( feature.fields() );
