@@ -107,10 +107,22 @@ void TestQgsOverlayExpression::initTestCase()
   pointsLayer->dataProvider()->addFeature( f3 );
   pointsLayer->dataProvider()->addFeature( f4 );
 
+  QgsVectorLayer *polygonsLayer = new QgsVectorLayer{ R"layer_definition(Polygon?crs=EPSG:2051&uid={d6f1eaf3-ec08-4e6c-9e39-6dab242e73f4}&field=fid:integer)layer_definition", QStringLiteral( "polygons2" ), QStringLiteral( "memory" ) };
+  QgsFeature f { polygonsLayer->fields() };
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((2604689.23400000017136335 1231339.72999999998137355, 2604696.20599999977275729 1231363.55400000000372529, 2604720.66000000014901161 1231358.27099999994970858, 2604713.89399999985471368 1231333.42900000000372529, 2604704.85499999998137355 1231335.10299999988637865, 2604695.41300000017508864 1231337.88999999989755452, 2604689.23400000017136335 1231339.72999999998137355))" ) ) );
+  f.setAttribute( 0, 997 );
+  polygonsLayer->dataProvider()->addFeature( f );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" ) ) );
+  f.setAttribute( 0, 1002 );
+  polygonsLayer->dataProvider()->addFeature( f );
+  QVERIFY( polygonsLayer->isValid() );
+  QCOMPARE( polygonsLayer->featureCount(), 2 );
+
   QgsProject::instance()->addMapLayer( pointsLayer );
   QgsProject::instance()->addMapLayer( linestringsLayer );
   QgsProject::instance()->addMapLayer( mRectanglesLayer );
   QgsProject::instance()->addMapLayer( mPolyLayer );
+  QgsProject::instance()->addMapLayer( polygonsLayer );
 
 
 }
@@ -247,7 +259,6 @@ void TestQgsOverlayExpression::testOverlayMeasure()
   QgsExpression exp( expression );
   QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
   const QVariant result = exp.evaluate( &context );
-
   QCOMPARE( result, expectedResult );
 
 }
@@ -273,6 +284,7 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   expected1.insert( QStringLiteral( "radius" ),  0.46454276882989376 );
 #endif
+
   QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 ) ;
 
   QTest::newRow( "intersects multi match return measure" ) << "overlay_intersects('polys', expression:=$id, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected1 << expected3 ) ;
@@ -390,6 +402,13 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   // Test polygon intersection resulting in a point with min_inscribed_circle_radius and expression
   QTest::newRow( "intersects point expression no match" ) << "overlay_intersects('polys', expression:=$id, min_inscribed_circle_radius:=0.5, sort_by_intersection_size:='desc')" << "POLYGON((-90.825 34.486, -89.981 35.059, -90.009 33.992, -90.825 34.486))" << ( QVariantList() );
+  // Test polygon intersection resulting in a line with min_inscribed_circle_radius and expression
+  QVariantMap expectedPoly;
+  expectedPoly.insert( QStringLiteral( "id" ), 2LL );
+  expectedPoly.insert( QStringLiteral( "overlap" ), 667.992431640625 );
+  expectedPoly.insert( QStringLiteral( "radius" ), 12.576424447201404 );
+  expectedPoly.insert( QStringLiteral( "result" ), 1002 );
+  QTest::newRow( "intersects line expression no match" ) << "overlay_intersects('polygons2', expression:=fid, return_details:=true, min_inscribed_circle_radius:=3, sort_by_intersection_size:='desc')" << "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" << ( QVariantList() << expectedPoly );
 #endif
 }
 
