@@ -21,6 +21,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
@@ -35,23 +36,43 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsmessagelog.h"
 #include "qgsvectorlayertemporalproperties.h"
 #include "qgsmapcanvasutils.h"
+#include "qgsselectioncontext.h"
 
 #include <QMouseEvent>
 #include <QApplication>
 #include <QAction>
 #include <QtConcurrent>
 
-QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canvas )
+QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() );
-  if ( !vlayer )
+  QgsMapLayer *layer = canvas->currentLayer();
+  if ( layer )
+  {
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      case QgsMapLayerType::VectorTileLayer:
+        // supported
+        break;
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        layer = nullptr; //not supported
+        break;
+    }
+  }
+
+  if ( !layer )
   {
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
       QObject::tr( "To select features, choose a vector layer in the layers panel" ),
       Qgis::MessageLevel::Info );
   }
-  return vlayer;
+  return layer;
 }
 
 void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
@@ -72,19 +93,46 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRe
   }
 }
 
-QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsVectorLayer *vlayer )
+QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsMapLayer *layer )
 {
   int boxSize = 0;
-  if ( !vlayer || vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( !layer )
   {
-    //if point or line use an artificial bounding box of 10x10 pixels
-    //to aid the user to click on a feature accurately
     boxSize = 5;
   }
   else
   {
-    //otherwise just use the click point for polys
-    boxSize = 1;
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
+        if ( vLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+        {
+          //if point or line use an artificial bounding box of 10x10 pixels
+          //to aid the user to click on a feature accurately
+          boxSize = 5;
+        }
+        else
+        {
+          //otherwise just use the click point for polys
+          boxSize = 1;
+        }
+        break;
+      }
+      case QgsMapLayerType::VectorTileLayer:
+        // mixed layer type, so aim for somewhere between the vector layer polygon/point sizes
+        boxSize = 2;
+        break;
+
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
   }
 
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
@@ -110,41 +158,73 @@ void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const 
 
 void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qt::KeyboardModifiers modifiers )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
-  if ( !vlayer )
+  QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( canvas );
+  if ( !layer )
     return;
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
-  if ( selectedFeatures.isEmpty() )
-  {
-    if ( !( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier ) )
-    {
-      // if no modifiers then clicking outside features clears the selection
-      // but if there's a shift or ctrl modifier, then it's likely the user was trying
-      // to modify an existing selection by adding or subtracting features and just
-      // missed the feature
-      vlayer->removeSelection();
-    }
-    QApplication::restoreOverrideCursor();
-    return;
-  }
 
   Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection;
+  QgsSelectionContext context;
+  context.setScale( canvas->scale() );
 
-  //either shift or control modifier switches to "toggle" selection mode
-  if ( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier )
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  switch ( layer->type() )
   {
-    QgsFeatureId selectId = *selectedFeatures.constBegin();
-    QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
-    if ( layerSelectedFeatures.contains( selectId ) )
-      behavior = Qgis::SelectBehavior::RemoveFromSelection;
-    else
-      behavior = Qgis::SelectBehavior::AddToSelection;
-  }
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer *>( layer );
+      QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
+      if ( selectedFeatures.isEmpty() )
+      {
+        if ( !( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier ) )
+        {
+          // if no modifiers then clicking outside features clears the selection
+          // but if there's a shift or ctrl modifier, then it's likely the user was trying
+          // to modify an existing selection by adding or subtracting features and just
+          // missed the feature
+          vlayer->removeSelection();
+        }
+        QApplication::restoreOverrideCursor();
+        return;
+      }
 
-  vlayer->selectByIds( selectedFeatures, behavior );
+      //either shift or control modifier switches to "toggle" selection mode
+      if ( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier )
+      {
+        QgsFeatureId selectId = *selectedFeatures.constBegin();
+        QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
+        if ( layerSelectedFeatures.contains( selectId ) )
+          behavior = Qgis::SelectBehavior::RemoveFromSelection;
+        else
+          behavior = Qgis::SelectBehavior::AddToSelection;
+      }
+
+      vlayer->selectByIds( selectedFeatures, behavior );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer *>( layer );
+
+      QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
+      QgsGeometry selectGeomTrans;
+      if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
+      {
+        break;
+      }
+
+      vtLayer->selectByGeometry( selectGeomTrans, context, behavior );
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
+      break;
+  }
 
   QApplication::restoreOverrideCursor();
 }
@@ -152,19 +232,52 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
 void QgsMapToolSelectUtils::setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry,
     Qgis::SelectBehavior selectBehavior, bool doContains, bool singleSelect )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
-  if ( !vlayer )
+  QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( canvas );
+  if ( !layer )
     return;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
-  vlayer->selectByIds( selectedFeatures, selectBehavior );
+  QgsSelectionContext context;
+  context.setScale( canvas->scale() );
+
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
+      QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, doContains, singleSelect );
+      vLayer->selectByIds( selectedFeatures, selectBehavior );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsVectorTileLayer *vtLayer = qobject_cast< QgsVectorTileLayer * >( layer );
+      QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
+      QgsGeometry selectGeomTrans;
+      if ( !transformSelectGeometry( selectGeometry, selectGeomTrans, ct ) )
+      {
+        break;
+      }
+
+      vtLayer->selectByGeometry( selectGeomTrans, context, selectBehavior, doContains ? Qgis::SelectGeometryRelationship::Within : Qgis::SelectGeometryRelationship::Intersect );
+      break;
+    }
+
+    case QgsMapLayerType::RasterLayer:
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::AnnotationLayer:
+    case QgsMapLayerType::PointCloudLayer:
+    case QgsMapLayerType::GroupLayer:
+      break;
+  }
 
   QApplication::restoreOverrideCursor();
 }
 
-static bool transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeometry &selectGeomTrans, const QgsCoordinateTransform &ct )
+static bool QgsMapToolSelectUtils::transformSelectGeometry( const QgsGeometry &selectGeometry,  QgsGeometry &selectGeomTrans, const QgsCoordinateTransform &ct )
 {
   selectGeomTrans = selectGeometry;
   try
@@ -222,7 +335,8 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   if ( selectGeometry.type() != QgsWkbTypes::PolygonGeometry )
     return newSelectedFeatures;
 
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
+  QgsMapLayer *targetLayer = QgsMapToolSelectUtils::getCurrentTargetLayer( canvas );
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( targetLayer );
   if ( !vlayer )
     return newSelectedFeatures;
 
@@ -372,19 +486,18 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
     QgsVectorLayer *vectorLayer,
     Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry,
-    QObject *parent ):
-  QObject( parent ),
-  mCanvas( canvas ),
-  mVectorLayer( vectorLayer ),
-  mBehavior( behavior ),
-  mSelectGeometry( selectionGeometry )
+    QObject *parent )
+  : QObject( parent )
+  , mCanvas( canvas )
+  , mVectorLayer( vectorLayer )
+  , mBehavior( behavior )
+  , mSelectGeometry( selectionGeometry )
 {
   connect( mVectorLayer, &QgsMapLayer::destroyed, this, &QgsMapToolSelectMenuActions::onLayerDestroyed );
 
   mFutureWatcher = new QFutureWatcher<QgsFeatureIds>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapToolSelectMenuActions::onSearchFinished );
 }
-
 
 QgsMapToolSelectUtils::QgsMapToolSelectMenuActions::~QgsMapToolSelectMenuActions()
 {
