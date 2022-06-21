@@ -41,6 +41,7 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsvectortilelayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -70,8 +71,32 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorTileLayer *src )
   if ( !src )
     return;
 
-  mFeatureClipboard = src->selectedFeatures();
-  mFeatureFields.clear();
+  // things are a bit tricky for vector tile features, as each will have different fields
+  // so we build a "super set" of fields first, and then make sure each feature has that superset present
+
+  const QList< QgsFeature > selectedFeatures = src->selectedFeatures();
+  QgsFields supersetFields;
+  for ( const QgsFeature &feature : selectedFeatures )
+  {
+    const QgsFields fields = feature.fields();
+    for ( const QgsField &field : fields )
+    {
+      if ( supersetFields.lookupField( field.name() ) == -1 )
+      {
+        supersetFields.append( field );
+      }
+    }
+  }
+
+  mFeatureFields = supersetFields;
+
+  mFeatureClipboard.clear();
+  for ( const QgsFeature &feature : selectedFeatures )
+  {
+    QgsFeature superSetFeature = feature;
+    QgsVectorLayerUtils::matchAttributesToFields( superSetFeature, mFeatureFields );
+    mFeatureClipboard.append( superSetFeature );
+  }
 
   mCRS = src->crs();
   QgsDebugMsgLevel( QStringLiteral( "replaced QGIS clipboard." ), 2 );
