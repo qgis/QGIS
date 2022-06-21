@@ -2263,7 +2263,9 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
       usePict = false;
 
       if ( context.selected() )
-        QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+      {
+        QgsImageOperation::overlayColor( img, context.renderContext().selectionColor() );
+      }
 
       //consider transparency
       if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
@@ -2984,7 +2986,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   {
     if ( context.selected() )
     {
-      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+      QgsImageOperation::overlayColor( img, context.renderContext().selectionColor() );
     }
 
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );

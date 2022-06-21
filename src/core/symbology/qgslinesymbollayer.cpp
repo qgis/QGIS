@@ -3482,7 +3482,7 @@ void QgsRasterLineSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbo
 
   if ( context.selected() )
   {
-    QgsImageOperation::adjustHueSaturation( sourceImage, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+    QgsImageOperation::overlayColor( sourceImage, context.renderContext().selectionColor() );
   }
 
   const QBrush brush( sourceImage );
