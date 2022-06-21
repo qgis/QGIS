@@ -269,7 +269,9 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     {
       latitude = -latitude;
     }
-    mLastGPSInformation.satPrn.clear();
+    //GSA
+    //mLastGPSInformation.satPrn.clear(); 
+    //GSV
     mLastGPSInformation.satellitesInView.clear();
     mLastGPSInformation.satellitesUsed = 0;
     
