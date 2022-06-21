@@ -168,6 +168,10 @@ class TestVectorTile(unittest.TestCase):
             'Polygon ((-12442000 5049000, -12411000 4990000, -12411000 4956000, -12426000 4916000, -12450000 4887000, -12563000 4827000, -12563000 5049000, -12442000 5049000))',
             'Point (-12714000 5220000)'})
         self.assertEqual(len(spy), 1)
+        self.assertNotEqual(layer.selectedFeatures()[0].fields().lookupField('tile_zoom'), -1)
+        self.assertNotEqual(layer.selectedFeatures()[0].fields().lookupField('tile_layer'), -1)
+        self.assertEqual(layer.selectedFeatures()[0]['tile_zoom'], 4)
+        self.assertCountEqual([f['tile_layer'] for f in layer.selectedFeatures()], ['polys', 'polys', 'polys', 'lines', 'points', 'polys', 'polys', 'polys'])
 
         # select same again, should be no new signal
         layer.selectByGeometry(selection_geometry, context, Qgis.SelectBehavior.SetSelection,
