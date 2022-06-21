@@ -256,9 +256,6 @@ void QgsNmeaConnection::processHchdtSentence( const char *data, int len )
 
 void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 {
-  mLastGPSInformation.satPrn.clear();
-  mLastGPSInformation.satellitesInView.clear();
-  mLastGPSInformation.satellitesUsed = 0;
   nmeaGPRMC result;
   if ( nmea_parse_GPRMC( data, len, &result ) )
   {
@@ -272,6 +269,10 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     {
       latitude = -latitude;
     }
+    mLastGPSInformation.satPrn.clear();
+    mLastGPSInformation.satellitesInView.clear();
+    mLastGPSInformation.satellitesUsed = 0;
+    
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
