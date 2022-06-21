@@ -407,6 +407,6 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
       
     }
     //mLastGPSInformation.satellitesUsed = result.satinuse;
-    mLastGPSInformation.satellitesUsed += result.satinuse;
+    //mLastGPSInformation.satellitesUsed += result.satinuse;
   }
 }
