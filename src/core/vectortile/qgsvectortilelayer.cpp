@@ -34,6 +34,9 @@
 #include "qgspainting.h"
 #include "qgsmaplayerfactory.h"
 #include "qgsarcgisrestutils.h"
+#include "qgsselectioncontext.h"
+#include "qgsgeometryengine.h"
+#include "qgsvectortilemvtdecoder.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -841,6 +844,176 @@ QgsVectorTileLabeling *QgsVectorTileLayer::labeling() const
   return mLabeling.get();
 }
 
+QList<QgsFeature> QgsVectorTileLayer::selectedFeatures() const
+{
+  QList< QgsFeature > res;
+  res.reserve( mSelectedFeatures.size() );
+  for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
+    res.append( it.value() );
+
+  return res;
+}
+
+int QgsVectorTileLayer::selectedFeatureCount() const
+{
+  return mSelectedFeatures.size();
+}
+
+void QgsVectorTileLayer::selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context, Qgis::SelectBehavior behavior, Qgis::SelectGeometryRelationship relationship )
+{
+  if ( !isInScaleRange( context.scale() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    return;
+  }
+
+  QSet< QgsFeatureId > prevSelection;
+  prevSelection.reserve( mSelectedFeatures.size() );
+  for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
+    prevSelection.insert( it.key() );
+
+  switch ( behavior )
+  {
+    case Qgis::SelectBehavior::SetSelection:
+    case Qgis::SelectBehavior::IntersectSelection:
+      mSelectedFeatures.clear();
+      break;
+
+    case Qgis::SelectBehavior::AddToSelection:
+    case Qgis::SelectBehavior::RemoveFromSelection:
+      break;
+  }
+
+  QgsGeometry selectionGeom = geometry;
+  bool isPointOrRectangle;
+  QgsPointXY point;
+  bool isSinglePoint = selectionGeom.type() == QgsWkbTypes::PointGeometry;
+  if ( isSinglePoint )
+  {
+    isPointOrRectangle = true;
+    point = selectionGeom.asPoint();
+    relationship = Qgis::SelectGeometryRelationship::Intersect;
+  }
+  else
+  {
+    // we have a polygon - maybe it is a rectangle - in such case we can avoid costly instersection tests later
+    isPointOrRectangle = QgsGeometry::fromRect( selectionGeom.boundingBox() ).isGeosEqual( selectionGeom );
+  }
+
+  std::unique_ptr<QgsGeometryEngine> selectionGeomPrepared;
+
+  QgsRectangle r;
+  if ( isSinglePoint )
+  {
+    r = QgsRectangle( point.x(), point.y(), point.x(), point.y() );
+  }
+  else
+  {
+    r = selectionGeom.boundingBox();
+
+    if ( !isPointOrRectangle || relationship == Qgis::SelectGeometryRelationship::Within )
+    {
+      // use prepared geometry for faster intersection test
+      selectionGeomPrepared.reset( QgsGeometry::createGeometryEngine( selectionGeom.constGet() ) );
+    }
+  }
+
+  const int tileZoom = tileMatrixSet().scaleToZoomLevel( context.scale() );
+  const QgsTileMatrix tileMatrix = tileMatrixSet().tileMatrix( tileZoom );
+  const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( r );
+
+  for ( int row = tileRange.startRow(); row <= tileRange.endRow(); ++row )
+  {
+    for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); ++col )
+    {
+      QgsTileXYZ tileID( col, row, tileZoom );
+      QByteArray data = getRawTile( tileID );
+      if ( data.isEmpty() )
+        continue;  // failed to get data
+
+      QgsVectorTileMVTDecoder decoder( tileMatrixSet() );
+      if ( !decoder.decode( tileID, data ) )
+        continue;  // failed to decode
+
+      QMap<QString, QgsFields> perLayerFields;
+      const QStringList layerNames = decoder.layers();
+      for ( const QString &layerName : layerNames )
+      {
+        QSet<QString> fieldNames = qgis::listToSet( decoder.layerFieldNames( layerName ) );
+        perLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( fieldNames );
+      }
+
+      const QgsVectorTileFeatures features = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
+      const QStringList featuresLayerNames = features.keys();
+      for ( const QString &layerName : featuresLayerNames )
+      {
+        const QgsFields fFields = perLayerFields[layerName];
+        const QVector<QgsFeature> &layerFeatures = features[layerName];
+        for ( const QgsFeature &f : layerFeatures )
+        {
+          if ( f.geometry().intersects( r ) )
+          {
+            bool selectFeature = true;
+            if ( selectionGeomPrepared )
+            {
+              switch ( relationship )
+              {
+                case Qgis::SelectGeometryRelationship::Intersect:
+                  selectFeature = selectionGeomPrepared->intersects( f.geometry().constGet() );
+                  break;
+                case Qgis::SelectGeometryRelationship::Within:
+                  selectFeature = selectionGeomPrepared->contains( f.geometry().constGet() );
+                  break;
+              }
+            }
+
+            if ( selectFeature )
+            {
+              switch ( behavior )
+              {
+                case Qgis::SelectBehavior::SetSelection:
+                case Qgis::SelectBehavior::AddToSelection:
+                  mSelectedFeatures.insert( f.id(), f );
+                  break;
+
+                case Qgis::SelectBehavior::IntersectSelection:
+                {
+                  if ( prevSelection.contains( f.id() ) )
+                    mSelectedFeatures.insert( f.id(), f );
+                  break;
+                }
+
+                case Qgis::SelectBehavior::RemoveFromSelection:
+                {
+                  mSelectedFeatures.remove( f.id() );
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  QSet< QgsFeatureId > newSelection;
+  newSelection.reserve( mSelectedFeatures.size() );
+  for ( auto it = mSelectedFeatures.begin(); it != mSelectedFeatures.end(); ++it )
+    newSelection.insert( it.key() );
+
+  // signal
+  if ( prevSelection != newSelection )
+    emit selectionChanged();
+}
+
+void QgsVectorTileLayer::removeSelection()
+{
+  if ( mSelectedFeatures.empty() )
+    return;
+
+  mSelectedFeatures.clear();
+  emit selectionChanged();
+}
 
 
 //

@@ -485,6 +485,12 @@ The development version
       RemoveFromSelection,
     };
 
+    enum class SelectGeometryRelationship
+    {
+      Intersect,
+      Within,
+    };
+
     enum class VectorEditResult
       {
       Success,

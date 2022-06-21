@@ -482,6 +482,7 @@ set(QGIS_CORE_SRCS
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
+  qgsselectioncontext.cpp
   qgsshapegenerator.cpp
   qgssimplifymethod.cpp
   qgssingleitemmodel.cpp
@@ -1158,6 +1159,7 @@ set(QGIS_CORE_HDRS
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
+  qgsselectioncontext.h
   qgsshapegenerator.h
   qgssimplifymethod.h
   qgssingleitemmodel.h
