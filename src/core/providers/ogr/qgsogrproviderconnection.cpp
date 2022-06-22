@@ -305,9 +305,17 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
+
+  GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve driver for connection" ) );
+  }
+
   QMap<QString, QVariant> opts { *options };
   opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
   opts[ QStringLiteral( "update" ) ] = true;
+  opts[ QStringLiteral( "driverName" ) ] = QString( GDALGetDriverShortName( hDriver ) );
   QMap<int, int> map;
   QString errCause;
   Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
@@ -379,7 +387,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   mCapabilities |= AddField;
   mCapabilities |= DeleteField;
 
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( hDS )
   {
     if ( OGR_DS_TestCapability( hDS.get(), ODsCCurveGeometries ) )
