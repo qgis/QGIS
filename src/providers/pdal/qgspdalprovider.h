@@ -83,6 +83,13 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< QgsMapLayerType > supportedLayerTypes() const override;
+
+  private:
+    static bool sSupportedFormatsPopulated;
+    static QString sFilterString;
+    static QStringList sExtensions;
+    void buildSupportedPointCloudFileFilterAndExtensions();
+
 };
 
 #endif // QGSPDALPROVIDER_H
