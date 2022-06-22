@@ -26,6 +26,7 @@
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QPointLight>
+#include <QWidget>
 #include <QShortcut>
 #include <QFontDatabase>
 #include <ctime>
@@ -669,7 +670,15 @@ void Qgs3DAxis::displayMenuAt( const QPoint &sourcePos )
   {
     createMenu();
   }
-  mMenu->popup( mParentWindow->parent()->mapToGlobal( sourcePos ) );
+  QObject *threeDMapCanvasWidget = mMapScene->engine()  // ie. 3DEngine
+                                   ->parent() // ie. Qgs3DMapCanvas
+                                   ->parent(); // ie. Qgs3DMapCanvasWidget
+
+  QWidget *container = dynamic_cast<QWidget * >( threeDMapCanvasWidget->parent() );
+  if ( container )
+    mMenu->popup( container->mapToGlobal( sourcePos ) );
+  else
+    mMenu->popup( mParentWindow->parent()->mapToGlobal( sourcePos ) );
 }
 
 void Qgs3DAxis::onAxisModeChanged( Qgs3DAxisSettings::Mode mode )
