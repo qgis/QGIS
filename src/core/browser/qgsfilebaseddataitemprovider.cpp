@@ -73,6 +73,11 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
   return children;
 }
 
+QgsProviderSublayerDetails QgsProviderSublayerItem::sublayerDetails() const
+{
+  return mDetails;
+}
+
 QgsAbstractDatabaseProviderConnection *QgsProviderSublayerItem::databaseConnection() const
 {
   if ( parent() )
