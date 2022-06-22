@@ -25,6 +25,7 @@
 #include "qgsgeopackagedataitems.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsfieldsitem.h"
+#include "qgsfielddomainsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsmbtiles.h"
 #include "qgsvectortiledataitems.h"
@@ -195,6 +196,29 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer, QString() );
     children.append( item );
+  }
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
+  {
+    QString domainError;
+    QStringList fieldDomains;
+    try
+    {
+      fieldDomains = conn->fieldDomainNames();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      domainError = ex.what();
+    }
+
+    if ( !fieldDomains.empty() || !domainError.isEmpty() )
+    {
+      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
+      children.append( domainsItem.release() );
+    }
   }
 
   return children;
