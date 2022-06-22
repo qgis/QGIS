@@ -710,6 +710,13 @@ This is supported on providers with the Capability.ListFieldDomains capability o
 .. versionadded:: 3.26
 %End
 
+    virtual QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const;
+%Docstring
+Returns a list of field domain types which are supported by the provider.
+
+.. versionadded:: 3.28
+%End
+
     virtual QgsFieldDomain *fieldDomain( const QString &name ) const throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Returns the field domain with the specified ``name`` from the provider.

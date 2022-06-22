@@ -895,6 +895,16 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection
   } );
 }
 
+QList<Qgis::FieldDomainType> QgsGeoPackageProviderConnection::supportedFieldDomainTypes() const
+{
+  return
+  {
+    Qgis::FieldDomainType::Coded,
+    Qgis::FieldDomainType::Glob,
+    Qgis::FieldDomainType::Range
+  };
+}
+
 QString QgsGeoPackageProviderConnection::databaseQueryLogIdentifier() const
 {
   return QStringLiteral( "QgsGeoPackageProviderConnection" );

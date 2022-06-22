@@ -83,6 +83,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QStringList fieldDomainNames() const override;
+    QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
     QgsFieldDomain *fieldDomain( const QString &name ) const override;
     void setFieldDomainName( const QString &fieldName, const QString &schema, const QString &tableName, const QString &domainName ) const override;
     void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const override;
