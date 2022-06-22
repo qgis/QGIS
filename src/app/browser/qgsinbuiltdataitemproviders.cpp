@@ -59,6 +59,7 @@
 #include "qgsvariantutils.h"
 #include "qgsfielddomainwidget.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsfilebaseddataitemprovider.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1548,15 +1549,25 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         if ( qobject_cast<QgsLayerItem *>( item ) )
         {
+          QString tableName;
+          if ( QgsProviderSublayerItem *sublayerItem = qobject_cast< QgsProviderSublayerItem * >( item ) )
+          {
+            tableName = sublayerItem->sublayerDetails().name();
+          }
+          if ( tableName.isEmpty() )
+          {
+            tableName = item->name();
+          }
+
           if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
           {
             // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( item->name() ) );
+            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( tableName ) );
           }
           else
           {
             // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->name() ) );
+            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( tableName ) );
           }
         }
 

@@ -58,6 +58,13 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
     QVector<QgsDataItem *> createChildren() override;
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
+    /**
+     * Returns the sublayer details for the item.
+     *
+     * \since QGIS 3.28
+     */
+    QgsProviderSublayerDetails sublayerDetails() const;
+
   private:
 
     static Qgis::BrowserLayerType layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer );
