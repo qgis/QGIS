@@ -39,9 +39,8 @@
 ///@cond PRIVATE
 
 //
+// QgsOgrProviderResultIterator
 //
-//
-
 
 QgsOgrProviderResultIterator::QgsOgrProviderResultIterator( gdal::ogr_datasource_unique_ptr hDS, OGRLayerH ogrLayer )
   : mHDS( std::move( hDS ) )
@@ -363,7 +362,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_VECTOR, false ) )
     mCapabilities |= Capability::Spatial;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(13,4,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
   mSingleTableDataset = GDALGetMetadataItem( driverMetadata, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr ) != nullptr;
 #else
   {
