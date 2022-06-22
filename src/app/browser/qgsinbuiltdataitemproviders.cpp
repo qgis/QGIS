@@ -1613,7 +1613,8 @@ QString QgsFieldDomainItemGuiProvider::name()
 void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext context )
 {
   if ( qobject_cast< QgsFieldDomainsItem * >( item )
-       || qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
+       || qobject_cast< QgsGeoPackageCollectionItem * >( item )
+       || qobject_cast< QgsFileDataCollectionItem * >( item ) )
   {
     QString providerKey;
     QString connectionUri;
@@ -1627,6 +1628,11 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
     {
       providerKey = QStringLiteral( "ogr" );
       connectionUri = gpkgItem->path().remove( QStringLiteral( "gpkg:/" ) );
+    }
+    else if ( QgsFileDataCollectionItem *fileItem = qobject_cast< QgsFileDataCollectionItem * >( item ) )
+    {
+      providerKey = QStringLiteral( "ogr" );
+      connectionUri = fileItem->path();
     }
 
     // Check if domain creation is supported
