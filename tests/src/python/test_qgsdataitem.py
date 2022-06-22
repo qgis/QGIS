@@ -90,7 +90,8 @@ class TestQgsDataItem(unittest.TestCase):
         # Check spatialite and gpkg
         spatialite_item = [i for i in children if i.path().endswith('spatialite.db')][0]
         geopackage_item = [i for i in children if i.path().endswith('geopackage.gpkg')][0]
-        textfile_item = [i for i in children if i.path().endswith('.sql')][0]
+        textfile_item = [i for i in children if i.path().endswith('.xml')][0]
+
         self.assertIsNotNone(spatialite_item.databaseConnection())
         self.assertIsNotNone(geopackage_item.databaseConnection())
         self.assertIsNone(textfile_item.databaseConnection())
