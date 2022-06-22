@@ -1646,12 +1646,6 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
         QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
         menu->addMenu( createFieldDomainMenu );
 
-        QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
-        createFieldDomainMenu->addAction( rangeDomainAction );
-        QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
-        createFieldDomainMenu->addAction( codedDomainAction );
-        QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
-        createFieldDomainMenu->addAction( globDomainAction );
         QPointer< QgsDataItem > itemWeakPointer( item );
 
         auto createDomain = [context, itemWeakPointer, md, connectionUri]( Qgis::FieldDomainType type )
@@ -1677,18 +1671,38 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
             }
           }
         };
-        connect( rangeDomainAction, &QAction::triggered, this, [ = ]
+
+        const QList< Qgis::FieldDomainType > supportedDomainTypes = conn->supportedFieldDomainTypes();
+
+        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Range ) )
         {
-          createDomain( Qgis::FieldDomainType::Range );
-        } );
-        connect( codedDomainAction, &QAction::triggered, this, [ = ]
+          QAction *rangeDomainAction = new QAction( QObject::tr( "New Range Domain…" ) );
+          createFieldDomainMenu->addAction( rangeDomainAction );
+          connect( rangeDomainAction, &QAction::triggered, this, [ = ]
+          {
+            createDomain( Qgis::FieldDomainType::Range );
+          } );
+        }
+
+        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Coded ) )
         {
-          createDomain( Qgis::FieldDomainType::Coded );
-        } );
-        connect( globDomainAction, &QAction::triggered, this, [ = ]
+          QAction *codedDomainAction = new QAction( QObject::tr( "New Coded Values Domain…" ) );
+          createFieldDomainMenu->addAction( codedDomainAction );
+          connect( codedDomainAction, &QAction::triggered, this, [ = ]
+          {
+            createDomain( Qgis::FieldDomainType::Coded );
+          } );
+        }
+
+        if ( supportedDomainTypes.contains( Qgis::FieldDomainType::Glob ) )
         {
-          createDomain( Qgis::FieldDomainType::Glob );
-        } );
+          QAction *globDomainAction = new QAction( QObject::tr( "New Glob Domain…" ) );
+          createFieldDomainMenu->addAction( globDomainAction );
+          connect( globDomainAction, &QAction::triggered, this, [ = ]
+          {
+            createDomain( Qgis::FieldDomainType::Glob );
+          } );
+        }
       }
     }
   }

@@ -608,6 +608,38 @@ QStringList QgsOgrProviderConnection::fieldDomainNames() const
 #endif
 }
 
+QList<Qgis::FieldDomainType> QgsOgrProviderConnection::supportedFieldDomainTypes() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
+    return {};
+
+  bool supportsRange = false;
+  bool supportsGlob = false;
+  bool supportsCoded = false;
+  if ( const char *pszDomainTypes = GDALGetMetadataItem( hDriver, GDAL_DMD_CREATION_FIELD_DOMAIN_TYPES, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszDomainTypes, " ", 0 );
+    supportsCoded = CSLFindString( papszTokens, "Coded" ) >= 0;
+    supportsRange = CSLFindString( papszTokens, "Range" ) >= 0;
+    supportsGlob = CSLFindString( papszTokens, "Glob" ) >= 0;
+    CSLDestroy( papszTokens );
+  }
+
+  QList<Qgis::FieldDomainType> res;
+  if ( supportsCoded )
+    res << Qgis::FieldDomainType::Coded;
+  if ( supportsRange )
+    res << Qgis::FieldDomainType::Range;
+  if ( supportsGlob )
+    res << Qgis::FieldDomainType::Glob;
+  return res;
+#else
+  return {};
+#endif
+}
+
 QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) const
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
