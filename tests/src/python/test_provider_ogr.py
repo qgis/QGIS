@@ -2587,14 +2587,16 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertFalse(table.geometryColumnTypes())
         self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial)
 
+        # test tables
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'featuredataset.gdb', {})
         tables = conn.tables('unused')
-        self.assertEqual(len(tables), 12)
-        table = [t for t in tables if t.tableName() == 'aliases'][0]
-        self.assertEqual(table.tableName(), 'aliases')
+        self.assertGreaterEqual(len(tables), 4)
+        table = [t for t in tables if t.tableName() == 'fd1_lyr1'][0]
+        self.assertEqual(table.tableName(), 'fd1_lyr1')
         self.assertEqual(table.primaryKeyColumns(), ['OBJECTID'])
         self.assertEqual(table.geometryColumnCount(), 1)
         self.assertEqual(len(table.geometryColumnTypes()), 1)
-        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.MultiPolygon)
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Point)
         self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
 
 
