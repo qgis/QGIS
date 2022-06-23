@@ -55,12 +55,20 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     void setEyeDomeLightingStrength( double strength );
     //! Sets the eye dome lighting distance (contributes to the contrast of the image)
     void setEyeDomeLightingDistance( int distance );
+
+    /**
+     * Sets whether screen space ambient occlusion is enabled
+     * \since QGIS 3.28
+     */
+    void setSsaoEnabled( bool enabled );
+
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
     Qt3DRender::QParameter *mShadowMapParameter = nullptr;
+    Qt3DRender::QParameter *mSsaoTextureParameter = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
     Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
@@ -84,6 +92,8 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mEyeDomeLightingEnabledParameter = nullptr;
     Qt3DRender::QParameter *mEyeDomeLightingStrengthParameter = nullptr;
     Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
+
+    Qt3DRender::QParameter *mSsaoEnabledParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

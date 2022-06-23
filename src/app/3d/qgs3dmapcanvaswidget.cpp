@@ -156,6 +156,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setEyeDomeLightingEnabled( enabled );
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
+
+  mActionEnableSsao = new QAction( tr( "Show Screen Space Ambient Occlusion" ), this );
+  mActionEnableSsao ->setCheckable( true );
+  connect( mActionEnableSsao, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    QgsSsaoSettings ssaoSettings = mCanvas->map()->ssaoSettings();
+    ssaoSettings.setSsaoEnabled( enabled );
+    mCanvas->map()->setSsaoSettings( ssaoSettings );
+  } );
+  mOptionsMenu->addAction( mActionEnableSsao );
+
   mOptionsMenu->addSeparator();
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
@@ -346,6 +357,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableSsao )->setChecked( map->ssaoSettings().ssaoEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
@@ -450,6 +462,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableSsao )->setChecked( map->ssaoSettings().ssaoEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
