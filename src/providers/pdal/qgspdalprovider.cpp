@@ -244,7 +244,7 @@ bool QgsPdalProvider::load( const QString &uri )
     pdal::StageFactory stageFactory;
     const std::string driver( stageFactory.inferReaderDriver( uri.toStdString() ) );
     if ( driver.empty() )
-      throw std::runtime_error( "No driver for " + uri.toStdString() );
+      throw pdal::pdal_error( "No driver for " + uri.toStdString() );
 
     if ( pdal::Reader *reader = dynamic_cast<pdal::Reader *>( stageFactory.createStage( driver ) ) )
     {
@@ -274,7 +274,7 @@ bool QgsPdalProvider::load( const QString &uri )
     }
     else
     {
-      throw std::runtime_error( "No reader for " + driver );
+      throw pdal::pdal_error( "No reader for " + driver );
     }
   }
   catch ( pdal::pdal_error &error )
@@ -287,7 +287,6 @@ bool QgsPdalProvider::load( const QString &uri )
 
 QString QgsPdalProviderMetadata::sFilterString;
 QStringList QgsPdalProviderMetadata::sExtensions;
-bool QgsPdalProviderMetadata::sSupportedFormatsPopulated;
 
 QgsPdalProviderMetadata::QgsPdalProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
@@ -377,8 +376,7 @@ QString QgsPdalProviderMetadata::filters( QgsProviderMetadata::FilterType type )
       return QString();
 
     case QgsProviderMetadata::FilterType::FilterPointCloud:
-      if ( !sSupportedFormatsPopulated )
-        buildSupportedPointCloudFileFilterAndExtensions();
+      buildSupportedPointCloudFileFilterAndExtensions();
 
       return sFilterString;
   }
@@ -403,35 +401,37 @@ QString QgsPdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 
 void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()
 {
-  sExtensions.clear();
-  sFilterString.clear();
-
-  const pdal::StageFactory f;
-  pdal::PluginManager<pdal::Stage>::loadAll();
-  const pdal::StringList stages = pdal::PluginManager<pdal::Stage>::names();
-  pdal::StageExtensions &extensions = pdal::PluginManager<pdal::Stage>::extensions();
-
-  // Let's call the defaultReader() method just so we trigger the private method extensions.load()
-  extensions.defaultReader( "laz" );
-
-  const QStringList allowedReaders { QStringLiteral( "readers.las" ),
-                                     QStringLiteral( "readers.e57" ),
-                                     QStringLiteral( "readers.bpf" ) };
-  for ( const auto &stage : stages )
+  // get supported extensions
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]
   {
-    if ( ! allowedReaders.contains( QString::fromStdString( stage ) ) )
-      continue;
+    const pdal::StageFactory f;
+    pdal::PluginManager<pdal::Stage>::loadAll();
+    const pdal::StringList stages = pdal::PluginManager<pdal::Stage>::names();
+    pdal::StageExtensions &extensions = pdal::PluginManager<pdal::Stage>::extensions();
 
-    const pdal::StringList readerExtensions = extensions.extensions( stage );
-    for ( const auto &extension : readerExtensions )
+    // Let's call the defaultReader() method just so we trigger the private method extensions.load()
+    extensions.defaultReader( "laz" );
+
+    const QStringList allowedReaders {
+      QStringLiteral( "readers.las" ),
+      QStringLiteral( "readers.e57" ),
+      QStringLiteral( "readers.bpf" ) };
+    for ( const auto &stage : stages )
     {
-      sExtensions.append( QString::fromStdString( extension ) );
+      if ( ! allowedReaders.contains( QString::fromStdString( stage ) ) )
+        continue;
+
+      const pdal::StringList readerExtensions = extensions.extensions( stage );
+      for ( const auto &extension : readerExtensions )
+      {
+        sExtensions.append( QString::fromStdString( extension ) );
+      }
     }
-  }
-  sExtensions.sort();
-  const QString extensionsString = QStringLiteral( "*." ).append( sExtensions.join( QStringLiteral( " *." ) ) );
-  sFilterString = tr( "PDAL Point Clouds" ) + QString( " (%1 %2)" ).arg( extensionsString, extensionsString.toUpper() );
-  sSupportedFormatsPopulated = true;
+    sExtensions.sort();
+    const QString extensionsString = QStringLiteral( "*." ).append( sExtensions.join( QStringLiteral( " *." ) ) );
+    sFilterString = tr( "PDAL Point Clouds" ) + QString( " (%1 %2)" ).arg( extensionsString, extensionsString.toUpper() );
+  } );
 }
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
