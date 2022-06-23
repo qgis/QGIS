@@ -138,6 +138,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::ssaoSettingsChanged, this, &Qgs3DMapScene::onSsaoSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
@@ -237,6 +238,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // force initial update of debugging setting of preview quads
   onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
+  // force initial update of SSAO settings
+  onSsaoSettingsChanged();
 
   mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
@@ -1100,6 +1103,16 @@ void Qgs3DMapScene::onShadowSettingsChanged()
   }
   else
     shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
+}
+
+void Qgs3DMapScene::onSsaoSettingsChanged()
+{
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
+  QgsSsaoSettings ssaoSettings = mMap.ssaoSettings();
+  shadowRenderingFrameGraph->setSsaoEnabled( ssaoSettings.ssaoEnabled() );
+  shadowRenderingFrameGraph->setSsaoShadingFactor( ssaoSettings.shadingFactor() );
+  shadowRenderingFrameGraph->setSsaoDistanceAttenuationFactor( ssaoSettings.distanceAttenuationFactor() );
+  shadowRenderingFrameGraph->setSsaoRadiusParameter( ssaoSettings.radiusParameter() );
 }
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()

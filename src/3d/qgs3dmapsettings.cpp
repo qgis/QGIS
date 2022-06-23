@@ -78,6 +78,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
   , mSkyboxSettings( other.mSkyboxSettings )
   , mShadowSettings( other.mShadowSettings )
+  , mSsaoSettings( other.mSsaoSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
@@ -290,6 +291,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemShadows = elem.firstChildElement( QStringLiteral( "shadow-rendering" ) );
   mShadowSettings.readXml( elemShadows, context );
 
+  QDomElement elemSsao = elem.firstChildElement( QStringLiteral( "screen-space-ambient-occlusion" ) );
+  mSsaoSettings.readXml( elemSsao, context );
+
   QDomElement elemEyeDomeLighting = elem.firstChildElement( QStringLiteral( "eye-dome-lighting" ) );
   mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", QStringLiteral( "0" ) ).toInt();
   mEyeDomeLightingStrength = elemEyeDomeLighting.attribute( "eye-dome-lighting-strength", QStringLiteral( "1000.0" ) ).toDouble();
@@ -418,6 +422,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemShadows = doc.createElement( QStringLiteral( "shadow-rendering" ) );
   mShadowSettings.writeXml( elemShadows, context );
   elem.appendChild( elemShadows );
+
+  QDomElement elemSsao = doc.createElement( QStringLiteral( "screen-space-ambient-occlusion" ) );
+  mSsaoSettings.writeXml( elemSsao, context );
+  elem.appendChild( elemSsao );
 
   QDomElement elemDebug = doc.createElement( QStringLiteral( "debug" ) );
   elemDebug.setAttribute( QStringLiteral( "bounding-boxes" ), mShowTerrainBoundingBoxes ? 1 : 0 );
@@ -861,6 +869,12 @@ void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSetting
   emit shadowSettingsChanged();
 }
 
+void Qgs3DMapSettings::setSsaoSettings( const QgsSsaoSettings &ssaoSettings )
+{
+  mSsaoSettings = ssaoSettings;
+  emit ssaoSettingsChanged();
+}
+
 void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
 {
   mDebugShadowMapEnabled = enabled;
@@ -959,6 +973,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::ssaoSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 
