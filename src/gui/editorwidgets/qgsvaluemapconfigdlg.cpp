@@ -19,6 +19,7 @@
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsmessagelog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -356,7 +357,7 @@ bool QgsValueMapConfigDlg::validateKeys() const
 {
   bool allValid = true;
   if ( !tableWidget )
-      return false;
+    return false;
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
   {
     QTableWidgetItem *ki = tableWidget->item( i, 0 );
@@ -364,29 +365,26 @@ bool QgsValueMapConfigDlg::validateKeys() const
     if ( !ki )
       continue;
 
-    if( !validateKey( ki ) )
-        allValid = false;
+    if ( !validateKey( ki ) )
+      allValid = false;
   }
   return allValid;
 }
 
 bool QgsValueMapConfigDlg::validateKey( QTableWidgetItem *key ) const
 {
-    if ( !key )
-        return false;
-    QVariant ks = QVariant( key->text() );
-    if ( ! mField.convertCompatible(  ks ) )
-    {
-      QMessageBox::information( nullptr,
-                          tr( "Map Value config" ),
-                          tr( "Provided key is incompatible" ),
-                          QMessageBox::Cancel );
-      key->setBackground( QBrush( Qt::red ) );
-      return false;
-    }
-    else if ( key->background() == QBrush( Qt::red ) )
-    {
-      key->setBackground( QBrush( QgsSettings().value( "gui/codeEdit/paperBaackgroundColor" ).value<QColor>() ) );
-    }
-    return true;
+  if ( !key )
+    return false;
+  QVariant ks = QVariant( key->text() );
+  if ( ! mField.convertCompatible(  ks ) )
+  {
+    QgsApplication::instance()->messageLog()->logMessage( tr( "Provided key is incompatible" ) );
+    key->setBackground( QBrush( Qt::red ) );
+    return false;
+  }
+  else if ( key->background() == QBrush( Qt::red ) )
+  {
+    key->setBackground( QBrush() );
+  }
+  return true;
 }
