@@ -31,7 +31,7 @@
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent ),
-  mField( vl->fields().at( fieldIdx ) )
+    mField( vl->fields().at( fieldIdx ) )
 {
   setupUi( this );
 
@@ -376,7 +376,7 @@ bool QgsValueMapConfigDlg::validateKey( QTableWidgetItem *key ) const
   if ( !key )
     return false;
   QVariant ks = QVariant( key->text() );
-  if ( ! mField.convertCompatible(  ks ) )
+  if ( ! mField.convertCompatible( ks ) )
   {
     QgsApplication::instance()->messageLog()->logMessage( tr( "Provided key is incompatible" ) );
     key->setBackground( QBrush( Qt::red ) );
