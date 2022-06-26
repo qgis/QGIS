@@ -206,6 +206,9 @@ void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::D
   switch ( type )
   {
     case QgsPointCloudAttribute::UChar:
+      value = *reinterpret_cast< const unsigned char * >( data + offset );
+      return;
+
     case QgsPointCloudAttribute::Char:
       value = *( data + offset );
       return;
@@ -279,6 +282,12 @@ QVariantMap QgsPointCloudAttribute::getAttributeMap( const char *data, std::size
     switch ( attr.type() )
     {
       case QgsPointCloudAttribute::UChar:
+      {
+        const unsigned char value = *reinterpret_cast< const unsigned char * >( data + recordOffset + attributeOffset );
+        map[ attributeName ] = value;
+      }
+      break;
+
       case QgsPointCloudAttribute::Char:
       {
         const char value = *( data + recordOffset + attributeOffset );

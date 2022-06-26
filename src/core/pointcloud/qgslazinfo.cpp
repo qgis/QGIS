@@ -165,7 +165,7 @@ void QgsLazInfo::parseLazAttributes()
   mAttributes.push_back( QgsPointCloudAttribute( "NumberOfReturns", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "ScanDirectionFlag", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "EdgeOfFlightLine", QgsPointCloudAttribute::Char ) );
-  mAttributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::Char ) );
+  mAttributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::UChar ) );
   mAttributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", QgsPointCloudAttribute::Short ) );
   mAttributes.push_back( QgsPointCloudAttribute( "UserData", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
