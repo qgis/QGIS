@@ -232,6 +232,8 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
     case QgsPointCloudAttribute::Int64:
     case QgsPointCloudAttribute::UInt32:
     case QgsPointCloudAttribute::UInt64:
+    case QgsPointCloudAttribute::Char:
+    case QgsPointCloudAttribute::UChar:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldInteger.svg" );
     }
@@ -239,11 +241,6 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
     case QgsPointCloudAttribute::Double:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
-    }
-    case QgsPointCloudAttribute::Char:
-    case QgsPointCloudAttribute::UChar:
-    {
-      return QgsApplication::getThemeIcon( "/mIconFieldText.svg" );
     }
 
   }
