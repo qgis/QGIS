@@ -11,9 +11,9 @@ uniform float nearPlane;
 uniform vec3 ssaoKernel[64];
 const int kernelSize = 32;
 
-uniform float	F; // Amplification of shading
-uniform float	Kz; // distance attenuation factor
-uniform float	R; // Radius of neighborhood sphere
+uniform float	shadingFactor; // Amplification of shading
+uniform float	distanceAttenuationFactor; // distance attenuation factor
+uniform float	radiusParameter; // Radius of neighborhood sphere
 
 in vec2 texCoord;
 
@@ -35,10 +35,10 @@ vec3 computeSSAO()
   float occlusion = 0.0;
   for(int i = 0; i < kernelSize; ++i)
   {
-    vec3 samplePos = fragPos + ssaoKernel[i] * R;
+    vec3 samplePos = fragPos + ssaoKernel[i] * radiusParameter;
     zs      = linearizeDepth(	texture2D( depthTexture, samplePos.xy ).r ) / farPlane;
     dz      =	max( 0.0, min( samplePos.z, 1.0 ) - zs );
-    occlusion    +=	dz * F * 1.0 / ( 1.0 + Kz * dz * dz ) / float(kernelSize);
+    occlusion    +=	dz * shadingFactor * 1.0 / ( 1.0 + distanceAttenuationFactor * dz * dz ) / float(kernelSize);
   }
   return vec3( max(1.0 - occlusion ,0.0) );
 }

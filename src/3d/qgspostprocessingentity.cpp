@@ -44,6 +44,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
   : Qt3DCore::QEntity( parent )
+  , mFrameGraph( frameGraph )
 {
   Qt3DQGeometry *geom = new Qt3DQGeometry( this );
   Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( this );
@@ -225,4 +226,16 @@ void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
 void QgsPostprocessingEntity::setSsaoEnabled( bool enabled )
 {
   mSsaoEnabledParameter->setValue( enabled );
+}
+
+void QgsPostprocessingEntity::setSsaoBlurEnabled( bool enabled )
+{
+  if ( enabled )
+  {
+    mSsaoTextureParameter->setValue( QVariant::fromValue( mFrameGraph->blurredSsaoFactorMap() ) );
+  }
+  else
+  {
+    mSsaoTextureParameter->setValue( QVariant::fromValue( mFrameGraph->ssaoFactorMap() ) );
+  }
 }

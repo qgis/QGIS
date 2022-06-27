@@ -22,6 +22,7 @@
 
 QgsSsaoSettings::QgsSsaoSettings( const QgsSsaoSettings &other )
   : mEnabled( other.mEnabled )
+  , mBlurEnabled( other.mBlurEnabled )
   , mShadingFactor( other.mShadingFactor )
   , mDistanceAttenuationFactor( other.mDistanceAttenuationFactor )
   , mRadiusParameter( other.mRadiusParameter )
@@ -32,6 +33,7 @@ QgsSsaoSettings::QgsSsaoSettings( const QgsSsaoSettings &other )
 QgsSsaoSettings &QgsSsaoSettings::operator=( QgsSsaoSettings const &rhs )
 {
   mEnabled = rhs.mEnabled;
+  mBlurEnabled = rhs.mBlurEnabled;
   mShadingFactor = rhs.mShadingFactor;
   mDistanceAttenuationFactor = rhs.mDistanceAttenuationFactor;
   mRadiusParameter = rhs.mRadiusParameter;
@@ -41,7 +43,8 @@ QgsSsaoSettings &QgsSsaoSettings::operator=( QgsSsaoSettings const &rhs )
 void QgsSsaoSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mEnabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mShadingFactor = element.attribute( QStringLiteral( "shading-factor" ), QStringLiteral( "300.0" ) ).toFloat();
+  mBlurEnabled = element.attribute( QStringLiteral( "blur-enabled" ), QStringLiteral( "1" ) ).toInt();
+  mShadingFactor = element.attribute( QStringLiteral( "shading-factor" ), QStringLiteral( "50.0" ) ).toFloat();
   mDistanceAttenuationFactor = element.attribute( QStringLiteral( "distance-attenuation-factor" ), QStringLiteral( "500.0" ) ).toFloat();
   mRadiusParameter = element.attribute( QStringLiteral( "radius-parameter" ), QStringLiteral( "0.05" ) ).toFloat();
 
@@ -51,6 +54,7 @@ void QgsSsaoSettings::readXml( const QDomElement &element, const QgsReadWriteCon
 void QgsSsaoSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled );
+  element.setAttribute( QStringLiteral( "blur-enabled" ), mBlurEnabled );
   element.setAttribute( QStringLiteral( "shading-factor" ), mShadingFactor );
   element.setAttribute( QStringLiteral( "distance-attenuation-factor" ), mDistanceAttenuationFactor );
   element.setAttribute( QStringLiteral( "radius-parameter" ), mRadiusParameter );

@@ -1110,6 +1110,7 @@ void Qgs3DMapScene::onSsaoSettingsChanged()
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   QgsSsaoSettings ssaoSettings = mMap.ssaoSettings();
   shadowRenderingFrameGraph->setSsaoEnabled( ssaoSettings.ssaoEnabled() );
+  shadowRenderingFrameGraph->setSsaoBlurEnabled( ssaoSettings.blurringEnabled() );
   shadowRenderingFrameGraph->setSsaoShadingFactor( ssaoSettings.shadingFactor() );
   shadowRenderingFrameGraph->setSsaoDistanceAttenuationFactor( ssaoSettings.distanceAttenuationFactor() );
   shadowRenderingFrameGraph->setSsaoRadiusParameter( ssaoSettings.radiusParameter() );

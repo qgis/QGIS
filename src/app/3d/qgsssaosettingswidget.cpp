@@ -24,6 +24,7 @@ QgsSsaoSettingsWidget::QgsSsaoSettingsWidget( QWidget *parent )
 void QgsSsaoSettingsWidget::setSsaoSettings( const QgsSsaoSettings &settings )
 {
   mSsaoGroupBox->setChecked( settings.ssaoEnabled() );
+  mSssaBlurCheckbox->setChecked( settings.blurringEnabled() );
   mShadingFactorSpinBox->setValue( settings.shadingFactor() );
   mDistanceAttenuationFactorSpinBox->setValue( settings.distanceAttenuationFactor() );
   mRadiusParameterSpinBox->setValue( settings.radiusParameter() );
@@ -33,6 +34,7 @@ QgsSsaoSettings QgsSsaoSettingsWidget::toSsaoSettings()
 {
   QgsSsaoSettings settings;
   settings.setSsaoEnabled( mSsaoGroupBox->isChecked() );
+  settings.setBlurringEnabled( mSssaBlurCheckbox->isChecked() );
   settings.setShadingFactor( mShadingFactorSpinBox->value() );
   settings.setDistanceAttenuationFactor( mDistanceAttenuationFactorSpinBox->value() );
   settings.setRadiusParameter( mRadiusParameterSpinBox->value() );

@@ -35,6 +35,7 @@ set(QGIS_3D_SRCS
   qgsshadowrenderingframegraph.cpp
   qgspostprocessingentity.cpp
   qgsssaorenderentity.cpp
+  qgsssaoblurentity.cpp
   qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
@@ -133,6 +134,7 @@ set(QGIS_3D_HDRS
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
   qgsssaorenderentity.h
+  qgsssaoblurentity.h
   qgsssaosettings.h
 
   lights/qgsdirectionallightsettings.h
