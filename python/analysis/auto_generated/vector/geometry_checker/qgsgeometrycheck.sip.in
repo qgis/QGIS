@@ -148,7 +148,7 @@ Create a new geometry check.
 
     virtual void prepare( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
 %Docstring
-Will be run in the main thread before :py:func:`~collectErrors` is called (which may be run from a background thread).
+Will be run in the main thread before :py:func:`~QgsGeometryCheck.collectErrors` is called (which may be run from a background thread).
 
 .. versionadded:: 3.10
 %End
@@ -157,7 +157,7 @@ Will be run in the main thread before :py:func:`~collectErrors` is called (which
     virtual bool isCompatible( QgsVectorLayer *layer ) const;
 %Docstring
 Returns if this geometry check is compatible with ``layer``.
-By default it checks for the geometry type in :py:func:`~compatibleGeometryTypes`.
+By default it checks for the geometry type in :py:func:`~QgsGeometryCheck.compatibleGeometryTypes`.
 
 .. versionadded:: 3.4
 %End
