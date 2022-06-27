@@ -23,5 +23,5 @@
     "expression": "lower('B') BETWEEN 'a' AND 'b'",
     "returns": "TRUE"
   }],
-  "tags": ["bound", "contained", "found", "include", "range"]
+  "tags": ["bound", "contained", "found", "include", "range", "within"]
 }
