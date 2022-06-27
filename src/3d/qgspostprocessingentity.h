@@ -30,8 +30,6 @@ class QgsShadowRenderingFrameGraph;
  * \ingroup 3d
  * \brief An entity that is responsible for applying post processing effect.
  *
- * Now it is used to make shadows.
- *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.16
@@ -62,7 +60,14 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
      */
     void setSsaoEnabled( bool enabled );
 
+    /**
+     * Sets whether Screen Space Ambient Occlusion blurring pass will be enabled
+     * \since QGIS 3.28
+     */
+    void setSsaoBlurEnabled( bool enabled );
+
   private:
+    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;

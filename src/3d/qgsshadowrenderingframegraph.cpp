@@ -22,6 +22,7 @@
 #include "qgspreviewquad.h"
 #include "qgs3dutils.h"
 #include "qgsssaorenderentity.h"
+#include "qgsssaoblurentity.h"
 
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -733,6 +734,13 @@ void QgsShadowRenderingFrameGraph::setSsaoEnabled( bool enabled )
   mPostprocessingEntity->setSsaoEnabled( enabled );
 }
 
+void QgsShadowRenderingFrameGraph::setSsaoBlurEnabled( bool enabled )
+{
+  mSsaoBlurEnabled = enabled;
+  mPostprocessingEntity->setSsaoBlurEnabled( enabled );
+  mSsaoBlurEntity->setEnabled( enabled );
+}
+
 void QgsShadowRenderingFrameGraph::setSsaoShadingFactor( float factor )
 {
   mSsaoShadingFactor = factor;
@@ -749,7 +757,6 @@ void QgsShadowRenderingFrameGraph::setSsaoRadiusParameter( float radius )
   mSsaoRadiusParameter = radius;
   mSsaoRenderEntity->setRadiusParameter( radius );
 }
-
 
 void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )
 {

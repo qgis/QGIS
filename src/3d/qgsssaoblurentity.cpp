@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgspostprocessingentity.cpp
+  qgsssaoblurentity.cpp
   --------------------------------------
-  Date                 : August 2020
-  Copyright            : (C) 2020 by Belgacem Nedjima
-  Email                : gb underscore nedjima at esi dot dz
+  Date                 : Juin 2022
+  Copyright            : (C) 2022 by Belgacem Nedjima
+  Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspostprocessingentity.h"
+#include "qgsssaoblurentity.h"
+
+#include <random>
 
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
@@ -27,9 +29,8 @@
 
 #include "qgsshadowrenderingframegraph.h"
 
-QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
+QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
   : Qt3DCore::QEntity( parent )
-  , mFrameGraph( frameGraph )
 {
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry( this );
   Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute( this );
@@ -61,14 +62,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );
-  mSsaoTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredSsaoFactorMap() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mShadowMapParameter );
-  mMaterial->addParameter( mSsaoTextureParameter );
 
   mMainCamera = frameGraph->mainCamera();
-  mLightCamera = frameGraph->lightCamera();
 
   mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
@@ -81,19 +79,6 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   connect( mMainCamera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane )
   {
     mNearPlaneParameter->setValue( nearPlane );
-  } );
-
-  mLightFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "lightFarPlane" ), mLightCamera->farPlane() );
-  mMaterial->addParameter( mLightFarPlaneParameter );
-  connect( mLightCamera, &Qt3DRender::QCamera::farPlaneChanged, mLightFarPlaneParameter, [&]( float farPlane )
-  {
-    mLightFarPlaneParameter->setValue( farPlane );
-  } );
-  mLightNearPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "lightNearPlane" ), mLightCamera->nearPlane() );
-  mMaterial->addParameter( mLightNearPlaneParameter );
-  connect( mLightCamera, &Qt3DRender::QCamera::nearPlaneChanged, mLightNearPlaneParameter, [&]( float nearPlane )
-  {
-    mLightNearPlaneParameter->setValue( nearPlane );
   } );
 
   mMainCameraInvViewMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "invertedCameraView" ), mMainCamera->viewMatrix().inverted() );
@@ -109,35 +94,8 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
     mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
   } );
 
-  mShadowMinX = new Qt3DRender::QParameter( QStringLiteral( "shadowMinX" ), QVariant::fromValue( 0.0f ) );
-  mShadowMaxX = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxX" ), QVariant::fromValue( 0.0f ) );
-  mShadowMinZ = new Qt3DRender::QParameter( QStringLiteral( "shadowMinZ" ), QVariant::fromValue( 0.0f ) );
-  mShadowMaxZ = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxZ" ), QVariant::fromValue( 0.0f ) );
-  mMaterial->addParameter( mShadowMinX );
-  mMaterial->addParameter( mShadowMaxX );
-  mMaterial->addParameter( mShadowMinZ );
-  mMaterial->addParameter( mShadowMaxZ );
-
-  mRenderShadowsParameter = new Qt3DRender::QParameter( QStringLiteral( "renderShadows" ), QVariant::fromValue( 0 ) );
-  mMaterial->addParameter( mRenderShadowsParameter );
-
-  mShadowBiasParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowBias" ), QVariant::fromValue( 0.00001f ) );
-  mMaterial->addParameter( mShadowBiasParameter );
-
-  mEyeDomeLightingEnabledParameter = new Qt3DRender::QParameter( QStringLiteral( "edlEnabled" ), QVariant::fromValue( 0 ) );
-  mEyeDomeLightingStrengthParameter = new Qt3DRender::QParameter( QStringLiteral( "edlStrength" ), QVariant::fromValue( 1000.0f ) );
-  mEyeDomeLightingDistanceParameter = new Qt3DRender::QParameter( QStringLiteral( "edlDistance" ), QVariant::fromValue( 2.0f ) );
-  mMaterial->addParameter( mEyeDomeLightingEnabledParameter );
-  mMaterial->addParameter( mEyeDomeLightingStrengthParameter );
-  mMaterial->addParameter( mEyeDomeLightingDistanceParameter );
-
-  mSsaoEnabledParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoEnabled" ), QVariant::fromValue( 0 ) );
-  mMaterial->addParameter( mSsaoEnabledParameter );
-
-  mLightPosition = new Qt3DRender::QParameter( QStringLiteral( "lightPosition" ), QVariant::fromValue( QVector3D() ) );
-  mLightDirection = new Qt3DRender::QParameter( QStringLiteral( "lightDirection" ), QVariant::fromValue( QVector3D() ) );
-  mMaterial->addParameter( mLightPosition );
-  mMaterial->addParameter( mLightDirection );
+  mSsaoFactorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->ssaoFactorMap() );
+  mMaterial->addParameter( mSsaoFactorTextureParameter );
 
   mEffect = new Qt3DRender::QEffect( this );
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( this );
@@ -149,8 +107,8 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( this );
 
-  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
-  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
+  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.vert" );
+  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.frag" );
 
   shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
@@ -169,58 +127,3 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   addComponent( mMaterial );
 }
 
-void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ )
-{
-  mShadowMinX->setValue( minX );
-  mShadowMaxX->setValue( maxX );
-  mShadowMinZ->setValue( minZ );
-  mShadowMaxZ->setValue( maxZ );
-}
-
-void QgsPostprocessingEntity::setupDirectionalLight( QVector3D position, QVector3D direction )
-{
-  mLightPosition->setValue( QVariant::fromValue( position ) );
-  mLightDirection->setValue( QVariant::fromValue( direction.normalized() ) );
-}
-
-void QgsPostprocessingEntity::setShadowRenderingEnabled( bool enabled )
-{
-  mRenderShadowsParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
-}
-
-void QgsPostprocessingEntity::setShadowBias( float shadowBias )
-{
-  mShadowBiasParameter->setValue( QVariant::fromValue( shadowBias ) );
-}
-
-void QgsPostprocessingEntity::setEyeDomeLightingEnabled( bool enabled )
-{
-  mEyeDomeLightingEnabledParameter->setValue( QVariant::fromValue( enabled ? 1 : 0 ) );
-}
-
-void QgsPostprocessingEntity::setEyeDomeLightingStrength( double strength )
-{
-  mEyeDomeLightingStrengthParameter->setValue( QVariant::fromValue( strength ) );
-}
-
-void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
-{
-  mEyeDomeLightingDistanceParameter->setValue( QVariant::fromValue( distance ) );
-}
-
-void QgsPostprocessingEntity::setSsaoEnabled( bool enabled )
-{
-  mSsaoEnabledParameter->setValue( enabled );
-}
-
-void QgsPostprocessingEntity::setSsaoBlurEnabled( bool enabled )
-{
-  if ( enabled )
-  {
-    mSsaoTextureParameter->setValue( QVariant::fromValue( mFrameGraph->blurredSsaoFactorMap() ) );
-  }
-  else
-  {
-    mSsaoTextureParameter->setValue( QVariant::fromValue( mFrameGraph->ssaoFactorMap() ) );
-  }
-}

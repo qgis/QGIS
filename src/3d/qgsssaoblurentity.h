@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsssaorenderentity.h
+  qgsssaoblurentity.h
   --------------------------------------
   Date                 : Juin 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSSAORENDERENTITY_H
-#define QGSSSAORENDERENTITY_H
+#ifndef QGSSSAOBLURENTITY_H
+#define QGSSSAOBLURENTITY_H
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QTexture>
@@ -28,27 +28,17 @@ class QgsShadowRenderingFrameGraph;
 
 /**
  * \ingroup 3d
- * \brief An entity that is responsible for producing an SSAO factor map.
+ * \brief An entity that is responsible for blurring the SSAO factor texture.
  *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.28
  */
-class QgsSsaoRenderEntity : public Qt3DCore::QEntity
+class QgsSsaoBlurEntity : public Qt3DCore::QEntity
 {
   public:
     //! Constructor
-    QgsSsaoRenderEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent = nullptr );
-
-    //! Sets the shading factor for the ambient occlusion effect
-    void setShadingFactor( float factor );
-
-    //! Sets the distance attenuation factor for the ambient occlusion effect
-    void setDistanceAttenuationFactor( float factor );
-
-    //! Sets the radius parameter for the ambient occlusion effect
-    void setRadiusParameter( float radius );
-
+    QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent = nullptr );
   private:
     Qt3DRender::QMaterial *mMaterial = nullptr;
     Qt3DRender::QEffect *mEffect = nullptr;
@@ -61,11 +51,7 @@ class QgsSsaoRenderEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
 
-    Qt3DRender::QParameter *mSsaoKernelParameter = nullptr;
-
-    Qt3DRender::QParameter *mShadingFactorParameter = nullptr;
-    Qt3DRender::QParameter *mDistanceAttenuationFactorParameter = nullptr;
-    Qt3DRender::QParameter *mRadiusParameter = nullptr;
+    Qt3DRender::QParameter *mSsaoFactorTextureParameter = nullptr;
 };
 
-#endif // QGSSSAORENDERENTITY_H
+#endif // QGSSSAOBLURENTITY_H

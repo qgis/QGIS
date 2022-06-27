@@ -137,6 +137,31 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     //! Sets the resolution of the shadow map
     void setShadowMapResolution( int resolution );
 
+
+    /**
+     * Sets whether Screen Space Ambient Occlusion will be enabled
+     * \since QGIS 3.28
+     */
+    void setSsaoEnabled( bool enabled );
+
+    /**
+     * Returns whether Screen Space Ambient Occlusion is enabled
+     * \since QGIS 3.28
+     */
+    bool ssaoEnabled() const { return mSsaoEnabled; }
+
+    /**
+     * Sets whether Screen Space Ambient Occlusion blurring pass will be enabled
+     * \since QGIS 3.28
+     */
+    void setSsaoBlurEnabled( bool enabled );
+
+    /**
+     * Returns whether Screen Space Ambient Occlusion blurring pass is enabled
+     * \since QGIS 3.28
+     */
+    bool ssaoBlurEnabled() const { return mSsaoBlurEnabled; }
+
     /**
      * Sets the SSAO shading factor parameter
      * \since QGIS 3.28
@@ -172,18 +197,6 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      * \since QGIS 3.28
      */
     float ssaoRadiusParameter() const { return mSsaoRadiusParameter; }
-
-    /**
-     * Sets whether Screen Space Ambient Occlusion will be enabled
-     * \since QGIS 3.28
-     */
-    void setSsaoEnabled( bool enabled );
-
-    /**
-     * Returns whether Screen Space Ambient Occlusion is enabled
-     * \since QGIS 3.28
-     */
-    bool ssaoEnabled() const { return mSsaoEnabled; }
 
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
@@ -302,6 +315,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 
     // SSAO related settings
     bool mSsaoEnabled = false;
+    bool mSsaoBlurEnabled = true;
     float mSsaoShadingFactor = 300.0f;
     float mSsaoDistanceAttenuationFactor = 500.0f;
     float mSsaoRadiusParameter = 0.05f;

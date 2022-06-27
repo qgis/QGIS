@@ -26,6 +26,12 @@ class QDomElement;
 
 #define SIP_NO_FILE
 
+/**
+ * \brief class containing the configuration of ambient occlusion rendering
+ * \ingroup 3d
+ * \note Not available in Python bindings
+ * \since QGIS 3.28
+ */
 class _3D_EXPORT QgsSsaoSettings
 {
   public:
@@ -41,25 +47,39 @@ class _3D_EXPORT QgsSsaoSettings
     //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
+    //! Sets whether ambient occlusion effect is enabled
     void setSsaoEnabled( bool enabled ) { mEnabled = enabled; }
 
+    //! Returns whether ambient occlusion effect is enabled
     bool ssaoEnabled() const { return mEnabled; }
 
+    //! Sets whether the ambient occlusion texture will be blurred
+    void setBlurringEnabled( bool enabled ) { mBlurEnabled = enabled; }
+
+    //! Retuens whether the ambient occlusion texture is blurred
+    bool blurringEnabled() const { return mBlurEnabled; }
+
+    //! Sets the shading factor of the ambient occlusion effect
     void setShadingFactor( float factor ) { mShadingFactor = factor; }
 
+    //! Returns the shading factor of the ambient occlusion effect
     float shadingFactor() const { return mShadingFactor; }
 
+    //! Sets the distance attenuation factor of the ambient occlusion effect
     void setDistanceAttenuationFactor( float factor ) { mDistanceAttenuationFactor = factor; }
 
     float distanceAttenuationFactor() const { return mDistanceAttenuationFactor; }
 
+    //! Sets the radius parameter of the ambient occlusion effect
     void setRadiusParameter( float radius ) { mRadiusParameter = radius; }
 
+    //! Returns the radius parameter of the ambient occlusion effect
     float radiusParameter() const { return mRadiusParameter; }
 
   private:
     bool mEnabled = false;
-    float mShadingFactor = 300.0f;
+    bool mBlurEnabled = true;
+    float mShadingFactor = 50.0f;
     float mDistanceAttenuationFactor = 500.0f;
     float mRadiusParameter = 0.05f;
 };

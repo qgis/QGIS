@@ -29,11 +29,6 @@
 
 #include "qgsshadowrenderingframegraph.h"
 
-float lerp( float a, float b, float f )
-{
-  return a + f * ( b - a );
-}
-
 QgsSsaoRenderEntity::QgsSsaoRenderEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
@@ -111,9 +106,6 @@ QgsSsaoRenderEntity::QgsSsaoRenderEntity( QgsShadowRenderingFrameGraph *frameGra
       randomFloats( generator ) * 2.0 - 1.0
     );
     sample.normalize();
-    float scale = ( float )i / 64.0;
-    scale   = lerp( 0.1f, 1.0f, scale * scale );
-    sample *= scale;
     sample *= randomFloats( generator );
     ssaoKernelValues.push_back( sample );
   }
@@ -121,13 +113,13 @@ QgsSsaoRenderEntity::QgsSsaoRenderEntity( QgsShadowRenderingFrameGraph *frameGra
   mSsaoKernelParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoKernel[0]" ), ssaoKernelValues );
   mMaterial->addParameter( mSsaoKernelParameter );
 
-  mShadingFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "F" ), 300.0f );
+  mShadingFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "shadingFactor" ), 50.0f );
   mMaterial->addParameter( mShadingFactorParameter );
 
-  mDistanceAttenuationFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "Kz" ), 500.0f );
+  mDistanceAttenuationFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "distanceAttenuationFactor" ), 500.0f );
   mMaterial->addParameter( mDistanceAttenuationFactorParameter );
 
-  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "R" ), 0.05f );
+  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radiusParameter" ), 0.05f );
   mMaterial->addParameter( mRadiusParameter );
 
   mEffect = new Qt3DRender::QEffect( this );
@@ -174,102 +166,3 @@ void QgsSsaoRenderEntity::setRadiusParameter( float radius )
 {
   mRadiusParameter->setValue( radius );
 }
-
-QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
-  : Qt3DCore::QEntity( parent )
-{
-  Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry( this );
-  Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute( this );
-  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f,  1.0f, 0.0f };
-
-  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
-  Qt3DRender::QBuffer *vertexBuffer = nullptr;
-  vertexBuffer = new Qt3DRender::QBuffer( this );
-  vertexBuffer->setData( vertexArr );
-
-  positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
-  positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
-  positionAttribute->setVertexSize( 3 );
-  positionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
-  positionAttribute->setBuffer( vertexBuffer );
-  positionAttribute->setByteOffset( 0 );
-  positionAttribute->setByteStride( 3 * sizeof( float ) );
-  positionAttribute->setCount( 6 );
-
-  geom->addAttribute( positionAttribute );
-
-  Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer( this );
-  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::PrimitiveType::Triangles );
-  renderer->setGeometry( geom );
-
-  addComponent( renderer );
-
-  mMaterial = new Qt3DRender::QMaterial( this );
-  mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
-  mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
-  mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );
-  mMaterial->addParameter( mColorTextureParameter );
-  mMaterial->addParameter( mDepthTextureParameter );
-  mMaterial->addParameter( mShadowMapParameter );
-
-  mMainCamera = frameGraph->mainCamera();
-
-  mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), mMainCamera->farPlane() );
-  mMaterial->addParameter( mFarPlaneParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane )
-  {
-    mFarPlaneParameter->setValue( farPlane );
-  } );
-  mNearPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "nearPlane" ), mMainCamera->nearPlane() );
-  mMaterial->addParameter( mNearPlaneParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane )
-  {
-    mNearPlaneParameter->setValue( nearPlane );
-  } );
-
-  mMainCameraInvViewMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "invertedCameraView" ), mMainCamera->viewMatrix().inverted() );
-  mMaterial->addParameter( mMainCameraInvViewMatrixParameter );
-  mMainCameraInvProjMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "invertedCameraProj" ), mMainCamera->projectionMatrix().inverted() );
-  mMaterial->addParameter( mMainCameraInvProjMatrixParameter );
-  connect( mMainCamera, &Qt3DRender::QCamera::projectionMatrixChanged, mMainCameraInvProjMatrixParameter, [&]( const QMatrix4x4 & projectionMatrix )
-  {
-    mMainCameraInvProjMatrixParameter->setValue( projectionMatrix.inverted() );
-  } );
-  connect( mMainCamera, &Qt3DRender::QCamera::viewMatrixChanged, mMainCameraInvViewMatrixParameter, [&]()
-  {
-    mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
-  } );
-
-  mSsaoFactorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->ssaoFactorMap() );
-  mMaterial->addParameter( mSsaoFactorTextureParameter );
-
-  mEffect = new Qt3DRender::QEffect( this );
-  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( this );
-  Qt3DRender::QGraphicsApiFilter *graphicsApiFilter = technique->graphicsApiFilter();
-  graphicsApiFilter->setApi( Qt3DRender::QGraphicsApiFilter::Api::OpenGL );
-  graphicsApiFilter->setProfile( Qt3DRender::QGraphicsApiFilter::OpenGLProfile::CoreProfile );
-  graphicsApiFilter->setMajorVersion( 1 );
-  graphicsApiFilter->setMinorVersion( 5 );
-  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
-  Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( this );
-
-  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.vert" );
-  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.frag" );
-
-  shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
-  shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
-  renderPass->setShaderProgram( shader );
-
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest( this );
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-
-  renderPass->addRenderState( depthTest );
-
-  technique->addRenderPass( renderPass );
-
-  mEffect->addTechnique( technique );
-  mMaterial->setEffect( mEffect );
-
-  addComponent( mMaterial );
-}
-
