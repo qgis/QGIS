@@ -208,8 +208,9 @@ QgsPointCloudCategoryList QgsPointCloudRendererRegistry::classificationAttribute
   QgsPointCloudCategoryList categories;
   for ( const int &layerClass : layerClasses )
   {
-    const QColor color = layerClass < defaultCategories.size() ? defaultCategories.at( layerClass ).color() : QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
-    const QString label = layerClass < defaultCategories.size() ? QgsPointCloudDataProvider::translatedLasClassificationCodes().value( layerClass, QString::number( layerClass ) ) : QString::number( layerClass );
+    const bool isDefaultCategory = layerClass >= 0 && layerClass < defaultCategories.size();
+    const QColor color = isDefaultCategory ? defaultCategories.at( layerClass ).color() : QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+    const QString label = isDefaultCategory ? QgsPointCloudDataProvider::translatedLasClassificationCodes().value( layerClass, QString::number( layerClass ) ) : QString::number( layerClass );
     categories.append( QgsPointCloudCategory( layerClass, color, label ) );
   }
   return categories;
