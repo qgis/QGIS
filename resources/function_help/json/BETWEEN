@@ -3,7 +3,10 @@
   "type": "operator",
   "groups": ["Operators"],
   "description": "Returns TRUE if value is within the specified range. The range is considered inclusive of the bounds. To test for exclusion `NOT BETWEEN` can be used.",
-  "arguments": [{
+  "arguments":[{
+    "arg": "string/number",
+    "description": "value"
+  },{
     "arg": "lower_bound AND higher_bound",
     "description": "range bounds"
   }],
