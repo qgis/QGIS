@@ -463,6 +463,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         """N/A for WFS provider"""
         pass
 
+    def providerCompatibleOfSubsetStringWithStableFID(self):
+        """ Return whether the provider is expected to have stable FID when changing subsetString.
+            The WFS provider might not always be able to have that guarantee. """
+        return False
+
     def testInconsistentUri(self):
         """Test a URI with a typename that doesn't match a type of the capabilities"""
 
