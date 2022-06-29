@@ -17,8 +17,13 @@ on:
   workflow_dispatch:
     # POST https://api.github.com/repos/qgis/QGIS/actions/workflows/2264135/dispatches:
 
+permissions:
+  contents: read
+
 jobs:
   define-strategy:
+    permissions:
+      contents: none
     if: github.repository_owner == 'qgis'
     runs-on: ubuntu-latest
     outputs:
