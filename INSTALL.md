@@ -347,10 +347,11 @@ In the cmake, you need to enable:
 WITH_3D=True
 ```
 
-### 3.8.1. Compiling with 3D on Debian based distributions
+### 3.8.1. Compiling with 3D on Debian Bullseye based distributions
 
 QGIS 3D requires Qt53DExtras. These headers have been removed
-from Qt upstream on Debian based distributions. A copy has been made in the
+from Qt upstream on Debian Bullseye based distributions (including e.g. 
+Ubuntu 20.04). A copy has been made in the
 QGIS repository in `external/qt3dextra-headers`.
 To compile with 3D enabled, you need to add some cmake options:
 
