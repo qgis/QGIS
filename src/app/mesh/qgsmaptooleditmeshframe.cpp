@@ -1386,7 +1386,6 @@ void QgsMapToolEditMeshFrame::searchEdge( const QgsPointXY &mapPoint )
 
 void QgsMapToolEditMeshFrame::highLight( const QgsPointXY &mapPoint )
 {
-  searchFace( mapPoint );
   highlightCurrentHoveredFace( mapPoint );
   searchEdge( mapPoint );
   highlightCloseVertex( mapPoint );
@@ -2191,7 +2190,7 @@ void QgsMapToolEditMeshFrame::setMovingRubberBandValidity( bool valid )
   }
 }
 
-bool QgsMapToolEditMeshFrame::isSelectionGrapped( QgsPointXY &grappedPoint )
+bool QgsMapToolEditMeshFrame::isSelectionGrapped( QgsPointXY &grappedPoint ) const
 {
   if ( mCurrentVertexIndex != -1 && mSelectedVertices.contains( mCurrentVertexIndex ) )
   {
@@ -2336,15 +2335,12 @@ void QgsMapToolEditMeshFrame::highlightCurrentHoveredFace( const QgsPointXY &map
   }
   else
     mSelectFaceMarker->setVisible( false );
-
-  return;
 }
 
 void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
 {
   if ( !mCurrentEditor )
     return;
-
 
   if ( mCurrentState == Digitizing && mNewFaceMarker->isVisible() )
   {
@@ -2430,6 +2426,8 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
     }
   }
 
+  searchEdge( mapPoint );
+
   if ( mMergeFaceMarker->isVisible() )
   {
     if ( mapPoint.distance( mMergeFaceMarker->center() ) < tolerance )
@@ -2437,8 +2435,6 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
     else
       mMergeFaceMarker->setColor( Qt::gray );
   }
-
-  searchEdge( mapPoint );
 
   mEdgeBand->reset();
   mFlipEdgeMarker->setVisible( false );
@@ -2513,7 +2509,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
 bool QgsMapToolEditMeshFrame::edgeCanBeInteractive( int vertexIndex1, int vertexIndex2 ) const
 {
   // If the edge is less than 90px width, the interactive marker will not be displayed to avoid too close marker and
-  // avoit the user to click on a marker if he doesn't want
+  // avoid the user to click on a marker if he doesn't want
   double mapUnitPerPixel = mCanvas->mapSettings().mapUnitsPerPixel();
   return mapVertexXY( vertexIndex1 ).distance( mapVertexXY( vertexIndex2 ) ) / mapUnitPerPixel > 90;
 }
@@ -2521,7 +2517,7 @@ bool QgsMapToolEditMeshFrame::edgeCanBeInteractive( int vertexIndex1, int vertex
 bool QgsMapToolEditMeshFrame::faceCanBeInteractive( int faceIndex ) const
 {
   // If both side of the face boundng box is less than 60px width, the interactive marker will not be displayed to avoid too close marker and
-  // avoit the user to click on a marker if he doesn't want
+  // avoid the user to click on a marker if he doesn't want
 
   double mapUnitPerPixel = mCanvas->mapSettings().mapUnitsPerPixel();
   QgsGeometry faceGeom( new QgsLineString( nativeFaceGeometry( faceIndex ) ) );
