@@ -76,11 +76,11 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );
-  mSsaoTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredSsaoFactorMap() );
+  mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredAmbientOcclusionFactorMap() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mShadowMapParameter );
-  mMaterial->addParameter( mSsaoTextureParameter );
+  mMaterial->addParameter( mAmbientOcclusionTextureParameter );
 
   mMainCamera = frameGraph->mainCamera();
   mLightCamera = frameGraph->lightCamera();
@@ -146,8 +146,8 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mMaterial->addParameter( mEyeDomeLightingStrengthParameter );
   mMaterial->addParameter( mEyeDomeLightingDistanceParameter );
 
-  mSsaoEnabledParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoEnabled" ), QVariant::fromValue( 0 ) );
-  mMaterial->addParameter( mSsaoEnabledParameter );
+  mAmbientOcclusionEnabledParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoEnabled" ), QVariant::fromValue( 0 ) );
+  mMaterial->addParameter( mAmbientOcclusionEnabledParameter );
 
   mLightPosition = new Qt3DRender::QParameter( QStringLiteral( "lightPosition" ), QVariant::fromValue( QVector3D() ) );
   mLightDirection = new Qt3DRender::QParameter( QStringLiteral( "lightDirection" ), QVariant::fromValue( QVector3D() ) );
@@ -223,19 +223,19 @@ void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
   mEyeDomeLightingDistanceParameter->setValue( QVariant::fromValue( distance ) );
 }
 
-void QgsPostprocessingEntity::setSsaoEnabled( bool enabled )
+void QgsPostprocessingEntity::setAmbientOcclusionEnabled( bool enabled )
 {
-  mSsaoEnabledParameter->setValue( enabled );
+  mAmbientOcclusionEnabledParameter->setValue( enabled );
 }
 
-void QgsPostprocessingEntity::setSsaoBlurEnabled( bool enabled )
+void QgsPostprocessingEntity::setAmbientOcclusionBlurEnabled( bool enabled )
 {
   if ( enabled )
   {
-    mSsaoTextureParameter->setValue( QVariant::fromValue( mFrameGraph->blurredSsaoFactorMap() ) );
+    mAmbientOcclusionTextureParameter->setValue( QVariant::fromValue( mFrameGraph->blurredAmbientOcclusionFactorMap() ) );
   }
   else
   {
-    mSsaoTextureParameter->setValue( QVariant::fromValue( mFrameGraph->ssaoFactorMap() ) );
+    mAmbientOcclusionTextureParameter->setValue( QVariant::fromValue( mFrameGraph->ambientOcclusionFactorMap() ) );
   }
 }

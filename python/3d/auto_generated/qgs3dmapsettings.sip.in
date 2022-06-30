@@ -877,9 +877,9 @@ Emitted when shadow rendering settings are changed
 %End
 
 
-    void ssaoSettingsChanged();
+    void ambientOcclusionSettingsChanged();
 %Docstring
-Emitted when ssao rendering settings are changed
+Emitted when ambient occlusion rendering settings are changed
 
 .. versionadded:: 3.28
 %End

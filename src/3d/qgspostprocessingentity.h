@@ -60,13 +60,13 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
      * Sets whether screen space ambient occlusion is enabled
      * \since QGIS 3.28
      */
-    void setSsaoEnabled( bool enabled );
+    void setAmbientOcclusionEnabled( bool enabled );
 
     /**
      * Sets whether Screen Space Ambient Occlusion blurring pass will be enabled
      * \since QGIS 3.28
      */
-    void setSsaoBlurEnabled( bool enabled );
+    void setAmbientOcclusionBlurEnabled( bool enabled );
 
   private:
     QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
@@ -75,7 +75,7 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
     Qt3DRender::QParameter *mShadowMapParameter = nullptr;
-    Qt3DRender::QParameter *mSsaoTextureParameter = nullptr;
+    Qt3DRender::QParameter *mAmbientOcclusionTextureParameter = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
     Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
@@ -100,7 +100,7 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mEyeDomeLightingStrengthParameter = nullptr;
     Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
 
-    Qt3DRender::QParameter *mSsaoEnabledParameter = nullptr;
+    Qt3DRender::QParameter *mAmbientOcclusionEnabledParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

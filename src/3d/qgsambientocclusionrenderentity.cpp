@@ -1,7 +1,7 @@
 /***************************************************************************
-  qgsssaoblurentity.cpp
+  qgsambientocclusionrenderentity.cpp
   --------------------------------------
-  Date                 : Juin 2022
+  Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
   Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsssaoblurentity.h"
+#include "qgsambientocclusionrenderentity.h"
 
 #include <random>
 
@@ -29,7 +29,7 @@
 
 #include "qgsshadowrenderingframegraph.h"
 
-QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
+QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
   Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry( this );
@@ -94,8 +94,33 @@ QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, 
     mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
   } );
 
-  mSsaoFactorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "texture" ), frameGraph->ssaoFactorMap() );
-  mMaterial->addParameter( mSsaoFactorTextureParameter );
+  QVariantList ssaoKernelValues;
+
+  std::uniform_real_distribution<float> randomFloats( 0.0, 1.0 ); // random floats between [0.0, 1.0]
+  std::default_random_engine generator;
+  for ( unsigned int i = 0; i < 64; ++i )
+  {
+    QVector3D sample(
+      randomFloats( generator ) * 2.0 - 1.0,
+      randomFloats( generator ) * 2.0 - 1.0,
+      randomFloats( generator ) * 2.0 - 1.0
+    );
+    sample.normalize();
+    sample *= randomFloats( generator );
+    ssaoKernelValues.push_back( sample );
+  }
+
+  mAmbientOcclusionKernelParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoKernel[0]" ), ssaoKernelValues );
+  mMaterial->addParameter( mAmbientOcclusionKernelParameter );
+
+  mShadingFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "shadingFactor" ), 50.0f );
+  mMaterial->addParameter( mShadingFactorParameter );
+
+  mDistanceAttenuationFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "distanceAttenuationFactor" ), 500.0f );
+  mMaterial->addParameter( mDistanceAttenuationFactorParameter );
+
+  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radiusParameter" ), 0.05f );
+  mMaterial->addParameter( mRadiusParameter );
 
   mEffect = new Qt3DRender::QEffect( this );
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( this );
@@ -107,8 +132,8 @@ QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, 
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( this );
 
-  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.vert" );
-  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_blur.frag" );
+  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.vert" );
+  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.frag" );
 
   shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
@@ -127,3 +152,17 @@ QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, 
   addComponent( mMaterial );
 }
 
+void QgsAmbientOcclusionRenderEntity::setShadingFactor( float factor )
+{
+  mShadingFactorParameter->setValue( factor );
+}
+
+void QgsAmbientOcclusionRenderEntity::setDistanceAttenuationFactor( float factor )
+{
+  mDistanceAttenuationFactorParameter->setValue( factor );
+}
+
+void QgsAmbientOcclusionRenderEntity::setRadiusParameter( float radius )
+{
+  mRadiusParameter->setValue( radius );
+}

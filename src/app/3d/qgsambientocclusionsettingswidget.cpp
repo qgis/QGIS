@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsssaosettingswidget.cpp
+  qgsambientocclusionsettingswidget.cpp
   --------------------------------------
   Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -13,28 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsssaosettingswidget.h"
+#include "qgsambientocclusionsettingswidget.h"
 
-QgsSsaoSettingsWidget::QgsSsaoSettingsWidget( QWidget *parent )
+QgsAmbientOcclusionSettingsWidget::QgsAmbientOcclusionSettingsWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
 }
 
-void QgsSsaoSettingsWidget::setSsaoSettings( const QgsSsaoSettings &settings )
+void QgsAmbientOcclusionSettingsWidget::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings )
 {
-  mSsaoGroupBox->setChecked( settings.ssaoEnabled() );
-  mSssaBlurCheckbox->setChecked( settings.blurringEnabled() );
+  mAmbientOcclusionGroupBox->setChecked( settings.ambientOcclusionEnabled() );
+  mAmbientOcclusionBlurCheckbox->setChecked( settings.blurringEnabled() );
   mShadingFactorSpinBox->setValue( settings.shadingFactor() );
   mDistanceAttenuationFactorSpinBox->setValue( settings.distanceAttenuationFactor() );
   mRadiusParameterSpinBox->setValue( settings.radiusParameter() );
 }
 
-QgsSsaoSettings QgsSsaoSettingsWidget::toSsaoSettings()
+QgsAmbientOcclusionSettings QgsAmbientOcclusionSettingsWidget::toAmbientOcclusionSettings()
 {
-  QgsSsaoSettings settings;
-  settings.setSsaoEnabled( mSsaoGroupBox->isChecked() );
-  settings.setBlurringEnabled( mSssaBlurCheckbox->isChecked() );
+  QgsAmbientOcclusionSettings settings;
+  settings.setAmbientOcclusionEnabled( mAmbientOcclusionGroupBox->isChecked() );
+  settings.setBlurringEnabled( mAmbientOcclusionBlurCheckbox->isChecked() );
   settings.setShadingFactor( mShadingFactorSpinBox->value() );
   settings.setDistanceAttenuationFactor( mDistanceAttenuationFactorSpinBox->value() );
   settings.setRadiusParameter( mRadiusParameterSpinBox->value() );

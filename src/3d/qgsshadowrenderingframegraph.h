@@ -44,9 +44,9 @@ class QgsDirectionalLightSettings;
 class QgsCameraController;
 class QgsRectangle;
 class QgsPostprocessingEntity;
-class QgsSsaoRenderEntity;
+class QgsAmbientOcclusionRenderEntity;
 class QgsPreviewQuad;
-class QgsSsaoBlurEntity;
+class QgsAmbientOcclusionBlurEntity;
 
 #define SIP_NO_FILE
 
@@ -77,16 +77,16 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *shadowMapTexture() { return mShadowMapTexture; }
 
     /**
-     * Returns SSAO factor values texture
+     * Returns ambient occlusion factor values texture
      * \since QGIS 3.28
      */
-    Qt3DRender::QTexture2D *ssaoFactorMap() { return mSsaoRenderTexture; }
+    Qt3DRender::QTexture2D *ambientOcclusionFactorMap() { return mAmbientOcclusionRenderTexture; }
 
     /**
-     * Returns blurred SSAO factor values texture
+     * Returns blurred ambient occlusion factor values texture
      * \since QGIS 3.28
      */
-    Qt3DRender::QTexture2D *blurredSsaoFactorMap() { return mSsaoBlurTexture; }
+    Qt3DRender::QTexture2D *blurredAmbientOcclusionFactorMap() { return mAmbientOcclusionBlurTexture; }
 
     //! Returns a layer object used to indicate that an entity is to be rendered during the post processing rendering pass
     Qt3DRender::QLayer *postprocessingPassLayer() { return mPostprocessPassLayer; }
@@ -144,61 +144,61 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      * Sets whether Screen Space Ambient Occlusion will be enabled
      * \since QGIS 3.28
      */
-    void setSsaoEnabled( bool enabled );
+    void setAmbientOcclusionEnabled( bool enabled );
 
     /**
      * Returns whether Screen Space Ambient Occlusion is enabled
      * \since QGIS 3.28
      */
-    bool ssaoEnabled() const { return mSsaoEnabled; }
+    bool ambientOcclusionEnabled() const { return mAmbientOcclusionEnabled; }
 
     /**
      * Sets whether Screen Space Ambient Occlusion blurring pass will be enabled
      * \since QGIS 3.28
      */
-    void setSsaoBlurEnabled( bool enabled );
+    void setAmbientOcclusionBlurEnabled( bool enabled );
 
     /**
      * Returns whether Screen Space Ambient Occlusion blurring pass is enabled
      * \since QGIS 3.28
      */
-    bool ssaoBlurEnabled() const { return mSsaoBlurEnabled; }
+    bool ambientOcclusionBlurEnabled() const { return mAmbientOcclusionBlurEnabled; }
 
     /**
-     * Sets the SSAO shading factor parameter
+     * Sets the ambient occlusion shading factor parameter
      * \since QGIS 3.28
      */
-    void setSsaoShadingFactor( float factor );
+    void setAmbientOcclusionShadingFactor( float factor );
 
     /**
-     * Returns the SSAO shading factor parameter
+     * Returns the ambient occlusion shading factor parameter
      * \since QGIS 3.28
      */
-    float ssaoShadingFactor() const { return mSsaoShadingFactor; }
+    float ambientOcclusionShadingFactor() const { return mAmbientOcclusionShadingFactor; }
 
     /**
-     * Sets the SSAO distance attenuation factor parameter
+     * Sets the ambient occlusion distance attenuation factor parameter
      * \since QGIS 3.28
      */
-    void setSsaoDistanceAttenuationFactor( float factor );
+    void setAmbientOcclusionDistanceAttenuationFactor( float factor );
 
     /**
-     * Returns the SSAO distance attenuation factor parameter
+     * Returns the ambient occlusion distance attenuation factor parameter
      * \since QGIS 3.28
      */
-    float ssaoDistanceAttenuationFactor() const { return mSsaoDistanceAttenuationFactor; }
+    float ambientOcclusionDistanceAttenuationFactor() const { return mAmbientOcclusionDistanceAttenuationFactor; }
 
     /**
-     * Sets the SSAO radius parameter
+     * Sets the ambient occlusion radius parameter
      * \since QGIS 3.28
      */
-    void setSsaoRadiusParameter( float radius );
+    void setAmbientOcclusionRadiusParameter( float radius );
 
     /**
-     * Returns the SSAO radius parameter
+     * Returns the ambient occlusion radius parameter
      * \since QGIS 3.28
      */
-    float ssaoRadiusParameter() const { return mSsaoRadiusParameter; }
+    float ambientOcclusionRadiusParameter() const { return mAmbientOcclusionRadiusParameter; }
 
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
@@ -287,21 +287,21 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QTexture2D *mRenderCaptureColorTexture = nullptr;
     Qt3DRender::QTexture2D *mRenderCaptureDepthTexture = nullptr;
 
-    // SSAO factor generation pass
-    Qt3DRender::QCameraSelector *mSsaoRenderCameraSelector = nullptr;
-    Qt3DRender::QRenderStateSet *mSsaoRenderStateSet = nullptr;;
-    Qt3DRender::QLayerFilter *mSsaoRenderLayerFilter = nullptr;
-    Qt3DRender::QRenderTargetSelector *mSsaoRenderCaptureTargetSelector = nullptr;
-    // SSAO factor generation pass texture related objects:
-    Qt3DRender::QTexture2D *mSsaoRenderTexture = nullptr;
+    // Ambient occlusion factor generation pass
+    Qt3DRender::QCameraSelector *mAmbientOcclusionRenderCameraSelector = nullptr;
+    Qt3DRender::QRenderStateSet *mAmbientOcclusionRenderStateSet = nullptr;;
+    Qt3DRender::QLayerFilter *mAmbientOcclusionRenderLayerFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mAmbientOcclusionRenderCaptureTargetSelector = nullptr;
+    // Ambient occlusion factor generation pass texture related objects:
+    Qt3DRender::QTexture2D *mAmbientOcclusionRenderTexture = nullptr;
 
-    // SSAO factor blur pass
-    Qt3DRender::QCameraSelector *mSsaoBlurCameraSelector = nullptr;
-    Qt3DRender::QRenderStateSet *mSsaoBlurStateSet = nullptr;;
-    Qt3DRender::QLayerFilter *mSsaoBlurLayerFilter = nullptr;
-    Qt3DRender::QRenderTargetSelector *mSsaoBlurRenderCaptureTargetSelector = nullptr;
-    // SSAO factor blur pass texture related objects:
-    Qt3DRender::QTexture2D *mSsaoBlurTexture = nullptr;
+    // Ambient occlusion factor blur pass
+    Qt3DRender::QCameraSelector *mAmbientOcclusionBlurCameraSelector = nullptr;
+    Qt3DRender::QRenderStateSet *mAmbientOcclusionBlurStateSet = nullptr;;
+    Qt3DRender::QLayerFilter *mAmbientOcclusionBlurLayerFilter = nullptr;
+    Qt3DRender::QRenderTargetSelector *mAmbientOcclusionBlurRenderCaptureTargetSelector = nullptr;
+    // Ambient occlusion factor blur pass texture related objects:
+    Qt3DRender::QTexture2D *mAmbientOcclusionBlurTexture = nullptr;
 
     // Texture preview:
     Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
@@ -313,12 +313,12 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     float mShadowBias = 0.00001f;
     int mShadowMapResolution = 2048;
 
-    // SSAO related settings
-    bool mSsaoEnabled = false;
-    bool mSsaoBlurEnabled = true;
-    float mSsaoShadingFactor = 300.0f;
-    float mSsaoDistanceAttenuationFactor = 500.0f;
-    float mSsaoRadiusParameter = 0.05f;
+    // Ambient occlusion related settings
+    bool mAmbientOcclusionEnabled = false;
+    bool mAmbientOcclusionBlurEnabled = true;
+    float mAmbientOcclusionShadingFactor = 300.0f;
+    float mAmbientOcclusionDistanceAttenuationFactor = 500.0f;
+    float mAmbientOcclusionRadiusParameter = 0.05f;
 
     QSize mSize = QSize( 1024, 768 );
 
@@ -330,7 +330,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     QgsPreviewQuad *mDebugDepthMapPreviewQuad = nullptr;
 
     QEntity *mDepthRenderQuad = nullptr;
-    QEntity *mSsaoRenderQuad = nullptr;
+    QEntity *mAmbientOcclusionRenderQuad = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
@@ -342,12 +342,12 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
-    Qt3DRender::QLayer *mSsaoRenderPassLayer = nullptr;
-    Qt3DRender::QLayer *mSsaoBlurPassLayer = nullptr;
+    Qt3DRender::QLayer *mAmbientOcclusionRenderPassLayer = nullptr;
+    Qt3DRender::QLayer *mAmbientOcclusionBlurPassLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
-    QgsSsaoRenderEntity *mSsaoRenderEntity = nullptr;
-    QgsSsaoBlurEntity *mSsaoBlurEntity = nullptr;
+    QgsAmbientOcclusionRenderEntity *mAmbientOcclusionRenderEntity = nullptr;
+    QgsAmbientOcclusionBlurEntity *mAmbientOcclusionBlurEntity = nullptr;
 
     QVector<QgsPreviewQuad *> mPreviewQuads;
 
@@ -356,11 +356,10 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QFrameGraphNode *constructTexturesPreviewPass();
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     Qt3DRender::QFrameGraphNode *constructDepthRenderPass();
-    Qt3DRender::QFrameGraphNode *constructSsaoRenderPass();
-    Qt3DRender::QFrameGraphNode *constructSsaoBlurPass();
+    Qt3DRender::QFrameGraphNode *constructAmbientOcclusionRenderPass();
+    Qt3DRender::QFrameGraphNode *constructAmbientOcclusionBlurPass();
 
     Qt3DCore::QEntity *constructDepthRenderQuad();
-    Qt3DCore::QEntity *constructSsaoRenderQuad();
 
     bool mRenderCaptureEnabled = true;
 

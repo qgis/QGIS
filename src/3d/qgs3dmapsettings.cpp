@@ -78,7 +78,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mIsSkyboxEnabled( other.mIsSkyboxEnabled )
   , mSkyboxSettings( other.mSkyboxSettings )
   , mShadowSettings( other.mShadowSettings )
-  , mSsaoSettings( other.mSsaoSettings )
+  , mAmbientOcclusionSettings( other.mAmbientOcclusionSettings )
   , mEyeDomeLightingEnabled( other.mEyeDomeLightingEnabled )
   , mEyeDomeLightingStrength( other.mEyeDomeLightingStrength )
   , mEyeDomeLightingDistance( other.mEyeDomeLightingDistance )
@@ -291,8 +291,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemShadows = elem.firstChildElement( QStringLiteral( "shadow-rendering" ) );
   mShadowSettings.readXml( elemShadows, context );
 
-  QDomElement elemSsao = elem.firstChildElement( QStringLiteral( "screen-space-ambient-occlusion" ) );
-  mSsaoSettings.readXml( elemSsao, context );
+  QDomElement elemAmbientOcclusion = elem.firstChildElement( QStringLiteral( "screen-space-ambient-occlusion" ) );
+  mAmbientOcclusionSettings.readXml( elemAmbientOcclusion, context );
 
   QDomElement elemEyeDomeLighting = elem.firstChildElement( QStringLiteral( "eye-dome-lighting" ) );
   mEyeDomeLightingEnabled = elemEyeDomeLighting.attribute( "enabled", QStringLiteral( "0" ) ).toInt();
@@ -423,9 +423,9 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   mShadowSettings.writeXml( elemShadows, context );
   elem.appendChild( elemShadows );
 
-  QDomElement elemSsao = doc.createElement( QStringLiteral( "screen-space-ambient-occlusion" ) );
-  mSsaoSettings.writeXml( elemSsao, context );
-  elem.appendChild( elemSsao );
+  QDomElement elemAmbientOcclusion = doc.createElement( QStringLiteral( "screen-space-ambient-occlusion" ) );
+  mAmbientOcclusionSettings.writeXml( elemAmbientOcclusion, context );
+  elem.appendChild( elemAmbientOcclusion );
 
   QDomElement elemDebug = doc.createElement( QStringLiteral( "debug" ) );
   elemDebug.setAttribute( QStringLiteral( "bounding-boxes" ), mShowTerrainBoundingBoxes ? 1 : 0 );
@@ -869,10 +869,10 @@ void Qgs3DMapSettings::setShadowSettings( const QgsShadowSettings &shadowSetting
   emit shadowSettingsChanged();
 }
 
-void Qgs3DMapSettings::setSsaoSettings( const QgsSsaoSettings &ssaoSettings )
+void Qgs3DMapSettings::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &ambientOcclusionSettings )
 {
-  mSsaoSettings = ssaoSettings;
-  emit ssaoSettingsChanged();
+  mAmbientOcclusionSettings = ambientOcclusionSettings;
+  emit ambientOcclusionSettingsChanged();
 }
 
 void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
@@ -973,7 +973,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
-  connect( this, &Qgs3DMapSettings::ssaoSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 

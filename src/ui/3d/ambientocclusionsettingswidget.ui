@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsSsaoSettingsWidget</class>
- <widget class="QWidget" name="QgsSsaoSettingsWidget">
+ <class>QgsAmbientOcclusionSettingsWidget</class>
+ <widget class="QWidget" name="QgsAmbientOcclusionSettingsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,8 +11,20 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
-    <widget class="QGroupBox" name="mSsaoGroupBox">
+    <widget class="QGroupBox" name="mAmbientOcclusionGroupBox">
      <property name="title">
       <string>Screen Space Ambient Occlusion</string>
      </property>
@@ -66,9 +78,9 @@
        </widget>
       </item>
       <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="mSssaBlurCheckbox">
+       <widget class="QCheckBox" name="mAmbientOcclusionBlurCheckbox">
         <property name="text">
-         <string>Enable SSAO blurring</string>
+         <string>Enable Ambient Occlusion blurring</string>
         </property>
         <property name="checked">
          <bool>true</bool>

@@ -36,7 +36,7 @@
 #include "qgsshadowsettings.h"
 #include "qgscameracontroller.h"
 #include "qgstemporalrangeobject.h"
-#include "qgsssaosettings.h"
+#include "qgsambientocclusionsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -535,7 +535,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns the current configuration of screen space ambient occlusion
      * \since QGIS 3.28
      */
-    QgsSsaoSettings ssaoSettings() const SIP_SKIP { return mSsaoSettings; }
+    QgsAmbientOcclusionSettings ambientOcclusionSettings() const SIP_SKIP { return mAmbientOcclusionSettings; }
 
     /**
      * Sets the current configuration of the skybox
@@ -553,7 +553,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Sets the current configuration of screen space ambient occlusion
      * \since QGIS 3.28
      */
-    void setSsaoSettings( const QgsSsaoSettings &ssaoSettings ) SIP_SKIP;
+    void setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &ambientOcclusionSettings ) SIP_SKIP;
 
     /**
      * Returns whether the skybox is enabled.
@@ -839,10 +839,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
 
     /**
-     * Emitted when ssao rendering settings are changed
+     * Emitted when ambient occlusion rendering settings are changed
      * \since QGIS 3.28
      */
-    void ssaoSettingsChanged();
+    void ambientOcclusionSettingsChanged();
 
     /**
      * Emitted when the FPS counter is enabled or disabled
@@ -916,7 +916,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
     QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
-    QgsSsaoSettings mSsaoSettings; //!< Screen Space Ambient Occlusion related settings
+    QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
