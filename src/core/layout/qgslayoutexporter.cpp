@@ -385,6 +385,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   }
 
   QFileInfo fi( filePath );
+  QDir dir;
+  if ( !dir.exists( fi.absolutePath() ) )
+  {
+    dir.mkpath( fi.absolutePath() );
+  }
 
   PageExportDetails pageDetails;
   pageDetails.directory = fi.path();
@@ -1210,6 +1215,13 @@ QMap<QString, QgsLabelingResults *> QgsLayoutExporter::takeLabelingResults()
 
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
+  QFileInfo fi( filePath );
+  QDir dir;
+  if ( !dir.exists( fi.absolutePath() ) )
+  {
+    dir.mkpath( fi.absolutePath() );
+  }
+
   printer.setOutputFileName( filePath );
   printer.setOutputFormat( QPrinter::PdfFormat );
 
