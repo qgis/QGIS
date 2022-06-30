@@ -94,7 +94,7 @@ QgsSsaoBlurEntity::QgsSsaoBlurEntity( QgsShadowRenderingFrameGraph *frameGraph, 
     mMainCameraInvViewMatrixParameter->setValue( mMainCamera->viewMatrix().inverted() );
   } );
 
-  mSsaoFactorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->ssaoFactorMap() );
+  mSsaoFactorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "texture" ), frameGraph->ssaoFactorMap() );
   mMaterial->addParameter( mSsaoFactorTextureParameter );
 
   mEffect = new Qt3DRender::QEffect( this );

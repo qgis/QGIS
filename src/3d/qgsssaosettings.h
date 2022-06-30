@@ -1,7 +1,7 @@
 /***************************************************************************
   qgsssaosettings.h
   --------------------------------------
-  Date                 : Juin 2022
+  Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
   Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
@@ -68,6 +68,7 @@ class _3D_EXPORT QgsSsaoSettings
     //! Sets the distance attenuation factor of the ambient occlusion effect
     void setDistanceAttenuationFactor( float factor ) { mDistanceAttenuationFactor = factor; }
 
+    //! Returns the distance attenuation factor of the ambient occlusion effect
     float distanceAttenuationFactor() const { return mDistanceAttenuationFactor; }
 
     //! Sets the radius parameter of the ambient occlusion effect

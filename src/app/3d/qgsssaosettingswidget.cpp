@@ -1,7 +1,7 @@
 /***************************************************************************
   qgsssaosettingswidget.cpp
   --------------------------------------
-  Date                 : Juin 2022
+  Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
   Email                : belgacem dot nedjima at gmail dot com
  ***************************************************************************
