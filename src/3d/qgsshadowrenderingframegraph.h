@@ -78,13 +78,13 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      * Returns SSAO factor values texture
      * \since QGIS 3.28
      */
-    Qt3DRender::QTexture2D *ssaoFactorMap() { return mSsaoRenderCaptureColorTexture; }
+    Qt3DRender::QTexture2D *ssaoFactorMap() { return mSsaoRenderTexture; }
 
     /**
      * Returns blurred SSAO factor values texture
      * \since QGIS 3.28
      */
-    Qt3DRender::QTexture2D *blurredSsaoFactorMap() { return mSsaoBlurRenderCaptureColorTexture; }
+    Qt3DRender::QTexture2D *blurredSsaoFactorMap() { return mSsaoBlurTexture; }
 
     //! Returns a layer object used to indicate that an entity is to be rendered during the post processing rendering pass
     Qt3DRender::QLayer *postprocessingPassLayer() { return mPostprocessPassLayer; }
@@ -291,8 +291,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayerFilter *mSsaoRenderLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mSsaoRenderCaptureTargetSelector = nullptr;
     // SSAO factor generation pass texture related objects:
-    Qt3DRender::QTexture2D *mSsaoRenderCaptureDepthTexture = nullptr;
-    Qt3DRender::QTexture2D *mSsaoRenderCaptureColorTexture = nullptr;
+    Qt3DRender::QTexture2D *mSsaoRenderTexture = nullptr;
 
     // SSAO factor blur pass
     Qt3DRender::QCameraSelector *mSsaoBlurCameraSelector = nullptr;
@@ -300,8 +299,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     Qt3DRender::QLayerFilter *mSsaoBlurLayerFilter = nullptr;
     Qt3DRender::QRenderTargetSelector *mSsaoBlurRenderCaptureTargetSelector = nullptr;
     // SSAO factor blur pass texture related objects:
-    Qt3DRender::QTexture2D *mSsaoBlurRenderCaptureDepthTexture = nullptr;
-    Qt3DRender::QTexture2D *mSsaoBlurRenderCaptureColorTexture = nullptr;
+    Qt3DRender::QTexture2D *mSsaoBlurTexture = nullptr;
 
     // Texture preview:
     Qt3DRender::QLayerFilter *mPreviewLayerFilter = nullptr;
