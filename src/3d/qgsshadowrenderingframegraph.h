@@ -328,7 +328,6 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     QgsPreviewQuad *mDebugDepthMapPreviewQuad = nullptr;
 
     QEntity *mDepthRenderQuad = nullptr;
-    QEntity *mAmbientOcclusionRenderQuad = nullptr;
 
     QVector3D mLightDirection = QVector3D( 0.0, -1.0f, 0.0f );
 
