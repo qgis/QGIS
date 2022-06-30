@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsssaosettings.cpp
+  qgambientocclusionsettings.cpp
   --------------------------------------
   Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsssaosettings.h"
+#include "qgsambientocclusionsettings.h"
 
 #include <QDomDocument>
 
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
-QgsSsaoSettings::QgsSsaoSettings( const QgsSsaoSettings &other )
+QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other )
   : mEnabled( other.mEnabled )
   , mBlurEnabled( other.mBlurEnabled )
   , mShadingFactor( other.mShadingFactor )
@@ -30,7 +30,7 @@ QgsSsaoSettings::QgsSsaoSettings( const QgsSsaoSettings &other )
 
 }
 
-QgsSsaoSettings &QgsSsaoSettings::operator=( QgsSsaoSettings const &rhs )
+QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientOcclusionSettings const &rhs )
 {
   mEnabled = rhs.mEnabled;
   mBlurEnabled = rhs.mBlurEnabled;
@@ -40,7 +40,7 @@ QgsSsaoSettings &QgsSsaoSettings::operator=( QgsSsaoSettings const &rhs )
   return *this;
 }
 
-void QgsSsaoSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
+void QgsAmbientOcclusionSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mEnabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mBlurEnabled = element.attribute( QStringLiteral( "blur-enabled" ), QStringLiteral( "1" ) ).toInt();
@@ -51,7 +51,7 @@ void QgsSsaoSettings::readXml( const QDomElement &element, const QgsReadWriteCon
   Q_UNUSED( context );
 }
 
-void QgsSsaoSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
+void QgsAmbientOcclusionSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled );
   element.setAttribute( QStringLiteral( "blur-enabled" ), mBlurEnabled );

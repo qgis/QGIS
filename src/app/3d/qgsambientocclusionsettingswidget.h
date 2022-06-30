@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsssaosettingswidget.h
+  qgsambientocclusionsettingswidget.h
   --------------------------------------
   Date                 : Juin 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -12,24 +12,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSSSAOSETTINGSWIDGET_H
-#define QGSSSAOSETTINGSWIDGET_H
+#ifndef QGSAMBIENTOCCLUSIONSETTINGSWIDGET_H
+#define QGSAMBIENTOCCLUSIONSETTINGSWIDGET_H
 
-#include "ui_ssaosettingswidget.h"
+#include "ui_ambientocclusionsettingswidget.h"
 
-#include "qgsssaosettings.h"
+#include "qgsambientocclusionsettings.h"
 
-class QgsSsaoSettingsWidget : public QWidget, private Ui::QgsSsaoSettingsWidget
+class QgsAmbientOcclusionSettingsWidget : public QWidget, private Ui::QgsAmbientOcclusionSettingsWidget
 {
     Q_OBJECT
 
   public:
-    explicit QgsSsaoSettingsWidget( QWidget *parent = nullptr );
+    explicit QgsAmbientOcclusionSettingsWidget( QWidget *parent = nullptr );
 
     //! Sets the shadow settings in the current widget UI
-    void setSsaoSettings( const QgsSsaoSettings &settings );
+    void setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings );
     //! Returns the shadow settings from the widget UI
-    QgsSsaoSettings toSsaoSettings();
+    QgsAmbientOcclusionSettings toAmbientOcclusionSettings();
 };
 
 #endif // QGSSSAOSETTINGSWIDGET_H

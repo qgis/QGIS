@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsssaosettings.h
+  qgsambientocclusionsettings.h
   --------------------------------------
   Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSSAOSETTINGS_H
-#define QGSSSAOSETTINGS_H
+#ifndef QGSAMBIENTOCCLUSIONSETTINGS_H
+#define QGSAMBIENTOCCLUSIONSETTINGS_H
 
 #include <QString>
 #include <QMap>
@@ -32,15 +32,15 @@ class QDomElement;
  * \note Not available in Python bindings
  * \since QGIS 3.28
  */
-class _3D_EXPORT QgsSsaoSettings
+class _3D_EXPORT QgsAmbientOcclusionSettings
 {
   public:
     //! Default constructor
-    QgsSsaoSettings() = default;
+    QgsAmbientOcclusionSettings() = default;
     //! Copy constructor
-    QgsSsaoSettings( const QgsSsaoSettings &other );
+    QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other );
     //! delete assignment operator
-    QgsSsaoSettings &operator=( QgsSsaoSettings const &rhs );
+    QgsAmbientOcclusionSettings &operator=( QgsAmbientOcclusionSettings const &rhs );
 
     //! Reads settings from a DOM \a element
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );
@@ -48,10 +48,10 @@ class _3D_EXPORT QgsSsaoSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Sets whether ambient occlusion effect is enabled
-    void setSsaoEnabled( bool enabled ) { mEnabled = enabled; }
+    void setAmbientOcclusionEnabled( bool enabled ) { mEnabled = enabled; }
 
     //! Returns whether ambient occlusion effect is enabled
-    bool ssaoEnabled() const { return mEnabled; }
+    bool ambientOcclusionEnabled() const { return mEnabled; }
 
     //! Sets whether the ambient occlusion texture will be blurred
     void setBlurringEnabled( bool enabled ) { mBlurEnabled = enabled; }
@@ -85,4 +85,4 @@ class _3D_EXPORT QgsSsaoSettings
     float mRadiusParameter = 0.05f;
 };
 
-#endif // QGSSKYBOXSETTINGS_H
+#endif // QGSAMBIENTOCCLUSIONSETTINGS_H

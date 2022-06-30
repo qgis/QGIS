@@ -590,8 +590,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>817</width>
-                <height>649</height>
+                <width>335</width>
+                <height>488</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -1118,7 +1118,7 @@
                    </spacer>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QgsSsaoSettingsWidget" name="mSsaoSettingsWidget" native="true"/>
+                   <widget class="QgsAmbientOcclusionSettingsWidget" name="mAmbientOcclusionSettingsWidget" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -1178,9 +1178,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSsaoSettingsWidget</class>
+   <class>QgsAmbientOcclusionSettingsWidget</class>
    <extends>QWidget</extends>
-   <header>qgsssaosettingswidget.h</header>
+   <header>qgsambientocclusionsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
