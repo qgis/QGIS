@@ -157,7 +157,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
 
-  mActionEnableAmbientOcclusion = new QAction( tr( "Show Screen Space Ambient Occlusion" ), this );
+  mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
   mActionEnableAmbientOcclusion ->setCheckable( true );
   connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [ = ]( bool enabled )
   {
