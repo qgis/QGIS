@@ -19,6 +19,10 @@ QgsAmbientOcclusionSettingsWidget::QgsAmbientOcclusionSettingsWidget( QWidget *p
   : QWidget( parent )
 {
   setupUi( this );
+
+  mShadingFactorSpinBox->setToolTip( tr( "The strength of the shading applied, bigger values means more pronounced and daraker colors." ) );
+  mDistanceAttenuationFactorSpinBox->setToolTip( tr( "The contributions of farther points into the sampling: bigger values mean lines will be graduated more." ) );
+  mRadiusParameterSpinBox->setToolTip( tr( "The radius of the sampled sphere: bigger values mean thicker edges" ) );
 }
 
 void QgsAmbientOcclusionSettingsWidget::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings )

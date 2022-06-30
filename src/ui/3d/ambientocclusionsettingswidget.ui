@@ -26,7 +26,7 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="mAmbientOcclusionGroupBox">
      <property name="title">
-      <string>Screen Space Ambient Occlusion</string>
+      <string>Ambient Occlusion</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
@@ -44,6 +44,9 @@
       </item>
       <item row="3" column="1">
        <widget class="QDoubleSpinBox" name="mRadiusParameterSpinBox">
+        <property name="decimals">
+         <number>3</number>
+        </property>
         <property name="maximum">
          <double>1.000000000000000</double>
         </property>
