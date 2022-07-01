@@ -435,7 +435,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
 
   for ( int i = 1; i <= nBands; ++i )
   {
-    iter->startRasterRead( i, nCols, nRows, outputExtent );
+    iter->startRasterRead( i, nCols, nRows, outputExtent, feedback );
     if ( destProvider && destHasNoDataValueList.value( i - 1 ) ) // no tiles
     {
       destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
