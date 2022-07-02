@@ -302,7 +302,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
     {
       const QDomElement attrElem = attributes.at( i ).toElement();
       QColor newColor( attrElem.attribute( QStringLiteral( "color" ) ) );
-      newColor.setAlphaF( opacity );
+      newColor.setAlphaF( attrElem.attribute( QStringLiteral( "colorOpacity" ), QStringLiteral( "1.0" ) ).toDouble() );
       categoryColors.append( newColor );
       categoryAttributes.append( attrElem.attribute( QStringLiteral( "field" ) ) );
       categoryLabels.append( attrElem.attribute( QStringLiteral( "label" ) ) );
@@ -321,7 +321,6 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
     for ( ; colorIt != colorList.constEnd(); ++colorIt )
     {
       QColor newColor( *colorIt );
-      newColor.setAlphaF( opacity );
       categoryColors.append( QColor( newColor ) );
     }
 
@@ -422,6 +421,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc,
 
     attributeElem.setAttribute( QStringLiteral( "field" ), categoryAttributes.at( i ) );
     attributeElem.setAttribute( QStringLiteral( "color" ), categoryColors.at( i ).name() );
+    attributeElem.setAttribute( QStringLiteral( "colorOpacity" ), QString::number( categoryColors.at( i ).alphaF() ) );
     attributeElem.setAttribute( QStringLiteral( "label" ), categoryLabels.at( i ) );
     categoryElem.appendChild( attributeElem );
   }
