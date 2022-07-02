@@ -134,7 +134,9 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
       if ( *valIt )
       {
         currentAngle = ( *valIt / valSum * 360 * 16 ) * ( s.direction() == QgsDiagramSettings::Clockwise ? -1 : 1 );
-        mCategoryBrush.setColor( *colIt );
+        QColor brushColor( *colIt );
+        brushColor.setAlphaF( brushColor.alphaF() * s.opacity );
+        mCategoryBrush.setColor( brushColor );
         p->setBrush( mCategoryBrush );
         // if only 1 value is > 0, draw a circle
         if ( valCount == 1 )
