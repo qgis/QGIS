@@ -219,7 +219,9 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   {
     double length = sizePainterUnits( *valIt * mScaleFactor, s, c );
 
-    mCategoryBrush.setColor( *colIt );
+    QColor brushColor( *colIt );
+    brushColor.setAlphaF( brushColor.alphaF() * s.opacity );
+    mCategoryBrush.setColor( brushColor );
     p->setBrush( mCategoryBrush );
 
     switch ( s.diagramOrientation )
