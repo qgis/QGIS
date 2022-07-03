@@ -219,7 +219,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
   mPostProcessingCameraSelector->setCamera( mLightCamera );
 
   mPostprocessPassLayerFilter = new Qt3DRender::QLayerFilter( mPostProcessingCameraSelector );
-  mPostprocessPassLayerFilter->addLayer( mPostprocessPassLayer );
 
   mPostprocessClearBuffers = new Qt3DRender::QClearBuffers( mPostprocessPassLayerFilter );
 
@@ -263,6 +262,9 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructPostprocessi
 
   mRenderCapture = new Qt3DRender::QRenderCapture( mRenderCaptureTargetSelector );
 
+  mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
+  mPostprocessPassLayerFilter->addLayer( mPostprocessingEntity->layer() );
+
   return mPostProcessingCameraSelector;
 }
 
@@ -282,7 +284,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
   mAmbientOcclusionRenderStateSet->addRenderState( depthRenderCullFace );
 
   mAmbientOcclusionRenderLayerFilter = new Qt3DRender::QLayerFilter( mAmbientOcclusionRenderStateSet );
-  mAmbientOcclusionRenderLayerFilter->addLayer( mAmbientOcclusionRenderPassLayer );
 
   mAmbientOcclusionRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mAmbientOcclusionRenderLayerFilter );
   Qt3DRender::QRenderTarget *depthRenderTarget = new Qt3DRender::QRenderTarget( mAmbientOcclusionRenderCaptureTargetSelector );
@@ -307,6 +308,9 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
 
   mAmbientOcclusionRenderCaptureTargetSelector->setTarget( depthRenderTarget );
 
+  mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( mForwardDepthTexture, mMainCamera, mRootEntity );
+  mAmbientOcclusionRenderLayerFilter->addLayer( mAmbientOcclusionRenderEntity->layer() );
+
   return mAmbientOcclusionRenderCameraSelector;
 }
 
@@ -326,7 +330,6 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
   mAmbientOcclusionBlurStateSet->addRenderState( depthRenderCullFace );
 
   mAmbientOcclusionBlurLayerFilter = new Qt3DRender::QLayerFilter( mAmbientOcclusionBlurStateSet );
-  mAmbientOcclusionBlurLayerFilter->addLayer( mAmbientOcclusionBlurPassLayer );
 
   mAmbientOcclusionBlurRenderCaptureTargetSelector = new Qt3DRender::QRenderTargetSelector( mAmbientOcclusionBlurLayerFilter );
   Qt3DRender::QRenderTarget *depthRenderTarget = new Qt3DRender::QRenderTarget( mAmbientOcclusionBlurRenderCaptureTargetSelector );
@@ -350,6 +353,9 @@ Qt3DRender::QFrameGraphNode *QgsShadowRenderingFrameGraph::constructAmbientOcclu
   depthRenderTarget->addOutput( colorOutput );
 
   mAmbientOcclusionBlurRenderCaptureTargetSelector->setTarget( depthRenderTarget );
+
+  mAmbientOcclusionBlurEntity = new QgsAmbientOcclusionBlurEntity( mAmbientOcclusionRenderTexture, mRootEntity );
+  mAmbientOcclusionBlurLayerFilter->addLayer( mAmbientOcclusionBlurEntity->layer() );
 
   return mAmbientOcclusionBlurCameraSelector;
 }
@@ -496,23 +502,17 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   mMainCamera = mainCamera;
   mLightCamera = new Qt3DRender::QCamera;
 
-  mPostprocessPassLayer = new Qt3DRender::QLayer;
   mPreviewLayer = new Qt3DRender::QLayer;
   mCastShadowsLayer = new Qt3DRender::QLayer;
   mForwardRenderLayer = new Qt3DRender::QLayer;
   mDepthRenderPassLayer = new Qt3DRender::QLayer;
   mTransparentObjectsPassLayer = new Qt3DRender::QLayer;
-  mAmbientOcclusionRenderPassLayer = new Qt3DRender::QLayer;
-  mAmbientOcclusionBlurPassLayer = new Qt3DRender::QLayer;
 
-  mPostprocessPassLayer->setRecursive( true );
   mPreviewLayer->setRecursive( true );
   mCastShadowsLayer->setRecursive( true );
   mForwardRenderLayer->setRecursive( true );
   mDepthRenderPassLayer->setRecursive( true );
   mTransparentObjectsPassLayer->setRecursive( true );
-  mAmbientOcclusionRenderPassLayer->setRecursive( true );
-  mAmbientOcclusionBlurPassLayer->setRecursive( true );
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
 
@@ -552,15 +552,6 @@ QgsShadowRenderingFrameGraph::QgsShadowRenderingFrameGraph( QSurface *surface, Q
   // textures preview pass
   Qt3DRender::QFrameGraphNode *previewPass = constructTexturesPreviewPass();
   previewPass->setParent( mMainViewPort );
-
-  mPostprocessingEntity = new QgsPostprocessingEntity( this, mRootEntity );
-  mPostprocessingEntity->addComponent( mPostprocessPassLayer );
-
-  mAmbientOcclusionRenderEntity = new QgsAmbientOcclusionRenderEntity( this, mRootEntity );
-  mAmbientOcclusionRenderEntity->addComponent( mAmbientOcclusionRenderPassLayer );
-
-  mAmbientOcclusionBlurEntity = new QgsAmbientOcclusionBlurEntity( this, mRootEntity );
-  mAmbientOcclusionBlurEntity->addComponent( mAmbientOcclusionBlurPassLayer );
 
   Qt3DRender::QParameter *depthMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );
   Qt3DRender::QParameter *shadowMapIsDepthParam = new Qt3DRender::QParameter( "isDepth", true );

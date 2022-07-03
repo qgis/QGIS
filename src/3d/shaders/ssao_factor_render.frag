@@ -2,9 +2,6 @@
 
 uniform sampler2D depthTexture;
 
-// view camera uniforms
-uniform mat4 invertedCameraView;
-uniform mat4 invertedCameraProj;
 uniform float farPlane;
 uniform float nearPlane;
 

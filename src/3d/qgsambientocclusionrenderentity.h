@@ -16,13 +16,7 @@
 #ifndef QGSAMBIENTOCCLUSIONRENDERENTITY_H
 #define QGSAMBIENTOCCLUSIONRENDERENTITY_H
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QCamera>
-
-class QgsShadowRenderingFrameGraph;
+#include "qgsrenderpassquad.h"
 
 #define SIP_NO_FILE
 
@@ -34,11 +28,11 @@ class QgsShadowRenderingFrameGraph;
  *
  * \since QGIS 3.28
  */
-class QgsAmbientOcclusionRenderEntity : public Qt3DCore::QEntity
+class QgsAmbientOcclusionRenderEntity : public QgsRenderPassQuad
 {
   public:
     //! Constructor
-    QgsAmbientOcclusionRenderEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent = nullptr );
+    QgsAmbientOcclusionRenderEntity( Qt3DRender::QTexture2D *depthTexture, Qt3DRender::QCamera *camera, QNode *parent = nullptr );
 
     //! Sets the shading factor for the ambient occlusion effect
     void setShadingFactor( float factor );
@@ -50,16 +44,10 @@ class QgsAmbientOcclusionRenderEntity : public Qt3DCore::QEntity
     void setRadiusParameter( float radius );
 
   private:
-    Qt3DRender::QMaterial *mMaterial = nullptr;
-    Qt3DRender::QEffect *mEffect = nullptr;
-    Qt3DRender::QParameter *mColorTextureParameter = nullptr;
-    Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
-    Qt3DRender::QParameter *mShadowMapParameter = nullptr;
-    Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
     Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
-    Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
-    Qt3DRender::QParameter *mMainCameraInvProjMatrixParameter = nullptr;
+
+    Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
 
     Qt3DRender::QParameter *mAmbientOcclusionKernelParameter = nullptr;
 

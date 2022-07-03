@@ -34,6 +34,7 @@ set(QGIS_3D_SRCS
   qgsskyboxsettings.cpp
   qgsshadowrenderingframegraph.cpp
   qgspostprocessingentity.cpp
+  qgsrenderpassquad.cpp
   qgsambientocclusionrenderentity.cpp
   qgsambientocclusionblurentity.cpp
   qgspreviewquad.cpp
@@ -133,6 +134,7 @@ set(QGIS_3D_HDRS
   qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
+  qgsrenderpassquad.h
   qgsambientocclusionrenderentity.h
   qgsambientocclusionblurentity.h
   qgsambientocclusionsettings.h
