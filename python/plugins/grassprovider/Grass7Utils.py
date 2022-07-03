@@ -384,6 +384,22 @@ class Grass7Utils:
             if sys.version_info >= (3, 6):
                 kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
 
+        def readline_with_recover(stdout):
+            """A method wrapping stdout.readline() with try-except.
+            This is a workaround for decoding stdout from GRASS cmd
+            because there are enviroments where it is difficult to avoid UnicodeDecodeError.
+
+            Args:
+                stdout: io.TextIOWrapper - proc.stdout
+
+            Returns:
+                str: read line or replaced text when recovered
+            """
+            try:
+                return stdout.readline()
+            except Exception as e:
+                return '???' # replaced-text
+
         with subprocess.Popen(
                 command,
                 shell=False,
@@ -394,7 +410,7 @@ class Grass7Utils:
                 env=grassenv,
                 **kw
         ) as proc:
-            for line in iter(proc.stdout.readline, ''):
+            for line in iter(lambda: readline_with_recover(proc.stdout), ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
                         feedback.setProgress(int(line[len('GRASS_INFO_PERCENT') + 2:]))
@@ -444,7 +460,7 @@ class Grass7Utils:
                 env=grassenv,
                 **kw
             ) as proc:
-                for line in iter(proc.stdout.readline, ''):
+                for line in iter(lambda: readline_with_recover(proc.stdout), ''):
                     if 'GRASS_INFO_PERCENT' in line:
                         try:
                             feedback.setProgress(int(
