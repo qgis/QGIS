@@ -387,7 +387,7 @@ class Grass7Utils:
         def readline_with_recover(stdout):
             """A method wrapping stdout.readline() with try-except.
             This is a workaround for decoding stdout from GRASS cmd
-            because there are enviroments where it is difficult to avoid UnicodeDecodeError.
+            because there are environments where it is difficult to avoid UnicodeDecodeError.
 
             Args:
                 stdout: io.TextIOWrapper - proc.stdout
