@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsambientocclusionblurentity.h
+  qgsrenderpassquad.h
   --------------------------------------
   Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima
@@ -13,28 +13,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSAMBIENTOCCLUSIONBLURENTITY_H
-#define QGSAMBIENTOCCLUSIONBLURENTITY_H
+#ifndef QGSRENDERPASSQUAD_H
+#define QGSRENDERPASSQUAD_H
 
-#include "qgsrenderpassquad.h"
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QLayer>
 
 #define SIP_NO_FILE
 
 /**
  * \ingroup 3d
- * \brief An entity that is responsible for blurring the ambient occlusion factor texture.
+ * \brief An entity that is responsible for rendering a screen quad for a specific rendering pass.
  *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.28
  */
-class QgsAmbientOcclusionBlurEntity : public QgsRenderPassQuad
+class QgsRenderPassQuad : public Qt3DCore::QEntity
 {
   public:
     //! Constructor
-    QgsAmbientOcclusionBlurEntity( Qt3DRender::QTexture2D *texture, QNode *parent = nullptr );
-  private:
-    Qt3DRender::QParameter *mAmbientOcclusionFactorTextureParameter = nullptr;
+    QgsRenderPassQuad( QNode *parent = nullptr );
+
+    //! Returns the layer object used to select this entity for rendering in a specific rendering pass
+    Qt3DRender::QLayer *layer() { return mLayer; }
+  protected:
+    Qt3DRender::QMaterial *mMaterial = nullptr;
+    Qt3DRender::QShaderProgram *mShader = nullptr;
+    Qt3DRender::QLayer *mLayer = nullptr;
 };
 
-#endif // QGSAMBIENTOCCLUSIONBLURENTITY_H
+#endif // QGSRENDERPASSQUAD_H

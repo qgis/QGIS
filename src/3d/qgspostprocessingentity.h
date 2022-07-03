@@ -16,11 +16,7 @@
 #ifndef QGSPOSTPROCESSINGENTITY_H
 #define QGSPOSTPROCESSINGENTITY_H
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QCamera>
+#include "qgsrenderpassquad.h"
 
 class QgsShadowRenderingFrameGraph;
 
@@ -34,7 +30,7 @@ class QgsShadowRenderingFrameGraph;
  *
  * \since QGIS 3.16
  */
-class QgsPostprocessingEntity : public Qt3DCore::QEntity
+class QgsPostprocessingEntity : public QgsRenderPassQuad
 {
     Q_OBJECT
 
@@ -70,13 +66,12 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
 
   private:
     QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
-    Qt3DRender::QMaterial *mMaterial = nullptr;
-    Qt3DRender::QEffect *mEffect = nullptr;
+    Qt3DRender::QCamera *mMainCamera = nullptr;
+
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
     Qt3DRender::QParameter *mShadowMapParameter = nullptr;
     Qt3DRender::QParameter *mAmbientOcclusionTextureParameter = nullptr;
-    Qt3DRender::QCamera *mMainCamera = nullptr;
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
     Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;

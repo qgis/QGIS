@@ -88,8 +88,6 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      */
     Qt3DRender::QTexture2D *blurredAmbientOcclusionFactorMap() { return mAmbientOcclusionBlurTexture; }
 
-    //! Returns a layer object used to indicate that an entity is to be rendered during the post processing rendering pass
-    Qt3DRender::QLayer *postprocessingPassLayer() { return mPostprocessPassLayer; }
     //! Returns a layer object used to indicate that an entity is to be rendered during the preview textures rendering pass
     Qt3DRender::QLayer *previewLayer() { return mPreviewLayer; }
     //! Returns a layer object used to indicate that an entity will cast shadows
@@ -316,7 +314,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     // Ambient occlusion related settings
     bool mAmbientOcclusionEnabled = false;
     bool mAmbientOcclusionBlurEnabled = true;
-    float mAmbientOcclusionShadingFactor = 300.0f;
+    float mAmbientOcclusionShadingFactor = 50.0f;
     float mAmbientOcclusionDistanceAttenuationFactor = 500.0f;
     float mAmbientOcclusionRadiusParameter = 0.05f;
 
@@ -335,14 +333,11 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 
     Qt3DCore::QEntity *mRootEntity = nullptr;
 
-    Qt3DRender::QLayer *mPostprocessPassLayer = nullptr;
     Qt3DRender::QLayer *mPreviewLayer = nullptr;
     Qt3DRender::QLayer *mForwardRenderLayer = nullptr;
     Qt3DRender::QLayer *mCastShadowsLayer = nullptr;
     Qt3DRender::QLayer *mDepthRenderPassLayer = nullptr;
     Qt3DRender::QLayer *mTransparentObjectsPassLayer = nullptr;
-    Qt3DRender::QLayer *mAmbientOcclusionRenderPassLayer = nullptr;
-    Qt3DRender::QLayer *mAmbientOcclusionBlurPassLayer = nullptr;
 
     QgsPostprocessingEntity *mPostprocessingEntity = nullptr;
     QgsAmbientOcclusionRenderEntity *mAmbientOcclusionRenderEntity = nullptr;
