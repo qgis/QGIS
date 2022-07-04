@@ -37,6 +37,10 @@ Encapsulates information relating to a GPS satellite.
     double azimuth;
 
     int signal;
+
+    bool operator==( const QgsSatelliteInfo &other ) const;
+
+    bool operator!=( const QgsSatelliteInfo &other ) const;
 };
 
 class QgsGpsInformation
