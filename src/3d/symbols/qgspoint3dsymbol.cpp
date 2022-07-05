@@ -38,14 +38,14 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
-  : mMaterial( std::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) ) );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
   : mAltClamping( other.altitudeClamping() )
-  , mMaterial( other.material() ? other.material()->clone() : nullptr )
+  , mMaterialSettings( other.material() ? other.material()->clone() : nullptr )
   , mShape( other.shape() )
   , mShapeProperties( other.shapeProperties() )
   , mTransform( other.transform() )
@@ -64,9 +64,9 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
   elem.appendChild( elemDataProperties );
 
-  elem.setAttribute( QStringLiteral( "material_type" ), mMaterial->type() );
+  elem.setAttribute( QStringLiteral( "material_type" ), mMaterialSettings->type() );
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
-  mMaterial->writeXml( elemMaterial, context );
+  mMaterialSettings->writeXml( elemMaterial, context );
   elem.appendChild( elemMaterial );
 
   elem.setAttribute( QStringLiteral( "shape" ), shapeToString( mShape ) );
@@ -97,10 +97,10 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   const QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   const QString materialType = elem.attribute( QStringLiteral( "material_type" ), QStringLiteral( "phong" ) );
-  mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
-  if ( !mMaterial )
-    mMaterial.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
-  mMaterial->readXml( elemMaterial, context );
+  mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( materialType ) );
+  if ( !mMaterialSettings )
+    mMaterialSettings.reset( Qgs3D::materialRegistry()->createMaterialSettings( QStringLiteral( "phong" ) ) );
+  mMaterialSettings->readXml( elemMaterial, context );
 
   mShape = shapeFromString( elem.attribute( QStringLiteral( "shape" ) ) );
 
@@ -179,15 +179,15 @@ QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
 
 QgsAbstractMaterialSettings *QgsPoint3DSymbol::material() const
 {
-  return mMaterial.get();
+  return mMaterialSettings.get();
 }
 
 void QgsPoint3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
 {
-  if ( material == mMaterial.get() )
+  if ( material == mMaterialSettings.get() )
     return;
 
-  mMaterial.reset( material );
+  mMaterialSettings.reset( material );
 }
 
 bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
