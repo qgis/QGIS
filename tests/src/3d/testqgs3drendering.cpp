@@ -1121,9 +1121,9 @@ void TestQgs3DRendering::testInstancedRendering()
   QVariantMap vmSphere;
   vmSphere[QStringLiteral( "radius" )] = 80.0f;
   sphere3DSymbol->setShapeProperties( vmSphere );
-  QgsPhongMaterialSettings material;
-  material.setAmbient( Qt::gray );
-  sphere3DSymbol->setMaterial( material.clone() );
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
 
@@ -1157,7 +1157,7 @@ void TestQgs3DRendering::testInstancedRendering()
   vmCylinder[QStringLiteral( "radius" )] = 20.0f;
   vmCylinder[QStringLiteral( "length" )] = 200.0f;
   cylinder3DSymbol->setShapeProperties( vmCylinder );
-  cylinder3DSymbol->setMaterial( material.clone() );
+  cylinder3DSymbol->setMaterialSettings( materialSettings.clone() );
 
   layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
 

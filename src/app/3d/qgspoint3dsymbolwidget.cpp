@@ -130,8 +130,8 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       lineEditModel->setSource( vm[QStringLiteral( "model" )].toString() );
       // "overwriteMaterial" is a legacy setting indicating that non-null material should be used
       forceNullMaterial = ( vm.contains( QStringLiteral( "overwriteMaterial" ) ) && !vm[QStringLiteral( "overwriteMaterial" )].toBool() )
-                          || !pointSymbol->material()
-                          || pointSymbol->material()->type() == QLatin1String( "null" );
+                          || !pointSymbol->materialSettings()
+                          || pointSymbol->materialSettings()->type() == QLatin1String( "null" );
       technique = QgsMaterialSettingsRenderingTechnique::TrianglesFromModel;
       break;
     }
@@ -144,7 +144,7 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
       break;
   }
 
-  widgetMaterial->setSettings( pointSymbol->material(), layer );
+  widgetMaterial->setSettings( pointSymbol->materialSettings(), layer );
   widgetMaterial->setTechnique( technique );
 
   if ( forceNullMaterial )
@@ -230,7 +230,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
   sym->setShape( static_cast<QgsPoint3DSymbol::Shape>( cboShape->itemData( cboShape->currentIndex() ).toInt() ) );
   sym->setShapeProperties( vm );
-  sym->setMaterial( widgetMaterial->settings() );
+  sym->setMaterialSettings( widgetMaterial->settings() );
   sym->setTransform( tr );
   return sym.release();
 }

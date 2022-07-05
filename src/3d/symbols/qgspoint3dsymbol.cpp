@@ -45,7 +45,7 @@ QgsPoint3DSymbol::QgsPoint3DSymbol()
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
   : mAltClamping( other.altitudeClamping() )
-  , mMaterialSettings( other.material() ? other.material()->clone() : nullptr )
+  , mMaterialSettings( other.materialSettings() ? other.materialSettings()->clone() : nullptr )
   , mShape( other.shape() )
   , mShapeProperties( other.shapeProperties() )
   , mTransform( other.transform() )
@@ -177,17 +177,17 @@ QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
   return billboardTransformMatrix;
 }
 
-QgsAbstractMaterialSettings *QgsPoint3DSymbol::material() const
+QgsAbstractMaterialSettings *QgsPoint3DSymbol::materialSettings() const
 {
   return mMaterialSettings.get();
 }
 
-void QgsPoint3DSymbol::setMaterial( QgsAbstractMaterialSettings *material )
+void QgsPoint3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *materialSettings )
 {
-  if ( material == mMaterialSettings.get() )
+  if ( materialSettings == mMaterialSettings.get() )
     return;
 
-  mMaterialSettings.reset( material );
+  mMaterialSettings.reset( materialSettings );
 }
 
 bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
@@ -201,7 +201,7 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
       for ( Qgs3DExportObject *obj : objects )
       {
         obj->setSmoothEdges( exporter->smoothEdges() );
-        obj->setupMaterial( material() );
+        obj->setupMaterial( materialSettings() );
       }
       exporter->mObjects << objects;
     }
@@ -213,7 +213,7 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
         Qgs3DExportObject *object = exporter->processGeometryRenderer( mesh, objectNamePrefix );
         if ( object == nullptr ) continue;
         object->setSmoothEdges( exporter->smoothEdges() );
-        object->setupMaterial( material() );
+        object->setupMaterial( materialSettings() );
         exporter->mObjects << object;
       }
     }
@@ -233,7 +233,7 @@ bool QgsPoint3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore:
     const QVector<Qgs3DExportObject *> objects = exporter->processInstancedPointGeometry( entity, objectNamePrefix );
     for ( Qgs3DExportObject *obj : objects )
     {
-      obj->setupMaterial( material() );
+      obj->setupMaterial( materialSettings() );
       exporter->mObjects << obj;
     }
     return true;

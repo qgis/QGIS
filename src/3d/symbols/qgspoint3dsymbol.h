@@ -66,15 +66,15 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol SIP_NODEFAULTCTOR
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
     void setAltitudeClamping( Qgis::AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
-    //! Returns material used for shading of the symbol
-    QgsAbstractMaterialSettings *material() const;
+    //! Returns material settings used for shading of the symbol
+    QgsAbstractMaterialSettings *materialSettings() const;
 
     /**
      * Sets the \a material settings used for shading of the symbol.
      *
      * Ownership of \a material is transferred to the symbol.
      */
-    void setMaterial( QgsAbstractMaterialSettings *material SIP_TRANSFER );
+    void setMaterialSettings( QgsAbstractMaterialSettings *materialSettings SIP_TRANSFER );
 
     //! 3D shape types supported by the symbol
     enum Shape
