@@ -29,12 +29,15 @@
 // read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS
 {
+  QStringLiteral( "userTablesOnly" ),
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "allowGeometrylessTables" ),
   QStringLiteral( "disableInvalidGeometryHandling" ),
   QStringLiteral( "onlyExistingTypes" ),
+  QStringLiteral( "includeGeoAttributes" ),
   QStringLiteral( "saveUsername" ),
   QStringLiteral( "savePassword" ),
+  QStringLiteral( "schema" )
 };
 
 // read from uri and used in the provider connection
