@@ -146,6 +146,9 @@ void QgsOracleNewConnection::accept()
     settings.sync();
   }
 
+  // This settings will be overridden by later saveConnections call on providerMetadata
+  // but there are still used when QgsOracleConn::connUri is called to generate uri
+  // so don't remove them
   baseKey += txtName->text();
   settings.setValue( baseKey + QStringLiteral( "/database" ), txtDatabase->text() );
   settings.setValue( baseKey + QStringLiteral( "/host" ), txtHost->text() );
@@ -166,11 +169,14 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + QStringLiteral( "/schema" ), txtSchema->text() );
 
   QVariantMap configuration;
+  configuration.insert( "userTablesOnly", cb_userTablesOnly->isChecked() );
   configuration.insert( "geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   configuration.insert( "allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   configuration.insert( "onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   configuration.insert( "saveUsername", mAuthSettings->storeUsernameIsChecked( ) ? "true" : "false" );
   configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
+  configuration.insert( "includeGeoAttributes", cb_includeGeoAttributes->isChecked() );
+  configuration.insert( "schema", txtSchema->text() );
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
   QgsOracleProviderConnection *providerConnection =  static_cast<QgsOracleProviderConnection *>( providerMetadata->createConnection( txtName->text() ) );
