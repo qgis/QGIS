@@ -44,19 +44,21 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
         break; // not possible
 
       case QColor::Rgb:
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
       case QColor::ExtendedRgb:
-      {
-        // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-        spec = QStringLiteral( "rgb" );
-        qreal red = 1;
-        qreal green = 1;
-        qreal blue = 1;
-        color.getRgbF( &red, &green, &blue );
-        colorElement.setAttribute( QStringLiteral( "red" ), qgsDoubleToString( red ) );
-        colorElement.setAttribute( QStringLiteral( "green" ), qgsDoubleToString( green ) );
-        colorElement.setAttribute( QStringLiteral( "blue" ), qgsDoubleToString( blue ) );
-        break;
-      }
+#endif
+        {
+          // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
+          spec = QStringLiteral( "rgb" );
+          qreal red = 1;
+          qreal green = 1;
+          qreal blue = 1;
+          color.getRgbF( &red, &green, &blue );
+          colorElement.setAttribute( QStringLiteral( "red" ), qgsDoubleToString( red ) );
+          colorElement.setAttribute( QStringLiteral( "green" ), qgsDoubleToString( green ) );
+          colorElement.setAttribute( QStringLiteral( "blue" ), qgsDoubleToString( blue ) );
+          break;
+        }
 
       case QColor::Hsv:
       {
@@ -174,19 +176,21 @@ QString QgsColorUtils::colorToString( const QColor &color )
       break; // not possible
 
     case QColor::Rgb:
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-    {
-      // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-      qreal red = 1;
-      qreal green = 1;
-      qreal blue = 1;
-      qreal alpha = 1;
-      color.getRgbF( &red, &green, &blue, &alpha );
-      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
-             qgsDoubleToString( green ),
-             qgsDoubleToString( blue ),
-             qgsDoubleToString( alpha ) );
-    }
+#endif
+      {
+        // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
+        qreal red = 1;
+        qreal green = 1;
+        qreal blue = 1;
+        qreal alpha = 1;
+        color.getRgbF( &red, &green, &blue, &alpha );
+        return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
+               qgsDoubleToString( green ),
+               qgsDoubleToString( blue ),
+               qgsDoubleToString( alpha ) );
+      }
 
     case QColor::Hsv:
     {
