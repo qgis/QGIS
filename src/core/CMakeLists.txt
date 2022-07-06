@@ -343,6 +343,7 @@ set(QGIS_CORE_SRCS
   qgscolorrampimpl.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
+  qgscolorutils.cpp
   qgscommandlineutils.cpp
   qgsconditionalstyle.cpp
   qgsconnectionregistry.cpp
@@ -1004,6 +1005,7 @@ set(QGIS_CORE_HDRS
   qgscolorrampimpl.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
+  qgscolorutils.h
   qgsconditionalstyle.h
   qgsconnectionpool.h
   qgsconnectionregistry.h
