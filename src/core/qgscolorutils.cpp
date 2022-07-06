@@ -164,6 +164,10 @@ QString QgsColorUtils::colorToString( const QColor &color )
   if ( !color.isValid() )
     return QString();
 
+  // this is the pre 3.28 deprecated string format -- we prefix the lossless encoded color with this so that older QGIS versions
+  // can still recover the lossy color via QgsSymbolLayerUtils::decodeColor
+  const QString compatString = QStringLiteral( "%1,%2,%3,%4," ).arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
+
   switch ( color.spec() )
   {
     case QColor::Invalid:
@@ -178,7 +182,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal blue = 1;
       qreal alpha = 1;
       color.getRgbF( &red, &green, &blue, &alpha );
-      return QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
+      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
              qgsDoubleToString( green ),
              qgsDoubleToString( blue ),
              qgsDoubleToString( alpha ) );
@@ -191,7 +195,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal v = 1;
       qreal alpha = 1;
       color.getHsvF( &h, &s, &v, &alpha );
-      return QStringLiteral( "hsv:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
+      return compatString + QStringLiteral( "hsv:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
              qgsDoubleToString( s ),
              qgsDoubleToString( v ),
              qgsDoubleToString( alpha ) );
@@ -204,7 +208,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal l = 1;
       qreal alpha = 1;
       color.getHslF( &h, &s, &l, &alpha );
-      return QStringLiteral( "hsl:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
+      return compatString + QStringLiteral( "hsl:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
              qgsDoubleToString( s ),
              qgsDoubleToString( l ),
              qgsDoubleToString( alpha ) );
@@ -218,7 +222,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal k = 1;
       qreal alpha = 1;
       color.getCmykF( &c, &y, &m, &k, &alpha );
-      return QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
+      return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
              qgsDoubleToString( m ),
              qgsDoubleToString( y ),
              qgsDoubleToString( k ),
@@ -233,45 +237,57 @@ QColor QgsColorUtils::colorFromString( const QString &string )
   if ( string.isEmpty() )
     return QColor();
 
-  const thread_local QRegularExpression rx( QStringLiteral( "^([a-z]+):([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),?([\\d\\.\\-]*)$" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "^(.*),([a-z]+):([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),([\\d\\.\\-]+),?([\\d\\.\\-]*)$" ) );
   const QRegularExpressionMatch match = rx.match( string );
   if ( !match.hasMatch() )
-    return QColor();
+  {
+    // try reading older color format
+    const thread_local QRegularExpression rgbArx( QStringLiteral( "^(\\d+),(\\d+),(\\d+),(\\d+)$" ) );
+    const QRegularExpressionMatch match = rgbArx.match( string );
+    if ( !match.hasMatch() )
+      return QColor();
 
-  const QString spec = match.captured( 1 );
+    const int red = match.captured( 1 ).toInt();
+    const int green = match.captured( 2 ).toInt();
+    const int blue = match.captured( 3 ).toInt();
+    const int alpha = match.captured( 4 ).toInt();
+    return QColor( red, green, blue, alpha );
+  }
+
+  const QString spec = match.captured( 2 );
 
   if ( spec == QLatin1String( "rgb" ) )
   {
     // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-    const double red = match.captured( 2 ).toDouble();
-    const double green = match.captured( 3 ).toDouble();
-    const double blue = match.captured( 4 ).toDouble();
-    const double alpha = match.captured( 5 ).toDouble();
+    const double red = match.captured( 3 ).toDouble();
+    const double green = match.captured( 4 ).toDouble();
+    const double blue = match.captured( 5 ).toDouble();
+    const double alpha = match.captured( 6 ).toDouble();
     return QColor::fromRgbF( red, green, blue, alpha );
   }
   else if ( spec == QLatin1String( "hsv" ) )
   {
-    const double hue = match.captured( 2 ).toDouble();
-    const double saturation = match.captured( 3 ).toDouble();
-    const double value = match.captured( 4 ).toDouble();
-    const double alpha = match.captured( 5 ).toDouble();
+    const double hue = match.captured( 3 ).toDouble();
+    const double saturation = match.captured( 4 ).toDouble();
+    const double value = match.captured( 5 ).toDouble();
+    const double alpha = match.captured( 6 ).toDouble();
     return QColor::fromHsvF( hue, saturation, value, alpha );
   }
   else if ( spec == QLatin1String( "hsl" ) )
   {
-    const double hue = match.captured( 2 ).toDouble();
-    const double saturation = match.captured( 3 ).toDouble();
-    const double lightness = match.captured( 4 ).toDouble();
-    const double alpha = match.captured( 5 ).toDouble();
+    const double hue = match.captured( 3 ).toDouble();
+    const double saturation = match.captured( 4 ).toDouble();
+    const double lightness = match.captured( 5 ).toDouble();
+    const double alpha = match.captured( 6 ).toDouble();
     return QColor::fromHslF( hue, saturation, lightness, alpha );
   }
   else if ( spec == QLatin1String( "cmyk" ) )
   {
-    const double cyan = match.captured( 2 ).toDouble();
-    const double magenta = match.captured( 3 ).toDouble();
-    const double yellow = match.captured( 4 ).toDouble();
-    const double black = match.captured( 5 ).toDouble();
-    const double alpha = match.captured( 6 ).toDouble();
+    const double cyan = match.captured( 3 ).toDouble();
+    const double magenta = match.captured( 4 ).toDouble();
+    const double yellow = match.captured( 5 ).toDouble();
+    const double black = match.captured( 6 ).toDouble();
+    const double alpha = match.captured( 7 ).toDouble();
     return QColor::fromCmykF( cyan, magenta, yellow, black, alpha );
   }
   return QColor();

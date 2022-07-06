@@ -18,7 +18,7 @@ import tempfile
 import os
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
-    Qgis,
+    QgsSymbolLayerUtils,
     QgsColorUtils,
     QgsReadWriteContext
 )
@@ -197,6 +197,96 @@ class TestQgsColorUtils(unittest.TestCase):
         self.assertFalse(res.isValid())
         res = QgsColorUtils.colorFromString('2')
         self.assertFalse(res.isValid())
+
+    def test_color_string_compat(self):
+        """
+        Test storing/restoring colors from string compatibility with deprecated methods
+        """
+
+        # rgb color
+        color = QColor.fromRgbF(50 / 255, 100 / 255, 150 / 255, 200 / 255)
+        string = QgsColorUtils.colorToString(color)
+        res = QgsSymbolLayerUtils.decodeColor(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 50)
+        self.assertEqual(res.green(), 100)
+        self.assertEqual(res.blue(), 150)
+        self.assertEqual(res.alpha(), 200)
+        string = QgsSymbolLayerUtils.encodeColor(color)
+        res = QgsColorUtils.colorFromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 50)
+        self.assertEqual(res.green(), 100)
+        self.assertEqual(res.blue(), 150)
+        self.assertEqual(res.alpha(), 200)
+
+        # rgb extended color
+        color = QColor.fromRgbF(-50 / 255, 100 / 255, 150 / 255, 200 / 255)
+        string = QgsColorUtils.colorToString(color)
+        res = QgsSymbolLayerUtils.decodeColor(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 0)
+        self.assertEqual(res.green(), 100)
+        self.assertEqual(res.blue(), 150)
+        self.assertEqual(res.alpha(), 200)
+        string = QgsSymbolLayerUtils.encodeColor(color)
+        res = QgsColorUtils.colorFromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 0)
+        self.assertEqual(res.green(), 100)
+        self.assertEqual(res.blue(), 150)
+        self.assertEqual(res.alpha(), 200)
+
+        # hsv color
+        color = QColor.fromHsvF(50 / 360, 100 / 255, 150 / 255, 200 / 255)
+        string = QgsColorUtils.colorToString(color)
+        res = QgsSymbolLayerUtils.decodeColor(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 150)
+        self.assertEqual(res.green(), 140)
+        self.assertEqual(res.blue(), 91)
+        self.assertEqual(res.alpha(), 200)
+        string = QgsSymbolLayerUtils.encodeColor(color)
+        res = QgsColorUtils.colorFromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 150)
+        self.assertEqual(res.green(), 140)
+        self.assertEqual(res.blue(), 91)
+        self.assertEqual(res.alpha(), 200)
+
+        # hsl color
+        color = QColor.fromHslF(50 / 360, 100 / 255, 150 / 255, 200 / 255)
+        string = QgsColorUtils.colorToString(color)
+        res = QgsSymbolLayerUtils.decodeColor(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 191)
+        self.assertEqual(res.green(), 177)
+        self.assertEqual(res.blue(), 109)
+        self.assertEqual(res.alpha(), 200)
+        string = QgsSymbolLayerUtils.encodeColor(color)
+        res = QgsColorUtils.colorFromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 191)
+        self.assertEqual(res.green(), 177)
+        self.assertEqual(res.blue(), 109)
+        self.assertEqual(res.alpha(), 200)
+
+        # cmyk color
+        color = QColor.fromCmykF(50 / 255, 100 / 255, 150 / 255, 200 / 255, 220 / 255)
+        string = QgsColorUtils.colorToString(color)
+        res = QgsSymbolLayerUtils.decodeColor(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 44)
+        self.assertEqual(res.green(), 33)
+        self.assertEqual(res.blue(), 23)
+        self.assertEqual(res.alpha(), 220)
+        string = QgsSymbolLayerUtils.encodeColor(color)
+        res = QgsColorUtils.colorFromString(string)
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.red(), 44)
+        self.assertEqual(res.green(), 33)
+        self.assertEqual(res.blue(), 23)
+        self.assertEqual(res.alpha(), 220)
 
 
 if __name__ == '__main__':
