@@ -30,6 +30,15 @@ from utilities import unitTestDataPath
 
 class TestQgsColorUtils(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        try:
+            QColor.ExtendedRgb
+            cls.has_extended_rgb = True
+        except AttributeError:
+            cls.has_extended_rgb = False
+
     def test_color_xml(self):
         """
         Test storing/restoring colors from xml
@@ -66,15 +75,16 @@ class TestQgsColorUtils(unittest.TestCase):
         self.assertEqual(res.alpha(), 20)
 
         # rgb extended color
-        color = QColor.fromRgbF(-1 / 65536, 2 / 65536, 3 / 65536, 4 / 65536)
-        QgsColorUtils.writeXml(color, 'my_rgb_ex_color', doc, element, context)
-        res = QgsColorUtils.readXml(element, 'my_rgb_ex_color', context)
-        self.assertTrue(res.isValid())
-        self.assertEqual(res.spec(), QColor.ExtendedRgb)
-        self.assertAlmostEqual(res.redF(), -1 / 65536, 5)
-        self.assertAlmostEqual(res.greenF(), 2 / 65536, 5)
-        self.assertAlmostEqual(res.blueF(), 3 / 65536, 5)
-        self.assertAlmostEqual(res.alphaF(), 4 / 65536, 5)
+        if TestQgsColorUtils.has_extended_rgb:
+            color = QColor.fromRgbF(-1 / 65536, 2 / 65536, 3 / 65536, 4 / 65536)
+            QgsColorUtils.writeXml(color, 'my_rgb_ex_color', doc, element, context)
+            res = QgsColorUtils.readXml(element, 'my_rgb_ex_color', context)
+            self.assertTrue(res.isValid())
+            self.assertEqual(res.spec(), QColor.ExtendedRgb)
+            self.assertAlmostEqual(res.redF(), -1 / 65536, 5)
+            self.assertAlmostEqual(res.greenF(), 2 / 65536, 5)
+            self.assertAlmostEqual(res.blueF(), 3 / 65536, 5)
+            self.assertAlmostEqual(res.alphaF(), 4 / 65536, 5)
 
         # hsv color
         color = QColor.fromHsvF(1 / 65536, 2 / 65536, 3 / 65536, 4 / 65536)
@@ -146,15 +156,16 @@ class TestQgsColorUtils(unittest.TestCase):
         self.assertEqual(res.alpha(), 20)
 
         # rgb extended color
-        color = QColor.fromRgbF(-1 / 65536, 2 / 65536, 3 / 65536, 4 / 65536)
-        string = QgsColorUtils.colorToString(color)
-        res = QgsColorUtils.colorFromString(string)
-        self.assertTrue(res.isValid())
-        self.assertEqual(res.spec(), QColor.ExtendedRgb)
-        self.assertAlmostEqual(res.redF(), -1 / 65536, 5)
-        self.assertAlmostEqual(res.greenF(), 2 / 65536, 5)
-        self.assertAlmostEqual(res.blueF(), 3 / 65536, 5)
-        self.assertAlmostEqual(res.alphaF(), 4 / 65536, 5)
+        if TestQgsColorUtils.has_extended_rgb:
+            color = QColor.fromRgbF(-1 / 65536, 2 / 65536, 3 / 65536, 4 / 65536)
+            string = QgsColorUtils.colorToString(color)
+            res = QgsColorUtils.colorFromString(string)
+            self.assertTrue(res.isValid())
+            self.assertEqual(res.spec(), QColor.ExtendedRgb)
+            self.assertAlmostEqual(res.redF(), -1 / 65536, 5)
+            self.assertAlmostEqual(res.greenF(), 2 / 65536, 5)
+            self.assertAlmostEqual(res.blueF(), 3 / 65536, 5)
+            self.assertAlmostEqual(res.alphaF(), 4 / 65536, 5)
 
         # hsv color
         color = QColor.fromHsvF(1 / 65536, 2 / 65536, 3 / 65536, 4 / 65536)
@@ -221,21 +232,22 @@ class TestQgsColorUtils(unittest.TestCase):
         self.assertEqual(res.alpha(), 200)
 
         # rgb extended color
-        color = QColor.fromRgbF(-50 / 255, 100 / 255, 150 / 255, 200 / 255)
-        string = QgsColorUtils.colorToString(color)
-        res = QgsSymbolLayerUtils.decodeColor(string)
-        self.assertTrue(res.isValid())
-        self.assertEqual(res.red(), 0)
-        self.assertEqual(res.green(), 100)
-        self.assertEqual(res.blue(), 150)
-        self.assertEqual(res.alpha(), 200)
-        string = QgsSymbolLayerUtils.encodeColor(color)
-        res = QgsColorUtils.colorFromString(string)
-        self.assertTrue(res.isValid())
-        self.assertEqual(res.red(), 0)
-        self.assertEqual(res.green(), 100)
-        self.assertEqual(res.blue(), 150)
-        self.assertEqual(res.alpha(), 200)
+        if TestQgsColorUtils.has_extended_rgb:
+            color = QColor.fromRgbF(-50 / 255, 100 / 255, 150 / 255, 200 / 255)
+            string = QgsColorUtils.colorToString(color)
+            res = QgsSymbolLayerUtils.decodeColor(string)
+            self.assertTrue(res.isValid())
+            self.assertEqual(res.red(), 0)
+            self.assertEqual(res.green(), 100)
+            self.assertEqual(res.blue(), 150)
+            self.assertEqual(res.alpha(), 200)
+            string = QgsSymbolLayerUtils.encodeColor(color)
+            res = QgsColorUtils.colorFromString(string)
+            self.assertTrue(res.isValid())
+            self.assertEqual(res.red(), 0)
+            self.assertEqual(res.green(), 100)
+            self.assertEqual(res.blue(), 150)
+            self.assertEqual(res.alpha(), 200)
 
         # hsv color
         color = QColor.fromHsvF(50 / 360, 100 / 255, 150 / 255, 200 / 255)
