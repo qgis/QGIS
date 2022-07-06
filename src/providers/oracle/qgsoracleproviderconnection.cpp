@@ -1632,7 +1632,8 @@ QStringList QgsOracleProviderConnection::schemas( ) const
   checkCapability( Capability::Schemas );
   QStringList schemas;
 
-  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS" ) ).rows();
+  // get only non system schemas/users
+  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS where ORACLE_MAINTAINED = 'N' AND USERNAME NOT IN ( 'PDBADMIN', 'HR' )" ) ).rows();
   for ( QVariantList userInfos : users )
     schemas << userInfos.at( 0 ).toString();
 
