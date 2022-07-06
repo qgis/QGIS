@@ -192,9 +192,12 @@ class TestPyQgsProviderConnectionOracle(unittest.TestCase, TestPyQgsProviderConn
     def test_schemas(self):
         """Test schemas retrieval"""
 
+        # may be added by previous test
+        self.execSQLCommand('DROP USER OTHER_USER CASCADE', ignore_errors=True)
+
         md = QgsProviderRegistry.instance().providerMetadata('oracle')
         conn = md.createConnection(self.uri, {})
-        self.assertTrue('QGIS' in conn.schemas())
+        self.assertEqual(conn.schemas(), ['QGIS'])
 
 
 if __name__ == '__main__':
