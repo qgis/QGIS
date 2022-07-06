@@ -50,9 +50,15 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
         {
           // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
           spec = QStringLiteral( "rgb" );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+          float red = 1;
+          float green = 1;
+          float blue = 1;
+#else
           qreal red = 1;
           qreal green = 1;
           qreal blue = 1;
+#endif
           color.getRgbF( &red, &green, &blue );
           colorElement.setAttribute( QStringLiteral( "red" ), qgsDoubleToString( red ) );
           colorElement.setAttribute( QStringLiteral( "green" ), qgsDoubleToString( green ) );
@@ -63,9 +69,16 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       case QColor::Hsv:
       {
         spec = QStringLiteral( "hsv" );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        float h = 1;
+        float s = 1;
+        float v = 1;
+#else
         qreal h = 1;
         qreal s = 1;
         qreal v = 1;
+#endif
         color.getHsvF( &h, &s, &v );
         colorElement.setAttribute( QStringLiteral( "hue" ), qgsDoubleToString( h ) );
         colorElement.setAttribute( QStringLiteral( "saturation" ), qgsDoubleToString( s ) );
@@ -76,9 +89,16 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       case QColor::Hsl:
       {
         spec = QStringLiteral( "hsl" );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        float h = 1;
+        float s = 1;
+        float l = 1;
+#else
         qreal h = 1;
         qreal s = 1;
         qreal l = 1;
+#endif
         color.getHslF( &h, &s, &l );
         colorElement.setAttribute( QStringLiteral( "hue" ), qgsDoubleToString( h ) );
         colorElement.setAttribute( QStringLiteral( "saturation" ), qgsDoubleToString( s ) );
@@ -89,10 +109,19 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       case QColor::Cmyk:
       {
         spec = QStringLiteral( "cmyk" );
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        float c = 1;
+        float m = 1;
+        float y = 1;
+        float k = 1;
+#else
         qreal c = 1;
         qreal m = 1;
         qreal y = 1;
         qreal k = 1;
+#endif
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
         color.getCmykF( &c, &y, &m, &k );
 #else
@@ -186,10 +215,17 @@ QString QgsColorUtils::colorToString( const QColor &color )
 #endif
       {
         // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        float red = 1;
+        float green = 1;
+        float blue = 1;
+        float alpha = 1;
+#else
         qreal red = 1;
         qreal green = 1;
         qreal blue = 1;
         qreal alpha = 1;
+#endif
         color.getRgbF( &red, &green, &blue, &alpha );
         return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
                qgsDoubleToString( green ),
@@ -199,10 +235,17 @@ QString QgsColorUtils::colorToString( const QColor &color )
 
     case QColor::Hsv:
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+      float h = 1;
+      float s = 1;
+      float v = 1;
+      float alpha = 1;
+#else
       qreal h = 1;
       qreal s = 1;
       qreal v = 1;
       qreal alpha = 1;
+#endif
       color.getHsvF( &h, &s, &v, &alpha );
       return compatString + QStringLiteral( "hsv:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
              qgsDoubleToString( s ),
@@ -212,10 +255,17 @@ QString QgsColorUtils::colorToString( const QColor &color )
 
     case QColor::Hsl:
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+      float h = 1;
+      float s = 1;
+      float l = 1;
+      float alpha = 1;
+#else
       qreal h = 1;
       qreal s = 1;
       qreal l = 1;
       qreal alpha = 1;
+#endif
       color.getHslF( &h, &s, &l, &alpha );
       return compatString + QStringLiteral( "hsl:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
              qgsDoubleToString( s ),
@@ -225,11 +275,20 @@ QString QgsColorUtils::colorToString( const QColor &color )
 
     case QColor::Cmyk:
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+      float c = 1;
+      float m = 1;
+      float y = 1;
+      float k = 1;
+      float alpha = 1;
+#else
       qreal c = 1;
       qreal m = 1;
       qreal y = 1;
       qreal k = 1;
       qreal alpha = 1;
+#endif
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
       color.getCmykF( &c, &y, &m, &k, &alpha );
 #else
