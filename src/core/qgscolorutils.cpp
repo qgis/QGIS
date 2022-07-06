@@ -93,7 +93,12 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
         qreal m = 1;
         qreal y = 1;
         qreal k = 1;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
         color.getCmykF( &c, &y, &m, &k );
+#else
+        QColor nonconstColor = color;
+        nonconstColor.getCmykF( &c, &y, &m, &k );
+#endif
         colorElement.setAttribute( QStringLiteral( "c" ), qgsDoubleToString( c ) );
         colorElement.setAttribute( QStringLiteral( "m" ), qgsDoubleToString( m ) );
         colorElement.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( y ) );
@@ -225,7 +230,12 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal y = 1;
       qreal k = 1;
       qreal alpha = 1;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
       color.getCmykF( &c, &y, &m, &k, &alpha );
+#else
+      QColor nonconstColor = color;
+      nonconstColor.getCmykF( &c, &y, &m, &k, &alpha );
+#endif
       return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
              qgsDoubleToString( m ),
              qgsDoubleToString( y ),
