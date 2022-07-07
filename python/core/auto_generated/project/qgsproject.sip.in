@@ -65,11 +65,14 @@ Set the current project singleton instance to ``project``
 .. versionadded:: 3.10.11
 %End
 
-    explicit QgsProject( QObject *parent /TransferThis/ = 0 );
+    explicit QgsProject( QObject *parent /TransferThis/ = 0, Qgis::ProjectCapabilities capabilities = Qgis::ProjectCapability::ProjectStyles );
 %Docstring
 Create a new QgsProject.
 
 Most of the time you want to use :py:func:`QgsProject.instance()` instead as many components of QGIS work with the singleton.
+
+Since QGIS 3.26.1 the ``capabilities`` argument specifies optional capabilities which can be selectively
+enabled for the project. These affect the QgsProject object for its entire lifetime.
 %End
 
     ~QgsProject();
@@ -98,6 +101,14 @@ Returns the project's title.
 .. note::
 
    Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's :py:func:`~QgsProject.metadata`.
+%End
+
+    Qgis::ProjectCapabilities capabilities() const;
+%Docstring
+Returns the project's capabilities, which dictate optional functionality
+which can be selectively enabled for a QgsProject object.
+
+.. versionadded:: 3.26.1
 %End
 
     Qgis::ProjectFlags flags() const;
