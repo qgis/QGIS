@@ -90,6 +90,13 @@ during triangulation.quiresTextureCoordinates
 Returns the texture rotation, in degrees.
 %End
 
+    float opacity() const;
+%Docstring
+Returns the opacity of the surface
+
+.. versionadded:: 3.28
+%End
+
     void setAmbient( const QColor &ambient );
 %Docstring
 Sets ambient color component
@@ -121,6 +128,13 @@ If the texture scale is less than 1 the texture will be stretched
     void setTextureRotation( float rotation );
 %Docstring
 Sets the texture rotation in degrees
+%End
+
+    void setOpacity( float opacity );
+%Docstring
+Sets opacity of the surface.
+
+.. versionadded:: 3.28
 %End
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
