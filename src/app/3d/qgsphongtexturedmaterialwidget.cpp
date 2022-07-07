@@ -69,4 +69,3 @@ QgsAbstractMaterialSettings *QgsPhongTexturedMaterialWidget::settings()
 
   return m.release();
 }
-
