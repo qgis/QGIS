@@ -77,7 +77,7 @@ jobs:
             with-clazy: OFF
             patch-qt-3d: false
             with-grass7: OFF
-            with-grass8: ON
+            with-grass8: OFF
             LD_PRELOAD: ''
             experimental: false
 
