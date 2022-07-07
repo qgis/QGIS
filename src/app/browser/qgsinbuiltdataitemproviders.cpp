@@ -1133,9 +1133,9 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
       QgsSaveToStyleVisitor visitor( &style );
 
-      QgsProject p;
+      QgsProject p( nullptr, Qgis::ProjectCapabilities() );
       QgsTemporaryCursorOverride override( Qt::WaitCursor );
-      if ( p.read( projectPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
+      if ( p.read( projectPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews ) )
       {
         p.accept( &visitor );
         override.release();

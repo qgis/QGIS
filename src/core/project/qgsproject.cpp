@@ -366,8 +366,9 @@ void removeKey_( const QString &scope,
   }
 }
 
-QgsProject::QgsProject( QObject *parent )
+QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities )
   : QObject( parent )
+  , mCapabilities( capabilities )
   , mLayerStore( new QgsMapLayerStore( this ) )
   , mBadLayerHandler( new QgsProjectBadLayerHandler() )
   , mSnappingConfig( this )

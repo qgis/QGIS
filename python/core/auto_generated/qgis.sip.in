@@ -1179,6 +1179,14 @@ The development version
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
 
 
+    enum class ProjectCapability
+    {
+      ProjectStyles,
+    };
+
+    typedef QFlags<Qgis::ProjectCapability> ProjectCapabilities;
+
+
     enum class MapBoxGlStyleSourceType
     {
       Vector,
@@ -1307,6 +1315,8 @@ QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToo
 QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
 
 QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
 
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 
