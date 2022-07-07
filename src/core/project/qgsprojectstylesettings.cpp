@@ -122,7 +122,7 @@ void QgsProjectStyleSettings::reset()
 
   clearStyles();
 
-  if ( mProject )
+  if ( mProject && ( mProject->capabilities() & Qgis::ProjectCapability::ProjectStyles ) )
   {
     const QString stylePath = mProject->createAttachedFile( QStringLiteral( "styles.db" ) );
     QgsStyle *style = new QgsStyle();
@@ -165,7 +165,7 @@ QgsStyle *QgsProjectStyleSettings::projectStyle()
   return mProjectStyle;
 }
 
-bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
+bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context, Qgis::ProjectReadFlags )
 {
   mRandomizeDefaultSymbolColor = element.attribute( QStringLiteral( "RandomizeDefaultSymbolColor" ), QStringLiteral( "0" ) ).toInt();
   mDefaultSymbolOpacity = element.attribute( QStringLiteral( "DefaultSymbolOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
@@ -218,7 +218,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
 
   {
     clearStyles();
-    if ( !( flags & Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
+    if ( !mProject || ( mProject->capabilities() & Qgis::ProjectCapability::ProjectStyles ) )
     {
       const QDomElement styleDatabases = element.firstChildElement( QStringLiteral( "databases" ) );
       if ( !styleDatabases.isNull() )
@@ -236,7 +236,7 @@ bool QgsProjectStyleSettings::readXml( const QDomElement &element, const QgsRead
         }
       }
 
-      if ( mProject )
+      if ( mProject && ( mProject->capabilities() & Qgis::ProjectCapability::ProjectStyles ) )
       {
         const QString projectStyleId = element.attribute( QStringLiteral( "projectStyleId" ) );
         const QString projectStyleFile = mProject->resolveAttachmentIdentifier( projectStyleId );

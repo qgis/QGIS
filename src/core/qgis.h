@@ -1947,7 +1947,7 @@ class CORE_EXPORT Qgis
       TrustLayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustLayerMetadata ) = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
       DontStoreOriginalStyles SIP_MONKEYPATCH_COMPAT_NAME( FlagDontStoreOriginalStyles ) = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
       DontLoad3DViews SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoad3DViews ) = 1 << 4, //!< Skip loading 3D views (since QGIS 3.26)
-      DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (since QGIS 3.26)
+      DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (deprecated -- use ProjectCapability::ProjectStyles flag instead)
     };
     Q_ENUM( ProjectReadFlag )
 
@@ -1960,6 +1960,28 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( ProjectReadFlags, ProjectReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProject, ReadFlags )
     Q_FLAG( ProjectReadFlags )
+
+    /**
+     * Flags which control project capabilities.
+     *
+     * These flags are specific upfront on creation of a QgsProject object, and can
+     * be used to selectively enable potentially costly functionality for the project.
+     *
+     * \since QGIS 3.26.1
+     */
+    enum class ProjectCapability : int
+    {
+      ProjectStyles = 1 << 0, //!< Enable the project embedded style library. Enabling this flag can increase the time required to clear and load projects.
+    };
+    Q_ENUM( ProjectCapability )
+
+    /**
+     * Flags which control project capabilities.
+     *
+     * \since QGIS 3.26.1
+     */
+    Q_DECLARE_FLAGS( ProjectCapabilities, ProjectCapability )
+    Q_FLAG( ProjectCapabilities )
 
     /**
      * Identify search radius in mm
@@ -2102,6 +2124,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 
 
