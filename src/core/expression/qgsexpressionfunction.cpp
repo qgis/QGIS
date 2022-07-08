@@ -4512,12 +4512,20 @@ static QVariant fcnConvexHull( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnConcaveHull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  const double targetPercent = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  const bool allowHoles = values.value( 2 ).toBool();
-  QgsGeometry geom = fGeom.concaveHull( targetPercent, allowHoles );
-  QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
-  return result;
+  try
+  {
+    QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+    const double targetPercent = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+    const bool allowHoles = values.value( 2 ).toBool();
+    QgsGeometry geom = fGeom.concaveHull( targetPercent, allowHoles );
+    QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+    return result;
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error caught in concave_hull() function: %1" ).arg( cse.what() ) );
+    return QVariant();
+  }
 }
 
 
