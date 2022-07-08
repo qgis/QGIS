@@ -1252,4 +1252,3 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
     }
   }
 }
-
