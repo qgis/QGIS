@@ -405,6 +405,18 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
+
+  // change opacity
+  QgsPhongMaterialSettings materialSettings;
+  materialSettings.setAmbient( Qt::lightGray );
+  materialSettings.setOpacity( 0.5f );
+  QgsPolygon3DSymbol *symbol3dOpacity = new QgsPolygon3DSymbol;
+  symbol3dOpacity->setMaterial( materialSettings.clone() );
+  symbol3dOpacity->setExtrusionHeight( 10.f );
+  QgsVectorLayer3DRenderer *renderer3dOpacity = new QgsVectorLayer3DRenderer( symbol3dOpacity );
+  mLayerBuildings->setRenderer3D( renderer3dOpacity );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "polygon3d_extrusion_opacity", img2, 40 ) );
 }
 
 void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
