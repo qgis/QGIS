@@ -1627,7 +1627,7 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convexHull() const;
 
     /**
-     * Returns a posibbly concave polygon that contains all the points in the geometry.
+     * Returns a posibly concave polygon that contains all the points in the geometry.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
      *
