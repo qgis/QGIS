@@ -731,6 +731,10 @@ if(ENABLE_COVERAGE)
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
 endif()
 
+if(USE_ALTERNATE_LINKER)
+  include("cmake/modules/linker.cmake")
+endif()
+
 #############################################################
 # platform specific stuff
 if (WITH_CORE)
