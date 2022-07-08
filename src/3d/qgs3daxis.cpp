@@ -136,7 +136,7 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
       if ( QgsLogger::isTraceEnabled() && event->type() == QEvent::MouseButtonRelease )
       {
         std::ostringstream os;
-        os << "QGS3DAxis: normalized pos:" << normalizedPos << " / viewport: " << mAxisViewport->normalizedRect();
+        os << "QGS3DAxis: normalized pos: " << normalizedPos << " / viewport: " << mAxisViewport->normalizedRect();
         QgsTraceMsg( os.str().c_str() );
       }
 
