@@ -2,7 +2,7 @@
   "name": "concave_hull",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns a posibly concave polygon that contains all the points in the geometry",
+  "description": "Returns a possibly concave polygon that contains all the points in the geometry",
   "arguments": [{
     "arg": "geometry",
     "description": "a geometry"
