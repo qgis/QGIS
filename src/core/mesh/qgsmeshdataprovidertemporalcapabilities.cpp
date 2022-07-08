@@ -132,7 +132,8 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
     if ( !times.isEmpty() )
     {
       durationSinceFirst += times.first();
-      durationSinceLast += times.last();
+      // adding one timestep (length as: times.last() - times.beforeLast)), to be sure we have enough steps
+      durationSinceLast += times.last() + ( times.last() - times[times.length() - 2] );
     }
 
     if ( !end.isValid() || groupReference.addMSecs( durationSinceLast ) > end )
