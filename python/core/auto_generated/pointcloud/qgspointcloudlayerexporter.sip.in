@@ -80,6 +80,10 @@ Sets the format for the exported file.
 If never called, the default format is GPKG for vector and COPC for pointcloud files.
 %End
 
+    void setPointsLimit( qint64 limit );
+%Docstring
+Sets the maximum number of points to be exported.
+%End
 };
 
 /************************************************************************

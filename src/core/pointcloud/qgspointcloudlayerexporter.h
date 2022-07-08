@@ -96,6 +96,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter
      */
     bool setFormat( const QString &format );
 
+    /**
+     * Sets the maximum number of points to be exported.
+     */
+    void setPointsLimit( qint64 limit ) { mPointsLimit = std::max< qint64 >( limit, 0 ); };
+
   private:
 
     void exportToSink( QgsFeatureSink * );
