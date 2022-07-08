@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscolorutils.h"
+
 #include <QColor>
 #include <QDomDocument>
 #include <QRegularExpression>
