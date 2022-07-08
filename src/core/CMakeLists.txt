@@ -2293,7 +2293,7 @@ if (WITH_SPATIALITE)
   target_link_libraries(qgis_core ${SPATIALITE_LIBRARY})
 endif()
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_link_libraries(qgis_core Qt6::Core5Compat)
 endif()
 
