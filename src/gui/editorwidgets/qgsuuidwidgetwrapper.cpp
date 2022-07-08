@@ -25,14 +25,16 @@ QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *layer, int fieldIdx,
 
 QString QgsUuidWidgetWrapper::createUiid( int maxLength )
 {
-  if ( maxLength <= 0 )
+  QString uuid = QUuid::createUuid().toString();
+
+  if ( maxLength <= 0 || maxLength >= uuid.length() )
   {
-    return QUuid::createUuid().toString();
+    return uuid;
   }
   else
   {
     // trim left "{" and remove -'s... they are wasted characters given that we have a limited length!
-    return QUuid::createUuid().toString().replace( '-', QString() ).mid( 1, maxLength );
+    return uuid.replace( '-', QString() ).mid( 1, maxLength );
   }
 }
 
