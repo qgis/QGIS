@@ -274,6 +274,10 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   , mShared( shared )
   , mCachedFeaturesIter( mCachedFeatures.begin() )
 {
+  if(mShared->doWhatYouNeedToDo_TempDummyTestFunction(request)){
+    request.filterExpression()->setExpression( "" );
+  }
+
   if ( !shared->clientSideFilterExpression().isEmpty() )
   {
     // backup current request because combine filter expression will remove the fid(s) filtering

@@ -750,6 +750,13 @@ const QgsRectangle &QgsBackgroundCachedSharedData::computedExtent() const
   return mComputedExtent;
 }
 
+bool QgsBackgroundCachedSharedData::doWhatYouNeedToDo_TempDummyTestFunction(const QgsFeatureRequest &request)
+{
+    Q_UNUSED(request);
+    qDebug() << "WFS DEBUG" << " sorry dave we're here";
+    return false;
+}
+
 //! Called by QgsFeatureDownloaderImpl::run() at the end of the download process.
 void QgsBackgroundCachedSharedData::endOfDownload( bool success, long long featureCount,
     bool truncatedResponse,
