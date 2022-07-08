@@ -73,6 +73,55 @@ QString QgsWFSSharedData::srsName() const
   return srsName;
 }
 
+bool QgsWFSSharedData::computeExpression( QString &errorMsg, const QgsExpression &expression )
+{
+  errorMsg.clear();
+  mWFSExpression.clear();
+
+  QgsOgcUtils::GMLVersion gmlVersion;
+  QgsOgcUtils::FilterVersion filterVersion;
+  bool honourAxisOrientation = false;
+  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    gmlVersion = QgsOgcUtils::GML_2_1_2;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
+  }
+  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_1_0;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
+  }
+  else
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_2_1;
+    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
+  }
+
+  if ( expression.isValid() )
+  {
+    QDomDocument expressionDoc;
+    qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "... and an expression as well: " << expression.expression();
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation() );
+
+    if ( !errorMsg.isEmpty() )
+    {
+      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "cannot perform this expression with OGC " << expression.expression();
+      errorMsg = tr( "Expression to OGC Filter error: " ) + errorMsg;
+      return false;
+    }
+    if ( !expressionElem.isNull() )
+    {
+      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "I CAN perform this expression with OGC " << expression.expression();
+
+      expressionDoc.appendChild( expressionElem );
+      mWFSExpression = expressionDoc.toString();
+    }
+  }
+  return true;
+}
+
 bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 {
   errorMsg.clear();
@@ -159,6 +208,8 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
       {
         //if not, if must be a QGIS expression
         const QgsExpression filterExpression( filter );
+
+        qDebug() << "WFS DEBUG" << "computing this filter here " << filterExpression.expression();
 
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
                                          filterExpression, filterDoc, gmlVersion, filterVersion, mGeometryAttribute,

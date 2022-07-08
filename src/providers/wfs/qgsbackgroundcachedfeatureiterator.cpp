@@ -363,11 +363,14 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   }
 
   //dave: here you need to evaluate if it's possible to perform the expression on server and ths needs to be checked in a method of the QgsWFSSharedDate - if yes, thenpass it to the register to cache we might clean up the expression to not have it in the initRequestCache
-  //- checking if there has been "many" same expression in a "short" time, don't go on with it.
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
+  {
+    qDebug() << "WFS DEBUG" << "having an expression here " << mRequest.filterExpression()->expression() << "but we already might have a wfs expression";
+  }
 
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() ? *mRequest.filterExpression() : QgsExpression() );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, QgsExpression() ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), QgsExpression() );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
@@ -401,6 +404,14 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
   }
   else
   {
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
+    {
+      qDebug() << "WFS DEBUG" << " and having an expression here " << mRequest.filterExpression()->expression();
+    }
+    if ( requestCache.filterExpression() && requestCache.filterExpression()->isValid() )
+    {
+      qDebug() << "WFS DEBUG" << " and requestCache expression " << requestCache.filterExpression()->expression();
+    }
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression &&
          // We cannot filter on geometry because the spatialite geometry is just
          // a bounding box and not the actual geometry of the final feature
@@ -434,7 +445,13 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
     }
     if ( genCounter >= 0 )
     {
+
+      qDebug() << "WFS DEBUG" << " counter is bigger zero";
       requestCache.combineFilterExpression( QString( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER + " <= %1" ).arg( genCounter ) );
+      if ( requestCache.filterExpression() && requestCache.filterExpression()->isValid() )
+      {
+        qDebug() << "WFS DEBUG" << " requestCache expression " << requestCache.filterExpression()->expression();
+      }
     }
   }
 

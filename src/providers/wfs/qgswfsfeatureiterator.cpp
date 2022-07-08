@@ -179,7 +179,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
   if ( ( !rect.isNull() && !mShared->mWFSFilter.isEmpty() )
-       || mShared->mExpression.isValid() )
+       || !mShared->mWFSExpression.isEmpty() )
   {
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
@@ -215,11 +215,10 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
     QDomNode bboxNode;
     QDomNode filterNode;
-    QDomElement expressionElem;
-
+    QDomNode expressionNode;
     if ( !rect.isNull() )
     {
-      qDebug() << QThread::currentThreadId() << "we have a bbox";
+      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "we have a bbox";
       double minx = rect.xMinimum();
       double miny = rect.yMinimum();
       double maxx = rect.xMaximum();
@@ -238,33 +237,35 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     }
     if ( !mShared->mWFSFilter.isEmpty() )
     {
-      qDebug() << QThread::currentThreadId() << "we have a filter";
+      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "we have a filter";
       QDomDocument filterDoc;
       ( void )filterDoc.setContent( mShared->mWFSFilter, true );
       filterNode = filterDoc.firstChildElement().firstChildElement();
       filterNode = filterDoc.firstChildElement().removeChild( filterNode );
     }
 
-    if ( mShared->mExpression.isValid() )
+    if ( !mShared->mWFSExpression.isEmpty() )
     {
-      qDebug() << QThread::currentThreadId() << "... and an expression as well: " << mShared->mExpression.expression();
+      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "... and an expression. but this might be empty here: " << mShared->mExpression.expression();
       QDomDocument expressionDoc;
-      expressionElem = QgsOgcUtils::expressionToOgcExpression( mShared->mExpression, expressionDoc, gmlVersion, filterVersion, geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
+      ( void )expressionDoc.setContent( mShared->mWFSExpression, true );
+      expressionNode = expressionDoc.firstChildElement().firstChildElement();
+      expressionNode = expressionDoc.firstChildElement().removeChild( expressionNode );
     }
 
-    if ( expressionElem.isNull() && bboxNode.isNull() )
+    if ( expressionNode.isNull() && bboxNode.isNull() )
     {
       filterElem.appendChild( filterNode );
     }
-    else if ( expressionElem.isNull() && filterNode.isNull() )
+    else if ( expressionNode.isNull() && filterNode.isNull() )
     {
       filterElem.appendChild( bboxNode );
     }
     else
     {
       filterElem.appendChild( andElem );
-      if ( !expressionElem.isNull() )
-        andElem.appendChild( expressionElem );
+      if ( !expressionNode.isNull() )
+        andElem.appendChild( expressionNode );
       if ( !bboxNode.isNull() )
         andElem.appendChild( bboxNode );
       if ( !filterNode.isNull() )
@@ -275,7 +276,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     QString str;
     QTextStream stream( &str );
     filterElem.save( stream, 4 );
-    qDebug() << "filterElem is:\n\n" << str << "\n\n";
+    qDebug() << "WFS DEBUG" << "filterElem is:\n\n" << str << "\n\n";
 
     QSet<QString> setNamespaceURI;
     for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
@@ -289,12 +290,12 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
         doc.firstChildElement().setAttributeNode( attr );
       }
     }
-    qDebug() << "filter is : " << sanitizeFilter( doc.toString() );
+    qDebug() << "WFS DEBUG" << "filter is : " << sanitizeFilter( doc.toString() );
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }
   else if ( !rect.isNull() )
   {
-    qDebug() << "we have a bbox only";
+    qDebug() << "WFS DEBUG" << "we have a bbox only";
     bool invertAxis = false;
     if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
          !mShared->mURI.ignoreAxisOrientation() )
@@ -332,7 +333,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
-    qDebug() << "we have a filter only";
+    qDebug() << "WFS DEBUG" << "we have a filter only";
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mWFSFilter ) );
   }
 
@@ -493,6 +494,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
     QUrl url( buildURL( mTotalDownloadedFeatureCount,
                         maxFeaturesThisRequest, false ) );
 
+    qDebug() << "WFS DEBUG" << "Send Query: " << url.query();
     // Small hack for testing purposes
     if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
     {
@@ -501,7 +503,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
       url.setQuery( query );
     }
 
-    qDebug() << url.toString();
+    qDebug() << "WFS DEBUG" << url.toString();
     sendGET( url,
              QString(), // content-type
              false, /* synchronous */

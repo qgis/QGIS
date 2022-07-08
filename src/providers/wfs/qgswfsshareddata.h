@@ -34,6 +34,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Compute WFS filter from the sql or filter in the URI
     bool computeFilter( QString &errorMsg );
 
+    //! Compute WFS filter from the sql or filter in the URI
+    bool computeExpression( QString &errorMsg, const QgsExpression &expression );
+
     //! Returns srsName
     QString srsName() const;
 
@@ -112,6 +115,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     //! WFS filter
     QString mWFSFilter;
+
+    //! WFS expression
+    QString mWFSExpression;
 
     //! WFS SORTBY
     QString mSortBy;
