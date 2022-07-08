@@ -115,6 +115,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     {
       return mAmbient == other.mAmbient &&
              mDiffuse == other.mDiffuse &&
+             mOpacity == other.mOpacity &&
              mSpecular == other.mSpecular &&
              mShininess == other.mShininess;
     }
