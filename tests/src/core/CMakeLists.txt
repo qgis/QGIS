@@ -139,6 +139,7 @@ set(TESTS
  testqgspallabeling.cpp
  testqgspointcloudattribute.cpp
  testqgspointcloudexpression.cpp
+ testqgspointcloudlayerexporter.cpp
  testqgspointcloudrendererregistry.cpp
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp

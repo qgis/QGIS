@@ -1,0 +1,91 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayerexporter.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsPointCloudLayerExporter
+{
+%Docstring(signature="appended")
+
+Handles exporting PointCloud layers to Temporary scratch layers, OGR supported files and PDAL supported files
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayerexporter.h"
+%End
+  public:
+
+    QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
+%Docstring
+Constructor for QgsPointCloudLayerExporter, associated with the specified ``layer``.
+%End
+
+    QgsVectorLayer *exportToMemoryLayer() /Factory/;
+%Docstring
+Exports the pointcloud layer to a Temporary Scratch Layer (memory layer).
+
+Caller takes ownership of the returned object.
+%End
+
+    void exportToVectorFile( const QString &filename );
+%Docstring
+Exports the pointcloud layer to a OGR vector file.
+%End
+
+    void exportToPdalFile( const QString &filename );
+%Docstring
+Exports the pointcloud layer to a PDAL pointcloud file.
+%End
+
+    void setLayerName( const QString &name );
+%Docstring
+Sets the name for the new layer.
+%End
+    void setFilterExtent( const QgsRectangle extent );
+%Docstring
+Sets a filter extent for points to be exported.
+Points that fall outside the extent will be skipped.
+%End
+    void setZRange( const QgsDoubleRange zRange );
+%Docstring
+Sets an inclusive range for Z values to be exported.
+Points with Z values outside the range will be skipped.
+%End
+    void setFeedback( QgsFeedback *feedback );
+%Docstring
+Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting.
+%End
+    void setAttributes( const QStringList &attributes );
+%Docstring
+Sets the list of pointcloud attributes that will be exported.
+If never called, all attributes will be exported.
+%End
+
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the CRS for the exported file.
+If different from the pointcloud layer's CRS, points will be reprojected.
+%End
+    bool setFormat( const QString &format );
+%Docstring
+Sets the format for the exported file.
+If never called, the default format is GPKG for vector and COPC for pointcloud files.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/pointcloud/qgspointcloudlayerexporter.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

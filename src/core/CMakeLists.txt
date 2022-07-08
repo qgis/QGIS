@@ -754,6 +754,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrenderer.cpp
   pointcloud/qgspointcloudrendererregistry.cpp
   pointcloud/qgspointcloudrgbrenderer.cpp
+  pointcloud/qgspointcloudlayerexporter.cpp
 
   pointcloud/expression/qgspointcloudexpression.cpp
   pointcloud/expression/qgspointcloudexpressionnode.cpp
@@ -1559,6 +1560,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
+  pointcloud/qgspointcloudlayerexporter.h
 
   pointcloud/expression/qgspointcloudexpression.h
   pointcloud/expression/qgspointcloudexpressionnode.h
