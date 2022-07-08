@@ -10,6 +10,7 @@
 
 
 
+
 class QgsColorUtils
 {
 %Docstring(signature="appended")
