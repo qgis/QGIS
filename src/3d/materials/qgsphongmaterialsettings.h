@@ -91,7 +91,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     void setShininess( float shininess ) { mShininess = shininess; }
 
     /**
-     * Sets shininess of the surface
+     * Sets opacity of the surface
      * \since QGIS 3.26
      */
     void setOpacity( float opacity ) { mOpacity = opacity; }
