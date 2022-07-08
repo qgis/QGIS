@@ -86,6 +86,59 @@ Sets the maximum number of points to be exported.
 %End
 };
 
+
+
+class QgsPointCloudLayerExporterTask : QgsTask
+{
+%Docstring(signature="appended")
+:py:class:`QgsTask` task which performs a :py:class:`QgsVectorLayerExporter` layer export operation as a background
+task. This can be used to export a vector layer out to a provider without blocking the
+QGIS interface.
+
+.. seealso:: :py:class:`QgsVectorFileWriterTask`
+
+.. seealso:: :py:class:`QgsRasterFileWriterTask`
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayerexporter.h"
+%End
+  public:
+
+    QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exp, const QString &format );
+%Docstring
+Constructor for :py:class:`QgsVectorLayerExporterTask`. Takes a source ``layer``, destination ``uri``
+and ``providerKey``, and various export related parameters such as destination CRS
+and export ``options``. ``ownsLayer`` has to be set to ``True`` if the task should take ownership
+of the layer and delete it after export.
+%End
+
+    virtual void cancel();
+
+
+  signals:
+
+    void exportComplete();
+%Docstring
+Emitted when exporting the layer is successfully completed.
+%End
+
+    void errorOccurred( Qgis::VectorExportResult error, const QString &errorMessage );
+%Docstring
+Emitted when an error occurs which prevented the layer being exported (or if
+the task is canceled). The export ``error`` and ``errorMessage`` will be reported.
+%End
+
+  protected:
+
+    virtual bool run();
+
+    virtual void finished( bool result );
+
+
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

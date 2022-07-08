@@ -22,6 +22,7 @@
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsproject.h"
 
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
@@ -162,7 +163,7 @@ void QgsPointCloudLayerExporter::exportToSink( QgsFeatureSink *sink )
 
       if ( mFeedback )
       {
-        mFeedback->setProgress( pointsExported / pointsToExport );
+        mFeedback->setProgress( 100 * static_cast< float >( pointsExported + pointsSkipped ) / pointsToExport );
         if ( mFeedback->isCanceled() )
           return;
       }
@@ -248,4 +249,48 @@ void QgsPointCloudLayerExporter::exportToVectorFile( const QString &filename )
 void QgsPointCloudLayerExporter::exportToPdalFile( const QString &filename )
 {
   Q_UNUSED( filename )
+}
+
+
+
+//
+// QgsPointCloudLayerExporterTask
+//
+
+QgsPointCloudLayerExporterTask::QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exp, const QString &format )
+  : QgsTask( tr( "Exporting Pointcloud" ), QgsTask::CanCancel )
+  , mExp( exp )
+  , mFormat( format )
+  , mOwnedFeedback( new QgsFeedback() )
+{
+}
+
+void QgsPointCloudLayerExporterTask::cancel()
+{
+  mOwnedFeedback->cancel();
+  QgsTask::cancel();
+}
+
+bool QgsPointCloudLayerExporterTask::run()
+{
+  if ( !mExp )
+    return false;
+
+  connect( mOwnedFeedback.get(), &QgsFeedback::progressChanged, this, &QgsPointCloudLayerExporterTask::setProgress );
+  mExp->setFeedback( mOwnedFeedback.get() );
+
+  mOutputLayer = mExp->exportToMemoryLayer();
+
+  return mError == Qgis::VectorExportResult::Success;
+}
+
+void QgsPointCloudLayerExporterTask::finished( bool result )
+{
+  delete mExp;
+  QgsProject::instance()->addMapLayer( mOutputLayer );
+
+  if ( result )
+    emit exportComplete();
+  else
+    emit errorOccurred( mError, mErrorMessage );
 }

@@ -9514,30 +9514,30 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
   QString vectorFilename;
   if ( dialog->exec() == QDialog::Accepted )
   {
-    QgsPointCloudLayerExporter exp( pclayer );
+    QgsPointCloudLayerExporter *exp = new QgsPointCloudLayerExporter( pclayer );
 
     QgsCoordinateReferenceSystem destCRS  = dialog->crsObject();
     if ( destCRS.isValid() )
     {
       QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
     }
-    exp.setCrs( destCRS );
-    exp.setFormat( dialog->format() );
+    exp->setCrs( destCRS );
+    exp->setFormat( dialog->format() );
 
     if ( dialog->hasFilterExtent() )
-      exp.setFilterExtent( dialog->filterExtent() );
+      exp->setFilterExtent( dialog->filterExtent() );
 
     if ( ! dialog->layername().isEmpty() )
-      exp.setLayerName( dialog->layername() );
+      exp->setLayerName( dialog->layername() );
 
-    exp.setAttributes( dialog->selectedAttributes() );
+    exp->setAttributes( dialog->selectedAttributes() );
 
 
     vectorFilename = dialog->filename();
     bool addToCanvas = dialog->addToCanvas();
 
-    QgsVectorLayer *result = exp.exportToMemoryLayer();
-    QgsProject::instance()->addMapLayer( result );
+    QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp, QStringLiteral( "memomry" ) );
+    QgsApplication::taskManager()->addTask( task );
   }
   delete dialog;
   return vectorFilename;
