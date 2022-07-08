@@ -1904,7 +1904,8 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
 QgsAbstractGeometry *QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
 {
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
-  ( void )geom;
+  ( void )allowHoles;
+  ( void )targetPercent;
   ( void )errorMsg;
   throw QgsNotSupportedException( QStringLiteral( "Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later" ) );
 #else
