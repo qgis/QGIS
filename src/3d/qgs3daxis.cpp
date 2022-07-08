@@ -130,7 +130,7 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
     else if ( ! mIsDragging )
     {
       // limit ray caster usage to the axis viewport
-      QPointF normalizedPos( ( float )mouseEvent->pos().x() / mParentWindow->width(),
+      QPointF normalizedPos( static_cast<float>(mouseEvent->pos().x()) / mParentWindow->width(),
                              ( float )mouseEvent->pos().y() / mParentWindow->height() );
 
       if ( QgsLogger::isTraceEnabled() && event->type() == QEvent::MouseButtonRelease )
