@@ -253,7 +253,7 @@ void QgsChunkNode::setExactBbox( const QgsAABB &box )
   // TODO: propagate better estimate to children?
 }
 
-void QgsChunkNode::updateParentBoundingBoxesRecursively()
+void QgsChunkNode::updateParentBoundingBoxesRecursively() const
 {
   QgsChunkNode *currentNode = parent();
   while ( currentNode )

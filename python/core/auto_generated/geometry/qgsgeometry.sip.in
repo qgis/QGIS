@@ -142,9 +142,11 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
     bool isNull() const /HoldGIL/;
 %Docstring
 Returns ``True`` if the geometry is null (ie, contains no underlying geometry
-accessible via :py:func:`~QgsGeometry.geometry` ).
+accessible via :py:func:`~QgsGeometry.get` or :py:func:`~QgsGeometry.constGet` ).
 
 .. seealso:: :py:func:`get`
+
+.. seealso:: :py:func:`constGet`
 
 .. seealso:: :py:func:`isEmpty`
 

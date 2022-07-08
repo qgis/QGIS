@@ -28,14 +28,14 @@ QgsConfigCache *QgsConfigCache::sInstance = nullptr;
 QgsAbstractCacheStrategy *getStrategyFromSettings( QgsServerSettings *settings )
 {
   QgsAbstractCacheStrategy *strategy;
-  if ( settings && settings->projectCacheStrategy() == QStringLiteral( "periodic" ) )
+  if ( settings && settings->projectCacheStrategy() == QLatin1String( "periodic" ) )
   {
     strategy = new QgsPeriodicCacheStrategy( settings->projectCacheCheckInterval() );
     QgsMessageLog::logMessage(
       QStringLiteral( "Initializing 'periodic' cache strategy" ),
       QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
   }
-  else if ( settings && settings->projectCacheStrategy() == QStringLiteral( "off" ) )
+  else if ( settings && settings->projectCacheStrategy() == QLatin1String( "off" ) )
   {
     strategy = new QgsNullCacheStrategy();
     QgsMessageLog::logMessage(
@@ -107,18 +107,20 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     prj->setBadLayerHandler( badLayerHandler );
 
     // Always skip original styles storage
-    QgsProject::ReadFlags readFlags = QgsProject::ReadFlag() | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ;
+    Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::DontStoreOriginalStyles
+                                       | Qgis::ProjectReadFlag::DontLoad3DViews
+                                       | Qgis::ProjectReadFlag::DontLoadProjectStyles;
     if ( settings )
     {
       // Activate trust layer metadata flag
       if ( settings->trustLayerMetadata() )
       {
-        readFlags |= QgsProject::ReadFlag::FlagTrustLayerMetadata;
+        readFlags |= Qgis::ProjectReadFlag::TrustLayerMetadata;
       }
       // Activate don't load layouts flag
       if ( settings->getPrintDisabled() )
       {
-        readFlags |= QgsProject::ReadFlag::FlagDontLoadLayouts;
+        readFlags |= Qgis::ProjectReadFlag::DontLoadLayouts;
       }
     }
 

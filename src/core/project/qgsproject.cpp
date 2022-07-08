@@ -59,6 +59,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
@@ -69,6 +70,7 @@
 #include "qgsgrouplayer.h"
 #include "qgsmapviewsmanager.h"
 #include "qgsprojectelevationproperties.h"
+#include "qgscombinedstylemodel.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -375,6 +377,7 @@ QgsProject::QgsProject( QObject *parent )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mStyleSettings( new QgsProjectStyleSettings( this ) )
   , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mElevationProperties( new QgsProjectElevationProperties( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
@@ -445,6 +448,10 @@ QgsProject::QgsProject( QObject *parent )
   Q_NOWARN_DEPRECATED_PUSH
   connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
   Q_NOWARN_DEPRECATED_POP
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  mStyleSettings->combinedStyleModel()->addDefaultStyle();
+#endif
 }
 
 
@@ -474,6 +481,8 @@ QgsProject *QgsProject::instance()
   if ( !sProject )
   {
     sProject = new QgsProject;
+
+    connect( sProject, &QgsProject::projectColorsChanged, QgsStyle::defaultStyle(), &QgsStyle::triggerIconRebuild );
   }
   return sProject;
 }
@@ -869,7 +878,7 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 
     // if annotation layer doesn't have a crs (i.e. in a newly created project), it should
     // initially inherit the project CRS
-    if ( !mMainAnnotationLayer->crs().isValid() )
+    if ( !mMainAnnotationLayer->crs().isValid() || mMainAnnotationLayer->isEmpty() )
       mMainAnnotationLayer->setCrs( crs );
 
     setDirty( true );
@@ -960,7 +969,7 @@ void QgsProject::clear()
   mElevationProperties->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
-  mAvoidIntersectionsMode = AvoidIntersectionsMode::AllowIntersections;
+  mAvoidIntersectionsMode = Qgis::AvoidIntersectionsMode::AllowIntersections;
   emit avoidIntersectionsModeChanged();
   emit topologicalEditingChanged();
 
@@ -971,6 +980,9 @@ void QgsProject::clear()
 
   mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
   mArchive.reset( new QgsArchive() );
+
+  // must happen after archive reset!
+  mStyleSettings->reset();
 
   emit labelingEngineSettingsChanged();
 
@@ -1187,7 +1199,7 @@ void QgsProject::setSnappingConfig( const QgsSnappingConfig &snappingConfig )
   emit snappingConfigChanged( mSnappingConfig );
 }
 
-void QgsProject::setAvoidIntersectionsMode( const AvoidIntersectionsMode mode )
+void QgsProject::setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode )
 {
   if ( mAvoidIntersectionsMode == mode )
     return;
@@ -1196,7 +1208,7 @@ void QgsProject::setAvoidIntersectionsMode( const AvoidIntersectionsMode mode )
   emit avoidIntersectionsModeChanged();
 }
 
-bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, QgsProject::ReadFlags flags )
+bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes, Qgis::ProjectReadFlags flags )
 {
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... )' signal
@@ -1278,7 +1290,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   return returnStatus;
 }
 
-bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, QgsProject::ReadFlags flags )
+bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, Qgis::ProjectReadFlags flags )
 {
   const QString type = layerElem.attribute( QStringLiteral( "type" ) );
   QgsDebugMsgLevel( "Layer type is " + type, 4 );
@@ -1302,7 +1314,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
       // apply specific settings to vector layer
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer.get() ) )
       {
-        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) );
+        vl->setReadExtentFromXml( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) );
       }
       break;
     }
@@ -1361,10 +1373,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = QgsMapLayer::ReadFlags();
-  if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
+  if ( flags & Qgis::ProjectReadFlag::DontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   // Propagate trust layer metadata flag
-  if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & QgsProject::ReadFlag::FlagTrustLayerMetadata ) )
+  if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
     layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
 
   profile.switchTask( tr( "Load layer source" ) );
@@ -1373,7 +1385,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   profile.switchTask( tr( "Add layer to project" ) );
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
-  if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
+  if ( layerIsValid || flags & Qgis::ProjectReadFlag::DontResolveLayers )
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
@@ -1415,7 +1427,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   return layerIsValid;
 }
 
-bool QgsProject::read( const QString &filename, QgsProject::ReadFlags flags )
+bool QgsProject::read( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   mFile.setFileName( filename );
   mCachedHomePath.clear();
@@ -1424,7 +1436,7 @@ bool QgsProject::read( const QString &filename, QgsProject::ReadFlags flags )
   return read( flags );
 }
 
-bool QgsProject::read( QgsProject::ReadFlags flags )
+bool QgsProject::read( Qgis::ProjectReadFlags flags )
 {
   const QString filename = mFile.fileName();
   bool returnValue;
@@ -1490,7 +1502,7 @@ bool QgsProject::read( QgsProject::ReadFlags flags )
   return returnValue;
 }
 
-bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags flags )
+bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   // avoid multiple emission of snapping updated signals
   ScopedIntIncrementor snapSignalBlock( &mBlockSnappingUpdates );
@@ -1860,10 +1872,64 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     }
   }
 
+  // Convert pre 3.26 default styles
+  if ( QgsProjectVersion( 3, 26, 0 ) > mSaveVersion )
+  {
+    // Convert default symbols
+    QString styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Marker, symbol.get() );
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Line, symbol.get() );
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsSymbol> symbol( QgsStyle::defaultStyle()->symbol( styleName ) );
+      styleSettings()->setDefaultSymbol( Qgis::SymbolType::Fill, symbol.get() );
+    }
+    styleName = readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
+    if ( !styleName.isEmpty() )
+    {
+      std::unique_ptr<QgsColorRamp> colorRamp( QgsStyle::defaultStyle()->colorRamp( styleName ) );
+      styleSettings()->setDefaultColorRamp( colorRamp.get() );
+    }
+
+    // Convert randomize default symbol fill color
+    styleSettings()->setRandomizeDefaultSymbolColor( readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) );
+
+    // Convert default symbol opacity
+    double opacity = 1.0;
+    bool ok = false;
+    // upgrade old setting
+    double alpha = readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
+    if ( ok )
+      opacity = alpha / 255.0;
+    double newOpacity = readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
+    if ( ok )
+      opacity = newOpacity;
+    styleSettings()->setDefaultSymbolOpacity( opacity );
+
+    // Cleanup
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ) );
+    removeEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ) );
+  }
+
   // After bad layer handling we might still have invalid layers,
   // store them in case the user wanted to handle them later
   // or wanted to pass them through when saving
-  if ( !( flags & QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+  if ( !( flags & Qgis::ProjectReadFlag::DontStoreOriginalStyles ) )
   {
     profile.switchTask( tr( "Storing original layer properties" ) );
     QgsLayerTreeUtils::storeOriginalLayersProperties( mRootGroup, doc.get() );
@@ -1882,13 +1948,13 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   profile.switchTask( tr( "Loading annotations" ) );
   mAnnotationManager->readXml( doc->documentElement(), context );
-  if ( !( flags & QgsProject::ReadFlag::FlagDontLoadLayouts ) )
+  if ( !( flags & Qgis::ProjectReadFlag::DontLoadLayouts ) )
   {
     profile.switchTask( tr( "Loading layouts" ) );
     mLayoutManager->readXml( doc->documentElement(), *doc );
   }
 
-  if ( !( flags & QgsProject::ReadFlag::FlagDontLoad3DViews ) )
+  if ( !( flags & Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     profile.switchTask( tr( "Loading 3D Views" ) );
     m3DViewsManager->readXml( doc->documentElement(), *doc );
@@ -1906,7 +1972,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   profile.switchTask( tr( "Loading snapping settings" ) );
   mSnappingConfig.readProject( *doc );
-  mAvoidIntersectionsMode = static_cast<AvoidIntersectionsMode>( readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( AvoidIntersectionsMode::AvoidIntersectionsLayers ) ) );
+  mAvoidIntersectionsMode = static_cast<Qgis::AvoidIntersectionsMode>( readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsMode" ), static_cast<int>( Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers ) ) );
 
   profile.switchTask( tr( "Loading view settings" ) );
   // restore older project scales settings
@@ -1931,11 +1997,18 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
 
+  // restore style settings
+  profile.switchTask( tr( "Loading style properties" ) );
+  const QDomElement styleSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectStyleSettings" ) );
+  if ( !styleSettingsElement.isNull() )
+    mStyleSettings->readXml( styleSettingsElement, context, flags );
+
   // restore time settings
   profile.switchTask( tr( "Loading temporal settings" ) );
   const QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
   if ( !timeSettingsElement.isNull() )
     mTimeSettings->readXml( timeSettingsElement, context );
+
 
   profile.switchTask( tr( "Loading elevation properties" ) );
   const QDomElement elevationPropertiesElement = doc->documentElement().firstChildElement( QStringLiteral( "ElevationProperties" ) );
@@ -2013,7 +2086,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 }
 
 
-bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, Qgis::ProjectReadFlags flags )
 {
   bool valid = true;
   const auto constChildren = group->children();
@@ -2289,6 +2362,8 @@ void QgsProject::cleanTransactionGroups( bool force )
 
 void QgsProject::updateTransactionGroups()
 {
+  mEditBufferGroup.clear();
+
   switch ( mTransactionMode )
   {
     case Qgis::TransactionMode::Disabled:
@@ -2296,14 +2371,14 @@ void QgsProject::updateTransactionGroups()
       cleanTransactionGroups( true );
       return;
     }
-
-    case Qgis::TransactionMode::AutomaticGroups:
+    break;
     case Qgis::TransactionMode::BufferedGroups:
+      cleanTransactionGroups( true );
+      break;
+    case Qgis::TransactionMode::AutomaticGroups:
       cleanTransactionGroups( false );
       break;
   }
-
-  mEditBufferGroup.clear();
 
   bool tgChanged = false;
   const auto constLayers = mapLayers().values();
@@ -2689,6 +2764,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   const QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
+
+  const QDomElement styleSettingsElem = mStyleSettings->writeXml( *doc, context );
+  qgisNode.appendChild( styleSettingsElem );
 
   const QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
   qgisNode.appendChild( timeSettingsElement );
@@ -3082,7 +3160,7 @@ QString QgsProject::layerIsEmbedded( const QString &id ) const
 }
 
 bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
-                                      bool saveFlag, QgsProject::ReadFlags flags )
+                                      bool saveFlag, Qgis::ProjectReadFlags flags )
 {
   QgsDebugCall;
 
@@ -3176,7 +3254,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 }
 
 
-QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags )
+QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags )
 {
   QString qgsProjectFile = projectFilePath;
   QgsProjectArchive archive;
@@ -3252,7 +3330,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   return newGroup;
 }
 
-void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+void QgsProject::initializeEmbeddedSubtree( const QString &projectFilePath, QgsLayerTreeGroup *group, Qgis::ProjectReadFlags flags )
 {
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
@@ -3417,6 +3495,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectStyleSettings *QgsProject::styleSettings() const
+{
+  return mStyleSettings;
+}
+
+QgsProjectStyleSettings *QgsProject::styleSettings()
+{
+  return mStyleSettings;
 }
 
 const QgsProjectTimeSettings *QgsProject::timeSettings() const
@@ -3617,7 +3705,7 @@ QList<QgsMapLayer *> QgsProject::mapLayersByShortName( const QString &shortName 
   return layers;
 }
 
-bool QgsProject::unzip( const QString &filename, QgsProject::ReadFlags flags )
+bool QgsProject::unzip( const QString &filename, Qgis::ProjectReadFlags flags )
 {
   clearError();
   std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );

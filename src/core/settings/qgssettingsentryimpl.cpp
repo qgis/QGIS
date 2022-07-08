@@ -60,7 +60,7 @@ void QgsSettingsEntryString::setMinLength( int minLength )
   mMinLength = minLength;
 }
 
-int QgsSettingsEntryString::minLength()
+int QgsSettingsEntryString::minLength() const
 {
   return mMinLength;
 }
@@ -70,7 +70,7 @@ void QgsSettingsEntryString::setMaxLength( int maxLength )
   mMaxLength = maxLength;
 }
 
-int QgsSettingsEntryString::maxLength()
+int QgsSettingsEntryString::maxLength() const
 {
   return mMaxLength;
 }
@@ -136,7 +136,7 @@ void QgsSettingsEntryInteger::setMinValue( qlonglong minValue )
   mMinValue = minValue;
 }
 
-qlonglong QgsSettingsEntryInteger::minValue()
+qlonglong QgsSettingsEntryInteger::minValue() const
 {
   return mMinValue;
 }
@@ -146,7 +146,7 @@ void QgsSettingsEntryInteger::setMaxValue( qlonglong maxValue )
   mMaxValue = maxValue;
 }
 
-qlonglong QgsSettingsEntryInteger::maxValue()
+qlonglong QgsSettingsEntryInteger::maxValue() const
 {
   return mMaxValue;
 }

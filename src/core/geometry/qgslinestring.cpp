@@ -34,6 +34,7 @@
 #include <QDomDocument>
 #include <QJsonObject>
 
+#include "qgsbox3d.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -573,6 +574,7 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
+// duplicated code from calculateBoundingBox3d to avoid useless z computation
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
   if ( mX.empty() )
@@ -585,6 +587,34 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   const double ymin = *result.first;
   const double ymax = *result.second;
   return QgsRectangle( xmin, ymin, xmax, ymax, false );
+}
+
+QgsBox3d QgsLineString::calculateBoundingBox3d() const
+{
+
+  if ( mX.empty() )
+  {
+    return QgsBox3d();
+  }
+
+  if ( mBoundingBox.isNull() )
+  {
+    mBoundingBox = calculateBoundingBox();
+  }
+
+  QgsBox3d out;
+  if ( is3D() )
+  {
+    auto result = std::minmax_element( mZ.begin(), mZ.end() );
+    const double zmin = *result.first;
+    const double zmax = *result.second;
+    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), zmin, mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), zmax );
+  }
+  else
+  {
+    out = QgsBox3d( mBoundingBox.xMinimum(), mBoundingBox.yMinimum(), std::numeric_limits< double >::quiet_NaN(), mBoundingBox.xMaximum(), mBoundingBox.yMaximum(), std::numeric_limits< double >::quiet_NaN() );
+  }
+  return out;
 }
 
 void QgsLineString::scroll( int index )
@@ -1056,6 +1086,76 @@ void QgsLineString::points( QgsPointSequence &pts ) const
   for ( int i = 0; i < nPoints; ++i )
   {
     pts.push_back( pointN( i ) );
+  }
+}
+
+void QgsLineString::setPoints( size_t size, const double *x, const double *y, const double *z, const double *m )
+{
+  clearCache(); //set bounding box invalid
+
+  if ( size <= 0 )
+  {
+    clear();
+    return;
+  }
+
+  const bool hasZ = static_cast< bool >( z );
+  const bool hasM = static_cast< bool >( m );
+
+  if ( hasZ && hasM )
+  {
+    mWkbType = QgsWkbTypes::LineStringZM;
+  }
+  else if ( hasZ )
+  {
+    mWkbType = QgsWkbTypes::LineStringZ;
+  }
+  else if ( hasM )
+  {
+    mWkbType = QgsWkbTypes::LineStringM;
+  }
+  else
+  {
+    mWkbType = QgsWkbTypes::LineString;
+  }
+
+  mX.resize( size );
+  mY.resize( size );
+  double *destX = mX.data();
+  double *destY = mY.data();
+  double *destZ = nullptr;
+  if ( hasZ )
+  {
+    mZ.resize( size );
+    destZ = mZ.data();
+  }
+  else
+  {
+    mZ.clear();
+  }
+  double *destM = nullptr;
+  if ( hasM )
+  {
+    mM.resize( size );
+    destM = mM.data();
+  }
+  else
+  {
+    mM.clear();
+  }
+
+  for ( size_t i = 0; i < size; ++i )
+  {
+    *destX++ = *x++;
+    *destY++ = *y++;
+    if ( hasZ )
+    {
+      *destZ++ = *z++;
+    }
+    if ( hasM )
+    {
+      *destM++ = *m++;
+    }
   }
 }
 

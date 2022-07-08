@@ -23,6 +23,7 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
+#include "qgsdbquerylog.h"
 
 #include <QRegularExpression>
 #include <QTextCodec>
@@ -466,8 +467,11 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
 QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QString &sql, QgsFeedback *feedback ) const
 {
 
+  QgsDatabaseQueryLogWrapper logWrapper( sql, uri(), providerKey(), QStringLiteral( "QgsSpatiaLiteProviderConnection" ), QGS_QUERY_LOG_ORIGIN );
+
   if ( feedback && feedback->isCanceled() )
   {
+    logWrapper.setCanceled();
     return QgsAbstractDatabaseProviderConnection::QueryResult();
   }
 
@@ -478,6 +482,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
     if ( feedback && feedback->isCanceled() )
     {
+      logWrapper.setCanceled();
       return QgsAbstractDatabaseProviderConnection::QueryResult();
     }
 
@@ -540,6 +545,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
       if ( ! errCause.isEmpty() )
       {
+        logWrapper.setError( errCause );
         throw QgsProviderConnectionException( QObject::tr( "Error executing SQL statement %1: %2" ).arg( sql, errCause ) );
       }
 
@@ -562,6 +568,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
 
   if ( !errCause.isEmpty() )
   {
+    logWrapper.setError( errCause );
     throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql, errCause ) );
   }
 

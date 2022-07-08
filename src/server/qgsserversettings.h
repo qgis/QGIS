@@ -155,7 +155,7 @@ class SERVER_EXPORT QgsServerSettings
      * \see logLevel()
      * \since QGIS 3.18
      */
-    bool logProfile();
+    bool logProfile() const;
 
     /**
      * Returns the QGS project file to use.

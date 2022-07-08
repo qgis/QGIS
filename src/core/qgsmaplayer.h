@@ -1102,10 +1102,23 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * record in the users style table in their personal qgis.db)
      * \param resultFlag a reference to a flag that will be set to FALSE if
      * we did not manage to save the default style.
+     * \param categories the style categories to be saved (since QGIS 3.26)
      * \returns a QString with any status messages
      * \see loadNamedStyle() and \see saveNamedStyle()
      */
-    virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT );
+    virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT, StyleCategories categories );
+
+    /**
+     * Save the properties of this layer as the default style
+     * (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * \param resultFlag a reference to a flag that will be set to FALSE if
+     * we did not manage to save the default style.
+     * \returns a QString with any status messages
+     * \see loadNamedStyle() and \see saveNamedStyle()
+     * \deprecated since QGIS 3.26
+     */
+    Q_DECL_DEPRECATED virtual QString saveDefaultStyle( bool &resultFlag SIP_OUT ) SIP_DEPRECATED;
 
     /**
      * Save the properties of this layer as a named style

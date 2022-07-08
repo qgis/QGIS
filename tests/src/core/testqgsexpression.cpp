@@ -1876,6 +1876,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "layer_property attribution with metadata" ) << QStringLiteral( "array_to_string(layer_property('%1','attribution'))" ).arg( mPointsLayerMetadata->name() ) << false << QVariant( "right1,right2" );
 
       QTest::newRow( "decode_uri shp path" ) << QStringLiteral( "array_last(string_to_array(replace(decode_uri('%1', 'path'), '\\\\', '/'), '/'))" ).arg( mPointsLayer->name() ) << false << QVariant( "points.shp" );
+      QTest::newRow( "layer_property path vector" ) << QStringLiteral( "file_name(layer_property('%1','path'))" ).arg( mPointsLayer->name() ) << false << QVariant( "points.shp" );
+      QTest::newRow( "layer_property path raster" ) << QStringLiteral( "file_name(layer_property('%1','path'))" ).arg( mRasterLayer->id() ) << false << QVariant( "tenbytenraster.asc" );
 
       // Mime type
       QTest::newRow( "mime_type empty" ) << QStringLiteral( "mime_type('')" ) << false << QVariant( "application/x-zerosize" );

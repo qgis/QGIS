@@ -109,7 +109,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * \note not available in Python bindings
      */
 #ifndef SIP_RUN
-    template<class T> void schemes( QList<T *> &schemeList )
+    template<class T> void schemes( QList<T *> &schemeList ) const
     {
       schemeList.clear();
       QList<QgsColorScheme *> schemeInstanceList = schemes();

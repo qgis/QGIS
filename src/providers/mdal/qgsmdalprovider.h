@@ -143,6 +143,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
 {
   public:
     QgsMdalProviderMetadata();
+    QIcon icon() const override;
     QString filters( FilterType type ) override;
     QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
@@ -158,6 +159,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif //QGSMDALPROVIDER_H

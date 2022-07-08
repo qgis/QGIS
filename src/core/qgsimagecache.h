@@ -26,6 +26,8 @@
 #include <QSize>
 #include <QImage>
 
+class QTemporaryDir;
+
 #ifndef SIP_RUN
 
 ///@cond PRIVATE
@@ -138,6 +140,8 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      */
     QgsImageCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsImageCache() override;
+
     /**
      * Returns the maximum size of the cache, in bytes.
      *
@@ -230,6 +234,13 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      */
     int nextFrameDelay( const QString &path, int currentFrame = 0, bool blocking = false );
 
+    /**
+     * Prepares for optimized retrieval of frames for the animation at the given \a path.
+     *
+     * \since QGIS 3.26
+     */
+    void prepareAnimation( const QString &path );
+
   signals:
 
     /**
@@ -249,6 +260,11 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     QByteArray mMissingSvg;
 
     QByteArray mFetchingSvg;
+
+    QMap< QString, QString > mExtractedAnimationPaths;
+    std::unique_ptr< QTemporaryDir > mTemporaryDir;
+    QMap< QString, int > mTotalFrameCounts;
+    QMap< QString, QVector< int > > mImageDelays;
 
     friend class TestQgsImageCache;
 };

@@ -53,7 +53,7 @@ Construct an optional expression with the provided expression and enabled state.
 %End
 
 
-    void writeXml( QDomElement &element );
+    void writeXml( QDomElement &element ) const;
 %Docstring
 Save the optional expression to the provided QDomElement.
 

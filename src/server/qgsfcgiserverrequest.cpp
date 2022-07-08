@@ -210,7 +210,7 @@ void QgsFcgiServerRequest::readData()
   }
 }
 
-void QgsFcgiServerRequest::printRequestInfos( const QUrl &url )
+void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), Qgis::MessageLevel::Info );
 

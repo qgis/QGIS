@@ -184,7 +184,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
     static bool convert( const QgsExpressionNodeBinaryOperator::BinaryOperator source, QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator &target );
 
   private:
-    bool compare( double diff );
+    bool compare( double diff ) const;
 
     BinaryOperator mOp;
     QgsPointCloudExpressionNode *mOpLeft = nullptr;

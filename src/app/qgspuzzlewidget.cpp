@@ -133,6 +133,7 @@ bool QgsPuzzleWidget::letsGetThePartyStarted()
 
   QPixmap pixmap;
   pixmap.load( filename );
+  pixmap = pixmap.scaled( mCanvas->width() - 2, mCanvas->height() - 2 );
 
   const int tileWidth = pixmap.width() / mSize;
   const int tileHeight = pixmap.height() / mSize;

@@ -146,7 +146,6 @@ bool QgsHanaFeatureIterator::rewind()
 
 bool QgsHanaFeatureIterator::close()
 {
-
   if ( mClosed )
     return false;
 

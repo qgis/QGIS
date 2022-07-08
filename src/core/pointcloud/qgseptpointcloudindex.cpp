@@ -45,12 +45,20 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex() = default;
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
+std::unique_ptr<QgsPointCloudIndex> QgsEptPointCloudIndex::clone() const
+{
+  QgsEptPointCloudIndex *clone = new QgsEptPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
+}
+
 void QgsEptPointCloudIndex::load( const QString &fileName )
 {
   QFile f( fileName );
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    QgsMessageLog::logMessage( tr( "Unable to open %1 for reading" ).arg( fileName ) );
+    mError = tr( "Unable to open %1 for reading" ).arg( fileName );
     mIsValid = false;
     return;
   }
@@ -214,19 +222,39 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     // store any metadata stats which are present for the attribute
     AttributeStatistics stats;
+    bool foundStats = false;
     if ( schemaObj.contains( QLatin1String( "count" ) ) )
+    {
       stats.count = schemaObj.value( QLatin1String( "count" ) ).toInt();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "minimum" ) ) )
+    {
       stats.minimum = schemaObj.value( QLatin1String( "minimum" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "maximum" ) ) )
+    {
       stats.maximum = schemaObj.value( QLatin1String( "maximum" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "count" ) ) )
+    {
       stats.mean = schemaObj.value( QLatin1String( "mean" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "stddev" ) ) )
+    {
       stats.stDev = schemaObj.value( QLatin1String( "stddev" ) ).toDouble();
+      foundStats = true;
+    }
     if ( schemaObj.contains( QLatin1String( "variance" ) ) )
+    {
       stats.variance = schemaObj.value( QLatin1String( "variance" ) ).toDouble();
-    mMetadataStats.insert( name, stats );
+      foundStats = true;
+    }
+    if ( foundStats )
+      mMetadataStats.insert( name, stats );
 
     if ( schemaObj.contains( QLatin1String( "counts" ) ) )
     {
@@ -327,6 +355,11 @@ qint64 QgsEptPointCloudIndex::pointCount() const
   return mPointCount;
 }
 
+bool QgsEptPointCloudIndex::hasStatisticsMetadata() const
+{
+  return !mMetadataStats.isEmpty();
+}
+
 QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
 {
   if ( !mMetadataStats.contains( attribute ) )
@@ -404,6 +437,7 @@ bool QgsEptPointCloudIndex::loadHierarchy()
     if ( !fH.open( QIODevice::ReadOnly ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename ), 2 );
+      mError = QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename );
       return false;
     }
 
@@ -413,6 +447,7 @@ bool QgsEptPointCloudIndex::loadHierarchy()
     if ( errH.error != QJsonParseError::NoError )
     {
       QgsDebugMsgLevel( QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename ), 2 );
+      mError = QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename );
       return false;
     }
 
@@ -440,6 +475,21 @@ bool QgsEptPointCloudIndex::loadHierarchy()
 bool QgsEptPointCloudIndex::isValid() const
 {
   return mIsValid;
+}
+
+void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destination ) const
+{
+  QgsPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsEptPointCloudIndex specific fields
+  destination->mIsValid = mIsValid;
+  destination->mDataType = mDataType;
+  destination->mDirectory = mDirectory;
+  destination->mWkt = mWkt;
+  destination->mPointCount = mPointCount;
+  destination->mMetadataStats = mMetadataStats;
+  destination->mAttributeClasses = mAttributeClasses;
+  destination->mOriginalMetadata = mOriginalMetadata;
 }
 
 ///@endcond

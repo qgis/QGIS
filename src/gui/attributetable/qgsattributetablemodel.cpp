@@ -74,7 +74,12 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
   connect( mLayer, &QgsVectorLayer::editCommandStarted, this, &QgsAttributeTableModel::bulkEditCommandStarted );
   connect( mLayer, &QgsVectorLayer::beforeRollBack, this,  &QgsAttributeTableModel::bulkEditCommandStarted );
-  connect( mLayer, &QgsVectorLayer::afterRollBack, this, &QgsAttributeTableModel::bulkEditCommandEnded );
+  connect( mLayer, &QgsVectorLayer::afterRollBack, this, [ = ]
+  {
+    mIsCleaningUpAfterRollback = true;
+    bulkEditCommandEnded();
+    mIsCleaningUpAfterRollback = false;
+  } );
 
   connect( mLayer, &QgsVectorLayer::editCommandEnded, this, &QgsAttributeTableModel::editCommandEnded );
   connect( mLayerCache, &QgsVectorLayerCache::attributeValueChanged, this, &QgsAttributeTableModel::attributeValueChanged );
@@ -170,12 +175,23 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
     return false;
 
   if ( !mResettingModel )
+  {
     beginRemoveRows( parent, row, row + count - 1 );
+  }
 
 #ifdef QGISDEBUG
   if ( 3 <= QgsLogger::debugLevel() )
     QgsDebugMsgLevel( QStringLiteral( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
 #endif
+
+  if ( mBulkEditCommandRunning && !mResettingModel )
+  {
+    for ( int i = row; i < row + count; i++ )
+    {
+      const QgsFeatureId fid { rowToId( row ) };
+      mInsertedRowsChanges.removeOne( fid );
+    }
+  }
 
   // clean old references
   for ( int i = row; i < row + count; i++ )
@@ -256,6 +272,10 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
       if ( !mResettingModel )
         endInsertRows();
       reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
+      if ( mBulkEditCommandRunning && !mResettingModel )
+      {
+        mInsertedRowsChanges.append( fid );
+      }
     }
   }
 }
@@ -833,7 +853,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   mBulkEditCommandRunning = false;
   // Full model update if the changed rows are more than half the total rows
   // or if their count is > layer cache size
-  const int changeCount( mAttributeValueChanges.count() );
+  const int changeCount( std::max( mAttributeValueChanges.count(), mInsertedRowsChanges.count() ) );
   const bool fullModelUpdate = changeCount > mLayerCache->cacheSize() ||
                                changeCount > rowCount() * 0.5;
 
@@ -843,6 +863,21 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
                     .arg( fullModelUpdate ? QStringLiteral( "full" ) :  QStringLiteral( "incremental" ) )
                     .arg( rowCount() ),
                     3 );
+
+  // Remove added rows on rollback
+  if ( mIsCleaningUpAfterRollback )
+  {
+    for ( const int fid : std::as_const( mInsertedRowsChanges ) )
+    {
+      const int row( idToRow( fid ) );
+      if ( row < 0 )
+      {
+        continue;
+      }
+      removeRow( row );
+    }
+  }
+
   // Invalidates the whole model
   if ( fullModelUpdate )
   {
@@ -852,6 +887,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
   }
   else
   {
+
     int minRow = rowCount();
     int minCol = columnCount();
     int maxRow = 0;
@@ -867,6 +903,7 @@ void QgsAttributeTableModel::bulkEditCommandEnded()
       maxRow = std::max<int>( row, maxRow );
       maxCol = std::max<int>( col, maxCol );
     }
+
     emit dataChanged( createIndex( minRow, minCol ), createIndex( maxRow, maxCol ) );
   }
   mAttributeValueChanges.clear();

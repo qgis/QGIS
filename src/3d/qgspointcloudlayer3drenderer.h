@@ -111,6 +111,8 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
+          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
@@ -300,9 +302,9 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
-    double mMaximumScreenError = 1.0;
+    double mMaximumScreenError = 3.0;
     bool mShowBoundingBoxes = false;
-    int mPointBudget = 1000000;
+    int mPointBudget = 5000000;
 
   private:
 #ifdef SIP_RUN

@@ -20,7 +20,7 @@
 /// @cond PRIVATE
 
 QgsPointLocatorInitTask::QgsPointLocatorInitTask( QgsPointLocator *loc )
-  : QgsTask( tr( "Indexing %1" ).arg( loc->layer()->id() ), QgsTask::Flags() )
+  : QgsTask( tr( "Indexing %1" ).arg( loc->layer()->id() ), QgsTask::Silent )
   , mLoc( loc )
 {}
 

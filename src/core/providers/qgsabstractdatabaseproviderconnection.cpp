@@ -1498,7 +1498,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult::QueryResult( std::shared_ptr
   : mResultIterator( iterator )
 {}
 
-double QgsAbstractDatabaseProviderConnection::QueryResult::queryExecutionTime()
+double QgsAbstractDatabaseProviderConnection::QueryResult::queryExecutionTime() const
 {
   return mQueryExecutionTime;
 }

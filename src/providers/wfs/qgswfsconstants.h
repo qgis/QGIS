@@ -52,14 +52,6 @@ struct QgsWFSConstants
 
   //
   static const QString VERSION_AUTO;
-
-  // Settings
-  static const QString CONNECTIONS_WFS;
-  static const QString SETTINGS_VERSION;
-  static const QString SETTINGS_MAXNUMFEATURES;
-  static const QString SETTINGS_PAGING_ENABLED;
-  static const QString SETTINGS_PAGE_SIZE;
-  static const QString SETTINGS_WFST_1_1_PREFER_COORDINATES;
 };
 
 #endif // QGSWFSCONSTANTS_H

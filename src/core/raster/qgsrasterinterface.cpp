@@ -37,7 +37,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
     int bandNo,
     int stats,
     const QgsRectangle &boundingBox,
-    int sampleSize )
+    int sampleSize ) const
 {
   QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ), 4 );
 

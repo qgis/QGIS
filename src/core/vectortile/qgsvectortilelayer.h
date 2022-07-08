@@ -21,11 +21,15 @@
 
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
+#include "qgsfeatureid.h"
 
 class QgsVectorTileLabeling;
 class QgsVectorTileRenderer;
 
 class QgsTileXYZ;
+class QgsFeature;
+class QgsGeometry;
+class QgsSelectionContext;
 
 /**
  * \ingroup core
@@ -148,6 +152,22 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      */
     bool loadDefaultStyle( QString &error, QStringList &warnings ) SIP_SKIP;
 
+    /**
+     * Loads the default style for the layer, and returns TRUE if the style was
+     * successfully loaded. Also loads any sub layers (such as raster terrain layers) associated
+     * with the layer's default style.
+     *
+     * The \a error string will be filled with a translated error message if an error
+     * occurs during the style load. The \a warnings list will be populated with any
+     * warning messages generated during the style load (e.g. default style properties
+     * which could not be converted).
+     *
+     * Ownership of the \a subLayers is transferrred to the caller.
+     *
+     * \since QGIS 3.28
+     */
+    bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList< QgsMapLayer * > &subLayers SIP_OUT SIP_TRANSFERBACK );
+
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
@@ -203,6 +223,65 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     //! Returns whether to render also borders of tiles (useful for debugging)
     bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
 
+    /**
+     * Returns the list of features currently selected in the layer.
+     *
+     * \see selectedFeatureCount()
+     * \see selectByGeometry()
+     * \see removeSelection()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    QList< QgsFeature > selectedFeatures() const;
+
+    /**
+     * Returns the number of features that are selected in this layer.
+     *
+     * \see selectedFeatures()
+     * \see selectByGeometry()
+     * \see removeSelection()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    int selectedFeatureCount() const;
+
+    /**
+     * Selects features found within the search \a geometry (in layer's coordinates).
+     *
+     * A render context can optionally be specified in order to avoid selecting features which are
+     * not currently rendered.
+     *
+     * \see selectedFeatures()
+     * \see removeSelection()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
+                           Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+                           Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+                           QgsRenderContext *renderContext = nullptr );
+
+  public slots:
+
+    /**
+     * Clear selection
+     *
+     * \see selectByGeometry()
+     * \see selectionChanged()
+     * \since QGIS 3.28
+     */
+    void removeSelection();
+
+  signals:
+
+    /**
+     * Emitted whenever the selected features in the layer are changed.
+     *
+     * \since QGIS 3.28
+     */
+    void selectionChanged();
+
   private:
     bool loadDataSource();
 
@@ -227,10 +306,15 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     std::unique_ptr< QgsDataProvider > mDataProvider;
 
+    QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
+
     bool setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri );
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
+
+    bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
+
 
 };
 

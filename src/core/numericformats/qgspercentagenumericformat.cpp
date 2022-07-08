@@ -34,7 +34,7 @@ QString QgsPercentageNumericFormat::visibleName() const
 
 int QgsPercentageNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return DEFAULT_SORT_KEY;
 }
 
 double QgsPercentageNumericFormat::suggestSampleValue() const

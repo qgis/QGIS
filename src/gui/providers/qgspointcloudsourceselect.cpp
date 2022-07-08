@@ -77,7 +77,7 @@ void QgsPointCloudSourceSelect::addButtonClicked()
     {
       // auto determine preferred provider for each path
 
-      const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
+      const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( path );
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
       if ( preferredProviders.empty() )
         continue;
@@ -94,7 +94,10 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       return;
     }
 
-    if ( !mPath.endsWith( QLatin1String( "/ept.json" ), Qt::CaseInsensitive ) && !mPath.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
+    QUrl url = QUrl::fromUserInput( mPath );
+    QString fileName = url.fileName();
+
+    if ( fileName.compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) != 0 && !fileName.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
     {
       QMessageBox::information( this,
                                 tr( "Add Point Cloud Layers" ),

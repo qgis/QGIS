@@ -52,6 +52,11 @@ QString QgsProviderMetadata::description() const
   return mDescription;
 }
 
+QIcon QgsProviderMetadata::icon() const
+{
+  return QIcon();
+}
+
 QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilities() const
 {
   return QgsProviderMetadata::ProviderMetadataCapabilities();
@@ -60,6 +65,11 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsProviderMetadata::capabilit
 QgsProviderMetadata::ProviderCapabilities QgsProviderMetadata::providerCapabilities() const
 {
   return QgsProviderMetadata::ProviderCapabilities();
+}
+
+QList<QgsMapLayerType> QgsProviderMetadata::supportedLayerTypes() const
+{
+  return {};
 }
 
 QString QgsProviderMetadata::library() const

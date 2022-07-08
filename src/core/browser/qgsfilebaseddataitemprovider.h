@@ -56,6 +56,14 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
     QgsProviderSublayerItem( QgsDataItem *parent, const QString &name, const QgsProviderSublayerDetails &details, const QString &filePath );
     QString layerName() const override;
     QVector<QgsDataItem *> createChildren() override;
+    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
+
+    /**
+     * Returns the sublayer details for the item.
+     *
+     * \since QGIS 3.28
+     */
+    QgsProviderSublayerDetails sublayerDetails() const;
 
   private:
 

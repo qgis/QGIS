@@ -24,7 +24,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsFieldConstraints,
                        QgsPointXY,
                        NULL,
-                       QgsRectangle)
+                       QgsRectangle,
+                       QgsVectorDataProvider)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QByteArray
 
@@ -444,6 +445,30 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(vl1.isValid())
         self.assertEqual(vl1.uniqueValues(0), {1, 2})
         self.assertEqual(vl1.uniqueValues(1), {'one', 'two'})
+
+    def testSpatialIndexCapability(self):
+        """ Test https://github.com/qgis/QGIS/issues/44513 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testSpatialIndexCapability.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        ds = None
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        caps = vl.dataProvider().capabilities()
+        self.assertFalse(caps & QgsVectorDataProvider.CreateSpatialIndex)
+
+    def testSpatialIndexCapabilitySpatialite(self):
+        """ Test https://github.com/qgis/QGIS/issues/44513 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testSpatialIndexCapabilitySpatialite.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
+        ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        ds = None
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(tmpfile), 'test', 'ogr')
+        caps = vl.dataProvider().capabilities()
+        self.assertTrue(caps & QgsVectorDataProvider.CreateSpatialIndex)
 
 
 if __name__ == '__main__':

@@ -184,7 +184,7 @@ void TestQgsVectorTileLayer::test_labeling()
   QgsPalLayerSettings labelSettings;
   labelSettings.drawLabels = true;
   labelSettings.fieldName = "name:en";
-  labelSettings.placement = QgsPalLayerSettings::OverPoint;
+  labelSettings.placement = Qgis::LabelPlacement::OverPoint;
   labelSettings.setFormat( format );
 
   QgsVectorTileBasicLabelingStyle st;

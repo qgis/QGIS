@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAdvancedDigitizingFloater : QWidget
 {
 %Docstring(signature="appended")

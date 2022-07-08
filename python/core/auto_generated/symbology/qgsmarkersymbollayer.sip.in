@@ -530,6 +530,8 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual bool usesMapUnits() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
@@ -987,6 +989,8 @@ required fonts are not available on the system.
 
     virtual bool usesMapUnits() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
 
 
     QString fontFamily() const;
@@ -1192,6 +1196,9 @@ Returns the marker frame rate in frame per second.
 
 .. seealso:: :py:func:`setFrameRate`
 %End
+
+    virtual void startRender( QgsSymbolRenderContext &context );
+
 
   protected:
 

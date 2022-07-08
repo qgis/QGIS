@@ -125,19 +125,6 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayoutFilter">
      <item>
-      <widget class="QLabel" name="labelFilter">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Fi&amp;lter</string>
-       </property>
-       <property name="buddy">
-        <cstring>lineFilter</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QgsFilterLineEdit" name="lineFilter">
        <property name="enabled">
         <bool>true</bool>
@@ -147,6 +134,9 @@
        </property>
        <property name="whatsThis">
         <string>Display WFS FeatureTypes containing this word in the title, name or abstract</string>
+       </property>
+       <property name="showSearchIcon">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -231,14 +221,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsBrowserTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgsbrowsertreeview.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsBrowserTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgsbrowsertreeview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

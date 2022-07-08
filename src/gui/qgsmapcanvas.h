@@ -366,8 +366,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, bool alwaysRecenter = true );
 
-    //! Pan to the selected features of current (vector) layer keeping same extent.
-    void panToSelected( QgsVectorLayer *layer = nullptr );
+    //! Pan to the selected features of current ayer keeping same extent.
+    void panToSelected( QgsMapLayer *layer = nullptr );
 
     /**
      * Pan to the combined extent of the selected features of all provided (vector) layers.
@@ -946,10 +946,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     void zoomOut();
 
     /**
-     * Zoom to the extent of the selected features of provided (vector) layer.
+     * Zoom to the extent of the selected features of provided map layer.
      * \param layer optionally specify different than current layer
      */
-    void zoomToSelected( QgsVectorLayer *layer = nullptr );
+    void zoomToSelected( QgsMapLayer *layer = nullptr );
 
     /**
      * Zoom to the combined extent of the selected features of all provided (vector) layers.
@@ -1106,9 +1106,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      */
     void mapToolSet( QgsMapTool *newTool, QgsMapTool *oldTool );
 
-
-    //! Emitted when selection in any layer gets changed
-    void selectionChanged( QgsVectorLayer *layer );
+    /**
+     * Emitted when selection in any \a layer gets changed.
+     *
+     * \note Since QGIS 3.28 this signal is emitted for multiple layer types, including QgsVectorLayer and QgsVectorTileLayer
+     */
+    void selectionChanged( QgsMapLayer *layer );
 
     //! Emitted when zoom last status changed
     void zoomLastStatusChanged( bool );
@@ -1459,6 +1462,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \since QGIS 2.16
      */
     void endZoomRect( QPoint pos );
+
+    //! Stop/cancel zooming via rectangle
+    void stopZoomRect();
+
+    //! Start map pan
+    void startPan();
+
+    //! Stop map pan
+    void stopPan();
 
     /**
      * Returns bounding box of feature list (in canvas coordinates)

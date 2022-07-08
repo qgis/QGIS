@@ -17,7 +17,7 @@ set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "25")
+set(CPACK_PACKAGE_VERSION_MINOR "27")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -411,8 +411,11 @@ if(WITH_CORE)
     message(STATUS "Qt WebKit support DISABLED.")
   endif()
 
+  set (WITH_INTERNAL_LAZPERF TRUE CACHE BOOL "Determines whether LazPerf should be built from internal copy")
   if (WITH_EPT OR WITH_COPC)
-    find_package(LazPerf) # for decompression of point clouds
+    if (NOT WITH_INTERNAL_LAZPERF)
+      find_package(LazPerf) # for decompression of point clouds
+    endif()
     if (NOT LazPerf_FOUND)
       message(STATUS "Using embedded laz-perf")
     endif()
@@ -572,6 +575,15 @@ if (ENABLE_TESTS)
   # For server side testing we have no X, we can use xvfb as a fake x
   # sudo apt-get install xvfb
   add_custom_target(check COMMAND xvfb-run --server-args=-screen\ 0\ 1024x768x24 ctest --output-on-failure)
+
+  # Define SOURCETREE fixture
+  add_test(NAME   logGitStatus COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/chkgitstatus.sh log)
+  add_test(NAME checkGitStatus COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/chkgitstatus.sh check)
+  set_tests_properties(logGitStatus   PROPERTIES FIXTURES_SETUP   SOURCETREE)
+  set_property(TEST logGitStatus PROPERTY SKIP_RETURN_CODE 2)
+  set_tests_properties(checkGitStatus PROPERTIES FIXTURES_CLEANUP SOURCETREE)
+  set_property(TEST checkGitStatus PROPERTY SKIP_RETURN_CODE 2)
+
 endif()
 
 if (WITH_CORE)
@@ -717,6 +729,10 @@ if(ENABLE_COVERAGE)
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
+endif()
+
+if(USE_ALTERNATE_LINKER)
+  include("cmake/modules/linker.cmake")
 endif()
 
 #############################################################
@@ -866,12 +882,21 @@ if (WITH_CORE)
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   include(GenerateExportHeader)
 
-  set (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
-  mark_as_advanced (ADD_CLAZY_CHECKS)
-  if (ADD_CLAZY_CHECKS)
-  set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
-  set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lambda-in-connect,lowercase-qml-type-name,qcolor-from-literal,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,missing-qobject-macro,isempty-vs-count")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+  set (WITH_CLAZY FALSE CACHE BOOL "Determines whether Clazy checks should be enabled")
+  mark_as_advanced (WITH_CLAZY)
+  if (WITH_CLAZY)
+    set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
+    #  qcolor-from-literal crashes clang with clazy 1.11
+    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+
+    if (WERROR AND NOT ${QGISDEBUG})
+      message(FATAL_ERROR "Don't activate both WERROR and ADD_CLAZY_CHECKS in Release mode, you will get many false positive errors")
+    endif()
+
+    if (WERROR AND ("$ENV{CLAZY_IGNORE_DIRS}" STREQUAL ""))
+      message(WARNING "WERROR and ADD_CLAZY_CHECKS are activated. To avoid unwanted Clazy error, please set the CLAZY_IGNORE_DIRS environment variable like this : \nexport CLAZY_IGNORE_DIRS=\"(.*/external/.*)|(.*sip_.*part.*)\"")
+    endif()
   endif()
 endif()
 
@@ -967,7 +992,7 @@ if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
   include(SIPMacros)
 
   set(SIP_INCLUDES ${PYQT_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
-  set(SIP_CONCAT_PARTS 19)
+  set(SIP_CONCAT_PARTS 20)
 
   if (NOT BINDINGS_GLOBAL_INSTALL)
     set(Python_SITEARCH ${QGIS_DATA_DIR}/python)

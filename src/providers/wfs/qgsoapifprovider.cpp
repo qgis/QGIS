@@ -25,6 +25,7 @@
 #include "qgswfsutils.h" // for isCompatibleType()
 
 #include <algorithm>
+#include <QIcon>
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
@@ -297,9 +298,14 @@ bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatur
     }
   }
 
-  // Invalid and cancel current download before altering fields, etc...
-  // (crashes might happen if not done at the beginning)
-  mShared->invalidateCache();
+  disconnect( mShared.get(), &QgsOapifSharedData::raiseError, this, &QgsOapifProvider::pushErrorSlot );
+  disconnect( mShared.get(), &QgsOapifSharedData::extentUpdated, this, &QgsOapifProvider::fullExtentCalculated );
+
+  // We must not change the subset string of the shared data used in another iterator/data provider ...
+  mShared.reset( mShared->clone() );
+
+  connect( mShared.get(), &QgsOapifSharedData::raiseError, this, &QgsOapifProvider::pushErrorSlot );
+  connect( mShared.get(), &QgsOapifSharedData::extentUpdated, this, &QgsOapifProvider::fullExtentCalculated );
 
   mSubsetString = filter;
   clearMinMaxCache();
@@ -337,7 +343,7 @@ const QString &QgsOapifProvider::clientSideFilterExpression() const
 
 void QgsOapifProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
-  mShared = qobject_cast<QgsOapifProvider *>( source )  ->mShared;
+  mShared = qobject_cast<QgsOapifProvider *>( source )->mShared;
 }
 
 QString QgsOapifProvider::name() const
@@ -395,6 +401,20 @@ std::unique_ptr<QgsFeatureDownloaderImpl> QgsOapifSharedData::newFeatureDownload
 
 void QgsOapifSharedData::invalidateCacheBaseUnderLock()
 {
+}
+
+QgsOapifSharedData *QgsOapifSharedData::clone() const
+{
+  QgsOapifSharedData *copy = new QgsOapifSharedData( mURI.uri( true ) );
+  copy->mWKBType = mWKBType;
+  copy->mPageSize = mPageSize;
+  copy->mExtraQueryParameters = mExtraQueryParameters;
+  copy->mCollectionUrl = mCollectionUrl;
+  copy->mItemsUrl = mItemsUrl;
+  copy->mServerFilter = mServerFilter;
+  QgsBackgroundCachedSharedData::copyStateToClone( copy );
+
+  return copy;
 }
 
 static QDateTime getDateTimeValue( const QVariant &v )
@@ -817,5 +837,15 @@ QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, 
   return new QgsOapifProvider( uri, options, flags );
 }
 
+QList<QgsMapLayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QgsOapifProviderMetadata::QgsOapifProviderMetadata():
   QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION ) {}
+
+QIcon QgsOapifProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
+}

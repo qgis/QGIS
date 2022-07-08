@@ -42,17 +42,13 @@
 
 using namespace pal;
 
-Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal, bool displayAll )
+Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal )
   : mProvider( provider )
   , mName( name )
   , mPal( pal )
   , mActive( active )
   , mLabelLayer( toLabel )
-  , mDisplayAll( displayAll )
-  , mCentroidInside( false )
   , mArrangement( arrangement )
-  , mMergeLines( false )
-  , mUpsidedownLabels( Upright )
 {
   if ( defaultPriority < 0.0001 )
     mDefaultPriority = 0.0001;

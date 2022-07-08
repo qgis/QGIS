@@ -245,6 +245,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     QString description() const;
 
     /**
+     * Returns an icon representing the provider.
+     *
+     * \since QGIS 3.26
+     */
+    virtual QIcon icon() const;
+
+    /**
      * Returns the provider metadata capabilities.
      *
      * \since QGIS 3.18
@@ -257,6 +264,51 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.18.1
      */
     virtual QgsProviderMetadata::ProviderCapabilities providerCapabilities() const;
+
+    /**
+     * Returns a list of the map layer types supported by the provider.
+     *
+     * \since QGIS 3.26
+     */
+#ifndef SIP_RUN
+    virtual QList< QgsMapLayerType > supportedLayerTypes() const;
+#else
+    SIP_PYOBJECT supportedLayerTypes() const SIP_TYPEHINT( List[QgsMapLayerType] );
+    % MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< QgsMapLayerType > cppRes = sipCpp->supportedLayerTypes();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_QgsMapLayerType );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
+    % End
+#endif
 
     /**
      * This returns the library file name

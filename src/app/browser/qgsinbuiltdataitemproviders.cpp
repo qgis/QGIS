@@ -59,6 +59,7 @@
 #include "qgsvariantutils.h"
 #include "qgsfielddomainwidget.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsfilebaseddataitemprovider.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1134,7 +1135,7 @@ void QgsProjectItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
       QgsProject p;
       QgsTemporaryCursorOverride override( Qt::WaitCursor );
-      if ( p.read( projectPath, QgsProject::ReadFlag::FlagDontResolveLayers | QgsProject::ReadFlag::FlagDontStoreOriginalStyles ) )
+      if ( p.read( projectPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
       {
         p.accept( &visitor );
         override.release();
@@ -1423,103 +1424,100 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
   // Add create new table for collection items but not not if it is a root item
   if ( ! qobject_cast<QgsConnectionsRootItem *>( item ) )
   {
-    if ( QgsDataCollectionItem * collectionItem { qobject_cast<QgsDataCollectionItem *>( item ) } )
-    {
-      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );
 
-      if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+    if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+    {
+
+      QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
+
+      QObject::connect( newTableAction, &QAction::triggered, item, [ item, context]
       {
 
-        QAction *newTableAction = new QAction( QObject::tr( "New Table…" ), menu );
-
-        QObject::connect( newTableAction, &QAction::triggered, collectionItem, [ collectionItem, context]
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( item->databaseConnection() );
+        // This should never happen but let's play safe
+        if ( ! conn2 )
         {
+          QgsMessageLog::logMessage( tr( "Connection to the database (%1) was lost." ).arg( item->name() ) );
+          return;
+        }
 
-          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( collectionItem->databaseConnection() );
-          // This should never happen but let's play safe
-          if ( ! conn2 )
+        QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
+        dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+
+        const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( item ) != nullptr };
+
+        if ( isSchema )
+        {
+          dlg.setSchemaName( item->name() );
+        }
+
+        if ( dlg.exec() == QgsNewVectorTableDialog::DialogCode::Accepted )
+        {
+          const QgsFields fields { dlg.fields() };
+          const QString tableName { dlg.tableName() };
+          const QString schemaName { dlg.schemaName() };
+          const QString geometryColumn { dlg.geometryColumnName() };
+          const QgsWkbTypes::Type geometryType { dlg.geometryType() };
+          const bool createSpatialIndex = dlg.createSpatialIndex() &&
+                                          geometryType != QgsWkbTypes::NoGeometry &&
+                                          geometryType != QgsWkbTypes::Unknown;
+          const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
+          // This flag tells to the provider that field types do not need conversion
+          // also prevents  GDAL to create a spatial index by default for GPKG, we are
+          // going to create it afterwards in a unified manner for all providers.
+          QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true },
+            { QStringLiteral( "layerOptions" ), QStringLiteral( "SPATIAL_INDEX=NO" ) } };
+
+          if ( ! geometryColumn.isEmpty() )
           {
-            QgsMessageLog::logMessage( tr( "Connection to the database (%1) was lost." ).arg( collectionItem->name() ) );
-            return;
+            options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
           }
 
-          QgsNewVectorTableDialog dlg { conn2.get(), nullptr };
-          dlg.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-
-          const bool isSchema { qobject_cast<QgsDatabaseSchemaItem *>( collectionItem ) != nullptr };
-
-          if ( isSchema )
+          try
           {
-            dlg.setSchemaName( collectionItem->name() );
+            conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
+            if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
+            {
+              try
+              {
+                conn2->createSpatialIndex( schemaName, tableName );
+              }
+              catch ( QgsProviderConnectionException &ex )
+              {
+                notify( QObject::tr( "Create Spatial Index" ), QObject::tr( "Could not create spatial index for table '%1':%2." ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Warning );
+              }
+            }
+            // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
+            // recursive.
+            // So, we check if the item is a schema or not, if it's not it means we initiated the new table from
+            // the parent connection item, hence we search for the schema item and refresh it instead of refreshing
+            // the connection item (the parent) with no effects.
+            if ( ! isSchema && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
+            {
+              const auto constChildren { item->children() };
+              for ( const auto &c : constChildren )
+              {
+                if ( c->name() == schemaName )
+                {
+                  c->refresh();
+                }
+              }
+            }
+            else
+            {
+              item->refresh( );
+            }
+            notify( QObject::tr( "New Table Created" ), QObject::tr( "Table '%1' was created successfully." ).arg( tableName ), context, Qgis::MessageLevel::Success );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            notify( QObject::tr( "New Table Creation Error" ), QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Critical );
           }
 
-          if ( dlg.exec() == QgsNewVectorTableDialog::DialogCode::Accepted )
-          {
-            const QgsFields fields { dlg.fields() };
-            const QString tableName { dlg.tableName() };
-            const QString schemaName { dlg.schemaName() };
-            const QString geometryColumn { dlg.geometryColumnName() };
-            const QgsWkbTypes::Type geometryType { dlg.geometryType() };
-            const bool createSpatialIndex = dlg.createSpatialIndex() &&
-                                            geometryType != QgsWkbTypes::NoGeometry &&
-                                            geometryType != QgsWkbTypes::Unknown;
-            const QgsCoordinateReferenceSystem crs { dlg.crs( ) };
-            // This flag tells to the provider that field types do not need conversion
-            // also prevents  GDAL to create a spatial index by default for GPKG, we are
-            // going to create it afterwards in a unified manner for all providers.
-            QMap<QString, QVariant> options { { QStringLiteral( "skipConvertFields" ), true },
-              { QStringLiteral( "layerOptions" ), QStringLiteral( "SPATIAL_INDEX=NO" ) } };
-
-            if ( ! geometryColumn.isEmpty() )
-            {
-              options[ QStringLiteral( "geometryColumn" ) ] = geometryColumn;
-            }
-
-            try
-            {
-              conn2->createVectorTable( schemaName, tableName, fields, geometryType, crs, true, &options );
-              if ( createSpatialIndex && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateSpatialIndex ) )
-              {
-                try
-                {
-                  conn2->createSpatialIndex( schemaName, tableName );
-                }
-                catch ( QgsProviderConnectionException &ex )
-                {
-                  notify( QObject::tr( "Create Spatial Index" ), QObject::tr( "Could not create spatial index for table '%1':%2." ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Warning );
-                }
-              }
-              // Ok, here is the trick: we cannot refresh the connection item because the refresh is not
-              // recursive.
-              // So, we check if the item is a schema or not, if it's not it means we initiated the new table from
-              // the parent connection item, hence we search for the schema item and refresh it instead of refreshing
-              // the connection item (the parent) with no effects.
-              if ( ! isSchema && conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
-              {
-                const auto constChildren { collectionItem->children() };
-                for ( const auto &c : constChildren )
-                {
-                  if ( c->name() == schemaName )
-                  {
-                    c->refresh();
-                  }
-                }
-              }
-              else
-              {
-                collectionItem->refresh( );
-              }
-              notify( QObject::tr( "New Table Created" ), QObject::tr( "Table '%1' was created successfully." ).arg( tableName ), context, Qgis::MessageLevel::Success );
-            }
-            catch ( QgsProviderConnectionException &ex )
-            {
-              notify( QObject::tr( "New Table Creation Error" ), QObject::tr( "Error creating new table '%1': %2" ).arg( tableName, ex.what() ), context, Qgis::MessageLevel::Critical );
-            }
-
-          }
-        } );
-        menu->addAction( newTableAction );
-      }
+        }
+      } );
+      menu->addAction( newTableAction );
     }
 
     // SQL dialog
@@ -1551,15 +1549,25 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
         if ( qobject_cast<QgsLayerItem *>( item ) )
         {
+          QString tableName;
+          if ( QgsProviderSublayerItem *sublayerItem = qobject_cast< QgsProviderSublayerItem * >( item ) )
+          {
+            tableName = sublayerItem->sublayerDetails().name();
+          }
+          if ( tableName.isEmpty() )
+          {
+            tableName = item->name();
+          }
+
           if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
           {
             // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( item->name() ) );
+            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( tableName ) );
           }
           else
           {
             // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->name() ) );
+            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( tableName ) );
           }
         }
 
@@ -1732,7 +1740,7 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Field type" ) + QStringLiteral( "</td><td>" );
   metadata += QgsVariantUtils::typeToDisplayString( domain->fieldType() );
-  metadata += QStringLiteral( "</td></tr>\n" );
+  metadata += QLatin1String( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Split policy" ) + QStringLiteral( "</td><td>" );
   switch ( domain->splitPolicy() )
@@ -1747,7 +1755,7 @@ QString QgsFieldDomainDetailsWidget::htmlMetadata( QgsFieldDomain *domain, const
       metadata +=  tr( "Use geometry ratio" );
       break;
   }
-  metadata += QStringLiteral( "</td></tr>\n" );
+  metadata += QLatin1String( "</td></tr>\n" );
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Merge policy" ) + QStringLiteral( "</td><td>" );
   switch ( domain->mergePolicy() )

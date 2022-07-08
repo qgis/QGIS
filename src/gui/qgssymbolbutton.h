@@ -204,6 +204,39 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void pasteColor();
 
+    /**
+     * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
+     * \param showNull set to TRUE to show a null option
+     * \see showNull()
+     * \see isNull()
+     * \since QGIS 3.26
+     */
+    void setShowNull( bool showNull );
+
+    /**
+     * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
+     * \see setShowNull()
+     * \see isNull()
+     * \since QGIS 3.26
+     */
+    bool showNull() const;
+
+    /**
+     * Returns TRUE if the current symbol is null.
+     * \see setShowNull()
+     * \see showNull()
+     * \since QGIS 3.26
+     */
+    bool isNull() const;
+
+    /**
+     * Sets symbol to to null.
+     * \see setShowNull()
+     * \see showNull()
+     * \since QGIS 3.26
+     */
+    void setToNull();
+
   signals:
 
     /**
@@ -233,6 +266,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     // Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e ) override;
+
+    void wheelEvent( QWheelEvent *event ) override;
 
   private slots:
 
@@ -276,6 +311,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
     bool mPickingColor = false;
+
+    bool mShowNull = false;
 
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview

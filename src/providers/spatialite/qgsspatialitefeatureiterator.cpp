@@ -235,6 +235,10 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       sqliteStatement = nullptr;
       close();
     }
+    else
+    {
+      mQueryLogWrapper = std::make_unique<QgsDatabaseQueryLogWrapper>( mLastSql, mSource->mSqlitePath, QStringLiteral( "spatialite" ), QStringLiteral( "QgsSpatiaLiteFeatureIterator" ), QGS_QUERY_LOG_ORIGIN );
+    }
   }
 }
 
@@ -395,6 +399,7 @@ bool QgsSpatiaLiteFeatureIterator::prepareStatement( const QString &whereClause,
       QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( mSqliteHandle ) ), QObject::tr( "SpatiaLite" ) );
       return false;
     }
+    mLastSql = sql;
   }
   catch ( QgsSpatiaLiteProvider::SLFieldNotFound )
   {

@@ -21,9 +21,13 @@ Encapsulates the context of snapping a profile point.
 %End
   public:
 
-    double maximumDistanceDelta;
+    double maximumSurfaceDistanceDelta;
 
-    double maximumElevationDelta;
+    double maximumSurfaceElevationDelta;
+
+    double maximumPointDistanceDelta;
+
+    double maximumPointElevationDelta;
 
     double displayRatioElevationVsDistance;
 

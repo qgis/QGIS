@@ -97,21 +97,41 @@
          <property name="title">
           <string>Layer Rendering</string>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Blending mode</string>
-            </property>
-           </widget>
-          </item>
-          <item>
+         <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>3</number>
+          </property>
+          <item row="1" column="1">
            <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
             <property name="minimumSize">
              <size>
               <width>0</width>
               <height>0</height>
              </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Blending mode</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lblTransparency">
+            <property name="text">
+             <string>Opacity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
@@ -461,6 +481,17 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsMeshRendererScalarSettingsWidget</class>
    <extends>QWidget</extends>
    <header>mesh/qgsmeshrendererscalarsettingswidget.h</header>
@@ -485,17 +516,22 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsMeshRenderer3dAveragingWidget</class>
    <extends>QWidget</extends>
    <header>mesh/qgsmeshrenderer3daveragingwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mStyleOptionsTab</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mContoursGroupBox</tabstop>
+  <tabstop>mVectorsGroupBox</tabstop>
+  <tabstop>mEdgeMeshGroup</tabstop>
+  <tabstop>mNativeMeshGroup</tabstop>
+  <tabstop>mTriangularMeshGroup</tabstop>
+ </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

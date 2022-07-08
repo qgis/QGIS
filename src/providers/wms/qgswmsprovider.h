@@ -454,6 +454,11 @@ class QgsWmsProvider final: public QgsRasterDataProvider
       */
     void addWmstParameters( QUrlQuery &query );
 
+    /**
+      * Add WMTS time dimension to a query.
+      */
+    QString calculateWmtsTimeDimensionValue() const;
+
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
@@ -721,10 +726,12 @@ class QgsWmsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWmsProviderMetadata();
+    QIcon icon() const override;
     QgsWmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif

@@ -119,6 +119,22 @@ Constructs a new vector tile layer
 
 
 
+    bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList< QgsMapLayer * > &subLayers /Out,TransferBack/ );
+%Docstring
+Loads the default style for the layer, and returns ``True`` if the style was
+successfully loaded. Also loads any sub layers (such as raster terrain layers) associated
+with the layer's default style.
+
+The ``error`` string will be filled with a translated error message if an error
+occurs during the style load. The ``warnings`` list will be populated with any
+warning messages generated during the style load (e.g. default style properties
+which could not be converted).
+
+Ownership of the ``subLayers`` is transferrred to the caller.
+
+.. versionadded:: 3.28
+%End
+
     virtual QString loadDefaultMetadata( bool &resultFlag /Out/ );
 
 
@@ -189,6 +205,78 @@ Sets whether to render also borders of tiles (useful for debugging)
     bool isTileBorderRenderingEnabled() const;
 %Docstring
 Returns whether to render also borders of tiles (useful for debugging)
+%End
+
+    QList< QgsFeature > selectedFeatures() const;
+%Docstring
+Returns the list of features currently selected in the layer.
+
+.. seealso:: :py:func:`selectedFeatureCount`
+
+.. seealso:: :py:func:`selectByGeometry`
+
+.. seealso:: :py:func:`removeSelection`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+    int selectedFeatureCount() const;
+%Docstring
+Returns the number of features that are selected in this layer.
+
+.. seealso:: :py:func:`selectedFeatures`
+
+.. seealso:: :py:func:`selectByGeometry`
+
+.. seealso:: :py:func:`removeSelection`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+    void selectByGeometry( const QgsGeometry &geometry, const QgsSelectionContext &context,
+                           Qgis::SelectBehavior behavior = Qgis::SelectBehavior::SetSelection,
+                           Qgis::SelectGeometryRelationship relationship = Qgis::SelectGeometryRelationship::Intersect,
+                           Qgis::SelectionFlags flags = Qgis::SelectionFlags(),
+                           QgsRenderContext *renderContext = 0 );
+%Docstring
+Selects features found within the search ``geometry`` (in layer's coordinates).
+
+A render context can optionally be specified in order to avoid selecting features which are
+not currently rendered.
+
+.. seealso:: :py:func:`selectedFeatures`
+
+.. seealso:: :py:func:`removeSelection`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+  public slots:
+
+    void removeSelection();
+%Docstring
+Clear selection
+
+.. seealso:: :py:func:`selectByGeometry`
+
+.. seealso:: :py:func:`selectionChanged`
+
+.. versionadded:: 3.28
+%End
+
+  signals:
+
+    void selectionChanged();
+%Docstring
+Emitted whenever the selected features in the layer are changed.
+
+.. versionadded:: 3.28
 %End
 
 };

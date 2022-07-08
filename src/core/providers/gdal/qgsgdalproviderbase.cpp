@@ -173,6 +173,14 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
       return Qgis::DataType::CFloat32;
     case GDT_CFloat64:
       return Qgis::DataType::CFloat64;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+    case GDT_Int64:
+    case GDT_UInt64:
+      // Lossy conversion
+      // NOTE: remove conversion from/to double in qgsgdalprovider.cpp if using
+      // a native Qgis data type for Int64/UInt64 (look for GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0))
+      return Qgis::DataType::Float64;
+#endif
     case GDT_Unknown:
     case GDT_TypeCount:
       return Qgis::DataType::UnknownDataType;

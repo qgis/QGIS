@@ -105,7 +105,7 @@ Sets the alignment for the legend component.
 .. versionadded:: 3.10
 %End
 
-    double indent();
+    double indent() const;
 %Docstring
 Returns the indent (in mm) of a group or subgroup.
 

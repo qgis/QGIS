@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include <QColor>
 #include <QPainter>
+#include <QPainterPath>
 #include <memory>
 
 #include "qgscoordinatetransform.h"
@@ -889,6 +890,22 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     void setTextureOrigin( const QPointF &origin );
 
+#ifndef SIP_RUN
+
+    /**
+     * Add a clip \a path to be applied to the \a symbolLayer before rendering
+     * \since QGIS 3.26
+     */
+    void addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path );
+
+    /**
+     * Returns clip paths to be applied to the \a symbolLayer before rendering
+     * \since QGIS 3.26
+     */
+    QList<QPainterPath> symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const;
+
+#endif
+
     /**
      * Returns the range of z-values which should be rendered.
      *
@@ -1150,6 +1167,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
     double mFrameRate = -1;
     long long mCurrentFrame = -1;
+
+    //! clip paths to be applied to the symbol layer before rendering
+    QMap< const QgsSymbolLayer *, QList<QPainterPath> > mSymbolLayerClipPaths;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

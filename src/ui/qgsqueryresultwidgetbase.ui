@@ -176,7 +176,7 @@
         <item>
          <widget class="QPushButton" name="mLoadLayerPushButton">
           <property name="text">
-           <string>Load layer</string>
+           <string>Load Layer</string>
           </property>
          </widget>
         </item>

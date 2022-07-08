@@ -303,7 +303,7 @@ class CORE_EXPORT QgsLegendRenderer
 
 #endif
 
-    void widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, double legendWidth, double &width, double &offset );
+    void widthAndOffsetForTitleText( const Qt::AlignmentFlag halignment, double legendWidth, double &width, double &offset ) const;
 };
 
 #endif // QGSLEGENDRENDERER_H

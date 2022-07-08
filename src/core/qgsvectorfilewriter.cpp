@@ -34,7 +34,6 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 #include "qgsgeometryengine.h"
-#include "qgsogrproviderutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsreadwritelocker.h"
@@ -2337,12 +2336,12 @@ OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type ty
   return ogrType;
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError() const
 {
   return mError;
 }
 
-QString QgsVectorFileWriter::errorMessage()
+QString QgsVectorFileWriter::errorMessage() const
 {
   return mErrorMessage;
 }
@@ -2909,18 +2908,7 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
   }
 #endif
 
-  QString mFilename;
-  if ( mDS )
-  {
-    mFilename = QString::fromUtf8( GDALGetDescription( mDS.get() ) );
-  }
-
   mDS.reset();
-
-  if ( !mFilename.isEmpty() )
-  {
-    QgsOgrProviderUtils::invalidateCachedDatasets( mFilename );
-  }
 
   if ( mOgrRef )
   {

@@ -222,12 +222,12 @@ Returns the best suited frame number for the specified datetime, based on the st
 
   signals:
 
-    void stateChanged( AnimationState state );
+    void stateChanged( QgsTemporalNavigationObject::AnimationState state );
 %Docstring
 Emitted whenever the animation ``state`` changes.
 %End
 
-    void navigationModeChanged( NavigationMode mode );
+    void navigationModeChanged( QgsTemporalNavigationObject::NavigationMode mode );
 %Docstring
 Emitted whenever the navigation ``mode`` changes.
 %End

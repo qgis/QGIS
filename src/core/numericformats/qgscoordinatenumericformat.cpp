@@ -55,7 +55,7 @@ QString QgsGeographicCoordinateNumericFormat::visibleName() const
 
 int QgsGeographicCoordinateNumericFormat::sortKey()
 {
-  return QgsNumericFormat::sortKey();
+  return DEFAULT_SORT_KEY;
 }
 
 double QgsGeographicCoordinateNumericFormat::suggestSampleValue() const

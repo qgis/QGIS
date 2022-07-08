@@ -31,6 +31,7 @@ class QgsVectorTileProviderMetadata : public QgsProviderMetadata
 {
   public:
     QgsVectorTileProviderMetadata();
+    QIcon icon() const override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 
     // handling of stored connections
@@ -44,7 +45,7 @@ class QgsVectorTileProviderMetadata : public QgsProviderMetadata
 
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
-
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

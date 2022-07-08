@@ -40,14 +40,14 @@ QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExport
 
   loadSettings();
 
-  connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, [ = ]( const QString & ) { settingsChanged(); } );
-  connect( ui->selectFolderWidget, &QgsFileWidget::fileChanged, [ = ]( const QString & ) { settingsChanged(); } );
-  connect( ui->smoothEdgesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->terrainResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
-  connect( ui->exportNormalsCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->exportTexturesCheckBox, &QCheckBox::stateChanged, [ = ]( int ) { settingsChanged(); } );
-  connect( ui->terrainTextureResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
-  connect( ui->scaleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), [ = ]( int ) { settingsChanged(); } );
+  connect( ui->sceneNameLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & ) { settingsChanged(); } );
+  connect( ui->selectFolderWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & ) { settingsChanged(); } );
+  connect( ui->smoothEdgesCheckBox, &QCheckBox::stateChanged, this, [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int ) { settingsChanged(); } );
+  connect( ui->exportNormalsCheckBox, &QCheckBox::stateChanged, this, [ = ]( int ) { settingsChanged(); } );
+  connect( ui->exportTexturesCheckBox, &QCheckBox::stateChanged, this, [ = ]( int ) { settingsChanged(); } );
+  connect( ui->terrainTextureResolutionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int ) { settingsChanged(); } );
+  connect( ui->scaleSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( int ) { settingsChanged(); } );
 
   // sets the export settings to whatever is on the scene
   settingsChanged();

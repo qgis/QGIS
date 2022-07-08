@@ -36,6 +36,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsfielddomain.h"
+#include "qgsfontmanager.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -50,28 +51,28 @@
 #include "ogr_srs_api.h"
 
 
-void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source )
+void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source ) const
 {
   OGR_DS_Destroy( source );
 }
 
 
-void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry )
+void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry ) const
 {
   OGR_G_DestroyGeometry( geometry );
 }
 
-void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition )
+void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition ) const
 {
   OGR_Fld_Destroy( definition );
 }
 
-void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature )
+void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature ) const
 {
   OGR_F_Destroy( feature );
 }
 
-void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset )
+void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset ) const
 {
   GDALClose( dataset );
 }
@@ -96,7 +97,7 @@ void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH
 }
 
 
-void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
+void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options ) const
 {
   GDALDestroyWarpOptions( options );
 }
@@ -1635,12 +1636,16 @@ std::unique_ptr<QgsSymbol> QgsOgrUtils::symbolFromStyleString( const QString &st
 
       bool familyFound = false;
       QString fontFamily;
+      QString matched;
       for ( const QString &family : std::as_const( families ) )
       {
-        if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
+        const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
+
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
+             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
         {
           familyFound = true;
-          fontFamily = family;
+          fontFamily = processedFamily;
           break;
         }
       }

@@ -70,6 +70,7 @@ class TestQgs3DRendering : public QObject
     void testDemTerrain();
     void testTerrainShading();
     void testMeshTerrain();
+    void testEpsg4978LineRendering();
     void testExtrudedPolygons();
     void testExtrudedPolygonsDataDefined();
     void testPolygonsEdges();
@@ -86,7 +87,8 @@ class TestQgs3DRendering : public QObject
     void testBillboardRendering();
 
   private:
-    bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
+    // color tolerance < 2 was failing polygon3d_extrusion test
+    bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0, int colorTolerance = 2 );
 
     QString mReport;
 
@@ -320,7 +322,7 @@ void TestQgs3DRendering::testTerrainShading()
   QgsPointLightSettings defaultLight;
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   defaultLight.setIntensity( 0.5 );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( {defaultLight.clone() } );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -383,7 +385,7 @@ void TestQgs3DRendering::testExtrudedPolygons()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( {defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -435,7 +437,7 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -488,7 +490,7 @@ void TestQgs3DRendering::testPolygonsEdges()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -646,7 +648,7 @@ void TestQgs3DRendering::testBufferedLineRendering()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -693,7 +695,7 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -762,7 +764,7 @@ void TestQgs3DRendering::testMesh()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -803,7 +805,7 @@ void TestQgs3DRendering::testMesh_datasetOnFaces()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -924,7 +926,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
   defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
-  map->setPointLights( QList<QgsPointLightSettings>() << defaultLight );
+  map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs() );
@@ -947,7 +949,7 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   QVERIFY( renderCheck( "rulebased", img, 40 ) );
 }
 
-bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount )
+bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount, int colorTolerance )
 {
   mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
@@ -957,7 +959,7 @@ bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, in
   myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
-  myChecker.setColorTolerance( 2 );  // color tolerance < 2 was failing polygon3d_extrusion test
+  myChecker.setColorTolerance( colorTolerance );
   const bool myResultFlag = myChecker.runTest( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
@@ -1068,6 +1070,60 @@ void TestQgs3DRendering::testBillboardRendering()
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "billboard_rendering_2", img2, 40 ) );
+}
+
+void TestQgs3DRendering::testEpsg4978LineRendering()
+{
+  const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+
+  QgsCoordinateReferenceSystem oldCrs = mProject->crs();
+  QgsCoordinateReferenceSystem newCrs;
+  newCrs.createFromString( "EPSG:4978" );
+  mProject->setCrs( newCrs );
+
+  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
+
+  QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
+  lineSymbol->setRenderAsSimpleLines( true );
+  lineSymbol->setWidth( 2 );
+  QgsSimpleLineMaterialSettings mat;
+  mat.setAmbient( Qt::red );
+  lineSymbol->setMaterial( mat.clone() );
+  layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  map->setLayers( QList<QgsMapLayer *>() << layerLines );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+
+  // look from the top
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 0, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "4978_line_rendering_1", img, 40, 15 ) );
+
+  // more perspective look
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1.5e7, 45, 45 );
+
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "4978_line_rendering_2", img2, 40, 15 ) );
+
+  delete layerLines;
+  mProject->setCrs( oldCrs );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

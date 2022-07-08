@@ -25,6 +25,8 @@
 #include "qgssettingsentryimpl.h"
 
 #include <QWidgetAction>
+#include <QElapsedTimer>
+#include <QTimer>
 
 class QgsDockableWidgetHelper;
 class QgsMapCanvas;
@@ -43,6 +45,10 @@ class QgsElevationProfileWidgetSettingsAction;
 class QgsElevationProfileLayerTreeView;
 class QgsLayerTree;
 class QgsLayerTreeRegistryBridge;
+class QgsElevationProfileToolIdentify;
+class QgsElevationProfileToolMeasure;
+class QLabel;
+class QgsProfilePoint;
 
 class QgsElevationProfileWidget : public QWidget
 {
@@ -74,28 +80,40 @@ class QgsElevationProfileWidget : public QWidget
     void populateInitialLayers();
     void updateCanvasLayers();
     void onTotalPendingJobsCountChanged( int count );
-    void setProfileCurve( const QgsGeometry &curve );
-    void onCanvasPointHovered( const QgsPointXY &point );
+    void setProfileCurve( const QgsGeometry &curve, bool resetView );
+    void onCanvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
     void updatePlot();
     void scheduleUpdate();
     void clear();
     void exportAsPdf();
     void exportAsImage();
+    void nudgeLeft();
+    void nudgeRight();
+    void nudgeCurve( Qgis::BufferSide side );
 
   private:
     QgsElevationProfileCanvas *mCanvas = nullptr;
 
     QString mCanvasName;
     QgsMapCanvas *mMainCanvas = nullptr;
+
     QProgressBar *mProgressPendingJobs = nullptr;
+    QElapsedTimer mLastJobTime;
+    double mLastJobTimeSeconds = 0;
+    QTimer mJobProgressBarTimer;
+    QMetaObject::Connection mJobProgressBarTimerConnection;
+
     QMenu *mOptionsMenu = nullptr;
     QToolButton *mBtnOptions = nullptr;
     QAction *mCaptureCurveAction = nullptr;
     QAction *mCaptureCurveFromFeatureAction = nullptr;
+    QAction *mNudgeLeftAction = nullptr;
+    QAction *mNudgeRightAction = nullptr;
 
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     std::unique_ptr< QgsMapToolProfileCurve > mCaptureCurveMapTool;
     std::unique_ptr< QgsMapToolProfileCurveFromFeature > mCaptureCurveFromFeatureMapTool;
+    std::unique_ptr< QgsElevationProfileToolMeasure > mMeasureTool;
     QgsGeometry mProfileCurve;
 
     QObjectUniquePtr<QgsRubberBand> mMapPointRubberBand;
@@ -109,6 +127,7 @@ class QgsElevationProfileWidget : public QWidget
     QgsPlotToolPan *mPanTool = nullptr;
     QgsPlotToolXAxisZoom *mXAxisZoomTool = nullptr;
     QgsPlotToolZoom *mZoomTool = nullptr;
+    QgsElevationProfileToolIdentify *mIdentifyTool = nullptr;
 
     QgsElevationProfileWidgetSettingsAction *mSettingsAction = nullptr;
 

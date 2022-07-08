@@ -21,6 +21,7 @@
 #include "qgsoptionalexpression.h"
 #include "qgspropertycollection.h"
 #include <QColor>
+#include <QFont>
 
 /**
  * \ingroup core
@@ -59,6 +60,46 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     SIP_END
 #endif
   public:
+
+    /**
+     * The TabStyle struct defines color and font overrides for form fields, tabs and groups labels.
+     * \since QGIS 3.26
+     */
+    struct CORE_EXPORT LabelStyle
+    {
+
+      //! Label font
+      QColor color;
+
+      //! Label font
+      QFont font;
+
+      //! Override label color
+      bool overrideColor = false;
+
+      //! Override label font
+      bool overrideFont = false;
+
+      /**
+       * Reads configuration from \a node.
+       * \note Not available in Python bindings
+       */
+      void readXml( const QDomNode &node ) SIP_SKIP;
+
+      /**
+       * Creates the XML configuration from \a document.
+       * \note Not available in Python bindings
+       */
+      QDomElement writeXml( QDomDocument &document ) const SIP_SKIP;
+
+      /**
+       * Returns TRUE if the style is equal to \a other.
+       * \note Not available in Python bindings
+       */
+      bool operator==( LabelStyle const  &other ) const SIP_SKIP;
+    };
+
+
     enum AttributeEditorType
     {
       AeTypeContainer, //!< A container
@@ -143,12 +184,28 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
      */
     void setShowLabel( bool showLabel );
 
+    /**
+     * Returns the label style.
+     * \see setLabelStyle()
+     * \since QGIS 3.26
+     */
+    LabelStyle labelStyle() const;
+
+    /**
+     * Sets the \a labelStyle.
+     * \see labelStyle()
+     * \since QGIS 3.26
+     */
+    void setLabelStyle( const LabelStyle &labelStyle );
+
+
   protected:
 #ifndef SIP_RUN
     AttributeEditorType mType;
     QString mName;
     QgsAttributeEditorElement *mParent = nullptr;
     bool mShowLabel;
+    LabelStyle mLabelStyle;
 #endif
 
   private:

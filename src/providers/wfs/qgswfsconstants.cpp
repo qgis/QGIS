@@ -44,9 +44,3 @@ const QString QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES( "preferCoo
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
 
-const QString QgsWFSConstants::CONNECTIONS_WFS( QStringLiteral( "qgis/connections-wfs/" ) );
-const QString QgsWFSConstants::SETTINGS_VERSION( QStringLiteral( "version" ) );
-const QString QgsWFSConstants::SETTINGS_MAXNUMFEATURES( QStringLiteral( "maxnumfeatures" ) );
-const QString QgsWFSConstants::SETTINGS_PAGING_ENABLED( QStringLiteral( "pagingenabled" ) );
-const QString QgsWFSConstants::SETTINGS_PAGE_SIZE( QStringLiteral( "pagesize" ) );
-const QString QgsWFSConstants::SETTINGS_WFST_1_1_PREFER_COORDINATES( QStringLiteral( "preferCoordinatesForWfsT11" ) );

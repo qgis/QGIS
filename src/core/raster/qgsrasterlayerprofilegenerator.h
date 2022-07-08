@@ -19,7 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 
@@ -42,26 +42,19 @@ class QgsProfileSnapContext;
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResults
+class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
 
   public:
 
-    QgsPointSequence rawPoints;
-    QMap< double, double > results;
-
-    double minZ = std::numeric_limits< double >::max();
-    double maxZ = std::numeric_limits< double >::lowest();
-
-    std::unique_ptr< QgsLineSymbol > lineSymbol;
-
     QString type() const override;
-    QMap< double, double > distanceToHeightMap() const override;
-    QgsDoubleRange zRange() const override;
-    QgsPointSequence sampledPoints() const override;
-    QVector< QgsGeometry > asGeometries() const override;
-    QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
-    void renderResults( QgsProfileRenderContext &context ) override;
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
+
+  private:
+
+    QPointer< QgsRasterLayer > mLayer;
+
+    friend class QgsRasterLayerProfileGenerator;
 };
 
 /**
@@ -71,7 +64,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileResult
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGenerator
+class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
 
   public:
@@ -83,17 +76,17 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGene
 
     ~QgsRasterLayerProfileGenerator() override;
 
-    bool generateProfile() override;
+    QString sourceId() const override;
+    Qgis::ProfileGeneratorFlags flags() const override;
+    bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
 
   private:
-
+    QString mId;
     std::unique_ptr<QgsRasterBlockFeedback> mFeedback = nullptr;
 
     std::unique_ptr< QgsCurve > mProfileCurve;
-
-    std::unique_ptr< QgsLineSymbol > mLineSymbol;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
@@ -102,6 +95,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGene
     double mOffset = 0;
     double mScale = 1;
 
+    QPointer< QgsRasterLayer > mLayer;
     std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
 
     std::unique_ptr< QgsRasterLayerProfileResults > mResults;
@@ -111,6 +105,8 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileGene
     double mRasterUnitsPerPixelY = 1;
 
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
+
+    friend class QgsRasterLayerProfileResults;
 
 };
 

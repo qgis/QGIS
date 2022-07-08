@@ -76,6 +76,9 @@ endif()
       )
     endif()
   endif()
+
+  set_tests_properties(qgis_${testname}${grass_build_version} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+
 endmacro (ADD_QGIS_GRASS_TEST)
 
 macro (ADD_QGIS_GRASS_TESTS version)

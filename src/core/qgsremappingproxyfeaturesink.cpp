@@ -31,7 +31,7 @@ QgsRemappingProxyFeatureSink::~QgsRemappingProxyFeatureSink()
     delete mSink;
 }
 
-void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context )
+void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context ) const
 {
   mContext = context;
 }

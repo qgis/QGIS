@@ -319,7 +319,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \deprecated QGIS 3.10 - any provider functionality should be accessed through QgsProviderMetadata
      */
-    Q_DECL_DEPRECATED QFunctionPointer function( const QString &providerKey, const QString &functionName ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QFunctionPointer function( const QString &providerKey, const QString &functionName ) const SIP_DEPRECATED;
 
     /**
      * Returns a new QLibrary for the specified \a providerKey. Ownership of the returned
@@ -337,6 +337,14 @@ class CORE_EXPORT QgsProviderRegistry
 
     //! Returns metadata of the provider or NULLPTR if not found
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
+
+    /**
+     * Returns a list of the provider keys for available providers which handle the specified
+     * layer \a type.
+     *
+     * \since QGIS 3.26
+     */
+    QSet< QString > providersForLayerType( QgsMapLayerType type ) const;
 
     /**
      * \ingroup core
@@ -747,4 +755,3 @@ class CORE_EXPORT QgsProviderRegistry
 }; // class QgsProviderRegistry
 
 #endif //QGSPROVIDERREGISTRY_H
-

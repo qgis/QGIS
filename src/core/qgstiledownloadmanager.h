@@ -275,7 +275,7 @@ class CORE_EXPORT QgsTileDownloadManager
     void setIdleThreadTimeout( int timeoutMs ) { mIdleThreadTimeoutMs = timeoutMs; }
 
     //! Returns basic statistics of the queries handled by this class
-    Stats statistics() { return mStats; }
+    Stats statistics() const { return mStats; }
 
     //! Resets statistics of numbers of queries handled by this class
     void resetStatistics();

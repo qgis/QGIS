@@ -21,12 +21,12 @@
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
 #include <Qt3DRender/QPickTriangleEvent>
-#include <Qt3DRender/QPointLight>
-#include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QEffect>
@@ -43,6 +43,7 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgs3daxis.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsaabb.h"
@@ -84,7 +85,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
-Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
+Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
 {
@@ -130,8 +131,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::maxTerrainScreenErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::maxTerrainGroundErrorChanged, this, &Qgs3DMapScene::createTerrain );
   connect( &map, &Qgs3DMapSettings::terrainShadingChanged, this, &Qgs3DMapScene::createTerrain );
-  connect( &map, &Qgs3DMapSettings::pointLightsChanged, this, &Qgs3DMapScene::updateLights );
-  connect( &map, &Qgs3DMapSettings::directionalLightsChanged, this, &Qgs3DMapScene::updateLights );
+  connect( &map, &Qgs3DMapSettings::lightSourcesChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::showLightSourceOriginsChanged, this, &Qgs3DMapScene::updateLights );
   connect( &map, &Qgs3DMapSettings::fieldOfViewChanged, this, &Qgs3DMapScene::updateCameraLens );
   connect( &map, &Qgs3DMapSettings::projectionTypeChanged, this, &Qgs3DMapScene::updateCameraLens );
@@ -145,7 +145,10 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
+  connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
+  connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
 
+  connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -237,6 +240,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
+
+  on3DAxisSettingsChanged();
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -523,6 +528,10 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   if ( fnear < 1 )
     fnear = 1;  // does not really make sense to use negative far plane (behind camera)
 
+  // when zooming in a lot, fnear can become smaller than ffar. This should not happen
+  if ( fnear > ffar )
+    std::swap( fnear, ffar );
+
   if ( fnear == 1e9 && ffar == 0 )
   {
     // the update didn't work out... this should not happen
@@ -658,74 +667,11 @@ void Qgs3DMapScene::updateLights()
   for ( Qt3DCore::QEntity *entity : std::as_const( mLightEntities ) )
     entity->deleteLater();
   mLightEntities.clear();
-  for ( Qt3DCore::QEntity *entity : std::as_const( mLightOriginEntities ) )
-    entity->deleteLater();
-  mLightOriginEntities.clear();
 
-  auto createLightOriginEntity = [ = ]( QVector3D translation, const QColor & color )->Qt3DCore::QEntity *
+  const QList< QgsLightSource * > newLights = mMap.lightSources();
+  for ( const QgsLightSource *source : newLights )
   {
-    Qt3DCore::QEntity *originEntity = new Qt3DCore::QEntity;
-
-    Qt3DCore::QTransform *trLightOriginCenter = new Qt3DCore::QTransform;
-    trLightOriginCenter->setTranslation( translation );
-    originEntity->addComponent( trLightOriginCenter );
-
-    Qt3DExtras::QPhongMaterial *materialLightOriginCenter = new Qt3DExtras::QPhongMaterial;
-    materialLightOriginCenter->setAmbient( color );
-    originEntity->addComponent( materialLightOriginCenter );
-
-    Qt3DExtras::QSphereMesh *rendererLightOriginCenter = new Qt3DExtras::QSphereMesh;
-    rendererLightOriginCenter->setRadius( 20 );
-    originEntity->addComponent( rendererLightOriginCenter );
-
-    originEntity->setEnabled( true );
-    originEntity->setParent( this );
-
-    return originEntity;
-  };
-
-  const auto newPointLights = mMap.pointLights();
-  for ( const QgsPointLightSettings &pointLightSettings : newPointLights )
-  {
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-    lightTransform->setTranslation( QVector3D( pointLightSettings.position().x(),
-                                    pointLightSettings.position().y(),
-                                    pointLightSettings.position().z() ) );
-
-    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
-    light->setColor( pointLightSettings.color() );
-    light->setIntensity( pointLightSettings.intensity() );
-
-    light->setConstantAttenuation( pointLightSettings.constantAttenuation() );
-    light->setLinearAttenuation( pointLightSettings.linearAttenuation() );
-    light->setQuadraticAttenuation( pointLightSettings.quadraticAttenuation() );
-
-    lightEntity->addComponent( light );
-    lightEntity->addComponent( lightTransform );
-    lightEntity->setParent( this );
-    mLightEntities << lightEntity;
-
-    if ( mMap.showLightSourceOrigins() )
-      mLightOriginEntities << createLightOriginEntity( lightTransform->translation(), pointLightSettings.color() );
-  }
-
-  const auto newDirectionalLights = mMap.directionalLights();
-  for ( const QgsDirectionalLightSettings &directionalLightSettings : newDirectionalLights )
-  {
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity;
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-
-    Qt3DRender::QDirectionalLight *light = new Qt3DRender::QDirectionalLight;
-    light->setColor( directionalLightSettings.color() );
-    light->setIntensity( directionalLightSettings.intensity() );
-    QgsVector3D direction = directionalLightSettings.direction();
-    light->setWorldDirection( QVector3D( direction.x(), direction.y(), direction.z() ) );
-
-    lightEntity->addComponent( light );
-    lightEntity->addComponent( lightTransform );
-    lightEntity->setParent( this );
-    mLightEntities << lightEntity;
+    mLightEntities.append( source->createEntity( mMap, this ) );
   }
 
   onShadowSettingsChanged();
@@ -977,6 +923,22 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
     bm->setViewportSize( mCameraController->viewport().size() );
   }
+
+
+  // Finalize adding the 3D transparent objects by adding the layer components to the entities
+  QgsShadowRenderingFrameGraph *frameGraph = mEngine->frameGraph();
+  Qt3DRender::QLayer *layer = frameGraph->transparentObjectLayer();
+  for ( Qt3DExtras::QDiffuseSpecularMaterial *ph : newEntity->findChildren<Qt3DExtras::QDiffuseSpecularMaterial *>() )
+  {
+    if ( ph->diffuse().value<QColor>().alphaF() == 1.0f )
+      continue;
+    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
+    if ( !entity )
+      continue;
+    if ( entity->components().contains( layer ) )
+      continue;
+    entity->addComponent( layer );
+  }
 }
 
 int Qgs3DMapScene::maximumTextureSize() const
@@ -1093,15 +1055,24 @@ void Qgs3DMapScene::onShadowSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
 
-  QList<QgsDirectionalLightSettings> directionalLights = mMap.directionalLights();
+  const QList< QgsLightSource * > lightSources = mMap.lightSources();
+  QList< QgsDirectionalLightSettings * > directionalLightSources;
+  for ( QgsLightSource *source : lightSources )
+  {
+    if ( source->type() == Qgis::LightSourceType::Directional )
+    {
+      directionalLightSources << qgis::down_cast< QgsDirectionalLightSettings * >( source );
+    }
+  }
+
   QgsShadowSettings shadowSettings = mMap.shadowSettings();
   int selectedLight = shadowSettings.selectedDirectionalLight();
-  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLights.count() )
+  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
   {
     shadowRenderingFrameGraph->setShadowRenderingEnabled( true );
     shadowRenderingFrameGraph->setShadowBias( shadowSettings.shadowBias() );
     shadowRenderingFrameGraph->setShadowMapResolution( shadowSettings.shadowMapResolution() );
-    QgsDirectionalLightSettings light = directionalLights[selectedLight];
+    QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
     shadowRenderingFrameGraph->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance() );
   }
   else
@@ -1120,6 +1091,12 @@ void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
   shadowRenderingFrameGraph->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
 }
 
+void Qgs3DMapScene::onDebugOverlayEnabledChanged()
+{
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
+  shadowRenderingFrameGraph->setDebugOverlayEnabled( mMap.isDebugOverlayEnabled() );
+}
+
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
@@ -1133,6 +1110,11 @@ void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
 {
   mCameraController->setCameraMovementSpeed( mMap.cameraMovementSpeed() );
+}
+
+void Qgs3DMapScene::onCameraNavigationModeChanged()
+{
+  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
@@ -1255,3 +1237,19 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
     mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
   } );
 }
+
+void Qgs3DMapScene::on3DAxisSettingsChanged()
+{
+  if ( !m3DAxis )
+  {
+    if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
+    {
+      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+                               engine->root(),
+                               this,
+                               mCameraController,
+                               &mMap );
+    }
+  }
+}
+

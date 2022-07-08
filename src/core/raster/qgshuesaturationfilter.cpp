@@ -221,7 +221,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
 }
 
 // Process a colorization and update resultant HSL & RGB values
-void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h, int &s, int &l )
+void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h, int &s, int &l ) const
 {
   QColor myColor;
 

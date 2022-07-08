@@ -81,6 +81,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRendererUsage( rh.mRendererUsage )
   , mFrameRate( rh.mFrameRate )
   , mCurrentFrame( rh.mCurrentFrame )
+  , mSymbolLayerClipPaths( rh.mSymbolLayerClipPaths )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -129,6 +130,7 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRendererUsage = rh.mRendererUsage;
   mFrameRate = rh.mFrameRate;
   mCurrentFrame = rh.mCurrentFrame;
+  mSymbolLayerClipPaths = rh.mSymbolLayerClipPaths;
   if ( isTemporal() )
     setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
@@ -700,3 +702,12 @@ void QgsRenderContext::setCurrentFrame( long long frame )
   mCurrentFrame = frame;
 }
 
+void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )
+{
+  mSymbolLayerClipPaths[ symbolLayer ].append( path );
+}
+
+QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const
+{
+  return mSymbolLayerClipPaths[ symbolLayer ];
+}

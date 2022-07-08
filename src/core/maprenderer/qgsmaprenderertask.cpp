@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+#include <QImageWriter>
 #include <QTextStream>
 #include <QTimeZone>
 #ifndef QT_NO_PRINTER
@@ -383,7 +384,13 @@ bool QgsMapRendererTask::run()
     }
     else if ( mFileFormat != QLatin1String( "PDF" ) )
     {
-      const bool success = mImage.save( mFileName, mFileFormat.toLocal8Bit().data() );
+      QImageWriter writer( mFileName, mFileFormat.toLocal8Bit().data() );
+      if ( mFileFormat == QLatin1String( "TIF" ) || mFileFormat == QLatin1String( "TIFF" ) )
+      {
+        // Enable LZW compression
+        writer.setCompression( 1 );
+      }
+      const bool success = writer.write( mImage );
       if ( !success )
       {
         mError = ImageSaveFail;

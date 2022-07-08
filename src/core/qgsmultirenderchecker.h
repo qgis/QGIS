@@ -60,7 +60,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     /**
      * Constructor for QgsMultiRenderChecker.
      */
-    QgsMultiRenderChecker() = default;
+    QgsMultiRenderChecker();
 
     virtual ~QgsMultiRenderChecker() = default;
 
@@ -145,6 +145,8 @@ class CORE_EXPORT QgsMultiRenderChecker
     int mMaxSizeDifferenceX = 0;
     int mMaxSizeDifferenceY = 0;
     QgsMapSettings mMapSettings;
+
+    bool mIsCiRun = false;
 };
 
 SIP_FEATURE( TESTS )

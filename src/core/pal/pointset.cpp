@@ -159,7 +159,7 @@ const GEOSPreparedGeometry *PointSet::preparedGeom() const
   return mPreparedGeom;
 }
 
-void PointSet::invalidateGeos()
+void PointSet::invalidateGeos() const
 {
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   if ( mOwnsGeom ) // delete old geometry if we own it
@@ -997,7 +997,7 @@ bool PointSet::boundingBoxIntersects( const PointSet *other ) const
   return y1 <= y2;
 }
 
-void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )
+void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py ) const
 {
   int i;
   double dx, dy, di;

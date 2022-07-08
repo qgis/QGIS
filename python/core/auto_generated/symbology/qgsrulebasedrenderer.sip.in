@@ -361,7 +361,7 @@ Create a rule from an XML definition
 :return: A new rule
 %End
 
-        const QgsRuleBasedRenderer::RuleList &children();
+        const QgsRuleBasedRenderer::RuleList &children() const;
 %Docstring
 Returns all children rules of this rule
 

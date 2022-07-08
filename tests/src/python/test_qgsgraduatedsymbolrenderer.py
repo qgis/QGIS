@@ -164,6 +164,12 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         self.assertEqual(range.lowerValue(), lower, "Lower value getter/setter failed")
         range.setUpperValue(upper)
         self.assertEqual(range.upperValue(), upper, "Upper value getter/setter failed")
+        self.assertEqual(range[0], 123.45)
+        self.assertEqual(range[1], 234.56)
+        with self.assertRaises(IndexError):
+            range[2]
+        with self.assertRaises(IndexError):
+            range[-1]
         range.setLabel(label)
         self.assertEqual(range.label(), label, "Label getter/setter failed")
         range.setRenderState(True)

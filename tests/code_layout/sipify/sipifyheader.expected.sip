@@ -320,6 +320,12 @@ remove argument
     void position( bool keep, bool keep );
     void position( bool keep );
 
+    void method( bool superArg = test );
+    void method( bool myArg1,
+                 bool superArg2 = test, // hola
+                 bool myArg3 );
+
+
     static SIP_PYLIST  changeReturnType( QVector<int> *resultTree = 0, QVector<double> &resultCost = 0 );
 
     Whatever &operator[]( int i ) /Factory/;

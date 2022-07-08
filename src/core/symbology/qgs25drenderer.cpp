@@ -214,7 +214,7 @@ bool Qgs25DRenderer::shadowEnabled() const
   return glowEffect()->enabled();
 }
 
-void Qgs25DRenderer::setShadowEnabled( bool value )
+void Qgs25DRenderer::setShadowEnabled( bool value ) const
 {
   glowEffect()->setEnabled( value );
 }
@@ -224,7 +224,7 @@ QColor Qgs25DRenderer::shadowColor() const
   return glowEffect()->color();
 }
 
-void Qgs25DRenderer::setShadowColor( const QColor &shadowColor )
+void Qgs25DRenderer::setShadowColor( const QColor &shadowColor ) const
 {
   glowEffect()->setColor( shadowColor );
 }
@@ -234,7 +234,7 @@ double Qgs25DRenderer::shadowSpread() const
   return glowEffect()->spread();
 }
 
-void Qgs25DRenderer::setShadowSpread( double spread )
+void Qgs25DRenderer::setShadowSpread( double spread ) const
 {
   glowEffect()->setSpread( spread );
 }
@@ -244,13 +244,13 @@ QColor Qgs25DRenderer::wallColor() const
   return wallLayer()->fillColor();
 }
 
-void Qgs25DRenderer::setWallColor( const QColor &wallColor )
+void Qgs25DRenderer::setWallColor( const QColor &wallColor ) const
 {
   wallLayer()->setFillColor( wallColor );
   wallLayer()->setStrokeColor( wallColor );
 }
 
-void Qgs25DRenderer::setWallShadingEnabled( bool enabled )
+void Qgs25DRenderer::setWallShadingEnabled( bool enabled ) const
 {
   wallLayer()->dataDefinedProperties().property( QgsSymbolLayer::PropertyFillColor ).setActive( enabled );
 }
@@ -265,7 +265,7 @@ QColor Qgs25DRenderer::roofColor() const
   return roofLayer()->fillColor();
 }
 
-void Qgs25DRenderer::setRoofColor( const QColor &roofColor )
+void Qgs25DRenderer::setRoofColor( const QColor &roofColor ) const
 {
   roofLayer()->setFillColor( roofColor );
   roofLayer()->setStrokeColor( roofColor );

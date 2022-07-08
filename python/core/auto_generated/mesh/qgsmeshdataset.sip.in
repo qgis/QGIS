@@ -685,7 +685,7 @@ Returns the minimum value of the whole dataset group
 Returns the maximum value of the whole dataset group
 %End
 
-    void setMinimumMaximum( double min, double max );
+    void setMinimumMaximum( double min, double max ) const;
 %Docstring
 Overrides the minimum and the maximum value of the whole dataset group
 %End
@@ -734,12 +734,12 @@ Sets whether the group contain scalar values
 Returns whether all the datasets contain ``count`` values
 %End
 
-    void calculateStatistic();
+    void calculateStatistic() const;
 %Docstring
 Calculates the statistics (minimum and maximum)
 %End
 
-    void setStatisticObsolete();
+    void setStatisticObsolete() const;
 %Docstring
 Sets statistic obsolete, that means statistic will be recalculated when requested
 %End

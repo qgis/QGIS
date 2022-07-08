@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>283</width>
-    <height>278</height>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,15 +16,25 @@
   <property name="title">
    <string>Widget Display</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QCheckBox" name="mShowLabelCheckBox">
      <property name="text">
       <string>Show label</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item>
+    <widget class="QgsFormLabelFormatWidget" name="mFormLabelFormatWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsCollapsibleGroupBox" name="mWidgetSpecificConfigGroupBox">
      <property name="title">
       <string>GroupBox</string>
@@ -38,6 +48,12 @@
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFormLabelFormatWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsformlabelformatwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -90,7 +90,7 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode &layerNode )
   }
 }
 
-void QgsExpressionFieldBuffer::updateFields( QgsFields &flds )
+void QgsExpressionFieldBuffer::updateFields( QgsFields &flds ) const
 {
   int index = 0;
   const auto constMExpressions = mExpressions;

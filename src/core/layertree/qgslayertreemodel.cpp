@@ -1071,6 +1071,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
 
   mimeData->setData( QStringLiteral( "application/qgis.layertreemodeldata" ), layerTreeDoc.toString().toUtf8() );
   mimeData->setData( QStringLiteral( "application/qgis.application.pid" ), QString::number( QCoreApplication::applicationPid() ).toUtf8() );
+  mimeData->setData( QStringLiteral( "application/qgis.layertree.source" ), QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( this ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) ).toUtf8() );
   mimeData->setData( QStringLiteral( "application/qgis.layertree.layerdefinitions" ), txt.toUtf8() );
   mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ), QgsMimeDataUtils::layerTreeNodesToUriList( nodesFinal ) );
 
@@ -1086,6 +1087,11 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
     return false;
 
   if ( column >= columnCount( parent ) )
+    return false;
+
+  // don't accept drops from some layer tree subclasses to non-matching subclasses
+  const QString restrictTypes( data->data( QStringLiteral( "application/qgis.restrictlayertreemodelsubclass" ) ) );
+  if ( !restrictTypes.isEmpty() && restrictTypes != QString( metaObject()->className() ) )
     return false;
 
   QgsLayerTreeNode *nodeParent = index2node( parent );

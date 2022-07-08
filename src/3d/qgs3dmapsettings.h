@@ -31,6 +31,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
+#include "qgs3daxissettings.h"
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
 #include "qgscameracontroller.h"
@@ -435,28 +436,21 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double debugDepthMapSize() const { return mDebugDepthMapSize; }
 
     /**
-     * Returns list of point lights defined in the scene
-     * \since QGIS 3.6
+     * Returns list of directional light sources defined in the scene.
+     * \see setLightSources()
+     * \since QGIS 3.26
      */
-    QList<QgsPointLightSettings> pointLights() const { return mPointLights; }
+    QList<QgsLightSource *> lightSources() const;
 
     /**
-     * Returns list of directional lights defined in the scene
-     * \since QGIS 3.16
+     * Sets the list of \a light sources defined in the scene.
+     *
+     * Ownership of the lights is transferred to the settings.
+     *
+     * \see lightSources()
+     * \since QGIS 3.26
      */
-    QList<QgsDirectionalLightSettings> directionalLights() const { return mDirectionalLights; }
-
-    /**
-     * Sets list of point lights defined in the scene
-     * \since QGIS 3.6
-     */
-    void setPointLights( const QList<QgsPointLightSettings> &pointLights );
-
-    /**
-     * Sets list of directional lights defined in the scene
-     * \since QGIS 3.16
-     */
-    void setDirectionalLights( const QList<QgsDirectionalLightSettings> &directionalLights );
+    void setLightSources( const QList<QgsLightSource *> &lights SIP_TRANSFER );
 
     /**
      * Returns the camera lens' field of view
@@ -634,6 +628,35 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setViewFrustumVisualizationEnabled( bool enabled );
 
+    /**
+     * Returns the current configuration of 3d axis
+     * \return QGIS 3.26
+     */
+    Qgs3DAxisSettings get3dAxisSettings() const SIP_SKIP { return m3dAxisSettings; }
+
+    /**
+     * Sets the current configuration of 3d axis
+     * \since QGIS 3.26
+     */
+    void set3dAxisSettings( const Qgs3DAxisSettings &axisSettings ) SIP_SKIP;
+
+    /**
+     * Returns whether debug overlay is enabled
+     * \see setIsDebugOverlayEnabled()
+     * \since QGIS 3.26
+     */
+    bool isDebugOverlayEnabled() const { return mIsDebugOverlayEnabled; }
+
+    /**
+     * Sets whether debug overlay is enabled
+     * The debug overlay displays some debugging and profiling information.
+     * It has been introduced in Qt version 5.15.
+     * This parameter is transient. It is not saved in the project parameters.
+     * \see isDebugOverlayEnabled()
+     * \since QGIS 3.26
+     */
+    void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
+
   signals:
 
     /**
@@ -754,6 +777,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void pointLightsChanged();
 
     /**
+     * Emitted when any of the light source settings in the map changes.
+     * \since QGIS 3.26
+     */
+    void lightSourcesChanged();
+
+    /**
      * Emitted when the list of directional lights changes
      * \since QGIS 3.16
      */
@@ -808,6 +837,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void viewFrustumVisualizationEnabledChanged();
 
+    /**
+     * Emitted when 3d axis rendering settings are changed
+     * \since QGIS 3.26
+     */
+    void axisSettingsChanged();
+
+    /**
+     * Emitted when the debug overaly is enabled or disabled
+     * \since QGIS 3.26
+     */
+    void debugOverlayEnabledChanged( bool debugOverlayEnabled );
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -838,8 +879,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
     bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
-    QList<QgsPointLightSettings> mPointLights;  //!< List of point lights defined for the scene
-    QList<QgsDirectionalLightSettings> mDirectionalLights;  //!< List of directional lights defined for the scene
+    QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
     QgsCameraController::NavigationMode mCameraNavigationMode = QgsCameraController::NavigationMode::TerrainBasedNavigation;
@@ -875,6 +915,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mTerrainRenderingEnabled = true;
 
     Qgis::RendererUsage mRendererUsage;
+
+    Qgs3DAxisSettings m3dAxisSettings; //!< 3d axis related configuration
+
+    bool mIsDebugOverlayEnabled = false;
+
 };
 
 

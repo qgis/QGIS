@@ -1056,7 +1056,7 @@ tests:
         type: vector
 
   - algorithm: native:setzfromraster
-    name: Drape points to z
+    name: Drape points to z with scale factor
     params:
       BAND: 1
       INPUT:
@@ -1073,7 +1073,7 @@ tests:
         type: vector
 
   - algorithm: native:setmfromraster
-    name: Drape points to m
+    name: Drape points to m with scale factor
     params:
       BAND: 1
       INPUT:
@@ -1121,6 +1121,41 @@ tests:
     results:
       OUTPUT:
         name: expected/drape_lines_m.shp
+        type: vector
+
+  - algorithm: native:setzfromraster
+    name: Drape points to z with offset
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      OFFSET: -20.0
+    results:
+      OUTPUT:
+        name: expected/drape_points_offset.shp
+        type: vector
+
+  - algorithm: native:setzfromraster
+    name: Drape points to z with scale and offset
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.2
+      OFFSET: 15.0
+    results:
+      OUTPUT:
+        name: expected/drape_points_scale_offset.shp
         type: vector
 
   - algorithm: native:linesubstring

@@ -45,7 +45,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
-  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, [ = ]( const QImage & image )
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
   {
     image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
     mEngine->setRenderCaptureEnabled( false );
@@ -70,14 +70,14 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   mEngine->window()->setCursor( Qt::OpenHandCursor );
   mEngine->window()->installEventFilter( this );
 
-  connect( mSplitter, &QSplitter::splitterMoved, [&]( int, int )
+  connect( mSplitter, &QSplitter::splitterMoved, this, [&]( int, int )
   {
     QRect viewportRect( QPoint( 0, 0 ), mContainer->size() );
     mScene->cameraController()->setViewport( viewportRect );
     mEngine->setSize( viewportRect.size() );
   } );
 
-  connect( mNavigationWidget, &Qgs3DNavigationWidget::sizeChanged, [&]( const QSize & newSize )
+  connect( mNavigationWidget, &Qgs3DNavigationWidget::sizeChanged, this, [&]( const QSize & newSize )
   {
     QSize widgetSize = size();
     QRect viewportRect( QPoint( 0, 0 ), QSize( widgetSize.width() - newSize.width(), widgetSize.height() ) );
@@ -150,7 +150,7 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMap, &Qgs3DMapSettings::setCameraMovementSpeed );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, this, &Qgs3DMapCanvas::cameraNavigationSpeedChanged );
-  connect( cameraController(), &QgsCameraController::navigationModeHotKeyPressed, this, &Qgs3DMapCanvas::onNavigationModeHotKeyPressed );
+  connect( cameraController(), &QgsCameraController::navigationModeChanged, this, &Qgs3DMapCanvas::onNavigationModeChanged );
   connect( cameraController(), &QgsCameraController::requestDepthBufferCapture, this, &Qgs3DMapCanvas::captureDepthBuffer );
 
   connect( mEngine, &QgsAbstract3DEngine::depthBufferCaptured, cameraController(), &QgsCameraController::depthBufferCaptured );
@@ -231,7 +231,7 @@ void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFo
     Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
     mScene->addComponent( screenCaptureFrameAction );
     // Wait to have the render capture enabled in the next frame
-    connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, [ = ]( float )
+    connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [ = ]( float )
     {
       mEngine->requestCaptureImage();
       mScene->removeComponent( screenCaptureFrameAction );
@@ -246,7 +246,7 @@ void Qgs3DMapCanvas::captureDepthBuffer()
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, [ = ]( float )
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [ = ]( float )
   {
     mEngine->requestDepthBufferCapture();
     mScene->removeComponent( screenCaptureFrameAction );
@@ -348,10 +348,9 @@ QSize Qgs3DMapCanvas::windowSize() const
   return mEngine->size();
 }
 
-void Qgs3DMapCanvas::onNavigationModeHotKeyPressed( QgsCameraController::NavigationMode mode )
+void Qgs3DMapCanvas::onNavigationModeChanged( QgsCameraController::NavigationMode mode )
 {
   mMap->setCameraNavigationMode( mode );
-  mScene->cameraController()->setCameraNavigationMode( mode );
 }
 
 void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )

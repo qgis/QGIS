@@ -1703,26 +1703,27 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
     // we don't want multiple signals!
     ScopedIntIncrementor styleChangedSignalBlocker( &mBlockStyleChangedSignal );
 
-    if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+    // need to check whether the default style included a legend, and if not, we need to make a default legend
+    // later...
+    mSetLegendFromStyle = false;
+
+    // first check if there is a default style / propertysheet defined
+    // for this layer and if so apply it
+    // this should take precedence over all
+    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
     {
-      // first try to create a renderer directly from the data provider
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+
+    if ( loadDefaultStyleFlag && !defaultLoadedFlag && isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
+    {
+      // if we didn't load a default style for this layer, try to create a renderer directly from the data provider
       std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
       if ( defaultRenderer )
       {
         defaultLoadedFlag = true;
         setRenderer( defaultRenderer.release() );
       }
-    }
-
-    // need to check whether the default style included a legend, and if not, we need to make a default legend
-    // later...
-    mSetLegendFromStyle = false;
-
-    // else check if there is a default style / propertysheet defined
-    // for this layer and if so apply it
-    if ( !defaultLoadedFlag && loadDefaultStyleFlag )
-    {
-      loadDefaultStyle( defaultLoadedFlag );
     }
 
     // if the default style failed to load or was disabled use some very basic defaults
@@ -1752,9 +1753,14 @@ void QgsVectorLayer::setDataSourcePrivate( const QString &dataSource, const QStr
 
 QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
 {
+  // first try to load a user-defined default style - this should always take precedence
+  QString res = QgsMapLayer::loadDefaultStyle( resultFlag );
+  if ( resultFlag )
+    return res;
+
   if ( isSpatial() && mDataProvider->capabilities() & QgsVectorDataProvider::CreateRenderer )
   {
-    // first try to create a renderer directly from the data provider
+    // otherwise try to create a renderer directly from the data provider
     std::unique_ptr< QgsFeatureRenderer > defaultRenderer( mDataProvider->createRenderer() );
     if ( defaultRenderer )
     {
@@ -1764,9 +1770,8 @@ QString QgsVectorLayer::loadDefaultStyle( bool &resultFlag )
     }
   }
 
-  return QgsMapLayer::loadDefaultStyle( resultFlag );
+  return QString();
 }
-
 
 bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
@@ -1900,6 +1905,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     // required so that source differs between memory layers
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
+  }
+  else if ( provider == QLatin1String( "hana" ) )
+  {
+    // update datasource from data provider computed one
+    mDataSource = mDataProvider->dataSourceUri( false );
   }
 
   connect( mDataProvider, &QgsVectorDataProvider::dataChanged, this, &QgsVectorLayer::emitDataChanged );
@@ -4979,10 +4989,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     QDomElement pointPlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "PointPlacement" ) );
     if ( !pointPlacementElem.isNull() )
     {
-      settings.placement = QgsPalLayerSettings::OverPoint;
+      settings.placement = Qgis::LabelPlacement::OverPoint;
       if ( geometryType() == QgsWkbTypes::LineGeometry )
       {
-        settings.placement = QgsPalLayerSettings::Horizontal;
+        settings.placement = Qgis::LabelPlacement::Horizontal;
       }
 
       QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
@@ -5055,7 +5065,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       QDomElement linePlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "LinePlacement" ) );
       if ( !linePlacementElem.isNull() )
       {
-        settings.placement = QgsPalLayerSettings::Line;
+        settings.placement = Qgis::LabelPlacement::Line;
       }
     }
   }
@@ -5108,17 +5118,17 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       }
       else if ( it.key() == QLatin1String( "maxDisplacement" ) )
       {
-        settings.placement = QgsPalLayerSettings::AroundPoint;
+        settings.placement = Qgis::LabelPlacement::AroundPoint;
       }
       else if ( it.key() == QLatin1String( "followLine" ) && it.value() == QLatin1String( "true" ) )
       {
         if ( geometryType() == QgsWkbTypes::PolygonGeometry )
         {
-          settings.placement = QgsPalLayerSettings::PerimeterCurved;
+          settings.placement = Qgis::LabelPlacement::PerimeterCurved;
         }
         else
         {
-          settings.placement = QgsPalLayerSettings::Curved;
+          settings.placement = Qgis::LabelPlacement::Curved;
         }
       }
       else if ( it.key() == QLatin1String( "maxAngleDelta" ) )
@@ -5134,11 +5144,11 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       // miscellaneous options
       else if ( it.key() == QLatin1String( "conflictResolution" ) && it.value() == QLatin1String( "false" ) )
       {
-        settings.displayAll = true;
+        settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
       }
       else if ( it.key() == QLatin1String( "forceLeftToRight" ) && it.value() == QLatin1String( "false" ) )
       {
-        settings.upsidedownLabels = QgsPalLayerSettings::ShowAll;
+        settings.upsidedownLabels = Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown;
       }
       else if ( it.key() == QLatin1String( "group" ) && it.value() == QLatin1String( "yes" ) )
       {
@@ -5437,13 +5447,13 @@ bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &m
 
 
 void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &description,
-    bool useAsDefault, const QString &uiFileContent, QString &msgError )
+    bool useAsDefault, const QString &uiFileContent, QString &msgError, QgsMapLayer::StyleCategories categories )
 {
 
   QString sldStyle, qmlStyle;
   QDomDocument qmlDocument, sldDocument;
   QgsReadWriteContext context;
-  exportNamedStyle( qmlDocument, msgError, context );
+  exportNamedStyle( qmlDocument, msgError, context, categories );
   if ( !msgError.isNull() )
   {
     return;

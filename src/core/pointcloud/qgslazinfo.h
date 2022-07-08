@@ -102,6 +102,11 @@ class CORE_EXPORT QgsLazInfo
     //! Returns the number of extrabytes contained in the LAZ dataset
     int extrabytesCount() const { return mHeader.ebCount(); }
 
+    //! Returns the absolute offset to the first extended point record in the LAZ file
+    uint64_t firstEvlrOffset() const { return mHeader.evlr_offset; }
+    //! Returns the absolute offset to the first variable length record in the LAZ file
+    uint32_t evlrCount() const { return mHeader.evlr_count; }
+
     //! Returns the coordinate system stored in the LAZ file
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
@@ -117,6 +122,11 @@ class CORE_EXPORT QgsLazInfo
     //! Returns the list of extrabytes contained in the LAZ file
     QVector<ExtraBytesAttributeDetails> extrabytes() const { return mExtrabyteAttributes; }
 
+#ifndef SIP_RUN
+    //! Returns the LAZPERF header object
+    lazperf::header14 header() const { return mHeader; }
+#endif
+
     //! Static function to parse the raw extrabytes VLR into a list of recognizable extrabyte attributes
     static QVector<ExtraBytesAttributeDetails> parseExtrabytes( char *rawData, int length, int pointRecordLength );
 
@@ -124,6 +134,9 @@ class CORE_EXPORT QgsLazInfo
     static QgsLazInfo fromFile( std::ifstream &file );
     //! Static function to create a QgsLazInfo class from a file over network
     static QgsLazInfo fromUrl( QUrl &url );
+
+    //! Static function to check whether the server of URL \a url supports range queries
+    static bool supportsRangeQueries( QUrl &url );
 
   private:
     void parseHeader( lazperf::header14 &header );

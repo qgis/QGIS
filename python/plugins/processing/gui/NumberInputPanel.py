@@ -272,10 +272,10 @@ class DistanceInputPanel(NumberInputPanel):
             self.units_combo.addItem(QgsUnitTypes.toString(u), u)
 
         label_margin = self.fontMetrics().width('X')
-        self.layout().insertSpacing(1, label_margin / 2)
+        self.layout().insertSpacing(1, int(label_margin / 2))
         self.layout().insertWidget(2, self.label)
         self.layout().insertWidget(3, self.units_combo)
-        self.layout().insertSpacing(4, label_margin / 2)
+        self.layout().insertSpacing(4, int(label_margin / 2))
         self.warning_label = QLabel()
         icon = QgsApplication.getThemeIcon('mIconWarning.svg')
         size = max(24, self.spnValue.height() * 0.5)

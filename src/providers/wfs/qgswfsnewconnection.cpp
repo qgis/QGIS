@@ -23,7 +23,7 @@
 #include <algorithm>
 
 QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connName ):
-  QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, connName )
+  QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, QStringLiteral( "WFS" ), connName )
 {
   connect( wfsVersionDetectButton(), &QPushButton::clicked, this, &QgsWFSNewConnection::versionDetectButton );
 }

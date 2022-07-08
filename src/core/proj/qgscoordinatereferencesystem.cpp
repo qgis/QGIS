@@ -2143,7 +2143,7 @@ void QgsCoordinateReferenceSystem::setValidationHint( const QString &html )
   mValidationHint = html;
 }
 
-QString QgsCoordinateReferenceSystem::validationHint()
+QString QgsCoordinateReferenceSystem::validationHint() const
 {
   return mValidationHint;
 }

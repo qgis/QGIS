@@ -181,26 +181,26 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
-        sld_size_px = 12 / (0.28 * 0.001)
+        sld_size_meters_at_scale = 12
 
         sl = layer.renderer().symbol().symbolLayers()[0]
         size = sl.size()
         unit = sl.outputUnit()
-        self.assertEqual(unit, QgsUnitTypes.RenderPixels)
-        self.assertAlmostEqual(size, sld_size_px, delta=0.1)
+        self.assertEqual(unit, QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertEqual(size, sld_size_meters_at_scale)
 
         # load a sld with marker size with uom attribute in foot
         sld = 'symbol_layer/QgsSvgMarkerSymbolLayerUomFoot.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
-        sld_size_px = 12 * (304.8 / 0.28)
+        sld_size_meters_at_scale = 12 * 0.3048
 
         sl = layer.renderer().symbol().symbolLayers()[0]
         size = sl.size()
         unit = sl.outputUnit()
-        self.assertEqual(unit, QgsUnitTypes.RenderPixels)
-        self.assertAlmostEqual(size, sld_size_px, delta=0.1)
+        self.assertEqual(unit, QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertAlmostEqual(size, sld_size_meters_at_scale, delta=0.1)
 
     def testSymbolSize(self):
         # create a layers

@@ -465,7 +465,7 @@ QString KeyboardTranslatorReader::description() const
 {
     return _description;
 }
-bool KeyboardTranslatorReader::hasNextEntry()
+bool KeyboardTranslatorReader::hasNextEntry() const
 {
     return _hasNext;
 }

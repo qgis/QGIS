@@ -313,7 +313,7 @@ void ProjectorData::calcSrcExtent()
   QgsDebugMsgLevel( "mSrcExtent = " + mSrcExtent.toString(), 4 );
 }
 
-QString ProjectorData::cpToString()
+QString ProjectorData::cpToString() const
 {
   QString myString;
   for ( int i = 0; i < mCPRows; i++ )

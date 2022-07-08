@@ -109,7 +109,7 @@ class QgsImageWarper
 
     bool openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
                                  const GDALTransformerFunc &pfnTransform, gdal::dataset_unique_ptr &hSrcDS,
-                                 gdal::warp_options_unique_ptr &psWarpOptions );
+                                 gdal::warp_options_unique_ptr &psWarpOptions ) const;
 
     bool createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY,
                                    double *adfGeoTransform, bool useZeroAsTrans, const QString &compression, const QgsCoordinateReferenceSystem &crs );

@@ -520,7 +520,7 @@ Fill in histogram defaults if not specified
     void initStatistics( QgsRasterBandStats &statistics, int bandNo,
                          int stats = QgsRasterBandStats::All,
                          const QgsRectangle &boundingBox = QgsRectangle(),
-                         int binCount = 0 );
+                         int binCount = 0 ) const;
 %Docstring
 Fill in statistics defaults if not specified
 %End
@@ -529,8 +529,6 @@ Fill in statistics defaults if not specified
     QgsRasterInterface( const QgsRasterInterface & );
     QgsRasterInterface &operator=( const QgsRasterInterface & );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

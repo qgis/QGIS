@@ -28,6 +28,7 @@
 #include "qgsunittypes.h"
 #include "qgssymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsfontmanager.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -1391,13 +1392,15 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
 
   const Qgis::MarkerShape shape = decodeShape( name );
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
-  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
-  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
+  offset.setX( offset.x() * scaleFactor );
+  offset.setY( offset.y() * scaleFactor );
 
   QgsSimpleMarkerSymbolLayer *m = new QgsSimpleMarkerSymbolLayer( shape, size );
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setColor( color );
   m->setStrokeColor( strokeColor );
   m->setAngle( angle );
@@ -1615,7 +1618,7 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
 
 void QgsSimpleMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
-  QgsMarkerSymbolLayer::setOutputUnit( unit );
+  QgsSimpleMarkerSymbolLayerBase::setOutputUnit( unit );
   mStrokeWidthUnit = unit;
 }
 
@@ -1887,6 +1890,13 @@ bool QgsFilledMarkerSymbolLayer::usesMapUnits() const
   return mSizeUnit == QgsUnitTypes::RenderMapUnits || mSizeUnit == QgsUnitTypes::RenderMetersInMapUnits
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits
          || ( mFill && mFill->usesMapUnits() );
+}
+
+void QgsFilledMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsSimpleMarkerSymbolLayerBase::setOutputUnit( unit );
+  if ( mFill )
+    mFill->setOutputUnit( unit );
 }
 
 void QgsFilledMarkerSymbolLayer::draw( QgsSymbolRenderContext &context, Qgis::MarkerShape shape, const QPolygonF &polygon, const QPainterPath &path )
@@ -2254,7 +2264,9 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
       usePict = false;
 
       if ( context.selected() )
-        QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+      {
+        QgsImageOperation::overlayColor( img, context.renderContext().selectionColor() );
+      }
 
       //consider transparency
       if ( !qgsDoubleNear( context.opacity(), 1.0 ) )
@@ -2537,8 +2549,10 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
     return nullptr;
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  size = size * scaleFactor;
 
   if ( mimeType != QLatin1String( "image/svg+xml" ) )
     return nullptr;
@@ -2557,7 +2571,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
   QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( path, size );
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setFillColor( fillColor );
   //m->setStrokeColor( strokeColor );
   //m->setStrokeWidth( strokeWidth );
@@ -2973,7 +2987,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   {
     if ( context.selected() )
     {
-      QgsImageOperation::adjustHueSaturation( img, 1.0, context.renderContext().selectionColor(), 1.0, context.renderContext().feedback() );
+      QgsImageOperation::overlayColor( img, context.renderContext().selectionColor() );
     }
 
     p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
@@ -3287,7 +3301,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
-  mFont = QFont( mFontFamily );
+  mFont = QFont( QgsApplication::fontManager()->processFontFamilyName( mFontFamily ) );
   if ( !mFontStyle.isEmpty() )
   {
     mFont.setStyleName( QgsFontUtils::translateNamedStyle( mFontStyle ) );
@@ -3493,7 +3507,8 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   {
     context.setOriginalValueVariable( mFontFamily );
     const QString fontFamily = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontFamily, context.renderContext().expressionContext(), mFontFamily, &ok );
-    mFont.setFamily( ok ? fontFamily : mFontFamily );
+    const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( ok ? fontFamily : mFontFamily );
+    mFont.setFamily( processedFamily );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
   {
@@ -3625,6 +3640,12 @@ bool QgsFontMarkerSymbolLayer::usesMapUnits() const
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
+void QgsFontMarkerSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsMarkerSymbolLayer::setOutputUnit( unit );
+  mStrokeWidthUnit = unit;
+}
+
 QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &context )
 {
   QPointF chrOffset = mChrOffset;
@@ -3697,13 +3718,15 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
+  double scaleFactor = 1.0;
   const QString uom = element.attribute( QStringLiteral( "uom" ) );
-  offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
-  offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
-  size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( uom, &scaleFactor );
+  offset.setX( offset.x() * scaleFactor );
+  offset.setY( offset.y() * scaleFactor );
+  size = size * scaleFactor;
 
   QgsMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, QChar( chr ), size, color );
-  m->setOutputUnit( QgsUnitTypes::RenderUnit::RenderPixels );
+  m->setOutputUnit( sldUnitSize );
   m->setAngle( angle );
   m->setOffset( offset );
   return m;
@@ -3712,9 +3735,12 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
 void QgsFontMarkerSymbolLayer::resolveFonts( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   const QString fontFamily = properties.value( QStringLiteral( "font" ), DEFAULT_FONTMARKER_FONT ).toString();
-  if ( !QgsFontUtils::fontFamilyMatchOnSystem( fontFamily ) )
+  const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( fontFamily );
+  QString matched;
+  if ( !QgsFontUtils::fontFamilyMatchOnSystem( processedFamily )
+       && !QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
   {
-    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( fontFamily ) );
+    context.pushMessage( QObject::tr( "Font “%1” not available on system" ).arg( processedFamily ) );
   }
 }
 
@@ -3793,8 +3819,30 @@ QgsAnimatedMarkerSymbolLayer *QgsAnimatedMarkerSymbolLayer::clone() const
   return m.release();
 }
 
+void QgsAnimatedMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
+{
+  QgsRasterMarkerSymbolLayer::startRender( context );
+
+  mPreparedPaths.clear();
+  if ( !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) && !mPath.isEmpty() )
+  {
+    QgsApplication::imageCache()->prepareAnimation( mPath );
+    mStaticPath = true;
+  }
+  else
+  {
+    mStaticPath = false;
+  }
+}
+
 QImage QgsAnimatedMarkerSymbolLayer::fetchImage( QgsRenderContext &context, const QString &path, QSize size, bool preserveAspectRatio, double opacity ) const
 {
+  if ( !mStaticPath && !mPreparedPaths.contains( path ) )
+  {
+    QgsApplication::imageCache()->prepareAnimation( path );
+    mPreparedPaths.insert( path );
+  }
+
   const long long mapFrameNumber = context.currentFrame();
   const int totalFrameCount = QgsApplication::imageCache()->totalFrameCount( path, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
   const double markerAnimationDuration = totalFrameCount / mFrameRateFps;

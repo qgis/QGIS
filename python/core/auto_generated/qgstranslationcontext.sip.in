@@ -62,7 +62,7 @@ Registers the ``source`` to be translated. It's the text of the object needed to
 The ``context`` defines in what context the object is used. Means layer name and sub category of object needed to be translated.
 %End
 
-    void writeTsFile( const QString &locale );
+    void writeTsFile( const QString &locale ) const;
 %Docstring
 Writes the Ts-file
 %End

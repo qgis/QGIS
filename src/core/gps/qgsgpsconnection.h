@@ -88,6 +88,20 @@ class CORE_EXPORT QgsSatelliteInfo
      * Signal strength (0-99dB), or -1 if not available.
      */
     int signal = -1;
+
+    bool operator==( const QgsSatelliteInfo &other ) const
+    {
+      return id == other.id &&
+             inUse == other.inUse &&
+             elevation == other.elevation &&
+             azimuth == other.azimuth &&
+             signal == other.signal;
+    }
+
+    bool operator!=( const QgsSatelliteInfo &other ) const
+    {
+      return !operator==( other );
+    }
 };
 
 /**

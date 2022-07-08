@@ -305,7 +305,7 @@ class CORE_EXPORT QgsAbstractGeoPdfExporter
     /**
      * Returns the last error message encountered during the export.
      */
-    QString errorMessage() { return mErrorMessage; }
+    QString errorMessage() const { return mErrorMessage; }
 
     /**
      * Returns a file path to use for temporary files required for GeoPDF creation.

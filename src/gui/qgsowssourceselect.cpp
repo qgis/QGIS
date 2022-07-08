@@ -6,9 +6,7 @@
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
     wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
     wms-c support        : (C) 2010 Juergen E. Fischer < jef at norbit dot de >, norBIT GmbH
-
     generalized          : (C) 2012 Radim Blazek, based on qgswmssourceselect.cpp
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -113,9 +111,29 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mCRSWidget->hide();
     mCacheWidget->hide();
   }
+  prepareExtent();
 
   // set up the WMS connections we already know about
   populateConnectionList();
+}
+
+void QgsOWSSourceSelect::setMapCanvas( QgsMapCanvas *mapCanvas )
+{
+  QgsAbstractDataSourceWidget::setMapCanvas( mapCanvas );
+  prepareExtent();
+}
+
+void QgsOWSSourceSelect::prepareExtent()
+{
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  mSpatialExtentBox->setOutputCrs( crs );
+  QgsMapCanvas *canvas = mapCanvas();
+  if ( !canvas )
+    return;
+  QgsCoordinateReferenceSystem destinationCrs = canvas->mapSettings().destinationCrs();
+  mSpatialExtentBox->setCurrentExtent( destinationCrs.bounds(), destinationCrs );
+  mSpatialExtentBox->setOutputExtentFromCurrent();
+  mSpatialExtentBox->setMapCanvas( canvas );
 }
 
 void QgsOWSSourceSelect::refresh()

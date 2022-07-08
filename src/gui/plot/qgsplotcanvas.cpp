@@ -41,6 +41,8 @@ QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
 
   setFocusPolicy( Qt::StrongFocus );
 
+  setRenderHints( QPainter::Antialiasing );
+
   mSpacePanTool = new QgsPlotToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsPlotToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsPlotToolTemporaryKeyZoom( this );
@@ -287,7 +289,7 @@ void QgsPlotCanvas::scalePlot( double )
 
 }
 
-void QgsPlotCanvas::zoomToRect( const QRectF )
+void QgsPlotCanvas::zoomToRect( const QRectF & )
 {
 
 }

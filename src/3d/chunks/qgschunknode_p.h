@@ -217,7 +217,7 @@ class QgsChunkNode
      * Will recursively walk up the list of all parent's to the root node and
      * update each in turn.
      */
-    void updateParentBoundingBoxesRecursively();
+    void updateParentBoundingBoxesRecursively() const;
 
     //! Sets whether the node has any data to be displayed. Can be used to set to FALSE after load returned no data
     void setHasData( bool hasData ) { mHasData = hasData; }

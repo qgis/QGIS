@@ -484,6 +484,126 @@ class TestQgsWmsCapabilities: public QObject
       QVERIFY( capabilities.identifyCapabilities() == capability );
     }
 
+    void wmtsTimeDimensionParsing()
+    {
+      QgsWmsCapabilities capabilities;
+      const QgsWmsParserSettings config;
+
+      const QByteArray configData( R"""(<Capabilities>
+      <ows:ServiceIdentification>
+          <ows:Title>TERN Landscapes Tile Services</ows:Title>
+          <ows:ServiceType>OGC WMTS</ows:ServiceType>
+          <ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+      </ows:ServiceIdentification>
+      <ows:ServiceProvider>
+          <ows:ServiceContact>
+              <ows:ContactInfo/>
+          </ows:ServiceContact>
+      </ows:ServiceProvider>
+      <Contents>
+          <Layer>
+              <ows:Title>ETa Scaled</ows:Title>
+              <ows:Abstract>Mapcache serving CMRSET ETa</ows:Abstract>
+              <ows:WGS84BoundingBox>
+                  <ows:LowerCorner>109.999000 -45.081000</ows:LowerCorner>
+                  <ows:UpperCorner>155.005000 -9.978000</ows:UpperCorner>
+              </ows:WGS84BoundingBox>
+              <ows:Identifier>ETaScaled</ows:Identifier>
+              <Style isDefault="true">
+                  <ows:Identifier>default</ows:Identifier>
+              </Style>
+              <Format>image/png</Format>
+              <Dimension>
+                  <ows:Identifier>time</ows:Identifier>
+                  <Default>current</Default>
+                  <Value>2005-08-01T00:00:00Z</Value>
+                  <Value>2016-03-01T00:00:00Z</Value>
+                  <Value>2005-07-01T00:00:00Z</Value>
+                  <Value>2009-02-01T00:00:00Z</Value>
+              </Dimension>
+              <TileMatrixSetLink>
+                  <TileMatrixSet>WGS84</TileMatrixSet>
+                  <TileMatrixSetLimits>
+                      <TileMatrixLimits>
+                          <TileMatrix>WGS84:0</TileMatrix>
+                          <MinTileRow>0</MinTileRow>
+                          <MaxTileRow>0</MaxTileRow>
+                          <MinTileCol>0</MinTileCol>
+                          <MaxTileCol>1</MaxTileCol>
+                      </TileMatrixLimits>
+                  </TileMatrixSetLimits>
+              </TileMatrixSetLink>
+              <TileMatrixSetLink>
+                  <TileMatrixSet>g</TileMatrixSet>
+              </TileMatrixSetLink>
+              <ResourceURL format="image/png" resourceType="tile" template="https:\/\/landscapes-mapserver.tern.org.au/mapcache/wmts/1.0.0/ETaScaled/default/{time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+          </Layer>
+          <TileMatrixSet>
+              <ows:Identifier>g</ows:Identifier>
+              <ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.3:900913">
+                  <ows:LowerCorner>-20037508.342789 -20037508.342789</ows:LowerCorner>
+                  <ows:UpperCorner>20037508.342789 20037508.342789</ows:UpperCorner>
+              </ows:BoundingBox>
+              <ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.3:900913</ows:SupportedCRS>
+              <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
+              <TileMatrix>
+                  <ows:Identifier>0</ows:Identifier>
+                  <ScaleDenominator>559082264.02871787548065185547</ScaleDenominator>
+                  <TopLeftCorner>-20037508.342789 20037508.342789</TopLeftCorner>
+                  <TileWidth>256</TileWidth>
+                  <TileHeight>256</TileHeight>
+                  <MatrixWidth>1</MatrixWidth>
+                  <MatrixHeight>1</MatrixHeight>
+              </TileMatrix>
+          </TileMatrixSet>
+      </Contents>
+</Capabilities>)""" );
+
+      QVERIFY( capabilities.parseResponse( configData, config ) );
+
+      QCOMPARE( capabilities.supportedTileLayers().size(), 1 );
+      const QgsWmtsTileLayer tileLayer = capabilities.supportedTileLayers().at( 0 );
+      QCOMPARE( tileLayer.title, QStringLiteral( "ETa Scaled" ) );
+      QCOMPARE( tileLayer.timeDimensionIdentifier, QStringLiteral( "time" ) );
+
+      QCOMPARE( tileLayer.allTimeRanges, QList< QgsDateTimeRange >(
+      {
+        QgsDateTimeRange( QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ) ),
+        QgsDateTimeRange( QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ),
+        QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ) ),
+        QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
+      } ) );
+      QCOMPARE( tileLayer.temporalExtent, QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ) );
+      QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, QgsUnitTypes::TemporalUnit::TemporalIrregularStep ) );
+      QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
+      QCOMPARE( tileLayer.defaultTimeDimensionValue, QStringLiteral( "current" ) );
+    }
+
+    void wmtsTimeDimensionValue_data()
+    {
+      QTest::addColumn<QString>( "value" );
+      QTest::addColumn<QgsDateTimeRange>( "range" );
+      QTest::addColumn<int>( "format" );
+
+      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
+      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
+      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 12, 31 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
+      QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" ) << QString( "2018-03-01T16:23:44Z" ) << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
+    }
+
+    void wmtsTimeDimensionValue()
+    {
+      QFETCH( QString, value );
+      QFETCH( QgsDateTimeRange, range );
+      QFETCH( int, format );
+
+      QgsWmtsTileLayer::WmtsTimeFormat resFormat;
+      QgsDateTimeRange res = QgsWmsSettings::parseWmtsTimeValue( value, resFormat );
+      QCOMPARE( res.begin(), range.begin() );
+      QCOMPARE( res.end(), range.end() );
+      QCOMPARE( static_cast< int >( resFormat ), format );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

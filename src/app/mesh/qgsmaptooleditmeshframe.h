@@ -239,7 +239,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void clearSelection();
 
     void setMovingRubberBandValidity( bool valid );
-    bool isSelectionGrapped( QgsPointXY &grappedPoint );
+    bool isSelectionGrapped( QgsPointXY &grappedPoint ) const;
 
     void forceByLineReleaseEvent( QgsMapMouseEvent *e );
     void forceByLineBySelectedFeature( QgsMapMouseEvent *e );

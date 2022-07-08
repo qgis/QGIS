@@ -44,7 +44,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapSettings,
                        QgsProperty,
                        QgsSymbolLayer,
-                       QgsRenderContext
+                       QgsRenderContext,
+                       QgsFeature,
+                       QgsGeometry
                        )
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
@@ -183,6 +185,46 @@ class TestQgsPointClusterRenderer(unittest.TestCase):
         result = renderchecker.runTest('expected_cluster_variables')
         self.layer.renderer().setClusterSymbol(old_marker)
         self.assertTrue(result)
+
+    def testMultiPoint(self):
+        """
+        Test multipoint handling
+        """
+        layer = QgsVectorLayer('Multipoint?field=cat:string', '', 'memory')
+        self.assertTrue(layer.isValid())
+
+        f = QgsFeature(layer.fields())
+        f.setAttributes(['a'])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(5 5, 5 6, 9 9)'))
+        layer.dataProvider().addFeature(f)
+        f.setAttributes(['b'])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(2 1, 2 2, 5 5)'))
+        layer.dataProvider().addFeature(f)
+        f.setAttributes(['c'])
+        f.setGeometry(QgsGeometry.fromWkt('MultiPoint(9 1)'))
+        layer.dataProvider().addFeature(f)
+
+        renderer = QgsPointClusterRenderer()
+        sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
+        sub_renderer = QgsSingleSymbolRenderer(sym1)
+        renderer.setEmbeddedRenderer(sub_renderer)
+        renderer.setClusterSymbol(QgsMarkerSymbol.createSimple({'color': '#ffff00', 'size': '3', 'outline_style': 'no'}))
+        renderer.setToleranceUnit(QgsUnitTypes.RenderMapUnits)
+        renderer.setTolerance(2)
+        layer.setRenderer(renderer)
+
+        rendered_layers = [layer]
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setExtent(QgsRectangle(0, 0, 10, 10))
+        mapsettings.setLayers(rendered_layers)
+
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('cluster_renderer')
+        renderchecker.setControlName('expected_cluster_multipoint')
+        self.assertTrue(renderchecker.runTest('expected_cluster_multipoint'))
 
     def testUsedAttributes(self):
         ctx = QgsRenderContext.fromMapSettings(self.mapsettings)

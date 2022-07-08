@@ -20,6 +20,7 @@
 #include "qgslabelfeature.h"
 #include "qgstextdocument.h"
 #include "qgstextmetrics.h"
+#include "qgspallabeling.h"
 #include <optional>
 
 class QgsTextCharacterFormat;
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
     //! Sets font to be used for rendering
     void setDefinedFont( const QFont &f ) { mDefinedFont = f; }
     //! Font to be used for rendering
-    QFont definedFont() { return mDefinedFont; }
+    QFont definedFont() const { return mDefinedFont; }
 
     /**
      * Metrics of the font for rendering.

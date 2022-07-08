@@ -42,7 +42,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * Ownership of the \a layers are transferred to the symbol.
      */
     QgsFillSymbol( const QgsSymbolLayerList &layers SIP_TRANSFER = QgsSymbolLayerList() );
-    void setAngle( double angle );
+    void setAngle( double angle ) const;
 
     /**
      * Renders the symbol using the given render \a context.
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 
   private:
 
-    void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context );
+    void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) const;
     //! Calculates the bounds of a polygon including rings
     QRectF polygonBounds( const QPolygonF &points, const QVector<QPolygonF> *rings ) const;
     //! Translates the rings in a polygon by a set distance

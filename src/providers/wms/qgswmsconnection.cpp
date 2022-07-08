@@ -28,33 +28,30 @@
 #include "qgssettings.h"
 #include "qgsowsconnection.h"
 
+static const QString SERVICE_WMS = QStringLiteral( "WMS" );
+
+
 QgsWMSConnection::QgsWMSConnection( const QString &connName )
-  : QgsOwsConnection( QStringLiteral( "WMS" ), connName )
+  : QgsOwsConnection( SERVICE_WMS, connName )
 {
 }
 
 QStringList QgsWMSConnection::connectionList()
 {
-  QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "qgis/connections-wms" ) );
-  return settings.childGroups();
+  return QgsOwsConnection::connectionList( SERVICE_WMS );
 }
 
 QString QgsWMSConnection::selectedConnection()
 {
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/connections-wms/selected" ) ).toString();
+  return QgsOwsConnection::selectedConnection( SERVICE_WMS );
 }
 
 void QgsWMSConnection::setSelectedConnection( const QString &name )
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/connections-wms/selected" ), name );
+  QgsOwsConnection::setSelectedConnection( SERVICE_WMS, name );
 }
 
 void QgsWMSConnection::deleteConnection( const QString &name )
 {
-  QgsSettings settings;
-  settings.remove( "qgis/connections-wms/" + name );
-  settings.remove( "qgis/WMS/" + name );
+  QgsOwsConnection::deleteConnection( SERVICE_WMS, name );
 }

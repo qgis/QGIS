@@ -60,15 +60,10 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   QString errorTitle, errorMessage;
 
   const QString authcfg = mDataSource.authConfigId();
-  QgsHttpHeaders headers;
-  const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
-  if ( !referer.isEmpty() )
-    headers[ QStringLiteral( "Referer" )] = referer;
-
   const QVariantMap queryData = QgsArcGisRestQueryUtils::getObjects(
                                   mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                                   QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                                  filterRect, errorTitle, errorMessage, headers, feedback );
+                                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), feedback );
 
   if ( queryData.isEmpty() )
   {
@@ -151,12 +146,8 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   QString errorText;
 
   const QString authcfg = mDataSource.authConfigId();
-  QgsHttpHeaders headers;
-  const QString referer = mDataSource.param( QStringLiteral( "referer" ) );
-  if ( !referer.isEmpty() )
-    headers[ QStringLiteral( "Referer" )] = referer;
   const QList<quint32> featuresInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                        extent, errorTitle, errorText, authcfg, headers, feedback );
+                                        extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback );
 
   QgsFeatureIds ids;
   for ( const quint32 id : featuresInRect )

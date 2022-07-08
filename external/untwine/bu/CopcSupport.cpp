@@ -36,7 +36,7 @@ CopcSupport::CopcSupport(const BaseInfo& b) : m_b(b),
     m_ebVlr(),
     m_wktVlr(b.srs.getWKT())
 {
-    m_f.open(b.opts.outputName, std::ios::out | std::ios::binary);
+    m_f.open(toNative(b.opts.outputName), std::ios::out | std::ios::binary);
 
     //ABELL
     m_header.file_source_id = 0;

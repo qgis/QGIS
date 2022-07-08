@@ -137,17 +137,14 @@ class TestQgsServerAccessControl(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
-        """Run before all tests"""
-        cls._server = QgsServer()
+
+        super().setUpClass()
+
+        cls._server = cls.server  # TODO: drop this
         cls._execute_request("")
-        cls._server_iface = cls._server.serverInterface()
+        cls._server_iface = cls.server.serverInterface()
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        del cls._server
 
     def setUp(self):
         super().setUp()

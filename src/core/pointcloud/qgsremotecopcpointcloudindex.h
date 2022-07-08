@@ -52,6 +52,8 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
     explicit QgsRemoteCopcPointCloudIndex();
     ~QgsRemoteCopcPointCloudIndex();
 
+    std::unique_ptr<QgsPointCloudIndex> clone() const override;
+
     QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
     void load( const QString &url ) override;
@@ -64,6 +66,13 @@ class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
     bool isValid() const override;
 
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Remote; }
+
+    /**
+     * Copies common properties to the \a destination index
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( QgsRemoteCopcPointCloudIndex *destination ) const;
+
   protected:
     virtual bool fetchNodeHierarchy( const IndexedPointCloudNode &nodeId ) const override;
     virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const override;

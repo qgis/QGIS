@@ -11,6 +11,7 @@
 
 
 
+
 class QgsImageCache : QgsAbstractContentCacheBase
 {
 %Docstring(signature="appended")
@@ -34,6 +35,8 @@ reuse without incurring the cost of resampling on every render.
 %Docstring
 Constructor for QgsImageCache, with the specified ``parent`` object.
 %End
+
+    ~QgsImageCache();
 
     long maximumSize() const;
 %Docstring
@@ -122,6 +125,13 @@ be ``True`` from GUI based applications (like the main QGIS application) or cras
 use in external scripts or QGIS server.
 
 If the image could not be read or is not an animated format then -1 is returned.
+
+.. versionadded:: 3.26
+%End
+
+    void prepareAnimation( const QString &path );
+%Docstring
+Prepares for optimized retrieval of frames for the animation at the given ``path``.
 
 .. versionadded:: 3.26
 %End

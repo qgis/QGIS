@@ -11,7 +11,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 
 from qgis import core as qgis_core
-from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel
+from qgis.core import Qgis, QgsSettings, QgsSettingsEntryVariant, QgsSettingsEntryString, QgsSettingsEntryStringList, QgsSettingsEntryBool, QgsSettingsEntryInteger, QgsSettingsEntryDouble, QgsSettingsEntryEnumFlag, QgsUnitTypes, QgsMapLayerProxyModel, QgsSettingsEntryGroup
 from qgis.testing import start_app, unittest
 
 from qgis.PyQt.QtGui import QColor
@@ -79,7 +79,7 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
     def test_settings_plugin_key(self):
         # be sure that the constructor in PyQGIS only creates keys with plugins prefix
-        settings_types = [x for x in dir(qgis_core) if x.startswith('QgsSettingsEntry') and not x.endswith('Base')]
+        settings_types = [x for x in dir(qgis_core) if x.startswith('QgsSettingsEntry') and not x.endswith('Base') and x != 'QgsSettingsEntryGroup']
         hardcoded_types = {
             'QgsSettingsEntryBool': True,
             'QgsSettingsEntryColor': QColor(),
@@ -382,6 +382,35 @@ class TestQgsSettingsEntry(unittest.TestCase):
 
         # Check settings type
         self.assertEqual(settingsEntryFlag.settingsType(), Qgis.SettingsType.EnumFlag)
+
+    def test_settings_entry_group(self):
+        settingsEntryString_1 = QgsSettingsEntryString('my/key/has/levels/my-setting-key-1', self.pluginName)
+        settingsEntryString_2 = QgsSettingsEntryString('my/key/has/levels/my-setting-key-2', self.pluginName)
+        settingsEntryString_3 = QgsSettingsEntryString('my-setting-key-3', self.pluginName)
+        settingsEntryString_4 = QgsSettingsEntryString('my-setting-key-4', self.pluginName)
+
+        group_1 = QgsSettingsEntryGroup([settingsEntryString_1, settingsEntryString_2])
+        self.assertTrue(group_1.isValid())
+        group_2 = QgsSettingsEntryGroup([settingsEntryString_3, settingsEntryString_4])
+        self.assertTrue(group_2.isValid())
+        with self.assertRaises(ValueError):
+            QgsSettingsEntryGroup([settingsEntryString_1, settingsEntryString_3])
+
+        settingsEntryString_1.setValue('value-1')
+        settingsEntryString_2.setValue('value-2')
+        self.assertTrue(settingsEntryString_1.exists())
+        self.assertTrue(settingsEntryString_2.exists())
+        group_1.removeAllSettingsAtBaseKey()
+        self.assertFalse(settingsEntryString_1.exists())
+        self.assertFalse(settingsEntryString_2.exists())
+
+        settingsEntryString_1.setValue('value-1')
+        settingsEntryString_2.setValue('value-2')
+        self.assertTrue(settingsEntryString_1.exists())
+        self.assertTrue(settingsEntryString_2.exists())
+        group_1.removeAllChildrenSettings()
+        self.assertFalse(settingsEntryString_1.exists())
+        self.assertFalse(settingsEntryString_2.exists())
 
 
 if __name__ == '__main__':

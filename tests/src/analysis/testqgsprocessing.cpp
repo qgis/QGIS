@@ -712,6 +712,7 @@ class TestQgsProcessing: public QObject
     void uniqueValues();
     void createIndex();
     void generateTemporaryDestination();
+    void removePointerValuesFromMap();
     void parseDestinationString();
     void createFeatureSink();
 #ifdef ENABLE_PGTEST
@@ -816,6 +817,14 @@ void TestQgsProcessing::initTestCase()
 
   QgsSettings settings;
   settings.clear();
+
+  /* Make sure geopackages are not written-to, during tests
+   * See https://github.com/qgis/QGIS/issues/25830
+   * NOTE: this needs to happen _after_
+   * QgsApplication::initQgis()
+   *       as any previously-set value would otherwise disappear.
+   */
+  settings.setValue( "qgis/walForSqlite3", false );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
@@ -2009,6 +2018,39 @@ void TestQgsProcessing::generateTemporaryDestination()
   f = QFileInfo( def3->generateTemporaryDestination() );
   QCOMPARE( f.completeSuffix(), QString( "gpkg" ) );
 
+}
+
+void TestQgsProcessing::removePointerValuesFromMap()
+{
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( "Point?crs=epsg:3111", "v1", "memory" );
+  const QString raster1 = QStringLiteral( TEST_DATA_DIR ) + '/' + "landsat_4326.tif";
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( raster1, "R1" );
+  QPointer< QgsMapLayer > rl1Pointer( rl.get() );
+
+  const QVariantMap source {{ QStringLiteral( "k1" ), 5 },
+    { QStringLiteral( "k2" ), QStringLiteral( "aa" ) },
+    { QStringLiteral( "k3" ), QVariantList() << QStringLiteral( "aa" ) << 3 << QVariant::fromValue( vl.get() ) },
+    {
+      QStringLiteral( "k4" ), QVariantMap{{ QStringLiteral( "kk1" ), 5},
+        {QStringLiteral( "kk2" ), QVariant::fromValue( rl1Pointer ) }}
+    }
+  };
+
+  const QVariantMap res = QgsProcessingUtils::removePointerValuesFromMap( source );
+
+  QCOMPARE( res.size(), 4 );
+  QCOMPARE( res.value( QStringLiteral( "k1" ) ).toInt(), 5 );
+  QCOMPARE( res.value( QStringLiteral( "k2" ) ).toString(), QStringLiteral( "aa" ) );
+  const QVariantList list = res.value( QStringLiteral( "k3" ) ).toList();
+  QCOMPARE( list.size(), 3 );
+  QCOMPARE( list.at( 0 ).toString(), QStringLiteral( "aa" ) );
+  QCOMPARE( list.at( 1 ).toInt(), 3 );
+  QCOMPARE( list.at( 2 ).toString(), vl->id() );
+
+  const QVariantMap subMap = res.value( QStringLiteral( "k4" ) ).toMap();
+  QCOMPARE( subMap.size(), 2 );
+  QCOMPARE( subMap.value( QStringLiteral( "kk1" ) ).toInt(), 5 );
+  QCOMPARE( subMap.value( QStringLiteral( "kk2" ) ).toString(), rl->source() );
 }
 
 void TestQgsProcessing::parseDestinationString()
@@ -9755,6 +9797,15 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('dataset groups', 'groups', meshLayerParameterName='layer parameter', supportedDataType=[QgsMeshDatasetGroupMetadata.DataOnFaces,QgsMeshDatasetGroupMetadata.DataOnVertices], optional=True)" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterMeshDatasetGroups fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.meshLayerParameterName(), def->meshLayerParameterName() );
 }
 
 void TestQgsProcessing::parameterMeshDatasetTime()
@@ -9864,6 +9915,16 @@ void TestQgsProcessing::parameterMeshDatasetTime()
   QVERIFY( !def->dependsOnOtherParameters().isEmpty() );
   QCOMPARE( def->meshLayerParameterName(), QStringLiteral( "layer parameter" ) );
   QCOMPARE( def->datasetGroupParameterName(), QStringLiteral( "dataset group parameter" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterMeshDatasetTime fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.meshLayerParameterName(), def->meshLayerParameterName() );
+  QCOMPARE( fromMap.datasetGroupParameterName(), def->datasetGroupParameterName() );
 }
 
 void TestQgsProcessing::parameterDateTime()
@@ -10878,6 +10939,7 @@ void TestQgsProcessing::generateIteratingDestination()
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "/home/bif.o/ape.shp", 2, context ).toString(), QStringLiteral( "/home/bif.o/ape_2.shp" ) );
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( QgsProcessing::TEMPORARY_OUTPUT, 2, context ).toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( QgsProcessingUtils::generateIteratingDestination( QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT ), 2, context ).toString(), QgsProcessing::TEMPORARY_OUTPUT );
+  QCOMPARE( QgsProcessingUtils::generateIteratingDestination( "/home/user/folder", 1, context ).toString(), QStringLiteral( "/home/user/folder_1" ) );
 
   QgsProject p;
   QgsProcessingOutputLayerDefinition def;

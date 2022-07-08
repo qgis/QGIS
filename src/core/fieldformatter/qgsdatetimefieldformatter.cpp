@@ -45,6 +45,11 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     return QgsApplication::nullRepresentation();
   }
 
+  if ( fieldIndex < 0 || fieldIndex >= layer->fields().size() )
+  {
+    return value.toString();
+  }
+
   const QgsField field = layer->fields().at( fieldIndex );
   const bool fieldIsoFormat = config.value( QStringLiteral( "field_iso_format" ), false ).toBool();
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), defaultFormat( field.type() ) ).toString();

@@ -123,7 +123,9 @@ class QgsOapifProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsOapifProviderMetadata();
+    QIcon icon() const override;
     QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 //! Class shared between provider and feature source
@@ -142,6 +144,9 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
     bool isRestrictedToRequestBBOX() const override;
+
+    //! Creates a deep copy of this shared data
+    QgsOapifSharedData *clone() const;
 
   signals:
 

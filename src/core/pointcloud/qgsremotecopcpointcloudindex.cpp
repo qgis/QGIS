@@ -46,12 +46,17 @@
 
 ///@cond PRIVATE
 
-QgsRemoteCopcPointCloudIndex::QgsRemoteCopcPointCloudIndex() : QgsCopcPointCloudIndex()
-{
-
-}
+QgsRemoteCopcPointCloudIndex::QgsRemoteCopcPointCloudIndex() = default;
 
 QgsRemoteCopcPointCloudIndex::~QgsRemoteCopcPointCloudIndex() = default;
+
+std::unique_ptr<QgsPointCloudIndex> QgsRemoteCopcPointCloudIndex::clone() const
+{
+  QgsRemoteCopcPointCloudIndex *clone = new QgsRemoteCopcPointCloudIndex;
+  QMutexLocker locker( &mHierarchyMutex );
+  copyCommonProperties( clone );
+  return std::unique_ptr<QgsPointCloudIndex>( clone );
+}
 
 QList<IndexedPointCloudNode> QgsRemoteCopcPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
@@ -60,6 +65,7 @@ QList<IndexedPointCloudNode> QgsRemoteCopcPointCloudIndex::nodeChildren( const I
   mHierarchyMutex.lock();
   Q_ASSERT( mHierarchy.contains( n ) );
   QList<IndexedPointCloudNode> lst;
+  lst.reserve( 8 );
   const int d = n.d() + 1;
   const int x = n.x() * 2;
   const int y = n.y() * 2;
@@ -91,7 +97,7 @@ void QgsRemoteCopcPointCloudIndex::load( const QString &url )
   }
   if ( !mIsValid )
   {
-    QgsMessageLog::logMessage( tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url ).arg( mLazInfo->error() ) );
+    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( url, mLazInfo->error() );
   }
 }
 
@@ -125,8 +131,8 @@ QgsPointCloudBlockRequest *QgsRemoteCopcPointCloudIndex::asyncNodeData( const In
   QgsPointCloudExpression filterExpression = mFilterExpression;
   QgsPointCloudAttributeCollection requestAttributes = request.attributes();
   requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-  auto [ blockOffset, blockSize ] = mHierarchyNodePos[n];
-  int pointCount = mHierarchy[n];
+  auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );
+  int pointCount = mHierarchy.value( n );
 
   return new QgsCopcPointCloudBlockRequest( n, mUrl.toString(), attributes(), requestAttributes,
          scale(), offset(), filterExpression,
@@ -152,12 +158,15 @@ bool QgsRemoteCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNo
   ancestors.push_front( foundRoot );
   for ( IndexedPointCloudNode n : ancestors )
   {
-    if ( !mHierarchy.contains( n ) )
+    auto hierarchyIt = mHierarchy.constFind( n );
+    if ( hierarchyIt == mHierarchy.constEnd() )
       return false;
-    int nodesCount = mHierarchy[n];
+
+    int nodesCount = *hierarchyIt;
     if ( nodesCount < 0 )
     {
-      fetchHierarchyPage( mHierarchyNodePos[n].first, mHierarchyNodePos[n].second );
+      auto hierarchyNodePos = mHierarchyNodePos.constFind( n );
+      fetchHierarchyPage( hierarchyNodePos->first, hierarchyNodePos->second );
     }
   }
   return mHierarchy.contains( n );
@@ -215,5 +224,13 @@ void QgsRemoteCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t
   }
 }
 
+void QgsRemoteCopcPointCloudIndex::copyCommonProperties( QgsRemoteCopcPointCloudIndex *destination ) const
+{
+  QgsCopcPointCloudIndex::copyCommonProperties( destination );
+
+  // QgsRemoteCopcPointCloudIndex specific fields
+  destination->mUrl = mUrl;
+  destination->mHierarchyNodes = mHierarchyNodes;
+}
 
 ///@endcond
