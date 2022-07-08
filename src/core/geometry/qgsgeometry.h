@@ -1636,8 +1636,8 @@ class CORE_EXPORT QgsGeometry
      *
      * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
      *
-     * \since QGIS 3.28
      *
+     * \since QGIS 3.28
      */
     QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const SIP_THROW( QgsNotSupportedException );
 
