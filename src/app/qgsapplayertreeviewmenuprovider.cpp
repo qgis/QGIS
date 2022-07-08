@@ -561,8 +561,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           case QgsMapLayerType::PointCloudLayer:
           {
             QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
+            QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
             QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
+            connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+            menuExportRaster->addAction( actionSaveAs );
+            actionSaveAs->setEnabled( pcLayer->isValid() );
             connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
             menuExportRaster->addAction( actionSaveAsDefinitionLayer );
             connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );

@@ -456,6 +456,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
+#include "pointcloud/qgspointcloudlayersaveasdialog.h"
+#include "pointcloud/qgspointcloudlayerexporter.h"
 #include "project/qgsprojectelevationsettingswidget.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
@@ -9098,6 +9100,8 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::PointCloudLayer:
+      return saveAsPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ) );
+
     case QgsMapLayerType::GroupLayer:
       return QString();
   }
@@ -9495,6 +9499,46 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
     QgsApplication::taskManager()->addTask( writerTask );
   }
 
+  delete dialog;
+  return vectorFilename;
+}
+
+QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
+{
+  QgsPointCloudLayerSaveAsDialog *dialog = new QgsPointCloudLayerSaveAsDialog( pclayer );
+
+  dialog->setMapCanvas( mMapCanvas );
+
+  dialog->setAddToCanvas( true );
+
+  QString vectorFilename;
+  if ( dialog->exec() == QDialog::Accepted )
+  {
+    QgsPointCloudLayerExporter exp( pclayer );
+
+    QgsCoordinateReferenceSystem destCRS  = dialog->crsObject();
+    if ( destCRS.isValid() )
+    {
+      QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
+    }
+    exp.setCrs( destCRS );
+    exp.setFormat( dialog->format() );
+
+    if ( dialog->hasFilterExtent() )
+      exp.setFilterExtent( dialog->filterExtent() );
+
+    if ( ! dialog->layername().isEmpty() )
+      exp.setLayerName( dialog->layername() );
+
+    exp.setAttributes( dialog->selectedAttributes() );
+
+
+    vectorFilename = dialog->filename();
+    bool addToCanvas = dialog->addToCanvas();
+
+    QgsVectorLayer *result = exp.exportToMemoryLayer();
+    QgsProject::instance()->addMapLayer( result );
+  }
   delete dialog;
   return vectorFilename;
 }

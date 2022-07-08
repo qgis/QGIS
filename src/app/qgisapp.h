@@ -2231,6 +2231,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                      QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
                                      const QString &dialogTitle = QString() );
 
+    QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
+
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
 
