@@ -16,7 +16,7 @@ if (WITH_GUI)
     gui/qgsauthpkcs12edit.h
   )
   set(AUTH_PKCS12_UIS gui/qgsauthpkcs12edit.ui)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(AUTH_PKCS12_UIS_H ${AUTH_PKCS12_UIS})
   else()
     QT5_WRAP_UI(AUTH_PKCS12_UIS_H ${AUTH_PKCS12_UIS})

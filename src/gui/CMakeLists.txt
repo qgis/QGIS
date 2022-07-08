@@ -1354,7 +1354,7 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS Qml QuickWidgets REQUIRED)
 else()
   find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
@@ -1505,7 +1505,7 @@ target_include_directories(qgis_gui SYSTEM PRIVATE
   ${QT_QTUITOOLS_INCLUDE_DIR}
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_include_directories(qgis_gui SYSTEM PRIVATE
     ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
   )
@@ -1624,7 +1624,7 @@ target_link_libraries(qgis_gui
   ${QT_VERSION_BASE}::QuickWidgets
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
   target_link_libraries(qgis_gui
     Qt6::SvgWidgets
