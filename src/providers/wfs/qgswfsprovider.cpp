@@ -917,22 +917,6 @@ bool QgsWFSProvider::isValid() const
 
 QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
-  qDebug() << "WFS DEBUG" << "What are we doing here?";
-
-  if ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression() && request.filterExpression()->isValid() )
-  {
-    QString error;
-    qDebug() << "WFS DEBUG" << "compute expression";
-    if ( mShared->computeExpression( error, *request.filterExpression() ) )
-    {
-      qDebug() << "WFS DEBUG" << "we did compute that expression yeah! do we need to remove the filterExpression from the request?";
-      request.filterExpression()->setExpression( "" );
-    }
-    else
-    {
-      qDebug() << "WFS DEBUG" << error;
-    }
-  }
   return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( new QgsBackgroundCachedFeatureSource( mShared ), true, mShared, request ) );
 }
 

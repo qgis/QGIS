@@ -142,6 +142,28 @@ bool QgsWFSSharedData::computeExpression( QString &errorMsg, const QgsExpression
   return true;
 }
 
+bool QgsWFSSharedData::doWhatYouNeedToDo_TempDummyTestFunction(const QgsFeatureRequest &request)
+{
+    qDebug() << "WFS DEBUG" << "What are we doing here?";
+
+    if ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression() && request.filterExpression()->isValid() )
+    {
+      QString error;
+      qDebug() << "WFS DEBUG" << "compute expression";
+      if ( computeExpression( error, *request.filterExpression() ) )
+      {
+        qDebug() << "WFS DEBUG" << "we did compute that expression yeah! do we need to remove the filterExpression from the request?";
+        return true;
+      }
+      else
+      {
+        qDebug() << "WFS DEBUG" << error;
+
+      }
+    }
+    return false;
+}
+
 bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 {
   errorMsg.clear();

@@ -66,6 +66,8 @@ class QgsBackgroundCachedSharedData
     //! Returns extent computed from currently downloaded features
     const QgsRectangle &computedExtent() const;
 
+    bool doWhatYouNeedToDo_TempDummyTestFunction( const QgsFeatureRequest &request );
+
     //! Returns whether the feature download is finished
     bool downloadFinished() const { return mDownloadFinished; }
 
