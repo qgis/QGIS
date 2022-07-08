@@ -1052,7 +1052,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     }
     mAxisViewport->setEnabled( true );
 
-    float xRatio = 1.0;
+    float xRatio = 1.0f;
     float yRatio = 1.0;
     if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorLeft )
       xRatio = 0.0f;
