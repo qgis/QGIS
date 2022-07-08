@@ -1059,7 +1059,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     else if ( settings.horizontalPosition() == Qt::AnchorPoint::AnchorHorizontalCenter )
       xRatio = 0.5f - widthRatio / 2.0f;
     else
-      xRatio = 1.0 - widthRatio;
+      xRatio = 1.0f - widthRatio;
 
     if ( settings.verticalPosition() == Qt::AnchorPoint::AnchorTop )
       yRatio = 0.0f;
