@@ -924,20 +924,43 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     bm->setViewportSize( mCameraController->viewport().size() );
   }
 
-
   // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsShadowRenderingFrameGraph *frameGraph = mEngine->frameGraph();
-  Qt3DRender::QLayer *layer = frameGraph->transparentObjectLayer();
-  for ( Qt3DExtras::QDiffuseSpecularMaterial *ph : newEntity->findChildren<Qt3DExtras::QDiffuseSpecularMaterial *>() )
+  Qt3DRender::QLayer *transparentLayer = frameGraph->transparentObjectLayer();
+  for ( Qt3DRender::QMaterial *material : newEntity->findChildren<Qt3DRender::QMaterial *>() )
   {
-    if ( ph->diffuse().value<QColor>().alphaF() == 1.0f )
-      continue;
-    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
-    if ( !entity )
-      continue;
-    if ( entity->components().contains( layer ) )
-      continue;
-    entity->addComponent( layer );
+    // This handles the phong material without data defined properties.
+    if ( Qt3DExtras::QDiffuseSpecularMaterial *ph = qobject_cast<Qt3DExtras::QDiffuseSpecularMaterial *>( material ) )
+    {
+      if ( ph->diffuse().value<QColor>().alphaF() != 1.0f )
+      {
+        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
+        if ( entity && !entity->components().contains( transparentLayer ) )
+        {
+          entity->addComponent( transparentLayer );
+        }
+      }
+    }
+    else
+    {
+      // This handles the phong material with data defined properties.
+      Qt3DRender::QEffect *effect = material->effect();
+      if ( effect )
+      {
+        for ( const auto *parameter : effect->parameters() )
+        {
+          if ( parameter->name() == "opacity" && parameter->value() != 1.0f )
+          {
+            Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( material->parent() );
+            if ( entity && !entity->components().contains( transparentLayer ) )
+            {
+              entity->addComponent( transparentLayer );
+            }
+            break;
+          }
+        }
+      }
+    }
   }
 }
 
