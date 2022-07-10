@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string notr="true">Obstacle Settings</string>
+   <string notr="true">Line Anchor Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
