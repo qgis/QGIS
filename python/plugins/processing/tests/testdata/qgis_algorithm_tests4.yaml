@@ -435,6 +435,24 @@ tests:
           geometry:
             normalize: True
 
+  - algorithm: native:difference
+    name: Difference points vs polys
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      OVERLAY:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference_points_vs_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            gml_id: skip
+
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference A - B (basic)
     params:
