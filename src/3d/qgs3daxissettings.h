@@ -37,7 +37,7 @@ class _3D_EXPORT Qgs3DAxisSettings
   public:
 
     /**
-     * \brief The Mode enum
+     * \brief Axis representation enum
      */
     enum class Mode
     {
@@ -72,12 +72,12 @@ class _3D_EXPORT Qgs3DAxisSettings
     //! Returns the minimal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
     double minViewportRatio() const { return mMinViewportRatio;}
     //! Sets the minimal axis viewport ratio between 0-1
-    void setMinViewportRatio( double ratio ) { mMinViewportRatio = ratio; }
+    void setMinViewportRatio( double ratio );
 
     //! Returns the maximal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
     double maxViewportRatio() const { return mMaxViewportRatio;}
     //! Sets the maximal axis viewport ratio between 0-1
-    void setMaxViewportRatio( double ratio ) { mMaxViewportRatio = ratio; }
+    void setMaxViewportRatio( double ratio );
 
     //! Returns the type of the 3daxis
     Qgs3DAxisSettings::Mode mode() const { return mMode; }
