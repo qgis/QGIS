@@ -99,6 +99,12 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
     return outputs;
   }
 
+  const QgsWkbTypes::Type geomTypeA = QgsWkbTypes::promoteNonPointTypesToMulti( sourceA->wkbType() );
+  const QgsWkbTypes::Type geomTypeB = QgsWkbTypes::promoteNonPointTypesToMulti( sourceB->wkbType() );
+
+  if ( geomTypeA != geomTypeB )
+    feedback->pushWarning( QObject::tr( "Performing union between layers with different geometry types (INPUT has %1 and OVERLAY has %2) can lead to unexpected results" ).arg( QgsWkbTypes::displayString( sourceA->wkbType() ), QgsWkbTypes::displayString( sourceB->wkbType() ) ) );
+
   const QList<int> fieldIndicesA = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceA->fields() );
   const QList<int> fieldIndicesB = QgsProcessingUtils::fieldNamesToIndices( QStringList(), sourceB->fields() );
 
