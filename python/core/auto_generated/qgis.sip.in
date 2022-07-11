@@ -780,6 +780,7 @@ The development version
       Render3DMap,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      ForceRasterMasks,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
