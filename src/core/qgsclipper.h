@@ -442,6 +442,14 @@ inline void QgsClipper::trimPolygonToBoundary( const QVector<double> &inX, const
     QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, const QgsBox3d &rect, Boundary boundary, double boundaryValue )
 {
   const double len = inX.length();
+  if ( len == 0 )
+  {
+    outX.clear();
+    outY.clear();
+    outZ.clear();
+    return;
+  }
+
   double inI1X = inX.at( len - 1 ); // start with last point
   double inI1Y = inY.at( len - 1 );
   double inI1Z = inZ.at( len - 1 );
