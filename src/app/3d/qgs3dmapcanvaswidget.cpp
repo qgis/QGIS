@@ -385,15 +385,16 @@ void Qgs3DMapCanvasWidget::resetView()
 
 void Qgs3DMapCanvasWidget::configure()
 {
-  QDialog dlg( this );
-  dlg.setWindowTitle( tr( "3D Configuration" ) );
-  dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
-  dlg.setMinimumSize( 600, 460 );
-  QgsGui::enableAutoGeometryRestore( &dlg );
+  QDialog *dlg = new QDialog( this );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->setWindowTitle( tr( "3D Configuration" ) );
+  dlg->setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  dlg->setMinimumSize( 600, 460 );
+  QgsGui::enableAutoGeometryRestore( dlg );
 
   Qgs3DMapSettings *map = mCanvas->map();
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel | QDialogButtonBox::Help, dlg );
 
   auto applyConfig = [ = ]()
   {
@@ -424,9 +425,9 @@ void Qgs3DMapCanvasWidget::configure()
                                 || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
-  connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-  connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-  connect( buttons, &QDialogButtonBox::clicked, &dlg, [ = ]( QAbstractButton * button )
+  connect( buttons, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
+  connect( buttons, &QDialogButtonBox::rejected, dlg, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::clicked, dlg, [ = ]( QAbstractButton * button )
   {
     if ( buttons->buttonRole( button ) == QDialogButtonBox::ApplyRole )
       applyConfig();
@@ -438,13 +439,16 @@ void Qgs3DMapCanvasWidget::configure()
     buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
   } );
 
-  QVBoxLayout *layout = new QVBoxLayout( &dlg );
+  QVBoxLayout *layout = new QVBoxLayout( dlg );
   layout->addWidget( w, 1 );
   layout->addWidget( buttons );
 
-  if ( !dlg.exec() )
-    return;
-  applyConfig();
+  connect( dlg, &QDialog::accepted, this, [ = ]()
+  {
+    applyConfig();
+  } );
+
+  dlg->show();
 
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
