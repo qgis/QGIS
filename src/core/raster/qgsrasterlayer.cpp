@@ -1958,6 +1958,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
 
   readCustomProperties( layer_node );
 
+  emit rendererChanged();
+  emitStyleChanged();
+
   return true;
 }
 
