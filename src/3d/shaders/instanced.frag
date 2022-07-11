@@ -19,6 +19,7 @@ out vec4 fragColor;
 void main()
 {
     vec3 diffuseColor, specularColor;
-    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
+    vec3 worldView = normalize(eyePosition - worldPosition);
+    adsModel(worldPosition, worldNormal, worldView, shininess, diffuseColor, specularColor);
     fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, 1.0 );
 }
