@@ -1022,19 +1022,22 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   double windowWidth = ( double )mParentWindow->width();
   double windowHeight = ( double )mParentWindow->height();
 
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate window w/h: %1px / %2px" )
-               .arg( windowWidth ).arg( windowHeight ) );
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate window physicalDpi %1" )
-               .arg( mParentWindow->screen()->physicalDotsPerInch() ) );
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate window pixel ratio %1" )
-               .arg( mParentWindow->screen()->devicePixelRatio() ) );
-  QgsMapSettings set;
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate set pixel ratio %1" )
-               .arg( set.devicePixelRatio() ) );
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate set outputDpi %1" )
-               .arg( set.outputDpi() ) );
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate set dpiTarget %1" )
-               .arg( set.dpiTarget() ) );
+  if ( QgsLogger::isTraceEnabled() )
+  {
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window w/h: %1px / %2px" )
+                 .arg( windowWidth ).arg( windowHeight ) );
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window physicalDpi %1" )
+                 .arg( mParentWindow->screen()->physicalDotsPerInch() ) );
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window pixel ratio %1" )
+                 .arg( mParentWindow->screen()->devicePixelRatio() ) );
+    QgsMapSettings set;
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate set pixel ratio %1" )
+                 .arg( set.devicePixelRatio() ) );
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate set outputDpi %1" )
+                 .arg( set.outputDpi() ) );
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate set dpiTarget %1" )
+                 .arg( set.dpiTarget() ) );
+  }
 
   // default ratio, axis will start to grow when:
   // window height or width > settings.defaultViewportSize() / settings.minViewportRatio()
