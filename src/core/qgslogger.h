@@ -31,7 +31,7 @@ class QFile;
 
 #ifdef QGISDEBUG
 #define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__)
-#define QgsTraceMsg(str) QgsLogger::debug(QString(str), 2, __FILE__, __FUNCTION__, __LINE__)
+#define QgsTraceMsg(str) if ( 2 <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), 2, __FILE__, __FUNCTION__, __LINE__); }(void)(0)
 #define QgsDebugMsgLevel(str, level) if ( level <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), (level), __FILE__, __FUNCTION__, __LINE__); }(void)(0)
 #define QgsDebugCall QgsScopeLogger _qgsScopeLogger(__FILE__, __FUNCTION__, __LINE__)
 #else
