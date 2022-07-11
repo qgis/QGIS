@@ -132,7 +132,7 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
     else if ( ! mIsDragging )
     {
       // limit ray caster usage to the axis viewport
-      QPointF normalizedPos( static_cast<float>(mouseEvent->pos().x()) / mParentWindow->width(),
+      QPointF normalizedPos( static_cast<float>( mouseEvent->pos().x() ) / mParentWindow->width(),
                              ( float )mouseEvent->pos().y() / mParentWindow->height() );
 
       if ( QgsLogger::isTraceEnabled() && event->type() == QEvent::MouseButtonRelease )
@@ -177,10 +177,10 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       os << "Qgs3DAxis::onTouchedByRay " << hits.length() << " hits at pos " << mLastClickedPos << " with QButton: " << mLastClickedButton;
       for ( int i = 0; i < hits.length(); ++i )
       {
-        os << std::endl;
-        os << "\tHit Type: " << hits.at( i ).type() << std::endl;
-        os << "\tHit triangle id: " << hits.at( i ).primitiveIndex() << std::endl;
-        os << "\tHit distance: " << hits.at( i ).distance() << std::endl;
+        os << "\n";
+        os << "\tHit Type: " << hits.at( i ).type() << "\n";
+        os << "\tHit triangle id: " << hits.at( i ).primitiveIndex() << "\n";
+        os << "\tHit distance: " << hits.at( i ).distance() << "\n";
         os << "\tHit entity name: " << hits.at( i ).entity()->objectName().toStdString();
       }
       QgsTraceMsg( os.str().c_str() );
@@ -381,18 +381,26 @@ void Qgs3DAxis::setEnableCube( bool show )
 {
   mCubeRoot->setEnabled( show );
   if ( show )
+  {
     mCubeRoot->setParent( mAxisSceneEntity );
+  }
   else
-    mCubeRoot->setParent( ( Qt3DCore::QEntity * )nullptr );
+  {
+    mCubeRoot->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+  }
 }
 
 void Qgs3DAxis::setEnableAxis( bool show )
 {
   mAxisRoot->setEnabled( show );
   if ( show )
+  {
     mAxisRoot->setParent( mAxisSceneEntity );
+  }
   else
-    mAxisRoot->setParent( ( Qt3DCore::QEntity * )nullptr );
+  {
+    mAxisRoot->setParent( static_cast<Qt3DCore::QEntity *>( nullptr ) );
+  }
 
   mTextX->setEnabled( show );
   mTextY->setEnabled( show );
