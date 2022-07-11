@@ -163,7 +163,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
         geom = geom.difference( geomB );
       }
 
-      if ( !sanitizeDifferenceResult( geom, geometryType ) )
+      if ( !geom.isNull() && !sanitizeDifferenceResult( geom, geometryType ) )
         continue;
 
       const QgsAttributes attrsA( featA.attributes() );
