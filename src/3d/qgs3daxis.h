@@ -105,12 +105,12 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onCameraViewChange( float pitch, float yaw );
 
     void onCameraViewChangeHome() { onCameraViewChange( 45.0f, 45.0f ); }
-    void onCameraViewChangeTop() { onCameraViewChange( 0.0, 90.0 ); }
-    void onCameraViewChangeNorth() { onCameraViewChange( 90.0, 180.0 ); }
-    void onCameraViewChangeEast() { onCameraViewChange( 90.0, 90.0 ); }
-    void onCameraViewChangeSouth() { onCameraViewChange( 90.0, 0.0 ); }
-    void onCameraViewChangeWest() { onCameraViewChange( 90.0, -90.0 ); }
-    void onCameraViewChangeBottom() { onCameraViewChange( 180.0, 0.0 ); }
+    void onCameraViewChangeTop() { onCameraViewChange( 0.0f, 90.0f ); }
+    void onCameraViewChangeNorth() { onCameraViewChange( 90.0f, 180.0f ); }
+    void onCameraViewChangeEast() { onCameraViewChange( 90.0f, 90.0f ); }
+    void onCameraViewChangeSouth() { onCameraViewChange( 90.0f, 0.0f ); }
+    void onCameraViewChangeWest() { onCameraViewChange( 90.0f, -90.0f ); }
+    void onCameraViewChangeBottom() { onCameraViewChange( 180.0f, 0.0f ); }
 
   private:
 
