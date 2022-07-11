@@ -149,3 +149,19 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   element.setAttribute( QStringLiteral( "vertical" ), str );
 
 }
+
+void Qgs3DAxisSettings::setMinViewportRatio( double ratio )
+{
+  if ( ratio < mMaxViewportRatio )
+  {
+    mMinViewportRatio = std::clamp( ratio, 0.0, 1.0 );
+  }
+}
+
+void Qgs3DAxisSettings::setMaxViewportRatio( double ratio )
+{
+  if ( ratio > mMinViewportRatio )
+  {
+    mMaxViewportRatio = std::clamp( ratio, 0.0, 1.0 );
+  }
+}
