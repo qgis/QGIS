@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for the postgres project storage.
-
-Note: to prepare the DB, you need to run the sql files specified in
-tests/testdata/provider/testdata_pg.sh
+"""QGIS Unit tests base for the database project storage.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -12,12 +9,11 @@ the Free Software Foundation; either version 2 of the License, or
 """
 from builtins import next
 
-__author__ = 'Martin Dobias'
-__date__ = '2018-03-29'
-__copyright__ = 'Copyright 2018, The QGIS Project'
+__author__ = 'Julien Cabieces'
+__date__ = '2022-04-19'
+__copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
-import psycopg2
 
 import os
 import time
@@ -29,6 +25,7 @@ from qgis.core import (
     QgsProject,
 )
 from PyQt5.QtCore import QDateTime, QUrl, QUrlQuery
+from qgis.PyQt.QtSql import QSqlDatabase, QSqlQuery
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from test_project_storage_base import TestPyQgsProjectStorageBase
@@ -37,7 +34,7 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestPyQgsProjectStoragePostgres(TestPyQgsProjectStorageBase, unittest.TestCase):
+class TestPyQgsProjectStorageOracle(TestPyQgsProjectStorageBase, unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -45,40 +42,49 @@ class TestPyQgsProjectStoragePostgres(TestPyQgsProjectStorageBase, unittest.Test
 
         super().setUpClass()
 
-        cls.dbconn = 'service=qgis_test'
-        if 'QGIS_PGTEST_DB' in os.environ:
-            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        cls.dbconn = "host=localhost dbname=XEPDB1 port=1521 user='QGIS' password='qgis'"
+        if 'QGIS_ORACLETEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_ORACLETEST_DB']
         cls.ds_uri = QgsDataSourceUri(cls.dbconn)
 
         # Create test layers
-        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+        cls.vl = QgsVectorLayer(
+            cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."SOME_DATA" (GEOM) sql=', 'test', 'oracle')
         assert cls.vl.isValid()
-        cls.con = psycopg2.connect(cls.dbconn)
 
-        cls.schema = 'qgis_test'
-        cls.provider = 'postgres'
-        cls.project_storage_type = 'postgresql'
+        cls.con = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
+        cls.con.setDatabaseName('localhost/XEPDB1')
+        if 'QGIS_ORACLETEST_DBNAME' in os.environ:
+            cls.con.setDatabaseName(os.environ['QGIS_ORACLETEST_DBNAME'])
+        cls.con.setUserName('QGIS')
+        cls.con.setPassword('qgis')
+
+        cls.schema = 'QGIS'
+        cls.provider = 'oracle'
+        cls.project_storage_type = 'oracle'
+
+        assert cls.con.open()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
 
-    def execSQLCommand(self, sql):
+    def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.con)
-        cur = self.con.cursor()
-        self.assertTrue(cur)
-        cur.execute(sql)
-        cur.close()
-        self.con.commit()
+        query = QSqlQuery(self.con)
+        res = query.exec_(sql)
+        if not ignore_errors:
+            self.assertTrue(res, sql + ': ' + query.lastError().text())
+        query.finish()
 
     def dropProjectsTable(self):
-        self.execSQLCommand("DROP TABLE IF EXISTS qgis_test.qgis_projects;")
+        self.execSQLCommand('DROP TABLE {}."qgis_projects"'.format(self.schema), True)
 
     def encode_uri(self, ds_uri, schema_name, project_name=None):
         u = QUrl()
         urlQuery = QUrlQuery()
 
-        u.setScheme("postgresql")
+        u.setScheme("oracle")
         u.setHost(ds_uri.host())
         if ds_uri.port() != '':
             u.setPort(int(ds_uri.port()))
