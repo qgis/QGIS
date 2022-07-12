@@ -36,19 +36,12 @@ QStringList QgsFilterByGeometryAlgorithm::tags() const
 
 QString QgsFilterByGeometryAlgorithm::group() const
 {
-  return QObject::tr( "Modeler tools" );
+  return QObject::tr( "Vector selection" );
 }
 
 QString QgsFilterByGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "modelertools" );
-}
-
-QgsProcessingAlgorithm::Flags QgsFilterByGeometryAlgorithm::flags() const
-{
-  Flags f = QgsProcessingAlgorithm::flags();
-  f |= QgsProcessingAlgorithm::FlagHideFromToolbox;
-  return f;
+  return QStringLiteral( "vectorselection" );
 }
 
 void QgsFilterByGeometryAlgorithm::initAlgorithm( const QVariantMap & )
