@@ -102,6 +102,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
 class QgsAfsProviderMetadata: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsAfsProviderMetadata();
     QIcon icon() const override;

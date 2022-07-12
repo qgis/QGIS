@@ -29,6 +29,7 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsMapToolCaptureLayerGeometry : public QgsMapToolCapture
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsMapToolCaptureLayerGeometry( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )

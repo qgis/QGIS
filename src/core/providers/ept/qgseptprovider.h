@@ -62,6 +62,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
 
 class QgsEptProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsEptProviderMetadata();
     QIcon icon() const override;

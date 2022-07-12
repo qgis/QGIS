@@ -172,6 +172,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
 
 class QgsHanaProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsHanaProviderMetadata();
     QIcon icon() const override;

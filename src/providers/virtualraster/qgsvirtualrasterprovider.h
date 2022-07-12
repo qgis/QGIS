@@ -91,6 +91,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
 
 class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsVirtualRasterProviderMetadata();
     QIcon icon() const override;

@@ -205,6 +205,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
  */
 class QgsWmsInterpretationComboBox : public QComboBox
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsWmsInterpretationComboBox( QWidget *parent = nullptr );

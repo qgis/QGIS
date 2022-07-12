@@ -101,6 +101,8 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
 
 class QgsMemoryProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsMemoryProviderMetadata();
     QIcon icon() const override;

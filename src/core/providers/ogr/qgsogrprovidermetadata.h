@@ -28,6 +28,7 @@ email                : nyall dot dawson at gmail dot com
  */
 class QgsOgrProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
 
     QgsOgrProviderMetadata();

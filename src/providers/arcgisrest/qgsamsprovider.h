@@ -222,6 +222,7 @@ class QgsAmsTiledImageDownloadHandler : public QObject
 
 class QgsAmsProviderMetadata: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsAmsProviderMetadata();
     QIcon icon() const override;

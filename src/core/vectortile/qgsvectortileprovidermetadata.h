@@ -29,6 +29,7 @@
  */
 class QgsVectorTileProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsVectorTileProviderMetadata();
     QIcon icon() const override;

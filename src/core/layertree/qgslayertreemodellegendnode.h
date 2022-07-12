@@ -730,6 +730,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
  */
 class CORE_EXPORT QgsVectorLabelLegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
   public:
 
     /**
