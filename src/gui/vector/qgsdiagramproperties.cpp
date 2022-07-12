@@ -52,24 +52,6 @@
 #include <QStyledItemDelegate>
 #include <QRandomGenerator>
 
-/**
- * \ingroup gui
- * \class EditBlockerDelegate
- */
-class EditBlockerDelegate: public QStyledItemDelegate
-{
-  public:
-    EditBlockerDelegate( QObject *parent = nullptr )
-      : QStyledItemDelegate( parent )
-    {}
-
-    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
-    {
-      return nullptr;
-    }
-};
-
-
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;

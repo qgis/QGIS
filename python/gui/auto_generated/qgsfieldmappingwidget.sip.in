@@ -146,9 +146,9 @@ Moves up currently selected field
 Moves down the currently selected field
 %End
 
-      public:
-      public:
 };
+
+
 
 
 /************************************************************************

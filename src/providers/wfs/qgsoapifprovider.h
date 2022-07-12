@@ -121,6 +121,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
 class QgsOapifProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsOapifProviderMetadata();
     QIcon icon() const override;

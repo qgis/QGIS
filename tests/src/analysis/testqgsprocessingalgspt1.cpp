@@ -5020,6 +5020,7 @@ void TestQgsProcessingAlgsPt1::setLayerEncoding()
 
 class TestProcessingFeedback : public QgsProcessingFeedback
 {
+    Q_OBJECT
   public:
 
     void reportError( const QString &error, bool ) override

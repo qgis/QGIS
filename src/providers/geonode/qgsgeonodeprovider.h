@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsgeonodeprovider.cpp
+                              qgsgeonodeprovider.h
                               ----------------------
     begin                : September 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -15,31 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSGEONODEPROVIDERMETADATA_H
+#define QGSGEONODEPROVIDERMETADATA_H
+
 #include <QList>
 
-#include "qgsgeonodeprovider.h"
+#include "qgis.h"
+#include "qgsprovidermetadata.h"
+#include "qgsgeonodedataitems.h"
+#include "qgsapplication.h"
 
-static const QString PROVIDER_KEY = QStringLiteral( "geonode" );
-static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GeoNode provider" );
-
-QgsGeoNodeProviderMetadata::QgsGeoNodeProviderMetadata()
-  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+class QgsGeoNodeProviderMetadata: public QgsProviderMetadata
 {
-}
+    Q_OBJECT
+  public:
+    QgsGeoNodeProviderMetadata();
 
-QIcon QgsGeoNodeProviderMetadata::icon() const
-{
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconGeonode.svg" ) );
-}
+    QIcon icon() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
+};
 
-QList<QgsDataItemProvider *> QgsGeoNodeProviderMetadata::dataItemProviders() const
-{
-  QList<QgsDataItemProvider *> providers;
-  providers << new QgsGeoNodeDataItemProvider();
-  return providers;
-}
-
-QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
-{
-  return new QgsGeoNodeProviderMetadata();
-}
+#endif // QGSGEONODEPROVIDERMETADATA_H

@@ -280,6 +280,7 @@ void TestQgsOgrProvider::encodeUri()
 
 class ReadVectorLayer : public QThread
 {
+    Q_OBJECT
 
   public :
     ReadVectorLayer( const QString &filePath, QMutex &mutex, QWaitCondition &waitForVlCreation, QWaitCondition &waitForProcessEvents )

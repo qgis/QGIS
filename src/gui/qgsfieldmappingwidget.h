@@ -154,35 +154,44 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     //! Returns selected row indexes in ascending order
     std::list<int> selectedRows( );
 
-    class ExpressionDelegate: public QStyledItemDelegate
-    {
-
-      public:
-
-        ExpressionDelegate( QObject *parent = nullptr );
-
-        // QAbstractItemDelegate interface
-        QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-        void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-        void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-    };
-
-    class TypeDelegate: public QStyledItemDelegate
-    {
-
-      public:
-
-        TypeDelegate( QObject *parent = nullptr );
-
-        // QAbstractItemDelegate interface
-        QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-        void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-        void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-    };
-
     friend class QgsAggregateMappingWidget;
 
 };
 
+/// @cond PRIVATE
+
+#ifndef SIP_RUN
+
+class QgsFieldMappingExpressionDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldMappingExpressionDelegate( QObject *parent = nullptr );
+
+    // QAbstractItemDelegate interface
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+};
+
+class QgsFieldMappingTypeDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFieldMappingTypeDelegate( QObject *parent = nullptr );
+
+    // QAbstractItemDelegate interface
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+};
+
+#endif
+
+/// @endcond
 
 #endif // QGSFIELDMAPPINGWIDGET_H

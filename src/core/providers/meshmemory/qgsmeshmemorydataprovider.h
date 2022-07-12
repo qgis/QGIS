@@ -189,6 +189,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
 
 class QgsMeshMemoryProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsMeshMemoryProviderMetadata();
     QIcon icon() const override;

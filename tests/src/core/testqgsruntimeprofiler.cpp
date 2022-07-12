@@ -93,6 +93,7 @@ void TestQgsRuntimeProfiler::testGroups()
 
 class ProfileInThread : public QThread
 {
+    Q_OBJECT
 
   public :
     ProfileInThread( QgsRuntimeProfiler *mainProfiler )
