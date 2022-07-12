@@ -62,6 +62,10 @@ class TestQgsArcGisRestUtils : public QObject
     void testParseRendererCategorized();
     void testParseLabeling();
     void testParseCompoundCurve();
+    void testParsePolyline();
+    void testParsePolylineZ();
+    void testParsePolylineM();
+    void testParsePolylineZM();
 
   private:
 
@@ -641,6 +645,38 @@ void TestQgsArcGisRestUtils::testParseCompoundCurve()
   QVERIFY( curve );
   // FIXME: the final linestring with one single point (1 4) is wrong !
   QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3),CircularString (5 3, 3 3, 1 4),(1 4)))" ) );
+}
+
+void TestQgsArcGisRestUtils::testParsePolyline()
+{
+  const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3],[5,3]]]}" );
+  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, QgsWkbTypes::Point ) );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurve (CompoundCurve ((6 3, 5 3)))" ) );
+}
+
+void TestQgsArcGisRestUtils::testParsePolylineZ()
+{
+  const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1],[5,3,2]]]}" );
+  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, QgsWkbTypes::PointZ ) );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurveZ (CompoundCurveZ ((6 3 1, 5 3 2)))" ) );
+}
+
+void TestQgsArcGisRestUtils::testParsePolylineM()
+{
+  const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1],[5,3,2]]]}" );
+  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, QgsWkbTypes::PointM ) );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurveM (CompoundCurveM ((6 3 1, 5 3 2)))" ) );
+}
+
+void TestQgsArcGisRestUtils::testParsePolylineZM()
+{
+  const QVariantMap map = jsonStringToMap( "{\"paths\": [[[6,3,1,11],[5,3,2,12]]]}" );
+  std::unique_ptr< QgsMultiCurve > curve( QgsArcGisRestUtils::convertGeometryPolyline( map, QgsWkbTypes::PointZM ) );
+  QVERIFY( curve );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "MultiCurveZM (CompoundCurveZM ((6 3 1 11, 5 3 2 12)))" ) );
 }
 
 QGSTEST_MAIN( TestQgsArcGisRestUtils )
