@@ -388,6 +388,12 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   mCapabilities |= DeleteField;
 
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // fallback to read only otherwise
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
   if ( hDS )
   {
     if ( OGR_DS_TestCapability( hDS.get(), ODsCCurveGeometries ) )
