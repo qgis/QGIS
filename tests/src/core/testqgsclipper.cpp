@@ -80,8 +80,8 @@ void TestQgsClipper::basicWithZ()
   QgsClipper::trimPolygon( x, y, z, clipRect );
 
   x = { 10.4, 20.2 };
-  y = {20.5, 30.2 };
-  z = {10.0, 20.0 };
+  y = { 20.5, 30.2 };
+  z = { 10.0, 20.0 };
   QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // Check nothing sticks out.
