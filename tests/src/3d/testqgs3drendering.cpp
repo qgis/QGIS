@@ -85,6 +85,7 @@ class TestQgs3DRendering : public QObject
     void testRuleBasedRenderer();
     void testAnimationExport();
     void testBillboardRendering();
+    void testInstancedRendering();
 
   private:
     // color tolerance < 2 was failing polygon3d_extrusion test
@@ -1016,6 +1017,79 @@ void TestQgs3DRendering::testAnimationExport()
 
   QVERIFY( success );
   QVERIFY( QFileInfo::exists( ( QDir( dir ).filePath( QStringLiteral( "test3danimation001.png" ) ) ) ) );
+}
+
+void TestQgs3DRendering::testInstancedRendering()
+{
+  const QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
+
+  std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
+
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
+
+  QgsFeature f1( layerPointsZ->fields() );
+  QgsFeature f2( layerPointsZ->fields() );
+  QgsFeature f3( layerPointsZ->fields() );
+
+  f1.setGeometry( QgsGeometry( p1 ) );
+  f2.setGeometry( QgsGeometry( p2 ) );
+  f3.setGeometry( QgsGeometry( p3 ) );
+
+  QgsFeatureList featureList;
+  featureList << f1 << f2 << f3;
+  layerPointsZ->dataProvider()->addFeatures( featureList );
+
+  QgsPoint3DSymbol *sphere3DSymbol = new QgsPoint3DSymbol();
+  sphere3DSymbol->setShape( QgsPoint3DSymbol::Sphere );
+  QVariantMap vmSphere;
+  vmSphere[QStringLiteral( "radius" )] = 80.0f;
+  sphere3DSymbol->setShapeProperties( vmSphere );
+  QgsPhongMaterialSettings material;
+  material.setAmbient( Qt::gray );
+  sphere3DSymbol->setMaterial( material.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( sphere3DSymbol ) );
+
+  Qgs3DMapSettings *mapSettings = new Qgs3DMapSettings;
+  mapSettings->setCrs( mProject->crs() );
+  mapSettings->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
+  mapSettings->setLayers( QList<QgsMapLayer *>() << layerPointsZ.get() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setExtent( fullExtent );
+  mapSettings->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
+  engine.setRootEntity( scene );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "sphere_rendering", imgSphere, 40 ) );
+
+  QgsPoint3DSymbol *cylinder3DSymbol = new QgsPoint3DSymbol();
+  cylinder3DSymbol->setShape( QgsPoint3DSymbol::Cylinder );
+  QVariantMap vmCylinder;
+  vmCylinder[QStringLiteral( "radius" )] = 20.0f;
+  vmCylinder[QStringLiteral( "length" )] = 200.0f;
+  cylinder3DSymbol->setShapeProperties( vmCylinder );
+  cylinder3DSymbol->setMaterial( material.clone() );
+
+  layerPointsZ->setRenderer3D( new QgsVectorLayer3DRenderer( cylinder3DSymbol ) );
+
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
+
+  QImage imgCylinder = Qgs3DUtils::captureSceneImage( engine, scene );
+  QVERIFY( renderCheck( "cylinder_rendering", imgCylinder, 40 ) );
 }
 
 void TestQgs3DRendering::testBillboardRendering()
