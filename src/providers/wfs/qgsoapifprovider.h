@@ -137,7 +137,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     //! Compute OAPIF filter from the filter in the URI
     bool computeServerFilter( QString &errorMsg );
 
-    QString computedExpression( QString &errorMsg, const QgsExpression &expression ) const override;
+    QString computedExpression( const QgsExpression &expression ) const override;
 
     bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
 

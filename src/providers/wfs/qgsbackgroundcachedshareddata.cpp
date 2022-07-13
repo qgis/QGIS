@@ -466,7 +466,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   {
     newDownloadNeeded = true;
   }
-  //If there's a ongoing download, when having an expression that can be performed on the server, then we need a new download.
+  //If there's a ongoing download, when having an expression that can be performed on the server and diverts from the previous one, then we need a new download.
   else if ( mServerExpression != serverExpression )
   {
     newDownloadNeeded = true;
@@ -484,8 +484,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     mComputedExtent = QgsRectangle();
     mDownloader.reset( new QgsThreadedFeatureDownloader( this ) );
     mDownloader->startAndWait();
-  }
-
+  }^
   if ( mDownloadFinished )
     return -1;
 

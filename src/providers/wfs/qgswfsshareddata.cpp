@@ -73,10 +73,8 @@ QString QgsWFSSharedData::srsName() const
   return srsName;
 }
 
-QString QgsWFSSharedData::computedExpression( QString &errorMsg, const QgsExpression &expression ) const
+QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) const
 {
-  errorMsg.clear();
-
   QgsOgcUtils::GMLVersion gmlVersion;
   QgsOgcUtils::FilterVersion filterVersion;
   bool honourAxisOrientation = false;
@@ -101,13 +99,8 @@ QString QgsWFSSharedData::computedExpression( QString &errorMsg, const QgsExpres
   if ( expression.isValid() )
   {
     QDomDocument expressionDoc;
-    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), &errorMsg );
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation() );
 
-    if ( !errorMsg.isEmpty() )
-    {
-      errorMsg = tr( "Expression to OGC Filter error: " ) + errorMsg;
-      return QString();
-    }
     if ( !expressionElem.isNull() )
     {
       expressionDoc.appendChild( expressionElem );

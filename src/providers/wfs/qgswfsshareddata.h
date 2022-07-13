@@ -35,7 +35,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     bool computeFilter( QString &errorMsg );
 
     //! Compute WFS filter from the sql or filter in the URI
-    QString computedExpression( QString &errorMsg, const QgsExpression &expression ) const override;
+    QString computedExpression( const QgsExpression &expression ) const override;
 
     //! Returns srsName
     QString srsName() const;
