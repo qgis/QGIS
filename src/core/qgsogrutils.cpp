@@ -37,6 +37,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfielddomain.h"
 #include "qgsfontmanager.h"
+#include "qgsvariantutils.h"
 
 #include <QTextCodec>
 #include <QUuid>
@@ -2032,6 +2033,124 @@ QVariant QgsOgrUtils::stringToVariant( OGRFieldType type, OGRFieldSubType, const
   }
 
   return ok ? res : QVariant();
+}
+
+QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver( GDALDriverH driver )
+{
+  if ( !driver )
+    return {};
+
+  const QString driverName = QString::fromUtf8( GDALGetDriverShortName( driver ) );
+
+  int nMaxIntLen = 11;
+  int nMaxInt64Len = 21;
+  int nMaxDoubleLen = 20;
+  int nMaxDoublePrec = 15;
+  int nDateLen = 8;
+  if ( driverName == QLatin1String( "GPKG" ) )
+  {
+    // GPKG only supports field length for text (and binary)
+    nMaxIntLen = 0;
+    nMaxInt64Len = 0;
+    nMaxDoubleLen = 0;
+    nMaxDoublePrec = 0;
+    nDateLen = 0;
+  }
+
+  QList<QgsVectorDataProvider::NativeType> nativeTypes;
+  nativeTypes
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
+      << QgsVectorDataProvider::NativeType( QObject::tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
+      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
+
+  if ( driverName == QLatin1String( "GPKG" ) )
+    nativeTypes << QgsVectorDataProvider::NativeType( QObject::tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
+
+  bool supportsDate = true;
+  bool supportsTime = driverName != QLatin1String( "ESRI Shapefile" ) && driverName != QLatin1String( "GPKG" );
+  bool supportsDateTime = driverName != QLatin1String( "ESRI Shapefile" );
+  bool supportsBinary = false;
+  bool supportIntegerList = false;
+  bool supportInteger64List = false;
+  bool supportRealList = false;
+  bool supportsStringList = false;
+
+  // For drivers that advertise their data type, use that instead of the
+  // above hardcoded defaults.
+  if ( const char *pszDataTypes = GDALGetMetadataItem( driver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszDataTypes, " ", 0 );
+    supportsDate = CSLFindString( papszTokens, "Date" ) >= 0;
+    supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
+    supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
+    supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
+    supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
+    supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
+    supportRealList = CSLFindString( papszTokens, "RealList" ) >= 0;
+    supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
+    CSLDestroy( papszTokens );
+  }
+
+  // Older versions of GDAL incorrectly report that shapefiles support
+  // DateTime.
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
+  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+  {
+    supportsDateTime = false;
+  }
+#endif
+
+  if ( supportsDate )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
+  }
+  if ( supportsTime )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time );
+  }
+  if ( supportsDateTime )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime );
+  }
+  if ( supportsBinary )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
+  }
+  if ( supportIntegerList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
+  }
+  if ( supportInteger64List )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
+  }
+  if ( supportRealList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
+  }
+  if ( supportsStringList )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::StringList ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
+  }
+
+  const char *pszDataSubTypes = GDALGetMetadataItem( driver, GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+  if ( pszDataSubTypes && strstr( pszDataSubTypes, "Boolean" ) )
+  {
+    // boolean data type
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( QObject::tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool );
+  }
+
+  return nativeTypes;
 }
 
 
