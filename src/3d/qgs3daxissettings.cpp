@@ -93,13 +93,13 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
 {
   QString str;
 
-  str = QString( "%1" ).arg( mDefaultViewportSize );
+  str = QString::number( mDefaultViewportSize );
   element.setAttribute( QStringLiteral( "defaultViewportSize" ), str );
 
-  str = QString( "%1" ).arg( mMinViewportRatio );
+  str = QString::number( mMinViewportRatio );
   element.setAttribute( QStringLiteral( "minViewportRatio" ), str );
 
-  str = QString( "%1" ).arg( mMaxViewportRatio );
+  str = QString::number( mMaxViewportRatio );
   element.setAttribute( QStringLiteral( "maxViewportRatio" ), str );
 
   switch ( mMode )

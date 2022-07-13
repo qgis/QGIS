@@ -31,6 +31,7 @@
 #include <QShortcut>
 #include <QFontDatabase>
 #include <ctime>
+#include <QApplication>
 
 #include "qgsmapsettings.h"
 #include "qgs3dmapscene.h"
@@ -70,11 +71,8 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
 
 Qgs3DAxis::~Qgs3DAxis()
 {
-  if ( mMenu )
-  {
-    delete mMenu;
-    mMenu = nullptr;
-  }
+  delete mMenu;
+  mMenu = nullptr;
 }
 
 void Qgs3DAxis::init3DObjectPicking( )
@@ -103,7 +101,7 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
 
   if ( event->type() == QEvent::MouseButtonPress )
   {
-    // registrer mouse click to detect dragging
+    // register mouse click to detect dragging
     mHasClicked = true;
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
     mLastClickedPos = mouseEvent->pos();
@@ -116,7 +114,7 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
 
     // user has clicked and move ==> dragging start
     if ( event->type() == QEvent::MouseMove &&
-         ( ( mHasClicked  && mouseEvent->pos() != mLastClickedPos ) || mIsDragging ) )
+         ( ( mHasClicked  && ( mouseEvent->pos() - mLastClickedPos ).manhattanLength() < QApplication::startDragDistance() ) || mIsDragging ) )
     {
       mIsDragging = true;
     }
@@ -254,8 +252,6 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
           default:
             break;
         }
-
-        mParentWindow->requestUpdate();
       }
     }
   }
@@ -477,8 +473,6 @@ void Qgs3DAxis::createAxisScene()
 
     updateAxisLabelPosition();
   }
-
-  mParentWindow->requestUpdate();
 }
 
 void Qgs3DAxis::createMenu()
@@ -631,7 +625,9 @@ void Qgs3DAxis::createMenu()
   {
     QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );
     if ( mapCanvas == nullptr )
-      qWarning() << "Qgs3DAxis: no canvas defined!";
+    {
+      QgsLogger::warning( "Qgs3DAxis: no canvas defined!" );
+    }
     else
     {
       QShortcut *shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
@@ -1104,8 +1100,6 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
       updateAxisLabelPosition();
     }
   }
-
-  mParentWindow->requestUpdate();
 }
 
 void Qgs3DAxis::onCameraUpdate( )
