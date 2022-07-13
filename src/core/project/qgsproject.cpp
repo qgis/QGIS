@@ -1641,7 +1641,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   const bool clean = _getMapLayers( *doc, brokenNodes, flags );
 
   // review the integrity of the retrieved map layers
-  if ( !clean )
+  if ( !clean && !( flags & Qgis::ProjectReadFlag::DontResolveLayers ) )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get map layers from project file." ) );
 
