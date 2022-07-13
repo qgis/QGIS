@@ -6,6 +6,7 @@ uniform vec3 ka;                            // Ambient reflectivity
 uniform vec3 kd;                            // Diffuse reflectivity
 uniform vec3 ks;                            // Specular reflectivity
 uniform float shininess;                    // Specular shininess factor
+uniform float opacity;                      // Opacity
 
 uniform vec3 eyePosition;
 
@@ -21,5 +22,5 @@ void main()
     vec3 diffuseColor, specularColor;
     vec3 worldView = normalize(eyePosition - worldPosition);
     adsModel(worldPosition, worldNormal, worldView, shininess, diffuseColor, specularColor);
-    fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, 1.0 );
+    fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, opacity );
 }
