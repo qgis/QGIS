@@ -9505,41 +9505,54 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
 QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
 {
-  QgsPointCloudLayerSaveAsDialog *dialog = new QgsPointCloudLayerSaveAsDialog( pclayer );
+  QgsPointCloudLayerSaveAsDialog dialog = QgsPointCloudLayerSaveAsDialog( pclayer );
 
-  dialog->setMapCanvas( mMapCanvas );
+  dialog.setMapCanvas( mMapCanvas );
 
-  dialog->setAddToCanvas( true );
+  dialog.setAddToCanvas( true );
 
   QString vectorFilename;
-  if ( dialog->exec() == QDialog::Accepted )
+  if ( dialog.exec() == QDialog::Accepted )
   {
     QgsPointCloudLayerExporter *exp = new QgsPointCloudLayerExporter( pclayer );
 
-    QgsCoordinateReferenceSystem destCRS  = dialog->crsObject();
+    QgsCoordinateReferenceSystem destCRS  = dialog.crsObject();
     if ( destCRS.isValid() )
     {
       QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
     }
     exp->setCrs( destCRS );
-    exp->setFormat( dialog->format() );
+    exp->setFormat( dialog.format() );
 
-    if ( dialog->hasFilterExtent() )
-      exp->setFilterExtent( dialog->filterExtent() );
+    if ( dialog.exportAttributes() )
+      exp->setAttributes( dialog.selectedAttributes() );
+    else
+      exp->setNoAttributes();
 
-    if ( ! dialog->layername().isEmpty() )
-      exp->setLayerName( dialog->layername() );
+    if ( dialog.hasFilterExtent() )
+      exp->setFilterExtent( dialog.filterExtent() );
 
-    exp->setAttributes( dialog->selectedAttributes() );
+    if ( dialog.hasZRange() )
+      exp->setZRange( dialog.zRange() );
+
+    if ( ! dialog.layername().isEmpty() )
+      exp->setLayerName( dialog.layername() );
 
 
-    vectorFilename = dialog->filename();
-    bool addToCanvas = dialog->addToCanvas();
+    vectorFilename = dialog.filename();
+    exp->setFileName( vectorFilename );
 
-    QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp, QStringLiteral( "memomry" ) );
+    bool addToCanvas = dialog.addToCanvas();
+
+    QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp );
     QgsApplication::taskManager()->addTask( task );
+
+    // when writer is successful:
+    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this ]( QgsVectorLayer * vlayer )
+    {
+      this->addMapLayer( vlayer );
+    } );
   }
-  delete dialog;
   return vectorFilename;
 }
 

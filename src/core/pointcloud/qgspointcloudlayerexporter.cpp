@@ -26,30 +26,33 @@
 
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
-  : mLayer( layer )
-  , mName( layer->name() )
-  , mCrs( layer->crs() )
+  : mLayerAttributeCollection( layer->attributes() )
+  , mIndex( layer->dataProvider()->index()->clone().release() )
+  , mName( QString( layer->name() ) )
+  , mCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
-  const QVector<QgsPointCloudAttribute> allAttributes = mLayer->attributes().attributes();
+  QStringList allAttributeNames;
+  const QVector<QgsPointCloudAttribute> allAttributes = mLayerAttributeCollection.attributes();
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
-    // default to all attributes except x, y, z
-    if ( attribute.name().compare( QLatin1String( "X" ), Qt::CaseInsensitive ) &&
-         attribute.name().compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) &&
-         attribute.name().compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) )
-    {
-      mRequestedAttributes.append( attribute.name() );
-    }
+    allAttributeNames.append( attribute.name() );
   }
+  setAttributes( allAttributeNames );
 }
 
 bool QgsPointCloudLayerExporter::setFormat( const QString &format )
 {
+  if ( format == QLatin1String( "memory" ) )
+  {
+    mFormat = format;
+    return true;
+  }
+
   const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
 
   for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
   {
-    if ( format.compare( driver.driverName, Qt::CaseInsensitive ) )
+    if ( ! format.compare( driver.driverName, Qt::CaseInsensitive ) )
     {
       mFormat = driver.driverName;
       return true;
@@ -62,7 +65,7 @@ void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList
 {
   mRequestedAttributes.clear();
 
-  const QVector<QgsPointCloudAttribute> allAttributes = mLayer->attributes().attributes();
+  const QVector<QgsPointCloudAttribute> allAttributes = mLayerAttributeCollection.attributes();
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
     // Don't add x, y, z or duplicate attributes
@@ -79,7 +82,7 @@ void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList
 
 const QgsPointCloudAttributeCollection QgsPointCloudLayerExporter::requestedAttributeCollection()
 {
-  const QVector<QgsPointCloudAttribute> allAttributes = mLayer->attributes().attributes();
+  const QVector<QgsPointCloudAttribute> allAttributes = mLayerAttributeCollection.attributes();
   QgsPointCloudAttributeCollection requestAttributes;
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
   {
@@ -97,7 +100,7 @@ const QgsPointCloudAttributeCollection QgsPointCloudLayerExporter::requestedAttr
 
 QgsFields QgsPointCloudLayerExporter::outputFields()
 {
-  const QVector<QgsPointCloudAttribute> attributes = mLayer->attributes().attributes();
+  const QVector<QgsPointCloudAttribute> attributes = mLayerAttributeCollection.attributes();
 
   QgsFields fields;
   for ( const QgsPointCloudAttribute &attribute : attributes )
@@ -111,30 +114,30 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
 
 void QgsPointCloudLayerExporter::exportToSink( QgsFeatureSink *sink )
 {
-  QgsPointCloudIndex *index = mLayer->dataProvider()->index();
-
   QVector<IndexedPointCloudNode> nodes;
   qint64 pointCount = 0;
   QQueue<IndexedPointCloudNode> queue;
-  queue.push_back( index->root() );
+  queue.push_back( mIndex->root() );
   while ( !queue.empty() )
   {
     IndexedPointCloudNode node = queue.front();
     queue.pop_front();
-    if ( !nodes.contains( node ) )
+    if ( !nodes.contains( node ) &&
+         mExtent.intersects( mIndex->nodeMapExtent( node ) ) &&
+         mZRange.overlaps( mIndex->nodeZRange( node ) ) )
     {
-      pointCount += index->nodePointCount( node );
+      pointCount += mIndex->nodePointCount( node );
       nodes.push_back( node );
     }
     if ( pointCount >= mPointsLimit )
       break;
-    for ( const IndexedPointCloudNode &child : index->nodeChildren( node ) )
+    for ( const IndexedPointCloudNode &child : mIndex->nodeChildren( node ) )
     {
       queue.push_back( child );
     }
   }
 
-  const QgsCoordinateTransform ct = QgsCoordinateTransform( mLayer->crs(), mCrs, mLayer->transformContext() );
+  const QgsCoordinateTransform ct = QgsCoordinateTransform( mIndex->crs(), mCrs, QgsCoordinateTransformContext() );
 
   int pointsSkipped = 0;
   const qint64 pointsToExport = std::max< qint64 >( std::min( mPointsLimit, pointCount ), 1 );
@@ -143,9 +146,9 @@ void QgsPointCloudLayerExporter::exportToSink( QgsFeatureSink *sink )
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
   QgsFeatureList fl;
   qint64 pointsExported = 0;
-  for ( const auto &node : nodes )
+  for ( const IndexedPointCloudNode &node : nodes )
   {
-    block.reset( index->nodeData( node, request ) );
+    block.reset( mIndex->nodeData( node, request ) );
     const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
     const char *ptr = block->data();
     int count = block->pointCount();
@@ -205,28 +208,26 @@ void QgsPointCloudLayerExporter::exportToSink( QgsFeatureSink *sink )
 
 QgsVectorLayer *QgsPointCloudLayerExporter::exportToMemoryLayer()
 {
-  if ( ! mLayer ||
-       ! mLayer->dataProvider() ||
-       ! mLayer->dataProvider()->index() ||
-       ! mLayer->dataProvider()->index()->isValid() )
+  if ( ! mIndex->isValid() )
     return nullptr;
 
   std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mCrs ) );
-  layer->startEditing();
-  exportToSink( layer.get() );
-  layer->commitChanges();
+  exportToSink( layer->dataProvider() );
   return layer.release();
 }
 
-void QgsPointCloudLayerExporter::exportToVectorFile( const QString &filename )
+QgsVectorLayer *QgsPointCloudLayerExporter::exportToVectorFile( const QString &filename )
 {
-  if ( ! mLayer ||
-       ! mLayer->dataProvider() ||
-       ! mLayer->dataProvider()->index() ||
-       ! mLayer->dataProvider()->index()->isValid() )
-    return;
+  if ( ! mIndex->isValid() )
+    return nullptr;
 
-  const QString extension = QFileInfo( filename ).suffix();
+  if ( ! filename.isEmpty() )
+    mFilename = filename;
+
+  if ( mFilename.isEmpty() )
+    return nullptr;
+
+  const QString extension = QFileInfo( mFilename ).suffix();
   if ( mFormat.isEmpty() )
   {
     const QString driver = QgsVectorFileWriter::driverForExtension( extension );
@@ -236,14 +237,18 @@ void QgsPointCloudLayerExporter::exportToVectorFile( const QString &filename )
   std::unique_ptr< QgsVectorLayer > memoryLayer( exportToMemoryLayer() );
 
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
-  saveOptions.layerName = mLayer->name();
+  saveOptions.layerName = mName;
   saveOptions.driverName = mFormat;
   saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( mFormat );
   saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( mFormat );
   saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
   saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+  saveOptions.feedback = mFeedback;
 
-  QgsVectorFileWriter::writeAsVectorFormatV3( memoryLayer.get(), filename, memoryLayer->transformContext(), saveOptions );
+  QgsVectorFileWriter::writeAsVectorFormatV3( memoryLayer.get(), mFilename, memoryLayer->transformContext(), saveOptions );
+
+  QgsVectorLayer *layer = new QgsVectorLayer( mFilename, mName, QStringLiteral( "ogr" ) );
+  return layer;
 }
 
 void QgsPointCloudLayerExporter::exportToPdalFile( const QString &filename )
@@ -257,10 +262,9 @@ void QgsPointCloudLayerExporter::exportToPdalFile( const QString &filename )
 // QgsPointCloudLayerExporterTask
 //
 
-QgsPointCloudLayerExporterTask::QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exp, const QString &format )
+QgsPointCloudLayerExporterTask::QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter )
   : QgsTask( tr( "Exporting Pointcloud" ), QgsTask::CanCancel )
-  , mExp( exp )
-  , mFormat( format )
+  , mExp( exporter )
   , mOwnedFeedback( new QgsFeedback() )
 {
 }
@@ -279,7 +283,10 @@ bool QgsPointCloudLayerExporterTask::run()
   connect( mOwnedFeedback.get(), &QgsFeedback::progressChanged, this, &QgsPointCloudLayerExporterTask::setProgress );
   mExp->setFeedback( mOwnedFeedback.get() );
 
-  mOutputLayer = mExp->exportToMemoryLayer();
+  if ( mExp->format() == QLatin1String( "memory" ) )
+    mOutputLayer = mExp->exportToMemoryLayer();
+  else
+    mOutputLayer = mExp->exportToVectorFile();
 
   return mError == Qgis::VectorExportResult::Success;
 }
@@ -287,10 +294,15 @@ bool QgsPointCloudLayerExporterTask::run()
 void QgsPointCloudLayerExporterTask::finished( bool result )
 {
   delete mExp;
-  QgsProject::instance()->addMapLayer( mOutputLayer );
 
   if ( result )
-    emit exportComplete();
+  {
+    QgsProject::instance()->addMapLayer( mOutputLayer );
+    emit exportComplete( mOutputLayer );
+  }
   else
+  {
     emit errorOccurred( mError, mErrorMessage );
+    delete mOutputLayer;
+  }
 }

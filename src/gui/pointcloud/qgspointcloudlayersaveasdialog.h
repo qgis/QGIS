@@ -33,7 +33,7 @@ class QgsPointCloudLayer;
  * \ingroup gui
  * \brief Class to select destination file, type and CRS for ogr layers
  * \note not available in Python bindings
- * \since QGIS 1.0
+ * \since QGIS 3.28
  */
 class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::QgsPointCloudLayerSaveAsDialogBase
 {
@@ -64,7 +64,6 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
 
     /**
      * Returns the CRS chosen for export
-     * \since QGIS 3.14
      */
     QgsCoordinateReferenceSystem crsObject() const;
 
@@ -84,7 +83,6 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      * Sets whether the  "add to canvas" checkbox should be \a checked.
      *
      * \see addToCanvas()
-     * \since QGIS 3.6
      */
     void setAddToCanvas( bool checked );
 
@@ -105,6 +103,24 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      */
     QgsRectangle filterExtent() const;
 
+    /**
+     * Determines if attributes will be exported as fields.
+     * \see selectedAttributes()
+     */
+    bool exportAttributes() const;
+
+    /**
+     * Determines if filtering by Z values is activated.
+     * \see zRange()
+     */
+    bool hasZRange() const;
+
+    /**
+     * Determines the Z range of points to be exported.
+     * \see hasZRange()
+     */
+    QgsDoubleRange zRange() const;
+
     //! Returns creation action
     QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
 
@@ -118,14 +134,6 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     void mDeselectAllAttributes_clicked();
 
   private:
-
-    enum class ColumnIndex : int
-    {
-      Name = 0,
-      ExportName = 1,
-      Type = 2,
-      ExportAsDisplayedValue = 3
-    };
 
     void setup();
 

@@ -85,10 +85,9 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   QgsSettings settings;
   QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "memory" ).toString();
-//  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( QStringLiteral( "memory" ) ) );
   mFormatComboBox->blockSignals( false );
-  mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
+//  mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   mCrsSelector->setCrs( mSelectedCrs );
   mCrsSelector->setLayerCrs( mSelectedCrs );
@@ -121,7 +120,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     {
       QTableWidgetItem *item = new QTableWidgetItem( availableAttributes.at( i ) );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-      item->setCheckState( Qt::Unchecked );
+      item->setCheckState( Qt::Checked );
       mAttributeTable->setItem( i, 0, item );
     }
     mAttributeTable->resizeColumnsToContents();
@@ -134,6 +133,12 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
   mExtentGroupBox->setCollapsed( true );
+
+  // ZRange group box
+  mMinimumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
+  mMaximumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
+  mMinimumZSpinBox->setValue( mLayer->statistics().minimum( QStringLiteral( "Z" ) ) );
+  mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
@@ -308,13 +313,10 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     }
   }
 
-  bool selectAllFields = true;
-
   const QString sFormat( format() );
   if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
   {
     mAttributesSelection->setVisible( false );
-    selectAllFields = false;
   }
   else
   {
@@ -345,7 +347,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
 
   mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
 
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( sFormat == QLatin1String( "memory" ) );
+//  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( sFormat == QLatin1String( "memory" ) );
 
   GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
   if ( hDriver )
@@ -419,6 +421,21 @@ bool QgsPointCloudLayerSaveAsDialog::hasFilterExtent() const
 QgsRectangle QgsPointCloudLayerSaveAsDialog::filterExtent() const
 {
   return mExtentGroupBox->outputExtent();
+}
+
+bool QgsPointCloudLayerSaveAsDialog::exportAttributes() const
+{
+  return mAttributesSelection->isVisible() && mAttributesSelection->isChecked();
+}
+
+bool QgsPointCloudLayerSaveAsDialog::hasZRange() const
+{
+  return mZRangeGroupBox->isChecked();
+}
+
+QgsDoubleRange QgsPointCloudLayerSaveAsDialog::zRange() const
+{
+  return QgsDoubleRange( mMinimumZSpinBox->value(), mMaximumZSpinBox->value() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::mSelectAllAttributes_clicked()
