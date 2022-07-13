@@ -192,6 +192,12 @@ Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer(
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;
 }
 
+bool QgsProviderMetadata::createDatabase( const QString &, QString &errorMessage )
+{
+  errorMessage = QObject::tr( "The %1 provider does not support database creation" ).arg( key() );
+  return false;
+}
+
 QgsRasterDataProvider *QgsProviderMetadata::createRasterDataProvider(
   const QString &, const QString &,
   int, Qgis::DataType, int,
