@@ -104,14 +104,22 @@ bool QgsOgrProviderMetadata::createDatabase( const QString &uri, QString &errorM
   char **metadata = GDALGetMetadata( poDriver, nullptr );
 
   if ( !CSLFetchBoolean( metadata, GDAL_DCAP_VECTOR, false )
-       || !CSLFetchBoolean( metadata, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, false )
-       || !CSLFetchBoolean( metadata, GDAL_DCAP_CREATE, false )
-     )
+       || !CSLFetchBoolean( metadata, GDAL_DCAP_CREATE, false ) )
   {
     errorMessage = tr( "The %1 driver does not support database creation" )
                    .arg( driverName );
     return false;
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+  if ( !CSLFetchBoolean( metadata, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, false ) )
+  {
+    errorMessage = tr( "The %1 driver does not support database creation" )
+                   .arg( driverName );
+    return false;
+  }
+#endif
+
 
   gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( poDriver, path.toUtf8().constData(), nullptr ) );
   if ( !hDS )
