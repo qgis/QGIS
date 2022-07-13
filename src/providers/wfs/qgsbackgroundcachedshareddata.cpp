@@ -498,7 +498,7 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
     mComputedExtent = QgsRectangle();
     mDownloader.reset( new QgsThreadedFeatureDownloader( this ) );
     mDownloader->startAndWait();
-  }^
+  }
   if ( mDownloadFinished )
     return -1;
 
