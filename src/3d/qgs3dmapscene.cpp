@@ -943,7 +943,7 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     }
     else
     {
-      // This handles the phong material with data defined properties and the textured case.
+      // This handles the phong material with data defined properties, the textured case and point (instanced) symbols.
       Qt3DRender::QEffect *effect = material->effect();
       if ( effect )
       {
