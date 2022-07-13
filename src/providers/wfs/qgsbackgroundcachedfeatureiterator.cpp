@@ -277,8 +277,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   QString serverExpression;
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
   {
-    QString error;
-    serverExpression = mShared->computedExpression( error, *mRequest.filterExpression() );
+    serverExpression = mShared->computedExpression( *mRequest.filterExpression() );
   }
 
   if ( !shared->clientSideFilterExpression().isEmpty() )
@@ -405,14 +404,6 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
   }
   else
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
-    {
-      qDebug() << "WFS DEBUG" << " and having an expression here " << mRequest.filterExpression()->expression();
-    }
-    if ( requestCache.filterExpression() && requestCache.filterExpression()->isValid() )
-    {
-      qDebug() << "WFS DEBUG" << " and requestCache expression " << requestCache.filterExpression()->expression();
-    }
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression &&
          // We cannot filter on geometry because the spatialite geometry is just
          // a bounding box and not the actual geometry of the final feature
@@ -446,13 +437,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
     }
     if ( genCounter >= 0 )
     {
-
-      qDebug() << "WFS DEBUG" << " counter is bigger zero";
       requestCache.combineFilterExpression( QString( QgsBackgroundCachedFeatureIteratorConstants::FIELD_GEN_COUNTER + " <= %1" ).arg( genCounter ) );
-      if ( requestCache.filterExpression() && requestCache.filterExpression()->isValid() )
-      {
-        qDebug() << "WFS DEBUG" << " requestCache expression " << requestCache.filterExpression()->expression();
-      }
     }
   }
 
@@ -997,6 +982,5 @@ QgsBackgroundCachedFeatureSource::QgsBackgroundCachedFeatureSource(
 
 QgsFeatureIterator QgsBackgroundCachedFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
-  qDebug() << "GET FEATURES in background";
   return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( this, false, mShared, request ) );
 }

@@ -617,10 +617,9 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   return true;
 }
 
-QString QgsOapifSharedData::computedExpression( QString &errorMsg, const QgsExpression &expression ) const
+QString QgsOapifSharedData::computedExpression( const QgsExpression &expression ) const
 {
   Q_UNUSED( expression );
-  errorMsg = tr( "Expression on server not implemented " );
   return QString();
 }
 

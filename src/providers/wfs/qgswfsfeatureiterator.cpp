@@ -206,7 +206,6 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     QDomElement andElem = doc.createElement( ( filterVersion == QgsOgcUtils::FILTER_FES_2_0 ) ? "fes:And" : "ogc:And" );
     QDomElement filterElem = doc.createElement( "fes:Filter" );
 
-
     QString geometryAttribute( mShared->mGeometryAttribute );
     if ( mShared->mLayerPropertiesList.size() > 1 )
       geometryAttribute = mShared->mURI.typeName() + "/" + geometryAttribute;
@@ -286,6 +285,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
         doc.firstChildElement().setAttributeNode( attr );
       }
     }
+
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }
   else if ( !rect.isNull() )
@@ -487,7 +487,6 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
     QUrl url( buildURL( mTotalDownloadedFeatureCount,
                         maxFeaturesThisRequest, false ) );
 
-    qDebug() << "WFS DEBUG" << "Send Query: " << url.query();
     // Small hack for testing purposes
     if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
     {
@@ -496,7 +495,6 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
       url.setQuery( query );
     }
 
-    qDebug() << "WFS DEBUG" << url.toString();
     sendGET( url,
              QString(), // content-type
              false, /* synchronous */

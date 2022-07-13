@@ -168,7 +168,7 @@ class QgsBackgroundCachedSharedData
     //////// Pure virtual methods
 
     //! Returns computed server expression
-    virtual QString computedExpression( QString &errorMsg, const QgsExpression &expression ) const = 0;
+    virtual QString computedExpression( const QgsExpression &expression ) const = 0;
 
     //! Instantiate a new feature downloader implementation.
     virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestMadeFromMainThread ) = 0;
@@ -219,7 +219,7 @@ class QgsBackgroundCachedSharedData
     //! Whether progress dialog should be hidden
     bool mHideProgressDialog = false;
 
-    //! Rerver filter expression
+    //! Server filter expression
     QString mServerExpression;
 
     //////////// Methods
@@ -273,7 +273,6 @@ class QgsBackgroundCachedSharedData
 
     //! Current BBOX used by the downloader
     QgsRectangle mRect;
-
 
     //! The background feature downloader
     std::unique_ptr<QgsThreadedFeatureDownloader> mDownloader;
