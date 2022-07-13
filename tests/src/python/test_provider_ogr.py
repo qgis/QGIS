@@ -2616,7 +2616,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(err)
 
         # non-database driver should error out
-        ok, err = metadata.createDatabase('aaa.shp')
+        ok, err = metadata.createDatabase('aaa.tif')
         self.assertFalse(ok)
         self.assertTrue(err)
 
