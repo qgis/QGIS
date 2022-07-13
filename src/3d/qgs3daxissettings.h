@@ -64,9 +64,9 @@ class _3D_EXPORT Qgs3DAxisSettings
     //! Writes settings to a DOM \a element
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
-    //! Returns the default axis viewport size in pixel
+    //! Returns the default axis viewport size in millimeters
     int defaultViewportSize() const { return mDefaultViewportSize;}
-    //! Sets the defaultl axis viewport size in pixel
+    //! Sets the defaultl axis viewport size in millimeters
     void setDefaultViewportSize( int size ) { mDefaultViewportSize = size; }
 
     //! Returns the minimal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
@@ -97,7 +97,7 @@ class _3D_EXPORT Qgs3DAxisSettings
   private:
     double mMinViewportRatio = 0.06;
     double mMaxViewportRatio = 0.5;
-    int mDefaultViewportSize = 160;
+    int mDefaultViewportSize = 40;
     Qgs3DAxisSettings::Mode mMode = Qgs3DAxisSettings::Mode::Crs;
     Qt::AnchorPoint mHorizontalPosition = Qt::AnchorPoint::AnchorRight;
     Qt::AnchorPoint mVerticalPosition = Qt::AnchorPoint::AnchorTop;

@@ -112,6 +112,10 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onCameraViewChangeWest() { onCameraViewChange( 90.0f, -90.0f ); }
     void onCameraViewChangeBottom() { onCameraViewChange( 180.0f, 0.0f ); }
 
+    void onTextXChanged( const QString &text );
+    void onTextYChanged( const QString &text );
+    void onTextZChanged( const QString &text );
+
   private:
 
     void createAxisScene();
