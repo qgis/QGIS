@@ -395,7 +395,7 @@ bool QgsBackgroundCachedSharedData::createCache()
   return true;
 }
 
-int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect, const QgsExpression &expression )
+int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect, const QString &serverExpression )
 {
   // This locks prevents 2 readers to register at the same time (and particularly
   // destroy the current mDownloader at the same time)
@@ -466,18 +466,15 @@ int QgsBackgroundCachedSharedData::registerToCache( QgsBackgroundCachedFeatureIt
   {
     newDownloadNeeded = true;
   }
-  //If there's a ongoing download, when having an expression needing a geometry, then we need a new download.
-  //We do not compare expressions here, because it won't recognize geometry changes
-  //We do not compare geometries here, because of performance and usually it diverts from the one before.
-  //Maybe it makes sense since this value is sometimes on adding feature reevaluated on attribute change...
-  else if ( expression.isValid() )
+  //If there's a ongoing download, when having an expression that can be performed on the server, then we need a new download.
+  else if ( mServerExpression != serverExpression )
   {
     newDownloadNeeded = true;
   }
   if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
-    mExpression = expression;
+    mServerExpression = serverExpression;
     mRequestLimit = ( limit > 0 && supportsLimitedFeatureCountDownloads() ) ? limit : 0;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
     mMutex.unlock();
@@ -748,13 +745,6 @@ const QgsRectangle &QgsBackgroundCachedSharedData::computedExtent() const
 {
   QMutexLocker locker( &mMutex );
   return mComputedExtent;
-}
-
-bool QgsBackgroundCachedSharedData::doWhatYouNeedToDo_TempDummyTestFunction(const QgsFeatureRequest &request)
-{
-    Q_UNUSED(request);
-    qDebug() << "WFS DEBUG" << " sorry dave we're here";
-    return false;
 }
 
 //! Called by QgsFeatureDownloaderImpl::run() at the end of the download process.

@@ -597,6 +597,13 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   return true;
 }
 
+QString QgsOapifSharedData::computedExpression( QString &errorMsg, const QgsExpression &expression ) const
+{
+  Q_UNUSED( expression );
+  errorMsg = tr( "Expression on server not implemented " );
+  return QString();
+}
+
 void QgsOapifSharedData::pushError( const QString &errorMsg ) const
 {
   QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );

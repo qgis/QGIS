@@ -274,8 +274,11 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   , mShared( shared )
   , mCachedFeaturesIter( mCachedFeatures.begin() )
 {
-  if(mShared->doWhatYouNeedToDo_TempDummyTestFunction(request)){
-    request.filterExpression()->setExpression( "" );
+  QString serverExpression;
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
+  {
+    QString error;
+    serverExpression = mShared->computedExpression( error, *mRequest.filterExpression() );
   }
 
   if ( !shared->clientSideFilterExpression().isEmpty() )
@@ -366,15 +369,9 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
   }
 
-  //dave: here you need to evaluate if it's possible to perform the expression on server and ths needs to be checked in a method of the QgsWFSSharedDate - if yes, thenpass it to the register to cache we might clean up the expression to not have it in the initRequestCache
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
-  {
-    qDebug() << "WFS DEBUG" << "having an expression here " << mRequest.filterExpression()->expression() << "but we already might have a wfs expression";
-  }
-
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, QgsExpression() ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), QgsExpression() );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
@@ -1000,5 +997,6 @@ QgsBackgroundCachedFeatureSource::QgsBackgroundCachedFeatureSource(
 
 QgsFeatureIterator QgsBackgroundCachedFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
+  qDebug() << "GET FEATURES in background";
   return QgsFeatureIterator( new QgsBackgroundCachedFeatureIterator( this, false, mShared, request ) );
 }

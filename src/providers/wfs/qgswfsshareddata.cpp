@@ -73,10 +73,9 @@ QString QgsWFSSharedData::srsName() const
   return srsName;
 }
 
-bool QgsWFSSharedData::computeExpression( QString &errorMsg, const QgsExpression &expression )
+QString QgsWFSSharedData::computedExpression( QString &errorMsg, const QgsExpression &expression ) const
 {
   errorMsg.clear();
-  mWFSExpression.clear();
 
   QgsOgcUtils::GMLVersion gmlVersion;
   QgsOgcUtils::FilterVersion filterVersion;
@@ -102,46 +101,20 @@ bool QgsWFSSharedData::computeExpression( QString &errorMsg, const QgsExpression
   if ( expression.isValid() )
   {
     QDomDocument expressionDoc;
-    qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "... and an expression as well: " << expression.expression();
-    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation() );
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), &errorMsg );
 
     if ( !errorMsg.isEmpty() )
     {
-      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "cannot perform this expression with OGC " << expression.expression();
       errorMsg = tr( "Expression to OGC Filter error: " ) + errorMsg;
-      return false;
+      return QString();
     }
     if ( !expressionElem.isNull() )
     {
-      qDebug() << "WFS DEBUG" << QThread::currentThreadId() << "I CAN perform this expression with OGC " << expression.expression();
-
       expressionDoc.appendChild( expressionElem );
-      mWFSExpression = expressionDoc.toString();
+      return expressionDoc.toString();
     }
   }
-  return true;
-}
-
-bool QgsWFSSharedData::doWhatYouNeedToDo_TempDummyTestFunction(const QgsFeatureRequest &request)
-{
-    qDebug() << "WFS DEBUG" << "What are we doing here?";
-
-    if ( request.filterType() == QgsFeatureRequest::FilterExpression && request.filterExpression() && request.filterExpression()->isValid() )
-    {
-      QString error;
-      qDebug() << "WFS DEBUG" << "compute expression";
-      if ( computeExpression( error, *request.filterExpression() ) )
-      {
-        qDebug() << "WFS DEBUG" << "we did compute that expression yeah! do we need to remove the filterExpression from the request?";
-        return true;
-      }
-      else
-      {
-        qDebug() << "WFS DEBUG" << error;
-
-      }
-    }
-    return false;
+  return QString();
 }
 
 bool QgsWFSSharedData::computeFilter( QString &errorMsg )
@@ -230,8 +203,6 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
       {
         //if not, if must be a QGIS expression
         const QgsExpression filterExpression( filter );
-
-        qDebug() << "WFS DEBUG" << "computing this filter here " << filterExpression.expression();
 
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
                                          filterExpression, filterDoc, gmlVersion, filterVersion, mGeometryAttribute,

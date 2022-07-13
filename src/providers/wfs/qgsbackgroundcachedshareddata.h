@@ -66,8 +66,6 @@ class QgsBackgroundCachedSharedData
     //! Returns extent computed from currently downloaded features
     const QgsRectangle &computedExtent() const;
 
-    bool doWhatYouNeedToDo_TempDummyTestFunction( const QgsFeatureRequest &request );
-
     //! Returns whether the feature download is finished
     bool downloadFinished() const { return mDownloadFinished; }
 
@@ -138,7 +136,7 @@ class QgsBackgroundCachedSharedData
      * Used by a QgsBackgroundCachedFeatureIterator to start a downloader and get the
      * generation counter.
     */
-    int registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect = QgsRectangle(), const QgsExpression &expression = QgsExpression() );
+    int registerToCache( QgsBackgroundCachedFeatureIterator *iterator, int limit, const QgsRectangle &rect = QgsRectangle(), const QString &serverExpression = QString() );
 
     /**
      * Used by the rewind() method of an iterator so as to get the up-to-date
@@ -168,6 +166,9 @@ class QgsBackgroundCachedSharedData
     void setHideProgressDialog( bool b ) { mHideProgressDialog = b; }
 
     //////// Pure virtual methods
+
+    //! Returns computed server expression
+    virtual QString computedExpression( QString &errorMsg, const QgsExpression &expression ) const = 0;
 
     //! Instantiate a new feature downloader implementation.
     virtual std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestMadeFromMainThread ) = 0;
@@ -218,6 +219,9 @@ class QgsBackgroundCachedSharedData
     //! Whether progress dialog should be hidden
     bool mHideProgressDialog = false;
 
+    //! Rerver filter expression
+    QString mServerExpression;
+
     //////////// Methods
 
     //! Should be called in the destructor of the implementation of this class !
@@ -225,8 +229,6 @@ class QgsBackgroundCachedSharedData
 
     //! Returns true if it is likely that the server doesn't properly honor axis order.
     virtual bool detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const { return false; }
-
-    QgsExpression mExpression;
 
   private:
 
