@@ -185,6 +185,8 @@ class CORE_EXPORT QgsPointCloudRenderContext
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
+          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;

@@ -37,6 +37,20 @@ QString QgsMeshLayerProfileResults::type() const
   return QStringLiteral( "mesh" );
 }
 
+QVector<QgsProfileIdentifyResults> QgsMeshLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  const QVector<QgsProfileIdentifyResults> noLayerResults = QgsAbstractProfileSurfaceResults::identify( point, context );
+
+  // we have to make a new list, with the correct layer reference set
+  QVector<QgsProfileIdentifyResults> res;
+  res.reserve( noLayerResults.size() );
+  for ( const QgsProfileIdentifyResults &result : noLayerResults )
+  {
+    res.append( QgsProfileIdentifyResults( mLayer, result.results() ) );
+  }
+  return res;
+}
+
 //
 // QgsMeshLayerProfileGenerator
 //
@@ -50,6 +64,7 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
   , mTransformContext( request.transformContext() )
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
+  , mLayer( layer )
   , mStepDistance( request.stepDistance() )
 {
   layer->updateTriangularMesh();
@@ -90,6 +105,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
     return false;
 
   mResults = std::make_unique< QgsMeshLayerProfileResults >();
+  mResults->mLayer = mLayer;
   mResults->copyPropertiesFromGenerator( this );
 
   // we don't currently have any method to determine line->mesh intersection points, so for now we just sample at about 100(?) points over the line
@@ -119,7 +135,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
     {
       continue;
     }
-    mResults->rawPoints.append( QgsPoint( point.x(), point.y(), height ) );
+    mResults->mRawPoints.append( QgsPoint( point.x(), point.y(), height ) );
   }
 
   if ( mFeedback->isCanceled() )
@@ -129,7 +145,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   QgsGeos originalCurveGeos( mProfileCurve.get() );
   originalCurveGeos.prepareGeometry();
   QString lastError;
-  for ( const QgsPoint &pixel : std::as_const( mResults->rawPoints ) )
+  for ( const QgsPoint &pixel : std::as_const( mResults->mRawPoints ) )
   {
     if ( mFeedback->isCanceled() )
       return false;
@@ -141,7 +157,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
       mResults->minZ = std::min( pixel.z(), mResults->minZ );
       mResults->maxZ = std::max( pixel.z(), mResults->maxZ );
     }
-    mResults->results.insert( distance, pixel.z() );
+    mResults->mDistanceToHeightMap.insert( distance, pixel.z() );
   }
 
   return true;

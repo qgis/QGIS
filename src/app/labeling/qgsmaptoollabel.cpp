@@ -365,57 +365,57 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
   }
 
   // data defined quadrant offset
-  if ( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::AroundPoint ||
-       mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::OverPoint )
+  if ( mCurrentLabel.settings.placement == Qgis::LabelPlacement::AroundPoint ||
+       mCurrentLabel.settings.placement == Qgis::LabelPlacement::OverPoint )
   {
-    QgsPalLayerSettings::QuadrantPosition quadrantOffset = QgsPalLayerSettings::QuadrantAboveRight;
+    Qgis::LabelQuadrantPosition quadrantOffset = Qgis::LabelQuadrantPosition::AboveRight;
 
     // quadrant offest defined via buttons
-    if ( mCurrentLabel.settings.placement == QgsPalLayerSettings::Placement::OverPoint )
+    if ( mCurrentLabel.settings.placement == Qgis::LabelPlacement::OverPoint )
       quadrantOffset = mCurrentLabel.settings.quadOffset;
 
     // quadrant offest DD defined
     if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::OffsetQuad ) )
     {
-      QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::OffsetQuad, mCurrentLabel.settings, f, quadrantOffset );
+      QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::OffsetQuad, mCurrentLabel.settings, f, static_cast< int >( quadrantOffset ) );
       if ( !exprVal.isNull() )
       {
         bool ok;
         int quadInt = exprVal.toInt( &ok );
         if ( ok && 0 <= quadInt && quadInt <= 8 )
         {
-          quadrantOffset = static_cast< QgsPalLayerSettings::QuadrantPosition >( quadInt );
+          quadrantOffset = static_cast< Qgis::LabelQuadrantPosition >( quadInt );
         }
       }
     }
 
     switch ( quadrantOffset )
     {
-      case QgsPalLayerSettings::QuadrantAboveLeft:
+      case Qgis::LabelQuadrantPosition::AboveLeft:
         labelAlignment = LabelAlignment::BottomRight;
         break;
-      case QgsPalLayerSettings::QuadrantAbove:
+      case Qgis::LabelQuadrantPosition::Above:
         labelAlignment = LabelAlignment::BottomCenter;
         break;
-      case QgsPalLayerSettings::QuadrantAboveRight:
+      case Qgis::LabelQuadrantPosition::AboveRight:
         labelAlignment = LabelAlignment::BottomLeft;
         break;
-      case QgsPalLayerSettings::QuadrantLeft:
+      case Qgis::LabelQuadrantPosition::Left:
         labelAlignment = LabelAlignment::HalfRight;
         break;
-      case QgsPalLayerSettings::QuadrantOver:
+      case Qgis::LabelQuadrantPosition::Over:
         labelAlignment = LabelAlignment::HalfCenter;
         break;
-      case QgsPalLayerSettings::QuadrantRight:
+      case Qgis::LabelQuadrantPosition::Right:
         labelAlignment = LabelAlignment::HalfLeft;
         break;
-      case QgsPalLayerSettings::QuadrantBelowLeft:
+      case Qgis::LabelQuadrantPosition::BelowLeft:
         labelAlignment = LabelAlignment::TopRight;
         break;
-      case QgsPalLayerSettings::QuadrantBelow:
+      case Qgis::LabelQuadrantPosition::Below:
         labelAlignment = LabelAlignment::TopCenter;
         break;
-      case QgsPalLayerSettings::QuadrantBelowRight:
+      case Qgis::LabelQuadrantPosition::BelowRight:
         labelAlignment = LabelAlignment::TopLeft;
         break;
     }
@@ -1142,7 +1142,30 @@ bool QgsMapToolLabel::isPinned()
 
   if ( ! mCurrentLabel.pos.isDiagram )
   {
-    rc = mCurrentLabel.pos.isPinned;
+    if ( mCurrentLabel.pos.isPinned )
+    {
+      rc = true;
+    }
+    else
+    {
+      double lineAnchor;
+      bool lineAnchorSuccess;
+      int lineAnchorCol;
+      QString lineAnchorClipping;
+      bool lineAnchorClippingSuccess;
+      int lineAnchorClippingCol;
+      QString lineAnchorType;
+      bool lineAnchorTypeSuccess;
+      int lineAnchorTypeCol;
+      QString lineAnchorTextPoint;
+      bool lineAnchorTextSuccess;
+      int lineAnchorTextCol;
+      if ( currentLabelDataDefinedLineAnchorPercent( lineAnchor, lineAnchorSuccess, lineAnchorCol, lineAnchorClipping, lineAnchorClippingSuccess, lineAnchorClippingCol,
+           lineAnchorType, lineAnchorTypeSuccess, lineAnchorTypeCol, lineAnchorTextPoint, lineAnchorTextSuccess, lineAnchorTextCol ) )
+      {
+        rc = lineAnchorSuccess;
+      }
+    }
   }
   else
   {

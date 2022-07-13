@@ -435,6 +435,24 @@ tests:
           geometry:
             normalize: True
 
+  - algorithm: native:difference
+    name: Difference points vs polys
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      OVERLAY:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference_points_vs_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            gml_id: skip
+
   - algorithm: native:symmetricaldifference
     name: Test Symmetrical Difference A - B (basic)
     params:
@@ -1056,7 +1074,7 @@ tests:
         type: vector
 
   - algorithm: native:setzfromraster
-    name: Drape points to z
+    name: Drape points to z with scale factor
     params:
       BAND: 1
       INPUT:
@@ -1073,7 +1091,7 @@ tests:
         type: vector
 
   - algorithm: native:setmfromraster
-    name: Drape points to m
+    name: Drape points to m with scale factor
     params:
       BAND: 1
       INPUT:
@@ -1121,6 +1139,41 @@ tests:
     results:
       OUTPUT:
         name: expected/drape_lines_m.shp
+        type: vector
+
+  - algorithm: native:setzfromraster
+    name: Drape points to z with offset
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      OFFSET: -20.0
+    results:
+      OUTPUT:
+        name: expected/drape_points_offset.shp
+        type: vector
+
+  - algorithm: native:setzfromraster
+    name: Drape points to z with scale and offset
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.2
+      OFFSET: 15.0
+    results:
+      OUTPUT:
+        name: expected/drape_points_scale_offset.shp
         type: vector
 
   - algorithm: native:linesubstring

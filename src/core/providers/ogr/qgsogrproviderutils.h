@@ -242,6 +242,9 @@ class CORE_EXPORT QgsOgrProviderUtils
     //! Gets single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
+    //! Gets single flatten and linear geometry type
+    static OGRwkbGeometryType ogrWkbSingleFlattenAndLinear( OGRwkbGeometryType type );
+
     static QString ogrWkbGeometryTypeName( OGRwkbGeometryType type );
 
     //! Resolves the geometry type for a feature, with special handling for some drivers
@@ -445,6 +448,9 @@ class QgsOgrLayer
 
     //! Return an approximate feature count
     GIntBig GetApproxFeatureCount();
+
+    //! Return an total feature count based on meta data from package container
+    GIntBig GetTotalFeatureCountFromMetaData() const;
 
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );

@@ -2894,6 +2894,11 @@ QgsMssqlProviderMetadata::QgsMssqlProviderMetadata():
 {
 }
 
+QIcon QgsMssqlProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMssql.svg" ) );
+}
+
 QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
   const QgsDataSourceUri dsUri( uri );
@@ -3079,6 +3084,11 @@ QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts ) const
   if ( parts.contains( QStringLiteral( "primaryKeyInGeometryColumns" ) ) )
     dsUri.setParam( QStringLiteral( "primaryKeyInGeometryColumns" ), parts.value( QStringLiteral( "primaryKeyInGeometryColumns" ) ).toString() );
   return dsUri.uri();
+}
+
+QList<QgsMapLayerType> QgsMssqlProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
 }
 
 bool QgsMssqlProviderMetadata::execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin ) const

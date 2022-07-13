@@ -54,7 +54,7 @@ class TestQgsOwsConnection(unittest.TestCase):
         uri = c.uri()
 
         self.assertEqual(uri.param('url'), 'aaa.bbb.com')
-        self.assertEqual(uri.param('referer'), 'my_ref')
+        self.assertEqual(uri.httpHeader('referer'), 'my_ref')
         self.assertEqual(uri.param('IgnoreGetMapUrl'), '1')
         self.assertEqual(uri.param('IgnoreGetFeatureInfoUrl'), '1')
         self.assertEqual(uri.param('SmoothPixmapTransform'), '1')
@@ -66,7 +66,7 @@ class TestQgsOwsConnection(unittest.TestCase):
         uri = QgsDataSourceUri()
         QgsOwsConnection.addWmsWcsConnectionSettings(uri, 'qgis/connections-wms/test/')
 
-        self.assertEqual(uri.param('referer'), 'my_ref')
+        self.assertEqual(uri.httpHeader('referer'), 'my_ref')
         self.assertEqual(uri.param('IgnoreGetMapUrl'), '1')
         self.assertEqual(uri.param('IgnoreGetFeatureInfoUrl'), '1')
         self.assertEqual(uri.param('SmoothPixmapTransform'), '1')

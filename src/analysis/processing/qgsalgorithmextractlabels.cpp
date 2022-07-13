@@ -147,8 +147,8 @@ class ExtractLabelSink : public QgsLabelSink
       }
 
       const QgsFeatureId fid = label->getFeaturePart()->featureId();
-      if ( settings.placement == QgsPalLayerSettings::Curved ||
-           settings.placement == QgsPalLayerSettings::PerimeterCurved )
+      if ( settings.placement == Qgis::LabelPlacement::Curved ||
+           settings.placement == Qgis::LabelPlacement::PerimeterCurved )
       {
         if ( !mCurvedWarningPushed.contains( layerId ) )
         {
@@ -181,27 +181,27 @@ class ExtractLabelSink : public QgsLabelSink
       QString labelAlignment;
       if ( dataDefinedValues.contains( QgsPalLayerSettings::MultiLineAlignment ) )
       {
-        labelSettings.multilineAlign = static_cast< QgsPalLayerSettings::MultiLineAlign >( dataDefinedValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
+        labelSettings.multilineAlign = static_cast< Qgis::LabelMultiLineAlignment >( dataDefinedValues.value( QgsPalLayerSettings::MultiLineAlignment ).toInt() );
       }
       switch ( labelSettings.multilineAlign )
       {
-        case QgsPalLayerSettings::QgsPalLayerSettings::MultiRight:
+        case Qgis::LabelMultiLineAlignment::Right:
           labelAlignment = QStringLiteral( "right" );
           break;
 
-        case QgsPalLayerSettings::QgsPalLayerSettings::MultiCenter:
+        case Qgis::LabelMultiLineAlignment::Center:
           labelAlignment = QStringLiteral( "center" );
           break;
 
-        case QgsPalLayerSettings::QgsPalLayerSettings::MultiLeft:
+        case Qgis::LabelMultiLineAlignment::Left:
           labelAlignment = QStringLiteral( "left" );
           break;
 
-        case QgsPalLayerSettings::QgsPalLayerSettings::MultiJustify:
+        case Qgis::LabelMultiLineAlignment::Justify:
           labelAlignment = QStringLiteral( "justify" );
           break;
 
-        case QgsPalLayerSettings::MultiFollowPlacement:
+        case Qgis::LabelMultiLineAlignment::FollowPlacement:
           switch ( label->getQuadrant() )
           {
             case pal::LabelPosition::QuadrantAboveLeft:
@@ -503,9 +503,10 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
 
     settings.fieldName = QStringLiteral( "LabelText" );
     settings.obstacleSettings().setIsObstacle( false );
-    settings.placement = QgsPalLayerSettings::OverPoint;
-    settings.quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
-    settings.displayAll = true;
+    settings.placement = Qgis::LabelPlacement::OverPoint;
+    settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+    settings.placementSettings().setAllowDegradedPlacement( true );
+    settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
     QgsTextFormat textFormat;
     textFormat.setSize( 9 );

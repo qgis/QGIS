@@ -25,6 +25,8 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QEffect>
@@ -41,6 +43,7 @@
 #include <QOpenGLFunctions>
 #include <QTimer>
 
+#include "qgs3daxis.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsaabb.h"
@@ -82,7 +85,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
-Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
+Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
   : mMap( map )
   , mEngine( engine )
 {
@@ -142,7 +145,10 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
+  connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
+  connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
 
+  connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -234,6 +240,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *
 
   mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
+
+  on3DAxisSettingsChanged();
 }
 
 void Qgs3DMapScene::viewZoomFull()
@@ -519,6 +527,10 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
 
   if ( fnear < 1 )
     fnear = 1;  // does not really make sense to use negative far plane (behind camera)
+
+  // when zooming in a lot, fnear can become smaller than ffar. This should not happen
+  if ( fnear > ffar )
+    std::swap( fnear, ffar );
 
   if ( fnear == 1e9 && ffar == 0 )
   {
@@ -911,6 +923,22 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
     bm->setViewportSize( mCameraController->viewport().size() );
   }
+
+
+  // Finalize adding the 3D transparent objects by adding the layer components to the entities
+  QgsShadowRenderingFrameGraph *frameGraph = mEngine->frameGraph();
+  Qt3DRender::QLayer *layer = frameGraph->transparentObjectLayer();
+  for ( Qt3DExtras::QDiffuseSpecularMaterial *ph : newEntity->findChildren<Qt3DExtras::QDiffuseSpecularMaterial *>() )
+  {
+    if ( ph->diffuse().value<QColor>().alphaF() == 1.0f )
+      continue;
+    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( ph->parent() );
+    if ( !entity )
+      continue;
+    if ( entity->components().contains( layer ) )
+      continue;
+    entity->addComponent( layer );
+  }
 }
 
 int Qgs3DMapScene::maximumTextureSize() const
@@ -1063,6 +1091,12 @@ void Qgs3DMapScene::onDebugDepthMapSettingsChanged()
   shadowRenderingFrameGraph->setupDepthMapDebugging( mMap.debugDepthMapEnabled(), mMap.debugDepthMapCorner(), mMap.debugDepthMapSize() );
 }
 
+void Qgs3DMapScene::onDebugOverlayEnabledChanged()
+{
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
+  shadowRenderingFrameGraph->setDebugOverlayEnabled( mMap.isDebugOverlayEnabled() );
+}
+
 void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
@@ -1076,6 +1110,11 @@ void Qgs3DMapScene::onEyeDomeShadingSettingsChanged()
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
 {
   mCameraController->setCameraMovementSpeed( mMap.cameraMovementSpeed() );
+}
+
+void Qgs3DMapScene::onCameraNavigationModeChanged()
+{
+  mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
 }
 
 void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
@@ -1198,3 +1237,19 @@ void Qgs3DMapScene::addCameraRotationCenterEntity( QgsCameraController *controll
     mEntityRotationCenter->setEnabled( mMap.showCameraRotationCenter() );
   } );
 }
+
+void Qgs3DMapScene::on3DAxisSettingsChanged()
+{
+  if ( !m3DAxis )
+  {
+    if ( QgsWindow3DEngine *engine = dynamic_cast<QgsWindow3DEngine *>( mEngine ) )
+    {
+      m3DAxis = new Qgs3DAxis( static_cast<Qt3DExtras::Qt3DWindow *>( engine->window() ),
+                               engine->root(),
+                               this,
+                               mCameraController,
+                               &mMap );
+    }
+  }
+}
+

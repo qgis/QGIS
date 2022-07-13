@@ -1159,7 +1159,7 @@ QString QgsCategorizedSymbolRenderer::legendKeyToExpression( const QString &key,
       parts.append( QgsExpression::quotedValue( v ) );
     }
 
-    return QStringLiteral( "%1 IN (%2)" ).arg( attributeComponent, parts.join( QStringLiteral( ", " ) ) );
+    return QStringLiteral( "%1 IN (%2)" ).arg( attributeComponent, parts.join( QLatin1String( ", " ) ) );
   }
   else
   {

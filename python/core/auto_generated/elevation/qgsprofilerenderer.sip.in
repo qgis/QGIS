@@ -143,6 +143,16 @@ If ``sourceId`` is empty then all sources will be rendered, otherwise only the m
 Snap a ``point`` to the results.
 %End
 
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context );
+%Docstring
+Identify results visible at the specified profile ``point``.
+%End
+
+    QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context );
+%Docstring
+Identify results visible within the specified ranges.
+%End
+
   signals:
 
     void generationFinished();

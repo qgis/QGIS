@@ -50,6 +50,21 @@ bool QgsPlotTool::isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) c
   return std::abs( diffX ) >= 2 || std::abs( diffY ) >= 2;
 }
 
+QPointF QgsPlotTool::constrainPointToRect( QPointF point, const QRectF &rect )
+{
+  if ( point.x() < rect.left() )
+    point.setX( rect.left() );
+  else if ( point.x() > rect.right() )
+    point.setX( rect.right() );
+
+  if ( point.y() < rect.top() )
+    point.setY( rect.top() );
+  else if ( point.y() > rect.bottom() )
+    point.setY( rect.bottom() );
+
+  return point;
+}
+
 QgsPlotTool::~QgsPlotTool()
 {
   if ( mCanvas )

@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgspointcloudclassifiedrenderer.h"
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
@@ -220,12 +221,17 @@ class CORE_EXPORT QgsPointCloudRendererRegistry
     QStringList renderersList() const;
 
     /**
-     * Returns a new default point cloud renderer for a layer with the specified \a provider.
+     * Returns a new default point cloud renderer for a specified \a layer.
      *
      * Caller takes ownership of the returned renderer.
      */
-    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudDataProvider *provider ) SIP_FACTORY;
+    static QgsPointCloudRenderer *defaultRenderer( const QgsPointCloudLayer *layer ) SIP_FACTORY;
 
+    /**
+     * Returns a list of categories using the available Classification classes of a specified \a layer, along with
+     * default colors and translated names for the 19 classes (0-18) of point data record formats 6-10
+     */
+    static QgsPointCloudCategoryList classificationAttributeCategories( const QgsPointCloudLayer *layer );
   private:
 #ifdef SIP_RUN
     QgsPointCloudRendererRegistry( const QgsPointCloudRendererRegistry &rh );

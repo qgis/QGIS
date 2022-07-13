@@ -23,6 +23,8 @@
 #include "qgstextrendererutils.h"
 #include "qgspallabeling.h"
 #include "qgsconfig.h"
+#include "qgsfontmanager.h"
+
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QWidget>
@@ -405,7 +407,7 @@ void QgsTextFormat::readFromLayer( QgsVectorLayer *layer )
 {
   d->isValid = true;
   QFont appFont = QApplication::font();
-  mTextFontFamily = layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString();
+  mTextFontFamily = QgsApplication::fontManager()->processFontFamilyName( layer->customProperty( QStringLiteral( "labeling/fontFamily" ), QVariant( appFont.family() ) ).toString() );
   QString fontFamily = mTextFontFamily;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
@@ -494,7 +496,7 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   else
     textStyleElem = elem.firstChildElement( QStringLiteral( "text-style" ) );
   QFont appFont = QApplication::font();
-  mTextFontFamily = textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() );
+  mTextFontFamily = QgsApplication::fontManager()->processFontFamilyName( textStyleElem.attribute( QStringLiteral( "fontFamily" ), appFont.family() ) );
   QString fontFamily = mTextFontFamily;
 
   const QDomElement familiesElem = textStyleElem.firstChildElement( QStringLiteral( "families" ) );
@@ -509,22 +511,32 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   d->families = families;
 
   mTextFontFound = false;
+  QString matched;
   if ( mTextFontFamily != appFont.family() && !QgsFontUtils::fontFamilyMatchOnSystem( mTextFontFamily ) )
   {
-    for ( const QString &family : std::as_const( families ) )
+    if ( QgsApplication::fontManager()->tryToDownloadFontFamily( mTextFontFamily, matched ) )
     {
-      if ( QgsFontUtils::fontFamilyMatchOnSystem( family ) )
-      {
-        mTextFontFound = true;
-        fontFamily = family;
-        break;
-      }
+      mTextFontFound = true;
     }
-
-    if ( !mTextFontFound )
+    else
     {
-      // couldn't even find a matching font in the backup list -- substitute default instead
-      fontFamily = appFont.family();
+      for ( const QString &family : std::as_const( families ) )
+      {
+        const QString processedFamily = QgsApplication::fontManager()->processFontFamilyName( family );
+        if ( QgsFontUtils::fontFamilyMatchOnSystem( processedFamily ) ||
+             QgsApplication::fontManager()->tryToDownloadFontFamily( processedFamily, matched ) )
+        {
+          mTextFontFound = true;
+          fontFamily = processedFamily;
+          break;
+        }
+      }
+
+      if ( !mTextFontFound )
+      {
+        // couldn't even find a matching font in the backup list -- substitute default instead
+        fontFamily = appFont.family();
+      }
     }
   }
   else
@@ -870,6 +882,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   if ( !exprVal.isNull() )
   {
     QString family = exprVal.toString().trimmed();
+    family = QgsApplication::fontManager()->processFontFamilyName( family );
     if ( d->textFont.family() != family )
     {
       // testing for ddFontFamily in QFontDatabase.families() may be slow to do for every feature

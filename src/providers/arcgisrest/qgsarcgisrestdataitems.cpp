@@ -195,15 +195,13 @@ QVector<QgsDataItem *> QgsArcGisRestConnectionItem::createChildren()
   const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), mConnName );
   const QString url = connection.uri().param( QStringLiteral( "url" ) );
   const QString authcfg = connection.uri().authConfigId();
-  const QString referer = connection.uri().param( QStringLiteral( "referer" ) );
-  QgsHttpHeaders headers;
-  if ( ! referer.isEmpty() )
-    headers[ QStringLiteral( "referer" )] = referer;
+
+  QgsHttpHeaders headers = connection.uri().httpHeaders();
 
   QVector<QgsDataItem *> items;
   if ( !mPortalCommunityEndpoint.isEmpty() && !mPortalContentEndpoint.isEmpty() )
   {
-    items << new QgsArcGisPortalGroupsItem( this, QStringLiteral( "groups" ), authcfg, headers, mPortalCommunityEndpoint, mPortalContentEndpoint );
+    items << new QgsArcGisPortalGroupsItem( this, QStringLiteral( "groups" ), authcfg, connection.uri().httpHeaders(), mPortalCommunityEndpoint, mPortalContentEndpoint );
     items << new QgsArcGisRestServicesItem( this, url, QStringLiteral( "services" ), authcfg, headers );
   }
   else
@@ -573,8 +571,9 @@ QgsArcGisFeatureServiceLayerItem::QgsArcGisFeatureServiceLayerItem( QgsDataItem 
   mUri = QStringLiteral( "crs='%1' url='%2'" ).arg( authid, url );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
-  if ( !headers [ QStringLiteral( "referer" ) ].toString().isEmpty() )
-    mUri += QStringLiteral( " referer='%1'" ).arg( headers[ QStringLiteral( "referer" ) ].toString() );
+
+  mUri += headers.toSpacedString();
+
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( url );
 }
@@ -590,8 +589,9 @@ QgsArcGisMapServiceLayerItem::QgsArcGisMapServiceLayerItem( QgsDataItem *parent,
   mUri = QStringLiteral( "crs='%1' format='%2' layer='%3' url='%4'" ).arg( authid, format, id, trimmedUrl );
   if ( !authcfg.isEmpty() )
     mUri += QStringLiteral( " authcfg='%1'" ).arg( authcfg );
-  if ( !headers [ QStringLiteral( "referer" ) ].toString().isEmpty() )
-    mUri += QStringLiteral( " referer='%1'" ).arg( headers [ QStringLiteral( "referer" ) ].toString() );
+
+  mUri += headers.toSpacedString();
+
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( mPath );
 }

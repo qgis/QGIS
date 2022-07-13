@@ -27,6 +27,7 @@
 #include <QTableView>
 #include <mutex>
 
+
 //
 // QgsAggregateMappingModel
 //
@@ -365,9 +366,9 @@ QgsAggregateMappingWidget::QgsAggregateMappingWidget( QWidget *parent,
 
   mModel = new QgsAggregateMappingModel( sourceFields, this );
   mTableView->setModel( mModel );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingWidget::ExpressionDelegate( this ) );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::Aggregate ), new QgsAggregateMappingWidget::AggregateDelegate( mTableView ) );
-  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingWidget::TypeDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::SourceExpression ), new QgsFieldMappingExpressionDelegate( this ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::Aggregate ), new QgsAggregateMappingDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsAggregateMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
   connect( mModel, &QgsAggregateMappingModel::rowsInserted, this, [ = ] { updateColumns(); } );
@@ -510,22 +511,23 @@ std::list<int> QgsAggregateMappingWidget::selectedRows()
 }
 
 
+/// @cond PRIVATE
 
 //
 // AggregateDelegate
 //
 
-QgsAggregateMappingWidget::AggregateDelegate::AggregateDelegate( QObject *parent )
+QgsAggregateMappingDelegate::QgsAggregateMappingDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
 }
 
-QWidget *QgsAggregateMappingWidget::AggregateDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex & ) const
+QWidget *QgsAggregateMappingDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex & ) const
 {
   Q_UNUSED( option )
   QComboBox *editor = new QComboBox( parent );
 
-  const QStringList aggregateList { QgsAggregateMappingWidget::AggregateDelegate::aggregates() };
+  const QStringList aggregateList { aggregates() };
   int i = 0;
   for ( const QString &aggregate : aggregateList )
   {
@@ -540,13 +542,13 @@ QWidget *QgsAggregateMappingWidget::AggregateDelegate::createEditor( QWidget *pa
            [ = ]( int currentIndex )
   {
     Q_UNUSED( currentIndex )
-    const_cast< QgsAggregateMappingWidget::AggregateDelegate *>( this )->emit commitData( editor );
+    const_cast< QgsAggregateMappingDelegate *>( this )->emit commitData( editor );
   } );
 
   return editor;
 }
 
-void QgsAggregateMappingWidget::AggregateDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsAggregateMappingDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
   if ( ! editorWidget )
@@ -556,7 +558,7 @@ void QgsAggregateMappingWidget::AggregateDelegate::setEditorData( QWidget *edito
   editorWidget->setCurrentIndex( editorWidget->findData( value ) );
 }
 
-void QgsAggregateMappingWidget::AggregateDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsAggregateMappingDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
   if ( ! editorWidget )
@@ -566,7 +568,7 @@ void QgsAggregateMappingWidget::AggregateDelegate::setModelData( QWidget *editor
   model->setData( index, currentValue, Qt::EditRole );
 }
 
-const QStringList QgsAggregateMappingWidget::AggregateDelegate::aggregates()
+const QStringList QgsAggregateMappingDelegate::aggregates()
 {
   static QStringList sAggregates;
   static std::once_flag initialized;
@@ -597,3 +599,4 @@ const QStringList QgsAggregateMappingWidget::AggregateDelegate::aggregates()
   return sAggregates;
 }
 
+/// @endcond

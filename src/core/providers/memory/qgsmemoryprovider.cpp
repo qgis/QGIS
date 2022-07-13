@@ -23,10 +23,12 @@
 #include "qgsspatialindex.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvariantutils.h"
+#include "qgsapplication.h"
 
 #include <QUrl>
 #include <QUrlQuery>
 #include <QRegularExpression>
+#include <QIcon>
 
 ///@cond PRIVATE
 
@@ -115,6 +117,8 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
 
+                  // complex types
+                  << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Map ), QStringLiteral( "map" ), QVariant::Map, -1, -1, -1, -1 )
                 );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
@@ -239,13 +243,6 @@ QString QgsMemoryProvider::providerKey()
 QString QgsMemoryProvider::providerDescription()
 {
   return TEXT_PROVIDER_DESCRIPTION;
-}
-
-QgsMemoryProvider *QgsMemoryProvider::createProvider( const QString &uri,
-    const ProviderOptions &options,
-    QgsDataProvider::ReadFlags flags )
-{
-  return new QgsMemoryProvider( uri, options, flags );
 }
 
 QgsAbstractFeatureSource *QgsMemoryProvider::featureSource() const
@@ -563,6 +560,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 {
+  bool fieldWasAdded { false };
   for ( QgsField field : attributes )
   {
     if ( !supportedType( field ) )
@@ -597,6 +595,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
 
     // add new field as a last one
     mFields.append( field );
+    fieldWasAdded = true;
 
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
@@ -606,7 +605,7 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       f.setAttributes( attr );
     }
   }
-  return true;
+  return fieldWasAdded;
 }
 
 bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes )
@@ -808,6 +807,27 @@ QString QgsMemoryProvider::name() const
 QString QgsMemoryProvider::description() const
 {
   return TEXT_PROVIDER_DESCRIPTION;
+}
+
+
+QgsMemoryProviderMetadata::QgsMemoryProviderMetadata()
+  : QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription() )
+{
+}
+
+QIcon QgsMemoryProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconMemory.svg" ) );
+}
+
+QgsDataProvider *QgsMemoryProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
+{
+  return new QgsMemoryProvider( uri, options, flags );
+}
+
+QList<QgsMapLayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
 }
 
 ///@endcond

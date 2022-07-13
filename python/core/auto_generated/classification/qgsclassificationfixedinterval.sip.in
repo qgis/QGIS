@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationfixedinterval.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsClassificationFixedInterval : QgsClassificationMethod
+{
+%Docstring(signature="appended")
+Implementation of a fixed interval classification.
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsclassificationfixedinterval.h"
+%End
+  public:
+
+    QgsClassificationFixedInterval();
+    virtual QgsClassificationMethod *clone() const;
+
+    virtual QString name() const;
+
+    virtual QString id() const;
+
+    virtual QIcon icon() const;
+
+    virtual bool valuesRequired() const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/classification/qgsclassificationfixedinterval.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

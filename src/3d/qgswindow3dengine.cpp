@@ -43,6 +43,11 @@ QWindow *QgsWindow3DEngine::window()
   return mWindow3D;
 }
 
+Qt3DCore::QEntity *QgsWindow3DEngine::root() const
+{
+  return mRoot;
+}
+
 void QgsWindow3DEngine::setShadowRenderingEnabled( bool enabled )
 {
   mShadowRenderingEnabled = enabled;

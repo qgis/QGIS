@@ -52,7 +52,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mAuth.mAuthCfg = uri.authConfigId();
   }
 
-  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
+  mAuth.mHttpHeaders = uri.httpHeaders();
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.hasParam( QStringLiteral( "interpretation" ) ) )
@@ -101,7 +101,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       QDateTime begin = mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
       QDateTime end = mTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
 
-      mFixedRange =  QgsDateTimeRange( begin, end );
+      mFixedRange = QgsDateTimeRange( begin, end );
     }
     else
       mFixedRange = QgsDateTimeRange();
@@ -397,6 +397,75 @@ QDateTime QgsWmsSettings::parseWmstDateTimes( const QString &item )
     return QDateTime::fromString( item, Qt::ISODateWithMs );
   else
     return QDateTime::fromString( item, Qt::ISODate );
+}
+
+QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWmtsTileLayer::WmtsTimeFormat &format )
+{
+  // no standards here, we just have to be flexible..!
+  // because we have to reconstruct values in the same exact formats later, each format match
+  // must be specific to ONE SINGULAR format only! (ie. we can't make these formats tolerant to - vs /, etc --
+  // each one must be handled individually).
+
+  // YYYYMMDD format, eg
+  // 20210101
+  const thread_local QRegularExpression rxYYYYMMDD( QStringLiteral( "^\\s*(\\d{4})(\\d{2})(\\d{2})\\s*$" ) );
+  QRegularExpressionMatch match = rxYYYYMMDD.match( value );
+  if ( match.hasMatch() )
+  {
+    const QDate date( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(), match.captured( 3 ).toInt() );
+    format = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    return QgsDateTimeRange( QDateTime( date, QTime( 0, 0, 0 ) ), QDateTime( date, QTime( 23, 59, 59, 999 ) ) );
+#else
+    return QgsDateTimeRange( date.startOfDay(), date.endOfDay( ) );
+#endif
+  }
+
+  // YYYY-MM-DD format, eg
+  // 2021-01-01
+  const thread_local QRegularExpression rxYYYY_MM_DD( QStringLiteral( "^\\s*(\\d{4})-(\\d{2})-(\\d{2})\\s*$" ) );
+  match = rxYYYY_MM_DD.match( value );
+  if ( match.hasMatch() )
+  {
+    const QDate date( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(), match.captured( 3 ).toInt() );
+    format = QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    return QgsDateTimeRange( QDateTime( date, QTime( 0, 0, 0 ) ), QDateTime( date, QTime( 23, 59, 59, 999 ) ) );
+#else
+    return QgsDateTimeRange( date.startOfDay(), date.endOfDay( ) );
+#endif
+  }
+
+  // YYYY format, eg
+  // 2021
+  const thread_local QRegularExpression rxYYYY( QStringLiteral( "^\\s*(\\d{4})\\s*$" ) );
+  match = rxYYYY.match( value );
+  if ( match.hasMatch() )
+  {
+    const QDate startDate( match.captured( 1 ).toInt(), 1, 1 );
+    const QDate endDate( match.captured( 1 ).toInt(), 12, 31 );
+    format = QgsWmtsTileLayer::WmtsTimeFormat::yyyy;
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    return QgsDateTimeRange( QDateTime( startDate, QTime( 0, 0, 0 ) ), QDateTime( endDate, QTime( 23, 59, 59, 999 ) ) );
+#else
+    return QgsDateTimeRange( startDate.startOfDay(), endDate.endOfDay( ) );
+#endif
+  }
+
+  // YYYY-MM-DDTHH:mm:ss.SSSZ
+  const thread_local QRegularExpression rxYYYYMMDDHHmmssSSSz( QStringLiteral( "^\\s*(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})Z\\s*$" ) );
+  match = rxYYYYMMDDHHmmssSSSz.match( value );
+  if ( match.hasMatch() )
+  {
+    const QDate date( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(), match.captured( 3 ).toInt() );
+    const QTime time( match.captured( 4 ).toInt(), match.captured( 5 ).toInt(), match.captured( 6 ).toInt() );
+    format = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ;
+    return QgsDateTimeRange( QDateTime( date, time ), QDateTime( date, time ) );
+  }
+
+  return QgsDateTimeRange();
 }
 
 
@@ -1551,6 +1620,10 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   QgsWmtsTileMatrix tileMatrix;
   QgsWmtsTileLayer tileLayer;
 
+  // don't allow duplicate format/style/ strings
+  QSet< QString > uniqueFormats;
+  QSet< QString > uniqueStyles;
+
   tileLayer.tileMode = WMSC;
 
   QDomNode node = element.firstChild();
@@ -1570,7 +1643,12 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else if ( tagName == QLatin1String( "Styles" ) )
       {
-        styles << nodeElement.text();
+        const QString style = nodeElement.text();
+        if ( !uniqueStyles.contains( style ) )
+        {
+          styles << style;
+          uniqueStyles.insert( style );
+        }
       }
       else if ( tagName == QLatin1String( "Width" ) )
       {
@@ -1586,7 +1664,12 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
       }
       else if ( tagName == QLatin1String( "Format" ) )
       {
-        tileLayer.formats << nodeElement.text();
+        const QString format = nodeElement.text();
+        if ( !uniqueFormats.contains( format ) )
+        {
+          tileLayer.formats << format;
+          uniqueFormats.insert( format );
+        }
       }
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
@@ -1651,8 +1734,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   mTileLayersSupported.append( tileLayer );
 
   int i = 0;
-  const auto constResolutions = resolutions;
-  for ( const QString &rS : constResolutions )
+  for ( const QString &rS : std::as_const( resolutions ) )
   {
     double r = rS.toDouble();
     tileMatrix.identifier = QString::number( i );
@@ -1902,9 +1984,17 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       tileLayer.styles.insert( style.identifier, style );
     }
 
-    for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "Format" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "Format" ) ) )
     {
-      tileLayer.formats << secondChildElement.text();
+      QSet< QString > uniqueFormats;
+      for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "Format" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "Format" ) ) )
+      {
+        const QString format = secondChildElement.text();
+        if ( !uniqueFormats.contains( format ) )
+        {
+          tileLayer.formats << format;
+          uniqueFormats.insert( format );
+        }
+      }
     }
 
     for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "InfoFormat" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "InfoFormat" ) ) )
@@ -1968,6 +2058,106 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       }
 
       tileLayer.dimensions.insert( dimension.identifier, dimension );
+
+      if ( ( dimension.title.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 ||
+             dimension.identifier.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 )
+           && !dimension.values.empty() )
+      {
+        // we will use temporal framework if there's multiple time dimension values, OR if a single time dimension value is itself an interval
+        bool useTemporalFramework = dimension.values.size() > 1;
+        if ( !useTemporalFramework )
+        {
+          const thread_local QRegularExpression rxPeriod( QStringLiteral( ".*/P.*" ) );
+          const QRegularExpressionMatch match = rxPeriod.match( dimension.values.constFirst() );
+          useTemporalFramework = match.hasMatch();
+        }
+
+        if ( useTemporalFramework )
+        {
+          tileLayer.timeDimensionIdentifier = dimension.identifier;
+          // populate temporal information
+          QDateTime minTime;
+          QDateTime maxTime;
+          QgsInterval defaultInterval = QgsInterval( 1, QgsUnitTypes::TemporalIrregularStep );
+          bool hasPeriodValue = false;
+          for ( const QString &value : std::as_const( dimension.values ) )
+          {
+            // unfortunately there's NO standard way of specifying time values for WMTS. So we have to be flexible here...
+
+            // check first if it's a WMST style YYYY-MM-DD/YYYY-MM-DD/Pxx format
+            const thread_local QRegularExpression rxPeriod( QStringLiteral( ".*/P.*" ) );
+            const QRegularExpressionMatch match = rxPeriod.match( value );
+            if ( match.hasMatch() )
+            {
+              const QStringList valueParts = value.split( '/' );
+              if ( valueParts.size() == 3 )
+              {
+                const QDateTime begin = QgsWmsSettings::parseWmstDateTimes( valueParts.at( 0 ) );
+                const QDateTime end = QgsWmsSettings::parseWmstDateTimes( valueParts.at( 1 ) );
+                const QgsTimeDuration itemResolution = QgsWmsSettings::parseWmstResolution( valueParts.at( 2 ) );
+
+                bool maxValuesExceeded = false;
+                const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, itemResolution, maxValuesExceeded, 1000 );
+                // if we have a manageable number of distinct dates, then we'll use those. If not we just use the overall range.
+                // (some servers eg may have data for every minute for decades!)
+                if ( !maxValuesExceeded )
+                {
+                  for ( const QDateTime &dt : dates )
+                  {
+                    tileLayer.allTimeRanges.append( QgsDateTimeRange( dt, dt ) );
+                    if ( !minTime.isValid() || dt < minTime )
+                      minTime = dt;
+                    if ( !maxTime.isValid() || dt > maxTime )
+                      maxTime = dt;
+                  }
+                }
+                else
+                {
+                  tileLayer.allTimeRanges.append( QgsDateTimeRange( begin, end ) );
+                  if ( !minTime.isValid() || begin < minTime )
+                    minTime = begin;
+                  if ( !maxTime.isValid() || end > maxTime )
+                    maxTime = end;
+                }
+
+                defaultInterval = itemResolution.toInterval();
+                tileLayer.timeFormat = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddyyyyMMddPxx;
+                hasPeriodValue = true;
+              }
+              else
+              {
+                QgsMessageLog::logMessage( QObject::tr( "Could not interpret TIME dimension value %1 as a time range" ).arg( value ) );
+              }
+              continue;
+            }
+
+            const QgsDateTimeRange range = QgsWmsSettings::parseWmtsTimeValue( value, tileLayer.timeFormat );
+            if ( !range.isEmpty() )
+            {
+              tileLayer.allTimeRanges.append( range );
+              if ( !minTime.isValid() || range.begin() < minTime )
+                minTime = range.begin();
+              if ( !maxTime.isValid() || range.end() > maxTime )
+                maxTime = range.end();
+            }
+            else
+            {
+              QgsMessageLog::logMessage( QObject::tr( "Could not interpret TIME dimension value %1 as a time range" ).arg( value ) );
+            }
+          }
+          if ( minTime.isValid() )
+            tileLayer.temporalExtent = QgsDateTimeRange( minTime, maxTime );
+          tileLayer.temporalInterval = defaultInterval;
+          tileLayer.defaultTimeDimensionValue = dimension.defaultValue;
+
+          if ( !hasPeriodValue )
+          {
+            // when the wmts isn't exposing a period value for the dimension, then we have to be careful to only ever pass exact time matches for the actual values
+            // present on the service
+            tileLayer.temporalCapabilityFlags |= Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges;
+          }
+        }
+      }
     }
 
     for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "TileMatrixSetLink" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "TileMatrixSetLink" ) ) )

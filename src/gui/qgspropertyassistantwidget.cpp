@@ -18,6 +18,7 @@
 
 #include "qgspropertyassistantwidget.h"
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreelayer.h"
@@ -478,10 +479,13 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   if ( !mColorRampButton->colorRamp() )
   {
     // set a default ramp
-    const QString defaultRampName = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
-    const std::unique_ptr< QgsColorRamp > defaultRamp( QgsStyle::defaultStyle()->colorRamp( !defaultRampName.isEmpty() ? defaultRampName : QStringLiteral( "Blues" ) ) );
-    if ( defaultRamp )
-      mColorRampButton->setColorRamp( defaultRamp.get() );
+    std::unique_ptr< QgsColorRamp > colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+    if ( !colorRamp )
+    {
+      colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Blues" ) ) );
+    }
+    if ( colorRamp )
+      mColorRampButton->setColorRamp( colorRamp.get() );
   }
 }
 

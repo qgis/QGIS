@@ -89,6 +89,9 @@ void QgsPointCloudElevationPropertiesWidget::apply()
 
   QgsPointCloudLayerElevationProperties *properties = qgis::down_cast< QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() );
 
+  const bool changed3DrelatedProperties = !qgsDoubleNear( mOffsetZSpinBox->value(), properties->zOffset() )
+                                          || !qgsDoubleNear( mScaleZSpinBox->value(), properties->zScale() );
+
   properties->setZOffset( mOffsetZSpinBox->value() );
   properties->setZScale( mScaleZSpinBox->value() );
   properties->setPointSize( mPointSizeSpinBox->value() );
@@ -100,7 +103,8 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   properties->setRespectLayerColors( mCheckBoxRespectLayerColors->isChecked() );
   properties->setApplyOpacityByDistanceEffect( mOpacityByDistanceCheckBox->isChecked() );
 
-  mLayer->trigger3DUpdate();
+  if ( changed3DrelatedProperties )
+    mLayer->trigger3DUpdate();
 }
 
 void QgsPointCloudElevationPropertiesWidget::onChanged()

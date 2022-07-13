@@ -19,7 +19,11 @@
 #include "qgswcssourceselect.h"
 #include "qgssourceselectprovider.h"
 #include "qgsproviderguimetadata.h"
+#include "qgsprovidersourcewidgetprovider.h"
+#include "qgsowssourcewidget.h"
 #include "qgswcsdataitemguiprovider.h"
+
+#include "qgsmaplayer.h"
 
 
 //! Provider for WCS layers source select
@@ -38,6 +42,30 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
+
+QgsWcsSourceWidgetProvider::QgsWcsSourceWidgetProvider() {}
+
+QString QgsWcsSourceWidgetProvider::providerKey() const
+{
+  return QStringLiteral( "wcs" );
+}
+bool QgsWcsSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer ) const
+{
+  return layer->providerType() == QLatin1String( "wcs" );
+}
+
+QgsProviderSourceWidget *QgsWcsSourceWidgetProvider::createWidget( QgsMapLayer *layer, QWidget *parent )
+{
+  if ( layer->providerType() != QLatin1String( "wcs" ) )
+    return nullptr;
+
+  QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ),  parent );
+
+  return sourceWidget;
+}
+
+
+
 QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWcsProvider::WCS_KEY )
 {
@@ -54,6 +82,13 @@ QList<QgsDataItemGuiProvider *> QgsWcsProviderGuiMetadata::dataItemGuiProviders(
 {
   return QList<QgsDataItemGuiProvider *>()
          << new QgsWcsDataItemGuiProvider;
+}
+
+QList<QgsProviderSourceWidgetProvider *> QgsWcsProviderGuiMetadata::sourceWidgetProviders()
+{
+  QList<QgsProviderSourceWidgetProvider *> providers;
+  providers << new QgsWcsSourceWidgetProvider();
+  return providers;
 }
 
 

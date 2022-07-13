@@ -1136,6 +1136,14 @@ void TestQgsPoint::toFromWkt()
   //bad WKT
   QVERIFY( !pt2.fromWkt( "Polygon()" ) );
   QVERIFY( !pt2.fromWkt( "Point(1 )" ) );
+
+  // with rounding
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 1 ), QStringLiteral( "Point (12345.7 12345.7)" ) );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 2 ), QStringLiteral( "Point (12345.68 12345.68)" ) );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( 0 ), QStringLiteral( "Point (12346 12346)" ) );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -1 ), QStringLiteral( "Point (12350 12350)" ) );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -2 ), QStringLiteral( "Point (12300 12300)" ) );
+  QCOMPARE( QgsPoint( 12345.678, 12345.678 ).asWkt( -3 ), QStringLiteral( "Point (12000 12000)" ) );
 }
 
 void TestQgsPoint::exportImport()

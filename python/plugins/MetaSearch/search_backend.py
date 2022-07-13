@@ -96,6 +96,8 @@ class CSW202Search(SearchBase):
 
     def query_records(self, bbox=[], keywords=None, limit=10, offset=1):
 
+        self.constraints = []
+
         # only apply spatial filter if bbox is not global
         # even for a global bbox, if a spatial filter is applied, then
         # the CSW server will skip records without a bbox
@@ -224,7 +226,7 @@ class OARecSearch(SearchBase):
 
                 'bbox': None,
                 'title': rec['properties']['title'],
-                'links': rec['properties'].get('associations', [])
+                'links': rec.get('links', [])
             }
             try:
                 bbox2 = rec['properties']['extent']['spatial']['bbox'][0]

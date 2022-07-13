@@ -73,6 +73,7 @@ class QgsTileDownloadManager;
 class QgsCoordinateReferenceSystemRegistry;
 class QgsRecentStyleHandler;
 class QgsDatabaseQueryLog;
+class QgsFontManager;
 
 /**
  * \ingroup core
@@ -838,6 +839,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsStyleModel *defaultStyleModel();
 
     /**
+     * Returns the application font manager, which manages available fonts and font installation for the QGIS instance.
+     *
+     * \since QGIS 3.28
+     */
+    static QgsFontManager *fontManager() SIP_KEEPREFERENCE;
+
+    /**
      * Returns the application's message log.
      * \since QGIS 3.0
      */
@@ -1145,6 +1153,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsStyleModel *mStyleModel = nullptr;
       QgsRecentStyleHandler *mRecentStyleHandler = nullptr;
       QgsDatabaseQueryLog *mQueryLogger = nullptr;
+      QgsFontManager *mFontManager;
       QString mNullRepresentation;
       QStringList mSvgPathCache;
       bool mSvgPathCacheValid = false;

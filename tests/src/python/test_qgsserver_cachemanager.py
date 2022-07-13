@@ -153,7 +153,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
             data = data.encode('utf-8')
         request = QgsBufferServerRequest(qs, requestMethod, {}, data)
         response = QgsBufferServerResponse()
-        cls._server.handleRequest(request, response)
+        cls.server.handleRequest(request, response)
         headers = []
         rh = response.headers()
         rk = sorted(rh.keys())
@@ -163,20 +163,13 @@ class TestQgsServerCacheManager(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
-        """Run before all tests"""
-        cls._app = QgsApplication([], False)
-        cls._server = QgsServer()
+
+        super().setUpClass()
+
         cls._handle_request("")
-        cls._server_iface = cls._server.serverInterface()
+        cls._server_iface = cls.server.serverInterface()
         cls._servercache = PyServerCache(cls._server_iface)
         cls._server_iface.registerServerCache(cls._servercache, 100)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        # cls._servercache.deleteCachedDocuments(None)
-        del cls._server
-        cls._app.exitQgis
 
     def _result(self, data):
         headers = {}
@@ -191,7 +184,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
     def _execute_request(self, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
         request = QgsBufferServerRequest(qs, requestMethod, {}, data)
         response = QgsBufferServerResponse()
-        self._server.handleRequest(request, response)
+        self.server.handleRequest(request, response)
         headers = []
         rh = response.headers()
         rk = sorted(rh.keys())
@@ -199,16 +192,8 @@ class TestQgsServerCacheManager(QgsServerTestBase):
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
-    def setUp(self):
-        """Create the server instance"""
-        self.fontFamily = QgsFontUtils.standardTestFontFamily()
-        QgsFontUtils.loadStandardTestFonts(['All'])
-
-        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
-        self._project_path = os.path.join(d, "project.qgs")
-
     def test_getcapabilities(self):
-        project = self._project_path
+        project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
         # without cache
@@ -281,7 +266,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not return True')
 
     def test_getcontext(self):
-        project = self._project_path
+        project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
         # without cache
@@ -301,7 +286,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         self.assertEqual(len(filelist), 0, 'All files in cache are not deleted ')
 
     def test_describefeaturetype(self):
-        project = self._project_path
+        project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -327,7 +312,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         self.assertEqual(len(filelist), 0, 'All files in cache are not deleted ')
 
     def test_getlegendgraphic(self):
-        project = self._project_path
+        project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -368,7 +353,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         self.assertEqual(len(filelist), 0, 'All images in cache are not deleted ')
 
     def test_gettile(self):
-        project = self._project_path
+        project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -486,7 +471,7 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         self.assertEqual(len(filelist), 0, 'All images in cache are not deleted ')
 
     def test_gettile_invalid_parameters(self):
-        project = self._project_path
+        project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
         qs = "?" + "&".join(["%s=%s" % i for i in list({

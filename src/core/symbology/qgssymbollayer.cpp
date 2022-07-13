@@ -132,12 +132,23 @@ void QgsSymbolLayer::startFeatureRender( const QgsFeature &feature, QgsRenderCon
 {
   if ( QgsSymbol *lSubSymbol = subSymbol() )
     lSubSymbol->startFeatureRender( feature, context );
+
+  if ( !mClipPath.isEmpty() )
+  {
+    context.painter()->save();
+    context.painter()->setClipPath( mClipPath, Qt::IntersectClip );
+  }
 }
 
 void QgsSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
 {
   if ( QgsSymbol *lSubSymbol = subSymbol() )
     lSubSymbol->stopFeatureRender( feature, context );
+
+  if ( !mClipPath.isEmpty() )
+  {
+    context.painter()->restore();
+  }
 }
 
 QgsSymbol *QgsSymbolLayer::subSymbol()
@@ -710,6 +721,7 @@ QgsMapUnitScale QgsMarkerSymbolLayer::mapUnitScale() const
 void QgsLineSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   mWidthUnit = unit;
+  mOffsetUnit = unit;
 }
 
 QgsUnitTypes::RenderUnit QgsLineSymbolLayer::outputUnit() const
@@ -895,3 +907,30 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
   return {};
 }
 
+void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+  mClipPath = QPainterPath();
+#else
+  mClipPath.clear();
+#endif
+
+  const QgsRenderContext &renderContext = context.renderContext();
+  const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( this );
+  if ( !clipPaths.isEmpty() )
+  {
+    QPainterPath mergedPaths;
+    mergedPaths.setFillRule( Qt::WindingFill );
+    for ( QPainterPath path : clipPaths )
+    {
+      mergedPaths.addPath( path );
+    }
+
+    if ( !mergedPaths.isEmpty() )
+    {
+      mClipPath.addRect( 0, 0, renderContext.outputSize().width(),
+                         renderContext.outputSize().height() );
+      mClipPath = mClipPath.subtracted( mergedPaths );
+    }
+  }
+}

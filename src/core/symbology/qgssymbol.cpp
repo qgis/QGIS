@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 #include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
 #include "qgsstyle.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
@@ -82,13 +83,154 @@ Q_NOWARN_DEPRECATED_POP
 
 QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent )
 {
+  if ( curve.is3D() )
+    return _getLineString3d( context, curve, clipToExtent );
+  else
+    return _getLineString2d( context, curve, clipToExtent );
+}
+
+QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent )
+{
+  const unsigned int nPoints = curve.numPoints();
+
+  QgsCoordinateTransform ct = context.coordinateTransform();
+  const QgsMapToPixel &mtp = context.mapToPixel();
+  QVector< double > pointsX;
+  QVector< double > pointsY;
+  QVector< double > pointsZ;
+
+  // apply clipping for large lines to achieve a better rendering performance
+  if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
+  {
+    const QgsRectangle e = context.extent();
+    const double cw = e.width() / 10;
+    const double ch = e.height() / 10;
+    const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
+
+    const QgsLineString *lineString = nullptr;
+    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
+    {
+      lineString = ls;
+    }
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+      lineString = segmentized.get();
+    }
+
+    QgsClipper::clipped3dLine( lineString->xVector(), lineString->yVector(), lineString->zVector(), pointsX, pointsY, pointsZ, clipRect );
+  }
+  else
+  {
+    // clone...
+    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
+    {
+      pointsX = ls->xVector();
+      pointsY = ls->yVector();
+      pointsZ = ls->zVector();
+    }
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+
+      pointsX = segmentized->xVector();
+      pointsY = segmentized->yVector();
+      pointsZ = segmentized->zVector();
+    }
+  }
+
+  // transform the points to screen coordinates
+  if ( ct.isValid() )
+  {
+    //create x, y arrays
+    const int nVertices = pointsX.size();
+
+    try
+    {
+      ct.transformCoords( nVertices, pointsX.data(), pointsY.data(), pointsZ.data(), Qgis::TransformDirection::Forward );
+    }
+    catch ( QgsCsException & )
+    {
+      // we don't abort the rendering here, instead we remove any invalid points and just plot those which ARE valid
+    }
+  }
+
+  // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+  {
+    const int size = pointsX.size();
+
+    const double *xIn = pointsX.data();
+    const double *yIn = pointsY.data();
+    const double *zIn = pointsZ.data();
+    double *xOut = pointsX.data();
+    double *yOut = pointsY.data();
+    double *zOut = pointsZ.data();
+    int outSize = 0;
+    for ( int i = 0; i < size; ++i )
+    {
+      if ( std::isfinite( *xIn ) && std::isfinite( *yIn ) && std::isfinite( *zIn ) )
+      {
+        *xOut++ = *xIn++;
+        *yOut++ = *yIn++;
+        *zOut++ = *zIn++;
+        outSize++;
+      }
+      else
+      {
+        xIn++;
+        yIn++;
+        zIn++;
+      }
+    }
+    pointsX.resize( outSize );
+    pointsY.resize( outSize );
+    pointsZ.resize( outSize );
+  }
+
+  if ( clipToExtent && nPoints > 1 && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection )
+  {
+    // early clipping was not possible, so we have to apply it here after transformation
+    const QgsRectangle e = context.mapExtent();
+    const double cw = e.width() / 10;
+    const double ch = e.height() / 10;
+    const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
+
+    QVector< double > tempX;
+    QVector< double > tempY;
+    QVector< double > tempZ;
+    QgsClipper::clipped3dLine( pointsX, pointsY, pointsZ, tempX, tempY, tempZ, clipRect );
+    pointsX = tempX;
+    pointsY = tempY;
+    pointsZ = tempZ;
+  }
+
+  const int polygonSize = pointsX.size();
+  QPolygonF out( polygonSize );
+  const double *x = pointsX.constData();
+  const double *y = pointsY.constData();
+  QPointF *dest = out.data();
+  for ( int i = 0; i < polygonSize; ++i )
+  {
+    double screenX = *x++;
+    double screenY = *y++;
+    mtp.transformInPlace( screenX, screenY );
+    *dest++ = QPointF( screenX, screenY );
+  }
+
+  return out;
+}
+
+QPolygonF QgsSymbol::_getLineString2d( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent )
+{
   const unsigned int nPoints = curve.numPoints();
 
   QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel &mtp = context.mapToPixel();
   QPolygonF pts;
 
-  //apply clipping for large lines to achieve a better rendering performance
+  // apply clipping for large lines to achieve a better rendering performance
   if ( clipToExtent && nPoints > 1 && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) )
   {
     const QgsRectangle e = context.extent();
@@ -102,7 +244,7 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
     pts = curve.asQPolygonF();
   }
 
-  //transform the QPolygonF to screen coordinates
+  // transform the QPolygonF to screen coordinates
   if ( ct.isValid() )
   {
     try
@@ -141,7 +283,168 @@ QPolygonF QgsSymbol::_getLineString( QgsRenderContext &context, const QgsCurve &
   return pts;
 }
 
+
 QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
+{
+  if ( curve.is3D() )
+    return _getPolygonRing3d( context, curve, clipToExtent, isExteriorRing, correctRingOrientation );
+  else
+    return _getPolygonRing2d( context, curve, clipToExtent, isExteriorRing, correctRingOrientation );
+}
+
+QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
+{
+  const QgsCoordinateTransform ct = context.coordinateTransform();
+  const QgsMapToPixel &mtp = context.mapToPixel();
+
+  QVector< double > pointsX;
+  QVector< double > pointsY;
+  QVector< double > pointsZ;
+
+  if ( curve.numPoints() < 1 )
+    return QPolygonF();
+
+  bool reverseRing = false;
+  if ( correctRingOrientation )
+  {
+    // ensure consistent polygon ring orientation
+    if ( ( isExteriorRing && curve.orientation() != Qgis::AngularDirection::Clockwise ) || ( !isExteriorRing && curve.orientation() != Qgis::AngularDirection::CounterClockwise ) )
+    {
+      reverseRing = true;
+    }
+  }
+
+  //clip close to view extent, if needed
+  if ( clipToExtent && !( context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection ) && !context.extent().contains( curve.boundingBox() ) )
+  {
+    const QgsRectangle e = context.extent();
+    const double cw = e.width() / 10;
+    const double ch = e.height() / 10;
+    const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
+
+    const QgsLineString *lineString = nullptr;
+    std::unique_ptr< QgsLineString > segmentized;
+    if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
+    {
+      lineString = ls;
+    }
+    else
+    {
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+      lineString = segmentized.get();
+    }
+
+    pointsX = lineString->xVector();
+    pointsY = lineString->yVector();
+    pointsZ = lineString->zVector();
+
+    QgsClipper::trimPolygon( pointsX, pointsY, pointsZ, clipRect );
+  }
+  else
+  {
+    // clone...
+    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( &curve ) )
+    {
+      pointsX = ls->xVector();
+      pointsY = ls->yVector();
+      pointsZ = ls->zVector();
+    }
+    else
+    {
+      std::unique_ptr< QgsLineString > segmentized;
+      segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
+
+      pointsX = segmentized->xVector();
+      pointsY = segmentized->yVector();
+      pointsZ = segmentized->zVector();
+    }
+  }
+
+  if ( reverseRing )
+  {
+    std::reverse( pointsX.begin(), pointsX.end() );
+    std::reverse( pointsY.begin(), pointsY.end() );
+    std::reverse( pointsZ.begin(), pointsZ.end() );
+  }
+
+  //transform the QPolygonF to screen coordinates
+  if ( ct.isValid() )
+  {
+    const int nVertices = pointsX.size();
+    try
+    {
+      ct.transformCoords( nVertices, pointsX.data(), pointsY.data(), pointsZ.data(), Qgis::TransformDirection::Forward );
+    }
+    catch ( QgsCsException & )
+    {
+      // we don't abort the rendering here, instead we remove any invalid points and just plot those which ARE valid
+    }
+  }
+
+  // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
+  {
+    const int size = pointsX.size();
+
+    const double *xIn = pointsX.data();
+    const double *yIn = pointsY.data();
+    const double *zIn = pointsZ.data();
+    double *xOut = pointsX.data();
+    double *yOut = pointsY.data();
+    double *zOut = pointsZ.data();
+    int outSize = 0;
+    for ( int i = 0; i < size; ++i )
+    {
+      if ( std::isfinite( *xIn ) && std::isfinite( *yIn ) && std::isfinite( *zIn ) )
+      {
+        *xOut++ = *xIn++;
+        *yOut++ = *yIn++;
+        *zOut++ = *zIn++;
+        outSize++;
+      }
+      else
+      {
+        xIn++;
+        yIn++;
+        zIn++;
+      }
+    }
+    pointsX.resize( outSize );
+    pointsY.resize( outSize );
+    pointsZ.resize( outSize );
+  }
+
+  if ( clipToExtent && context.flags() & Qgis::RenderContextFlag::ApplyClipAfterReprojection && !context.mapExtent().contains( curve.boundingBox() ) )
+  {
+    // early clipping was not possible, so we have to apply it here after transformation
+    const QgsRectangle e = context.mapExtent();
+    const double cw = e.width() / 10;
+    const double ch = e.height() / 10;
+    const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
+
+    QgsClipper::trimPolygon( pointsX, pointsY, pointsZ, clipRect );
+  }
+
+  const int polygonSize = pointsX.size();
+  QPolygonF out( polygonSize );
+  const double *x = pointsX.constData();
+  const double *y = pointsY.constData();
+  QPointF *dest = out.data();
+  for ( int i = 0; i < polygonSize; ++i )
+  {
+    double screenX = *x++;
+    double screenY = *y++;
+    mtp.transformInPlace( screenX, screenY );
+    *dest++ = QPointF( screenX, screenY );
+  }
+
+  if ( !out.empty() && !out.isClosed() )
+    out << out.at( 0 );
+
+  return out;
+}
+
+
+QPolygonF QgsSymbol::_getPolygonRing2d( QgsRenderContext &context, const QgsCurve &curve, const bool clipToExtent, const bool isExteriorRing, const bool correctRingOrientation )
 {
   const QgsCoordinateTransform ct = context.coordinateTransform();
   const QgsMapToPixel &mtp = context.mapToPixel();
@@ -372,23 +675,20 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   std::unique_ptr< QgsSymbol > s;
 
   // override global default if project has a default for this type
-  QString defaultSymbol;
   switch ( geomType )
   {
-    case QgsWkbTypes::PointGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
+    case QgsWkbTypes::PointGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
       break;
-    case QgsWkbTypes::LineGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
+    case QgsWkbTypes::LineGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
       break;
-    case QgsWkbTypes::PolygonGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
+    case QgsWkbTypes::PolygonGeometry:
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
       break;
     default:
       break;
   }
-  if ( !defaultSymbol.isEmpty() )
-    s.reset( QgsStyle::defaultStyle()->symbol( defaultSymbol ) );
 
   // if no default found for this type, get global default (as previously)
   if ( !s )
@@ -411,20 +711,10 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   }
 
   // set opacity
-  double opacity = 1.0;
-  bool ok = false;
-  // upgrade old setting
-  double alpha = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/AlphaInt" ), 255, &ok );
-  if ( ok )
-    opacity = alpha / 255.0;
-  double newOpacity = QgsProject::instance()->readDoubleEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Opacity" ), 1.0, &ok );
-  if ( ok )
-    opacity = newOpacity;
-  s->setOpacity( opacity );
+  s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol.isEmpty() ||
-       QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
+  if ( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() )
   {
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
@@ -544,6 +834,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
       continue;
 
     layer->prepareExpressions( symbolContext );
+    layer->prepareMasks( symbolContext );
     layer->startRender( symbolContext );
   }
 }

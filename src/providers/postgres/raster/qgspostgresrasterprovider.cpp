@@ -23,6 +23,7 @@
 #include "qgspostgresprovider.h"
 #include "qgsgdalutils.h"
 #include "qgsstringutils.h"
+#include "qgsapplication.h"
 
 #include <QRegularExpression>
 
@@ -546,6 +547,11 @@ QgsPostgresRasterProviderMetadata::QgsPostgresRasterProviderMetadata()
 
 }
 
+QIcon QgsPostgresRasterProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
+}
+
 QVariantMap QgsPostgresRasterProviderMetadata::decodeUri( const QString &uri ) const
 {
   const QgsDataSourceUri dsUri { uri };
@@ -674,6 +680,11 @@ QString QgsPostgresRasterProviderMetadata::encodeUri( const QVariantMap &parts )
   if ( parts.contains( QStringLiteral( "enableTime" ) ) )
     dsUri.setParam( QStringLiteral( "enableTime" ), parts.value( QStringLiteral( "enableTime" ) ).toString() );
   return dsUri.uri( false );
+}
+
+QList<QgsMapLayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::RasterLayer };
 }
 
 QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

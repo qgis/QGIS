@@ -530,6 +530,8 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
     virtual bool usesMapUnits() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
@@ -986,6 +988,8 @@ required fonts are not available on the system.
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const;
 
     virtual bool usesMapUnits() const;
+
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
 
 

@@ -250,7 +250,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   auto lineExtensionSide = mAdvancedDigitizingDockWidget->lineExtensionSide();
   if ( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() &&
        lineExtensionSide != Qgis::LineExtensionSide::NoVertex &&
-       mAdvancedDigitizingDockWidget->lockedSnapVertices().length() )
+       !mAdvancedDigitizingDockWidget->lockedSnapVertices().isEmpty() )
   {
     painter->setPen( mLockedPen );
 
@@ -319,7 +319,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
                        canvasPoint - QPointF( -5, 5 ) );
   }
 
-  if ( lockedSnapVertices.length() )
+  if ( !lockedSnapVertices.isEmpty() )
   {
     const QgsPointXY point = lockedSnapVertices.last().point();
     const QPointF canvasPoint = toCanvasCoordinates( point );

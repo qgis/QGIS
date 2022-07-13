@@ -31,6 +31,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainterPath>
+#include <QImage>
 
 class QPainter;
 class QSize;
@@ -622,6 +623,13 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QList<QgsSymbolLayerReference> masks() const;
 
+    /**
+     * Prepares all mask internal objects according to what is defined in \a context
+     * This should be called prior to calling startRender() method.
+     * \since QGIS 3.26
+     */
+    virtual void prepareMasks( const QgsSymbolRenderContext &context );
+
   protected:
 
     /**
@@ -644,6 +652,9 @@ class CORE_EXPORT QgsSymbolLayer
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
     QgsFields mFields;
+
+    // clip path to be used during rendering
+    QPainterPath mClipPath;
 
     // Configuration of selected symbology implementation
     //! Whether styles for selected features ignore symbol alpha
@@ -1246,5 +1257,3 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
 class QgsSymbolLayerWidget;  // why does SIP fail, when this isn't here
 
 #endif
-
-

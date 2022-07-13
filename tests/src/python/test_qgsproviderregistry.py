@@ -69,6 +69,23 @@ class TestQgsProviderRegistry(unittest.TestCase):
 
         self.assertIsNone(QgsProviderRegistry.instance().providerMetadata('asdasdasdasdasd'))
 
+    def testProvidersForLayerType(self):
+        """
+        Test retrieving providers for a layer type
+        """
+        providers = QgsProviderRegistry.instance().providersForLayerType(QgsMapLayerType.VectorLayer)
+        self.assertIn('ogr', providers)
+        self.assertIn('memory', providers)
+        self.assertNotIn('gdal', providers)
+
+        providers = QgsProviderRegistry.instance().providersForLayerType(QgsMapLayerType.RasterLayer)
+        self.assertNotIn('ogr', providers)
+        self.assertNotIn('memory', providers)
+        self.assertIn('gdal', providers)
+
+        providers = QgsProviderRegistry.instance().providersForLayerType(QgsMapLayerType.AnnotationLayer)
+        self.assertFalse(providers)
+
     def testCreateProvider(self):
         """
         Test creating provider instance

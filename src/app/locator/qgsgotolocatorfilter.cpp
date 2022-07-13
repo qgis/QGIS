@@ -72,7 +72,8 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( !match.hasMatch() )
   {
     // Check if the string is a pair of decimal degrees with [N,S,E,W] suffixes
-    separatorRx = QRegularExpression( QStringLiteral( "^\\s*([0-9\\-\\.]*\\s*[NSEWnsew])[\\s\\,]*([0-9\\-\\.]*\\s*[NSEWnsew])\\s*$" ) );
+    separatorRx = QRegularExpression( QStringLiteral( "^\\s*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?\\s*[NSEWnsew])[\\s\\,]*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?\\s*[NSEWnsew])\\s*$" )
+                                      .arg( locale.decimalPoint() ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
@@ -89,7 +90,8 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   if ( !match.hasMatch() )
   {
     // Check if the string is a pair of degree minute second
-    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:\\.\\d+)?[^0-9.,]*[-+nsew]?)$" ) );
+    separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:[\\.\\%1]\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:[\\.\\%1]\\d+)?[^0-9.,]*[-+nsew]?)$" )
+                                      .arg( locale.decimalPoint() ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {

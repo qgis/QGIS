@@ -116,6 +116,37 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 1)
 
+    def testSetBufferedGroupsAfterAutomaticGroups(self):
+
+        ml = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+
+        # Load 2 layer from a geopackage
+        d = QTemporaryDir()
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'GPKG'
+        options.layerName = 'layer_a'
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'test_EditBufferGroup.gpkg'), QgsCoordinateTransformContext(), options)
+
+        options.layerName = 'layer_b'
+        options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+        err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'test_EditBufferGroup.gpkg'), QgsCoordinateTransformContext(), options)
+
+        layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
+        self.assertTrue(layer_a.isValid())
+        layer_b = QgsVectorLayer(newFileName + '|layername=layer_b')
+        self.assertTrue(layer_b.isValid())
+
+        project = QgsProject()
+        project.addMapLayers([layer_a, layer_b, ml])
+
+        project.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+
+        project.startEditing()
+        success, rollbackErrors = project.rollBack(True)
+
+        self.assertTrue(success)
+
 
 if __name__ == '__main__':
     unittest.main()

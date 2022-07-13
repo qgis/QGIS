@@ -17,6 +17,7 @@
 
 #include "qgsvectortileconnection.h"
 #include "qgsvectortiledataitems.h"
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
@@ -26,6 +27,11 @@
 QgsVectorTileProviderMetadata::QgsVectorTileProviderMetadata()
   : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
+}
+
+QIcon QgsVectorTileProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVectorTileLayer.svg" ) );
 }
 
 QList<QgsDataItemProvider *> QgsVectorTileProviderMetadata::dataItemProviders() const
@@ -86,8 +92,8 @@ QVariantMap QgsVectorTileProviderMetadata::decodeUri( const QString &uri ) const
   if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
     uriComponents.insert( QStringLiteral( "zmax" ), dsUri.param( QStringLiteral( "zmax" ) ) );
 
-  if ( dsUri.hasParam( QStringLiteral( "referer" ) ) )
-    uriComponents.insert( QStringLiteral( "referer" ), dsUri.param( QStringLiteral( "referer" ) ) );
+  dsUri.httpHeaders().updateMap( uriComponents );
+
   if ( dsUri.hasParam( QStringLiteral( "styleUrl" ) ) )
     uriComponents.insert( QStringLiteral( "styleUrl" ), dsUri.param( QStringLiteral( "styleUrl" ) ) );
 
@@ -111,8 +117,8 @@ QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) con
   if ( parts.contains( QStringLiteral( "zmax" ) ) )
     dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
 
-  if ( parts.contains( QStringLiteral( "referer" ) ) )
-    dsUri.setParam( QStringLiteral( "referer" ), parts[ QStringLiteral( "referer" ) ].toString() );
+  dsUri.httpHeaders().setFromMap( parts );
+
   if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
     dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
 
@@ -120,6 +126,11 @@ QString QgsVectorTileProviderMetadata::encodeUri( const QVariantMap &parts ) con
     dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
 
   return dsUri.encodedUri();
+}
+
+QList<QgsMapLayerType> QgsVectorTileProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorTileLayer };
 }
 
 ///@endcond

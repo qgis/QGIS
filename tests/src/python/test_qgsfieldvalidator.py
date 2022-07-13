@@ -29,19 +29,21 @@ start_app()
 
 class TestQgsFieldValidator(unittest.TestCase):
 
-    def setUp(self):
-        """Run before each test."""
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests."""
         testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg'
         # Copy it
         tempdir = tempfile.mkdtemp()
         testPathCopy = os.path.join(tempdir, 'bug_17878.gpkg')
         shutil.copy(testPath, testPathCopy)
-        self.vl = QgsVectorLayer(testPathCopy + '|layername=bug_17878', "test_data", "ogr")
-        assert self.vl.isValid()
+        cls.vl = QgsVectorLayer(testPathCopy + '|layername=bug_17878', "test_data", "ogr")
+        assert cls.vl.isValid()
 
-    def tearDown(self):
-        """Run after each test."""
-        pass
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests."""
+        cls.vl = None
 
     def _fld_checker(self, field):
         """
@@ -57,7 +59,7 @@ class TestQgsFieldValidator(unittest.TestCase):
 
         def _test(value, expected):
             ret = validator.validate(value, 0)
-            self.assertEqual(ret[0], expected, "%s != %s" % (ret[0], expected))
+            self.assertEqual(ret[0], expected)
             if value:
                 self.assertEqual(validator.validate('-' + value, 0)[0], expected, '-' + value)
 
@@ -116,21 +118,21 @@ class TestQgsFieldValidator(unittest.TestCase):
     def test_doubleValidatorCommaLocale(self):
         """Test the double with german locale"""
         QLocale.setDefault(QLocale(QLocale.German, QLocale.Germany))
-        assert QLocale().decimalPoint() == ','
+        self.assertEqual(QLocale().decimalPoint(), ',')
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
         self._fld_checker(field)
 
     def test_doubleValidatorDotLocale(self):
         """Test the double with english locale"""
         QLocale.setDefault(QLocale(QLocale.English))
-        assert QLocale().decimalPoint() == '.'
+        self.assertEqual(QLocale().decimalPoint(), '.')
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
         self._fld_checker(field)
 
     def test_precision(self):
         """Test different precision"""
         QLocale.setDefault(QLocale(QLocale.English))
-        assert QLocale().decimalPoint() == '.'
+        self.assertEqual(QLocale().decimalPoint(), '.')
         field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
         field.setPrecision(4)
         self._fld_checker(field)

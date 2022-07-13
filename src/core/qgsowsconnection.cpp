@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
 #include "qgssettings.h"
+#include "qgshttpheaders.h"
 
 #include <QPicture>
 #include <QUrl>
@@ -60,10 +61,11 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
-  const QString referer = settingsConnectionReferer.value( {mService.toLower(), mConnName} );
+  QgsHttpHeaders httpHeaders( QString( "%3/connections-%1/%2/" ).arg( mService.toLower(), mConnName, QgsSettings::Prefix::QGIS ) );
+  mUri.setHttpHeaders( httpHeaders );
+  const QString referer = httpHeaders[QgsHttpHeaders::KEY_REFERER].toString();
   if ( !referer.isEmpty() )
   {
-    mUri.setParam( QStringLiteral( "referer" ), referer );
     mConnectionInfo.append( ",referer=" + referer );
   }
 
@@ -107,11 +109,8 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
   Q_NOWARN_DEPRECATED_POP
 
   const QgsSettings settings;
-  const QString referer = settings.value( settingsKey + "/referer" ).toString();
-  if ( !referer.isEmpty() )
-  {
-    uri.setParam( QStringLiteral( "referer" ), referer );
-  }
+  uri.httpHeaders().setFromSettings( settings, settingsKey );
+
   if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetMapURI" ), false ).toBool() )
   {
     uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
@@ -141,11 +140,10 @@ QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUr
 {
   addCommonConnectionSettings( uri, service, connName );
 
-  const QString referer = settingsConnectionReferer.value( {service.toLower(), connName} );
-  if ( !referer.isEmpty() )
-  {
-    uri.setParam( QStringLiteral( "referer" ), referer );
-  }
+  QString settingsKey = QString( "%3/connections-%1/%2/" ).arg( service.toLower(), connName, QgsSettings::Prefix::QGIS );
+  const QgsSettings settings;
+  uri.httpHeaders().setFromSettings( settings, settingsKey );
+
   if ( settingsConnectionIgnoreGetMapURI.value( {service.toLower(), connName} ) )
   {
     uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
@@ -214,20 +212,20 @@ QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
   QgsSettings settings;
-  settings.beginGroup( "qgis/connections-" + service.toLower() );
+  settings.beginGroup( QString( "%1/connections-%2" ).arg( QgsSettings::Prefix::QGIS, service.toLower() ) );
   return settings.childGroups();
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
   const QgsSettings settings;
-  return settings.value( "qgis/connections-" + service.toLower() + "/selected" ).toString();
+  return settings.value( QString( "%1/connections-%2/selected" ).arg( QgsSettings::Prefix::QGIS, service.toLower() ) ).toString();
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( "qgis/connections-" + service.toLower() + "/selected", name );
+  settings.setValue( QString( "%1/connections-%2/selected" ).arg( QgsSettings::Prefix::QGIS, service.toLower() ), name );
 }
 
 void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )

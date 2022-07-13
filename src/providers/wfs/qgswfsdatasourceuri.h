@@ -22,6 +22,7 @@
 #include "qgsauthorizationsettings.h"
 
 #include <QNetworkRequest>
+#include <QSet>
 #include <QString>
 
 /**
@@ -41,8 +42,8 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
-    //! Returns the URI, avoiding expansion of authentication configuration, which is handled during network access
-    const QString uri() const;
+    //! Returns the URI, optionally with the authentication configuration expanded
+    QString uri( bool expandAuthConfig = false ) const;
 
     //! Returns base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
@@ -133,11 +134,15 @@ class QgsWFSDataSourceURI
     //! Sets Post DCP endpoints
     void setPostEndpoints( const QgsStringMap &map );
 
+    //! Return set of unknown parameter keys in the URI.
+    QSet<QString> unknownParamKeys() const;
+
   private:
     QgsDataSourceUri    mURI;
     QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;
+    bool mDeprecatedURI = false;
 };
 
 

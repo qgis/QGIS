@@ -60,21 +60,23 @@ void TestQgsMeshLayerInterpolator::cleanupTestCase()
 
 void TestQgsMeshLayerInterpolator::testExportRasterBand()
 {
-  QgsMeshLayer memoryLayer( mTestDataDir + "/mesh/quad_and_triangle.2dm",
-                            "Triangle and Quad Mdal",
-                            "mdal" );
-  QVERIFY( memoryLayer.isValid() );
-  const QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
-  memoryLayer.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
+  QgsMeshLayer meshLayer( mTestDataDir + "/mesh/quad_and_triangle.2dm",
+                          "Triangle and Quad Mdal",
+                          "mdal" );
+  QVERIFY( meshLayer.isValid() );
+  QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
+  meshLayer.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
 
-  QgsRasterBlock *block = QgsMeshUtils::exportRasterBlock(
-                            memoryLayer,
-                            index,
-                            memoryLayer.crs(),
-                            QgsProject::instance()->transformContext(),
-                            100,
-                            memoryLayer.extent()
-                          );
+  std::unique_ptr<QgsRasterBlock> block;
+  block.reset( QgsMeshUtils::exportRasterBlock(
+                 meshLayer,
+                 index,
+                 meshLayer.crs(),
+                 QgsProject::instance()->transformContext(),
+                 100,
+                 meshLayer.extent() ) );
+
+  QVERIFY( block );
 
   QCOMPARE( block->width(), 20 );
   QCOMPARE( block->height(), 10 );
@@ -87,6 +89,46 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   QCOMPARE( block->value( 0, 0 ), 10.0 );
   QCOMPARE( block->value( 5, 5 ), 35.0 );
   QVERIFY( block->isNoData( 10, 10 ) );
+
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> virtualGroup = std::make_unique<QgsMeshMemoryDatasetGroup>( QStringLiteral( "on face" ), QgsMeshDatasetGroupMetadata::DataOnFaces );
+  std::shared_ptr<QgsMeshMemoryDataset> dataset = std::make_shared < QgsMeshMemoryDataset>();
+  dataset->values.resize( 2 );
+  dataset->values[0] = 12;
+  dataset->values[1] = 36;
+  dataset->active.resize( 2 );
+  dataset->active[0] = 1;
+  dataset->active[1] = 1;
+  dataset->time = 0;
+  dataset->valid = true;
+  virtualGroup->addDataset( dataset );
+
+  meshLayer.addDatasets( virtualGroup.release() );
+
+  QCOMPARE( meshLayer.datasetGroupCount(), 2 );
+
+  index = QgsMeshDatasetIndex( 1, 0 );
+
+  block.reset( QgsMeshUtils::exportRasterBlock(
+                 meshLayer,
+                 index,
+                 meshLayer.crs(),
+                 QgsProject::instance()->transformContext(),
+                 100,
+                 meshLayer.extent() ) );
+
+  QVERIFY( block );
+
+  QCOMPARE( block->width(), 20 );
+  QCOMPARE( block->height(), 10 );
+  QVERIFY( block->isValid() );
+  QVERIFY( !block->isEmpty() );
+  QCOMPARE( block->dataType(), Qgis::DataType::Float64 );
+  QVERIFY( block->hasNoDataValue() );
+  QVERIFY( block->hasNoData() );
+
+  QCOMPARE( block->value( 0, 0 ), 12.0 );
+  QCOMPARE( block->value( 5, 15 ), 36.0 );
+  QVERIFY( block->isNoData( 10, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayerInterpolator )

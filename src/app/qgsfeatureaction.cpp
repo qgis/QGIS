@@ -324,7 +324,7 @@ void QgsFeatureAction::hideParentWidget()
   if ( dialog )
   {
     QWidget *triggerWidget = dialog->parentWidget();
-    if ( triggerWidget && triggerWidget->window()->objectName() != QStringLiteral( "QgisApp" ) )
+    if ( triggerWidget && triggerWidget->window()->objectName() != QLatin1String( "QgisApp" ) )
       triggerWidget->window()->setVisible( false );
   }
 }

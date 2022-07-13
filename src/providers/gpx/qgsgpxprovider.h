@@ -119,12 +119,15 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
 class QgsGpxProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsGpxProviderMetadata();
+    QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif

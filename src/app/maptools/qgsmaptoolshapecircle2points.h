@@ -40,6 +40,7 @@ class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMe
 
 class APP_EXPORT QgsMapToolShapeCircle2Points : public QgsMapToolShapeCircleAbstract
 {
+    Q_OBJECT
   public:
     QgsMapToolShapeCircle2Points( QgsMapToolCapture *parentTool )
       : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, parentTool )

@@ -102,13 +102,15 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
 class QgsAfsProviderMetadata: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsAfsProviderMetadata();
+    QIcon icon() const override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
-
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif // QGSAFSPROVIDER_H

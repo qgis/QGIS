@@ -89,7 +89,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void changed();
 
   private slots:
-    void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity type );
+    void setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath );
     void mSymbolUnitWidget_changed();
     void updateAssistantSymbol();
     void opacityChanged( double value );

@@ -872,6 +872,13 @@ Using this shared model instead of creating a new :py:class:`QgsStyleModel` impr
 .. versionadded:: 3.10
 %End
 
+    static QgsFontManager *fontManager() /KeepReference/;
+%Docstring
+Returns the application font manager, which manages available fonts and font installation for the QGIS instance.
+
+.. versionadded:: 3.28
+%End
+
     static QgsMessageLog *messageLog();
 %Docstring
 Returns the application's message log.

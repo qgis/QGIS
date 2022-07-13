@@ -22,25 +22,22 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <QDialog>
 
-class QgsVectorLayer;
-class QMainWindow;
-class QgsLayerTreeView;
+class QgsMapLayerProxyModel;
 
 class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLayerSelectDialog
 {
     Q_OBJECT
 
   public:
-    QgsEmbeddedLayerSelectDialog( QWidget *parent, QgsLayerTreeView *tv );
+    QgsEmbeddedLayerSelectDialog( QWidget *parent );
 
     //! Returns the list of layer ids selected
     QStringList layers() const;
 
-  public slots:
-    void updateLayersList();
-
   private:
-    QgsLayerTreeView *mTreeView = nullptr;
+
+    QgsMapLayerProxyModel *mLayerProxyModel = nullptr;
+
 };
 
 #endif

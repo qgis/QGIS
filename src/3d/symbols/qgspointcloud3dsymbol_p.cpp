@@ -908,6 +908,13 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
 
+  QList<QgsPointCloudCategory> categoriesList = symbol->categoriesList();
+  QVector<int> categoriesValues;
+  for ( QgsPointCloudCategory &c : categoriesList )
+  {
+    categoriesValues.push_back( c.value() );
+  }
+
   const QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
   {
@@ -945,10 +952,14 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     else
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
 
-    if ( filteredOutValues.contains( ( int ) iParam ) )
+    if ( filteredOutValues.contains( ( int ) iParam ) ||
+         ! categoriesValues.contains( ( int ) iParam ) )
       continue;
     outNormal.positions.push_back( QVector3D( p.x(), p.y(), p.z() ) );
-    outNormal.parameter.push_back( iParam );
+
+    // find iParam actual index in the categories list
+    float iParam2 = categoriesValues.indexOf( ( int )iParam ) + 1;
+    outNormal.parameter.push_back( iParam2 );
   }
 }
 

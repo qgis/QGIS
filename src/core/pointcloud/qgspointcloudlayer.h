@@ -24,6 +24,7 @@ class QgsPointCloudLayerRenderer;
 #include "qgsmaplayer.h"
 #include "qgis_core.h"
 #include "qgsabstractprofilesource.h"
+#include "qgspointcloudstatistics.h"
 
 #include <QString>
 #include <memory>
@@ -84,8 +85,26 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
        * Set to TRUE if point cloud index generation should be skipped.
        */
       bool skipIndexGeneration = false;
+
+      /**
+       * Set to true if the statistics calculation for this point cloud is disabled
+       * \since QGIS 3.26
+       */
+      bool skipStatisticsCalculation = false;
     };
 
+
+    /**
+     * Point cloud statistics calculation task
+     * \since QGIS 3.26
+     */
+    enum class PointCloudStatisticsCalculationState : int
+    {
+      NotStarted = 0, //!< The statistics calculation task has not been started
+      Calculating = 1 << 0, //!< The statistics calculation task is running
+      Calculated = 1 << 1 //!< The statistics calculation task is done and statistics are available
+    };
+    Q_ENUM( PointCloudStatisticsCalculationState )
 
     /**
      * Constructor - creates a point cloud layer
@@ -213,7 +232,18 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     bool convertRenderer3DFromRenderer2D();
 
+    /**
+     * Returns the object containing statistics
+     * \since QGIS 3.26
+     */
+    const QgsPointCloudStatistics statistics() const { return mStatistics; }
 
+    /**
+     * Returns the status of point cloud statistics calculation
+     *
+     * \since QGIS 3.26
+     */
+    PointCloudStatisticsCalculationState statisticsCalculationState() const { return mStatisticsCalculationState; }
   signals:
 
     /**
@@ -230,6 +260,13 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     void raiseError( const QString &msg );
 
+    /**
+     * Emitted when statistics calculation state has changed
+     *
+     * \since QGIS 3.26
+     */
+    void statisticsCalculationStateChanged( QgsPointCloudLayer::PointCloudStatisticsCalculationState state );
+
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
@@ -237,6 +274,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
   private:
 
     bool isReadOnly() const override {return true;}
+
+    void calculateStatistics();
+
+    void resetRenderer();
 
 #ifdef SIP_RUN
     QgsPointCloudLayer( const QgsPointCloudLayer &rhs );
@@ -248,7 +289,12 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     QgsPointCloudLayerElevationProperties *mElevationProperties = nullptr;
 
-    bool mSync3DRendererTo2DRenderer = false;
+    LayerOptions mLayerOptions;
+
+    bool mSync3DRendererTo2DRenderer = true;
+    QgsPointCloudStatistics mStatistics;
+    PointCloudStatisticsCalculationState mStatisticsCalculationState = PointCloudStatisticsCalculationState::NotStarted;
+    long mStatsCalculationTask = 0;
 };
 
 

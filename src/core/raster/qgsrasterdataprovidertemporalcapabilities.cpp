@@ -22,6 +22,16 @@ QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabili
 {
 }
 
+Qgis::RasterTemporalCapabilityFlags QgsRasterDataProviderTemporalCapabilities::flags() const
+{
+  return mFlags;
+}
+
+void QgsRasterDataProviderTemporalCapabilities::setFlags( Qgis::RasterTemporalCapabilityFlags flags )
+{
+  mFlags = flags;
+}
+
 void QgsRasterDataProviderTemporalCapabilities::setAvailableTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !hasTemporalCapabilities() )

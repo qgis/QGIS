@@ -37,7 +37,8 @@
 #include "qgstriangle.h"
 #include "qgsrectangle.h"
 #include "qgsregularpolygon.h"
-
+#include "qgsrange.h"
+#include "qgsinterval.h"
 
 #define QGSTEST_MAIN(TestObject) \
   QT_BEGIN_NAMESPACE \
@@ -215,5 +216,20 @@ char *toString( const QgsCircle &geom )
 {
   return QTest::toString( geom.toString() );
 }
+
+char *toString( const QgsDateTimeRange &range )
+{
+  return QTest::toString( QStringLiteral( "<QgsDateTimeRange: %1%2, %3%4>" ).arg(
+                            range.includeBeginning() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
+                            range.begin().toString( Qt::ISODateWithMs ),
+                            range.end().toString( Qt::ISODateWithMs ),
+                            range.includeEnd() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) ) );
+}
+
+char *toString( const QgsInterval &interval )
+{
+  return QTest::toString( QStringLiteral( "<QgsInterval: %1 %2>" ).arg( interval.originalDuration() ).arg( QgsUnitTypes::toString( interval.originalUnit() ) ) );
+}
+
 
 #endif // QGSTEST_H

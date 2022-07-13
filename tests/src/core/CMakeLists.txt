@@ -22,6 +22,7 @@ set(TESTS
  testqgsannotationitemregistry.cpp
  testqgsapplication.cpp
  testqgsarcgisrestutils.cpp
+ testqgsattributeeditorelement.cpp
  testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
  testqgsauthcrypto.cpp
@@ -204,6 +205,7 @@ set(TESTS
  testqgstiles.cpp
  testqgsweakrelation.cpp
  testqgsziputils.cpp
+ testqobjectparentuniqueptr.cpp
  testqobjectuniqueptr.cpp
  testziplayer.cpp
 )
@@ -229,3 +231,4 @@ if (ENABLE_PGTEST)
 endif()
 
 add_subdirectory(geometry)
+add_subdirectory(vector)

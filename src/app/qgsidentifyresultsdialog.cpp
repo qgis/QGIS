@@ -340,6 +340,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
   connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
   connect( mActionHideDerivedAttributes, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled );
+  connect( mActionHideNullValues, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionHideNullValues_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -444,6 +445,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mActionAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
   settingsMenu->addAction( mActionHideDerivedAttributes );
   mActionHideDerivedAttributes->setChecked( mySettings.value( QStringLiteral( "Map/hideDerivedAttributes" ), false ).toBool() );
+  settingsMenu->addAction( mActionHideNullValues );
+  mActionHideNullValues->setChecked( QgsIdentifyResultsDialog::settingHideNullValues.value() );
 
 }
 
@@ -704,11 +707,16 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
+    if ( attrs.at( i ).isNull() && QgsIdentifyResultsDialog::settingHideNullValues.value() )
+    {
+      continue;
+    }
     QString defVal;
     if ( fields.fieldOrigin( i ) == QgsFields::OriginProvider && vlayer->dataProvider() )
       defVal = vlayer->dataProvider()->defaultValueClause( fields.fieldOriginIndex( i ) );
 
     const QString originalValue = defVal == attrs.at( i ) ? defVal : fields.at( i ).displayString( attrs.at( i ) );
+
     QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << originalValue );
     featItem->addChild( attrItem );
 
@@ -1431,8 +1439,7 @@ void QgsIdentifyResultsDialog::show()
   }
   else
   {
-    mDock->show();
-    mDock->raise();
+    mDock->setUserVisible( true );
   }
 }
 
@@ -2400,6 +2407,11 @@ void QgsIdentifyResultsDialog::mActionHideDerivedAttributes_toggled( bool checke
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/hideDerivedAttributes" ), checked );
+}
+
+void QgsIdentifyResultsDialog::mActionHideNullValues_toggled( bool checked )
+{
+  QgsIdentifyResultsDialog::settingHideNullValues.setValue( checked );
 }
 
 void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )

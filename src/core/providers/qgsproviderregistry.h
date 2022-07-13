@@ -339,6 +339,14 @@ class CORE_EXPORT QgsProviderRegistry
     QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
+     * Returns a list of the provider keys for available providers which handle the specified
+     * layer \a type.
+     *
+     * \since QGIS 3.26
+     */
+    QSet< QString > providersForLayerType( QgsMapLayerType type ) const;
+
+    /**
      * \ingroup core
      *
      * \brief Contains information pertaining to a candidate provider.

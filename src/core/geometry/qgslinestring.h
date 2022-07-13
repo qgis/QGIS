@@ -27,6 +27,7 @@
 #include "qgscompoundcurve.h"
 
 class QgsLineSegment2D;
+class QgsBox3d;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -457,6 +458,47 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         return mM.constData();
     }
 
+    /**
+     * Returns the x vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > xVector() const SIP_SKIP
+    {
+      return mX;
+    }
+
+    /**
+     * Returns the y vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > yVector() const SIP_SKIP
+    {
+      return mY;
+    }
+
+    /**
+     * Returns the z vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > zVector() const SIP_SKIP
+    {
+      return mZ;
+    }
+
+    /**
+     * Returns the m vertex values as a vector.
+     * \note Not available in Python bindings
+     * \since QGIS 3.26
+    */
+    QVector< double > mVector() const SIP_SKIP
+    {
+      return mM;
+    }
+
+
 #ifndef SIP_RUN
 
     /**
@@ -720,10 +762,25 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
-     * Resets the line string to match the specified list of points. The line string will
-     * inherit the dimensionality of the first point in the list.
-     * \param points new points for line string. If empty, line string will be cleared.
-     */
+    * Resets the line string to match the specified point data. The line string
+    * dimensionality will be based on whether \a z or \a m arrays are specified.
+    *
+    * \param size point count.
+    * \param x array of x data
+    * \param y array of y data
+    * \param z array of z data, can be NULLPTR
+    * \param m array of m data, can be NULLPTR
+    *
+    * \note Not available from Python bindings
+    * \since QGIS 3.26
+    */
+    void setPoints( size_t size, const double *x, const double *y, const double *z = nullptr, const double *m = nullptr ) SIP_SKIP;
+
+    /**
+    * Resets the line string to match the specified list of points. The line string will
+    * inherit the dimensionality of the first point in the list.
+    * \param points new points for line string. If empty, line string will be cleared.
+    */
     void setPoints( const QgsPointSequence &points );
 
     /**
@@ -983,6 +1040,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % End
 
 #endif
+
+    /**
+     * Calculates the minimal 3D bounding box for the geometry.
+     * \see calculateBoundingBox()
+     * \since QGIS 3.26
+     */
+    QgsBox3d calculateBoundingBox3d() const;
 
   protected:
 

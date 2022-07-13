@@ -1998,3 +1998,13 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsHanaProviderMetadata();
 }
+
+QList<QgsMapLayerType> QgsHanaProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
+QIcon QgsHanaProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconHana.svg" ) );
+}

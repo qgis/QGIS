@@ -31,10 +31,10 @@ jobs:
       RUN_FLAKY_TESTS: ${{ contains( github.event.pull_request.labels.*.name, 'run flaky tests') }}
 
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     strategy:
       matrix:
-        # tests run on 20.04 (Qt 5.12), compile test on 20.10 (Qt 5.14) and 21.04 (Qt 5.15)
         include:
           - distro-version: '20.04'
             qt-version: 5
@@ -44,8 +44,12 @@ jobs:
             with-qt5: ON
             with-3d: ON
             with-quick: ON
+            with-clazy: OFF
             patch-qt-3d: true
+            with-grass7: OFF
+            with-grass8: OFF
             LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            experimental: false
 
           - distro-version: '21.10'
             qt-version: 5
@@ -55,10 +59,14 @@ jobs:
             with-qt5: ON
             with-3d: OFF
             with-quick: ON
+            with-clazy: ON
             patch-qt-3d: false
+            with-grass7: OFF
+            with-grass8: OFF
             LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
+            experimental: false
 
-          - distro-version: '34'
+          - distro-version: '36'
             qt-version: 6
             run-tests: true
             docker-tag-suffix: ''
@@ -66,8 +74,12 @@ jobs:
             with-qt5: OFF
             with-3d: OFF
             with-quick: OFF
+            with-clazy: OFF
             patch-qt-3d: false
+            with-grass7: OFF
+            with-grass8: OFF
             LD_PRELOAD: ''
+            experimental: false
 
 
       fail-fast: false
@@ -162,11 +174,14 @@ jobs:
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
                      --env WITH_QT5=${{ matrix.with-qt5 }} \
-                     --env WITH_QT6=${{ matrix.with-qt6 }} \
+                     --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env PATCH_QT_3D=${{ matrix.patch-qt-3d }} \
+                     --env WITH_GRASS7=${{ matrix.with-grass7 }} \
+                     --env WITH_GRASS8=${{ matrix.with-grass8 }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
+                     --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
@@ -300,7 +315,7 @@ jobs:
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
-          - distro-version: '34'
+          - distro-version: '36'
             qt-version: 6
             test-batch: ALL_BUT_PROVIDERS
             docker-target: single
@@ -379,6 +394,7 @@ jobs:
         id: tests
         env:
           TEST_BATCH: ${{matrix.test-batch}}
+          QGIS_COMMON_GIT_DIR: ${{ github.workspace }}
         run: |
           DOCKERFILE=$( ( [[ ${{ matrix.test-batch }} == "ORACLE"   ]] && echo "docker-compose-testing-oracle.yml" ) \
                      || ( [[ ${{ matrix.test-batch }} == "POSTGRES" ]] && echo "docker-compose-testing-postgres.yml" ) \

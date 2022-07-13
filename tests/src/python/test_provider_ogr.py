@@ -48,7 +48,9 @@ from qgis.core import (
     QgsMapLayerType,
     QgsProviderSublayerDetails,
     Qgis,
-    QgsDirectoryItem
+    QgsDirectoryItem,
+    QgsAbstractDatabaseProviderConnection,
+    QgsProviderConnectionException
 )
 
 from qgis.gui import (
@@ -2520,6 +2522,82 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.LineString25D)
         self.assertEqual(feature.geometry().vertexAt(1).asWkt(),
                          'PointZ (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
+
+    def test_provider_connection_shp(self):
+        """
+        Test creating connections for OGR provider
+        """
+        layer = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'lines')
+
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'lines.shp', {})
+        self.assertTrue(conn)
+
+        self.assertEqual(conn.tableUri('unused', 'unused'), TEST_DATA_DIR + '/' + 'lines.shp')
+
+        table = conn.table('unused', 'unused')
+        # not set for single layer formats
+        self.assertFalse(table.tableName())
+        self.assertFalse(table.primaryKeyColumns())
+        self.assertEqual(table.geometryColumnCount(), 1)
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+        self.assertEqual(table.geometryColumnTypes()[0].crs, layer.crs())
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+
+        tables = conn.tables('unused')
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertFalse(table.tableName())
+        self.assertFalse(table.primaryKeyColumns())
+        self.assertEqual(table.geometryColumnCount(), 1)
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+        self.assertEqual(table.geometryColumnTypes()[0].crs, layer.crs())
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+
+    def test_provider_connection_gdb(self):
+        """
+        Test creating connections for OGR provider
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'field_alias.gdb', {})
+        self.assertTrue(conn)
+
+        self.assertEqual(conn.tableUri('unused', 'aliases'), TEST_DATA_DIR + '/' + 'field_alias.gdb|layername=aliases')
+
+        with self.assertRaises(QgsProviderConnectionException):
+            conn.table('unused', 'notpresent')
+
+        table = conn.table('unused', 'aliases')
+        self.assertEqual(table.tableName(), 'aliases')
+        self.assertEqual(table.primaryKeyColumns(), ['OBJECTID'])
+        self.assertEqual(table.geometryColumnCount(), 1)
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.MultiPolygon)
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+
+        # aspatial table
+        table = conn.table('unused', 'fras_aux_aliases')
+        self.assertEqual(table.tableName(), 'fras_aux_aliases')
+        self.assertEqual(table.primaryKeyColumns(), ['OBJECTID'])
+        self.assertEqual(table.geometryColumnCount(), 0)
+        self.assertFalse(table.geometryColumnTypes())
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Aspatial)
+
+        # test tables
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'featuredataset.gdb', {})
+        tables = conn.tables('unused')
+        self.assertGreaterEqual(len(tables), 4)
+        table = [t for t in tables if t.tableName() == 'fd1_lyr1'][0]
+        self.assertEqual(table.tableName(), 'fd1_lyr1')
+        self.assertEqual(table.primaryKeyColumns(), ['OBJECTID'])
+        self.assertEqual(table.geometryColumnCount(), 1)
+        self.assertEqual(len(table.geometryColumnTypes()), 1)
+        self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Point)
+        self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
 
 
 if __name__ == '__main__':

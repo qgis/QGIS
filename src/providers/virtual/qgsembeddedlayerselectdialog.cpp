@@ -16,54 +16,35 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsembeddedlayerselectdialog.h"
+#include "qgsmaplayerproxymodel.h"
+#include "qgsmaplayermodel.h"
+#include "qgsgui.h"
 
-#include <QMainWindow>
-#include <QSettings>
-
-#include "qgsvectorlayer.h"
-#include "layertree/qgslayertreeview.h"
-#include "layertree/qgslayertreemodel.h"
-#include "layertree/qgslayertreegroup.h"
-#include "layertree/qgslayertreelayer.h"
-#include "layertree/qgslayertree.h"
-#include "qgsproviderregistry.h"
-#include "qgsvectordataprovider.h"
-
-QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent, QgsLayerTreeView *tv )
-  : QDialog( parent ),
-    mTreeView( tv )
+QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent )
+  : QDialog( parent )
+  , mLayerProxyModel( new QgsMapLayerProxyModel( this ) )
 {
   setupUi( this );
-  updateLayersList();
+
+  QgsGui::enableAutoGeometryRestore( this );
+
+  mLayerProxyModel->setFilters( QgsMapLayerProxyModel::Filter::VectorLayer );
+  mLayers->setModel( mLayerProxyModel );
+
+  mSearchLineEdit->setShowSearchIcon( true );
+  mSearchLineEdit->setShowClearButton( true );
+  connect( mSearchLineEdit, &QLineEdit::textChanged, mLayerProxyModel, &QgsMapLayerProxyModel::setFilterString );
+  mSearchLineEdit->setFocus();
 }
 
 QStringList QgsEmbeddedLayerSelectDialog::layers() const
 {
   QStringList ids;
-  QModelIndexList selected = mLayers->selectionModel()->selectedRows();
-  for ( int i = 0; i < selected.size(); i++ )
+  const QModelIndexList selected = mLayers->selectionModel()->selectedRows();
+  ids.reserve( selected.size() );
+  for ( const QModelIndex &index : selected )
   {
-    QgsVectorLayer *l = static_cast<QgsVectorLayer *>( mLayers->item( selected[i].row() )->data( Qt::UserRole ).value<void *>() );
-    ids << l->id();
+    ids << index.data( QgsMapLayerModel::LayerIdRole ).toString();
   }
   return ids;
-}
-
-void QgsEmbeddedLayerSelectDialog::updateLayersList()
-{
-  // populate list
-  mLayers->clear();
-  const QList<QgsLayerTreeLayer *> layers = mTreeView->layerTreeModel()->rootGroup()->findLayers();
-  const auto constLayers = layers;
-  for ( const QgsLayerTreeLayer *l : constLayers )
-  {
-    if ( l->layer() && l->layer()->type() == QgsMapLayerType::VectorLayer )
-    {
-      // display layer name and store its pointer
-      QListWidgetItem *item = new QListWidgetItem();
-      item->setText( l->layer()->name() );
-      item->setData( Qt::UserRole, QVariant::fromValue( static_cast<void *>( l->layer() ) ) );
-      mLayers->insertItem( mLayers->count(), item );
-    }
-  }
 }

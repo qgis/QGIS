@@ -31,6 +31,8 @@
 QgsRenderChecker::QgsRenderChecker()
   : mBasePath( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/control_images/" ) ) //defined in CmakeLists.txt
 {
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
+    mIsCiRun = true;
 }
 
 QString QgsRenderChecker::controlImagePath() const
@@ -145,6 +147,9 @@ bool QgsRenderChecker::isKnownAnomaly( const QString &diffImageFile )
 
 void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement &dashMessage )
 {
+  if ( !mIsCiRun )
+    return;
+
   if ( mBufferDashMessages )
     mDashMessages << dashMessage;
   else
@@ -154,6 +159,19 @@ void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement &dashMessage )
 void QgsRenderChecker::emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value )
 {
   emitDashMessage( QgsDartMeasurement( name, type, value ) );
+}
+
+void QgsRenderChecker::dumpRenderedImageAsBase64()
+{
+  QFile fileSource( mRenderedImageFile );
+  if ( !fileSource.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+
+  const QByteArray blob = fileSource.readAll();
+  const QByteArray encoded = blob.toBase64();
+  qDebug() << encoded;
 }
 
 bool QgsRenderChecker::runTest( const QString &testName,
@@ -387,6 +405,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
+      if ( mIsCiRun )
+        dumpRenderedImageAsBase64();
       return false;
     }
     else
@@ -407,6 +427,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and result image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
+      if ( mIsCiRun )
+        dumpRenderedImageAsBase64();
       return false;
     }
 
@@ -506,6 +528,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
+      if ( mIsCiRun )
+        dumpRenderedImageAsBase64();
       return false;
     }
     else
@@ -536,5 +560,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   mReport += "<font color=red>Test image and result image for " + testName + " are mismatched</font><br>";
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
+  if ( mIsCiRun )
+    dumpRenderedImageAsBase64();
   return false;
 }

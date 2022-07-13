@@ -60,7 +60,9 @@ from qgis.core import (
     QgsDataSourceUri,
     QgsDoubleRange,
     QgsIntRange,
-    QgsDefaultValue
+    QgsDefaultValue,
+    QgsRendererRange,
+    QgsRendererCategory
 )
 
 start_app()
@@ -335,6 +337,17 @@ class TestPython__repr__(unittest.TestCase):
     def testDefaultValue(self):
         self.assertEqual(QgsDefaultValue().__repr__(), '<QgsDefaultValue: invalid>')
         self.assertEqual(QgsDefaultValue('1+3').__repr__(), '<QgsDefaultValue: 1+3>')
+
+    def testRendererRange(self):
+        self.assertEqual(QgsRendererRange().__repr__(), '<QgsRendererRange: 0 - 0>')
+        self.assertEqual(QgsRendererRange(1.0, 2.0, None, None).__repr__(), '<QgsRendererRange: 1 - 2>')
+        self.assertEqual(QgsRendererRange(1.0, 2.0, None, 'my class').__repr__(), '<QgsRendererRange: 1 - 2 (my class)>')
+
+    def testRendererCategory(self):
+        self.assertEqual(QgsRendererCategory().__repr__(), '<QgsRendererCategory>')
+        self.assertEqual(QgsRendererCategory(5, None, None).__repr__(), '<QgsRendererCategory: 5>')
+        self.assertEqual(QgsRendererCategory('abc', None, None).__repr__(), '<QgsRendererCategory: abc>')
+        self.assertEqual(QgsRendererCategory('abc', None, 'my class').__repr__(), '<QgsRendererCategory: abc (my class)>')
 
 
 if __name__ == "__main__":

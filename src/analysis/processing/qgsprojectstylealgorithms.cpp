@@ -202,8 +202,8 @@ QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !mProjectPath.isEmpty() )
   {
     // load project from path
-    QgsProject p;
-    if ( !p.read( mProjectPath, QgsProject::ReadFlag::FlagDontResolveLayers ) )
+    QgsProject p( nullptr, Qgis::ProjectCapabilities() );
+    if ( !p.read( mProjectPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoad3DViews ) )
     {
       throw QgsProcessingException( QObject::tr( "Could not read project %1" ).arg( mProjectPath ) );
     }

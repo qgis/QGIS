@@ -16,13 +16,18 @@ from qgis.core import (
     QgsPointCloudLayerElevationProperties,
     QgsReadWriteContext,
     QgsUnitTypes,
-    Qgis
+    Qgis,
+    QgsPointCloudLayer,
+    QgsProviderRegistry,
+    QgsPointCloudClassifiedRenderer
 )
 from qgis.PyQt.QtGui import QColor
-
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
+
 
 start_app()
 
@@ -82,6 +87,24 @@ class TestQgsPointCloudElevationProperties(unittest.TestCase):
         self.assertEqual(props2.pointSize(), 1.2)
         self.assertEqual(props2.pointSizeUnit(), QgsUnitTypes.RenderPoints)
         self.assertFalse(props2.respectLayerColors())
+
+    @unittest.skipIf('ept' not in QgsProviderRegistry.instance().providerList(), 'EPT provider not available')
+    def test_signals(self):
+        layer = QgsPointCloudLayer(unitTestDataPath() + '/point_clouds/ept/rgb/ept.json', 'test', 'ept')
+        self.assertTrue(layer.isValid())
+
+        props = layer.elevationProperties()
+        spy = QSignalSpy(props.profileGenerationPropertyChanged)
+
+        # when we are respecting layer colors, changing the 2d point cloud renderer should trigger a profile regeneration
+        props.setRespectLayerColors(True)
+        layer.setRenderer(QgsPointCloudClassifiedRenderer())
+        self.assertEqual(len(spy), 1)
+
+        # when we aren't respecting layer colors, no signal should be emitted
+        props.setRespectLayerColors(False)
+        layer.setRenderer(QgsPointCloudClassifiedRenderer())
+        self.assertEqual(len(spy), 1)
 
 
 if __name__ == '__main__':

@@ -181,6 +181,52 @@ color or string representation of a color, then no change is applied.
 .. seealso:: :py:func:`copyColor`
 %End
 
+    void setShowNull( bool showNull );
+%Docstring
+Sets whether a set to null (clear) option is shown in the button's drop-down menu.
+
+:param showNull: set to ``True`` to show a null option
+
+.. seealso:: :py:func:`showNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 3.26
+%End
+
+    bool showNull() const;
+%Docstring
+Returns whether the set to null (clear) option is shown in the button's drop-down menu.
+
+.. seealso:: :py:func:`setShowNull`
+
+.. seealso:: :py:func:`isNull`
+
+.. versionadded:: 3.26
+%End
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the current symbol is null.
+
+.. seealso:: :py:func:`setShowNull`
+
+.. seealso:: :py:func:`showNull`
+
+.. versionadded:: 3.26
+%End
+
+    void setToNull();
+%Docstring
+Sets symbol to to null.
+
+.. seealso:: :py:func:`setShowNull`
+
+.. seealso:: :py:func:`showNull`
+
+.. versionadded:: 3.26
+%End
+
   signals:
 
     void changed();
@@ -216,6 +262,9 @@ Emitted when the symbol's settings are changed.
 
 
     virtual void dropEvent( QDropEvent *e );
+
+
+    virtual void wheelEvent( QWheelEvent *event );
 
 
 };

@@ -149,7 +149,7 @@ void TestQgsImageCache::broken()
   QgsImageCache cache;
   bool inCache = false;
   bool missingImage = false;
-  const QImage img = cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
+  cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
   QVERIFY( missingImage );
   cache.pathAsImage( QStringLiteral( "bbbbbbb" ), QSize( 200, 200 ), true, 1.0, inCache, false, 96,  -1, &missingImage );
   QVERIFY( missingImage );

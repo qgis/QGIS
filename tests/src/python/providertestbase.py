@@ -224,28 +224,34 @@ class ProviderTestCase(FeatureSourceTestCase):
                                                                                                       result, subset)
         self.assertTrue(all_valid)
 
-        # Subset string AND filter fid
-        ids = {f[self.pk_name]: f.id() for f in self.source.getFeatures()}
-        self.source.setSubsetString(subset)
-        request = QgsFeatureRequest().setFilterFid(4)
-        result = set([f.id() for f in self.source.getFeatures(request)])
-        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        self.source.setSubsetString(None)
-        expected = set([4])
-        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
-                                                                                                      result, subset)
-        self.assertTrue(all_valid)
+        if self.providerCompatibleOfSubsetStringWithStableFID():
+            # Subset string AND filter fid
+            ids = {f[self.pk_name]: f.id() for f in self.source.getFeatures()}
+            self.source.setSubsetString(subset)
+            request = QgsFeatureRequest().setFilterFid(4)
+            result = set([f.id() for f in self.source.getFeatures(request)])
+            all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+            self.source.setSubsetString(None)
+            expected = set([4])
+            assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
+                                                                                                          result, subset)
+            self.assertTrue(all_valid)
 
-        # Subset string AND filter fids
-        self.source.setSubsetString(subset)
-        request = QgsFeatureRequest().setFilterFids([ids[2], ids[4]])
-        result = set([f.id() for f in self.source.getFeatures(request)])
-        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
-        self.source.setSubsetString(None)
-        expected = set([ids[2], ids[4]])
-        assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
-                                                                                                      result, subset)
-        self.assertTrue(all_valid)
+            # Subset string AND filter fids
+            self.source.setSubsetString(subset)
+            request = QgsFeatureRequest().setFilterFids([ids[2], ids[4]])
+            result = set([f.id() for f in self.source.getFeatures(request)])
+            all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+            self.source.setSubsetString(None)
+            expected = set([ids[2], ids[4]])
+            assert set(expected) == result, 'Expected {} and got {} when testing subset string {}'.format(set(expected),
+                                                                                                          result, subset)
+            self.assertTrue(all_valid)
+
+    def providerCompatibleOfSubsetStringWithStableFID(self):
+        """ Return whether the provider is expected to have stable FID when changing subsetString.
+            The WFS provider might not always be able to have that guarantee. """
+        return True
 
     def getSubsetString(self):
         """Individual providers may need to override this depending on their subset string formats"""

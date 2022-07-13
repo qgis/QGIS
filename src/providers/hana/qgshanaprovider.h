@@ -172,8 +172,11 @@ class QgsHanaProvider final : public QgsVectorDataProvider
 
 class QgsHanaProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsHanaProviderMetadata();
+    QIcon icon() const override;
 
     void cleanupProvider() override;
 
@@ -201,6 +204,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif // QGSHANAPROVIDER_H

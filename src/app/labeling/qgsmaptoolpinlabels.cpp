@@ -201,10 +201,14 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
     if ( isPinned() )
     {
       QString labelStringID = QStringLiteral( "%0|%1|%2" ).arg( QString::number( pos.isDiagram ), pos.layerID, QString::number( pos.featureId ) );
-
-      // don't highlight again
-      if ( mHighlights.contains( labelStringID ) )
+      if ( pos.groupedLabelId )
       {
+        // for curved labels we do want to show a highlight for every part
+        labelStringID += '|' + QString::number( mHighlights.size() );
+      }
+      else if ( mHighlights.contains( labelStringID ) )
+      {
+        // don't highlight again
         continue;
       }
 

@@ -232,4 +232,3 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
 
 #endif // QGSMARKERSYMBOL_H
-

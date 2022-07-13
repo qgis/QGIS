@@ -25,8 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
-
-#include <QFileInfo>
+#include <QIcon>
 
 ///@cond PRIVATE
 
@@ -39,7 +38,8 @@ QgsCopcProvider::QgsCopcProvider(
   QgsDataProvider::ReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  bool isRemote = uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive );
+  if ( isRemote )
     mIndex.reset( new QgsRemoteCopcPointCloudIndex );
   else
     mIndex.reset( new QgsCopcPointCloudIndex );
@@ -49,6 +49,10 @@ QgsCopcProvider::QgsCopcProvider(
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
+  if ( mIndex && !mIndex->isValid() )
+  {
+    appendError( mIndex->error() );
+  }
 }
 
 QgsCopcProvider::~QgsCopcProvider() = default;
@@ -97,16 +101,6 @@ qint64 QgsCopcProvider::pointCount() const
   return mIndex->pointCount();
 }
 
-QVariantList QgsCopcProvider::metadataClasses( const QString &attribute ) const
-{
-  return mIndex->metadataClasses( attribute );
-}
-
-QVariant QgsCopcProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataClassStatistic( attribute, value, statistic );
-}
-
 void QgsCopcProvider::loadIndex( )
 {
   // Index already loaded -> no need to load
@@ -125,14 +119,14 @@ void QgsCopcProvider::generateIndex()
   //no-op, index is always generated
 }
 
-QVariant QgsCopcProvider::metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const
-{
-  return mIndex->metadataStatistic( attribute, statistic );
-}
-
 QgsCopcProviderMetadata::QgsCopcProviderMetadata():
   QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
+}
+
+QIcon QgsCopcProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPointCloudLayer.svg" ) );
 }
 
 QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
@@ -143,7 +137,7 @@ QgsCopcProvider *QgsCopcProviderMetadata::createProvider( const QString &uri, co
 QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const QString &uri, Qgis::SublayerQueryFlags, QgsFeedback * ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
   {
     QgsProviderSublayerDetails details;
     details.setUri( uri );
@@ -161,8 +155,7 @@ QList<QgsProviderSublayerDetails> QgsCopcProviderMetadata::querySublayers( const
 int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return 100;
 
   return 0;
@@ -171,8 +164,7 @@ int QgsCopcProviderMetadata::priorityForUri( const QString &uri ) const
 QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QString &uri ) const
 {
   const QVariantMap parts = decodeUri( uri );
-  const QFileInfo fi( parts.value( QStringLiteral( "path" ) ).toString() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
+  if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".copc.laz", Qt::CaseSensitivity::CaseInsensitive ) )
     return QList< QgsMapLayerType>() << QgsMapLayerType::PointCloudLayer;
 
   return QList< QgsMapLayerType>();
@@ -180,9 +172,10 @@ QList<QgsMapLayerType> QgsCopcProviderMetadata::validLayerTypesForUri( const QSt
 
 QVariantMap QgsCopcProviderMetadata::decodeUri( const QString &uri ) const
 {
-  const QString path = uri;
   QVariantMap uriComponents;
-  uriComponents.insert( QStringLiteral( "path" ), path );
+  QUrl url = QUrl::fromUserInput( uri );
+  uriComponents.insert( QStringLiteral( "file-name" ), url.fileName() );
+  uriComponents.insert( QStringLiteral( "path" ), uri );
   return uriComponents;
 }
 
@@ -205,6 +198,11 @@ QString QgsCopcProviderMetadata::filters( QgsProviderMetadata::FilterType type )
 QgsProviderMetadata::ProviderCapabilities QgsCopcProviderMetadata::providerCapabilities() const
 {
   return FileBasedUris;
+}
+
+QList<QgsMapLayerType> QgsCopcProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::PointCloudLayer };
 }
 
 QString QgsCopcProviderMetadata::encodeUri( const QVariantMap &parts ) const

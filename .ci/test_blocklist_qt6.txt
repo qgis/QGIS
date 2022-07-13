@@ -47,7 +47,6 @@ test_geometry_checker_geometrychecks
 test_gui_queryresultwidget
 
 # block list
-PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup

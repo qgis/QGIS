@@ -137,7 +137,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     bool showRandomColorRamp() const { return mShowRandomColorRamp; }
 
     /**
-     * Returns TRUE if the current color is null.
+     * Returns TRUE if the current color ramp is random.
      * \see setShowNull()
      * \see showNull()
      */
@@ -159,7 +159,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     bool showNull() const;
 
     /**
-     * Returns TRUE if the current color is null.
+     * Returns TRUE if the current color ramp is null.
      * \see setShowNull()
      * \see showNull()
      */

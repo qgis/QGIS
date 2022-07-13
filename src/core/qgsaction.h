@@ -256,6 +256,12 @@ class CORE_EXPORT QgsAction
      */
     QString html( ) const;
 
+    /**
+     * Sets the action \a command.
+     * \since QGIS 3.26
+     */
+    void setCommand( const QString &newCommand );
+
   private:
 
     void handleFormSubmitAction( const QString &expandedAction ) const;

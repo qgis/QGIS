@@ -157,6 +157,8 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mBlockRenderUpdates = false;
     QElapsedTimer mElapsedTimer;
 
+    bool mNoSetLayerExpressionContext = false;
+
 };
 
 

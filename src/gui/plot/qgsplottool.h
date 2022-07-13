@@ -258,6 +258,11 @@ class GUI_EXPORT QgsPlotTool : public QObject
      */
     bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 
+    /**
+     * Constrains a point to force it to fall within the specified rectangle.
+     */
+    static QPointF constrainPointToRect( QPointF point, const QRectF &rect );
+
     //! The pointer to the canvas
     QgsPlotCanvas *mCanvas = nullptr;
 

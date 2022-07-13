@@ -195,7 +195,6 @@ The development version
     typedef QFlags<Qgis::SymbolRenderHint> SymbolRenderHints;
 
 
-
     enum class SymbolFlag
     {
       RendererShouldUseSymbolLevels,
@@ -344,6 +343,78 @@ The development version
       NeverShow,
     };
 
+    enum class LabelOverlapHandling
+    {
+      PreventOverlap,
+      AllowOverlapIfRequired,
+      AllowOverlapAtNoCost,
+    };
+
+    enum class LabelPlacement
+      {
+      AroundPoint,
+      OverPoint,
+      Line,
+      Curved,
+      Horizontal,
+      Free,
+      OrderedPositionsAroundPoint,
+      PerimeterCurved,
+      OutsidePolygons,
+    };
+
+
+    enum class LabelPredefinedPointPosition
+      {
+      TopLeft,
+      TopSlightlyLeft,
+      TopMiddle,
+      TopSlightlyRight,
+      TopRight,
+      MiddleLeft,
+      MiddleRight,
+      BottomLeft,
+      BottomSlightlyLeft,
+      BottomMiddle,
+      BottomSlightlyRight,
+      BottomRight,
+    };
+
+    enum class LabelOffsetType
+      {
+      FromPoint,
+      FromSymbolBounds,
+    };
+
+    enum class LabelQuadrantPosition
+      {
+      AboveLeft,
+      Above,
+      AboveRight,
+      Left,
+      Over,
+      Right,
+      BelowLeft,
+      Below,
+      BelowRight,
+    };
+
+    enum class UpsideDownLabelHandling
+      {
+      FlipUpsideDownLabels,
+      AllowUpsideDownWhenRotationIsDefined,
+      AlwaysAllowUpsideDown
+    };
+
+    enum class LabelMultiLineAlignment
+      {
+      Left,
+      Center,
+      Right,
+      FollowPlacement,
+      Justify,
+    };
+
     enum class SublayerQueryFlag
     {
       FastScan,
@@ -413,6 +484,22 @@ The development version
       IntersectSelection,
       RemoveFromSelection,
     };
+
+    enum class SelectGeometryRelationship
+    {
+      Intersect,
+      Within,
+    };
+
+    enum class SelectionFlag
+    {
+      SingleFeatureSelection,
+      ToggleSelection,
+    };
+
+    typedef QFlags<Qgis::SelectionFlag> SelectionFlags;
+
+
 
     enum class VectorEditResult
       {
@@ -553,7 +640,6 @@ The development version
     typedef QFlags<Qgis::MapLayerProperty> MapLayerProperties;
 
 
-
     enum class DataProviderFlag
     {
       IsBasemapSource,
@@ -677,11 +763,28 @@ The development version
       FindClosestMatchToEndOfRange
     };
 
+    enum class RasterTemporalCapabilityFlag
+    {
+      RequestedTimesMustExactlyMatchAllAvailableTemporalRanges,
+    };
+
+    typedef QFlags<Qgis::RasterTemporalCapabilityFlag> RasterTemporalCapabilityFlags;
+
+
     enum class TransformDirection
       {
       Forward,
       Reverse
     };
+
+    enum class CoordinateTransformationFlag
+    {
+      BallparkTransformsAreAppropriate,
+      IgnoreImpossibleTransformations,
+    };
+
+    typedef QFlags<Qgis::CoordinateTransformationFlag> CoordinateTransformationFlags;
+
 
     enum class MapSettingsFlag
       {
@@ -701,6 +804,7 @@ The development version
       Render3DMap,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      ForceRasterMasks,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -861,6 +965,12 @@ The development version
       ScaleGapOnly,
     };
 
+    enum class GraduatedMethod
+      {
+      Color,
+      Size,
+    };
+
     enum class DpiMode
     {
       All,
@@ -1016,6 +1126,12 @@ The development version
       FillBelow,
     };
 
+    enum class VectorProfileType
+    {
+      IndividualFeatures,
+      ContinuousSurface,
+    };
+
     enum class ProfileGeneratorFlag
     {
       RespectsMaximumErrorMapUnit,
@@ -1036,6 +1152,51 @@ The development version
       Default,
       BottomToTop,
       TopToBottom,
+    };
+
+    enum class AvoidIntersectionsMode
+      {
+      AllowIntersections,
+      AvoidIntersectionsCurrentLayer,
+      AvoidIntersectionsLayers,
+    };
+
+    enum class ProjectFileFormat
+      {
+      Qgz,
+      Qgs,
+    };
+
+    enum class ProjectReadFlag
+      {
+      DontResolveLayers,
+      DontLoadLayouts,
+      TrustLayerMetadata,
+      DontStoreOriginalStyles,
+      DontLoad3DViews,
+      DontLoadProjectStyles,
+    };
+
+    typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
+
+
+    enum class ProjectCapability
+    {
+      ProjectStyles,
+    };
+
+    typedef QFlags<Qgis::ProjectCapability> ProjectCapabilities;
+
+
+    enum class MapBoxGlStyleSourceType
+    {
+      Vector,
+      Raster,
+      RasterDem,
+      GeoJson,
+      Image,
+      Video,
+      Unknown,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -1153,6 +1314,16 @@ QFlags<Qgis::SnappingType> operator|(Qgis::SnappingType f1, QFlags<Qgis::Snappin
 QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToolFlag> f2);
 
 QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
+
+QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
+
+QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
+
+QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabilityFlag f1, QFlags<Qgis::RasterTemporalCapabilityFlag> f2);
+
+QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
 
 
 

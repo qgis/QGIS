@@ -153,7 +153,7 @@ void QgsMaskingWidget::populate()
     }
 
     // collect label masks
-    QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> labelMasks = QgsVectorLayerUtils::labelMasks( vl );
+    QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::labelMasks( vl );
     for ( auto it = labelMasks.begin(); it != labelMasks.end(); it++ )
     {
       const QString &ruleKey = it.key();
@@ -162,7 +162,7 @@ void QgsMaskingWidget::populate()
         if ( it2.key() == mLayer->id() )
         {
           // merge with masked symbol layers
-          maskedSymbolLayers.unite( it2.value() );
+          maskedSymbolLayers.unite( it2.value().symbolLayerIds );
           // add the mask source
           source.layerId = layerId;
           source.isLabeling = true;

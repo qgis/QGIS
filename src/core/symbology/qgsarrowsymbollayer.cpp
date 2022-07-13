@@ -193,6 +193,15 @@ bool QgsArrowSymbolLayer::usesMapUnits() const
          || mOffsetUnit == QgsUnitTypes::RenderMapUnits || mOffsetUnit == QgsUnitTypes::RenderMetersInMapUnits;
 }
 
+void QgsArrowSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  QgsLineSymbolLayer::setOutputUnit( unit );
+  mArrowWidthUnit = unit;
+  mArrowStartWidthUnit = unit;
+  mHeadLengthUnit = unit;
+  mHeadThicknessUnit = unit;
+}
+
 void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
   mExpressionScope.reset( new QgsExpressionContextScope() );

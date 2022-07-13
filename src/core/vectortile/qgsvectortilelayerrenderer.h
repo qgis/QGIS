@@ -91,6 +91,9 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     //! Cached list of layers required for renderer and labeling
     QSet< QString > mRequiredLayers;
 
+    //! Selected features, to draw on top in a selected style
+    QList< QgsFeature > mSelectedFeatures;
+
     //! Counter of total elapsed time to decode tiles (ms)
     int mTotalDecodeTime = 0;
     //! Counter of total elapsed time to render tiles (ms)

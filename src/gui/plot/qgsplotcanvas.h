@@ -174,6 +174,11 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     void toolChanged( QgsPlotTool *newTool );
 
     /**
+     * Emitted whenever the visible area of the plot is changed.
+     */
+    void plotAreaChanged();
+
+    /**
      * Emitted before the canvas context menu will be shown.
      * Can be used to extend the context menu.
      */

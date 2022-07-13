@@ -254,6 +254,7 @@ class QgsOracleConn : public QObject
     static QString restrictToSchema( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
+    static bool allowProjectsInDatabase( const QString &connName );
     static bool estimatedMetadata( const QString &connName );
     static bool onlyExistingTypes( const QString &connName );
     static void deleteConnection( const QString &connName );

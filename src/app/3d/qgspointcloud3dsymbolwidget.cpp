@@ -134,6 +134,10 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mClassifiedRenderingLayout->addWidget( mClassifiedRendererWidget );
 
   connect( mClassifiedRendererWidget, &QgsPointCloudClassifiedRendererWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+
+  mPointSizeSpinBox->setToolTip( tr( "The size of each point in pixels" ) );
+  mMaxScreenErrorSpinBox->setToolTip( tr( "The distance in pixels between the points of the smallest chunk to be rendered.\nRaising this value will result in a less detailed scene which can improve performance" ) );
+  mPointBudgetSpinBox->setToolTip( tr( "The maximum number of points that will be rendered simultaneously.\nRaising this value may allow missing chunks to be rendered while lowering it may improve performance" ) );
 }
 
 void QgsPointCloud3DSymbolWidget::setSymbol( QgsPointCloud3DSymbol *symbol )
@@ -478,19 +482,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     }
     else if ( newSymbolType == QLatin1String( "classification" ) )
     {
-      const QgsPointCloudClassifiedRenderer *renderer2d = dynamic_cast< const QgsPointCloudClassifiedRenderer * >( mLayer->renderer() );
-      mBlockChangedSignals++;
-      if ( renderer2d )
-      {
-        mClassifiedRendererWidget->setFromCategories( renderer2d->categories(), renderer2d->attribute() );
-      }
-      else
-      {
-        mClassifiedRendererWidget->setFromCategories( QgsPointCloudClassifiedRenderer::defaultCategories(), QString() );
-      }
-
-      ( void )( renderer2d );
-      mBlockChangedSignals--;
+      mClassifiedRendererWidget->setFromRenderer( mLayer->renderer() );
     }
   }
 
@@ -509,18 +501,9 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant min = mLayer->dataProvider()->metadataStatistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Min );
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRenderingParameterComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( min.isValid() && max.isValid() )
-    {
-      mProviderMin = min.toDouble();
-      mProviderMax = max.toDouble();
-    }
-    else
-    {
-      mProviderMin = std::numeric_limits< double >::quiet_NaN();
-      mProviderMax = std::numeric_limits< double >::quiet_NaN();
-    }
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    mProviderMin = stats.minimum( mRenderingParameterComboBox->currentAttribute() );
+    mProviderMax = stats.maximum( mRenderingParameterComboBox->currentAttribute() );
 
     if ( mRenderingParameterComboBox->currentAttribute() == QLatin1String( "Z" ) )
     {
@@ -591,16 +574,16 @@ void QgsPointCloud3DSymbolWidget::redAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mRedAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mRedAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mRedMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mRedMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mRedMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitChangedSignal();
     }
@@ -611,16 +594,16 @@ void QgsPointCloud3DSymbolWidget::greenAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mGreenAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mGreenAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mGreenMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mGreenMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mGreenMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitChangedSignal();
     }
@@ -631,16 +614,16 @@ void QgsPointCloud3DSymbolWidget::blueAttributeChanged()
 {
   if ( mLayer && mLayer->dataProvider() )
   {
-    const QVariant max = mLayer->dataProvider()->metadataStatistic( mBlueAttributeComboBox->currentAttribute(), QgsStatisticalSummary::Max );
-    if ( max.isValid() )
+    QgsPointCloudStatistics stats = mLayer->statistics();
+    const double max = stats.maximum( mBlueAttributeComboBox->currentAttribute() );
+    if ( !std::isnan( max ) )
     {
-      const int maxValue = max.toInt();
       mDisableMinMaxWidgetRefresh++;
       mBlueMinLineEdit->setText( QLocale().toString( 0 ) );
 
       // try and guess suitable range from input max values -- we don't just take the provider max value directly here, but rather see if it's
       // likely to be 8 bit or 16 bit color values
-      mBlueMaxLineEdit->setText( QLocale().toString( maxValue > 255 ? 65535 : 255 ) );
+      mBlueMaxLineEdit->setText( QLocale().toString( max > 255 ? 65535 : 255 ) );
       mDisableMinMaxWidgetRefresh--;
       emitChangedSignal();
     }
@@ -670,12 +653,6 @@ void QgsPointCloud3DSymbolWidget::setPointBudget( double budget )
 double QgsPointCloud3DSymbolWidget::pointBudget() const
 {
   return mPointBudgetSpinBox->value();
-}
-
-
-void QgsPointCloud3DSymbolWidget::setPointCloudSize( int size )
-{
-  mPointCloudSizeLabel->setText( QStringLiteral( "%1 points" ).arg( size ) );
 }
 
 bool QgsPointCloud3DSymbolWidget::showBoundingBoxes() const

@@ -40,7 +40,7 @@ QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPoint
   connect( mWidgetPointCloudSymbol, &QgsPointCloud3DSymbolWidget::changed, this, &QgsPointCloudLayer3DRendererWidget::widgetChanged );
 }
 
-void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer, QgsPointCloudLayer *layer )
+void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3DRenderer *renderer )
 {
   if ( renderer != nullptr )
   {
@@ -49,8 +49,6 @@ void QgsPointCloudLayer3DRendererWidget::setRenderer( const QgsPointCloudLayer3D
     mWidgetPointCloudSymbol->setMaximumScreenError( renderer->maximumScreenError() );
     mWidgetPointCloudSymbol->setShowBoundingBoxes( renderer->showBoundingBoxes() );
   }
-  if ( layer )
-    mWidgetPointCloudSymbol->setPointCloudSize( layer->pointCount() );
 }
 
 QgsPointCloudLayer3DRenderer *QgsPointCloudLayer3DRendererWidget::renderer()
@@ -93,7 +91,7 @@ void QgsPointCloudLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
     pointCloudRenderer = static_cast<QgsPointCloudLayer3DRenderer *>( r );
     pointCloudRenderer->setSymbol( mWidgetPointCloudSymbol->symbol() );
   }
-  setRenderer( pointCloudRenderer, qobject_cast< QgsPointCloudLayer * >( layer ) );
+  setRenderer( pointCloudRenderer );
   mWidgetPointCloudSymbol->setEnabled( true );
 }
 
@@ -120,7 +118,7 @@ QgsMapLayerConfigWidget *QgsPointCloudLayer3DRendererWidgetFactory::createWidget
     return nullptr;
   QgsPointCloudLayer3DRendererWidget *widget = new QgsPointCloudLayer3DRendererWidget( pointCloudLayer, canvas, parent );
   if ( pointCloudLayer )
-    widget->setRenderer( dynamic_cast<QgsPointCloudLayer3DRenderer *>( pointCloudLayer->renderer3D() ), pointCloudLayer );
+    widget->setRenderer( dynamic_cast<QgsPointCloudLayer3DRenderer *>( pointCloudLayer->renderer3D() ) );
   return widget;
 }
 

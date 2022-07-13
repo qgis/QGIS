@@ -80,11 +80,10 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryT
 void QgsVectorLayerLabelProvider::init()
 {
   mPlacement = mSettings.placement;
+
   mFlags = Flags();
   if ( mSettings.drawLabels )
     mFlags |= DrawLabels;
-  if ( mSettings.displayAll )
-    mFlags |= DrawAllLabels;
   if ( mSettings.lineSettings().mergeLines() && !mSettings.lineSettings().addDirectionSymbol() )
     mFlags |= MergeConnectedLines;
   if ( mSettings.centroidInside )
@@ -384,7 +383,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   format.setSizeUnit( QgsUnitTypes::RenderPixels );
   tmpLyr.setFormat( format );
 
-  if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
+  if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
   {
     //calculate font alignment based on label quadrant
     switch ( label->getQuadrant() )
@@ -392,17 +391,17 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
       case LabelPosition::QuadrantAboveLeft:
       case LabelPosition::QuadrantLeft:
       case LabelPosition::QuadrantBelowLeft:
-        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiRight;
+        tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
         break;
       case LabelPosition::QuadrantAbove:
       case LabelPosition::QuadrantOver:
       case LabelPosition::QuadrantBelow:
-        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiCenter;
+        tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
         break;
       case LabelPosition::QuadrantAboveRight:
       case LabelPosition::QuadrantRight:
       case LabelPosition::QuadrantBelowRight:
-        tmpLyr.multilineAlign = QgsPalLayerSettings::MultiLeft;
+        tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
         break;
     }
   }
@@ -595,7 +594,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
 
     //add the direction symbol if needed
-    if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&
+    if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line &&
          tmpLyr.lineSettings().addDirectionSymbol() )
     {
       bool prependSymb = false;
@@ -648,11 +647,11 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     }
 
     QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
-    if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
+    if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::Center )
       hAlign = QgsTextRenderer::AlignCenter;
-    else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiRight )
+    else if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::Right )
       hAlign = QgsTextRenderer::AlignRight;
-    else if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiJustify )
+    else if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::Justify )
       hAlign = QgsTextRenderer::AlignJustify;
 
     QgsTextRenderer::Component component;
@@ -660,7 +659,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.rotation = label->getAlpha();
 
     QgsTextDocument document;
-    if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == QgsPalLayerSettings::Curved )
+    if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == Qgis::LabelPlacement::Curved )
     {
       const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
       const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );

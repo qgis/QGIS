@@ -55,6 +55,7 @@ from qgis.core import (QgsGeometry,
                        QgsSymbolLayerUtils,
                        QgsMarkerLineSymbolLayer,
                        QgsArrowSymbolLayer,
+                       QgsGeometryGeneratorSymbolLayer,
                        QgsSymbol,
                        Qgis,
                        QgsSymbolLayer,
@@ -267,10 +268,12 @@ class TestQgsSymbol(unittest.TestCase):
                   'reference_image': 'empty'},
                  {'name': 'CircularString',
                   'wkt': 'CIRCULARSTRING(268 415,227 505,227 406)',
-                  'reference_image': 'circular_string'},
+                  'reference_image': 'circular_string',
+                  'clip_size': 30},
                  {'name': 'CompoundCurve',
                   'wkt': 'COMPOUNDCURVE((5 3, 5 13), CIRCULARSTRING(5 13, 7 15, 9 13), (9 13, 9 3), CIRCULARSTRING(9 3, 7 1, 5 3))',
-                  'reference_image': 'compound_curve'},
+                  'reference_image': 'compound_curve',
+                  'clip_size': 30},
                  {'name': 'CurvePolygon',
                   'wkt': 'CURVEPOLYGON(CIRCULARSTRING(1 3, 3 5, 4 7, 7 3, 1 3))',
                   'reference_image': 'curve_polygon'},
@@ -315,7 +318,30 @@ class TestQgsSymbol(unittest.TestCase):
             rendered_image = self.renderGeometry(geom_m)
             assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image)
 
-    def renderGeometry(self, geom):
+            # test with clipping
+
+            geom = get_geom()
+            rendered_image = self.renderGeometry(geom, clipped_geometry=True, clip_size=test.get('clip_size', 10))
+            self.assertTrue(self.imageCheck(test['name'], test['reference_image'] + '_clipped', rendered_image), test['name'])
+
+            # test with Z
+            geom_z = get_geom()
+            geom_z.get().addZValue(5)
+            rendered_image = self.renderGeometry(geom_z, clipped_geometry=True, clip_size=test.get('clip_size', 10))
+            assert self.imageCheck(test['name'] + 'Z', test['reference_image'] + '_clipped', rendered_image)
+
+            # test with ZM
+            geom_z.get().addMValue(15)
+            rendered_image = self.renderGeometry(geom_z, clipped_geometry=True, clip_size=test.get('clip_size', 10))
+            assert self.imageCheck(test['name'] + 'ZM', test['reference_image'] + '_clipped', rendered_image)
+
+            # test with M
+            geom_m = get_geom()
+            geom_m.get().addMValue(15)
+            rendered_image = self.renderGeometry(geom_m, clipped_geometry=True, clip_size=test.get('clip_size', 10))
+            assert self.imageCheck(test['name'] + 'M', test['reference_image'] + '_clipped', rendered_image)
+
+    def renderGeometry(self, geom, clipped_geometry=False, clip_size=10):
         f = QgsFeature()
         f.setGeometry(geom)
 
@@ -326,7 +352,10 @@ class TestQgsSymbol(unittest.TestCase):
         extent = geom.get().boundingBox()
         # buffer extent by 10%
         if extent.width() > 0:
-            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+            if clipped_geometry:
+                extent = extent.buffered(-(extent.height() + extent.width()) / clip_size)
+            else:
+                extent = extent.buffered((extent.height() + extent.width()) / 20.0)
         else:
             extent = extent.buffered(10)
 
@@ -832,6 +861,34 @@ class TestQgsMarkerSymbol(unittest.TestCase):
         markerSymbol.symbolLayer(1).setSize(45)
         self.assertAlmostEqual(markerSymbol.size(context), 45, 3)
         self.assertAlmostEqual(markerSymbol.size(context2), 45, 3)
+
+    def testGeometryGeneratorSize(self):
+        # test marker symbol size propagation to geometry generated sub marker symbols
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Marker)
+        geomGeneratorSymbolLayer.subSymbol().setSize(2.5)
+
+        markerSymbol = QgsMarkerSymbol()
+        markerSymbol.deleteSymbolLayer(0)
+        markerSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(markerSymbol.size(), 2.5)
+
+        markerSymbol.setSize(10.5)
+        self.assertEqual(markerSymbol.size(), 10.5)
+
+    def testGeometryGeneratorWidth(self):
+        # test line symbol width propagation to geometry generated sub line symbols
+        geomGeneratorSymbolLayer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '$geometry'})
+        geomGeneratorSymbolLayer.setSymbolType(QgsSymbol.Line)
+        geomGeneratorSymbolLayer.subSymbol().setWidth(2.5)
+
+        lineSymbol = QgsLineSymbol()
+        lineSymbol.deleteSymbolLayer(0)
+        lineSymbol.appendSymbolLayer(geomGeneratorSymbolLayer)
+        self.assertEqual(lineSymbol.width(), 2.5)
+
+        lineSymbol.setWidth(10.5)
+        self.assertEqual(lineSymbol.width(), 10.5)
 
     def testAngle(self):
         # test angle and setAngle

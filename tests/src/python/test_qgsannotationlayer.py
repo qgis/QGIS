@@ -263,6 +263,24 @@ class TestQgsAnnotationLayer(unittest.TestCase):
         self.assertIsInstance(p2.mainAnnotationLayer().items()[linestring_item_id], QgsAnnotationLineItem)
         self.assertIsInstance(p2.mainAnnotationLayer().items()[marker_item_id], QgsAnnotationMarkerItem)
 
+    def testMainAnnotationLayerCrs(self):
+        p = QgsProject()
+        self.assertEqual(p.crs(), p.mainAnnotationLayer().crs())
+
+        # main annotation layer should follow project crs
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(p.crs(), p.mainAnnotationLayer().crs())
+
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(p.crs(), p.mainAnnotationLayer().crs())
+
+        # add an item, should lock in the crs for the main annotation layer
+        p.mainAnnotationLayer().addItem(QgsAnnotationPolygonItem(
+            QgsPolygon(QgsLineString([QgsPoint(12, 13), QgsPoint(14, 13), QgsPoint(14, 15), QgsPoint(12, 13)]))))
+
+        p.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(p.mainAnnotationLayer().crs().authid(), 'EPSG:4326')
+
     def test_apply_edit(self):
         """
         Test applying edits to a layer

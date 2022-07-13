@@ -25,6 +25,15 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
   : QgsMapLayerElevationProperties( parent )
 {
   mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
+
+  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
+  {
+    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this]
+    {
+      if ( mRespectLayerColors )
+        emit profileGenerationPropertyChanged();
+    } );
+  }
 }
 
 bool QgsPointCloudLayerElevationProperties::hasElevation() const
@@ -102,7 +111,7 @@ QString QgsPointCloudLayerElevationProperties::htmlSummary() const
   QStringList properties;
   properties << tr( "Scale: %1" ).arg( mZScale );
   properties << tr( "Offset: %1" ).arg( mZOffset );
-  return QStringLiteral( "<ul><li>%1</li></ul>" ).arg( properties.join( QStringLiteral( "</li><li>" ) ) );
+  return QStringLiteral( "<ul><li>%1</li></ul>" ).arg( properties.join( QLatin1String( "</li><li>" ) ) );
 }
 
 bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange & ) const
@@ -117,12 +126,14 @@ QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLay
   {
     if ( pcLayer->dataProvider() )
     {
+      const QgsPointCloudStatistics stats = pcLayer->statistics();
+
       // try to fetch z range from provider metadata
-      const QVariant zMin = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Min );
-      const QVariant zMax = pcLayer->dataProvider()->metadataStatistic( QStringLiteral( "Z" ), QgsStatisticalSummary::Max );
-      if ( zMin.isValid() && zMax.isValid() )
+      const double zMin = stats.minimum( QStringLiteral( "Z" ) );
+      const double zMax = stats.maximum( QStringLiteral( "Z" ) );
+      if ( !std::isnan( zMin ) && !std::isnan( zMax ) )
       {
-        return QgsDoubleRange( zMin.toDouble() * mZScale + mZOffset, zMax.toDouble() * mZScale + mZOffset );
+        return QgsDoubleRange( zMin * mZScale + mZOffset, zMax * mZScale + mZOffset );
       }
     }
   }

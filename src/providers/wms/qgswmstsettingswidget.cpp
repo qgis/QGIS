@@ -99,14 +99,20 @@ void QgsWmstSettingsWidget::syncToLayer( QgsMapLayer *layer )
 
     const QList< QgsDateTimeRange > allAvailableRanges = mRasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
     // determine if available ranges are a set of non-contiguous instants, and if so, we show a combobox to users instead of the free-form date widgets
-    if ( allAvailableRanges.size() < 50 && std::all_of( allAvailableRanges.cbegin(), allAvailableRanges.cend(), []( const QgsDateTimeRange & range ) { return range.isInstant(); } ) )
+    if ( ( mRasterLayer->dataProvider()->temporalCapabilities()->flags() & Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges )
+         || (
+           allAvailableRanges.size() < 50 &&
+    std::all_of( allAvailableRanges.cbegin(), allAvailableRanges.cend(), []( const QgsDateTimeRange & range ) { return range.isInstant(); } ) )
+       )
     {
       mStaticWmstRangeFrame->hide();
       mStaticWmstChoiceFrame->show();
       mStaticWmstRangeCombo->clear();
       for ( const QgsDateTimeRange &range : allAvailableRanges )
       {
-        mStaticWmstRangeCombo->addItem( range.begin().toString( Qt::ISODate ), QVariant::fromValue( range ) );
+        const QString identifier = range.isInstant() ? range.begin().toString( Qt::ISODate )
+                                   : tr( "%1 to %2" ).arg( range.begin().toString( Qt::ISODate ), range.end().toString( Qt::ISODate ) );
+        mStaticWmstRangeCombo->addItem( identifier, QVariant::fromValue( range ) );
       }
       mStaticTemporalRangeRadio->setText( tr( "Predefined date" ) );
     }

@@ -261,6 +261,9 @@ class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! Time (temporalDomain), optional
     QString mTime;
 
+    //! Specified bounding box
+    QString mBBOX;
+
     //! Format of coverage to be used in request
     QString mFormat;
 
@@ -444,10 +447,15 @@ class QgsWcsDownloadHandler : public QObject
 
 class QgsWcsProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsWcsProviderMetadata();
+    QIcon icon() const override;
     QgsWcsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QVariantMap decodeUri( const QString &uri ) const override;
+    QString encodeUri( const QVariantMap &parts ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 #endif

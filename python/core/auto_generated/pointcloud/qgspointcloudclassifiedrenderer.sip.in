@@ -116,7 +116,7 @@ Renders point clouds by a classification attribute.
 %End
   public:
 
-    QgsPointCloudClassifiedRenderer();
+    QgsPointCloudClassifiedRenderer( const QString &attributeName = QString(), const QgsPointCloudCategoryList &categories = QgsPointCloudCategoryList() );
 %Docstring
 Constructor for QgsPointCloudClassifiedRenderer.
 %End

@@ -11,6 +11,13 @@ Make sure that you have enabled building of tests in CMake.
 Some tests require setting up a test environment.
 Below some information about how to set such environment up.
 
+## Docker based environment
+
+The test environment used by the continuous integration system
+is based on Docker and can be reproduced locally by using the
+`.ci/run_tests.sh` script. Run with the --help switch to see
+options.
+
 ## Postgres
 
 Make sure that you have enabled building of postgres test in CMake.
@@ -73,13 +80,13 @@ For example if the output of `make check` ends like this:
 
 ```
    The following tests FAILED:
-         77 - PyQgsLocalServer (Failed)
+         77 - PyQgsFeature (Failed)
 ```
 
 You could re-run the failing test with:
 
 ```
-   ctest -V -R PyQgsLocalServer
+   ctest -V -R PyQgsFeature
 ```
 
 The parameter `-V` enables verbose mode and `-R` takes a regular expression as
