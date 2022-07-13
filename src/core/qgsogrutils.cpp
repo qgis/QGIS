@@ -2068,8 +2068,8 @@ QList<QgsVectorDataProvider::NativeType> QgsOgrUtils::nativeFieldTypesForDriver(
     nativeTypes << QgsVectorDataProvider::NativeType( QObject::tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
 
   bool supportsDate = true;
-  bool supportsTime = driverName != QLatin1String( "ESRI Shapefile" ) && driverName != QLatin1String( "GPKG" );
-  bool supportsDateTime = driverName != QLatin1String( "ESRI Shapefile" );
+  bool supportsTime = true;
+  bool supportsDateTime = true;
   bool supportsBinary = false;
   bool supportIntegerList = false;
   bool supportInteger64List = false;
