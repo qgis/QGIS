@@ -167,6 +167,22 @@ class PyQgsGdalProvider(unittest.TestCase):
                           '/home/me/special.sdat.vat.dbf', '/home/me/special.ovr', '/home/me/special.sdat.ovr',
                           '/home/me/special.wld', '/home/me/special.sdat.wld'])
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 2, 0) or int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 5, 2), "Test only relevant on GDAL >= 3.2.0 and < 3.5.2")
+    def testSanitizeVRT(self):
+        """Test qgsgdalprovider.cpp sanitizeVRTFile() / workaround for https://github.com/qgis/QGIS/issues/49285 """
+
+        tmp_dir = QTemporaryDir()
+        vrtfilename = os.path.join(tmp_dir.path(), 'out.vrt')
+        path = os.path.join(unitTestDataPath(), 'landsat_4326.tif')
+        ds = gdal.BuildVRT(vrtfilename, [path])
+        ds = None
+        assert 'OverviewList' in open(vrtfilename, 'rt').read()
+
+        raster_layer = QgsRasterLayer(vrtfilename, 'test')
+        del raster_layer
+
+        assert 'OverviewList' not in open(vrtfilename, 'rt').read()
+
 
 if __name__ == '__main__':
     unittest.main()
