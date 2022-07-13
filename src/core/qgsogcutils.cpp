@@ -1952,6 +1952,74 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
   return QDomElement();
 }
 
+QDomElement QgsOgcUtils::expressionToOgcExpressionFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage )
+{
+  return expressionToOgcExpressionFilter( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
+                                          QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
+}
+
+
+QDomElement QgsOgcUtils::expressionToOgcExpressionFilter( const QgsExpression &expression,
+    QDomDocument &doc,
+    GMLVersion gmlVersion,
+    FilterVersion filterVersion,
+    const QString &geometryName,
+    const QString &srsName,
+    bool honourAxisOrientation,
+    bool invertAxisOrientation,
+    QString *errorMessage )
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope();
+
+  QgsExpression exp = expression;
+
+  const QgsExpressionNode *node = exp.rootNode();
+  if ( !node )
+    return QDomElement();
+
+  switch ( node->nodeType() )
+  {
+    case QgsExpressionNode::ntFunction:
+    case QgsExpressionNode::ntLiteral:
+    case QgsExpressionNode::ntColumnRef:
+    {
+      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
+      const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
+
+      if ( errorMessage )
+        *errorMessage = utils.errorMessage();
+
+      if ( !exprRootElem.isNull() )
+      {
+        QDomElement filterElem =
+          ( filterVersion == FILTER_FES_2_0 ) ?
+          doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
+          doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
+        if ( utils.GMLNamespaceUsed() )
+        {
+          QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
+          if ( gmlVersion == GML_3_2_1 )
+            attr.setValue( GML32_NAMESPACE );
+          else
+            attr.setValue( GML_NAMESPACE );
+          filterElem.setAttributeNode( attr );
+        }
+        filterElem.appendChild( exprRootElem );
+        return filterElem;
+      }
+      break;
+    }
+    default:
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
+    }
+  }
+  // got an error
+  return QDomElement();
+}
+
 QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &statement,
     QDomDocument &doc,
     GMLVersion gmlVersion,
