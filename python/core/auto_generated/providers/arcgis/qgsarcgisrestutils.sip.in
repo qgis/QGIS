@@ -101,6 +101,15 @@ Converts an ESRI fill ``style`` to a Qt brush style.
 Converts a date time ``value`` to a QDateTime.
 %End
 
+    static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Converts a ``geometry`` to an ArcGIS REST JSON representation.
+
+Returns an empty map if the geometry cannot be converted.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************

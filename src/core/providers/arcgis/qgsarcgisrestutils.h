@@ -18,6 +18,7 @@
 #include "qgswkbtypes.h"
 #include "qgsrectangle.h"
 #include "qgsmarkersymbollayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include "qgis_sip.h"
 
@@ -44,8 +45,11 @@ class QgsCircularString;
 class QgsCompoundCurve;
 class QgsMultiPoint;
 class QgsMultiSurface;
+class QgsMultiLineString;
 class QgsPolygon;
 class QgsMultiCurve;
+class QgsMultiPolygon;
+class QgsCurvePolygon;
 
 /**
  * \ingroup core
@@ -135,6 +139,15 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QDateTime convertDateTime( const QVariant &value );
 
+    /**
+     * Converts a \a geometry to an ArcGIS REST JSON representation.
+     *
+     * Returns an empty map if the geometry cannot be converted.
+     *
+     * \since QGIS 3.28
+     */
+    static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
   private:
 
     /**
@@ -186,6 +199,21 @@ class CORE_EXPORT QgsArcGisRestUtils
     static std::unique_ptr< QgsMarkerSymbol > parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData );
 
     static Qgis::MarkerShape parseEsriMarkerShape( const QString &style );
+
+    static QVariantMap pointToJson( const QgsPoint *point );
+    static QVariantMap multiPointToJson( const QgsMultiPoint *multiPoint );
+    static QVariantList lineStringToJsonPath( const QgsLineString *line );
+    static QVariantList curveToJsonCurve( const QgsCurve *curve, bool includeStart );
+    static QVariantMap lineStringToJson( const QgsLineString *line );
+    static QVariantMap curveToJson( const QgsCurve *curve );
+    static QVariantMap multiLineStringToJson( const QgsMultiLineString *multiLine );
+    static QVariantMap multiCurveToJson( const QgsMultiCurve *multiCurve );
+    static QVariantList polygonToJsonRings( const QgsPolygon *polygon );
+    static QVariantList curvePolygonToJsonRings( const QgsCurvePolygon *polygon );
+    static QVariantMap polygonToJson( const QgsPolygon *polygon );
+    static QVariantMap curvePolygonToJson( const QgsCurvePolygon *polygon );
+    static QVariantMap multiPolygonToJson( const QgsMultiPolygon *polygon );
+    static QVariantMap multiSurfaceToJson( const QgsMultiSurface *multiSurface );
 
     friend class TestQgsArcGisRestUtils;
 };
