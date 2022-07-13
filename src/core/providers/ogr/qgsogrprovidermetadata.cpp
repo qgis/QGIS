@@ -31,6 +31,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderutils.h"
 #include "qgsgdalutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsvectorfilewriter.h"
 
 #include <gdal.h>
 #include <QFileInfo>
@@ -64,6 +65,62 @@ Qgis::VectorExportResult QgsOgrProviderMetadata::createEmptyLayer( const QString
            uri, fields, wkbType, srs, overwrite,
            &oldToNewAttrIdxMap, &errorMessage, options
          );
+}
+
+bool QgsOgrProviderMetadata::createDatabase( const QString &uri, QString &errorMessage )
+{
+  errorMessage.clear();
+
+  const QVariantMap parts = decodeUri( uri );
+  const QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  if ( path.isEmpty() )
+  {
+    errorMessage = tr( "Invalid database path specified" );
+    return false;
+  }
+  else if ( QFileInfo::exists( path ) )
+  {
+    errorMessage = tr( "A file already exists with the specified database path" );
+    return false;
+  }
+
+  const QString extension = QFileInfo( path ).completeSuffix();
+  const QString driverName = QgsVectorFileWriter::driverForExtension( extension );
+  if ( driverName.isEmpty() )
+  {
+    errorMessage = tr( "The file extension %1 is not supported for database creation" ).arg( extension );
+    return false;
+  }
+
+  OGRSFDriverH poDriver = OGRGetDriverByName( driverName.toLocal8Bit().constData() );
+  if ( !poDriver )
+  {
+    errorMessage = tr( "OGR driver for '%1' not found (OGR error: %2)" )
+                   .arg( driverName,
+                         QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+
+  char **metadata = GDALGetMetadata( poDriver, nullptr );
+
+  if ( !CSLFetchBoolean( metadata, GDAL_DCAP_VECTOR, false )
+       || !CSLFetchBoolean( metadata, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, false )
+       || !CSLFetchBoolean( metadata, GDAL_DCAP_CREATE, false )
+     )
+  {
+    errorMessage = tr( "The %1 driver does not support database creation" )
+                   .arg( driverName );
+    return false;
+  }
+
+  gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( poDriver, path.toUtf8().constData(), nullptr ) );
+  if ( !hDS )
+  {
+    errorMessage = tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+
+  return true;
 }
 
 QVariantMap QgsOgrProviderMetadata::decodeUri( const QString &uri ) const
@@ -1069,7 +1126,7 @@ QString QgsOgrProviderMetadata::filters( FilterType type )
 
 QgsProviderMetadata::ProviderMetadataCapabilities QgsOgrProviderMetadata::capabilities() const
 {
-  return QuerySublayers;
+  return QuerySublayers | CreateDatabase;
 }
 
 bool QgsOgrProviderMetadata::uriIsBlocklisted( const QString &uri ) const
