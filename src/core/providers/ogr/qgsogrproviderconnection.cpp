@@ -586,17 +586,13 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
 
 QList<QgsVectorDataProvider::NativeType> QgsOgrProviderConnection::nativeTypes() const
 {
-  QgsVectorLayer::LayerOptions options { false, true };
-  options.skipCrsValidation = true;
-  const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
-  if ( ! vl.isValid() || ! vl.dataProvider() )
+  GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
   {
-    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
-                               vl.dataProvider()->errors().join( '\n' ) :
-                               QObject::tr( "unknown error" );
-    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve driver for connection" ) );
   }
-  return vl.dataProvider()->nativeTypes();
+
+  return QgsOgrUtils::nativeFieldTypesForDriver( hDriver );
 }
 
 QStringList QgsOgrProviderConnection::fieldDomainNames() const
