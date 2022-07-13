@@ -33,6 +33,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
   connect( mAmbientDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mDiffuseDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
   connect( mSpecularDataDefinedButton, &QgsPropertyOverrideButton::changed, this, &QgsPhongMaterialWidget::changed );
+  connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPhongMaterialWidget::changed );
 }
 
 QgsMaterialSettingsWidget *QgsPhongMaterialWidget::create()
@@ -100,6 +101,7 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
   btnAmbient->setColor( phongMaterial->ambient() );
   btnSpecular->setColor( phongMaterial->specular() );
   spinShininess->setValue( phongMaterial->shininess() );
+  mOpacityWidget->setOpacity( phongMaterial->opacity() );
 
   mPropertyCollection = settings->dataDefinedProperties();
 
@@ -115,6 +117,7 @@ QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );
   m->setShininess( spinShininess->value() );
+  m->setOpacity( mOpacityWidget->opacity() );
 
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Diffuse, mDiffuseDataDefinedButton->toProperty() );
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Ambient, mAmbientDataDefinedButton->toProperty() );

@@ -17,6 +17,9 @@
 #define QGSTABWIDGET_H
 
 #include <QTabWidget>
+#include "qgstabbarproxystyle.h"
+#include "qgsattributeeditorelement.h"
+
 #include "qgis_gui.h"
 
 /**
@@ -87,6 +90,12 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      */
     void tabRemoved( int index ) override;
 
+    /**
+     * Sets the optional custom \a labelStyle for the tab identified by \a tabIndex.
+     * \since QGIS 3.26
+     */
+    void setTabStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &labelStyle );
+
   private:
     void synchronizeIndexes();
 
@@ -113,6 +122,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
 
     QList<TabInformation> mTabs;
     bool mSetTabVisibleFlag = false;
+    QgsTabBarProxyStyle *mTabBarStyle = nullptr;
 };
 
 #endif // QGSTABWIDGET_H

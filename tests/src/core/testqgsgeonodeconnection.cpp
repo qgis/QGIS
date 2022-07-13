@@ -49,11 +49,13 @@ class TestQgsGeoNodeConnection: public QObject
     // Check if we can create geonode connection from database.
     void testCreation();
 
+#if 0 // these services are no longer online
     // Test Layer API
     void testLayerAPI();
 
     // Test Style API
     void testStyleAPI();
+#endif
 
   private:
     QString mGeoNodeConnectionName;
@@ -120,6 +122,8 @@ void TestQgsGeoNodeConnection::testCreation()
   QVERIFY( newConnectionList.contains( mGeoNodeConnectionName ) );
 }
 
+#if 0 // these services are no longer online!
+
 // Test Layer API
 void TestQgsGeoNodeConnection::testLayerAPI()
 {
@@ -158,6 +162,7 @@ void TestQgsGeoNodeConnection::testStyleAPI()
   QgsDebugMsg( QString::number( geoNodeStyles.count() ) );
   QVERIFY( geoNodeStyles.count() == 2 );
 }
+#endif
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )
 #include "testqgsgeonodeconnection.moc"

@@ -29,12 +29,16 @@
 // read from QSettings and used in the provider connection
 const QStringList CONFIGURATION_PARAMETERS
 {
+  QStringLiteral( "userTablesOnly" ),
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "allowGeometrylessTables" ),
   QStringLiteral( "disableInvalidGeometryHandling" ),
   QStringLiteral( "onlyExistingTypes" ),
+  QStringLiteral( "includeGeoAttributes" ),
+  QStringLiteral( "projectsInDatabase" ),
   QStringLiteral( "saveUsername" ),
   QStringLiteral( "savePassword" ),
+  QStringLiteral( "schema" )
 };
 
 // read from uri and used in the provider connection
@@ -1632,7 +1636,8 @@ QStringList QgsOracleProviderConnection::schemas( ) const
   checkCapability( Capability::Schemas );
   QStringList schemas;
 
-  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS" ) ).rows();
+  // get only non system schemas/users
+  QList<QVariantList> users = executeSqlPrivate( QStringLiteral( "SELECT USERNAME FROM ALL_USERS where ORACLE_MAINTAINED = 'N' AND USERNAME NOT IN ( 'PDBADMIN', 'HR' )" ) ).rows();
   for ( QVariantList userInfos : users )
     schemas << userInfos.at( 0 ).toString();
 

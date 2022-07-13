@@ -26,6 +26,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgssymbolanimationsettingswidget.h"
+#include "qgsprojectstylesettings.h"
 
 #include <QMessageBox>
 
@@ -128,7 +129,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   connect( mSymbolOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
 
-  connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::selectionChanged, this, &QgsSymbolsListWidget::setSymbolFromStyle );
+  connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::selectionChangedWithStylePath, this, &QgsSymbolsListWidget::setSymbolFromStyle );
   connect( mStyleItemsListWidget, &QgsStyleItemsListWidget::saveEntity, this, &QgsSymbolsListWidget::saveSymbol );
 }
 
@@ -291,9 +292,6 @@ void QgsSymbolsListWidget::showAnimationSettings()
 
 void QgsSymbolsListWidget::saveSymbol()
 {
-  if ( !mStyle )
-    return;
-
   QgsStyleSaveDialog saveDlg( this );
   saveDlg.setDefaultTags( mStyleItemsListWidget->currentTagFilter() );
   if ( !saveDlg.exec() )
@@ -302,8 +300,12 @@ void QgsSymbolsListWidget::saveSymbol()
   if ( saveDlg.name().isEmpty() )
     return;
 
+  QgsStyle *style = saveDlg.destinationStyle();
+  if ( !style )
+    return;
+
   // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( saveDlg.name() ) )
+  if ( style->symbolNames().contains( saveDlg.name() ) )
   {
     const int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                           tr( "Symbol with name '%1' already exists. Overwrite?" )
@@ -313,17 +315,17 @@ void QgsSymbolsListWidget::saveSymbol()
     {
       return;
     }
-    mStyle->removeSymbol( saveDlg.name() );
+    style->removeSymbol( saveDlg.name() );
   }
 
   const QStringList symbolTags = saveDlg.tags().split( ',' );
 
   // add new symbol to style and re-populate the list
   QgsSymbol *newSymbol = mSymbol->clone();
-  mStyle->addSymbol( saveDlg.name(), newSymbol );
+  style->addSymbol( saveDlg.name(), newSymbol );
 
   // make sure the symbol is stored
-  mStyle->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
+  style->saveSymbol( saveDlg.name(), newSymbol, saveDlg.isFavorite(), symbolTags );
 }
 
 void QgsSymbolsListWidget::updateSymbolDataDefinedProperty()
@@ -599,10 +601,32 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   whileBlocking( mStandardizeRingsAction )->setChecked( mSymbol->forceRHR() );
 }
 
-void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity )
+void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::StyleEntity, const QString &stylePath )
 {
+  if ( name.isEmpty() )
+    return;
+
+  QgsStyle *style = nullptr;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  if ( mStyle != QgsStyle::defaultStyle() )
+  {
+    // get new instance of symbol from style
+    style = mStyle;
+  }
+  else
+  {
+    style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
+  }
+#else
+  ( void )stylePath;
+  style = mStyle;
+#endif
+
+  if ( !style )
+    return;
+
   // get new instance of symbol from style
-  std::unique_ptr< QgsSymbol > s( mStyle->symbol( name ) );
+  std::unique_ptr< QgsSymbol > s( style->symbol( name ) );
   if ( !s )
     return;
 

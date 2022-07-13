@@ -30,6 +30,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsprojectstorageregistry.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
@@ -38,6 +40,9 @@
 #include "qgsoracleconnpool.h"
 #include "qgsoracletransaction.h"
 #include "qgsoracleproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsoracleprojectstoragedialog.h"
+#include "qgsoracleprojectstorage.h"
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -2481,33 +2486,49 @@ long long QgsOracleProvider::featureCount() const
   if ( mFeaturesCounted >= 0 || !conn )
     return mFeaturesCounted;
 
-  // get total number of features
+  QSqlQuery qry( *conn );
   QString sql;
 
-  // use estimated metadata even when there is a where clause,
-  // although we get an incorrect feature count for the subset
-  // - but make huge dataset usable.
-  QVariantList args;
-  if ( !mIsQuery && mUseEstimatedMetadata )
-  {
-    sql = QString( "SELECT num_rows FROM all_tables WHERE owner=? AND table_name=?" );
-    args << mOwnerName << mTableName;
-  }
-  else
+  // If we do not use estimated metadata or if it is a query, we perform a true count
+  if ( !mUseEstimatedMetadata || mIsQuery )
   {
     sql = QString( "SELECT count(*) FROM %1" ).arg( mQuery );
-
     if ( !mSqlWhereClause.isEmpty() )
-    {
       sql += " WHERE " + mSqlWhereClause;
+    if ( LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) && qry.next() )
+      mFeaturesCounted = qry.value( 0 ).toLongLong();
+  }
+  // Else, to estimate feature count, if it is a view or there is a where clause we use the explain plan
+  else if ( !mSqlWhereClause.isEmpty() || relkind() == QgsOracleProvider::View )
+  {
+    sql = QString( "explain plan for select 1 from %1" ).arg( mTableName );
+    if ( !mSqlWhereClause.isEmpty() )
+      sql += " WHERE " + mSqlWhereClause;
+    if ( LoggedExecStatic( qry,
+                           sql,
+                           QVariantList(),
+                           mUri.uri() ) &&
+         LoggedExecStatic( qry,
+                           QStringLiteral( "SELECT dbms_xplan.display_plan(format=>'basic,rows', type=>'xml') FROM dual" ),
+                           QVariantList(),
+                           mUri.uri() ) &&
+         qry.next() )
+    {
+      QDomDocument plan;
+      plan.setContent( qry.value( 0 ).toString() );
+      const QDomNodeList nList = plan.elementsByTagName( "card" );
+      if ( nList.length() == 2 )
+        mFeaturesCounted = nList.item( 0 ).toElement().text().toLongLong();
+      else
+        QgsLogger::warning( QStringLiteral( "Cannot parse XML explain result to estimate feature count : %1" ).arg( plan.toString() ) );
     }
   }
-
-  QSqlQuery qry( *conn );
-
-  if ( LoggedExecStatic( qry, sql, QVariantList( ), mUri.uri() ) && qry.next() )
+  // Else, to estimate feature count, we use the stats
+  else
   {
-    mFeaturesCounted = qry.value( 0 ).toLongLong();
+    sql = QString( "SELECT num_rows FROM all_tables WHERE owner=? AND table_name=?" );
+    if ( LoggedExecStatic( qry, sql, QVariantList() << mOwnerName << mTableName, mUri.uri() ) && qry.next() )
+      mFeaturesCounted = qry.value( 0 ).toLongLong();
   }
 
   qry.finish();
@@ -2515,6 +2536,39 @@ long long QgsOracleProvider::featureCount() const
   QgsDebugMsgLevel( "number of features: " + QString::number( mFeaturesCounted ), 2 );
 
   return mFeaturesCounted;
+}
+
+QgsOracleProvider::Relkind QgsOracleProvider::relkind() const
+{
+  if ( mKind != Relkind::NotSet )
+    return mKind;
+
+  QgsOracleConn *conn = connectionRO();
+  if ( mIsQuery || !conn )
+  {
+    mKind = Relkind::Unknown;
+  }
+  else
+  {
+    QSqlQuery qry( *conn );
+    QString type;
+    const QString sql = QStringLiteral( "SELECT object_type FROM all_objects WHERE object_name=? and owner=?" );
+    if ( LoggedExecStatic( qry, sql, QVariantList() << mTableName << mOwnerName, mUri.uri() ) && qry.next() )
+      type = qry.value( 0 ).toString();
+
+    mKind = Relkind::Unknown;
+
+    if ( type == QLatin1String( "TABLE" ) )
+    {
+      mKind = Relkind::Table;
+    }
+    else if ( type == QLatin1String( "VIEW" ) )
+    {
+      mKind = Relkind::View;
+    }
+  }
+
+  return mKind;
 }
 
 QgsRectangle QgsOracleProvider::extent() const
@@ -3458,8 +3512,21 @@ Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QStr
          );
 }
 
+QgsOracleProjectStorage *gOracleProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+
+void QgsOracleProviderMetadata::initProvider()
+{
+  Q_ASSERT( !gOracleProjectStorage );
+  gOracleProjectStorage = new QgsOracleProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gOracleProjectStorage );  // takes ownership
+}
+
 void QgsOracleProviderMetadata::cleanupProvider()
 {
+  // destroys the object
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gOracleProjectStorage );
+  gOracleProjectStorage = nullptr;
+
   QgsOracleConnPool::cleanupInstance();
 }
 
@@ -3954,6 +4021,34 @@ class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+class QgsOracleProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
+{
+  public:
+    QString type() override { return QStringLiteral( "oracle" ); }
+    QString visibleName() override
+    {
+      return QObject::tr( "Oracle" );
+    }
+
+    QString showLoadGui() override
+    {
+      QgsOracleProjectStorageDialog dlg( false );
+      if ( !dlg.exec() )
+        return QString();
+
+      return dlg.currentProjectUri();
+    }
+
+    QString showSaveGui() override
+    {
+      QgsOracleProjectStorageDialog dlg( true );
+      if ( !dlg.exec() )
+        return QString();
+
+      return dlg.currentProjectUri();
+    }
+};
+
 QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
   : QgsProviderGuiMetadata( ORACLE_KEY )
 {
@@ -3963,6 +4058,13 @@ QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
 QList<QgsSourceSelectProvider *> QgsOracleProviderGuiMetadata::sourceSelectProviders()
 {
   return QList<QgsSourceSelectProvider *>() << new QgsOracleSourceSelectProvider;
+}
+
+QList<QgsProjectStorageGuiProvider *> QgsOracleProviderGuiMetadata::projectStorageGuiProviders()
+{
+  QList<QgsProjectStorageGuiProvider *> providers;
+  providers << new QgsOracleProjectStorageGuiProvider;
+  return providers;
 }
 
 void QgsOracleProviderGuiMetadata::registerGui( QMainWindow *mainWindow )
@@ -4104,3 +4206,13 @@ void QgsOracleProviderMetadata::saveConnection( const QgsAbstractProviderConnect
 }
 
 // vim: set sw=2
+
+QList<QgsMapLayerType> QgsOracleProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
+QIcon QgsOracleProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconOracle.svg" ) );
+}

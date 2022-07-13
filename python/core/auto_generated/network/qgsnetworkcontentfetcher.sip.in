@@ -62,6 +62,13 @@ Returns a reference to the network reply
 :return: QNetworkReply for fetched URL content
 %End
 
+    QString contentDispositionFilename() const;
+%Docstring
+Returns the associated filename from the reply's content disposition header, if present.
+
+.. versionadded:: 3.28
+%End
+
     QString contentAsString() const;
 %Docstring
 Returns the fetched content as a string

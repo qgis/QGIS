@@ -472,10 +472,9 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
     return;
   }
 
-  QModelIndex idx = proxyModel()->mapToSource( index );
-  QString tableName = mTableModel->itemFromIndex( idx.sibling( idx.row(), QgsOracleTableModel::DbtmTable ) )->text();
+  QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsOracleTableModel::DbtmTable ) )->text();
 
-  QString uri = mTableModel->layerURI( idx, mConnInfo );
+  QString uri = mTableModel->layerURI( index, mConnInfo );
   if ( uri.isNull() )
   {
     QgsDebugMsg( QStringLiteral( "no uri" ) );
@@ -493,7 +492,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
   QgsQueryBuilder *gb = new QgsQueryBuilder( vlayer, this );
   if ( gb->exec() )
   {
-    mTableModel->setSql( proxyModel()->mapToSource( index ), gb->sql() );
+    mTableModel->setSql( index, gb->sql() );
   }
 
   delete gb;

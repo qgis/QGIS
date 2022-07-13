@@ -168,8 +168,45 @@ void QgsGeometryRubberBand::setVertexDrawingEnabled( bool isVerticesDrawn )
 
 QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
 {
-  const qreal scale = mMapCanvas->mapUnitsPerPixel();
-  const qreal s = ( mIconSize - 1 ) / 2.0 * scale;
-  const qreal p = mPen.width() * scale;
-  return mGeometry->boundingBox().buffered( s + p );
+  if ( !mGeometry || mGeometry->isEmpty() )
+  {
+    return QgsRectangle();
+  }
+  const QgsMapToPixel &m2p = *( mMapCanvas->getCoordinateTransform() );
+
+  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ); // in canvas units
+
+  QgsRectangle r;  // in canvas units
+  QgsRectangle rectMap = mGeometry->boundingBox();  // in map units
+  QList<QgsPointXY> pl;
+  pl << QgsPointXY( rectMap.xMinimum(), rectMap.yMinimum() )
+     << QgsPointXY( rectMap.xMinimum(), rectMap.yMaximum() )
+     << QgsPointXY( rectMap.xMaximum(), rectMap.yMaximum() )
+     << QgsPointXY( rectMap.xMaximum(), rectMap.yMinimum() );
+
+  for ( QgsPointXY &p : pl )
+  {
+    p = toCanvasCoordinates( p );
+    // no need to normalize the rectangle -- we know it is already normal
+    QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w, false );
+    r.combineExtentWith( rect );
+  }
+
+  // This is an hack to pass QgsMapCanvasItem::setRect what it
+  // expects (encoding of position and size of the item)
+  qreal res = m2p.mapUnitsPerPixel();
+  QgsPointXY topLeft = m2p.toMapCoordinates( r.xMinimum(), r.yMinimum() );
+  QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
+
+  return rect;
+}
+
+void QgsGeometryRubberBand::updatePosition()
+{
+  // re-compute rectangle
+  // See https://github.com/qgis/QGIS/issues/20566
+  // NOTE: could be optimized by saving map-extent
+  //       of rubberband and simply re-projecting
+  //       that to device-rectangle on "updatePosition"
+  setRect( rubberBandRectangle() );
 }

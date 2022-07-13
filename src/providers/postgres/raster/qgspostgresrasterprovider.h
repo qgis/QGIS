@@ -246,11 +246,14 @@ struct QgsPostgresRasterProviderException: public std::exception
 
 class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsPostgresRasterProviderMetadata();
+    QIcon icon() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QString encodeUri( const QVariantMap &parts ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 

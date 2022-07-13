@@ -77,6 +77,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   connect( mLayersFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterLayers );
   connect( mTilesetsFilterLineEdit, &QgsFilterLineEdit::textChanged, this, &QgsWMSSourceSelect::filterTiles );
+  connect( mLoadLayersIndividuallyCheckBox, &QCheckBox::toggled, leLayerName, &QLineEdit::setDisabled );
+
+  leLayerName->setDisabled( mLoadLayersIndividuallyCheckBox->isChecked() );
 
   // Creates and connects standard ok/apply buttons
   setupButtons( buttonBox );
@@ -87,7 +90,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mStepHeight->setValidator( new QIntValidator( 0, 999999, this ) );
   mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
-  mImageFormatGroup = new QButtonGroup;
+  mImageFormatGroup = new QButtonGroup( this );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
@@ -396,6 +399,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
           for ( const QString &format : l.formats )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
+            item->setIcon( QgsApplication::getThemeIcon( l.timeDimensionIdentifier.isEmpty() ? QStringLiteral( "/mIconRaster.svg" ) : QStringLiteral( "/mIconTemporalRaster.svg" ) ) );
             item->setData( Qt::UserRole + 0, l.identifier );
             item->setData( Qt::UserRole + 1, format );
             item->setData( Qt::UserRole + 2, style.identifier );
@@ -565,7 +569,7 @@ void QgsWMSSourceSelect::addButtonClicked()
     if ( !layer )
       return;
 
-    if ( !layer->dimensions.isEmpty() )
+    if ( layer->dimensions.size() > 1 || ( layer->dimensions.size() == 1 && layer->dimensions.constBegin()->identifier != layer->timeDimensionIdentifier ) )
     {
       QgsWmtsDimensions *dlg = new QgsWmtsDimensions( *layer, this );
       if ( dlg->exec() != QDialog::Accepted )
@@ -574,8 +578,7 @@ void QgsWMSSourceSelect::addButtonClicked()
         return;
       }
 
-      QHash<QString, QString> dims;
-      dlg->selectedDimensions( dims );
+      const QHash<QString, QString> dims = dlg->selectedDimensions();
 
       QString dimString;
       QString delim;
@@ -593,9 +596,6 @@ void QgsWMSSourceSelect::addButtonClicked()
       uri.setParam( QStringLiteral( "tileDimensions" ), dimString );
     }
   }
-
-  uri.setParam( QStringLiteral( "layers" ), layers );
-  uri.setParam( QStringLiteral( "styles" ), styles );
   uri.setParam( QStringLiteral( "format" ), format );
   uri.setParam( QStringLiteral( "crs" ), crs );
   QgsDebugMsgLevel( QStringLiteral( "crs=%2 " ).arg( crs ), 2 );
@@ -609,10 +609,30 @@ void QgsWMSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "interpretation" ), mInterpretationCombo->interpretation() );
 
   uri.setParam( QStringLiteral( "contextualWMSLegend" ), mContextualLegendCheckbox->isChecked() ? "1" : "0" );
+  if ( mLoadLayersIndividuallyCheckBox->isChecked() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "layers=%1 " ).arg( layers.join( ", " ) ), 2 );
+    for ( int i = 0; i < layers.count(); i++ )
+    {
+      QgsDataSourceUri individualUri( uri );
+      individualUri.setParam( QStringLiteral( "layers" ), layers.at( i ) );
+      individualUri.setParam( QStringLiteral( "styles" ), styles.at( i ) );
 
-  emit addRasterLayer( uri.encodedUri(),
-                       leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
-                       QStringLiteral( "wms" ) );
+      emit addRasterLayer( individualUri.encodedUri(),
+                           titles.at( i ),
+                           QStringLiteral( "wms" ) );
+    }
+
+  }
+  else
+  {
+    uri.setParam( QStringLiteral( "layers" ), layers );
+    uri.setParam( QStringLiteral( "styles" ), styles );
+
+    emit addRasterLayer( uri.encodedUri(),
+                         leLayerName->text().isEmpty() ? titles.join( QLatin1Char( '/' ) ) : leLayerName->text(),
+                         QStringLiteral( "wms" ) );
+  }
 }
 
 void QgsWMSSourceSelect::reset()

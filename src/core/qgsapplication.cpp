@@ -78,6 +78,7 @@
 #include "qgsreadwritelocker.h"
 #include "qgsbabelformatregistry.h"
 #include "qgsdbquerylog.h"
+#include "qgsfontmanager.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -427,6 +428,11 @@ void QgsApplication::init( QString profileFolder )
   // allow Qt to search for Qt plugins (e.g. sqldrivers) in our plugin directory
   QCoreApplication::addLibraryPath( pluginPath() );
 
+  {
+    QgsScopedRuntimeProfile profile( tr( "Load user fonts" ) );
+    fontManager()->installUserFonts();
+  }
+
   // set max. thread count to -1
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
@@ -443,8 +449,10 @@ void QgsApplication::init( QString profileFolder )
     bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
   }
 
+  // trigger creation of default style
+  QgsStyle *defaultStyle = QgsStyle::defaultStyle();
   if ( !members()->mStyleModel )
-    members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+    members()->mStyleModel = new QgsStyleModel( defaultStyle );
 
   ABISYM( mInitialized ) = true;
 }
@@ -2445,6 +2453,11 @@ QgsStyleModel *QgsApplication::defaultStyleModel()
   return members()->mStyleModel;
 }
 
+QgsFontManager *QgsApplication::fontManager()
+{
+  return members()->mFontManager;
+}
+
 QgsMessageLog *QgsApplication::messageLog()
 {
   return members()->mMessageLog;
@@ -2532,6 +2545,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Create connection registry" ) );
     mConnectionRegistry = new QgsConnectionRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Create font manager" ) );
+    mFontManager = new QgsFontManager();
     profiler->end();
   }
   {
@@ -2736,6 +2754,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
   delete mConnectionRegistry;
+  delete mFontManager;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
   delete mQueryLogger;

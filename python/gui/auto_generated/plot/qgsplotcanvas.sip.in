@@ -139,6 +139,11 @@ Updates and redraws the plot.
 Emitted when the plot tool is changed.
 %End
 
+    void plotAreaChanged();
+%Docstring
+Emitted whenever the visible area of the plot is changed.
+%End
+
     void contextMenuAboutToShow( QMenu *menu, QgsPlotMouseEvent *event );
 %Docstring
 Emitted before the canvas context menu will be shown.

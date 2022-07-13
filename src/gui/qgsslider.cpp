@@ -86,11 +86,7 @@ void QgsSlider::update()
     QSlider::setSingleStep( mStep.toInt() );
     QSlider::setValue( mValue.toInt() );
   }
-
-  if ( mMin.type() == QVariant::Double &&
-       mMax.type() == QVariant::Double &&
-       mStep.type() == QVariant::Double &&
-       mValue.type() == QVariant::Double )
+  else
   {
     if ( minimum() != 0 )
       QSlider::setMinimum( 0 );
@@ -126,10 +122,7 @@ void QgsSlider::onValueChanged( int value )
   {
     mValue = value;
   }
-  else if ( mMin.type() == QVariant::Double &&
-            mMax.type() == QVariant::Double &&
-            mStep.type() == QVariant::Double &&
-            mValue.type() == QVariant::Double )
+  else
   {
     mValue = QVariant( mMin.toDouble() + value * mStep.toDouble() );
   }

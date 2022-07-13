@@ -35,4 +35,3 @@ set(TESTS
 foreach(TESTSRC ${TESTS})
   add_qgis_test(${TESTSRC} MODULE 3d LINKEDLIBRARIES qgis_3d)
 endforeach(TESTSRC)
-

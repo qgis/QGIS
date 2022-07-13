@@ -58,7 +58,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 
   signals:
 
-    void modeChanged( Mode mode );
+    void modeChanged( QgsMapToolSelect::Mode mode );
 
   private slots:
     void selectFeatures( Qt::KeyboardModifiers modifiers );

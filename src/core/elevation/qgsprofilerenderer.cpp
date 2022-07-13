@@ -271,6 +271,8 @@ QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
 {
   QImage res( width, height, QImage::Format_ARGB32_Premultiplied );
+  res.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  res.setDotsPerMeterY( 96 / 25.4 * 1000 );
   res.fill( Qt::transparent );
 
   QPainter p( &res );
@@ -350,6 +352,44 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
   }
 
   return bestSnapResult;
+}
+
+QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
+{
+  QVector<QgsProfileIdentifyResults> res;
+  if ( !mRequest.profileCurve() )
+    return res;
+
+  for ( const auto &job : mJobs )
+  {
+    job->mutex.lock();
+    if ( job->complete && job->results )
+    {
+      res.append( job->results->identify( point, context ) );
+    }
+    job->mutex.unlock();
+  }
+
+  return res;
+}
+
+QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context )
+{
+  QVector<QgsProfileIdentifyResults> res;
+  if ( !mRequest.profileCurve() )
+    return res;
+
+  for ( const auto &job : mJobs )
+  {
+    job->mutex.lock();
+    if ( job->complete && job->results )
+    {
+      res.append( job->results->identify( distanceRange, elevationRange, context ) );
+    }
+    job->mutex.unlock();
+  }
+
+  return res;
 }
 
 void QgsProfilePlotRenderer::onGeneratingFinished()

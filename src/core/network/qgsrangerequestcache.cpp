@@ -22,8 +22,6 @@
 #include <QDir>
 #include <QDateTime>
 
-#include "qgsmessagelog.h"
-
 QgsRangeRequestCache::QgsRangeRequestCache()
 {
 
@@ -58,7 +56,7 @@ void QgsRangeRequestCache::clear()
   }
 }
 
-void QgsRangeRequestCache::setCacheDirectory( const QString &path )
+bool QgsRangeRequestCache::setCacheDirectory( const QString &path )
 {
   QString cachePath = path;
   if ( !cachePath.endsWith( QDir::separator() ) )
@@ -69,8 +67,10 @@ void QgsRangeRequestCache::setCacheDirectory( const QString &path )
 
   if ( !QDir().mkpath( mCacheDir ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Unable to create cache directory \"%1\"" ).arg( mCacheDir ) );
+    mError = QObject::tr( "Unable to create cache directory \"%1\"" ).arg( mCacheDir );
+    return false;
   }
+  return true;
 }
 
 void QgsRangeRequestCache::setCacheSize( qint64 cacheSize )
@@ -89,37 +89,47 @@ QByteArray QgsRangeRequestCache::readFile( const QString &fileName )
   QFile file( fileName );
   if ( !file.open( QFile::OpenModeFlag::ReadOnly ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Unable to read cache file \"%1\"" ).arg( fileName ) );
+    mError = QObject::tr( "Unable to read cache file \"%1\"" ).arg( fileName );
     return QByteArray();
   }
   return file.readAll();
 }
 
-void QgsRangeRequestCache::writeFile( const QString &fileName, QByteArray data )
+bool QgsRangeRequestCache::writeFile( const QString &fileName, QByteArray data )
 {
   QFile file( fileName );
   if ( !file.open( QFile::OpenModeFlag::WriteOnly ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Unable to open cache file \"%1\"" ).arg( fileName ) );
-    return;
+    mError = QObject::tr( "Unable to open cache file \"%1\"" ).arg( fileName );
+    return false;
   }
-  file.write( data );
+  qint64 written = file.write( data );
   file.close();
+  if ( written != data.size() )
+  {
+    mError = QObject::tr( "Unable to write to cache file \"%1\", error: \"%2\"" ).arg( fileName, file.errorString() );
+    return false;
+  }
+  return true;
 }
 
-void QgsRangeRequestCache::removeFile( const QString &fileName )
+bool QgsRangeRequestCache::removeFile( const QString &fileName )
 {
   if ( fileName.isEmpty() )
-    return;
-  QFile::remove( fileName );
+    return false;
+  bool wasRemoved = QFile::remove( fileName );
+  if ( !wasRemoved )
+  {
+    mError = QObject::tr( "Unable to remove cache file \"%1\"" ).arg( fileName );
+  }
+  return wasRemoved;
 }
 
 void QgsRangeRequestCache::expire()
 {
-  QDir dir( mCacheDir );
   QFileInfoList filesList = cacheEntries();
   qint64 totalSize = 0;
-  for ( QFileInfo info : filesList )
+  for ( QFileInfo &info : filesList )
   {
     totalSize += info.size();
   }

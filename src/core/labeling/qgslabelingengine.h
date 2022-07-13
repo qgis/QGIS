@@ -21,17 +21,20 @@
 #include "qgis_core.h"
 #include "qgsmapsettings.h"
 
-#include "qgspallabeling.h"
 #include "qgslabelingenginesettings.h"
 #include "qgslabeling.h"
 #include "qgsfeedback.h"
+#include "qgslabelobstaclesettings.h"
 
 class QgsLabelingEngine;
 class QgsLabelingResults;
+class QgsLabelFeature;
 
 namespace pal
 {
   class Problem;
+  class Pal;
+  class LabelPosition;
 }
 
 /**
@@ -61,7 +64,6 @@ class CORE_EXPORT QgsAbstractLabelProvider
     enum Flag
     {
       DrawLabels              = 1 << 1,  //!< Whether the labels should be rendered
-      DrawAllLabels           = 1 << 2,  //!< Whether all features will be labelled even though overlaps occur
       MergeConnectedLines     = 1 << 3,  //!< Whether adjacent lines (with the same label text) should be merged
       CentroidMustBeInside    = 1 << 4,  //!< Whether location of centroid must be inside of polygons
     };
@@ -146,7 +148,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Flags flags() const { return mFlags; }
 
     //! What placement strategy to use for the labels
-    QgsPalLayerSettings::Placement placement() const { return mPlacement; }
+    Qgis::LabelPlacement placement() const { return mPlacement; }
 
     //! Default priority of labels (may be overridden by individual labels)
     double priority() const { return mPriority; }
@@ -155,7 +157,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     QgsLabelObstacleSettings::ObstacleType obstacleType() const { return mObstacleType; }
 
     //! How to handle labels that would be upside down
-    QgsPalLayerSettings::UpsideDownLabels upsidedownLabels() const { return mUpsidedownLabels; }
+    Qgis::UpsideDownLabelHandling upsidedownLabels() const { return mUpsidedownLabels; }
 
     /**
      * Returns the expression context scope created from the layer associated with this provider.
@@ -184,15 +186,15 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Associated provider ID (one layer may have multiple providers, e.g. in rule-based labeling)
     QString mProviderId;
     //! Flags altering drawing and registration of features
-    Flags mFlags;
+    Flags mFlags = DrawLabels;
     //! Placement strategy
-    QgsPalLayerSettings::Placement mPlacement;
+    Qgis::LabelPlacement mPlacement = Qgis::LabelPlacement::AroundPoint;
     //! Default priority of labels
-    double mPriority;
+    double mPriority = 0.5;
     //! Type of the obstacle of feature geometries
     QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::PolygonBoundary;
     //! How to handle labels that would be upside down
-    QgsPalLayerSettings::UpsideDownLabels mUpsidedownLabels;
+    Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
   private:
 
@@ -530,7 +532,7 @@ class CORE_EXPORT QgsLabelingUtils
      * \returns list encoded to string
      * \see decodePredefinedPositionOrder()
      */
-    static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &positions );
+    static QString encodePredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &positions );
 
     /**
      * Decodes a string to an ordered list of predefined point label positions.
@@ -538,7 +540,7 @@ class CORE_EXPORT QgsLabelingUtils
      * \returns decoded list
      * \see encodePredefinedPositionOrder()
      */
-    static QVector< QgsPalLayerSettings::PredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
+    static QVector< Qgis::LabelPredefinedPointPosition > decodePredefinedPositionOrder( const QString &positionString );
 
     /**
      * Encodes line placement \a flags to a string.

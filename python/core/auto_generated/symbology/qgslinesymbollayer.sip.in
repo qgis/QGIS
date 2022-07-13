@@ -899,6 +899,8 @@ calculating individual symbol angles.
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const ${SIP_FINAL};
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
     virtual void setMapUnitScale( const QgsMapUnitScale &scale ) ${SIP_FINAL};
 
     virtual QgsMapUnitScale mapUnitScale() const ${SIP_FINAL};

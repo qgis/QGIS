@@ -22,27 +22,6 @@
 #include "qgsvectorlayer.h"
 
 
-#ifndef SIP_RUN
-class RelationNameEditorDelegate: public QStyledItemDelegate
-{
-  public:
-    RelationNameEditorDelegate( const QList<int> &editableColumns, QObject *parent = nullptr )
-      : QStyledItemDelegate( parent )
-      , mEditableColumns( editableColumns )
-    {}
-
-    virtual QWidget *createEditor( QWidget *parentWidget, const QStyleOptionViewItem &option, const QModelIndex &index ) const
-    {
-      if ( mEditableColumns.contains( index.column() ) )
-        return QStyledItemDelegate::createEditor( parentWidget, option, index );
-
-      return nullptr;
-    }
-  private:
-    QList<int> mEditableColumns;
-};
-#endif
-
 QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relationMgr, QWidget *parent )
   : QWidget( parent )
   , Ui::QgsRelationManagerDialogBase()

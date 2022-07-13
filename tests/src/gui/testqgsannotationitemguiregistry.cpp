@@ -72,6 +72,7 @@ class TestItem : public QgsAnnotationItem // clazy:exclude=missing-qobject-macro
 
 class TestItemWidget: public QgsAnnotationItemBaseWidget
 {
+    Q_OBJECT
   public:
 
     TestItemWidget( QWidget *parent )

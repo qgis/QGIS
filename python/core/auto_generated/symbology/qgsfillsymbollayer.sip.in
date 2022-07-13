@@ -967,6 +967,8 @@ Used internally when reading/writing symbols.
 
     virtual QColor color() const;
 
+    virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
+
 
     virtual QgsSymbol *subSymbol();
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );

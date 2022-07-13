@@ -55,21 +55,30 @@ class CORE_EXPORT QgsRangeRequestCache
 
     //! Clears the cache removing all of the files
     void clear();
-    //! Sets the directory where data will be stored
-    void setCacheDirectory( const QString &path );
+
+    /**
+     * Set the Cache Directory object.
+     * Returns whether the cache directory was set properly
+     * \see error()
+     */
+    bool setCacheDirectory( const QString &path );
     //! Sets the cache size
     void setCacheSize( qint64 maxBytes );
 
+    //! Returns the last error that occurred when manipulating the cache.
+    QString error() const { return mError; }
+
     friend class TestQgsCopcProvider;
   private:
+    QString mError;
     QString mCacheDir;
     qint64 mMaxDataSize = 256 * 1024 * 1024;
 
     QString rangeFileName( const QNetworkRequest &request ) const;
 
     QByteArray readFile( const QString &fileName );
-    void writeFile( const QString &fileName, QByteArray data );
-    void removeFile( const QString &fileName );
+    bool writeFile( const QString &fileName, QByteArray data );
+    bool removeFile( const QString &fileName );
 
     void expire();
 

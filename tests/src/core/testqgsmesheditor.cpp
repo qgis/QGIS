@@ -2160,7 +2160,7 @@ void TestQgsMeshEditor::transformByExpression()
   transformVertex.setInputVertices( {8} );
   transformVertex.setExpressions( QStringLiteral( "$vertex_x - 1000" ),
                                   QStringLiteral( "$vertex_y - 1000" ),
-                                  QStringLiteral( "" ) );
+                                  QLatin1String( "" ) );
 
   QVERIFY( !transformVertex.calculate( layer.get() ) );
 
@@ -2169,7 +2169,7 @@ void TestQgsMeshEditor::transformByExpression()
 
   transformVertex.setExpressions( QStringLiteral( "$vertex_x + 1000" ),
                                   QStringLiteral( "$vertex_y + 1000" ),
-                                  QStringLiteral( "" ) );
+                                  QLatin1String( "" ) );
 
   QVERIFY( transformVertex.calculate( layer.get() ) );
 }

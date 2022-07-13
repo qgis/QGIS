@@ -25,6 +25,7 @@
 #include "qgsgeopackagedataitems.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsfieldsitem.h"
+#include "qgsfielddomainsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsmbtiles.h"
 #include "qgsvectortiledataitems.h"
@@ -42,8 +43,8 @@ QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QSt
 {
   mToolTip = details.uri();
 
-  // no children, except for sqlite, which gets special handling because of the unusual situation with the spatialite provider
-  setState( details.driverName() == QLatin1String( "SQLite" ) ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
+  // no children, except for vector layers, which will show the fields item
+  setState( details.type() == QgsMapLayerType::VectorLayer ? Qgis::BrowserItemState::NotPopulated : Qgis::BrowserItemState::Populated );
 }
 
 QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
@@ -52,8 +53,7 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
 
   if ( mDetails.type() == QgsMapLayerType::VectorLayer )
   {
-    // sqlite gets special handling because of the spatialite provider which supports the api required for a fields item.
-    // TODO -- allow read only fields items to be created directly from vector layers, so that all vector layers can show field items.
+    // sqlite gets special handling because it delegates to the dedicated spatialite provider
     if ( mDetails.driverName() == QLatin1String( "SQLite" ) )
     {
       children.push_back( new QgsFieldsItem( this,
@@ -61,8 +61,43 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
                                              QStringLiteral( R"(dbname="%1")" ).arg( parent()->path().replace( '"', QLatin1String( R"(\")" ) ) ),
                                              QStringLiteral( "spatialite" ), QString(), name() ) );
     }
+    else if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+    {
+      // otherwise we use the default OGR database connection approach, which is the generic way to handle this
+      // for all OGR layer types
+      children.push_back( new QgsFieldsItem( this,
+                                             path() + QStringLiteral( "/columns/ " ),
+                                             path(),
+                                             QStringLiteral( "ogr" ), QString(), name() ) );
+    }
   }
   return children;
+}
+
+QgsProviderSublayerDetails QgsProviderSublayerItem::sublayerDetails() const
+{
+  return mDetails;
+}
+
+QgsAbstractDatabaseProviderConnection *QgsProviderSublayerItem::databaseConnection() const
+{
+  if ( parent() )
+  {
+    if ( QgsAbstractDatabaseProviderConnection *connection = parent()->databaseConnection() )
+      return connection;
+  }
+
+  if ( mDetails.providerKey() == QLatin1String( "ogr" ) )
+  {
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), path() );
+      return static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
+    }
+  }
+
+  return nullptr;
 }
 
 Qgis::BrowserLayerType QgsProviderSublayerItem::layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer )
@@ -163,6 +198,29 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
     children.append( item );
   }
 
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::ListFieldDomains ) )
+  {
+    QString domainError;
+    QStringList fieldDomains;
+    try
+    {
+      fieldDomains = conn->fieldDomainNames();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      domainError = ex.what();
+    }
+
+    if ( !fieldDomains.empty() || !domainError.isEmpty() )
+    {
+      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
+      children.append( domainsItem.release() );
+    }
+  }
+
   return children;
 }
 
@@ -182,15 +240,6 @@ QgsMimeDataUtils::UriList QgsFileDataCollectionItem::mimeUris() const
 
 QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnection() const
 {
-  // sqlite gets special handling because of the spatialite provider which supports the api required database connections
-  const QFileInfo fi( mPath );
-  if ( fi.suffix().toLower() != QLatin1String( "sqlite" )  && fi.suffix().toLower() != QLatin1String( "db" ) )
-  {
-    return nullptr;
-  }
-
-  QgsAbstractDatabaseProviderConnection *conn = nullptr;
-
   // test that file is valid with OGR
   if ( OGRGetDriverCount() == 0 )
   {
@@ -211,14 +260,25 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
   QString driverName = GDALGetDriverShortName( hDriver );
 
+  QgsAbstractDatabaseProviderConnection *conn = nullptr;
   if ( driverName == QLatin1String( "SQLite" ) )
   {
-    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) };
-    if ( md )
+    // sqlite gets special handling, as we delegate to the native spatialite provider
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) )
     {
       QgsDataSourceUri uri;
       uri.setDatabase( path( ) );
       conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), {} ) );
+    }
+  }
+  else
+  {
+    // for all other vector types we use the generic OGR provider
+    if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QVariantMap parts;
+      parts.insert( QStringLiteral( "path" ), path() );
+      conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( md->encodeUri( parts ), {} ) );
     }
   }
   return conn;

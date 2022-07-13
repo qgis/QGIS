@@ -74,7 +74,7 @@ void QgsCopcPointCloudBlockRequest::blockFinishedLoading()
   }
   if ( !error.isEmpty() )
   {
-    mErrorStr = QStringLiteral( "Error loading point tile %1: \"%2\"" ).arg( mNode.toString() ).arg( error );
+    mErrorStr = QStringLiteral( "Error loading point tile %1: \"%2\"" ).arg( mNode.toString(), error );
   }
   emit finished();
 }

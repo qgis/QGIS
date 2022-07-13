@@ -506,6 +506,7 @@ set(QGIS_GUI_SRCS
   qgsfloatingwidget.cpp
   qgsfocuskeeper.cpp
   qgsfocuswatcher.cpp
+  qgsformlabelformatwidget.cpp
   qgsfontbutton.cpp
   qgsformannotation.cpp
   qgsgeocoderlocatorfilter.cpp
@@ -590,6 +591,7 @@ set(QGIS_GUI_SRCS
   qgsoptionsdialoghighlightwidgetsimpl.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
+  qgsowssourcewidget.cpp
   qgspanelwidget.cpp
   qgspanelwidgetstack.cpp
   qgspasswordlineedit.cpp
@@ -643,6 +645,7 @@ set(QGIS_GUI_SRCS
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
+  qgstabbarproxystyle.cpp
   qgstableview.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
@@ -765,6 +768,7 @@ set(QGIS_GUI_HDRS
   qgsfocuswatcher.h
   qgsfontbutton.h
   qgsformannotation.h
+  qgsformlabelformatwidget.h
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h
@@ -848,6 +852,7 @@ set(QGIS_GUI_HDRS
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
+  qgsowssourcewidget.h
   qgspanelwidget.h
   qgspanelwidgetstack.h
   qgspasswordlineedit.h
@@ -905,6 +910,7 @@ set(QGIS_GUI_HDRS
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
   qgssymbollayerselectionwidget.h
+  qgstabbarproxystyle.h
   qgstableview.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h
@@ -1348,7 +1354,7 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS Qml QuickWidgets REQUIRED)
 else()
   find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
@@ -1397,6 +1403,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslimportdialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsslimporterrors.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthtrustedcasdialog.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscolorrampshaderwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscrsdefinitionwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
@@ -1407,6 +1414,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgshttpheaderwidget.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshrendererscalarsettingswidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsnewvectortabledialogbase.h
@@ -1497,7 +1505,7 @@ target_include_directories(qgis_gui SYSTEM PRIVATE
   ${QT_QTUITOOLS_INCLUDE_DIR}
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_include_directories(qgis_gui SYSTEM PRIVATE
     ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
   )
@@ -1616,7 +1624,7 @@ target_link_libraries(qgis_gui
   ${QT_VERSION_BASE}::QuickWidgets
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
   target_link_libraries(qgis_gui
     Qt6::SvgWidgets

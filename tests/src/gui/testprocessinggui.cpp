@@ -184,6 +184,7 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
 
 class DummyPluginLayer: public QgsPluginLayer
 {
+    Q_OBJECT
   public:
 
     DummyPluginLayer( const QString &layerType, const QString &layerName ): QgsPluginLayer( layerType, layerName )
@@ -5625,8 +5626,14 @@ void TestProcessingGui::testExtentWrapper()
     QVERIFY( !wrapper2.widgetValue().isValid() );
     QVERIFY( !static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->isValid() );
 
-    wrapper2.setWidgetValue( "1,3,4,7", context );
+    // simulate a user manually entering an extent by hand
+    qgis::down_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->mCondensedLineEdit->setText( "372830.001,373830.001,372830.001,373830.001" );
+    qgis::down_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->setOutputExtentFromCondensedLineEdit();
     QCOMPARE( spy2.count(), 4 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "372830.001000000,373830.001000000,372830.001000000,373830.001000000 [EPSG:3111]" ) );
+    QCOMPARE( qgis::down_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputExtent(), QgsRectangle( 372830.001, 372830.001, 373830.001, 373830.001 ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+
     wrapper2.setWidgetValue( "", context );
     QCOMPARE( spy2.count(), 5 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
@@ -10043,6 +10050,25 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   timeWrapper.setWidgetValue( QVariant::fromValue( QDateTime( QDate( 2020, 02, 01 ), QTime( 3, 2, 1 ) ) ).toString(), context );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
   QCOMPARE( pythonString, QStringLiteral( "{'type': 'defined-date-time','value': QDateTime(QDate(2020, 2, 1), QTime(3, 2, 1))}" ) );
+
+  // parameter definition widget
+  std::unique_ptr<QgsProcessingAbstractParameterDefinitionWidget> paramWidgetGroup( groupsWrapper.createParameterDefinitionWidget( context, widgetContext, &groupsDefinition, nullptr ) );
+  QgsProcessingParameterDefinition::Flags flags;
+  std::unique_ptr<QgsProcessingParameterDefinition> paramDefGroup( paramWidgetGroup->createParameter( QStringLiteral( "my_param_name" ), QStringLiteral( "my_param_descr" ), flags ) );
+  QVERIFY( paramDefGroup );
+  QCOMPARE( paramDefGroup->name(), QStringLiteral( "my_param_name" ) );
+  QCOMPARE( paramDefGroup->description(), QStringLiteral( "my_param_descr" ) );
+  QCOMPARE( paramDefGroup->type(), QgsProcessingParameterMeshDatasetGroups::typeName() );
+  QCOMPARE( static_cast<QgsProcessingParameterMeshDatasetGroups *>( paramDefGroup.get() )->meshLayerParameterName(), QStringLiteral( "layer" ) );
+
+  std::unique_ptr<QgsProcessingAbstractParameterDefinitionWidget> paramWidgetTime( timeWrapper.createParameterDefinitionWidget( context, widgetContext, &timeDefinition, nullptr ) );
+  std::unique_ptr<QgsProcessingParameterDefinition> paramDefTime( paramWidgetTime->createParameter( QStringLiteral( "my_param_name" ), QStringLiteral( "my_param_descr" ), flags ) );
+  QVERIFY( paramDefTime );
+  QCOMPARE( paramDefTime->name(), QStringLiteral( "my_param_name" ) );
+  QCOMPARE( paramDefTime->description(), QStringLiteral( "my_param_descr" ) );
+  QCOMPARE( paramDefTime->type(), QgsProcessingParameterMeshDatasetTime::typeName() );
+  QCOMPARE( static_cast<QgsProcessingParameterMeshDatasetTime *>( paramDefTime.get() )->meshLayerParameterName(), QStringLiteral( "layer" ) );
+  QCOMPARE( static_cast<QgsProcessingParameterMeshDatasetTime *>( paramDefTime.get() )->datasetGroupParameterName(), QStringLiteral( "groups" ) );
 }
 
 void TestProcessingGui::testMeshDatasetWrapperLayerOutsideProject()

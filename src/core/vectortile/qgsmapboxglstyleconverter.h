@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsproperty.h"
+#include "qgspropertycollection.h"
 #include <QVariantMap>
 #include <memory>
 #include <QImage>
@@ -27,6 +28,7 @@ class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
 class QgsVectorTileBasicRendererStyle;
 class QgsVectorTileBasicLabelingStyle;
+class QgsRasterLayer;
 
 /**
  * Context for a MapBox GL style conversion operation.
@@ -158,6 +160,171 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
     QVariantMap mSpriteDefinitions;
 };
 
+
+
+
+/**
+ * Abstract base class for MapBox GL style sources.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsMapBoxGlStyleAbstractSource
+{
+  public:
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+
+    switch ( sipCpp->type() )
+    {
+      case Qgis::MapBoxGlStyleSourceType::Raster:
+        sipType = sipType_QgsMapBoxGlStyleRasterSource;
+        break;
+      default:
+        sipType = 0;
+        break;
+    }
+    SIP_END
+#endif
+
+    /**
+     * Constructor for QgsMapBoxGlStyleAbstractSource.
+     */
+    QgsMapBoxGlStyleAbstractSource( const QString &name );
+
+    virtual ~QgsMapBoxGlStyleAbstractSource();
+
+    /**
+     * Returns the source type.
+     */
+    virtual Qgis::MapBoxGlStyleSourceType type() const = 0;
+
+    /**
+     * Sets the source's state from a \a json map.
+     */
+    virtual bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) = 0;
+
+    /**
+     * Returns the source's name.
+     */
+    QString name() const;
+
+  private:
+
+    QString mName;
+};
+
+
+/**
+ * Encapsulates a MapBox GL style raster source.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsMapBoxGlStyleRasterSource : public QgsMapBoxGlStyleAbstractSource
+{
+  public:
+
+    /**
+     * Constructor for QgsMapBoxGlStyleRasterSource.
+     */
+    QgsMapBoxGlStyleRasterSource( const QString &name );
+
+    Qgis::MapBoxGlStyleSourceType type() const override;
+    bool setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context ) override;
+
+    /**
+     * Returns the source's attribution text.
+     */
+    QString attribution() const { return mAttribution; }
+
+    /**
+     * Returns the minimum tile zoom for which tiles are available.
+     *
+     * \see maximumZoom()
+     */
+    int minimumZoom() const { return mMinZoom; }
+
+    /**
+     * Returns the maximum tile zoom for which tiles are available.
+     *
+     * \see minimumZoom()
+     */
+    int maximumZoom() const { return mMaxZoom; }
+
+    /**
+     * Returns the associated tile size.
+     */
+    int tileSize() const { return mTileSize; }
+
+    /**
+     * Returns the list of tile sources.
+     */
+    QStringList tiles() const { return mTiles; }
+
+    /**
+     * Returns a new raster layer representing the raster source, or NULLPTR if the source cannot be represented as a raster layer.
+     *
+     * The caller takes ownership of the returned layer.
+     */
+    QgsRasterLayer *toRasterLayer() const SIP_FACTORY;
+
+  private:
+
+    QStringList mTiles;
+    QString mAttribution;
+    int mMinZoom = 0;
+    int mMaxZoom = 22;
+    int mTileSize = 512;
+};
+
+
+
+/**
+ * Encapsulates a MapBox GL style raster sub layer.
+ * \warning This is private API only, and may change in future QGIS versions
+ * \ingroup core
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsMapBoxGlStyleRasterSubLayer
+{
+  public:
+
+    /**
+     * Constructor for QgsMapBoxGlStyleRasterSubLayer, with the given \a id and \a source.
+     */
+    QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source );
+
+    /**
+     * Returns the layer's ID.
+     */
+    QString id() const { return mId; }
+
+    /**
+     * Returns the layer's source.
+     */
+    QString source() const { return mSource; }
+
+    /**
+     * Returns a reference to the layer's data defined properties.
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the layer's data defined properties.
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+
+  private:
+
+    QString mId;
+    QString mSource;
+    QgsPropertyCollection mDataDefinedProperties;
+
+};
+
+
 /**
  * \ingroup core
  * \brief Handles conversion of MapBox GL styles to QGIS vector tile renderers and labeling
@@ -171,6 +338,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
  */
 class CORE_EXPORT QgsMapBoxGlStyleConverter
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -191,6 +360,19 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
       Success = 0, //!< Conversion was successful
       NoLayerList = 1, //!< No layer list was found in JSON input
     };
+
+    /**
+     * Property types, for interpolated value conversion
+     * \warning This is private API only, and may change in future QGIS versions
+     */
+    enum class PropertyType
+    {
+      Color, //!< Color property
+      Numeric, //!< Numeric property (e.g. line width, text size)
+      Opacity, //!< Opacity property
+      Point, //!< Point/offset property
+    };
+    Q_ENUM( PropertyType )
 
     /**
      * Converts a JSON \a style map, and returns the resultant status of the conversion.
@@ -246,19 +428,46 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      */
     QgsVectorTileLabeling *labeling() const SIP_FACTORY;
 
+    /**
+     * Returns the list of converted sources.
+     *
+     * \since QGIS 3.28
+     */
+    QList< QgsMapBoxGlStyleAbstractSource * > sources();
+
+    /**
+     * Returns a list of raster sub layers contained in the style.
+     *
+     * \since QGIS 3.28
+     */
+    QList< QgsMapBoxGlStyleRasterSubLayer > rasterSubLayers() const;
+
+    /**
+     * Returns a list of new map layers corresponding to sublayers of the style, e.g. raster layers.
+     *
+     * The caller takes ownership of the returned layers.
+     *
+     * \since QGIS 3.28
+     */
+    QList< QgsMapLayer * > createSubLayers() const SIP_FACTORY;
+
   protected:
 
     /**
-     * Property types, for interpolated value conversion
+     * Parse list of \a sources from JSON.
      * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \since QGIS 3.28
      */
-    enum PropertyType
-    {
-      Color, //!< Color property
-      Numeric, //!< Numeric property (e.g. line width, text size)
-      Opacity, //!< Opacity property
-      Point, //!< Point/offset property
-    };
+    void parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context = nullptr );
+
+    /**
+     * Parse a raster \a source from JSON.
+     * \warning This is private API only, and may change in future QGIS versions
+     *
+     * \since QGIS 3.28
+     */
+    void parseRasterSource( const QVariantMap &source, const QString &name, QgsMapBoxGlStyleConversionContext *context = nullptr );
 
     /**
      * Parse list of \a layers from JSON.
@@ -393,7 +602,6 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
         const QVariantMap &conversionMap,
         QString *defaultString SIP_OUT = nullptr );
 
-
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
      * to interpolate point/offset values.
@@ -433,6 +641,16 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
                                      const QVariantMap &conversionMap,
                                      QString *defaultString SIP_OUT = nullptr );
 
+
+    /**
+     * Parses a list of interpolation stops containing label values.
+     *
+     * \param stops definition of interpolation stops
+     * \param context conversion context
+     *
+     * \returns converted expression
+     */
+    static QString parseLabelStops( const QVariantList &stops, QgsMapBoxGlStyleConversionContext &context );
 
     /**
      * Parses and converts a value list (e.g. an interpolate list).
@@ -548,6 +766,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
     static QString parseKey( const QVariant &value, QgsMapBoxGlStyleConversionContext &context );
 
+    static QString processLabelField( const QString &string, bool &isExpression );
+
     /**
      * Checks if interpolation bottom/top values are numeric values
      * \param bottomVariant bottom value
@@ -563,6 +783,9 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
 
     std::unique_ptr< QgsVectorTileRenderer > mRenderer;
     std::unique_ptr< QgsVectorTileLabeling > mLabeling;
+
+    QList< QgsMapBoxGlStyleAbstractSource * > mSources;
+    QList< QgsMapBoxGlStyleRasterSubLayer> mRasterSubLayers;
 
 };
 

@@ -53,7 +53,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   QWebPage *page = mWidget->page();
   connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-  connect( page, &QWebPage::loadFinished, this, [ = ]( bool ) { fixHeight(); }, Qt::ConnectionType::UniqueConnection );
+  connect( page, &QWebPage::loadFinished, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
 
 #endif
 

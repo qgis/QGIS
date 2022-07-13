@@ -236,7 +236,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   settings.fieldName = QStringLiteral( "'X'" );
   settings.isExpression = true;
 
-  settings.placement = QgsPalLayerSettings::OverPoint;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
   settings.geometryGeneratorEnabled = true;
   settings.geometryGeneratorType = QgsWkbTypes::PointGeometry;
   settings.geometryGenerator = "translate($geometry, 1, 0)";

@@ -18,8 +18,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
-#include <Qt3DExtras/QDiffuseMapMaterial>
-#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMaterial>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -69,6 +68,7 @@ void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWr
   mDiffuse = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
   mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
+  mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toFloat();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -79,6 +79,7 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
   elem.setAttribute( QStringLiteral( "diffuse" ), QgsSymbolLayerUtils::encodeColor( mDiffuse ) );
   elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
+  elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
@@ -98,11 +99,16 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettings
       if ( dataDefinedProperties().hasActiveProperties() )
         return dataDefinedMaterial();
 
-      Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
-      material->setDiffuse( mDiffuse );
-      material->setAmbient( mAmbient );
-      material->setSpecular( mSpecular );
+      int opacity = mOpacity * 255;
+      Qt3DExtras::QDiffuseSpecularMaterial *material  = new Qt3DExtras::QDiffuseSpecularMaterial;
+      material->setDiffuse( QColor( mDiffuse.red(), mDiffuse.green(), mDiffuse.blue(), opacity ) );
+      material->setAmbient( QColor( mAmbient.red(), mAmbient.green(), mAmbient.blue(), opacity ) );
+      material->setSpecular( QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) );
       material->setShininess( mShininess );
+      if ( mOpacity != 1 )
+      {
+        material->setAlphaBlendingEnabled( true );
+      }
 
       if ( context.isSelected() )
       {

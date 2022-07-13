@@ -41,20 +41,93 @@ Creates a renderer symbol range
     bool operator<( const QgsRendererRange &other ) const;
 
     double lowerValue() const;
+%Docstring
+Returns the lower bound of the range.
+
+.. seealso:: :py:func:`setLowerValue`
+
+.. seealso:: :py:func:`upperValue`
+%End
+
     double upperValue() const;
+%Docstring
+Returns the upper bound of the range.
+
+.. seealso:: :py:func:`setUpperValue`
+
+.. seealso:: :py:func:`lowerValue`
+%End
 
     QgsSymbol *symbol() const;
+%Docstring
+Returns the symbol used for the range.
+
+.. seealso:: :py:func:`setSymbol`
+%End
+
     QString label() const;
+%Docstring
+Returns the label used for the range.
+
+.. seealso:: :py:func:`setLabel`
+%End
 
     void setSymbol( QgsSymbol *s /Transfer/ );
+%Docstring
+Sets the symbol used for the range.
+
+Ownership of the symbol is transferred.
+
+.. seealso:: :py:func:`symbol`
+%End
+
     void setLabel( const QString &label );
+%Docstring
+Sets the label used for the range.
+
+.. seealso:: :py:func:`label`
+%End
+
     void setLowerValue( double lowerValue );
+%Docstring
+Sets the lower bound of the range.
+
+.. seealso:: :py:func:`lowerValue`
+
+.. seealso:: :py:func:`setUpperValue`
+%End
+
     void setUpperValue( double upperValue );
+%Docstring
+Sets the upper bound of the range.
+
+.. seealso:: :py:func:`upperValue`
+
+.. seealso:: :py:func:`setLowerValue`
+%End
 
     bool renderState() const;
+%Docstring
+Returns ``True`` if the range should be rendered.
+
+.. seealso:: :py:func:`setRenderState`
+
+.. versionadded:: 2.6
+%End
+
     void setRenderState( bool render );
+%Docstring
+Sets whether the range should be rendered.
+
+.. seealso:: :py:func:`renderState`
+
+.. versionadded:: 2.6
+%End
 
     QString dump() const;
+%Docstring
+Dumps a string representation of the range.
+%End
 
     void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props, bool firstRange = false ) const;
 %Docstring
@@ -65,6 +138,31 @@ Creates a DOM element representing the range in SLD format.
 :param props: graduated renderer properties
 :param firstRange: set to ``True`` if the range is the first range, where the lower value uses a <= test
                    rather than a < test.
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    const QString str = sipCpp->label().isEmpty()
+                        ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
+                        : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    SIP_PYOBJECT __getitem__( int );
+%MethodCode
+    if ( a0 == 0 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->lowerValue() );
+    }
+    else if ( a0 == 1 )
+    {
+      sipRes = Py_BuildValue( "d", sipCpp->upperValue() );
+    }
+    else
+    {
+      QString msg = QString( "Bad index: %1" ).arg( a0 );
+      PyErr_SetString( PyExc_IndexError, msg.toLatin1().constData() );
+    }
 %End
 
   protected:

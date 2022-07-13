@@ -166,7 +166,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
 
   protected:
-    float mPointSize = 2.0;
+    float mPointSize = 3.0;
     bool mRenderAsTriangles = false;
     bool mHorizontalTriangleFilter = false;
     float mHorizontalFilterThreshold = 10.0;

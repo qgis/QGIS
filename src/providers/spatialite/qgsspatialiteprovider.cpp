@@ -5902,6 +5902,11 @@ QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   return new QgsSpatiaLiteProvider( uri, options, flags );
 }
 
+QList<QgsMapLayerType> QgsSpatiaLiteProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
@@ -6505,6 +6510,11 @@ void QgsSpatiaLiteProviderMetadata::cleanupProvider()
 QgsSpatiaLiteProviderMetadata::QgsSpatiaLiteProviderMetadata():
   QgsProviderMetadata( QgsSpatiaLiteProvider::SPATIALITE_KEY, QgsSpatiaLiteProvider::SPATIALITE_DESCRIPTION )
 {
+}
+
+QIcon QgsSpatiaLiteProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconSpatialite.svg" ) );
 }
 
 QList< QgsDataItemProvider * > QgsSpatiaLiteProviderMetadata::dataItemProviders() const

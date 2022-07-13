@@ -57,14 +57,14 @@
        </property>
       </spacer>
      </item>
-     <item row="3" column="2">
+     <item row="0" column="2">
       <widget class="QgsPropertyOverrideButton" name="mIntervalDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="0" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QCheckBox" name="mCheckInterval">
@@ -116,7 +116,7 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="1">
+     <item row="3" column="1">
       <widget class="QCheckBox" name="mCheckVertex">
        <property name="toolTip">
         <string>Shows symbols on inner vertices, i.e. all vertices except the first or last</string>
@@ -126,35 +126,35 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="2" column="1">
       <widget class="QCheckBox" name="mCheckVertexLast">
        <property name="text">
         <string>On last vertex</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="1" column="1">
       <widget class="QCheckBox" name="mCheckVertexFirst">
        <property name="text">
         <string>On first vertex</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="4" column="1">
       <widget class="QCheckBox" name="mCheckCentralPoint">
        <property name="text">
         <string>On central point</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="5" column="1">
       <widget class="QCheckBox" name="mCheckSegmentCentralPoint">
        <property name="text">
         <string>On central point of segments</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="6" column="1">
       <widget class="QCheckBox" name="mCheckCurvePoint">
        <property name="text">
         <string>On every curve point</string>
@@ -163,7 +163,7 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="1" colspan="2">
+   <item row="3" column="1" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -272,7 +272,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
+     <item row="1" column="2">
       <widget class="QgsDoubleSpinBox" name="mSpinOffsetAlongLine">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -310,14 +310,14 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="4">
+     <item row="1" column="4">
       <widget class="QgsPropertyOverrideButton" name="mOffsetAlongLineDDBtn">
        <property name="text">
         <string>…</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
+     <item row="1" column="3">
       <widget class="QgsUnitSelectionWidget" name="mOffsetAlongLineUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -337,7 +337,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0" colspan="5">
+     <item row="2" column="0" colspan="5">
       <widget class="QCheckBox" name="chkRotateMarker">
        <property name="text">
         <string>Rotate marker to follow line direction</string>
@@ -351,7 +351,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0" colspan="2">
+     <item row="1" column="0" colspan="2">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Offset along line</string>
@@ -384,10 +384,10 @@
      <item row="5" column="2" colspan="3">
       <widget class="QComboBox" name="mRingFilterComboBox"/>
      </item>
-     <item row="2" column="0" colspan="5">
+     <item row="0" column="0" colspan="5">
       <widget class="QCheckBox" name="mCheckPlaceOnEveryPart">
        <property name="toolTip">
-        <string>If checked, the &quot;first vertex&quot; or &quot;last vertex&quot; placements will rendered at the first and last vertex for every part of multipart geometries</string>
+        <string>If checked, the &quot;first vertex&quot; or &quot;last vertex&quot; placements will also render at the first and last vertex for every part of multipart geometries</string>
        </property>
        <property name="text">
         <string>Place on every part</string>
@@ -428,11 +428,11 @@
   <tabstop>mCheckCentralPoint</tabstop>
   <tabstop>mCheckSegmentCentralPoint</tabstop>
   <tabstop>mCheckCurvePoint</tabstop>
+  <tabstop>mCheckPlaceOnEveryPart</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
   <tabstop>mOffsetAlongLineUnitWidget</tabstop>
   <tabstop>mOffsetAlongLineDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>
-  <tabstop>mCheckPlaceOnEveryPart</tabstop>
   <tabstop>mSpinAverageAngleLength</tabstop>
   <tabstop>mAverageAngleUnit</tabstop>
   <tabstop>mAverageAngleDDBtn</tabstop>

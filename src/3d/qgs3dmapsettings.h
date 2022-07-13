@@ -31,6 +31,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgsterraingenerator.h"
 #include "qgsvector3d.h"
+#include "qgs3daxissettings.h"
 #include "qgsskyboxsettings.h"
 #include "qgsshadowsettings.h"
 #include "qgscameracontroller.h"
@@ -627,6 +628,35 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setViewFrustumVisualizationEnabled( bool enabled );
 
+    /**
+     * Returns the current configuration of 3d axis
+     * \return QGIS 3.26
+     */
+    Qgs3DAxisSettings get3dAxisSettings() const SIP_SKIP { return m3dAxisSettings; }
+
+    /**
+     * Sets the current configuration of 3d axis
+     * \since QGIS 3.26
+     */
+    void set3dAxisSettings( const Qgs3DAxisSettings &axisSettings ) SIP_SKIP;
+
+    /**
+     * Returns whether debug overlay is enabled
+     * \see setIsDebugOverlayEnabled()
+     * \since QGIS 3.26
+     */
+    bool isDebugOverlayEnabled() const { return mIsDebugOverlayEnabled; }
+
+    /**
+     * Sets whether debug overlay is enabled
+     * The debug overlay displays some debugging and profiling information.
+     * It has been introduced in Qt version 5.15.
+     * This parameter is transient. It is not saved in the project parameters.
+     * \see isDebugOverlayEnabled()
+     * \since QGIS 3.26
+     */
+    void setIsDebugOverlayEnabled( bool debugOverlayEnabled );
+
   signals:
 
     /**
@@ -807,6 +837,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void viewFrustumVisualizationEnabledChanged();
 
+    /**
+     * Emitted when 3d axis rendering settings are changed
+     * \since QGIS 3.26
+     */
+    void axisSettingsChanged();
+
+    /**
+     * Emitted when the debug overaly is enabled or disabled
+     * \since QGIS 3.26
+     */
+    void debugOverlayEnabledChanged( bool debugOverlayEnabled );
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -873,6 +915,11 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mTerrainRenderingEnabled = true;
 
     Qgis::RendererUsage mRendererUsage;
+
+    Qgs3DAxisSettings m3dAxisSettings; //!< 3d axis related configuration
+
+    bool mIsDebugOverlayEnabled = false;
+
 };
 
 

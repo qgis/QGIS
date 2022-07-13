@@ -269,7 +269,6 @@ and :py:func:`~QgsMarkerSymbol.stopRender` calls, or data defined rotation and o
 };
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

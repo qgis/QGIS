@@ -27,6 +27,49 @@
 
 /// @cond PRIVATE
 
+class QgsProcessingTinInputLayersModel: public QAbstractTableModel
+{
+    Q_OBJECT
+  public:
+    enum Roles
+    {
+      Type = Qt::UserRole
+    };
+
+    QgsProcessingTinInputLayersModel( QgsProject *project );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    int columnCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+
+    void addLayer( QgsProcessingParameterTinInputLayers::InputLayer &layer );
+    void removeLayer( int index );
+    void clear();
+
+    QList<QgsProcessingParameterTinInputLayers::InputLayer> layers() const;
+
+    void setProject( QgsProject *project );
+
+  private:
+    QList<QgsProcessingParameterTinInputLayers::InputLayer> mInputLayers;
+    QgsProject *mProject = nullptr;
+};
+
+class QgsProcessingTinInputLayersDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+  public:
+    QgsProcessingTinInputLayersDelegate( QObject *parent ): QStyledItemDelegate( parent ) {}
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+};
+
+
 class GUI_EXPORT QgsProcessingTinInputLayersWidget: public QWidget, private Ui::QgsProcessingTinInputLayersWidgetBase
 {
     Q_OBJECT
@@ -46,45 +89,6 @@ class GUI_EXPORT QgsProcessingTinInputLayersWidget: public QWidget, private Ui::
     void onLayersRemove();
 
   private:
-    class QgsProcessingTinInputLayersModel: public QAbstractTableModel
-    {
-      public:
-        enum Roles
-        {
-          Type = Qt::UserRole
-        };
-
-        QgsProcessingTinInputLayersModel( QgsProject *project );
-
-        int rowCount( const QModelIndex &parent ) const override;
-        int columnCount( const QModelIndex &parent ) const override;
-        QVariant data( const QModelIndex &index, int role ) const override;
-        bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-        Qt::ItemFlags flags( const QModelIndex &index ) const override;
-        QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-
-        void addLayer( QgsProcessingParameterTinInputLayers::InputLayer &layer );
-        void removeLayer( int index );
-        void clear();
-
-        QList<QgsProcessingParameterTinInputLayers::InputLayer> layers() const;
-
-        void setProject( QgsProject *project );
-
-      private:
-        QList<QgsProcessingParameterTinInputLayers::InputLayer> mInputLayers;
-        QgsProject *mProject = nullptr;
-    };
-
-    class Delegate: public QStyledItemDelegate
-    {
-      public:
-        Delegate( QObject *parent ): QStyledItemDelegate( parent ) {}
-
-        QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-        void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
-        void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-    };
 
     QgsProcessingTinInputLayersModel mInputLayersModel;
 };

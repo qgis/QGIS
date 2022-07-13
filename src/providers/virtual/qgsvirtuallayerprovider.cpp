@@ -32,6 +32,7 @@ extern "C"
 #include "qgsvirtuallayerprovider.h"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
+#include "qgsapplication.h"
 
 #include <QUrl>
 
@@ -593,6 +594,7 @@ void QgsVirtualLayerProvider::updateStatistics() const
 void QgsVirtualLayerProvider::invalidateStatistics()
 {
   mCachedStatistics = false;
+  emit dataChanged();
 }
 
 QgsFields QgsVirtualLayerProvider::fields() const
@@ -670,9 +672,19 @@ QgsVirtualLayerProvider *QgsVirtualLayerProviderMetadata::createProvider(
   return new QgsVirtualLayerProvider( uri, options, flags );
 }
 
+QList<QgsMapLayerType> QgsVirtualLayerProviderMetadata::supportedLayerTypes() const
+{
+  return { QgsMapLayerType::VectorLayer };
+}
+
 QgsVirtualLayerProviderMetadata::QgsVirtualLayerProviderMetadata():
   QgsProviderMetadata( QgsVirtualLayerProvider::VIRTUAL_LAYER_KEY, QgsVirtualLayerProvider::VIRTUAL_LAYER_DESCRIPTION )
 {
+}
+
+QIcon QgsVirtualLayerProviderMetadata::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVirtualLayer.svg" ) );
 }
 
 

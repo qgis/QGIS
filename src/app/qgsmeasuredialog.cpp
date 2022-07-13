@@ -376,6 +376,26 @@ void QgsMeasureDialog::updateUi()
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mConvertToDisplayUnits = true;
 
+  const auto getEllipsoidFriendlyName = [this]()
+  {
+    // If mDa.ellipsoid is an acronym (e.g "EPSG:7030"), retrieve the user
+    // friendly name ("WGS 84 (EPSG:7030)")
+    QString ellipsoid = mDa.ellipsoid();
+    if ( ellipsoid.contains( ':' ) )
+    {
+      const auto ellipsoidList = QgsEllipsoidUtils::definitions();
+      for ( const auto &ellpsDefinition : ellipsoidList )
+      {
+        if ( ellpsDefinition.acronym == ellipsoid )
+        {
+          ellipsoid = ellpsDefinition.description;
+          break;
+        }
+      }
+    }
+    return ellipsoid;
+  };
+
   if ( mMeasureArea )
   {
     if ( mCartesian->isChecked() || !mCanvas->mapSettings().destinationCrs().isValid() )
@@ -410,7 +430,7 @@ void QgsMeasureDialog::updateUi()
       {
         resultUnit = QgsUnitTypes::AreaSquareMeters;
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is selected." ) + ' ';
-        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( mDa.ellipsoid(),
+        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the area is calculated in %2." ).arg( getEllipsoidFriendlyName(),
                    QgsUnitTypes::toString( resultUnit ) );
       }
       else
@@ -488,7 +508,7 @@ void QgsMeasureDialog::updateUi()
       {
         resultUnit = QgsUnitTypes::DistanceMeters;
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is selected." ) + ' ';
-        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( mDa.ellipsoid(),
+        toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the distance is calculated in %2." ).arg( getEllipsoidFriendlyName(),
                    QgsUnitTypes::toString( resultUnit ) );
       }
       else

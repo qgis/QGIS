@@ -32,6 +32,7 @@ class QToolButton;
 
 class GUI_EXPORT QgsProcessingDxfLayerDetailsWidget : public QgsPanelWidget, private Ui::QgsProcessingDxfLayerDetailsWidget
 {
+    Q_OBJECT
   public:
     QgsProcessingDxfLayerDetailsWidget( const QVariant &value, QgsProject *project );
 

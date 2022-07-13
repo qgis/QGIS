@@ -32,6 +32,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgsstatisticalsummary.h"
 #include "qgis_sip.h"
+#include "qgspointcloudstatistics.h"
 
 #include "qgslazinfo.h"
 #include "lazperf/vlr.hpp"
@@ -49,6 +50,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
+    std::unique_ptr<QgsPointCloudIndex> clone() const override;
+
     void load( const QString &fileName ) override;
 
     bool hasNode( const IndexedPointCloudNode &n ) const override;
@@ -59,10 +62,31 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
+    bool hasStatisticsMetadata() const override { return false; };
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override { return QgsPointCloudIndex::Local; };
+
+    /**
+     * Writes the statistics object \a stats into the COPC dataset as an Extended Variable Length Record (EVLR).
+     * Returns true if the data was written successfully.
+     * \since QGIS 3.26
+     */
+    bool writeStatistics( QgsPointCloudStatistics &stats );
+
+    /**
+     * Returns the statistics object contained in the COPC dataset.
+     * If the dataset doesn't contain statistics EVLR, an object with 0 samples will be returned.
+     * \since QGIS 3.26
+     */
+    QgsPointCloudStatistics readStatistics();
+
+    /**
+     * Copies common properties to the \a destination index
+     * \since QGIS 3.26
+     */
+    void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
 
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
@@ -76,6 +100,8 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
      * \note: This function is NOT thread safe and the mutex mHierarchyMutex needs to be locked before entering
      */
     virtual void fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const;
+
+    QByteArray fetchCopcStatisticsEvlrData();
 
     bool mIsValid = false;
     QString mFileName;

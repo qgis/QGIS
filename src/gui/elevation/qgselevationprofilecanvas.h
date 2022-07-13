@@ -33,6 +33,8 @@ class QgsProfilePlotRenderer;
 class QgsCurve;
 class Qgs2DPlot;
 class QgsProfileSnapContext;
+class QgsProfileIdentifyContext;
+class QgsProfileIdentifyResults;
 
 /**
  * \ingroup gui
@@ -163,8 +165,27 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     /**
      * Sets the visible area of the plot.
+     *
+     * \see visibleDistanceRange()
+     * \see visibleElevationRange()
      */
     void setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation );
+
+    /**
+     * Returns the distance range currently visible in the plot.
+     *
+     * \see visibleElevationRange()
+     * \see setVisiblePlotRange()
+     */
+    QgsDoubleRange visibleDistanceRange() const;
+
+    /**
+     * Returns the elevation range currently visible in the plot.
+     *
+     * \see visibleDistanceRange()
+     * \see setVisiblePlotRange()
+     */
+    QgsDoubleRange visibleElevationRange() const;
 
     /**
      * Returns a reference to the 2D plot used by the widget.
@@ -178,6 +199,30 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
 
+    /**
+     * Identify results visible at the specified plot point.
+     */
+    QVector<QgsProfileIdentifyResults> identify( QPointF point );
+
+    /**
+     * Identify results visible within the specified plot rect.
+     */
+    QVector<QgsProfileIdentifyResults> identify( const QRectF &rect );
+
+    /**
+     * Converts a canvas point to the equivalent plot point.
+     *
+     * \see plotPointToCanvasPoint()
+     */
+    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
+
+    /**
+     * Converts a plot point to the equivalent canvas point.
+     *
+     * \see canvasPointToPlotPoint()
+     */
+    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
+
   signals:
 
     /**
@@ -187,8 +232,10 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
     /**
      * Emitted when the mouse hovers over the specified point (in canvas coordinates).
+     *
+     * The \a profilePoint argument gives the hovered profile point, which may be snapped.
      */
-    void canvasPointHovered( const QgsPointXY &point );
+    void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
 
   public slots:
 
@@ -221,17 +268,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 
   private:
 
-    /**
-     * Converts a canvas point to the equivalent plot point.
-     */
-    QgsProfilePoint canvasPointToPlotPoint( QPointF point ) const;
-
-    /**
-     * Converts a plot point to the equivalent canvas point.
-     */
-    QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point ) const;
-
     QgsProfileSnapContext snapContext() const;
+    QgsProfileIdentifyContext identifyContext() const;
 
     void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
 

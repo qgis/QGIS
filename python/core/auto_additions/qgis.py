@@ -87,6 +87,8 @@ Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = 'Vector layer type flags.\n\n.. versionadded:: 3.24\n\n' + '* ``SqlQuery``: ' + Qgis.VectorLayerTypeFlag.SqlQuery.__doc__
 # --
 Qgis.VectorLayerTypeFlag.baseClass = Qgis
+Qgis.VectorLayerTypeFlags.baseClass = Qgis
+VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.Never = Qgis.PythonMacroMode.Never
 Qgis.Never.is_monkey_patched = True
@@ -234,11 +236,15 @@ Qgis.SymbolRenderHint.__doc__ = 'Flags controlling behavior of symbols during re
 # --
 Qgis.SymbolRenderHint.baseClass = Qgis
 QgsSymbol.RenderHints = Qgis.SymbolRenderHints
+Qgis.SymbolRenderHints.baseClass = Qgis
+SymbolRenderHints = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__ = "If present, indicates that a QgsFeatureRenderer using the symbol should use symbol levels for best results"
 Qgis.SymbolFlag.__doc__ = 'Flags controlling behavior of symbols\n\n.. versionadded:: 3.20\n\n' + '* ``RendererShouldUseSymbolLevels``: ' + Qgis.SymbolFlag.RendererShouldUseSymbolLevels.__doc__
 # --
 Qgis.SymbolFlag.baseClass = Qgis
+Qgis.SymbolFlags.baseClass = Qgis
+SymbolFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsSymbol.PreviewFlag = Qgis.SymbolPreviewFlag
 # monkey patching scoped based enum
 QgsSymbol.FlagIncludeCrosshairsForMarkerSymbols = Qgis.SymbolPreviewFlag.FlagIncludeCrosshairsForMarkerSymbols
@@ -248,11 +254,15 @@ Qgis.SymbolPreviewFlag.__doc__ = 'Flags for controlling how symbol preview image
 # --
 Qgis.SymbolPreviewFlag.baseClass = Qgis
 QgsSymbol.SymbolPreviewFlags = Qgis.SymbolPreviewFlags
+Qgis.SymbolPreviewFlags.baseClass = Qgis
+SymbolPreviewFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__ = "If present, indicates that features should never be clipped to the map extent during rendering"
 Qgis.SymbolLayerFlag.__doc__ = 'Flags controlling behavior of symbol layers\n\n.. versionadded:: 3.22\n\n' + '* ``DisableFeatureClipping``: ' + Qgis.SymbolLayerFlag.DisableFeatureClipping.__doc__
 # --
 Qgis.SymbolLayerFlag.baseClass = Qgis
+Qgis.SymbolLayerFlags.baseClass = Qgis
+SymbolLayerFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsDataItem.Type = Qgis.BrowserItemType
 # monkey patching scoped based enum
 QgsDataItem.Collection = Qgis.BrowserItemType.Collection
@@ -332,6 +342,8 @@ Qgis.BrowserItemCapability.__doc__ = 'Browser item capabilities.\n\n.. versionad
 # --
 Qgis.BrowserItemCapability.baseClass = Qgis
 QgsDataItem.Capabilities = Qgis.BrowserItemCapabilities
+Qgis.BrowserItemCapabilities.baseClass = Qgis
+BrowserItemCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayerItem.LayerType = Qgis.BrowserLayerType
 # monkey patching scoped based enum
 QgsLayerItem.NoType = Qgis.BrowserLayerType.NoType
@@ -438,6 +450,8 @@ Qgis.SqlLayerDefinitionCapability.UnstableFeatureIds.__doc__ = "SQL layer defini
 Qgis.SqlLayerDefinitionCapability.__doc__ = 'SqlLayerDefinitionCapability enum lists the arguments supported by the provider when creating SQL query layers.\n\n.. versionadded:: 3.22\n\n' + '* ``SubsetStringFilter``: ' + Qgis.SqlLayerDefinitionCapability.SubsetStringFilter.__doc__ + '\n' + '* ``GeometryColumn``: ' + Qgis.SqlLayerDefinitionCapability.GeometryColumn.__doc__ + '\n' + '* ``PrimaryKeys``: ' + Qgis.SqlLayerDefinitionCapability.PrimaryKeys.__doc__ + '\n' + '* ``UnstableFeatureIds``: ' + Qgis.SqlLayerDefinitionCapability.UnstableFeatureIds.__doc__
 # --
 Qgis.SqlLayerDefinitionCapability.baseClass = Qgis
+Qgis.SqlLayerDefinitionCapabilities.baseClass = Qgis
+SqlLayerDefinitionCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SqlKeywordCategory.Keyword.__doc__ = "SQL keyword"
 Qgis.SqlKeywordCategory.Constant.__doc__ = "SQL constant"
@@ -480,6 +494,163 @@ Qgis.UnplacedLabelVisibility.__doc__ = 'Unplaced label visibility.\n\n.. version
 # --
 Qgis.UnplacedLabelVisibility.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LabelOverlapHandling.PreventOverlap.__doc__ = "Do not allow labels to overlap other labels"
+Qgis.LabelOverlapHandling.AllowOverlapIfRequired.__doc__ = "Avoids overlapping labels when possible, but permit overlaps if labels for features cannot otherwise be placed"
+Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__ = "Labels may freely overlap other labels, at no cost"
+Qgis.LabelOverlapHandling.__doc__ = 'Label overlap handling.\n\n.. versionadded:: 3.26\n\n' + '* ``PreventOverlap``: ' + Qgis.LabelOverlapHandling.PreventOverlap.__doc__ + '\n' + '* ``AllowOverlapIfRequired``: ' + Qgis.LabelOverlapHandling.AllowOverlapIfRequired.__doc__ + '\n' + '* ``AllowOverlapAtNoCost``: ' + Qgis.LabelOverlapHandling.AllowOverlapAtNoCost.__doc__
+# --
+Qgis.LabelOverlapHandling.baseClass = Qgis
+QgsPalLayerSettings.Placement = Qgis.LabelPlacement
+# monkey patching scoped based enum
+QgsPalLayerSettings.AroundPoint = Qgis.LabelPlacement.AroundPoint
+QgsPalLayerSettings.AroundPoint.is_monkey_patched = True
+QgsPalLayerSettings.AroundPoint.__doc__ = "Arranges candidates in a circle around a point (or centroid of a polygon). Applies to point or polygon layers only."
+QgsPalLayerSettings.OverPoint = Qgis.LabelPlacement.OverPoint
+QgsPalLayerSettings.OverPoint.is_monkey_patched = True
+QgsPalLayerSettings.OverPoint.__doc__ = "Arranges candidates over a point (or centroid of a polygon), or at a preset offset from the point. Applies to point or polygon layers only."
+QgsPalLayerSettings.Line = Qgis.LabelPlacement.Line
+QgsPalLayerSettings.Line.is_monkey_patched = True
+QgsPalLayerSettings.Line.__doc__ = "Arranges candidates parallel to a generalised line representing the feature or parallel to a polygon's perimeter. Applies to line or polygon layers only."
+QgsPalLayerSettings.Curved = Qgis.LabelPlacement.Curved
+QgsPalLayerSettings.Curved.is_monkey_patched = True
+QgsPalLayerSettings.Curved.__doc__ = "Arranges candidates following the curvature of a line feature. Applies to line layers only."
+QgsPalLayerSettings.Horizontal = Qgis.LabelPlacement.Horizontal
+QgsPalLayerSettings.Horizontal.is_monkey_patched = True
+QgsPalLayerSettings.Horizontal.__doc__ = "Arranges horizontal candidates scattered throughout a polygon feature. Applies to polygon layers only."
+QgsPalLayerSettings.Free = Qgis.LabelPlacement.Free
+QgsPalLayerSettings.Free.is_monkey_patched = True
+QgsPalLayerSettings.Free.__doc__ = "Arranges candidates scattered throughout a polygon feature. Candidates are rotated to respect the polygon's orientation. Applies to polygon layers only."
+QgsPalLayerSettings.OrderedPositionsAroundPoint = Qgis.LabelPlacement.OrderedPositionsAroundPoint
+QgsPalLayerSettings.OrderedPositionsAroundPoint.is_monkey_patched = True
+QgsPalLayerSettings.OrderedPositionsAroundPoint.__doc__ = "Candidates are placed in predefined positions around a point. Preference is given to positions with greatest cartographic appeal, e.g., top right, bottom right, etc. Applies to point layers only."
+QgsPalLayerSettings.PerimeterCurved = Qgis.LabelPlacement.PerimeterCurved
+QgsPalLayerSettings.PerimeterCurved.is_monkey_patched = True
+QgsPalLayerSettings.PerimeterCurved.__doc__ = "Arranges candidates following the curvature of a polygon's boundary. Applies to polygon layers only."
+QgsPalLayerSettings.OutsidePolygons = Qgis.LabelPlacement.OutsidePolygons
+QgsPalLayerSettings.OutsidePolygons.is_monkey_patched = True
+QgsPalLayerSettings.OutsidePolygons.__doc__ = "Candidates are placed outside of polygon boundaries. Applies to polygon layers only. Since QGIS 3.14"
+Qgis.LabelPlacement.__doc__ = 'Placement modes which determine how label candidates are generated for a feature.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.Placement\n\n.. versionadded:: 3.26\n\n' + '* ``AroundPoint``: ' + Qgis.LabelPlacement.AroundPoint.__doc__ + '\n' + '* ``OverPoint``: ' + Qgis.LabelPlacement.OverPoint.__doc__ + '\n' + '* ``Line``: ' + Qgis.LabelPlacement.Line.__doc__ + '\n' + '* ``Curved``: ' + Qgis.LabelPlacement.Curved.__doc__ + '\n' + '* ``Horizontal``: ' + Qgis.LabelPlacement.Horizontal.__doc__ + '\n' + '* ``Free``: ' + Qgis.LabelPlacement.Free.__doc__ + '\n' + '* ``OrderedPositionsAroundPoint``: ' + Qgis.LabelPlacement.OrderedPositionsAroundPoint.__doc__ + '\n' + '* ``PerimeterCurved``: ' + Qgis.LabelPlacement.PerimeterCurved.__doc__ + '\n' + '* ``OutsidePolygons``: ' + Qgis.LabelPlacement.OutsidePolygons.__doc__
+# --
+Qgis.LabelPlacement.baseClass = Qgis
+QgsPalLayerSettings.PredefinedPointPosition = Qgis.LabelPredefinedPointPosition
+# monkey patching scoped based enum
+QgsPalLayerSettings.TopLeft = Qgis.LabelPredefinedPointPosition.TopLeft
+QgsPalLayerSettings.TopLeft.is_monkey_patched = True
+QgsPalLayerSettings.TopLeft.__doc__ = "Label on top-left of point"
+QgsPalLayerSettings.TopSlightlyLeft = Qgis.LabelPredefinedPointPosition.TopSlightlyLeft
+QgsPalLayerSettings.TopSlightlyLeft.is_monkey_patched = True
+QgsPalLayerSettings.TopSlightlyLeft.__doc__ = "Label on top of point, slightly left of center"
+QgsPalLayerSettings.TopMiddle = Qgis.LabelPredefinedPointPosition.TopMiddle
+QgsPalLayerSettings.TopMiddle.is_monkey_patched = True
+QgsPalLayerSettings.TopMiddle.__doc__ = "Label directly above point"
+QgsPalLayerSettings.TopSlightlyRight = Qgis.LabelPredefinedPointPosition.TopSlightlyRight
+QgsPalLayerSettings.TopSlightlyRight.is_monkey_patched = True
+QgsPalLayerSettings.TopSlightlyRight.__doc__ = "Label on top of point, slightly right of center"
+QgsPalLayerSettings.TopRight = Qgis.LabelPredefinedPointPosition.TopRight
+QgsPalLayerSettings.TopRight.is_monkey_patched = True
+QgsPalLayerSettings.TopRight.__doc__ = "Label on top-right of point"
+QgsPalLayerSettings.MiddleLeft = Qgis.LabelPredefinedPointPosition.MiddleLeft
+QgsPalLayerSettings.MiddleLeft.is_monkey_patched = True
+QgsPalLayerSettings.MiddleLeft.__doc__ = "Label on left of point"
+QgsPalLayerSettings.MiddleRight = Qgis.LabelPredefinedPointPosition.MiddleRight
+QgsPalLayerSettings.MiddleRight.is_monkey_patched = True
+QgsPalLayerSettings.MiddleRight.__doc__ = "Label on right of point"
+QgsPalLayerSettings.BottomLeft = Qgis.LabelPredefinedPointPosition.BottomLeft
+QgsPalLayerSettings.BottomLeft.is_monkey_patched = True
+QgsPalLayerSettings.BottomLeft.__doc__ = "Label on bottom-left of point"
+QgsPalLayerSettings.BottomSlightlyLeft = Qgis.LabelPredefinedPointPosition.BottomSlightlyLeft
+QgsPalLayerSettings.BottomSlightlyLeft.is_monkey_patched = True
+QgsPalLayerSettings.BottomSlightlyLeft.__doc__ = "Label below point, slightly left of center"
+QgsPalLayerSettings.BottomMiddle = Qgis.LabelPredefinedPointPosition.BottomMiddle
+QgsPalLayerSettings.BottomMiddle.is_monkey_patched = True
+QgsPalLayerSettings.BottomMiddle.__doc__ = "Label directly below point"
+QgsPalLayerSettings.BottomSlightlyRight = Qgis.LabelPredefinedPointPosition.BottomSlightlyRight
+QgsPalLayerSettings.BottomSlightlyRight.is_monkey_patched = True
+QgsPalLayerSettings.BottomSlightlyRight.__doc__ = "Label below point, slightly right of center"
+QgsPalLayerSettings.BottomRight = Qgis.LabelPredefinedPointPosition.BottomRight
+QgsPalLayerSettings.BottomRight.is_monkey_patched = True
+QgsPalLayerSettings.BottomRight.__doc__ = "Label on bottom right of point"
+Qgis.LabelPredefinedPointPosition.__doc__ = 'Positions for labels when using the Qgis.LabelPlacement.OrderedPositionsAroundPoint placement mode.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.PredefinedPointPosition\n\n.. versionadded:: 3.26\n\n' + '* ``TopLeft``: ' + Qgis.LabelPredefinedPointPosition.TopLeft.__doc__ + '\n' + '* ``TopSlightlyLeft``: ' + Qgis.LabelPredefinedPointPosition.TopSlightlyLeft.__doc__ + '\n' + '* ``TopMiddle``: ' + Qgis.LabelPredefinedPointPosition.TopMiddle.__doc__ + '\n' + '* ``TopSlightlyRight``: ' + Qgis.LabelPredefinedPointPosition.TopSlightlyRight.__doc__ + '\n' + '* ``TopRight``: ' + Qgis.LabelPredefinedPointPosition.TopRight.__doc__ + '\n' + '* ``MiddleLeft``: ' + Qgis.LabelPredefinedPointPosition.MiddleLeft.__doc__ + '\n' + '* ``MiddleRight``: ' + Qgis.LabelPredefinedPointPosition.MiddleRight.__doc__ + '\n' + '* ``BottomLeft``: ' + Qgis.LabelPredefinedPointPosition.BottomLeft.__doc__ + '\n' + '* ``BottomSlightlyLeft``: ' + Qgis.LabelPredefinedPointPosition.BottomSlightlyLeft.__doc__ + '\n' + '* ``BottomMiddle``: ' + Qgis.LabelPredefinedPointPosition.BottomMiddle.__doc__ + '\n' + '* ``BottomSlightlyRight``: ' + Qgis.LabelPredefinedPointPosition.BottomSlightlyRight.__doc__ + '\n' + '* ``BottomRight``: ' + Qgis.LabelPredefinedPointPosition.BottomRight.__doc__
+# --
+Qgis.LabelPredefinedPointPosition.baseClass = Qgis
+QgsPalLayerSettings.OffsetType = Qgis.LabelOffsetType
+# monkey patching scoped based enum
+QgsPalLayerSettings.FromPoint = Qgis.LabelOffsetType.FromPoint
+QgsPalLayerSettings.FromPoint.is_monkey_patched = True
+QgsPalLayerSettings.FromPoint.__doc__ = "Offset distance applies from point geometry"
+QgsPalLayerSettings.FromSymbolBounds = Qgis.LabelOffsetType.FromSymbolBounds
+QgsPalLayerSettings.FromSymbolBounds.is_monkey_patched = True
+QgsPalLayerSettings.FromSymbolBounds.__doc__ = "Offset distance applies from rendered symbol bounds"
+Qgis.LabelOffsetType.__doc__ = 'Behavior modifier for label offset and distance, only applies in some\nlabel placement modes.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.OffsetType\n\n.. versionadded:: 3.26\n\n' + '* ``FromPoint``: ' + Qgis.LabelOffsetType.FromPoint.__doc__ + '\n' + '* ``FromSymbolBounds``: ' + Qgis.LabelOffsetType.FromSymbolBounds.__doc__
+# --
+Qgis.LabelOffsetType.baseClass = Qgis
+QgsPalLayerSettings.QuadrantPosition = Qgis.LabelQuadrantPosition
+# monkey patching scoped based enum
+QgsPalLayerSettings.QuadrantAboveLeft = Qgis.LabelQuadrantPosition.AboveLeft
+QgsPalLayerSettings.QuadrantAboveLeft.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantAboveLeft.__doc__ = "Above left"
+QgsPalLayerSettings.QuadrantAbove = Qgis.LabelQuadrantPosition.Above
+QgsPalLayerSettings.QuadrantAbove.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantAbove.__doc__ = "Above center"
+QgsPalLayerSettings.QuadrantAboveRight = Qgis.LabelQuadrantPosition.AboveRight
+QgsPalLayerSettings.QuadrantAboveRight.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantAboveRight.__doc__ = "Above right"
+QgsPalLayerSettings.QuadrantLeft = Qgis.LabelQuadrantPosition.Left
+QgsPalLayerSettings.QuadrantLeft.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantLeft.__doc__ = "Left middle"
+QgsPalLayerSettings.QuadrantOver = Qgis.LabelQuadrantPosition.Over
+QgsPalLayerSettings.QuadrantOver.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantOver.__doc__ = "Center middle"
+QgsPalLayerSettings.QuadrantRight = Qgis.LabelQuadrantPosition.Right
+QgsPalLayerSettings.QuadrantRight.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantRight.__doc__ = "Right middle"
+QgsPalLayerSettings.QuadrantBelowLeft = Qgis.LabelQuadrantPosition.BelowLeft
+QgsPalLayerSettings.QuadrantBelowLeft.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantBelowLeft.__doc__ = "Below left"
+QgsPalLayerSettings.QuadrantBelow = Qgis.LabelQuadrantPosition.Below
+QgsPalLayerSettings.QuadrantBelow.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantBelow.__doc__ = "Below center"
+QgsPalLayerSettings.QuadrantBelowRight = Qgis.LabelQuadrantPosition.BelowRight
+QgsPalLayerSettings.QuadrantBelowRight.is_monkey_patched = True
+QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "BelowRight"
+Qgis.LabelQuadrantPosition.__doc__ = 'Label quadrant positions\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.QuadrantPosition\n\n.. versionadded:: 3.26\n\n' + '* ``QuadrantAboveLeft``: ' + Qgis.LabelQuadrantPosition.AboveLeft.__doc__ + '\n' + '* ``QuadrantAbove``: ' + Qgis.LabelQuadrantPosition.Above.__doc__ + '\n' + '* ``QuadrantAboveRight``: ' + Qgis.LabelQuadrantPosition.AboveRight.__doc__ + '\n' + '* ``QuadrantLeft``: ' + Qgis.LabelQuadrantPosition.Left.__doc__ + '\n' + '* ``QuadrantOver``: ' + Qgis.LabelQuadrantPosition.Over.__doc__ + '\n' + '* ``QuadrantRight``: ' + Qgis.LabelQuadrantPosition.Right.__doc__ + '\n' + '* ``QuadrantBelowLeft``: ' + Qgis.LabelQuadrantPosition.BelowLeft.__doc__ + '\n' + '* ``QuadrantBelow``: ' + Qgis.LabelQuadrantPosition.Below.__doc__ + '\n' + '* ``QuadrantBelowRight``: ' + Qgis.LabelQuadrantPosition.BelowRight.__doc__
+# --
+Qgis.LabelQuadrantPosition.baseClass = Qgis
+QgsPalLayerSettings.UpsideDownLabels = Qgis.UpsideDownLabelHandling
+# monkey patching scoped based enum
+QgsPalLayerSettings.Upright = Qgis.UpsideDownLabelHandling.FlipUpsideDownLabels
+QgsPalLayerSettings.Upright.is_monkey_patched = True
+QgsPalLayerSettings.Upright.__doc__ = "Upside-down labels (90 <= angle < 270) are shown upright"
+QgsPalLayerSettings.ShowDefined = Qgis.UpsideDownLabelHandling.AllowUpsideDownWhenRotationIsDefined
+QgsPalLayerSettings.ShowDefined.is_monkey_patched = True
+QgsPalLayerSettings.ShowDefined.__doc__ = "Show upside down when rotation is layer- or data-defined"
+QgsPalLayerSettings.ShowAll = Qgis.UpsideDownLabelHandling.AlwaysAllowUpsideDown
+QgsPalLayerSettings.ShowAll.is_monkey_patched = True
+QgsPalLayerSettings.ShowAll.__doc__ = "Show upside down for all labels, including dynamic ones"
+Qgis.UpsideDownLabelHandling.__doc__ = 'Handling techniques for upside down labels.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.UpsideDownLabels\n\n.. versionadded:: 3.26\n\n' + '* ``Upright``: ' + Qgis.UpsideDownLabelHandling.FlipUpsideDownLabels.__doc__ + '\n' + '* ``ShowDefined``: ' + Qgis.UpsideDownLabelHandling.AllowUpsideDownWhenRotationIsDefined.__doc__ + '\n' + '* ``ShowAll``: ' + Qgis.UpsideDownLabelHandling.AlwaysAllowUpsideDown.__doc__
+# --
+Qgis.UpsideDownLabelHandling.baseClass = Qgis
+QgsPalLayerSettings.MultiLineAlign = Qgis.LabelMultiLineAlignment
+# monkey patching scoped based enum
+QgsPalLayerSettings.MultiLeft = Qgis.LabelMultiLineAlignment.Left
+QgsPalLayerSettings.MultiLeft.is_monkey_patched = True
+QgsPalLayerSettings.MultiLeft.__doc__ = "Left align"
+QgsPalLayerSettings.MultiCenter = Qgis.LabelMultiLineAlignment.Center
+QgsPalLayerSettings.MultiCenter.is_monkey_patched = True
+QgsPalLayerSettings.MultiCenter.__doc__ = "Center align"
+QgsPalLayerSettings.MultiRight = Qgis.LabelMultiLineAlignment.Right
+QgsPalLayerSettings.MultiRight.is_monkey_patched = True
+QgsPalLayerSettings.MultiRight.__doc__ = "Right align"
+QgsPalLayerSettings.MultiFollowPlacement = Qgis.LabelMultiLineAlignment.FollowPlacement
+QgsPalLayerSettings.MultiFollowPlacement.is_monkey_patched = True
+QgsPalLayerSettings.MultiFollowPlacement.__doc__ = "Alignment follows placement of label, e.g., labels to the left of a feature will be drawn with right alignment"
+QgsPalLayerSettings.MultiJustify = Qgis.LabelMultiLineAlignment.Justify
+QgsPalLayerSettings.MultiJustify.is_monkey_patched = True
+QgsPalLayerSettings.MultiJustify.__doc__ = "Justified"
+Qgis.LabelMultiLineAlignment.__doc__ = 'Text alignment for multi-line labels.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsPalLayerSettings`.MultiLineAlign\n\n.. versionadded:: 3.26\n\n' + '* ``MultiLeft``: ' + Qgis.LabelMultiLineAlignment.Left.__doc__ + '\n' + '* ``MultiCenter``: ' + Qgis.LabelMultiLineAlignment.Center.__doc__ + '\n' + '* ``MultiRight``: ' + Qgis.LabelMultiLineAlignment.Right.__doc__ + '\n' + '* ``MultiFollowPlacement``: ' + Qgis.LabelMultiLineAlignment.FollowPlacement.__doc__ + '\n' + '* ``MultiJustify``: ' + Qgis.LabelMultiLineAlignment.Justify.__doc__
+# --
+Qgis.LabelMultiLineAlignment.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
@@ -487,11 +658,15 @@ Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__ = "Include system or internal
 Qgis.SublayerQueryFlag.__doc__ = 'Flags which control how data providers will scan for sublayers in a dataset.\n\n.. versionadded:: 3.22\n\n' + '* ``FastScan``: ' + Qgis.SublayerQueryFlag.FastScan.__doc__ + '\n' + '* ``ResolveGeometryType``: ' + Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ + '\n' + '* ``CountFeatures``: ' + Qgis.SublayerQueryFlag.CountFeatures.__doc__ + '\n' + '* ``IncludeSystemTables``: ' + Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__
 # --
 Qgis.SublayerQueryFlag.baseClass = Qgis
+Qgis.SublayerQueryFlags.baseClass = Qgis
+SublayerQueryFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.SublayerFlag.SystemTable.__doc__ = "Sublayer is a system or internal table, which should be hidden by default"
 Qgis.SublayerFlag.__doc__ = 'Flags which reflect the properties of sublayers in a dataset.\n\n.. versionadded:: 3.22\n\n' + '* ``SystemTable``: ' + Qgis.SublayerFlag.SystemTable.__doc__
 # --
 Qgis.SublayerFlag.baseClass = Qgis
+Qgis.SublayerFlags.baseClass = Qgis
+SublayerFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRasterPipe.Role = Qgis.RasterPipeInterfaceRole
 # monkey patching scoped based enum
 QgsRasterPipe.UnknownRole = Qgis.RasterPipeInterfaceRole.Unknown
@@ -574,6 +749,20 @@ QgsVectorLayer.RemoveFromSelection.__doc__ = "Remove from current selection"
 Qgis.SelectBehavior.__doc__ = 'Specifies how a selection should be applied.\n\n.. versionadded:: 3.22\n\n' + '* ``SetSelection``: ' + Qgis.SelectBehavior.SetSelection.__doc__ + '\n' + '* ``AddToSelection``: ' + Qgis.SelectBehavior.AddToSelection.__doc__ + '\n' + '* ``IntersectSelection``: ' + Qgis.SelectBehavior.IntersectSelection.__doc__ + '\n' + '* ``RemoveFromSelection``: ' + Qgis.SelectBehavior.RemoveFromSelection.__doc__
 # --
 Qgis.SelectBehavior.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SelectGeometryRelationship.Intersect.__doc__ = "Select where features intersect the reference geometry"
+Qgis.SelectGeometryRelationship.Within.__doc__ = "Select where features are within the reference geometry"
+Qgis.SelectGeometryRelationship.__doc__ = 'Geometry relationship test to apply for selecting features.\n\n.. versionadded:: 3.28\n\n' + '* ``Intersect``: ' + Qgis.SelectGeometryRelationship.Intersect.__doc__ + '\n' + '* ``Within``: ' + Qgis.SelectGeometryRelationship.Within.__doc__
+# --
+Qgis.SelectGeometryRelationship.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SelectionFlag.SingleFeatureSelection.__doc__ = "Select only a single feature, picking the \"best\" match for the selection geometry"
+Qgis.SelectionFlag.ToggleSelection.__doc__ = "Enables a \"toggle\" selection mode, where previously selected matching features will be deselected and previously deselected features will be selected. This flag works only when the SingleFeatureSelection flag is also set."
+Qgis.SelectionFlag.__doc__ = 'Flags which control feature selection behavior.\n\n.. versionadded:: 3.28\n\n' + '* ``SingleFeatureSelection``: ' + Qgis.SelectionFlag.SingleFeatureSelection.__doc__ + '\n' + '* ``ToggleSelection``: ' + Qgis.SelectionFlag.ToggleSelection.__doc__
+# --
+Qgis.SelectionFlag.baseClass = Qgis
+Qgis.SelectionFlags.baseClass = Qgis
+SelectionFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsVectorLayer.EditResult = Qgis.VectorEditResult
 # monkey patching scoped based enum
 QgsVectorLayer.Success = Qgis.VectorEditResult.Success
@@ -640,11 +829,15 @@ Qgis.BabelFormatCapability.Tracks.__doc__ = "Format supports tracks"
 Qgis.BabelFormatCapability.__doc__ = 'Babel GPS format capabilities.\n\n.. versionadded:: 3.22\n\n' + '* ``Import``: ' + Qgis.BabelFormatCapability.Import.__doc__ + '\n' + '* ``Export``: ' + Qgis.BabelFormatCapability.Export.__doc__ + '\n' + '* ``Waypoints``: ' + Qgis.BabelFormatCapability.Waypoints.__doc__ + '\n' + '* ``Routes``: ' + Qgis.BabelFormatCapability.Routes.__doc__ + '\n' + '* ``Tracks``: ' + Qgis.BabelFormatCapability.Tracks.__doc__
 # --
 Qgis.BabelFormatCapability.baseClass = Qgis
+Qgis.BabelFormatCapabilities.baseClass = Qgis
+BabelFormatCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.BabelCommandFlag.QuoteFilePaths.__doc__ = "File paths should be enclosed in quotations and escaped"
 Qgis.BabelCommandFlag.__doc__ = 'Babel command flags, which control how commands and arguments\nare generated for executing GPSBabel processes.\n\n.. versionadded:: 3.22\n\n' + '* ``QuoteFilePaths``: ' + Qgis.BabelCommandFlag.QuoteFilePaths.__doc__
 # --
 Qgis.BabelCommandFlag.baseClass = Qgis
+Qgis.BabelCommandFlags.baseClass = Qgis
+BabelCommandFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.GpsFeatureType.Waypoint.__doc__ = "Waypoint"
 Qgis.GpsFeatureType.Route.__doc__ = "Route"
@@ -711,6 +904,8 @@ Qgis.GeometryValidityFlag.__doc__ = 'Geometry validity check flags.\n\n.. versio
 # --
 QgsGeometry.ValidityFlags = Qgis.GeometryValidityFlags
 Qgis.GeometryValidityFlag.baseClass = Qgis
+Qgis.GeometryValidityFlags.baseClass = Qgis
+GeometryValidityFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsGeometry.ValidationMethod = Qgis.GeometryValidationEngine
 # monkey patching scoped based enum
 QgsGeometry.ValidatorQgisInternal = Qgis.GeometryValidationEngine.QgisInternal
@@ -774,17 +969,23 @@ Qgis.FileOperationFlag.IncludeStyleFile.__doc__ = "Indicates that any associated
 Qgis.FileOperationFlag.__doc__ = 'File operation flags.\n\n.. versionadded:: 3.22\n\n' + '* ``IncludeMetadataFile``: ' + Qgis.FileOperationFlag.IncludeMetadataFile.__doc__ + '\n' + '* ``IncludeStyleFile``: ' + Qgis.FileOperationFlag.IncludeStyleFile.__doc__
 # --
 Qgis.FileOperationFlag.baseClass = Qgis
+Qgis.FileOperationFlags.baseClass = Qgis
+FileOperationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually. Since QGIS 3.22."
 Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest. Since QGIS 3.26."
 Qgis.MapLayerProperty.__doc__ = 'Generic map layer properties.\n\n.. versionadded:: 3.22\n\n' + '* ``UsersCannotToggleEditing``: ' + Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ + '\n' + '* ``IsBasemapLayer``: ' + Qgis.MapLayerProperty.IsBasemapLayer.__doc__
 # --
 Qgis.MapLayerProperty.baseClass = Qgis
+Qgis.MapLayerProperties.baseClass = Qgis
+MapLayerProperties = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
 Qgis.DataProviderFlag.__doc__ = 'Generic data provider flags.\n\n.. versionadded:: 3.26\n\n' + '* ``IsBasemapSource``: ' + Qgis.DataProviderFlag.IsBasemapSource.__doc__
 # --
 Qgis.DataProviderFlag.baseClass = Qgis
+Qgis.DataProviderFlags.baseClass = Qgis
+DataProviderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.CrsAxisDirection.North.__doc__ = "North"
 Qgis.CrsAxisDirection.NorthNorthEast.__doc__ = "North North East"
@@ -841,11 +1042,15 @@ Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__ = "Item's bounding box
 Qgis.AnnotationItemFlag.__doc__ = 'Flags for annotation items.\n\n.. versionadded:: 3.22\n\n' + '* ``ScaleDependentBoundingBox``: ' + Qgis.AnnotationItemFlag.ScaleDependentBoundingBox.__doc__
 # --
 Qgis.AnnotationItemFlag.baseClass = Qgis
+Qgis.AnnotationItemFlags.baseClass = Qgis
+AnnotationItemFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__ = "Do not show item creation tools for the item type"
 Qgis.AnnotationItemGuiFlag.__doc__ = 'Flags for controlling how an annotation item behaves in the GUI.\n\n.. versionadded:: 3.22\n\n' + '* ``FlagNoCreationTools``: ' + Qgis.AnnotationItemGuiFlag.FlagNoCreationTools.__doc__
 # --
 Qgis.AnnotationItemGuiFlag.baseClass = Qgis
+Qgis.AnnotationItemGuiFlags.baseClass = Qgis
+AnnotationItemGuiFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.AnnotationItemNodeType.VertexHandle.__doc__ = "Node is a handle for manipulating vertices"
 Qgis.AnnotationItemNodeType.__doc__ = 'Annotation item node types.\n\n.. versionadded:: 3.22\n\n' + '* ``VertexHandle``: ' + Qgis.AnnotationItemNodeType.VertexHandle.__doc__
@@ -935,6 +1140,12 @@ QgsRasterDataProviderTemporalCapabilities.FindClosestMatchToEndOfRange.__doc__ =
 Qgis.TemporalIntervalMatchMethod.__doc__ = 'Method to use when resolving a temporal range to a data provider layer or band.\n\n.. versionadded:: 3.22\n\n' + '* ``MatchUsingWholeRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchUsingWholeRange.__doc__ + '\n' + '* ``MatchExactUsingStartOfRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchExactUsingStartOfRange.__doc__ + '\n' + '* ``MatchExactUsingEndOfRange``: ' + Qgis.TemporalIntervalMatchMethod.MatchExactUsingEndOfRange.__doc__ + '\n' + '* ``FindClosestMatchToStartOfRange``: ' + Qgis.TemporalIntervalMatchMethod.FindClosestMatchToStartOfRange.__doc__ + '\n' + '* ``FindClosestMatchToEndOfRange``: ' + Qgis.TemporalIntervalMatchMethod.FindClosestMatchToEndOfRange.__doc__
 # --
 Qgis.TemporalIntervalMatchMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterTemporalCapabilityFlag.RequestedTimesMustExactlyMatchAllAvailableTemporalRanges.__doc__ = "If present, indicates that the provider must only request temporal values which are exact matches for the values present in QgsRasterDataProviderTemporalCapabilities.allAvailableTemporalRanges()."
+Qgis.RasterTemporalCapabilityFlag.__doc__ = 'Flags for raster layer temporal capabilities.\n\n.. versionadded:: 3.28\n\n' + '* ``RequestedTimesMustExactlyMatchAllAvailableTemporalRanges``: ' + Qgis.RasterTemporalCapabilityFlag.RequestedTimesMustExactlyMatchAllAvailableTemporalRanges.__doc__
+# --
+Qgis.RasterTemporalCapabilityFlag.baseClass = Qgis
+Qgis.RasterTemporalCapabilityFlags.baseClass = Qgis
 QgsCoordinateTransform.TransformDirection = Qgis.TransformDirection
 # monkey patching scoped based enum
 QgsCoordinateTransform.ForwardTransform = Qgis.TransformDirection.Forward
@@ -946,6 +1157,13 @@ QgsCoordinateTransform.ReverseTransform.__doc__ = "Reverse/inverse transform (fr
 Qgis.TransformDirection.__doc__ = 'Indicates the direction (forward or inverse) of a transform.\n\n.. versionadded:: 3.22\n\n' + '* ``ForwardTransform``: ' + Qgis.TransformDirection.Forward.__doc__ + '\n' + '* ``ReverseTransform``: ' + Qgis.TransformDirection.Reverse.__doc__
 # --
 Qgis.TransformDirection.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoordinateTransformationFlag.BallparkTransformsAreAppropriate.__doc__ = "Indicates that approximate \"ballpark\" results are appropriate for this coordinate transform. See QgsCoordinateTransform.setBallparkTransformsAreAppropriate() for further details."
+Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__ = "Indicates that impossible transformations (such as those which attempt to transform between two different celestial bodies) should be silently handled and marked as invalid. See QgsCoordinateTransform.isTransformationPossible() and QgsCoordinateTransform.isValid()."
+Qgis.CoordinateTransformationFlag.__doc__ = 'Flags which adjust the coordinate transformations behave.\n\n.. versionadded:: 3.26\n\n' + '* ``BallparkTransformsAreAppropriate``: ' + Qgis.CoordinateTransformationFlag.BallparkTransformsAreAppropriate.__doc__ + '\n' + '* ``IgnoreImpossibleTransformations``: ' + Qgis.CoordinateTransformationFlag.IgnoreImpossibleTransformations.__doc__
+# --
+Qgis.CoordinateTransformationFlag.baseClass = Qgis
+Qgis.CoordinateTransformationFlags.baseClass = Qgis
 QgsMapSettings.Flag = Qgis.MapSettingsFlag
 # monkey patching scoped based enum
 QgsMapSettings.Antialiasing = Qgis.MapSettingsFlag.Antialiasing
@@ -996,10 +1214,15 @@ QgsMapSettings.HighQualityImageTransforms.__doc__ = "Enable high quality image t
 QgsMapSettings.SkipSymbolRendering = Qgis.MapSettingsFlag.SkipSymbolRendering
 QgsMapSettings.SkipSymbolRendering.is_monkey_patched = True
 QgsMapSettings.SkipSymbolRendering.__doc__ = "Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)"
-Qgis.MapSettingsFlag.__doc__ = 'Flags which adjust the way maps are rendered.\n\n.. versionadded:: 3.22\n\n' + '* ``Antialiasing``: ' + Qgis.MapSettingsFlag.Antialiasing.__doc__ + '\n' + '* ``DrawEditingInfo``: ' + Qgis.MapSettingsFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.MapSettingsFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.MapSettingsFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``DrawLabeling``: ' + Qgis.MapSettingsFlag.DrawLabeling.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.MapSettingsFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.MapSettingsFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.MapSettingsFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.MapSettingsFlag.RenderMapTile.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.MapSettingsFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.MapSettingsFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.MapSettingsFlag.RenderBlocking.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.MapSettingsFlag.LosslessImageRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.MapSettingsFlag.Render3DMap.__doc__ + '\n' + '* ``HighQualityImageTransforms``: ' + Qgis.MapSettingsFlag.HighQualityImageTransforms.__doc__ + '\n' + '* ``SkipSymbolRendering``: ' + Qgis.MapSettingsFlag.SkipSymbolRendering.__doc__
+QgsMapSettings.ForceRasterMasks = Qgis.MapSettingsFlag.ForceRasterMasks
+QgsMapSettings.ForceRasterMasks.is_monkey_patched = True
+QgsMapSettings.ForceRasterMasks.__doc__ = "Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. (since QGIS 3.26.1)"
+Qgis.MapSettingsFlag.__doc__ = 'Flags which adjust the way maps are rendered.\n\n.. versionadded:: 3.22\n\n' + '* ``Antialiasing``: ' + Qgis.MapSettingsFlag.Antialiasing.__doc__ + '\n' + '* ``DrawEditingInfo``: ' + Qgis.MapSettingsFlag.DrawEditingInfo.__doc__ + '\n' + '* ``ForceVectorOutput``: ' + Qgis.MapSettingsFlag.ForceVectorOutput.__doc__ + '\n' + '* ``UseAdvancedEffects``: ' + Qgis.MapSettingsFlag.UseAdvancedEffects.__doc__ + '\n' + '* ``DrawLabeling``: ' + Qgis.MapSettingsFlag.DrawLabeling.__doc__ + '\n' + '* ``UseRenderingOptimization``: ' + Qgis.MapSettingsFlag.UseRenderingOptimization.__doc__ + '\n' + '* ``DrawSelection``: ' + Qgis.MapSettingsFlag.DrawSelection.__doc__ + '\n' + '* ``DrawSymbolBounds``: ' + Qgis.MapSettingsFlag.DrawSymbolBounds.__doc__ + '\n' + '* ``RenderMapTile``: ' + Qgis.MapSettingsFlag.RenderMapTile.__doc__ + '\n' + '* ``RenderPartialOutput``: ' + Qgis.MapSettingsFlag.RenderPartialOutput.__doc__ + '\n' + '* ``RenderPreviewJob``: ' + Qgis.MapSettingsFlag.RenderPreviewJob.__doc__ + '\n' + '* ``RenderBlocking``: ' + Qgis.MapSettingsFlag.RenderBlocking.__doc__ + '\n' + '* ``LosslessImageRendering``: ' + Qgis.MapSettingsFlag.LosslessImageRendering.__doc__ + '\n' + '* ``Render3DMap``: ' + Qgis.MapSettingsFlag.Render3DMap.__doc__ + '\n' + '* ``HighQualityImageTransforms``: ' + Qgis.MapSettingsFlag.HighQualityImageTransforms.__doc__ + '\n' + '* ``SkipSymbolRendering``: ' + Qgis.MapSettingsFlag.SkipSymbolRendering.__doc__ + '\n' + '* ``ForceRasterMasks``: ' + Qgis.MapSettingsFlag.ForceRasterMasks.__doc__
 # --
 QgsMapSettings.Flags = Qgis.MapSettingsFlags
 Qgis.MapSettingsFlag.baseClass = Qgis
+Qgis.MapSettingsFlags.baseClass = Qgis
+MapSettingsFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.Flag = Qgis.RenderContextFlag
 # monkey patching scoped based enum
 QgsRenderContext.DrawEditingInfo = Qgis.RenderContextFlag.DrawEditingInfo
@@ -1063,6 +1286,8 @@ Qgis.RenderContextFlag.__doc__ = 'Flags which affect rendering operations.\n\n..
 # --
 QgsRenderContext.Flags = Qgis.RenderContextFlags
 Qgis.RenderContextFlag.baseClass = Qgis
+Qgis.RenderContextFlags.baseClass = Qgis
+RenderContextFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.TextRenderFormat = Qgis.TextRenderFormat
 # monkey patching scoped based enum
 QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines
@@ -1308,6 +1533,17 @@ Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__ = "Only gap lengths are adju
 Qgis.DashPatternSizeAdjustment.__doc__ = 'Dash pattern size adjustment options.\n\n.. versionadded:: 3.24\n\n' + '* ``ScaleBothDashAndGap``: ' + Qgis.DashPatternSizeAdjustment.ScaleBothDashAndGap.__doc__ + '\n' + '* ``ScaleDashOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleDashOnly.__doc__ + '\n' + '* ``ScaleGapOnly``: ' + Qgis.DashPatternSizeAdjustment.ScaleGapOnly.__doc__
 # --
 Qgis.DashPatternSizeAdjustment.baseClass = Qgis
+QgsGraduatedSymbolRenderer.GraduatedMethod = Qgis.GraduatedMethod
+# monkey patching scoped based enum
+QgsGraduatedSymbolRenderer.GraduatedColor = Qgis.GraduatedMethod.Color
+QgsGraduatedSymbolRenderer.GraduatedColor.is_monkey_patched = True
+QgsGraduatedSymbolRenderer.GraduatedColor.__doc__ = "Alter color of symbols"
+QgsGraduatedSymbolRenderer.GraduatedSize = Qgis.GraduatedMethod.Size
+QgsGraduatedSymbolRenderer.GraduatedSize.is_monkey_patched = True
+QgsGraduatedSymbolRenderer.GraduatedSize.__doc__ = "Alter size of symbols"
+Qgis.GraduatedMethod.__doc__ = 'Methods for modifying symbols by range in a graduated symbol renderer.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsGraduatedSymbolRenderer`.GraduatedMethod\n\n.. versionadded:: 3.26\n\n' + '* ``GraduatedColor``: ' + Qgis.GraduatedMethod.Color.__doc__ + '\n' + '* ``GraduatedSize``: ' + Qgis.GraduatedMethod.Size.__doc__
+# --
+Qgis.GraduatedMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
@@ -1492,6 +1728,12 @@ Qgis.ProfileSurfaceSymbology.__doc__ = 'Surface symbology type for elevation pro
 # --
 Qgis.ProfileSurfaceSymbology.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.VectorProfileType.IndividualFeatures.__doc__ = "Treat each feature as an individual object (eg buildings)"
+Qgis.VectorProfileType.ContinuousSurface.__doc__ = "The features should be treated as representing values on a continuous surface (eg contour lines)"
+Qgis.VectorProfileType.__doc__ = 'Types of elevation profiles to generate for vector sources.\n\n.. versionadded:: 3.26\n\n' + '* ``IndividualFeatures``: ' + Qgis.VectorProfileType.IndividualFeatures.__doc__ + '\n' + '* ``ContinuousSurface``: ' + Qgis.VectorProfileType.ContinuousSurface.__doc__
+# --
+Qgis.VectorProfileType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ = "Generated profile respects the QgsProfileGenerationContext.maximumErrorMapUnits() property."
 Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.distanceRange() property."
 Qgis.ProfileGeneratorFlag.RespectsElevationRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.elevationRange() property."
@@ -1525,3 +1767,72 @@ QgsPointCloudRenderer.TopToBottom.__doc__ = "Draw points with larger Z values fi
 Qgis.PointCloudDrawOrder.__doc__ = 'Pointcloud rendering order for 2d views\n\n/since QGIS 3.26\n\n' + '* ``Default``: ' + Qgis.PointCloudDrawOrder.Default.__doc__ + '\n' + '* ``BottomToTop``: ' + Qgis.PointCloudDrawOrder.BottomToTop.__doc__ + '\n' + '* ``TopToBottom``: ' + Qgis.PointCloudDrawOrder.TopToBottom.__doc__
 # --
 Qgis.PointCloudDrawOrder.baseClass = Qgis
+QgsProject.AvoidIntersectionsMode = Qgis.AvoidIntersectionsMode
+# monkey patching scoped based enum
+QgsProject.AllowIntersections = Qgis.AvoidIntersectionsMode.AllowIntersections
+QgsProject.AllowIntersections.is_monkey_patched = True
+QgsProject.AllowIntersections.__doc__ = "Overlap with any feature allowed when digitizing new features"
+QgsProject.AvoidIntersectionsCurrentLayer = Qgis.AvoidIntersectionsMode.AvoidIntersectionsCurrentLayer
+QgsProject.AvoidIntersectionsCurrentLayer.is_monkey_patched = True
+QgsProject.AvoidIntersectionsCurrentLayer.__doc__ = "Overlap with features from the active layer when digitizing new features not allowed"
+QgsProject.AvoidIntersectionsLayers = Qgis.AvoidIntersectionsMode.AvoidIntersectionsLayers
+QgsProject.AvoidIntersectionsLayers.is_monkey_patched = True
+QgsProject.AvoidIntersectionsLayers.__doc__ = "Overlap with features from a specified list of layers when digitizing new features not allowed"
+Qgis.AvoidIntersectionsMode.__doc__ = 'Flags which control how intersections of pre-existing feature are handled when digitizing new features.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsProject`.AvoidIntersectionsMode\n\n.. versionadded:: 3.26\n\n' + '* ``AllowIntersections``: ' + Qgis.AvoidIntersectionsMode.AllowIntersections.__doc__ + '\n' + '* ``AvoidIntersectionsCurrentLayer``: ' + Qgis.AvoidIntersectionsMode.AvoidIntersectionsCurrentLayer.__doc__ + '\n' + '* ``AvoidIntersectionsLayers``: ' + Qgis.AvoidIntersectionsMode.AvoidIntersectionsLayers.__doc__
+# --
+Qgis.AvoidIntersectionsMode.baseClass = Qgis
+QgsProject.FileFormat = Qgis.ProjectFileFormat
+# monkey patching scoped based enum
+QgsProject.Qgz = Qgis.ProjectFileFormat.Qgz
+QgsProject.Qgz.is_monkey_patched = True
+QgsProject.Qgz.__doc__ = "Archive file format, supports auxiliary data"
+QgsProject.Qgs = Qgis.ProjectFileFormat.Qgs
+QgsProject.Qgs.is_monkey_patched = True
+QgsProject.Qgs.__doc__ = "Project saved in a clear text, does not support auxiliary data"
+Qgis.ProjectFileFormat.__doc__ = 'Flags which control project read behavior.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsProject`.FileFormat\n\n.. versionadded:: 3.26\n\n' + '* ``Qgz``: ' + Qgis.ProjectFileFormat.Qgz.__doc__ + '\n' + '* ``Qgs``: ' + Qgis.ProjectFileFormat.Qgs.__doc__
+# --
+Qgis.ProjectFileFormat.baseClass = Qgis
+QgsProject.ReadFlag = Qgis.ProjectReadFlag
+# monkey patching scoped based enum
+QgsProject.FlagDontResolveLayers = Qgis.ProjectReadFlag.DontResolveLayers
+QgsProject.FlagDontResolveLayers.is_monkey_patched = True
+QgsProject.FlagDontResolveLayers.__doc__ = "Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required."
+QgsProject.FlagDontLoadLayouts = Qgis.ProjectReadFlag.DontLoadLayouts
+QgsProject.FlagDontLoadLayouts.is_monkey_patched = True
+QgsProject.FlagDontLoadLayouts.__doc__ = "Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe)."
+QgsProject.FlagTrustLayerMetadata = Qgis.ProjectReadFlag.TrustLayerMetadata
+QgsProject.FlagTrustLayerMetadata.is_monkey_patched = True
+QgsProject.FlagTrustLayerMetadata.__doc__ = "Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server."
+QgsProject.FlagDontStoreOriginalStyles = Qgis.ProjectReadFlag.DontStoreOriginalStyles
+QgsProject.FlagDontStoreOriginalStyles.is_monkey_patched = True
+QgsProject.FlagDontStoreOriginalStyles.__doc__ = "Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts."
+QgsProject.FlagDontLoad3DViews = Qgis.ProjectReadFlag.DontLoad3DViews
+QgsProject.FlagDontLoad3DViews.is_monkey_patched = True
+QgsProject.FlagDontLoad3DViews.__doc__ = "Skip loading 3D views (since QGIS 3.26)"
+QgsProject.DontLoadProjectStyles = Qgis.ProjectReadFlag.DontLoadProjectStyles
+QgsProject.DontLoadProjectStyles.is_monkey_patched = True
+QgsProject.DontLoadProjectStyles.__doc__ = "Skip loading project style databases (deprecated -- use ProjectCapability.ProjectStyles flag instead)"
+Qgis.ProjectReadFlag.__doc__ = 'Flags which control project read behavior.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsProject`.ReadFlag\n\n.. versionadded:: 3.26\n\n' + '* ``FlagDontResolveLayers``: ' + Qgis.ProjectReadFlag.DontResolveLayers.__doc__ + '\n' + '* ``FlagDontLoadLayouts``: ' + Qgis.ProjectReadFlag.DontLoadLayouts.__doc__ + '\n' + '* ``FlagTrustLayerMetadata``: ' + Qgis.ProjectReadFlag.TrustLayerMetadata.__doc__ + '\n' + '* ``FlagDontStoreOriginalStyles``: ' + Qgis.ProjectReadFlag.DontStoreOriginalStyles.__doc__ + '\n' + '* ``FlagDontLoad3DViews``: ' + Qgis.ProjectReadFlag.DontLoad3DViews.__doc__ + '\n' + '* ``DontLoadProjectStyles``: ' + Qgis.ProjectReadFlag.DontLoadProjectStyles.__doc__
+# --
+Qgis.ProjectReadFlag.baseClass = Qgis
+QgsProject.ReadFlags = Qgis.ProjectReadFlags
+Qgis.ProjectReadFlags.baseClass = Qgis
+ProjectReadFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.ProjectCapability.ProjectStyles.__doc__ = "Enable the project embedded style library. Enabling this flag can increase the time required to clear and load projects."
+Qgis.ProjectCapability.__doc__ = 'Flags which control project capabilities.\n\nThese flags are specific upfront on creation of a :py:class:`QgsProject` object, and can\nbe used to selectively enable potentially costly functionality for the project.\n\n.. versionadded:: 3.26.1\n\n' + '* ``ProjectStyles``: ' + Qgis.ProjectCapability.ProjectStyles.__doc__
+# --
+Qgis.ProjectCapability.baseClass = Qgis
+Qgis.ProjectCapabilities.baseClass = Qgis
+ProjectCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.MapBoxGlStyleSourceType.Vector.__doc__ = "Vector source"
+Qgis.MapBoxGlStyleSourceType.Raster.__doc__ = "Raster source"
+Qgis.MapBoxGlStyleSourceType.RasterDem.__doc__ = "Raster DEM source"
+Qgis.MapBoxGlStyleSourceType.GeoJson.__doc__ = "GeoJSON source"
+Qgis.MapBoxGlStyleSourceType.Image.__doc__ = "Image source"
+Qgis.MapBoxGlStyleSourceType.Video.__doc__ = "Video source"
+Qgis.MapBoxGlStyleSourceType.Unknown.__doc__ = "Other/unknown source type"
+Qgis.MapBoxGlStyleSourceType.__doc__ = 'Available MapBox GL style source types.\n\n.. versionadded:: 3.28\n\n' + '* ``Vector``: ' + Qgis.MapBoxGlStyleSourceType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.MapBoxGlStyleSourceType.Raster.__doc__ + '\n' + '* ``RasterDem``: ' + Qgis.MapBoxGlStyleSourceType.RasterDem.__doc__ + '\n' + '* ``GeoJson``: ' + Qgis.MapBoxGlStyleSourceType.GeoJson.__doc__ + '\n' + '* ``Image``: ' + Qgis.MapBoxGlStyleSourceType.Image.__doc__ + '\n' + '* ``Video``: ' + Qgis.MapBoxGlStyleSourceType.Video.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.MapBoxGlStyleSourceType.Unknown.__doc__
+# --
+Qgis.MapBoxGlStyleSourceType.baseClass = Qgis

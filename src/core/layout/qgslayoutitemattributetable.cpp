@@ -566,13 +566,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
     for ( const QgsLayoutTableColumn &column : std::as_const( mColumns ) )
     {
-      int idx = layer->fields().lookupField( column.attribute() );
-
       QgsConditionalStyle style;
-
+      int idx = layer->fields().lookupField( column.attribute() );
       if ( idx != -1 )
       {
-
         QVariant val = f.attributes().at( idx );
 
         if ( mUseConditionalStyling )
@@ -597,11 +594,11 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
           }
           else
           {
-            cache = fieldFormatter->createCache( mVectorLayer.get(), idx, setup.config() );
+            cache = fieldFormatter->createCache( layer, idx, setup.config() );
             mLayerCache.insert( column.attribute(), cache );
           }
 
-          val = fieldFormatter->representValue( mVectorLayer.get(), idx, setup.config(), cache, val );
+          val = fieldFormatter->representValue( layer, idx, setup.config(), cache, val );
         }
 
         QVariant v = val.isNull() ? QString() : replaceWrapChar( val );

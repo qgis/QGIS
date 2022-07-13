@@ -111,12 +111,15 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList
   if ( nCoords < 2 )
     return nullptr;
   bool xok = false, yok = false;
-  double x = coordList[0].toDouble( &xok );
-  double y = coordList[1].toDouble( &yok );
+  const double x = coordList[0].toDouble( &xok );
+  const double y = coordList[1].toDouble( &yok );
   if ( !xok || !yok )
     return nullptr;
-  double z = nCoords >= 3 ? coordList[2].toDouble() : 0;
-  double m = nCoords >= 4 ? coordList[3].toDouble() : 0;
+  const bool hasZ = QgsWkbTypes::hasZ( pointType );
+  const double z = hasZ && nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+
+  // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
+  const double m = QgsWkbTypes::hasM( pointType ) && ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
   return std::make_unique< QgsPoint >( pointType, x, y, z, m );
 }
 
@@ -145,8 +148,7 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
   std::unique_ptr< QgsCompoundCurve > compoundCurve = std::make_unique< QgsCompoundCurve >();
-  QgsLineString *lineString = new QgsLineString();
-  compoundCurve->addCurve( lineString );
+  std::unique_ptr< QgsLineString > lineString;
   for ( const QVariant &curveData : curvesList )
   {
     if ( curveData.type() == QVariant::List )
@@ -156,16 +158,22 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
       {
         return nullptr;
       }
+      if ( !lineString )
+        lineString = std::make_unique< QgsLineString >();
+
       lineString->addVertex( *point );
     }
     else if ( curveData.type() == QVariant::Map )
     {
       // The last point of the linestring is the start point of this circular string
-      std::unique_ptr< QgsCircularString > circularString( convertCircularString( curveData.toMap(), pointType, lineString->endPoint() ) );
+      std::unique_ptr< QgsCircularString > circularString( convertCircularString( curveData.toMap(), pointType, lineString ? lineString->endPoint() : QgsPoint() ) );
       if ( !circularString )
       {
         return nullptr;
       }
+
+      if ( lineString )
+        compoundCurve->addCurve( lineString.release() );
 
       // If the previous curve had less than two points, remove it
       if ( compoundCurve->curveAt( compoundCurve->nCurves() - 1 )->nCoordinates() < 2 )
@@ -175,11 +183,13 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
       compoundCurve->addCurve( circularString.release() );
 
       // Prepare a new line string
-      lineString = new QgsLineString;
-      compoundCurve->addCurve( lineString );
+      lineString = std::make_unique< QgsLineString >();
       lineString->addVertex( endPointCircularString );
     }
   }
+  if ( lineString )
+    compoundCurve->addCurve( lineString.release() );
+
   return compoundCurve;
 }
 
@@ -639,73 +649,73 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
     const QString placement = labeling.value( QStringLiteral( "labelPlacement" ) ).toString();
     if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveCenter" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantAbove;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::Above;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowCenter" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantBelow;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::Below;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterCenter" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantOver;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::Over;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveLeft" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveLeft;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::AboveLeft;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowLeft" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowLeft;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::BelowLeft;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterLeft" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantLeft;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::Left;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementAboveRight" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantAboveRight;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementBelowRight" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantBelowRight;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
     }
     else if ( placement == QLatin1String( "esriServerPointLabelPlacementCenterRight" ) )
     {
-      settings->placement = QgsPalLayerSettings::OverPoint;
-      settings->quadOffset = QgsPalLayerSettings::QuadrantRight;
+      settings->placement = Qgis::LabelPlacement::OverPoint;
+      settings->quadOffset = Qgis::LabelQuadrantPosition::Right;
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||
               placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
     {
-      settings->placement = QgsPalLayerSettings::Line;
+      settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::MapOrientation );
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementBelowStart" ) ||
               placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
     {
-      settings->placement = QgsPalLayerSettings::Line;
+      settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
     }
     else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) ||
               placement == QLatin1String( "esriServerLinePlacementCenterStart" ) ||
               placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
     {
-      settings->placement = QgsPalLayerSettings::Line;
+      settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
     }
     else if ( placement == QLatin1String( "esriServerPolygonPlacementAlwaysHorizontal" ) )
     {
-      settings->placement = QgsPalLayerSettings::Horizontal;
+      settings->placement = Qgis::LabelPlacement::Horizontal;
     }
 
     const double minScale = labeling.value( QStringLiteral( "minScale" ) ).toDouble();

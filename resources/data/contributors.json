@@ -1111,6 +1111,23 @@
           41.052098
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Björn Hinkeldey",
+        "Committer": "No",
+        "First Commit Message": "Improves QGIS Server WMS GetCapabilities output",
+        "First Commit Date": "25-12-2020",
+        "GIT Nickname": "pathmapper"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.41453,
+          51.16380
+        ]
+      }
     }
   ]
 }

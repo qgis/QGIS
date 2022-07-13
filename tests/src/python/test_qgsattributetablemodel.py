@@ -10,19 +10,29 @@ __author__ = 'Matthias Kuhn'
 __date__ = '27/05/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+
+import os
+
 from qgis.gui import (
     QgsAttributeTableModel,
     QgsGui
 )
 from qgis.core import (
+    QgsProject,
+    Qgis,
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
     QgsVectorLayer,
     QgsVectorLayerCache,
     QgsConditionalStyle,
+    QgsVectorLayerExporter,
+    QgsMemoryProviderUtils,
+    QgsField,
+    QgsFields,
+    QgsWkbTypes,
 )
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant
 from qgis.PyQt.QtGui import QColor
 from qgis.testing import (start_app,
                           unittest
@@ -158,6 +168,58 @@ class TestQgsAttributeTableModel(unittest.TestCase):
                 self.assertIsNone(text_color, f'Feature {f.id()} should have no color')
 
         self.layer.conditionalStyles().setRowStyles([])
+
+    def testTransactionRollback(self):
+        """Test issue https://github.com/qgis/QGIS/issues/48171#issuecomment-1132709901"""
+
+        d = QTemporaryDir()
+        path = d.path()
+
+        source_fields = QgsFields()
+        source_fields.append(QgsField('int', QVariant.Int))
+        vl = QgsMemoryProviderUtils.createMemoryLayer('test', source_fields)
+        f = QgsFeature()
+        f.setAttributes([1])
+        vl.dataProvider().addFeature(f)
+
+        tmpfile = os.path.join(path, 'testTransactionRollback.sqlite')
+
+        options = {
+            'driverName': 'SpatiaLite',
+            'layerName': 'test'
+        }
+
+        err = QgsVectorLayerExporter.exportLayer(vl, tmpfile, "ogr", vl.crs(), False, options)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+                         'unexpected import error {0}'.format(err))
+
+        vl = QgsVectorLayer(
+            'dbname=\'{}\' table="test" () sql='.format(tmpfile), 'test', 'spatialite')
+
+        self.assertTrue(vl.isValid())
+
+        p = QgsProject.instance()
+        p.setTransactionMode(Qgis.TransactionMode.AutomaticGroups)
+        self.assertTrue(p.addMapLayer(vl))
+
+        cache = QgsVectorLayerCache(vl, 100)
+        am = QgsAttributeTableModel(cache)
+        am.loadLayer()
+        self.assertEqual(am.rowCount(), 1)
+
+        self.assertTrue(vl.startEditing())
+        vl.beginEditCommand('edit1')
+
+        f = QgsFeature()
+        f.setAttributes([2])
+        self.assertTrue(vl.addFeature(f))
+        self.assertEqual(am.rowCount(), 2)
+        self.assertEqual(len([f for f in vl.getFeatures()]), 2)
+
+        vl.endEditCommand()
+        self.assertTrue(vl.rollBack())
+        self.assertEqual(len([f for f in vl.getFeatures()]), 1)
+        self.assertEqual(am.rowCount(), 1)
 
 
 if __name__ == '__main__':

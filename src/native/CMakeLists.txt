@@ -134,7 +134,7 @@ if(NOT ANDROID)
   )
 endif()
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_link_libraries(qgis_native ${Qt6Core_LIBRARIES} ${Qt6Gui_LIBRARIES} "${NATIVE_LINK_LIBS}")
 else()
   target_link_libraries(qgis_native ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} "${NATIVE_LINK_LIBS}")

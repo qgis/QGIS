@@ -51,9 +51,6 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     QString description() const override;
     QgsPointCloudIndex *index() const override;
     qint64 pointCount() const override;
-    QVariant metadataStatistic( const QString &attribute, QgsStatisticalSummary::Statistic statistic ) const override;
-    QVariantList metadataClasses( const QString &attribute ) const override;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, QgsStatisticalSummary::Statistic statistic ) const override;
     QVariantMap originalMetadata() const override;
     void loadIndex( ) override;
     void generateIndex( ) override;
@@ -69,8 +66,10 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
 
 class QgsCopcProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsCopcProviderMetadata();
+    QIcon icon() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsCopcProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
@@ -80,6 +79,7 @@ class QgsCopcProviderMetadata : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

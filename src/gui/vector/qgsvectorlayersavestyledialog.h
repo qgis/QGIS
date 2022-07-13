@@ -73,6 +73,7 @@ class GUI_EXPORT QgsVectorLayerSaveStyleDialog : public QDialog, private Ui::Qgs
 
   private:
     void setupMultipleStyles();
+    void populateStyleComboBox();
     QgsVectorLayer *mLayer = nullptr;
     QgsMapLayerStyleCategoriesModel *mModel;
     QString mUiFileContent;

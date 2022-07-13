@@ -97,16 +97,27 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     QVector< QgsGeometry > asGeometries() const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
+    QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
+    QVector<QgsProfileIdentifyResults> identify( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange, const QgsProfileIdentifyContext &context ) override;
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 
   private:
 
     GEOSSTRtree *mPointIndex = nullptr;
+    QPointer< QgsPointCloudLayer > mLayer;
+    QgsCoordinateReferenceSystem mCurveCrs;
+    std::unique_ptr< QgsCurve > mProfileCurve;
+    double mTolerance = 0;
+    double mZOffset = 0;
+    double mZScale = 1.0;
+    double mMaxErrorInLayerCoordinates = 0;
 
     // only required for GEOS < 3.9
 #if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
     std::vector< geos::unique_ptr > mSTRTreeItems;
 #endif
+
+    friend class QgsPointCloudLayerProfileGenerator;
 };
 
 

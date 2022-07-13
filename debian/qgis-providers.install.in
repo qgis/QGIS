@@ -1,5 +1,5 @@
 usr/lib/qgis/crssync
-usr/lib/qgis/untwine
+#!sid#usr/lib/qgis/untwine
 usr/lib/qgis/plugins/libauthmethod_basic.so
 usr/lib/qgis/plugins/libauthmethod_esritoken.so
 usr/lib/qgis/plugins/libauthmethod_identcert.so

@@ -709,7 +709,7 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
            ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets )
              && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
       {
-        menu->addAction( driver.description(), [groupIndex, driverName, suffix, this]
+        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this]
         {
           this->saveDatasetGroup( groupIndex, driverName, suffix );
         } );
@@ -779,6 +779,7 @@ QVariant QgsMeshAvailableDatasetGroupTreeModel::data( const QModelIndex &index, 
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::EditRole:
     case Name:
       return textDisplayed( index );
 

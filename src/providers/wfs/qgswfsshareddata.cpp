@@ -47,6 +47,26 @@ bool QgsWFSSharedData::isRestrictedToRequestBBOX() const
   return mURI.isRestrictedToRequestBBOX();
 }
 
+QgsWFSSharedData *QgsWFSSharedData::clone() const
+{
+  QgsWFSSharedData *copy = new QgsWFSSharedData( mURI.uri( true ) );
+  copy->mWFSVersion = mWFSVersion;
+  copy->mGeometryAttribute = mGeometryAttribute;
+  copy->mLayerPropertiesList = mLayerPropertiesList;
+  copy->mMapFieldNameToSrcLayerNameFieldName = mMapFieldNameToSrcLayerNameFieldName;
+  copy->mPageSize = mPageSize;
+  copy->mCaps = mCaps;
+  copy->mHasWarnedAboutMissingFeatureId = mHasWarnedAboutMissingFeatureId;
+  copy->mGetFeatureEPSGDotHonoursEPSGOrder = mGetFeatureEPSGDotHonoursEPSGOrder;
+  copy->mServerPrefersCoordinatesForTransactions_1_1 = mServerPrefersCoordinatesForTransactions_1_1;
+  copy->mWKBType = mWKBType;
+  copy->mWFSFilter = mWFSFilter;
+  copy->mSortBy = mSortBy;
+  QgsBackgroundCachedSharedData::copyStateToClone( copy );
+
+  return copy;
+}
+
 void QgsWFSSharedData::invalidateCacheBaseUnderLock()
 {
 }

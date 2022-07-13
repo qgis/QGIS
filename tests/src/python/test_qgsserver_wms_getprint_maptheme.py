@@ -32,26 +32,31 @@ from utilities import unitTestDataPath
 
 
 class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
-    """Tests for issue GH #34178 QGIS Server GetPrint:
-    HIGHLIGHT_GEOM is not printed if map layers are configured to follow a map theme"""
+    """Tests for GetPrint layouts following map themes"""
 
-    def test_wms_getprint_maptheme(self):
-        """Test project has 2 layer: red and green and three templates:
-            red: follow map theme red
-            green: follow map theme green
-            blank: no map theme
-        """
+    @classmethod
+    def setUpClass(cls):
 
-        tmp_dir = QTemporaryDir()
-        shutil.copyfile(os.path.join(unitTestDataPath('qgis_server'), 'test_project_mapthemes.qgs'), os.path.join(tmp_dir.path(), 'test_project_mapthemes.qgs'))
-        shutil.copyfile(os.path.join(unitTestDataPath('qgis_server'), 'test_project_mapthemes.gpkg'), os.path.join(tmp_dir.path(), 'test_project_mapthemes.gpkg'))
+        super().setUpClass()
 
         project = QgsProject()
-        self.assertTrue(project.read(os.path.join(tmp_dir.path(), 'test_project_mapthemes.qgs')))
+        assert (project.read(os.path.join(cls.temporary_path, 'qgis_server', 'test_project_mapthemes.qgs')))
+
+        cls.project = project
+        cls.polygon = 'POLYGON((7.09769689415099325 44.92867722467413216, 7.37818833364500737 44.92867722467413216, 7.37818833364500737 45.0714498943264914, 7.09769689415099325 45.0714498943264914, 7.09769689415099325 44.92867722467413216))'
+
+    def test_wms_getprint_maptheme(self):
+        """Test templates green and red have 2 layers: red and green
+            template red: follow map theme red
+            template green: follow map theme green
+            template blank: no map theme
+        """
+
+        project = self.project
 
         params = {
             "SERVICE": "WMS",
-            "VERSION": "1.3",
+            "VERSION": "1.3.0",
             "REQUEST": "GetPrint",
             "TEMPLATE": "blank",
             "FORMAT": "png",
@@ -61,8 +66,6 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
             "CRS": "EPSG:4326",
             "DPI": '72'
         }
-
-        polygon = 'POLYGON((7.09769689415099325 44.92867722467413216, 7.37818833364500737 44.92867722467413216, 7.37818833364500737 45.0714498943264914, 7.09769689415099325 45.0714498943264914, 7.09769689415099325 44.92867722467413216))'
 
         ######################################################
         # Template map theme tests, no HIGHLIGHT
@@ -116,13 +119,149 @@ class PyQgsServerWMSGetPrintMapTheme(QgsServerTestBase):
         image = QImage.fromData(response.body(), "PNG")
         self._assertRed(image.pixelColor(100, 100))
 
-        ######################################################
-        # Start HIGHLIGHT tests
+        # Same situation as above but LAYERS is not map0 prefixed
+        params["LAYERS"] = "red"
+        params["TEMPLATE"] = "green"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
 
-        params["TEMPLATE"] = "blank"
-        params["map0:LAYERS"] = "red"
-        params["map0:HIGHLIGHT_GEOM"] = polygon
-        params["map0:HIGHLIGHT_SYMBOL"] = r'<StyledLayerDescriptor><UserStyle><FeatureTypeStyle><Rule><PolygonSymbolizer><Fill><CssParameter name="fill">%230000FF</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></StyledLayerDescriptor>'
+        image = QImage.fromData(response.body(), "PNG")
+        self._assertRed(image.pixelColor(100, 100))
+
+        # Same as above but we have a conflict situation: we pass both LAYERS
+        # and map0:LAYERS, the second must prevail because it is more specific
+        params["LAYERS"] = "red"
+        params["map0:LAYERS"] = "green"
+        params["TEMPLATE"] = "red"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        self._assertGreen(image.pixelColor(100, 100))
+
+    def test_wms_getprint_maptheme_multiple_maps(self):
+        """Test template points has 4 layers: points_black, points_red, points_green, points_blue
+            the template has two maps (from top to bottom) map1 and map0 using
+            respectively the 4points-red and 4points-green map themes
+        """
+
+        project = self.project
+
+        # No LAYERS specified
+        params = {
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetPrint',
+            'TEMPLATE': 'points',
+            'FORMAT': 'png',
+            'map0:EXTENT': '44.66151222233335716,6.71202136069002187,45.25042454764368927,7.83398711866607833',
+            'CRS': 'EPSG:4326',
+            'DPI': '72',
+            'map1:EXTENT': '44.66151222233335716,6.71202136069002187,45.25042454764368927,7.83398711866607833'
+        }
+
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        # Expected: green and red
+        # map1 (top map)
+        self._assertRed(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertWhite(image.pixelColor(485, 258))  # BLACK
+        # map0 (bottom map)
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertGreen(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertWhite(image.pixelColor(481, 553))  # BLACK
+
+        # Black LAYERS
+        params["LAYERS"] = "points_black"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        # Expected black
+        # map1 (top map)
+        self._assertWhite(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertBlack(image.pixelColor(485, 258))  # BLACK
+        # map0 (bottom map)
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertWhite(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertBlack(image.pixelColor(481, 553))  # BLACK
+
+        # Black map0:LAYERS
+        del params["LAYERS"]
+        params["map0:LAYERS"] = "points_black"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        # Expected black on map0, green on map1
+        # map1 (top map)
+        self._assertRed(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertWhite(image.pixelColor(485, 258))  # BLACK
+        #  map0 (bottom map)
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertWhite(image.pixelColor(475, 473))  # GREEN
+        self._assertWhite(image.pixelColor(329, 553))  # BLUE
+        self._assertBlack(image.pixelColor(481, 553))  # BLACK
+
+        # Conflicting information: Black LAYERS and Green map0:LAYERS
+        # The second gets precedence on map0 while LAYERS is applied to map1
+        params["map0:LAYERS"] = "points_blue"
+        params["LAYERS"] = "points_black"
+        response = QgsBufferServerResponse()
+        request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))
+        self.server.handleRequest(request, response, project)
+
+        image = QImage.fromData(response.body(), "PNG")
+        # Expected green on map0, black on map1
+        # map1 (top map)
+        self._assertWhite(image.pixelColor(325, 184))  # RED
+        self._assertWhite(image.pixelColor(474, 184))  # GREEN
+        self._assertWhite(image.pixelColor(332, 262))  # BLUE
+        self._assertBlack(image.pixelColor(485, 258))  # BLACK
+        #  map0 (bottom map)
+        self._assertWhite(image.pixelColor(315, 461))  # RED
+        self._assertWhite(image.pixelColor(475, 473))  # GREEN
+        self._assertBlue(image.pixelColor(329, 553))  # BLUE
+        self._assertWhite(image.pixelColor(481, 553))  # BLACK
+
+    def test_wms_getprint_maptheme_highlight(self):
+        """Test templates green and red have 2 layers: red and green
+            template red: follow map theme red
+            template green: follow map theme green
+            template blank: no map theme
+        """
+
+        project = self.project
+
+        params = {
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetPrint',
+            'TEMPLATE': 'blank',
+            'FORMAT': 'png',
+            'LAYERS': '',
+            'map0:EXTENT': '44.92867722467413216,7.097696894150993252,45.0714498943264914,7.378188333645007368',
+            'map0:LAYERS': 'red',
+            'CRS': 'EPSG:4326',
+            'DPI': '72',
+            'map0:HIGHLIGHT_GEOM': self.polygon,
+            'map0:HIGHLIGHT_SYMBOL': r'<StyledLayerDescriptor><UserStyle><FeatureTypeStyle><Rule><PolygonSymbolizer><Fill><CssParameter name="fill">%230000FF</CssParameter></Fill></PolygonSymbolizer></Rule></FeatureTypeStyle></UserStyle></StyledLayerDescriptor>'
+        }
 
         response = QgsBufferServerResponse()
         request = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % i for i in params.items()]))

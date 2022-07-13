@@ -49,6 +49,7 @@ from utilities import unitTestDataPath
 import osgeo.gdal  # NOQA
 import tempfile
 import base64
+from shutil import copytree
 
 
 start_app()
@@ -112,14 +113,47 @@ class QgsServerTestBase(unittest.TestCase):
                 self.assertEqual(expected_values, response_values, msg=msg + "\nXML attribute values differ at line {0}: {1} != {2}".format(line_no, expected_values, response_values))
             line_no += 1
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         """Create the server instance"""
         self.fontFamily = QgsFontUtils.standardTestFontFamily()
         QgsFontUtils.loadStandardTestFonts(['All'])
 
-        self.testdata_path = unitTestDataPath('qgis_server') + '/'
+        self.temporary_dir = tempfile.TemporaryDirectory()
+        self.temporary_path = self.temporary_dir.name
 
-        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        # Copy all testdata to the temporary directory
+        copytree(unitTestDataPath('qgis_server'), os.path.join(self.temporary_path, 'qgis_server'))
+        copytree(unitTestDataPath('qgis_server_accesscontrol'), os.path.join(self.temporary_path, 'qgis_server_accesscontrol'))
+
+        for f in [
+            'empty_spatial_layer.dbf',
+            'empty_spatial_layer.prj',
+            'empty_spatial_layer.qpj',
+            'empty_spatial_layer.shp',
+            'empty_spatial_layer.shx',
+            'france_parts.dbf',
+            'france_parts.prj',
+            'france_parts.qpj',
+            'france_parts.shp',
+            'france_parts.shp.xml',
+            'france_parts.shx',
+            'landsat.tif',
+            'points.dbf',
+            'points.prj',
+            'points.shp',
+            'points.shx',
+            'requires_warped_vrt.tif',
+        ]:
+            os.symlink(
+                unitTestDataPath(f),
+                os.path.join(self.temporary_path, f)
+            )
+
+        self.testdata_path = os.path.join(self.temporary_path, 'qgis_server') + '/'
+
+        d = os.path.join(self.temporary_path, 'qgis_server_accesscontrol')
+
         self.projectPath = os.path.join(d, "project.qgs")
         self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
         self.projectStatePath = os.path.join(d, "project_state.qgs")
@@ -139,14 +173,17 @@ class QgsServerTestBase(unittest.TestCase):
         # Disable landing page API to test standard legacy XML responses in case of errors
         os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         """Cleanup env"""
 
-        super().tearDown()
+        super().tearDownClass()
         try:
             del os.environ["QGIS_SERVER_DISABLED_APIS"]
         except KeyError:
             pass
+
+        self.temporary_dir.cleanup()
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
@@ -306,7 +343,7 @@ class QgsServerTestBase(unittest.TestCase):
     def _assertBlack(self, color: QColor):
         self.assertEqual(color.red(), 0)
         self.assertEqual(color.green(), 0)
-        self.assertEqual(color.blue(), 255)
+        self.assertEqual(color.blue(), 0)
 
     def _assertWhite(self, color: QColor):
         self.assertEqual(color.red(), 255)

@@ -225,6 +225,13 @@ Returns an HTML table with the basic information about this action.
 .. versionadded:: 3.24
 %End
 
+    void setCommand( const QString &newCommand );
+%Docstring
+Sets the action ``command``.
+
+.. versionadded:: 3.26
+%End
+
 };
 
 

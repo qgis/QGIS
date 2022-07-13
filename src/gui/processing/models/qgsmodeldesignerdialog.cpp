@@ -229,6 +229,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mMenuEdit->insertAction( mActionDeleteComponents, mActionPaste );
   mMenuEdit->insertSeparator( mActionDeleteComponents );
 
+  mAlgorithmsModel = new QgsModelerToolboxModel( this );
+  mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
+
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {
@@ -237,9 +240,6 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmsTree->setFilters( filters );
   mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );
   mAlgorithmsTree->setDropIndicatorShown( true );
-
-  mAlgorithmsModel = new QgsModelerToolboxModel( this );
-  mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
 
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [ = ]( const QString & algorithmId, const QPointF & pos )
   {

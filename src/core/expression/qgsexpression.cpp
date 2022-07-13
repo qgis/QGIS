@@ -801,6 +801,8 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "frame_rate" ), QCoreApplication::translate( "variable_help", "Number of frames per second during animation playback" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "frame_duration" ), QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep" ), QCoreApplication::translate( "variable_help", "Frame time step during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep_unit" ), QCoreApplication::translate( "variable_help", "Unit of the frame time step during animation playback" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "animation_start_time" ), QCoreApplication::translate( "variable_help", "Start of the animation's overall temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "animation_end_time" ), QCoreApplication::translate( "variable_help", "End of the animation's overall temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "animation_interval" ), QCoreApplication::translate( "variable_help", "Duration of the animation's overall temporal time range (as an interval value)" ) );

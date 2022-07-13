@@ -18,6 +18,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
+#include "qgsprovidermetadata.h"
 
 ///@cond PRIVATE
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
@@ -40,13 +41,6 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     static QString providerKey();
     //! Returns the memory provider description
     static QString providerDescription();
-
-    /**
-     * Creates a new memory provider, with provider properties embedded within the given \a uri and \a options
-     * argument.
-     */
-    static QgsMemoryProvider *createProvider( const QString &uri, const QgsVectorDataProvider::ProviderOptions &coordinateTransformContext,
-        QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
@@ -102,6 +96,18 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     QString mSubsetString;
 
     friend class QgsMemoryFeatureSource;
+};
+
+
+class QgsMemoryProviderMetadata final: public QgsProviderMetadata
+{
+    Q_OBJECT
+
+  public:
+    QgsMemoryProviderMetadata();
+    QIcon icon() const override;
+    QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

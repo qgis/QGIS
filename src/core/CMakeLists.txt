@@ -38,6 +38,7 @@ set(QGIS_CORE_SRCS
   classification/qgsclassificationmethod.cpp
   classification/qgsclassificationcustom.cpp
   classification/qgsclassificationequalinterval.cpp
+  classification/qgsclassificationfixedinterval.cpp
   classification/qgsclassificationprettybreaks.cpp
   classification/qgsclassificationquantile.cpp
   classification/qgsclassificationjenks.cpp
@@ -74,6 +75,7 @@ set(QGIS_CORE_SRCS
   symbology/qgsarrowsymbollayer.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
+  symbology/qgscombinedstylemodel.cpp
   symbology/qgscptcityarchive.cpp
   symbology/qgsellipsesymbollayer.cpp
   symbology/qgsembeddedsymbolrenderer.cpp
@@ -93,8 +95,8 @@ set(QGIS_CORE_SRCS
   symbology/qgsmarkersymbollayer.cpp
   symbology/qgsmasksymbollayer.cpp
   symbology/qgsmergedfeaturerenderer.cpp
-  symbology/qgspainterswapper.cpp
   symbology/qgsnullsymbolrenderer.cpp
+  symbology/qgspainterswapper.cpp
   symbology/qgspointclusterrenderer.cpp
   symbology/qgspointdisplacementrenderer.cpp
   symbology/qgspointdistancerenderer.cpp
@@ -301,6 +303,7 @@ set(QGIS_CORE_SRCS
   scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
+  textrenderer/qgsfontmanager.cpp
   textrenderer/qgstextbackgroundsettings.cpp
   textrenderer/qgstextblock.cpp
   textrenderer/qgstextbuffersettings.cpp
@@ -340,6 +343,7 @@ set(QGIS_CORE_SRCS
   qgscolorrampimpl.cpp
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
+  qgscolorutils.cpp
   qgscommandlineutils.cpp
   qgsconditionalstyle.cpp
   qgsconnectionregistry.cpp
@@ -433,6 +437,7 @@ set(QGIS_CORE_SRCS
   qgsmargins.cpp
   qgsmaskidprovider.cpp
   qgsmbtiles.cpp
+  qgsmaskpaintdevice.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -478,8 +483,10 @@ set(QGIS_CORE_SRCS
   qgsruntimeprofiler.cpp
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
+  qgsselectioncontext.cpp
   qgsshapegenerator.cpp
   qgssimplifymethod.cpp
+  qgssingleitemmodel.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgsspatialindexkdbush.cpp
@@ -649,6 +656,7 @@ set(QGIS_CORE_SRCS
   project/qgsprojectservervalidator.cpp
   project/qgsprojectstorage.cpp
   project/qgsprojectstorageregistry.cpp
+  project/qgsprojectstylesettings.cpp
   project/qgsprojecttimesettings.cpp
   project/qgsprojectutils.cpp
   project/qgsprojectversion.cpp
@@ -753,11 +761,16 @@ set(QGIS_CORE_SRCS
   pointcloud/expression/qgspointcloudexpressionnode.cpp
   pointcloud/expression/qgspointcloudexpressionnodeimpl.cpp
 
+  pointcloud/qgspointcloudstatscalculator.cpp
+  pointcloud/qgspointcloudstatscalculationtask.cpp
+  pointcloud/qgspointcloudstatistics.cpp
+
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
   labeling/qgslabelingenginesettings.cpp
   labeling/qgslabelingresults.cpp
   labeling/qgslabellinesettings.cpp
+  labeling/qgslabelplacementsettings.cpp
   labeling/qgslabelobstaclesettings.cpp
   labeling/qgslabelsearchtree.cpp
   labeling/qgslabelsink.cpp
@@ -992,6 +1005,7 @@ set(QGIS_CORE_HDRS
   qgscolorrampimpl.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
+  qgscolorutils.h
   qgsconditionalstyle.h
   qgsconnectionpool.h
   qgsconnectionregistry.h
@@ -1097,6 +1111,7 @@ set(QGIS_CORE_HDRS
   qgsmapunitscale.h
   qgsmargins.h
   qgsmaskidprovider.h
+  qgsmaskpaintdevice.h
   qgsmbtiles.h
   qgsmessagelog.h
   qgsmessageoutput.h
@@ -1146,8 +1161,10 @@ set(QGIS_CORE_HDRS
   qgsruntimeprofiler.h
   qgsscalecalculator.h
   qgsscaleutils.h
+  qgsselectioncontext.h
   qgsshapegenerator.h
   qgssimplifymethod.h
+  qgssingleitemmodel.h
   qgssnappingconfig.h
   qgssnappingutils.h
   qgsspatialindex.h
@@ -1254,6 +1271,7 @@ set(QGIS_CORE_HDRS
 
   classification/qgsclassificationcustom.h
   classification/qgsclassificationequalinterval.h
+  classification/qgsclassificationfixedinterval.h
   classification/qgsclassificationjenks.h
   classification/qgsclassificationlogarithmic.h
   classification/qgsclassificationmethod.h
@@ -1381,6 +1399,7 @@ set(QGIS_CORE_HDRS
   labeling/qgslabelingresults.h
   labeling/qgslabellinesettings.h
   labeling/qgslabelobstaclesettings.h
+  labeling/qgslabelplacementsettings.h
   labeling/qgslabelposition.h
   labeling/qgslabelsearchtree.h
   labeling/qgslabelsink.h
@@ -1549,6 +1568,10 @@ set(QGIS_CORE_HDRS
   pointcloud/expression/qgspointcloudexpressionnode.h
   pointcloud/expression/qgspointcloudexpressionnodeimpl.h
 
+  pointcloud/qgspointcloudstatscalculator.h
+  pointcloud/qgspointcloudstatscalculationtask.h
+  pointcloud/qgspointcloudstatistics.h
+
   proj/qgscelestialbody.h
   proj/qgscoordinatereferencesystem.h
   proj/qgscoordinatereferencesystemregistry.h
@@ -1632,6 +1655,7 @@ set(QGIS_CORE_HDRS
   project/qgsprojectservervalidator.h
   project/qgsprojectstorage.h
   project/qgsprojectstorageregistry.h
+  project/qgsprojectstylesettings.h
   project/qgsprojecttimesettings.h
   project/qgsprojecttranslator.h
   project/qgsprojectutils.h
@@ -1740,6 +1764,7 @@ set(QGIS_CORE_HDRS
   symbology/qgsarrowsymbollayer.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
+  symbology/qgscombinedstylemodel.h
   symbology/qgscptcityarchive.h
   symbology/qgsellipsesymbollayer.h
   symbology/qgsembeddedsymbolrenderer.h
@@ -1779,6 +1804,7 @@ set(QGIS_CORE_HDRS
   symbology/qgssymbolrendercontext.h
   symbology/qgsvectorfieldsymbollayer.h
 
+  textrenderer/qgsfontmanager.h
   textrenderer/qgstextbackgroundsettings.h
   textrenderer/qgstextblock.h
   textrenderer/qgstextbuffersettings.h
@@ -2238,10 +2264,6 @@ if (APPLE AND NOT IOS)
   target_link_libraries(qgis_core qgis_native)
 endif()
 
-if (ADD_CLAZY_CHECKS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS},non-pod-global-static")
-endif()
-
 target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Core
   ${QT_VERSION_BASE}::Gui
@@ -2273,7 +2295,7 @@ if (WITH_SPATIALITE)
   target_link_libraries(qgis_core ${SPATIALITE_LIBRARY})
 endif()
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_link_libraries(qgis_core Qt6::Core5Compat)
 endif()
 

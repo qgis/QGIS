@@ -42,6 +42,7 @@
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
 #include "qgssymbollayerreference.h"
+#include "qgspainteffect.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -940,7 +941,7 @@ bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fiel
 }
 
 
-QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> QgsVectorLayerUtils::labelMasks( const QgsVectorLayer *layer )
+QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVectorLayer *layer )
 {
   class LabelMasksVisitor : public QgsStyleEntityVisitorInterface
   {
@@ -959,18 +960,25 @@ QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> QgsVectorLayerUtils::labe
         if ( leaf.entity && leaf.entity->type() == QgsStyle::LabelSettingsEntity )
         {
           auto labelSettingsEntity = static_cast<const QgsStyleLabelSettingsEntity *>( leaf.entity );
-          if ( labelSettingsEntity->settings().format().mask().enabled() )
+          const QgsTextMaskSettings &maskSettings = labelSettingsEntity->settings().format().mask();
+          if ( maskSettings.enabled() )
           {
-            for ( const auto &r : labelSettingsEntity->settings().format().mask().maskedSymbolLayers() )
+            // transparency is considered has effects because it implies rasterization when masking
+            // is involved
+            const bool hasEffects = maskSettings.opacity() < 1 ||
+                                    ( maskSettings.paintEffect() && maskSettings.paintEffect()->enabled() );
+            for ( const auto &r : maskSettings.maskedSymbolLayers() )
             {
-              masks[currentRule][r.layerId()].insert( r.symbolLayerId() );
+              QgsMaskedLayer &maskedLayer = maskedLayers[currentRule][r.layerId()];
+              maskedLayer.symbolLayerIds.insert( r.symbolLayerId() );
+              maskedLayer.hasEffects = hasEffects;
             }
           }
         }
         return true;
       }
 
-      QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> masks;
+      QHash<QString, QgsMaskedLayers> maskedLayers;
       // Current label rule, empty string for a simple labeling
       QString currentRule;
   };
@@ -980,10 +988,10 @@ QHash<QString, QHash<QString, QSet<QgsSymbolLayerId>>> QgsVectorLayerUtils::labe
 
   LabelMasksVisitor visitor;
   layer->labeling()->accept( &visitor );
-  return std::move( visitor.masks );
+  return std::move( visitor.maskedLayers );
 }
 
-QHash<QString, QSet<QgsSymbolLayerId>> QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *layer )
+QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *layer )
 {
   if ( ! layer->renderer() )
     return {};
@@ -996,20 +1004,32 @@ QHash<QString, QSet<QgsSymbolLayerId>> QgsVectorLayerUtils::symbolLayerMasks( co
         return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
       }
 
-      void visitSymbol( const QgsSymbol *symbol )
+      // Returns true if the visited symbol has effects
+      bool visitSymbol( const QgsSymbol *symbol )
       {
+        // transparency is considered has effects because it implies rasterization when masking
+        // is involved
+        bool symbolHasEffect = symbol->opacity() < 1;
         for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
         {
           const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
-          for ( const auto &mask : sl->masks() )
-          {
-            masks[mask.layerId()].insert( mask.symbolLayerId() );
-          }
+          bool slHasEffects = sl->paintEffect() && sl->paintEffect()->enabled();
+          symbolHasEffect |= slHasEffects;
+
           // recurse over sub symbols
           const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
           if ( subSymbol )
-            visitSymbol( subSymbol );
+            slHasEffects |= visitSymbol( subSymbol );
+
+          for ( const auto &mask : sl->masks() )
+          {
+            QgsMaskedLayer &maskedLayer = maskedLayers[mask.layerId()];
+            maskedLayer.hasEffects |= slHasEffects;
+            maskedLayer.symbolLayerIds.insert( mask.symbolLayerId() );
+          }
         }
+
+        return symbolHasEffect;
       }
 
       bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
@@ -1022,12 +1042,12 @@ QHash<QString, QSet<QgsSymbolLayerId>> QgsVectorLayerUtils::symbolLayerMasks( co
         }
         return true;
       }
-      QHash<QString, QSet<QgsSymbolLayerId>> masks;
+      QgsMaskedLayers maskedLayers;
   };
 
   SymbolLayerVisitor visitor;
   layer->renderer()->accept( &visitor );
-  return visitor.masks;
+  return visitor.maskedLayers;
 }
 
 QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature )

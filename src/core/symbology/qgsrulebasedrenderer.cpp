@@ -1148,7 +1148,7 @@ QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVect
       else
         return (
                  otherRules.size() > 1
-                 ?  QStringLiteral( "NOT ((%1))" ).arg( otherRules.join( QStringLiteral( ") OR (" ) ) )
+                 ?  QStringLiteral( "NOT ((%1))" ).arg( otherRules.join( QLatin1String( ") OR (" ) ) )
                  : QStringLiteral( "NOT (%1)" ).arg( otherRules.at( 0 ) )
                );
     }
@@ -1168,7 +1168,7 @@ QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVect
       {
         return (
                  ruleParts.size() > 1
-                 ?  QStringLiteral( "(%1)" ).arg( ruleParts.join( QStringLiteral( ") AND (" ) ) )
+                 ?  QStringLiteral( "(%1)" ).arg( ruleParts.join( QLatin1String( ") AND (" ) ) )
                  : ruleParts.at( 0 )
                );
       }
@@ -1192,7 +1192,7 @@ QString QgsRuleBasedRenderer::legendKeyToExpression( const QString &key, QgsVect
   ok = true;
   return parts.empty() ? QStringLiteral( "TRUE" )
          : ( parts.size() > 1
-             ?  QStringLiteral( "(%1)" ).arg( parts.join( QStringLiteral( ") AND (" ) ) )
+             ?  QStringLiteral( "(%1)" ).arg( parts.join( QLatin1String( ") AND (" ) ) )
              : parts.at( 0 ) );
 }
 

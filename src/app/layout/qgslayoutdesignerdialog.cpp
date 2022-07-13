@@ -2885,7 +2885,6 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
 
   QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
   dlg.setFileMode( QFileDialog::Directory );
-  dlg.setOption( QFileDialog::ShowDirsOnly, true );
   dlg.setDirectory( lastUsedDir );
   if ( !dlg.exec() )
   {
@@ -3060,7 +3059,6 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
   QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
   dlg.setFileMode( QFileDialog::Directory );
-  dlg.setOption( QFileDialog::ShowDirsOnly, true );
   dlg.setDirectory( lastUsedDir );
   if ( !dlg.exec() )
   {
@@ -3279,7 +3277,6 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
     QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
-    dlg.setOption( QFileDialog::ShowDirsOnly, true );
     dlg.setDirectory( lastUsedDir );
     if ( !dlg.exec() )
     {

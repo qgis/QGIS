@@ -458,6 +458,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   {
     QgsExpressionContext context = mExpressionContextGenerator->createExpressionContext();
     QStringList variables = context.variableNames();
+    variables.sort();
     const auto constVariables = variables;
     for ( const QString &variable : constVariables )
     {

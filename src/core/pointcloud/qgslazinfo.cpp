@@ -110,7 +110,7 @@ void QgsLazInfo::parseCrs()
   // TODO: handle other kind of CRS in the laz spec
   for ( LazVlr &vlr : mVlrVector )
   {
-    if ( vlr.userId.trimmed() == QStringLiteral( "LASF_Projection" ) && vlr.recordId == 2112 )
+    if ( vlr.userId.trimmed() == QLatin1String( "LASF_Projection" ) && vlr.recordId == 2112 )
     {
       mCrs = QgsCoordinateReferenceSystem::fromWkt( QString::fromStdString( vlr.data.toStdString() ) );
       break;
@@ -165,7 +165,7 @@ void QgsLazInfo::parseLazAttributes()
   mAttributes.push_back( QgsPointCloudAttribute( "NumberOfReturns", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "ScanDirectionFlag", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "EdgeOfFlightLine", QgsPointCloudAttribute::Char ) );
-  mAttributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::Char ) );
+  mAttributes.push_back( QgsPointCloudAttribute( "Classification", QgsPointCloudAttribute::UChar ) );
   mAttributes.push_back( QgsPointCloudAttribute( "ScanAngleRank", QgsPointCloudAttribute::Short ) );
   mAttributes.push_back( QgsPointCloudAttribute( "UserData", QgsPointCloudAttribute::Char ) );
   mAttributes.push_back( QgsPointCloudAttribute( "PointSourceId", QgsPointCloudAttribute::UShort ) );
@@ -281,7 +281,7 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
   lazInfo.parseRawHeader( headerRawData, 375 );
 
   int vlrDataSize = lazInfo.firstPointRecordOffset() - lazInfo.firstVariableLengthRecord();
-  std::unique_ptr<char> vlrEntriesRawData( new char[ vlrDataSize ] );
+  std::unique_ptr<char[]> vlrEntriesRawData( new char[ vlrDataSize ] );
   file.seekg( lazInfo.firstVariableLengthRecord() );
   file.read( vlrEntriesRawData.get(), vlrDataSize );
   lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), vlrDataSize );
@@ -292,6 +292,13 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
 QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
 {
   QgsLazInfo lazInfo;
+
+  if ( !supportsRangeQueries( url ) )
+  {
+    lazInfo.mError = QStringLiteral( "The server of submitted URL doesn't support range queries" );
+    return lazInfo;
+  }
+
   // Fetch header data
   {
     QNetworkRequest nr( url );
@@ -306,6 +313,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
       lazInfo.mError = QStringLiteral( "Range query 0-374 to \"%1\" failed: \"%2\"" ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
+
     const QgsNetworkReplyContent reply = req.reply();
     QByteArray lazHeaderData = reply.content();
 
@@ -338,3 +346,16 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
   return lazInfo;
 }
 
+bool QgsLazInfo::supportsRangeQueries( QUrl &url )
+{
+  QNetworkRequest nr( url );
+  nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
+  nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, false );
+  nr.setRawHeader( "Range", "bytes=0-0" );
+  QgsBlockingNetworkRequest req;
+  QgsBlockingNetworkRequest::ErrorCode errCode = req.head( nr );
+  QgsNetworkReplyContent reply = req.reply();
+
+  QString acceptRangesHeader = reply.rawHeader( QStringLiteral( "Accept-Ranges" ).toLocal8Bit() );
+  return errCode == QgsBlockingNetworkRequest::NoError && acceptRangesHeader.compare( QStringLiteral( "bytes" ), Qt::CaseSensitivity::CaseInsensitive ) == 0;
+}

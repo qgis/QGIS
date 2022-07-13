@@ -237,12 +237,12 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     /**
      * Emitted whenever the animation \a state changes.
      */
-    void stateChanged( AnimationState state );
+    void stateChanged( QgsTemporalNavigationObject::AnimationState state );
 
     /**
      * Emitted whenever the navigation \a mode changes.
      */
-    void navigationModeChanged( NavigationMode mode );
+    void navigationModeChanged( QgsTemporalNavigationObject::NavigationMode mode );
 
     /**
      * Emitted whenever the temporalExtent \a extent changes.

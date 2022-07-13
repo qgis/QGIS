@@ -824,6 +824,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QStringList fieldDomainNames() const SIP_THROW( QgsProviderConnectionException );
 
     /**
+     * Returns a list of field domain types which are supported by the provider.
+     *
+     * \since QGIS 3.28
+     */
+    virtual QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const;
+
+    /**
      * Returns the field domain with the specified \a name from the provider.
      *
      * The caller takes ownership of the return object. Will return NULLPTR if no matching field domain is found.

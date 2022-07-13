@@ -397,16 +397,16 @@ bool QgsMssqlNewConnection::testPrimaryKeyInGeometryColumns() const
   return test;
 }
 
-QgsMssqlNewConnection::SchemaModel::SchemaModel( QObject *parent ): QAbstractListModel( parent )
+SchemaModel::SchemaModel( QObject *parent ): QAbstractListModel( parent )
 {}
 
-int QgsMssqlNewConnection::SchemaModel::rowCount( const QModelIndex &parent ) const
+int SchemaModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return mSchemas.count();
 }
 
-QVariant QgsMssqlNewConnection::SchemaModel::data( const QModelIndex &index, int role ) const
+QVariant SchemaModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || index.row() >= mSchemas.count() )
     return QVariant();
@@ -430,7 +430,7 @@ QVariant QgsMssqlNewConnection::SchemaModel::data( const QModelIndex &index, int
   return QVariant();
 }
 
-bool QgsMssqlNewConnection::SchemaModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool SchemaModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || index.row() >= mSchemas.count() )
     return false;
@@ -451,28 +451,28 @@ bool QgsMssqlNewConnection::SchemaModel::setData( const QModelIndex &index, cons
   return false;
 }
 
-Qt::ItemFlags QgsMssqlNewConnection::SchemaModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags SchemaModel::flags( const QModelIndex &index ) const
 {
   return QAbstractListModel::flags( index ) | Qt::ItemFlag::ItemIsUserCheckable;
 }
 
-QStringList QgsMssqlNewConnection::SchemaModel::uncheckedSchemas() const
+QStringList SchemaModel::uncheckedSchemas() const
 {
   return mExcludedSchemas;
 }
 
 
-QString QgsMssqlNewConnection::SchemaModel::dataBaseName() const
+QString SchemaModel::dataBaseName() const
 {
   return mDataBaseName;
 }
 
-void QgsMssqlNewConnection::SchemaModel::setDataBaseName( const QString &dataBaseName )
+void SchemaModel::setDataBaseName( const QString &dataBaseName )
 {
   mDataBaseName = dataBaseName;
 }
 
-void QgsMssqlNewConnection::SchemaModel::setSettings( const QString &database, const QStringList &schemas, const QStringList &excludedSchemas )
+void SchemaModel::setSettings( const QString &database, const QStringList &schemas, const QStringList &excludedSchemas )
 {
   beginResetModel();
   mDataBaseName = database;
@@ -481,13 +481,13 @@ void QgsMssqlNewConnection::SchemaModel::setSettings( const QString &database, c
   endResetModel();
 }
 
-void QgsMssqlNewConnection::SchemaModel::checkAll()
+void SchemaModel::checkAll()
 {
   mExcludedSchemas.clear();
   emit dataChanged( index( 0, 0, QModelIndex() ), index( mSchemas.count() - 1, 0, QModelIndex() ) );
 }
 
-void QgsMssqlNewConnection::SchemaModel::unCheckAll()
+void SchemaModel::unCheckAll()
 {
   mExcludedSchemas = mSchemas;
   emit dataChanged( index( 0, 0, QModelIndex() ), index( mSchemas.count() - 1, 0, QModelIndex() ) );

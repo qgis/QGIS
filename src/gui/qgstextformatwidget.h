@@ -210,7 +210,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * Sets the current text settings from a style entry.
      * \since QGIS 3.10
      */
-    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type );
+    virtual void setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath );
 
     /**
      * Saves the current text settings to a style entry.
@@ -314,6 +314,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void updateShadowFrameStatus();
     void updateCalloutFrameStatus();
     void updateDataDefinedAlignment();
+    void overlapModeChanged();
 };
 
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>491</width>
-    <height>535</height>
+    <height>614</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,36 @@
       <string>Save style</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="mStyleTypeComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mStylesWidgetLabel">
+     <property name="text">
+      <string>Styles</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QListWidget" name="mStylesWidget"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mFileLabel">
+     <property name="text">
+      <string>File</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsFileWidget" name="mFileWidget"/>
    </item>
    <item row="3" column="0" colspan="2">
     <widget class="QWidget" name="mSaveToDbWidget" native="true">
@@ -36,6 +66,20 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item row="2" column="1">
+       <widget class="QgsFileWidget" name="mDbStyleUIFileWidget">
+        <property name="toolTip">
+         <string>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="mDbStyleUseAsDefault">
+        <property name="text">
+         <string>Use as default style for this layer</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="nameLabel">
         <property name="text">
@@ -45,9 +89,6 @@
          <cstring>mDbStyleNameEdit</cstring>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mDbStyleNameEdit"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="descriptionLabel">
@@ -69,101 +110,36 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QCheckBox" name="mDbStyleUseAsDefault">
-        <property name="text">
-         <string>Use as default style for this layer</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QgsFileWidget" name="mDbStyleUIFileWidget" native="true">
-        <property name="toolTip">
-         <string>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mStyleTypeComboBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QWidget" name="mSaveToFileWidget" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Categories</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>File</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QListView" name="mStyleCategoriesListView">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
-       <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
+       <widget class="QLineEdit" name="mDbStyleNameEdit"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Categories</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QListView" name="mStyleCategoriesListView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QListWidget" name="mStylesWidget"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mStylesWidgetLabel">
-     <property name="text">
-      <string>Styles</string>
      </property>
     </widget>
    </item>
@@ -180,7 +156,6 @@
  <tabstops>
   <tabstop>mStyleTypeComboBox</tabstop>
   <tabstop>mStylesWidget</tabstop>
-  <tabstop>mStyleCategoriesListView</tabstop>
   <tabstop>mDbStyleNameEdit</tabstop>
   <tabstop>mDbStyleDescriptionEdit</tabstop>
   <tabstop>mDbStyleUseAsDefault</tabstop>

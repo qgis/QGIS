@@ -72,6 +72,7 @@ class GUI_EXPORT QgsModelInputReorderWidget : public QWidget, private Ui::QgsMod
  */
 class GUI_EXPORT QgsModelInputReorderDialog : public QDialog
 {
+    Q_OBJECT
 
   public:
 

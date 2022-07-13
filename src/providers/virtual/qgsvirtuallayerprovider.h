@@ -135,9 +135,12 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 
 class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsVirtualLayerProviderMetadata();
+    QIcon icon() const override;
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 // clazy:excludeall=qstring-allocations

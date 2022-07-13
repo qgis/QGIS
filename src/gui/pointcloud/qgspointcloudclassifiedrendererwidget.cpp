@@ -26,6 +26,7 @@
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"
+#include "qgspointcloudrendererregistry.h"
 
 #include <QMimeData>
 
@@ -126,6 +127,16 @@ QVariant QgsPointCloudClassifiedRendererModel::data( const QModelIndex &index, i
         }
         case 2:
           return category.label();
+        case 3:
+          const float value = mPercentages.value( category.value(), -1 );
+          QString str;
+          if ( value < 0 )
+            str = tr( "N/A" );
+          else if ( value != 0 && std::round( value * 10 ) < 1 )
+            str = QStringLiteral( "< " ) + QLocale().toString( 0.1, 'f', 1 );
+          else
+            str = QLocale().toString( mPercentages.value( category.value() ), 'f', 1 );
+          return str;
       }
       break;
     }
@@ -144,7 +155,11 @@ QVariant QgsPointCloudClassifiedRendererModel::data( const QModelIndex &index, i
 
     case Qt::TextAlignmentRole:
     {
-      return ( index.column() == 0 ) ? static_cast<Qt::Alignment::Int>( Qt::AlignHCenter ) : static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
+      if ( index.column() == 0 )
+        return static_cast<Qt::Alignment::Int>( Qt::AlignHCenter );
+      if ( index.column() == 3 )
+        return static_cast<Qt::Alignment::Int>( Qt::AlignRight );
+      return static_cast<Qt::Alignment::Int>( Qt::AlignLeft );
     }
 
     case Qt::EditRole:
@@ -206,10 +221,10 @@ bool QgsPointCloudClassifiedRendererModel::setData( const QModelIndex &index, co
 
 QVariant QgsPointCloudClassifiedRendererModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 4 )
   {
     QStringList lst;
-    lst << tr( "Color" ) << tr( "Value" ) << tr( "Legend" );
+    lst << tr( "Color" ) << tr( "Value" ) << tr( "Legend" ) << tr( "Percentage" );
     return lst.value( section );
   }
   return QVariant();
@@ -227,7 +242,7 @@ int QgsPointCloudClassifiedRendererModel::rowCount( const QModelIndex &parent ) 
 int QgsPointCloudClassifiedRendererModel::columnCount( const QModelIndex &index ) const
 {
   Q_UNUSED( index )
-  return 3;
+  return 4;
 }
 
 QModelIndex QgsPointCloudClassifiedRendererModel::index( int row, int column, const QModelIndex &parent ) const
@@ -382,7 +397,6 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
   mAttributeComboBox->setFilters( QgsPointCloudAttributeProxyModel::Char | QgsPointCloudAttributeProxyModel::Int32 | QgsPointCloudAttributeProxyModel::Short );
 
   mModel = new QgsPointCloudClassifiedRendererModel( this );
-  mModel->setRendererCategories( QgsPointCloudClassifiedRenderer::defaultCategories() );
 
   if ( layer )
   {
@@ -399,7 +413,7 @@ QgsPointCloudClassifiedRendererWidget::QgsPointCloudClassifiedRendererWidget( Qg
   viewCategories->setStyle( new QgsPointCloudClassifiedRendererViewStyle( viewCategories ) );
 
   connect( mAttributeComboBox, &QgsPointCloudAttributeComboBox::attributeChanged,
-           this, &QgsPointCloudClassifiedRendererWidget::emitWidgetChanged );
+           this, &QgsPointCloudClassifiedRendererWidget::attributeChanged );
   connect( mModel, &QgsPointCloudClassifiedRendererModel::categoriesChanged, this, &QgsPointCloudClassifiedRendererWidget::emitWidgetChanged );
 
   connect( viewCategories, &QAbstractItemView::doubleClicked, this, &QgsPointCloudClassifiedRendererWidget::categoriesDoubleClicked );
@@ -439,10 +453,24 @@ QString QgsPointCloudClassifiedRendererWidget::attribute()
   return mAttributeComboBox->currentAttribute();
 }
 
+void QgsPointCloudClassifiedRendererWidget::attributeChanged()
+{
+  if ( mBlockChangedSignal )
+    return;
+
+  mBlockChangedSignal = true;
+  mModel->removeAllRows();
+  mBlockChangedSignal = false;
+  addCategories();
+}
+
 void QgsPointCloudClassifiedRendererWidget::emitWidgetChanged()
 {
-  if ( !mBlockChangedSignal )
-    emit widgetChanged();
+  if ( mBlockChangedSignal )
+    return;
+
+  updateCategoriesPercentages();
+  emit widgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::categoriesDoubleClicked( const QModelIndex &idx )
@@ -456,17 +484,24 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
   if ( !mLayer || !mLayer->dataProvider() )
     return;
 
-  const QVariantList providerCategories = mLayer->dataProvider()->metadataClasses( mAttributeComboBox->currentAttribute() );
+
+  const QString currentAttribute = mAttributeComboBox->currentAttribute();
+  const QgsPointCloudStatistics stats = mLayer->statistics();
+  const QList<int> providerCategories = stats.classesOf( currentAttribute );
+
   const QgsPointCloudCategoryList currentCategories = mModel->categories();
 
-  for ( const QVariant &providerCategory : providerCategories )
+  const bool isClassificationAttribute = ! currentAttribute.compare( QStringLiteral( "Classification" ), Qt::CaseInsensitive );
+  const QgsPointCloudCategoryList defaultLayerCategories = isClassificationAttribute ? QgsPointCloudRendererRegistry::classificationAttributeCategories( mLayer ) : QgsPointCloudCategoryList();
+
+  mBlockChangedSignal = true;
+  for ( const int &providerCategory : providerCategories )
   {
-    const int newValue = providerCategory.toInt();
     // does this category already exist?
     bool found = false;
     for ( const QgsPointCloudCategory &c : currentCategories )
     {
-      if ( c.value() == newValue )
+      if ( c.value() == providerCategory )
       {
         found = true;
         break;
@@ -476,8 +511,23 @@ void QgsPointCloudClassifiedRendererWidget::addCategories()
     if ( found )
       continue;
 
-    mModel->addCategory( QgsPointCloudCategory( newValue, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( newValue, QString::number( newValue ) ) ) );
+    QgsPointCloudCategory category;
+    if ( isClassificationAttribute )
+    {
+      for ( const QgsPointCloudCategory &c : defaultLayerCategories )
+      {
+        if ( c.value() == providerCategory )
+          category = c;
+      }
+    }
+    else
+    {
+      category = QgsPointCloudCategory( providerCategory, QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString::number( providerCategory ) );
+    }
+    mModel->addCategory( category );
   }
+  mBlockChangedSignal = false;
+  emitWidgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::addCategory()
@@ -487,20 +537,17 @@ void QgsPointCloudClassifiedRendererWidget::addCategory()
 
   const QgsPointCloudCategory cat( mModel->categories().size(), QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor(), QString(), true );
   mModel->addCategory( cat );
-  emit widgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::deleteCategories()
 {
   const QList<int> categoryIndexes = selectedCategories();
   mModel->deleteRows( categoryIndexes );
-  emit widgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::deleteAllCategories()
 {
   mModel->removeAllRows();
-  emit widgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::setFromRenderer( const QgsPointCloudRenderer *r )
@@ -513,21 +560,15 @@ void QgsPointCloudClassifiedRendererWidget::setFromRenderer( const QgsPointCloud
   }
   else
   {
-    if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
-    {
-      mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
-    }
-    else
-    {
-      mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
-    }
+    initialize();
   }
   mBlockChangedSignal = false;
+  emitWidgetChanged();
 }
 
 void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCategoryList categories, const QString &attribute )
 {
-  mBlockChangedSignal = false;
+  mBlockChangedSignal = true;
   mModel->setRendererCategories( categories );
   if ( !attribute.isEmpty() )
   {
@@ -535,16 +576,24 @@ void QgsPointCloudClassifiedRendererWidget::setFromCategories( QgsPointCloudCate
   }
   else
   {
-    if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
-    {
-      mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
-    }
-    else
-    {
-      mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
-    }
+    initialize();
   }
   mBlockChangedSignal = false;
+  emitWidgetChanged();
+}
+
+void QgsPointCloudClassifiedRendererWidget::initialize()
+{
+  if ( mAttributeComboBox->findText( QStringLiteral( "Classification" ) ) > -1 )
+  {
+    mAttributeComboBox->setAttribute( QStringLiteral( "Classification" ) );
+  }
+  else
+  {
+    mAttributeComboBox->setCurrentIndex( mAttributeComboBox->count() > 1 ? 1 : 0 );
+  }
+  mModel->removeAllRows();
+  addCategories();
 }
 
 void QgsPointCloudClassifiedRendererWidget::changeCategorySymbol()
@@ -601,4 +650,22 @@ int QgsPointCloudClassifiedRendererWidget::currentCategoryRow()
   return idx.row();
 }
 
+void QgsPointCloudClassifiedRendererWidget::updateCategoriesPercentages()
+{
+  QMap < int, float > percentages;
+
+  const QgsPointCloudStatistics stats = mLayer->statistics();
+  const QMap<int, int> classes = stats.availableClasses( attribute() );
+  const int pointCount = stats.sampledPointsCount();
+  const QgsPointCloudCategoryList currentCategories = mModel->categories();
+
+  // when the stats are 100% accurate, we are sure that missing classes have a 0% of points
+  const bool statsExact = stats.sampledPointsCount() == mLayer->pointCount();
+  for ( const QgsPointCloudCategory &category : currentCategories )
+  {
+    if ( classes.contains( category.value() ) || statsExact )
+      percentages.insert( category.value(), ( double ) classes.value( category.value() ) / pointCount * 100 );
+  }
+  mModel->updateCategoriesPercentages( percentages );
+}
 ///@endcond

@@ -32,6 +32,8 @@ void QgsVectorFieldSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
 {
   QgsMarkerSymbolLayer::setOutputUnit( unit );
   mDistanceUnit = unit;
+  if ( mLineSymbol )
+    mLineSymbol->setOutputUnit( unit );
 }
 
 QgsUnitTypes::RenderUnit QgsVectorFieldSymbolLayer::outputUnit() const

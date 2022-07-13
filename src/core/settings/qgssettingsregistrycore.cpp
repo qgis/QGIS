@@ -27,6 +27,7 @@
 #include "qgsprocessing.h"
 #include "qgsvectorlayer.h"
 #include "qgsogrdbconnection.h"
+#include "qgsfontmanager.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -109,6 +110,9 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsOwsConnection::settingsConnectionSelected );
   addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionDetailsGroup );
   addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionCredentialsGroup );
+
+  addSettingsEntry( &QgsFontManager::settingsFontFamilyReplacements );
+  addSettingsEntry( &QgsFontManager::settingsDownloadMissingFonts );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

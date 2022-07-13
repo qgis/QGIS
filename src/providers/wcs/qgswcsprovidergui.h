@@ -16,6 +16,8 @@
 #include "qgswcsprovider.h"
 #include "qgsproviderguimetadata.h"
 
+#include"qgsprovidersourcewidgetprovider.h"
+
 class QgsWcsProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
@@ -23,5 +25,18 @@ class QgsWcsProviderGuiMetadata: public QgsProviderGuiMetadata
 
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
+    QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
 };
+
+
+class QgsWcsSourceWidgetProvider : public QgsProviderSourceWidgetProvider
+{
+  public:
+    QgsWcsSourceWidgetProvider();
+    QString providerKey() const override;
+    bool canHandleLayer( QgsMapLayer *layer ) const override;
+    QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
+
+};
+
 

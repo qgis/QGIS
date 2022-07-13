@@ -20,6 +20,7 @@
 #include "qgslabelfeature.h"
 #include "qgstextdocument.h"
 #include "qgstextmetrics.h"
+#include "qgspallabeling.h"
 #include <optional>
 
 class QgsTextCharacterFormat;

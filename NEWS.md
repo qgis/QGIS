@@ -1,5 +1,78 @@
 Change history for the QGIS Project
 
+# What's new in Version 3.26 'Buenos Aires'?
+
+This release has following new features:
+
+- Breaking Changes: DB2 Support Removed
+- Map Tools: Selecting all features by attribute value from Identify Results panel
+- User Interface: Coordinate ordering according to CRS
+- User Interface: Select features from expression based symbols
+- User Interface: Copy preview expression value to clipboard
+- User Interface: Option to synchronize statistics panel with layer selection
+- User Interface: Implement scroll wheel action for color and symbol buttons
+- Accessibility: Horizontal table scroll with shift+wheel
+- Symbology: New "Animated Marker" symbol type
+- Symbology: Allow any symbol to be an animated symbol
+- Symbology: Point cloud style synchronization
+- Symbology: Add a new classification method for "Fixed interval"
+- Symbology: Custom dash pattern panel shows total pattern length
+- Symbology: Select style categories when storing styles in database
+- Labelling: Allow data-defined control over line anchor type
+- Labelling: Control label anchor placement relative to text position
+- Labelling: Interactively move curved line labels along their line features
+- Rendering: WMS provider resampling
+- Rendering: Selective masking vectorization
+- 3D Features: Transparency support for 3D Phong material
+- 3D Features: 3D Maps inherit terrain settings from project
+- 3D Features: Sync 2D and 3D navigation
+- 3D Features: 3D axis in 3D map viewer
+- Point Clouds: Point cloud triangulation in 3D views
+- Point Clouds: Cloud Optimized Point Clouds (COPC) support
+- Point Clouds: Point cloud filtering
+- Print Layouts: Apply font settings from layer conditional styling to layout attribute tables
+- Expressions: Between/ Not between operators
+- Expressions: Static parent variable in aggregate expression functions
+- Expressions: Static parent variable in aggregate expression functions
+- Digitising: Add a checkbox to disable vertex tool dock auto-opening behavior
+- Digitising: Integrate shape map tools into feature digitizing
+- Digitising: New constraints for advanced digitizing panel
+- Data Management: Add a "filter rules" search box to vector tile renderer and labeling widgets
+- Data Management: User defined field names in export
+- Data Management: Georeferencing vector layers in georeferencer
+- Data Management: Add field domain management capabilities to browser
+- Data Management: Buffered Transactional Editing
+- Forms and Widgets: Access form reference in python form actions
+- Forms and Widgets: Allow drag and drop forms label font and color customization
+- Forms and Widgets: Collapse form group by expression
+- Analysis Tools: "Keep disjoint features separate" option for dissolve algorithm
+- Processing: Raise message model tool
+- Processing: Run batch processing steps in tasks
+- Processing: Background processing of model algorithms
+- Processing: Allow setting Examples in graphical model help
+- Processing: Overlay tools with multiple overlay layers support
+- Application and Project Options: Project elevation properties framework
+- Application and Project Options: Optionally store UI configuration in projects
+- Application and Project Options: Optionally store layer edit state in projects
+- Application and Project Options: Project style databases support
+- Application and Project Options: Added setting to show feature counts by default for newly added layers
+- Application and Project Options: Add a "Skip" option for custom environmental variables in Settings->Options->Environment
+- Application and Project Options: Revamped projects' default symbols, color ramp , and text format
+- Profile Plots: Elevation profile plotting tool
+- Profile Plots: Flexible vector layer symbology in elevation profiles
+- Profile Plots: Flexible symbology for point cloud profile plotting
+- Profile Plots: Vector feature extrusion for profile charts
+- Browser: Rename bookmark groups context menu control
+- Data Providers: Support reading ESRI vector tile packages (.vtpk) files directly
+- Data Providers: SQL Logging in the Debugging/ Development panel
+- QGIS Server: Alternate periodic check strategy for detecting project updates
+- QGIS Server: Add more server highlight label parameters
+- QGIS Server: Temporal properties support for WMS Server
+- Programmability: Add a QgsScaleCalculator function to calculate canvas width from a given extent, scale, and dpi
+- Programmability: Clear current symbol action in symbol button widget
+-
+
+
 # What's new in Version 3.24 'Tisler'?
 
 This release has following new features:

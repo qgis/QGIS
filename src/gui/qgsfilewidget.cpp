@@ -320,7 +320,7 @@ void QgsFileWidget::openFileDialog()
         break;
       case GetDirectory:
         title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions | QFileDialog::ShowDirsOnly );
+        fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(), mOptions );
         break;
       case SaveFile:
       {

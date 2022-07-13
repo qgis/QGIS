@@ -640,6 +640,14 @@ This is a list of symbol layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
+    virtual void prepareMasks( const QgsSymbolRenderContext &context );
+%Docstring
+Prepares all mask internal objects according to what is defined in ``context``
+This should be called prior to calling :py:func:`~QgsSymbolLayer.startRender` method.
+
+.. versionadded:: 3.26
+%End
+
   protected:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
@@ -649,6 +657,7 @@ Constructor for QgsSymbolLayer.
 :param type: specifies the associated symbol type
 :param locked: if ``True``, then symbol layer colors will be locked and will ignore any symbol-level color changes.
 %End
+
 
 
 
@@ -1315,8 +1324,6 @@ Default method to render polygon
   private:
     QgsFillSymbolLayer( const QgsFillSymbolLayer &other );
 };
-
-
 
 
 /************************************************************************

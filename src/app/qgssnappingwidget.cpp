@@ -47,22 +47,6 @@
 #include "modeltest.h"
 #endif
 
-class SnapTypeMenu: public QMenu
-{
-  public:
-    SnapTypeMenu( const QString &title, QWidget *parent = nullptr )
-      : QMenu( title, parent ) {}
-
-    void mouseReleaseEvent( QMouseEvent *e )
-    {
-      QAction *action = activeAction();
-      if ( action )
-        action->trigger();
-      else
-        QMenu::mouseReleaseEvent( e );
-    }
-};
-
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
   , mProject( project )
@@ -514,19 +498,19 @@ void QgsSnappingWidget::projectAvoidIntersectionModeChanged()
 {
   switch ( mProject->avoidIntersectionsMode() )
   {
-    case QgsProject::AvoidIntersectionsMode::AllowIntersections:
+    case Qgis::AvoidIntersectionsMode::AllowIntersections:
       mAvoidIntersectionsModeButton->setDefaultAction( mAllowIntersectionsAction );
       mAllowIntersectionsAction->setChecked( true );
       mAvoidIntersectionsCurrentLayerAction->setChecked( false );
       mAvoidIntersectionsLayersAction->setChecked( false );
       break;
-    case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
+    case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:
       mAvoidIntersectionsModeButton->setDefaultAction( mAvoidIntersectionsCurrentLayerAction );
       mAllowIntersectionsAction->setChecked( false );
       mAvoidIntersectionsCurrentLayerAction->setChecked( true );
       mAvoidIntersectionsLayersAction->setChecked( false );
       break;
-    case QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers:
+    case Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers:
       mAvoidIntersectionsModeButton->setDefaultAction( mAvoidIntersectionsLayersAction );
       mAllowIntersectionsAction->setChecked( false );
       mAvoidIntersectionsCurrentLayerAction->setChecked( false );
@@ -649,15 +633,15 @@ void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
     mAvoidIntersectionsModeButton->setDefaultAction( action );
     if ( action == mAllowIntersectionsAction )
     {
-      mProject->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AllowIntersections );
+      mProject->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AllowIntersections );
     }
     else if ( action == mAvoidIntersectionsCurrentLayerAction )
     {
-      mProject->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+      mProject->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
     }
     else if ( action == mAvoidIntersectionsLayersAction )
     {
-      mProject->setAvoidIntersectionsMode( QgsProject::AvoidIntersectionsMode::AvoidIntersectionsLayers );
+      mProject->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers );
     }
   }
 }

@@ -18,7 +18,7 @@ INCLUDE (${CMAKE_SOURCE_DIR}/cmake/MacPlistMacros.cmake)
 IF(WIN32)
 
   IF (MINGW)
-    FIND_PATH(GDAL_INCLUDE_DIR gdal.h /usr/local/include /usr/include c:/msys/local/include)
+    FIND_PATH(GDAL_INCLUDE_DIR gdal.h /usr/local/include /usr/include c:/msys/local/include PATH_SUFFIXES gdal)
     FIND_LIBRARY(GDAL_LIBRARY NAMES gdal PATHS /usr/local/lib /usr/lib c:/msys/local/lib)
   ENDIF (MINGW)
 
@@ -174,7 +174,7 @@ ELSE(WIN32)
             SET(GDAL_LIBRARY ${GDAL_LINK_DIRECTORIES}/lib${GDAL_LIB_NAME}.dylib CACHE STRING INTERNAL FORCE)
           ENDIF (NOT GDAL_LIBRARY)
         ELSE (APPLE)
-          FIND_LIBRARY(GDAL_LIBRARY NAMES ${GDAL_LIB_NAME} PATHS ${GDAL_LINK_DIRECTORIES}/lib)
+          FIND_LIBRARY(GDAL_LIBRARY NAMES ${GDAL_LIB_NAME} gdal PATHS ${GDAL_LINK_DIRECTORIES}/lib ${GDAL_LINK_DIRECTORIES})
         ENDIF (APPLE)
       
       ELSE(GDAL_CONFIG)

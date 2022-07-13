@@ -430,7 +430,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
   mMapToolDigitize->setLayer( layer );
 
   // window is always on top, so we hide it to digitize without seeing it
-  if ( window()->objectName() != QStringLiteral( "QgisApp" ) )
+  if ( window()->objectName() != QLatin1String( "QgisApp" ) )
   {
     window()->setVisible( false );
   }

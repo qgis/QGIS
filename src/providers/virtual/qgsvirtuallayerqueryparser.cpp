@@ -17,6 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvirtuallayerqueryparser.h"
 #include "qgsvirtuallayersqlitehelper.h"
 #include "qgsvirtuallayerblob.h"
+#include "qgslogger.h"
 
 #include "sqlite3.h"
 
@@ -55,7 +56,14 @@ namespace QgsVirtualLayerQueryParser
 
         // create a dummy table to skip this error
         const QString createStr = QStringLiteral( "CREATE TABLE \"%1\" (id int)" ).arg( tableName.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) );
-        ( void )sqlite3_exec( db.get(), createStr.toUtf8().constData(), nullptr, nullptr, nullptr );
+        const int createRes = sqlite3_exec( db.get(), createStr.toUtf8().constData(), nullptr, nullptr, &errMsg );
+        if ( createRes != SQLITE_OK )
+        {
+          err = QString::fromUtf8( errMsg );
+          sqlite3_free( errMsg );
+          QgsDebugMsg( QStringLiteral( "Could not create temporary table for virtual layer: %1" ).arg( err ) );
+          break;
+        }
       }
       else
       {

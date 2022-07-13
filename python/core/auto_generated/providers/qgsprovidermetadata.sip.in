@@ -187,6 +187,13 @@ This returns descriptive text for the provider
 This is used to provide a descriptive list of available data providers.
 %End
 
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon representing the provider.
+
+.. versionadded:: 3.26
+%End
+
     virtual QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const;
 %Docstring
 Returns the provider metadata capabilities.
@@ -199,6 +206,47 @@ Returns the provider metadata capabilities.
 Returns the provider's capabilities.
 
 .. versionadded:: 3.18.1
+%End
+
+    SIP_PYOBJECT supportedLayerTypes() const /TypeHint="List[QgsMapLayerType]"/;
+%Docstring
+Returns a list of the map layer types supported by the provider.
+
+.. versionadded:: 3.26
+%End
+%MethodCode
+    // adapted from the qpymultimedia_qlist.sip file from the PyQt6 sources
+
+    const QList< QgsMapLayerType > cppRes = sipCpp->supportedLayerTypes();
+
+    PyObject *l = PyList_New( cppRes.size() );
+
+    if ( !l )
+      sipIsErr = 1;
+    else
+    {
+      for ( int i = 0; i < cppRes.size(); ++i )
+      {
+        PyObject *eobj = sipConvertFromEnum( static_cast<int>( cppRes.at( i ) ),
+                                             sipType_QgsMapLayerType );
+
+        if ( !eobj )
+        {
+          sipIsErr = 1;
+        }
+
+        PyList_SetItem( l, i, eobj );
+      }
+
+      if ( !sipIsErr )
+      {
+        sipRes = l;
+      }
+      else
+      {
+        Py_DECREF( l );
+      }
+    }
 %End
 
  QString library() const /Deprecated/;

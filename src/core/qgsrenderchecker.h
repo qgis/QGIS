@@ -234,6 +234,7 @@ class CORE_EXPORT QgsRenderChecker
   private:
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
+    void dumpRenderedImageAsBase64();
 
     QString mBasePath;
 
@@ -247,6 +248,7 @@ class CORE_EXPORT QgsRenderChecker
     QString mControlExtension = QStringLiteral( "png" );
     QString mControlPathPrefix;
     QString mControlPathSuffix;
+    bool mIsCiRun = false;
     QVector<QgsDartMeasurement> mDashMessages;
     bool mBufferDashMessages = false;
 }; // class QgsRenderChecker

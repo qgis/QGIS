@@ -2425,6 +2425,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f['my--thing\'s'] = 'my "things -- all'
         f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(1 1)'))
         lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['text_field'] = 'three'
+        f['my--thing\'s'] = 'my "things \n all'
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(2 2)'))
+        lyr.CreateFeature(f)
         del (lyr)
 
         def _test(subset_string):
@@ -2437,6 +2442,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         _test(' SELECT * --comment\nFROM "my--test" WHERE\ntext_field=\'one\' AND \ntext_field != \'--embedded comment\'')
         _test('SELECT * FROM "my--test" WHERE text_field=\'one\' AND text_field != \' \\\'--embedded comment\'')
         _test('select "my--thing\'s" from "my--test" where "my--thing\'s" = \'my "things -- all\'')
+        _test('select "my--thing\'s" from "my--test" where "my--thing\'s" = \'my "things \n all\'')
 
     def testIsSqlQuery(self):
         """Test that isQuery returns what it should in case of simple filters"""
@@ -2471,6 +2477,106 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         # Test flags
         self.assertFalse(vl2.vectorLayerTypeFlags() & Qgis.VectorLayerTypeFlag.SqlQuery)
+
+    def testCircularStringOnlyInUnknownTypeLayer(self):
+        """ Test bugfix for https://github.com/qgis/QGIS/issues/47610 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testCircularStringOnlyInUnknownTypeLayer.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('CIRCULARSTRING(0 0,1 1,2 0)'))
+        lyr.CreateFeature(f)
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertEqual(1, vl.dataProvider().subLayerCount())
+        self.assertEqual(vl.dataProvider().subLayers(),
+                         [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '1', 'CircularString', 'geom', ''])])
+
+        vl = QgsVectorLayer('{}'.format(tmpfile) + '|geometryType=CircularString', 'test', 'ogr')
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 1)
+
+    def testCompoundCurveOnlyInUnknownTypeLayer(self):
+        """ Test bugfix for https://github.com/qgis/QGIS/issues/47610 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testCompoundCurveOnlyInUnknownTypeLayer.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('COMPOUNDCURVE((7 8,9 10))'))
+        lyr.CreateFeature(f)
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertEqual(1, vl.dataProvider().subLayerCount())
+        self.assertEqual(vl.dataProvider().subLayers(),
+                         [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '1', 'CompoundCurve', 'geom', ''])])
+
+        vl = QgsVectorLayer('{}'.format(tmpfile) + '|geometryType=CompoundCurve', 'test', 'ogr')
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 1)
+
+    def testCurvePolygonOnlyInUnknownTypeLayer(self):
+        """ Test bugfix for https://github.com/qgis/QGIS/issues/47610 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testCurvePolygonOnlyInUnknownTypeLayer.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('CURVEPOLYGON((10 10,10 11,11 11,10 10))'))
+        lyr.CreateFeature(f)
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertEqual(1, vl.dataProvider().subLayerCount())
+        self.assertEqual(vl.dataProvider().subLayers(),
+                         [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '1', 'CurvePolygon', 'geom', ''])])
+
+        vl = QgsVectorLayer('{}'.format(tmpfile) + '|geometryType=CurvePolygon', 'test', 'ogr')
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 1)
+
+    def testCurveGeometryTypeInUnknownTypeLayer(self):
+        """ Test bugfix for https://github.com/qgis/QGIS/issues/47610 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testFilterCurveGeometryType.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('CIRCULARSTRING(0 0,1 1,2 0)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('CIRCULARSTRING Z(0 -10 10,1 -11 10,2 -10 10)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('MULTILINESTRING((3 4,5 6))'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('COMPOUNDCURVE((7 8,9 10))'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('CURVEPOLYGON((10 10,10 11,11 11,10 10))'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON((10 20,10 21,11 21,10 20))'))
+        lyr.CreateFeature(f)
+        ds = None
+
+        vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
+        self.assertEqual(1, vl.dataProvider().subLayerCount())
+        self.assertEqual(vl.dataProvider().subLayers(),
+                         [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '4', 'CompoundCurve', 'geom', '']),
+                          QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '2', 'CurvePolygon', 'geom', ''])])
+
+        vl = QgsVectorLayer('{}'.format(tmpfile) + '|geometryType=CompoundCurve', 'test', 'ogr')
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 4)
+
+        vl = QgsVectorLayer('{}'.format(tmpfile) + '|geometryType=CurvePolygon', 'test', 'ogr')
+        got = [feat for feat in vl.getFeatures()]
+        self.assertEqual(len(got), 2)
 
 
 if __name__ == '__main__':

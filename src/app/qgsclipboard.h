@@ -29,6 +29,7 @@
 #include "qgis_app.h"
 
 class QgsVectorLayer;
+class QgsVectorTileLayer;
 class QgsFeatureStore;
 
 /**
@@ -68,6 +69,12 @@ class APP_EXPORT QgsClipboard : public QObject
      * the internal clipboard, destroying the previous contents.
      */
     void replaceWithCopyOf( QgsVectorLayer *src );
+
+    /**
+     * Place a copy of the selected features from the specified layer on
+     * the internal clipboard, destroying the previous contents.
+     */
+    void replaceWithCopyOf( QgsVectorTileLayer *src );
 
     /**
      * Place a copy of features on the internal clipboard,
@@ -177,7 +184,6 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFeatureList mFeatureClipboard;
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
-    QPointer<QgsVectorLayer> mSrcLayer;
 
     //! True if next system clipboard change should be ignored
     bool mIgnoreNextSystemClipboardChange = false;

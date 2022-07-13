@@ -162,6 +162,10 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   if ( !w )
   {
     w = QgsGui::relationWidgetRegistry()->create( mRelationEditorId, widgetConfig(), editor );
+    if ( ! editor->layout() )
+    {
+      editor->setLayout( new QVBoxLayout( editor ) );
+    }
     editor->layout()->addWidget( w );
   }
 

@@ -395,6 +395,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     //! Changed attribute values within a bulk edit command
     QMap<QPair<QgsFeatureId, int>, QVariant> mAttributeValueChanges;
 
+    //! Inserted feature IDs within a bulk edit command
+    QList<QgsFeatureId> mInsertedRowsChanges;
+
+    //! TRUE if triggered by afterRollback()
+    bool mIsCleaningUpAfterRollback = false;
+
     friend class TestQgsAttributeTable;
 
 };

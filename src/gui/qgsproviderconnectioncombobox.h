@@ -28,6 +28,7 @@ class QgsProviderConnectionModel;
 #ifndef SIP_RUN
 class GUI_EXPORT QgsProviderConnectionComboBoxSortModel: public QSortFilterProxyModel
 {
+    Q_OBJECT
   public:
     explicit QgsProviderConnectionComboBoxSortModel( QObject *parent = nullptr );
   protected:

@@ -1,8 +1,20 @@
-qgis (3.25.0) UNRELEASED; urgency=medium
+qgis (3.27.0) UNRELEASED; urgency=medium
+
+  * New development version 3.27 after branch of 3.26
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 17 Jun 2022 14:08:27 +0200
+
+qgis (3.26.0) unstable; urgency=medium
+
+  * Release of 3.26.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 17 Jun 2022 14:08:26 +0200
+
+qgis (3.25.0) unstable; urgency=medium
 
   * New development version 3.25 after branch of 3.24
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 18 Feb 2022 13:08:40 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 17 Jun 2022 14:05:27 +0200
 
 qgis (3.24.0) unstable; urgency=medium
 

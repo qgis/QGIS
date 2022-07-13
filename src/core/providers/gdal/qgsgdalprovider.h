@@ -370,8 +370,10 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
  */
 class QgsGdalProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsGdalProviderMetadata();
+    QIcon icon() const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     bool uriIsBlocklisted( const QString &uri ) const override;
@@ -392,6 +394,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
     ProviderCapabilities providerCapabilities() const override;
     QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
+    QList< QgsMapLayerType > supportedLayerTypes() const override;
 };
 
 ///@endcond

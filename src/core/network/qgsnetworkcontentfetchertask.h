@@ -55,16 +55,22 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      * the specified \a url.
      *
      * Optionally, authentication configuration can be set via the \a authcfg argument.
+     *
+     * Since QGIS 3.28 the optional \a description can be explicitly set. If not specified, a default task description will be generated.
      */
-    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
+    QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
+                                  const QString &description = QString() );
 
     /**
      * Constructor for a QgsNetworkContentFetcherTask which fetches
      * the specified network \a request.
      *
      * Optionally, authentication configuration can be set via the \a authcfg argument.
+     *
+     * Since QGIS 3.28 the optional \a description can be explicitly set. If not specified, a default task description will be generated.
      */
-    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel );
+    QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
+                                  const QString &description = QString() );
 
     ~QgsNetworkContentFetcherTask() override;
 
@@ -80,6 +86,13 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      * the QgsNetworkContentFetcherTask::fetched() signal.
      */
     QNetworkReply *reply();
+
+    /**
+     * Returns the associated filename from the reply's content disposition header, if present.
+     *
+     * \since QGIS 3.28
+     */
+    QString contentDispositionFilename() const;
 
     /**
      * Returns the fetched content as a string

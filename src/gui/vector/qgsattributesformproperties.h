@@ -156,6 +156,20 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
          */
         void setCollapsed( bool collapsed ) { mCollapsed = collapsed; };
 
+        /**
+         * Returns the label style.
+         * \see setLabelStyle()
+         * \since QGIS 3.26
+         */
+        const QgsAttributeEditorElement::LabelStyle labelStyle() const;
+
+        /**
+         * Sets the label style to \a labelStyle.
+         * \see labelStyle()
+         * \since QGIS 3.26
+         */
+        void setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle );
+
         bool showLabel() const;
         void setShowLabel( bool showLabel );
 
@@ -215,6 +229,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         QColor mBackgroundColor;
         bool mCollapsed = false;
         QgsOptionalExpression mCollapsedExpression;
+        QgsAttributeEditorElement::LabelStyle mLabelStyle;
     };
 
 
@@ -296,12 +311,12 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void loadInfoWidget( const QString &infoText );
 
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
+
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
     QString mInitFilePath;
     QString mInitCode;
-
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
 
   private slots:
     void addTabOrGroupButton();

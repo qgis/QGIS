@@ -981,7 +981,21 @@ Export the properties of this layer as SLD style in a QDomDocument
                  during the execution of writeSymbology
 %End
 
-    virtual QString saveDefaultStyle( bool &resultFlag /Out/ );
+    virtual QString saveDefaultStyle( bool &resultFlag /Out/, StyleCategories categories );
+%Docstring
+Save the properties of this layer as the default style
+(either as a .qml file on disk or as a
+record in the users style table in their personal qgis.db)
+
+:param categories: the style categories to be saved (since QGIS 3.26)
+
+:return: - a QString with any status messages
+         - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
+
+.. seealso:: :py:func:`loadNamedStyle`
+%End
+
+ virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated/;
 %Docstring
 Save the properties of this layer as the default style
 (either as a .qml file on disk or as a
@@ -992,6 +1006,8 @@ record in the users style table in their personal qgis.db)
          - resultFlag: a reference to a flag that will be set to ``False`` if we did not manage to save the default style.
 
 .. seealso:: :py:func:`loadNamedStyle`
+
+.. deprecated:: QGIS 3.26
 %End
 
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/, StyleCategories categories = AllStyleCategories );

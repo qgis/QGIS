@@ -1921,7 +1921,7 @@ QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   spinOffset->setClearValue( 0.0 );
-
+  mSpinOffsetAlongLine->setClearValue( 0.0 );
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
   connect( spinInterval, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMarkerLineSymbolLayerWidget::setInterval );
@@ -2068,6 +2068,7 @@ void QgsMarkerLineSymbolLayerWidget::setPlacement()
   mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
   mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( mCheckInterval->isChecked() || mCheckCentralPoint->isChecked() ) );
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+  mCheckPlaceOnEveryPart->setEnabled( mCheckVertexLast->isChecked() || mCheckVertexFirst->isChecked() );
 
   Qgis::MarkerLinePlacements placements;
   if ( mCheckInterval->isChecked() )
@@ -2176,7 +2177,7 @@ QgsHashedLineSymbolLayerWidget::QgsHashedLineSymbolLayerWidget( QgsVectorLayer *
   } );
 
   spinOffset->setClearValue( 0.0 );
-
+  mSpinOffsetAlongLine->setClearValue( 0.0 );
   mHashRotationSpinBox->setClearValue( 0 );
   mSpinAverageAngleLength->setClearValue( 4.0 );
 
@@ -2345,6 +2346,7 @@ void QgsHashedLineSymbolLayerWidget::setPlacement()
   mOffsetAlongLineUnitWidget->setEnabled( mSpinOffsetAlongLine->isEnabled() );
   mSpinAverageAngleLength->setEnabled( chkRotateMarker->isChecked() && ( mCheckInterval->isChecked() || mCheckCentralPoint->isChecked() ) );
   mAverageAngleUnit->setEnabled( mSpinAverageAngleLength->isEnabled() );
+  mCheckPlaceOnEveryPart->setEnabled( mCheckVertexLast->isChecked() || mCheckVertexFirst->isChecked() );
 
   Qgis::MarkerLinePlacements placements;
   if ( mCheckInterval->isChecked() )
