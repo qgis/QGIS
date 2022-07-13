@@ -900,10 +900,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::XAxis:
       mTextX = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mTextX->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
-      {
-        mTextX->setWidth( mFontSize * text.length() );
-      } );
+      connect( mTextX, &Qt3DExtras::QText2DEntity::textChanged, this, &Qgs3DAxis::onTextXChanged );
       mTextTransformX = new Qt3DCore::QTransform();
       mTextCoordX = QVector3D( mCylinderLength + coneLength / 2.0f, 0.0f, 0.0f );
 
@@ -917,10 +914,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::YAxis:
       mTextY = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mTextY->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
-      {
-        mTextY->setWidth( mFontSize * text.length() );
-      } );
+      connect( mTextY, &Qt3DExtras::QText2DEntity::textChanged, this, &Qgs3DAxis::onTextYChanged );
       mTextTransformY = new Qt3DCore::QTransform();
       mTextCoordY = QVector3D( 0.0f, mCylinderLength + coneLength / 2.0f, 0.0f );
 
@@ -934,10 +928,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
     case Qt::Axis::ZAxis:
       mTextZ = new Qt3DExtras::QText2DEntity( );  // object initialization in two step:
       mTextZ->setParent( mTwoDLabelSceneEntity ); // see https://bugreports.qt.io/browse/QTBUG-77139
-      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, [this]( const QString & text )
-      {
-        mTextZ->setWidth( mFontSize * text.length() );
-      } );
+      connect( mTextZ, &Qt3DExtras::QText2DEntity::textChanged, this, &Qgs3DAxis::onTextZChanged );
       mTextTransformZ = new Qt3DCore::QTransform();
       mTextCoordZ = QVector3D( 0.0f, 0.0f, mCylinderLength + coneLength / 2.0f );
 
@@ -998,13 +989,7 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
   coneTransform->setMatrix( transformMatrixCone );
   coneEntity->addComponent( coneTransform );
 
-  // text
-  QFont f = QFont( "monospace", mFontSize ); // TODO: should use outlined font
-  f.setWeight( QFont::Weight::Black );
-  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
-  text->setFont( f );
-  text->setHeight( mFontSize * 1.5f );
-  text->setWidth( mFontSize );
+  // text font, height and width will be set later in onText?Changed
   text->setColor( QColor( 192, 192, 192, 192 ) );
   text->addComponent( textTransform );
 }
@@ -1022,15 +1007,23 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   double windowWidth = ( double )mParentWindow->width();
   double windowHeight = ( double )mParentWindow->height();
 
+  QgsMapSettings set;
   if ( QgsLogger::isTraceEnabled() )
   {
     QgsTraceMsg( QString( "onAxisViewportSizeUpdate window w/h: %1px / %2px" )
                  .arg( windowWidth ).arg( windowHeight ) );
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window physicalDpi %1" )
-                 .arg( mParentWindow->screen()->physicalDotsPerInch() ) );
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window physicalDpi %1 (%2, %3)" )
+                 .arg( mParentWindow->screen()->physicalDotsPerInch() )
+                 .arg( mParentWindow->screen()->physicalDotsPerInchX() )
+                 .arg( mParentWindow->screen()->physicalDotsPerInchY() ) );
+    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window logicalDotsPerInch %1 (%2, %3)" )
+                 .arg( mParentWindow->screen()->logicalDotsPerInch() )
+                 .arg( mParentWindow->screen()->logicalDotsPerInchX() )
+                 .arg( mParentWindow->screen()->logicalDotsPerInchY() ) );
+
     QgsTraceMsg( QString( "onAxisViewportSizeUpdate window pixel ratio %1" )
                  .arg( mParentWindow->screen()->devicePixelRatio() ) );
-    QgsMapSettings set;
+
     QgsTraceMsg( QString( "onAxisViewportSizeUpdate set pixel ratio %1" )
                  .arg( set.devicePixelRatio() ) );
     QgsTraceMsg( QString( "onAxisViewportSizeUpdate set outputDpi %1" )
@@ -1039,22 +1032,24 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
                  .arg( set.dpiTarget() ) );
   }
 
-  // default ratio, axis will start to grow when:
-  // window height or width > settings.defaultViewportSize() / settings.minViewportRatio()
-  double widthRatio = settings.minViewportRatio();
+  // default viewport size in pixel according to 92 dpi
+  double defaultViewportPixelSize = ( ( double )settings.defaultViewportSize() / 25.4 ) * 92.0;
+
+  // computes the viewport size according to screen dpi but as the viewport size growths too fast
+  // then we limit the growth by using a factor on the dpi difference.
+  double viewportPixelSize = defaultViewportPixelSize + ( ( double )settings.defaultViewportSize() / 25.4 )
+                             * ( mParentWindow->screen()->physicalDotsPerInch() - 92.0 ) * 0.7;
+  QgsTraceMsg( QString( "onAxisViewportSizeUpdate viewportPixelSize %1" ).arg( viewportPixelSize ) );
+  double widthRatio = viewportPixelSize / windowWidth;
   double heightRatio = widthRatio * windowWidth / windowHeight;
 
-  if ( widthRatio * windowWidth < ( double )settings.defaultViewportSize() )
+  QgsTraceMsg( QString( "3DAxis viewport ratios width: %1% / height: %2%" ).arg( widthRatio ).arg( heightRatio ) );
+
+  if ( heightRatio * windowHeight < viewportPixelSize )
   {
-    widthRatio = settings.defaultViewportSize() / windowWidth;
-    heightRatio = widthRatio * windowWidth / windowHeight;
-    QgsTraceMsg( QString( "3DAxis viewport ratios adjusted to width: %1%% / height: %2%%" ).arg( widthRatio ).arg( heightRatio ) );
-  }
-  if ( heightRatio * windowHeight < ( double )settings.defaultViewportSize() )
-  {
-    heightRatio = settings.defaultViewportSize() / windowHeight;
-    widthRatio = heightRatio * windowWidth / windowHeight;
-    QgsTraceMsg( QString( "3DAxis viewport ratios adjusted to width: %1%% / height: %2%%" ).arg( widthRatio ).arg( heightRatio ) );
+    heightRatio = viewportPixelSize / windowHeight;
+    widthRatio = heightRatio * windowHeight / windowWidth;
+    QgsTraceMsg( QString( "3DAxis viewport, height too small, ratios adjusted to width: %1% / height: %2%" ).arg( widthRatio ).arg( heightRatio ) );
   }
 
   if ( heightRatio > settings.maxViewportRatio() || widthRatio > settings.maxViewportRatio() )
@@ -1067,8 +1062,9 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   }
   else
   {
-    // will be used to adjust the axis label translations
-    mAxisScaleFactor = heightRatio * windowHeight / settings.defaultViewportSize();
+    // will be used to adjust the axis label translations/sizes
+    mAxisScaleFactor = viewportPixelSize / defaultViewportPixelSize;
+    QgsTraceMsg( QString( "3DAxis viewport mAxisScaleFactor %1" ).arg( mAxisScaleFactor ) );
 
     if ( ! mAxisViewport->isEnabled() )
     {
@@ -1151,15 +1147,49 @@ void Qgs3DAxis::updateAxisLabelPosition()
     mTextTransformX->setTranslation( from3DTo2DLabelPosition( mTextCoordX * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
+    onTextXChanged( mTextX->text() );
+
     mTextTransformY->setTranslation( from3DTo2DLabelPosition( mTextCoordY * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
+    onTextYChanged( mTextY->text() );
+
     mTextTransformZ->setTranslation( from3DTo2DLabelPosition( mTextCoordZ * mAxisScaleFactor, mAxisCamera,
                                      mAxisViewport, mTwoDLabelCamera, mTwoDLabelViewport,
                                      mParentWindow->size() ) );
+    onTextZChanged( mTextZ->text() );
   }
 }
 
+void Qgs3DAxis::onTextXChanged( const QString &text )
+{
+  QFont f = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
+  f.setWeight( QFont::Weight::Black );
+  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
+  mTextX->setFont( f );
+  mTextX->setWidth( mAxisScaleFactor * mFontSize * text.length() );
+  mTextX->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
+}
+
+void Qgs3DAxis::onTextYChanged( const QString &text )
+{
+  QFont f = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
+  f.setWeight( QFont::Weight::Black );
+  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
+  mTextY->setFont( f );
+  mTextY->setWidth( mAxisScaleFactor * mFontSize * text.length() );
+  mTextY->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
+}
+
+void Qgs3DAxis::onTextZChanged( const QString &text )
+{
+  QFont f = QFont( "monospace", mAxisScaleFactor *  mFontSize ); // TODO: should use outlined font
+  f.setWeight( QFont::Weight::Black );
+  f.setStyleStrategy( QFont::StyleStrategy::ForceOutline );
+  mTextZ->setFont( f );
+  mTextZ->setWidth( mAxisScaleFactor * mFontSize * text.length() );
+  mTextZ->setHeight( mAxisScaleFactor * mFontSize * 1.5f );
+}
 
 //
 // Qgs3DWiredMesh
