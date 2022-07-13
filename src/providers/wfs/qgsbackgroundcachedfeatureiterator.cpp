@@ -277,7 +277,9 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   QString serverExpression;
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
   {
+    qDebug() << "WFS DEB expression: " << mRequest.filterExpression()->expression();
     serverExpression = mShared->computedExpression( *mRequest.filterExpression() );
+    qDebug() << "WFS DEB EX" << serverExpression;
   }
 
   if ( !shared->clientSideFilterExpression().isEmpty() )
