@@ -7449,7 +7449,9 @@ void QgisApp::dxfExport()
     switch ( dxfExport.writeToFile( &dxfFile, d.encoding() ) )
     {
       case QgsDxfExport::ExportResult::Success:
-        visibleMessageBar()->pushMessage( tr( "DXF export completed" ), Qgis::MessageLevel::Success );
+        visibleMessageBar()->pushMessage( tr( "DXF export completed" ),
+                                          tr( "Successfully exported DXF to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ),
+                                          Qgis::MessageLevel::Success, 0 );
         break;
 
       case QgsDxfExport::ExportResult::DeviceNotWritableError:
