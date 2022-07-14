@@ -16,8 +16,19 @@ import qgis  # NOQA
 from qgis.core import (
     QgsGeometry,
     QgsArcGisRestUtils,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
+    QgsFields,
+    QgsField,
+    QgsFeature,
+    NULL
 )
+from qgis.PyQt.QtCore import (
+    QVariant,
+    QDate,
+    QTime,
+    QDateTime
+)
+
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -235,6 +246,44 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                          {'spatialReference': {'wkid': '4326'}, 'x': 1.0, 'y': 2.0})
         self.assertEqual(QgsArcGisRestUtils.geometryToJson(geom, QgsCoordinateReferenceSystem('EPSG:3857')),
                          {'spatialReference': {'wkid': '3857'}, 'x': 1.0, 'y': 2.0})
+
+    def test_feature_to_json(self):
+        test_fields = QgsFields()
+
+        attributes = []
+
+        test_fields.append(QgsField('a_string_field', QVariant.String))
+        attributes.append('my string value')
+
+        test_fields.append(QgsField('a_int_field', QVariant.Int))
+        attributes.append(5)
+
+        test_fields.append(QgsField('a_double_field', QVariant.Double))
+        attributes.append(5.5)
+
+        test_fields.append(QgsField('a_boolean_field', QVariant.Bool))
+        attributes.append(True)
+
+        test_fields.append(QgsField('a_datetime_field', QVariant.DateTime))
+        attributes.append(QDateTime(QDate(2022, 3, 4), QTime(12, 13, 14)))
+
+        test_fields.append(QgsField('a_date_field', QVariant.Date))
+        attributes.append(QDate(2022, 3, 4))
+
+        test_fields.append(QgsField('a_null_value', QVariant.String))
+        attributes.append(NULL)
+
+        test_feature = QgsFeature(test_fields)
+        test_feature.setAttributes(attributes)
+
+        res = QgsArcGisRestUtils.featureToJson(test_feature)
+        self.assertEqual(res, {'attributes': {'a_boolean_field': True,
+                                              'a_datetime_field': 1646359994000,
+                                              'a_date_field': 1646316000000,
+                                              'a_double_field': 5.5,
+                                              'a_int_field': 5,
+                                              'a_string_field': 'my string value',
+                                              'a_null_value': None}})
 
 
 if __name__ == '__main__':

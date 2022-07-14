@@ -158,6 +158,21 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
 
+    /**
+     * Converts a \a feature to an ArcGIS REST JSON representation.
+     *
+     * \since QGIS 3.28
+     */
+    static QVariantMap featureToJson( const QgsFeature &feature,
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Converts a variant to a REST attribute value.
+     *
+     * \since QGIS 3.28
+     */
+    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType );
+
   private:
 
     /**

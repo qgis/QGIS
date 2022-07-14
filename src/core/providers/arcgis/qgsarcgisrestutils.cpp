@@ -1423,3 +1423,53 @@ QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &c
   return res;
 }
 
+QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs )
+{
+  QVariantMap res;
+  if ( feature.hasGeometry() )
+  {
+    res.insert( QStringLiteral( "geometry" ), geometryToJson( feature.geometry(), crs ) );
+  }
+
+  QVariantMap attributes;
+  const QgsFields fields = feature.fields();
+  for ( const QgsField &field : fields )
+  {
+    attributes.insert( field.name(), variantToAttributeValue( feature.attribute( field.name() ), field.type() ) );
+  }
+  if ( !attributes.isEmpty() )
+  {
+    res.insert( QStringLiteral( "attributes" ), attributes );
+  }
+  return res;
+}
+
+QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType )
+{
+  if ( variant.isNull() )
+    return QVariant();
+
+  switch ( expectedType )
+  {
+    case QVariant::DateTime:
+    case QVariant::Date:
+    {
+      switch ( variant.type() )
+      {
+        case QVariant::DateTime:
+          return variant.toDateTime().toMSecsSinceEpoch();
+
+        case QVariant::Date:
+          // for date values, assume start of day -- the REST api requires datetime values only, not plain dates
+          return QDateTime( variant.toDate(), QTime( 0, 0, 0 ) ).toMSecsSinceEpoch();
+
+        default:
+          return QVariant();
+      }
+    }
+
+    default:
+      return variant;
+  }
+}
+

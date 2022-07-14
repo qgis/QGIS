@@ -120,6 +120,21 @@ Returns an empty map if the ``crs`` is not valid.
 .. versionadded:: 3.28
 %End
 
+    static QVariantMap featureToJson( const QgsFeature &feature,
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Converts a ``feature`` to an ArcGIS REST JSON representation.
+
+.. versionadded:: 3.28
+%End
+
+    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType );
+%Docstring
+Converts a variant to a REST attribute value.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************
