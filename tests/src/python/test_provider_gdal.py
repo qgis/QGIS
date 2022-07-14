@@ -11,6 +11,7 @@ __date__ = '2018-30-10'
 __copyright__ = 'Copyright 2018, Nyall Dawson'
 
 import os
+import gdal
 
 from qgis.core import (
     QgsProviderRegistry,
@@ -18,11 +19,16 @@ from qgis.core import (
     QgsRectangle,
 )
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QTemporaryDir
 
 from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
 class PyQgsGdalProvider(unittest.TestCase):
