@@ -200,7 +200,8 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   const QString authcfg = dataSource.authConfigId();
 
   const QString serviceUrl = dataSource.param( QStringLiteral( "url" ) );
-  mServiceInfo = QgsArcGisRestQueryUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
+  if ( !serviceUrl.isEmpty() )
+    mServiceInfo = QgsArcGisRestQueryUtils::getServiceInfo( serviceUrl, authcfg, mErrorTitle, mError, mRequestHeaders );
 
   QString layerUrl;
   if ( dataSource.param( QStringLiteral( "layer" ) ).isEmpty() )
