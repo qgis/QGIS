@@ -11,7 +11,7 @@ __date__ = '2018-30-10'
 __copyright__ = 'Copyright 2018, Nyall Dawson'
 
 import os
-import gdal
+from osgeo import gdal
 
 from qgis.core import (
     QgsProviderRegistry,
