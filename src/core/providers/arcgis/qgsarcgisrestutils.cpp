@@ -995,6 +995,7 @@ QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, con
   if ( crs.isValid() )
   {
     // add spatialReference information
+    res.insert( QStringLiteral( "spatialReference" ), crsToJson( crs ) );
   }
 
   return res;
