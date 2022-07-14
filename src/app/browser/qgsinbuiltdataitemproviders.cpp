@@ -809,8 +809,13 @@ bool QgsAppFileItemGuiProvider::rename( QgsDataItem *item, const QString &name, 
   const QString oldPath = item->path();
 
   QString newName = name;
+
   if ( QFileInfo( newName ).suffix().isEmpty() )
     newName = newName + '.' + QFileInfo( oldPath ).suffix();
+
+  const QString newPath = QFileInfo( oldPath ).dir().filePath( newName );
+  if ( newPath == oldPath )
+    return false; // don't need to do anything
 
   const QStringList existingNames = QFileInfo( oldPath ).dir().entryList();
   if ( existingNames.contains( newName ) )
