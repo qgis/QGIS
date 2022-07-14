@@ -78,6 +78,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
   mFormatComboBox->addItem( tr( "Temporary Scratch Layer" ), QStringLiteral( "memory" ) );
+  mFormatComboBox->addItem( tr( "PDAL LAZ" ), QStringLiteral( "LAZ" ) );
   for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
   {
     mFormatComboBox->addItem( driver.longName, driver.driverName );
@@ -137,8 +138,11 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   // ZRange group box
   mMinimumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
   mMaximumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
-  mMinimumZSpinBox->setValue( mLayer->statistics().minimum( QStringLiteral( "Z" ) ) );
-  mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
+  if ( mLayer )
+  {
+    mMinimumZSpinBox->setValue( mLayer->statistics().minimum( QStringLiteral( "Z" ) ) );
+    mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
+  }
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
@@ -309,21 +313,22 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     if ( !ext.isEmpty() )
     {
       QFileInfo fi( mFilename->filePath() );
-      mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path() ).arg( fi.baseName() ).arg( ext ) );
+      mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path(), fi.baseName(), ext ) );
     }
   }
 
   const QString sFormat( format() );
   if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
   {
-    mAttributesSelection->setVisible( false );
+    mAttributesSelection->setEnabled( false );
   }
   else
   {
-    mAttributesSelection->setVisible( true );
+    mAttributesSelection->setEnabled( true );
   }
 
-  leLayername->setEnabled( sFormat == QLatin1String( "KML" ) ||
+  leLayername->setEnabled( sFormat == QLatin1String( "memory" ) ||
+                           sFormat == QLatin1String( "KML" ) ||
                            sFormat == QLatin1String( "GPKG" ) ||
                            sFormat == QLatin1String( "XLSX" ) ||
                            sFormat == QLatin1String( "ODS" ) ||
@@ -346,8 +351,6 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   }
 
   mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
-
-//  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( sFormat == QLatin1String( "memory" ) );
 
   GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
   if ( hDriver )
@@ -382,7 +385,7 @@ QgsCoordinateReferenceSystem QgsPointCloudLayerSaveAsDialog::crsObject() const
   return mSelectedCrs;
 }
 
-QStringList QgsPointCloudLayerSaveAsDialog::selectedAttributes() const
+QStringList QgsPointCloudLayerSaveAsDialog::attributes() const
 {
   QStringList attributes;
 
@@ -423,9 +426,9 @@ QgsRectangle QgsPointCloudLayerSaveAsDialog::filterExtent() const
   return mExtentGroupBox->outputExtent();
 }
 
-bool QgsPointCloudLayerSaveAsDialog::exportAttributes() const
+bool QgsPointCloudLayerSaveAsDialog::hasAttributes() const
 {
-  return mAttributesSelection->isVisible() && mAttributesSelection->isChecked();
+  return mAttributesSelection->isChecked() && mAttributesSelection->isEnabled();
 }
 
 bool QgsPointCloudLayerSaveAsDialog::hasZRange() const

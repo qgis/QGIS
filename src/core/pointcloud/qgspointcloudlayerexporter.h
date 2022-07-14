@@ -57,7 +57,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Exports the point cloud layer to a point cloud file, where the file type can be any format supported by PDAL.
      */
-    void exportToPdalFile( const QString &filename );
+    QgsPointCloudLayer *exportToPdalFile( const QString &filename = QString() ) SIP_FACTORY;
 
     /**
      * Sets the name for the new layer.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     /**
      * Emitted when exporting the layer is successfully completed.
      */
-    void exportComplete( QgsVectorLayer * );
+    void exportComplete( QgsMapLayer * );
 
     /**
      * Emitted when an error occurs which prevented the layer being exported (or if
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     void finished( bool result ) override;
 
   private:
-    QgsVectorLayer *mOutputLayer = nullptr;
+    QgsMapLayer *mOutputLayer = nullptr;
     QgsPointCloudLayerExporter *mExp = nullptr;
     const QString mFormat;
 

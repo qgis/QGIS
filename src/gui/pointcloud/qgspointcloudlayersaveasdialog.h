@@ -68,9 +68,9 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     QgsCoordinateReferenceSystem crsObject() const;
 
     /**
-     * Returns a list of attributes which are selected for saving.
+     * Sets a map \a canvas to associate with the dialog.
      */
-    QStringList selectedAttributes() const;
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Returns TRUE if the "add to canvas" checkbox is checked.
@@ -87,11 +87,6 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     void setAddToCanvas( bool checked );
 
     /**
-     * Sets a map \a canvas to associate with the dialog.
-     */
-    void setMapCanvas( QgsMapCanvas *canvas );
-
-    /**
      * Determines if filtering the export by an extent is activated.
      * \see filterExtent()
      */
@@ -105,9 +100,14 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
 
     /**
      * Determines if attributes will be exported as fields.
-     * \see selectedAttributes()
+     * \see attributes()
      */
-    bool exportAttributes() const;
+    bool hasAttributes() const;
+
+    /**
+     * Returns a list of attributes which are selected for saving.
+     */
+    QStringList attributes() const;
 
     /**
      * Determines if filtering by Z values is activated.

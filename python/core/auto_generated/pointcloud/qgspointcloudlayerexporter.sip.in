@@ -44,7 +44,7 @@ Caller takes ownership of the returned object.
 Exports the point cloud layer to a OGR vector file.
 %End
 
-    void exportToPdalFile( const QString &filename );
+    QgsPointCloudLayer *exportToPdalFile( const QString &filename = QString() ) /Factory/;
 %Docstring
 Exports the point cloud layer to a point cloud file, where the file type can be any format supported by PDAL.
 %End
@@ -140,7 +140,7 @@ of the layer and delete it after export.
 
   signals:
 
-    void exportComplete( QgsVectorLayer * );
+    void exportComplete( QgsMapLayer * );
 %Docstring
 Emitted when exporting the layer is successfully completed.
 %End

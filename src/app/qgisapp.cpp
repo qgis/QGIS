@@ -9524,8 +9524,8 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     exp->setCrs( destCRS );
     exp->setFormat( dialog.format() );
 
-    if ( dialog.exportAttributes() )
-      exp->setAttributes( dialog.selectedAttributes() );
+    if ( dialog.hasAttributes() )
+      exp->setAttributes( dialog.attributes() );
     else
       exp->setNoAttributes();
 
@@ -9542,15 +9542,23 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     vectorFilename = dialog.filename();
     exp->setFileName( vectorFilename );
 
-    bool addToCanvas = dialog.addToCanvas();
+    const bool addToCanvas = dialog.addToCanvas();
 
     QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp );
     QgsApplication::taskManager()->addTask( task );
 
     // when writer is successful:
-    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this ]( QgsVectorLayer * vlayer )
+    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this, addToCanvas ]( QgsMapLayer * layer )
     {
-      this->addMapLayer( vlayer );
+      if ( addToCanvas )
+      {
+        this->addMapLayer( layer );
+      }
+      else
+      {
+        // need to cleanup the dangling pointer if the layer is not added to the map
+        delete layer;
+      }
     } );
   }
   return vectorFilename;
