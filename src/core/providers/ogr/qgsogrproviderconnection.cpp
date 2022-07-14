@@ -349,11 +349,27 @@ void QgsOgrProviderConnection::dropVectorTable( const QString &schema, const QSt
   }
 }
 
+void QgsOgrProviderConnection::vacuum( const QString &, const QString &name ) const
+{
+  Q_UNUSED( name );
+  checkCapability( Capability::Vacuum );
+
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    if ( !name.isEmpty() )
+      executeGdalSqlPrivate( QStringLiteral( "REPACK \"%1\"" ).arg( name ) );
+    else
+      executeGdalSqlPrivate( QStringLiteral( "REPACK" ) );
+  }
+}
+
 void QgsOgrProviderConnection::setDefaultCapabilities()
 {
   GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   if ( !hDriver )
     return;
+
+  mDriverName = GDALGetDriverShortName( hDriver );
 
   mGeometryColumnCapabilities =
   {
@@ -380,6 +396,13 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
                            ? pathInfo.suffix().toLower()
                            : QFileInfo( uriParts.value( QStringLiteral( "vsiSuffix" ) ).toString() ).suffix().toLower();
     mSingleTableDataset = !QgsGdalUtils::multiLayerFileExtensions().contains( suffix );
+  }
+#endif
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    mCapabilities |= Vacuum;
   }
 #endif
 

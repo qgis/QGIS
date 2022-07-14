@@ -81,6 +81,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
+    void vacuum( const QString &schema, const QString &name ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QStringList fieldDomainNames() const override;
     QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
@@ -101,6 +102,7 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
 
   private:
+    QString mDriverName;
     bool mSingleTableDataset = false;
 
 };
