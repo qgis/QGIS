@@ -599,6 +599,13 @@ QStringList QgsOgrProviderConnection::fieldDomainNames() const
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // In some cases (empty geopackage for example), opening in read-only
+    // mode fails, so retry in update mode
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
   if ( hDS )
   {
     QStringList names;
@@ -654,6 +661,13 @@ QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) con
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // In some cases (empty geopackage for example), opening in read-only
+    // mode fails, so retry in update mode
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
   if ( hDS )
   {
     if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( hDS.get(), name.toUtf8().constData() ) )
