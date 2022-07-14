@@ -248,17 +248,22 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  gdal::dataset_unique_ptr hDS( GDALOpenEx( path().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_READONLY, nullptr, nullptr, nullptr ) );
+  GDALDriverH hDriver = GDALIdentifyDriverEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   CPLPopErrorHandler();
 
-  if ( ! hDS )
+  if ( ! hDriver )
   {
-    QgsDebugMsgLevel( QStringLiteral( "GDALOpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "GDALIdentifyDriverEx error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
     return nullptr;
   }
 
-  GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
-  QString driverName = GDALGetDriverShortName( hDriver );
+  const QString driverName = GDALGetDriverShortName( hDriver );
+  if ( driverName == QLatin1String( "PDF" ) )
+  {
+    // unwanted drivers -- it's slow to create connections for these, and we don't really want
+    // to expose database capabilities for them (even though they kind of are database formats)
+    return nullptr;
+  }
 
   QgsAbstractDatabaseProviderConnection *conn = nullptr;
   if ( driverName == QLatin1String( "SQLite" ) )
