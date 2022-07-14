@@ -15,7 +15,8 @@ __copyright__ = 'Copyright 2022, The QGIS Project'
 import qgis  # NOQA
 from qgis.core import (
     QgsGeometry,
-    QgsArcGisRestUtils
+    QgsArcGisRestUtils,
+    QgsCoordinateReferenceSystem
 )
 from qgis.testing import start_app, unittest
 
@@ -218,6 +219,15 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
             input = QgsGeometry.fromWkt(test_wkt)
             json = QgsArcGisRestUtils.geometryToJson(input)
             self.assertEqual(json, expected, f'Mismatch for {test_wkt}')
+
+    def test_crs_conversion(self):
+        self.assertEqual(QgsArcGisRestUtils.crsToJson(QgsCoordinateReferenceSystem()), {})
+        self.assertEqual(QgsArcGisRestUtils.crsToJson(QgsCoordinateReferenceSystem('EPSG:4326')), {'wkid': '4326'})
+        self.assertEqual(QgsArcGisRestUtils.crsToJson(QgsCoordinateReferenceSystem('EPSG:3857')), {'wkid': '3857'})
+        self.assertEqual(QgsArcGisRestUtils.crsToJson(QgsCoordinateReferenceSystem('ESRI:53079')), {'wkid': '53079'})
+
+        # should be represented via wkt
+        self.assertTrue(QgsArcGisRestUtils.crsToJson(QgsCoordinateReferenceSystem('IGNF:WGS84'))['wkt'])
 
 
 if __name__ == '__main__':
