@@ -1392,3 +1392,33 @@ QVariantMap QgsArcGisRestUtils::multiSurfaceToJson( const QgsMultiSurface *multi
   return data;
 }
 
+QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &crs )
+{
+  QVariantMap res;
+  if ( !crs.isValid() )
+    return res;
+
+  const QString authid = crs.authid();
+  if ( !authid.isEmpty() )
+  {
+    const thread_local QRegularExpression rxAuthid( QStringLiteral( "(\\w+):(\\d+)" ) );
+    const QRegularExpressionMatch match = rxAuthid.match( authid );
+    if ( match.hasMatch()
+         && (
+           ( match.captured( 1 ).compare( QLatin1String( "EPSG" ), Qt::CaseInsensitive ) == 0 )
+           || ( match.captured( 1 ).compare( QLatin1String( "ESRI" ), Qt::CaseInsensitive ) == 0 )
+         )
+       )
+    {
+      const QString wkid = match.captured( 2 );
+      res.insert( QStringLiteral( "wkid" ), wkid );
+      return res;
+    }
+  }
+
+  // docs don't mention the WKT version support, so let's hope for 2.0...
+  res.insert( QStringLiteral( "wkt" ), crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2019_SIMPLIFIED ) );
+
+  return res;
+}
+

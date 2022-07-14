@@ -148,6 +148,16 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
+
+    /**
+     * Converts a \a crs to an ArcGIS REST JSON representation.
+     *
+     * Returns an empty map if the \a crs is not valid.
+     *
+     * \since QGIS 3.28
+     */
+    static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
+
   private:
 
     /**

@@ -110,6 +110,16 @@ Returns an empty map if the geometry cannot be converted.
 .. versionadded:: 3.28
 %End
 
+
+    static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Converts a ``crs`` to an ArcGIS REST JSON representation.
+
+Returns an empty map if the ``crs`` is not valid.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 /************************************************************************
