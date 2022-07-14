@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 
 class QgsBrowserGuiModel;
+class QgsDataItem;
 
 /**
  * \ingroup gui
@@ -50,6 +51,15 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 
     // Set section where to store settings (because we have 2 browser dock widgets)
     void setSettingsSection( const QString &section ) { mSettingsSection = section; }
+
+    /**
+     * Sets the \a item currently selected in the view.
+     *
+     * Returns TRUE if the item was found and could be selected.
+     *
+     * \since QGIS 3.28
+     */
+    bool setSelectedItem( QgsDataItem *item );
 
   protected:
 

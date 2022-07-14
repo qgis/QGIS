@@ -21,6 +21,7 @@
 #include "qgsdataitem.h"
 
 #include <QKeyEvent>
+#include <QSortFilterProxyModel>
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
@@ -168,6 +169,24 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
       return true;
   }
   return false;
+}
+
+bool QgsBrowserTreeView::setSelectedItem( QgsDataItem *item )
+{
+  if ( !mBrowserModel )
+    return false;
+
+  QModelIndex index = mBrowserModel->findItem( item );
+  if ( !index.isValid() )
+    return false;
+
+  if ( QSortFilterProxyModel *proxyModel = qobject_cast< QSortFilterProxyModel *>( model() ) )
+  {
+    index = proxyModel->mapFromSource( index );
+  }
+
+  setCurrentIndex( index );
+  return true;
 }
 
 // rowsInserted signal is used to continue in state restoring
