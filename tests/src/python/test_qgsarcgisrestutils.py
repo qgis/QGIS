@@ -13,6 +13,12 @@ __date__ = '14/07/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
 import qgis  # NOQA
+from qgis.PyQt.QtCore import (
+    QVariant,
+    QDate,
+    QTime,
+    QDateTime
+)
 from qgis.core import (
     QgsGeometry,
     QgsArcGisRestUtils,
@@ -22,15 +28,7 @@ from qgis.core import (
     QgsFeature,
     NULL
 )
-from qgis.PyQt.QtCore import (
-    QVariant,
-    QDate,
-    QTime,
-    QDateTime
-)
-
 from qgis.testing import start_app, unittest
-
 from utilities import unitTestDataPath
 
 start_app()
@@ -72,7 +70,8 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
              {'hasM': False, 'hasZ': False, 'curvePaths': [[[1.0, 2.0],
                                                             {'c': [[7.0, 2.2], [5.0, 4.0]]},
                                                             {'c': [[13.0, 4.0], [10.0, 0.1]]}]]}),
-            ('CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4, 15 6)',  # invalid curve, has extra node which must be ignored
+            ('CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4, 15 6)',
+             # invalid curve, has extra node which must be ignored
              {'hasM': False, 'hasZ': False, 'curvePaths': [[[1.0, 2.0],
                                                             {'c': [[7.0, 2.2], [5.0, 4.0]]},
                                                             {'c': [[13.0, 4.0], [10.0, 0.1]]}]]}),
@@ -93,13 +92,14 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                                             {'c': [[13.0, 4.0], [10.0, 0.1]]},
                                                             [17.0, -6.0]
                                                             ]]}),
-            ('CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.20 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9))',
-             {'hasM': False, 'hasZ': True, 'curvePaths': [[[-1.0, -5.0, 3.0],
-                                                           [1.0, 2.0, 4.0],
-                                                           {'c': [[7.0, 2.2, 6.0], [5.0, 4.0, 5.0]]},
-                                                           {'c': [[13.0, 4.0, 8.0], [10.0, 0.1, 7.0]]},
-                                                           [17.0, -6.0, 9.0]
-                                                           ]]}),
+            (
+                'CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.20 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9))',
+                {'hasM': False, 'hasZ': True, 'curvePaths': [[[-1.0, -5.0, 3.0],
+                                                              [1.0, 2.0, 4.0],
+                                                              {'c': [[7.0, 2.2, 6.0], [5.0, 4.0, 5.0]]},
+                                                              {'c': [[13.0, 4.0, 8.0], [10.0, 0.1, 7.0]]},
+                                                              [17.0, -6.0, 9.0]
+                                                              ]]}),
             (
                 'CompoundCurveM ((-1 -5 3, 1 2 4),CircularStringM (1 2 4, 5 4 5, 7 2.20 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9))',
                 {'hasM': True, 'hasZ': False, 'curvePaths': [[[-1.0, -5.0, 3.0],
@@ -108,13 +108,14 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                                               {'c': [[13.0, 4.0, 8.0], [10.0, 0.1, 7.0]]},
                                                               [17.0, -6.0, 9.0]
                                                               ]]}),
-            ('CompoundCurveZM ((-1 -5 3 11, 1 2 4 12),CircularStringZM (1 2 4 12, 5 4 5 13, 7 2.20 6 14, 10 0.1 7 15, 13 4 8 16),(13 4 8 16, 17 -6 9 17))',
-             {'hasM': True, 'hasZ': True, 'curvePaths': [[[-1.0, -5.0, 3.0, 11.0],
-                                                         [1.0, 2.0, 4.0, 12.0],
-                                                         {'c': [[7.0, 2.2, 6.0, 14.0], [5.0, 4.0, 5.0, 13.0]]},
-                                                         {'c': [[13.0, 4.0, 8.0, 16.0], [10.0, 0.1, 7.0, 15.0]]},
-                                                         [17.0, -6.0, 9.0, 17.0]
-                                                          ]]}),
+            (
+                'CompoundCurveZM ((-1 -5 3 11, 1 2 4 12),CircularStringZM (1 2 4 12, 5 4 5 13, 7 2.20 6 14, 10 0.1 7 15, 13 4 8 16),(13 4 8 16, 17 -6 9 17))',
+                {'hasM': True, 'hasZ': True, 'curvePaths': [[[-1.0, -5.0, 3.0, 11.0],
+                                                             [1.0, 2.0, 4.0, 12.0],
+                                                             {'c': [[7.0, 2.2, 6.0, 14.0], [5.0, 4.0, 5.0, 13.0]]},
+                                                             {'c': [[13.0, 4.0, 8.0, 16.0], [10.0, 0.1, 7.0, 15.0]]},
+                                                             [17.0, -6.0, 9.0, 17.0]
+                                                             ]]}),
             ('MultiCurve (CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),CircularString (-11 -3, 5 7, 10 -1))',
              {'hasM': False, 'hasZ': False, 'curvePaths': [[[1.0, 2.0],
                                                             {'c': [[7.0, 2.2], [5.0, 4.0]]},
@@ -124,18 +125,9 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                                                [-11.0, -3.0],
                                                                {'c': [[10.0, -1.0], [5.0, 7.0]]}
              ]]}),
-            ('MultiCurveZ (CircularStringZ (1 2 10, 5 4 11, 7 2.2 12, 10 0.1 13, 13 4 14),CircularStringZ (-11 -3 20, 5 7 21, 10 -1 22))',
-             {'hasM': False, 'hasZ': True, 'curvePaths': [[[1.0, 2.0, 10.0],
-                                                           {'c': [[7.0, 2.2, 12.0], [5.0, 4.0, 11.0]]},
-                                                           {'c': [[13.0, 4.0, 14.0], [10.0, 0.1, 13.0]]}
-                                                           ],
-                                                          [
-                 [-11.0, -3.0, 20.0],
-                 {'c': [[10.0, -1.0, 22.0], [5.0, 7.0, 21.0]]}
-             ]]}),
             (
-                'MultiCurveM (CircularStringM (1 2 10, 5 4 11, 7 2.2 12, 10 0.1 13, 13 4 14),CircularStringM (-11 -3 20, 5 7 21, 10 -1 22))',
-                {'hasM': True, 'hasZ': False, 'curvePaths': [[[1.0, 2.0, 10.0],
+                'MultiCurveZ (CircularStringZ (1 2 10, 5 4 11, 7 2.2 12, 10 0.1 13, 13 4 14),CircularStringZ (-11 -3 20, 5 7 21, 10 -1 22))',
+                {'hasM': False, 'hasZ': True, 'curvePaths': [[[1.0, 2.0, 10.0],
                                                               {'c': [[7.0, 2.2, 12.0], [5.0, 4.0, 11.0]]},
                                                               {'c': [[13.0, 4.0, 14.0], [10.0, 0.1, 13.0]]}
                                                               ],
@@ -144,14 +136,25 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                     {'c': [[10.0, -1.0, 22.0], [5.0, 7.0, 21.0]]}
                 ]]}),
             (
+                'MultiCurveM (CircularStringM (1 2 10, 5 4 11, 7 2.2 12, 10 0.1 13, 13 4 14),CircularStringM (-11 -3 20, 5 7 21, 10 -1 22))',
+                {'hasM': True, 'hasZ': False, 'curvePaths': [[[1.0, 2.0, 10.0],
+                                                              {'c': [[7.0, 2.2, 12.0], [5.0, 4.0, 11.0]]},
+                                                              {'c': [[13.0, 4.0, 14.0], [10.0, 0.1, 13.0]]}
+                                                              ],
+                                                             [
+                                                                 [-11.0, -3.0, 20.0],
+                                                                 {'c': [[10.0, -1.0, 22.0], [5.0, 7.0, 21.0]]}
+                ]]}),
+            (
                 'MultiCurveZM (CircularStringZM (1 2 10 20, 5 4 11 21, 7 2.2 12 22, 10 0.1 13 23, 13 4 14 24),CircularStringZM (-11 -3 20 31, 5 7 21 32, 10 -1 22 33))',
                 {'hasM': True, 'hasZ': True, 'curvePaths': [[[1.0, 2.0, 10.0, 20.0],
                                                              {'c': [[7.0, 2.2, 12.0, 22.0], [5.0, 4.0, 11.0, 21.0]]},
                                                              {'c': [[13.0, 4.0, 14.0, 24.0], [10.0, 0.1, 13.0, 23.0]]}
                                                              ],
                                                             [
-                    [-11.0, -3.0, 20.0, 31.0],
-                    {'c': [[10.0, -1.0, 22.0, 33.0], [5.0, 7.0, 21.0, 32.0]]}
+                                                                [-11.0, -3.0, 20.0, 31.0],
+                                                                {'c': [[10.0, -1.0, 22.0, 33.0],
+                                                                       [5.0, 7.0, 21.0, 32.0]]}
                 ]]}),
             ('MultiLineString((1 2, 3 4, 3 6), (11 12, 13 16, 18 19, 21 3))',
              {'hasM': False, 'hasZ': False,
@@ -193,20 +196,20 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
             ('CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2))',
              {'hasM': False, 'hasZ': False,
               'curveRings': [[[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}]]}),
-            ('CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2), CircularString(21 2, 20 2, 20 12, 21 12, 21 2))',
-             {'hasM': False, 'hasZ': False,
-              'curveRings': [[[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}],
-                             [[21.0, 2.0], {'c': [[20.0, 12.0], [21.0, 12.0]]}, {'c': [[21.0, 2.0], [20.0, 2.0]]}]]}),
+            (
+                'CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2), CircularString(21 2, 20 2, 20 12, 21 12, 21 2))',
+                {'hasM': False, 'hasZ': False,
+                 'curveRings': [[[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}],
+                                [[21.0, 2.0], {'c': [[20.0, 12.0], [21.0, 12.0]]}, {'c': [[21.0, 2.0], [20.0, 2.0]]}]]}),
 
             (
                 'CurvePolygon (CompoundCurve ((0 -23.43778, 0 -15.43778, 0 23.43778),CircularString (0 23.43778, -45 100, -90 23.43778),(-90 23.43778, -90 -23.43778),CircularString (-90 -23.43778, -45 -16.43778, 0 -23.43778)),CompoundCurve (CircularString (-30 0, -48 -12, -60 0, -48 -6, -30 0)))',
                 {'hasM': False, 'hasZ': False,
                  'curveRings': [[[0.0, -23.43778], {'c': [[-90.0, -23.43778], [-45.0, -16.43778]]}, [-90.0, 23.43778],
                                  {'c': [[0.0, 23.43778], [-45.0, 100.0]]}, [0.0, -15.43778], [0.0, -23.43778]],
-                                [[-30.0, 0.0], {'c': [[-60.0, 0.0], [-48.0, -6.0]]}, {'c': [[-30.0, 0.0], [-48.0, -12.0]]}]]
+                                [[-30.0, 0.0], {'c': [[-60.0, 0.0], [-48.0, -6.0]]},
+                                 {'c': [[-30.0, 0.0], [-48.0, -12.0]]}]]
                  }),
-
-
 
             ('MultiPolygon(((1 2, 10 2, 10 12, 1 12, 1 2)),((20 10, 22 10, 20 13, 20 10)))',
              {'hasM': False, 'hasZ': False,
@@ -218,12 +221,13 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                         [[5.0, 6.0], [6.0, 6.0], [5.0, 7.0], [5.0, 6.0]],
                         [[20.0, 10.0], [20.0, 13.0], [22.0, 10.0], [20.0, 10.0]]]}),
 
-            ('MultiSurface(CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2)),CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2), CircularString(21 2, 20 2, 20 12, 21 12, 21 2)))',
-             {'hasM': False, 'hasZ': False,
-              'curveRings': [
-                  [[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}],
-                  [[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}],
-                  [[21.0, 2.0], {'c': [[20.0, 12.0], [21.0, 12.0]]}, {'c': [[21.0, 2.0], [20.0, 2.0]]}]]})
+            (
+                'MultiSurface(CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2)),CurvePolygon(CircularString(1 2, 10 2, 10 12, 1 12, 1 2), CircularString(21 2, 20 2, 20 12, 21 12, 21 2)))',
+                {'hasM': False, 'hasZ': False,
+                 'curveRings': [
+                     [[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}],
+                     [[1.0, 2.0], {'c': [[10.0, 12.0], [1.0, 12.0]]}, {'c': [[1.0, 2.0], [10.0, 2.0]]}],
+                     [[21.0, 2.0], {'c': [[20.0, 12.0], [21.0, 12.0]]}, {'c': [[21.0, 2.0], [20.0, 2.0]]}]]})
         ]
 
         for test_wkt, expected in tests:
