@@ -229,6 +229,13 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
         # should be represented via wkt
         self.assertTrue(QgsArcGisRestUtils.crsToJson(QgsCoordinateReferenceSystem('IGNF:WGS84'))['wkt'])
 
+    def test_geometry_with_crs(self):
+        geom = QgsGeometry.fromWkt('Point( 1 2)')
+        self.assertEqual(QgsArcGisRestUtils.geometryToJson(geom, QgsCoordinateReferenceSystem('EPSG:4326')),
+                         {'spatialReference': {'wkid': '4326'}, 'x': 1.0, 'y': 2.0})
+        self.assertEqual(QgsArcGisRestUtils.geometryToJson(geom, QgsCoordinateReferenceSystem('EPSG:3857')),
+                         {'spatialReference': {'wkid': '3857'}, 'x': 1.0, 'y': 2.0})
+
 
 if __name__ == '__main__':
     unittest.main()
