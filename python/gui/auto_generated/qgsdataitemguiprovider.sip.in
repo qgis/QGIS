@@ -46,6 +46,24 @@ This bar can be used to provide non-blocking feedback to users.
 .. seealso:: :py:func:`messageBar`
 %End
 
+    QgsBrowserTreeView *view() const;
+%Docstring
+Returns the associated view.
+
+.. seealso:: :py:func:`setView`
+
+.. versionadded:: 3.28
+%End
+
+    void setView( QgsBrowserTreeView *view );
+%Docstring
+Sets the associated ``view``.
+
+.. seealso:: :py:func:`view`
+
+.. versionadded:: 3.28
+%End
+
 };
 
 
