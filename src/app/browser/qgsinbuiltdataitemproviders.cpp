@@ -60,6 +60,8 @@
 #include "qgsfielddomainwidget.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsfilebaseddataitemprovider.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsmessageoutput.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1732,6 +1734,145 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
       } );
     }
   }
+}
+
+bool QgsDatabaseItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( !qobject_cast< QgsFileDataCollectionItem * >( item ) )
+    return false;
+
+  if ( qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
+    return false; // GPKG is handled elsewhere (QgsGeoPackageItemGuiProvider)
+
+  std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() );
+  if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::CreateVectorTable ) )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction )
+{
+  if ( !qobject_cast< QgsFileDataCollectionItem * >( item ) )
+    return false;
+
+  if ( qobject_cast< QgsGeoPackageCollectionItem * >( item ) )
+    return false; // GPKG is handled elsewhere (QgsGeoPackageItemGuiProvider)
+
+  if ( !QgsMimeDataUtils::isUriList( data ) )
+    return false;
+
+  QString uri;
+
+  QStringList importResults;
+  bool hasError = false;
+
+  // Main task
+  std::unique_ptr< QgsConcurrentFileWriterImportTask > mainTask( new QgsConcurrentFileWriterImportTask( tr( "Layer import" ) ) );
+  QgsTaskList importTasks;
+
+  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &dropUri : lst )
+  {
+    // Check that we are not copying over self
+    if ( dropUri.uri.startsWith( item->path() ) )
+    {
+      importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( dropUri.name ) );
+      hasError = true;
+    }
+    else
+    {
+      QgsVectorLayer *srcLayer = nullptr;
+      bool owner;
+      QString error;
+      if ( dropUri.layerType == QLatin1String( "vector" ) )
+      {
+        // open the source layer
+        srcLayer = dropUri.vectorLayer( owner, error );
+      }
+      else
+      {
+        // unsupported
+        hasError = true;
+        continue;
+      }
+
+      if ( !srcLayer )
+      {
+        importResults.append( tr( "%1: %2" ).arg( dropUri.name, error ) );
+        hasError = true;
+        continue;
+      }
+
+      if ( srcLayer->isValid() )
+      {
+        uri = item->path();
+
+        // check if the destination layer already exists
+        bool exists = false;
+        const QVector< QgsDataItem * > c( item->children() );
+        for ( const QgsDataItem *child : c )
+        {
+          if ( child->name() == dropUri.name )
+          {
+            exists = true;
+          }
+        }
+
+        if ( ! exists || QMessageBox::question( nullptr, tr( "Overwrite Layer" ),
+                                                tr( "Destination layer <b>%1</b> already exists. Do you want to overwrite it?" ).arg( dropUri.name ), QMessageBox::Yes |  QMessageBox::No ) == QMessageBox::Yes )
+        {
+          QgsVectorLayer *vectorSrcLayer = qobject_cast < QgsVectorLayer * >( srcLayer );
+          QVariantMap options;
+          //  options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
+          options.insert( QStringLiteral( "update" ), true );
+          options.insert( QStringLiteral( "overwrite" ), true );
+          options.insert( QStringLiteral( "layerName" ), dropUri.name );
+          QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
+          mainTask->addSubTask( exportTask, importTasks );
+          importTasks << exportTask;
+          // when export is successful:
+          connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, item, [ = ]()
+          {
+            notify( tr( "Import to database" ), tr( "Import was successful." ), context, Qgis::MessageLevel::Success );
+            item->refresh();
+          } );
+
+          // when an error occurs:
+          connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, item, [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
+          {
+            if ( error != Qgis::VectorExportResult::UserCanceled )
+            {
+              QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+              output->setTitle( tr( "Import to database" ) );
+              output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+              output->showMessage();
+            }
+          } );
+        } // do not overwrite
+      }
+      else
+      {
+        importResults.append( tr( "%1: Not a valid layer!" ).arg( dropUri.name ) );
+        hasError = true;
+      }
+    } // check for self copy
+  } // for each
+
+  if ( hasError )
+  {
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->showMessage();
+  }
+  if ( ! importTasks.isEmpty() )
+  {
+    QgsApplication::taskManager()->addTask( mainTask.release() );
+  }
+  return true;
 }
 
 
