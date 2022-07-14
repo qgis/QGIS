@@ -121,18 +121,49 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   createGpkg->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewGeoPackageLayer.svg" ) ) );
   connect( createGpkg, &QAction::triggered, this, [ = ]
   {
-    QgsNewGeoPackageLayerDialog dialog( QgisApp::instance() );
     QDir dir( directoryItem->dirPath() );
-    dialog.setDatabasePath( dir.filePath( QStringLiteral( "new_geopackage" ) ) );
-    dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-    dialog.setAddToProject( false );
-    if ( dialog.exec() )
+    QString newName = tr( "New GeoPackage.gpkg" );
+    int i = 1;
+    while ( QFileInfo::exists( dir.absoluteFilePath( newName ) ) )
     {
-      QString file = dialog.databasePath();
-      file = QgsFileUtils::ensureFileNameHasExtension( file, QStringList() << QStringLiteral( "gpkg" ) );
-      context.messageBar()->pushSuccess( tr( "New GeoPackage" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
-                                           QUrl::fromLocalFile( file ).toString(), QDir::toNativeSeparators( file ) ) );
-      item->refresh();
+      i += 1;
+      newName = tr( "New GeoPackage (%1).gpkg" ).arg( i );
+    }
+
+    const QString fileName = dir.absoluteFilePath( newName );
+    if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QString error;
+      if ( ! ogrMetadata->createDatabase( fileName, error ) )
+      {
+        context.messageBar()->pushCritical( tr( "New GeoPackage" ), tr( "GeoPackage creation failed: %1" ).arg( error ) );
+      }
+      else
+      {
+        QObject *contextObject = new QObject();
+        connect( directoryItem, &QgsDataItem::stateChanged, contextObject, [contextObject, fileName, context]( QgsDataItem * item, Qgis::BrowserItemState )
+        {
+          if ( item->state() == Qgis::BrowserItemState::Populated )
+          {
+            // find the new item and select it
+            const QVector<QgsDataItem *> children = item->children();
+            for ( QgsDataItem *child : children )
+            {
+              if ( child->path() == fileName )
+              {
+                if ( QgsBrowserTreeView *view = context.view() )
+                {
+                  if ( view->setSelectedItem( child ) )
+                    view->edit( view->currentIndex() );
+                }
+                break;
+              }
+            }
+            contextObject->deleteLater();
+          }
+        } );
+        directoryItem->refresh();
+      }
     }
   } );
   newMenu->addAction( createGpkg );
@@ -182,8 +213,6 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       }
       else
       {
-        context.messageBar()->pushSuccess( tr( "New ESRI File Geodatabase" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
-                                             QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
         QObject *contextObject = new QObject();
         connect( directoryItem, &QgsDataItem::stateChanged, contextObject, [contextObject, fileName, context]( QgsDataItem * item, Qgis::BrowserItemState )
         {
