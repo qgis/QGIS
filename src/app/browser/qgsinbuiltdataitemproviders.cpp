@@ -1610,7 +1610,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
 
     // SQL dialog
-    if ( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( item->databaseConnection() ); conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
+    if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::ExecuteSql ) )
     {
       QAction *sqlAction = new QAction( QObject::tr( "Execute SQL…" ), menu );
 
@@ -1685,6 +1685,51 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
       } );
       menu->addAction( sqlAction );
+    }
+
+    // Check if domain creation is supported
+    if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Vacuum ) )
+    {
+      QAction *compactAction = new QAction( tr( "Compact Database (VACUUM)" ), menu );
+      menu->addAction( compactAction );
+
+      const QString connectionUri = conn->uri();
+      const QString providerKey = conn->providerKey();
+
+      connect( compactAction, &QAction::triggered, compactAction, [context, connectionUri, providerKey]
+      {
+        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+        if ( !md )
+          return;
+
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+        QString errCause;
+        if ( conn )
+        {
+          try
+          {
+            QgsTemporaryCursorOverride override( Qt::WaitCursor );
+            conn->vacuum( QString(), QString() );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            errCause = ex.what();
+          }
+        }
+        else
+        {
+          errCause = QObject::tr( "There was an error retrieving the connection to %1" ).arg( connectionUri );
+        }
+
+        if ( !errCause.isEmpty() )
+        {
+          notify( tr( "Database compact (VACUUM)" ), errCause, context, Qgis::MessageLevel::Critical );
+        }
+        else if ( context.messageBar() )
+        {
+          context.messageBar()->pushMessage( tr( "Database compacted" ), Qgis::MessageLevel::Success );
+        }
+      } );
     }
   }
 }

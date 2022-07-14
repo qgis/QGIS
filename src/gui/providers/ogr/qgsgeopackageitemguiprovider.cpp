@@ -113,18 +113,6 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       deleteGpkg( collectionPath, collectionName, parent, context );
     } );
     menu->addAction( actionDelete );
-
-    // Run VACUUM
-    QAction *actionVacuumDb = new QAction( tr( "Compact Database (VACUUM)" ), menu );
-    const QVariantMap dataVacuum;
-    const QString name = collectionItem->name();
-    const QString path = collectionItem->path();
-    actionVacuumDb->setData( dataVacuum );
-    connect( actionVacuumDb, &QAction::triggered, this, [this, context, name, path]
-    {
-      vacuum( path, name, context );
-    } );
-    menu->addAction( actionVacuumDb );
   }
 }
 
@@ -371,13 +359,6 @@ void QgsGeoPackageItemGuiProvider::vacuumGeoPackageDbAction( const QString &path
   {
     context.messageBar()->pushMessage( tr( "Database compacted" ), Qgis::MessageLevel::Success );
   }
-}
-
-void QgsGeoPackageItemGuiProvider::vacuum( const QString &itemPath, const QString &name, QgsDataItemGuiContext context )
-{
-  QString path = itemPath;
-  path = path.remove( QStringLiteral( "gpkg:/" ) );
-  vacuumGeoPackageDbAction( path, name, context );
 }
 
 void QgsGeoPackageItemGuiProvider::createDatabase( const QPointer< QgsGeoPackageRootItem > &item )
