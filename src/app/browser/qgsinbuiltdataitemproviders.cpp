@@ -158,6 +158,61 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   } );
   newMenu->addAction( createShp );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  QAction *createFgdb = new QAction( tr( "ESRI FileGeodatabase…" ), newMenu );
+  createFgdb->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "dbmanager.svg" ) ) );
+  connect( createFgdb, &QAction::triggered, this, [ = ]
+  {
+    QDir dir( directoryItem->dirPath() );
+    QString newName = tr( "New File Geodatabase.gdb" );
+    int i = 1;
+    while ( QFileInfo::exists( dir.absoluteFilePath( newName ) ) )
+    {
+      i += 1;
+      newName = tr( "New File Geodatabase (%1).gdb" ).arg( i );
+    }
+
+    const QString fileName = dir.absoluteFilePath( newName );
+    if ( QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) ) )
+    {
+      QString error;
+      if ( ! ogrMetadata->createDatabase( fileName, error ) )
+      {
+        context.messageBar()->pushCritical( tr( "New ESRI File Geodatabase" ), tr( "Database creation failed: %1" ).arg( error ) );
+      }
+      else
+      {
+        context.messageBar()->pushSuccess( tr( "New ESRI File Geodatabase" ), tr( "Created <a href=\"%1\">%2</a>" ).arg(
+                                             QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+        QObject *contextObject = new QObject();
+        connect( directoryItem, &QgsDataItem::stateChanged, contextObject, [contextObject, fileName, context]( QgsDataItem * item, Qgis::BrowserItemState )
+        {
+          if ( item->state() == Qgis::BrowserItemState::Populated )
+          {
+            // find the new item and select it
+            const QVector<QgsDataItem *> children = item->children();
+            for ( QgsDataItem *child : children )
+            {
+              if ( child->path() == fileName )
+              {
+                if ( QgsBrowserTreeView *view = context.view() )
+                {
+                  if ( view->setSelectedItem( child ) )
+                    view->edit( view->currentIndex() );
+                }
+                break;
+              }
+            }
+            contextObject->deleteLater();
+          }
+        } );
+        directoryItem->refresh();
+      }
+    }
+  } );
+  newMenu->addAction( createFgdb );
+#endif
+
   menu->addMenu( newMenu );
 
   menu->addSeparator();
