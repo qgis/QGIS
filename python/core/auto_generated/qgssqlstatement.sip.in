@@ -711,9 +711,23 @@ Constructor with table name
 Constructor with table name and alias
 %End
 
+        NodeTableDef( const QString &schema, const QString &name, const QString &alias );
+%Docstring
+Constructor with schema, table name and alias
+
+.. versionadded:: 3.28
+%End
+
         QString name() const;
 %Docstring
 Table name
+%End
+
+        QString schema() const;
+%Docstring
+Returns the schema name.
+
+.. versionadded:: 3.28
 %End
 
         QString alias() const;
