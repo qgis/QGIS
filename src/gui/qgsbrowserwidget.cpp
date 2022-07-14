@@ -463,6 +463,7 @@ QgsDataItemGuiContext QgsBrowserWidget::createContext()
 {
   QgsDataItemGuiContext context;
   context.setMessageBar( mMessageBar );
+  context.setView( mBrowserView );
   return context;
 }
 

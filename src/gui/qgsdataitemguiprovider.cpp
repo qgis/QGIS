@@ -34,6 +34,16 @@ void QgsDataItemGuiContext::setMessageBar( QgsMessageBar *messageBar )
   mMessageBar = messageBar;
 }
 
+QgsBrowserTreeView *QgsDataItemGuiContext::view() const
+{
+  return mView;
+}
+
+void QgsDataItemGuiContext::setView( QgsBrowserTreeView *view )
+{
+  mView = view;
+}
+
 //
 // QgsDataItemGuiProvider
 //
