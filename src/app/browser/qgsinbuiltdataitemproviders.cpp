@@ -160,7 +160,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
   QAction *createFgdb = new QAction( tr( "ESRI FileGeodatabase…" ), newMenu );
-  createFgdb->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "dbmanager.svg" ) ) );
+  createFgdb->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewFileGeodatabase.svg" ) ) );
   connect( createFgdb, &QAction::triggered, this, [ = ]
   {
     QDir dir( directoryItem->dirPath() );
