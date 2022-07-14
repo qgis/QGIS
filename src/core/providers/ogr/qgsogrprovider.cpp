@@ -261,6 +261,13 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     update = options->value( QStringLiteral( "update" ) ).toBool();
     if ( update )
     {
+      // when updating an existing dataset, always use the original driver
+      GDALDriverH hDriver = GDALIdentifyDriverEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+      if ( hDriver )
+      {
+        driverName = GDALGetDriverShortName( hDriver );
+      }
+
       if ( !overwrite && !layerName.isEmpty() )
       {
         gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
