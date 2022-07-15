@@ -49,7 +49,7 @@ class QgsAfsSharedData : public QObject
 
   private:
     friend class QgsAfsProvider;
-    QReadWriteLock mReadWriteLock;
+    mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
     QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;

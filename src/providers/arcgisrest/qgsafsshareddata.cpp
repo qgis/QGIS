@@ -21,11 +21,13 @@
 
 long long QgsAfsSharedData::objectIdCount() const
 {
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mObjectIds.size();
 }
 
 long long QgsAfsSharedData::featureCount() const
 {
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mObjectIds.size();
 }
 
@@ -223,5 +225,6 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 
 bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mCache.count() == featureCount();
 }
