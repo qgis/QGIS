@@ -270,7 +270,7 @@ QgsWkbTypes::Type QgsAfsProvider::wkbType() const
 
 long long QgsAfsProvider::featureCount() const
 {
-  return mSharedData->mObjectIds.size();
+  return mSharedData->featureCount();
 }
 
 QgsFields QgsAfsProvider::fields() const

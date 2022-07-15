@@ -18,6 +18,16 @@
 #include "qgsarcgisrestquery.h"
 #include "qgslogger.h"
 
+long long QgsAfsSharedData::objectIdCount() const
+{
+  return mObjectIds.size();
+}
+
+long long QgsAfsSharedData::featureCount() const
+{
+  return mObjectIds.size();
+}
+
 void QgsAfsSharedData::clearCache()
 {
   const QMutexLocker locker( &mMutex );
@@ -210,5 +220,5 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 
 bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
-  return mCache.count() == mObjectIds.count();
+  return mCache.count() == featureCount();
 }
