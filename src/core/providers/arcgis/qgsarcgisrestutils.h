@@ -24,6 +24,8 @@
 
 #include <QStringList>
 #include <QVariant>
+#include <QTimeZone>
+
 #include <functional>
 #include <memory>
 
@@ -50,6 +52,38 @@ class QgsPolygon;
 class QgsMultiCurve;
 class QgsMultiPolygon;
 class QgsCurvePolygon;
+
+/**
+ * \ingroup core
+ * \brief Contains the context of a ArcGIS REST service operation.
+ *
+ * \see QgsArcGisRestUtils
+ *
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsArcGisRestContext
+{
+  public:
+
+    /**
+     * Sets the time \a zone for datetime values.
+     *
+     * \see timeZone()
+     */
+    void setTimeZone( const QTimeZone &zone ) { mTimeZone = zone; }
+
+    /**
+     * Returns the time zone for datetime values.
+     *
+     * \see setTimeZone()
+     */
+    QTimeZone timeZone() const { return mTimeZone; }
+
+  private:
+
+    QTimeZone mTimeZone;
+
+};
 
 /**
  * \ingroup core
@@ -146,8 +180,7 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \since QGIS 3.28
      */
-    static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
-
+    static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Converts a \a crs to an ArcGIS REST JSON representation.
@@ -164,6 +197,7 @@ class CORE_EXPORT QgsArcGisRestUtils
      * \since QGIS 3.28
      */
     static QVariantMap featureToJson( const QgsFeature &feature,
+                                      const QgsArcGisRestContext &context,
                                       const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
@@ -171,7 +205,7 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \since QGIS 3.28
      */
-    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType );
+    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context );
 
   private:
 
