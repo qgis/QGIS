@@ -22,6 +22,55 @@ void QgsAfsSharedData::clearCache()
 {
   const QMutexLocker locker( &mMutex );
   mCache.clear();
+  mObjectIds.clear();
+  mDeletedFeatureIds.clear();
+  QString error;
+  getObjectIds( error );
+}
+
+bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
+{
+  errorMessage.clear();
+
+  // Read OBJECTIDs of all features: these may not be a continuous sequence,
+  // and we need to store these to iterate through the features. This query
+  // also returns the name of the ObjectID field.
+  QString errorTitle;
+  QString error;
+  QVariantMap objectIdData = QgsArcGisRestQueryUtils::getObjectIds( mDataSource.param( QStringLiteral( "url" ) ), mDataSource.authConfigId(),
+                             errorTitle, error, mDataSource.httpHeaders(), !mExtent.isNull() ? mExtent : QgsRectangle() );
+  if ( objectIdData.isEmpty() )
+  {
+    errorMessage = tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, error );
+    return false;
+  }
+  if ( !objectIdData[QStringLiteral( "objectIdFieldName" )].isValid() || !objectIdData[QStringLiteral( "objectIds" )].isValid() )
+  {
+    errorMessage = tr( "Failed to determine objectIdFieldName and/or objectIds" );
+    return false;
+  }
+  mObjectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
+  for ( int idx = 0, nIdx = mFields.count(); idx < nIdx; ++idx )
+  {
+    if ( mFields.at( idx ).name() == mObjectIdFieldName )
+    {
+      mObjectIdFieldIdx = idx;
+
+      // primary key is not null, unique
+      QgsFieldConstraints constraints = mFields.at( idx ).constraints();
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+      mFields[ idx ].setConstraints( constraints );
+
+      break;
+    }
+  }
+  const QVariantList objectIds = objectIdData.value( QStringLiteral( "objectIds" ) ).toList();
+  for ( const QVariant &objectId : objectIds )
+  {
+    mObjectIds.append( objectId.toInt() );
+  }
+  return true;
 }
 
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )

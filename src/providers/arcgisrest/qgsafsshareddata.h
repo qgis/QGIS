@@ -39,6 +39,8 @@ class QgsAfsSharedData : public QObject
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
     void clearCache();
 
+    bool getObjectIds( QString &errorMessage );
+
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
@@ -52,6 +54,8 @@ class QgsAfsSharedData : public QObject
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
     QString mObjectIdFieldName;
+    int mObjectIdFieldIdx = -1;
+
     QList<quint32> mObjectIds;
     QMap<QgsFeatureId, QgsFeature> mCache;
     QgsCoordinateReferenceSystem mSourceCRS;
