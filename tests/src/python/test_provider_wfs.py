@@ -3460,16 +3460,16 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'), 'wb') as f:
             f.write("""
-<wfs:WFS_Capabilities version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1">
+<wfs:WFS_Capabilities version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
   <wfs:FeatureTypeList>
     <wfs:FeatureType xmlns:my="http://my">
       <wfs:Name>my:typename</wfs:Name>
       <wfs:Title>Title</wfs:Title>
       <wfs:Abstract>Abstract</wfs:Abstract>
-      <wfs:SRS>EPSG:32631</wfs:SRS>
+      <wfs:SRS>EPSG:4326</wfs:SRS>
       <WGS84BoundingBox>
-        <LowerCorner>0 40</LowerCorner>
-        <UpperCorner>15 50</UpperCorner>
+        <LowerCorner>50 -100</LowerCorner>
+        <UpperCorner>100 -50</UpperCorner>
       </WGS84BoundingBox>
     </wfs:FeatureType>
   </wfs:FeatureTypeList>
@@ -3500,8 +3500,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.fields()), 1)
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
+        # Simple test
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -3518,42 +3519,93 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['intfield'] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
 
+        # Get feature according to expression
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(len(vl.fields()), 1)
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+
+        polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
+        poly = QgsFeature(polygonLayer.fields())
+        parent_feature = QgsFeature()
+        parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
+        scope = QgsExpressionContextScope()
+        scope.setVariable('parent', parent_feature, True)
+        context.appendScope(scope)
+        request = QgsFeatureRequest()
+        request.setExpressionContext(context)
+        request.setFilterExpression("intersects( $geometry, geometry(var('parent')))")
+
+        with open(sanitize(endpoint,
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2">
+        <fes:Intersects>
+          <fes:ValueReference>geometryProperty</fes:ValueReference>
+          <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
+          <gml:exterior>
+            <gml:LinearRing>
+            <gml:posList srsDimension="2">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+          </gml:Polygon>
+        </fes:Intersects>
+        </fes:Filter>
+        &NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)
+        """),
+                  'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+        values = [f['intfield'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [1])
+
         # Get feature according to expression and filter
         vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' sql=SELECT * FROM \"my:typename\" WHERE intfield = 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        request = QgsFeatureRequest()
-        feature = QgsFeature()
-        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
-        context = QgsExpressionContext()
+        parent_feature = QgsFeature().setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
         scope = QgsExpressionContextScope()
-        scope.setVariable('parent', feature)
+        scope.setVariable('parent', parent_feature, True)
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
         context.appendScope(scope)
+        request = QgsFeatureRequest()
         request.setExpressionContext(context)
-        request.setFilterExpression("intersects( $geometry, geometry(@parent))")
+        request.setFilterExpression("intersects( $geometry, geometry(var('parent')))")
 
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:my="http://my">
-   <fes:And>
-    <fes:Intersects xmlns:fes=\"http://www.opengis.net/fes/2.0\">
-    <fes:ValueReference xmlns:fes=\"http://www.opengis.net/fes/2.0\">wkb_geometry</fes:ValueReference>
-    <gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\" gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">
-      <gml:exterior xmlns:gml=\"http://www.opengis.net/gml/3.2\">
-      <gml:LinearRing xmlns:gml=\"http://www.opengis.net/gml/3.2\">
-        <gml:posList xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsDimension=\"2\">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
-      </gml:LinearRing>
-      </gml:exterior>
-    </gml:Polygon>
-    </fes:Intersects>
-    <fes:PropertyIsEqualTo>
-      <fes:ValueReference>my:intfield</fes:ValueReference>
-      <fes:Literal>1</fes:Literal>
-    </fes:PropertyIsEqualTo>
-  </fes:And>
-</fes:Filter>
-&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)"""),
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2">
+        <fes:And>
+            <fes:Intersects>
+              <fes:ValueReference>geometryProperty</fes:ValueReference>
+              <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
+              <gml:exterior>
+                <gml:LinearRing>
+                <gml:posList srsDimension="2">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+              </gml:Polygon>
+            </fes:Intersects>
+          <fes:PropertyIsEqualTo>
+            <fes:ValueReference>my:intfield</fes:ValueReference>
+            <fes:Literal>1</fes:Literal>
+          </fes:PropertyIsEqualTo>
+        </fes:And>
+      </fes:Filter>
+      &NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)
+      """),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -3572,42 +3624,45 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Get feature according to expression and filter and bounding box
         vl = QgsVectorLayer(
-            "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1 sql=SELECT * FROM \"my:typename\" WHERE intfield > 0", 'test',
-            'WFS')
+            "url='http://" + endpoint + "' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1 sql=SELECT * FROM \"my:typename\" WHERE intfield = 1", 'test', 'WFS')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.fields()), 1)
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        extent = QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0)
+        extent = QgsRectangle(-80, 60, -60, 89)
+
         request = QgsFeatureRequest().setFilterRect(extent)
 
-        feature = QgsFeature()
-        feature.setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
-        context = QgsExpressionContext()
+        parent_feature = QgsFeature().setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
         scope = QgsExpressionContextScope()
-        scope.setVariable('parent', feature)
+        scope.setVariable('parent', parent_feature, True)
+        context = QgsExpressionContext()
+        context.appendScope(QgsExpressionContextUtils.globalScope())
         context.appendScope(scope)
         request.setExpressionContext(context)
-        request.setFilterExpression("intersects( $geometry, geometry(@parent))")
+        request.setFilterExpression("intersects( $geometry, geometry(var('parent')))")
 
         with open(sanitize(endpoint,
-                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my">
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2">
  <fes:And>
   <fes:BBOX>
    <fes:ValueReference>my:geometryProperty</fes:ValueReference>
    <gml:Envelope srsName="urn:ogc:def:crs:EPSG::32631">
     <gml:lowerCorner>400000 5400000</gml:lowerCorner>
     <gml:upperCorner>450000 5500000</gml:upperCorner>
+
+        <LowerCorner>-90 70</LowerCorner>
+        <UpperCorner>-70 90</UpperCorner>
    </gml:Envelope>
   </fes:BBOX>
-  <fes:Intersects xmlns:fes=\"http://www.opengis.net/fes/2.0\">
-    <fes:ValueReference xmlns:fes=\"http://www.opengis.net/fes/2.0\">wkb_geometry</fes:ValueReference>
-    <gml:Polygon xmlns:gml=\"http://www.opengis.net/gml/3.2\" gml:id=\"qgis_id_geom_1\" srsName=\"urn:ogc:def:crs:EPSG::4326\">
-      <gml:exterior xmlns:gml=\"http://www.opengis.net/gml/3.2\">
-      <gml:LinearRing xmlns:gml=\"http://www.opengis.net/gml/3.2\">
-        <gml:posList xmlns:gml=\"http://www.opengis.net/gml/3.2\" srsDimension=\"2\">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
+  <fes:Intersects>
+    <fes:ValueReference>geometryProperty</fes:ValueReference>
+    <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
+    <gml:exterior>
+      <gml:LinearRing>
+      <gml:posList srsDimension="2">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
       </gml:LinearRing>
-      </gml:exterior>
+    </gml:exterior>
     </gml:Polygon>
   </fes:Intersects>
   <fes:PropertyIsGreaterThan xmlns:fes="http://www.opengis.net/fes/2.0">
@@ -3625,7 +3680,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        xmlns:my="http://my">
   <gml:featureMember>
     <my:typename fid="typename.0">
-      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::32631" gml:id="typename.geom.0"><gml:pos>426858 5427937</gml:pos></gml:Point></my:geometryProperty>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>426858 5427937</gml:pos></gml:Point></my:geometryProperty>
       <my:intfield>1</my:intfield>
     </my:typename>
   </gml:featureMember>
