@@ -174,12 +174,13 @@ Returns an expression from a WFS filter embedded in a document.
 %End
 
 
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0 );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0,
+        bool requiresFilterElement = false );
 %Docstring
 Creates an OGC expression XML element.
 
-:return: valid OGC expression QDomElement on success,
-         otherwise null QDomElement
+:return: valid OGC expression QDomElement on success or a valid \verbatim <Filter> QDomElement when:param requiresFilterElement: is set.
+          otherwise null QDomElement
 %End
 
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
@@ -190,12 +191,13 @@ Creates an OGC expression XML element.
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString *errorMessage = 0 );
+        QString *errorMessage = 0,
+        bool requiresFilterElement = false );
 %Docstring
 Creates an OGC expression XML element.
 
-:return: valid OGC expression QDomElement on success,
-         otherwise null QDomElement
+:return: valid OGC expression QDomElement on success or a valid \verbatim <Filter> QDomElement when:param requiresFilterElement: is set.
+          otherwise null QDomElement
 %End
 
 

@@ -268,8 +268,6 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
     envelopeFilterDoc.firstChildElement().appendChild( andElem );
 
-    qDebug() << "WFS DEB filter " << mShared->mWFSFilter;
-    qDebug() << "WFS DEB expres " << mShared->mServerExpression;
     QSet<QString> setNamespaceURI;
     for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
     {
@@ -283,7 +281,6 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       }
     }
 
-    qDebug() << "WFS DEB having the doc:\n" << envelopeFilterDoc.toString();
     query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( envelopeFilterDoc.toString() ) );
   }
   else if ( !rect.isNull() )
@@ -372,6 +369,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
   getFeatureUrl.setQuery( query );
   QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
+  qDebug() << "\n\n" << "WFS GetFeature URL: " << getFeatureUrl.toDisplayString() << "\n\n";
   return getFeatureUrl;
 }
 

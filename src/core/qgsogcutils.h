@@ -211,7 +211,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success,
+     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> QDomElement when \param requiresFilterElement is set.
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr,
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsOgcUtils
 
     /**
      * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success,
+     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> QDomElement when \param requiresFilterElement is set.
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
@@ -232,28 +232,6 @@ class CORE_EXPORT QgsOgcUtils
         bool invertAxisOrientation,
         QString *errorMessage = nullptr,
         bool requiresFilterElement = false );
-
-    /**
-     * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success,
-     * otherwise null QDomElement
-     */
-    static QDomElement expressionToOgcExpressionFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
-
-    /**
-     * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success,
-     * otherwise null QDomElement
-     */
-    static QDomElement expressionToOgcExpressionFilter( const QgsExpression &exp,
-        QDomDocument &doc,
-        QgsOgcUtils::GMLVersion gmlVersion,
-        FilterVersion filterVersion,
-        const QString &geometryName,
-        const QString &srsName,
-        bool honourAxisOrientation,
-        bool invertAxisOrientation,
-        QString *errorMessage = nullptr );
 
 #ifndef SIP_RUN
 
@@ -326,12 +304,8 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
 
     /**
-     * @brief filterElement
-     * @param doc
-     * @param gmlVersion
-     * @param filterVersion
-     * @param GMLUsed
-     * @return
+     * Creates an empty \verbatim <Filter> \endverbatim QDomElement
+     * \returns valid \verbatim <Filter> \endverbatim QDomElement
      */
     static QDomElement filterElement(
       QDomDocument &doc,
