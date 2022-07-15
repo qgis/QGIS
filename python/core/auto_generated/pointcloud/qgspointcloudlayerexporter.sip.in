@@ -51,21 +51,37 @@ Exports the point cloud layer to a point cloud file, where the file type can be 
 
     void setFileName( const QString &filename );
 %Docstring
-Sets the name for the new layer.
+Sets the ``filename`` for the new layer.
+%End
+    QString fileName() const;
+%Docstring
+Gets the filename for the new layer.
 %End
     void setLayerName( const QString &name );
 %Docstring
-Sets the name for the new layer.
+Sets the ``name`` for the new layer.
+%End
+    QString layerName() const;
+%Docstring
+Gets the name for the new layer.
 %End
     void setFilterExtent( const QgsRectangle extent );
 %Docstring
 Sets a filter extent for points to be exported.
 Points that fall outside the extent will be skipped.
 %End
+    QgsRectangle filterExtent() const;
+%Docstring
+Gets the filter extent for points to be exported.
+%End
     void setZRange( const QgsDoubleRange zRange );
 %Docstring
 Sets an inclusive range for Z values to be exported.
 Points with Z values outside the range will be skipped.
+%End
+    QgsDoubleRange zRange() const;
+%Docstring
+Gets the inclusive range for Z values to be exported.
 %End
     void setFeedback( QgsFeedback *feedback );
 %Docstring
@@ -74,6 +90,10 @@ Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting
 .. note::
 
    The ``feedback`` object must exist for the lifetime of the exporter.
+%End
+    QgsFeedback *feedback() const;
+%Docstring
+Gets a pointer to the :py:class:`QgsFeedback` object used for cancellation / progress reporting, or None if not set.
 %End
     void setAttributes( const QStringList &attributes );
 %Docstring
@@ -85,24 +105,38 @@ If never called, all attributes will be exported.
 %Docstring
 Sets that no attributes will be exported.
 %End
+    QStringList attributes() const;
+%Docstring
+Gets the list of point cloud attributes that will be exported.
+%End
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
 Sets the ``crs`` for the exported file, and the transfom ``context`` that will be used for
 for reprojection if different from the point cloud layer's CRS.
 %End
+    QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Gets the ``crs`` for the exported file.
+%End
     bool setFormat( const QString &format );
 %Docstring
-Sets the format for the exported file.
+Sets the ``format`` for the exported file. Possible values are OGR driver names and PDAL reader names.
 If never called, the default format is GPKG for vector and COPC for pointcloud files.
+
+:return: true if the ``format`` is supported, false otherwise.
 %End
 
     QString format() const;
 %Docstring
-Returns the format for the exported file.
+Returns the format for the exported file or layer.
 %End
     void setPointsLimit( qint64 limit );
 %Docstring
 Sets the maximum number of points to be exported.
+%End
+    qint64 pointsLimit();
+%Docstring
+Gets the maximum number of points to be exported.
 %End
 };
 
@@ -115,10 +149,6 @@ class QgsPointCloudLayerExporterTask : QgsTask
 task. This can be used to export a point cloud layer out to a provider without blocking the
 QGIS interface.
 
-.. seealso:: :py:class:`QgsVectorFileWriterTask`
-
-.. seealso:: :py:class:`QgsRasterFileWriterTask`
-
 .. versionadded:: 3.28
 %End
 
@@ -129,10 +159,7 @@ QGIS interface.
 
     QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter );
 %Docstring
-Constructor for QgsPointCloudLayerExporterTask. Takes a source ``layer``, destination ``uri``
-and ``providerKey``, and various export related parameters such as destination CRS
-and export ``options``. ``ownsLayer`` has to be set to ``True`` if the task should take ownership
-of the layer and delete it after export.
+Constructor for QgsPointCloudLayerExporterTask. Takes ownership of ``exporter``.
 %End
 
     virtual void cancel();
@@ -143,12 +170,6 @@ of the layer and delete it after export.
     void exportComplete( QgsMapLayer * );
 %Docstring
 Emitted when exporting the layer is successfully completed.
-%End
-
-    void errorOccurred( Qgis::VectorExportResult error, const QString &errorMessage );
-%Docstring
-Emitted when an error occurs which prevented the layer being exported (or if
-the task is canceled). The export ``error`` and ``errorMessage`` will be reported.
 %End
 
   protected:

@@ -489,7 +489,6 @@ void QgsPointCloudLayerExporterTask::finished( bool result )
   else
   {
     delete mOutputLayer;
-    emit errorOccurred( mError, mErrorMessage );
   }
   delete mExp;
 }

@@ -60,14 +60,24 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsPointCloudLayer *exportToPdalFile( const QString &filename = QString() ) SIP_FACTORY;
 
     /**
-     * Sets the name for the new layer.
+     * Sets the \a filename for the new layer.
      */
     void setFileName( const QString &filename ) { mFilename = filename; };
 
     /**
-     * Sets the name for the new layer.
+     * Gets the filename for the new layer.
+     */
+    QString fileName() const { return mFilename; };
+
+    /**
+     * Sets the \a name for the new layer.
      */
     void setLayerName( const QString &name ) { mName = name; };
+
+    /**
+     * Gets the name for the new layer.
+     */
+    QString layerName() const { return mFilename; };
 
     /**
      * Sets a filter extent for points to be exported.
@@ -76,10 +86,20 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     void setFilterExtent( const QgsRectangle extent ) { mExtent = extent; };
 
     /**
+     * Gets the filter extent for points to be exported.
+     */
+    QgsRectangle filterExtent() const { return mExtent; };
+
+    /**
      * Sets an inclusive range for Z values to be exported.
      * Points with Z values outside the range will be skipped.
      */
     void setZRange( const QgsDoubleRange zRange ) { mZRange = zRange; };
+
+    /**
+     * Gets the inclusive range for Z values to be exported.
+     */
+    QgsDoubleRange zRange() const { return mZRange; };
 
     /**
      * Sets a QgsFeedback object to allow cancellation / progress reporting.
@@ -87,6 +107,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * \note The \a feedback object must exist for the lifetime of the exporter.
      */
     void setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; };
+
+    /**
+     * Gets a pointer to the QgsFeedback object used for cancellation / progress reporting, or nullptr if not set.
+     */
+    QgsFeedback *feedback() const { return mFeedback; };
 
     /**
      * Sets the list of point cloud \a attributes that will be exported.
@@ -100,19 +125,30 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     void setNoAttributes() { mRequestedAttributes.clear(); };
 
     /**
+     * Gets the list of point cloud attributes that will be exported.
+     */
+    QStringList attributes() const { return mRequestedAttributes; };
+
+    /**
      * Sets the \a crs for the exported file, and the transfom \a context that will be used for
      * for reprojection if different from the point cloud layer's CRS.
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mCrs = crs; mTransformContext = context; };
 
     /**
-     * Sets the format for the exported file.
+     * Gets the \a crs for the exported file.
+     */
+    QgsCoordinateReferenceSystem crs() const { return mCrs; };
+
+    /**
+     * Sets the \a format for the exported file. Possible values are OGR driver names and PDAL reader names.
      * If never called, the default format is GPKG for vector and COPC for pointcloud files.
+     * \returns true if the \a format is supported, false otherwise.
      */
     bool setFormat( const QString &format );
 
     /**
-     * Returns the format for the exported file.
+     * Returns the format for the exported file or layer.
      */
     QString format() const { return mFormat; };
 
@@ -120,6 +156,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Sets the maximum number of points to be exported.
      */
     void setPointsLimit( qint64 limit ) { mPointsLimit = std::max< qint64 >( limit, 0 ); };
+
+    /**
+     * Gets the maximum number of points to be exported.
+     */
+    qint64 pointsLimit() { return mPointsLimit; };
 
   private:
 
@@ -154,8 +195,6 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
  * \brief QgsTask task which performs a QgsPointCloudLayerExporter layer export operation as a background
  * task. This can be used to export a point cloud layer out to a provider without blocking the
  * QGIS interface.
- * \see QgsVectorFileWriterTask
- * \see QgsRasterFileWriterTask
  * \since QGIS 3.28
  */
 class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
@@ -165,10 +204,7 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
   public:
 
     /**
-     * Constructor for QgsPointCloudLayerExporterTask. Takes a source \a layer, destination \a uri
-     * and \a providerKey, and various export related parameters such as destination CRS
-     * and export \a options. \a ownsLayer has to be set to TRUE if the task should take ownership
-     * of the layer and delete it after export.
+     * Constructor for QgsPointCloudLayerExporterTask. Takes ownership of \a exporter.
     */
     QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter );
 
@@ -180,12 +216,6 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
      * Emitted when exporting the layer is successfully completed.
      */
     void exportComplete( QgsMapLayer * );
-
-    /**
-     * Emitted when an error occurs which prevented the layer being exported (or if
-     * the task is canceled). The export \a error and \a errorMessage will be reported.
-     */
-    void errorOccurred( Qgis::VectorExportResult error, const QString &errorMessage );
 
   protected:
 
