@@ -75,6 +75,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
       constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
       constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
       mFields[ idx ].setConstraints( constraints );
+      mFields[ idx ].setReadOnly( true );
 
       break;
     }

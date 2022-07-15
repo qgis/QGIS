@@ -51,6 +51,7 @@ class QgsAfsSharedData : public QObject
     friend class QgsAfsProvider;
     mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
     QgsDataSourceUri mDataSource;
+    bool mLimitBBox = false;
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;

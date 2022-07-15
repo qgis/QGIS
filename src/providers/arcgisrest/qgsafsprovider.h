@@ -61,8 +61,10 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeGeometryValues( QgsGeometryMap & geometry_map ) override{ return false; }
     */
     QgsVectorDataProvider::Capabilities capabilities() const override;
-    QgsAttributeList pkAttributeIndexes() const override { return QgsAttributeList() << mSharedData->mObjectIdFieldIdx; }
+    QgsAttributeList pkAttributeIndexes() const override;
+    QString defaultValueClause( int fieldId ) const override;
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
 
     /* Inherited from QgsDataProvider */
     QgsCoordinateReferenceSystem crs() const override;
