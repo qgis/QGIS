@@ -123,7 +123,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
   if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
     return false;
 
-  if ( mFeatureIterator >= mSource->sharedData()->featureCount() )
+  if ( mFeatureIterator >= mSource->sharedData()->objectIdCount() )
     return false;
 
   if ( mDeferredFeaturesInFilterRectCheck )
@@ -188,7 +188,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
     case QgsFeatureRequest::FilterExpression:
     case QgsFeatureRequest::FilterNone:
     {
-      while ( mFeatureIterator < mSource->sharedData()->featureCount() )
+      while ( mFeatureIterator < mSource->sharedData()->objectIdCount() )
       {
         if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
           return false;
