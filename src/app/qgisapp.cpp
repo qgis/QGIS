@@ -9521,7 +9521,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     {
       QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
     }
-    exp->setCrs( destCRS );
+    exp->setCrs( destCRS, pclayer->transformContext() );
     exp->setFormat( dialog.format() );
 
     if ( dialog.hasAttributes() )

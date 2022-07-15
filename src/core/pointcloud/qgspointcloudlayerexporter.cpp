@@ -481,7 +481,6 @@ bool QgsPointCloudLayerExporterTask::run()
 
 void QgsPointCloudLayerExporterTask::finished( bool result )
 {
-  delete mExp;
 
   if ( result )
   {
@@ -492,4 +491,5 @@ void QgsPointCloudLayerExporterTask::finished( bool result )
     delete mOutputLayer;
     emit errorOccurred( mError, mErrorMessage );
   }
+  delete mExp;
 }

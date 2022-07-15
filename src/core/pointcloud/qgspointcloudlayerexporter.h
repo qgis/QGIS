@@ -100,10 +100,10 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     void setNoAttributes() { mRequestedAttributes.clear(); };
 
     /**
-     * Sets the \a crs for the exported file.
-     * If different from the point cloud layer's CRS, points will be reprojected.
+     * Sets the \a crs for the exported file, and the transfom \a context that will be used for
+     * for reprojection if different from the point cloud layer's CRS.
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; };
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mCrs = crs; mTransformContext = context; };
 
     /**
      * Sets the format for the exported file.
@@ -143,6 +143,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     qint64 mPointsLimit = std::numeric_limits<qint64>::max();
     QStringList mRequestedAttributes;
     QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 

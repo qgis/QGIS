@@ -85,10 +85,10 @@ If never called, all attributes will be exported.
 %Docstring
 Sets that no attributes will be exported.
 %End
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
-Sets the ``crs`` for the exported file.
-If different from the point cloud layer's CRS, points will be reprojected.
+Sets the ``crs`` for the exported file, and the transfom ``context`` that will be used for
+for reprojection if different from the point cloud layer's CRS.
 %End
     bool setFormat( const QString &format );
 %Docstring
