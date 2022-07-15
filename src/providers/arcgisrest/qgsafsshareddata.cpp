@@ -17,6 +17,7 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
 #include "qgslogger.h"
+#include "qgsreadwritelocker.h"
 
 long long QgsAfsSharedData::objectIdCount() const
 {
@@ -30,7 +31,8 @@ long long QgsAfsSharedData::featureCount() const
 
 void QgsAfsSharedData::clearCache()
 {
-  const QMutexLocker locker( &mMutex );
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+
   mCache.clear();
   mObjectIds.clear();
   mDeletedFeatureIds.clear();
@@ -85,7 +87,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
 
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
 {
-  QMutexLocker locker( &mMutex );
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
 
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.constFind( id );
@@ -132,7 +134,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   }
 
   // but re-lock while updating cache
-  locker.relock();
+  locker.changeMode( QgsReadWriteLocker::Write );
   const QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
   if ( featuresData.isEmpty() )
   {
@@ -208,6 +210,7 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   const QList<quint32> featuresInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
                                         extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback );
 
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   QgsFeatureIds ids;
   for ( const quint32 id : featuresInRect )
   {
