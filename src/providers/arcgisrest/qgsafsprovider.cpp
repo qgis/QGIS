@@ -287,6 +287,27 @@ QgsLayerMetadata QgsAfsProvider::layerMetadata() const
   return mLayerMetadata;
 }
 
+bool QgsAfsProvider::deleteFeatures( const QgsFeatureIds &ids )
+{
+  if ( !mCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
+    return false;
+
+  return mSharedData->deleteFeatures( ids );
+}
+
+bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
+{
+  if ( !mCapabilityStrings.contains( QLatin1String( "create" ), Qt::CaseInsensitive ) )
+    return false;
+
+  QString error;
+  const bool res = mSharedData->addFeatures( flist, error );
+  if ( !res )
+    pushError( tr( "Error while adding features: %1" ).arg( error ) );
+
+  return res;
+}
+
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
   QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId

@@ -196,6 +196,12 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
           return false;
 
+        if ( mSource->sharedData()->isDeleted( mFeatureIterator ) )
+        {
+          ++mFeatureIterator;
+          continue;
+        }
+
         bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
         if ( !mFeatureIdList.empty() )
         {
