@@ -14,7 +14,7 @@ Building QGIS from source - step by step
   - [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
   - [3.7. Starting the compile](#37-starting-the-compile)
   - [3.8. Compiling with 3D](#38-compiling-with-3d)
-    - [3.8.1. Compiling with 3D on Debian based distributions](#381-compiling-with-3d-on-debian-based-distributions)
+    - [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
   - [3.9. Building different branches](#39-building-different-branches)
   - [3.10. Building Debian packages](#310-building-debian-packages)
   - [3.11. On Fedora Linux](#311-on-fedora-linux)
@@ -347,13 +347,12 @@ In the cmake, you need to enable:
 WITH_3D=True
 ```
 
-### 3.8.1. Compiling with 3D on Debian Bullseye based distributions
+### 3.8.1. Compiling with 3D on old Debian based distributions
 
 QGIS 3D requires Qt53DExtras. These headers have been removed
-from Qt upstream on Debian Bullseye based distributions (including e.g. 
-Ubuntu 20.04). A copy has been made in the
-QGIS repository in `external/qt3dextra-headers`.
-To compile with 3D enabled, you need to add some cmake options:
+from Qt upstream on Debian Buster and Ubuntu focal (20.04) based distributions.
+A copy has been made in the QGIS repository in `external/qt3dextra-headers`.
+To compile with 3D enabled on these distributions, you need to add some cmake options:
 
 ```bash
 CMAKE_PREFIX_PATH={path to QGIS Git repo}/external/qt3dextra-headers/cmake
@@ -361,6 +360,8 @@ QT5_3DEXTRA_INCLUDE_DIR={path to QGIS Git repo}/external/qt3dextra-headers
 QT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so
 Qt53DExtras_DIR={path to QGIS Git repo}/external/qt3dextra-headers/cmake/Qt53DExtras
 ```
+
+Above instructions do not apply to newer versions of Debian and Ubuntu.
 
 ## 3.9. Building different branches
 
