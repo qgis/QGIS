@@ -93,6 +93,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
     QgsHttpHeaders mRequestHeaders;
+    bool mServerSupportsCurves = false;
 
     /**
      * Clears cache

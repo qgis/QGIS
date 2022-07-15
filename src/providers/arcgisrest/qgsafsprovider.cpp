@@ -62,6 +62,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mLayerName = layerData[QStringLiteral( "name" )].toString();
   mLayerDescription = layerData[QStringLiteral( "description" )].toString();
   mCapabilityStrings = layerData[QStringLiteral( "capabilities" )].toString().split( ',' );
+  mServerSupportsCurves = layerData.value( QStringLiteral( "allowTrueCurvesUpdates" ), false ).toBool();
 
   // Set extent
   QStringList coords = mSharedData->mDataSource.param( QStringLiteral( "bbox" ) ).split( ',' );
@@ -286,7 +287,9 @@ QgsLayerMetadata QgsAfsProvider::layerMetadata() const
 
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
-  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::ReadLayerMetadata | QgsVectorDataProvider::Capability::ReloadData;
+  QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
+                                          | QgsVectorDataProvider::ReadLayerMetadata
+                                          | QgsVectorDataProvider::Capability::ReloadData;
   if ( !mRendererDataMap.empty() )
   {
     c = c | QgsVectorDataProvider::CreateRenderer;
@@ -295,6 +298,9 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
   {
     c = c | QgsVectorDataProvider::CreateLabeling;
   }
+
+  if ( mServerSupportsCurves )
+    c |= QgsVectorDataProvider::CircularGeometries;
 
   if ( mCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
   {
