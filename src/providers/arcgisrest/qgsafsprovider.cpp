@@ -64,7 +64,6 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
 
   // Set extent
   QStringList coords = mSharedData->mDataSource.param( QStringLiteral( "bbox" ) ).split( ',' );
-  bool limitBbox = false;
   if ( coords.size() == 4 )
   {
     bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
@@ -74,11 +73,6 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     mSharedData->mExtent.setYMaximum( coords[3].toDouble( &ymaxOk ) );
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
       mSharedData->mExtent = QgsRectangle();
-    else
-    {
-      // user has set a bounding box limit on the layer - so we only EVER fetch features from this extent
-      limitBbox = true;
-    }
   }
 
   const QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
@@ -228,38 +222,10 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
-  QVariantMap objectIdData = QgsArcGisRestQueryUtils::getObjectIds( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), authcfg,
-                             errorTitle,  errorMessage, mRequestHeaders, limitBbox ? mSharedData->mExtent : QgsRectangle() );
-  if ( objectIdData.isEmpty() )
+  if ( ! mSharedData->getObjectIds( errorMessage ) )
   {
-    appendError( QgsErrorMessage( tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, errorMessage ), QStringLiteral( "AFSProvider" ) ) );
+    appendError( QgsErrorMessage( errorMessage, QStringLiteral( "AFSProvider" ) ) );
     return;
-  }
-  if ( !objectIdData[QStringLiteral( "objectIdFieldName" )].isValid() || !objectIdData[QStringLiteral( "objectIds" )].isValid() )
-  {
-    appendError( QgsErrorMessage( tr( "Failed to determine objectIdFieldName and/or objectIds" ), QStringLiteral( "AFSProvider" ) ) );
-    return;
-  }
-  mSharedData->mObjectIdFieldName = objectIdData[QStringLiteral( "objectIdFieldName" )].toString();
-  for ( int idx = 0, nIdx = mSharedData->mFields.count(); idx < nIdx; ++idx )
-  {
-    if ( mSharedData->mFields.at( idx ).name() == mSharedData->mObjectIdFieldName )
-    {
-      mObjectIdFieldIdx = idx;
-
-      // primary key is not null, unique
-      QgsFieldConstraints constraints = mSharedData->mFields.at( idx ).constraints();
-      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
-      constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-      mSharedData->mFields[ idx ].setConstraints( constraints );
-
-      break;
-    }
-  }
-  const QVariantList objectIds = objectIdData.value( QStringLiteral( "objectIds" ) ).toList();
-  for ( const QVariant &objectId : objectIds )
-  {
-    mSharedData->mObjectIds.append( objectId.toInt() );
   }
 
   // layer metadata

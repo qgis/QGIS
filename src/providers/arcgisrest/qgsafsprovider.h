@@ -61,7 +61,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeGeometryValues( QgsGeometryMap & geometry_map ) override{ return false; }
     */
     QgsVectorDataProvider::Capabilities capabilities() const override;
-    QgsAttributeList pkAttributeIndexes() const override { return QgsAttributeList() << mObjectIdFieldIdx; }
+    QgsAttributeList pkAttributeIndexes() const override { return QgsAttributeList() << mSharedData->mObjectIdFieldIdx; }
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
 
     /* Inherited from QgsDataProvider */
@@ -86,7 +86,6 @@ class QgsAfsProvider : public QgsVectorDataProvider
   private:
     bool mValid = false;
     std::shared_ptr<QgsAfsSharedData> mSharedData;
-    int mObjectIdFieldIdx = -1;
     QString mLayerName;
     QString mLayerDescription;
     QgsLayerMetadata mLayerMetadata;
