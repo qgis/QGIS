@@ -3460,23 +3460,23 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?VERSION=2.0.0'), 'wb') as f:
             f.write("""
-<wfs:WFS_Capabilities version="2.0.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
-  <wfs:FeatureTypeList>
-    <wfs:FeatureType xmlns:my="http://my">
-      <wfs:Name>my:typename</wfs:Name>
-      <wfs:Title>Title</wfs:Title>
-      <wfs:Abstract>Abstract</wfs:Abstract>
-      <wfs:SRS>EPSG:4326</wfs:SRS>
+<wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <DefaultCRS>urn:ogc:def:crs:EPSG::4326</DefaultCRS>
       <WGS84BoundingBox>
-        <LowerCorner>50 -100</LowerCorner>
-        <UpperCorner>100 -50</UpperCorner>
+        <LowerCorner>-50 -50</LowerCorner>
+        <UpperCorner>50 50</UpperCorner>
       </WGS84BoundingBox>
-    </wfs:FeatureType>
-  </wfs:FeatureTypeList>
+    </FeatureType>
+  </FeatureTypeList>
 </wfs:WFS_Capabilities>""".encode('UTF-8'))
 
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&NAMESPACES=xmlns(my,http://my)&TYPENAME=my:typename&NAMESPACE=xmlns(my,http://my)'),
+                           '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'),
                   'wb') as f:
             f.write("""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
@@ -3502,7 +3502,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Simple test
         with open(sanitize(endpoint,
-                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)'),
+                           '?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326'),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -3512,6 +3512,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMember>
     <my:typename fid="typename.0">
       <my:intfield>1</my:intfield>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>1 1</gml:pos></gml:Point></my:geometryProperty>
     </my:typename>
   </gml:featureMember>
 </wfs:FeatureCollection>""".encode('UTF-8'))
@@ -3525,10 +3526,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.fields()), 1)
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
-        poly = QgsFeature(polygonLayer.fields())
         parent_feature = QgsFeature()
-        parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
+        parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((-20 -20, -20 20, 20 20, 20 -20, -20 -20))'))
         context = QgsExpressionContext()
         context.appendScope(QgsExpressionContextUtils.globalScope())
         scope = QgsExpressionContextScope()
@@ -3545,13 +3544,12 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
           <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
           <gml:exterior>
             <gml:LinearRing>
-            <gml:posList srsDimension="2">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
+              <gml:posList srsDimension="2">-20 -20 20 -20 20 20 -20 20 -20 -20</gml:posList>
             </gml:LinearRing>
           </gml:exterior>
           </gml:Polygon>
         </fes:Intersects>
         </fes:Filter>
-        &NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)
         """),
                   'wb') as f:
             f.write("""
@@ -3562,7 +3560,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   <gml:featureMember>
     <my:typename fid="typename.0">
       <my:intfield>1</my:intfield>
-      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>1 1</gml:pos></gml:Point></my:geometryProperty>
     </my:typename>
   </gml:featureMember>
 </wfs:FeatureCollection>""".encode('UTF-8'))
@@ -3575,7 +3573,8 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.fields()), 1)
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
-        parent_feature = QgsFeature().setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
+        parent_feature = QgsFeature()
+        parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((-20 -20, -20 20, 20 20, 20 -20, -20 -20))'))
         scope = QgsExpressionContextScope()
         scope.setVariable('parent', parent_feature, True)
         context = QgsExpressionContext()
@@ -3593,7 +3592,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
               <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
               <gml:exterior>
                 <gml:LinearRing>
-                <gml:posList srsDimension="2">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
+                  <gml:posList srsDimension="2">-20 -20 20 -20 20 20 -20 20 -20 -20</gml:posList>
                 </gml:LinearRing>
               </gml:exterior>
               </gml:Polygon>
@@ -3604,21 +3603,20 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
           </fes:PropertyIsEqualTo>
         </fes:And>
       </fes:Filter>
-      &NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)
       """),
                   'wb') as f:
             f.write("""
-<wfs:FeatureCollection
-                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
-                       xmlns:gml="http://www.opengis.net/gml/3.2"
-                       xmlns:my="http://my">
-  <gml:featureMember>
-    <my:typename fid="typename.0">
-      <my:intfield>1</my:intfield>
-      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>70 -65</gml:pos></gml:Point></my:geometryProperty>
-    </my:typename>
-  </gml:featureMember>
-</wfs:FeatureCollection>""".encode('UTF-8'))
+      <wfs:FeatureCollection
+                            xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                            xmlns:gml="http://www.opengis.net/gml/3.2"
+                            xmlns:my="http://my">
+        <gml:featureMember>
+          <my:typename fid="typename.0">
+            <my:intfield>1</my:intfield>
+            <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>1 1</gml:pos></gml:Point></my:geometryProperty>
+          </my:typename>
+        </gml:featureMember>
+      </wfs:FeatureCollection>""".encode('UTF-8'))
         values = [f['intfield'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [1])
 
@@ -3630,10 +3628,10 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
 
         extent = QgsRectangle(-80, 60, -60, 89)
-
         request = QgsFeatureRequest().setFilterRect(extent)
 
-        parent_feature = QgsFeature().setGeometry(QgsGeometry.fromWkt('Polygon ((80 -80, 80 -60, 60 -60, 60 -80, 80 -80))'))
+        parent_feature = QgsFeature()
+        parent_feature.setGeometry(QgsGeometry.fromWkt('Polygon ((-20 -20, -20 20, 20 20, 20 -20, -20 -20))'))
         scope = QgsExpressionContextScope()
         scope.setVariable('parent', parent_feature, True)
         context = QgsExpressionContext()
@@ -3644,34 +3642,31 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         with open(sanitize(endpoint,
                            """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gml="http://www.opengis.net/gml/3.2">
- <fes:And>
-  <fes:BBOX>
-   <fes:ValueReference>my:geometryProperty</fes:ValueReference>
-   <gml:Envelope srsName="urn:ogc:def:crs:EPSG::32631">
-    <gml:lowerCorner>400000 5400000</gml:lowerCorner>
-    <gml:upperCorner>450000 5500000</gml:upperCorner>
-
-        <LowerCorner>-90 70</LowerCorner>
-        <UpperCorner>-70 90</UpperCorner>
-   </gml:Envelope>
-  </fes:BBOX>
-  <fes:Intersects>
-    <fes:ValueReference>geometryProperty</fes:ValueReference>
-    <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
-    <gml:exterior>
-      <gml:LinearRing>
-      <gml:posList srsDimension="2">80 -80 80 -60 60 -60 60 -80 80 -80</gml:posList>
-      </gml:LinearRing>
-    </gml:exterior>
-    </gml:Polygon>
-  </fes:Intersects>
-  <fes:PropertyIsGreaterThan xmlns:fes="http://www.opengis.net/fes/2.0">
-   <fes:ValueReference>my:intfield</fes:ValueReference>
-   <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">0</fes:Literal>
-  </fes:PropertyIsGreaterThan>
- </fes:And>
-</fes:Filter>
-&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)"""),
+        <fes:And>
+          <fes:BBOX>
+          <fes:ValueReference>my:geometryProperty</fes:ValueReference>
+          <gml:Envelope srsName="urn:ogc:def:crs:EPSG::32631">
+            <gml:lowerCorner>-30 -30</gml:lowerCorner>
+            <gml:upperCorner>30 30</gml:upperCorner>
+          </gml:Envelope>
+          </fes:BBOX>
+          <fes:Intersects>
+            <fes:ValueReference>geometryProperty</fes:ValueReference>
+            <gml:Polygon gml:id="qgis_id_geom_1" srsName="urn:ogc:def:crs:EPSG::4326">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">-20 -20 20 -20 20 20 -20 20 -20 -20</gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+            </gml:Polygon>
+          </fes:Intersects>
+          <fes:PropertyIsGreaterThan xmlns:fes="http://www.opengis.net/fes/2.0">
+          <fes:ValueReference>my:intfield</fes:ValueReference>
+          <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">0</fes:Literal>
+          </fes:PropertyIsGreaterThan>
+        </fes:And>
+        </fes:Filter>
+        """),
                   'wb') as f:
             f.write("""
 <wfs:FeatureCollection
@@ -3680,7 +3675,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
                        xmlns:my="http://my">
   <gml:featureMember>
     <my:typename fid="typename.0">
-      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>426858 5427937</gml:pos></gml:Point></my:geometryProperty>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.0"><gml:pos>1 1</gml:pos></gml:Point></my:geometryProperty>
       <my:intfield>1</my:intfield>
     </my:typename>
   </gml:featureMember>
