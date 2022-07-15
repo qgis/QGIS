@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPointCloudLayerExporter /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -31,6 +32,8 @@ Constructor for QgsPointCloudLayerExporter, associated with the specified ``laye
 
    The ``layer`` is safe to be deleted once it's used in the constructor.
 %End
+
+    ~QgsPointCloudLayerExporter();
 
     QgsVectorLayer *exportToMemoryLayer() /Factory/;
 %Docstring
@@ -138,6 +141,15 @@ Sets the maximum number of points to be exported.
 %Docstring
 Gets the maximum number of points to be exported.
 %End
+    void doExport();
+
+    QgsMapLayer *getLayer();
+
+      public:
+      protected:
+      public:
+      public:
+      public:
 };
 
 
@@ -167,7 +179,7 @@ Constructor for QgsPointCloudLayerExporterTask. Takes ownership of ``exporter``.
 
   signals:
 
-    void exportComplete( QgsMapLayer * );
+    void exportComplete();
 %Docstring
 Emitted when exporting the layer is successfully completed.
 %End

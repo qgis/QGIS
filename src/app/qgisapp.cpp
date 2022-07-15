@@ -9548,16 +9548,11 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     QgsApplication::taskManager()->addTask( task );
 
     // when writer is successful:
-    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this, addToCanvas ]( QgsMapLayer * layer )
+    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this, addToCanvas, &exp ]()
     {
       if ( addToCanvas )
       {
-        this->addMapLayer( layer );
-      }
-      else
-      {
-        // need to cleanup the dangling pointer if the layer is not added to the map
-        delete layer;
+        this->addMapLayer( exp->getLayer() );
       }
     } );
   }

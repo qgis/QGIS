@@ -23,6 +23,8 @@
 #include "qgspointcloudlayer.h"
 #include "qgstaskmanager.h"
 
+class QgsCoordinateTransform;
+
 /**
  * \class QgsPointCloudLayerExporter
  * \ingroup core
@@ -41,6 +43,8 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * \note The \a layer is safe to be deleted once it's used in the constructor.
      */
     QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
+
+    ~QgsPointCloudLayerExporter();
 
     /**
      * Exports the point cloud layer to a memory layer.
@@ -162,6 +166,10 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      */
     qint64 pointsLimit() { return mPointsLimit; };
 
+    void doExport();
+
+    QgsMapLayer *getLayer();
+
   private:
 
     void exportToSink( QgsFeatureSink * );
@@ -185,6 +193,56 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QStringList mRequestedAttributes;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
+
+    QgsMapLayer *mOutputLayer = nullptr;
+
+
+
+    class ExporterBase
+    {
+      public:
+        ExporterBase();
+        void run();
+        virtual ~ExporterBase() = default;
+      protected:
+        virtual void handlePoint( double x, double y, double z, const QVariantMap &map ) = 0;
+        virtual void handleNode() = 0;
+        QgsPointCloudLayerExporter *mParent = nullptr;
+        QgsCoordinateTransform *mCt = nullptr;
+    };
+
+    class ExporterMemory : public ExporterBase
+    {
+      public:
+        ExporterMemory( QgsPointCloudLayerExporter *exp );
+        ~ExporterMemory() override;
+      private:
+        void handlePoint( double x, double y, double z, const QVariantMap &map ) override;
+        void handleNode() override;
+        QgsFeatureList mFeatures;
+    };
+
+    class ExporterVector : public ExporterBase
+    {
+      public:
+        ExporterVector( QgsPointCloudLayerExporter *exp );
+        ~ExporterVector() override;
+      private:
+        void handlePoint( double x, double y, double z, const QVariantMap &map ) override;
+        void handleNode() override;
+        QgsFeatureList mFeatures;
+    };
+
+    class ExporterPdal : public ExporterBase
+    {
+      public:
+        ExporterPdal( QgsPointCloudLayerExporter *exp );
+        ~ExporterPdal() override;
+      private:
+        void handlePoint( double x, double y, double z, const QVariantMap &map ) override;
+        void handleNode() override;
+    };
+
 };
 
 
@@ -215,7 +273,7 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     /**
      * Emitted when exporting the layer is successfully completed.
      */
-    void exportComplete( QgsMapLayer * );
+    void exportComplete();
 
   protected:
 
@@ -223,7 +281,6 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     void finished( bool result ) override;
 
   private:
-    QgsMapLayer *mOutputLayer = nullptr;
     QgsPointCloudLayerExporter *mExp = nullptr;
     const QString mFormat;
 
