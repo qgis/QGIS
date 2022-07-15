@@ -121,6 +121,11 @@ class QgsFeature3DHandler
      */
     float zMaximum() const { return mZMax; }
 
+    /**
+     * Returns the number of features processed by the handler.
+     */
+    int featureCount() const { return mFeatureCount; }
+
   protected:
     //! updates zMinimum, zMaximum from the vector of positions in 3D world coordinates
     void updateZRangeFromPositions( const QVector<QVector3D> &positions );
@@ -128,6 +133,7 @@ class QgsFeature3DHandler
   protected:
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
+    int mFeatureCount = 0;
 };
 
 
