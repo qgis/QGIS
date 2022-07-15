@@ -52,7 +52,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
   QString errorTitle;
   QString error;
   QVariantMap objectIdData = QgsArcGisRestQueryUtils::getObjectIds( mDataSource.param( QStringLiteral( "url" ) ), mDataSource.authConfigId(),
-                             errorTitle, error, mDataSource.httpHeaders(), !mExtent.isNull() ? mExtent : QgsRectangle() );
+                             errorTitle, error, mDataSource.httpHeaders(), mLimitBBox ? mExtent : QgsRectangle() );
   if ( objectIdData.isEmpty() )
   {
     errorMessage = tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, error );
