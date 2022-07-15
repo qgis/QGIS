@@ -322,6 +322,23 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
   return c;
 }
 
+QgsAttributeList QgsAfsProvider::pkAttributeIndexes() const
+{
+  return QgsAttributeList() << mSharedData->mObjectIdFieldIdx;
+}
+
+QString QgsAfsProvider::defaultValueClause( int fieldId ) const
+{
+  if ( fieldId == mSharedData->mObjectIdFieldIdx )
+    return QStringLiteral( "Autogenerate" );
+  return QString();
+}
+
+bool QgsAfsProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint, const QVariant &value ) const
+{
+  return fieldIndex == mSharedData->mObjectIdFieldIdx && value.toString() == QLatin1String( "Autogenerate" );
+}
+
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
 {
   mSharedData->mDataSource = QgsDataSourceUri( uri );

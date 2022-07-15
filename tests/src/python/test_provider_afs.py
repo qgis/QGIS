@@ -32,7 +32,8 @@ from qgis.core import (NULL,
                        QgsProviderRegistry,
                        QgsWkbTypes,
                        QgsDataSourceUri,
-                       QgsVectorDataProviderTemporalCapabilities
+                       QgsVectorDataProviderTemporalCapabilities,
+                       QgsFieldConstraints
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -479,6 +480,18 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         parts = {'url': 'http://blah.com', 'crs': 'epsg:4326', 'referer': 'me', 'bounds': QgsRectangle(1, 2, 3, 4)}
         uri = QgsProviderRegistry.instance().encodeUri(self.vl.dataProvider().name(), parts)
         self.assertEqual(uri, " bbox='1,2,3,4' crs='epsg:4326' url='http://blah.com' http-header:referer='me' referer='me'")
+
+    def testFieldProperties(self):
+        self.assertEqual(self.vl.dataProvider().pkAttributeIndexes(), [0])
+        self.assertEqual(self.vl.dataProvider().fields()[0].constraints().constraints(),
+                         QgsFieldConstraints.Constraints(QgsFieldConstraints.ConstraintNotNull | QgsFieldConstraints.ConstraintUnique))
+        self.assertFalse(self.vl.dataProvider().fields()[1].constraints().constraints())
+        self.assertEqual(self.vl.dataProvider().defaultValueClause(0), 'Autogenerate')
+        self.assertFalse(self.vl.dataProvider().defaultValueClause(1))
+
+        self.assertTrue(self.vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 'Autogenerate'))
+        self.assertFalse(self.vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 'aa'))
+        self.assertFalse(self.vl.dataProvider().skipConstraintCheck(1, QgsFieldConstraints.ConstraintUnique, 'aa'))
 
     def testObjectIdDifferentName(self):
         """ Test that object id fields not named OBJECTID work correctly """
