@@ -17,7 +17,14 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
 #include "qgslogger.h"
+#include <QUrlQuery>
+#include <QNetworkRequest>
+#include "qgsnetworkaccessmanager.h"
+#include "qgsblockingnetworkrequest.h"
 #include "qgsreadwritelocker.h"
+#include "qgsjsonutils.h"
+
+#include <nlohmann/json.hpp>
 
 long long QgsAfsSharedData::objectIdCount() const
 {
@@ -28,7 +35,7 @@ long long QgsAfsSharedData::objectIdCount() const
 long long QgsAfsSharedData::featureCount() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
-  return mObjectIds.size();
+  return mObjectIds.size() - mDeletedFeatureIds.size();
 }
 
 void QgsAfsSharedData::clearCache()
@@ -107,8 +114,8 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
   {
-    if ( i >= 0 && i < mObjectIds.count() )
-      objectIds.append( mObjectIds[i] );
+    if ( i >= 0 && i < mObjectIds.count() && !mDeletedFeatureIds.contains( i ) )
+      objectIds.append( mObjectIds.at( i ) );
   }
 
   if ( objectIds.empty() )
@@ -222,6 +229,143 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
       ids.insert( featureId );
   }
   return ids;
+}
+
+bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids )
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+
+  QStringList stringIds;
+  for ( const QgsFeatureId id : ids )
+  {
+    stringIds.append( QString::number( mObjectIds[id] ) );
+  }
+  locker.unlock();
+
+  QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/deleteFeatures" );
+
+  QByteArray payload;
+  payload.append( QStringLiteral( "f=json&objectIds=%1" ).arg( stringIds.join( ',' ) ).toUtf8() );
+
+  QString errorTitle;
+  QString errorText;
+
+  QNetworkRequest request( queryUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mDataSource.authConfigId() );
+  QgsFeedback feedback;
+
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.post( request, payload, false, &feedback );
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
+  {
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    errorTitle = QStringLiteral( "Network error" );
+    errorText = networkRequest.errorMessage();
+
+    // try to get detailed error message from reply
+    const QString content = networkRequest.reply().content();
+    const thread_local QRegularExpression errorRx( QStringLiteral( "Error: <.*?>(.*?)<" ) );
+    const QRegularExpressionMatch match = errorRx.match( content );
+    if ( match.hasMatch() )
+    {
+      errorText = match.captured( 1 );
+    }
+
+    return false;
+  }
+
+  locker.changeMode( QgsReadWriteLocker::Write );
+  for ( QgsFeatureId id : ids )
+  {
+    mCache.remove( id );
+    mDeletedFeatureIds.insert( id );
+  }
+
+  return true;
+}
+
+bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMessage )
+{
+  errorMessage.clear();
+  QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/applyEdits" );
+
+  QgsArcGisRestContext context;
+
+  QVariantList featuresJson;
+  featuresJson.reserve( features.size() );
+  for ( const QgsFeature &feature : features )
+  {
+    featuresJson.append( QgsArcGisRestUtils::featureToJson( feature, context ) );
+  }
+
+  const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( featuresJson ).dump( 2 ) );
+
+  QByteArray payload;
+  payload.append( QStringLiteral( "f=json&trueCurveClient=true&adds=%1" ).arg( json ).toUtf8() );
+
+  QString errorTitle;
+  QString errorText;
+
+  QNetworkRequest request( queryUrl );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mDataSource.authConfigId() );
+  QgsFeedback feedback;
+
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.post( request, payload, false, &feedback );
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
+  {
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    errorTitle = QStringLiteral( "Network error" );
+    errorText = networkRequest.errorMessage();
+
+    // try to get detailed error message from reply
+    const QString content = networkRequest.reply().content();
+    const thread_local QRegularExpression errorRx( QStringLiteral( "Error: <.*?>(.*?)<" ) );
+    const QRegularExpressionMatch match = errorRx.match( content );
+    if ( match.hasMatch() )
+    {
+      errorText = match.captured( 1 );
+    }
+
+    return false;
+  }
+
+  const QVariantMap response = QgsJsonUtils::parseJson( networkRequest.reply().content() ).toMap();
+  const QVariantList addResults = response.value( QStringLiteral( "addResults" ) ).toList();
+  for ( const QVariant &result : addResults )
+  {
+    const QVariantMap resultMap = result.toMap();
+    if ( !resultMap.value( QStringLiteral( "success" ) ).toBool() )
+    {
+      errorMessage = resultMap.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "description" ) ).toString();
+      return false;
+    }
+  }
+
+  // all good!
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+  int i = 0;
+  for ( const QVariant &result : addResults )
+  {
+    const QVariantMap resultMap = result.toMap();
+    const long long objectId = resultMap.value( QStringLiteral( "objectId" ) ).toLongLong();
+
+    features[i].setId( mObjectIds.size() );
+    mObjectIds.append( objectId );
+
+    i++;
+  }
+  return true;
 }
 
 bool QgsAfsSharedData::hasCachedAllFeatures() const

@@ -52,9 +52,11 @@ class QgsAfsProvider : public QgsVectorDataProvider
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
     /* Read only for the moment
-    bool addFeatures( QgsFeatureList &flist ) override{ return false; }
-    bool deleteFeatures( const QgsFeatureIds &id ) override{ return false; }
+
     bool addAttributes( const QList<QgsField> &attributes ) override{ return false; }
     bool deleteAttributes( const QgsAttributeIds &attributes ) override{ return false; }
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override{ return false; }

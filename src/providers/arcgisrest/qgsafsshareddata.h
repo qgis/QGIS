@@ -35,6 +35,7 @@ class QgsAfsSharedData : public QObject
     QgsAfsSharedData() = default;
     long long objectIdCount() const;
     long long featureCount() const;
+    bool isDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
     const QgsFields &fields() const { return mFields; }
     QgsRectangle extent() const { return mExtent; }
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
@@ -44,6 +45,9 @@ class QgsAfsSharedData : public QObject
 
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
+
+    bool deleteFeatures( const QgsFeatureIds &id );
+    bool addFeatures( QgsFeatureList &features, QString &error );
 
     bool hasCachedAllFeatures() const;
 
@@ -55,10 +59,12 @@ class QgsAfsSharedData : public QObject
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
+
     QString mObjectIdFieldName;
     int mObjectIdFieldIdx = -1;
 
     QList<quint32> mObjectIds;
+    QSet<QgsFeatureId> mDeletedFeatureIds;
     QMap<QgsFeatureId, QgsFeature> mCache;
     QgsCoordinateReferenceSystem mSourceCRS;
 };
