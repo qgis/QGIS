@@ -33,7 +33,8 @@ from qgis.core import (NULL,
                        QgsWkbTypes,
                        QgsDataSourceUri,
                        QgsVectorDataProviderTemporalCapabilities,
-                       QgsFieldConstraints
+                       QgsFieldConstraints,
+                       QgsVectorDataProvider
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -480,6 +481,133 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         parts = {'url': 'http://blah.com', 'crs': 'epsg:4326', 'referer': 'me', 'bounds': QgsRectangle(1, 2, 3, 4)}
         uri = QgsProviderRegistry.instance().encodeUri(self.vl.dataProvider().name(), parts)
         self.assertEqual(uri, " bbox='1,2,3,4' crs='epsg:4326' url='http://blah.com' http-header:referer='me' referer='me'")
+
+    def testProviderCapabilities(self):
+        # non-editable layer
+        self.assertEqual(self.vl.dataProvider().capabilities(), QgsVectorDataProvider.Capabilities(QgsVectorDataProvider.SelectAtId
+                                                                                                   | QgsVectorDataProvider.ReadLayerMetadata
+                                                                                                   | QgsVectorDataProvider.ReloadData))
+
+        # delete capability
+        endpoint = self.basetestpath + '/delete_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                "minScale":72225,"maxScale":0,
+                "defaultVisibility":true,
+                "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                "displayField":"LABEL","typeIdField":null,
+                "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                "capabilities":"Map,Query,Data,Delete","maxRecordCount":1000,"supportsStatistics":true,
+                "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+                {
+                 "objectIdFieldName": "OBJECTID",
+                 "objectIds": [
+                  1
+                 ]
+                }
+                """.encode('UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().capabilities(), QgsVectorDataProvider.Capabilities(QgsVectorDataProvider.SelectAtId
+                                                                                              | QgsVectorDataProvider.ReadLayerMetadata
+                                                                                              | QgsVectorDataProvider.ReloadData
+                                                                                              | QgsVectorDataProvider.DeleteFeatures))
+
+        # add capability
+        endpoint = self.basetestpath + '/delete_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                "minScale":72225,"maxScale":0,
+                "defaultVisibility":true,
+                "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                "displayField":"LABEL","typeIdField":null,
+                "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                "capabilities":"Map,Query,Data,Create","maxRecordCount":1000,"supportsStatistics":true,
+                "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().capabilities(), QgsVectorDataProvider.Capabilities(QgsVectorDataProvider.SelectAtId
+                                                                                              | QgsVectorDataProvider.ReadLayerMetadata
+                                                                                              | QgsVectorDataProvider.ReloadData
+                                                                                              | QgsVectorDataProvider.AddFeatures))
+        # update capability
+        endpoint = self.basetestpath + '/delete_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                    {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                    "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                    "minScale":72225,"maxScale":0,
+                    "defaultVisibility":true,
+                    "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                    "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                    "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                    "displayField":"LABEL","typeIdField":null,
+                    "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                    "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                    "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+                    "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                    "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        # Create test layer
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().capabilities(),
+                         QgsVectorDataProvider.Capabilities(QgsVectorDataProvider.SelectAtId
+                                                            | QgsVectorDataProvider.ReadLayerMetadata
+                                                            | QgsVectorDataProvider.ReloadData
+                                                            | QgsVectorDataProvider.ChangeAttributeValues
+                                                            | QgsVectorDataProvider.ChangeFeatures
+                                                            | QgsVectorDataProvider.ChangeGeometries))
+
+        # circular strings
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                    {"currentVersion":10.22,"id":1,"name":"QGIS Test","allowTrueCurvesUpdates":true,"type":"Feature Layer","description":
+                    "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                    "minScale":72225,"maxScale":0,
+                    "defaultVisibility":true,
+                    "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                    "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                    "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                    "displayField":"LABEL","typeIdField":null,
+                    "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                    "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                    "capabilities":"Map,Query,Data,Update","maxRecordCount":1000,"supportsStatistics":true,
+                    "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                    "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().capabilities(),
+                         QgsVectorDataProvider.Capabilities(QgsVectorDataProvider.SelectAtId
+                                                            | QgsVectorDataProvider.ReadLayerMetadata
+                                                            | QgsVectorDataProvider.ReloadData
+                                                            | QgsVectorDataProvider.ChangeAttributeValues
+                                                            | QgsVectorDataProvider.ChangeFeatures
+                                                            | QgsVectorDataProvider.CircularGeometries
+                                                            | QgsVectorDataProvider.ChangeGeometries))
 
     def testFieldProperties(self):
         self.assertEqual(self.vl.dataProvider().pkAttributeIndexes(), [0])
