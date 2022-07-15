@@ -61,6 +61,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   }
   mLayerName = layerData[QStringLiteral( "name" )].toString();
   mLayerDescription = layerData[QStringLiteral( "description" )].toString();
+  mCapabilityStrings = layerData[QStringLiteral( "capabilities" )].toString().split( ',' );
 
   // Set extent
   QStringList coords = mSharedData->mDataSource.param( QStringLiteral( "bbox" ) ).split( ',' );
@@ -294,6 +295,22 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
   {
     c = c | QgsVectorDataProvider::CreateLabeling;
   }
+
+  if ( mCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
+  {
+    c |= QgsVectorDataProvider::DeleteFeatures;
+  }
+  if ( mCapabilityStrings.contains( QLatin1String( "create" ), Qt::CaseInsensitive ) )
+  {
+    c |= QgsVectorDataProvider::AddFeatures;
+  }
+  if ( mCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+  {
+    c |= QgsVectorDataProvider::ChangeAttributeValues;
+    c |= QgsVectorDataProvider::ChangeFeatures;
+    c |= QgsVectorDataProvider::ChangeGeometries;
+  }
+
   return c;
 }
 
