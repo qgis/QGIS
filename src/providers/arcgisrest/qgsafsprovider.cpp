@@ -75,6 +75,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     mSharedData->mExtent.setYMaximum( coords[3].toDouble( &ymaxOk ) );
     if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
       mSharedData->mExtent = QgsRectangle();
+    else
+      mSharedData->mLimitBBox = true;
   }
 
   const QVariantMap layerExtentMap = layerData[QStringLiteral( "extent" )].toMap();
