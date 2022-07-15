@@ -88,6 +88,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     std::shared_ptr<QgsAfsSharedData> mSharedData;
     QString mLayerName;
     QString mLayerDescription;
+    QStringList mCapabilityStrings;
     QgsLayerMetadata mLayerMetadata;
     QVariantMap mRendererDataMap;
     QVariantList mLabelingDataList;
