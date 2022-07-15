@@ -214,7 +214,8 @@ class CORE_EXPORT QgsOgcUtils
      * \returns valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
-    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
+    static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr,
+        bool requiresFilterElement = false );
 
     /**
      * Creates an OGC expression XML element.
@@ -229,7 +230,8 @@ class CORE_EXPORT QgsOgcUtils
         const QString &srsName,
         bool honourAxisOrientation,
         bool invertAxisOrientation,
-        QString *errorMessage = nullptr );
+        QString *errorMessage = nullptr,
+        bool requiresFilterElement = false );
 
     /**
      * Creates an OGC expression XML element.
@@ -322,6 +324,20 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry geometryFromGMLMultiLineString( const QDomElement &geometryElement );
     //! Static method that creates geometry from GML MultiPolygon
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
+
+    /**
+     * @brief filterElement
+     * @param doc
+     * @param gmlVersion
+     * @param filterVersion
+     * @param GMLUsed
+     * @return
+     */
+    static QDomElement filterElement(
+      QDomDocument &doc,
+      QgsOgcUtils::GMLVersion gmlVersion,
+      FilterVersion filterVersion,
+      bool GMLUsed );
 
     /**
      * Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points

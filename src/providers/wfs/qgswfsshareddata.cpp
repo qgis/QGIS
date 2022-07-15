@@ -119,7 +119,7 @@ QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) 
   if ( expression.isValid() )
   {
     QDomDocument expressionDoc;
-    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpressionFilter( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation() );
+    QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr, true );
 
     if ( !expressionElem.isNull() )
     {
