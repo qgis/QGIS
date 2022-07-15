@@ -111,6 +111,7 @@ void QgsInstancedPoint3DSymbolHandler::processFeature( const QgsFeature &feature
     return;
 
   Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol->altitudeClamping(), out.positions );
+  mFeatureCount++;
 }
 
 void QgsInstancedPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
@@ -381,6 +382,7 @@ void QgsModelPoint3DSymbolHandler::processFeature( const QgsFeature &feature, co
     return;
 
   Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol->altitudeClamping(), out.positions );
+  mFeatureCount++;
 }
 
 void QgsModelPoint3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
@@ -539,6 +541,7 @@ void QgsPoint3DBillboardSymbolHandler::processFeature( const QgsFeature &feature
     return;
 
   Qgs3DUtils::extractPointPositions( feature, context.map(), mSymbol->altitudeClamping(), out.positions );
+  mFeatureCount++;
 }
 
 void QgsPoint3DBillboardSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
