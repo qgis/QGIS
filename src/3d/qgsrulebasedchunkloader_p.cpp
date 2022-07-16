@@ -119,8 +119,6 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
     return new Qt3DCore::QEntity( parent );  // dummy entity
   }
 
-  float zMin = std::numeric_limits<float>::max();
-  float zMax = std::numeric_limits<float>::min();
   long long featureCount = 0;
   for ( auto it = mHandlers.constBegin(); it != mHandlers.constEnd(); ++it )
   {
@@ -133,6 +131,8 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
   }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  float zMin = std::numeric_limits<float>::max();
+  float zMax = std::numeric_limits<float>::lowest();
   for ( auto it = mHandlers.constBegin(); it != mHandlers.constEnd(); ++it )
   {
     QgsFeature3DHandler *handler = it.value();
@@ -144,7 +144,7 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
   }
 
   // fix the vertical range of the node from the estimated vertical range to the true range
-  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::min() )
+  if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
   {
     QgsAABB box = mNode->bbox();
     box.yMin = zMin;
