@@ -126,15 +126,14 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
     return new Qt3DCore::QEntity( parent );  // dummy entity
   }
 
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  mHandler->finalize( entity, mContext );
-
   if ( mHandler->featureCount() == 0 )
   {
     // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-    delete entity;
     return nullptr;
   }
+
+  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
+  mHandler->finalize( entity, mContext );
 
   // fix the vertical range of the node from the estimated vertical range to the true range
   if ( mHandler->zMinimum() != std::numeric_limits<float>::max() && mHandler->zMaximum() != std::numeric_limits<float>::min() )
