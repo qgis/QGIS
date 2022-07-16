@@ -121,24 +121,26 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
 
   float zMin = std::numeric_limits<float>::max();
   float zMax = std::numeric_limits<float>::min();
-  int featureCount = 0;
+  long long featureCount = 0;
+  for ( auto it = mHandlers.constBegin(); it != mHandlers.constEnd(); ++it )
+  {
+    featureCount += it.value()->featureCount();
+  }
+  if ( featureCount == 0 )
+  {
+    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
+    return nullptr;
+  }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );
-  for ( QgsFeature3DHandler *handler : mHandlers.values() )
+  for ( auto it = mHandlers.constBegin(); it != mHandlers.constEnd(); ++it )
   {
+    QgsFeature3DHandler *handler = it.value();
     handler->finalize( entity, mContext );
     if ( handler->zMinimum() < zMin )
       zMin = handler->zMinimum();
     if ( handler->zMaximum() > zMax )
       zMax = handler->zMaximum();
-    featureCount += handler->featureCount();
-  }
-
-  if ( featureCount == 0 )
-  {
-    // an empty node, so we return no entity. This tags the node as having no data and effectively removes it.
-    delete entity;
-    return nullptr;
   }
 
   // fix the vertical range of the node from the estimated vertical range to the true range
