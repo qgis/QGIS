@@ -263,6 +263,10 @@ void TestQgs3DRendering::testFlatTerrain()
   // change camera lens field of view
   map->setFieldOfView( 85.0f );
   QImage img4 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+
   QVERIFY( renderCheck( "flat_terrain_4", img4, 40 ) );
 }
 
@@ -292,6 +296,9 @@ void TestQgs3DRendering::testDemTerrain()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
 
   QVERIFY( renderCheck( "dem_terrain_1", img3, 40 ) );
 }
@@ -334,6 +341,8 @@ void TestQgs3DRendering::testTerrainShading()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
 
   QVERIFY( renderCheck( "shaded_terrain_no_layers", img3, 40 ) );
 }
@@ -369,6 +378,9 @@ void TestQgs3DRendering::testMeshTerrain()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
   QVERIFY( renderCheck( "mesh_terrain_1", img, 40 ) );
 }
 
@@ -402,6 +414,8 @@ void TestQgs3DRendering::testExtrudedPolygons()
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
+  delete scene;
+  delete map;
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
 }
 
@@ -455,6 +469,8 @@ void TestQgs3DRendering::testExtrudedPolygonsDataDefined()
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion_data_defined", img, 40 ) );
+  delete scene;
+  delete map;
 }
 
 void TestQgs3DRendering::testPolygonsEdges()
@@ -506,6 +522,9 @@ void TestQgs3DRendering::testPolygonsEdges()
   // find a better fix in the future.
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
 
   QVERIFY( renderCheck( "polygon_edges_height", img, 40 ) );
 }
@@ -562,9 +581,10 @@ void TestQgs3DRendering::testLineRendering()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
-  QVERIFY( renderCheck( "line_rendering_2", img2, 40 ) );
-
+  delete scene;
+  delete map;
   delete layerLines;
+  QVERIFY( renderCheck( "line_rendering_2", img2, 40 ) );
 }
 
 void TestQgs3DRendering::testLineRenderingCurved()
@@ -619,9 +639,10 @@ void TestQgs3DRendering::testLineRenderingCurved()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QVERIFY( renderCheck( "line_rendering_1", img, 40 ) );
-
+  delete scene;
+  delete map;
   delete layerLines;
+  QVERIFY( renderCheck( "line_rendering_1", img, 40 ) );
 }
 
 void TestQgs3DRendering::testBufferedLineRendering()
@@ -665,9 +686,11 @@ void TestQgs3DRendering::testBufferedLineRendering()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QVERIFY( renderCheck( "buffered_lines", img, 40 ) );
-
+  delete scene;
+  delete map;
   delete layerLines;
+
+  QVERIFY( renderCheck( "buffered_lines", img, 40 ) );
 }
 
 void TestQgs3DRendering::testBufferedLineRenderingWidth()
@@ -712,9 +735,10 @@ void TestQgs3DRendering::testBufferedLineRenderingWidth()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QVERIFY( renderCheck( "buffered_lines_width", img, 40 ) );
-
+  delete scene;
+  delete map;
   delete layerLines;
+  QVERIFY( renderCheck( "buffered_lines_width", img, 40 ) );
 }
 
 void TestQgs3DRendering::testMapTheme()
@@ -748,6 +772,8 @@ void TestQgs3DRendering::testMapTheme()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
   QVERIFY( renderCheck( "terrain_theme", img, 40 ) );
 }
 
@@ -779,6 +805,8 @@ void TestQgs3DRendering::testMesh()
   // find a better fix in the future.
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
 
   QVERIFY( renderCheck( "mesh3d", img, 40 ) );
 }
@@ -820,6 +848,8 @@ void TestQgs3DRendering::testMesh_datasetOnFaces()
   // find a better fix in the future.
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
 
   QVERIFY( renderCheck( "mesh3dOnFace", img, 40 ) );
 }
@@ -886,6 +916,8 @@ void TestQgs3DRendering::testMeshSimplified()
     // find a better fix in the future.
     Qgs3DUtils::captureSceneImage( engine, scene );
     QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+    delete scene;
+    delete map;
 
     QVERIFY( renderCheck( QString( "mesh_simplified_%1" ).arg( i ), img, 40 ) );
   }
@@ -944,6 +976,10 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   Qgs3DUtils::captureSceneImage( engine, scene );
 
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  delete scene;
+  delete map;
+
   QVERIFY( renderCheck( "rulebased", img, 40 ) );
 }
 
@@ -1067,6 +1103,9 @@ void TestQgs3DRendering::testBillboardRendering()
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 45 );
 
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+
   QVERIFY( renderCheck( "billboard_rendering_2", img2, 40 ) );
 }
 
