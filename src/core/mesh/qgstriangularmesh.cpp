@@ -533,7 +533,10 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     size_t maxNumberOfIndexes = baseIndexCount / pow( reductionFactor, path + 1 );
 
     if ( indexes.size() <= int( maxNumberOfIndexes ) )
+    {
+      delete simplifiedMesh;
       break;
+    }
 
     QVector<unsigned int> returnIndexes( indexes.size() );
     //returned size could be different than goal size but not than the input indexes count
@@ -552,6 +555,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     if ( size == 0 || int( size ) >= indexes.size() )
     {
       QgsDebugMsg( QStringLiteral( "Mesh simplification failed after %1 path" ).arg( path + 1 ) );
+      delete simplifiedMesh;
       break;
     }
 
