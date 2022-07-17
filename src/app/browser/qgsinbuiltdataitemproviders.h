@@ -161,6 +161,8 @@ class QgsFieldItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
+
     QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 };
 

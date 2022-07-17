@@ -386,6 +386,7 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   // No generic way in GDAL to test these per driver/dataset yet
   mCapabilities |= AddField;
   mCapabilities |= DeleteField;
+  mCapabilities |= RenameField;
 
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( !hDS )
@@ -754,6 +755,53 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
   ( void )schema;
   throw QgsProviderConnectionException( QObject::tr( "Creating field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
+}
+
+void QgsOgrProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameField );
+
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  QString errCause;
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
+                               true,
+                               QStringList(),
+                               tableName, errCause, true );
+  if ( !layer )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
+  }
+
+  QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
+  const int geomFieldCount = fdef.GetGeomFieldCount();
+  for ( int i = 0; i < geomFieldCount; ++ i )
+  {
+    if ( OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( i ) )
+    {
+      const QString geometryColumn = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
+      if ( name == geometryColumn )
+      {
+        throw QgsProviderConnectionException( QObject::tr( "Cannot rename geometry columns" ) );
+      }
+    }
+  }
+
+  //type does not matter, it will not be used
+  gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( newName.toUtf8().constData(), OFTReal ) );
+
+  const int fieldIndex = layer->GetLayerDefn().GetFieldIndex( name.toUtf8().constData() );
+  if ( fieldIndex < 0 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not rename %1 - field does not exist" ).arg( name ) );
+  }
+  if ( layer->AlterFieldDefn( fieldIndex, fld.get(), ALTER_NAME_FLAG ) != OGRERR_NONE )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not rename field: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConnection::sqlOptions( const QString &layerSource )

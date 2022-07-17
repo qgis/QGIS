@@ -503,6 +503,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       RetrieveFieldDomain = 1 << 23,                  //!< Can retrieve field domain details from provider via fieldDomain() (since QGIS 3.26)
       SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() (since QGIS 3.26)
       AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
+      RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -658,6 +659,21 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.16
      */
     virtual void addField( const QgsField &field, const QString &schema, const QString &tableName ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Renames an existing field.
+     *
+     * \param schema name of the schema (schema is ignored if not supported by the backend).
+     * \param tableName name of the table
+     * \param name current name of field
+     * \param newName new name for field
+     *
+     * \note it is responsibility of the caller to handle open layers and registry entries.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     * \since QGIS 3.28
+     */
+    virtual void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Renames a schema with the specified \a name.

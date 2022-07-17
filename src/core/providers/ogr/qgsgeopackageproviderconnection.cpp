@@ -321,6 +321,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::DeleteSpatialIndex,
     Capability::DeleteField,
     Capability::AddField,
+    Capability::RenameField,
     Capability::DropRasterTable,
     Capability::SqlLayers
   };
