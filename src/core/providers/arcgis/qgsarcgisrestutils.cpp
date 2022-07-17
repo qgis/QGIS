@@ -868,15 +868,21 @@ QString QgsArcGisRestUtils::convertLabelingExpression( const QString &string )
   QString expression = string;
 
   // Replace a few ArcGIS token to QGIS equivalents
-  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)CONCAT(\\s|$)" ), QStringLiteral( "\\4||\\5" ) );
-  expression = expression.replace( QRegularExpression( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)NEWLINE(\\s|$)" ), QStringLiteral( "\\4'\\n'\\5" ) );
+  const thread_local QRegularExpression rx1 = QRegularExpression( QStringLiteral( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)CONCAT(\\s|$)" ) );
+  expression = expression.replace( rx1, QStringLiteral( "\\4||\\5" ) );
+
+  const thread_local QRegularExpression rx2 = QRegularExpression( QStringLiteral( "(?=([^\"\\\\]*(\\\\.|\"([^\"\\\\]*\\\\.)*[^\"\\\\]*\"))*[^\"]*$)(\\s|^)NEWLINE(\\s|$)" ) );
+  expression = expression.replace( rx2, QStringLiteral( "\\4'\\n'\\5" ) );
 
   // ArcGIS's double quotes are single quotes in QGIS
-  expression = expression.replace( QRegularExpression( "\"(.*?(?<!\\\\))\"" ), QStringLiteral( "'\\1'" ) );
-  expression = expression.replace( QRegularExpression( "\\\\\"" ), QStringLiteral( "\"" ) );
+  const thread_local QRegularExpression rx3 = QRegularExpression( QStringLiteral( "\"(.*?(?<!\\\\))\"" ) );
+  expression = expression.replace( rx3, QStringLiteral( "'\\1'" ) );
+  const thread_local QRegularExpression rx4 = QRegularExpression( QStringLiteral( "\\\\\"" ) );
+  expression = expression.replace( rx4, QStringLiteral( "\"" ) );
 
   // ArcGIS's square brakets are double quotes in QGIS
-  expression = expression.replace( QRegularExpression( "\\[([^]]*)\\]" ), QStringLiteral( "\"\\1\"" ) );
+  const thread_local QRegularExpression rx5 = QRegularExpression( QStringLiteral( "\\[([^]]*)\\]" ) );
+  expression = expression.replace( rx5, QStringLiteral( "\"\\1\"" ) );
 
   return expression;
 }

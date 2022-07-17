@@ -17,12 +17,15 @@
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
 #include "qgslogger.h"
-#include <QUrlQuery>
-#include <QNetworkRequest>
 #include "qgsnetworkaccessmanager.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsreadwritelocker.h"
 #include "qgsjsonutils.h"
+
+#include <QUrlQuery>
+#include <QNetworkRequest>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include <nlohmann/json.hpp>
 
