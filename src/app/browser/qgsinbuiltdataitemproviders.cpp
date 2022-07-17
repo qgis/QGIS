@@ -1527,9 +1527,6 @@ bool QgsFieldItemGuiProvider::rename( QgsDataItem *item, const QString &name, Qg
     {
       const QString connectionUri = fieldsItem->connectionUri();
       const QString providerKey = fieldsItem->providerKey();
-      const QString schema = fieldsItem->schema();
-      const QString tableName = fieldsItem->tableName();
-      const QString fieldName = fieldItem->field().name();
 
       // Check if it is supported
       QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
