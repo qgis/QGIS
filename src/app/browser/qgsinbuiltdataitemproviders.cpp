@@ -1433,6 +1433,34 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
           } );
         }
 
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameField ) )
+        {
+          QAction *renameFieldAction = new QAction( tr( "Rename Field…" ), menu );
+          const QString itemName { item->name() };
+
+          connect( renameFieldAction, &QAction::triggered, fieldsItem, [ md, fieldsItem, itemName, context ]
+          {
+            // Confirmation dialog
+            QgsNewNameDialog dlg( tr( "field “%1”" ).arg( itemName ), itemName );
+            dlg.setWindowTitle( tr( "Rename Field" ) );
+            if ( dlg.exec() != QDialog::Accepted || dlg.name() == itemName )
+              return;
+
+            std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2 { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( fieldsItem->connectionUri(), {} ) ) };
+            try
+            {
+              conn2->renameField( fieldsItem->schema(), fieldsItem->tableName(), itemName, dlg.name() );
+              fieldsItem->refresh();
+            }
+            catch ( const QgsProviderConnectionException &ex )
+            {
+              notify( tr( "Rename Field" ), tr( "Failed to rename field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
+            }
+          } );
+
+          menu->addAction( renameFieldAction );
+        }
+
         if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::DeleteField ) )
         {
           QAction *deleteFieldAction = new QAction( tr( "Delete Field…" ), menu );
@@ -1488,6 +1516,45 @@ void QgsFieldItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
       QgsDebugMsg( QStringLiteral( "Error getting parent fields for %1" ).arg( item->name() ) );
     }
   }
+}
+
+bool QgsFieldItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context )
+{
+  if ( QgsFieldItem *fieldItem = qobject_cast<QgsFieldItem *>( item ) )
+  {
+    QPointer< QgsFieldsItem > fieldsItem { qobject_cast<QgsFieldsItem *>( fieldItem->parent() ) };
+    if ( fieldsItem )
+    {
+      const QString connectionUri = fieldsItem->connectionUri();
+      const QString providerKey = fieldsItem->providerKey();
+      const QString schema = fieldsItem->schema();
+      const QString tableName = fieldsItem->tableName();
+      const QString fieldName = fieldItem->field().name();
+
+      // Check if it is supported
+      QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+      if ( md )
+      {
+        std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, {} ) ) };
+        if ( conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameField ) )
+        {
+          const QString itemName { item->name() };
+
+          try
+          {
+            conn->renameField( fieldsItem->schema(), fieldsItem->tableName(), itemName, name );
+            fieldsItem->refresh();
+          }
+          catch ( const QgsProviderConnectionException &ex )
+          {
+            notify( tr( "Rename Field" ), tr( "Failed to rename field '%1': %2" ).arg( itemName, ex.what() ), context, Qgis::MessageLevel::Critical );
+          }
+        }
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 QWidget *QgsFieldItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
