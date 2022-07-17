@@ -197,6 +197,14 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
       lineString->addVertex( endPointCircularString );
     }
   }
+
+  if ( lineString && lineString->numPoints() == 1 && compoundCurve->nCurves() > 0 )
+  {
+    const QgsCurve *finalCurve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
+    if ( finalCurve->endPoint() == lineString->startPoint() )
+      lineString.reset(); // redundant final curve containing a duplicate vertex
+  }
+
   if ( lineString )
     compoundCurve->addCurve( lineString.release() );
 
