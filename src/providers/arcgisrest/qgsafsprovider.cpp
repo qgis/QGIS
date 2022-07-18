@@ -337,6 +337,8 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
   QgsFeatureList updatedFeatures;
   updatedFeatures.reserve( attrMap.size() );
 
+  const int objectIdFieldIndex = mSharedData->mObjectIdFieldIdx;
+
   while ( it.nextFeature( feature ) )
   {
     QgsFeature modifiedFeature = feature;
@@ -344,7 +346,9 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
     const QgsAttributeMap modifiedAttributes = attrMap.value( feature.id() );
     for ( auto aIt = modifiedAttributes.constBegin(); aIt != modifiedAttributes.constEnd(); ++aIt )
     {
-      // todo -- handle object id
+      if ( aIt.key() == objectIdFieldIndex )
+        continue; // can't modify the objectId field!
+
       modifiedFeature.setAttribute( aIt.key(), aIt.value() );
     }
 
@@ -419,6 +423,7 @@ bool QgsAfsProvider::changeFeatures( const QgsChangedAttributesMap &attrMap, con
 
   QgsFeatureList updatedFeatures;
   updatedFeatures.reserve( attrMap.size() );
+  const int objectIdFieldIndex = mSharedData->mObjectIdFieldIdx;
 
   while ( it.nextFeature( feature ) )
   {
@@ -427,6 +432,9 @@ bool QgsAfsProvider::changeFeatures( const QgsChangedAttributesMap &attrMap, con
     const QgsAttributeMap modifiedAttributes = attrMap.value( feature.id() );
     for ( auto aIt = modifiedAttributes.constBegin(); aIt != modifiedAttributes.constEnd(); ++aIt )
     {
+      if ( aIt.key() == objectIdFieldIndex )
+        continue; // can't modify the objectId field!
+
       modifiedFeature.setAttribute( aIt.key(), aIt.value() );
     }
 
