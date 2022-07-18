@@ -395,6 +395,59 @@ bool QgsAfsProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
   return res;
 }
 
+bool QgsAfsProvider::changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap )
+{
+  if ( !mCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+    return false;
+
+  QgsFeatureIds ids;
+  ids.reserve( attrMap.size() + geometryMap.size() );
+  for ( auto it = attrMap.constBegin(); it != attrMap.constEnd(); ++it )
+  {
+    const QgsFeatureId id = it.key();
+    ids << id;
+  }
+  for ( auto it = geometryMap.constBegin(); it != geometryMap.constEnd(); ++it )
+  {
+    const QgsFeatureId id = it.key();
+    ids << id;
+  }
+
+  // REST API requires a full definition of features, so we have to read their initial values first
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ) );
+  QgsFeature feature;
+
+  QgsFeatureList updatedFeatures;
+  updatedFeatures.reserve( attrMap.size() );
+
+  while ( it.nextFeature( feature ) )
+  {
+    QgsFeature modifiedFeature = feature;
+
+    const QgsAttributeMap modifiedAttributes = attrMap.value( feature.id() );
+    for ( auto aIt = modifiedAttributes.constBegin(); aIt != modifiedAttributes.constEnd(); ++aIt )
+    {
+      modifiedFeature.setAttribute( aIt.key(), aIt.value() );
+    }
+
+    const auto geomIt = geometryMap.constFind( feature.id() );
+    if ( geomIt != geometryMap.constEnd() )
+    {
+      modifiedFeature.setGeometry( geomIt.value() );
+    }
+
+    updatedFeatures.append( modifiedFeature );
+  }
+
+  QString error;
+  QgsFeedback feedback;
+  const bool res = mSharedData->updateFeatures( updatedFeatures, true, true, error, &feedback );
+  if ( !res )
+    pushError( tr( "Error while updating features: %1" ).arg( error ) );
+
+  return res;
+}
+
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
   QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId

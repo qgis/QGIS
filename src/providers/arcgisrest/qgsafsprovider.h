@@ -55,14 +55,13 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
-    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometryMap ) override;
+    bool changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap ) override;
 
     /* Read only for the moment
 
     bool addAttributes( const QList<QgsField> &attributes ) override{ return false; }
     bool deleteAttributes( const QgsAttributeIds &attributes ) override{ return false; }
-    virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
-                                 const QgsGeometryMap &geometry_map );
     */
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override;
