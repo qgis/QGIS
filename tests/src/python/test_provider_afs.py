@@ -35,7 +35,8 @@ from qgis.core import (NULL,
                        QgsVectorDataProviderTemporalCapabilities,
                        QgsFieldConstraints,
                        QgsVectorDataProvider,
-                       QgsFeature
+                       QgsFeature,
+                       QgsGeometry
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -1732,6 +1733,96 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         with open(add_endpoint + "_payload", 'rt') as f:
             res = '\n'.join(f.readlines())
             self.assertEqual(res, 'f=json&features=[\n\n  {\n\n    "attributes": {\n\n      "OBJECTID": 1,\n\n      "name": "xxname",\n\n      "name2": "xxname2",\n\n      "name3": "name3"\n\n    }\n\n  }\n\n]')
+
+    def testChangeGeometriesSuccess(self):
+        # add capability
+        endpoint = self.basetestpath + '/change_geom_test_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                "minScale":72225,"maxScale":0,
+                "defaultVisibility":true,
+                "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                "displayField":"LABEL","typeIdField":null,
+                "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+                          {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
+                          {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
+                          {"name":"name3","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null}
+                ],
+                "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                "capabilities":"Map,Query,Data,Create,Update","maxRecordCount":1000,"supportsStatistics":true,
+                "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+                {
+                 "objectIdFieldName": "OBJECTID",
+                 "objectIds": [
+                  1
+                 ]
+                }
+                """.encode('UTF-8'))
+
+        with open(sanitize(endpoint,
+                           '/query?f=json&objectIds=1&inSR=4326&outSR=4326&returnGeometry=true&outFields=*&returnM=false&returnZ=false'),
+                  'wb') as f:
+            f.write(("""
+        {
+         "displayFieldName": "name",
+         "fieldAliases": {
+          "name": "name"
+         },
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
+        {"name":"name3","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
+        {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
+        {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID": 1,
+            "name": "name1",
+            "name2":"name2",
+            "name3":"name3"
+           },
+           "geometry": {
+            "x": -71.123,
+            "y": 78.23
+           }
+          }
+         ]
+        }""").encode('UTF-8'))
+
+        add_endpoint = sanitize(endpoint, '/updateFeatures')
+        with open(add_endpoint, 'wb') as f:
+            f.write("""{
+  "addResults": [
+    {
+      "objectId": 617,
+      "success": true
+    }
+  ]
+}""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        res = vl.dataProvider().changeGeometryValues({0: QgsGeometry.fromWkt('Point( 111 222)')})
+        self.assertTrue(res)
+
+        with open(add_endpoint + "_payload", 'rt') as f:
+            res = '\n'.join(f.readlines())
+            self.assertEqual(res, 'f=json&features=[\n\n  {\n\n    "attributes": {\n\n      "OBJECTID": 1\n\n    },\n\n    "geometry": {\n\n      "x": 111.0,\n\n      "y": 222.0\n\n    }\n\n  }\n\n]')
 
 
 if __name__ == '__main__':

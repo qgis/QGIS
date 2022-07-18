@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsfeedback.h"
+#include "qgsreadwritelocker.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
@@ -330,7 +331,7 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
   }
 
   // REST API requires a full definition of features, so we have to read their initial values first
-  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ) );
+  QgsFeatureIterator it = getFeatures( QgsFeatureRequest().setFilterFids( ids ).setFlags( QgsFeatureRequest::NoGeometry ) );
   QgsFeature feature;
 
   QgsFeatureList updatedFeatures;
@@ -352,7 +353,42 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
 
   QString error;
   QgsFeedback feedback;
-  const bool res = mSharedData->updateFeatures( updatedFeatures, false, error, &feedback );
+  const bool res = mSharedData->updateFeatures( updatedFeatures, false, true, error, &feedback );
+  if ( !res )
+    pushError( tr( "Error while updating features: %1" ).arg( error ) );
+
+  return res;
+}
+
+bool QgsAfsProvider::changeGeometryValues( const QgsGeometryMap &geometryMap )
+{
+  if ( !mCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+    return false;
+
+  const QgsFields fields = mSharedData->mFields;
+  const int objectIdFieldIndex = mSharedData->mObjectIdFieldIdx;
+
+  QgsFeatureList updatedFeatures;
+  updatedFeatures.reserve( geometryMap.size() );
+
+  // grab a lock upfront so we aren't trying to acquire for each feature
+  QgsReadWriteLocker locker( mSharedData->mReadWriteLock, QgsReadWriteLocker::Read );
+  for ( auto it = geometryMap.constBegin(); it != geometryMap.constEnd(); ++it )
+  {
+    const QgsFeatureId id = it.key();
+    QgsFeature feature( fields );
+    feature.setId( id );
+    // we ONLY require the objectId field set here
+    feature.setAttribute( objectIdFieldIndex, mSharedData->featureIdToObjectId( id ) );
+    feature.setGeometry( it.value() );
+
+    updatedFeatures.append( feature );
+  }
+  locker.unlock();
+
+  QString error;
+  QgsFeedback feedback;
+  const bool res = mSharedData->updateFeatures( updatedFeatures, true, false, error, &feedback );
   if ( !res )
     pushError( tr( "Error while updating features: %1" ).arg( error ) );
 
