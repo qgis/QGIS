@@ -958,51 +958,55 @@ QDateTime QgsArcGisRestUtils::convertDateTime( const QVariant &value )
 QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, const QgsArcGisRestContext &, const QgsCoordinateReferenceSystem &crs )
 {
   QVariantMap res;
-  switch ( QgsWkbTypes::flatType( geometry.wkbType() ) )
+  if ( geometry.isNull() )
+    return QVariantMap();
+
+  const QgsAbstractGeometry *geom = geometry.constGet()->simplifiedTypeRef();
+  switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
   {
     case QgsWkbTypes::Unknown:
     case QgsWkbTypes::NoGeometry:
       return QVariantMap();
 
     case QgsWkbTypes::Point:
-      res = pointToJson( qgsgeometry_cast< const QgsPoint * >( geometry.constGet() ) );
+      res = pointToJson( qgsgeometry_cast< const QgsPoint * >( geom ) );
       break;
 
     case QgsWkbTypes::LineString:
-      res = lineStringToJson( qgsgeometry_cast< const QgsLineString * >( geometry.constGet() ) );
+      res = lineStringToJson( qgsgeometry_cast< const QgsLineString * >( geom ) );
       break;
 
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CompoundCurve:
-      res = curveToJson( qgsgeometry_cast< const QgsCurve * >( geometry.constGet() ) );
+      res = curveToJson( qgsgeometry_cast< const QgsCurve * >( geom ) );
       break;
 
     case QgsWkbTypes::Polygon:
-      res = polygonToJson( qgsgeometry_cast< const QgsPolygon * >( geometry.constGet() ) );
+      res = polygonToJson( qgsgeometry_cast< const QgsPolygon * >( geom ) );
       break;
 
     case QgsWkbTypes::MultiPoint:
-      res = multiPointToJson( qgsgeometry_cast< const QgsMultiPoint * >( geometry.constGet() ) );
+      res = multiPointToJson( qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
-      res = multiLineStringToJson( qgsgeometry_cast< const QgsMultiLineString * >( geometry.constGet() ) );
+      res = multiLineStringToJson( qgsgeometry_cast< const QgsMultiLineString * >( geom ) );
       break;
 
     case QgsWkbTypes::MultiCurve:
-      res = multiCurveToJson( qgsgeometry_cast< const QgsMultiCurve * >( geometry.constGet() ) );
+      res = multiCurveToJson( qgsgeometry_cast< const QgsMultiCurve * >( geom ) );
       break;
 
     case QgsWkbTypes::MultiPolygon:
-      res = multiPolygonToJson( qgsgeometry_cast< const QgsMultiPolygon * >( geometry.constGet() ) );
+      res = multiPolygonToJson( qgsgeometry_cast< const QgsMultiPolygon * >( geom ) );
       break;
 
     case QgsWkbTypes::CurvePolygon:
-      res = curvePolygonToJson( qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) );
+      res = curvePolygonToJson( qgsgeometry_cast< const QgsCurvePolygon * >( geom ) );
       break;
 
     case QgsWkbTypes::MultiSurface:
-      res = multiSurfaceToJson( qgsgeometry_cast< const QgsMultiSurface * >( geometry.constGet() ) );
+      res = multiSurfaceToJson( qgsgeometry_cast< const QgsMultiSurface * >( geom ) );
       break;
 
     case QgsWkbTypes::GeometryCollection:
