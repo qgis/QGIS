@@ -1851,15 +1851,15 @@ bool QgsDatabaseItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiCo
               output->showMessage();
             }
           } );
-        } // do not overwrite
+        }
       }
       else
       {
         importResults.append( tr( "%1: Not a valid layer!" ).arg( dropUri.name ) );
         hasError = true;
       }
-    } // check for self copy
-  } // for each
+    }
+  }
 
   if ( hasError )
   {
