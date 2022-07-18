@@ -36,9 +36,8 @@ const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
-  mSharedData.reset( new QgsAfsSharedData() );
+  mSharedData.reset( new QgsAfsSharedData( QgsDataSourceUri( uri ) ) );
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;
-  mSharedData->mDataSource = QgsDataSourceUri( uri );
 
   const QString authcfg = mSharedData->mDataSource.authConfigId();
 
@@ -333,6 +332,8 @@ bool QgsAfsProvider::deleteFeatures( const QgsFeatureIds &ids )
   const bool result = mSharedData->deleteFeatures( ids, error, &feedback );
   if ( !result )
     pushError( tr( "Error while deleting features: %1" ).arg( error ) );
+  else
+    clearMinMaxCache();
 
   return result;
 }
@@ -350,6 +351,8 @@ bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
   const bool res = mSharedData->addFeatures( flist, error, &feedback );
   if ( !res )
     pushError( tr( "Error while adding features: %1" ).arg( error ) );
+  else
+    clearMinMaxCache();
 
   return res;
 }
@@ -397,6 +400,8 @@ bool QgsAfsProvider::changeAttributeValues( const QgsChangedAttributesMap &attrM
   const bool res = mSharedData->updateFeatures( updatedFeatures, false, true, error, &feedback );
   if ( !res )
     pushError( tr( "Error while updating features: %1" ).arg( error ) );
+  else
+    clearMinMaxCache();
 
   return res;
 }
@@ -489,6 +494,8 @@ bool QgsAfsProvider::changeFeatures( const QgsChangedAttributesMap &attrMap, con
   const bool res = mSharedData->updateFeatures( updatedFeatures, true, true, error, &feedback );
   if ( !res )
     pushError( tr( "Error while updating features: %1" ).arg( error ) );
+  else
+    clearMinMaxCache();
 
   return res;
 }
@@ -609,6 +616,30 @@ QString QgsAfsProvider::defaultValueClause( int fieldId ) const
 bool QgsAfsProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint, const QVariant &value ) const
 {
   return fieldIndex == mSharedData->mObjectIdFieldIdx && value.toString() == QLatin1String( "Autogenerate" );
+}
+
+QString QgsAfsProvider::subsetString() const
+{
+  return mSharedData->subsetString();
+}
+
+bool QgsAfsProvider::setSubsetString( const QString &subset, bool )
+{
+  if ( subset.trimmed() == mSharedData->subsetString() )
+    return true;
+
+  mSharedData->setSubsetString( subset );
+
+  // Update datasource uri too
+  QgsDataSourceUri uri = dataSourceUri();
+  uri.setSql( subset );
+  setDataSourceUri( uri.uri( false ) );
+
+  clearMinMaxCache();
+
+  emit dataChanged();
+
+  return true;
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )

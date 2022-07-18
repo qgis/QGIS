@@ -42,6 +42,33 @@ long long QgsAfsSharedData::featureCount() const
   return mObjectIds.size() - mDeletedFeatureIds.size();
 }
 
+QgsRectangle QgsAfsSharedData::extent() const
+{
+  if ( mDataSource.sql().isEmpty() )
+    return mExtent;
+
+  return QgsArcGisRestQueryUtils::getExtent( mDataSource.param( QStringLiteral( "url" ) ), mDataSource.sql(), mDataSource.authConfigId(),
+         mDataSource.httpHeaders() );
+}
+
+QgsAfsSharedData::QgsAfsSharedData( const QgsDataSourceUri &uri )
+  : mDataSource( uri )
+{
+}
+
+QString QgsAfsSharedData::subsetString() const
+{
+  return mDataSource.sql();
+}
+
+bool QgsAfsSharedData::setSubsetString( const QString &subset )
+{
+  mDataSource.setSql( subset );
+
+  clearCache();
+  return true;
+}
+
 void QgsAfsSharedData::clearCache()
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
@@ -63,7 +90,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
   QString errorTitle;
   QString error;
   QVariantMap objectIdData = QgsArcGisRestQueryUtils::getObjectIds( mDataSource.param( QStringLiteral( "url" ) ), mDataSource.authConfigId(),
-                             errorTitle, error, mDataSource.httpHeaders(), mLimitBBox ? mExtent : QgsRectangle() );
+                             errorTitle, error, mDataSource.httpHeaders(), mLimitBBox ? mExtent : QgsRectangle(), mDataSource.sql() );
   if ( objectIdData.isEmpty() )
   {
     errorMessage = tr( "getObjectIds failed: %1 - %2" ).arg( errorTitle, error );
@@ -148,8 +175,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
   if ( queryData.isEmpty() )
   {
-//    const_cast<QgsAfsProvider *>( this )->pushError( errorTitle + ": " + errorMessage );
-    QgsDebugMsg( QStringLiteral( "Query returned empty result" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
     return false;
   }
 
@@ -228,7 +254,7 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
 
   const QString authcfg = mDataSource.authConfigId();
   const QList<quint32> featuresInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                        extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback );
+                                        extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql() );
 
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   QgsFeatureIds ids;
