@@ -71,6 +71,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QgsArcGisRestBrowserProxyModel *mProxyModel = nullptr;
 
+    QPushButton *mBuildQueryButton = nullptr;
     QButtonGroup *mImageEncodingGroup = nullptr;
 
     //! Updates the UI for the list of available image encodings from the specified list.
@@ -92,6 +93,7 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     void deleteEntryOfServerList();
     void modifyEntryOfServerList();
     void addButtonClicked() override;
+    void buildQueryButtonClicked();
     void updateCrsLabel();
     void updateImageEncodings();
     void connectToServer();
