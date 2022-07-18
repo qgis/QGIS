@@ -28,7 +28,6 @@ from qgis.core import (
     QgsFields,
     QgsField,
     QgsFeature,
-    QgsArcGisRestContext,
     NULL
 )
 from qgis.testing import start_app, unittest
