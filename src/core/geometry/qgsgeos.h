@@ -173,6 +173,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * Curved geometries are not supported.
      *
+     * \param maxNodes Maximum nodes used
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      * \since QGIS 3.0
      */
@@ -670,6 +672,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Returns a geometry representing the overlay operation with \a geom.
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by GEOS
+     * \param op Overlay Operation
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      */
     std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, double gridSize = -1 ) const;
