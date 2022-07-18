@@ -57,12 +57,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometryMap ) override;
     bool changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap ) override;
+    bool addAttributes( const QList<QgsField> &attributes ) override;
+    bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
-    /* Read only for the moment
-
-    bool addAttributes( const QList<QgsField> &attributes ) override{ return false; }
-    bool deleteAttributes( const QgsAttributeIds &attributes ) override{ return false; }
-    */
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override;
     QString defaultValueClause( int fieldId ) const override;
@@ -99,6 +96,8 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QVariantList mLabelingDataList;
     QgsHttpHeaders mRequestHeaders;
     bool mServerSupportsCurves = false;
+    QString mAdminUrl;
+    QVariantMap mAdminData;
 
     /**
      * Clears cache
