@@ -79,9 +79,25 @@ class CORE_EXPORT QgsArcGisRestContext
      */
     QTimeZone timeZone() const { return mTimeZone; }
 
+    /**
+     * Sets the name of the objectId field.
+     *
+     * \see objectIdFieldName()
+     */
+    void setObjectIdFieldName( const QString &name ) { mObjectIdFieldName = name; }
+
+    /**
+     * Returns the name of the objectId field.
+     *
+     * \see setObjectIdFieldName()
+     */
+    QString objectIdFieldName() const { return mObjectIdFieldName; }
+
   private:
 
     QTimeZone mTimeZone;
+
+    QString mObjectIdFieldName;
 
 };
 
@@ -95,6 +111,8 @@ class CORE_EXPORT QgsArcGisRestContext
  */
 class CORE_EXPORT QgsArcGisRestUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -192,6 +210,26 @@ class CORE_EXPORT QgsArcGisRestUtils
     static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
 
     /**
+     * Flags which control the behavior of converting features to JSON.
+     *
+     * \since QGIS 3.28
+     */
+    enum class FeatureToJsonFlag : int
+    {
+      IncludeGeometry = 1 << 0, //!< Whether to include the geometry definition
+      IncludeNonObjectIdAttributes = 1 << 1, //!< Whether to include any non-objectId attributes
+    };
+    Q_ENUM( FeatureToJsonFlag );
+
+    /**
+     * Flags which control the behavior of converting features to JSON.
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( FeatureToJsonFlags, FeatureToJsonFlag )
+    Q_FLAG( FeatureToJsonFlags )
+
+    /**
      * Converts a \a feature to an ArcGIS REST JSON representation.
      *
      * \since QGIS 3.28
@@ -199,7 +237,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     static QVariantMap featureToJson( const QgsFeature &feature,
                                       const QgsArcGisRestContext &context,
                                       const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      bool includeGeometry = true );
+                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
 
     /**
      * Converts a variant to a REST attribute value.
@@ -277,5 +315,7 @@ class CORE_EXPORT QgsArcGisRestUtils
 
     friend class TestQgsArcGisRestUtils;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsArcGisRestUtils::FeatureToJsonFlags )
 
 #endif // QGSARCGISRESTUTILS_H

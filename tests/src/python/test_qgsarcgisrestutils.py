@@ -309,7 +309,7 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                               'a_null_value': None},
                                'geometry': {'x': 1.0, 'y': 2.0}})
         # without geometry
-        res = QgsArcGisRestUtils.featureToJson(test_feature, context, includeGeometry=False)
+        res = QgsArcGisRestUtils.featureToJson(test_feature, context, flags=QgsArcGisRestUtils.FeatureToJsonFlags(QgsArcGisRestUtils.FeatureToJsonFlag.IncludeNonObjectIdAttributes))
         self.assertEqual(res, {'attributes': {'a_boolean_field': True,
                                               'a_datetime_field': 1646395994000,
                                               'a_date_field': 1646352000000,
@@ -317,6 +317,12 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
                                               'a_int_field': 5,
                                               'a_string_field': 'my string value',
                                               'a_null_value': None}})
+        # without attributes
+        context.setObjectIdFieldName('a_int_field')
+        res = QgsArcGisRestUtils.featureToJson(test_feature, context, flags=QgsArcGisRestUtils.FeatureToJsonFlags(QgsArcGisRestUtils.FeatureToJsonFlag.IncludeGeometry))
+        self.assertEqual(res, {'attributes': {
+            'a_int_field': 5},
+            'geometry': {'x': 1.0, 'y': 2.0}})
 
 
 if __name__ == '__main__':

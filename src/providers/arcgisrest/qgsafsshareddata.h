@@ -48,7 +48,7 @@ class QgsAfsSharedData : public QObject
 
     bool deleteFeatures( const QgsFeatureIds &id, QString &error, QgsFeedback *feedback );
     bool addFeatures( QgsFeatureList &features, QString &error, QgsFeedback *feedback );
-    bool updateFeatures( const QgsFeatureList &features, bool includeGeometries, QString &error, QgsFeedback *feedback );
+    bool updateFeatures( const QgsFeatureList &features, bool includeGeometries, bool includeAttributes, QString &error, QgsFeedback *feedback );
 
     bool hasCachedAllFeatures() const;
 

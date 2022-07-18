@@ -40,6 +40,20 @@ Returns the time zone for datetime values.
 .. seealso:: :py:func:`setTimeZone`
 %End
 
+    void setObjectIdFieldName( const QString &name );
+%Docstring
+Sets the name of the objectId field.
+
+.. seealso:: :py:func:`objectIdFieldName`
+%End
+
+    QString objectIdFieldName() const;
+%Docstring
+Returns the name of the objectId field.
+
+.. seealso:: :py:func:`setObjectIdFieldName`
+%End
+
 };
 
 class QgsArcGisRestUtils
@@ -55,6 +69,9 @@ Utility functions for working with ArcGIS REST services.
 %TypeHeaderCode
 #include "qgsarcgisrestutils.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
     static QVariant::Type convertFieldType( const QString &type );
@@ -151,10 +168,19 @@ Returns an empty map if the ``crs`` is not valid.
 .. versionadded:: 3.28
 %End
 
+    enum class FeatureToJsonFlag
+    {
+      IncludeGeometry,
+      IncludeNonObjectIdAttributes,
+    };
+
+    typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;
+
+
     static QVariantMap featureToJson( const QgsFeature &feature,
                                       const QgsArcGisRestContext &context,
                                       const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      bool includeGeometry = true );
+                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
 %Docstring
 Converts a ``feature`` to an ArcGIS REST JSON representation.
 
@@ -169,6 +195,9 @@ Converts a variant to a REST attribute value.
 %End
 
 };
+
+QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
