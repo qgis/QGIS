@@ -308,6 +308,9 @@ bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
   if ( !mCapabilityStrings.contains( QLatin1String( "create" ), Qt::CaseInsensitive ) )
     return false;
 
+  if ( flist.isEmpty() )
+    return true; // for consistency!
+
   QString error;
   QgsFeedback feedback;
   const bool res = mSharedData->addFeatures( flist, error, &feedback );

@@ -1586,6 +1586,9 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             res = '\n'.join(f.readlines())
             self.assertEqual(res, 'f=json&features=[\n\n  {\n\n    "attributes": {\n\n      "OBJECTID": 11\n\n    }\n\n  }\n\n]')
 
+        # add empty list, should return true for consistency
+        self.assertTrue(vl.dataProvider().addFeatures([]))
+
     def testAddFail(self):
         # add capability
         endpoint = self.basetestpath + '/delete_test_fake_qgis_http_endpoint'
