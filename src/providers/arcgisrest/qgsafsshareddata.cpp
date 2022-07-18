@@ -312,7 +312,7 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
     }
   }
 
-  // all good!
+  // All good!
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
   int i = 0;
   for ( const QVariant &result : addResults )
@@ -372,7 +372,7 @@ bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool incl
     }
   }
 
-  // all good. Now we remove the cached versions of features so that they'll get re-fetched from the service
+  // All good. Now we remove the cached versions of features so that they'll get re-fetched from the service
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
   for ( const QgsFeature &feature : features )
   {
@@ -413,7 +413,7 @@ bool QgsAfsSharedData::addFields( const QString &adminUrl, const QList<QgsField>
     return false;
   }
 
-  // all good. Now we remove the cached versions of features so that they'll get re-fetched from the service
+  // All good. Now we remove the cached versions of features so that they'll get re-fetched from the service
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
   mCache.clear();
 
@@ -462,7 +462,7 @@ bool QgsAfsSharedData::deleteFields( const QString &adminUrl, const QgsAttribute
     return false;
   }
 
-  // all good. Now we remove the cached versions of features so that they'll get re-fetched from the service
+  // All good. Now we remove the cached versions of features so that they'll get re-fetched from the service
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
   mCache.clear();
 
