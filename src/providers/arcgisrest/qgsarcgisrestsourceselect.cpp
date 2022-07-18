@@ -299,8 +299,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
 
   const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 
-  const QString pCrsString( labelCoordRefSys->text() );
-  const QgsCoordinateReferenceSystem pCrs( pCrsString );
+  const QgsCoordinateReferenceSystem pCrs( labelCoordRefSys->text() );
   //prepare canvas extent info for layers with "cache features" option not set
   QgsRectangle extent;
   QgsCoordinateReferenceSystem canvasCrs;
@@ -326,46 +325,32 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     }
   }
 
-  //create layers that user selected from this feature source
+  // create layers that user selected from this feature source
   const QModelIndexList list = mBrowserView->selectionModel()->selectedRows();
   for ( const QModelIndex &proxyIndex : list )
   {
-    const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
-    if ( !sourceIndex.isValid() )
-    {
-      continue;
-    }
-
-    QgsDataItem *item = mBrowserModel->dataItem( sourceIndex );
-    if ( !item )
+    QString layerName;
+    Qgis::ArcGisRestServiceType serviceType = Qgis::ArcGisRestServiceType::Unknown;
+    const QString uri = indexToUri( proxyIndex, layerName, serviceType, cbxFeatureCurrentViewExtent->isChecked() ? extent : QgsRectangle() );
+    if ( uri.isEmpty() )
       continue;
 
-    if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
+    switch ( serviceType )
     {
-      const QString layerName = layerItem->name();
+      case Qgis::ArcGisRestServiceType::FeatureServer:
+        emit addVectorLayer( uri, layerName );
+        break;
 
-      QgsRectangle layerExtent;
-      if ( cbxFeatureCurrentViewExtent->isChecked() )
-      {
-        layerExtent = extent;
-      }
+      case Qgis::ArcGisRestServiceType::MapServer:
+        emit addRasterLayer( uri, layerName, QStringLiteral( "arcgismapserver" ) );
+        break;
 
-      QgsDataSourceUri uri( layerItem->uri() );
-      uri.setParam( QStringLiteral( "crs" ), pCrsString );
-      if ( qobject_cast< QgsArcGisFeatureServiceLayerItem *>( layerItem ) )
-      {
-        if ( !layerExtent.isEmpty() )
-        {
-          uri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( layerExtent.xMinimum() ).arg( layerExtent.yMinimum() ).arg( layerExtent.xMaximum() ).arg( layerExtent.yMaximum() ) );
-        }
-        emit addVectorLayer( uri.uri( false ), layerName );
-      }
-      else if ( qobject_cast< QgsArcGisMapServiceLayerItem *>( layerItem ) )
-      {
-        uri.removeParam( QStringLiteral( "format" ) );
-        uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
-        emit addRasterLayer( uri.uri( false ), layerName, QStringLiteral( "arcgismapserver" ) );
-      }
+      case Qgis::ArcGisRestServiceType::ImageServer:
+      case Qgis::ArcGisRestServiceType::GlobeServer:
+      case Qgis::ArcGisRestServiceType::GPServer:
+      case Qgis::ArcGisRestServiceType::GeocodeServer:
+      case Qgis::ArcGisRestServiceType::Unknown:
+        break;
     }
   }
 
@@ -500,6 +485,52 @@ void QgsArcGisRestSourceSelect::refreshModel( const QModelIndex &index )
         }
       }
     }
+  }
+}
+
+QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QString &layerName, Qgis::ArcGisRestServiceType &serviceType, const QgsRectangle &extent )
+{
+  layerName.clear();
+  serviceType = Qgis::ArcGisRestServiceType::Unknown;
+
+  const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
+  if ( !sourceIndex.isValid() )
+  {
+    return QString();
+  }
+
+  QgsDataItem *item = mBrowserModel->dataItem( sourceIndex );
+  if ( !item )
+    return QString();
+
+  if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
+  {
+    layerName = layerItem->name();
+
+    QString filter;// = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
+
+    QgsDataSourceUri uri( layerItem->uri() );
+    uri.setParam( QStringLiteral( "crs" ), labelCoordRefSys->text() );
+    if ( qobject_cast< QgsArcGisFeatureServiceLayerItem *>( layerItem ) )
+    {
+      uri.setParam( QStringLiteral( "filter" ), filter );
+      if ( !extent.isNull() )
+      {
+        uri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum() ).arg( extent.yMinimum() ).arg( extent.xMaximum() ).arg( extent.yMaximum() ) );
+      }
+      serviceType = Qgis::ArcGisRestServiceType::FeatureServer;
+    }
+    else if ( qobject_cast< QgsArcGisMapServiceLayerItem *>( layerItem ) )
+    {
+      uri.removeParam( QStringLiteral( "format" ) );
+      uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
+      serviceType = Qgis::ArcGisRestServiceType::MapServer;
+    }
+    return uri.uri( false );
+  }
+  else
+  {
+    return QString();
   }
 }
 
