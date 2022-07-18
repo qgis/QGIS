@@ -211,11 +211,17 @@ QVariantMap QgsArcGisRestQueryUtils::queryServiceJSON( const QUrl &url, const QS
   return res;
 }
 
-QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url )
+QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url, bool *isTestEndpoint )
 {
+  if ( isTestEndpoint )
+    *isTestEndpoint = false;
+
   QUrl modifiedUrl( url );
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
+    if ( isTestEndpoint )
+      *isTestEndpoint = true;
+
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
@@ -223,7 +229,7 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url )
     modifiedUrlString.replace( QLatin1String( "fake_qgis_http_endpoint/" ), QLatin1String( "fake_qgis_http_endpoint_" ) );
     QgsDebugMsg( QStringLiteral( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
-    QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
+    QString args = modifiedUrlString.indexOf( '?' ) >= 0 ? modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) ) : QString();
     if ( modifiedUrlString.size() > 150 )
     {
       args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
