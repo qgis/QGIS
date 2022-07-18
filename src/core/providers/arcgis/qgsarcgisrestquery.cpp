@@ -48,13 +48,13 @@ QVariantMap QgsArcGisRestQueryUtils::getLayerInfo( const QString &layerurl, cons
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
 }
 
-QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QgsRectangle &bbox )
+QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, const QgsRectangle &bbox, const QString &whereClause )
 {
   // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnIdsOnly=true&f=json
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  query.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
+  query.addQueryItem( QStringLiteral( "where" ), whereClause.isEmpty() ? QStringLiteral( "1=1" ) : whereClause );
   query.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   if ( !bbox.isNull() )
   {
@@ -66,6 +66,33 @@ QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, cons
   }
   queryUrl.setQuery( query );
   return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
+}
+
+QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders )
+{
+  // http://sampleserver5.arcgisonline.com/arcgis/rest/services/Energy/Geology/FeatureServer/1/query?where=1%3D1&returnExtentOnly=true&f=json
+  QUrl queryUrl( layerurl + "/query" );
+  QUrlQuery query( queryUrl );
+  query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
+  query.addQueryItem( QStringLiteral( "where" ), whereClause );
+  query.addQueryItem( QStringLiteral( "returnExtentOnly" ), QStringLiteral( "true" ) );
+  queryUrl.setQuery( query );
+  QString errorTitle;
+  QString errorText;
+  const QVariantMap res = queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders );
+  if ( res.isEmpty() )
+  {
+    QgsDebugMsg( QStringLiteral( "getExtent failed: %1 - %2" ).arg( errorTitle, errorText ) );
+    return QgsRectangle();
+  }
+
+  QgsRectangle rect;
+  const QVariantMap coords = res.value( QStringLiteral( "extent" ) ).toMap();
+  rect.setXMinimum( coords.value( QStringLiteral( "xmin" ) ).toDouble() );
+  rect.setYMinimum( coords.value( QStringLiteral( "ymin" ) ).toDouble() );
+  rect.setXMaximum( coords.value( QStringLiteral( "xmax" ) ).toDouble() );
+  rect.setYMaximum( coords.value( QStringLiteral( "ymax" ) ).toDouble() );
+  return rect;
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
@@ -110,12 +137,12 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, feedback );
 }
 
-QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback )
+QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &whereClause )
 {
   QUrl queryUrl( layerurl + "/query" );
   QUrlQuery query( queryUrl );
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
-  query.addQueryItem( QStringLiteral( "where" ), QStringLiteral( "1=1" ) );
+  query.addQueryItem( QStringLiteral( "where" ), whereClause.isEmpty() ? QStringLiteral( "1=1" ) : whereClause );
   query.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   query.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
                       .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
@@ -258,6 +285,10 @@ QUrl QgsArcGisRestQueryUtils::parseUrl( const QUrl &url, bool *isTestEndpoint )
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
     QgsDebugMsg( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
+    if ( !QFile::exists( modifiedUrlString ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Local test file %1 for URL %2 does not exist!!!" ).arg( modifiedUrlString, url.toString() ) );
+    }
   }
 
   return modifiedUrl;

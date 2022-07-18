@@ -33,13 +33,18 @@ class QgsAfsSharedData : public QObject
 {
     Q_OBJECT
   public:
-    QgsAfsSharedData() = default;
+    QgsAfsSharedData( const QgsDataSourceUri &uri );
+
     long long objectIdCount() const;
     long long featureCount() const;
     bool isDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
     const QgsFields &fields() const { return mFields; }
-    QgsRectangle extent() const { return mExtent; }
+    QgsRectangle extent() const;
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+
+    QString subsetString() const;
+    bool setSubsetString( const QString &subset );
+
     void clearCache();
 
     bool getObjectIds( QString &errorMessage );

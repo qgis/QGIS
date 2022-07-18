@@ -67,6 +67,10 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
 
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+    bool supportsSubsetString() const override { return true; }
+
     /* Inherited from QgsDataProvider */
     QgsCoordinateReferenceSystem crs() const override;
     void setDataSourceUri( const QString &uri ) override;

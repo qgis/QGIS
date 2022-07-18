@@ -62,7 +62,16 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * Retrieves all object IDs for the specified layer URL.
      */
     static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
-                                     const QgsRectangle &bbox = QgsRectangle() );
+                                     const QgsRectangle &bbox = QgsRectangle(),
+                                     const QString &whereClause = QString() );
+
+
+    /**
+     * Retrieves the extent for the features matching a \a whereClause.
+     *
+     * \since QGIS 3.28
+     */
+    static QgsRectangle getExtent( const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders() );
 
     /**
      * Retrieves all matching objects from the specified layer URL.
@@ -74,7 +83,8 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Gets a list of object IDs which fall within the specified extent.
      */
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr,
+        const QString &whereClause = QString() );
 
     /**
      * Performs a blocking request to a URL and returns the retrieved data.
