@@ -25,6 +25,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsfeedback.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
@@ -292,7 +293,13 @@ bool QgsAfsProvider::deleteFeatures( const QgsFeatureIds &ids )
   if ( !mCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
     return false;
 
-  return mSharedData->deleteFeatures( ids );
+  QString error;
+  QgsFeedback feedback;
+  const bool result = mSharedData->deleteFeatures( ids, error, &feedback );
+  if ( !result )
+    pushError( tr( "Error while deleting features: %1" ).arg( error ) );
+
+  return result;
 }
 
 bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
@@ -301,7 +308,8 @@ bool QgsAfsProvider::addFeatures( QgsFeatureList &flist, Flags )
     return false;
 
   QString error;
-  const bool res = mSharedData->addFeatures( flist, error );
+  QgsFeedback feedback;
+  const bool res = mSharedData->addFeatures( flist, error, &feedback );
   if ( !res )
     pushError( tr( "Error while adding features: %1" ).arg( error ) );
 
