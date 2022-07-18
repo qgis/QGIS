@@ -196,13 +196,13 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
         if ( !mFeatureIdList.empty() && mRemainingFeatureIds.empty() )
           return false;
 
-        if ( mSource->sharedData()->isDeleted( mFeatureIterator ) )
+        bool success = false;
+        bool isDeleted = mSource->sharedData()->isDeleted( mFeatureIterator );
+        if ( !isDeleted )
         {
-          ++mFeatureIterator;
-          continue;
+          success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
         }
 
-        bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, QgsRectangle(), mInterruptionChecker );
         if ( !mFeatureIdList.empty() )
         {
           mRemainingFeatureIds.removeAll( mFeatureIterator );
@@ -214,7 +214,7 @@ bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
           ++mFeatureIterator;
         }
 
-        if ( !mFilterRect.isNull() )
+        if ( success && !mFilterRect.isNull() )
         {
           if ( !f.hasGeometry() )
             success = false;
