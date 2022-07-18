@@ -1451,10 +1451,10 @@ QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &c
   return res;
 }
 
-QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs )
+QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs, bool includeGeometry )
 {
   QVariantMap res;
-  if ( feature.hasGeometry() )
+  if ( includeGeometry && feature.hasGeometry() )
   {
     res.insert( QStringLiteral( "geometry" ), geometryToJson( feature.geometry(), context, crs ) );
   }

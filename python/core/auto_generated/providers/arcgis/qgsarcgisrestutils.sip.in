@@ -153,7 +153,8 @@ Returns an empty map if the ``crs`` is not valid.
 
     static QVariantMap featureToJson( const QgsFeature &feature,
                                       const QgsArcGisRestContext &context,
-                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      bool includeGeometry = true );
 %Docstring
 Converts a ``feature`` to an ArcGIS REST JSON representation.
 
