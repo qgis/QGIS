@@ -34,7 +34,8 @@ from qgis.core import (NULL,
                        QgsDataSourceUri,
                        QgsVectorDataProviderTemporalCapabilities,
                        QgsFieldConstraints,
-                       QgsVectorDataProvider
+                       QgsVectorDataProvider,
+                       QgsFeature
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -1478,6 +1479,169 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.Polygon)
+
+    def testDelete(self):
+        # delete capability
+        endpoint = self.basetestpath + '/delete_test_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                "minScale":72225,"maxScale":0,
+                "defaultVisibility":true,
+                "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                "displayField":"LABEL","typeIdField":null,
+                "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                "capabilities":"Map,Query,Data,Delete","maxRecordCount":1000,"supportsStatistics":true,
+                "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+                {
+                 "objectIdFieldName": "OBJECTID",
+                 "objectIds": [
+                  1
+                 ]
+                }
+                """.encode('UTF-8'))
+
+        delete_endpoint = sanitize(endpoint, '/deleteFeatures')
+        with open(delete_endpoint, 'wb') as f:
+            f.write("""{
+   "deleteResults": [
+   {
+    "objectId": 1,
+    "success": true
+   }
+  ]
+}""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        res = vl.dataProvider().deleteFeatures([0])
+        self.assertTrue(res)
+
+        with open(delete_endpoint + "_payload", 'rt') as f:
+            res = '\n'.join(f.readlines())
+            self.assertEqual(res, 'f=json&objectIds=1')
+
+    def testAddSuccess(self):
+        # add capability
+        endpoint = self.basetestpath + '/delete_test_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                "minScale":72225,"maxScale":0,
+                "defaultVisibility":true,
+                "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                "displayField":"LABEL","typeIdField":null,
+                "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                "capabilities":"Map,Query,Data,Create","maxRecordCount":1000,"supportsStatistics":true,
+                "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+                {
+                 "objectIdFieldName": "OBJECTID",
+                 "objectIds": [
+                  1
+                 ]
+                }
+                """.encode('UTF-8'))
+
+        add_endpoint = sanitize(endpoint, '/addFeatures')
+        with open(add_endpoint, 'wb') as f:
+            f.write("""{
+  "addResults": [
+    {
+      "objectId": 617,
+      "success": true
+    }
+  ]
+}""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        f = QgsFeature()
+        f.setFields(vl.fields())
+        f.setAttributes([11])
+        res, f = vl.dataProvider().addFeatures([f])
+        self.assertTrue(res)
+
+        with open(add_endpoint + "_payload", 'rt') as f:
+            res = '\n'.join(f.readlines())
+            self.assertEqual(res, 'f=json&features=[\n\n  {\n\n    "attributes": {\n\n      "OBJECTID": 11\n\n    }\n\n  }\n\n]')
+
+    def testAddFail(self):
+        # add capability
+        endpoint = self.basetestpath + '/delete_test_fake_qgis_http_endpoint'
+        with open(sanitize(endpoint, '?f=json'), 'wb') as f:
+            f.write("""
+                {"currentVersion":10.22,"id":1,"name":"QGIS Test","type":"Feature Layer","description":
+                "QGIS Provider Test Layer","geometryType":"esriGeometryPoint","copyrightText":"not copyright","parentLayer":{"id":2,"name":"QGIS Tests"},"subLayers":[],
+                "minScale":72225,"maxScale":0,
+                "defaultVisibility":true,
+                "extent":{"xmin":-71.123,"ymin":66.33,"xmax":-65.32,"ymax":78.3,
+                "spatialReference":{"wkid":4326,"latestWkid":4326}},
+                "hasAttachments":false,"htmlPopupType":"esriServerHTMLPopupTypeAsHTMLText",
+                "displayField":"LABEL","typeIdField":null,
+                "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null}],
+                "relationships":[],"canModifyLayer":false,"canScaleSymbols":false,"hasLabels":false,
+                "capabilities":"Map,Query,Data,Create","maxRecordCount":1000,"supportsStatistics":true,
+                "supportsAdvancedQueries":true,"supportedQueryFormats":"JSON, AMF",
+                "ownershipBasedAccessControlForFeatures":{"allowOthersToQuery":true},"useStandardizedQueries":true}""".encode(
+                'UTF-8'))
+
+        with open(sanitize(endpoint, '/query?f=json_where=1=1&returnIdsOnly=true'), 'wb') as f:
+            f.write("""
+                {
+                 "objectIdFieldName": "OBJECTID",
+                 "objectIds": [
+                  1
+                 ]
+                }
+                """.encode('UTF-8'))
+
+        add_endpoint = sanitize(endpoint, '/addFeatures')
+        with open(add_endpoint, 'wb') as f:
+            f.write("""{
+  "addResults": [
+    {
+      "success": false,
+      "error": {
+        "code": -2147217395,
+        "description": "Setting of Value for depth failed."
+      }
+    }
+  ]
+}""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+
+        f = QgsFeature()
+        f.setFields(vl.fields())
+        f.setAttributes([11])
+        res, f = vl.dataProvider().addFeatures([f])
+        self.assertFalse(res)
+        self.assertEqual(vl.dataProvider().lastError(), 'Error while adding features: Setting of Value for depth failed.')
+
+        with open(add_endpoint + "_payload", 'rt') as f:
+            res = '\n'.join(f.readlines())
+            self.assertEqual(res, 'f=json&features=[\n\n  {\n\n    "attributes": {\n\n      "OBJECTID": 11\n\n    }\n\n  }\n\n]')
 
 
 if __name__ == '__main__':

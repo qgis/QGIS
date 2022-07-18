@@ -26,6 +26,7 @@
 #include <QNetworkRequest>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QFile>
 
 #include <nlohmann/json.hpp>
 
@@ -252,7 +253,6 @@ bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids, QString &error,
   payload.append( QStringLiteral( "f=json&objectIds=%1" ).arg( stringIds.join( ',' ) ).toUtf8() );
 
   bool ok = false;
-  QString errorText;
   postData( queryUrl, payload, feedback, ok, error );
   if ( ! ok )
   {
@@ -272,7 +272,7 @@ bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids, QString &error,
 bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMessage, QgsFeedback *feedback )
 {
   errorMessage.clear();
-  QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/applyEdits" );
+  QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/addFeatures" );
 
   QgsArcGisRestContext context;
 
@@ -286,7 +286,7 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
   const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( featuresJson ).dump( 2 ) );
 
   QByteArray payload;
-  payload.append( QStringLiteral( "f=json&trueCurveClient=true&adds=%1" ).arg( json ).toUtf8() );
+  payload.append( QStringLiteral( "f=json&features=%1" ).arg( json ).toUtf8() );
 
   bool ok = false;
   const QVariantMap results = postData( queryUrl, payload, feedback, ok, errorMessage );
@@ -333,7 +333,36 @@ QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &paylo
   errorText.clear();
   ok = false;
 
-  QNetworkRequest request( url );
+  bool isTestEndpoint = false;
+  const QUrl modifiedUrl = QgsArcGisRestQueryUtils::parseUrl( url, &isTestEndpoint );
+  if ( isTestEndpoint )
+  {
+    const QString localFile = modifiedUrl.toLocalFile() + "_payload";
+    QgsDebugMsg( QStringLiteral( "payload file is %1" ).arg( localFile ) );
+    {
+      QFile file( localFile );
+      if ( file.open( QFile::WriteOnly | QIODevice::Truncate ) )
+      {
+        file.write( payload );
+        file.close();
+      }
+    }
+
+    ok = true;
+
+    QVariantMap res;
+    {
+      QFile file( modifiedUrl.toLocalFile() );
+      if ( file.open( QFile::ReadOnly ) )
+      {
+        res = QgsJsonUtils::parseJson( file.readAll() ).toMap();
+      }
+    }
+
+    return res;
+  }
+
+  QNetworkRequest request( modifiedUrl );
   request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
 
@@ -342,7 +371,7 @@ QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &paylo
 
   const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.post( request, payload, false, feedback );
 
-  // Handle network errors
+// Handle network errors
   if ( error != QgsBlockingNetworkRequest::NoError )
   {
     QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );

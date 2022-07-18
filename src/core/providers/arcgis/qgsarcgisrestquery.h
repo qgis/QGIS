@@ -101,9 +101,13 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      */
     static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = AllTypes );
 
+    /**
+     * Parses and processes a \a url.
+     */
+    static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
+
   private:
 
-    static QUrl parseUrl( const QUrl &url );
     static void adjustBaseUrl( QString &baseUrl, const QString &name );
 
     friend class TestQgsArcGisRestUtils;
