@@ -109,7 +109,7 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &cont
 
     for ( const int filterType : itemTypes )
     {
-      if ( typeToString( static_cast< ItemType >( filterType ) ).compare( itemType, Qt::CaseInsensitive ) == 0 )
+      if ( typeToString( static_cast< Qgis::ArcGisRestServiceType >( filterType ) ).compare( itemType, Qt::CaseInsensitive ) == 0 )
       {
         result << item;
         break;
@@ -125,16 +125,23 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &cont
 }
 
 
-QString QgsArcGisPortalUtils::typeToString( QgsArcGisPortalUtils::ItemType type )
+QString QgsArcGisPortalUtils::typeToString( Qgis::ArcGisRestServiceType type )
 {
+  // note -- these values are different in the Portal REST responses vs the standard ArcGIS REST responses!
   switch ( type )
   {
-    case QgsArcGisPortalUtils::FeatureService:
+    case Qgis::ArcGisRestServiceType::FeatureServer:
       return QStringLiteral( "Feature Service" );
-    case QgsArcGisPortalUtils::MapService:
+    case Qgis::ArcGisRestServiceType::MapServer:
       return QStringLiteral( "Map Service" );
-    case QgsArcGisPortalUtils::ImageService:
+    case Qgis::ArcGisRestServiceType::ImageServer:
       return QStringLiteral( "Image Service" );
+
+    case Qgis::ArcGisRestServiceType::GlobeServer:
+    case Qgis::ArcGisRestServiceType::GPServer:
+    case Qgis::ArcGisRestServiceType::GeocodeServer:
+    case Qgis::ArcGisRestServiceType::Unknown:
+      return QString();
   }
-  return QString();
+  BUILTIN_UNREACHABLE
 }

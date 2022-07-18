@@ -1199,6 +1199,17 @@ The development version
       Unknown,
     };
 
+    enum class ArcGisRestServiceType
+      {
+      FeatureServer,
+      MapServer,
+      ImageServer,
+      GlobeServer,
+      GPServer,
+      GeocodeServer,
+      Unknown,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

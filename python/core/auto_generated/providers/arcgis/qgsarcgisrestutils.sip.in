@@ -201,6 +201,13 @@ Converts a ``field``'s definition to an ArcGIS REST JSON representation.
 .. versionadded:: 3.28
 %End
 
+    static Qgis::ArcGisRestServiceType serviceTypeFromString( const QString &type );
+%Docstring
+Converts a string value to a REST service type.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);

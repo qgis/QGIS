@@ -1558,3 +1558,21 @@ QVariantMap QgsArcGisRestUtils::fieldDefinitionToJson( const QgsField &field )
   return res;
 }
 
+Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QString &type )
+{
+  if ( type.compare( QLatin1String( "FeatureServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::FeatureServer;
+  else if ( type.compare( QLatin1String( "MapServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::MapServer;
+  else if ( type.compare( QLatin1String( "ImageServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::ImageServer;
+  else if ( type.compare( QLatin1String( "GlobeServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::GlobeServer;
+  else if ( type.compare( QLatin1String( "GPServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::GPServer;
+  else if ( type.compare( QLatin1String( "GeocodeServer" ), Qt::CaseInsensitive ) == 0 )
+    return Qgis::ArcGisRestServiceType::GeocodeServer;
+
+  return Qgis::ArcGisRestServiceType::Unknown;
+}
+
