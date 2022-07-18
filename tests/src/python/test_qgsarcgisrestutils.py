@@ -96,7 +96,9 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
             ('CircularStringZM (1 2 3 11, 5 4 4 12, 7 2.2 5 13)',
              {'hasM': True, 'hasZ': True, 'curvePaths': [[[1.0, 2.0, 3.0, 11.0],
                                                           {'c': [[7.0, 2.2, 5.0, 13.0], [5.0, 4.0, 4.0, 12.0]]}]]}),
-
+            # compound curve with no curved components should return paths, not curvePaths
+            ('CompoundCurve ((-1 -5, 1 2))',
+             {'hasM': False, 'hasZ': False, 'paths': [[[-1.0, -5.0], [1.0, 2.0]]]}),
             ('CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6))',
              {'hasM': False, 'hasZ': False, 'curvePaths': [[[-1.0, -5.0],
                                                             [1.0, 2.0],
