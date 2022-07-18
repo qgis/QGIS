@@ -138,7 +138,21 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     void geometryChanged() override;
     void prepareGeometry() override;
 
+    /**
+     * Returns a geometry representing the point-set intersection of two geometries.
+     * In other words, that portion of the geometry and \a geom that is shared between the two geometries.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const override;
+
+    /**
+     * Returns a geometry representing the part of the geometry that does not intersect \a geom.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const override;
 
     /**
@@ -159,13 +173,42 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * Curved geometries are not supported.
      *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      * \since QGIS 3.0
      */
     std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr, double gridSize = -1 ) const;
 
+
+    /**
+     * Unions the input geometries, merging geometry to produce a result geometry with no overlaps.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const override;
+
+    /**
+     * Unions the input geometries, merging geometry to produce a result geometry with no overlaps.
+     * \param geomList List of geometries to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, double gridSize = -1 ) const override;
+
+    /**
+     * Unions the input geometries, merging geometry to produce a result geometry with no overlaps.
+     * \param geomList List of geometries to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr, double gridSize = -1 ) const override;
+
+    /**
+     * Returns a geometry representing the portions of geometries of the current geometry and \a geom that does not intersect.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
@@ -622,6 +665,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
+
+    /**
+     * Returns a geometry representing the overlay operation with \a geom.
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     */
     std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr, double gridSize = -1 ) const;
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
