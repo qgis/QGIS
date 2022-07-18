@@ -68,7 +68,7 @@ void QgsUnionAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Union" ) ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PRECISION" ), QObject::tr( "Precision" ),
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRIDSIZE" ), QObject::tr( "Grid size" ),
                 QgsProcessingParameterNumber::Double, QVariant( - 1 ), true ) );
 }
 
@@ -107,7 +107,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
 
   long count = 0;
   const long total = sourceA->featureCount() * 2 + sourceB->featureCount();
-  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "PRECISION" ), context );
+  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
 
   QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, gridSize );
   if ( feedback->isCanceled() )

@@ -52,7 +52,7 @@ void QgsCalculateVectorOverlapsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Overlay layers" ), QgsProcessing::TypeVectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PRECISION" ), QObject::tr( "Precision" ),
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRIDSIZE" ), QObject::tr( "Grid size" ),
                 QgsProcessingParameterNumber::Double, QVariant( - 1 ), true ) );
 }
 
@@ -132,7 +132,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   da.setSourceCrs( mCrs, context.transformContext() );
   da.setEllipsoid( context.ellipsoid() );
 
-  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "PRECISION" ), context );
+  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
 
   // loop through input
   const double step = mInputCount > 0 ? 100.0 / mInputCount : 0;
