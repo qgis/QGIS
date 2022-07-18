@@ -246,6 +246,13 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context );
 
+    /**
+     * Converts a \a field's definition to an ArcGIS REST JSON representation.
+     *
+     * \since QGIS 3.28
+     */
+    static QVariantMap fieldDefinitionToJson( const QgsField &field );
+
   private:
 
     /**
