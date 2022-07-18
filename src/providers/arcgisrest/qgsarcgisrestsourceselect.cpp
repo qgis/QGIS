@@ -32,6 +32,7 @@
 #include "qgsbrowserguimodel.h"
 #include "qgsarcgisrestdataitems.h"
 #include "qgsnewarcgisrestconnection.h"
+#include "qgsafsprovider.h"
 
 #include <QButtonGroup>
 #include <QListWidgetItem>
@@ -85,6 +86,10 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisRestSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add ArcGIS REST Layer" ) );
+
+  mBuildQueryButton = buttonBox->addButton( tr( "Add with Filter" ), QDialogButtonBox::ActionRole );
+  mBuildQueryButton->setDisabled( true );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::buildQueryButtonClicked );
 
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( btnNew, &QAbstractButton::clicked, this, &QgsArcGisRestSourceSelect::addEntryToServerList );
@@ -281,6 +286,7 @@ void QgsArcGisRestSourceSelect::connectToServer()
 
   btnConnect->setEnabled( true );
   emit enableButtons( haveLayers );
+  mBuildQueryButton->setEnabled( false );
   updateCrsLabel();
 }
 
@@ -416,7 +422,61 @@ void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &
   updateCrsLabel();
   updateImageEncodings();
 
+  bool enableFilter = false;
+  if ( mBrowserView->selectionModel()->selectedRows().size() == 1 )
+  {
+    const QModelIndex currentIndex = mBrowserView->selectionModel()->currentIndex();
+    if ( currentIndex.isValid() )
+    {
+      const QModelIndex sourceIndex = mProxyModel->mapToSource( currentIndex );
+      if ( sourceIndex.isValid() )
+      {
+        if ( qobject_cast< QgsArcGisFeatureServiceLayerItem * >( mBrowserModel->dataItem( sourceIndex ) ) )
+        {
+          enableFilter = true;
+        }
+      }
+    }
+  }
+  mBuildQueryButton->setEnabled( enableFilter );
+
   emit enableButtons( current.isValid() );
+}
+
+void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
+{
+  QString layerName;
+  Qgis::ArcGisRestServiceType serviceType = Qgis::ArcGisRestServiceType::Unknown;
+  const QString uri = indexToUri( mBrowserView->selectionModel()->currentIndex(), layerName, serviceType );
+  if ( uri.isEmpty() || serviceType != Qgis::ArcGisRestServiceType::FeatureServer )
+  {
+    return;
+  }
+
+  // Query available fields
+  QgsDataSourceUri ds( uri );
+  ds.setSql( QStringLiteral( "1=0" ) ); // don't retrieve any records
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsAfsProvider provider( ds.uri( false ), providerOptions );
+  if ( !provider.isValid() )
+  {
+    return;
+  }
+
+  //show expression builder
+  QgsExpressionBuilderDialog d( nullptr, QString(), this );
+
+  //add available attributes to expression builder
+  QgsExpressionBuilderWidget *w = d.expressionBuilder();
+  w->initWithFields( provider.fields() );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    const QString sql = w->expressionText();
+    ds.setSql( sql );
+    emit addVectorLayer( ds.uri( false ), layerName );
+  }
 }
 
 void QgsArcGisRestSourceSelect::filterChanged( const QString &text )
