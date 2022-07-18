@@ -7047,6 +7047,35 @@ class TestQgsGeometry(unittest.TestCase):
         print((self.report))
         return result
 
+    def testFixedPrecision(self):
+        # Tests algorithms using gridSize from geos >= 3.9
+        if self.geos39:
+            a = QgsGeometry.fromWkt('LINESTRING(0 0, 9 0)')
+            b = QgsGeometry.fromWkt('LINESTRING(7 0, 13.2 0)')
+
+            # Intersection, gridSize = 2
+            intersectionExpected = a.intersection(b, 2)
+            self.assertEqual(intersectionExpected.asWkt(), 'LineString (8 0, 10 0)')
+
+            # Difference, gridSize = 2
+            differenceExpected = a.difference(b, 2)
+            self.assertEqual(differenceExpected.asWkt(), 'LineString (0 0, 8 0)')
+
+            # symDifference, gridSize = 2
+            symDifferenceExpected = a.symDifference(b, 2)
+            self.assertEqual(symDifferenceExpected.asWkt(), 'MultiLineString ((0 0, 8 0),(10 0, 14 0))')
+
+            # For union, add a tiny float offset to the first vertex
+            a = QgsGeometry.fromWkt('LINESTRING(0.5 0, 9 0)')
+            # union, gridSize = 2
+            combineExpected = a.combine(b, 2)
+            self.assertEqual(combineExpected.asWkt(), 'LineString (0 0, 8 0, 10 0, 14 0)')
+
+            # Subdivide, gridSize = 1
+            a = QgsGeometry.fromWkt('POLYGON((0 0,0 10,10 10,10 6,100 5.1, 100 10, 110 10, 110 0, 100 0,100 4.9,10 5,10 0,0 0))')
+            subdivideExpected = a.subdivide(6, 1)
+            self.assertEqual(subdivideExpected.asWkt(), 'MultiPolygon (((0 10, 7 10, 7 0, 0 0, 0 10)),((10 0, 7 0, 7 5, 10 5, 10 0)),((10 10, 10 6, 10 5, 7 5, 7 10, 10 10)),((14 6, 14 5, 10 5, 10 6, 14 6)),((28 6, 28 5, 14 5, 14 6, 28 6)),((55 6, 55 5, 28 5, 28 6, 55 6)),((100 5, 55 5, 55 6, 100 5)),((100 10, 110 10, 110 0, 100 0, 100 5, 100 10)))')
+
 
 if __name__ == '__main__':
     unittest.main()
