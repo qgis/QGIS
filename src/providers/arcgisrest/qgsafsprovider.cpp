@@ -522,6 +522,29 @@ bool QgsAfsProvider::deleteAttributes( const QgsAttributeIds &attributes )
   return res;
 }
 
+bool QgsAfsProvider::createAttributeIndex( int field )
+{
+  if ( mAdminUrl.isEmpty() )
+    return false;
+
+  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+  if ( !adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+    return false;
+
+  if ( field < 0 || field >= mSharedData->mFields.count() )
+  {
+    return false;
+  }
+
+  QString error;
+  QgsFeedback feedback;
+  const bool res = mSharedData->addAttributeIndex( mAdminUrl, field, error, &feedback );
+  if ( !res )
+    pushError( tr( "Error while creating attribute index: %1" ).arg( error ) );
+
+  return true;
+}
+
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
   QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
@@ -558,6 +581,7 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
   if ( adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
   {
     c |= QgsVectorDataProvider::AddAttributes;
+    c |= QgsVectorDataProvider::CreateAttributeIndex;
   }
   if ( adminCapabilities.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
   {
