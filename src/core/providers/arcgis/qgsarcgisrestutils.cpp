@@ -1505,3 +1505,56 @@ QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, Q
   }
 }
 
+QVariantMap QgsArcGisRestUtils::fieldDefinitionToJson( const QgsField &field )
+{
+  QVariantMap res;
+  res.insert( QStringLiteral( "name" ), field.name() );
+
+  QString fieldType;
+  switch ( field.type() )
+  {
+    case QVariant::LongLong:
+      fieldType = QStringLiteral( "esriFieldTypeInteger" );
+      break;
+
+    case QVariant::Int:
+      fieldType = QStringLiteral( "esriFieldTypeSmallInteger" );
+      break;
+
+    case QVariant::Double:
+      fieldType = QStringLiteral( "esriFieldTypeDouble" );
+      break;
+
+    case QVariant::String:
+      fieldType = QStringLiteral( "esriFieldTypeString" );
+      break;
+
+    case QVariant::DateTime:
+    case QVariant::Date:
+      fieldType = QStringLiteral( "esriFieldTypeDate" );
+      break;
+
+    case QVariant::ByteArray:
+      fieldType = QStringLiteral( "esriFieldTypeBlob" );
+      break;
+
+    default:
+      // fallback to string
+      fieldType = QStringLiteral( "esriFieldTypeString" );
+      break;
+  }
+  res.insert( QStringLiteral( "type" ), fieldType );
+
+  if ( !field.alias().isEmpty() )
+    res.insert( QStringLiteral( "alias" ), field.alias() );
+
+  // nullable
+  const bool notNullable = field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull;
+  res.insert( QStringLiteral( "nullable" ), !notNullable );
+
+  // editable
+  res.insert( QStringLiteral( "editable" ), true );
+
+  return res;
+}
+

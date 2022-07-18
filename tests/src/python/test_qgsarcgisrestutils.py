@@ -27,6 +27,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFields,
     QgsField,
+    QgsFieldConstraints,
     QgsFeature,
     QgsArcGisRestContext,
     NULL
@@ -323,6 +324,32 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
         self.assertEqual(res, {'attributes': {
             'a_int_field': 5},
             'geometry': {'x': 1.0, 'y': 2.0}})
+
+    def test_field_to_json(self):
+        field = QgsField('my name', QVariant.LongLong)
+        field.setAlias('my alias')
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'alias': 'my alias', 'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeInteger'})
+        field = QgsField('my name', QVariant.Int)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeSmallInteger'})
+        field = QgsField('my name', QVariant.Double)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeDouble'})
+        field = QgsField('my name', QVariant.String)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeString'})
+        field = QgsField('my name', QVariant.DateTime)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeDate'})
+        field = QgsField('my name', QVariant.ByteArray)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeBlob'})
+
+        # unsupported type
+        field = QgsField('my name', QVariant.Time)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': True, 'type': 'esriFieldTypeString'})
+
+        # not nullable
+        field = QgsField('my name', QVariant.Int)
+        field_constraints = field.constraints()
+        field_constraints.setConstraint(QgsFieldConstraints.Constraint.ConstraintNotNull)
+        field.setConstraints(field_constraints)
+        self.assertEqual(QgsArcGisRestUtils.fieldDefinitionToJson(field), {'editable': True, 'name': 'my name', 'nullable': False, 'type': 'esriFieldTypeSmallInteger'})
 
 
 if __name__ == '__main__':

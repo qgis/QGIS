@@ -194,6 +194,13 @@ Converts a variant to a REST attribute value.
 .. versionadded:: 3.28
 %End
 
+    static QVariantMap fieldDefinitionToJson( const QgsField &field );
+%Docstring
+Converts a ``field``'s definition to an ArcGIS REST JSON representation.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);
