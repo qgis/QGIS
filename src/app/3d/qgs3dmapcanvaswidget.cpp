@@ -394,7 +394,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   Qgs3DMapSettings *map = mCanvas->map();
   Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel | QDialogButtonBox::Help, dlg );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help, dlg );
 
   auto applyConfig = [ = ]()
   {
