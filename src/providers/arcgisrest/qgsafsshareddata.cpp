@@ -124,13 +124,13 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )
   {
-    if ( i >= 0 && i < mObjectIds.count() && !mDeletedFeatureIds.contains( i ) )
+    if ( i >= 0 && i < mObjectIds.count() && !mDeletedFeatureIds.contains( i ) && !mCache.contains( i ) )
       objectIds.append( mObjectIds.at( i ) );
   }
 
   if ( objectIds.empty() )
   {
-    QgsDebugMsg( QStringLiteral( "No valid features IDs to fetch" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No valid features IDs to fetch" ), 2 );
     return false;
   }
 
