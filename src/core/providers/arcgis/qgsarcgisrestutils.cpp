@@ -1451,10 +1451,10 @@ QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &c
   return res;
 }
 
-QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs, bool includeGeometry )
+QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs, QgsArcGisRestUtils::FeatureToJsonFlags flags )
 {
   QVariantMap res;
-  if ( includeGeometry && feature.hasGeometry() )
+  if ( ( flags & FeatureToJsonFlag::IncludeGeometry ) && feature.hasGeometry() )
   {
     res.insert( QStringLiteral( "geometry" ), geometryToJson( feature.geometry(), context, crs ) );
   }
@@ -1463,7 +1463,8 @@ QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const 
   const QgsFields fields = feature.fields();
   for ( const QgsField &field : fields )
   {
-    attributes.insert( field.name(), variantToAttributeValue( feature.attribute( field.name() ), field.type(), context ) );
+    if ( ( flags & FeatureToJsonFlag::IncludeNonObjectIdAttributes ) || field.name() == context.objectIdFieldName() )
+      attributes.insert( field.name(), variantToAttributeValue( feature.attribute( field.name() ), field.type(), context ) );
   }
   if ( !attributes.isEmpty() )
   {

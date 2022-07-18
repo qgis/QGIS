@@ -322,18 +322,25 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
   return true;
 }
 
-bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool includeGeometries, QString &error, QgsFeedback *feedback )
+bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool includeGeometries, bool includeAttributes, QString &error, QgsFeedback *feedback )
 {
   error.clear();
   QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/updateFeatures" );
 
   QgsArcGisRestContext context;
+  context.setObjectIdFieldName( mObjectIdFieldName );
+
+  QgsArcGisRestUtils::FeatureToJsonFlags flags;
+  if ( includeGeometries )
+    flags |= QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry;
+  if ( includeAttributes )
+    flags |= QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes;
 
   QVariantList featuresJson;
   featuresJson.reserve( features.size() );
   for ( const QgsFeature &feature : features )
   {
-    featuresJson.append( QgsArcGisRestUtils::featureToJson( feature, context, QgsCoordinateReferenceSystem(), includeGeometries ) );
+    featuresJson.append( QgsArcGisRestUtils::featureToJson( feature, context, QgsCoordinateReferenceSystem(), flags ) );
   }
 
   const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( featuresJson ).dump( 2 ) );
