@@ -295,10 +295,21 @@ class TestQgsArcGisRestUtils(unittest.TestCase):
 
         test_feature = QgsFeature(test_fields)
         test_feature.setAttributes(attributes)
+        test_feature.setGeometry(QgsGeometry.fromWkt('Point(1 2)'))
 
         context = QgsArcGisRestContext()
         context.setTimeZone(QTimeZone.utc())
         res = QgsArcGisRestUtils.featureToJson(test_feature, context)
+        self.assertEqual(res, {'attributes': {'a_boolean_field': True,
+                                              'a_datetime_field': 1646395994000,
+                                              'a_date_field': 1646352000000,
+                                              'a_double_field': 5.5,
+                                              'a_int_field': 5,
+                                              'a_string_field': 'my string value',
+                                              'a_null_value': None},
+                               'geometry': {'x': 1.0, 'y': 2.0}})
+        # without geometry
+        res = QgsArcGisRestUtils.featureToJson(test_feature, context, includeGeometry=False)
         self.assertEqual(res, {'attributes': {'a_boolean_field': True,
                                               'a_datetime_field': 1646395994000,
                                               'a_date_field': 1646352000000,

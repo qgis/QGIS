@@ -198,7 +198,8 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QVariantMap featureToJson( const QgsFeature &feature,
                                       const QgsArcGisRestContext &context,
-                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      bool includeGeometry = true );
 
     /**
      * Converts a variant to a REST attribute value.
