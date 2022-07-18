@@ -394,10 +394,22 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
 
   if ( clipPart1 )
   {
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    if ( gridSize > 0 )
+    {
+      clipPart1.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), clipPart1.get(), gridSize ) );
+    }
+#endif
     subdivideRecursive( clipPart1.get(), maxNodes, depth, parts, halfClipRect1, gridSize );
   }
   if ( clipPart2 )
   {
+#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
+    if ( gridSize > 0 )
+    {
+      clipPart2.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), clipPart2.get(), gridSize ) );
+    }
+#endif
     subdivideRecursive( clipPart2.get(), maxNodes, depth, parts, halfClipRect2, gridSize );
   }
 }
