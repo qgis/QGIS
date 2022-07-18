@@ -322,6 +322,52 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
   return true;
 }
 
+bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool includeGeometries, QString &error, QgsFeedback *feedback )
+{
+  error.clear();
+  QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/updateFeatures" );
+
+  QgsArcGisRestContext context;
+
+  QVariantList featuresJson;
+  featuresJson.reserve( features.size() );
+  for ( const QgsFeature &feature : features )
+  {
+    featuresJson.append( QgsArcGisRestUtils::featureToJson( feature, context, QgsCoordinateReferenceSystem(), includeGeometries ) );
+  }
+
+  const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( featuresJson ).dump( 2 ) );
+
+  QByteArray payload;
+  payload.append( QStringLiteral( "f=json&features=%1" ).arg( json ).toUtf8() );
+
+  bool ok = false;
+  const QVariantMap results = postData( queryUrl, payload, feedback, ok, error );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  const QVariantList addResults = results.value( QStringLiteral( "updateResults" ) ).toList();
+  for ( const QVariant &result : addResults )
+  {
+    const QVariantMap resultMap = result.toMap();
+    if ( !resultMap.value( QStringLiteral( "success" ) ).toBool() )
+    {
+      error = resultMap.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "description" ) ).toString();
+      return false;
+    }
+  }
+
+  // all good. Now we remove the cached versions of features so that they'll get re-fetched from the service
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+  for ( const QgsFeature &feature : features )
+  {
+    mCache.remove( feature.id() );
+  }
+  return true;
+}
+
 bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
