@@ -99,6 +99,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool mServerSupportsCurves = false;
     QString mAdminUrl;
     QVariantMap mAdminData;
+    QStringList mAdminCapabilityStrings;
 
     /**
      * Clears cache

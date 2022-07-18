@@ -82,6 +82,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       {
         mAdminUrl = adminUrl;
         mAdminData = adminData;
+        mAdminCapabilityStrings = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
       }
     }
   }
@@ -497,8 +498,7 @@ bool QgsAfsProvider::addAttributes( const QList<QgsField> &attributes )
   if ( mAdminUrl.isEmpty() )
     return false;
 
-  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
-  if ( !adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+  if ( !mAdminCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
     return false;
 
   QString error;
@@ -515,8 +515,7 @@ bool QgsAfsProvider::deleteAttributes( const QgsAttributeIds &attributes )
   if ( mAdminUrl.isEmpty() )
     return false;
 
-  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
-  if ( !adminCapabilities.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
+  if ( !mAdminCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
     return false;
 
   QString error;
@@ -533,8 +532,7 @@ bool QgsAfsProvider::createAttributeIndex( int field )
   if ( mAdminUrl.isEmpty() )
     return false;
 
-  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
-  if ( !adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+  if ( !mAdminCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
     return false;
 
   if ( field < 0 || field >= mSharedData->mFields.count() )
@@ -583,13 +581,12 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
     c |= QgsVectorDataProvider::ChangeGeometries;
   }
 
-  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
-  if ( adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+  if ( mAdminCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
   {
     c |= QgsVectorDataProvider::AddAttributes;
     c |= QgsVectorDataProvider::CreateAttributeIndex;
   }
-  if ( adminCapabilities.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
+  if ( mAdminCapabilityStrings.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
   {
     c |= QgsVectorDataProvider::DeleteAttributes;
   }
