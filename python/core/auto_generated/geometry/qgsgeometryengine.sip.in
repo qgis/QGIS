@@ -93,12 +93,16 @@ tests against other geometries.
 %Docstring
 Calculate the intersection of this and ``geom``.
 
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+
 .. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, double gridSize = -1 ) const = 0 /Factory/;
 %Docstring
 Calculate the difference of this and ``geom``.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 
 .. versionadded:: 3.0
 %End
@@ -107,12 +111,16 @@ Calculate the difference of this and ``geom``.
 %Docstring
 Calculate the combination of this and ``geom``.
 
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+
 .. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, double gridSize = -1 ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geometries``.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 
 .. versionadded:: 3.0
 %End
@@ -121,12 +129,16 @@ Calculate the combination of this and ``geometries``.
 %Docstring
 Calculate the combination of this and ``geometries``.
 
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+
 .. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, double gridSize = -1 ) const = 0 /Factory/;
 %Docstring
 Calculate the symmetric difference of this and ``geom``.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 
 .. versionadded:: 3.0
 %End

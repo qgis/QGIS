@@ -108,12 +108,16 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the intersection of this and \a geom.
      *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      * \since QGIS 3.0 \a geom is a pointer
      */
     virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the difference of this and \a geom.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
@@ -122,12 +126,16 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the combination of this and \a geom.
      *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      * \since QGIS 3.0 \a geom is a pointer
      */
     virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geometries.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
@@ -136,12 +144,16 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the combination of this and \a geometries.
      *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      * \since QGIS 3.0 \a geom is a pointer
      */
     virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
