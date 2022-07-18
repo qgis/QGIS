@@ -70,13 +70,19 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   {
     // if the user has update capability, see if this extends to field definition modification
     QString adminUrl = mSharedData->mDataSource.param( QStringLiteral( "url" ) );
-    adminUrl.replace( QStringLiteral( "/rest/services/" ), QStringLiteral( "/rest/admin/services/" ) );
-    const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
-                                  authcfg, errorTitle, errorMessage, mRequestHeaders );
-    if ( !adminData.isEmpty() )
+
+    // note that for hosted ArcGIS Server the admin url may not match this format (which is how it works for AGOL).
+    // we may want to consider exposing the admin url as an option for users to set
+    if ( adminUrl.contains( QStringLiteral( "/rest/services/" ) ) )
     {
-      mAdminUrl = adminUrl;
-      mAdminData = adminData;
+      adminUrl.replace( QStringLiteral( "/rest/services/" ), QStringLiteral( "/rest/admin/services/" ) );
+      const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
+                                    authcfg, errorTitle, errorMessage, mRequestHeaders );
+      if ( !adminData.isEmpty() )
+      {
+        mAdminUrl = adminUrl;
+        mAdminData = adminData;
+      }
     }
   }
 
