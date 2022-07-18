@@ -27,6 +27,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsfeedback.h"
 #include "qgsreadwritelocker.h"
+#include "qgsvariantutils.h"
 
 const QString QgsAfsProvider::AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 const QString QgsAfsProvider::AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
@@ -221,6 +222,17 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
           QgsArcGisRestUtils::convertDateTime( extent.at( 1 ) ) ) );
     }
   }
+
+  QList<QgsVectorDataProvider::NativeType> types
+  {
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "esriFieldTypeSmallInteger" ), QVariant::Int, -1, -1, 0, 0 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "esriFieldTypeInteger" ), QVariant::LongLong, -1, -1, 0, 0 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Double ), QStringLiteral( "esriFieldTypeDouble" ), QVariant::Double, 1, 20, 0, 20 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "esriFieldTypeString" ), QVariant::String, -1, -1, -1, -1 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "esriFieldTypeDate" ), QVariant::DateTime, -1, -1, -1, -1 ),
+    QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "esriFieldTypeBlob" ), QVariant::ByteArray, -1, -1, -1, -1 )
+  };
+  setNativeTypes( types );
 
   if ( profile )
     profile->switchTask( tr( "Retrieve object IDs" ) );
