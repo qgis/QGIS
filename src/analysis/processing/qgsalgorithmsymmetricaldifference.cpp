@@ -66,7 +66,7 @@ void QgsSymmetricalDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( prefix.release() );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Symmetrical difference" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "PRECISION" ), QObject::tr( "Precision" ),
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "GRIDSIZE" ), QObject::tr( "Grid size" ),
                 QgsProcessingParameterNumber::Double, QVariant( - 1 ), true ) );
 }
 
@@ -100,7 +100,7 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
 
   long count = 0;
   const long total = sourceA->featureCount() + sourceB->featureCount();
-  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "PRECISION" ), context );
+  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
 
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB, gridSize );
   if ( feedback->isCanceled() )
