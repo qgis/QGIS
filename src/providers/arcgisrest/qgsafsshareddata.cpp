@@ -99,6 +99,12 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
   return true;
 }
 
+quint32 QgsAfsSharedData::featureIdToObjectId( QgsFeatureId id )
+{
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
+  return mObjectIds.value( id, -1 );
+}
+
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );

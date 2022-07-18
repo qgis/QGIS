@@ -43,6 +43,8 @@ class QgsAfsSharedData : public QObject
 
     bool getObjectIds( QString &errorMessage );
 
+    quint32 featureIdToObjectId( QgsFeatureId id );
+
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
