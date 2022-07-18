@@ -210,16 +210,17 @@ class CORE_EXPORT QgsOgcUtils
         QString *errorMessage = nullptr ) SIP_SKIP;
 
     /**
-     * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> QDomElement when \param requiresFilterElement is set.
+     * Creates an OGC expression XML element from the \a exp expression
+     * with default values for the geometry name, srs name, honourAsisOrientation and invertAxisOrientation.
+     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when \a requiresFilterElement is set.
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr,
         bool requiresFilterElement = false );
 
     /**
-     * Creates an OGC expression XML element.
-     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> QDomElement when \param requiresFilterElement is set.
+     * Creates an OGC expression XML element from the \a exp expression.
+     * \returns valid OGC expression QDomElement on success or a valid \verbatim <Filter> \endverbatim QDomElement when \a requiresFilterElement is set.
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
