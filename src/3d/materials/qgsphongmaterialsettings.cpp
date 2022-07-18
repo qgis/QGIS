@@ -248,7 +248,7 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
 
-  technique->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
 
   eff->addTechnique( technique );
   material->setEffect( eff );
