@@ -108,6 +108,8 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the intersection of this and \a geom.
      *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
@@ -117,6 +119,8 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the difference of this and \a geom.
      *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
@@ -126,6 +130,8 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the combination of this and \a geom.
      *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
@@ -135,6 +141,8 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the combination of this and \a geometries.
      *
+     * \param geomList list of geometries to perform the operation
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
@@ -144,6 +152,8 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the combination of this and \a geometries.
      *
+     * \param geometries list of geometries to perform the operation
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
@@ -153,6 +163,8 @@ class CORE_EXPORT QgsGeometryEngine
     /**
      * Calculate the symmetric difference of this and \a geom.
      *
+     * \param geom geometry to perform the operation
+     * \param errorMsg Error message returned by GEOS
      * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
      *
      * \since QGIS 3.0 \a geom is a pointer
