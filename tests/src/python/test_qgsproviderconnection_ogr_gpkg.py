@@ -350,6 +350,11 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
         fields = conn.fields('', 'cdb_lines')
         self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name2', 'ortsrat', 'id_long', 'geom'])
 
+        # make sure schema is ignored
+        conn.renameField('', 'cdb_lines', 'name2', 'name3')
+        fields = conn.fields('', 'cdb_lines')
+        self.assertEqual(fields.names(), ['fid', 'id', 'typ', 'name3', 'ortsrat', 'id_long', 'geom'])
+
 
 if __name__ == '__main__':
     unittest.main()
