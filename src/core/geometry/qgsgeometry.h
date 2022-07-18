@@ -1714,6 +1714,8 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      * \since QGIS 3.0
      */
     QgsGeometry subdivide( int maxNodes = 256, double gridSize = -1 ) const;
@@ -1766,6 +1768,9 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      */
     QgsGeometry intersection( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
@@ -1788,6 +1793,9 @@ class CORE_EXPORT QgsGeometry
      * by calling lastError() on the returned geometry.
      *
      * \note this operation is not called union since its a reserved word in C++.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      */
     QgsGeometry combine( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
@@ -1808,6 +1816,9 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      */
     QgsGeometry difference( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
@@ -1818,6 +1829,9 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      */
     QgsGeometry symDifference( const QgsGeometry &geometry, double gridSize = -1 ) const;
 
@@ -2494,6 +2508,9 @@ class CORE_EXPORT QgsGeometry
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
+     *
+     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     *
      */
     static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, double gridSize = -1 );
 

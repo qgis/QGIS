@@ -1736,6 +1736,8 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+
 .. versionadded:: 3.0
 %End
 
@@ -1799,6 +1801,8 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 %End
 
     QgsGeometry clipped( const QgsRectangle &rectangle );
@@ -1824,6 +1828,8 @@ by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 .. note::
 
    this operation is not called union since its a reserved word in C++.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 %End
 
     QgsGeometry mergeLines() const;
@@ -1846,6 +1852,8 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 %End
 
     QgsGeometry symDifference( const QgsGeometry &geometry, double gridSize = -1 ) const;
@@ -1856,6 +1864,8 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 %End
 
     QgsGeometry extrude( double x, double y );
@@ -2423,6 +2433,8 @@ resultant geometry will be geometrically equivalent to the original geometry.
 Compute the unary union on a list of ``geometries``. May be faster than an iterative union on a set of geometries.
 The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
 input geometries. An empty geometry will be returned in the case of errors.
+
+:param gridSize: If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
 %End
 
     static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );
