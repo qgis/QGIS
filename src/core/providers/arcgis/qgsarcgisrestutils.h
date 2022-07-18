@@ -253,6 +253,13 @@ class CORE_EXPORT QgsArcGisRestUtils
      */
     static QVariantMap fieldDefinitionToJson( const QgsField &field );
 
+    /**
+     * Converts a string value to a REST service type.
+     *
+     * \since QGIS 3.28
+     */
+    static Qgis::ArcGisRestServiceType serviceTypeFromString( const QString &type );
+
   private:
 
     /**

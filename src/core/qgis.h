@@ -2054,6 +2054,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( MapBoxGlStyleSourceType )
 
     /**
+     * Available ArcGIS REST service types.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsArcGisPortalUtils::ItemType.
+     *
+     * \since QGIS 3.28
+     */
+    enum class ArcGisRestServiceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsArcGisPortalUtils, ItemType ) : int
+      {
+      FeatureServer SIP_MONKEYPATCH_COMPAT_NAME( FeatureService ), //!< FeatureServer
+      MapServer SIP_MONKEYPATCH_COMPAT_NAME( MapService ), //!< MapServer
+      ImageServer SIP_MONKEYPATCH_COMPAT_NAME( ImageService ), //!< ImageServer
+      GlobeServer, //!< GlobeServer
+      GPServer, //!< GPServer
+      GeocodeServer, //!< GeocodeServer
+      Unknown, //!< Other unknown/unsupported type
+    };
+    Q_ENUM( ArcGisRestServiceType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

@@ -1836,3 +1836,29 @@ Qgis.MapBoxGlStyleSourceType.Unknown.__doc__ = "Other/unknown source type"
 Qgis.MapBoxGlStyleSourceType.__doc__ = 'Available MapBox GL style source types.\n\n.. versionadded:: 3.28\n\n' + '* ``Vector``: ' + Qgis.MapBoxGlStyleSourceType.Vector.__doc__ + '\n' + '* ``Raster``: ' + Qgis.MapBoxGlStyleSourceType.Raster.__doc__ + '\n' + '* ``RasterDem``: ' + Qgis.MapBoxGlStyleSourceType.RasterDem.__doc__ + '\n' + '* ``GeoJson``: ' + Qgis.MapBoxGlStyleSourceType.GeoJson.__doc__ + '\n' + '* ``Image``: ' + Qgis.MapBoxGlStyleSourceType.Image.__doc__ + '\n' + '* ``Video``: ' + Qgis.MapBoxGlStyleSourceType.Video.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.MapBoxGlStyleSourceType.Unknown.__doc__
 # --
 Qgis.MapBoxGlStyleSourceType.baseClass = Qgis
+QgsArcGisPortalUtils.ItemType = Qgis.ArcGisRestServiceType
+# monkey patching scoped based enum
+QgsArcGisPortalUtils.FeatureService = Qgis.ArcGisRestServiceType.FeatureServer
+QgsArcGisPortalUtils.FeatureService.is_monkey_patched = True
+QgsArcGisPortalUtils.FeatureService.__doc__ = "FeatureServer"
+QgsArcGisPortalUtils.MapService = Qgis.ArcGisRestServiceType.MapServer
+QgsArcGisPortalUtils.MapService.is_monkey_patched = True
+QgsArcGisPortalUtils.MapService.__doc__ = "MapServer"
+QgsArcGisPortalUtils.ImageService = Qgis.ArcGisRestServiceType.ImageServer
+QgsArcGisPortalUtils.ImageService.is_monkey_patched = True
+QgsArcGisPortalUtils.ImageService.__doc__ = "ImageServer"
+QgsArcGisPortalUtils.GlobeServer = Qgis.ArcGisRestServiceType.GlobeServer
+QgsArcGisPortalUtils.GlobeServer.is_monkey_patched = True
+QgsArcGisPortalUtils.GlobeServer.__doc__ = "GlobeServer"
+QgsArcGisPortalUtils.GPServer = Qgis.ArcGisRestServiceType.GPServer
+QgsArcGisPortalUtils.GPServer.is_monkey_patched = True
+QgsArcGisPortalUtils.GPServer.__doc__ = "GPServer"
+QgsArcGisPortalUtils.GeocodeServer = Qgis.ArcGisRestServiceType.GeocodeServer
+QgsArcGisPortalUtils.GeocodeServer.is_monkey_patched = True
+QgsArcGisPortalUtils.GeocodeServer.__doc__ = "GeocodeServer"
+QgsArcGisPortalUtils.Unknown = Qgis.ArcGisRestServiceType.Unknown
+QgsArcGisPortalUtils.Unknown.is_monkey_patched = True
+QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
+Qgis.ArcGisRestServiceType.__doc__ = 'Available ArcGIS REST service types.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsArcGisPortalUtils`.ItemType.\n\n.. versionadded:: 3.28\n\n' + '* ``FeatureService``: ' + Qgis.ArcGisRestServiceType.FeatureServer.__doc__ + '\n' + '* ``MapService``: ' + Qgis.ArcGisRestServiceType.MapServer.__doc__ + '\n' + '* ``ImageService``: ' + Qgis.ArcGisRestServiceType.ImageServer.__doc__ + '\n' + '* ``GlobeServer``: ' + Qgis.ArcGisRestServiceType.GlobeServer.__doc__ + '\n' + '* ``GPServer``: ' + Qgis.ArcGisRestServiceType.GPServer.__doc__ + '\n' + '* ``GeocodeServer``: ' + Qgis.ArcGisRestServiceType.GeocodeServer.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ArcGisRestServiceType.Unknown.__doc__
+# --
+Qgis.ArcGisRestServiceType.baseClass = Qgis
