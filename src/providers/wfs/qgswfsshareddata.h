@@ -140,6 +140,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     QgsRectangle getExtentFromSingleFeatureRequest() const override;
 
     long long getFeatureCountFromServer() const override;
+
+    void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion,  QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
 };
 
 //! Utility class to issue a GetFeature resultType=hits request

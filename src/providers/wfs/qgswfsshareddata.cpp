@@ -95,29 +95,15 @@ QString QgsWFSSharedData::srsName() const
 
 QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) const
 {
-  QgsOgcUtils::GMLVersion gmlVersion;
-  QgsOgcUtils::FilterVersion filterVersion;
-  bool honourAxisOrientation = false;
-  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
-  {
-    gmlVersion = QgsOgcUtils::GML_2_1_2;
-    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
-  }
-  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
-  {
-    honourAxisOrientation = !mURI.ignoreAxisOrientation();
-    gmlVersion = QgsOgcUtils::GML_3_1_0;
-    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
-  }
-  else
-  {
-    honourAxisOrientation = !mURI.ignoreAxisOrientation();
-    gmlVersion = QgsOgcUtils::GML_3_2_1;
-    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
-  }
 
   if ( expression.isValid() )
   {
+
+    QgsOgcUtils::GMLVersion gmlVersion;
+    QgsOgcUtils::FilterVersion filterVersion;
+    bool honourAxisOrientation = false;
+    getVersionValues( gmlVersion, filterVersion, honourAxisOrientation );
+
     QDomDocument expressionDoc;
     QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression( expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute, srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr, true );
 
@@ -139,23 +125,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
   QgsOgcUtils::GMLVersion gmlVersion;
   QgsOgcUtils::FilterVersion filterVersion;
   bool honourAxisOrientation = false;
-  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
-  {
-    gmlVersion = QgsOgcUtils::GML_2_1_2;
-    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
-  }
-  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
-  {
-    honourAxisOrientation = !mURI.ignoreAxisOrientation();
-    gmlVersion = QgsOgcUtils::GML_3_1_0;
-    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
-  }
-  else
-  {
-    honourAxisOrientation = !mURI.ignoreAxisOrientation();
-    gmlVersion = QgsOgcUtils::GML_3_2_1;
-    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
-  }
+  getVersionValues( gmlVersion, filterVersion, honourAxisOrientation );
 
   if ( !mURI.sql().isEmpty() )
   {
@@ -292,6 +262,27 @@ long long QgsWFSSharedData::getFeatureCountFromServer() const
 {
   QgsWFSFeatureHitsRequest request( mURI );
   return request.getFeatureCount( mWFSVersion, mWFSFilter, mCaps );
+}
+
+void QgsWFSSharedData::getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const
+{
+  if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    gmlVersion = QgsOgcUtils::GML_2_1_2;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_0;
+  }
+  else if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) )
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_1_0;
+    filterVersion = QgsOgcUtils::FILTER_OGC_1_1;
+  }
+  else
+  {
+    honourAxisOrientation = !mURI.ignoreAxisOrientation();
+    gmlVersion = QgsOgcUtils::GML_3_2_1;
+    filterVersion = QgsOgcUtils::FILTER_FES_2_0;
+  }
 }
 
 bool QgsWFSSharedData::detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const
