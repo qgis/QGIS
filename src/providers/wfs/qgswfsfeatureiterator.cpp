@@ -369,7 +369,6 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 
   getFeatureUrl.setQuery( query );
   QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
-  qDebug() << "\n\n" << "WFS GetFeature URL: " << getFeatureUrl.toDisplayString() << "\n\n";
   return getFeatureUrl;
 }
 
