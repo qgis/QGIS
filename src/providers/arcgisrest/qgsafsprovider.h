@@ -59,6 +59,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeFeatures( const QgsChangedAttributesMap &attrMap, const QgsGeometryMap &geometryMap ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &attributes ) override;
+    bool createAttributeIndex( int field ) override;
 
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override;

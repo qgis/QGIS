@@ -474,6 +474,46 @@ bool QgsAfsSharedData::deleteFields( const QString &adminUrl, const QgsAttribute
   return true;
 }
 
+bool QgsAfsSharedData::addAttributeIndex( const QString &adminUrl, int attribute, QString &error, QgsFeedback *feedback )
+{
+  error.clear();
+  QUrl queryUrl( adminUrl + "/addToDefinition" );
+
+  const QString name = mFields.field( attribute ).name();
+
+
+  QVariantList indexJson;
+  indexJson << QVariantMap(
+  {
+    {QStringLiteral( "name" ), QStringLiteral( "%1_index" ).arg( name )},
+    {QStringLiteral( "fields" ), name},
+    {QStringLiteral( "description" ), name}
+  } );
+
+
+  const QVariantMap definition {{ QStringLiteral( "indexes" ), indexJson }};
+
+  const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( definition ).dump( 2 ) );
+
+  QByteArray payload;
+  payload.append( QStringLiteral( "f=json&addToDefinition=%1" ).arg( json ).toUtf8() );
+
+  bool ok = false;
+  const QVariantMap results = postData( queryUrl, payload, feedback, ok, error );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  if ( !results.value( QStringLiteral( "success" ) ).toBool() )
+  {
+    error = results.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString();
+    return false;
+  }
+
+  return true;
+}
+
 bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
