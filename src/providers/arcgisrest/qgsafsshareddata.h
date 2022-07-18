@@ -46,12 +46,15 @@ class QgsAfsSharedData : public QObject
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
-    bool deleteFeatures( const QgsFeatureIds &id );
-    bool addFeatures( QgsFeatureList &features, QString &error );
+    bool deleteFeatures( const QgsFeatureIds &id, QString &error, QgsFeedback *feedback );
+    bool addFeatures( QgsFeatureList &features, QString &error, QgsFeedback *feedback );
 
     bool hasCachedAllFeatures() const;
 
   private:
+
+    QVariantMap postData( const QUrl &url, const QByteArray &payload, QgsFeedback *feedback, bool &ok, QString &errorText ) const;
+
     friend class QgsAfsProvider;
     mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
     QgsDataSourceUri mDataSource;

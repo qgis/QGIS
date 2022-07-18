@@ -234,8 +234,9 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   return ids;
 }
 
-bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids )
+bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids, QString &error, QgsFeedback *feedback )
 {
+  error.clear();
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
 
   QStringList stringIds;
@@ -250,35 +251,11 @@ bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids )
   QByteArray payload;
   payload.append( QStringLiteral( "f=json&objectIds=%1" ).arg( stringIds.join( ',' ) ).toUtf8() );
 
-  QString errorTitle;
+  bool ok = false;
   QString errorText;
-
-  QNetworkRequest request( queryUrl );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
-
-  QgsBlockingNetworkRequest networkRequest;
-  networkRequest.setAuthCfg( mDataSource.authConfigId() );
-  QgsFeedback feedback;
-
-  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.post( request, payload, false, &feedback );
-
-  // Handle network errors
-  if ( error != QgsBlockingNetworkRequest::NoError )
+  postData( queryUrl, payload, feedback, ok, error );
+  if ( ! ok )
   {
-    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
-    errorTitle = QStringLiteral( "Network error" );
-    errorText = networkRequest.errorMessage();
-
-    // try to get detailed error message from reply
-    const QString content = networkRequest.reply().content();
-    const thread_local QRegularExpression errorRx( QStringLiteral( "Error: <.*?>(.*?)<" ) );
-    const QRegularExpressionMatch match = errorRx.match( content );
-    if ( match.hasMatch() )
-    {
-      errorText = match.captured( 1 );
-    }
-
     return false;
   }
 
@@ -292,7 +269,7 @@ bool QgsAfsSharedData::deleteFeatures( const QgsFeatureIds &ids )
   return true;
 }
 
-bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMessage )
+bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMessage, QgsFeedback *feedback )
 {
   errorMessage.clear();
   QUrl queryUrl( mDataSource.param( QStringLiteral( "url" ) ) + "/applyEdits" );
@@ -311,40 +288,14 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
   QByteArray payload;
   payload.append( QStringLiteral( "f=json&trueCurveClient=true&adds=%1" ).arg( json ).toUtf8() );
 
-  QString errorTitle;
-  QString errorText;
-
-  QNetworkRequest request( queryUrl );
-  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
-
-  QgsBlockingNetworkRequest networkRequest;
-  networkRequest.setAuthCfg( mDataSource.authConfigId() );
-  QgsFeedback feedback;
-
-  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.post( request, payload, false, &feedback );
-
-  // Handle network errors
-  if ( error != QgsBlockingNetworkRequest::NoError )
+  bool ok = false;
+  const QVariantMap results = postData( queryUrl, payload, feedback, ok, errorMessage );
+  if ( !ok )
   {
-    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
-    errorTitle = QStringLiteral( "Network error" );
-    errorText = networkRequest.errorMessage();
-
-    // try to get detailed error message from reply
-    const QString content = networkRequest.reply().content();
-    const thread_local QRegularExpression errorRx( QStringLiteral( "Error: <.*?>(.*?)<" ) );
-    const QRegularExpressionMatch match = errorRx.match( content );
-    if ( match.hasMatch() )
-    {
-      errorText = match.captured( 1 );
-    }
-
     return false;
   }
 
-  const QVariantMap response = QgsJsonUtils::parseJson( networkRequest.reply().content() ).toMap();
-  const QVariantList addResults = response.value( QStringLiteral( "addResults" ) ).toList();
+  const QVariantList addResults = results.value( QStringLiteral( "addResults" ) ).toList();
   for ( const QVariant &result : addResults )
   {
     const QVariantMap resultMap = result.toMap();
@@ -375,4 +326,40 @@ bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mCache.count() == featureCount();
+}
+
+QVariantMap QgsAfsSharedData::postData( const QUrl &url, const QByteArray &payload, QgsFeedback *feedback, bool &ok, QString &errorText ) const
+{
+  errorText.clear();
+  ok = false;
+
+  QNetworkRequest request( url );
+  request.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisRestUtils" ) );
+
+  QgsBlockingNetworkRequest networkRequest;
+  networkRequest.setAuthCfg( mDataSource.authConfigId() );
+
+  const QgsBlockingNetworkRequest::ErrorCode error = networkRequest.post( request, payload, false, feedback );
+
+  // Handle network errors
+  if ( error != QgsBlockingNetworkRequest::NoError )
+  {
+    QgsDebugMsg( QStringLiteral( "Network error: %1" ).arg( networkRequest.errorMessage() ) );
+    errorText = networkRequest.errorMessage();
+
+    // try to get detailed error message from reply
+    const QString content = networkRequest.reply().content();
+    const thread_local QRegularExpression errorRx( QStringLiteral( "Error: <.*?>(.*?)<" ) );
+    const QRegularExpressionMatch match = errorRx.match( content );
+    if ( match.hasMatch() )
+    {
+      errorText = match.captured( 1 );
+    }
+
+    return QVariantMap();
+  }
+
+  ok = true;
+  return QgsJsonUtils::parseJson( networkRequest.reply().content() ).toMap();
 }
