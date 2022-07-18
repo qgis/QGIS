@@ -381,6 +381,99 @@ bool QgsAfsSharedData::updateFeatures( const QgsFeatureList &features, bool incl
   return true;
 }
 
+bool QgsAfsSharedData::addFields( const QString &adminUrl, const QList<QgsField> &attributes, QString &error, QgsFeedback *feedback )
+{
+  error.clear();
+  QUrl queryUrl( adminUrl + "/addToDefinition" );
+
+  QVariantList fieldsJson;
+  fieldsJson.reserve( attributes.size() );
+  for ( const QgsField &field : attributes )
+  {
+    fieldsJson.append( QgsArcGisRestUtils::fieldDefinitionToJson( field ) );
+  }
+
+  const QVariantMap definition {{ QStringLiteral( "fields" ), fieldsJson }};
+
+  const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( definition ).dump( 2 ) );
+
+  QByteArray payload;
+  payload.append( QStringLiteral( "f=json&addToDefinition=%1" ).arg( json ).toUtf8() );
+
+  bool ok = false;
+  const QVariantMap results = postData( queryUrl, payload, feedback, ok, error );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  if ( !results.value( QStringLiteral( "success" ) ).toBool() )
+  {
+    error = results.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString();
+    return false;
+  }
+
+  // all good. Now we remove the cached versions of features so that they'll get re-fetched from the service
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+  mCache.clear();
+
+  for ( const QgsField &field : attributes )
+  {
+    mFields.append( field );
+  }
+
+  return true;
+}
+
+bool QgsAfsSharedData::deleteFields( const QString &adminUrl, const QgsAttributeIds &attributes, QString &error, QgsFeedback *feedback )
+{
+  error.clear();
+  QUrl queryUrl( adminUrl + "/deleteFromDefinition" );
+
+  QVariantList fieldsJson;
+  fieldsJson.reserve( attributes.size() );
+  QStringList fieldNames;
+  for ( int index : attributes )
+  {
+    if ( index >= 0 && index < mFields.count() )
+    {
+      fieldsJson.append( QVariantMap( {{QStringLiteral( "name" ), mFields.at( index ).name() }} ) );
+      fieldNames << mFields.at( index ).name();
+    }
+  }
+
+  const QVariantMap definition {{ QStringLiteral( "fields" ), fieldsJson }};
+
+  const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( definition ).dump( 2 ) );
+
+  QByteArray payload;
+  payload.append( QStringLiteral( "f=json&deleteFromDefinition=%1" ).arg( json ).toUtf8() );
+
+  bool ok = false;
+  const QVariantMap results = postData( queryUrl, payload, feedback, ok, error );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  if ( !results.value( QStringLiteral( "success" ) ).toBool() )
+  {
+    error = results.value( QStringLiteral( "error" ) ).toMap().value( QStringLiteral( "message" ) ).toString();
+    return false;
+  }
+
+  // all good. Now we remove the cached versions of features so that they'll get re-fetched from the service
+  QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Write );
+  mCache.clear();
+
+  for ( const QString &name : std::as_const( fieldNames ) )
+  {
+    mFields.remove( mFields.lookupField( name ) );
+  }
+
+  return true;
+}
+
 bool QgsAfsSharedData::hasCachedAllFeatures() const
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );

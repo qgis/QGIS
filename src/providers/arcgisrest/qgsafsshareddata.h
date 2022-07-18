@@ -22,6 +22,7 @@
 #include "qgsfeature.h"
 #include "qgsdatasourceuri.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvectordataprovider.h"
 
 class QgsFeedback;
 
@@ -51,6 +52,8 @@ class QgsAfsSharedData : public QObject
     bool deleteFeatures( const QgsFeatureIds &id, QString &error, QgsFeedback *feedback );
     bool addFeatures( QgsFeatureList &features, QString &error, QgsFeedback *feedback );
     bool updateFeatures( const QgsFeatureList &features, bool includeGeometries, bool includeAttributes, QString &error, QgsFeedback *feedback );
+    bool addFields( const QString &adminUrl, const QList<QgsField> &attributes, QString &error, QgsFeedback *feedback );
+    bool deleteFields( const QString &adminUrl, const QgsAttributeIds &attributes, QString &error, QgsFeedback *feedback );
 
     bool hasCachedAllFeatures() const;
 

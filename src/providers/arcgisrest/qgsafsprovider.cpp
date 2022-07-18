@@ -65,6 +65,21 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mLayerName = layerData[QStringLiteral( "name" )].toString();
   mLayerDescription = layerData[QStringLiteral( "description" )].toString();
   mCapabilityStrings = layerData[QStringLiteral( "capabilities" )].toString().split( ',' );
+
+  if ( mCapabilityStrings.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+  {
+    // if the user has update capability, see if this extends to field definition modification
+    QString adminUrl = mSharedData->mDataSource.param( QStringLiteral( "url" ) );
+    adminUrl.replace( QStringLiteral( "/rest/services/" ), QStringLiteral( "/rest/admin/services/" ) );
+    const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
+                                  authcfg, errorTitle, errorMessage, mRequestHeaders );
+    if ( !adminData.isEmpty() )
+    {
+      mAdminUrl = adminUrl;
+      mAdminData = adminData;
+    }
+  }
+
   mServerSupportsCurves = layerData.value( QStringLiteral( "allowTrueCurvesUpdates" ), false ).toBool();
 
   // Set extent
@@ -471,6 +486,42 @@ bool QgsAfsProvider::changeFeatures( const QgsChangedAttributesMap &attrMap, con
   return res;
 }
 
+bool QgsAfsProvider::addAttributes( const QList<QgsField> &attributes )
+{
+  if ( mAdminUrl.isEmpty() )
+    return false;
+
+  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+  if ( !adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+    return false;
+
+  QString error;
+  QgsFeedback feedback;
+  const bool res = mSharedData->addFields( mAdminUrl, attributes, error, &feedback );
+  if ( !res )
+    pushError( tr( "Error while adding fields: %1" ).arg( error ) );
+
+  return true;
+}
+
+bool QgsAfsProvider::deleteAttributes( const QgsAttributeIds &attributes )
+{
+  if ( mAdminUrl.isEmpty() )
+    return false;
+
+  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+  if ( !adminCapabilities.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
+    return false;
+
+  QString error;
+  QgsFeedback feedback;
+  const bool res = mSharedData->deleteFields( mAdminUrl, attributes, error, &feedback );
+  if ( !res )
+    pushError( tr( "Error while deleting fields: %1" ).arg( error ) );
+
+  return res;
+}
+
 QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
 {
   QgsVectorDataProvider::Capabilities c = QgsVectorDataProvider::SelectAtId
@@ -501,6 +552,16 @@ QgsVectorDataProvider::Capabilities QgsAfsProvider::capabilities() const
     c |= QgsVectorDataProvider::ChangeAttributeValues;
     c |= QgsVectorDataProvider::ChangeFeatures;
     c |= QgsVectorDataProvider::ChangeGeometries;
+  }
+
+  const QStringList adminCapabilities = mAdminData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
+  if ( adminCapabilities.contains( QLatin1String( "update" ), Qt::CaseInsensitive ) )
+  {
+    c |= QgsVectorDataProvider::AddAttributes;
+  }
+  if ( adminCapabilities.contains( QLatin1String( "delete" ), Qt::CaseInsensitive ) )
+  {
+    c |= QgsVectorDataProvider::DeleteAttributes;
   }
 
   return c;
