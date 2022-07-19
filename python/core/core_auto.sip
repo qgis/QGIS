@@ -197,6 +197,7 @@
 %Include auto_generated/qgstransactiongroup.sip
 %Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsunittypes.sip
+%Include auto_generated/qgsunsetattributevalue.sip
 %Include auto_generated/qgsuserprofile.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/qgsvariantutils.sip
