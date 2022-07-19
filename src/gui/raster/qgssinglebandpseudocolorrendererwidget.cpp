@@ -183,7 +183,7 @@ void QgsSingleBandPseudoColorRendererWidget::bandChanged()
 
 void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsg( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
+  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
 
   const QString oldMinTextvalue = mMinLineEdit->text();
   const QString oldMaxTextvalue = mMaxLineEdit->text();
