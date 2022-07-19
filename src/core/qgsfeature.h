@@ -808,6 +808,41 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns TRUE if the attribute at the specified index is an unset value.
+     *
+     * \see QgsUnsetAttributeValue
+     * \since QGIS 3.28
+     */
+    bool isUnsetValue( int fieldIdx ) const;
+#else
+
+    /**
+     * Returns TRUE if the attribute at the specified index is an unset value.
+     *
+     * \throws KeyError if the field is not found
+     * \see QgsUnsetAttributeValue
+     * \since QGIS 3.28
+     */
+    bool isUnsetValue( int fieldIdx ) const;
+    % MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipCpp->isUnsetValue( a0 );
+      }
+    }
+    % End
+#endif
+
     /**
      * Returns the feature's embedded symbology, or NULLPTR if the feature has no embedded symbol.
      *

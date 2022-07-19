@@ -20,7 +20,8 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayer,
                        NULL,
                        QgsFields,
-                       QgsField)
+                       QgsField,
+                       QgsUnsetAttributeValue)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -223,6 +224,19 @@ class TestQgsFeature(unittest.TestCase):
         # more attributes than fields
         with self.assertRaises(ValueError):
             _ = f.attributeMap()
+
+    def testUnsetFeature(self):
+        f = QgsFeature()
+        f.setAttributes([1, 'a', NULL, QgsUnsetAttributeValue(), QgsUnsetAttributeValue('Autonumber')])
+        with self.assertRaises(KeyError):
+            f.isUnsetValue(-1)
+        with self.assertRaises(KeyError):
+            f.isUnsetValue(5)
+        self.assertFalse(f.isUnsetValue(0))
+        self.assertFalse(f.isUnsetValue(1))
+        self.assertFalse(f.isUnsetValue(2))
+        self.assertTrue(f.isUnsetValue(3))
+        self.assertTrue(f.isUnsetValue(4))
 
 
 if __name__ == '__main__':
