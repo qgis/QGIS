@@ -1239,7 +1239,11 @@ void QgsCptCitySelectionItem::parseXml()
     if ( ! e.attribute( QStringLiteral( "dir" ) ).isNull() )
     {
       // TODO parse description and use that, instead of default archive name
-      mSelectionsList << e.attribute( QStringLiteral( "dir" ) ) + '/';
+      const QString dir = e.attribute( QStringLiteral( "dir" ) ) + '/';
+      if ( QFile::exists( QgsCptCityArchive::defaultBaseDir() + '/' + dir ) )
+      {
+        mSelectionsList << dir;
+      }
     }
     e = e.nextSiblingElement();
   }
@@ -1252,7 +1256,11 @@ void QgsCptCitySelectionItem::parseXml()
     {
       // QgsDebugMsgLevel( "add " + e.attribute( "dir" ) + '/' + e.attribute( "file" ) + " to " + selname, 2 );
       // TODO parse description and save elsewhere
-      mSelectionsList << e.attribute( QStringLiteral( "dir" ) ) + '/' + e.attribute( QStringLiteral( "file" ) );
+      const QString dir = e.attribute( QStringLiteral( "dir" ) );
+      if ( QFile::exists( QgsCptCityArchive::defaultBaseDir() + '/' + dir ) )
+      {
+        mSelectionsList << dir + '/' + e.attribute( QStringLiteral( "file" ) );
+      }
     }
     e = e.nextSiblingElement();
   }
