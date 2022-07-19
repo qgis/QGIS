@@ -387,9 +387,18 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       else
         offset = offsetStr.toDouble();
 
-      // QColor color( 255, 0, 0 ); // red color as a warning :)
-      QColor color = QgsSymbolLayerUtils::parseColor( colorStr );
-      if ( color != QColor() )
+      QColor color;
+      if ( colorStr.isEmpty() )
+      {
+        // SVG spec says that stops without color default to black!
+        color = QColor( 0, 0, 0 );
+      }
+      else
+      {
+        color = QgsSymbolLayerUtils::parseColor( colorStr );
+      }
+
+      if ( color.isValid() )
       {
         const int alpha = opacityStr.toDouble() * 255; // test
         color.setAlpha( alpha );
@@ -400,7 +409,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
       }
       else
       {
-        QgsDebugMsg( QStringLiteral( "at offset=%1 invalid color" ).arg( offset ) );
+        QgsDebugMsg( QStringLiteral( "at offset=%1 invalid color \"%2\"" ).arg( offset ).arg( colorStr ) );
       }
     }
     else
