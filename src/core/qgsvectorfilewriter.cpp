@@ -2449,7 +2449,12 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     QVariant attrValue = feature.attribute( fldIdx );
     QgsField field = mFields.at( fldIdx );
 
-    if ( !attrValue.isValid() || attrValue.isNull() )
+    if ( feature.isUnsetValue( fldIdx ) )
+    {
+      OGR_F_UnsetField( poFeature.get(), ogrField );
+      continue;
+    }
+    else if ( !attrValue.isValid() || attrValue.isNull() )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
