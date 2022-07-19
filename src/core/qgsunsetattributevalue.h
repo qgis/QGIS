@@ -66,6 +66,12 @@ class CORE_EXPORT QgsUnsetAttributeValue
     % End
 #endif
 
+    //! Allows direct construction of QVariants from unset values.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     QString mDefaultValueClause;

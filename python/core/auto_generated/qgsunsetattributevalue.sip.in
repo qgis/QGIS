@@ -48,6 +48,8 @@ Returns the original data provider's default value clause.
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
+    operator QVariant() const;
+
 };
 
 
