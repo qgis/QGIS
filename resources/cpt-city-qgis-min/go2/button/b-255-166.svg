@@ -1,18 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="b-255-166" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(217,217,217)" stop-opacity="1.0000"/>
-        <stop offset="50.00%" stop-color="rgb(204,204,204)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(166,166,166)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#b-255-166)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.46"/>
-    <created date="Wed Aug 15 23:30:13 2012"/>
-  </metadata>
-</svg>
+<svg height="45" viewBox="0 0 300 45" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="#d9d9d9"/><stop offset=".5" stop-color="#ccc"/><stop offset="1" stop-color="#a6a6a6"/></linearGradient><path d="m4 4h292v37h-292z" fill="url(#a)" stroke="#000"/></svg>

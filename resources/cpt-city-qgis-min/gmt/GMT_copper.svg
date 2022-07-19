@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
-  <g>
-    <defs>
-      <linearGradient id="GMT_copper" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
-        <stop offset="0.00%" stop-color="rgb(0, 0, 0)" stop-opacity="1.0000"/>
-        <stop offset="79.69%" stop-color="rgb(255, 159, 102)" stop-opacity="1.0000"/>
-        <stop offset="100.00%" stop-color="rgb(255, 200, 128)" stop-opacity="1.0000"/>
-      </linearGradient>
-    </defs>
-    <rect fill="url(#GMT_copper)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
-  </g>
-  <metadata>
-    <creator name="cptutils" version="1.57"/>
-    <created date="Fri Apr 17 21:57:12 2015"/>
-  </metadata>
-</svg>
+<svg height="45" viewBox="0 0 300 45" width="300" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%"><stop offset="0"/><stop offset=".7969" stop-color="#ff9f66"/><stop offset="1" stop-color="#ffc880"/></linearGradient><path d="m4 4h292v37h-292z" fill="url(#a)" stroke="#000"/></svg>
