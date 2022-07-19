@@ -1056,7 +1056,6 @@ bool QgsCptCityColorRamp::loadFile()
   QString filename = fileName();
   if ( filename.isNull() )
   {
-    QgsDebugMsg( "Couldn't get fileName() for " + mSchemeName + mVariantName );
     return false;
   }
 
