@@ -34,7 +34,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsCoordinateTransformContext,
                        QgsFeatureSink,
                        QgsMemoryProviderUtils,
-                       QgsLayerMetadata
+                       QgsLayerMetadata,
+                       QgsUnsetAttributeValue,
+                       NULL
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QByteArray, QTemporaryDir
 import os
@@ -1530,6 +1532,68 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         # Check that we can open the layer
         vl2 = QgsVectorLayer(f'{tmpfile}|layername=test2', 'test', 'ogr')
         self.assertTrue(vl2.isValid())
+
+    def testWriteUnsetAttributeToShapefile(self):
+        """ Test writing an unset attribute to a shapefile """
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        f.setAttribute(0, QgsUnsetAttributeValue('Autonumber'))
+        self.assertTrue(vl.addFeatures([f]))
+        f.setAttribute(0, 12345)
+        self.assertTrue(vl.addFeatures([f]))
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writing_unset_values.shp')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            dest_file_name,
+            'utf-8',
+            QgsCoordinateReferenceSystem(),
+            'ESRI Shapefile')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertEqual(created_layer.fields().count(), 1)
+        self.assertEqual(created_layer.featureCount(), 2)
+        features = created_layer.getFeatures(QgsFeatureRequest())
+        f = next(features)
+        self.assertEqual(f['int'], NULL)
+        f = next(features)
+        self.assertEqual(f['int'], 12345)
+
+    def testWriteUnsetAttributeToGpkg(self):
+        """ Test writing an unset attribute to a gpkg """
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer', 'test', 'memory')
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('point(9 45)'))
+        f.setAttribute(0, QgsUnsetAttributeValue('Autonumber'))
+        self.assertTrue(vl.addFeatures([f]))
+        f.setAttribute(0, 12345)
+        self.assertTrue(vl.addFeatures([f]))
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'writing_unset_values.gpkg')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            vl,
+            dest_file_name,
+            'utf-8',
+            QgsCoordinateReferenceSystem(),
+            'GPKG')
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertEqual(created_layer.fields().count(), 2)
+        self.assertEqual(created_layer.featureCount(), 2)
+        features = created_layer.getFeatures(QgsFeatureRequest())
+        f = next(features)
+        self.assertEqual(f['int'], NULL)
+        f = next(features)
+        self.assertEqual(f['int'], 12345)
 
 
 if __name__ == '__main__':
