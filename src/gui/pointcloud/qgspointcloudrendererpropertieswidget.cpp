@@ -114,6 +114,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mApplyEdlCheckbox, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlStrength, QOverload<int>::of( &QSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistance, QOverload<int>::of( &QSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   syncToLayer( layer );
 }
 
@@ -156,6 +159,10 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
+
+    mApplyEdlCheckbox->setChecked( mLayer->renderer()->useEyeDomeLighting() );
+    mEdlStrength->setValue( mLayer->renderer()->eyeDomeLightingStrength() );
+    mEdlDistance->setValue( mLayer->renderer()->eyeDomeLightingDistance() );
   }
 
   mBlockChangedSignal = false;
@@ -190,6 +197,9 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );
   mLayer->renderer()->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
   mLayer->renderer()->setDrawOrder2d( static_cast< Qgis::PointCloudDrawOrder >( mDrawOrderComboBox->currentData().toInt() ) );
+  mLayer->renderer()->setUseEyeDomeLighting( mApplyEdlCheckbox->isChecked() );
+  mLayer->renderer()->setEyeDomeLightingStrength( mEdlStrength->value() );
+  mLayer->renderer()->setEyeDomeLightingDistance( mEdlDistance->value() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

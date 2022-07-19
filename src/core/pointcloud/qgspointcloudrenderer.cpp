@@ -168,6 +168,9 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setMaximumScreenErrorUnit( mMaximumScreenErrorUnit );
   destination->setPointSymbol( mPointSymbol );
   destination->setDrawOrder2d( mDrawOrder2d );
+  destination->setUseEyeDomeLighting( mUseEyeDomeLighting );
+  destination->setEyeDomeLightingStrength( mEyeDomeLightingStrength );
+  destination->setEyeDomeLightingDistance( mEyeDomeLightingDistance );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
@@ -180,6 +183,9 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
   mPointSymbol = static_cast< Qgis::PointCloudSymbol >( element.attribute( QStringLiteral( "pointSymbol" ), QStringLiteral( "0" ) ).toInt() );
   mDrawOrder2d = static_cast< Qgis::PointCloudDrawOrder >( element.attribute( QStringLiteral( "drawOrder2d" ), QStringLiteral( "0" ) ).toInt() );
+  mUseEyeDomeLighting = element.attribute( QStringLiteral( "use-eye-dome-lighting" ), QStringLiteral( "0" ) ).toInt();
+  mEyeDomeLightingStrength = element.attribute( QStringLiteral( "eye-dome-lighting-strength" ), QStringLiteral( "1000" ) ).toInt();
+  mEyeDomeLightingDistance = element.attribute( QStringLiteral( "eye-dome-lighting-distance" ), QStringLiteral( "1" ) ).toInt();
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
@@ -192,6 +198,9 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
   element.setAttribute( QStringLiteral( "pointSymbol" ), QString::number( static_cast< int >( mPointSymbol ) ) );
   element.setAttribute( QStringLiteral( "drawOrder2d" ), QString::number( static_cast< int >( mDrawOrder2d ) ) );
+  element.setAttribute( QStringLiteral( "use-eye-dome-lighting" ), QString::number( mUseEyeDomeLighting ) );
+  element.setAttribute( QStringLiteral( "eye-dome-lighting-strength" ), QString::number( mEyeDomeLightingStrength ) );
+  element.setAttribute( QStringLiteral( "eye-dome-lighting-distance" ), QString::number( mEyeDomeLightingDistance ) );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
