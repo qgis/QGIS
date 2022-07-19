@@ -705,6 +705,32 @@ Alternatively, in Python it is possible to directly retrieve a field's value via
     }
 %End
 
+
+
+    bool isUnsetValue( int fieldIdx ) const;
+%Docstring
+Returns ``True`` if the attribute at the specified index is an unset value.
+
+:raises KeyError: if the field is not found
+
+.. seealso:: :py:class:`QgsUnsetAttributeValue`
+
+.. versionadded:: 3.28
+%End
+%MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipCpp->isUnsetValue( a0 );
+      }
+    }
+%End
+
     const QgsSymbol *embeddedSymbol() const;
 %Docstring
 Returns the feature's embedded symbology, or ``None`` if the feature has no embedded symbol.
