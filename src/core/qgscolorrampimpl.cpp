@@ -1016,6 +1016,10 @@ QVariantMap QgsCptCityColorRamp::properties() const
   return map;
 }
 
+QString QgsCptCityColorRamp::fileNameForVariant( const QString &schema, const QString &variant )
+{
+  return QgsCptCityArchive::defaultBaseDir() + QDir::separator() + schema + variant + ".svg";
+}
 
 QString QgsCptCityColorRamp::fileName() const
 {

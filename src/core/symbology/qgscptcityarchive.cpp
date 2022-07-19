@@ -1190,7 +1190,12 @@ QVector<QgsCptCityDataItem *> QgsCptCitySelectionItem::createChildren()
     }
     else
     {
-      // init item to test if is valid after loading file
+      const QString fileName = QgsCptCityColorRamp::fileNameForVariant( childPath, QString() );
+      if ( !QFile::exists( fileName ) )
+      {
+        continue;
+      }
+
       item = new QgsCptCityColorRampItem( this, childPath, childPath, QString(), true );
       if ( item->isValid() )
         children << item;
