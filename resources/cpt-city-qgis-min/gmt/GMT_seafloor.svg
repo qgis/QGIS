@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GMT_seafloor" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(105, 0, 182)" stop-opacity="1.0000"/>
+        <stop offset="4.17%" stop-color="rgb(110, 0, 188)" stop-opacity="1.0000"/>
+        <stop offset="8.33%" stop-color="rgb(115, 0, 193)" stop-opacity="1.0000"/>
+        <stop offset="12.50%" stop-color="rgb(120, 0, 201)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(109, 14, 204)" stop-opacity="1.0000"/>
+        <stop offset="20.83%" stop-color="rgb(97, 28, 207)" stop-opacity="1.0000"/>
+        <stop offset="29.17%" stop-color="rgb(84, 42, 210)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(71, 57, 214)" stop-opacity="1.0000"/>
+        <stop offset="37.50%" stop-color="rgb(58, 72, 217)" stop-opacity="1.0000"/>
+        <stop offset="41.67%" stop-color="rgb(44, 88, 220)" stop-opacity="1.0000"/>
+        <stop offset="45.83%" stop-color="rgb(30, 104, 223)" stop-opacity="1.0000"/>
+        <stop offset="54.17%" stop-color="rgb(15, 121, 226)" stop-opacity="1.0000"/>
+        <stop offset="58.33%" stop-color="rgb(0, 138, 230)" stop-opacity="1.0000"/>
+        <stop offset="62.50%" stop-color="rgb(25, 150, 233)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(50, 162, 236)" stop-opacity="1.0000"/>
+        <stop offset="70.83%" stop-color="rgb(76, 174, 239)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(103, 187, 242)" stop-opacity="1.0000"/>
+        <stop offset="83.33%" stop-color="rgb(129, 200, 245)" stop-opacity="1.0000"/>
+        <stop offset="87.50%" stop-color="rgb(157, 214, 249)" stop-opacity="1.0000"/>
+        <stop offset="91.67%" stop-color="rgb(186, 227, 252)" stop-opacity="1.0000"/>
+        <stop offset="95.83%" stop-color="rgb(215, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(241, 252, 255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GMT_seafloor)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.59"/>
+    <created date="Sun Aug 23 21:48:17 2015"/>
+  </metadata>
+</svg>

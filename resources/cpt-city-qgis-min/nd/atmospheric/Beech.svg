@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Atmospheric_Beech" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,254,238)" stop-opacity="1.0000"/>
+        <stop offset="4.84%" stop-color="rgb(255,254,238)" stop-opacity="1.0000"/>
+        <stop offset="9.01%" stop-color="rgb(255,254,238)" stop-opacity="1.0000"/>
+        <stop offset="10.35%" stop-color="rgb(228,224,186)" stop-opacity="1.0000"/>
+        <stop offset="11.35%" stop-color="rgb(201,195,135)" stop-opacity="1.0000"/>
+        <stop offset="11.35%" stop-color="rgb(186,255,234)" stop-opacity="1.0000"/>
+        <stop offset="19.87%" stop-color="rgb(138,251,238)" stop-opacity="1.0000"/>
+        <stop offset="27.88%" stop-color="rgb(90,246,243)" stop-opacity="1.0000"/>
+        <stop offset="36.56%" stop-color="rgb(45,225,231)" stop-opacity="1.0000"/>
+        <stop offset="47.25%" stop-color="rgb(0,204,219)" stop-opacity="1.0000"/>
+        <stop offset="52.42%" stop-color="rgb(8,168,186)" stop-opacity="1.0000"/>
+        <stop offset="53.42%" stop-color="rgb(16,132,153)" stop-opacity="1.0000"/>
+        <stop offset="53.42%" stop-color="rgb(65,189,217)" stop-opacity="1.0000"/>
+        <stop offset="81.84%" stop-color="rgb(33,159,207)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,129,197)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Atmospheric_Beech)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:34:26 2012"/>
+  </metadata>
+</svg>

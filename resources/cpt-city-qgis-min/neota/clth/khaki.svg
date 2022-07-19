@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="CLTH khaki" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(3,1,1)" stop-opacity="1.0000"/>
+        <stop offset="12.57%" stop-color="rgb(36,31,27)" stop-opacity="1.0000"/>
+        <stop offset="25.15%" stop-color="rgb(69,62,54)" stop-opacity="1.0000"/>
+        <stop offset="35.38%" stop-color="rgb(97,87,76)" stop-opacity="1.0000"/>
+        <stop offset="45.61%" stop-color="rgb(125,112,98)" stop-opacity="1.0000"/>
+        <stop offset="69.59%" stop-color="rgb(190,174,159)" stop-opacity="1.0000"/>
+        <stop offset="93.57%" stop-color="rgb(255,235,219)" stop-opacity="1.0000"/>
+        <stop offset="96.78%" stop-color="rgb(255,245,237)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#CLTH khaki)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:31 2012"/>
+  </metadata>
+</svg>

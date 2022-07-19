@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://pjentoft.com">
+      <name>Peggy Jentoft</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2005</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>Paint Shop Pro (grd version 3)</format>
+    <link href="http://pjentoft.com//PJs-pspstuff.html">Download original gradients</link>
+    <remark>Contributed to the archive by the author, Sep 2005</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

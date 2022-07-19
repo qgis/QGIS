@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Ingerlise</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2005</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>Paint Shop Pro gradient (grd version 3)</format>
+    <remark>Contributed to the archive by the author, Feb 2005.
+    Website (www.ingerlise.dk) now dead.</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

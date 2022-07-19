@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj7-womanpower" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(119,84,47)" stop-opacity="1.0000"/>
+        <stop offset="23.00%" stop-color="rgb(175,69,5)" stop-opacity="1.0000"/>
+        <stop offset="37.99%" stop-color="rgb(150,88,6)" stop-opacity="1.0000"/>
+        <stop offset="59.01%" stop-color="rgb(193,231,255)" stop-opacity="1.0000"/>
+        <stop offset="78.00%" stop-color="rgb(13,70,213)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,0,128)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj7-womanpower)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:02 2012"/>
+  </metadata>
+</svg>

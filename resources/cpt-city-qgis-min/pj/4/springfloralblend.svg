@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj4-springfloralblend" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="4.00%" stop-color="rgb(121,245,123)" stop-opacity="1.0000"/>
+        <stop offset="8.01%" stop-color="rgb(133,246,0)" stop-opacity="1.0000"/>
+        <stop offset="12.01%" stop-color="rgb(148,212,240)" stop-opacity="1.0000"/>
+        <stop offset="15.99%" stop-color="rgb(68,130,205)" stop-opacity="1.0000"/>
+        <stop offset="22.00%" stop-color="rgb(245,72,55)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(255,27,14)" stop-opacity="1.0000"/>
+        <stop offset="31.01%" stop-color="rgb(255,50,221)" stop-opacity="1.0000"/>
+        <stop offset="34.01%" stop-color="rgb(240,8,144)" stop-opacity="1.0000"/>
+        <stop offset="37.99%" stop-color="rgb(255,251,99)" stop-opacity="1.0000"/>
+        <stop offset="42.99%" stop-color="rgb(251,200,0)" stop-opacity="1.0000"/>
+        <stop offset="46.00%" stop-color="rgb(172,140,239)" stop-opacity="1.0000"/>
+        <stop offset="51.00%" stop-color="rgb(118,61,202)" stop-opacity="1.0000"/>
+        <stop offset="56.01%" stop-color="rgb(190,252,3)" stop-opacity="1.0000"/>
+        <stop offset="59.01%" stop-color="rgb(155,235,0)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(11,99,207)" stop-opacity="1.0000"/>
+        <stop offset="68.99%" stop-color="rgb(144,206,255)" stop-opacity="1.0000"/>
+        <stop offset="74.00%" stop-color="rgb(251,69,55)" stop-opacity="1.0000"/>
+        <stop offset="77.00%" stop-color="rgb(255,90,79)" stop-opacity="1.0000"/>
+        <stop offset="82.01%" stop-color="rgb(175,156,246)" stop-opacity="1.0000"/>
+        <stop offset="86.01%" stop-color="rgb(138,73,225)" stop-opacity="1.0000"/>
+        <stop offset="89.99%" stop-color="rgb(70,170,0)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(67,221,183)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj4-springfloralblend)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:58 2012"/>
+  </metadata>
+</svg>

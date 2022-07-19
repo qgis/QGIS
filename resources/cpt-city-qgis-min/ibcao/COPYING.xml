@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.ngdc.noaa.gov/mgg/bathymetry/arctic/arctic.html">
+      <name>The IBCAO consortium</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2004</year>
+    <text>None</text>
+  </license>
+  <src>
+    <format>Extracted from PDF file</format>
+    <remark>Contributed to the archive Oct 2010</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj5-tropical-sun" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(238,137,124)" stop-opacity="1.0000"/>
+        <stop offset="8.01%" stop-color="rgb(252,106,73)" stop-opacity="1.0000"/>
+        <stop offset="12.99%" stop-color="rgb(252,108,74)" stop-opacity="1.0000"/>
+        <stop offset="17.99%" stop-color="rgb(238,137,124)" stop-opacity="1.0000"/>
+        <stop offset="23.00%" stop-color="rgb(252,103,71)" stop-opacity="1.0000"/>
+        <stop offset="28.00%" stop-color="rgb(250,138,118)" stop-opacity="1.0000"/>
+        <stop offset="32.01%" stop-color="rgb(252,106,73)" stop-opacity="1.0000"/>
+        <stop offset="37.99%" stop-color="rgb(252,131,82)" stop-opacity="1.0000"/>
+        <stop offset="43.99%" stop-color="rgb(252,121,80)" stop-opacity="1.0000"/>
+        <stop offset="47.00%" stop-color="rgb(249,176,85)" stop-opacity="1.0000"/>
+        <stop offset="51.00%" stop-color="rgb(252,150,91)" stop-opacity="1.0000"/>
+        <stop offset="58.01%" stop-color="rgb(248,179,87)" stop-opacity="1.0000"/>
+        <stop offset="62.99%" stop-color="rgb(249,175,85)" stop-opacity="1.0000"/>
+        <stop offset="65.99%" stop-color="rgb(249,207,95)" stop-opacity="1.0000"/>
+        <stop offset="68.99%" stop-color="rgb(248,183,86)" stop-opacity="1.0000"/>
+        <stop offset="76.00%" stop-color="rgb(249,179,85)" stop-opacity="1.0000"/>
+        <stop offset="81.01%" stop-color="rgb(249,207,95)" stop-opacity="1.0000"/>
+        <stop offset="87.01%" stop-color="rgb(247,207,91)" stop-opacity="1.0000"/>
+        <stop offset="91.99%" stop-color="rgb(241,195,126)" stop-opacity="1.0000"/>
+        <stop offset="96.00%" stop-color="rgb(241,201,151)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(241,201,151)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj5-tropical-sun)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:14 2012"/>
+  </metadata>
+</svg>

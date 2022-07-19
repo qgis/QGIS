@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://oceancolor.gsfc.nasa.gov/">
+      <name>Ocean Color</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2009</year>
+    <text>
+      No licence specified
+    </text>
+  </license>
+  <src>
+    <format>ASCII data</format>
+    <remark>Permission to add the files to the archive
+      received from Gene C Feldman (NASA), Jan 2009</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

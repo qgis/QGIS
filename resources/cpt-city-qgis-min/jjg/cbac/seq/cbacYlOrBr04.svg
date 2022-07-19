@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="cbacYlOrBr04" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,255,212)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(255,241,186)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(254,231,168)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(254,193,104)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(254,177,79)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(235,124,26)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(223,105,17)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(204,76,2)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#cbacYlOrBr04)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:22 2012"/>
+  </metadata>
+</svg>

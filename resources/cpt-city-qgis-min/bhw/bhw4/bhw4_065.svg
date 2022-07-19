@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="bhw4_65" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(124,77,57)" stop-opacity="1.0000"/>
+        <stop offset="7.01%" stop-color="rgb(226,135,114)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(233,213,162)" stop-opacity="1.0000"/>
+        <stop offset="22.00%" stop-color="rgb(235,237,174)" stop-opacity="1.0000"/>
+        <stop offset="28.00%" stop-color="rgb(232,208,184)" stop-opacity="1.0000"/>
+        <stop offset="41.99%" stop-color="rgb(226,135,114)" stop-opacity="1.0000"/>
+        <stop offset="53.00%" stop-color="rgb(232,208,184)" stop-opacity="1.0000"/>
+        <stop offset="65.99%" stop-color="rgb(235,237,174)" stop-opacity="1.0000"/>
+        <stop offset="79.00%" stop-color="rgb(190,129,100)" stop-opacity="1.0000"/>
+        <stop offset="84.01%" stop-color="rgb(162,101,103)" stop-opacity="1.0000"/>
+        <stop offset="91.99%" stop-color="rgb(133,67,77)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(133,67,77)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#bhw4_65)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:35 2012"/>
+  </metadata>
+</svg>

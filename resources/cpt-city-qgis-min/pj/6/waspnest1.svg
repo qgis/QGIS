@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj6-waspnest1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(168,140,117)" stop-opacity="1.0000"/>
+        <stop offset="7.01%" stop-color="rgb(118,99,14)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(115,94,30)" stop-opacity="1.0000"/>
+        <stop offset="22.00%" stop-color="rgb(62,44,27)" stop-opacity="1.0000"/>
+        <stop offset="32.01%" stop-color="rgb(87,56,16)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(100,90,58)" stop-opacity="1.0000"/>
+        <stop offset="49.00%" stop-color="rgb(67,83,52)" stop-opacity="1.0000"/>
+        <stop offset="57.01%" stop-color="rgb(152,140,97)" stop-opacity="1.0000"/>
+        <stop offset="65.99%" stop-color="rgb(169,155,127)" stop-opacity="1.0000"/>
+        <stop offset="77.00%" stop-color="rgb(96,94,54)" stop-opacity="1.0000"/>
+        <stop offset="87.01%" stop-color="rgb(96,94,54)" stop-opacity="1.0000"/>
+        <stop offset="98.00%" stop-color="rgb(150,114,49)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(150,114,49)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj6-waspnest1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:47 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Environmental Systems Research Institute, Inc.</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Derivative works permitted under the same licence.
+      Disclaimer, patent prohibition, and US export restrictions
+      apply</informal>
+    <year>2011</year>
+    <text>
+ARTICLE 1. DEFINITIONS
+
+The terms used herein are defined as follows:
+
+    (a) Materials mean all or any portion of ESRI's proprietary scripts, 
+        software, data, documentation, or related materials supplied by 
+        ESRI, regardless of the format or content provided under this 
+        Agreement.
+    (b) Derivative Works mean any products, services, or methods created 
+        using, incorporating, or derived from the Materials or from other 
+        Derivative Works. Derivative Works may consist of collective works 
+        of authorship.
+
+ARTICLE 2. INTELLECTUAL PROPERTY RIGHTS AND RESERVATION OF OWNERSHIP
+
+Materials supplied under this Agreement are licensed and not sold. ESRI 
+solely owns all Materials, which are protected by United States laws and 
+applicable international laws, treaties, and conventions regarding 
+intellectual property or proprietary rights. You agree to keep all 
+attribution, copyright, and ownership notices included in the Materials 
+wholly intact.
+
+ARTICLE 3. GRANT OF LICENSE
+
+3.1 Grant of License. The Agreement is intended to promote the free 
+exchange of Materials related to ESRI products and services. Subject to 
+the terms and conditions of this Agreement, ESRI grants You a worldwide, 
+royalty-free, nonexclusive, perpetual, nontransferable license:
+
+    (a) To use, execute, display, perform, and transmit the Materials;
+    (b) To reproduce and distribute the Materials consistent with the 
+        terms of Section 5.1;
+    (c) To produce Derivative Works of the Materials;
+    (d) To redistribute Derivative Works subject to terms and conditions 
+        of this Agreement; and
+    (e) To use, execute, display, perform, and transmit Derivative Works.
+
+All other rights are reserved to ESRI. Nothing in this Agreement shall 
+abridge ESRI's rights in the Materials.
+
+3.2 Express Prohibition on Patenting. You may not incorporate the Materials 
+into any product, process, or method to be patented or protected by similar 
+rights granted in a foreign jurisdiction. Sublicensees of any Derivative 
+Works are likewise prohibited from seeking such patent or similar right on 
+any product, process, or method incorporating the Materials or Derivative 
+Works. Additionally, Materials shall not be used in any preferred 
+embodiments of patented products, processes, or methods. Any attempts to 
+seek a patent or similar right incorporating Materials shall render this 
+Agreement void and all rights granted under this License shall be immediately 
+revoked.
+
+3.3 Technology Neutrality. The rights granted herein apply in any media or 
+format, whether presently used or hereafter devised. These rights include 
+the right to make any modifications necessary in order make use of Materials 
+on platforms for which it was not intended. If such modifications are made, 
+any attribution and copyright notices included in the Materials shall be 
+included and left wholly intact.
+
+ARTICLE 4. DISCLAIMERS AND LIMITATION OF LIABILITY
+
+4.1 Disclaimer of Certain Types of Liability. ESRI DISCLAIMS ALL WARRANTIES 
+OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+4.2 Disclaimer of Indemnity. ESRI SHALL NOT BE LIABLE TO YOU FOR COSTS OF 
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOST PROFITS, SALES, OR 
+BUSINESS EXPENDITURES; LOST INVESTMENTS; COMMITMENTS IN CONNECTION WITH 
+ANY BUSINESS; LOSS OF ANY GOODWILL; OR FOR ANY INDIRECT, SPECIAL, INCIDENTAL, 
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR RELATED TO THIS AGREEMENT OR 
+USE OF THE MATERIALS, HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER OR NOT ESRI HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+THESE LIMITATIONS SHALL APPLY NOTWITHSTANDING ANY FAILURE OF ESSENTIAL 
+PURPOSE OF ANY LIMITED REMEDY.
+
+ARTICLE 5. GENERAL PROVISIONS
+
+5.1 Distribution of Materials.
+
+    (a) License and Distribution. You may redistribute the Materials under 
+        this Agreement to non parties to this agreement ("Sublicensee") 
+        only if (1) a complete copy of this license is provided to and 
+        expressly agreed upon by the Sublicensee or (2) the Material is 
+        included in a deliverable in such a manner that the Material is 
+        not accessible, usable, or extractable by the Sublicensee without 
+        the use of extraordinary measures. This License is specific to the 
+        Materials provided and is not attached to any other ESRI products 
+        or services. Sublicensees are also subject to terms and conditions 
+        of use for the Materials and Derivative Works.
+    (b) Export Control Regulations. You expressly acknowledge and agree to 
+        not export, reexport, or provide the Materials, in whole or in part, 
+        to (i) any country to which the United States has embargoed goods; 
+        (ii) any person on the U.S. Treasury Department's list of Specially 
+        Designated Nationals; (iii) any person or entity on the U.S. Commerce 
+        Department's Table of Denial Orders; or (iv) any person or entity 
+        where such export, reexport, or provision violates any U.S. export 
+        control laws or regulations, including amendments and supplemental 
+        additions as they may occur from time to time. You shall not export 
+        the Materials or any underlying information or technology to any 
+        facility in violation of these or other applicable laws and 
+        regulations, including but not limited to the terms of any export 
+        license or licensing provision. You represent and warrant that You 
+        and Your employees, consultants, or customers who gain access to 
+        the Materials are not a national, resident, located in or under the 
+        control of, or acting on behalf of any person, entity, or country 
+        subject to such U.S. export controls.
+
+5.2 Severability. The parties mutually agree that if any provision of this 
+Agreement is held to be unenforceable for any reason, such provision shall 
+be reformed only to the extent necessary to make the intent of the language 
+enforceable.
+
+5.3 Successor and Assigns. You shall not assign or transfer Your rights or 
+delegate its obligations under this Agreement without ESRI's prior written 
+consent. Any attempt to do so without prior written consent shall be void.
+
+5.4 Equitable Relief. You agree that Your breach of this Agreement may 
+cause irreparable harm and that, in the event of such breach, in addition 
+to any and all remedies at law, ESRI shall have the right to seek an 
+injunction, specific performance, or other equitable relief in any court of 
+competent jurisdiction without the requirement of posting a bond or 
+undertaking or proving injury as a condition for relief.
+
+5.5 Governing Law. This Agreement shall be governed by and construed in 
+accordance with the laws of the State of California. Actions arising under 
+this Agreement shall be filed in San Bernardino County, California.
+
+5.6 Entire Agreement. This Agreement constitutes the sole and entire 
+agreement of the parties as to the Materials provided hereunder. Additional 
+or different terms included with an order or other document shall not be 
+binding upon ESRI. Any modification(s) or amendment(s) to this Agreement 
+must be in writing and signed by each party. This Agreement shall have 
+no effect on interpretation, application, or the rights and obligations 
+associated with any other agreements between You and ESRI whether agreed 
+to before or after the date of this Agreement. 
+    </text>
+  </license>
+  <src>
+    <format>png image</format>
+    <link href="http://mappingcenter.esri.com/index.cfm?fa=arcgisResources.gateway">download</link>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="other"/>
+  </distribute>
+</copying>

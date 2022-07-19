@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="template" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(250,244,239)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(250,244,239)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(241,223,206)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(241,223,206)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(231,201,174)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(231,201,174)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(219,181,145)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(219,181,145)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(206,161,119)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(206,161,119)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(188,140,101)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(188,140,101)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(170,120,82)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(170,120,82)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(153,99,64)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(153,99,64)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(135,79,45)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(135,79,45)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(110,61,33)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(110,61,33)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#template)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:31:30 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GMT_topo" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(200, 119, 217)" stop-opacity="1.0000"/>
+        <stop offset="3.57%" stop-color="rgb(160, 119, 217)" stop-opacity="1.0000"/>
+        <stop offset="3.57%" stop-color="rgb(176, 138, 230)" stop-opacity="1.0000"/>
+        <stop offset="7.14%" stop-color="rgb(138, 138, 230)" stop-opacity="1.0000"/>
+        <stop offset="10.71%" stop-color="rgb(138, 168, 230)" stop-opacity="1.0000"/>
+        <stop offset="14.29%" stop-color="rgb(138, 200, 230)" stop-opacity="1.0000"/>
+        <stop offset="17.86%" stop-color="rgb(145, 242, 234)" stop-opacity="1.0000"/>
+        <stop offset="21.43%" stop-color="rgb(133, 242, 188)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(133, 242, 142)" stop-opacity="1.0000"/>
+        <stop offset="28.57%" stop-color="rgb(171, 242, 133)" stop-opacity="1.0000"/>
+        <stop offset="32.14%" stop-color="rgb(215, 242, 133)" stop-opacity="1.0000"/>
+        <stop offset="35.71%" stop-color="rgb(242, 224, 133)" stop-opacity="1.0000"/>
+        <stop offset="39.29%" stop-color="rgb(242, 179, 133)" stop-opacity="1.0000"/>
+        <stop offset="46.43%" stop-color="rgb(217, 154, 141)" stop-opacity="1.0000"/>
+        <stop offset="46.43%" stop-color="rgb(217, 163, 163)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(204, 153, 153)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(116, 163, 178)" stop-opacity="1.0000"/>
+        <stop offset="51.43%" stop-color="rgb(107, 178, 155)" stop-opacity="1.0000"/>
+        <stop offset="52.86%" stop-color="rgb(98, 178, 105)" stop-opacity="1.0000"/>
+        <stop offset="54.29%" stop-color="rgb(144, 204, 112)" stop-opacity="1.0000"/>
+        <stop offset="57.14%" stop-color="rgb(181, 204, 112)" stop-opacity="1.0000"/>
+        <stop offset="60.71%" stop-color="rgb(230, 216, 149)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(255, 240, 230)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(255, 248, 242)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255, 255, 255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GMT_topo)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.57"/>
+    <created date="Fri Apr 17 21:57:13 2015"/>
+  </metadata>
+</svg>

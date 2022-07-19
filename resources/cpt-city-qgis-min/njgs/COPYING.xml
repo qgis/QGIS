@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.state.nj.us/dep/njgs/">
+      <name>New Jersey Geological Survey</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Disclaimer required</informal>
+    <year>2010</year>
+    <text href="http://www.state.nj.us/dep/njgs/geodata/about.htm"/>
+  </license>
+  <src>
+    <format>ARCView legend (avl) and bitmap format maps</format>
+    <link href="http://www.state.nj.us/dep/njgs/geodata/dgs99-4.htm">elevation and shade</link>
+    <link href="http://www.state.nj.us/dep/njgs/geodata/dgs07-3.htm">bathymetry</link>
+    <link href="http://www.state.nj.us/dep/njgs/geodata/dgs04-2.htm">gravity anomaly</link>
+    <link href="http://www.state.nj.us/dep/njgs/geodata/dgs04-3.htm">magnetic anomaly</link>
+    <link href="http://www.state.nj.us/dep/njgs/geodata/dgs01-2.htm">freshwater withdrawals</link>
+    <link href="http://www.state.nj.us/dep/njgs/geodata/dgs98-5.htm">aquifer yield</link>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="other"/>
+  </distribute>
+</copying>

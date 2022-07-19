@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="BLD  green metal" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="26.32%" stop-color="rgb(70,70,55)" stop-opacity="1.0000"/>
+        <stop offset="52.63%" stop-color="rgb(141,141,109)" stop-opacity="1.0000"/>
+        <stop offset="60.53%" stop-color="rgb(144,165,149)" stop-opacity="1.0000"/>
+        <stop offset="68.42%" stop-color="rgb(147,189,190)" stop-opacity="1.0000"/>
+        <stop offset="84.21%" stop-color="rgb(201,222,222)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#BLD  green metal)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:33 2012"/>
+  </metadata>
+</svg>

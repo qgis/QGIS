@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://onecoldcanadian.deviantart.com/">
+      <name>onecondcanadian</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2005</year>
+    <text>None</text>
+  </license>
+  <src>
+    <format>Paint Shop Pro gradient (grd version 3)</format>
+    <remark>Contributed to the archive Jan 2005</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

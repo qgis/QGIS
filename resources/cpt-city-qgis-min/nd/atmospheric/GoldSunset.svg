@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Atmospheric_GoldSunset" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(245,180,0)" stop-opacity="1.0000"/>
+        <stop offset="16.19%" stop-color="rgb(244,168,0)" stop-opacity="1.0000"/>
+        <stop offset="32.22%" stop-color="rgb(243,156,0)" stop-opacity="1.0000"/>
+        <stop offset="46.58%" stop-color="rgb(215,113,0)" stop-opacity="1.0000"/>
+        <stop offset="48.75%" stop-color="rgb(187,71,0)" stop-opacity="1.0000"/>
+        <stop offset="50.75%" stop-color="rgb(217,140,42)" stop-opacity="1.0000"/>
+        <stop offset="54.26%" stop-color="rgb(248,209,85)" stop-opacity="1.0000"/>
+        <stop offset="75.13%" stop-color="rgb(246,194,42)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(245,180,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Atmospheric_GoldSunset)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:34:27 2012"/>
+  </metadata>
+</svg>

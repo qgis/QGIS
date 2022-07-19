@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.fractint.org/">
+      <name>The Stone Soup Group</name>
+    </author>
+  </authors>
+  <license>
+    <informal>May be copied freely and may be used in other 
+    programs except for commercial programs which produce 
+    fractal images. Credit requested.</informal>
+    <year>1991</year>
+    <text>
+Copyright Information:
+======================
+
+Some parts of the source are from the public domain and are not
+copyrighted.
+
+Some parts of the source bear explicit copyright notices from the
+author and are subject to the conditions listed there by the author.
+
+The remainder of the source (not already public domain, no explicit
+author's copyright notice) is Copyright 1990, 1991 by the Stone Soup Group
+(a loosely associated and ever-growing group of fanatic programmers).
+
+The source code may be copied freely and may be used in other programs
+under the following conditions:
+  It may not be used in a commercial program which produces fractal images.
+  Please credit the author (in general, credit Fractint and the Stone Soup
+  Group) as the source of the code.
+
+
+Distribution of modified versions of Fractint:
+==============================================
+
+If you enhance Fractint and want to distribute the results to others, the
+preferred approach is to join the Stone Soup Group - send us your
+enhancements and get your name in lights in future versions of Fractint.
+
+We prefer that a modified Fractint executable program not be distributed to
+others, but understand that you might want to give copies to friends.  This
+is permitted, under the following conditions:
+  o The modified executable has a different name than "fractint.exe".
+  o The distribution includes a full unmodified copy of the corresponding
+    original version of fraint.exe.  (The easiest way is to copy fraint.exe
+    to yournew.exe, then "pkzip -a fraint.exe newfract.exe" to add your
+    version, and perhaps add a read.me file to describe it.)
+  o The heading displayed by the modified program clearly indicates that
+    it is a non-standard release.  E.g. you might change the heading to
+    say "Non-standard Fractint, Modified by John Doe".
+  o All author credits and distribution information in the online help
+    are unchanged (adding lines for your work is of course ok.)
+
+The source code for a modified version of Fractint may not be distributed.
+(This is because we don't want any chance of confusion over which version
+of a source file is the official release.)
+    </text>
+  </license>
+  <src>
+    <format>map files included in the Debian Xfractint distribution</format>
+    <link href="http://packages.debian.org/search?keywords=xfractint">download</link>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="other"/>
+  </distribute>
+</copying>

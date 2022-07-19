@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ipod-orange" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(251,176,59)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(251,176,59)" stop-opacity="1.0000"/>
+        <stop offset="61.38%" stop-color="rgb(248,174,58)" stop-opacity="1.0000"/>
+        <stop offset="68.22%" stop-color="rgb(240,168,56)" stop-opacity="1.0000"/>
+        <stop offset="73.87%" stop-color="rgb(226,158,53)" stop-opacity="1.0000"/>
+        <stop offset="78.86%" stop-color="rgb(205,144,48)" stop-opacity="1.0000"/>
+        <stop offset="83.43%" stop-color="rgb(179,126,42)" stop-opacity="1.0000"/>
+        <stop offset="87.68%" stop-color="rgb(147,103,34)" stop-opacity="1.0000"/>
+        <stop offset="91.69%" stop-color="rgb(108,76,25)" stop-opacity="1.0000"/>
+        <stop offset="95.51%" stop-color="rgb(64,45,15)" stop-opacity="1.0000"/>
+        <stop offset="99.04%" stop-color="rgb(15,10,3)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ipod-orange)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:12 2012"/>
+  </metadata>
+</svg>

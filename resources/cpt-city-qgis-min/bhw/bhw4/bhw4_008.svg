@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="bhw4_8" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(254,254,218)" stop-opacity="1.0000"/>
+        <stop offset="10.01%" stop-color="rgb(249,255,144)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(252,117,87)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(231,153,91)" stop-opacity="1.0000"/>
+        <stop offset="37.99%" stop-color="rgb(249,255,144)" stop-opacity="1.0000"/>
+        <stop offset="49.00%" stop-color="rgb(166,40,16)" stop-opacity="1.0000"/>
+        <stop offset="60.01%" stop-color="rgb(252,117,87)" stop-opacity="1.0000"/>
+        <stop offset="84.01%" stop-color="rgb(102,71,88)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(3,3,3)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#bhw4_8)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:34 2012"/>
+  </metadata>
+</svg>

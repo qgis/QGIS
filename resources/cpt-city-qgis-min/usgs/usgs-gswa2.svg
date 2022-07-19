@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="usgs-gswa2" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(127, 159, 101)" stop-opacity="1.0000"/>
+        <stop offset="4.80%" stop-color="rgb(130, 174, 106)" stop-opacity="1.0000"/>
+        <stop offset="9.50%" stop-color="rgb(160, 194, 122)" stop-opacity="1.0000"/>
+        <stop offset="14.30%" stop-color="rgb(186, 214, 140)" stop-opacity="1.0000"/>
+        <stop offset="19.00%" stop-color="rgb(207, 226, 156)" stop-opacity="1.0000"/>
+        <stop offset="23.80%" stop-color="rgb(224, 233, 166)" stop-opacity="1.0000"/>
+        <stop offset="28.60%" stop-color="rgb(237, 236, 166)" stop-opacity="1.0000"/>
+        <stop offset="33.30%" stop-color="rgb(242, 228, 159)" stop-opacity="1.0000"/>
+        <stop offset="38.10%" stop-color="rgb(240, 210, 144)" stop-opacity="1.0000"/>
+        <stop offset="42.90%" stop-color="rgb(230, 188, 136)" stop-opacity="1.0000"/>
+        <stop offset="47.60%" stop-color="rgb(216, 165, 133)" stop-opacity="1.0000"/>
+        <stop offset="52.40%" stop-color="rgb(197, 149, 138)" stop-opacity="1.0000"/>
+        <stop offset="57.10%" stop-color="rgb(217, 165, 146)" stop-opacity="1.0000"/>
+        <stop offset="61.90%" stop-color="rgb(227, 181, 153)" stop-opacity="1.0000"/>
+        <stop offset="66.70%" stop-color="rgb(233, 196, 160)" stop-opacity="1.0000"/>
+        <stop offset="71.40%" stop-color="rgb(234, 208, 170)" stop-opacity="1.0000"/>
+        <stop offset="76.20%" stop-color="rgb(230, 214, 182)" stop-opacity="1.0000"/>
+        <stop offset="81.00%" stop-color="rgb(228, 218, 194)" stop-opacity="1.0000"/>
+        <stop offset="85.70%" stop-color="rgb(230, 219, 206)" stop-opacity="1.0000"/>
+        <stop offset="90.50%" stop-color="rgb(240, 220, 220)" stop-opacity="1.0000"/>
+        <stop offset="95.20%" stop-color="rgb(250, 230, 237)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255, 255, 255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#usgs-gswa2)" x="0" y="0" width="300" height="45"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.73"/>
+    <created date="Mon Jul 19 20:38:46 2021"/>
+  </metadata>
+</svg>

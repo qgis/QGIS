@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="~1faecat" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(112,77,111)" stop-opacity="1.0000"/>
+        <stop offset="12.99%" stop-color="rgb(162,118,162)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(119,114,60)" stop-opacity="1.0000"/>
+        <stop offset="37.99%" stop-color="rgb(60,64,43)" stop-opacity="1.0000"/>
+        <stop offset="51.00%" stop-color="rgb(120,46,26)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(228,183,66)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(167,198,249)" stop-opacity="1.0000"/>
+        <stop offset="87.01%" stop-color="rgb(183,129,147)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(112,77,111)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#~1faecat)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:56 2012"/>
+  </metadata>
+</svg>

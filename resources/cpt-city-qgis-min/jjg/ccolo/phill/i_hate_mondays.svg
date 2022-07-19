@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="i_hate_mondays" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(235,231,194)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(235,231,194)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(221,218,182)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(207,204,170)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(195,192,161)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(184,181,152)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(176,172,146)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(167,164,139)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(158,155,131)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(148,146,123)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(148,146,123)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#i_hate_mondays)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:31 2012"/>
+  </metadata>
+</svg>

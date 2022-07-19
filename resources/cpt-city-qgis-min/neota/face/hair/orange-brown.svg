@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FACE HAIR orange brown" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="13.74%" stop-color="rgb(47,31,14)" stop-opacity="1.0000"/>
+        <stop offset="27.49%" stop-color="rgb(94,61,28)" stop-opacity="1.0000"/>
+        <stop offset="35.67%" stop-color="rgb(118,83,48)" stop-opacity="1.0000"/>
+        <stop offset="43.86%" stop-color="rgb(143,105,68)" stop-opacity="1.0000"/>
+        <stop offset="50.29%" stop-color="rgb(157,121,87)" stop-opacity="1.0000"/>
+        <stop offset="56.73%" stop-color="rgb(171,138,105)" stop-opacity="1.0000"/>
+        <stop offset="71.05%" stop-color="rgb(202,176,143)" stop-opacity="1.0000"/>
+        <stop offset="85.38%" stop-color="rgb(234,215,182)" stop-opacity="1.0000"/>
+        <stop offset="92.69%" stop-color="rgb(244,235,218)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FACE HAIR orange brown)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:39 2012"/>
+  </metadata>
+</svg>

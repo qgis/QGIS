@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="frizzell-04" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(252, 198, 221)" stop-opacity="1.0000"/>
+        <stop offset="0.83%" stop-color="rgb(59, 15, 32)" stop-opacity="1.0000"/>
+        <stop offset="9.38%" stop-color="rgb(59, 15, 32)" stop-opacity="1.0000"/>
+        <stop offset="9.91%" stop-color="rgb(242, 190, 130)" stop-opacity="1.0000"/>
+        <stop offset="30.30%" stop-color="rgb(242, 190, 130)" stop-opacity="1.0000"/>
+        <stop offset="30.57%" stop-color="rgb(108, 76, 51)" stop-opacity="1.0000"/>
+        <stop offset="39.94%" stop-color="rgb(108, 76, 51)" stop-opacity="1.0000"/>
+        <stop offset="39.94%" stop-color="rgb(242, 190, 130)" stop-opacity="1.0000"/>
+        <stop offset="59.79%" stop-color="rgb(242, 190, 130)" stop-opacity="1.0000"/>
+        <stop offset="60.06%" stop-color="rgb(108, 76, 51)" stop-opacity="1.0000"/>
+        <stop offset="69.43%" stop-color="rgb(108, 76, 51)" stop-opacity="1.0000"/>
+        <stop offset="69.97%" stop-color="rgb(242, 190, 130)" stop-opacity="1.0000"/>
+        <stop offset="90.09%" stop-color="rgb(242, 190, 130)" stop-opacity="1.0000"/>
+        <stop offset="90.17%" stop-color="rgb(150, 102, 81)" stop-opacity="1.0000"/>
+        <stop offset="90.62%" stop-color="rgb(59, 15, 32)" stop-opacity="1.0000"/>
+        <stop offset="99.17%" stop-color="rgb(59, 15, 32)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(252, 198, 221)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#frizzell-04)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:11:51 2014"/>
+  </metadata>
+</svg>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="bhw2_1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(86,61,28)" stop-opacity="1.0000"/>
+        <stop offset="7.01%" stop-color="rgb(118,99,32)" stop-opacity="1.0000"/>
+        <stop offset="26.00%" stop-color="rgb(155,154,37)" stop-opacity="1.0000"/>
+        <stop offset="34.05%" stop-color="rgb(189,188,71)" stop-opacity="1.0000"/>
+        <stop offset="49.00%" stop-color="rgb(222,221,106)" stop-opacity="1.0000"/>
+        <stop offset="61.92%" stop-color="rgb(189,188,71)" stop-opacity="1.0000"/>
+        <stop offset="67.99%" stop-color="rgb(155,154,37)" stop-opacity="1.0000"/>
+        <stop offset="75.91%" stop-color="rgb(137,126,34)" stop-opacity="1.0000"/>
+        <stop offset="89.99%" stop-color="rgb(118,99,32)" stop-opacity="1.0000"/>
+        <stop offset="96.20%" stop-color="rgb(102,80,30)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(86,61,28)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#bhw2_1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:42 2012"/>
+  </metadata>
+</svg>

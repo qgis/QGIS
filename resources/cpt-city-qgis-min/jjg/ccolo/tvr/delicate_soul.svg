@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="delicate_soul" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(206,227,135)" stop-opacity="1.0000"/>
+        <stop offset="15.50%" stop-color="rgb(206,227,135)" stop-opacity="1.0000"/>
+        <stop offset="31.00%" stop-color="rgb(207,226,145)" stop-opacity="1.0000"/>
+        <stop offset="33.00%" stop-color="rgb(208,224,155)" stop-opacity="1.0000"/>
+        <stop offset="35.00%" stop-color="rgb(202,224,162)" stop-opacity="1.0000"/>
+        <stop offset="36.50%" stop-color="rgb(195,224,168)" stop-opacity="1.0000"/>
+        <stop offset="38.00%" stop-color="rgb(183,209,158)" stop-opacity="1.0000"/>
+        <stop offset="44.50%" stop-color="rgb(171,194,149)" stop-opacity="1.0000"/>
+        <stop offset="51.00%" stop-color="rgb(156,190,157)" stop-opacity="1.0000"/>
+        <stop offset="75.50%" stop-color="rgb(141,186,165)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(141,186,165)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#delicate_soul)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:29 2012"/>
+  </metadata>
+</svg>

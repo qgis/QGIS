@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="zoz" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(240,111,40)" stop-opacity="1.0000"/>
+        <stop offset="13.99%" stop-color="rgb(240,40,40)" stop-opacity="1.0000"/>
+        <stop offset="24.00%" stop-color="rgb(240,40,101)" stop-opacity="1.0000"/>
+        <stop offset="29.00%" stop-color="rgb(240,40,125)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(240,40,219)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(181,40,240)" stop-opacity="1.0000"/>
+        <stop offset="62.01%" stop-color="rgb(120,40,240)" stop-opacity="1.0000"/>
+        <stop offset="68.99%" stop-color="rgb(171,40,240)" stop-opacity="1.0000"/>
+        <stop offset="77.00%" stop-color="rgb(233,40,222)" stop-opacity="1.0000"/>
+        <stop offset="83.01%" stop-color="rgb(240,40,77)" stop-opacity="1.0000"/>
+        <stop offset="91.99%" stop-color="rgb(240,50,40)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(240,102,40)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#zoz)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:56 2012"/>
+  </metadata>
+</svg>

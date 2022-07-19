@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.nsa.gov/">
+      <name>US National Security Agency</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      A work of the United States government and so, under section 105 
+      of the Copyright Act, not entitled to domestic copyright protection 
+      under US law. The United States government may assert its copyright 
+      on such works in other jurisdictions, but I am not aware that such
+      an assertion has been made.
+    </informal>
+    <year>2013</year>
+  </license>
+  <src>
+    <format>extracted from JPEG file</format>
+    <link href="http://www.guardian.co.uk/world/2013/jun/08/nsa-boundless-informant-global-datamining"
+	  >Guardian article containing the map</link>
+    <link href="http://en.wikipedia.org/wiki/Copyright_status_of_work_by_the_U.S._government"
+	  >US government copyright</link>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="other"/>
+  </distribute>
+</copying>

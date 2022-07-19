@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FACE HAIR blonde/brown striped" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="9.94%" stop-color="rgb(36,22,20)" stop-opacity="1.0000"/>
+        <stop offset="19.88%" stop-color="rgb(72,44,41)" stop-opacity="1.0000"/>
+        <stop offset="24.85%" stop-color="rgb(88,54,48)" stop-opacity="1.0000"/>
+        <stop offset="29.82%" stop-color="rgb(103,64,55)" stop-opacity="1.0000"/>
+        <stop offset="34.21%" stop-color="rgb(119,75,60)" stop-opacity="1.0000"/>
+        <stop offset="38.60%" stop-color="rgb(134,87,65)" stop-opacity="1.0000"/>
+        <stop offset="40.06%" stop-color="rgb(135,90,75)" stop-opacity="1.0000"/>
+        <stop offset="41.52%" stop-color="rgb(136,93,84)" stop-opacity="1.0000"/>
+        <stop offset="44.15%" stop-color="rgb(145,100,85)" stop-opacity="1.0000"/>
+        <stop offset="46.78%" stop-color="rgb(155,107,87)" stop-opacity="1.0000"/>
+        <stop offset="49.71%" stop-color="rgb(157,116,99)" stop-opacity="1.0000"/>
+        <stop offset="52.63%" stop-color="rgb(160,124,111)" stop-opacity="1.0000"/>
+        <stop offset="55.85%" stop-color="rgb(169,132,120)" stop-opacity="1.0000"/>
+        <stop offset="59.06%" stop-color="rgb(177,139,130)" stop-opacity="1.0000"/>
+        <stop offset="60.53%" stop-color="rgb(181,144,130)" stop-opacity="1.0000"/>
+        <stop offset="61.99%" stop-color="rgb(184,149,130)" stop-opacity="1.0000"/>
+        <stop offset="78.95%" stop-color="rgb(220,195,188)" stop-opacity="1.0000"/>
+        <stop offset="95.91%" stop-color="rgb(255,241,247)" stop-opacity="1.0000"/>
+        <stop offset="97.95%" stop-color="rgb(255,248,251)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FACE HAIR blonde/brown striped)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:38 2012"/>
+  </metadata>
+</svg>

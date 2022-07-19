@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>jmn</dir>
+  <name>James McNames' monotonic luminance ColorSpiral</name>
+  <full>
+    Portland State's Biomedical Signal Processing Laboratory has
+    developed a colourmap with monotonic luminance for simultaneous
+    colour and grey-scale publications.
+  </full>
+  <date>01/08/2012</date>
+</description>

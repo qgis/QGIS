@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="zoz2" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(240,111,40)" stop-opacity="1.0000"/>
+        <stop offset="2.00%" stop-color="rgb(240,103,40)" stop-opacity="1.0000"/>
+        <stop offset="8.67%" stop-color="rgb(240,75,40)" stop-opacity="0.8476"/>
+        <stop offset="12.99%" stop-color="rgb(240,46,40)" stop-opacity="0.7490"/>
+        <stop offset="13.99%" stop-color="rgb(240,40,40)" stop-opacity="0.7630"/>
+        <stop offset="20.00%" stop-color="rgb(240,40,101)" stop-opacity="0.8466"/>
+        <stop offset="30.00%" stop-color="rgb(240,40,125)" stop-opacity="0.9861"/>
+        <stop offset="31.01%" stop-color="rgb(240,40,136)" stop-opacity="1.0000"/>
+        <stop offset="38.99%" stop-color="rgb(240,40,219)" stop-opacity="0.8211"/>
+        <stop offset="48.00%" stop-color="rgb(181,40,240)" stop-opacity="0.6192"/>
+        <stop offset="52.00%" stop-color="rgb(211,40,230)" stop-opacity="0.5294"/>
+        <stop offset="56.01%" stop-color="rgb(240,40,219)" stop-opacity="0.5860"/>
+        <stop offset="62.01%" stop-color="rgb(120,40,240)" stop-opacity="0.6708"/>
+        <stop offset="65.66%" stop-color="rgb(146,40,240)" stop-opacity="0.7224"/>
+        <stop offset="66.99%" stop-color="rgb(160,40,240)" stop-opacity="0.7412"/>
+        <stop offset="67.99%" stop-color="rgb(171,40,240)" stop-opacity="0.7327"/>
+        <stop offset="78.00%" stop-color="rgb(240,40,77)" stop-opacity="0.6477"/>
+        <stop offset="79.00%" stop-color="rgb(240,41,71)" stop-opacity="0.6392"/>
+        <stop offset="85.01%" stop-color="rgb(240,50,40)" stop-opacity="0.7424"/>
+        <stop offset="90.99%" stop-color="rgb(240,40,44)" stop-opacity="0.8452"/>
+        <stop offset="100.00%" stop-color="rgb(240,102,40)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#zoz2)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:49 2012"/>
+  </metadata>
+</svg>

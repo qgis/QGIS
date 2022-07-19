@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Silva_Text" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(169,170,169)" stop-opacity="1.0000"/>
+        <stop offset="0.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="32.79%" stop-color="rgb(163,163,163)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(70,70,70)" stop-opacity="1.0000"/>
+        <stop offset="53.44%" stop-color="rgb(127,128,127)" stop-opacity="1.0000"/>
+        <stop offset="61.01%" stop-color="rgb(184,185,184)" stop-opacity="1.0000"/>
+        <stop offset="68.99%" stop-color="rgb(106,106,106)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(28,28,28)" stop-opacity="1.0000"/>
+        <stop offset="94.40%" stop-color="rgb(95,95,95)" stop-opacity="1.0000"/>
+        <stop offset="98.00%" stop-color="rgb(162,162,162)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(162,162,162)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Silva_Text)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:42 2012"/>
+  </metadata>
+</svg>

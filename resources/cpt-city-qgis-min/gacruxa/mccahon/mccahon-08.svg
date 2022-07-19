@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="mccahon-08" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(252, 245, 227)" stop-opacity="1.0000"/>
+        <stop offset="29.47%" stop-color="rgb(184, 145, 8)" stop-opacity="1.0000"/>
+        <stop offset="29.76%" stop-color="rgb(252, 245, 227)" stop-opacity="1.0000"/>
+        <stop offset="34.99%" stop-color="rgb(248, 163, 108)" stop-opacity="1.0000"/>
+        <stop offset="49.58%" stop-color="rgb(47, 7, 5)" stop-opacity="1.0000"/>
+        <stop offset="49.85%" stop-color="rgb(248, 163, 108)" stop-opacity="1.0000"/>
+        <stop offset="59.79%" stop-color="rgb(248, 163, 108)" stop-opacity="1.0000"/>
+        <stop offset="60.06%" stop-color="rgb(247, 159, 105)" stop-opacity="0.0000"/>
+        <stop offset="65.06%" stop-color="rgb(229, 94, 62)" stop-opacity="0.0000"/>
+        <stop offset="65.58%" stop-color="rgb(227, 87, 58)" stop-opacity="1.0000"/>
+        <stop offset="66.11%" stop-color="rgb(226, 81, 54)" stop-opacity="0.9997"/>
+        <stop offset="100.00%" stop-color="rgb(226, 81, 54)" stop-opacity="0.9800"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#mccahon-08)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:11:50 2014"/>
+  </metadata>
+</svg>

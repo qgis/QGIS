@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FLOR bush" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="5.26%" stop-color="rgb(2,2,2)" stop-opacity="1.0000"/>
+        <stop offset="10.53%" stop-color="rgb(4,4,4)" stop-opacity="1.0000"/>
+        <stop offset="10.53%" stop-color="rgb(55,77,53)" stop-opacity="1.0000"/>
+        <stop offset="15.79%" stop-color="rgb(55,77,53)" stop-opacity="1.0000"/>
+        <stop offset="21.05%" stop-color="rgb(55,77,53)" stop-opacity="1.0000"/>
+        <stop offset="21.05%" stop-color="rgb(76,94,65)" stop-opacity="1.0000"/>
+        <stop offset="26.61%" stop-color="rgb(76,94,65)" stop-opacity="1.0000"/>
+        <stop offset="32.16%" stop-color="rgb(76,94,65)" stop-opacity="1.0000"/>
+        <stop offset="32.16%" stop-color="rgb(78,110,76)" stop-opacity="1.0000"/>
+        <stop offset="38.89%" stop-color="rgb(78,110,76)" stop-opacity="1.0000"/>
+        <stop offset="45.61%" stop-color="rgb(78,110,76)" stop-opacity="1.0000"/>
+        <stop offset="45.61%" stop-color="rgb(86,129,70)" stop-opacity="1.0000"/>
+        <stop offset="51.75%" stop-color="rgb(86,129,70)" stop-opacity="1.0000"/>
+        <stop offset="57.89%" stop-color="rgb(86,129,70)" stop-opacity="1.0000"/>
+        <stop offset="57.89%" stop-color="rgb(71,148,65)" stop-opacity="1.0000"/>
+        <stop offset="64.33%" stop-color="rgb(71,148,65)" stop-opacity="1.0000"/>
+        <stop offset="70.76%" stop-color="rgb(71,148,65)" stop-opacity="1.0000"/>
+        <stop offset="70.76%" stop-color="rgb(119,167,134)" stop-opacity="1.0000"/>
+        <stop offset="77.19%" stop-color="rgb(119,167,134)" stop-opacity="1.0000"/>
+        <stop offset="83.63%" stop-color="rgb(119,167,134)" stop-opacity="1.0000"/>
+        <stop offset="83.63%" stop-color="rgb(158,187,156)" stop-opacity="1.0000"/>
+        <stop offset="91.81%" stop-color="rgb(158,187,156)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(158,187,156)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FLOR bush)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:44 2012"/>
+  </metadata>
+</svg>

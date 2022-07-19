@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="wiki-isle-of-man" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(185,227,255)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(185,227,255)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(216,242,254)" stop-opacity="1.0000"/>
+        <stop offset="22.22%" stop-color="rgb(216,242,254)" stop-opacity="1.0000"/>
+        <stop offset="22.22%" stop-color="rgb(172,208,165)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(172,208,165)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(148,191,139)" stop-opacity="1.0000"/>
+        <stop offset="27.78%" stop-color="rgb(148,191,139)" stop-opacity="1.0000"/>
+        <stop offset="27.78%" stop-color="rgb(168,198,143)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(168,198,143)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(189,204,150)" stop-opacity="1.0000"/>
+        <stop offset="38.89%" stop-color="rgb(189,204,150)" stop-opacity="1.0000"/>
+        <stop offset="38.89%" stop-color="rgb(209,215,171)" stop-opacity="1.0000"/>
+        <stop offset="44.44%" stop-color="rgb(209,215,171)" stop-opacity="1.0000"/>
+        <stop offset="44.44%" stop-color="rgb(225,228,181)" stop-opacity="1.0000"/>
+        <stop offset="55.56%" stop-color="rgb(225,228,181)" stop-opacity="1.0000"/>
+        <stop offset="55.56%" stop-color="rgb(239,235,192)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(239,235,192)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(232,225,182)" stop-opacity="1.0000"/>
+        <stop offset="77.78%" stop-color="rgb(232,225,182)" stop-opacity="1.0000"/>
+        <stop offset="77.78%" stop-color="rgb(222,214,163)" stop-opacity="1.0000"/>
+        <stop offset="88.89%" stop-color="rgb(222,214,163)" stop-opacity="1.0000"/>
+        <stop offset="88.89%" stop-color="rgb(202,185,130)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(202,185,130)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#wiki-isle-of-man)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:31:03 2012"/>
+  </metadata>
+</svg>

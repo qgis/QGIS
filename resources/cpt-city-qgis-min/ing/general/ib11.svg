@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ib-regnbue" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(254,84,0)" stop-opacity="1.0000"/>
+        <stop offset="16.59%" stop-color="rgb(255,167,2)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(255,250,4)" stop-opacity="1.0000"/>
+        <stop offset="39.20%" stop-color="rgb(128,224,128)" stop-opacity="1.0000"/>
+        <stop offset="47.00%" stop-color="rgb(0,197,252)" stop-opacity="1.0000"/>
+        <stop offset="73.00%" stop-color="rgb(172,1,231)" stop-opacity="1.0000"/>
+        <stop offset="86.01%" stop-color="rgb(252,5,0)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(118,255,3)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ib-regnbue)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:52 2012"/>
+  </metadata>
+</svg>

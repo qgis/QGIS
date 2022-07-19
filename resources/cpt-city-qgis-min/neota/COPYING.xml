@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://dgowers.livejournal.com/">
+      <name>David Gowers</name>
+      <alias>Neota</alias>
+      <alias>Aicaz</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2004</year>
+  </license>
+  <src>
+    <format>GIMP gradient (ggr)</format>
+    <link href="http://aicaz.deviantart.com/gallery">Aicas' 
+      DeviantArt page</link>
+    <remark>Contributed to the archive by the author, 
+      June 2004</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="mars_sand_dunes" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(19,26,38)" stop-opacity="1.0000"/>
+        <stop offset="2.08%" stop-color="rgb(18,25,36)" stop-opacity="1.0000"/>
+        <stop offset="4.17%" stop-color="rgb(18,24,33)" stop-opacity="1.0000"/>
+        <stop offset="6.25%" stop-color="rgb(18,25,34)" stop-opacity="1.0000"/>
+        <stop offset="8.33%" stop-color="rgb(19,26,36)" stop-opacity="1.0000"/>
+        <stop offset="10.42%" stop-color="rgb(24,30,41)" stop-opacity="1.0000"/>
+        <stop offset="12.50%" stop-color="rgb(28,34,46)" stop-opacity="1.0000"/>
+        <stop offset="14.58%" stop-color="rgb(32,38,50)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(36,43,55)" stop-opacity="1.0000"/>
+        <stop offset="18.75%" stop-color="rgb(42,52,67)" stop-opacity="1.0000"/>
+        <stop offset="20.83%" stop-color="rgb(48,61,79)" stop-opacity="1.0000"/>
+        <stop offset="22.92%" stop-color="rgb(67,84,104)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(87,106,129)" stop-opacity="1.0000"/>
+        <stop offset="27.08%" stop-color="rgb(104,121,140)" stop-opacity="1.0000"/>
+        <stop offset="29.17%" stop-color="rgb(122,137,152)" stop-opacity="1.0000"/>
+        <stop offset="31.25%" stop-color="rgb(120,132,142)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(118,126,133)" stop-opacity="1.0000"/>
+        <stop offset="35.42%" stop-color="rgb(106,117,127)" stop-opacity="1.0000"/>
+        <stop offset="37.50%" stop-color="rgb(95,108,120)" stop-opacity="1.0000"/>
+        <stop offset="39.58%" stop-color="rgb(91,102,114)" stop-opacity="1.0000"/>
+        <stop offset="41.67%" stop-color="rgb(86,97,109)" stop-opacity="1.0000"/>
+        <stop offset="43.75%" stop-color="rgb(78,90,104)" stop-opacity="1.0000"/>
+        <stop offset="45.83%" stop-color="rgb(70,82,98)" stop-opacity="1.0000"/>
+        <stop offset="47.92%" stop-color="rgb(68,81,98)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(65,79,98)" stop-opacity="1.0000"/>
+        <stop offset="52.08%" stop-color="rgb(62,77,96)" stop-opacity="1.0000"/>
+        <stop offset="54.17%" stop-color="rgb(60,74,93)" stop-opacity="1.0000"/>
+        <stop offset="56.25%" stop-color="rgb(60,74,92)" stop-opacity="1.0000"/>
+        <stop offset="58.33%" stop-color="rgb(60,74,92)" stop-opacity="1.0000"/>
+        <stop offset="60.42%" stop-color="rgb(60,74,91)" stop-opacity="1.0000"/>
+        <stop offset="62.50%" stop-color="rgb(60,73,91)" stop-opacity="1.0000"/>
+        <stop offset="64.58%" stop-color="rgb(61,74,91)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(61,74,90)" stop-opacity="1.0000"/>
+        <stop offset="68.75%" stop-color="rgb(62,75,91)" stop-opacity="1.0000"/>
+        <stop offset="70.83%" stop-color="rgb(63,76,92)" stop-opacity="1.0000"/>
+        <stop offset="72.92%" stop-color="rgb(64,76,91)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(65,77,91)" stop-opacity="1.0000"/>
+        <stop offset="77.08%" stop-color="rgb(67,78,92)" stop-opacity="1.0000"/>
+        <stop offset="79.17%" stop-color="rgb(68,80,93)" stop-opacity="1.0000"/>
+        <stop offset="81.25%" stop-color="rgb(69,81,95)" stop-opacity="1.0000"/>
+        <stop offset="83.33%" stop-color="rgb(70,82,96)" stop-opacity="1.0000"/>
+        <stop offset="85.42%" stop-color="rgb(71,83,97)" stop-opacity="1.0000"/>
+        <stop offset="87.50%" stop-color="rgb(72,84,98)" stop-opacity="1.0000"/>
+        <stop offset="89.58%" stop-color="rgb(74,85,101)" stop-opacity="1.0000"/>
+        <stop offset="91.67%" stop-color="rgb(75,87,103)" stop-opacity="1.0000"/>
+        <stop offset="93.75%" stop-color="rgb(75,87,104)" stop-opacity="1.0000"/>
+        <stop offset="95.83%" stop-color="rgb(75,88,105)" stop-opacity="1.0000"/>
+        <stop offset="97.92%" stop-color="rgb(76,89,106)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(77,90,107)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#mars_sand_dunes)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:25 2012"/>
+  </metadata>
+</svg>

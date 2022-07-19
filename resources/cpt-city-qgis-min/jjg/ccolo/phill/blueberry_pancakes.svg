@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="blueberry_pancakes" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(217,208,150)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(217,208,150)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(202,192,134)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(186,177,117)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(135,160,139)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(84,143,161)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(73,130,147)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(62,116,133)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(42,102,120)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(21,87,107)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(21,87,107)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#blueberry_pancakes)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:32 2012"/>
+  </metadata>
+</svg>

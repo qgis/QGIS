@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="xmas_19" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(54,91,39)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(142,23,25)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(19,52,23)" stop-opacity="1.0000"/>
+        <stop offset="66.99%" stop-color="rgb(190,29,34)" stop-opacity="1.0000"/>
+        <stop offset="85.01%" stop-color="rgb(53,110,57)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(165,30,37)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#xmas_19)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:05 2012"/>
+  </metadata>
+</svg>

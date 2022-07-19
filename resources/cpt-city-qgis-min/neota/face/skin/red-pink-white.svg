@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FACE SKIN red-pink-white" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(3,2,1)" stop-opacity="1.0000"/>
+        <stop offset="15.55%" stop-color="rgb(41,20,15)" stop-opacity="1.0000"/>
+        <stop offset="31.11%" stop-color="rgb(79,39,29)" stop-opacity="1.0000"/>
+        <stop offset="46.18%" stop-color="rgb(117,56,41)" stop-opacity="1.0000"/>
+        <stop offset="61.26%" stop-color="rgb(155,74,54)" stop-opacity="1.0000"/>
+        <stop offset="77.69%" stop-color="rgb(197,99,82)" stop-opacity="1.0000"/>
+        <stop offset="94.13%" stop-color="rgb(240,124,110)" stop-opacity="1.0000"/>
+        <stop offset="95.91%" stop-color="rgb(244,152,132)" stop-opacity="1.0000"/>
+        <stop offset="97.68%" stop-color="rgb(249,179,154)" stop-opacity="1.0000"/>
+        <stop offset="98.84%" stop-color="rgb(250,212,199)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(250,245,244)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FACE SKIN red-pink-white)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:40 2012"/>
+  </metadata>
+</svg>

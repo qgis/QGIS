@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj6-sky-earth-water" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(180,188,252)" stop-opacity="1.0000"/>
+        <stop offset="11.01%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(180,188,252)" stop-opacity="1.0000"/>
+        <stop offset="22.00%" stop-color="rgb(181,235,251)" stop-opacity="1.0000"/>
+        <stop offset="29.00%" stop-color="rgb(181,235,251)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(65,149,69)" stop-opacity="1.0000"/>
+        <stop offset="35.01%" stop-color="rgb(66,210,69)" stop-opacity="1.0000"/>
+        <stop offset="42.99%" stop-color="rgb(66,210,69)" stop-opacity="1.0000"/>
+        <stop offset="65.99%" stop-color="rgb(66,210,69)" stop-opacity="1.0000"/>
+        <stop offset="68.99%" stop-color="rgb(66,210,69)" stop-opacity="1.0000"/>
+        <stop offset="72.00%" stop-color="rgb(66,147,210)" stop-opacity="1.0000"/>
+        <stop offset="73.00%" stop-color="rgb(66,147,210)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(1,145,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj6-sky-earth-water)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:46 2012"/>
+  </metadata>
+</svg>

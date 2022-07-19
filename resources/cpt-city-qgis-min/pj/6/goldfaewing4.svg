@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj6-goldfaewing4" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(228,228,173)" stop-opacity="1.0000"/>
+        <stop offset="6.01%" stop-color="rgb(235,200,197)" stop-opacity="1.0000"/>
+        <stop offset="12.99%" stop-color="rgb(228,228,173)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(228,54,144)" stop-opacity="1.0000"/>
+        <stop offset="27.00%" stop-color="rgb(228,234,183)" stop-opacity="1.0000"/>
+        <stop offset="35.01%" stop-color="rgb(131,52,165)" stop-opacity="1.0000"/>
+        <stop offset="43.99%" stop-color="rgb(228,234,183)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(72,78,195)" stop-opacity="1.0000"/>
+        <stop offset="67.99%" stop-color="rgb(228,234,183)" stop-opacity="1.0000"/>
+        <stop offset="83.01%" stop-color="rgb(66,208,200)" stop-opacity="1.0000"/>
+        <stop offset="93.99%" stop-color="rgb(210,238,229)" stop-opacity="1.0000"/>
+        <stop offset="99.00%" stop-color="rgb(228,234,183)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(228,234,183)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj6-goldfaewing4)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:48 2012"/>
+  </metadata>
+</svg>

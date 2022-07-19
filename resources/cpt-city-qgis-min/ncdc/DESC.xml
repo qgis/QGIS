@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>ncdc</dir>
+  <name>The NCDC's scheme for probability of a white Christmas</name>
+  <full>
+    A palette used by the US National Climatic Data Center in mapping
+    the probability of a white Christmas.
+  </full>
+  <date>01/08/2012</date>
+</description>

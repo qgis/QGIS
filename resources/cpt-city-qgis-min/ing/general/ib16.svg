@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ib16" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(125,150,204)" stop-opacity="1.0000"/>
+        <stop offset="21.85%" stop-color="rgb(180,108,139)" stop-opacity="1.0000"/>
+        <stop offset="23.00%" stop-color="rgb(234,67,74)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(160,204,129)" stop-opacity="1.0000"/>
+        <stop offset="28.75%" stop-color="rgb(199,223,192)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(238,242,254)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ib16)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:51 2012"/>
+  </metadata>
+</svg>

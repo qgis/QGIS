@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="alarm.p2.1.5" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(224,255,216)" stop-opacity="1.0000"/>
+        <stop offset="5.00%" stop-color="rgb(222,255,213)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(220,255,206)" stop-opacity="1.0000"/>
+        <stop offset="15.00%" stop-color="rgb(218,255,198)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(218,255,188)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(219,255,177)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(224,255,165)" stop-opacity="1.0000"/>
+        <stop offset="35.00%" stop-color="rgb(231,255,151)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(243,255,137)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(255,250,121)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(255,228,105)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(255,200,88)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(255,164,70)" stop-opacity="1.0000"/>
+        <stop offset="65.00%" stop-color="rgb(255,122,52)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(255,72,32)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(255,13,13)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(255,12,121)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(255,12,235)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(158,12,255)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(39,12,255)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(12,109,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#alarm.p2.1.5)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:29:27 2012"/>
+  </metadata>
+</svg>

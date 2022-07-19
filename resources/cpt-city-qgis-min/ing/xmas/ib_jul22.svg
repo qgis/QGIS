@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ib_jul22" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,36,12)" stop-opacity="1.0000"/>
+        <stop offset="27.29%" stop-color="rgb(252,128,110)" stop-opacity="1.0000"/>
+        <stop offset="38.99%" stop-color="rgb(248,220,208)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(63,101,24)" stop-opacity="1.0000"/>
+        <stop offset="57.34%" stop-color="rgb(80,113,19)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(98,126,15)" stop-opacity="1.0000"/>
+        <stop offset="91.99%" stop-color="rgb(85,106,31)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(85,106,31)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ib_jul22)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:47 2012"/>
+  </metadata>
+</svg>

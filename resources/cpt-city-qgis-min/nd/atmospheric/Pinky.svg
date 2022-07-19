@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Atmospheric_Pinky" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,194,214)" stop-opacity="1.0000"/>
+        <stop offset="28.05%" stop-color="rgb(255,210,187)" stop-opacity="1.0000"/>
+        <stop offset="35.39%" stop-color="rgb(255,226,160)" stop-opacity="1.0000"/>
+        <stop offset="37.90%" stop-color="rgb(252,207,159)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(249,187,159)" stop-opacity="1.0000"/>
+        <stop offset="42.57%" stop-color="rgb(252,197,164)" stop-opacity="1.0000"/>
+        <stop offset="49.58%" stop-color="rgb(255,208,168)" stop-opacity="1.0000"/>
+        <stop offset="71.79%" stop-color="rgb(242,183,184)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(229,159,200)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Atmospheric_Pinky)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:34:27 2012"/>
+  </metadata>
+</svg>

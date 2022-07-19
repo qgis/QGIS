@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.ncdc.noaa.gov/oa/ncdc.html">
+      <name>NCDC</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2010</year>
+    <text>No licence specified</text>
+  </license>
+  <src>
+    <format>Image (gif)</format>
+    <link href="http://www.ncdc.noaa.gov/oa/climate/extremes/2001/december/extremes1201.html">NCDC's white Christmas page</link>
+    <remark>Andy Goss gave permission to add to the archive Jan 2010</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

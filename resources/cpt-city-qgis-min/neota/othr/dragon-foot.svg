@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="OTHR dragon foot" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="14.45%" stop-color="rgb(19,42,39)" stop-opacity="1.0000"/>
+        <stop offset="28.89%" stop-color="rgb(37,84,78)" stop-opacity="1.0000"/>
+        <stop offset="33.05%" stop-color="rgb(53,94,84)" stop-opacity="1.0000"/>
+        <stop offset="37.21%" stop-color="rgb(69,103,91)" stop-opacity="1.0000"/>
+        <stop offset="41.67%" stop-color="rgb(75,117,98)" stop-opacity="1.0000"/>
+        <stop offset="46.13%" stop-color="rgb(80,130,106)" stop-opacity="1.0000"/>
+        <stop offset="48.99%" stop-color="rgb(89,137,111)" stop-opacity="1.0000"/>
+        <stop offset="51.84%" stop-color="rgb(98,144,116)" stop-opacity="1.0000"/>
+        <stop offset="57.51%" stop-color="rgb(116,158,126)" stop-opacity="1.0000"/>
+        <stop offset="63.18%" stop-color="rgb(133,172,136)" stop-opacity="1.0000"/>
+        <stop offset="65.21%" stop-color="rgb(143,176,142)" stop-opacity="1.0000"/>
+        <stop offset="67.24%" stop-color="rgb(153,179,148)" stop-opacity="1.0000"/>
+        <stop offset="70.96%" stop-color="rgb(160,191,148)" stop-opacity="1.0000"/>
+        <stop offset="74.68%" stop-color="rgb(167,202,149)" stop-opacity="1.0000"/>
+        <stop offset="77.50%" stop-color="rgb(174,210,149)" stop-opacity="1.0000"/>
+        <stop offset="80.33%" stop-color="rgb(181,218,148)" stop-opacity="1.0000"/>
+        <stop offset="84.22%" stop-color="rgb(195,226,159)" stop-opacity="1.0000"/>
+        <stop offset="88.12%" stop-color="rgb(210,235,169)" stop-opacity="1.0000"/>
+        <stop offset="92.46%" stop-color="rgb(227,243,187)" stop-opacity="1.0000"/>
+        <stop offset="96.80%" stop-color="rgb(244,252,204)" stop-opacity="1.0000"/>
+        <stop offset="98.40%" stop-color="rgb(250,253,230)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#OTHR dragon foot)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:35 2012"/>
+  </metadata>
+</svg>

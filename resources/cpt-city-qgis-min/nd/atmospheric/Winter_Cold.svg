@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Atmospheric_Winter_Cold" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(79,57,190)" stop-opacity="1.0000"/>
+        <stop offset="12.69%" stop-color="rgb(137,141,220)" stop-opacity="1.0000"/>
+        <stop offset="30.05%" stop-color="rgb(196,225,250)" stop-opacity="1.0000"/>
+        <stop offset="33.72%" stop-color="rgb(224,239,251)" stop-opacity="1.0000"/>
+        <stop offset="36.23%" stop-color="rgb(253,253,253)" stop-opacity="1.0000"/>
+        <stop offset="39.40%" stop-color="rgb(225,230,246)" stop-opacity="1.0000"/>
+        <stop offset="51.09%" stop-color="rgb(197,208,240)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(166,174,211)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(135,141,183)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Atmospheric_Winter_Cold)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:34:31 2012"/>
+  </metadata>
+</svg>

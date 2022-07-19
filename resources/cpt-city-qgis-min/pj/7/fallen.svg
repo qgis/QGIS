@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj7-fallen" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(190,7,72)" stop-opacity="1.0000"/>
+        <stop offset="8.01%" stop-color="rgb(213,5,81)" stop-opacity="1.0000"/>
+        <stop offset="13.99%" stop-color="rgb(157,45,44)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(177,51,50)" stop-opacity="1.0000"/>
+        <stop offset="28.00%" stop-color="rgb(116,67,35)" stop-opacity="1.0000"/>
+        <stop offset="34.01%" stop-color="rgb(117,67,35)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(120,68,35)" stop-opacity="1.0000"/>
+        <stop offset="47.00%" stop-color="rgb(94,60,42)" stop-opacity="1.0000"/>
+        <stop offset="53.00%" stop-color="rgb(91,60,74)" stop-opacity="1.0000"/>
+        <stop offset="59.01%" stop-color="rgb(134,85,37)" stop-opacity="1.0000"/>
+        <stop offset="64.99%" stop-color="rgb(66,78,45)" stop-opacity="1.0000"/>
+        <stop offset="73.00%" stop-color="rgb(86,101,97)" stop-opacity="1.0000"/>
+        <stop offset="81.01%" stop-color="rgb(76,88,98)" stop-opacity="1.0000"/>
+        <stop offset="90.99%" stop-color="rgb(120,125,70)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(96,100,66)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj7-fallen)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:03 2012"/>
+  </metadata>
+</svg>

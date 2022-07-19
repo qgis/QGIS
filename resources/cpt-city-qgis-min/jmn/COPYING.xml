@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://web.cecs.pdx.edu/~mcnames/">
+      <name>James McNames</name>
+      <org>Biomedical Signal Processing Laboratory, 
+	Portland State University</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2009</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>Matlab script</format>
+    <link href="http://bsp.pdx.edu/Software/ColorSpiral.m">Matlab script</link>
+    <link href="http://bsp.pdx.edu/Publications/2006/SPM_McNames.pdf">2006 IEEE Signal Processing Magazine article</link>
+    <link href="http://bsp.pdx.edu/">Biomedical Signal Processing Laboratory</link>
+    <remark>Contributed to the archive by the author, Jan 2010</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

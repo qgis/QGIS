@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Mark J. Fenbers</name>
+      <org>US National Weather Center</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2004</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>GMT colour palette table (cpt)</format>
+    <link href="http://www.erh.noaa.gov/ohrfc/">Ohio River Forecast Center</link>
+    <remark>Contributed to the archive by the author,
+      March 2004</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

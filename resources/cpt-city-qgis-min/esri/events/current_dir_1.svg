@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="current_dir_1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(115,222,255)" stop-opacity="1.0000"/>
+        <stop offset="0.79%" stop-color="rgb(115,222,255)" stop-opacity="1.0000"/>
+        <stop offset="1.59%" stop-color="rgb(129,226,247)" stop-opacity="1.0000"/>
+        <stop offset="2.38%" stop-color="rgb(129,226,247)" stop-opacity="1.0000"/>
+        <stop offset="3.17%" stop-color="rgb(138,226,237)" stop-opacity="1.0000"/>
+        <stop offset="3.97%" stop-color="rgb(138,226,237)" stop-opacity="1.0000"/>
+        <stop offset="4.76%" stop-color="rgb(150,227,227)" stop-opacity="1.0000"/>
+        <stop offset="5.56%" stop-color="rgb(150,227,227)" stop-opacity="1.0000"/>
+        <stop offset="6.35%" stop-color="rgb(161,230,219)" stop-opacity="1.0000"/>
+        <stop offset="7.14%" stop-color="rgb(161,230,219)" stop-opacity="1.0000"/>
+        <stop offset="7.94%" stop-color="rgb(172,232,210)" stop-opacity="1.0000"/>
+        <stop offset="8.73%" stop-color="rgb(172,232,210)" stop-opacity="1.0000"/>
+        <stop offset="9.52%" stop-color="rgb(181,235,201)" stop-opacity="1.0000"/>
+        <stop offset="10.32%" stop-color="rgb(181,235,201)" stop-opacity="1.0000"/>
+        <stop offset="11.11%" stop-color="rgb(192,237,193)" stop-opacity="1.0000"/>
+        <stop offset="11.90%" stop-color="rgb(192,237,193)" stop-opacity="1.0000"/>
+        <stop offset="12.70%" stop-color="rgb(200,240,185)" stop-opacity="1.0000"/>
+        <stop offset="13.49%" stop-color="rgb(200,240,185)" stop-opacity="1.0000"/>
+        <stop offset="14.29%" stop-color="rgb(206,240,175)" stop-opacity="1.0000"/>
+        <stop offset="15.08%" stop-color="rgb(206,240,175)" stop-opacity="1.0000"/>
+        <stop offset="15.87%" stop-color="rgb(215,242,165)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(215,242,165)" stop-opacity="1.0000"/>
+        <stop offset="17.46%" stop-color="rgb(223,245,157)" stop-opacity="1.0000"/>
+        <stop offset="18.25%" stop-color="rgb(223,245,157)" stop-opacity="1.0000"/>
+        <stop offset="19.05%" stop-color="rgb(230,247,146)" stop-opacity="1.0000"/>
+        <stop offset="19.84%" stop-color="rgb(230,247,146)" stop-opacity="1.0000"/>
+        <stop offset="20.63%" stop-color="rgb(239,250,137)" stop-opacity="1.0000"/>
+        <stop offset="21.43%" stop-color="rgb(239,250,137)" stop-opacity="1.0000"/>
+        <stop offset="22.22%" stop-color="rgb(246,252,129)" stop-opacity="1.0000"/>
+        <stop offset="23.02%" stop-color="rgb(246,252,129)" stop-opacity="1.0000"/>
+        <stop offset="23.81%" stop-color="rgb(253,255,120)" stop-opacity="1.0000"/>
+        <stop offset="24.60%" stop-color="rgb(253,255,120)" stop-opacity="1.0000"/>
+        <stop offset="25.40%" stop-color="rgb(255,255,115)" stop-opacity="1.0000"/>
+        <stop offset="26.19%" stop-color="rgb(255,255,115)" stop-opacity="1.0000"/>
+        <stop offset="26.98%" stop-color="rgb(255,250,117)" stop-opacity="1.0000"/>
+        <stop offset="27.78%" stop-color="rgb(255,250,117)" stop-opacity="1.0000"/>
+        <stop offset="28.57%" stop-color="rgb(255,248,117)" stop-opacity="1.0000"/>
+        <stop offset="29.37%" stop-color="rgb(255,248,117)" stop-opacity="1.0000"/>
+        <stop offset="30.16%" stop-color="rgb(255,246,117)" stop-opacity="1.0000"/>
+        <stop offset="30.95%" stop-color="rgb(255,246,117)" stop-opacity="1.0000"/>
+        <stop offset="31.75%" stop-color="rgb(255,241,120)" stop-opacity="1.0000"/>
+        <stop offset="32.54%" stop-color="rgb(255,241,120)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(255,239,120)" stop-opacity="1.0000"/>
+        <stop offset="34.13%" stop-color="rgb(255,239,120)" stop-opacity="1.0000"/>
+        <stop offset="34.92%" stop-color="rgb(255,237,120)" stop-opacity="1.0000"/>
+        <stop offset="35.71%" stop-color="rgb(255,237,120)" stop-opacity="1.0000"/>
+        <stop offset="36.51%" stop-color="rgb(255,233,122)" stop-opacity="1.0000"/>
+        <stop offset="37.30%" stop-color="rgb(255,233,122)" stop-opacity="1.0000"/>
+        <stop offset="38.10%" stop-color="rgb(255,231,122)" stop-opacity="1.0000"/>
+        <stop offset="38.89%" stop-color="rgb(255,231,122)" stop-opacity="1.0000"/>
+        <stop offset="39.68%" stop-color="rgb(255,228,122)" stop-opacity="1.0000"/>
+        <stop offset="40.48%" stop-color="rgb(255,228,122)" stop-opacity="1.0000"/>
+        <stop offset="41.27%" stop-color="rgb(255,225,125)" stop-opacity="1.0000"/>
+        <stop offset="42.06%" stop-color="rgb(255,225,125)" stop-opacity="1.0000"/>
+        <stop offset="42.86%" stop-color="rgb(255,222,125)" stop-opacity="1.0000"/>
+        <stop offset="43.65%" stop-color="rgb(255,222,125)" stop-opacity="1.0000"/>
+        <stop offset="44.44%" stop-color="rgb(255,218,125)" stop-opacity="1.0000"/>
+        <stop offset="45.24%" stop-color="rgb(255,218,125)" stop-opacity="1.0000"/>
+        <stop offset="46.03%" stop-color="rgb(255,216,125)" stop-opacity="1.0000"/>
+        <stop offset="46.83%" stop-color="rgb(255,216,125)" stop-opacity="1.0000"/>
+        <stop offset="47.62%" stop-color="rgb(255,213,128)" stop-opacity="1.0000"/>
+        <stop offset="48.41%" stop-color="rgb(255,213,128)" stop-opacity="1.0000"/>
+        <stop offset="49.21%" stop-color="rgb(255,210,128)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(255,210,128)" stop-opacity="1.0000"/>
+        <stop offset="50.79%" stop-color="rgb(255,211,135)" stop-opacity="1.0000"/>
+        <stop offset="51.59%" stop-color="rgb(255,211,135)" stop-opacity="1.0000"/>
+        <stop offset="52.38%" stop-color="rgb(255,208,143)" stop-opacity="1.0000"/>
+        <stop offset="53.17%" stop-color="rgb(255,208,143)" stop-opacity="1.0000"/>
+        <stop offset="53.97%" stop-color="rgb(252,206,149)" stop-opacity="1.0000"/>
+        <stop offset="54.76%" stop-color="rgb(252,206,149)" stop-opacity="1.0000"/>
+        <stop offset="55.56%" stop-color="rgb(252,206,159)" stop-opacity="1.0000"/>
+        <stop offset="56.35%" stop-color="rgb(252,206,159)" stop-opacity="1.0000"/>
+        <stop offset="57.14%" stop-color="rgb(250,203,165)" stop-opacity="1.0000"/>
+        <stop offset="57.94%" stop-color="rgb(250,203,165)" stop-opacity="1.0000"/>
+        <stop offset="58.73%" stop-color="rgb(250,202,175)" stop-opacity="1.0000"/>
+        <stop offset="59.52%" stop-color="rgb(250,202,175)" stop-opacity="1.0000"/>
+        <stop offset="60.32%" stop-color="rgb(250,203,185)" stop-opacity="1.0000"/>
+        <stop offset="61.11%" stop-color="rgb(250,203,185)" stop-opacity="1.0000"/>
+        <stop offset="61.90%" stop-color="rgb(247,200,190)" stop-opacity="1.0000"/>
+        <stop offset="62.70%" stop-color="rgb(247,200,190)" stop-opacity="1.0000"/>
+        <stop offset="63.49%" stop-color="rgb(245,198,199)" stop-opacity="1.0000"/>
+        <stop offset="64.29%" stop-color="rgb(245,198,199)" stop-opacity="1.0000"/>
+        <stop offset="65.08%" stop-color="rgb(245,198,208)" stop-opacity="1.0000"/>
+        <stop offset="65.87%" stop-color="rgb(245,198,208)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(242,196,216)" stop-opacity="1.0000"/>
+        <stop offset="67.46%" stop-color="rgb(242,196,216)" stop-opacity="1.0000"/>
+        <stop offset="68.25%" stop-color="rgb(240,194,223)" stop-opacity="1.0000"/>
+        <stop offset="69.05%" stop-color="rgb(240,194,223)" stop-opacity="1.0000"/>
+        <stop offset="69.84%" stop-color="rgb(240,194,234)" stop-opacity="1.0000"/>
+        <stop offset="70.63%" stop-color="rgb(240,194,234)" stop-opacity="1.0000"/>
+        <stop offset="71.43%" stop-color="rgb(237,194,242)" stop-opacity="1.0000"/>
+        <stop offset="72.22%" stop-color="rgb(237,194,242)" stop-opacity="1.0000"/>
+        <stop offset="73.02%" stop-color="rgb(233,190,250)" stop-opacity="1.0000"/>
+        <stop offset="73.81%" stop-color="rgb(233,190,250)" stop-opacity="1.0000"/>
+        <stop offset="74.60%" stop-color="rgb(231,191,255)" stop-opacity="1.0000"/>
+        <stop offset="75.40%" stop-color="rgb(231,191,255)" stop-opacity="1.0000"/>
+        <stop offset="76.19%" stop-color="rgb(223,186,255)" stop-opacity="1.0000"/>
+        <stop offset="76.98%" stop-color="rgb(223,186,255)" stop-opacity="1.0000"/>
+        <stop offset="77.78%" stop-color="rgb(213,181,255)" stop-opacity="1.0000"/>
+        <stop offset="78.57%" stop-color="rgb(213,181,255)" stop-opacity="1.0000"/>
+        <stop offset="79.37%" stop-color="rgb(202,176,255)" stop-opacity="1.0000"/>
+        <stop offset="80.16%" stop-color="rgb(202,176,255)" stop-opacity="1.0000"/>
+        <stop offset="80.95%" stop-color="rgb(190,171,255)" stop-opacity="1.0000"/>
+        <stop offset="81.75%" stop-color="rgb(190,171,255)" stop-opacity="1.0000"/>
+        <stop offset="82.54%" stop-color="rgb(179,166,255)" stop-opacity="1.0000"/>
+        <stop offset="83.33%" stop-color="rgb(179,166,255)" stop-opacity="1.0000"/>
+        <stop offset="84.13%" stop-color="rgb(165,161,255)" stop-opacity="1.0000"/>
+        <stop offset="84.92%" stop-color="rgb(165,161,255)" stop-opacity="1.0000"/>
+        <stop offset="85.71%" stop-color="rgb(156,159,255)" stop-opacity="1.0000"/>
+        <stop offset="86.51%" stop-color="rgb(156,159,255)" stop-opacity="1.0000"/>
+        <stop offset="87.30%" stop-color="rgb(150,163,255)" stop-opacity="1.0000"/>
+        <stop offset="88.10%" stop-color="rgb(150,163,255)" stop-opacity="1.0000"/>
+        <stop offset="88.89%" stop-color="rgb(145,169,255)" stop-opacity="1.0000"/>
+        <stop offset="89.68%" stop-color="rgb(145,169,255)" stop-opacity="1.0000"/>
+        <stop offset="90.48%" stop-color="rgb(140,175,255)" stop-opacity="1.0000"/>
+        <stop offset="91.27%" stop-color="rgb(140,175,255)" stop-opacity="1.0000"/>
+        <stop offset="92.06%" stop-color="rgb(135,183,255)" stop-opacity="1.0000"/>
+        <stop offset="92.86%" stop-color="rgb(135,183,255)" stop-opacity="1.0000"/>
+        <stop offset="93.65%" stop-color="rgb(133,192,255)" stop-opacity="1.0000"/>
+        <stop offset="94.44%" stop-color="rgb(133,192,255)" stop-opacity="1.0000"/>
+        <stop offset="95.24%" stop-color="rgb(125,201,255)" stop-opacity="1.0000"/>
+        <stop offset="96.03%" stop-color="rgb(125,201,255)" stop-opacity="1.0000"/>
+        <stop offset="96.83%" stop-color="rgb(122,211,255)" stop-opacity="1.0000"/>
+        <stop offset="97.62%" stop-color="rgb(122,211,255)" stop-opacity="1.0000"/>
+        <stop offset="98.41%" stop-color="rgb(115,222,255)" stop-opacity="1.0000"/>
+        <stop offset="99.21%" stop-color="rgb(115,222,255)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(115,222,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#current_dir_1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:00 2012"/>
+  </metadata>
+</svg>

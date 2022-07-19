@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.absolutetrouble.com/">
+      <name>Michele Albert</name>
+      <alias>Michelle Jerott</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2006</year>
+    <text>
+      None
+    </text>
+  </license>
+  <src>
+    <format>Paint Shop Pro (grd version 3)</format>
+    <link href="http://www.absolutetrouble.com/brushes/pafiledb.php?action=category&amp;id=21">Download</link>
+    <remark>Permission to add the gradients to the archive
+      received on Mon, 2 Jan 2006</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

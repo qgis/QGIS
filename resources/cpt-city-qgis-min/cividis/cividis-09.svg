@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="cividis-09" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0, 42, 101)" stop-opacity="1.0000"/>
+        <stop offset="11.11%" stop-color="rgb(0, 42, 101)" stop-opacity="1.0000"/>
+        <stop offset="11.11%" stop-color="rgb(36, 62, 108)" stop-opacity="1.0000"/>
+        <stop offset="22.22%" stop-color="rgb(36, 62, 108)" stop-opacity="1.0000"/>
+        <stop offset="22.22%" stop-color="rgb(73, 82, 107)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(73, 82, 107)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(100, 102, 111)" stop-opacity="1.0000"/>
+        <stop offset="44.44%" stop-color="rgb(100, 102, 111)" stop-opacity="1.0000"/>
+        <stop offset="44.44%" stop-color="rgb(125, 124, 120)" stop-opacity="1.0000"/>
+        <stop offset="55.56%" stop-color="rgb(125, 124, 120)" stop-opacity="1.0000"/>
+        <stop offset="55.56%" stop-color="rgb(152, 146, 120)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(152, 146, 120)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(181, 169, 113)" stop-opacity="1.0000"/>
+        <stop offset="77.78%" stop-color="rgb(181, 169, 113)" stop-opacity="1.0000"/>
+        <stop offset="77.78%" stop-color="rgb(212, 194, 101)" stop-opacity="1.0000"/>
+        <stop offset="88.89%" stop-color="rgb(212, 194, 101)" stop-opacity="1.0000"/>
+        <stop offset="88.89%" stop-color="rgb(244, 220, 78)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(244, 220, 78)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#cividis-09)" x="0" y="0" width="300" height="45"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.69"/>
+    <created date="Thu Dec 20 14:31:09 2018"/>
+  </metadata>
+</svg>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Super_Gran" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(162,232,245)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(162,232,245)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(142,203,214)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(121,174,184)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(96,118,120)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(71,61,56)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(112,97,89)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(154,132,122)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(196,169,156)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(239,205,190)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(239,205,190)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Super_Gran)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:45 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://sglider12.blogspot.com/">
+      <name>Sarah Davison</name>
+      <alias>SGlider12</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2008</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>GIMP gradient (ggr)</format>
+    <link href="http://sglider12.blogspot.com/2007/12/130-web-20-gradients-for-gimp.html">Download gradients</link>
+    <link href="http://www.dezinerfolio.com/2007/05/06/ultimate-web-20-layer-styles/">Deziner Folio's page</link>
+    <remark>Reimplementation of Deziner Folio's 2007 gradients for Photoshop</remark>
+    <remark>Contributed to the archive by the author, Jan 2008</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

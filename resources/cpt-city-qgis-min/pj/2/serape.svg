@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj-serape" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(17,8,54)" stop-opacity="1.0000"/>
+        <stop offset="9.01%" stop-color="rgb(221,38,98)" stop-opacity="1.0000"/>
+        <stop offset="15.99%" stop-color="rgb(211,36,182)" stop-opacity="1.0000"/>
+        <stop offset="24.00%" stop-color="rgb(167,30,206)" stop-opacity="1.0000"/>
+        <stop offset="32.01%" stop-color="rgb(31,84,212)" stop-opacity="1.0000"/>
+        <stop offset="41.99%" stop-color="rgb(45,85,229)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(30,149,205)" stop-opacity="1.0000"/>
+        <stop offset="57.01%" stop-color="rgb(47,228,86)" stop-opacity="1.0000"/>
+        <stop offset="65.99%" stop-color="rgb(211,207,43)" stop-opacity="1.0000"/>
+        <stop offset="71.00%" stop-color="rgb(204,172,34)" stop-opacity="1.0000"/>
+        <stop offset="77.00%" stop-color="rgb(211,133,38)" stop-opacity="1.0000"/>
+        <stop offset="84.01%" stop-color="rgb(209,28,67)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(102,10,52)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj-serape)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:10 2012"/>
+  </metadata>
+</svg>

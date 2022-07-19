@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FAUN radioactive slime" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="9.95%" stop-color="rgb(9,40,11)" stop-opacity="1.0000"/>
+        <stop offset="22.90%" stop-color="rgb(17,79,21)" stop-opacity="1.0000"/>
+        <stop offset="29.84%" stop-color="rgb(54,97,49)" stop-opacity="1.0000"/>
+        <stop offset="39.79%" stop-color="rgb(91,114,78)" stop-opacity="1.0000"/>
+        <stop offset="46.42%" stop-color="rgb(81,141,78)" stop-opacity="1.0000"/>
+        <stop offset="53.05%" stop-color="rgb(70,167,78)" stop-opacity="1.0000"/>
+        <stop offset="59.16%" stop-color="rgb(108,198,117)" stop-opacity="1.0000"/>
+        <stop offset="68.32%" stop-color="rgb(146,228,157)" stop-opacity="1.0000"/>
+        <stop offset="76.72%" stop-color="rgb(200,226,160)" stop-opacity="1.0000"/>
+        <stop offset="87.40%" stop-color="rgb(255,223,164)" stop-opacity="1.0000"/>
+        <stop offset="93.89%" stop-color="rgb(255,239,173)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,183)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FAUN radioactive slime)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:45 2012"/>
+  </metadata>
+</svg>

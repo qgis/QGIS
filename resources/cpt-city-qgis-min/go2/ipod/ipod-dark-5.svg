@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ipod-dark-5" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(13,13,13)" stop-opacity="1.0000"/>
+        <stop offset="12.89%" stop-color="rgb(27,27,27)" stop-opacity="1.0000"/>
+        <stop offset="34.42%" stop-color="rgb(45,45,45)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(51,51,51)" stop-opacity="1.0000"/>
+        <stop offset="65.45%" stop-color="rgb(45,45,45)" stop-opacity="1.0000"/>
+        <stop offset="85.76%" stop-color="rgb(29,29,29)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(13,13,13)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ipod-dark-5)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:12 2012"/>
+  </metadata>
+</svg>

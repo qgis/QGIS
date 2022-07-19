@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="OTHR wood" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="10.70%" stop-color="rgb(35,26,11)" stop-opacity="1.0000"/>
+        <stop offset="21.41%" stop-color="rgb(71,53,22)" stop-opacity="1.0000"/>
+        <stop offset="23.02%" stop-color="rgb(78,55,32)" stop-opacity="1.0000"/>
+        <stop offset="24.63%" stop-color="rgb(86,58,42)" stop-opacity="1.0000"/>
+        <stop offset="29.21%" stop-color="rgb(95,71,48)" stop-opacity="1.0000"/>
+        <stop offset="33.79%" stop-color="rgb(104,84,55)" stop-opacity="1.0000"/>
+        <stop offset="36.98%" stop-color="rgb(117,90,69)" stop-opacity="1.0000"/>
+        <stop offset="40.17%" stop-color="rgb(131,96,82)" stop-opacity="1.0000"/>
+        <stop offset="43.11%" stop-color="rgb(136,105,82)" stop-opacity="1.0000"/>
+        <stop offset="46.05%" stop-color="rgb(141,114,82)" stop-opacity="1.0000"/>
+        <stop offset="50.24%" stop-color="rgb(148,127,87)" stop-opacity="1.0000"/>
+        <stop offset="54.43%" stop-color="rgb(154,139,92)" stop-opacity="1.0000"/>
+        <stop offset="58.01%" stop-color="rgb(164,148,100)" stop-opacity="1.0000"/>
+        <stop offset="61.60%" stop-color="rgb(174,157,108)" stop-opacity="1.0000"/>
+        <stop offset="65.38%" stop-color="rgb(188,165,114)" stop-opacity="1.0000"/>
+        <stop offset="69.15%" stop-color="rgb(203,174,121)" stop-opacity="1.0000"/>
+        <stop offset="74.74%" stop-color="rgb(213,189,139)" stop-opacity="1.0000"/>
+        <stop offset="80.34%" stop-color="rgb(224,204,157)" stop-opacity="1.0000"/>
+        <stop offset="83.17%" stop-color="rgb(235,209,173)" stop-opacity="1.0000"/>
+        <stop offset="85.99%" stop-color="rgb(247,214,190)" stop-opacity="1.0000"/>
+        <stop offset="89.69%" stop-color="rgb(251,226,195)" stop-opacity="1.0000"/>
+        <stop offset="93.39%" stop-color="rgb(255,237,200)" stop-opacity="1.0000"/>
+        <stop offset="95.12%" stop-color="rgb(255,242,212)" stop-opacity="1.0000"/>
+        <stop offset="96.85%" stop-color="rgb(255,247,223)" stop-opacity="1.0000"/>
+        <stop offset="98.20%" stop-color="rgb(255,251,231)" stop-opacity="1.0000"/>
+        <stop offset="99.55%" stop-color="rgb(255,255,239)" stop-opacity="1.0000"/>
+        <stop offset="99.77%" stop-color="rgb(255,255,247)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#OTHR wood)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:37 2012"/>
+  </metadata>
+</svg>

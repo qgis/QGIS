@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj-a-rainbow" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(248,28,95)" stop-opacity="1.0000"/>
+        <stop offset="1.90%" stop-color="rgb(250,26,62)" stop-opacity="1.0000"/>
+        <stop offset="5.00%" stop-color="rgb(251,25,30)" stop-opacity="1.0000"/>
+        <stop offset="11.01%" stop-color="rgb(250,95,26)" stop-opacity="1.0000"/>
+        <stop offset="15.99%" stop-color="rgb(249,130,25)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(252,163,24)" stop-opacity="1.0000"/>
+        <stop offset="26.00%" stop-color="rgb(252,217,24)" stop-opacity="1.0000"/>
+        <stop offset="31.01%" stop-color="rgb(250,237,24)" stop-opacity="1.0000"/>
+        <stop offset="35.01%" stop-color="rgb(227,251,25)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(201,252,24)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(119,199,71)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(54,186,73)" stop-opacity="1.0000"/>
+        <stop offset="54.00%" stop-color="rgb(54,186,147)" stop-opacity="1.0000"/>
+        <stop offset="59.01%" stop-color="rgb(25,204,225)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(67,138,255)" stop-opacity="1.0000"/>
+        <stop offset="67.99%" stop-color="rgb(67,116,255)" stop-opacity="1.0000"/>
+        <stop offset="72.00%" stop-color="rgb(89,67,255)" stop-opacity="1.0000"/>
+        <stop offset="76.00%" stop-color="rgb(125,67,255)" stop-opacity="1.0000"/>
+        <stop offset="81.01%" stop-color="rgb(124,16,208)" stop-opacity="1.0000"/>
+        <stop offset="86.01%" stop-color="rgb(162,16,210)" stop-opacity="1.0000"/>
+        <stop offset="88.60%" stop-color="rgb(185,16,192)" stop-opacity="1.0000"/>
+        <stop offset="89.99%" stop-color="rgb(208,16,174)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(208,16,115)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(248,26,68)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj-a-rainbow)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:10 2012"/>
+  </metadata>
+</svg>

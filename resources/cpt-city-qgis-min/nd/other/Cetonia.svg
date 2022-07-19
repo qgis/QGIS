@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Cetonia" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(33,30,21)" stop-opacity="1.0000"/>
+        <stop offset="6.25%" stop-color="rgb(40,33,24)" stop-opacity="1.0000"/>
+        <stop offset="12.50%" stop-color="rgb(48,35,26)" stop-opacity="1.0000"/>
+        <stop offset="18.75%" stop-color="rgb(84,47,39)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(121,58,51)" stop-opacity="1.0000"/>
+        <stop offset="31.25%" stop-color="rgb(137,97,60)" stop-opacity="1.0000"/>
+        <stop offset="37.50%" stop-color="rgb(153,137,68)" stop-opacity="1.0000"/>
+        <stop offset="43.75%" stop-color="rgb(148,149,72)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(143,161,75)" stop-opacity="1.0000"/>
+        <stop offset="56.25%" stop-color="rgb(132,180,89)" stop-opacity="1.0000"/>
+        <stop offset="62.50%" stop-color="rgb(122,199,103)" stop-opacity="1.0000"/>
+        <stop offset="68.75%" stop-color="rgb(103,196,102)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(85,194,101)" stop-opacity="1.0000"/>
+        <stop offset="81.25%" stop-color="rgb(73,153,85)" stop-opacity="1.0000"/>
+        <stop offset="87.50%" stop-color="rgb(61,112,69)" stop-opacity="1.0000"/>
+        <stop offset="93.75%" stop-color="rgb(48,86,56)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(36,59,43)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Cetonia)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:31 2012"/>
+  </metadata>
+</svg>

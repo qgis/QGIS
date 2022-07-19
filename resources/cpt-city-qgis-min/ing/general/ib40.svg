@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ib40" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(230,247,250)" stop-opacity="1.0000"/>
+        <stop offset="4.00%" stop-color="rgb(244,254,253)" stop-opacity="1.0000"/>
+        <stop offset="10.01%" stop-color="rgb(209,234,195)" stop-opacity="1.0000"/>
+        <stop offset="15.69%" stop-color="rgb(228,244,223)" stop-opacity="1.0000"/>
+        <stop offset="15.99%" stop-color="rgb(247,253,251)" stop-opacity="1.0000"/>
+        <stop offset="19.59%" stop-color="rgb(223,239,225)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(198,224,199)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(178,212,224)" stop-opacity="1.0000"/>
+        <stop offset="33.01%" stop-color="rgb(222,241,247)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(246,255,254)" stop-opacity="1.0000"/>
+        <stop offset="47.00%" stop-color="rgb(215,244,240)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(226,249,255)" stop-opacity="1.0000"/>
+        <stop offset="61.01%" stop-color="rgb(242,255,241)" stop-opacity="1.0000"/>
+        <stop offset="62.98%" stop-color="rgb(217,242,240)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(191,229,238)" stop-opacity="1.0000"/>
+        <stop offset="67.34%" stop-color="rgb(192,227,211)" stop-opacity="1.0000"/>
+        <stop offset="68.99%" stop-color="rgb(192,224,183)" stop-opacity="1.0000"/>
+        <stop offset="78.00%" stop-color="rgb(236,251,244)" stop-opacity="1.0000"/>
+        <stop offset="82.01%" stop-color="rgb(189,213,179)" stop-opacity="1.0000"/>
+        <stop offset="93.99%" stop-color="rgb(246,255,255)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(237,253,252)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ib40)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:55 2012"/>
+  </metadata>
+</svg>

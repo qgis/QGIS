@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://xkcd.com/">
+      <name>Randall Munroe</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Creative Commons Attribution-NonCommercial 2.5 Generic
+    </informal>
+    <year>2012</year>
+    <text href="http://creativecommons.org/licenses/by-nc/2.5/"/>
+  </license>
+  <src>
+    <format>PNG image</format>
+    <link href="http://xkcd.com/1040/">XKCD illustration of bathymetry</link>
+  </src>
+  <distribute>
+    <qgis distribute="noncomm" license="ccnc"/>
+  </distribute>
+</copying>

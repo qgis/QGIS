@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="MOS_6581" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(140,15,45)" stop-opacity="1.0000"/>
+        <stop offset="19.50%" stop-color="rgb(140,15,45)" stop-opacity="1.0000"/>
+        <stop offset="39.00%" stop-color="rgb(148,45,63)" stop-opacity="1.0000"/>
+        <stop offset="48.00%" stop-color="rgb(157,75,80)" stop-opacity="1.0000"/>
+        <stop offset="57.00%" stop-color="rgb(165,110,97)" stop-opacity="1.0000"/>
+        <stop offset="58.50%" stop-color="rgb(173,144,114)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(182,169,132)" stop-opacity="1.0000"/>
+        <stop offset="62.00%" stop-color="rgb(190,194,149)" stop-opacity="1.0000"/>
+        <stop offset="64.00%" stop-color="rgb(219,206,154)" stop-opacity="1.0000"/>
+        <stop offset="82.00%" stop-color="rgb(247,218,158)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(247,218,158)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#MOS_6581)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:55 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="sancristobal-21" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(49, 255, 255)" stop-opacity="1.0000"/>
+        <stop offset="1.37%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="3.86%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="4.69%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="7.45%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="22.05%" stop-color="rgb(49, 255, 255)" stop-opacity="1.0000"/>
+        <stop offset="22.88%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="25.90%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="26.44%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="28.93%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="44.36%" stop-color="rgb(49, 255, 255)" stop-opacity="1.0000"/>
+        <stop offset="45.19%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="48.22%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="48.75%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="51.25%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="66.38%" stop-color="rgb(49, 255, 255)" stop-opacity="1.0000"/>
+        <stop offset="67.21%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="69.70%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="70.53%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="73.27%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="87.60%" stop-color="rgb(49, 255, 255)" stop-opacity="1.0000"/>
+        <stop offset="88.43%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="91.46%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="92.02%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="95.04%" stop-color="rgb(174, 174, 41)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(49, 255, 255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#sancristobal-21)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:12:45 2014"/>
+  </metadata>
+</svg>

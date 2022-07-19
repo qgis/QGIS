@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="losalcarrizos-19" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="0.56%" stop-color="rgb(241, 255, 87)" stop-opacity="1.0000"/>
+        <stop offset="19.02%" stop-color="rgb(241, 255, 87)" stop-opacity="1.0000"/>
+        <stop offset="19.56%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="29.76%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="30.30%" stop-color="rgb(54, 255, 27)" stop-opacity="1.0000"/>
+        <stop offset="39.40%" stop-color="rgb(54, 255, 27)" stop-opacity="1.0000"/>
+        <stop offset="39.67%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="49.58%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="49.58%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="59.79%" stop-color="rgb(13, 13, 13)" stop-opacity="1.0000"/>
+        <stop offset="60.06%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="70.24%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="70.24%" stop-color="rgb(54, 255, 27)" stop-opacity="1.0000"/>
+        <stop offset="79.35%" stop-color="rgb(54, 255, 27)" stop-opacity="1.0000"/>
+        <stop offset="79.88%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="89.53%" stop-color="rgb(230, 241, 255)" stop-opacity="1.0000"/>
+        <stop offset="89.82%" stop-color="rgb(230, 241, 255)" stop-opacity="0.5000"/>
+        <stop offset="90.09%" stop-color="rgb(230, 241, 255)" stop-opacity="0.5000"/>
+        <stop offset="90.36%" stop-color="rgb(241, 255, 87)" stop-opacity="0.5000"/>
+        <stop offset="98.90%" stop-color="rgb(241, 255, 87)" stop-opacity="0.5000"/>
+        <stop offset="100.00%" stop-color="rgb(241, 255, 87)" stop-opacity="0.7400"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#losalcarrizos-19)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:12:43 2014"/>
+  </metadata>
+</svg>

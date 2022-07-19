@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj-black-velvet" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(35,38,33)" stop-opacity="1.0000"/>
+        <stop offset="11.01%" stop-color="rgb(114,83,93)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(73,70,78)" stop-opacity="1.0000"/>
+        <stop offset="29.00%" stop-color="rgb(44,47,76)" stop-opacity="1.0000"/>
+        <stop offset="39.99%" stop-color="rgb(58,54,60)" stop-opacity="1.0000"/>
+        <stop offset="51.00%" stop-color="rgb(31,26,30)" stop-opacity="1.0000"/>
+        <stop offset="60.01%" stop-color="rgb(44,47,76)" stop-opacity="1.0000"/>
+        <stop offset="71.00%" stop-color="rgb(102,86,89)" stop-opacity="1.0000"/>
+        <stop offset="83.01%" stop-color="rgb(106,115,122)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(91,73,81)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj-black-velvet)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:12 2012"/>
+  </metadata>
+</svg>

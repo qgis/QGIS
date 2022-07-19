@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>ibcao</dir>
+  <name>The IBCAO scheme for arctic bathymetry</name>
+  <full>
+    A scheme for IBCAO: the International Bathymetric Chart of the
+    Arctic Ocean. The scheme was taken from the RP-2 poster of the
+    bathymetry.
+  </full>
+  <date>01/08/2012</date>
+</description>

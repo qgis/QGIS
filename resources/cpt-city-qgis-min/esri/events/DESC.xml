@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>events</dir>
+  <name>Geospatial events and processes</name>
+  <full>
+    These ramps can be used to symbolic continuous data that relates
+    to environmental events such as active events like fires; gradual
+    events like desertification, seasonal event shifts and water
+    events related to water direction currents and velocity.
+  </full>
+  <date>01/08/2012</date>
+</description>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="CLTH purple pants" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="18.11%" stop-color="rgb(52,41,81)" stop-opacity="1.0000"/>
+        <stop offset="36.23%" stop-color="rgb(104,82,161)" stop-opacity="1.0000"/>
+        <stop offset="39.77%" stop-color="rgb(114,91,166)" stop-opacity="1.0000"/>
+        <stop offset="43.31%" stop-color="rgb(125,100,171)" stop-opacity="1.0000"/>
+        <stop offset="46.60%" stop-color="rgb(138,107,174)" stop-opacity="1.0000"/>
+        <stop offset="49.88%" stop-color="rgb(151,115,178)" stop-opacity="1.0000"/>
+        <stop offset="58.40%" stop-color="rgb(171,138,192)" stop-opacity="1.0000"/>
+        <stop offset="66.91%" stop-color="rgb(191,161,206)" stop-opacity="1.0000"/>
+        <stop offset="77.37%" stop-color="rgb(218,189,218)" stop-opacity="1.0000"/>
+        <stop offset="87.83%" stop-color="rgb(245,217,231)" stop-opacity="1.0000"/>
+        <stop offset="93.91%" stop-color="rgb(250,236,243)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#CLTH purple pants)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:28 2012"/>
+  </metadata>
+</svg>

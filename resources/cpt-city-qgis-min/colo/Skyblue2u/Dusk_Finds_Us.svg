@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Dusk_Finds_Us" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(150,138,162)" stop-opacity="1.0000"/>
+        <stop offset="52.00%" stop-color="rgb(150,138,162)" stop-opacity="1.0000"/>
+        <stop offset="52.00%" stop-color="rgb(162,119,148)" stop-opacity="1.0000"/>
+        <stop offset="56.00%" stop-color="rgb(162,119,148)" stop-opacity="1.0000"/>
+        <stop offset="56.00%" stop-color="rgb(173,100,134)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(173,100,134)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(185,80,121)" stop-opacity="1.0000"/>
+        <stop offset="67.00%" stop-color="rgb(185,80,121)" stop-opacity="1.0000"/>
+        <stop offset="67.00%" stop-color="rgb(207,42,93)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(207,42,93)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Dusk_Finds_Us)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:29 2012"/>
+  </metadata>
+</svg>

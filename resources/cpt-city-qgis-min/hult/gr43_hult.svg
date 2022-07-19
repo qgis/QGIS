@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="gr43_hult" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(208,203,235)" stop-opacity="1.0000"/>
+        <stop offset="7.01%" stop-color="rgb(197,144,105)" stop-opacity="1.0000"/>
+        <stop offset="10.01%" stop-color="rgb(208,203,235)" stop-opacity="1.0000"/>
+        <stop offset="12.99%" stop-color="rgb(211,153,111)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(175,199,186)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(140,178,157)" stop-opacity="1.0000"/>
+        <stop offset="35.01%" stop-color="rgb(212,172,142)" stop-opacity="1.0000"/>
+        <stop offset="42.99%" stop-color="rgb(197,144,105)" stop-opacity="1.0000"/>
+        <stop offset="49.00%" stop-color="rgb(208,203,235)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(175,169,211)" stop-opacity="1.0000"/>
+        <stop offset="64.99%" stop-color="rgb(141,132,109)" stop-opacity="1.0000"/>
+        <stop offset="74.00%" stop-color="rgb(162,142,94)" stop-opacity="1.0000"/>
+        <stop offset="84.01%" stop-color="rgb(64,98,79)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(64,98,79)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#gr43_hult)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:19 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>oc</dir>
+  <name>Colour scales from NASA's OceanColor site</name>
+  <full>
+    The gradients from NASA's OceanColor site, designed for global
+    maps of ocean chlorophyll levels, surface temperature and other
+    parameters.
+  </full>
+  <date>01/08/2012</date>
+</description>

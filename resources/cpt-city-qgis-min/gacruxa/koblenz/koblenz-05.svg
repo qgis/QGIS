@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="koblenz-05" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(189, 216, 225)" stop-opacity="1.0000"/>
+        <stop offset="0.56%" stop-color="rgb(189, 216, 225)" stop-opacity="0.9909"/>
+        <stop offset="30.30%" stop-color="rgb(225, 243, 252)" stop-opacity="0.5107"/>
+        <stop offset="59.79%" stop-color="rgb(252, 252, 252)" stop-opacity="0.0343"/>
+        <stop offset="60.06%" stop-color="rgb(249, 247, 250)" stop-opacity="0.0300"/>
+        <stop offset="69.48%" stop-color="rgb(151, 105, 197)" stop-opacity="0.0300"/>
+        <stop offset="69.97%" stop-color="rgb(146, 97, 195)" stop-opacity="0.0300"/>
+        <stop offset="70.50%" stop-color="rgb(140, 89, 192)" stop-opacity="0.5150"/>
+        <stop offset="70.53%" stop-color="rgb(140, 89, 192)" stop-opacity="1.0000"/>
+        <stop offset="71.07%" stop-color="rgb(135, 81, 189)" stop-opacity="0.9426"/>
+        <stop offset="79.61%" stop-color="rgb(135, 81, 189)" stop-opacity="0.0300"/>
+        <stop offset="90.01%" stop-color="rgb(135, 81, 189)" stop-opacity="0.5150"/>
+        <stop offset="100.00%" stop-color="rgb(135, 81, 189)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#koblenz-05)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:12:48 2014"/>
+  </metadata>
+</svg>

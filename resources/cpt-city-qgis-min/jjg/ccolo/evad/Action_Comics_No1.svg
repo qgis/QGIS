@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Action_Comics_No1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(240,190,7)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(240,190,7)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(246,169,23)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(253,148,39)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(226,84,32)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(199,20,24)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(158,23,40)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(117,26,57)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(84,56,74)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(51,86,92)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(51,86,92)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Action_Comics_No1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:52 2012"/>
+  </metadata>
+</svg>

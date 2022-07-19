@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="CLTH pink ribbon" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="14.23%" stop-color="rgb(63,30,24)" stop-opacity="1.0000"/>
+        <stop offset="28.47%" stop-color="rgb(127,59,47)" stop-opacity="1.0000"/>
+        <stop offset="31.57%" stop-color="rgb(138,66,59)" stop-opacity="1.0000"/>
+        <stop offset="34.68%" stop-color="rgb(150,72,70)" stop-opacity="1.0000"/>
+        <stop offset="44.51%" stop-color="rgb(182,95,98)" stop-opacity="1.0000"/>
+        <stop offset="54.34%" stop-color="rgb(215,117,127)" stop-opacity="1.0000"/>
+        <stop offset="60.81%" stop-color="rgb(222,138,132)" stop-opacity="1.0000"/>
+        <stop offset="67.29%" stop-color="rgb(229,158,137)" stop-opacity="1.0000"/>
+        <stop offset="71.73%" stop-color="rgb(225,174,144)" stop-opacity="1.0000"/>
+        <stop offset="76.18%" stop-color="rgb(221,191,151)" stop-opacity="1.0000"/>
+        <stop offset="88.09%" stop-color="rgb(238,223,203)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#CLTH pink ribbon)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:29 2012"/>
+  </metadata>
+</svg>

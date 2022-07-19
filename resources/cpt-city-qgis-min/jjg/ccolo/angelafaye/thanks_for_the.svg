@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="thanks_for_the" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(166,158,128)" stop-opacity="1.0000"/>
+        <stop offset="18.50%" stop-color="rgb(166,158,128)" stop-opacity="1.0000"/>
+        <stop offset="37.00%" stop-color="rgb(195,172,142)" stop-opacity="1.0000"/>
+        <stop offset="44.00%" stop-color="rgb(224,186,155)" stop-opacity="1.0000"/>
+        <stop offset="51.00%" stop-color="rgb(227,178,140)" stop-opacity="1.0000"/>
+        <stop offset="53.00%" stop-color="rgb(231,169,126)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(220,151,121)" stop-opacity="1.0000"/>
+        <stop offset="57.00%" stop-color="rgb(210,133,116)" stop-opacity="1.0000"/>
+        <stop offset="59.00%" stop-color="rgb(134,79,75)" stop-opacity="1.0000"/>
+        <stop offset="79.50%" stop-color="rgb(59,25,34)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(59,25,34)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#thanks_for_the)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:25 2012"/>
+  </metadata>
+</svg>

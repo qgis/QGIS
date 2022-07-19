@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>hypsometry</dir>
+  <name>Hypsometry: elevation and bathymetry</name>
+  <full>
+    Hypsometry relates to depictions of the relationship between land
+    elevations and sea-level: these ramps can be used to assign colors
+    to various elevation models. The color ramps include symbology for
+    both terrestrial and bathymetric data.
+  </full>
+  <date>01/08/2012</date>
+</description>

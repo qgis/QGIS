@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj4-anharmi" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(160,77,223)" stop-opacity="1.0000"/>
+        <stop offset="22.00%" stop-color="rgb(196,59,178)" stop-opacity="1.0000"/>
+        <stop offset="42.99%" stop-color="rgb(198,215,233)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(134,52,222)" stop-opacity="1.0000"/>
+        <stop offset="82.01%" stop-color="rgb(76,97,211)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(57,99,177)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj4-anharmi)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:59 2012"/>
+  </metadata>
+</svg>

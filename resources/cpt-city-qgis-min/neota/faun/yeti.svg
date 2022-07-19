@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FAUN yeti" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="23.59%" stop-color="rgb(56,60,72)" stop-opacity="1.0000"/>
+        <stop offset="47.18%" stop-color="rgb(113,120,145)" stop-opacity="1.0000"/>
+        <stop offset="51.30%" stop-color="rgb(120,131,154)" stop-opacity="1.0000"/>
+        <stop offset="55.42%" stop-color="rgb(128,143,164)" stop-opacity="1.0000"/>
+        <stop offset="64.10%" stop-color="rgb(146,166,186)" stop-opacity="1.0000"/>
+        <stop offset="72.77%" stop-color="rgb(163,190,208)" stop-opacity="1.0000"/>
+        <stop offset="78.95%" stop-color="rgb(177,207,223)" stop-opacity="1.0000"/>
+        <stop offset="85.12%" stop-color="rgb(190,223,238)" stop-opacity="1.0000"/>
+        <stop offset="88.63%" stop-color="rgb(207,230,239)" stop-opacity="1.0000"/>
+        <stop offset="92.14%" stop-color="rgb(223,238,240)" stop-opacity="1.0000"/>
+        <stop offset="96.07%" stop-color="rgb(239,246,247)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FAUN yeti)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:45 2012"/>
+  </metadata>
+</svg>

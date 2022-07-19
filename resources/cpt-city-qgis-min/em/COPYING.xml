@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Erika Mackay</name>
+      <org>
+	Graphics Department
+	National Institute of Water and Atmospheric Research Ltd. (NIWA)
+	Private Bag 14-901, Kilbirnie, Wellington, New Zealand
+      </org>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2004</year>
+    <text>
+      Free to use
+    </text>
+  </license>
+  <src>
+    <format>GMT cpt</format>
+    <remark>Contributed by email, Tue, 2 Mar 2004</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

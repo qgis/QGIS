@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="vilaka-23" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="22.09%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="22.36%" stop-color="rgb(252, 252, 252)" stop-opacity="0.0000"/>
+        <stop offset="22.63%" stop-color="rgb(252, 252, 252)" stop-opacity="0.0000"/>
+        <stop offset="24.27%" stop-color="rgb(83, 83, 83)" stop-opacity="0.0000"/>
+        <stop offset="24.80%" stop-color="rgb(28, 28, 28)" stop-opacity="1.0000"/>
+        <stop offset="25.07%" stop-color="rgb(1, 1, 1)" stop-opacity="1.0000"/>
+        <stop offset="34.77%" stop-color="rgb(1, 1, 1)" stop-opacity="1.0000"/>
+        <stop offset="34.77%" stop-color="rgb(191, 181, 181)" stop-opacity="1.0000"/>
+        <stop offset="74.39%" stop-color="rgb(191, 181, 181)" stop-opacity="1.0000"/>
+        <stop offset="74.93%" stop-color="rgb(1, 1, 1)" stop-opacity="1.0000"/>
+        <stop offset="83.57%" stop-color="rgb(1, 1, 1)" stop-opacity="1.0000"/>
+        <stop offset="84.38%" stop-color="rgb(1, 1, 1)" stop-opacity="0.0000"/>
+        <stop offset="85.18%" stop-color="rgb(1, 1, 1)" stop-opacity="0.0000"/>
+        <stop offset="85.45%" stop-color="rgb(191, 181, 181)" stop-opacity="0.0000"/>
+        <stop offset="87.33%" stop-color="rgb(191, 181, 181)" stop-opacity="0.0000"/>
+        <stop offset="87.87%" stop-color="rgb(191, 181, 181)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(191, 181, 181)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#vilaka-23)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:12:27 2014"/>
+  </metadata>
+</svg>

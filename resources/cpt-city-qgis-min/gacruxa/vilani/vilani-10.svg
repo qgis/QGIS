@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="vilani-10" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(171, 171, 171)" stop-opacity="1.0000"/>
+        <stop offset="1.07%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="10.79%" stop-color="rgb(33, 191, 181)" stop-opacity="1.0000"/>
+        <stop offset="11.06%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="21.29%" stop-color="rgb(232, 99, 121)" stop-opacity="1.0000"/>
+        <stop offset="21.83%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="32.89%" stop-color="rgb(33, 191, 181)" stop-opacity="1.0000"/>
+        <stop offset="33.15%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="43.68%" stop-color="rgb(232, 99, 121)" stop-opacity="1.0000"/>
+        <stop offset="44.21%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="54.44%" stop-color="rgb(33, 191, 181)" stop-opacity="1.0000"/>
+        <stop offset="55.25%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="65.77%" stop-color="rgb(232, 99, 121)" stop-opacity="1.0000"/>
+        <stop offset="66.31%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(170, 229, 225)" stop-opacity="1.0000"/>
+        <stop offset="76.27%" stop-color="rgb(33, 191, 181)" stop-opacity="1.0000"/>
+        <stop offset="76.54%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="87.60%" stop-color="rgb(232, 99, 121)" stop-opacity="1.0000"/>
+        <stop offset="87.87%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="97.58%" stop-color="rgb(33, 191, 181)" stop-opacity="1.0000"/>
+        <stop offset="98.93%" stop-color="rgb(252, 252, 252)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(131, 131, 131)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#vilani-10)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:12:30 2014"/>
+  </metadata>
+</svg>

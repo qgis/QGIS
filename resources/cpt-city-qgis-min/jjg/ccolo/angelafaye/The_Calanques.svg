@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="The_Calanques" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(6,47,82)" stop-opacity="1.0000"/>
+        <stop offset="28.50%" stop-color="rgb(6,47,82)" stop-opacity="1.0000"/>
+        <stop offset="57.00%" stop-color="rgb(10,80,116)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(13,113,149)" stop-opacity="1.0000"/>
+        <stop offset="63.00%" stop-color="rgb(27,129,142)" stop-opacity="1.0000"/>
+        <stop offset="65.50%" stop-color="rgb(41,145,135)" stop-opacity="1.0000"/>
+        <stop offset="68.00%" stop-color="rgb(60,154,128)" stop-opacity="1.0000"/>
+        <stop offset="71.00%" stop-color="rgb(79,163,121)" stop-opacity="1.0000"/>
+        <stop offset="74.00%" stop-color="rgb(126,184,147)" stop-opacity="1.0000"/>
+        <stop offset="87.00%" stop-color="rgb(173,204,173)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(173,204,173)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#The_Calanques)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:32:25 2012"/>
+  </metadata>
+</svg>

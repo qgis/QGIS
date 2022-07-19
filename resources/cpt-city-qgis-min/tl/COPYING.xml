@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://thomas-lotze.de/">
+      <name>Thomas Lotze</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2004</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>GIMP gradient</format>
+    <remark>Contributed to the archive by the author, March 2004</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

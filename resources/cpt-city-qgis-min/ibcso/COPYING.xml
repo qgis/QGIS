@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.ibcso.org/">
+      <name>The IBCSO consortium</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2013</year>
+    <text>None</text>
+  </license>
+  <src>
+    <format>Plain text data file</format>
+    <remark>Contributed to the archive April 2013</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

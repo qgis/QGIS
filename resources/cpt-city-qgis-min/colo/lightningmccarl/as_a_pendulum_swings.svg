@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="as_a_pendulum_swings" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(30,25,44)" stop-opacity="1.0000"/>
+        <stop offset="79.00%" stop-color="rgb(30,25,44)" stop-opacity="1.0000"/>
+        <stop offset="79.00%" stop-color="rgb(70,59,78)" stop-opacity="1.0000"/>
+        <stop offset="82.00%" stop-color="rgb(70,59,78)" stop-opacity="1.0000"/>
+        <stop offset="82.00%" stop-color="rgb(109,92,112)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(109,92,112)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(164,122,116)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(164,122,116)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(219,152,120)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(219,152,120)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#as_a_pendulum_swings)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:36 2012"/>
+  </metadata>
+</svg>

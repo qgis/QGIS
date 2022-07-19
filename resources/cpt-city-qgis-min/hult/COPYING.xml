@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.hultshome.dk/">
+      <name>Hult</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2007</year>
+    <text>None specified</text>
+  </license>
+  <src>
+    <format>Paint Shop Pro gradient (grd version 3)</format>
+    <link href="http://www.hultshome.dk/gradients_hult/psp_gradients_en.htm">Download gradients</link>
+    <remark>Contributed to the archive by the author,
+      July 2007</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

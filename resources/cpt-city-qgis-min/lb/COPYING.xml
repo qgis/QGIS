@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.loadboy.com/">
+      <name>Loadboy Ltd</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use</informal>
+    <year>2008</year>
+    <text>
+      None
+    </text>
+  </license>
+  <src>
+    <format>Paint Shop Pro (grd version 3)</format>
+    <remark>
+      Permission to include the gradients in the archive
+      given in an email of Thu, 10 Apr 2008.
+    </remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="freeuse"/>
+  </distribute>
+</copying>

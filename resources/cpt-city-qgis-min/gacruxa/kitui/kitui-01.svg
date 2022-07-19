@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="kitui-01" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(248, 248, 248)" stop-opacity="1.0000"/>
+        <stop offset="0.83%" stop-color="rgb(238, 235, 231)" stop-opacity="0.2000"/>
+        <stop offset="6.62%" stop-color="rgb(173, 150, 120)" stop-opacity="1.0000"/>
+        <stop offset="7.15%" stop-color="rgb(167, 143, 110)" stop-opacity="0.6089"/>
+        <stop offset="7.71%" stop-color="rgb(165, 139, 106)" stop-opacity="0.2000"/>
+        <stop offset="13.77%" stop-color="rgb(152, 101, 65)" stop-opacity="1.0000"/>
+        <stop offset="14.04%" stop-color="rgb(151, 100, 63)" stop-opacity="0.2000"/>
+        <stop offset="14.87%" stop-color="rgb(150, 95, 58)" stop-opacity="0.2892"/>
+        <stop offset="21.48%" stop-color="rgb(150, 95, 58)" stop-opacity="1.0000"/>
+        <stop offset="21.75%" stop-color="rgb(150, 95, 58)" stop-opacity="0.6174"/>
+        <stop offset="22.05%" stop-color="rgb(147, 92, 56)" stop-opacity="0.2000"/>
+        <stop offset="28.10%" stop-color="rgb(95, 50, 27)" stop-opacity="1.0000"/>
+        <stop offset="28.66%" stop-color="rgb(97, 53, 30)" stop-opacity="0.2000"/>
+        <stop offset="42.43%" stop-color="rgb(164, 139, 107)" stop-opacity="1.0000"/>
+        <stop offset="42.97%" stop-color="rgb(167, 143, 110)" stop-opacity="0.4824"/>
+        <stop offset="43.26%" stop-color="rgb(165, 141, 108)" stop-opacity="0.2000"/>
+        <stop offset="60.60%" stop-color="rgb(95, 50, 27)" stop-opacity="0.9199"/>
+        <stop offset="62.52%" stop-color="rgb(118, 75, 49)" stop-opacity="1.0000"/>
+        <stop offset="62.82%" stop-color="rgb(121, 79, 53)" stop-opacity="0.2000"/>
+        <stop offset="70.24%" stop-color="rgb(211, 177, 140)" stop-opacity="1.0000"/>
+        <stop offset="70.53%" stop-color="rgb(214, 180, 143)" stop-opacity="0.2000"/>
+        <stop offset="71.07%" stop-color="rgb(221, 188, 150)" stop-opacity="0.2306"/>
+        <stop offset="84.57%" stop-color="rgb(246, 188, 166)" stop-opacity="1.0000"/>
+        <stop offset="85.13%" stop-color="rgb(248, 188, 167)" stop-opacity="0.0000"/>
+        <stop offset="94.78%" stop-color="rgb(248, 248, 248)" stop-opacity="0.9729"/>
+        <stop offset="95.04%" stop-color="rgb(248, 248, 248)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(248, 248, 248)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#kitui-01)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.50"/>
+    <created date="Wed Feb 12 23:11:38 2014"/>
+  </metadata>
+</svg>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FACE HAIR purple" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="9.06%" stop-color="rgb(40,22,0)" stop-opacity="1.0000"/>
+        <stop offset="18.13%" stop-color="rgb(81,44,0)" stop-opacity="1.0000"/>
+        <stop offset="24.85%" stop-color="rgb(99,54,20)" stop-opacity="1.0000"/>
+        <stop offset="31.58%" stop-color="rgb(117,63,41)" stop-opacity="1.0000"/>
+        <stop offset="37.13%" stop-color="rgb(136,75,73)" stop-opacity="1.0000"/>
+        <stop offset="42.69%" stop-color="rgb(155,87,106)" stop-opacity="1.0000"/>
+        <stop offset="50.88%" stop-color="rgb(178,106,112)" stop-opacity="1.0000"/>
+        <stop offset="59.06%" stop-color="rgb(200,124,117)" stop-opacity="1.0000"/>
+        <stop offset="69.01%" stop-color="rgb(213,161,132)" stop-opacity="1.0000"/>
+        <stop offset="78.95%" stop-color="rgb(226,197,147)" stop-opacity="1.0000"/>
+        <stop offset="89.47%" stop-color="rgb(241,226,201)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FACE HAIR purple)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:39 2012"/>
+  </metadata>
+</svg>

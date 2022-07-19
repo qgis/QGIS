@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="FAUN brown wolf" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="10.64%" stop-color="rgb(14,20,27)" stop-opacity="1.0000"/>
+        <stop offset="21.28%" stop-color="rgb(29,41,54)" stop-opacity="1.0000"/>
+        <stop offset="25.58%" stop-color="rgb(46,54,65)" stop-opacity="1.0000"/>
+        <stop offset="29.88%" stop-color="rgb(64,67,76)" stop-opacity="1.0000"/>
+        <stop offset="48.36%" stop-color="rgb(117,89,76)" stop-opacity="1.0000"/>
+        <stop offset="66.85%" stop-color="rgb(170,110,76)" stop-opacity="1.0000"/>
+        <stop offset="74.22%" stop-color="rgb(189,133,84)" stop-opacity="1.0000"/>
+        <stop offset="81.58%" stop-color="rgb(207,155,91)" stop-opacity="1.0000"/>
+        <stop offset="90.79%" stop-color="rgb(228,203,119)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(249,251,147)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#FAUN brown wolf)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:45 2012"/>
+  </metadata>
+</svg>

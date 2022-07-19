@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Trouble_Ahead" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(159,148,89)" stop-opacity="1.0000"/>
+        <stop offset="6.00%" stop-color="rgb(159,148,89)" stop-opacity="1.0000"/>
+        <stop offset="6.00%" stop-color="rgb(126,128,82)" stop-opacity="1.0000"/>
+        <stop offset="11.00%" stop-color="rgb(126,128,82)" stop-opacity="1.0000"/>
+        <stop offset="11.00%" stop-color="rgb(67,91,69)" stop-opacity="1.0000"/>
+        <stop offset="16.00%" stop-color="rgb(67,91,69)" stop-opacity="1.0000"/>
+        <stop offset="16.00%" stop-color="rgb(21,45,45)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(21,45,45)" stop-opacity="1.0000"/>
+        <stop offset="21.00%" stop-color="rgb(2,21,21)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(2,21,21)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Trouble_Ahead)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:42 2012"/>
+  </metadata>
+</svg>

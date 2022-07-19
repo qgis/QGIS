@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="bhw3-28" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(43,41,52)" stop-opacity="1.0000"/>
+        <stop offset="10.01%" stop-color="rgb(52,63,81)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(122,143,172)" stop-opacity="1.0000"/>
+        <stop offset="37.01%" stop-color="rgb(228,191,172)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(69,112,157)" stop-opacity="1.0000"/>
+        <stop offset="74.00%" stop-color="rgb(166,132,120)" stop-opacity="1.0000"/>
+        <stop offset="84.01%" stop-color="rgb(130,112,112)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(158,105,91)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#bhw3-28)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:24 2012"/>
+  </metadata>
+</svg>

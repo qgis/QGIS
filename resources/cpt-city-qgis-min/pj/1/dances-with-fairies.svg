@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj-dances-with-fairies" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(244,238,198)" stop-opacity="1.0000"/>
+        <stop offset="7.01%" stop-color="rgb(221,210,125)" stop-opacity="1.0000"/>
+        <stop offset="13.99%" stop-color="rgb(244,187,147)" stop-opacity="1.0000"/>
+        <stop offset="22.00%" stop-color="rgb(249,164,187)" stop-opacity="1.0000"/>
+        <stop offset="31.01%" stop-color="rgb(249,187,244)" stop-opacity="1.0000"/>
+        <stop offset="37.99%" stop-color="rgb(227,142,204)" stop-opacity="1.0000"/>
+        <stop offset="46.00%" stop-color="rgb(221,142,204)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(153,187,249)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(142,85,255)" stop-opacity="1.0000"/>
+        <stop offset="73.00%" stop-color="rgb(130,164,249)" stop-opacity="1.0000"/>
+        <stop offset="81.01%" stop-color="rgb(119,238,198)" stop-opacity="1.0000"/>
+        <stop offset="87.99%" stop-color="rgb(142,244,170)" stop-opacity="1.0000"/>
+        <stop offset="96.00%" stop-color="rgb(221,238,181)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(221,238,181)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj-dances-with-fairies)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:37:12 2012"/>
+  </metadata>
+</svg>

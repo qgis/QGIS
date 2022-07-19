@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="OTHR sunset in atlantis 2" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="25.15%" stop-color="rgb(63,63,76)" stop-opacity="1.0000"/>
+        <stop offset="50.29%" stop-color="rgb(126,126,153)" stop-opacity="1.0000"/>
+        <stop offset="57.89%" stop-color="rgb(147,142,145)" stop-opacity="1.0000"/>
+        <stop offset="65.48%" stop-color="rgb(167,158,137)" stop-opacity="1.0000"/>
+        <stop offset="66.47%" stop-color="rgb(170,159,139)" stop-opacity="1.0000"/>
+        <stop offset="67.46%" stop-color="rgb(172,160,141)" stop-opacity="1.0000"/>
+        <stop offset="68.45%" stop-color="rgb(175,161,143)" stop-opacity="1.0000"/>
+        <stop offset="69.43%" stop-color="rgb(177,162,146)" stop-opacity="1.0000"/>
+        <stop offset="70.42%" stop-color="rgb(180,163,148)" stop-opacity="1.0000"/>
+        <stop offset="71.41%" stop-color="rgb(182,164,150)" stop-opacity="1.0000"/>
+        <stop offset="72.39%" stop-color="rgb(185,165,152)" stop-opacity="1.0000"/>
+        <stop offset="73.38%" stop-color="rgb(187,166,154)" stop-opacity="1.0000"/>
+        <stop offset="74.37%" stop-color="rgb(190,167,157)" stop-opacity="1.0000"/>
+        <stop offset="75.36%" stop-color="rgb(192,168,159)" stop-opacity="1.0000"/>
+        <stop offset="76.34%" stop-color="rgb(195,169,161)" stop-opacity="1.0000"/>
+        <stop offset="77.33%" stop-color="rgb(197,169,163)" stop-opacity="1.0000"/>
+        <stop offset="78.32%" stop-color="rgb(200,170,165)" stop-opacity="1.0000"/>
+        <stop offset="79.30%" stop-color="rgb(202,171,167)" stop-opacity="1.0000"/>
+        <stop offset="80.29%" stop-color="rgb(205,172,170)" stop-opacity="1.0000"/>
+        <stop offset="81.28%" stop-color="rgb(207,172,172)" stop-opacity="1.0000"/>
+        <stop offset="82.26%" stop-color="rgb(210,174,175)" stop-opacity="1.0000"/>
+        <stop offset="83.25%" stop-color="rgb(212,178,179)" stop-opacity="1.0000"/>
+        <stop offset="84.24%" stop-color="rgb(215,182,183)" stop-opacity="1.0000"/>
+        <stop offset="85.22%" stop-color="rgb(217,186,187)" stop-opacity="1.0000"/>
+        <stop offset="86.21%" stop-color="rgb(219,190,191)" stop-opacity="1.0000"/>
+        <stop offset="87.19%" stop-color="rgb(222,194,195)" stop-opacity="1.0000"/>
+        <stop offset="88.18%" stop-color="rgb(224,198,199)" stop-opacity="1.0000"/>
+        <stop offset="89.16%" stop-color="rgb(226,203,203)" stop-opacity="1.0000"/>
+        <stop offset="90.15%" stop-color="rgb(229,207,207)" stop-opacity="1.0000"/>
+        <stop offset="91.13%" stop-color="rgb(231,211,211)" stop-opacity="1.0000"/>
+        <stop offset="92.12%" stop-color="rgb(233,216,216)" stop-opacity="1.0000"/>
+        <stop offset="93.10%" stop-color="rgb(236,220,220)" stop-opacity="1.0000"/>
+        <stop offset="94.09%" stop-color="rgb(238,224,225)" stop-opacity="1.0000"/>
+        <stop offset="95.07%" stop-color="rgb(240,229,229)" stop-opacity="1.0000"/>
+        <stop offset="96.06%" stop-color="rgb(243,233,233)" stop-opacity="1.0000"/>
+        <stop offset="97.04%" stop-color="rgb(245,238,238)" stop-opacity="1.0000"/>
+        <stop offset="98.03%" stop-color="rgb(247,243,243)" stop-opacity="1.0000"/>
+        <stop offset="99.01%" stop-color="rgb(250,247,247)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(252,252,252)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#OTHR sunset in atlantis 2)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:36 2012"/>
+  </metadata>
+</svg>

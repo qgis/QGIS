@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  version information for cpt-city packages
+-->
 <archive>
-  <!--version information for cpt-city packages-->
-  <version>2.07.2</version>
-  <variant>cpt-city-qgis-sel</variant>
-  <parent>
-    <version>2.07</version>
-    <variant>full</variant>
-  </parent>
-  <creator>Etienne Tourigny</creator>
-  <created>Mon Apr 22 14:27:17 2013</created>
+  <version>2.24</version>
+  <variant>full</variant>
+  <parent>none</parent>
+  <creator>J.J. Green</creator>
+  <created>Fri 23 Jul 21:24:28 BST 2021</created>
 </archive>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="OTHR purple house" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="1.46%" stop-color="rgb(4,4,4)" stop-opacity="1.0000"/>
+        <stop offset="2.92%" stop-color="rgb(8,8,8)" stop-opacity="1.0000"/>
+        <stop offset="2.92%" stop-color="rgb(9,15,16)" stop-opacity="1.0000"/>
+        <stop offset="11.11%" stop-color="rgb(21,31,57)" stop-opacity="1.0000"/>
+        <stop offset="19.30%" stop-color="rgb(34,47,98)" stop-opacity="1.0000"/>
+        <stop offset="26.55%" stop-color="rgb(67,60,106)" stop-opacity="1.0000"/>
+        <stop offset="33.80%" stop-color="rgb(101,73,113)" stop-opacity="1.0000"/>
+        <stop offset="35.03%" stop-color="rgb(102,76,115)" stop-opacity="1.0000"/>
+        <stop offset="36.26%" stop-color="rgb(104,79,118)" stop-opacity="1.0000"/>
+        <stop offset="41.52%" stop-color="rgb(124,90,130)" stop-opacity="1.0000"/>
+        <stop offset="46.78%" stop-color="rgb(145,100,143)" stop-opacity="1.0000"/>
+        <stop offset="55.26%" stop-color="rgb(153,122,170)" stop-opacity="1.0000"/>
+        <stop offset="63.74%" stop-color="rgb(161,144,197)" stop-opacity="1.0000"/>
+        <stop offset="81.87%" stop-color="rgb(208,200,226)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#OTHR purple house)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:36 2012"/>
+  </metadata>
+</svg>

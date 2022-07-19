@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Meghan Miller</name>
+      <alias>Crumblinwalls</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Not specified</informal>
+    <year>2006</year>
+    <text>
+      Not specified
+    </text>
+    <remark>
+      Permission received from Megan to put the files
+      in the archive in an email on Mon, 28 Aug 2006.
+    </remark>
+  </license>
+  <src>
+    <format>Paint Shop Pro (grd version 3)</format>
+    <remark>Downloaded from crumblingwalls.livejournal.com, which 
+    died May 2008</remark>
+  </src>
+  <distribute>
+    <qgis distribute="no" license="none"/>
+  </distribute>
+</copying>

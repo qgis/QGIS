@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <!-- href="http://www.fused-graphics.com/"> -->
+      <name>George Kemp</name>
+      <org>Fused Graphics</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Credit requested</informal>
+    <year>2009</year>
+    <text>
+      Thank you for downloading Vista Button Gradients by Fused Graphics! 
+      
+      These buttons can be used for anything you want but if you edit, 
+      distribute or send anybody these buttons please give credit to me 
+      and link to my website. www.Fused-Graphics.com Thanks.
+    </text>
+  </license>
+  <src>
+    <format>GIMP gradient (ggr)</format>
+    <!--
+    <link href="http://www.fused-graphics.com/?p=28">Blog entry</link>
+    -->
+    <remark>Website seems to be dead as of Nov 2011</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

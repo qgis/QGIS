@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="OTHR burnt clouds" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="16.08%" stop-color="rgb(51,40,28)" stop-opacity="1.0000"/>
+        <stop offset="32.16%" stop-color="rgb(102,79,56)" stop-opacity="1.0000"/>
+        <stop offset="40.64%" stop-color="rgb(128,99,70)" stop-opacity="1.0000"/>
+        <stop offset="49.12%" stop-color="rgb(153,119,84)" stop-opacity="1.0000"/>
+        <stop offset="61.11%" stop-color="rgb(190,148,104)" stop-opacity="1.0000"/>
+        <stop offset="73.10%" stop-color="rgb(226,176,124)" stop-opacity="1.0000"/>
+        <stop offset="84.21%" stop-color="rgb(241,208,168)" stop-opacity="1.0000"/>
+        <stop offset="95.32%" stop-color="rgb(255,241,212)" stop-opacity="1.0000"/>
+        <stop offset="97.66%" stop-color="rgb(255,248,234)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#OTHR burnt clouds)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:35 2012"/>
+  </metadata>
+</svg>

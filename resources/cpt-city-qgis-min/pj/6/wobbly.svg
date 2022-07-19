@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="pj6-wobbly" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(226,46,47)" stop-opacity="1.0000"/>
+        <stop offset="23.00%" stop-color="rgb(186,118,95)" stop-opacity="1.0000"/>
+        <stop offset="46.00%" stop-color="rgb(230,146,107)" stop-opacity="1.0000"/>
+        <stop offset="62.01%" stop-color="rgb(239,234,177)" stop-opacity="1.0000"/>
+        <stop offset="89.99%" stop-color="rgb(69,94,129)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(92,51,245)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#pj6-wobbly)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:36:49 2012"/>
+  </metadata>
+</svg>
