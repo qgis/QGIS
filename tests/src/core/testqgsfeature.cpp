@@ -23,6 +23,7 @@
 #include "qgsgeometry.h"
 #include "qgssymbol.h"
 #include "qgslinesymbol.h"
+#include "qgsunsetattributevalue.h"
 
 class TestQgsFeature: public QObject
 {
@@ -36,6 +37,7 @@ class TestQgsFeature: public QObject
     void attributesTest(); //test QgsAttributes
     void constructorTest(); //test default constructors
     void attributesToMap();
+    void unsetAttributes();
     void create();//test creating a feature
     void copy();// test cpy destruction (double delete)
     void assignment();
@@ -164,6 +166,18 @@ void TestQgsFeature::attributesToMap()
   const QgsAttributes attr3;
   const QgsAttributeMap map3 = attr3.toMap();
   QVERIFY( map3.isEmpty() );
+}
+
+void TestQgsFeature::unsetAttributes()
+{
+  QgsAttributes attr1;
+  attr1 << QVariant( 5 ) << QVariant() << QVariant( "val" ) << QVariant( QgsUnsetAttributeValue() )  << QVariant( QgsUnsetAttributeValue() );
+
+  QVERIFY( !attr1.isUnsetValue( 0 ) );
+  QVERIFY( !attr1.isUnsetValue( 1 ) );
+  QVERIFY( !attr1.isUnsetValue( 2 ) );
+  QVERIFY( attr1.isUnsetValue( 3 ) );
+  QVERIFY( attr1.isUnsetValue( 4 ) );
 }
 
 void TestQgsFeature::create()
