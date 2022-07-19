@@ -1048,7 +1048,7 @@ bool QgsCptCityColorRamp::loadFile()
 {
   if ( mFileLoaded )
   {
-    QgsDebugMsg( "File already loaded for " + mSchemeName + mVariantName );
+    QgsDebugMsgLevel( "File already loaded for " + mSchemeName + mVariantName, 2 );
     return true;
   }
 
