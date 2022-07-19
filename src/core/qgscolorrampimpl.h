@@ -773,6 +773,14 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     void loadPalette() { loadFile(); }
     bool hasMultiStops() const { return mMultiStops; }
 
+    /**
+     * Returns the source file name for a CPT \a schema and \a variant.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.28
+     */
+    static QString fileNameForVariant( const QString &schema, const QString &variant ) SIP_SKIP;
+
     QString fileName() const;
     bool loadFile();
     bool fileLoaded() const { return mFileLoaded; }
