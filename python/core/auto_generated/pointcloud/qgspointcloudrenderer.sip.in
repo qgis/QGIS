@@ -48,6 +48,78 @@ Returns a reference to the context's render context.
 %End
 
 
+
+    void setElevationPainter( QPainter *painter );
+%Docstring
+Sets the painter used to render elevation data
+
+.. versionadded:: 3.28
+%End
+
+    QPainter *elevationPainter() const;
+%Docstring
+Returns the painter used to render elevation data
+
+.. versionadded:: 3.28
+%End
+
+    void setElevationImage( QImage *image );
+%Docstring
+Sets the image used to store elevation data
+
+.. versionadded:: 3.28
+%End
+
+    QImage *elevationImage() const;
+%Docstring
+Returns the image used to store elevation data
+
+.. versionadded:: 3.28
+%End
+
+    void setUseEyeDomeLighting( bool useEyeDomeLighting );
+%Docstring
+Sets whether eye dome lighting will be used
+
+.. versionadded:: 3.28
+%End
+
+    bool useEyeDomeLighting() const;
+%Docstring
+Returns whether eye dome lighting will be used
+
+.. versionadded:: 3.28
+%End
+
+    void setEyeDomeLightingStrength( int strength );
+%Docstring
+Sets the eye dome lighting strength
+
+.. versionadded:: 3.28
+%End
+
+    double eyeDomeLightingStrength() const;
+%Docstring
+Returns the eye dome lighting strength
+
+.. versionadded:: 3.28
+%End
+
+    void setEyeDomeLightingDistance( int distance );
+%Docstring
+Sets the eye dome lighting distance
+
+.. versionadded:: 3.28
+%End
+
+    int eyeDomeLightingDistance() const;
+%Docstring
+Returns the eye dome lighting distance
+
+.. versionadded:: 3.28
+%End
+
+
     QgsVector3D scale() const;
 %Docstring
 Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -154,6 +226,24 @@ Returns any constant offset which must be applied to z values taken from the poi
 Returns the feedback object used to cancel rendering
 
 .. versionadded:: 3.20
+%End
+
+    double minZ() const;
+%Docstring
+Returns the minimum Z value rendered into the elevation map
+\sine QGIS 3.28
+%End
+
+    double maxZ() const;
+%Docstring
+Returns the maximum Z value rendered into the elevation map
+\sine QGIS 3.28
+%End
+
+    void updateZRange( double z );
+%Docstring
+Updates the Z range of the points rendered into the elevation map
+\sine QGIS 3.28
 %End
 
 
@@ -448,6 +538,42 @@ Creates a set of legend nodes representing the renderer.
 Returns a list of all rule keys for legend nodes created by the renderer.
 %End
 
+    bool useEyeDomeLighting() const;
+%Docstring
+Sets whether eye dome lighting effect will be used
+\sine QGIS 3.28
+%End
+
+    void setUseEyeDomeLighting( bool useEyeDomeLighting );
+%Docstring
+Returns whether eye dome lighting effect will be used
+\sine QGIS 3.28
+%End
+
+    double eyeDomeLightingStrength() const;
+%Docstring
+Returns the eye dome lighting strength value
+\sine QGIS 3.28
+%End
+
+    void setEyeDomeLightingStrength( double strength );
+%Docstring
+Sets the eye dome lighting strength value
+\sine QGIS 3.28
+%End
+
+    int eyeDomeLightingDistance() const;
+%Docstring
+Returns the eye dome lighting distance value
+\sine QGIS 3.28
+%End
+
+    void setEyeDomeLightingDistance( int distance );
+%Docstring
+Sets the eye dome lighting distance value
+\sine QGIS 3.28
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
@@ -464,6 +590,8 @@ Retrieves the z value for the point at index ``i``.
 %Docstring
 Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordinates).
 %End
+
+    void drawElevation( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
 %Docstring

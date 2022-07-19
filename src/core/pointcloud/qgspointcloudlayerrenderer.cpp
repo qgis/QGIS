@@ -67,12 +67,78 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mReadyToCompose = false;
 }
 
+float decodeElevation( const QColor &elevationColor )
+{
+  return elevationColor.redF() + ( elevationColor.greenF() + elevationColor.blueF() / 255.0 ) / 255.0;
+}
+
+void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRenderContext &context )
+{
+  double strength = context.eyeDomeLightingStrength();
+  double distance = context.eyeDomeLightingDistance();
+
+  float minZ = context.minZ();
+  float maxZ = context.maxZ();
+
+  for ( int i = distance; i < img->width() - distance; ++i )
+  {
+    for ( int j = distance; j < img->height() - distance; ++j )
+    {
+      QColor originalColor = img->pixelColor( i, j );
+      int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
+      float factor = 0.0f;
+      QColor centerElevationColor = elevationImg->pixelColor( i, j );
+      if ( centerElevationColor.alphaF() != 1.0f )
+      {
+        continue;
+      }
+      float centerDepth = decodeElevation( centerElevationColor );
+      centerDepth = ( centerDepth - minZ ) / ( maxZ - minZ );
+      int sampledPointsCount = 0;
+      for ( int k = 0; k < 4; ++k )
+      {
+        int neighbourCoordsX = i + distance * neighbours[2 * k];
+        int neighbourCoordsY = j + distance * neighbours[2 * k + 1];
+        QColor neighbourColor = elevationImg->pixelColor( neighbourCoordsX, neighbourCoordsY );
+        if ( neighbourColor.alphaF() != 1.0f )
+          continue;
+        sampledPointsCount++;
+        float neighbourDepth = decodeElevation( neighbourColor );
+        neighbourDepth = ( neighbourDepth - minZ ) / ( maxZ - minZ );
+        {
+          if ( centerDepth == 0.0f ) factor += 1.0f;
+          else factor += std::max<float>( 0, centerDepth - neighbourDepth );
+        }
+      }
+      if ( sampledPointsCount == 0 )
+        continue;
+      float shade = exp( -factor / sampledPointsCount * strength );
+      img->setPixelColor( i, j, QColor::fromRgbF( shade * originalColor.redF(), shade * originalColor.greenF(), shade * originalColor.blueF(), originalColor.alphaF() ) );
+    }
+  }
+};
+
 bool QgsPointCloudLayerRenderer::render()
 {
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset, mFeedback.get() );
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
+  std::unique_ptr<QImage> elevationImage;
+  std::unique_ptr<QPainter> elevationPainter;
+  bool applyEdl = mRenderer && mRenderer->useEyeDomeLighting();
+  context.setUseEyeDomeLighting( applyEdl );
+  if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
+  {
+    if ( applyEdl )
+    {
+      elevationImage.reset( new QImage( painterImage->size(), QImage::Format::Format_ARGB32 ) );
+      elevationImage->fill( QColor::fromRgbF( 0, 0, 0, 0 ) );
+      elevationPainter.reset( new QPainter );
+      elevationPainter->begin( elevationImage.get() );
+      context.setElevationPainter( elevationPainter.get() );
+    }
+  }
 
   QgsScopedQPainterState painterState( painter );
   context.renderContext().setPainterFlagsUsingContext( painter );
@@ -226,6 +292,18 @@ bool QgsPointCloudLayerRenderer::render()
 #endif
 
   mRenderer->stopRender( context );
+
+  if ( applyEdl )
+  {
+    if ( QImage *drawnImage = dynamic_cast<QImage *>( painter->device() ) )
+    {
+      if ( QPainter *elevationPainter = context.elevationPainter() )
+      {
+        elevationPainter->end();
+      }
+      applyEyeDomeLighting( drawnImage, elevationImage.get(), context );
+    }
+  }
 
   mReadyToCompose = true;
   return !canceled;

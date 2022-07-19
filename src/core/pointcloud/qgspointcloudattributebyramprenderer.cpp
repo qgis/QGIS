@@ -62,8 +62,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
     return;
   const QgsPointCloudAttribute::DataType attributeType = attribute->type();
 
+  const bool renderElevation = context.useEyeDomeLighting();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite();
 
   const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
   const bool applyXOffset = attribute->name() == QLatin1String( "X" );
@@ -87,13 +87,10 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
       break;
     }
 
-    if ( considerZ )
-    {
-      // z value filtering is cheapest, if we're doing it...
-      z = pointZ( context, ptr, i );
-      if ( !zRange.contains( z ) )
-        continue;
-    }
+    // z value filtering is cheapest, if we're doing it...
+    z = pointZ( context, ptr, i );
+    if ( !zRange.contains( z ) )
+      continue;
 
     pointXY( context, ptr, i, x, y );
     if ( visibleExtent.contains( x, y ) )
@@ -122,6 +119,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
       drawPoint( x, y, QColor( red, green, blue, alpha ), context );
+      if ( renderElevation )
+        drawElevation( x, y, z, context );
 
       rendered++;
     }

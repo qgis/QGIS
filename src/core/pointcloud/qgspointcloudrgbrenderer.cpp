@@ -85,6 +85,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const bool useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   const bool useGreenContrastEnhancement = mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
 
+  const bool renderElevation = context.useEyeDomeLighting();
   const QgsDoubleRange zRange = context.renderContext().zRange();
   const bool considerZ = !zRange.isInfinite();
 
@@ -158,6 +159,8 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
       blue = std::max( 0, std::min( 255, blue ) );
 
       drawPoint( x, y, QColor( red, green, blue ), context );
+      if ( renderElevation )
+        drawElevation( x, y, z, context );
       rendered++;
     }
   }

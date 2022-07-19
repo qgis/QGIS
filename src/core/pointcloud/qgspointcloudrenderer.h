@@ -74,6 +74,68 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
+
+    /**
+     * Sets the painter used to render elevation data
+     * \since QGIS 3.28
+     */
+    void setElevationPainter( QPainter *painter ) { mElevationPainter = painter; }
+
+    /**
+     * Returns the painter used to render elevation data
+     * \since QGIS 3.28
+     */
+    QPainter *elevationPainter() const { return mElevationPainter; }
+
+    /**
+     * Sets the image used to store elevation data
+     * \since QGIS 3.28
+     */
+    void setElevationImage( QImage *image ) { mElevationImage = image; }
+
+    /**
+     * Returns the image used to store elevation data
+     * \since QGIS 3.28
+     */
+    QImage *elevationImage() const { return mElevationImage; }
+
+    /**
+     * Sets whether eye dome lighting will be used
+     * \since QGIS 3.28
+     */
+    void setUseEyeDomeLighting( bool useEyeDomeLighting ) { mUseEyeDomeLighting = useEyeDomeLighting; }
+
+    /**
+     * Returns whether eye dome lighting will be used
+     * \since QGIS 3.28
+     */
+    bool useEyeDomeLighting() const { return mUseEyeDomeLighting; }
+
+    /**
+     * Sets the eye dome lighting strength
+     * \since QGIS 3.28
+     */
+    void setEyeDomeLightingStrength( int strength ) { mEyeDomeLightingStrength = strength; }
+
+    /**
+     * Returns the eye dome lighting strength
+     * \since QGIS 3.28
+     */
+    double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
+
+    /**
+     * Sets the eye dome lighting distance
+     * \since QGIS 3.28
+     */
+    void setEyeDomeLightingDistance( int distance ) { mEyeDomeLightingDistance = distance; }
+
+    /**
+     * Returns the eye dome lighting distance
+     * \since QGIS 3.28
+     */
+    int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
+
+
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
      */
@@ -173,6 +235,28 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
+    /**
+     * Returns the minimum Z value rendered into the elevation map
+     * \sine QGIS 3.28
+     */
+    double minZ() const { return mMinZ; }
+
+    /**
+     * Returns the maximum Z value rendered into the elevation map
+     * \sine QGIS 3.28
+     */
+    double maxZ() const { return mMaxZ; }
+
+    /**
+     * Updates the Z range of the points rendered into the elevation map
+     * \sine QGIS 3.28
+     */
+    void updateZRange( double z )
+    {
+      mMinZ = std::min<double>( mMinZ, z );
+      mMaxZ = std::max<double>( mMaxZ, z );
+    }
+
 #ifndef SIP_RUN
 
     /**
@@ -230,6 +314,8 @@ class CORE_EXPORT QgsPointCloudRenderContext
 #endif
 
     QgsRenderContext &mRenderContext;
+    QPainter *mElevationPainter = nullptr;
+    QImage *mElevationImage = nullptr;
     QgsVector3D mScale;
     QgsVector3D mOffset;
     long mPointsRendered = 0;
@@ -240,6 +326,11 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
+    bool mUseEyeDomeLighting = false;
+    double mEyeDomeLightingStrength = 1000;
+    int mEyeDomeLightingDistance = 1;
+    double mMinZ = std::numeric_limits<double>::max();
+    double mMaxZ = std::numeric_limits<double>::lowest();
 
     QgsFeedback *mFeedback = nullptr;
 };
@@ -570,6 +661,42 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
+    /**
+     * Sets whether eye dome lighting effect will be used
+     * \sine QGIS 3.28
+     */
+    bool useEyeDomeLighting() const { return mUseEyeDomeLighting; }
+
+    /**
+     * Returns whether eye dome lighting effect will be used
+     * \sine QGIS 3.28
+     */
+    void setUseEyeDomeLighting( bool useEyeDomeLighting ) { mUseEyeDomeLighting = useEyeDomeLighting; }
+
+    /**
+     * Returns the eye dome lighting strength value
+     * \sine QGIS 3.28
+     */
+    double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
+
+    /**
+     * Sets the eye dome lighting strength value
+     * \sine QGIS 3.28
+     */
+    void setEyeDomeLightingStrength( double strength ) { mEyeDomeLightingStrength = strength; }
+
+    /**
+     * Returns the eye dome lighting distance value
+     * \sine QGIS 3.28
+     */
+    int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
+
+    /**
+     * Sets the eye dome lighting distance value
+     * \sine QGIS 3.28
+     */
+    void setEyeDomeLightingDistance( int distance ) { mEyeDomeLightingDistance = distance; }
+
   protected:
 
     /**
@@ -622,6 +749,43 @@ class CORE_EXPORT QgsPointCloudRenderer
       };
     }
 
+    void drawElevation( double x, double y, double z, QgsPointCloudRenderContext &context ) const
+    {
+      const QPointF originalXY( x, y );
+      context.renderContext().mapToPixel().transformInPlace( x, y );
+      QPainter *elevationPainter = context.elevationPainter();
+      const double zMin = -5000;//context.zMin();//-37.2;
+      const double zMax = +5000;//context.zMax();// 532.87;
+      double zFloat = ( z - zMin ) / ( zMax - zMin );
+      context.updateZRange( zFloat );
+      zFloat = std::max<double>( 0.0, std::min<double>( 1.0, zFloat ) );
+      QColor elevationColor;
+      zFloat *= 255;
+      elevationColor.setRed( zFloat );
+      zFloat = ( zFloat - std::truncf( zFloat ) ) * 255.0;
+      elevationColor.setGreen( zFloat );
+      zFloat = ( zFloat - std::truncf( zFloat ) ) * 255.0;
+      elevationColor.setBlue( zFloat );
+      elevationColor.setAlphaF( 1.0f );
+
+      switch ( mPointSymbol )
+      {
+        case Qgis::PointCloudSymbol::Square:
+          elevationPainter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
+                                              y - mPainterPenWidth * 0.5,
+                                              mPainterPenWidth, mPainterPenWidth ), elevationColor );
+          break;
+
+        case Qgis::PointCloudSymbol::Circle:
+          elevationPainter->setBrush( QBrush( elevationColor ) );
+          elevationPainter->setPen( Qt::NoPen );
+          elevationPainter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
+                                                 y - mPainterPenWidth * 0.5,
+                                                 mPainterPenWidth, mPainterPenWidth ) );
+          break;
+      };
+    }
+
     /**
      * Copies common point cloud properties (such as point size and screen error) to the \a destination renderer.
      */
@@ -663,6 +827,10 @@ class CORE_EXPORT QgsPointCloudRenderer
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     int mPainterPenWidth = 1;
     Qgis::PointCloudDrawOrder mDrawOrder2d = Qgis::PointCloudDrawOrder::Default;
+
+    bool mUseEyeDomeLighting = false;
+    double mEyeDomeLightingStrength = 1000.0;
+    int mEyeDomeLightingDistance = 1;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H
