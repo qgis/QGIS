@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include <QString>
+#include <QVariant>
 
 /**
  * \ingroup core
@@ -70,6 +71,9 @@ class CORE_EXPORT QgsUnsetAttributeValue
     QString mDefaultValueClause;
 
 };
+
+Q_DECLARE_METATYPE( QgsUnsetAttributeValue )
+
 
 inline bool CORE_EXPORT operator==( const QgsUnsetAttributeValue &value, const QString &other )
 {
