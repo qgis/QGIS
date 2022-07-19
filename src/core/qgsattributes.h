@@ -121,6 +121,19 @@ class QgsAttributes : public QVector<QVariant>
      */
     CORE_EXPORT QgsAttributeMap toMap() const SIP_SKIP;
 
+    /**
+     * Returns TRUE if the attribute at the specified index is an unset value.
+     *
+     * \see QgsUnsetAttributeValue
+     */
+    bool isUnsetValue( int index ) const
+    {
+      if ( index < 0 || index >= size() )
+        return false;
+
+      return at( index ).userType() == QMetaType::type( "QgsUnsetAttributeValue" );
+    }
+
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };
 
