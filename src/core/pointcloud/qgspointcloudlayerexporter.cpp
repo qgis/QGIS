@@ -31,7 +31,6 @@
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
   , mIndex( layer->dataProvider()->index()->clone().release() )
-  , mName( QString( layer->name() ) )
   , mCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
   QStringList allAttributeNames;
