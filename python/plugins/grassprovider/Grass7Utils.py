@@ -398,7 +398,7 @@ class Grass7Utils:
             try:
                 return stdout.readline()
             except Exception as e:
-                return '???'  # replaced-text
+                return ''  # replaced-text
 
         with subprocess.Popen(
                 command,
