@@ -2377,7 +2377,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
       otherGeomElem = geomNode.toElement();
     }
-    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().canConvert<QgsGeometry>() )
+    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().userType() == QMetaType::type( "QgsGeometry" ) )
     {
       QgsGeometry geom = otherNode->cachedStaticValue().value<QgsGeometry>();
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
