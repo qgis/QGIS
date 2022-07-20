@@ -99,7 +99,7 @@ void QgsMapCanvasSymbolItem::setSymbol( std::unique_ptr< QgsSymbol > symbol )
   mSymbol = std::move( symbol );
 }
 
-const QgsSymbol *QgsMapCanvasSymbolItem::symbol() const
+QgsSymbol *QgsMapCanvasSymbolItem::symbol()
 {
   return mSymbol.get();
 }

@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
      * Returns the symbol used for rendering the item.
      * \see setSymbol()
      */
-    const QgsSymbol *symbol() const;
+    QgsSymbol *symbol();
 
     /**
      * Sets the feature used for rendering the symbol. The feature's attributes
