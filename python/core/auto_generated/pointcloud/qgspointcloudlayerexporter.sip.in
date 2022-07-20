@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsPointCloudLayerExporter /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -34,23 +36,6 @@ Constructor for QgsPointCloudLayerExporter, associated with the specified ``laye
 %End
 
     ~QgsPointCloudLayerExporter();
-
-    QgsVectorLayer *exportToMemoryLayer() /Factory/;
-%Docstring
-Exports the point cloud layer to a memory layer.
-
-Caller takes ownership of the returned object.
-%End
-
-    QgsVectorLayer *exportToVectorFile( const QString &filename = QString() ) /Factory/;
-%Docstring
-Exports the point cloud layer to a OGR vector file.
-%End
-
-    QgsPointCloudLayer *exportToPdalFile( const QString &filename = QString() ) /Factory/;
-%Docstring
-Exports the point cloud layer to a point cloud file, where the file type can be any format supported by PDAL.
-%End
 
     void setFileName( const QString &filename );
 %Docstring
@@ -143,7 +128,7 @@ Gets the maximum number of points to be exported.
 %End
     void doExport();
 
-    QgsMapLayer *getLayer();
+    QgsMapLayer *getLayer() /Factory/;
 
       public:
       protected:

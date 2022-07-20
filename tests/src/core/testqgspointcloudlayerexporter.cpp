@@ -82,7 +82,9 @@ void TestQgsPointCloudLayerExporter::cleanup()
 void TestQgsPointCloudLayerExporter::testScratchLayer()
 {
   QgsPointCloudLayerExporter exp( mLayer );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->wkbType(), QgsWkbTypes::PointZ );
@@ -115,7 +117,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerFiltered()
 {
   mLayer->setSubsetString( QStringLiteral( "red > 150" ) );
   QgsPointCloudLayerExporter exp( mLayer );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 45 );
@@ -128,7 +132,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerExtent()
 {
   QgsPointCloudLayerExporter exp( mLayer );
   exp.setFilterExtent( QgsRectangle( 497754, 7050888, 497755, 7050889 ) );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 46 );
@@ -140,7 +146,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerZRange()
 {
   QgsPointCloudLayerExporter exp( mLayer );
   exp.setZRange( QgsDoubleRange( 1, 1.1 ) );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 74 );
@@ -156,7 +164,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerAttributes()
                       QStringLiteral( "Blue" )
                     };
   exp.setAttributes( attrs );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 134 );
@@ -179,7 +189,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerBadAttributes()
                       QStringLiteral( "MissingAttribute" )
                     };
   exp.setAttributes( attrs );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 134 );
@@ -196,7 +208,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerSkipAttributes()
   QgsPointCloudLayerExporter exp( mLayer );
   QStringList attrs;
   exp.setAttributes( attrs );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 134 );
@@ -213,7 +227,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerCrs()
 
   QgsCoordinateReferenceSystem differentCrs = QgsCoordinateReferenceSystem::fromEpsgId( 2100 );
   exp.setCrs( differentCrs );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->wkbType(), QgsWkbTypes::PointZ );
@@ -236,7 +252,9 @@ void TestQgsPointCloudLayerExporter::testScratchLayerSynthetic()
   exp.setAttributes( attrs );
   exp.setFilterExtent( QgsRectangle( 497754, 7050888, 497755, 7050889 ) );
   exp.setZRange( QgsDoubleRange( 1, 1.1 ) );
-  QgsVectorLayer *result = exp.exportToMemoryLayer();
+  exp.setFormat( QStringLiteral( "memory" ) );
+  exp.doExport();
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
   QVERIFY( result->isValid() );
   QCOMPARE( result->featureCount(), 9 );
@@ -251,21 +269,35 @@ void TestQgsPointCloudLayerExporter::testScratchLayerSynthetic()
 void TestQgsPointCloudLayerExporter::testOgrFile()
 {
   const QString file = QDir::tempPath() + "/filename.gpkg";
+  const QString driver = QStringLiteral( "GPKG" );
   QgsPointCloudLayerExporter exp( mLayer );
+  exp.setFormat( driver );
+  exp.setFileName( file );
+  exp.doExport();
 
-  exp.exportToVectorFile( file );
+  QgsVectorLayer *result = qgis::down_cast<QgsVectorLayer *>( exp.getLayer() );
 
-  QgsVectorLayer *exported = new QgsVectorLayer( file, QStringLiteral( "GPKG" ) );
-
-  QVERIFY( exported->isValid() );
-  QCOMPARE( exported->wkbType(), QgsWkbTypes::PointZ );
-  QCOMPARE( exported->featureCount(), 134 );
-  delete exported;
+  QVERIFY( result->isValid() );
+  QCOMPARE( result->wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( result->featureCount(), 134 );
+  delete result;
 }
 
 void TestQgsPointCloudLayerExporter::testPdalFile()
 {
-  QVERIFY( false );
+  const QString file = QDir::tempPath() + "/filename.laz";
+  const QString driver = QStringLiteral( "LAZ" );
+  QgsPointCloudLayerExporter exp( mLayer );
+  exp.setFormat( driver );
+  exp.setFileName( file );
+  exp.doExport();
+
+  QgsPointCloudLayer *result = qgis::down_cast<QgsPointCloudLayer *>( exp.getLayer() );
+
+  QVERIFY( result->isValid() );
+
+  QCOMPARE( result->pointCount(), 134 );
+  delete result;
 }
 
 QGSTEST_MAIN( TestQgsPointCloudLayerExporter )

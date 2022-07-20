@@ -23,6 +23,11 @@
 #include "qgspointcloudlayer.h"
 #include "qgstaskmanager.h"
 
+#include <pdal/PointView.hpp>
+#include <pdal/PointTable.hpp>
+#include <pdal/Options.hpp>
+
+
 class QgsCoordinateTransform;
 
 /**
@@ -45,23 +50,6 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
 
     ~QgsPointCloudLayerExporter();
-
-    /**
-     * Exports the point cloud layer to a memory layer.
-     *
-     * Caller takes ownership of the returned object.
-     */
-    QgsVectorLayer *exportToMemoryLayer() SIP_FACTORY;
-
-    /**
-     * Exports the point cloud layer to a OGR vector file.
-     */
-    QgsVectorLayer *exportToVectorFile( const QString &filename = QString() ) SIP_FACTORY;
-
-    /**
-     * Exports the point cloud layer to a point cloud file, where the file type can be any format supported by PDAL.
-     */
-    QgsPointCloudLayer *exportToPdalFile( const QString &filename = QString() ) SIP_FACTORY;
 
     /**
      * Sets the \a filename for the new layer.
@@ -168,7 +156,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     void doExport();
 
-    QgsMapLayer *getLayer();
+    QgsMapLayer *getLayer() SIP_FACTORY;
 
   private:
 
@@ -195,18 +183,20 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsCoordinateTransformContext mTransformContext;
 
     QgsMapLayer *mOutputLayer = nullptr;
+    QgsFeatureSink *mSink = nullptr;
 
 
 
     class ExporterBase
     {
       public:
-        ExporterBase();
+        ExporterBase() = default;
         void run();
-        virtual ~ExporterBase() = default;
+        virtual ~ExporterBase();
       protected:
-        virtual void handlePoint( double x, double y, double z, const QVariantMap &map ) = 0;
+        virtual void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) = 0;
         virtual void handleNode() = 0;
+        virtual void handleAll() = 0;
         QgsPointCloudLayerExporter *mParent = nullptr;
         QgsCoordinateTransform *mCt = nullptr;
     };
@@ -215,10 +205,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     {
       public:
         ExporterMemory( QgsPointCloudLayerExporter *exp );
-        ~ExporterMemory() override;
+
       private:
-        void handlePoint( double x, double y, double z, const QVariantMap &map ) override;
+        void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) override;
         void handleNode() override;
+        void handleAll() override;
         QgsFeatureList mFeatures;
     };
 
@@ -226,10 +217,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     {
       public:
         ExporterVector( QgsPointCloudLayerExporter *exp );
-        ~ExporterVector() override;
+
       private:
-        void handlePoint( double x, double y, double z, const QVariantMap &map ) override;
+        void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) override;
         void handleNode() override;
+        void handleAll() override;
         QgsFeatureList mFeatures;
     };
 
@@ -237,10 +229,14 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     {
       public:
         ExporterPdal( QgsPointCloudLayerExporter *exp );
-        ~ExporterPdal() override;
+
       private:
-        void handlePoint( double x, double y, double z, const QVariantMap &map ) override;
+        void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) override;
         void handleNode() override;
+        void handleAll() override;
+        pdal::Options mOptions;
+        pdal::PointTable mTable;
+        pdal::PointViewPtr mView;
     };
 
 };

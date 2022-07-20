@@ -23,13 +23,10 @@
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsproject.h"
-#include <pdal/PointView.hpp>
-#include <pdal/PointTable.hpp>
-#include <pdal/Dimension.hpp>
-#include <pdal/Options.hpp>
+
 #include <pdal/StageFactory.hpp>
 #include <pdal/io/BufferReader.hpp>
-
+#include <pdal/Dimension.hpp>
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
@@ -48,7 +45,8 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
 
 QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
 {
-  delete mOutputLayer;
+//  delete mOutputLayer;
+  delete mSink;
 }
 
 bool QgsPointCloudLayerExporter::setFormat( const QString &format )
@@ -123,340 +121,47 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
   return fields;
 }
 
-
-void QgsPointCloudLayerExporter::exportToSink( QgsFeatureSink *sink )
-{
-  QVector<IndexedPointCloudNode> nodes;
-  qint64 pointCount = 0;
-  QQueue<IndexedPointCloudNode> queue;
-  queue.push_back( mIndex->root() );
-  while ( !queue.empty() )
-  {
-    IndexedPointCloudNode node = queue.front();
-    queue.pop_front();
-    if ( !nodes.contains( node ) &&
-         mExtent.intersects( mIndex->nodeMapExtent( node ) ) &&
-         mZRange.overlaps( mIndex->nodeZRange( node ) ) )
-    {
-      pointCount += mIndex->nodePointCount( node );
-      nodes.push_back( node );
-    }
-    if ( pointCount >= mPointsLimit )
-      break;
-    for ( const IndexedPointCloudNode &child : mIndex->nodeChildren( node ) )
-    {
-      queue.push_back( child );
-    }
-  }
-
-  const QgsCoordinateTransform ct = QgsCoordinateTransform( mIndex->crs(), mCrs, QgsCoordinateTransformContext() );
-
-  int pointsSkipped = 0;
-  const qint64 pointsToExport = std::max< qint64 >( std::min( mPointsLimit, pointCount ), 1 );
-  QgsPointCloudRequest request;
-  request.setAttributes( requestedAttributeCollection() );
-  std::unique_ptr<QgsPointCloudBlock> block = nullptr;
-  QgsFeatureList fl;
-  qint64 pointsExported = 0;
-  for ( const IndexedPointCloudNode &node : nodes )
-  {
-    block.reset( mIndex->nodeData( node, request ) );
-    const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
-    const char *ptr = block->data();
-    int count = block->pointCount();
-    int recordSize = attributesCollection.pointRecordSize();
-    const QgsVector3D scale = block->scale();
-    const QgsVector3D offset = block->offset();
-    int xOffset;
-    int yOffset;
-    int zOffset;
-    attributesCollection.find( QStringLiteral( "X" ), xOffset );
-    attributesCollection.find( QStringLiteral( "Y" ), yOffset );
-    attributesCollection.find( QStringLiteral( "Z" ), zOffset );
-    for ( int i = 0; i < count; ++i )
-    {
-
-      if ( mFeedback )
-      {
-        mFeedback->setProgress( 100 * static_cast< float >( pointsExported + pointsSkipped ) / pointsToExport );
-        if ( mFeedback->isCanceled() )
-          return;
-      }
-
-      if ( pointsExported > mPointsLimit )
-        break;
-
-      double x, y, z;
-      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize,
-                                           xOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           yOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           zOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           scale, offset,
-                                           x, y, z );
-      if ( ! mZRange.contains( z ) ||
-           ! mExtent.contains( x, y ) )
-      {
-        ++pointsSkipped;
-        continue;
-      }
-
-      QgsFeature feature;
-      ct.transformInPlace( x, y, z );
-      feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
-      const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
-      QgsAttributes featureAttributes;
-      for ( const QString &attribute : std::as_const( mRequestedAttributes ) )
-      {
-        const double val = attributeMap[ attribute ].toDouble();
-        featureAttributes.append( val );
-      }
-      feature.setAttributes( featureAttributes );
-      fl.append( feature );
-      ++pointsExported;
-    }
-  }
-  sink->addFeatures( fl );
-}
-
-QgsVectorLayer *QgsPointCloudLayerExporter::exportToMemoryLayer()
-{
-  if ( ! mIndex->isValid() )
-    return nullptr;
-
-  std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mCrs ) );
-  exportToSink( layer->dataProvider() );
-  return layer.release();
-}
-
-QgsVectorLayer *QgsPointCloudLayerExporter::exportToVectorFile( const QString &filename )
-{
-  if ( ! mIndex->isValid() )
-    return nullptr;
-
-  if ( ! filename.isEmpty() )
-    mFilename = filename;
-
-  if ( mFilename.isEmpty() )
-    return nullptr;
-
-  const QString extension = QFileInfo( mFilename ).suffix();
-  if ( mFormat.isEmpty() )
-  {
-    const QString driver = QgsVectorFileWriter::driverForExtension( extension );
-    mFormat = driver.isEmpty() ? QStringLiteral( "GPKG" ) : driver;
-  }
-
-  std::unique_ptr< QgsVectorLayer > memoryLayer( exportToMemoryLayer() );
-
-  QgsVectorFileWriter::SaveVectorOptions saveOptions;
-  saveOptions.layerName = mName;
-  saveOptions.driverName = mFormat;
-  saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( mFormat );
-  saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( mFormat );
-  saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-  saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
-  saveOptions.feedback = mFeedback;
-
-  QgsVectorFileWriter::writeAsVectorFormatV3( memoryLayer.get(), mFilename, memoryLayer->transformContext(), saveOptions );
-
-  QgsVectorLayer *layer = new QgsVectorLayer( mFilename, mName, QStringLiteral( "ogr" ) );
-  return layer;
-}
-
-QgsPointCloudLayer *QgsPointCloudLayerExporter::exportToPdalFile( const QString &filename )
-{
-  if ( ! mIndex->isValid() )
-    return nullptr;
-
-  if ( ! filename.isEmpty() )
-    mFilename = filename;
-
-  if ( mFilename.isEmpty() )
-    return nullptr;
-
-  pdal::Options options;
-  options.add( "filename", mFilename.toStdString() );
-
-  pdal::PointTable table;
-  table.layout()->registerDim( pdal::Dimension::Id::X );
-  table.layout()->registerDim( pdal::Dimension::Id::Y );
-  table.layout()->registerDim( pdal::Dimension::Id::Z );
-  if ( mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::Intensity );
-  if ( mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::ReturnNumber );
-  if ( mRequestedAttributes.contains( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::NumberOfReturns );
-  if ( mRequestedAttributes.contains( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::ScanDirectionFlag );
-  if ( mRequestedAttributes.contains( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::EdgeOfFlightLine );
-  if ( mRequestedAttributes.contains( QLatin1String( "Classification" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::Classification );
-  if ( mRequestedAttributes.contains( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::ScanAngleRank );
-  if ( mRequestedAttributes.contains( QLatin1String( "UserData" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::UserData );
-  if ( mRequestedAttributes.contains( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::PointSourceId );
-  if ( mRequestedAttributes.contains( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::ScanChannel );
-  if ( mRequestedAttributes.contains( QLatin1String( "Red" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::Red );
-  if ( mRequestedAttributes.contains( QLatin1String( "Green" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::Green );
-  if ( mRequestedAttributes.contains( QLatin1String( "Blue" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::Blue );
-  if ( mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
-    table.layout()->registerDim( pdal::Dimension::Id::GpsTime );
-  pdal::PointViewPtr view( new pdal::PointView( table ) );
-
-  //////// v
-
-  QVector<IndexedPointCloudNode> nodes;
-  qint64 pointCount = 0;
-  QQueue<IndexedPointCloudNode> queue;
-  queue.push_back( mIndex->root() );
-  while ( !queue.empty() )
-  {
-    IndexedPointCloudNode node = queue.front();
-    queue.pop_front();
-    if ( !nodes.contains( node ) &&
-         mExtent.intersects( mIndex->nodeMapExtent( node ) ) &&
-         mZRange.overlaps( mIndex->nodeZRange( node ) ) )
-    {
-      pointCount += mIndex->nodePointCount( node );
-      nodes.push_back( node );
-    }
-    if ( pointCount >= mPointsLimit )
-      break;
-    for ( const IndexedPointCloudNode &child : mIndex->nodeChildren( node ) )
-    {
-      queue.push_back( child );
-    }
-  }
-
-  const QgsCoordinateTransform ct = QgsCoordinateTransform( mIndex->crs(), mCrs, QgsCoordinateTransformContext() );
-
-  int pointsSkipped = 0;
-  const qint64 pointsToExport = std::max< qint64 >( std::min( mPointsLimit, pointCount ), 1 );
-  QgsPointCloudRequest request;
-  request.setAttributes( requestedAttributeCollection() );
-  std::unique_ptr<QgsPointCloudBlock> block = nullptr;
-//  QgsFeatureList fl;
-  qint64 pointsExported = 0;
-  for ( const IndexedPointCloudNode &node : nodes )
-  {
-    block.reset( mIndex->nodeData( node, request ) );
-    const QgsPointCloudAttributeCollection attributesCollection = block->attributes();
-    const char *ptr = block->data();
-    int count = block->pointCount();
-    int recordSize = attributesCollection.pointRecordSize();
-    const QgsVector3D scale = block->scale();
-    const QgsVector3D offset = block->offset();
-    int xOffset;
-    int yOffset;
-    int zOffset;
-    attributesCollection.find( QStringLiteral( "X" ), xOffset );
-    attributesCollection.find( QStringLiteral( "Y" ), yOffset );
-    attributesCollection.find( QStringLiteral( "Z" ), zOffset );
-    for ( int i = 0; i < count; ++i )
-    {
-
-      if ( mFeedback )
-      {
-        mFeedback->setProgress( 100 * static_cast< float >( pointsExported + pointsSkipped ) / pointsToExport );
-        if ( mFeedback->isCanceled() )
-          return nullptr;
-      }
-
-      if ( pointsExported > mPointsLimit )
-        break;
-
-      double x, y, z;
-      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize,
-                                           xOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           yOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           zOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           scale, offset,
-                                           x, y, z );
-      if ( ! mZRange.contains( z ) ||
-           ! mExtent.contains( x, y ) )
-      {
-        ++pointsSkipped;
-        continue;
-      }
-
-      /////// ^
-
-      view->setField( pdal::Dimension::Id::X, pointsExported, x );
-      view->setField( pdal::Dimension::Id::Y, pointsExported, y );
-      view->setField( pdal::Dimension::Id::Z, pointsExported, z );
-
-      const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
-      const int cls = attributeMap[ QStringLiteral( "Classification" ) ].toInt();
-      view->setField( pdal::Dimension::Id::Classification, pointsExported, cls );
-
-
-      if ( mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::Intensity, pointsExported, attributeMap[ QStringLiteral( "Intensity" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::ReturnNumber, pointsExported, attributeMap[ QStringLiteral( "ReturnNumber" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::NumberOfReturns, pointsExported, attributeMap[ QStringLiteral( "NumberOfReturns" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::ScanDirectionFlag, pointsExported, attributeMap[ QStringLiteral( "ScanDirectionFlag" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointsExported, attributeMap[ QStringLiteral( "EdgeOfFlightLine" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "Classification" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::Classification, pointsExported, attributeMap[ QStringLiteral( "Classification" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::ScanAngleRank, pointsExported, attributeMap[ QStringLiteral( "ScanAngleRank" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "UserData" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::UserData, pointsExported, attributeMap[ QStringLiteral( "UserData" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::PointSourceId, pointsExported, attributeMap[ QStringLiteral( "PointSourceId" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::ScanChannel, pointsExported, attributeMap[ QStringLiteral( "ScannerChannel" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "Red" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::Red, pointsExported, attributeMap[ QStringLiteral( "Red" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "Green" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::Green, pointsExported, attributeMap[ QStringLiteral( "Green" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "Blue" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::Blue, pointsExported, attributeMap[ QStringLiteral( "Blue" ) ].toInt() );
-      if ( mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
-        view->setField( pdal::Dimension::Id::GpsTime, pointsExported, attributeMap[ QStringLiteral( "GpsTime" ) ].toDouble() );
-
-      ++pointsExported;
-    }
-  }
-
-
-  pdal::BufferReader reader;
-  reader.addView( view );
-
-  pdal::StageFactory factory;
-
-  pdal::Stage *writer = factory.createStage( "writers.las" );
-
-  writer->setInput( reader );
-  writer->setOptions( options );
-  writer->prepare( table );
-  writer->execute( table );
-
-  QgsPointCloudLayer *layer = new QgsPointCloudLayer( mFilename, mName, QStringLiteral( "pdal" ) );
-  return layer;
-}
-
 void QgsPointCloudLayerExporter::doExport()
 {
-  ExporterMemory exp = ExporterMemory( this );
-  exp.run();
+  if ( mFormat == QLatin1String( "memory" ) )
+  {
+    mOutputLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mCrs );
+    ExporterMemory exp = ExporterMemory( this );
+    exp.run();
+  }
+  else if ( mFormat == QLatin1String( "LAZ" ) )
+  {
+    ExporterPdal exp = ExporterPdal( this );
+    exp.run();
+  }
+  else
+  {
+    QgsVectorFileWriter::SaveVectorOptions saveOptions;
+    saveOptions.layerName = mName;
+    saveOptions.driverName = mFormat;
+    saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( mFormat );
+    saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( mFormat );
+    saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+    saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+    saveOptions.feedback = mFeedback;
+    mSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mCrs, QgsCoordinateTransformContext(), saveOptions );
+    ExporterVector exp = ExporterVector( this );
+    exp.run();
+  }
 }
 
 QgsMapLayer *QgsPointCloudLayerExporter::getLayer()
 {
-  return mOutputLayer;
+  if ( mFormat == QLatin1String( "memory" ) && mOutputLayer )
+    return mOutputLayer;
+
+  if ( mFormat == QLatin1String( "LAZ" ) )
+    return new QgsPointCloudLayer( mFilename, mName, QStringLiteral( "pdal" ) );
+
+  QString uri( mFilename );
+  if ( ! mName.isEmpty() )
+    uri += "|layername=" + mName;
+  return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
 }
 
 //
@@ -538,11 +243,17 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
         continue;
       }
       const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
-      handlePoint( x, y, z, attributeMap );
+      handlePoint( x, y, z, attributeMap, pointsExported );
       ++pointsExported;
     }
     handleNode();
   }
+  handleAll();
+}
+
+QgsPointCloudLayerExporter::ExporterBase::~ExporterBase()
+{
+  delete mCt;
 }
 
 //
@@ -554,8 +265,10 @@ QgsPointCloudLayerExporter::ExporterMemory::ExporterMemory( QgsPointCloudLayerEx
   mParent = exp;
 }
 
-void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y, double z, const QVariantMap &map )
+void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )
 {
+  Q_UNUSED( pointNumber )
+
   QgsFeature feature;
   mCt->transformInPlace( x, y, z );
   feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
@@ -571,13 +284,14 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 {
-  qgis::down_cast<QgsVectorLayer *>( mParent->mOutputLayer )->dataProvider()->addFeatures( mFeatures );
+  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mOutputLayer );
+  if ( vl )
+    vl->dataProvider()->addFeatures( mFeatures );
   mFeatures.clear();
 }
 
-QgsPointCloudLayerExporter::ExporterMemory::~ExporterMemory()
+void QgsPointCloudLayerExporter::ExporterMemory::handleAll()
 {
-  delete mCt;
 }
 
 //
@@ -589,8 +303,10 @@ QgsPointCloudLayerExporter::ExporterVector::ExporterVector( QgsPointCloudLayerEx
   mParent = exp;
 }
 
-void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y, double z, const QVariantMap &map )
+void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )
 {
+  Q_UNUSED( pointNumber )
+
   QgsFeature feature;
   mCt->transformInPlace( x, y, z );
   feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
@@ -604,14 +320,120 @@ void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y
   mFeatures.append( feature );
 }
 
-QgsPointCloudLayerExporter::ExporterVector::~ExporterVector()
+void QgsPointCloudLayerExporter::ExporterVector::handleNode()
 {
-  delete mCt;
+  mParent->mSink->addFeatures( mFeatures );
+  mFeatures.clear();
+}
+
+void QgsPointCloudLayerExporter::ExporterVector::handleAll()
+{
+  delete mParent->mSink;
+  mParent->mSink = nullptr;
 }
 
 //
 // ExporterPdal
 //
+
+QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExporter *exp )
+{
+  mParent = exp;
+
+
+  mOptions.add( "filename", mParent->mFilename.toStdString() );
+
+  mTable.layout()->registerDim( pdal::Dimension::Id::X );
+  mTable.layout()->registerDim( pdal::Dimension::Id::Y );
+  mTable.layout()->registerDim( pdal::Dimension::Id::Z );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::Intensity );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::ReturnNumber );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::NumberOfReturns );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::ScanDirectionFlag );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::EdgeOfFlightLine );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Classification" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::Classification );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::ScanAngleRank );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "UserData" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::UserData );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::PointSourceId );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::ScanChannel );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Red" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::Red );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Green" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::Green );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Blue" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::Blue );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::GpsTime );
+  mView.reset( new pdal::PointView( mTable ) );
+}
+
+void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )
+{
+  mView->setField( pdal::Dimension::Id::X, pointNumber, x );
+  mView->setField( pdal::Dimension::Id::Y, pointNumber, y );
+  mView->setField( pdal::Dimension::Id::Z, pointNumber, z );
+
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ QStringLiteral( "Intensity" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[ QStringLiteral( "ReturnNumber" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ QStringLiteral( "NumberOfReturns" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ QStringLiteral( "ScanDirectionFlag" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ QStringLiteral( "EdgeOfFlightLine" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Classification" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[ QStringLiteral( "Classification" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ QStringLiteral( "ScanAngleRank" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "UserData" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ QStringLiteral( "UserData" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ QStringLiteral( "PointSourceId" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ QStringLiteral( "ScannerChannel" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Red" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[ QStringLiteral( "Red" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Green" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[ QStringLiteral( "Green" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Blue" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ QStringLiteral( "Blue" ) ].toInt() );
+  if ( mParent->mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
+    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ QStringLiteral( "GpsTime" ) ].toDouble() );
+}
+
+void QgsPointCloudLayerExporter::ExporterPdal::handleNode()
+{
+
+}
+
+void QgsPointCloudLayerExporter::ExporterPdal::handleAll()
+{
+  pdal::BufferReader reader;
+  reader.addView( mView );
+
+  pdal::StageFactory factory;
+
+  pdal::Stage *writer = factory.createStage( "writers.las" );
+
+  writer->setInput( reader );
+  writer->setOptions( mOptions );
+  writer->prepare( mTable );
+  writer->execute( mTable );
+
+//  mParent->mOutputLayer = new QgsPointCloudLayer( mParent->mFilename, mParent->mName, QStringLiteral( "pdal" ) );
+}
 
 //
 // QgsPointCloudLayerExporterTask
