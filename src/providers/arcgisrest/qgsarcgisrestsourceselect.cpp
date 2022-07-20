@@ -306,7 +306,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
   const QgsOwsConnection connection( QStringLiteral( "ARCGISFEATURESERVER" ), cmbConnections->currentText() );
 
   const QgsCoordinateReferenceSystem pCrs( labelCoordRefSys->text() );
-  //prepare canvas extent info for layers with "cache features" option not set
+  // prepare canvas extent info for layers with "cache features" option not set
   QgsRectangle extent;
   QgsCoordinateReferenceSystem canvasCrs;
   if ( auto *lMapCanvas = mapCanvas() )
@@ -314,7 +314,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
     extent = lMapCanvas->extent();
     canvasCrs = lMapCanvas->mapSettings().destinationCrs();
   }
-  //does canvas have "on the fly" reprojection set?
+  // does canvas have "on the fly" reprojection set?
   if ( pCrs.isValid() && canvasCrs.isValid() )
   {
     try
@@ -466,10 +466,9 @@ void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
   }
   cursor.release();
 
-  //show expression builder
   QgsExpressionBuilderDialog d( nullptr, QString(), this );
 
-  //add available attributes to expression builder
+  // Add available attributes to expression builder
   QgsExpressionBuilderWidget *w = d.expressionBuilder();
   w->initWithFields( provider.fields() );
 
@@ -569,13 +568,10 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
   {
     layerName = layerItem->name();
 
-    QString filter;// = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->text() : QString(); //optional filter specified by user
-
     QgsDataSourceUri uri( layerItem->uri() );
     uri.setParam( QStringLiteral( "crs" ), labelCoordRefSys->text() );
     if ( qobject_cast< QgsArcGisFeatureServiceLayerItem *>( layerItem ) )
     {
-      uri.setParam( QStringLiteral( "filter" ), filter );
       if ( !extent.isNull() )
       {
         uri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum() ).arg( extent.yMinimum() ).arg( extent.xMaximum() ).arg( extent.yMaximum() ) );

@@ -625,14 +625,15 @@ QString QgsAfsProvider::subsetString() const
 
 bool QgsAfsProvider::setSubsetString( const QString &subset, bool )
 {
-  if ( subset.trimmed() == mSharedData->subsetString() )
+  const QString trimmedSubset = subset.trimmed();
+  if ( trimmedSubset == mSharedData->subsetString() )
     return true;
 
-  mSharedData->setSubsetString( subset );
+  mSharedData->setSubsetString( trimmedSubset );
 
   // Update datasource uri too
   QgsDataSourceUri uri = dataSourceUri();
-  uri.setSql( subset );
+  uri.setSql( trimmedSubset );
   setDataSourceUri( uri.uri( false ) );
 
   clearMinMaxCache();
