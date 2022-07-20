@@ -25,16 +25,13 @@
 #include "qgsgeometry.h"
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
-#include "qgslayertreeview.h"
 #include "qgslogger.h"
 #include "qgsmaptooladdfeature.h"
-#include "qgsnmeaconnection.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgswkbptr.h"
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
 #include "gmath.h"
@@ -48,6 +45,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
 #include "qgslinesymbol.h"
+#include "qgsgpsconnection.h"
 
 // QWT Charting widget
 
@@ -264,9 +262,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   // Restore state
 
-  mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
+  mCheckShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
   mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool() );
-  mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "markerSize" ), "12", QgsSettings::Gps ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt() );
   mSpinTrackWidth->setClearValue( 2 );
   mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>() );
@@ -462,8 +459,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "lastPort" ), mCboDevices->currentData().toString(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "trackWidth" ), mSpinTrackWidth->value(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "trackColor" ), mBtnTrackColor->color(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "markerSize" ), mSliderMarkerSize->value(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "showMarker" ), mGroupShowMarker->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "showMarker" ), mCheckShowMarker->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
@@ -1031,11 +1027,13 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     updateGpsDistanceStatusMessage( false );
   }
 
+  double bearing = 0;
+  double trueNorth = 0;
+  const QgsSettings settings;
+  const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
+
   if ( !std::isnan( info.direction ) || ( mTravelBearingCheckBox->isChecked() && !mSecondLastGpsPosition.isEmpty() ) )
   {
-    const QgsSettings settings;
-    double bearing = 0;
-    double trueNorth = 0;
     if ( !mTravelBearingCheckBox->isChecked() )
     {
       bearing = info.direction;
@@ -1063,8 +1061,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       }
 
     }
-
-    const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
@@ -1124,7 +1120,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   }
 
   // new marker position after recentering
-  if ( mGroupShowMarker->isChecked() ) // show marker
+  if ( mCheckShowMarker->isChecked() ) // show marker
   {
     if ( validFlag ) // update cursor position if valid position
     {
@@ -1133,8 +1129,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       {
         mMapMarker = new QgsGpsMarker( mMapCanvas );
       }
-      mMapMarker->setSize( mSliderMarkerSize->value() );
       mMapMarker->setGpsPosition( myNewCenter );
+
+      mMapMarker->setMarkerRotation( bearing - trueNorth + adjustment );
     }
   }
   else
