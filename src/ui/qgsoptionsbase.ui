@@ -2900,7 +2900,7 @@
                    </widget>
                   </item>
                   <item>
-                   <widget class="QGroupBox" name="groupBox_17">
+                   <widget class="QgsCollapsibleGroupBox" name="groupBox_17">
                     <property name="title">
                      <string>Contrast enhancement</string>
                     </property>
