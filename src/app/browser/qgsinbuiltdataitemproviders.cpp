@@ -1081,6 +1081,22 @@ void QgsLayerItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *men
   } );
   menu->addAction( addAction );
 
+  for ( QAction *action : menu->actions() )
+  {
+    const QString insertAfter = action->property( "insertAfter" ).toString();
+    if ( !insertAfter.isEmpty() && insertAfter == "addLayerToProject" )
+    {
+      // temporarily unset the parent -- we don't want the action to be deleted automatically if it was parented to the menu
+      QObject *prevParent = action->parent();
+      action->setParent( nullptr );
+
+      menu->removeAction( action );
+      menu->addAction( action );
+
+      action->setParent( prevParent );
+    }
+  }
+
   QAction *propertiesAction = new QAction( tr( "Layer Properties…" ), menu );
   connect( propertiesAction, &QAction::triggered, this, [ = ]
   {

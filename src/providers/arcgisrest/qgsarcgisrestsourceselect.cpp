@@ -457,12 +457,14 @@ void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
   QgsDataSourceUri ds( uri );
   ds.setSql( QStringLiteral( "1=0" ) ); // don't retrieve any records
 
+  QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   QgsDataProvider::ProviderOptions providerOptions;
   QgsAfsProvider provider( ds.uri( false ), providerOptions );
   if ( !provider.isValid() )
   {
     return;
   }
+  cursor.release();
 
   //show expression builder
   QgsExpressionBuilderDialog d( nullptr, QString(), this );
