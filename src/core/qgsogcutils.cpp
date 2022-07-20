@@ -2352,7 +2352,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
                       QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
       if ( otherGeomElem.isNull() )
       {
-        mErrorMessage = QObject::tr( "geom_from_wkt: unable to genererate GML from wkt geometry" );
+        mErrorMessage = QObject::tr( "geom_from_wkt: unable to generate GML from wkt geometry" );
         return QDomElement();
       }
       mGeomId ++;
@@ -2384,7 +2384,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
                       QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
       if ( otherGeomElem.isNull() )
       {
-        mErrorMessage = QObject::tr( "geom from static value: unable to genererate GML from static variable" );
+        mErrorMessage = QObject::tr( "geom from static value: unable to generate GML from static variable" );
         return QDomElement();
       }
       mGeomId ++;
