@@ -20,6 +20,7 @@
 #include "qgscheckablecomboboxplugin.h"
 #include "qgscollapsiblegroupboxplugin.h"
 #include "qgscolorbuttonplugin.h"
+#include "qgsdateeditplugin.h"
 #include "qgsdatetimeeditplugin.h"
 #include "qgsdockwidgetplugin.h"
 #include "qgsdoublespinboxplugin.h"
@@ -54,6 +55,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsCheckableComboBoxPlugin( this ) );
   mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
   mWidgets.append( new QgsColorButtonPlugin( this ) );
+  mWidgets.append( new QgsDateEditPlugin( this ) );
   mWidgets.append( new QgsDateTimeEditPlugin( this ) );
   mWidgets.append( new QgsDockWidgetPlugin( this ) );
   mWidgets.append( new QgsDoubleSpinBoxPlugin( this ) );
