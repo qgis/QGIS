@@ -166,12 +166,15 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     QgsMapLayer *getExportedLayer() SIP_FACTORY;
 
+    QString lastError() const { return mLastError; };
+
   private:
 
     void exportToSink( QgsFeatureSink * );
 
     QgsFields outputFields();
     const QgsPointCloudAttributeCollection requestedAttributeCollection();
+    void setLastError( QString error ) { mLastError = error; };
 
     const QgsPointCloudAttributeCollection mLayerAttributeCollection;
 
@@ -179,6 +182,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QString mName;
     QString mFormat;
     QString mFilename;
+    QString mLastError;
     QgsRectangle mExtent = QgsRectangle( std::numeric_limits< double >::lowest(),
                                          std::numeric_limits< double >::lowest(),
                                          std::numeric_limits< double >::max(),
@@ -191,8 +195,8 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
 
-    QgsMapLayer *mOutputLayer = nullptr;
-    QgsFeatureSink *mSink = nullptr;
+    QgsMapLayer *mMemoryLayer = nullptr;
+    QgsFeatureSink *mVectorSink = nullptr;
 
 
 

@@ -136,6 +136,7 @@ Gets the maximum number of points to be exported.
 
     QgsMapLayer *getExportedLayer() /Factory/;
 
+    QString lastError() const;
       public:
       protected:
       public:

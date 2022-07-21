@@ -55,7 +55,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
 QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
 {
 //  delete mOutputLayer;
-  delete mSink;
+  delete mVectorSink;
 }
 
 bool QgsPointCloudLayerExporter::setFormat( const QString &format )
@@ -122,14 +122,23 @@ void QgsPointCloudLayerExporter::doExport()
 {
   if ( mFormat == QLatin1String( "memory" ) )
   {
-    mOutputLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mCrs );
+    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mCrs );
     ExporterMemory exp = ExporterMemory( this );
     exp.run();
   }
   else if ( mFormat == QLatin1String( "LAZ" ) )
   {
-    ExporterPdal exp = ExporterPdal( this );
-    exp.run();
+    // PDAL may throw exceptions
+    try
+    {
+      ExporterPdal exp = ExporterPdal( this );
+      exp.run();
+    }
+    catch ( std::runtime_error &e )
+    {
+      setLastError( QString::fromLatin1( e.what() ) );
+      QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
+    }
   }
   else
   {
@@ -141,7 +150,7 @@ void QgsPointCloudLayerExporter::doExport()
     saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
     saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
     saveOptions.feedback = mFeedback;
-    mSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mCrs, QgsCoordinateTransformContext(), saveOptions );
+    mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mCrs, QgsCoordinateTransformContext(), saveOptions );
     ExporterVector exp = ExporterVector( this );
     exp.run();
   }
@@ -149,8 +158,8 @@ void QgsPointCloudLayerExporter::doExport()
 
 QgsMapLayer *QgsPointCloudLayerExporter::getExportedLayer()
 {
-  if ( mFormat == QLatin1String( "memory" ) && mOutputLayer )
-    return mOutputLayer;
+  if ( mFormat == QLatin1String( "memory" ) && mMemoryLayer )
+    return mMemoryLayer;
 
   if ( mFormat == QLatin1String( "LAZ" ) )
     return new QgsPointCloudLayer( mFilename, mName, QStringLiteral( "pdal" ) );
@@ -281,9 +290,14 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 {
-  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mOutputLayer );
+  QgsVectorLayer *vl = qgis::down_cast<QgsVectorLayer *>( mParent->mMemoryLayer );
   if ( vl )
-    vl->dataProvider()->addFeatures( mFeatures );
+  {
+    if ( ! vl->dataProvider()->addFeatures( mFeatures ) )
+    {
+      mParent->setLastError( vl->dataProvider()->lastError() );
+    }
+  }
   mFeatures.clear();
 }
 
@@ -319,14 +333,17 @@ void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y
 
 void QgsPointCloudLayerExporter::ExporterVector::handleNode()
 {
-  mParent->mSink->addFeatures( mFeatures );
+  if ( ! mParent->mVectorSink->addFeatures( mFeatures ) )
+  {
+    mParent->setLastError( mParent->mVectorSink->lastError() );
+  }
   mFeatures.clear();
 }
 
 void QgsPointCloudLayerExporter::ExporterVector::handleAll()
 {
-  delete mParent->mSink;
-  mParent->mSink = nullptr;
+  delete mParent->mVectorSink;
+  mParent->mVectorSink = nullptr;
 }
 
 //
@@ -430,8 +447,6 @@ void QgsPointCloudLayerExporter::ExporterPdal::handleAll()
   writer->setOptions( mOptions );
   writer->prepare( mTable );
   writer->execute( mTable );
-
-//  mParent->mOutputLayer = new QgsPointCloudLayer( mParent->mFilename, mParent->mName, QStringLiteral( "pdal" ) );
 }
 #endif
 

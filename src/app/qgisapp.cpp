@@ -9548,11 +9548,17 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     QgsApplication::taskManager()->addTask( task );
 
     // when writer is successful:
-    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ addToCanvas, exp ]()
+    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this, addToCanvas, exp ]()
     {
-      if ( addToCanvas )
+      QgsMapLayer *ml = exp->getExportedLayer();
+      if ( ! ml->isValid() )
       {
-        QgsMapLayer *ml = exp->getExportedLayer();
+        visibleMessageBar()->pushMessage( tr( "Export failed" ),
+                                          tr( "A problem occured while exporting: %1" ).arg( exp->lastError() ),
+                                          Qgis::MessageLevel::Warning );
+      }
+      else if ( addToCanvas )
+      {
         QgsProject::instance()->addMapLayer( ml );
       }
     } );
