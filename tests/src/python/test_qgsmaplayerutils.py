@@ -159,6 +159,9 @@ class TestQgsMapLayerUtils(unittest.TestCase):
         self.assertEqual(QgsMapLayerUtils.sortLayersByType([vl1, rl1, gp1, vl2], [QgsMapLayerType.AnnotationLayer]),
                          [vl1, rl1, gp1, vl2])
 
+    def test_launder_layer_name(self):
+        self.assertEqual(QgsMapLayerUtils.launderLayerName('abc Def4_a.h%'), 'abc_def4_ah')
+
 
 if __name__ == '__main__':
     unittest.main()

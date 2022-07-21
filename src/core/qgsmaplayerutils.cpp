@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatetransform.h"
+#include <QRegularExpression>
 
 QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
 {
@@ -153,4 +154,16 @@ QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer
     return false;
   } );
   return res;
+}
+
+QString QgsMapLayerUtils::launderLayerName( const QString &name )
+{
+  QString laundered = name.toLower();
+  const thread_local QRegularExpression sRxSwapChars( QStringLiteral( "\\s" ) );
+  laundered.replace( sRxSwapChars, QStringLiteral( "_" ) );
+
+  const thread_local QRegularExpression sRxRemoveChars( QStringLiteral( "[^a-zA-Z0-9_]" ) );
+  laundered.replace( sRxRemoveChars, QString() );
+
+  return laundered;
 }
