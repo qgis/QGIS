@@ -123,7 +123,10 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
 void QgsPointCloudLayerExporter::doExport()
 {
   mTransform = new QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
-  mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+  if ( mExtent.isFinite() )
+  {
+    mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+  }
 
   if ( mFormat == QLatin1String( "memory" ) )
   {
@@ -234,7 +237,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       {
         mParent->mFeedback->setProgress( 100 * static_cast< float >( pointsExported + pointsSkipped ) / pointsToExport );
         if ( mParent->mFeedback->isCanceled() )
+        {
+          mParent->setLastError( QObject::tr( "Canceled by user" ) );
           return;
+        }
       }
 
       if ( pointsExported > mParent->mPointsLimit )
@@ -254,6 +260,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
         continue;
       }
       const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
+      mParent->mTransform->transformInPlace( x, y, z );
       handlePoint( x, y, z, attributeMap, pointsExported );
       ++pointsExported;
     }
@@ -281,7 +288,6 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
   Q_UNUSED( pointNumber )
 
   QgsFeature feature;
-  mParent->mTransform->transformInPlace( x, y, z );
   feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
   QgsAttributes featureAttributes;
   for ( const QString &attribute : std::as_const( mParent->mRequestedAttributes ) )
@@ -324,7 +330,6 @@ void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y
   Q_UNUSED( pointNumber )
 
   QgsFeature feature;
-  mParent->mTransform->transformInPlace( x, y, z );
   feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
   QgsAttributes featureAttributes;
   for ( const QString &attribute : std::as_const( mParent->mRequestedAttributes ) )

@@ -184,10 +184,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QString mFormat;
     QString mFilename;
     QString mLastError;
-    QgsRectangle mExtent = QgsRectangle( std::numeric_limits< double >::lowest(),
-                                         std::numeric_limits< double >::lowest(),
-                                         std::numeric_limits< double >::max(),
-                                         std::numeric_limits< double >::max() );
+    QgsRectangle mExtent = QgsRectangle( -std::numeric_limits<double>::infinity(),
+                                         -std::numeric_limits<double>::infinity(),
+                                         std::numeric_limits<double>::infinity(),
+                                         std::numeric_limits<double>::infinity(),
+                                         false );
     QgsDoubleRange mZRange;
     QgsFeedback *mFeedback = nullptr;
     qint64 mPointsLimit = std::numeric_limits<qint64>::max();
