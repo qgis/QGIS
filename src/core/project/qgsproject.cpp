@@ -1380,6 +1380,9 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   // Propagate trust layer metadata flag
   if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
     layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
+  // Propagate open layers in read-only mode
+  if ( ( flags & Qgis::ProjectReadFlag::ForceReadOnlyLayers ) )
+    layerFlags |= QgsMapLayer::FlagForceReadOnly;
 
   profile.switchTask( tr( "Load layer source" ) );
   const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();

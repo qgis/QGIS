@@ -418,7 +418,14 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  open( OpenModeInitial );
+  if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+  {
+    open( OpenModeForceReadOnly );
+  }
+  else
+  {
+    open( OpenModeInitial );
+  }
 
   QList<NativeType> nativeTypes;
   if ( mOgrOrigLayer )

@@ -117,6 +117,11 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
       {
         readFlags |= Qgis::ProjectReadFlag::TrustLayerMetadata;
       }
+      // Activate force layer read only flag
+      if ( settings->forceReadOnlyLayers() )
+      {
+        readFlags |= Qgis::ProjectReadFlag::ForceReadOnlyLayers;
+      }
       // Activate don't load layouts flag
       if ( settings->getPrintDisabled() )
       {
@@ -334,4 +339,3 @@ void QgsNullCacheStrategy::entryInserted( const QString &path )
 {
   Q_UNUSED( path )
 }
-

@@ -186,6 +186,10 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
+    if ( options.forceReadOnly )
+    {
+      providerFlags |= QgsDataProvider::ForceReadOnly;
+    }
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
 
@@ -1586,6 +1590,10 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     // for invalid layer sources, we fallback to stored wkbType if available
     if ( elem.hasAttribute( QStringLiteral( "wkbType" ) ) )
       mWkbType = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "wkbType" ) ), mWkbType );
+  }
+  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
