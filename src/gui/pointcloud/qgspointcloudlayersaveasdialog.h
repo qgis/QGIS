@@ -136,6 +136,7 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
   private:
 
     void setup();
+    QString filterForDriver( const QString &driverName ) const;
 
     QgsCoordinateReferenceSystem mSelectedCrs;
 

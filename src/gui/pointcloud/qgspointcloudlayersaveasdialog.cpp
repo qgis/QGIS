@@ -51,8 +51,6 @@ QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLay
     mLayerExtent = layer->extent();
   }
   setup();
-
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
 }
 
 void QgsPointCloudLayerSaveAsDialog::setup()
@@ -79,13 +77,14 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mFormatComboBox->addItem( tr( "Temporary Scratch Layer" ), QStringLiteral( "memory" ) );
   mFormatComboBox->addItem( tr( "LAZ point cloud" ), QStringLiteral( "LAZ" ) );
   mFormatComboBox->addItem( tr( "GeoPackage" ), QStringLiteral( "GPKG" ) );
-  mFormatComboBox->addItem( tr( "ESRI Shapefile" ), QStringLiteral( "SHP" ) );
+  mFormatComboBox->addItem( tr( "ESRI Shapefile" ), QStringLiteral( "ESRI Shapefile" ) );
   mFormatComboBox->addItem( tr( "AutoCAD DXF" ), QStringLiteral( "DXF" ) );
 
   QgsSettings settings;
-  QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "memory" ).toString();
+  const QString defaultFormat = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "memory" ).toString();
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( defaultFormat ) );
   mFormatComboBox->blockSignals( false );
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
+  mFormatComboBox_currentIndexChanged( 0 );
 
   mCrsSelector->setCrs( mSelectedCrs );
   mCrsSelector->setLayerCrs( mSelectedCrs );
@@ -150,12 +149,12 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
-    if ( !filePath.isEmpty() && leLayername->isEnabled() )
+    if ( !filePath.isEmpty() && leLayername->text().isEmpty() )
     {
       QFileInfo fileInfo( filePath );
       leLayername->setText( fileInfo.completeBaseName() );
     }
-
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
 
   try
@@ -173,6 +172,11 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mCrsSelector->setShowAccuracyWarnings( true );
 
   mAddToCanvas->setEnabled( true );
+
+  leLayername->setEnabled( true );
+  leLayername->setText( mLayer->name() );
+
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( format() == QLatin1String( "memory" ) || !mFilename->filePath().isEmpty() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::accept()
@@ -295,12 +299,25 @@ void QgsPointCloudLayerSaveAsDialog::accept()
   QDialog::accept();
 }
 
+QString QgsPointCloudLayerSaveAsDialog::filterForDriver( const QString &driverName ) const
+{
+  if ( driverName == QLatin1String( "LAZ" ) )
+    return QStringLiteral( "LAZ pointcloud (*.laz *.LAZ)" );
+  if ( driverName == QLatin1String( "GPKG" ) )
+    return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
+  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+    return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
+  if ( driverName == QLatin1String( "DXF" ) )
+    return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
+  return QString();
+}
+
 void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 {
   Q_UNUSED( idx )
 
   mFilename->setEnabled( true );
-  mFilename->setFilter( QgsVectorFileWriter::filterForDriver( format() ) );
+  mFilename->setFilter( filterForDriver( format() ) );
 
   // if output filename already defined we need to replace old suffix
   // to avoid double extensions like .gpkg.shp
@@ -308,7 +325,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   {
     QRegularExpression rx( "\\.(.*?)[\\s]" );
     QString ext;
-    ext = rx.match( QgsVectorFileWriter::filterForDriver( format() ) ).captured( 1 );
+    ext = rx.match( filterForDriver( format() ) ).captured( 1 );
     if ( !ext.isEmpty() )
     {
       QFileInfo fi( mFilename->filePath() );
@@ -326,21 +343,24 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     mAttributesSelection->setEnabled( true );
   }
 
-  leLayername->setEnabled( sFormat == QLatin1String( "memory" ) ||
-                           sFormat == QLatin1String( "GPKG" ) );
+  if ( sFormat == QLatin1String( "memory" ) )
+  {
+    mFilename->setEnabled( false );
+    mFilename->setFilePath( QString() );
+  }
+  else
+  {
+    mFilename->setEnabled( true );
+  }
 
-  leLayername->setMaxLength( 32767 ); // default length
-
-  if ( !leLayername->isEnabled() )
-    leLayername->setText( QString() );
-  else if ( leLayername->text().isEmpty() &&
-            !mFilename->filePath().isEmpty() )
+  if ( leLayername->text().isEmpty() &&
+       !mFilename->filePath().isEmpty() )
   {
     QString layerName = QFileInfo( mFilename->filePath() ).baseName();
     leLayername->setText( layerName );
   }
 
-  mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( sFormat == QLatin1String( "memory" ) || !mFilename->filePath().isEmpty() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )

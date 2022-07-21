@@ -73,8 +73,9 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QString layerName() const { return mFilename; };
 
     /**
-     * Sets a filter extent for points to be exported.
+     * Sets a filter extent for points to be exported in the target CRS
      * Points that fall outside the extent will be skipped.
+     * \see setCrs()
      */
     void setFilterExtent( const QgsRectangle extent ) { mExtent = extent; };
 
@@ -126,12 +127,12 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Sets the \a crs for the exported file, and the transfom \a context that will be used for
      * for reprojection if different from the point cloud layer's CRS.
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mCrs = crs; mTransformContext = context; };
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; };
 
     /**
      * Gets the \a crs for the exported file.
      */
-    QgsCoordinateReferenceSystem crs() const { return mCrs; };
+    QgsCoordinateReferenceSystem crs() const { return mTargetCrs; };
 
     /**
      * Sets the \a format for the exported file.
@@ -192,12 +193,13 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     qint64 mPointsLimit = std::numeric_limits<qint64>::max();
     QStringList mRequestedAttributes;
     QStringList mSupportedFormats;
-    QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
 
     QgsMapLayer *mMemoryLayer = nullptr;
     QgsFeatureSink *mVectorSink = nullptr;
-
+    QgsCoordinateTransform *mTransform = nullptr;
 
 
     class ExporterBase
@@ -211,7 +213,6 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         virtual void handleNode() = 0;
         virtual void handleAll() = 0;
         QgsPointCloudLayerExporter *mParent = nullptr;
-        QgsCoordinateTransform *mCt = nullptr;
     };
 
     class ExporterMemory : public ExporterBase

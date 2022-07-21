@@ -54,8 +54,10 @@ Gets the name for the new layer.
 %End
     void setFilterExtent( const QgsRectangle extent );
 %Docstring
-Sets a filter extent for points to be exported.
+Sets a filter extent for points to be exported in the target CRS
 Points that fall outside the extent will be skipped.
+
+.. seealso:: :py:func:`setCrs`
 %End
     QgsRectangle filterExtent() const;
 %Docstring

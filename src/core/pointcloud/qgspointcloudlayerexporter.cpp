@@ -33,14 +33,15 @@
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
   , mIndex( layer->dataProvider()->index()->clone().release() )
-  , mCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
+  , mSourceCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
+  , mTargetCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
   mSupportedFormats << QStringLiteral( "memory" )
 #ifdef HAVE_PDAL_QGIS
                     << QStringLiteral( "LAZ" )
 #endif
                     << QStringLiteral( "GPKG" )
-                    << QStringLiteral( "Shapefile" )
+                    << QStringLiteral( "ESRI Shapefile" )
                     << QStringLiteral( "DXF" );
 
   QStringList allAttributeNames;
@@ -56,6 +57,7 @@ QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
 {
 //  delete mOutputLayer;
   delete mVectorSink;
+  delete mTransform;
 }
 
 bool QgsPointCloudLayerExporter::setFormat( const QString &format )
@@ -120,9 +122,12 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
 
 void QgsPointCloudLayerExporter::doExport()
 {
+  mTransform = new QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
+  mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+
   if ( mFormat == QLatin1String( "memory" ) )
   {
-    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mCrs );
+    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mTargetCrs );
     ExporterMemory exp = ExporterMemory( this );
     exp.run();
   }
@@ -150,7 +155,7 @@ void QgsPointCloudLayerExporter::doExport()
     saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
     saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
     saveOptions.feedback = mFeedback;
-    mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mCrs, QgsCoordinateTransformContext(), saveOptions );
+    mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
     ExporterVector exp = ExporterVector( this );
     exp.run();
   }
@@ -199,7 +204,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     }
   }
 
-  mCt = new QgsCoordinateTransform( mParent->mIndex->crs(), mParent->mCrs, QgsCoordinateTransformContext() );
+
 
   int pointsSkipped = 0;
   const qint64 pointsToExport = std::max< qint64 >( std::min( mParent->mPointsLimit, pointCount ), 1 );
@@ -259,7 +264,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
 QgsPointCloudLayerExporter::ExporterBase::~ExporterBase()
 {
-  delete mCt;
+//  delete mCt;
 }
 
 //
@@ -276,7 +281,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y
   Q_UNUSED( pointNumber )
 
   QgsFeature feature;
-  mCt->transformInPlace( x, y, z );
+  mParent->mTransform->transformInPlace( x, y, z );
   feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
   QgsAttributes featureAttributes;
   for ( const QString &attribute : std::as_const( mParent->mRequestedAttributes ) )
@@ -319,7 +324,7 @@ void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y
   Q_UNUSED( pointNumber )
 
   QgsFeature feature;
-  mCt->transformInPlace( x, y, z );
+  mParent->mTransform->transformInPlace( x, y, z );
   feature.setGeometry( QgsGeometry( new QgsPoint( x, y, z ) ) );
   QgsAttributes featureAttributes;
   for ( const QString &attribute : std::as_const( mParent->mRequestedAttributes ) )
@@ -482,6 +487,7 @@ bool QgsPointCloudLayerExporterTask::run()
 
 void QgsPointCloudLayerExporterTask::finished( bool result )
 {
+  Q_UNUSED( result )
   // mExp.setResult( result );
   emit exportComplete();
   delete mExp;
