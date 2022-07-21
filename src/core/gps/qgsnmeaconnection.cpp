@@ -414,7 +414,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
       
     }
     // da completare ---MB
-    //mLastGPSInformation.satellitesUsed = result.satinuse;
+    mLastGPSInformation.satellitesUsed = result.satinuse;
     //mLastGPSInformation.satellitesUsed += result.satinuse;
   }
 }
