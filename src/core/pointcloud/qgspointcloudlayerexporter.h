@@ -197,6 +197,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
+    int mPointRecordFormat;
 
     QgsMapLayer *mMemoryLayer = nullptr;
     QgsFeatureSink *mVectorSink = nullptr;

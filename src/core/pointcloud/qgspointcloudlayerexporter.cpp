@@ -36,6 +36,11 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
   , mSourceCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
   , mTargetCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
+  bool ok;
+  mPointRecordFormat = layer->dataProvider()->originalMetadata().value( QStringLiteral( "dataformat_id" ) ).toInt( &ok );
+  if ( !ok )
+    mPointRecordFormat = 3;
+
   mSupportedFormats << QStringLiteral( "memory" )
 #ifdef HAVE_PDAL_QGIS
                     << QStringLiteral( "LAZ" )
@@ -369,10 +374,12 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
 
   mOptions.add( "filename", mParent->mFilename.toStdString() );
   mOptions.add( "a_srs", mParent->mTargetCrs.authid().toStdString() );
+//  mOptions.add( "format", QString( mParent->mPointRecordFormat ).toStdString() );
 
   mTable.layout()->registerDim( pdal::Dimension::Id::X );
   mTable.layout()->registerDim( pdal::Dimension::Id::Y );
   mTable.layout()->registerDim( pdal::Dimension::Id::Z );
+
   if ( mParent->mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
     mTable.layout()->registerDim( pdal::Dimension::Id::Intensity );
   if ( mParent->mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
@@ -401,6 +408,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
     mTable.layout()->registerDim( pdal::Dimension::Id::Blue );
   if ( mParent->mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
     mTable.layout()->registerDim( pdal::Dimension::Id::GpsTime );
+
   mView.reset( new pdal::PointView( mTable ) );
 }
 
@@ -409,6 +417,7 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   mView->setField( pdal::Dimension::Id::X, pointNumber, x );
   mView->setField( pdal::Dimension::Id::Y, pointNumber, y );
   mView->setField( pdal::Dimension::Id::Z, pointNumber, z );
+
 
   if ( mParent->mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
     mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ QStringLiteral( "Intensity" ) ].toInt() );
@@ -438,6 +447,7 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
     mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ QStringLiteral( "Blue" ) ].toInt() );
   if ( mParent->mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
     mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ QStringLiteral( "GpsTime" ) ].toDouble() );
+
 }
 
 void QgsPointCloudLayerExporter::ExporterPdal::handleNode()
@@ -494,7 +504,7 @@ bool QgsPointCloudLayerExporterTask::run()
 void QgsPointCloudLayerExporterTask::finished( bool result )
 {
   Q_UNUSED( result )
-  // mExp.setResult( result );
+
   emit exportComplete();
   delete mExp;
 }
