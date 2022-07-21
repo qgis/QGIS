@@ -75,20 +75,17 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsPointCloudLayerSaveAsDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsPointCloudLayerSaveAsDialog::reject );
 
-  const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
   mFormatComboBox->addItem( tr( "Temporary Scratch Layer" ), QStringLiteral( "memory" ) );
-  mFormatComboBox->addItem( tr( "PDAL LAZ" ), QStringLiteral( "LAZ" ) );
-  for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
-  {
-    mFormatComboBox->addItem( driver.longName, driver.driverName );
-  }
+  mFormatComboBox->addItem( tr( "LAZ point cloud" ), QStringLiteral( "LAZ" ) );
+  mFormatComboBox->addItem( tr( "GeoPackage" ), QStringLiteral( "GPKG" ) );
+  mFormatComboBox->addItem( tr( "ESRI Shapefile" ), QStringLiteral( "SHP" ) );
+  mFormatComboBox->addItem( tr( "AutoCAD DXF" ), QStringLiteral( "DXF" ) );
 
   QgsSettings settings;
   QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "memory" ).toString();
   mFormatComboBox->blockSignals( false );
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
-//  mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   mCrsSelector->setCrs( mSelectedCrs );
   mCrsSelector->setLayerCrs( mSelectedCrs );
@@ -174,6 +171,8 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   }
 
   mCrsSelector->setShowAccuracyWarnings( true );
+
+  mAddToCanvas->setEnabled( true );
 }
 
 void QgsPointCloudLayerSaveAsDialog::accept()
@@ -318,7 +317,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   }
 
   const QString sFormat( format() );
-  if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
+  if ( sFormat == QLatin1String( "DXF" ) )
   {
     mAttributesSelection->setEnabled( false );
   }
@@ -328,18 +327,9 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   }
 
   leLayername->setEnabled( sFormat == QLatin1String( "memory" ) ||
-                           sFormat == QLatin1String( "KML" ) ||
-                           sFormat == QLatin1String( "GPKG" ) ||
-                           sFormat == QLatin1String( "XLSX" ) ||
-                           sFormat == QLatin1String( "ODS" ) ||
-                           sFormat == QLatin1String( "FileGDB" ) ||
-                           sFormat == QLatin1String( "SQLite" ) ||
-                           sFormat == QLatin1String( "SpatiaLite" ) );
+                           sFormat == QLatin1String( "GPKG" ) );
 
-  if ( sFormat == QLatin1String( "XLSX" ) )
-    leLayername->setMaxLength( 31 );
-  else if ( leLayername->isEnabled() )
-    leLayername->setMaxLength( 32767 ); // default length
+  leLayername->setMaxLength( 32767 ); // default length
 
   if ( !leLayername->isEnabled() )
     leLayername->setText( QString() );
@@ -351,12 +341,6 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   }
 
   mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
-
-  GDALDriverH hDriver = GDALGetDriverByName( format().toUtf8().constData() );
-  if ( hDriver )
-  {
-    mAddToCanvas->setEnabled( GDALGetMetadataItem( hDriver, GDAL_DCAP_OPEN, nullptr ) != nullptr );
-  }
 }
 
 void QgsPointCloudLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
