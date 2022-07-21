@@ -108,8 +108,8 @@ void QgsNmeaConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
-        //else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) || substring.startsWith( QLatin1String( "$GQGSV" ) ) )
-        else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) )
+        else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) || substring.startsWith( QLatin1String( "$GQGSV" ) ) )
+        //else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
           processGsvSentence( ba.data(), ba.length() );
@@ -202,7 +202,6 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     }
 
     //mLastGPSInformation.satellitesUsed = result.satinuse;
-    mLastGPSInformation.satellitesUsed = result.satinuse;
   }
 }
 
@@ -272,10 +271,10 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
       latitude = -latitude;
     }
     //GSA
-    //mLastGPSInformation.satPrn.clear(); 
+    mLastGPSInformation.satPrn.clear(); 
     //GSV
-    //mLastGPSInformation.satellitesInView.clear();
-    //mLastGPSInformation.satellitesUsed = 0;
+    mLastGPSInformation.satellitesInView.clear();
+    mLastGPSInformation.satellitesUsed = 0;
     
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
@@ -361,13 +360,12 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
-    // clear() on RMS
+    // clear() on RMS ---MB
     //clear satellite information when a new series of packs arrives
-    if ( result.pack_index == 1 )
-    {
-      //mLastGPSInformation.satellitesInView.clear();
-      mLastGPSInformation.satellitesInView.clear();
-    }
+    //if ( result.pack_index == 1 )
+    //{
+    //  mLastGPSInformation.satellitesInView.clear();
+    //}
 
     // for determining when to graph sat info
     mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
@@ -401,8 +399,9 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )
   {
+    
+    // clear() on RMS ---MB
     //mLastGPSInformation.satPrn.clear();    
-    mLastGPSInformation.satPrn.clear();
     
     mLastGPSInformation.hdop = result.HDOP;
     mLastGPSInformation.pdop = result.PDOP;
@@ -414,6 +413,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
       mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
       
     }
+    // da completare ---MB
     //mLastGPSInformation.satellitesUsed = result.satinuse;
     //mLastGPSInformation.satellitesUsed += result.satinuse;
   }
