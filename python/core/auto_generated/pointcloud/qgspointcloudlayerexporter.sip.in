@@ -11,7 +11,6 @@
 
 
 
-
 class QgsPointCloudLayerExporter /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -108,15 +107,22 @@ Gets the ``crs`` for the exported file.
 %End
     bool setFormat( const QString &format );
 %Docstring
-Sets the ``format`` for the exported file. Possible values are OGR driver names and PDAL reader names.
-If never called, the default format is GPKG for vector and COPC for pointcloud files.
+Sets the ``format`` for the exported file.
 
 :return: true if the ``format`` is supported, false otherwise.
+
+.. seealso:: :py:func:`supportedFormats`
 %End
 
     QString format() const;
 %Docstring
 Returns the format for the exported file or layer.
+%End
+    QStringList supportedFormats() const;
+%Docstring
+Gets a list of the supported export formats.
+
+.. seealso:: :py:func:`setFormat`
 %End
     void setPointsLimit( qint64 limit );
 %Docstring
@@ -128,7 +134,7 @@ Gets the maximum number of points to be exported.
 %End
     void doExport();
 
-    QgsMapLayer *getLayer() /Factory/;
+    QgsMapLayer *getExportedLayer() /Factory/;
 
       public:
       protected:

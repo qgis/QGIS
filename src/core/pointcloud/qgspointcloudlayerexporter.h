@@ -23,10 +23,11 @@
 #include "qgspointcloudlayer.h"
 #include "qgstaskmanager.h"
 
+#ifdef HAVE_PDAL_QGIS
 #include <pdal/PointView.hpp>
 #include <pdal/PointTable.hpp>
 #include <pdal/Options.hpp>
-
+#endif
 
 class QgsCoordinateTransform;
 
@@ -133,9 +134,9 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsCoordinateReferenceSystem crs() const { return mCrs; };
 
     /**
-     * Sets the \a format for the exported file. Possible values are OGR driver names and PDAL reader names.
-     * If never called, the default format is GPKG for vector and COPC for pointcloud files.
+     * Sets the \a format for the exported file.
      * \returns true if the \a format is supported, false otherwise.
+     * \see supportedFormats()
      */
     bool setFormat( const QString &format );
 
@@ -143,6 +144,13 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Returns the format for the exported file or layer.
      */
     QString format() const { return mFormat; };
+
+    /**
+     * Gets a list of the supported export formats.
+     *
+     * \see setFormat()
+     */
+    QStringList supportedFormats() const { return mSupportedFormats; };
 
     /**
      * Sets the maximum number of points to be exported.
@@ -156,7 +164,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     void doExport();
 
-    QgsMapLayer *getLayer() SIP_FACTORY;
+    QgsMapLayer *getExportedLayer() SIP_FACTORY;
 
   private:
 
@@ -179,6 +187,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsFeedback *mFeedback = nullptr;
     qint64 mPointsLimit = std::numeric_limits<qint64>::max();
     QStringList mRequestedAttributes;
+    QStringList mSupportedFormats;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
 
@@ -225,6 +234,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         QgsFeatureList mFeatures;
     };
 
+#ifdef HAVE_PDAL_QGIS
     class ExporterPdal : public ExporterBase
     {
       public:
@@ -238,6 +248,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         pdal::PointTable mTable;
         pdal::PointViewPtr mView;
     };
+#endif
 
 };
 

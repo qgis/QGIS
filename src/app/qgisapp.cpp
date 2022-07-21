@@ -9552,7 +9552,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     {
       if ( addToCanvas )
       {
-        QgsMapLayer *ml = exp->getLayer();
+        QgsMapLayer *ml = exp->getExportedLayer();
         QgsProject::instance()->addMapLayer( ml );
       }
     } );

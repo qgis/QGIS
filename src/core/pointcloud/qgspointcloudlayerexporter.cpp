@@ -24,15 +24,25 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsproject.h"
 
+#ifdef HAVE_PDAL_QGIS
 #include <pdal/StageFactory.hpp>
 #include <pdal/io/BufferReader.hpp>
 #include <pdal/Dimension.hpp>
+#endif
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
   , mIndex( layer->dataProvider()->index()->clone().release() )
   , mCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {
+  mSupportedFormats << QStringLiteral( "memory" )
+#ifdef HAVE_PDAL_QGIS
+                    << QStringLiteral( "LAZ" )
+#endif
+                    << QStringLiteral( "GPKG" )
+                    << QStringLiteral( "Shapefile" )
+                    << QStringLiteral( "DXF" );
+
   QStringList allAttributeNames;
   const QVector<QgsPointCloudAttribute> allAttributes = mLayerAttributeCollection.attributes();
   for ( const QgsPointCloudAttribute &attribute : allAttributes )
@@ -50,22 +60,10 @@ QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
 
 bool QgsPointCloudLayerExporter::setFormat( const QString &format )
 {
-  if ( format == QLatin1String( "memory" ) ||
-       format == QLatin1String( "LAZ" ) )
+  if ( mSupportedFormats.contains( format, Qt::CaseInsensitive ) )
   {
     mFormat = format;
     return true;
-  }
-
-  const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
-
-  for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
-  {
-    if ( ! format.compare( driver.driverName, Qt::CaseInsensitive ) )
-    {
-      mFormat = driver.driverName;
-      return true;
-    }
   }
   return false;
 }
@@ -149,7 +147,7 @@ void QgsPointCloudLayerExporter::doExport()
   }
 }
 
-QgsMapLayer *QgsPointCloudLayerExporter::getLayer()
+QgsMapLayer *QgsPointCloudLayerExporter::getExportedLayer()
 {
   if ( mFormat == QLatin1String( "memory" ) && mOutputLayer )
     return mOutputLayer;
@@ -335,6 +333,8 @@ void QgsPointCloudLayerExporter::ExporterVector::handleAll()
 // ExporterPdal
 //
 
+#ifdef HAVE_PDAL_QGIS
+
 QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExporter *exp )
 {
   mParent = exp;
@@ -433,6 +433,7 @@ void QgsPointCloudLayerExporter::ExporterPdal::handleAll()
 
 //  mParent->mOutputLayer = new QgsPointCloudLayer( mParent->mFilename, mParent->mName, QStringLiteral( "pdal" ) );
 }
+#endif
 
 //
 // QgsPointCloudLayerExporterTask
