@@ -370,6 +370,7 @@ Constructor for LayerOptions.
 
       bool skipCrsValidation;
 
+      bool forceReadOnly;
     };
 
     struct DeleteContext

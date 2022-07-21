@@ -67,6 +67,10 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   {
     flags |= QgsDataProvider::FlagTrustDataSource;
   }
+  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
+  }
   setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
