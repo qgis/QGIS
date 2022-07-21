@@ -368,6 +368,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
 
 
   mOptions.add( "filename", mParent->mFilename.toStdString() );
+  mOptions.add( "a_srs", mParent->mTargetCrs.authid().toStdString() );
 
   mTable.layout()->registerDim( pdal::Dimension::Id::X );
   mTable.layout()->registerDim( pdal::Dimension::Id::Y );
