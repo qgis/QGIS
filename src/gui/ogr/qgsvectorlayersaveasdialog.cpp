@@ -26,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerutils.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
@@ -57,6 +58,11 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, O
     mLayerExtent = layer->extent();
   }
   setup();
+
+  if ( layer && leLayername->isEnabled() )
+  {
+    leLayername->setText( QgsMapLayerUtils::launderLayerName( layer->name() ) );
+  }
 
   if ( !( mOptions & Symbology ) )
   {
@@ -188,10 +194,12 @@ void QgsVectorLayerSaveAsDialog::setup()
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
-    if ( !filePath.isEmpty() && leLayername->isEnabled() )
+
+    // if no layer name set, then automatically match the output layer name to the file name
+    if ( leLayername->text().isEmpty() && !filePath.isEmpty() && leLayername->isEnabled() )
     {
       QFileInfo fileInfo( filePath );
-      leLayername->setText( fileInfo.completeBaseName() );
+      leLayername->setText( QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() ) );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
@@ -489,7 +497,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   else if ( leLayername->text().isEmpty() &&
             !mFilename->filePath().isEmpty() )
   {
-    QString layerName = QFileInfo( mFilename->filePath() ).baseName();
+    const QString layerName = mLayer && !mLayer->name().isEmpty() ? mLayer->name() : QFileInfo( mFilename->filePath() ).baseName();
     leLayername->setText( layerName );
   }
 
