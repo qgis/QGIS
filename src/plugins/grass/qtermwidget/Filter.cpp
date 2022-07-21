@@ -420,16 +420,7 @@ UrlFilter::HotSpot::HotSpot(int startLine,int startColumn,int endLine,int endCol
 
 QString UrlFilter::HotSpot::tooltip() const
 {
-    QString url = capturedTexts().first();
-
-    const UrlType kind = urlType();
-
-    if ( kind == StandardUrl )
-        return QString();
-    else if ( kind == Email )
-        return QString();
-    else
-        return QString();
+    return QString();
 }
 UrlFilter::HotSpot::UrlType UrlFilter::HotSpot::urlType() const
 {
