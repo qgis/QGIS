@@ -494,10 +494,13 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
   if ( !leLayername->isEnabled() )
     leLayername->setText( QString() );
-  else if ( leLayername->text().isEmpty() &&
-            !mFilename->filePath().isEmpty() )
+  else if ( leLayername->text().isEmpty() )
   {
-    const QString layerName = mLayer && !mLayer->name().isEmpty() ? mLayer->name() : QFileInfo( mFilename->filePath() ).baseName();
+    QString layerName = mLayer && !mLayer->name().isEmpty() ? QgsMapLayerUtils::launderLayerName( mLayer->name() ) : QString();
+    if ( layerName.isEmpty() && !mFilename->filePath().isEmpty() )
+      layerName = QFileInfo( mFilename->filePath() ).baseName();
+    if ( layerName.isEmpty() )
+      layerName = tr( "new_layer" );
     leLayername->setText( layerName );
   }
 
