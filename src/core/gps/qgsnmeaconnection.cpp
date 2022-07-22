@@ -104,6 +104,13 @@ void QgsNmeaConnection::processStringBuffer()
         else if ( substring.startsWith( QLatin1String( "$GPRMC" ) ) || substring.startsWith( QLatin1String( "$GNRMC" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
+          
+          //GSA
+          mLastGPSInformation.satPrn.clear(); 
+          //GSV
+          mLastGPSInformation.satellitesInView.clear();
+          mLastGPSInformation.satellitesUsed = 0;
+          
           processRmcSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
@@ -259,10 +266,10 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 {
   nmeaGPRMC result;
   //GSA
-  mLastGPSInformation.satPrn.clear(); 
+  //mLastGPSInformation.satPrn.clear(); 
   //GSV
-  mLastGPSInformation.satellitesInView.clear();
-  mLastGPSInformation.satellitesUsed = 0;
+  //mLastGPSInformation.satellitesInView.clear();
+  //mLastGPSInformation.satellitesUsed = 0;
   
   if ( nmea_parse_GPRMC( data, len, &result ) )
   {
