@@ -541,9 +541,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mCheckMonitorDirectories->setChecked( mSettings->value( QStringLiteral( "/qgis/monitorDirectoriesInBrowser" ), true ).toBool() );
 
-  // log rendering events, for userspace debugging
-  mLogCanvasRefreshChkBx->setChecked( QgsMapRendererJob::settingsLogCanvasRefreshEvent.value() );
-
   //set the default projection behavior radio buttons
   const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
   switch ( mode )
@@ -718,8 +715,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
   chkAntiAliasing->setChecked( mSettings->value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() );
-  chkUseRenderCaching->setChecked( mSettings->value( QStringLiteral( "/qgis/enable_render_caching" ), true ).toBool() );
-  chkParallelRendering->setChecked( mSettings->value( QStringLiteral( "/qgis/parallel_rendering" ), true ).toBool() );
   spinMapUpdateInterval->setValue( mSettings->value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
   spinMapUpdateInterval->setClearValue( 250 );
   chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
@@ -1708,8 +1703,6 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/enable_anti_aliasing" ), chkAntiAliasing->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/enable_render_caching" ), chkUseRenderCaching->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/parallel_rendering" ), chkParallelRendering->isChecked() );
   int maxThreads = chkMaxThreads->isChecked() ? spinMaxThreads->value() : -1;
   QgsApplication::setMaxThreads( maxThreads );
   mSettings->setValue( QStringLiteral( "/qgis/max_threads" ), maxThreads );
@@ -1794,9 +1787,6 @@ void QgsOptions::saveOptions()
 
   mSettings->setValue( QStringLiteral( "/Raster/cumulativeCutLower" ), mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
   mSettings->setValue( QStringLiteral( "/Raster/cumulativeCutUpper" ), mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
-
-  // log rendering events, for userspace debugging
-  QgsMapRendererJob::settingsLogCanvasRefreshEvent.setValue( mLogCanvasRefreshChkBx->isChecked() );
 
   //check behavior so default projection when new layer is added with no
   //projection defined...
