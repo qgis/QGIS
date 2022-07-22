@@ -33,9 +33,6 @@
 #include "qgsauthconfigselect.h"
 #include "qgsproject.h"
 #include "qgsdualview.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterminmaxorigin.h"
-#include "qgscontrastenhancement.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsnumericformatwidget.h"
@@ -122,7 +119,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mTreeModel->appendRow( dataSources );
   dataSources->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "propertyicons/gdal.svg" ) ) );
 
-  mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "propertyicons/rendering.svg" ) ) );
   mTreeModel->appendRow( createItem( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QCoreApplication::translate( "QgsOptionsBase", "Canvas and legend" ), QStringLiteral( "propertyicons/overlay.svg" ) ) );
 
   QStandardItem *mapTools = createItem( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QCoreApplication::translate( "QgsOptionsBase", "Map tools" ), QStringLiteral( "propertyicons/map_tools.svg" ) );
@@ -712,64 +708,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   mNativeColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool() );
 
-  //set the state of the checkboxes
-  //Changed to default to true as of QGIS 1.7
-  chkAntiAliasing->setChecked( mSettings->value( QStringLiteral( "/qgis/enable_anti_aliasing" ), true ).toBool() );
-  spinMapUpdateInterval->setValue( mSettings->value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
-  spinMapUpdateInterval->setClearValue( 250 );
-  chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
-  spinMaxThreads->setEnabled( chkMaxThreads->isChecked() );
-  spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
-  spinMaxThreads->setValue( QgsApplication::maxThreads() );
-
-  // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( mSettings->enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), QgsVectorSimplifyMethod::GeometrySimplification ) != QgsVectorSimplifyMethod::NoSimplification );
-  mSimplifyDrawingSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/simplifyDrawingTol" ), Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
-  mSimplifyDrawingAtProvider->setChecked( !mSettings->value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
-
-  //segmentation tolerance type
-  mToleranceTypeComboBox->addItem( tr( "Maximum Angle" ), QgsAbstractGeometry::MaximumAngle );
-  mToleranceTypeComboBox->addItem( tr( "Maximum Difference" ), QgsAbstractGeometry::MaximumDifference );
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = mSettings->enumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
-  int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
-  if ( toleranceTypeIndex != -1 )
-  {
-    mToleranceTypeComboBox->setCurrentIndex( toleranceTypeIndex );
-  }
-
-  double tolerance = mSettings->value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  if ( toleranceType == QgsAbstractGeometry::MaximumAngle )
-  {
-    tolerance = tolerance * 180.0 / M_PI; //value shown to the user is degree, not rad
-  }
-  mSegmentationToleranceSpinBox->setValue( tolerance );
-  mSegmentationToleranceSpinBox->setClearValue( 1.0 );
-
-  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
-  myScalesList.append( QStringLiteral( "1:1" ) );
-  mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
-  mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
-
-  // Magnifier
-  double magnifierMin = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
-  double magnifierMax = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  double magnifierVal = 100 * mSettings->value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
-  doubleSpinBoxMagnifierDefault->setRange( magnifierMin, magnifierMax );
-  doubleSpinBoxMagnifierDefault->setSingleStep( 50 );
-  doubleSpinBoxMagnifierDefault->setDecimals( 0 );
-  doubleSpinBoxMagnifierDefault->setSuffix( QStringLiteral( "%" ) );
-  doubleSpinBoxMagnifierDefault->setValue( magnifierVal );
-  doubleSpinBoxMagnifierDefault->setClearValue( 100 );
-
-  // Default local simplification algorithm
-  mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), static_cast<int>( QgsVectorSimplifyMethod::Distance ) );
-  mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), static_cast<int>( QgsVectorSimplifyMethod::SnapToGrid ) );
-  mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), static_cast<int>( QgsVectorSimplifyMethod::Visvalingam ) );
-  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), QgsVectorSimplifyMethod::NoSimplification ) ) );
-
-  // Slightly awkward here at the settings value is true to use QImage,
-  // but the checkbox is true to use QPixmap
-  chkAddedVisibility->setChecked( mSettings->value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
   cbxLegendClassifiers->setChecked( mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() );
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.value() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
@@ -801,50 +739,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mMapTipsDelaySpinBox->setClearValue( 850 );
 
   mRespectScreenDpiCheckBox->setChecked( QgsSettingsRegistryGui::settingsRespectScreenDPI.value() );
-
-  //
-  // Raster properties
-  //
-  spnRed->setValue( mSettings->value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt() );
-  spnRed->setClearValue( 1 );
-  spnGreen->setValue( mSettings->value( QStringLiteral( "/Raster/defaultGreenBand" ), 2 ).toInt() );
-  spnGreen->setClearValue( 2 );
-  spnBlue->setValue( mSettings->value( QStringLiteral( "/Raster/defaultBlueBand" ), 3 ).toInt() );
-  spnBlue->setClearValue( 3 );
-
-  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
-  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
-  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ), QStringLiteral( "nearest neighbour" ) );
-  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Bilinear" ), QStringLiteral( "bilinear" ) );
-  mZoomedOutResamplingComboBox->insertItem( 2, tr( "Cubic" ), QStringLiteral( "cubic" ) );
-  QString zoomedInResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedInResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
-  mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( zoomedInResampling ) );
-  QString zoomedOutResampling = mSettings->value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
-  mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( zoomedOutResampling ) );
-  spnOversampling->setValue( mSettings->value( QStringLiteral( "/Raster/defaultOversampling" ), 2.0 ).toDouble() );
-  spnOversampling->setClearValue( 2.0 );
-  mCbEarlyResampling->setChecked( mSettings->value( QStringLiteral( "/Raster/defaultEarlyResampling" ), false ).toBool() );
-
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ),
-                           QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::SINGLE_BAND_ENHANCEMENT_ALGORITHM ) );
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ),
-                           QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM ) );
-  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ),
-                           QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM ) );
-
-  initMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, QStringLiteral( "singleBand" ),
-                    QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS ) );
-  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ),
-                    QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS ) );
-  initMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ),
-                    QgsRasterMinMaxOrigin::limitsString( QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS ) );
-
-  spnThreeBandStdDev->setValue( mSettings->value( QStringLiteral( "/Raster/defaultStandardDeviation" ), QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR ).toDouble() );
-  spnThreeBandStdDev->setClearValue( QgsRasterMinMaxOrigin::DEFAULT_STDDEV_FACTOR );
-
-  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutLower" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_LOWER ) ).toDouble() );
-  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
 
   //set the color for selections
   int red = mSettings->value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
@@ -1701,40 +1595,7 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), ( QgsClipboard::CopyFormat )mComboCopyFeatureFormat->currentData().toInt() );
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/enable_anti_aliasing" ), chkAntiAliasing->isChecked() );
-  int maxThreads = chkMaxThreads->isChecked() ? spinMaxThreads->value() : -1;
-  QgsApplication::setMaxThreads( maxThreads );
-  mSettings->setValue( QStringLiteral( "/qgis/max_threads" ), maxThreads );
-
-  mSettings->setValue( QStringLiteral( "/qgis/map_update_interval" ), spinMapUpdateInterval->value() );
   mSettings->setValue( QStringLiteral( "/qgis/legendDoubleClickAction" ), cmbLegendDoubleClickAction->currentIndex() );
-
-  // Default simplify drawing configuration
-  QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
-  if ( mSimplifyDrawingGroupBox->isChecked() )
-  {
-    simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
-    if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
-  }
-  mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
-  mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
-
-  // magnification
-  mSettings->setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
-
-  //curve segmentation
-  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
-  mSettings->setEnumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
-  double segmentationTolerance = mSegmentationToleranceSpinBox->value();
-  if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
-  {
-    segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
-  }
-  mSettings->setValue( QStringLiteral( "/qgis/segmentationTolerance" ), segmentationTolerance );
 
   // project
   mSettings->setValue( QStringLiteral( "/qgis/projOpenAtLaunch" ), mProjectOnLaunchCmbBx->currentIndex() );
@@ -1764,29 +1625,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/messageTimeout" ), mMessageTimeoutSpnBx->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/native_color_dialogs" ), mNativeColorDialogsChkBx->isChecked() );
-
-  // rasters settings
-  mSettings->setValue( QStringLiteral( "/Raster/defaultRedBand" ), spnRed->value() );
-  mSettings->setValue( QStringLiteral( "/Raster/defaultGreenBand" ), spnGreen->value() );
-  mSettings->setValue( QStringLiteral( "/Raster/defaultBlueBand" ), spnBlue->value() );
-
-  mSettings->setValue( QStringLiteral( "/Raster/defaultZoomedInResampling" ), mZoomedInResamplingComboBox->currentData().toString() );
-  mSettings->setValue( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), mZoomedOutResamplingComboBox->currentData().toString() );
-  mSettings->setValue( QStringLiteral( "/Raster/defaultOversampling" ), spnOversampling->value() );
-  mSettings->setValue( QStringLiteral( "/Raster/defaultEarlyResampling" ), mCbEarlyResampling->isChecked() );
-
-  saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, QStringLiteral( "singleBand" ) );
-  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
-  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ) );
-
-  saveMinMaxLimits( cboxContrastEnhancementLimitsSingleBand, QStringLiteral( "singleBand" ) );
-  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandSingleByte, QStringLiteral( "multiBandSingleByte" ) );
-  saveMinMaxLimits( cboxContrastEnhancementLimitsMultiBandMultiByte, QStringLiteral( "multiBandMultiByte" ) );
-
-  mSettings->setValue( QStringLiteral( "/Raster/defaultStandardDeviation" ), spnThreeBandStdDev->value() );
-
-  mSettings->setValue( QStringLiteral( "/Raster/cumulativeCutLower" ), mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
-  mSettings->setValue( QStringLiteral( "/Raster/cumulativeCutUpper" ), mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
   //check behavior so default projection when new layer is added with no
   //projection defined...
@@ -2120,13 +1958,6 @@ void QgsOptions::editGdalDriver( const QString &driverName )
       optionsWidget->apply();
   }
 
-}
-
-// Return state of the visibility flag for newly added layers. If
-
-bool QgsOptions::newVisible()
-{
-  return chkAddedVisibility->isChecked();
 }
 
 QStringList QgsOptions::i18nList()
@@ -2715,54 +2546,6 @@ void QgsOptions::exportScales()
   {
     QgsDebugMsg( msg );
   }
-}
-
-void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal )
-{
-  QgsSettings settings;
-
-  //add items to the color enhanceContrast combo boxes
-  cbox->addItem( tr( "No Stretch" ),
-                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::NoEnhancement ) );
-  cbox->addItem( tr( "Stretch to MinMax" ),
-                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchToMinimumMaximum ) );
-  cbox->addItem( tr( "Stretch and Clip to MinMax" ),
-                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ) );
-  cbox->addItem( tr( "Clip to MinMax" ),
-                 QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::ClipToMinimumMaximum ) );
-
-  QString contrastEnhancement = mSettings->value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
-  cbox->setCurrentIndex( cbox->findData( contrastEnhancement ) );
-}
-
-void QgsOptions::saveContrastEnhancement( QComboBox *cbox, const QString &name )
-{
-  QgsSettings settings;
-  QString value = cbox->currentData().toString();
-  mSettings->setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
-}
-
-void QgsOptions::initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal )
-{
-  QgsSettings settings;
-
-  //add items to the color limitsContrast combo boxes
-  cbox->addItem( tr( "Cumulative Pixel Count Cut" ),
-                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::CumulativeCut ) );
-  cbox->addItem( tr( "Minimum / Maximum" ),
-                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::MinMax ) );
-  cbox->addItem( tr( "Mean +/- Standard Deviation" ),
-                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::StdDev ) );
-
-  QString contrastLimits = mSettings->value( "/Raster/defaultContrastEnhancementLimits/" + name, defaultVal ).toString();
-  cbox->setCurrentIndex( cbox->findData( contrastLimits ) );
-}
-
-void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString &name )
-{
-  QgsSettings settings;
-  QString value = cbox->currentData().toString();
-  mSettings->setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
 }
 
 void QgsOptions::addColor()

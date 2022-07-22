@@ -2744,11 +2744,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAppQueryLogger *mQueryLogger = nullptr;
     QgsScopedDevToolWidgetFactory mQueryLoggerWidgetFactory;
 
-    QgsScopedOptionsWidgetFactory mCodeEditorWidgetFactory;
-    QgsScopedOptionsWidgetFactory mBabelGpsDevicesWidgetFactory;
-    QgsScopedOptionsWidgetFactory m3DOptionsWidgetFactory;
-    QgsScopedOptionsWidgetFactory mCustomProjectionsWidgetFactory;
-    QgsScopedOptionsWidgetFactory mFontOptionsWidgetFactory;
+    std::vector< QgsScopedOptionsWidgetFactory > mOptionWidgetFactories;
 
     QMap< QString, QToolButton * > mAnnotationItemGroupToolButtons;
     QAction *mAnnotationsItemInsertBefore = nullptr; // Used to insert annotation items at the appropriate location in the annotations toolbar
