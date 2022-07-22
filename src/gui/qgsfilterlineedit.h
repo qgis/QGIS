@@ -145,7 +145,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \see clearMode()
      * \since QGIS 3.0
      */
-    void setDefaultValue( const QString &defaultValue ) { mDefaultValue = defaultValue; }
+    void setDefaultValue( const QString &defaultValue );
 
     /**
      * Returns the default value for the widget. The default value is a value

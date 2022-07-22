@@ -62,6 +62,15 @@ void QgsFilterLineEdit::setShowSearchIcon( bool visible )
   }
 }
 
+void QgsFilterLineEdit::setDefaultValue( const QString &defaultValue )
+{
+  if ( defaultValue == mDefaultValue )
+    return;
+
+  mDefaultValue = defaultValue;
+  updateClearIcon();
+}
+
 void QgsFilterLineEdit::updateClearIcon()
 {
   const bool showClear = shouldShowClear();

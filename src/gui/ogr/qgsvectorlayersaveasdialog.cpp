@@ -61,7 +61,10 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, O
 
   if ( layer && leLayername->isEnabled() )
   {
-    leLayername->setText( QgsMapLayerUtils::launderLayerName( layer->name() ) );
+    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name() );
+    leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
+    leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
+    leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
   }
 
   if ( !( mOptions & Symbology ) )
@@ -195,11 +198,15 @@ void QgsVectorLayerSaveAsDialog::setup()
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
 
+    const QFileInfo fileInfo( filePath );
+    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
+    if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
+      leLayername->setDefaultValue( suggestedLayerName );
+
     // if no layer name set, then automatically match the output layer name to the file name
     if ( leLayername->text().isEmpty() && !filePath.isEmpty() && leLayername->isEnabled() )
     {
-      QFileInfo fileInfo( filePath );
-      leLayername->setText( QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() ) );
+      leLayername->setText( suggestedLayerName );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
@@ -496,9 +503,12 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
     leLayername->setText( QString() );
   else if ( leLayername->text().isEmpty() )
   {
-    QString layerName = mLayer && !mLayer->name().isEmpty() ? QgsMapLayerUtils::launderLayerName( mLayer->name() ) : QString();
+    QString layerName = mDefaultOutputLayerNameFromInputLayerName;
     if ( layerName.isEmpty() && !mFilename->filePath().isEmpty() )
+    {
       layerName = QFileInfo( mFilename->filePath() ).baseName();
+      leLayername->setDefaultValue( layerName );
+    }
     if ( layerName.isEmpty() )
       layerName = tr( "new_layer" );
     leLayername->setText( layerName );
