@@ -1302,7 +1302,7 @@ int main( int argc, char *argv[] )
         if ( systemEnvVars.contains( envVarName ) && envVarApply == QLatin1String( "unset" ) )
         {
 #ifdef Q_OS_WIN
-          putenv( envVarName.toUtf8().constData() );
+          putenv( QString( "%1=" ).arg( envVarName ).toUtf8().constData() );
 #else
           unsetenv( envVarName.toUtf8().constData() );
 #endif

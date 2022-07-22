@@ -33,6 +33,7 @@ class QToolButton;
 
 class QgsProcessingVectorTileWriteLayerDetailsWidget : public QgsPanelWidget, private Ui::QgsProcessingVectorTileWriterLayerDetailsWidget
 {
+    Q_OBJECT
   public:
     QgsProcessingVectorTileWriteLayerDetailsWidget( const QVariant &value, QgsProject *project );
 

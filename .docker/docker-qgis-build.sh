@@ -52,7 +52,7 @@ if [[ "${WITH_CLAZY}" = "ON" ]]; then
   export CLAZY_IGNORE_DIRS="(.*/external/.*)|(.*sip_.*part.*)"
 fi
 
-if [[ ${WITH_QT6} = "ON" ]]; then
+if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
   CLANG_WARNINGS="-Wrange-loop-construct"
 fi
 
@@ -76,7 +76,7 @@ cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
  -DUSE_CCACHE=OFF \
- -DWITH_QT6=${WITH_QT6} \
+ -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
  -DWITH_DESKTOP=${WITH_QT5} \
  -DWITH_ANALYSIS=ON \
  -DWITH_GUI=${WITH_QT5} \

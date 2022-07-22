@@ -724,6 +724,7 @@ Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
 class QgsWmsProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsWmsProviderMetadata();
     QIcon icon() const override;

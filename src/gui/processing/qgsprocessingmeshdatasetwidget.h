@@ -103,6 +103,8 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsWidgetWrapper  : public QgsAbstra
 
 class GUI_EXPORT QgsProcessingMeshDatasetGroupsParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {
+    Q_OBJECT
+
   public:
     QgsProcessingMeshDatasetGroupsParameterDefinitionWidget( QgsProcessingContext &context,
         const QgsProcessingParameterWidgetContext &widgetContext,
@@ -118,6 +120,7 @@ class GUI_EXPORT QgsProcessingMeshDatasetGroupsParameterDefinitionWidget : publi
 class GUI_EXPORT QgsProcessingMeshDatasetTimeWidget : public QWidget, private Ui::QgsProcessingMeshDatasetTimeWidgetBase
 {
     Q_OBJECT
+
   public:
     QgsProcessingMeshDatasetTimeWidget( QWidget *parent = nullptr,
                                         const QgsProcessingParameterMeshDatasetTime *param = nullptr,
@@ -203,6 +206,8 @@ class GUI_EXPORT QgsProcessingMeshDatasetTimeWidgetWrapper  : public QgsAbstract
 
 class GUI_EXPORT QgsProcessingMeshDatasetTimeParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
 {
+    Q_OBJECT
+
   public:
     QgsProcessingMeshDatasetTimeParameterDefinitionWidget( QgsProcessingContext &context,
         const QgsProcessingParameterWidgetContext &widgetContext,

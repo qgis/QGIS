@@ -323,18 +323,22 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
 
     const QgsLineString *lineString = nullptr;
+    std::unique_ptr< QgsLineString > segmentized;
     if ( const QgsLineString *ls = qgsgeometry_cast< const QgsLineString * >( &curve ) )
     {
       lineString = ls;
     }
     else
     {
-      std::unique_ptr< QgsLineString > segmentized;
       segmentized.reset( qgsgeometry_cast< QgsLineString * >( curve.segmentize( ) ) );
       lineString = segmentized.get();
     }
 
-    QgsClipper::clipped3dLine( lineString->xVector(), lineString->yVector(), lineString->zVector(), pointsX, pointsY, pointsZ, clipRect );
+    pointsX = lineString->xVector();
+    pointsY = lineString->yVector();
+    pointsZ = lineString->zVector();
+
+    QgsClipper::trimPolygon( pointsX, pointsY, pointsZ, clipRect );
   }
   else
   {
@@ -417,13 +421,7 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
     const double ch = e.height() / 10;
     const QgsBox3d clipRect( e.xMinimum() - cw, e.yMinimum() - ch, -HUGE_VAL, e.xMaximum() + cw, e.yMaximum() + ch, HUGE_VAL ); // TODO also need to be clipped according to z axis
 
-    QVector< double > tempX;
-    QVector< double > tempY;
-    QVector< double > tempZ;
-    QgsClipper::clipped3dLine( pointsX, pointsY, pointsZ, tempX, tempY, tempZ, clipRect );
-    pointsX = tempX;
-    pointsY = tempY;
-    pointsZ = tempZ;
+    QgsClipper::trimPolygon( pointsX, pointsY, pointsZ, clipRect );
   }
 
   const int polygonSize = pointsX.size();

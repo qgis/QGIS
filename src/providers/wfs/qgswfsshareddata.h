@@ -34,6 +34,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     //! Compute WFS filter from the sql or filter in the URI
     bool computeFilter( QString &errorMsg );
 
+    //! Returns computed WFS server expression
+    QString computedExpression( const QgsExpression &expression ) const override;
+
     //! Returns srsName
     QString srsName() const;
 
@@ -137,6 +140,9 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     QgsRectangle getExtentFromSingleFeatureRequest() const override;
 
     long long getFeatureCountFromServer() const override;
+
+    void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion,  QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
 };
 
 //! Utility class to issue a GetFeature resultType=hits request

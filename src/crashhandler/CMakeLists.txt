@@ -2,7 +2,7 @@ include_directories(SYSTEM
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   QT6_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
   QT6_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
 else()

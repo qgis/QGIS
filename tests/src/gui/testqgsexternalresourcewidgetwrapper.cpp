@@ -283,7 +283,7 @@ void TestQgsExternalResourceWidgetWrapper::testSetNullValues()
 
 void TestQgsExternalResourceWidgetWrapper::testUrlStorageExpression()
 {
-  // test that everything related to Url storage expresssion is correctly set
+  // test that everything related to Url storage expression is correctly set
   // according to configuration
 
   QVariantMap globalVariables;
@@ -1107,7 +1107,7 @@ void TestQgsExternalResourceWidgetWrapper::testChangeValueBeforeLoaded()
   QVERIFY( !ww.mQgsWidget->mErrorLabel->isVisible() );
   QVERIFY( !messageBar->currentItem() );
 
-  // first fetch has been canceled and should be detroyed
+  // first fetch has been canceled and should be destroyed
   connect( firstFetchContent, &QObject::destroyed, &loop, &QEventLoop::quit );
   loop.exec();
 

@@ -29,6 +29,7 @@
  */
 class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpressionStoreDialogBase
 {
+    Q_OBJECT
   public:
 
     /**

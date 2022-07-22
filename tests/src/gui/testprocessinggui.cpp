@@ -184,6 +184,7 @@ class TestWidgetFactory : public QgsProcessingParameterWidgetFactoryInterface
 
 class DummyPluginLayer: public QgsPluginLayer
 {
+    Q_OBJECT
   public:
 
     DummyPluginLayer( const QString &layerType, const QString &layerName ): QgsPluginLayer( layerType, layerName )

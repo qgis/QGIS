@@ -891,6 +891,26 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement &geometr
   return g;
 }
 
+QDomElement QgsOgcUtils::filterElement( QDomDocument &doc, GMLVersion gmlVersion, FilterVersion filterVersion, bool GMLUsed )
+{
+  QDomElement filterElem =
+    ( filterVersion == FILTER_FES_2_0 ) ?
+    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
+    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
+
+  if ( GMLUsed )
+  {
+    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
+    if ( gmlVersion == GML_3_2_1 )
+      attr.setValue( GML32_NAMESPACE );
+    else
+      attr.setValue( GML_NAMESPACE );
+    filterElem.setAttributeNode( attr );
+  }
+  return filterElem;
+}
+
+
 bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem )
 {
   QString coordSeparator = QStringLiteral( "," );
@@ -1858,11 +1878,12 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &exp, QDomDo
                                 QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
 }
 
-QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage )
+QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage, bool requiresFilterElement )
 {
   return expressionToOgcExpression( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
-                                    QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
+                                    QStringLiteral( "geometry" ), QString(), false, false, errorMessage, requiresFilterElement );
 }
+
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
     QDomDocument &doc,
@@ -1888,19 +1909,7 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
   if ( exprRootElem.isNull() )
     return QDomElement();
 
-  QDomElement filterElem =
-    ( filterVersion == FILTER_FES_2_0 ) ?
-    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
-  if ( utils.GMLNamespaceUsed() )
-  {
-    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
-    if ( gmlVersion == GML_3_2_1 )
-      attr.setValue( GML32_NAMESPACE );
-    else
-      attr.setValue( GML_NAMESPACE );
-    filterElem.setAttributeNode( attr );
-  }
+  QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
@@ -1913,7 +1922,8 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     const QString &srsName,
     bool honourAxisOrientation,
     bool invertAxisOrientation,
-    QString *errorMessage )
+    QString *errorMessage,
+    bool requiresFilterElement )
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope();
@@ -1938,6 +1948,13 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
 
       if ( !exprRootElem.isNull() )
       {
+        if ( requiresFilterElement )
+        {
+          QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+          filterElem.appendChild( exprRootElem );
+          return filterElem;
+        }
         return exprRootElem;
       }
       break;
@@ -1974,19 +1991,7 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
   if ( exprRootElem.isNull() )
     return QDomElement();
 
-  QDomElement filterElem =
-    ( filterVersion == FILTER_FES_2_0 ) ?
-    doc.createElementNS( FES_NAMESPACE, QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( OGC_NAMESPACE, QStringLiteral( "ogc:Filter" ) );
-  if ( utils.GMLNamespaceUsed() )
-  {
-    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:gml" ) );
-    if ( gmlVersion == GML_3_2_1 )
-      attr.setValue( GML32_NAMESPACE );
-    else
-      attr.setValue( GML_NAMESPACE );
-    filterElem.setAttributeNode( attr );
-  }
+  QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
 
   QSet<QString> setNamespaceURI;
   for ( const LayerProperties &props : layerProperties )
@@ -2000,7 +2005,6 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
       filterElem.setAttributeNode( attr );
     }
   }
-
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
@@ -2346,6 +2350,11 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
       const QgsGeometry geom = QgsGeometry::fromWkt( wkt );
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
                       QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
+      if ( otherGeomElem.isNull() )
+      {
+        mErrorMessage = QObject::tr( "geom_from_wkt: unable to generate GML from wkt geometry" );
+        return QDomElement();
+      }
       mGeomId ++;
     }
     else if ( otherFnDef->name() == QLatin1String( "geom_from_gml" ) )
@@ -2367,6 +2376,18 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
 
       const QDomNode geomNode = mDoc.importNode( geomDoc.documentElement(), true );
       otherGeomElem = geomNode.toElement();
+    }
+    else if ( otherNode->hasCachedStaticValue() && otherNode->cachedStaticValue().userType() == QMetaType::type( "QgsGeometry" ) )
+    {
+      QgsGeometry geom = otherNode->cachedStaticValue().value<QgsGeometry>();
+      otherGeomElem = QgsOgcUtils::geometryToGML( geom, mDoc, mGMLVersion, mSrsName, mInvertAxisOrientation,
+                      QStringLiteral( "qgis_id_geom_%1" ).arg( mGeomId ) );
+      if ( otherGeomElem.isNull() )
+      {
+        mErrorMessage = QObject::tr( "geom from static value: unable to generate GML from static variable" );
+        return QDomElement();
+      }
+      mGeomId ++;
     }
     else
     {

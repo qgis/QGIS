@@ -46,6 +46,7 @@ class QgsNewVectorTableFieldModel;
  */
 class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVectorTableDialogBase
 {
+    Q_OBJECT
   public:
 
     /**
@@ -146,6 +147,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
 #ifndef SIP_RUN
 class QgsNewVectorTableDialogFieldsDelegate: public QStyledItemDelegate
 {
+    Q_OBJECT
   public:
 
     QgsNewVectorTableDialogFieldsDelegate( const QList< QgsVectorDataProvider::NativeType> &typeList, QObject *parent = nullptr );
@@ -168,6 +170,7 @@ class QgsNewVectorTableDialogFieldsDelegate: public QStyledItemDelegate
 
 class QgsNewVectorTableFieldModel: public QgsFieldModel
 {
+    Q_OBJECT
 
   public:
 

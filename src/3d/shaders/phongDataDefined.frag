@@ -37,5 +37,6 @@ vec4 phongFunction(const in vec4 ambient,
 
 void main(void)
 {
-    fragColor = phongFunction(vs_in.ambient,vs_in.diffuse,vs_in.specular, 1.0, worldPosition, eyePosition, worldNormal);
+    vec3 worldView = normalize(eyePosition - worldPosition);
+    fragColor = phongFunction(vs_in.ambient,vs_in.diffuse,vs_in.specular, 1.0, worldPosition, worldView, worldNormal);
 }

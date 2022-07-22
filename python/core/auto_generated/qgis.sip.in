@@ -804,6 +804,7 @@ The development version
       Render3DMap,
       HighQualityImageTransforms,
       SkipSymbolRendering,
+      ForceRasterMasks,
     };
     typedef QFlags<Qgis::MapSettingsFlag> MapSettingsFlags;
 
@@ -1179,6 +1180,14 @@ The development version
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
 
 
+    enum class ProjectCapability
+    {
+      ProjectStyles,
+    };
+
+    typedef QFlags<Qgis::ProjectCapability> ProjectCapabilities;
+
+
     enum class MapBoxGlStyleSourceType
     {
       Vector,
@@ -1187,6 +1196,17 @@ The development version
       GeoJson,
       Image,
       Video,
+      Unknown,
+    };
+
+    enum class ArcGisRestServiceType
+      {
+      FeatureServer,
+      MapServer,
+      ImageServer,
+      GlobeServer,
+      GPServer,
+      GeocodeServer,
       Unknown,
     };
 
@@ -1307,6 +1327,8 @@ QFlags<Qgis::PlotToolFlag> operator|(Qgis::PlotToolFlag f1, QFlags<Qgis::PlotToo
 QFlags<Qgis::ProfileGeneratorFlag> operator|(Qgis::ProfileGeneratorFlag f1, QFlags<Qgis::ProfileGeneratorFlag> f2);
 
 QFlags<Qgis::ProjectReadFlag> operator|(Qgis::ProjectReadFlag f1, QFlags<Qgis::ProjectReadFlag> f2);
+
+QFlags<Qgis::ProjectCapability> operator|(Qgis::ProjectCapability f1, QFlags<Qgis::ProjectCapability> f2);
 
 QFlags<Qgis::CoordinateTransformationFlag> operator|(Qgis::CoordinateTransformationFlag f1, QFlags<Qgis::CoordinateTransformationFlag> f2);
 

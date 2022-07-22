@@ -617,6 +617,12 @@ bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
   return true;
 }
 
+QString QgsOapifSharedData::computedExpression( const QgsExpression &expression ) const
+{
+  Q_UNUSED( expression );
+  return QString();
+}
+
 void QgsOapifSharedData::pushError( const QString &errorMsg ) const
 {
   QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );

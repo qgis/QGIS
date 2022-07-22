@@ -305,9 +305,17 @@ void QgsOgrProviderConnection::createVectorTable( const QString &schema,
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
+
+  GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve driver for connection" ) );
+  }
+
   QMap<QString, QVariant> opts { *options };
   opts[ QStringLiteral( "layerName" ) ] = QVariant( name );
   opts[ QStringLiteral( "update" ) ] = true;
+  opts[ QStringLiteral( "driverName" ) ] = QString( GDALGetDriverShortName( hDriver ) );
   QMap<int, int> map;
   QString errCause;
   Qgis::VectorExportResult errCode = QgsOgrProvider::createEmptyLayer(
@@ -341,11 +349,27 @@ void QgsOgrProviderConnection::dropVectorTable( const QString &schema, const QSt
   }
 }
 
+void QgsOgrProviderConnection::vacuum( const QString &, const QString &name ) const
+{
+  Q_UNUSED( name );
+  checkCapability( Capability::Vacuum );
+
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    if ( !name.isEmpty() )
+      executeGdalSqlPrivate( QStringLiteral( "REPACK \"%1\"" ).arg( name ) );
+    else
+      executeGdalSqlPrivate( QStringLiteral( "REPACK" ) );
+  }
+}
+
 void QgsOgrProviderConnection::setDefaultCapabilities()
 {
   GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   if ( !hDriver )
     return;
+
+  mDriverName = GDALGetDriverShortName( hDriver );
 
   mGeometryColumnCapabilities =
   {
@@ -375,11 +399,25 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   }
 #endif
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( mDriverName == QLatin1String( "OpenFileGDB" ) )
+  {
+    mCapabilities |= Vacuum;
+  }
+#endif
+
   // No generic way in GDAL to test these per driver/dataset yet
   mCapabilities |= AddField;
   mCapabilities |= DeleteField;
+  mCapabilities |= RenameField;
 
-  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // fallback to read only otherwise
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
   if ( hDS )
   {
     if ( OGR_DS_TestCapability( hDS.get(), ODsCCurveGeometries ) )
@@ -572,23 +610,26 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsOgrProviderConnection::exe
 
 QList<QgsVectorDataProvider::NativeType> QgsOgrProviderConnection::nativeTypes() const
 {
-  QgsVectorLayer::LayerOptions options { false, true };
-  options.skipCrsValidation = true;
-  const QgsVectorLayer vl { uri(), QStringLiteral( "temp_layer" ), QStringLiteral( "ogr" ), options };
-  if ( ! vl.isValid() || ! vl.dataProvider() )
+  GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
   {
-    const QString errorCause = vl.dataProvider() && vl.dataProvider()->hasErrors() ?
-                               vl.dataProvider()->errors().join( '\n' ) :
-                               QObject::tr( "unknown error" );
-    throw QgsProviderConnectionException( QObject::tr( "Error retrieving native types for %1: %2" ).arg( uri(), errorCause ) );
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve driver for connection" ) );
   }
-  return vl.dataProvider()->nativeTypes();
+
+  return QgsOgrUtils::nativeFieldTypesForDriver( hDriver );
 }
 
 QStringList QgsOgrProviderConnection::fieldDomainNames() const
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // In some cases (empty geopackage for example), opening in read-only
+    // mode fails, so retry in update mode
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
   if ( hDS )
   {
     QStringList names;
@@ -608,10 +649,49 @@ QStringList QgsOgrProviderConnection::fieldDomainNames() const
 #endif
 }
 
+QList<Qgis::FieldDomainType> QgsOgrProviderConnection::supportedFieldDomainTypes() const
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+  GDALDriverH hDriver = GDALIdentifyDriverEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+  if ( !hDriver )
+    return {};
+
+  bool supportsRange = false;
+  bool supportsGlob = false;
+  bool supportsCoded = false;
+  if ( const char *pszDomainTypes = GDALGetMetadataItem( hDriver, GDAL_DMD_CREATION_FIELD_DOMAIN_TYPES, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszDomainTypes, " ", 0 );
+    supportsCoded = CSLFindString( papszTokens, "Coded" ) >= 0;
+    supportsRange = CSLFindString( papszTokens, "Range" ) >= 0;
+    supportsGlob = CSLFindString( papszTokens, "Glob" ) >= 0;
+    CSLDestroy( papszTokens );
+  }
+
+  QList<Qgis::FieldDomainType> res;
+  if ( supportsCoded )
+    res << Qgis::FieldDomainType::Coded;
+  if ( supportsRange )
+    res << Qgis::FieldDomainType::Range;
+  if ( supportsGlob )
+    res << Qgis::FieldDomainType::Glob;
+  return res;
+#else
+  return {};
+#endif
+}
+
 QgsFieldDomain *QgsOgrProviderConnection::fieldDomain( const QString &name ) const
 {
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // In some cases (empty geopackage for example), opening in read-only
+    // mode fails, so retry in update mode
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
   if ( hDS )
   {
     if ( OGRFieldDomainH domain = GDALDatasetGetFieldDomain( hDS.get(), name.toUtf8().constData() ) )
@@ -712,6 +792,53 @@ void QgsOgrProviderConnection::addFieldDomain( const QgsFieldDomain &domain, con
   ( void )schema;
   throw QgsProviderConnectionException( QObject::tr( "Creating field domains for datasets requires GDAL 3.3 or later" ) );
 #endif
+}
+
+void QgsOgrProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameField );
+
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+  QString errCause;
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( uri(),
+                               true,
+                               QStringList(),
+                               tableName, errCause, true );
+  if ( !layer )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset: %1" ).arg( errCause ) );
+  }
+
+  QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
+  const int geomFieldCount = fdef.GetGeomFieldCount();
+  for ( int i = 0; i < geomFieldCount; ++ i )
+  {
+    if ( OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( i ) )
+    {
+      const QString geometryColumn = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
+      if ( name == geometryColumn )
+      {
+        throw QgsProviderConnectionException( QObject::tr( "Cannot rename geometry columns" ) );
+      }
+    }
+  }
+
+  //type does not matter, it will not be used
+  gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( newName.toUtf8().constData(), OFTReal ) );
+
+  const int fieldIndex = layer->GetLayerDefn().GetFieldIndex( name.toUtf8().constData() );
+  if ( fieldIndex < 0 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not rename %1 - field does not exist" ).arg( name ) );
+  }
+  if ( layer->AlterFieldDefn( fieldIndex, fld.get(), ALTER_NAME_FLAG ) != OGRERR_NONE )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not rename field: %1" ).arg( CPLGetLastErrorMsg() ) );
+  }
 }
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConnection::sqlOptions( const QString &layerSource )

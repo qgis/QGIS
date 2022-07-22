@@ -1353,6 +1353,7 @@ void TestQgsProcessingAlgsPt2::convertGpxFeatureType()
 
 class TestProcessingFeedback : public QgsProcessingFeedback
 {
+    Q_OBJECT
   public:
 
     void reportError( const QString &error, bool ) override

@@ -321,6 +321,7 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::DeleteSpatialIndex,
     Capability::DeleteField,
     Capability::AddField,
+    Capability::RenameField,
     Capability::DropRasterTable,
     Capability::SqlLayers
   };
@@ -893,6 +894,16 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsGeoPackageProviderConnection
       }
     }
   } );
+}
+
+QList<Qgis::FieldDomainType> QgsGeoPackageProviderConnection::supportedFieldDomainTypes() const
+{
+  return
+  {
+    Qgis::FieldDomainType::Coded,
+    Qgis::FieldDomainType::Glob,
+    Qgis::FieldDomainType::Range
+  };
 }
 
 QString QgsGeoPackageProviderConnection::databaseQueryLogIdentifier() const

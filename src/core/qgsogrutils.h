@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
+#include "qgsvectordataprovider.h"
 
 #include <ogr_api.h>
 #include <gdal.h>
@@ -395,6 +396,13 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.26
      */
     static QVariant stringToVariant( OGRFieldType type, OGRFieldSubType subType, const QString &string ) SIP_SKIP;
+
+    /**
+     * Returns the list of native field types supported for a \a driver.
+     *
+     * \since QGIS 3.28
+     */
+    static QList<QgsVectorDataProvider::NativeType> nativeFieldTypesForDriver( GDALDriverH driver ) SIP_SKIP;
 
 #ifndef SIP_RUN
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)

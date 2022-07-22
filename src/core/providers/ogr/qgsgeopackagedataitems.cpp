@@ -200,16 +200,22 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
   if ( children.empty() )
   {
-    QString errorMessage;
-    if ( QFile::exists( path ) )
+    // sniff database to see if it's just empty, or if something went wrong
+    // note that we HAVE to use update here, or GDAL won't open an empty database
+    gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( path.toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+    if ( !hDS )
     {
-      errorMessage = tr( "The file does not contain any layer or there was an error opening the file.\nCheck file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
+      QString errorMessage;
+      if ( !QFile::exists( path ) )
+      {
+        errorMessage = tr( "The database does not contain any layers or there was an error opening the file.\nCheck file and directory permissions on\n%1" ).arg( QDir::toNativeSeparators( path ) );
+      }
+      else
+      {
+        errorMessage = tr( "Layer is not valid (%1)" ).arg( path );
+      }
+      children.append( new QgsErrorItem( this, errorMessage, mPath + "/error" ) );
     }
-    else
-    {
-      errorMessage = tr( "Layer is not valid (%1)" ).arg( path );
-    }
-    children.append( new QgsErrorItem( this, errorMessage, mPath + "/error" ) );
   }
 
   return children;

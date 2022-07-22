@@ -153,8 +153,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Create a new QgsProject.
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     *
+     * Since QGIS 3.26.1 the \a capabilities argument specifies optional capabilities which can be selectively
+     * enabled for the project. These affect the QgsProject object for its entire lifetime.
      */
-    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = nullptr, Qgis::ProjectCapabilities capabilities = Qgis::ProjectCapability::ProjectStyles );
 
     ~QgsProject() override;
 
@@ -176,6 +179,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
     */
     QString title() const;
+
+    /**
+     * Returns the project's capabilities, which dictate optional functionality
+     * which can be selectively enabled for a QgsProject object.
+     *
+     * \since QGIS 3.26.1
+     */
+    Qgis::ProjectCapabilities capabilities() const { return mCapabilities; }
 
     /**
      * Returns the project's flags, which dictate the behavior of the project.
@@ -2161,6 +2172,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     //! Returns the property definition used for a data defined server property
     static QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions();
+
+    Qgis::ProjectCapabilities mCapabilities;
 
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 

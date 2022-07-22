@@ -36,6 +36,7 @@
  */
 class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
 {
+    Q_OBJECT
   public:
 
     QgsTabBarProxyStyle( QTabBar *tabBar );

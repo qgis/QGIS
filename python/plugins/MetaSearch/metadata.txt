@@ -10,11 +10,5 @@ author=Tom Kralidis
 email=tomkralidis@gmail.com
 tags=web,catalog,service,metadata,csw
 homepage=https://qgis.org/
-tracker=https://issues.qgis.org/projects/qgis/issues?category_id=107&set_filter=1&status_id=o
+tracker=https://github.com/qgis/QGIS/issues
 repository=https://github.com/qgis/QGIS/tree/master/python/plugins/MetaSearch
-experimental=False
-deprecated=False
-changelog=Version 0.3.5 (2017-03-05)
-    - fix help functionality (#16176)
-    - clean OWS URL when adding from search (#16261)
-    - updates to core CSW list (Greece, Portugal data.gov https)

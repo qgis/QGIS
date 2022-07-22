@@ -93,11 +93,19 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
      */
     QgsAbstractDatabaseProviderConnection::TableProperty *tableProperty() const;
 
+    /**
+     * Returns TRUE if the connection supports renaming fields.
+     *
+     * \since QGIS 3.28
+     */
+    bool canRenameFields() const { return mCanRename; }
+
   private:
 
     QString mSchema;
     QString mTableName;
     QString mConnectionUri;
+    bool mCanRename = false;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection::TableProperty> mTableProperty;
 
 };

@@ -30,6 +30,8 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
 #include "qgsdbquerylog.h"
+#include "qgsprojectstorageguiprovider.h"
+#include "qgsprojectstorageregistry.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
@@ -39,6 +41,8 @@
 #include "qgsoracletransaction.h"
 #include "qgsoracleproviderconnection.h"
 #include "qgsapplication.h"
+#include "qgsoracleprojectstoragedialog.h"
+#include "qgsoracleprojectstorage.h"
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
@@ -3508,8 +3512,21 @@ Qgis::VectorExportResult QgsOracleProviderMetadata::createEmptyLayer( const QStr
          );
 }
 
+QgsOracleProjectStorage *gOracleProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+
+void QgsOracleProviderMetadata::initProvider()
+{
+  Q_ASSERT( !gOracleProjectStorage );
+  gOracleProjectStorage = new QgsOracleProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gOracleProjectStorage );  // takes ownership
+}
+
 void QgsOracleProviderMetadata::cleanupProvider()
 {
+  // destroys the object
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gOracleProjectStorage );
+  gOracleProjectStorage = nullptr;
+
   QgsOracleConnPool::cleanupInstance();
 }
 
@@ -4004,6 +4021,34 @@ class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
     }
 };
 
+class QgsOracleProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
+{
+  public:
+    QString type() override { return QStringLiteral( "oracle" ); }
+    QString visibleName() override
+    {
+      return QObject::tr( "Oracle" );
+    }
+
+    QString showLoadGui() override
+    {
+      QgsOracleProjectStorageDialog dlg( false );
+      if ( !dlg.exec() )
+        return QString();
+
+      return dlg.currentProjectUri();
+    }
+
+    QString showSaveGui() override
+    {
+      QgsOracleProjectStorageDialog dlg( true );
+      if ( !dlg.exec() )
+        return QString();
+
+      return dlg.currentProjectUri();
+    }
+};
+
 QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
   : QgsProviderGuiMetadata( ORACLE_KEY )
 {
@@ -4013,6 +4058,13 @@ QgsOracleProviderGuiMetadata::QgsOracleProviderGuiMetadata()
 QList<QgsSourceSelectProvider *> QgsOracleProviderGuiMetadata::sourceSelectProviders()
 {
   return QList<QgsSourceSelectProvider *>() << new QgsOracleSourceSelectProvider;
+}
+
+QList<QgsProjectStorageGuiProvider *> QgsOracleProviderGuiMetadata::projectStorageGuiProviders()
+{
+  QList<QgsProjectStorageGuiProvider *> providers;
+  providers << new QgsOracleProjectStorageGuiProvider;
+  return providers;
 }
 
 void QgsOracleProviderGuiMetadata::registerGui( QMainWindow *mainWindow )
