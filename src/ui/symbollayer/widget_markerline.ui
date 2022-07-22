@@ -390,7 +390,7 @@
         <string>If checked, the &quot;first vertex&quot; or &quot;last vertex&quot; placements will also render at the first and last vertex for every part of multipart geometries</string>
        </property>
        <property name="text">
-        <string>Place on every part</string>
+        <string>Place on every part extremity</string>
        </property>
       </widget>
      </item>
