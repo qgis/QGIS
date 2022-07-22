@@ -258,6 +258,12 @@ void QgsNmeaConnection::processHchdtSentence( const char *data, int len )
 void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 {
   nmeaGPRMC result;
+  //GSA
+  mLastGPSInformation.satPrn.clear(); 
+  //GSV
+  mLastGPSInformation.satellitesInView.clear();
+  mLastGPSInformation.satellitesUsed = 0;
+  
   if ( nmea_parse_GPRMC( data, len, &result ) )
   {
     double longitude = result.lon;
@@ -270,11 +276,6 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     {
       latitude = -latitude;
     }
-    //GSA
-    mLastGPSInformation.satPrn.clear(); 
-    //GSV
-    mLastGPSInformation.satellitesInView.clear();
-    mLastGPSInformation.satellitesUsed = 0;
     
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
@@ -372,14 +373,17 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
-      const nmeaSATELLITE currentSatellite = result.sat_data[i];
-      QgsSatelliteInfo satelliteInfo;
-      satelliteInfo.azimuth = currentSatellite.azimuth;
-      satelliteInfo.elevation = currentSatellite.elv;
-      satelliteInfo.id = currentSatellite.id;
-      satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
-      satelliteInfo.signal = currentSatellite.sig;
-      mLastGPSInformation.satellitesInView.append( satelliteInfo );
+      if ( result.sat_data[ i ].id > 0 )
+      {
+        const nmeaSATELLITE currentSatellite = result.sat_data[i];
+        QgsSatelliteInfo satelliteInfo;
+        satelliteInfo.azimuth = currentSatellite.azimuth;
+        satelliteInfo.elevation = currentSatellite.elv;
+        satelliteInfo.id = currentSatellite.id;
+        satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
+        satelliteInfo.signal = currentSatellite.sig;
+        mLastGPSInformation.satellitesInView.append( satelliteInfo );
+      }  
     }
 
   }
@@ -416,8 +420,5 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
         mLastGPSInformation.satellitesUsed +=1;
       }
     }
-    // da completare ---MB
-    //mLastGPSInformation.satellitesUsed = 5;
-    //mLastGPSInformation.satellitesUsed += result.satinuse;
   }
 }
