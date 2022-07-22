@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://eusoils.jrc.ec.europa.eu/library/esdac/index.html">
+      <name>European Soil Data Centre</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Free to use for any purpose</informal>
+    <year>2006</year>
+    <text href="http://eusoils.jrc.it/ESDB_Archive/ESDBv3/legend/LegendData.cfm">
+      The public user can download all the Legend files 
+      related to the European Soil Database and use them 
+      for his own purposes
+    </text>
+  </license>
+  <src>
+    <format>AVL</format>
+    <link href="http://eusoils.jrc.it/ESDB_Archive/ESDBv3/legend/LegendData.cfm">ESDB legend download and usage notice</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>
