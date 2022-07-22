@@ -410,11 +410,14 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     mLastGPSInformation.fixType = result.fix_type;
     for ( int i = 0; i < NMEA_MAXSAT; i++ )
     {
-      mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
-      
+      if ( result.sat_prn[ i ] > 0 )
+      {
+        mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
+        mLastGPSInformation.satellitesUsed +=1;
+      }
     }
     // da completare ---MB
-    mLastGPSInformation.satellitesUsed = 5;
+    //mLastGPSInformation.satellitesUsed = 5;
     //mLastGPSInformation.satellitesUsed += result.satinuse;
   }
 }
