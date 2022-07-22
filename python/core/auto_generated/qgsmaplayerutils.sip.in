@@ -75,6 +75,7 @@ Specifically this method:
 
 - Converts the name to lowercase
 - Replaces spaces by underscore characters
+- Removes any characters which are not alphanumeric or '_'.
 
 .. versionadded:: 3.28
 %End

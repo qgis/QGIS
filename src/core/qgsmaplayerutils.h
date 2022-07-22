@@ -88,6 +88,7 @@ class CORE_EXPORT QgsMapLayerUtils
      *
      * - Converts the name to lowercase
      * - Replaces spaces by underscore characters
+     * - Removes any characters which are not alphanumeric or '_'.
      *
      * \since QGIS 3.28
      */
