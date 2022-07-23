@@ -565,11 +565,17 @@ void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFea
   {
     QAction *qAction = nullptr;
 
-    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete Feature" ) );
-    connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
+    if ( mButtonsVisibility.testFlag( QgsRelationEditorWidget::Button::DeleteChildFeature ) )
+    {
+      qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete Feature" ) );
+      connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
+    }
 
-    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ),  tr( "Unlink Feature" ) );
-    connect( qAction, &QAction::triggered, this, [this, fid]() { unlinkFeature( fid ); } );
+    if ( mButtonsVisibility.testFlag( QgsRelationEditorWidget::Button::Unlink ) )
+    {
+      qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ),  tr( "Unlink Feature" ) );
+      connect( qAction, &QAction::triggered, this, [this, fid]() { unlinkFeature( fid ); } );
+    }
   }
 }
 
