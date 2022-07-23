@@ -973,7 +973,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.qualityDescription() );
     //mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
-    mTxtSatellitesUsed->setText( "used: " + QString::number( info.satellitesUsed ) + "  (view: " + info.satellitesInView.size() + ")" );
+    mTxtSatellitesUsed->setText( "used: " + QString::number( info.satellitesUsed ) + "  (view: " + QString::number( info.satellitesInView.size() ) + ")" );
      
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
   } //position
