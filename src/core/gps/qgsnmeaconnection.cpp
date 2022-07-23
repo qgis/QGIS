@@ -361,7 +361,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
-    // clear() on RMS ---MB
+    // clear() on VTG ---MB
     //clear satellite information when a new series of packs arrives
     //if ( result.pack_index == 1 )
     //{
@@ -393,15 +393,15 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 
 void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 {
+  //GSA
+  mLastGPSInformation.satPrn.clear(); 
+  //GSV
+  mLastGPSInformation.satellitesInView.clear();
+  mLastGPSInformation.satellitesUsed = 0;
+
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
-    //GSA
-    mLastGPSInformation.satPrn.clear(); 
-    //GSV
-    mLastGPSInformation.satellitesInView.clear();
-    mLastGPSInformation.satellitesUsed = 0;
-
     mLastGPSInformation.speed = result.spk;
   }
 }
