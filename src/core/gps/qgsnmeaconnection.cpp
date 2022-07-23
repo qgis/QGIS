@@ -373,19 +373,18 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
-      if ( result.sat_data[ i ].id > 0 )
+      const nmeaSATELLITE currentSatellite = result.sat_data[i];
+      QgsSatelliteInfo satelliteInfo;
+      satelliteInfo.azimuth = currentSatellite.azimuth;
+      satelliteInfo.elevation = currentSatellite.elv;
+      satelliteInfo.id = currentSatellite.id;
+      satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
+      satelliteInfo.signal = currentSatellite.sig;
+      if ( currentSatellite.sig > 0 )
       {
-        const nmeaSATELLITE currentSatellite = result.sat_data[i];
-        QgsSatelliteInfo satelliteInfo;
-        satelliteInfo.azimuth = currentSatellite.azimuth;
-        satelliteInfo.elevation = currentSatellite.elv;
-        satelliteInfo.id = currentSatellite.id;
-        satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
-        satelliteInfo.signal = currentSatellite.sig;
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
         // save SNR
-        mLastGPSInformation.satPrn.append( currentSatellite.sig );
-
+        //mLastGPSInformation.satPrn.append( currentSatellite.sig );
       }  
     }
 
@@ -427,7 +426,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
       {
         // SAVE SAT_ID
         // spostata in GSV per salvare SNR
-        // mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
+        mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
         mLastGPSInformation.satellitesUsed +=1;
       }
     }
