@@ -33,7 +33,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Toolbar buttons</string>
+      <string>Toolbar buttons and context menu items</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
