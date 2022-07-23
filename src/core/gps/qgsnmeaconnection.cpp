@@ -104,13 +104,6 @@ void QgsNmeaConnection::processStringBuffer()
         else if ( substring.startsWith( QLatin1String( "$GPRMC" ) ) || substring.startsWith( QLatin1String( "$GNRMC" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
-          
-          //GSA
-          mLastGPSInformation.satPrn.clear(); 
-          //GSV
-          mLastGPSInformation.satellitesInView.clear();
-          mLastGPSInformation.satellitesUsed = 0;
-          
           processRmcSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
@@ -390,6 +383,9 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
         satelliteInfo.signal = currentSatellite.sig;
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
+        // save SNR
+        mLastGPSInformation.satPrn.append( currentSatellite.sig );
+
       }  
     }
 
@@ -401,6 +397,12 @@ void QgsNmeaConnection::processVtgSentence( const char *data, int len )
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
+    //GSA
+    mLastGPSInformation.satPrn.clear(); 
+    //GSV
+    mLastGPSInformation.satellitesInView.clear();
+    mLastGPSInformation.satellitesUsed = 0;
+
     mLastGPSInformation.speed = result.spk;
   }
 }
@@ -423,7 +425,9 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     {
       if ( result.sat_prn[ i ] > 0 )
       {
-        mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
+        // SAVE SAT_ID
+        // spostata in GSV per salvare SNR
+        // mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
         mLastGPSInformation.satellitesUsed +=1;
       }
     }
