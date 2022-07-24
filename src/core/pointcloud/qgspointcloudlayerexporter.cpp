@@ -283,7 +283,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       try
       {
         mParent->mTransform->transformInPlace( x, y, z );
-        const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
+        const QVariantMap attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
         handlePoint( x, y, z, attributeMap, pointsExported );
         ++pointsExported;
       }
