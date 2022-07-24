@@ -162,4 +162,5 @@ void QgsGpsConnection::setSource( QIODevice *source )
 void QgsGpsConnection::clearLastGPSInformation()
 {
   mLastGPSInformation = QgsGpsInformation();
+  mLastGPSInformation.satellitesInView.clear();
 }
