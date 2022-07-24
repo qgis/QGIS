@@ -219,6 +219,13 @@ void QgsLabelingGui::showLineAnchorSettings()
   else
   {
     QgsLabelSettingsWidgetDialog dialog( widget, this );
+
+    dialog.buttonBox()->addButton( QDialogButtonBox::Help );
+    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+    {
+      QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#placement-for-line-layers" ) );
+    } );
+
     if ( dialog.exec() )
     {
       applySettings();
