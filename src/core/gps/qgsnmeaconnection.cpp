@@ -369,7 +369,8 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
     //}
 
     // for determining when to graph sat info
-    mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
+    //mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
+    mLastGPSInformation.satInfoComplete = true;
 
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
@@ -378,7 +379,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.azimuth = currentSatellite.azimuth;
       satelliteInfo.elevation = currentSatellite.elv;
       satelliteInfo.id = currentSatellite.id;
-      satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
+      //satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
       satelliteInfo.signal = currentSatellite.sig;
       if ( currentSatellite.sig > 0 )
       {
