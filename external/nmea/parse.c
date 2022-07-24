@@ -390,7 +390,8 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
     return 0;
   }
 
-  if ( type != 'P' && type != 'N' && type != 'L' && type != 'A' && type != 'B' && type != 'Q' )
+  if ( type != 'P' && type != 'N' && type != 'L' && type != 'A' && type != 'B' )
+  //if ( type != 'P' && type != 'N' && type != 'L' && type != 'A' && type != 'B' && type != 'Q' )
   //if ( type != 'P' && type != 'N' )
   {
     nmea_error( "G?GSV invalid type " );
