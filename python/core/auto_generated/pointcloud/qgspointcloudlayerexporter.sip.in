@@ -148,10 +148,21 @@ Sets the maximum number of points to be exported.
 Gets the maximum number of points to be exported.
 %End
     void doExport();
+%Docstring
+Performs the actual exporting operation.
+%End
 
     QgsMapLayer *getExportedLayer() /Factory/;
+%Docstring
+Gets a pointer to the exported layer.
+Caller takes ownership of the returned object.
+%End
 
     QString lastError() const;
+%Docstring
+Gets the last error that occurred during the exporting operation.
+If no error occurred an empty string is returned.
+%End
       public:
       protected:
       public:

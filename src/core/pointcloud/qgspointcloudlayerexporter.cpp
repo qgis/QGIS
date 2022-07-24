@@ -54,7 +54,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
 
 QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
 {
-//  delete mOutputLayer;
+  delete mMemoryLayer;
   delete mVectorSink;
   delete mTransform;
 }
@@ -185,7 +185,11 @@ void QgsPointCloudLayerExporter::doExport()
 QgsMapLayer *QgsPointCloudLayerExporter::getExportedLayer()
 {
   if ( mFormat == QLatin1String( "memory" ) && mMemoryLayer )
-    return mMemoryLayer;
+  {
+    QgsMapLayer *retVal = mMemoryLayer;
+    mMemoryLayer = nullptr;
+    return retVal;
+  }
 
   if ( mFormat == QLatin1String( "LAZ" ) )
     return new QgsPointCloudLayer( mFilename, mName, QStringLiteral( "pdal" ) );
@@ -294,11 +298,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     handleNode();
   }
   handleAll();
-}
-
-QgsPointCloudLayerExporter::ExporterBase::~ExporterBase()
-{
-//  delete mCt;
 }
 
 //

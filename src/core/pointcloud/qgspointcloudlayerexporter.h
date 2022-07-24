@@ -170,10 +170,21 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      */
     qint64 pointsLimit() { return mPointsLimit; };
 
+    /**
+     * Performs the actual exporting operation.
+     */
     void doExport();
 
+    /**
+     * Gets a pointer to the exported layer.
+     * Caller takes ownership of the returned object.
+     */
     QgsMapLayer *getExportedLayer() SIP_FACTORY;
 
+    /**
+     * Gets the last error that occurred during the exporting operation.
+     * If no error occurred an empty string is returned.
+     */
     QString lastError() const { return mLastError; };
 
   private:
@@ -215,8 +226,8 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     {
       public:
         ExporterBase() = default;
+        virtual ~ExporterBase() = default;
         void run();
-        virtual ~ExporterBase();
       protected:
         virtual void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) = 0;
         virtual void handleNode() = 0;
