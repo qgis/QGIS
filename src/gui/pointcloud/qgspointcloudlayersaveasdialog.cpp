@@ -127,6 +127,9 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
   }
 
+  // points limit group box
+  mPointsLimitSpinBox->setValue( 1e6 );
+
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
