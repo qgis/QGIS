@@ -151,6 +151,7 @@ void QgsPointCloudLayerExporter::doExport()
     ExporterMemory exp = ExporterMemory( this );
     exp.run();
   }
+#ifdef HAVE_PDAL_QGIS
   else if ( mFormat == QLatin1String( "LAZ" ) )
   {
     setAllAttributes();
@@ -166,6 +167,7 @@ void QgsPointCloudLayerExporter::doExport()
       QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
     }
   }
+#endif
   else
   {
     QgsVectorFileWriter::SaveVectorOptions saveOptions;
@@ -393,8 +395,8 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
 
   mOptions.add( "filename", mParent->mFilename.toStdString() );
   mOptions.add( "a_srs", mParent->mTargetCrs.authid().toStdString() );
-  mOptions.add( "minor_version", QString( 4 ).toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
-  mOptions.add( "format", QString( mPointFormat ).toStdString() );
+  mOptions.add( "minor_version", QStringLiteral( "4" ).toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
+  mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
 
   mTable.layout()->registerDim( pdal::Dimension::Id::X );
   mTable.layout()->registerDim( pdal::Dimension::Id::Y );
