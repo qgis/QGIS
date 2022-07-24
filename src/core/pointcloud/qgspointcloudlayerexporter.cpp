@@ -135,7 +135,14 @@ void QgsPointCloudLayerExporter::doExport()
   mTransform = new QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
   if ( mExtent.isFinite() )
   {
-    mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+    try
+    {
+      mExtent = mTransform->transformBoundingBox( mExtent, Qgis::TransformDirection::Reverse );
+    }
+    catch ( const QgsCsException &cse )
+    {
+      QgsDebugMsg( QStringLiteral( "Error transforming extent: %1" ).arg( cse.what() ) );
+    }
   }
 
   if ( mFormat == QLatin1String( "memory" ) )
@@ -270,10 +277,19 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
         ++pointsSkipped;
         continue;
       }
-      const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
-      mParent->mTransform->transformInPlace( x, y, z );
-      handlePoint( x, y, z, attributeMap, pointsExported );
-      ++pointsExported;
+
+      try
+      {
+        mParent->mTransform->transformInPlace( x, y, z );
+        const auto attributeMap = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, attributesCollection );
+        handlePoint( x, y, z, attributeMap, pointsExported );
+        ++pointsExported;
+      }
+      catch ( const QgsCsException &cse )
+      {
+        QgsDebugMsg( QStringLiteral( "Error transforming point: %1" ).arg( cse.what() ) );
+        ++pointsSkipped;
+      }
     }
     handleNode();
   }
