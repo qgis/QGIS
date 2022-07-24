@@ -131,7 +131,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QStringList attributes() const { return mRequestedAttributes; };
 
     /**
-     * Sets the \a crs for the exported file, and the transfom \a context that will be used for
+     * Sets the \a crs for the exported file, and the transform \a context that will be used for
      * for reprojection if different from the point cloud layer's CRS.
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; };

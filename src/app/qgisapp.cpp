@@ -9558,7 +9558,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       if ( ! ml->isValid() )
       {
         visibleMessageBar()->pushMessage( tr( "Export failed" ),
-                                          tr( "A problem occured while exporting: %1" ).arg( exp->lastError() ),
+                                          tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
                                           Qgis::MessageLevel::Warning );
       }
       else if ( addToCanvas )

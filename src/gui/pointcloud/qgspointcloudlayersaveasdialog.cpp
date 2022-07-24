@@ -15,30 +15,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
-#include "qgspointcloudlayersaveasdialog.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsvectordataprovider.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgseditorwidgetfactory.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgssettings.h"
-#include "qgsmapcanvas.h"
-#include "qgsgui.h"
-#include "qgsapplication.h"
+
 #include <QMessageBox>
-#include <QFileDialog>
-#include <QTextCodec>
-#include <QSpinBox>
 #include <QRegularExpression>
-#include "gdal.h"
+
+#include "qgspointcloudlayersaveasdialog.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
 #include "qgsdatums.h"
-#include "qgsiconutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
-
 #include "qgspointcloudlayer.h"
-
 
 QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

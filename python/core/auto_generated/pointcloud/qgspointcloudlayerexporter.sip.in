@@ -113,7 +113,7 @@ Gets the list of point cloud attributes that will be exported.
 %End
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
-Sets the ``crs`` for the exported file, and the transfom ``context`` that will be used for
+Sets the ``crs`` for the exported file, and the transform ``context`` that will be used for
 for reprojection if different from the point cloud layer's CRS.
 %End
     QgsCoordinateReferenceSystem crs() const;
