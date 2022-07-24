@@ -121,6 +121,18 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      */
     QgsDoubleRange zRange() const;
 
+    /**
+     * Determines if limiting the number of exported points is enabled.
+     * \see pointsLimit()
+     */
+    bool hasPointsLimit() const;
+
+    /**
+     * Determines the limit to the total number of points.
+     * \see hasPointsLimit()
+     */
+    int pointsLimit() const;
+
     //! Returns creation action
     QgsVectorFileWriter::ActionOnExistingFile creationActionOnExistingFile() const;
 

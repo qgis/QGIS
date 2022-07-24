@@ -9539,6 +9539,9 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     if ( dialog.hasZRange() )
       exp->setZRange( dialog.zRange() );
 
+    if ( dialog.hasPointsLimit() )
+      exp->setPointsLimit( dialog.pointsLimit() );
+
     if ( ! dialog.layername().isEmpty() )
       exp->setLayerName( dialog.layername() );
 

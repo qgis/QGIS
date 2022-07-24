@@ -96,7 +96,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-35</y>
+        <y>0</y>
         <width>557</width>
         <height>501</height>
        </rect>
@@ -179,8 +179,18 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Maximum Z value</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QgsDoubleSpinBox" name="mMaximumZSpinBox"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMinimumZSpinBox"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
@@ -189,34 +199,11 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Maximum Z value</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMinimumZSpinBox"/>
-          </item>
-          <item row="1" column="2">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mPointsLimitGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mPointsLimitGroupBox">
          <property name="title">
           <string>Limit number of points</string>
          </property>
@@ -226,27 +213,21 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="1">
-           <widget class="QgsSpinBox" name="mPointsLimitSpinBox"/>
-          </item>
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>212</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
+         <layout class="QFormLayout" name="formLayout">
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Limit total number of exported points to:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsSpinBox" name="mPointsLimitSpinBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="singleStep">
+             <number>100000</number>
             </property>
            </widget>
           </item>

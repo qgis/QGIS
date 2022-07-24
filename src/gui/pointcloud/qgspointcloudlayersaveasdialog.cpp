@@ -124,11 +124,16 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   if ( mLayer )
   {
     mMinimumZSpinBox->setValue( mLayer->statistics().minimum( QStringLiteral( "Z" ) ) );
+    mMinimumZSpinBox->setClearValue( mMinimumZSpinBox->value() );
     mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
+    mMaximumZSpinBox->setClearValue( mMaximumZSpinBox->value() );
   }
 
   // points limit group box
+  mPointsLimitSpinBox->setMinimum( 1 );
+  mPointsLimitSpinBox->setMaximum( std::numeric_limits<int>::max() );
   mPointsLimitSpinBox->setValue( 1e6 );
+  mPointsLimitSpinBox->setClearValue( 1e6 );
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
@@ -434,6 +439,16 @@ bool QgsPointCloudLayerSaveAsDialog::hasZRange() const
 QgsDoubleRange QgsPointCloudLayerSaveAsDialog::zRange() const
 {
   return QgsDoubleRange( mMinimumZSpinBox->value(), mMaximumZSpinBox->value() );
+}
+
+bool QgsPointCloudLayerSaveAsDialog::hasPointsLimit() const
+{
+  return mPointsLimitGroupBox->isChecked();
+}
+
+int QgsPointCloudLayerSaveAsDialog::pointsLimit() const
+{
+  return mPointsLimitSpinBox->value();
 }
 
 void QgsPointCloudLayerSaveAsDialog::mSelectAllAttributes_clicked()

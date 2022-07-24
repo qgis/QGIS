@@ -221,8 +221,6 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       pointCount += mParent->mIndex->nodePointCount( node );
       nodes.push_back( node );
     }
-    if ( pointCount >= mParent->mPointsLimit )
-      break;
     for ( const IndexedPointCloudNode &child : mParent->mIndex->nodeChildren( node ) )
     {
       queue.push_back( child );
@@ -257,7 +255,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
       if ( mParent->mFeedback )
       {
-        mParent->mFeedback->setProgress( 100 * static_cast< float >( pointsExported + pointsSkipped ) / pointsToExport );
+        mParent->mFeedback->setProgress( 100 * static_cast< float >( pointsExported ) / pointsToExport );
         if ( mParent->mFeedback->isCanceled() )
         {
           mParent->setLastError( QObject::tr( "Canceled by user" ) );
@@ -265,7 +263,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
         }
       }
 
-      if ( pointsExported > mParent->mPointsLimit )
+      if ( pointsExported >= mParent->mPointsLimit )
         break;
 
       double x, y, z;
