@@ -88,12 +88,25 @@ Gets a pointer to the :py:class:`QgsFeedback` object used for cancellation / pro
 %Docstring
 Sets the list of point cloud ``attributes`` that will be exported.
 If never called, all attributes will be exported.
+
+.. note::
+
+   This has no effect when exporting to LAZ format.
 %End
 
     void setNoAttributes();
 %Docstring
 Sets that no attributes will be exported.
+
+.. note::
+
+   This has no effect when exporting to LAZ format.
 %End
+    void setAllAttributes();
+%Docstring
+Sets that all attributes will be exported.
+%End
+
     QStringList attributes() const;
 %Docstring
 Gets the list of point cloud attributes that will be exported.

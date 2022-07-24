@@ -334,7 +334,8 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   }
 
   const QString sFormat( format() );
-  if ( sFormat == QLatin1String( "DXF" ) )
+  if ( sFormat == QLatin1String( "DXF" ) ||
+       sFormat == QLatin1String( "LAZ" ) )
   {
     mAttributesSelection->setEnabled( false );
   }

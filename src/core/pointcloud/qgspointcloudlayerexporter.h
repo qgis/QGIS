@@ -110,13 +110,20 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Sets the list of point cloud \a attributes that will be exported.
      * If never called, all attributes will be exported.
+     * \note This has no effect when exporting to LAZ format.
      */
     void setAttributes( const QStringList &attributes );
 
     /**
      * Sets that no attributes will be exported.
+     * \note This has no effect when exporting to LAZ format.
      */
     void setNoAttributes() { mRequestedAttributes.clear(); };
+
+    /**
+     * Sets that all attributes will be exported.
+     */
+    void setAllAttributes();
 
     /**
      * Gets the list of point cloud attributes that will be exported.
@@ -251,6 +258,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) override;
         void handleNode() override;
         void handleAll() override;
+        const int mPointFormat;
         pdal::Options mOptions;
         pdal::PointTable mTable;
         pdal::PointViewPtr mView;
@@ -296,17 +304,8 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
 
   private:
     QgsPointCloudLayerExporter *mExp = nullptr;
-    const QString mFormat;
-
-    QString mDestUri;
-    QString mDestProviderKey;
-    QgsCoordinateReferenceSystem mDestCrs;
-    QMap<QString, QVariant> mOptions;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
-
-    Qgis::VectorExportResult mError = Qgis::VectorExportResult::Success;
-    QString mErrorMessage;
 
 };
 #endif // QGSPOINTCLOUDLAYEREXPORTER_H

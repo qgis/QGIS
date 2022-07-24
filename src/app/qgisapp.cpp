@@ -9524,10 +9524,14 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     exp->setCrs( destCRS, pclayer->transformContext() );
     exp->setFormat( dialog.format() );
 
-    if ( dialog.hasAttributes() )
-      exp->setAttributes( dialog.attributes() );
-    else
-      exp->setNoAttributes();
+    // LAZ format epxorts all attributes
+    if ( dialog.format() != QLatin1String( "LAZ" ) )
+    {
+      if ( dialog.hasAttributes() )
+        exp->setAttributes( dialog.attributes() );
+      else
+        exp->setNoAttributes();
+    }
 
     if ( dialog.hasFilterExtent() )
       exp->setFilterExtent( dialog.filterExtent() );

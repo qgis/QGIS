@@ -49,13 +49,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
                     << QStringLiteral( "ESRI Shapefile" )
                     << QStringLiteral( "DXF" );
 
-  QStringList allAttributeNames;
-  const QVector<QgsPointCloudAttribute> allAttributes = mLayerAttributeCollection.attributes();
-  for ( const QgsPointCloudAttribute &attribute : allAttributes )
-  {
-    allAttributeNames.append( attribute.name() );
-  }
-  setAttributes( allAttributeNames );
+  setAllAttributes();
 }
 
 QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
@@ -92,6 +86,17 @@ void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList
       mRequestedAttributes.append( attribute.name() );
     }
   }
+}
+
+void QgsPointCloudLayerExporter::setAllAttributes()
+{
+  QStringList allAttributeNames;
+  const QVector<QgsPointCloudAttribute> allAttributes = mLayerAttributeCollection.attributes();
+  for ( const QgsPointCloudAttribute &attribute : allAttributes )
+  {
+    allAttributeNames.append( attribute.name() );
+  }
+  setAttributes( allAttributeNames );
 }
 
 const QgsPointCloudAttributeCollection QgsPointCloudLayerExporter::requestedAttributeCollection()
@@ -141,6 +146,7 @@ void QgsPointCloudLayerExporter::doExport()
   }
   else if ( mFormat == QLatin1String( "LAZ" ) )
   {
+    setAllAttributes();
     // PDAL may throw exceptions
     try
     {
@@ -368,46 +374,51 @@ void QgsPointCloudLayerExporter::ExporterVector::handleAll()
 #ifdef HAVE_PDAL_QGIS
 
 QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExporter *exp )
+  : mPointFormat( exp->mPointRecordFormat )
 {
   mParent = exp;
 
-
   mOptions.add( "filename", mParent->mFilename.toStdString() );
   mOptions.add( "a_srs", mParent->mTargetCrs.authid().toStdString() );
-//  mOptions.add( "format", QString( mParent->mPointRecordFormat ).toStdString() );
+  mOptions.add( "minor_version", QString( 4 ).toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
+  mOptions.add( "format", QString( mPointFormat ).toStdString() );
 
   mTable.layout()->registerDim( pdal::Dimension::Id::X );
   mTable.layout()->registerDim( pdal::Dimension::Id::Y );
   mTable.layout()->registerDim( pdal::Dimension::Id::Z );
 
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::Intensity );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::ReturnNumber );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::NumberOfReturns );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::ScanDirectionFlag );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::EdgeOfFlightLine );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Classification" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::Classification );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::ScanAngleRank );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "UserData" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::UserData );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::PointSourceId );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) )
+  mTable.layout()->registerDim( pdal::Dimension::Id::Classification );
+  mTable.layout()->registerDim( pdal::Dimension::Id::Intensity );
+  mTable.layout()->registerDim( pdal::Dimension::Id::ReturnNumber );
+  mTable.layout()->registerDim( pdal::Dimension::Id::NumberOfReturns );
+  mTable.layout()->registerDim( pdal::Dimension::Id::ScanDirectionFlag );
+  mTable.layout()->registerDim( pdal::Dimension::Id::EdgeOfFlightLine );
+  mTable.layout()->registerDim( pdal::Dimension::Id::ScanAngleRank );
+  mTable.layout()->registerDim( pdal::Dimension::Id::UserData );
+  mTable.layout()->registerDim( pdal::Dimension::Id::PointSourceId );
+
+  if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
+  {
     mTable.layout()->registerDim( pdal::Dimension::Id::ScanChannel );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Red" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::Red );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Green" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::Green );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Blue" ), Qt::CaseInsensitive ) )
-    mTable.layout()->registerDim( pdal::Dimension::Id::Blue );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
+    mTable.layout()->registerDim( pdal::Dimension::Id::ClassFlags );
+  }
+
+  if ( mPointFormat != 0 && mPointFormat != 2 )
+  {
     mTable.layout()->registerDim( pdal::Dimension::Id::GpsTime );
+  }
+
+  if ( mPointFormat == 2 || mPointFormat == 3 || mPointFormat == 5 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 10 )
+  {
+    mTable.layout()->registerDim( pdal::Dimension::Id::Red );
+    mTable.layout()->registerDim( pdal::Dimension::Id::Green );
+    mTable.layout()->registerDim( pdal::Dimension::Id::Blue );
+  }
+
+  if ( mPointFormat == 8 || mPointFormat == 10 )
+  {
+    mTable.layout()->registerDim( pdal::Dimension::Id::Infrared );
+  }
 
   mView.reset( new pdal::PointView( mTable ) );
 }
@@ -419,35 +430,38 @@ void QgsPointCloudLayerExporter::ExporterPdal::handlePoint( double x, double y, 
   mView->setField( pdal::Dimension::Id::Z, pointNumber, z );
 
 
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Intensity" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ QStringLiteral( "Intensity" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ReturnNumber" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[ QStringLiteral( "ReturnNumber" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "NumberOfReturns" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ QStringLiteral( "NumberOfReturns" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanDirectionFlag" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ QStringLiteral( "ScanDirectionFlag" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "EdgeOfFlightLine" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ QStringLiteral( "EdgeOfFlightLine" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Classification" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[ QStringLiteral( "Classification" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScanAngleRank" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ QStringLiteral( "ScanAngleRank" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "UserData" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ QStringLiteral( "UserData" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "PointSourceId" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ QStringLiteral( "PointSourceId" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "ScannerChannel" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ QStringLiteral( "ScannerChannel" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Red" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[ QStringLiteral( "Red" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Green" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[ QStringLiteral( "Green" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "Blue" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ QStringLiteral( "Blue" ) ].toInt() );
-  if ( mParent->mRequestedAttributes.contains( QLatin1String( "GpsTime" ), Qt::CaseInsensitive ) )
-    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ QStringLiteral( "GpsTime" ) ].toDouble() );
+  mView->setField( pdal::Dimension::Id::Classification, pointNumber, map[ QStringLiteral( "Classification" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::Intensity, pointNumber, map[ QStringLiteral( "Intensity" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::ReturnNumber, pointNumber, map[ QStringLiteral( "ReturnNumber" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::NumberOfReturns, pointNumber, map[ QStringLiteral( "NumberOfReturns" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanDirectionFlag, pointNumber, map[ QStringLiteral( "ScanDirectionFlag" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::EdgeOfFlightLine, pointNumber, map[ QStringLiteral( "EdgeOfFlightLine" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::ScanAngleRank, pointNumber, map[ QStringLiteral( "ScanAngleRank" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::UserData, pointNumber, map[ QStringLiteral( "UserData" ) ].toInt() );
+  mView->setField( pdal::Dimension::Id::PointSourceId, pointNumber, map[ QStringLiteral( "PointSourceId" ) ].toInt() );
 
+  if ( mPointFormat == 6 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 9 || mPointFormat == 10 )
+  {
+    mView->setField( pdal::Dimension::Id::ScanChannel, pointNumber, map[ QStringLiteral( "ScannerChannel" ) ].toInt() );
+    mView->setField( pdal::Dimension::Id::ClassFlags, pointNumber, map[ QStringLiteral( "ClassificationFlags" ) ].toInt() );
+  }
+
+  if ( mPointFormat != 0 && mPointFormat != 2 )
+  {
+    mView->setField( pdal::Dimension::Id::GpsTime, pointNumber, map[ QStringLiteral( "GpsTime" ) ].toDouble() );
+  }
+
+  if ( mPointFormat == 2 || mPointFormat == 3 || mPointFormat == 5 || mPointFormat == 7 || mPointFormat == 8 || mPointFormat == 10 )
+  {
+    mView->setField( pdal::Dimension::Id::Red, pointNumber, map[ QStringLiteral( "Red" ) ].toInt() );
+    mView->setField( pdal::Dimension::Id::Green, pointNumber, map[ QStringLiteral( "Green" ) ].toInt() );
+    mView->setField( pdal::Dimension::Id::Blue, pointNumber, map[ QStringLiteral( "Blue" ) ].toInt() );
+  }
+
+  if ( mPointFormat == 8 || mPointFormat == 10 )
+  {
+    mView->setField( pdal::Dimension::Id::Infrared, pointNumber, map[ QStringLiteral( "Infrared" ) ].toInt() );
+  }
 }
 
 void QgsPointCloudLayerExporter::ExporterPdal::handleNode()
@@ -498,7 +512,7 @@ bool QgsPointCloudLayerExporterTask::run()
 
   mExp->doExport();
 
-  return mError == Qgis::VectorExportResult::Success;
+  return true;
 }
 
 void QgsPointCloudLayerExporterTask::finished( bool result )
