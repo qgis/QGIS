@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>612</width>
+    <width>693</width>
     <height>534</height>
    </rect>
   </property>
@@ -43,25 +43,8 @@
      <property name="checkable">
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" name="_14">
-      <item row="0" column="1" colspan="4">
-       <widget class="QLabel" name="label_59">
-        <property name="text">
-         <string>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</string>
-        </property>
-       </widget>
-      </item>
+     <layout class="QGridLayout" name="_14" columnstretch="0,1,0,0">
       <item row="1" column="1">
-       <widget class="QLabel" name="label_65">
-        <property name="text">
-         <string>Simplification threshold (higher values result in more simplification)</string>
-        </property>
-        <property name="margin">
-         <number>2</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
        <widget class="QgsDoubleSpinBox" name="mSimplifyDrawingSpinBox">
         <property name="toolTip">
          <string>Higher values result in more simplification</string>
@@ -83,30 +66,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="mSimplifyDrawingPx">
-        <property name="text">
-         <string>pixels</string>
-        </property>
-        <property name="margin">
-         <number>2</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <spacer name="horizontalSpacer_40">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="2" column="1">
+      <item row="2" column="0">
        <widget class="QLabel" name="mSimplifyAlgorithmLabel">
         <property name="toolTip">
          <string>This algorithm is only applied to simplify on local side</string>
@@ -119,17 +79,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QComboBox" name="mSimplifyAlgorithmComboBox"/>
-      </item>
-      <item row="3" column="1" colspan="4">
-       <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
-        <property name="text">
-         <string>Simplify on provider side if possible</string>
+      <item row="4" column="1" colspan="3">
+       <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="4" column="0">
        <widget class="QLabel" name="mSimplifyMaxScaleLabel">
         <property name="text">
          <string>Maximum scale at which the layer should be simplified (1:1 always simplifies)</string>
@@ -139,13 +99,40 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="3" column="0" colspan="4">
+       <widget class="QCheckBox" name="mSimplifyDrawingAtProvider">
+        <property name="text">
+         <string>Simplify on provider side if possible</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="4">
+       <widget class="QLabel" name="label_59">
+        <property name="text">
+         <string>&lt;b&gt;Note:&lt;/b&gt; Feature simplification may speed up rendering but can result in rendering inconsistencies</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="3">
+       <widget class="QComboBox" name="mSimplifyAlgorithmComboBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_65">
+        <property name="text">
+         <string>Simplification threshold (higher values result in more simplification)</string>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" colspan="2">
+       <widget class="QLabel" name="mSimplifyDrawingPx">
+        <property name="text">
+         <string>pixels</string>
+        </property>
+        <property name="margin">
+         <number>2</number>
         </property>
        </widget>
       </item>
