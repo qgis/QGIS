@@ -255,7 +255,8 @@ void QgsStatusBarCoordinatesWidget::world()
   }
   const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   const QFileInfo fileInfo = QFileInfo( fileName );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  options.forceReadOnly = true;
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
       tr( "World Map" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
@@ -384,4 +385,3 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
     mLineEdit->setMaximumWidth( width );
   }
 }
-
