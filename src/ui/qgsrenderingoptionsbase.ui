@@ -45,13 +45,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="chkMaxThreads">
-        <property name="text">
-         <string>Maximum cores to use for map rendering</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="1">
        <widget class="QgsSpinBox" name="spinMapUpdateInterval">
         <property name="suffix">
@@ -87,6 +80,13 @@
       </item>
       <item row="3" column="1">
        <widget class="QgsDoubleSpinBox" name="doubleSpinBoxMagnifierDefault"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Maximum cores to use for map rendering</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
