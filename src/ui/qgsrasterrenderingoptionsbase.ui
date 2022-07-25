@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>GPS Device Editor</string>
+   <string>Raster Rendering Options</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -297,6 +297,24 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>spnRed</tabstop>
+  <tabstop>spnGreen</tabstop>
+  <tabstop>spnBlue</tabstop>
+  <tabstop>mZoomedInResamplingComboBox</tabstop>
+  <tabstop>mZoomedOutResamplingComboBox</tabstop>
+  <tabstop>spnOversampling</tabstop>
+  <tabstop>mCbEarlyResampling</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsSingleBand</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsMultiBandSingleByte</tabstop>
+  <tabstop>cboxContrastEnhancementAlgorithmMultiBandMultiByte</tabstop>
+  <tabstop>cboxContrastEnhancementLimitsMultiBandMultiByte</tabstop>
+  <tabstop>mRasterCumulativeCutLowerDoubleSpinBox</tabstop>
+  <tabstop>mRasterCumulativeCutUpperDoubleSpinBox</tabstop>
+  <tabstop>spnThreeBandStdDev</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
