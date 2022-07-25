@@ -189,6 +189,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     if ( options.forceReadOnly )
     {
       providerFlags |= QgsDataProvider::ForceReadOnly;
+      mDataSourceReadOnly = true;
     }
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
@@ -272,6 +273,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   {
     dataSource = source();
   }
+  options.forceReadOnly = mDataSourceReadOnly;
   QgsVectorLayer *layer = new QgsVectorLayer( dataSource, name(), mProviderKey, options );
   if ( mDataProvider && layer->dataProvider() )
   {
@@ -1573,6 +1575,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mProviderKey = QStringLiteral( "ogr" );
   }
 
+  const QDomElement elem = layer_node.toElement();
   QgsDataProvider::ProviderOptions options { context.transformContext() };
   QgsDataProvider::ReadFlags flags;
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
@@ -1585,7 +1588,6 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     {
       QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
     }
-    const QDomElement elem = layer_node.toElement();
 
     // for invalid layer sources, we fallback to stored wkbType if available
     if ( elem.hasAttribute( QStringLiteral( "wkbType" ) ) )
@@ -1594,6 +1596,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
   if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
   {
     flags |= QgsDataProvider::ForceReadOnly;
+    mDataSourceReadOnly = true;
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
@@ -3750,13 +3753,17 @@ bool QgsVectorLayer::isSpatial() const
 
 bool QgsVectorLayer::isReadOnly() const
 {
-  return mReadOnly;
+  return mDataSourceReadOnly || mReadOnly;
 }
 
 bool QgsVectorLayer::setReadOnly( bool readonly )
 {
   // exit if the layer is in editing mode
   if ( readonly && mEditBuffer )
+    return false;
+
+  // exit if the data source is in read-only mode
+  if ( !readonly && mDataSourceReadOnly )
     return false;
 
   mReadOnly = readonly;
@@ -3767,6 +3774,9 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
 bool QgsVectorLayer::supportsEditing() const
 {
   if ( ! mDataProvider )
+    return false;
+
+  if ( mDataSourceReadOnly )
     return false;
 
   return mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities && ! mReadOnly;
