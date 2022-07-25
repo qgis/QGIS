@@ -237,7 +237,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     /**
      * Returns the minimum Z value rendered into the elevation map
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     double minZ() const { return mMinZ; }
 

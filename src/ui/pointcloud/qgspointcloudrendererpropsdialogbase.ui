@@ -248,51 +248,53 @@
               <property name="title">
                <string>Eye Dome Lighting</string>
               </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
               <layout class="QGridLayout" name="gridLayout_3">
-               <item row="1" column="0">
+               <item row="0" column="0">
                 <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>Strength</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QSpinBox" name="mEdlStrength">
-                 <property name="minimum">
-                  <number>100</number>
-                 </property>
-                 <property name="maximum">
-                  <number>10000</number>
-                 </property>
-                 <property name="singleStep">
-                  <number>100</number>
-                 </property>
-                 <property name="value">
-                  <number>1000</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QSpinBox" name="mEdlDistance">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>5</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
+               <item row="1" column="0">
                 <widget class="QLabel" name="label_4">
                  <property name="text">
                   <string>Distance</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0" colspan="2">
-                <widget class="QCheckBox" name="mApplyEdlCheckbox">
-                 <property name="text">
-                  <string>Apply Eye Dome Lighting</string>
+               <item row="0" column="1">
+                <widget class="QgsSpinBox" name="mEdlStrength" native="true">
+                 <property name="minimum" stdset="0">
+                  <number>100</number>
+                 </property>
+                 <property name="maximum" stdset="0">
+                  <number>10000</number>
+                 </property>
+                 <property name="singleStep" stdset="0">
+                  <number>100</number>
+                 </property>
+                 <property name="value" stdset="0">
+                  <number>1000</number>
+                 </property>
+                 <property name="clearValue" stdset="0">
+                  <number>1000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QgsSpinBox" name="mEdlDistance" native="true">
+                 <property name="minimum" stdset="0">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum" stdset="0">
+                  <number>5</number>
+                 </property>
+                 <property name="clearValue" stdset="0">
+                  <number>1</number>
                  </property>
                 </widget>
                </item>
@@ -345,6 +347,11 @@
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QWidget</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
