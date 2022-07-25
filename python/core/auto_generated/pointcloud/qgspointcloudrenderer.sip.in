@@ -219,7 +219,8 @@ Returns the feedback object used to cancel rendering
     double minZ() const;
 %Docstring
 Returns the minimum Z value rendered into the elevation map
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     double maxZ() const;

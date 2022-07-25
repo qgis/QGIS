@@ -97,10 +97,7 @@ void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRende
         QColor neighbourColor = elevationImg->pixelColor( neighbourCoordsX, neighbourCoordsY );
         float neighbourDepth = ( float )neighbourColor.rgba64().red() / 65535.0;
         neighbourDepth = ( neighbourDepth - minZ ) / ( maxZ - minZ );
-        {
-          if ( centerDepth == 0.0f ) factor += 1.0f;
-          else factor += std::max<float>( 0, centerDepth - neighbourDepth );
-        }
+        factor += std::max<float>( 0, centerDepth - neighbourDepth );
       }
       float shade = exp( -factor / 4 * strength );
       img->setPixelColor( i, j, QColor::fromRgbF( shade * originalColor.redF(), shade * originalColor.greenF(), shade * originalColor.blueF(), originalColor.alphaF() ) );
