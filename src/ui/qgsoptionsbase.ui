@@ -5291,11 +5291,6 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -5408,6 +5403,13 @@ p, li { white-space: pre-wrap; }
   <tabstop>mLocalizedDataPathListWidget</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
   <tabstop>mListHiddenBrowserPaths</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>mOptionsScrollArea_02</tabstop>
+  <tabstop>cmbEditCreateOptions</tabstop>
+  <tabstop>pbnEditCreateOptions</tabstop>
+  <tabstop>pbnEditPyramidsOptions</tabstop>
+  <tabstop>lstRasterDrivers</tabstop>
+  <tabstop>lstVectorDrivers</tabstop>
   <tabstop>mOptionsScrollArea_06</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
@@ -5429,8 +5431,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mKeepBaseUnitCheckBox</tabstop>
   <tabstop>mDistanceUnitsComboBox</tabstop>
   <tabstop>mAreaUnitsComboBox</tabstop>
-  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
   <tabstop>mAngleUnitsComboBox</tabstop>
+  <tabstop>mCustomizeCoordinateFormatButton</tabstop>
   <tabstop>mCustomizeBearingFormatButton</tabstop>
   <tabstop>spinZoomFactor</tabstop>
   <tabstop>mListGlobalScales</tabstop>
@@ -5439,16 +5441,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnDefaultScaleValues</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mColorSchemesComboBox</tabstop>
-  <tabstop>mSchemeToolButton</tabstop>
-  <tabstop>mTreeCustomColors</tabstop>
-  <tabstop>mButtonAddColor</tabstop>
-  <tabstop>mButtonRemoveColor</tabstop>
-  <tabstop>mButtonCopyColors</tabstop>
-  <tabstop>mButtonPasteColors</tabstop>
-  <tabstop>mButtonImportColors</tabstop>
-  <tabstop>mButtonExportColors</tabstop>
   <tabstop>mOptionsScrollArea_07</tabstop>
   <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>chkReuseLastValues</tabstop>
@@ -5478,6 +5470,16 @@ p, li { white-space: pre-wrap; }
   <tabstop>mTracingConvertToCurveCheckBox</tabstop>
   <tabstop>mTracingCustomAngleToleranceSpinBox</tabstop>
   <tabstop>mTracingCustomDistanceToleranceSpinBox</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mColorSchemesComboBox</tabstop>
+  <tabstop>mTreeCustomColors</tabstop>
+  <tabstop>mSchemeToolButton</tabstop>
+  <tabstop>mButtonAddColor</tabstop>
+  <tabstop>mButtonRemoveColor</tabstop>
+  <tabstop>mButtonCopyColors</tabstop>
+  <tabstop>mButtonPasteColors</tabstop>
+  <tabstop>mButtonImportColors</tabstop>
+  <tabstop>mButtonExportColors</tabstop>
   <tabstop>mOptionsScrollArea_12</tabstop>
   <tabstop>mComposerFontComboBox</tabstop>
   <tabstop>mGridStyleComboBox</tabstop>
@@ -5489,13 +5491,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBtnAddTemplatePath</tabstop>
   <tabstop>mBtnRemoveTemplatePath</tabstop>
   <tabstop>mListComposerTemplatePaths</tabstop>
-  <tabstop>mOptionsScrollArea_02</tabstop>
-  <tabstop>tabWidget</tabstop>
-  <tabstop>cmbEditCreateOptions</tabstop>
-  <tabstop>pbnEditCreateOptions</tabstop>
-  <tabstop>pbnEditPyramidsOptions</tabstop>
-  <tabstop>lstRasterDrivers</tabstop>
-  <tabstop>lstVectorDrivers</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>mNetworkTimeoutSpinBox</tabstop>
@@ -5508,8 +5503,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBrowseCacheDirectory</tabstop>
   <tabstop>mCacheSize</tabstop>
   <tabstop>mClearCache</tabstop>
-  <tabstop>mAutoClearAccessCache</tabstop>
-  <tabstop>mClearAccessCache</tabstop>
   <tabstop>grpProxy</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
@@ -5520,6 +5513,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mGPUEnableCheckBox</tabstop>
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
+  <tabstop>mAutoClearAccessCache</tabstop>
+  <tabstop>mClearAccessCache</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

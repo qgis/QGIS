@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>GPS Device Editor</string>
+   <string>Rendering Options</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -153,6 +153,13 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>chkAddedVisibility</tabstop>
+  <tabstop>spinMaxThreads</tabstop>
+  <tabstop>spinMapUpdateInterval</tabstop>
+  <tabstop>doubleSpinBoxMagnifierDefault</tabstop>
+  <tabstop>chkAntiAliasing</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
