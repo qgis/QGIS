@@ -79,7 +79,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Sets the painter used to render elevation data
      * \since QGIS 3.28
      */
-    void setElevationPainter( QPainter *painter ) { mElevationPainter = painter; }
+    void setElevationPainter( QPainter *painter ) SIP_SKIP { mElevationPainter = painter; }
 
     /**
      * Returns the painter used to render elevation data
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Sets the image used to store elevation data
      * \since QGIS 3.28
      */
-    void setElevationImage( QImage *image ) { mElevationImage = image; }
+    void setElevationImage( QImage *image ) SIP_SKIP { mElevationImage = image; }
 
     /**
      * Returns the image used to store elevation data
@@ -756,28 +756,20 @@ class CORE_EXPORT QgsPointCloudRenderer
       QPainter *elevationPainter = context.elevationPainter();
       const double zMin = -5000;//context.zMin();//-37.2;
       const double zMax = +5000;//context.zMax();// 532.87;
-      double zFloat = ( z - zMin ) / ( zMax - zMin );
-      context.updateZRange( zFloat );
+      float zFloat = ( z - zMin ) / ( zMax - zMin );
       zFloat = std::max<double>( 0.0, std::min<double>( 1.0, zFloat ) );
-      QColor elevationColor;
-      zFloat *= 255;
-      elevationColor.setRed( zFloat );
-      zFloat = ( zFloat - std::truncf( zFloat ) ) * 255.0;
-      elevationColor.setGreen( zFloat );
-      zFloat = ( zFloat - std::truncf( zFloat ) ) * 255.0;
-      elevationColor.setBlue( zFloat );
-      elevationColor.setAlphaF( 1.0f );
-
+      context.updateZRange( zFloat );
+      QBrush brush( QColor::fromRgba64( zFloat * 65535, zFloat * 65535, zFloat * 65535, zFloat * 65535 ) );
       switch ( mPointSymbol )
       {
         case Qgis::PointCloudSymbol::Square:
           elevationPainter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
                                               y - mPainterPenWidth * 0.5,
-                                              mPainterPenWidth, mPainterPenWidth ), elevationColor );
+                                              mPainterPenWidth, mPainterPenWidth ), brush );
           break;
 
         case Qgis::PointCloudSymbol::Circle:
-          elevationPainter->setBrush( QBrush( elevationColor ) );
+          elevationPainter->setBrush( brush );
           elevationPainter->setPen( Qt::NoPen );
           elevationPainter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
                                                  y - mPainterPenWidth * 0.5,

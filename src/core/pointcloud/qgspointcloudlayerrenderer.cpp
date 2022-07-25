@@ -88,31 +88,21 @@ void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRende
       int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
       float factor = 0.0f;
       QColor centerElevationColor = elevationImg->pixelColor( i, j );
-      if ( centerElevationColor.alphaF() != 1.0f )
-      {
-        continue;
-      }
-      float centerDepth = decodeElevation( centerElevationColor );
+      float centerDepth = ( float )centerElevationColor.rgba64().red() / 65535.0;
       centerDepth = ( centerDepth - minZ ) / ( maxZ - minZ );
-      int sampledPointsCount = 0;
       for ( int k = 0; k < 4; ++k )
       {
         int neighbourCoordsX = i + distance * neighbours[2 * k];
         int neighbourCoordsY = j + distance * neighbours[2 * k + 1];
         QColor neighbourColor = elevationImg->pixelColor( neighbourCoordsX, neighbourCoordsY );
-        if ( neighbourColor.alphaF() != 1.0f )
-          continue;
-        sampledPointsCount++;
-        float neighbourDepth = decodeElevation( neighbourColor );
+        float neighbourDepth = ( float )neighbourColor.rgba64().red() / 65535.0;
         neighbourDepth = ( neighbourDepth - minZ ) / ( maxZ - minZ );
         {
           if ( centerDepth == 0.0f ) factor += 1.0f;
           else factor += std::max<float>( 0, centerDepth - neighbourDepth );
         }
       }
-      if ( sampledPointsCount == 0 )
-        continue;
-      float shade = exp( -factor / sampledPointsCount * strength );
+      float shade = exp( -factor / 4 * strength );
       img->setPixelColor( i, j, QColor::fromRgbF( shade * originalColor.redF(), shade * originalColor.greenF(), shade * originalColor.blueF(), originalColor.alphaF() ) );
     }
   }
@@ -132,10 +122,11 @@ bool QgsPointCloudLayerRenderer::render()
   {
     if ( applyEdl )
     {
-      elevationImage.reset( new QImage( painterImage->size(), QImage::Format::Format_ARGB32 ) );
+      elevationImage.reset( new QImage( painterImage->size(), QImage::Format::Format_Grayscale16 ) );
       elevationImage->fill( QColor::fromRgbF( 0, 0, 0, 0 ) );
       elevationPainter.reset( new QPainter );
       elevationPainter->begin( elevationImage.get() );
+      elevationPainter->setCompositionMode( QPainter::CompositionMode::CompositionMode_Lighten );
       context.setElevationPainter( elevationPainter.get() );
     }
   }
@@ -184,7 +175,8 @@ bool QgsPointCloudLayerRenderer::render()
 
   if ( !context.renderContext().zRange().isInfinite() ||
        mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::BottomToTop ||
-       mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom )
+       mRenderer->drawOrder2d() == Qgis::PointCloudDrawOrder::TopToBottom ||
+       applyEdl )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
   // collect attributes required by renderer

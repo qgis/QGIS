@@ -49,12 +49,6 @@ Returns a reference to the context's render context.
 
 
 
-    void setElevationPainter( QPainter *painter );
-%Docstring
-Sets the painter used to render elevation data
-
-.. versionadded:: 3.28
-%End
 
     QPainter *elevationPainter() const;
 %Docstring
@@ -63,12 +57,6 @@ Returns the painter used to render elevation data
 .. versionadded:: 3.28
 %End
 
-    void setElevationImage( QImage *image );
-%Docstring
-Sets the image used to store elevation data
-
-.. versionadded:: 3.28
-%End
 
     QImage *elevationImage() const;
 %Docstring
