@@ -29,15 +29,15 @@ QgsRenderingOptionsWidget::QgsRenderingOptionsWidget( QWidget *parent )
 {
   setupUi( this );
 
-  connect( chkMaxThreads, &QCheckBox::toggled, spinMaxThreads, &QWidget::setEnabled );
-
   QgsSettings settings;
   chkAddedVisibility->setChecked( settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
 
-  chkMaxThreads->setChecked( QgsApplication::maxThreads() != -1 );
-  spinMaxThreads->setEnabled( chkMaxThreads->isChecked() );
   spinMaxThreads->setRange( 1, QThread::idealThreadCount() );
-  spinMaxThreads->setValue( QgsApplication::maxThreads() );
+  spinMaxThreads->setClearValue( -1, tr( "All Available (%1)" ).arg( QThread::idealThreadCount() ) );
+  if ( QgsApplication::maxThreads() != -1 )
+    spinMaxThreads->setValue( QgsApplication::maxThreads() );
+  else
+    spinMaxThreads->clear();
 
   spinMapUpdateInterval->setValue( settings.value( QStringLiteral( "/qgis/map_update_interval" ), 250 ).toInt() );
   spinMapUpdateInterval->setClearValue( 250 );
@@ -60,7 +60,7 @@ void QgsRenderingOptionsWidget::apply()
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
 
-  const int maxThreads = chkMaxThreads->isChecked() ? spinMaxThreads->value() : -1;
+  const int maxThreads = spinMaxThreads->value() == spinMaxThreads->clearValue() ? -1 : spinMaxThreads->value();
   QgsApplication::setMaxThreads( maxThreads );
   settings.setValue( QStringLiteral( "/qgis/max_threads" ), maxThreads );
 
