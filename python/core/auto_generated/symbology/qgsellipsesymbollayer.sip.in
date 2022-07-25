@@ -32,6 +32,12 @@ A symbol layer for rendering objects with major and minor axis (e.g. ellipse, re
       RightHalfTriangle,
       LeftHalfTriangle,
       SemiCircle,
+      ThirdCircle,
+      QuarterCircle,
+      Pentagon,
+      Hexagon,
+      Octagon,
+      Star,
     };
 
     static QList< QgsEllipseSymbolLayer::Shape > availableShapes();
