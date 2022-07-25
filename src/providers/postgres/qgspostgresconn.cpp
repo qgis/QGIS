@@ -32,6 +32,7 @@
 #include "qgspostgresconnpool.h"
 #include "qgsvariantutils.h"
 #include "qgsdbquerylog.h"
+#include "qgsapplication.h"
 
 #include <QApplication>
 #include <QStringList>
@@ -49,6 +50,7 @@
 #endif
 
 const int PG_DEFAULT_TIMEOUT = 30;
+const QString PG_APPLICATION_NAME = QStringLiteral( "QGIS" );
 
 QgsPostgresResult::~QgsPostgresResult()
 {
@@ -449,8 +451,17 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
 
   if ( mPostgresqlVersion >= 90000 )
   {
-    LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET application_name='QGIS'" ) );
-    LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET extra_float_digits=3" ) );
+    QgsSettings settings;
+    const QString applicationName = settings.value(
+                                      QStringLiteral( "PostgreSQL/application_name" ),
+                                      QStringLiteral( "%1 %2" ).arg( QgsApplication::applicationName(), QgsApplication::platform() ),
+                                      QgsSettings::Providers
+                                    ).toString();
+    // Quoting floating point values and application name for PostgreSQL connection in 1 request
+    LoggedPQexecNR(
+      "QgsPostgresConn",
+      QStringLiteral( "SET extra_float_digits=3; SET application_name=%1" ).arg( quotedValue( applicationName ) )
+    );
   }
 
   PQsetNoticeProcessor( mConn, noticeProcessor, nullptr );
