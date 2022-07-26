@@ -82,7 +82,9 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
-    GeometryColumnCapability::SinglePart,
+    GeometryColumnCapability::SinglePoint,
+    GeometryColumnCapability::SingleLineString,
+    GeometryColumnCapability::SinglePolygon,
     GeometryColumnCapability::Curves
   };
   mSqlLayerDefinitionCapabilities =
