@@ -73,6 +73,27 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
 
 };
 
+
+/**
+ * \ingroup core
+ * \brief A data collection item for grouping of the content in file based data collections (e.g. FileGeodatabase files).
+ *
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+
+    /**
+     * Constructor for QgsFileDataCollectionGroupItem.
+     * \param parent parent item
+     * \param groupName group name
+     * \param path item path
+     */
+    QgsFileDataCollectionGroupItem( QgsDataItem *parent, const QString &groupName, const QString &path );
+};
+
 /**
  * \ingroup core
  * \brief A data collection item for file based data collections (e.g. NetCDF files).

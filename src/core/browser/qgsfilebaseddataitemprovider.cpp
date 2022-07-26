@@ -154,6 +154,16 @@ QString QgsProviderSublayerItem::layerName() const
 }
 
 //
+// QgsFileDataCollectionGroupItem
+//
+QgsFileDataCollectionGroupItem::QgsFileDataCollectionGroupItem( QgsDataItem *parent, const QString &groupName, const QString &path )
+  : QgsDataCollectionItem( parent, groupName, path )
+{
+  mCapabilities = Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+}
+
+//
 // QgsFileDataCollectionItem
 //
 
@@ -192,10 +202,47 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
   QVector<QgsDataItem *> children;
   children.reserve( sublayers.size() );
+  QMap< QStringList, QgsFileDataCollectionGroupItem * > groupItems;
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer, QString() );
-    children.append( item );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( nullptr, sublayer.name(), sublayer, QString() );
+    item->setState( Qgis::BrowserItemState::Populated ); // children are not expected
+
+    if ( !sublayer.path().isEmpty() )
+    {
+      QStringList currentPath;
+      QStringList remainingPaths = sublayer.path();
+      QgsFileDataCollectionGroupItem *groupItem = nullptr;
+
+      while ( !remainingPaths.empty() )
+      {
+        currentPath << remainingPaths.takeAt( 0 );
+
+        auto it = groupItems.constFind( currentPath );
+        if ( it == groupItems.constEnd() )
+        {
+          QgsFileDataCollectionGroupItem *newGroupItem = new QgsFileDataCollectionGroupItem( this, currentPath.constLast(), path() + '/' + currentPath.join( ',' ) );
+          newGroupItem->setState( Qgis::BrowserItemState::Populated );
+          groupItems.insert( currentPath, newGroupItem );
+          if ( groupItem )
+            groupItem->addChildItem( newGroupItem );
+          else
+            children.append( newGroupItem );
+          groupItem = newGroupItem;
+        }
+        else
+        {
+          groupItem = it.value();
+        }
+      }
+
+      if ( groupItem )
+        groupItem->addChildItem( item );
+    }
+    else
+    {
+      children.append( item );
+    }
   }
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
