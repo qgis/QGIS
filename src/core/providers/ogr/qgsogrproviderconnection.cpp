@@ -371,13 +371,16 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
   mDriverName = GDALGetDriverShortName( hDriver );
 
-  mGeometryColumnCapabilities =
-  {
-    GeometryColumnCapability::Z, // No generic way in GDAL to test these per driver/dataset yet
-    GeometryColumnCapability::SinglePart
-  };
+  mGeometryColumnCapabilities = GeometryColumnCapability::SinglePart;
 
   char **driverMetadata = GDALGetMetadata( hDriver, nullptr );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_Z_GEOMETRIES, false ) )
+    mGeometryColumnCapabilities |= GeometryColumnCapability::Z;
+#else
+  mGeometryColumnCapabilities |= GeometryColumnCapability::Z; // Prior to GDAL 3.6 there was no generic way to test these per driver/dataset
+#endif
 
   mCapabilities = Capability::SqlLayers
                   | Capability::ExecuteSql
@@ -406,10 +409,27 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   }
 #endif
 
-  // No generic way in GDAL to test these per driver/dataset yet
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE_FIELD, false ) )
+    mCapabilities |= AddField;
+  if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_DELETE_FIELD, false ) )
+    mCapabilities |= DeleteField;
+
+  if ( const char *pszAlterFieldDefnFlags = GDALGetMetadataItem( hDriver, GDAL_DMD_ALTER_FIELD_DEFN_FLAGS, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszAlterFieldDefnFlags, " ", 0 );
+    if ( CSLFindString( papszTokens, "Name" ) >= 0 )
+    {
+      mCapabilities |= RenameField;
+    }
+    CSLDestroy( papszTokens );
+  }
+#else
+  // Prior to GDAL 3.6 there was no generic way to test these per driver/dataset
   mCapabilities |= AddField;
   mCapabilities |= DeleteField;
   mCapabilities |= RenameField;
+#endif
 
   gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
   if ( !hDS )
