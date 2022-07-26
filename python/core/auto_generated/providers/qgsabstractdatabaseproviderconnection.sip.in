@@ -363,7 +363,10 @@ This information is calculated from the geometry columns types.
       Z,
       M,
       SinglePart,
-      Curves
+      Curves,
+      SinglePoint,
+      SingleLineString,
+      SinglePolygon,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;

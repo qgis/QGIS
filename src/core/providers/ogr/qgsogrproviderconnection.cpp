@@ -371,7 +371,32 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
 
   mDriverName = GDALGetDriverShortName( hDriver );
 
-  mGeometryColumnCapabilities = GeometryColumnCapability::SinglePart;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  mGeometryColumnCapabilities = GeometryColumnCapability::SinglePoint;
+
+  if ( const char *pszGeometryFlags = GDALGetMetadataItem( hDriver, GDAL_DMD_GEOMETRY_FLAGS, nullptr ) )
+  {
+    char **papszTokens = CSLTokenizeString2( pszGeometryFlags, " ", 0 );
+    if ( CSLFindString( papszTokens, "EquatesMultiAndSingleLineStringDuringWrite" ) < 0 )
+    {
+      mGeometryColumnCapabilities |= GeometryColumnCapability::SingleLineString;
+    }
+    if ( CSLFindString( papszTokens, "EquatesMultiAndSinglePolygonDuringWrite" ) < 0 )
+    {
+      mGeometryColumnCapabilities |= GeometryColumnCapability::SinglePolygon;
+    }
+    CSLDestroy( papszTokens );
+  }
+  else
+  {
+    mGeometryColumnCapabilities |= GeometryColumnCapability::SingleLineString;
+    mGeometryColumnCapabilities |= GeometryColumnCapability::SinglePolygon;
+  }
+#else
+  mGeometryColumnCapabilities |= GeometryColumnCapability::SinglePoint;
+  mGeometryColumnCapabilities |= GeometryColumnCapability::SingleLineString;
+  mGeometryColumnCapabilities |= GeometryColumnCapability::SinglePolygon;
+#endif
 
   char **driverMetadata = GDALGetMetadata( hDriver, nullptr );
 
