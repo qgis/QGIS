@@ -66,14 +66,22 @@ QList<Qgis::MarkerShape> QgsSimpleMarkerSymbolLayerBase::availableShapes()
 {
   QList< Qgis::MarkerShape > shapes;
   shapes << Qgis::MarkerShape::Square
+         << Qgis::MarkerShape::Trapezoid
+         << Qgis::MarkerShape::ParallelogramLeft
+         << Qgis::MarkerShape::ParallelogramRight
          << Qgis::MarkerShape::Diamond
+         << Qgis::MarkerShape::Shield
          << Qgis::MarkerShape::Pentagon
          << Qgis::MarkerShape::Hexagon
          << Qgis::MarkerShape::Octagon
+         << Qgis::MarkerShape::Decagon
          << Qgis::MarkerShape::SquareWithCorners
+         << Qgis::MarkerShape::RoundedSquare
          << Qgis::MarkerShape::Triangle
          << Qgis::MarkerShape::EquilateralTriangle
+         << Qgis::MarkerShape::DiamondStar
          << Qgis::MarkerShape::Star
+         << Qgis::MarkerShape::Heart
          << Qgis::MarkerShape::Arrow
          << Qgis::MarkerShape::Circle
          << Qgis::MarkerShape::Cross
@@ -116,14 +124,22 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeIsFilled( Qgis::MarkerShape shape )
   switch ( shape )
   {
     case Qgis::MarkerShape::Square:
+    case Qgis::MarkerShape::Trapezoid:
+    case Qgis::MarkerShape::ParallelogramRight:
+    case Qgis::MarkerShape::ParallelogramLeft:
     case Qgis::MarkerShape::Diamond:
+    case Qgis::MarkerShape::Shield:
     case Qgis::MarkerShape::Pentagon:
     case Qgis::MarkerShape::Hexagon:
     case Qgis::MarkerShape::Octagon:
+    case Qgis::MarkerShape::Decagon:
     case Qgis::MarkerShape::SquareWithCorners:
+    case Qgis::MarkerShape::RoundedSquare:
     case Qgis::MarkerShape::Triangle:
     case Qgis::MarkerShape::EquilateralTriangle:
+    case Qgis::MarkerShape::DiamondStar:
     case Qgis::MarkerShape::Star:
+    case Qgis::MarkerShape::Heart:
     case Qgis::MarkerShape::Arrow:
     case Qgis::MarkerShape::Circle:
     case Qgis::MarkerShape::CrossFill:
@@ -319,22 +335,38 @@ Qgis::MarkerShape QgsSimpleMarkerSymbolLayerBase::decodeShape( const QString &na
 
   if ( cleaned == QLatin1String( "square" ) || cleaned == QLatin1String( "rectangle" ) )
     return Qgis::MarkerShape::Square;
+  else if ( cleaned == QLatin1String( "trapezoid" ) )
+    return Qgis::MarkerShape::Trapezoid;
+  else if ( cleaned == QLatin1String( "parallelogram_right" ) )
+    return Qgis::MarkerShape::ParallelogramRight;
+  else if ( cleaned == QLatin1String( "parallelogram_left" ) )
+    return Qgis::MarkerShape::ParallelogramLeft;
   else if ( cleaned == QLatin1String( "square_with_corners" ) )
     return Qgis::MarkerShape::SquareWithCorners;
+  else if ( cleaned == QLatin1String( "rounded_square" ) )
+    return Qgis::MarkerShape::RoundedSquare;
   else if ( cleaned == QLatin1String( "diamond" ) )
     return Qgis::MarkerShape::Diamond;
+  else if ( cleaned == QLatin1String( "shield" ) )
+    return Qgis::MarkerShape::Shield;
   else if ( cleaned == QLatin1String( "pentagon" ) )
     return Qgis::MarkerShape::Pentagon;
   else if ( cleaned == QLatin1String( "hexagon" ) )
     return Qgis::MarkerShape::Hexagon;
   else if ( cleaned == QLatin1String( "octagon" ) )
     return Qgis::MarkerShape::Octagon;
+  else if ( cleaned == QLatin1String( "decagon" ) )
+    return Qgis::MarkerShape::Decagon;
   else if ( cleaned == QLatin1String( "triangle" ) )
     return Qgis::MarkerShape::Triangle;
   else if ( cleaned == QLatin1String( "equilateral_triangle" ) )
     return Qgis::MarkerShape::EquilateralTriangle;
+  else if ( cleaned == QLatin1String( "star_diamond" ))
+    return Qgis::MarkerShape::DiamondStar;
   else if ( cleaned == QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
     return Qgis::MarkerShape::Star;
+  else if ( cleaned == QLatin1String( "heart" ))
+    return Qgis::MarkerShape::Heart;
   else if ( cleaned == QLatin1String( "arrow" ) )
     return Qgis::MarkerShape::Arrow;
   else if ( cleaned == QLatin1String( "circle" ) )
@@ -393,6 +425,14 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( Qgis::MarkerShape shape )
       return QStringLiteral( "half_square" );
     case Qgis::MarkerShape::DiagonalHalfSquare:
       return QStringLiteral( "diagonal_half_square" );
+    case Qgis::MarkerShape::ParallelogramRight:
+      return QStringLiteral( "parallelogram_right" );
+    case Qgis::MarkerShape::ParallelogramLeft:
+      return QStringLiteral( "parallelogram_left" );
+    case Qgis::MarkerShape::Trapezoid:
+      return QStringLiteral( "trapezoid" );
+    case Qgis::MarkerShape::Shield:
+      return QStringLiteral( "shield" );
     case Qgis::MarkerShape::Diamond:
       return QStringLiteral( "diamond" );
     case Qgis::MarkerShape::Pentagon:
@@ -401,8 +441,12 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( Qgis::MarkerShape shape )
       return QStringLiteral( "hexagon" );
     case Qgis::MarkerShape::Octagon:
       return QStringLiteral( "octagon" );
+    case Qgis::MarkerShape::Decagon:
+      return QStringLiteral( "decagon" );
     case Qgis::MarkerShape::SquareWithCorners:
       return QStringLiteral( "square_with_corners" );
+    case Qgis::MarkerShape::RoundedSquare:
+      return QStringLiteral( "rounded_square" );
     case Qgis::MarkerShape::Triangle:
       return QStringLiteral( "triangle" );
     case Qgis::MarkerShape::EquilateralTriangle:
@@ -411,8 +455,12 @@ QString QgsSimpleMarkerSymbolLayerBase::encodeShape( Qgis::MarkerShape shape )
       return QStringLiteral( "left_half_triangle" );
     case Qgis::MarkerShape::RightHalfTriangle:
       return QStringLiteral( "right_half_triangle" );
+    case Qgis::MarkerShape::DiamondStar:
+      return QStringLiteral( "star_diamond" );
     case Qgis::MarkerShape::Star:
       return QStringLiteral( "star" );
+    case Qgis::MarkerShape::Heart:
+      return QStringLiteral( "heart" );
     case Qgis::MarkerShape::Arrow:
       return QStringLiteral( "arrow" );
     case Qgis::MarkerShape::ArrowHeadFilled:
@@ -490,9 +538,42 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
       polygon << QPointF( -1, -1 ) << QPointF( 1, 1 ) << QPointF( -1, 1 ) << QPointF( -1, -1 );
       return true;
 
+    case Qgis::MarkerShape::Trapezoid:
+      polygon << QPointF( 0.5, -0.5 )
+              << QPointF( 1, 0.5 )
+              << QPointF( -1, 0.5 )
+              << QPointF( -0.5, -0.5 )
+              << QPointF( 0.5, -0.5 );
+      return true;
+
+    case Qgis::MarkerShape::ParallelogramRight:
+      polygon << QPointF( 0.5, 0.5 )
+              << QPointF( 1, -0.5 )
+              << QPointF( -0.5, -0.5 )
+              << QPointF( -1, 0.5 )
+              << QPointF( 0.5, 0.5 );
+      return true;
+
+    case Qgis::MarkerShape::ParallelogramLeft:
+      polygon << QPointF( 1, 0.5 )
+              << QPointF( 0.5, -0.5 )
+              << QPointF( -1, -0.5 )
+              << QPointF( -0.5, 0.5 )
+              << QPointF( 1, 0.5 );
+      return true;
+
     case Qgis::MarkerShape::Diamond:
       polygon << QPointF( -1, 0 ) << QPointF( 0, 1 )
               << QPointF( 1, 0 ) << QPointF( 0, -1 ) << QPointF( -1, 0 );
+      return true;
+
+    case Qgis::MarkerShape::Shield:
+      polygon << QPointF( 1, 0.5 )
+              << QPointF( 1, -1 )
+              << QPointF( -1, -1 )
+              << QPointF( -1, 0.5 )
+              << QPointF( 0, 1 )
+              << QPointF( 1, 0.5 );
       return true;
 
     case Qgis::MarkerShape::Pentagon:
@@ -543,6 +624,23 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
       return true;
     }
 
+    case Qgis::MarkerShape::Decagon:
+    {
+
+      polygon << QPointF( 0.587785252,  0.809016994 )
+              << QPointF( 0.951056516, 0.309016994 )
+              << QPointF( 0.951056516, -0.309016994 )
+              << QPointF( 0.587785252, -0.809016994 )
+              << QPointF( 0, -1 )
+              << QPointF( -0.587785252, -0.809016994 )
+              << QPointF( -0.951056516, -0.309016994 )
+              << QPointF( -0.951056516, 0.309016994 )
+              << QPointF( -0.587785252, 0.809016994 )
+              << QPointF( 0, 1 )
+              << QPointF( 0.587785252,  0.809016994 );
+      return true;
+    }
+
     case Qgis::MarkerShape::Triangle:
       polygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
       return true;
@@ -565,6 +663,24 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     case Qgis::MarkerShape::RightHalfTriangle:
       polygon << QPointF( -1, 1 ) << QPointF( 0, 1 ) << QPointF( 0, -1 ) << QPointF( -1, 1 );
       return true;
+
+    case Qgis::MarkerShape::DiamondStar:
+    {
+      const double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
+
+      polygon << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), - inner_r * std::cos( DEG2RAD( 324.0 ) ) )  // 324
+              << QPointF( std::sin( DEG2RAD( 288.0 ) ), - std::cos( DEG2RAD( 288 ) ) )    // 288
+              << QPointF( inner_r * std::sin( DEG2RAD( 252.0 ) ), - inner_r * std::cos( DEG2RAD( 252.0 ) ) )   // 252
+              << QPointF( std::sin( DEG2RAD( 216.0 ) ), - std::cos( DEG2RAD( 216.0 ) ) )   // 216
+              << QPointF( 0, inner_r )         // 180
+              << QPointF( std::sin( DEG2RAD( 144.0 ) ), - std::cos( DEG2RAD( 144.0 ) ) )   // 144
+              << QPointF( inner_r * std::sin( DEG2RAD( 108.0 ) ), - inner_r * std::cos( DEG2RAD( 108.0 ) ) )   // 108
+              << QPointF( std::sin( DEG2RAD( 72.0 ) ), - std::cos( DEG2RAD( 72.0 ) ) )    //  72
+              << QPointF( inner_r * std::sin( DEG2RAD( 36.0 ) ), - inner_r * std::cos( DEG2RAD( 36.0 ) ) )   //  36
+              << QPointF( 0, -1 )
+              << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), - inner_r * std::cos( DEG2RAD( 324.0 ) ) );  // 324;          //   0
+      return true;
+    }
 
     case Qgis::MarkerShape::Star:
     {
@@ -653,6 +769,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     }
 
     case Qgis::MarkerShape::Circle:
+    case Qgis::MarkerShape::RoundedSquare:
     case Qgis::MarkerShape::Cross:
     case Qgis::MarkerShape::Cross2:
     case Qgis::MarkerShape::Line:
@@ -663,6 +780,7 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     case Qgis::MarkerShape::HalfArc:
     case Qgis::MarkerShape::ThirdArc:
     case Qgis::MarkerShape::QuarterArc:
+    case Qgis::MarkerShape::Heart:
       return false;
   }
 
@@ -678,6 +796,18 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
     case Qgis::MarkerShape::Circle:
 
       mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
+      return true;
+
+    case Qgis::MarkerShape::RoundedSquare:
+      mPath.moveTo( 0, -1 );
+      mPath.arcTo( -1, -1, 0.25, 0.25, 90, 90 );
+      mPath.lineTo( 1, -1 );
+      mPath.arcTo( -1, 1, 0.25, -0.25, 90, 90 );
+      mPath.lineTo( -1, 1 );
+      mPath.arcTo( 1, 1, -0.25, 0.25, 90, 90 );
+      mPath.lineTo( 1, 1 );
+      mPath.arcTo( 1, -1, 0.25, -0.25, 90, 90 );
+      mPath.lineTo( 1, -1 );
       return true;
 
     case Qgis::MarkerShape::SemiCircle:
@@ -740,15 +870,22 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
     case Qgis::MarkerShape::QuarterSquare:
     case Qgis::MarkerShape::HalfSquare:
     case Qgis::MarkerShape::DiagonalHalfSquare:
+    case Qgis::MarkerShape::Trapezoid:
+    case Qgis::MarkerShape::ParallelogramRight:
+    case Qgis::MarkerShape::ParallelogramLeft:
     case Qgis::MarkerShape::Diamond:
+    case Qgis::MarkerShape::Shield:
     case Qgis::MarkerShape::Pentagon:
     case Qgis::MarkerShape::Hexagon:
     case Qgis::MarkerShape::Octagon:
+    case Qgis::MarkerShape::Decagon:
     case Qgis::MarkerShape::Triangle:
     case Qgis::MarkerShape::EquilateralTriangle:
     case Qgis::MarkerShape::LeftHalfTriangle:
     case Qgis::MarkerShape::RightHalfTriangle:
+    case Qgis::MarkerShape::DiamondStar:
     case Qgis::MarkerShape::Star:
+    case Qgis::MarkerShape::Heart:
     case Qgis::MarkerShape::Arrow:
     case Qgis::MarkerShape::ArrowHeadFilled:
     case Qgis::MarkerShape::CrossFill:
