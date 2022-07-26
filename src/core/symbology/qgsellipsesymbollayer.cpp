@@ -702,6 +702,7 @@ void QgsEllipseSymbolLayer::preparePath( const QgsEllipseSymbolLayer::Shape &sha
       return;
 
     case Octagon:
+    {
       static constexpr double VERTEX_OFFSET_FROM_ORIGIN = 1.0 / ( 1 + M_SQRT2 );
       mPainterPath.moveTo( ( size.width() * VERTEX_OFFSET_FROM_ORIGIN ) / -2.0, size.height() / 2.0 );
       mPainterPath.lineTo( ( size.width() * VERTEX_OFFSET_FROM_ORIGIN ) / 2.0, size.height() / 2.0 );
@@ -713,8 +714,10 @@ void QgsEllipseSymbolLayer::preparePath( const QgsEllipseSymbolLayer::Shape &sha
       mPainterPath.lineTo( size.width() / -2.0, ( size.height() * VERTEX_OFFSET_FROM_ORIGIN ) / 2.0 );
       mPainterPath.lineTo( ( size.width() * VERTEX_OFFSET_FROM_ORIGIN ) / -2.0, size.height() / 2.0 );
       return;
+    }
 
     case Star:
+    {
       const double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
       mPainterPath.moveTo( ( size.width() * inner_r * std::sin( DEG2RAD( 324.0 ) ) ) / 2.0, ( size.height() * inner_r * std::cos( DEG2RAD( 324.0 ) ) ) / -2.0 );
       mPainterPath.lineTo( ( size.width() * std::sin( DEG2RAD( 288.0 ) ) ) / 2.0, ( size.height() * std::cos( DEG2RAD( 288.0 ) ) ) / -2.0 );
@@ -728,6 +731,7 @@ void QgsEllipseSymbolLayer::preparePath( const QgsEllipseSymbolLayer::Shape &sha
       mPainterPath.lineTo( 0, size.height() / -2.0 );
       mPainterPath.lineTo( ( size.width() * inner_r * std::sin( DEG2RAD( 324.0 ) ) ) / 2.0, ( size.height() * inner_r * std::cos( DEG2RAD( 324.0 ) ) ) / -2.0 );
       return;
+    }
   }
 }
 
