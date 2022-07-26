@@ -1134,14 +1134,14 @@
       "properties": {
         "Name": "Zayne Tomlins",
         "Committer": "No",
-        "First Commit Message": "Added more symbols to the symbolmap",
+        "First Commit Message": "Added new ellipse marker shapes",
         "First Commit Date": "25-07-2022",
         "GIT Nickname": "ZayneTomlins"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-	  152.95745,
+          152.95745,
           -26.62229
         ]
       }
