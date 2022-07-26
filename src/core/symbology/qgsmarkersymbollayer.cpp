@@ -668,17 +668,14 @@ bool QgsSimpleMarkerSymbolLayerBase::shapeToPolygon( Qgis::MarkerShape shape, QP
     {
       const double inner_r = std::cos( DEG2RAD( 72.0 ) ) / std::cos( DEG2RAD( 36.0 ) );
 
-      polygon << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), - inner_r * std::cos( DEG2RAD( 324.0 ) ) )  // 324
-              << QPointF( std::sin( DEG2RAD( 288.0 ) ), - std::cos( DEG2RAD( 288 ) ) )    // 288
-              << QPointF( inner_r * std::sin( DEG2RAD( 252.0 ) ), - inner_r * std::cos( DEG2RAD( 252.0 ) ) )   // 252
-              << QPointF( std::sin( DEG2RAD( 216.0 ) ), - std::cos( DEG2RAD( 216.0 ) ) )   // 216
-              << QPointF( 0, inner_r )         // 180
-              << QPointF( std::sin( DEG2RAD( 144.0 ) ), - std::cos( DEG2RAD( 144.0 ) ) )   // 144
-              << QPointF( inner_r * std::sin( DEG2RAD( 108.0 ) ), - inner_r * std::cos( DEG2RAD( 108.0 ) ) )   // 108
-              << QPointF( std::sin( DEG2RAD( 72.0 ) ), - std::cos( DEG2RAD( 72.0 ) ) )    //  72
-              << QPointF( inner_r * std::sin( DEG2RAD( 36.0 ) ), - inner_r * std::cos( DEG2RAD( 36.0 ) ) )   //  36
-              << QPointF( 0, -1 )
-              << QPointF( inner_r * std::sin( DEG2RAD( 324.0 ) ), - inner_r * std::cos( DEG2RAD( 324.0 ) ) );  // 324;          //   0
+      polygon << QPointF( inner_r * std::sin( DEG2RAD( 315.0 ) ), - inner_r * std::cos( DEG2RAD( 315.0 ) ) )
+              << QPointF( std::sin( DEG2RAD( 270 ) ), - std::cos( DEG2RAD( 270 ) ) )
+              << QPointF( inner_r * std::sin( DEG2RAD( 225.0 ) ), - inner_r * std::cos( DEG2RAD( 225.0 ) ) )
+              << QPointF( std::sin( DEG2RAD( 180 ) ), - std::cos( DEG2RAD( 180 ) ) )
+              << QPointF( inner_r * std::sin( DEG2RAD( 135.0 ) ), - inner_r * std::cos( DEG2RAD( 135.0 ) ) )
+              << QPointF( std::sin( DEG2RAD( 90 ) ), - std::cos( DEG2RAD( 90 ) ) )
+              << QPointF( inner_r * std::sin( DEG2RAD( 45.0 ) ), - inner_r * std::cos( DEG2RAD( 45.0 ) ) )
+              << QPointF( std::sin( DEG2RAD( 0 ) ), - std::cos( DEG2RAD( 0 ) ) );
       return true;
     }
 
@@ -799,15 +796,8 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
       return true;
 
     case Qgis::MarkerShape::RoundedSquare:
-      mPath.moveTo( 0, -1 );
-      mPath.arcTo( -1, -1, 0.25, 0.25, 90, 90 );
-      mPath.lineTo( 1, -1 );
-      mPath.arcTo( -1, 1, 0.25, -0.25, 90, 90 );
-      mPath.lineTo( -1, 1 );
-      mPath.arcTo( 1, 1, -0.25, 0.25, 90, 90 );
-      mPath.lineTo( 1, 1 );
-      mPath.arcTo( 1, -1, 0.25, -0.25, 90, 90 );
-      mPath.lineTo( 1, -1 );
+      mPath.moveTo( -1, -1 );
+      mPath.addRoundedRect(-1, -1, 2, 2, 0.25, 0.25);
       return true;
 
     case Qgis::MarkerShape::SemiCircle:
@@ -865,6 +855,15 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
       mPath.lineTo( -1, 1 );
       return true;
 
+    case Qgis::MarkerShape::Heart:
+      mPath.moveTo( 0, 1 );
+      mPath.lineTo( 0.84, -0.13 );
+      mPath.arcTo( 0, -1, 1, 1, -45, 225 );
+      mPath.arcTo( -1, -1, 1, 1, 0, 225 );
+      mPath.lineTo( -0.84, -0.13 );
+      mPath.lineTo( 0, 1 );
+      return true;
+
     case Qgis::MarkerShape::Square:
     case Qgis::MarkerShape::SquareWithCorners:
     case Qgis::MarkerShape::QuarterSquare:
@@ -885,7 +884,6 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
     case Qgis::MarkerShape::RightHalfTriangle:
     case Qgis::MarkerShape::DiamondStar:
     case Qgis::MarkerShape::Star:
-    case Qgis::MarkerShape::Heart:
     case Qgis::MarkerShape::Arrow:
     case Qgis::MarkerShape::ArrowHeadFilled:
     case Qgis::MarkerShape::CrossFill:
