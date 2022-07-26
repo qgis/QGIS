@@ -252,7 +252,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
       // Old projects do not have view extent information, we have no choice than
       // re-read the project and extract the information from there
     {
-      QgsProject temporaryProject;
+      QgsProject temporaryProject( nullptr, Qgis::ProjectCapabilities() );
       QObject::connect( &temporaryProject, &QgsProject::readProject, qApp, [ & ]( const QDomDocument & projectDoc )
       {
         const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
