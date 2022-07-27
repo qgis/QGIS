@@ -96,7 +96,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
   relation.d->mReferencedLayer = qobject_cast<QgsVectorLayer *>( referencedLayer );
   relation.d->mRelationId = id;
   relation.d->mRelationName = name;
-  relation.d->mRelationStrength = qgsEnumKeyToValue<QgsRelation::RelationStrength>( strength, RelationStrength::Association );
+  relation.d->mRelationStrength = qgsEnumKeyToValue<Qgis::RelationshipStrength>( strength, Qgis::RelationshipStrength::Association );
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
@@ -121,7 +121,7 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "name" ), d->mRelationName );
   elem.setAttribute( QStringLiteral( "referencingLayer" ), d->mReferencingLayerId );
   elem.setAttribute( QStringLiteral( "referencedLayer" ), d->mReferencedLayerId );
-  elem.setAttribute( QStringLiteral( "strength" ), qgsEnumValueToKey<RelationStrength>( d->mRelationStrength ) );
+  elem.setAttribute( QStringLiteral( "strength" ), qgsEnumValueToKey<Qgis::RelationshipStrength>( d->mRelationStrength ) );
 
   for ( const FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
@@ -149,7 +149,7 @@ void QgsRelation::setName( const QString &name )
 }
 
 
-void QgsRelation::setStrength( RelationStrength strength )
+void QgsRelation::setStrength( Qgis::RelationshipStrength strength )
 {
   d.detach();
   d->mRelationStrength = strength;
@@ -283,7 +283,7 @@ QString QgsRelation::name() const
   return d->mRelationName;
 }
 
-QgsRelation::RelationStrength QgsRelation::strength() const
+Qgis::RelationshipStrength QgsRelation::strength() const
 {
   return d->mRelationStrength;
 }
@@ -458,10 +458,10 @@ QgsPolymorphicRelation QgsRelation::polymorphicRelation() const
   return mContext.project()->relationManager()->polymorphicRelation( d->mPolymorphicRelationId );
 }
 
-QgsRelation::RelationType QgsRelation::type() const
+Qgis::RelationshipType QgsRelation::type() const
 {
   if ( d->mPolymorphicRelationId.isNull() )
-    return QgsRelation::Normal;
+    return Qgis::RelationshipType::Normal;
   else
-    return QgsRelation::Generated;
+    return Qgis::RelationshipType::Generated;
 }

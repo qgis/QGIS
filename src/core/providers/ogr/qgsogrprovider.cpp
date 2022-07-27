@@ -3154,15 +3154,15 @@ QList<QgsRelation> QgsOgrProvider::discoverRelations( const QgsVectorLayer *targ
     CSLDestroy( cslRightMappingTableFieldNames );
 
     const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
-    QgsRelation::RelationStrength strength = QgsRelation::Association;
+    Qgis::RelationshipStrength strength = Qgis::RelationshipStrength::Association;
     switch ( relationshipType )
     {
       case GRT_COMPOSITE:
-        strength = QgsRelation::Composition;
+        strength = Qgis::RelationshipStrength::Composition;
         break;
 
       case GRT_ASSOCIATION:
-        strength = QgsRelation::Association;
+        strength = Qgis::RelationshipStrength::Association;
         break;
 
       case GRT_AGGREGATION:

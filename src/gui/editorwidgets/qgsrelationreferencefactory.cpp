@@ -60,8 +60,15 @@ unsigned int QgsRelationReferenceFactory::fieldScore( const QgsVectorLayer *vl, 
   const QList<QgsRelation> relations = vl->referencingRelations( fieldIdx );
   for ( const QgsRelation &rel : relations )
   {
-    if ( rel.type() == QgsRelation::Normal )
-      normalRelationsCount++;
+    switch ( rel.type() )
+    {
+      case Qgis::RelationshipType::Normal:
+        normalRelationsCount++;
+        break;
+
+      case Qgis::RelationshipType::Generated:
+        break;
+    }
   }
   // generated relations should not be used for relation reference widget
   return normalRelationsCount > 0 ? 21 /*A bit stronger than the range widget*/ : 5;

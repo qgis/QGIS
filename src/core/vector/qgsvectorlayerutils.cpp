@@ -646,7 +646,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   for ( const QgsRelation &relation : relations )
   {
     //check if composition (and not association)
-    if ( relation.strength() == QgsRelation::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
+    if ( relation.strength() == Qgis::RelationshipStrength::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
     {
       depth++;
       referencedLayersBranch << layer;
@@ -1070,37 +1070,44 @@ bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, c
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
   for ( const QgsRelation &relation : relations )
   {
-    if ( relation.strength() == QgsRelation::Composition )
+    switch ( relation.strength() )
     {
-      QgsFeatureIds childFeatureIds;
-
-      const auto constFids = fids;
-      for ( const QgsFeatureId fid : constFids )
+      case Qgis::RelationshipStrength::Composition:
       {
-        //get features connected over this relation
-        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( layer->getFeature( fid ) );
-        QgsFeature childFeature;
-        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        QgsFeatureIds childFeatureIds;
+
+        const auto constFids = fids;
+        for ( const QgsFeatureId fid : constFids )
         {
-          childFeatureIds.insert( childFeature.id() );
+          //get features connected over this relation
+          QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( layer->getFeature( fid ) );
+          QgsFeature childFeature;
+          while ( relatedFeaturesIt.nextFeature( childFeature ) )
+          {
+            childFeatureIds.insert( childFeature.id() );
+          }
         }
+
+        if ( childFeatureIds.count() > 0 )
+        {
+          if ( context.layers().contains( relation.referencingLayer() ) )
+          {
+            QgsFeatureIds handledFeatureIds = context.duplicatedFeatures( relation.referencingLayer() );
+            // add feature ids
+            handledFeatureIds.unite( childFeatureIds );
+            context.setDuplicatedFeatures( relation.referencingLayer(), handledFeatureIds );
+          }
+          else
+          {
+            // add layer and feature id
+            context.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
+          }
+        }
+        break;
       }
 
-      if ( childFeatureIds.count() > 0 )
-      {
-        if ( context.layers().contains( relation.referencingLayer() ) )
-        {
-          QgsFeatureIds handledFeatureIds = context.duplicatedFeatures( relation.referencingLayer() );
-          // add feature ids
-          handledFeatureIds.unite( childFeatureIds );
-          context.setDuplicatedFeatures( relation.referencingLayer(), handledFeatureIds );
-        }
-        else
-        {
-          // add layer and feature id
-          context.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
-        }
-      }
+      case Qgis::RelationshipStrength::Association:
+        break;
     }
   }
 

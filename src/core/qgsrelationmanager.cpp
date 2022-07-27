@@ -236,8 +236,13 @@ void QgsRelationManager::writeProject( QDomDocument &doc )
   {
     // the generated relations for polymorphic relations should be ignored,
     // they are generated every time when a polymorphic relation is added
-    if ( relation.type() == QgsRelation::Generated )
-      continue;
+    switch ( relation.type() )
+    {
+      case Qgis::RelationshipType::Generated:
+        continue;
+      case Qgis::RelationshipType::Normal:
+        break;
+    }
 
     relation.writeXml( relationsNode, doc );
   }

@@ -48,7 +48,7 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationMana
     QList< QPair< QString, QString > > references();
     QString relationId();
     QString relationName();
-    QgsRelation::RelationStrength relationStrength();
+    Qgis::RelationshipStrength relationStrength() const;
 
   private slots:
     void addFieldsRow();

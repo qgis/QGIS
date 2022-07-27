@@ -230,12 +230,12 @@ Returns a list of generated relations, based on the currently set :py:func:`~Qgs
 Returns layer representation as evaluated string
 %End
 
-    QgsRelation::RelationStrength strength() const;
+    Qgis::RelationshipStrength strength() const;
 %Docstring
 Returns the relation strength for all the generated normal relations
 %End
 
-    void setRelationStrength( QgsRelation::RelationStrength relationStrength );
+    void setRelationStrength( Qgis::RelationshipStrength relationStrength );
 %Docstring
 Sets the relation strength for all the generated normal relations
 %End
