@@ -43,11 +43,11 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationMana
   public:
     explicit QgsRelationAddDlg( QWidget *parent = nullptr );
 
-    QString referencingLayerId();
-    QString referencedLayerId();
-    QList< QPair< QString, QString > > references();
-    QString relationId();
-    QString relationName();
+    QString referencingLayerId() const;
+    QString referencedLayerId() const;
+    QList< QPair< QString, QString > > references() const;
+    QString relationId() const;
+    QString relationName() const;
     Qgis::RelationshipStrength relationStrength() const;
 
   private slots:
