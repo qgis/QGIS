@@ -580,6 +580,8 @@ Retrieves the z value for the point at index ``i``.
 Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordinates).
 %End
 
+    QColor encodeElevation( float z ) const;
+
     void drawElevation( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;

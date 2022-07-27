@@ -749,6 +749,20 @@ class CORE_EXPORT QgsPointCloudRenderer
       };
     }
 
+    QColor encodeElevation( float z ) const
+    {
+      QColor c;
+      c.setRedF( z );
+      z *= std::pow<float>( 2, 8 );
+      z -= ( int )z;
+      c.setGreenF( z );
+      z *= std::pow<float>( 2, 8 );
+      z -= ( int )z;
+      c.setBlueF( z );
+      c.setAlphaF( 1.0f );
+      return c;
+    }
+
     void drawElevation( double x, double y, double z, QgsPointCloudRenderContext &context ) const
     {
       const QPointF originalXY( x, y );
@@ -759,7 +773,7 @@ class CORE_EXPORT QgsPointCloudRenderer
       float zFloat = ( z - zMin ) / ( zMax - zMin );
       zFloat = std::max<double>( 0.0, std::min<double>( 1.0, zFloat ) );
       context.updateZRange( zFloat );
-      QBrush brush( QColor::fromRgba64( zFloat * 65535, zFloat * 65535, zFloat * 65535, zFloat * 65535 ) );
+      QBrush brush( encodeElevation( zFloat ) );
       switch ( mPointSymbol )
       {
         case Qgis::PointCloudSymbol::Square:
