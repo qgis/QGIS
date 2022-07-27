@@ -72,7 +72,7 @@ void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
     }
   }
 
-  mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
+  mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will also be copied and deleted) or Association" ) );
 }
 
 QList<QgsRelation> QgsDiscoverRelationsDialog::relations() const
