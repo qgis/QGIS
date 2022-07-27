@@ -36,6 +36,8 @@ email                : sherman at mrcc.com
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -3066,6 +3068,194 @@ Qgis::VectorLayerTypeFlags QgsOgrProvider::vectorLayerTypeFlags() const
     flags.setFlag( Qgis::VectorLayerTypeFlag::SqlQuery );
   }
   return flags;
+}
+
+QList<QgsRelation> QgsOgrProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
+{
+  if ( !mOgrLayer )
+    return {};
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  QList<QgsRelation> output;
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+  QMutex *mutex = nullptr;
+#else
+  QRecursiveMutex *mutex = nullptr;
+#endif
+  GDALDatasetH hDS = mOgrLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
+  char **relationNames = GDALDatasetGetRelationshipNames( hDS, nullptr );
+  if ( !relationNames )
+    return output;
+
+  const QStringList names = QgsOgrUtils::cStringListToQStringList( relationNames );
+  CSLDestroy( relationNames );
+
+  QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( TEXT_PROVIDER_KEY );
+  const QVariantMap thisLayerParts = ogrProviderMetadata->decodeUri( target->source() );
+  const QString thisPath = thisLayerParts.value( QStringLiteral( "path" ) ).toString();
+
+  for ( const QString &name : names )
+  {
+    GDALRelationshipH relationship = GDALDatasetGetRelationship( hDS, name.toUtf8().constData() );
+    if ( !relationship )
+      continue;
+
+    const QString leftTableName( GDALRelationshipGetLeftTableName( relationship ) );
+    if ( leftTableName != mLayerName )
+      continue;
+
+    const QString rightTableName( GDALRelationshipGetRightTableName( relationship ) );
+    const QString mappingTableName( GDALRelationshipGetMappingTableName( relationship ) );
+
+    // try to find right and mapping tables in list of provided layers
+    QgsVectorLayer *rightTableLayer = nullptr;
+    QgsVectorLayer *mappingTableLayer = nullptr;
+    for ( QgsVectorLayer *layer : layers )
+    {
+      if ( layer->providerType() != TEXT_PROVIDER_KEY )
+        continue;
+
+      const QVariantMap parts = ogrProviderMetadata->decodeUri( layer->source() );
+      if ( parts.value( QStringLiteral( "path" ) ).toString() != thisPath )
+        continue;
+
+      if ( parts.value( QStringLiteral( "layerName" ) ).toString() == rightTableName )
+        rightTableLayer = layer;
+
+      if ( parts.value( QStringLiteral( "layerName" ) ).toString() == mappingTableName )
+        mappingTableLayer = layer;
+    }
+
+    if ( !rightTableLayer )
+      continue;
+
+    if ( !mappingTableName.isEmpty() && !mappingTableLayer )
+      continue;
+
+    const QString relationshipName( GDALRelationshipGetName( relationship ) );
+
+    char **cslLeftTableFieldNames = GDALRelationshipGetLeftTableFields( relationship );
+    const QStringList leftTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftTableFieldNames );
+    CSLDestroy( cslLeftTableFieldNames );
+
+    char **cslRightTableFieldNames = GDALRelationshipGetRightTableFields( relationship );
+    const QStringList rightTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightTableFieldNames );
+    CSLDestroy( cslRightTableFieldNames );
+
+    char **cslLeftMappingTableFieldNames = GDALRelationshipGetLeftMappingTableFields( relationship );
+    const QStringList leftMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftMappingTableFieldNames );
+    CSLDestroy( cslLeftMappingTableFieldNames );
+
+    char **cslRightMappingTableFieldNames = GDALRelationshipGetRightMappingTableFields( relationship );
+    const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
+    CSLDestroy( cslRightMappingTableFieldNames );
+
+    const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
+    QgsRelation::RelationStrength strength = QgsRelation::Association;
+    switch ( relationshipType )
+    {
+      case GRT_COMPOSITE:
+        strength = QgsRelation::Composition;
+        break;
+
+      case GRT_ASSOCIATION:
+        strength = QgsRelation::Association;
+        break;
+
+      case GRT_AGGREGATION:
+        QgsLogger::warning( "Aggregation relationships are not supported" );
+        continue;
+    }
+
+    const GDALRelationshipCardinality cardinality = GDALRelationshipGetCardinality( relationship );
+    switch ( cardinality )
+    {
+      case GRC_ONE_TO_ONE:
+      case GRC_ONE_TO_MANY:
+      case GRC_MANY_TO_ONE:
+      {
+        QgsRelation relation;
+        relation.setName( relationshipName );
+        relation.setId( relationshipName );
+        relation.setReferencedLayer( target->id() );
+        relation.setReferencingLayer( rightTableLayer->id() );
+        relation.setStrength( strength );
+        for ( int i = 0; i < std::min( leftTableFieldNames.length(), rightTableFieldNames.length() ); ++i )
+        {
+          relation.addFieldPair( rightTableFieldNames.at( i ), leftTableFieldNames.at( i ) );
+        }
+        if ( relation.isValid() )
+        {
+          output.append( relation );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + relationshipName );
+        }
+        break;
+      }
+
+      case GRC_MANY_TO_MANY:
+      {
+        if ( !mappingTableLayer )
+        {
+          QgsLogger::warning( "No mapping table for " + relationshipName );
+          continue;
+        }
+
+        QgsRelation relation;
+        relation.setName( relationshipName );
+        relation.setId( relationshipName + "_forward" );
+        relation.setReferencedLayer( target->id() );
+        relation.setReferencingLayer( mappingTableLayer->id() );
+        relation.setStrength( strength );
+        for ( int i = 0; i < std::min( leftTableFieldNames.length(), leftMappingTableFieldNames.length() ); ++i )
+        {
+          relation.addFieldPair( leftMappingTableFieldNames.at( i ), leftTableFieldNames.at( i ) );
+        }
+        if ( relation.isValid() )
+        {
+          output.append( relation );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + relationshipName );
+          continue;
+        }
+
+        QgsRelation relation2;
+        relation2.setName( relationshipName );
+        relation2.setId( relationshipName + "_backward" );
+        relation2.setReferencedLayer( rightTableLayer->id() );
+        relation2.setReferencingLayer( mappingTableLayer->id() );
+        relation2.setStrength( strength );
+        for ( int i = 0; i < std::min( rightTableFieldNames.length(), rightMappingTableFieldNames.length() ); ++i )
+        {
+          relation2.addFieldPair( rightMappingTableFieldNames.at( i ), rightTableFieldNames.at( i ) );
+        }
+        if ( relation2.isValid() )
+        {
+          output.append( relation2 );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + relationshipName );
+          continue;
+        }
+
+        break;
+      }
+    }
+  }
+  return output;
+#else
+  Q_UNUSED( target )
+  Q_UNUSED( layers )
+  return {}
+#endif
 }
 
 QVariant QgsOgrProvider::minimumValue( int index ) const

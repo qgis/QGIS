@@ -998,6 +998,8 @@ QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encodi
 QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
 {
   QStringList strings;
+  if ( !stringList )
+    return {};
 
   // presume null terminated string list
   for ( qgssize i = 0; stringList[i]; ++i )
