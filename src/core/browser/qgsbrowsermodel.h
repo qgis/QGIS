@@ -157,6 +157,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \since QGIS 3.6
      */
     QMap<QString, QgsDirectoryItem *> driveItems() const;
+
+    /**
+     * Returns the root items for the model.
+     *
+     * \since QGIS 3.28
+     */
+    QVector<QgsDataItem *> rootItems() const { return mRootItems; }
+
   signals:
 
     //! Emitted when item children fetch was finished
@@ -228,13 +236,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \see initialized()
      */
     void initialize();
-
-    /**
-     * Returns the root items for the model.
-     *
-     * \since QGIS 3.28
-     */
-    QVector<QgsDataItem *> rootItems() const { return mRootItems; }
 
   protected:
     //! Populates the model

@@ -162,6 +162,14 @@ and on Linux the "/" root directory.
 
 .. versionadded:: 3.6
 %End
+
+    QVector<QgsDataItem *> rootItems() const;
+%Docstring
+Returns the root items for the model.
+
+.. versionadded:: 3.28
+%End
+
   signals:
 
     void stateChanged( const QModelIndex &index, Qgis::BrowserItemState oldState );
@@ -235,13 +243,6 @@ Hide the given path in the browser model
 Delayed initialization, needed because the provider registry must be already populated.
 
 .. seealso:: :py:func:`initialized`
-%End
-
-    QVector<QgsDataItem *> rootItems() const;
-%Docstring
-Returns the root items for the model.
-
-.. versionadded:: 3.28
 %End
 
   protected:
