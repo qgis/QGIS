@@ -56,13 +56,18 @@ void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
   mRelationsTable->setItem( row, 2, new QTableWidgetItem( referencingFields ) );
   mRelationsTable->setItem( row, 3, new QTableWidgetItem( rel.referencedLayer()->name() ) );
   mRelationsTable->setItem( row, 4, new QTableWidgetItem( referencedFields ) );
-  if ( rel.strength() == QgsRelation::RelationStrength::Composition )
+  switch ( rel.strength() )
   {
-    mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
-  }
-  else
-  {
-    mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Association" ) ) );
+    case Qgis::RelationshipStrength::Composition:
+    {
+      mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
+      break;
+    }
+    case Qgis::RelationshipStrength::Association:
+    {
+      mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Association" ) ) );
+      break;
+    }
   }
 
   mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );

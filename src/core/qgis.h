@@ -2073,6 +2073,34 @@ class CORE_EXPORT Qgis
     Q_ENUM( ArcGisRestServiceType )
 
     /**
+     * Relationship types.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsRelation::RelationType.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RelationshipType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRelation, RelationType ) : int
+      {
+      Normal, //!< A normal relation
+      Generated, //!< A generated relation is a child of a polymorphic relation
+    };
+    Q_ENUM( RelationshipType )
+
+    /**
+     * Relationship strength.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsRelation::RelationStrength.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RelationshipStrength SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRelation, RelationStrength ) : int
+      {
+      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
+      Composition, //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
+    };
+    Q_ENUM( RelationshipStrength )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

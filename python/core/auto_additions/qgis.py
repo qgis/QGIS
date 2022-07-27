@@ -1862,3 +1862,25 @@ QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
 Qgis.ArcGisRestServiceType.__doc__ = 'Available ArcGIS REST service types.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsArcGisPortalUtils`.ItemType.\n\n.. versionadded:: 3.28\n\n' + '* ``FeatureService``: ' + Qgis.ArcGisRestServiceType.FeatureServer.__doc__ + '\n' + '* ``MapService``: ' + Qgis.ArcGisRestServiceType.MapServer.__doc__ + '\n' + '* ``ImageService``: ' + Qgis.ArcGisRestServiceType.ImageServer.__doc__ + '\n' + '* ``GlobeServer``: ' + Qgis.ArcGisRestServiceType.GlobeServer.__doc__ + '\n' + '* ``GPServer``: ' + Qgis.ArcGisRestServiceType.GPServer.__doc__ + '\n' + '* ``GeocodeServer``: ' + Qgis.ArcGisRestServiceType.GeocodeServer.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ArcGisRestServiceType.Unknown.__doc__
 # --
 Qgis.ArcGisRestServiceType.baseClass = Qgis
+QgsRelation.RelationType = Qgis.RelationshipType
+# monkey patching scoped based enum
+QgsRelation.Normal = Qgis.RelationshipType.Normal
+QgsRelation.Normal.is_monkey_patched = True
+QgsRelation.Normal.__doc__ = "A normal relation"
+QgsRelation.Generated = Qgis.RelationshipType.Generated
+QgsRelation.Generated.is_monkey_patched = True
+QgsRelation.Generated.__doc__ = "A generated relation is a child of a polymorphic relation"
+Qgis.RelationshipType.__doc__ = 'Relationship types.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsRelation`.RelationType.\n\n.. versionadded:: 3.28\n\n' + '* ``Normal``: ' + Qgis.RelationshipType.Normal.__doc__ + '\n' + '* ``Generated``: ' + Qgis.RelationshipType.Generated.__doc__
+# --
+Qgis.RelationshipType.baseClass = Qgis
+QgsRelation.RelationStrength = Qgis.RelationshipStrength
+# monkey patching scoped based enum
+QgsRelation.Association = Qgis.RelationshipStrength.Association
+QgsRelation.Association.is_monkey_patched = True
+QgsRelation.Association.__doc__ = "Loose relation, related elements are not part of the parent and a parent copy will not copy any children."
+QgsRelation.Composition = Qgis.RelationshipStrength.Composition
+QgsRelation.Composition.is_monkey_patched = True
+QgsRelation.Composition.__doc__ = "Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children"
+Qgis.RelationshipStrength.__doc__ = 'Relationship strength.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsRelation`.RelationStrength.\n\n.. versionadded:: 3.28\n\n' + '* ``Association``: ' + Qgis.RelationshipStrength.Association.__doc__ + '\n' + '* ``Composition``: ' + Qgis.RelationshipStrength.Composition.__doc__
+# --
+Qgis.RelationshipStrength.baseClass = Qgis

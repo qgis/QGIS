@@ -1210,6 +1210,18 @@ The development version
       Unknown,
     };
 
+    enum class RelationshipType
+      {
+      Normal,
+      Generated,
+    };
+
+    enum class RelationshipStrength
+      {
+      Association,
+      Composition,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

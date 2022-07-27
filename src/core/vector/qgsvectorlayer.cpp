@@ -2727,12 +2727,16 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     QDomElement referencedLayersElement = doc.createElement( QStringLiteral( "referencedLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
-    for ( const auto &rel : constReferencingRelations )
+    const QList<QgsRelation> referencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
+    for ( const QgsRelation &rel : referencingRelations )
     {
-      if ( rel.type() == QgsRelation::Normal )
+      switch ( rel.type() )
       {
-        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+        case Qgis::RelationshipType::Normal:
+          QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+          break;
+        case Qgis::RelationshipType::Generated:
+          break;
       }
     }
 
@@ -2740,15 +2744,18 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
-    for ( const auto &rel : constReferencedRelations )
+    const QList<QgsRelation> referencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
+    for ( const QgsRelation &rel : referencedRelations )
     {
-      if ( rel.type() == QgsRelation::Normal )
+      switch ( rel.type() )
       {
-        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+        case Qgis::RelationshipType::Normal:
+          QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+          break;
+        case Qgis::RelationshipType::Generated:
+          break;
       }
     }
-
   }
 
   // write field configurations
@@ -3374,21 +3381,28 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
       for ( const QgsRelation &relation : relations )
       {
         //check if composition (and not association)
-        if ( relation.strength() == QgsRelation::Composition )
+        switch ( relation.strength() )
         {
-          //get features connected over this relation
-          QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
-          QgsFeatureIds childFeatureIds;
-          QgsFeature childFeature;
-          while ( relatedFeaturesIt.nextFeature( childFeature ) )
+          case Qgis::RelationshipStrength::Composition:
           {
-            childFeatureIds.insert( childFeature.id() );
+            //get features connected over this relation
+            QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
+            QgsFeatureIds childFeatureIds;
+            QgsFeature childFeature;
+            while ( relatedFeaturesIt.nextFeature( childFeature ) )
+            {
+              childFeatureIds.insert( childFeature.id() );
+            }
+            if ( childFeatureIds.count() > 0 )
+            {
+              relation.referencingLayer()->startEditing();
+              relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+            }
+            break;
           }
-          if ( childFeatureIds.count() > 0 )
-          {
-            relation.referencingLayer()->startEditing();
-            relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
-          }
+
+          case Qgis::RelationshipStrength::Association:
+            break;
         }
       }
     }
