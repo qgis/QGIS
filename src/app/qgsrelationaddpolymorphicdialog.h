@@ -18,7 +18,9 @@
 #include <QDialog>
 #include "qgis_app.h"
 #include "ui_qgsrelationmanageraddpolymorphicdialogbase.h"
-#include "qgsrelation.h"
+#include "qgis.h"
+
+class QgsPolymorphicRelation;
 
 /**
  * QgsRelationAddDlg allows configuring a new relation.
