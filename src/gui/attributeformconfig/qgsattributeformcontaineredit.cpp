@@ -39,7 +39,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
   mShowAsGroupBox->setChecked( itemData.showAsGroupBox() );
 
-  mControlVisibilityGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+  mVisibilityExpressionWidget->setAllowEmptyFieldName( true );
   mVisibilityExpressionWidget->setLayer( layer );
   mVisibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
   mColumnCountSpinBox->setValue( itemData.columnCount() );
@@ -75,7 +75,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );
-  visibilityExpression.setEnabled( mControlVisibilityGroupBox->isChecked() );
+  visibilityExpression.setEnabled( true );
   itemData.setVisibilityExpression( visibilityExpression );
 
   QgsOptionalExpression collapsedExpression;
