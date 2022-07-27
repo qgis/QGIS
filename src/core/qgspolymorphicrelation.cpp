@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "qgspolymorphicrelation.h"
-
-#include "qgsapplication.h"
-#include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgspolymorphicrelation_p.h"
-#include "qgsexpressioncontextutils.h"
+
+#include <QApplication>
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )

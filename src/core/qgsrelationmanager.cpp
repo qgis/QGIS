@@ -15,7 +15,6 @@
 
 #include "qgsrelationmanager.h"
 
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"

@@ -15,7 +15,6 @@
 
 #include "qgsrelationreferenceconfigdlg.h"
 
-#include "qgseditorwidgetfactory.h"
 #include "qgsfields.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"

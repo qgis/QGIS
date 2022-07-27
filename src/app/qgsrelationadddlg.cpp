@@ -28,11 +28,9 @@
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgsapplication.h"
 #include "qgshelp.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsfieldexpressionwidget.h"
 
 
 QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
