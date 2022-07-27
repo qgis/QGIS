@@ -387,17 +387,17 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       
       if ( currentSatellite.sig > 0 )
       {
-        int IDfind=0;
+        int IDfind = 0;
         //set QgsSatelliteInfo.inuse to true for the satellites in use
         for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
         {
           QgsSatelliteInfo satInView = mLastGPSInformation.satellitesInView.at( j );
           if ( satInView.id == currentSatellite.id )
           {
-            IDfind=1;
+            IDfind = 1;
           }
         }
-        if (IDfind==0; )
+        if (IDfind == 0)
         {
           satelliteInfo.inUse = 1;
           mLastGPSInformation.satellitesInView.append( satelliteInfo );
