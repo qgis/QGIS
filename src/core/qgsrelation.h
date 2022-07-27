@@ -30,7 +30,6 @@
 class QgsFeatureIterator;
 class QgsFeature;
 class QgsFeatureRequest;
-class QgsAttributes;
 class QgsVectorLayer;
 class QgsRelationPrivate;
 class QgsPolymorphicRelation;
