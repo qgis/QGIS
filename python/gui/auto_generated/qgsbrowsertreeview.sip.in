@@ -8,6 +8,11 @@
 
 
 
+// this is needed for the "convert to subclass" code below to compile
+%ModuleHeaderCode
+#include "qgsbrowsertreeview.h"
+%End
+
 
 class QgsBrowserTreeView : QTreeView
 {

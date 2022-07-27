@@ -20,6 +20,13 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
+#ifdef SIP_RUN
+// this is needed for the "convert to subclass" code below to compile
+% ModuleHeaderCode
+#include "qgsbrowsertreeview.h"
+% End
+#endif
+
 class QgsBrowserGuiModel;
 class QgsDataItem;
 
