@@ -67,9 +67,17 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mReadyToCompose = false;
 }
 
-float decodeElevation( const QColor &elevationColor )
+float decodeElevation( const uchar *colorRaw )
 {
-  return elevationColor.redF() + ( elevationColor.greenF() + elevationColor.blueF() / 255.0 ) / 255.0;
+  const float red = *( ( quint16 * )colorRaw );
+  const float green = *( ( ( quint16 * )colorRaw ) + 1 );
+  const float blue = *( ( ( quint16 * )colorRaw ) + 2 );
+  return ( red + ( green + blue / 65535 ) / 65535 ) / 65535;
+}
+
+float decodeElevation( const QColor &color )
+{
+  return color.redF() + ( color.greenF() + color.blueF() / 256.0 ) / 256.0;
 }
 
 void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRenderContext &context )
@@ -87,15 +95,13 @@ void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRende
       QColor originalColor = img->pixelColor( i, j );
       int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
       float factor = 0.0f;
-      QColor centerElevationColor = elevationImg->pixelColor( i, j );
-      float centerDepth = ( float )centerElevationColor.rgba64().red() / 65535.0;
+      float centerDepth = decodeElevation( elevationImg->pixelColor( i, j ) );
       centerDepth = ( centerDepth - minZ ) / ( maxZ - minZ );
       for ( int k = 0; k < 4; ++k )
       {
         int neighbourCoordsX = i + distance * neighbours[2 * k];
         int neighbourCoordsY = j + distance * neighbours[2 * k + 1];
-        QColor neighbourColor = elevationImg->pixelColor( neighbourCoordsX, neighbourCoordsY );
-        float neighbourDepth = ( float )neighbourColor.rgba64().red() / 65535.0;
+        float neighbourDepth = decodeElevation( elevationImg->pixelColor( neighbourCoordsX, neighbourCoordsY ) );
         neighbourDepth = ( neighbourDepth - minZ ) / ( maxZ - minZ );
         factor += std::max<float>( 0, centerDepth - neighbourDepth );
       }
@@ -119,11 +125,10 @@ bool QgsPointCloudLayerRenderer::render()
   {
     if ( applyEdl )
     {
-      elevationImage.reset( new QImage( painterImage->size(), QImage::Format::Format_Grayscale16 ) );
+      elevationImage.reset( new QImage( painterImage->size(), QImage::Format_ARGB32 ) );
       elevationImage->fill( QColor::fromRgbF( 0, 0, 0, 0 ) );
       elevationPainter.reset( new QPainter );
       elevationPainter->begin( elevationImage.get() );
-      elevationPainter->setCompositionMode( QPainter::CompositionMode::CompositionMode_Lighten );
       context.setElevationPainter( elevationPainter.get() );
     }
   }
