@@ -229,6 +229,13 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      */
     void initialize();
 
+    /**
+     * Returns the root items for the model.
+     *
+     * \since QGIS 3.28
+     */
+    QVector<QgsDataItem *> rootItems() const { return mRootItems; }
+
   protected:
     //! Populates the model
     void addRootItems();
