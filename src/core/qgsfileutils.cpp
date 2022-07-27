@@ -501,3 +501,31 @@ bool QgsFileUtils::isCloseToLimitOfOpenedFiles( int filesToBeOpened )
   constexpr int SOME_MARGIN = 20;
   return nFileCount > 0 && nFileLimit > 0 && nFileCount + filesToBeOpened > nFileLimit - SOME_MARGIN;
 }
+
+QStringList QgsFileUtils::splitPathToComponents( const QString &input )
+{
+  QStringList result;
+  QString path = QDir::cleanPath( input );
+  if ( path.isEmpty() )
+    return result;
+
+  const QString fileName = QFileInfo( path ).fileName();
+  if ( !fileName.isEmpty() )
+    result << fileName;
+  else if ( QFileInfo( path ).path() == path )
+    result << path;
+
+  QString prevPath = path;
+  while ( ( path = QFileInfo( path ).path() ).length() < prevPath.length() )
+  {
+    const QString dirName = QDir( path ).dirName();
+    if ( dirName == QLatin1String( "." ) )
+      break;
+
+    result << ( !dirName.isEmpty() ? dirName : path );
+    prevPath = path;
+  }
+
+  std::reverse( result.begin(), result.end() );
+  return result;
+}

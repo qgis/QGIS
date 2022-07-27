@@ -301,6 +301,16 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertFalse(res)
         self.assertTrue(error)
 
+    def testSplitPathToComponents(self):
+        self.assertEqual(QgsFileUtils.splitPathToComponents('/home/user/Pictures/test.png'), ["/", "home", "user", "Pictures", "test.png"])
+        self.assertEqual(QgsFileUtils.splitPathToComponents('/home/user/Pictures/'), ["/", "home", "user", "Pictures"])
+        self.assertEqual(QgsFileUtils.splitPathToComponents('/home/user/Pictures'), ["/", "home", "user", "Pictures"])
+        self.assertEqual(QgsFileUtils.splitPathToComponents('/home/user'), ["/", "home", "user"])
+        self.assertEqual(QgsFileUtils.splitPathToComponents('/home'), ["/", "home"])
+        self.assertEqual(QgsFileUtils.splitPathToComponents('/'), ["/"])
+        self.assertEqual(QgsFileUtils.splitPathToComponents(''), [])
+        self.assertEqual(QgsFileUtils.splitPathToComponents('c:/home/user'), ["c:", "home", "user"])
+
 
 if __name__ == '__main__':
     unittest.main()
