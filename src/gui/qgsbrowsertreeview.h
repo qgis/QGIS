@@ -71,6 +71,15 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
      */
     bool setSelectedItem( QgsDataItem *item );
 
+    /**
+     * Expands out a file \a path in the view.
+     *
+     * The \a path must correspond to a valid directory existing on the file system.
+     *
+     * \since QGIS 3.28
+     */
+    void expandPath( const QString &path );
+
   protected:
 
     void keyPressEvent( QKeyEvent *event ) override;

@@ -63,6 +63,15 @@ Returns ``True`` if the item was found and could be selected.
 .. versionadded:: 3.28
 %End
 
+    void expandPath( const QString &path );
+%Docstring
+Expands out a file ``path`` in the view.
+
+The ``path`` must correspond to a valid directory existing on the file system.
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
     virtual void keyPressEvent( QKeyEvent *event );

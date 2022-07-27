@@ -19,9 +19,13 @@
 #include "qgslogger.h"
 #include "qgsguiutils.h"
 #include "qgsdataitem.h"
+#include "qgsdirectoryitem.h"
+#include "qgsfileutils.h"
 
 #include <QKeyEvent>
 #include <QSortFilterProxyModel>
+#include <QDir>
+#include <QFileInfo>
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
@@ -169,6 +173,74 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
       return true;
   }
   return false;
+}
+
+void QgsBrowserTreeView::expandPath( const QString &str )
+{
+  const QStringList result = QgsFileUtils::splitPathToComponents( str );
+  if ( result.isEmpty() )
+    return;
+
+  QString parentPath = result.at( 0 );
+  QDir currentDir( parentPath );
+  QList< QgsDirectoryItem * > pathItems;
+
+  QgsDirectoryItem *rootItem = mBrowserModel->driveItems().value( result.at( 0 ) );
+  if ( !rootItem )
+    return; // should we create this automatically?
+
+  QgsDirectoryItem *currentDirectoryItem = rootItem;
+  pathItems << rootItem;
+
+  for ( int i = 1; i < result.count(); ++i )
+  {
+    const QString currentFolderName = result.at( i );
+    const QString thisPath = currentDir.filePath( currentFolderName );
+
+    if ( !QFile::exists( thisPath ) )
+      break;
+
+    // check if current directory item already has a child for the folder
+    QgsDirectoryItem *existingChild = nullptr;
+    const QVector< QgsDataItem * > children = currentDirectoryItem->children();
+    for ( QgsDataItem *child : children )
+    {
+      if ( QgsDirectoryItem *childDirectoryItem = qobject_cast< QgsDirectoryItem *>( child ) )
+      {
+        if ( childDirectoryItem->dirPath() == thisPath )
+        {
+          existingChild = childDirectoryItem;
+          break;
+        }
+      }
+    }
+
+    if ( existingChild )
+    {
+      pathItems << existingChild;
+      currentDirectoryItem  = existingChild;
+    }
+    else
+    {
+      QgsDirectoryItem *newDir = new QgsDirectoryItem( nullptr, currentFolderName, thisPath );
+      pathItems << newDir;
+      currentDirectoryItem ->addChildItem( newDir, true );
+      currentDirectoryItem  = newDir;
+    }
+
+    currentDir = QDir( thisPath );
+    parentPath = thisPath;
+  }
+
+  for ( QgsDirectoryItem *i : std::as_const( pathItems ) )
+  {
+    QModelIndex index = mBrowserModel->findItem( i );
+    if ( QSortFilterProxyModel *proxyModel = qobject_cast< QSortFilterProxyModel *>( model() ) )
+    {
+      index = proxyModel->mapFromSource( index );
+    }
+    expand( index );
+  }
 }
 
 bool QgsBrowserTreeView::setSelectedItem( QgsDataItem *item )
