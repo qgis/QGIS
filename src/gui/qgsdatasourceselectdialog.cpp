@@ -63,6 +63,7 @@ QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   else
   {
     mBrowserTreeView->setModel( &mBrowserProxyModel );
+    mBrowserTreeView->setBrowserModel( mBrowserModel );
     setValid( false );
   }
 
@@ -268,6 +269,7 @@ void QgsDataSourceSelectWidget::setLayerTypeFilter( QgsMapLayerType layerType )
   mBrowserProxyModel.setLayerType( layerType );
   // reset model and button
   mBrowserTreeView->setModel( &mBrowserProxyModel );
+  mBrowserTreeView->setBrowserModel( mBrowserModel );
   setValid( false );
 }
 
