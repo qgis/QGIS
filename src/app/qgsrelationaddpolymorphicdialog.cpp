@@ -59,7 +59,7 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
 
   mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast< int >( Qgis::RelationshipStrength::Association ) );
   mRelationStrengthComboBox->addItem( tr( "Composition" ), static_cast< int >( Qgis::RelationshipStrength::Composition ) );
-  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
+  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will also be duplicated and deleted.\n"
                                          "Duplications are made by the feature duplication action.\n"
                                          "The default actions are activated in the Action section of the layer properties." ) );
 
