@@ -395,14 +395,14 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         else
         {
           int IDfind = 0;
-          for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
-          {
-            QgsSatelliteInfo FindsatInView = mLastGPSInformation.satellitesInView.at( j );
-            if ( FindsatInView.id == currentSatellite.id )
-            {
-              IDfind = 1;
-            }
-          }
+          //for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
+          //{
+          //  QgsSatelliteInfo FindsatInView = mLastGPSInformation.satellitesInView.at( j );
+          //  if ( FindsatInView.id == currentSatellite.id )
+          //  {
+          //    IDfind = 1;
+          //  }
+          //}
           if (IDfind == 0)
           {
             mLastGPSInformation.satellitesInView.append( satelliteInfo );
