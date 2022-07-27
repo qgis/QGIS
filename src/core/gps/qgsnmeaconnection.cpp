@@ -383,30 +383,24 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       //satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
-      if ( currentSatellite.sig > 0 )
+
+      int IDfind = 0;
+      if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
+      {
+        for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
+        {
+          QgsSatelliteInfo FindsatInView = mLastGPSInformation.satellitesInView.at( j );
+          if ( FindsatInView.id == currentSatellite.id )
+          {
+            IDfind = 1;
+          }
+        }
+      }
+      //set QgsSatelliteInfo.inuse to true for the satellites in use
+      if ( IDfind == 0 && currentSatellite.sig > 0 )
       {
         satelliteInfo.inUse = 1;
-        //set QgsSatelliteInfo.inuse to true for the satellites in use
-        if ( mLastGPSInformation.satellitesInView.size() < NMEA_SATINPACK )
-        {
-          mLastGPSInformation.satellitesInView.append( satelliteInfo );
-        }
-        else
-        {
-          int IDfind = 0;
-          for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
-          {
-            QgsSatelliteInfo FindsatInView = mLastGPSInformation.satellitesInView.at( j );
-            if ( FindsatInView.id == currentSatellite.id )
-            {
-              IDfind = 1;
-            }
-          }
-          if (IDfind == 0)
-          {
-            mLastGPSInformation.satellitesInView.append( satelliteInfo );
-          }
-        }
+        mLastGPSInformation.satellitesInView.append( satelliteInfo );
       }
     
     }
