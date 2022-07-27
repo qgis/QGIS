@@ -72,9 +72,9 @@ void QgsRelationManager::addRelation( const QgsRelation &relation )
 
 void QgsRelationManager::updateRelationsStatus()
 {
-  for ( auto relation : mRelations )
+  for ( auto relationIt = mRelations.begin(); relationIt != mRelations.end(); ++relationIt )
   {
-    relation.updateRelationStatus();
+    relationIt->updateRelationStatus();
   }
 }
 
