@@ -188,7 +188,6 @@ This is a persistent setting, which is saved in QSettings.
     void directoryChanged();
 
   protected:
-    void init();
 
 
 };
