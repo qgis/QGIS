@@ -47,14 +47,16 @@ namespace QgsWfs
 
       /**
        * Constructor for WFS service.
+       * \param version Version of the WFS service. (since QGIS 3.22.12)
        * \param serverIface Interface for plugins.
        */
-      Service( QgsServerInterface *serverIface )
-        : mServerIface( serverIface )
+      Service( const QString &version, QgsServerInterface *serverIface )
+        : mVersion( version )
+        , mServerIface( serverIface )
       {}
 
       QString name()    const override { return QStringLiteral( "WFS" ); }
-      QString version() const override { return implementationVersion(); }
+      QString version() const override { return mVersion; }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
@@ -117,6 +119,7 @@ namespace QgsWfs
       }
 
     private:
+      QString mVersion;
       QgsServerInterface *mServerIface = nullptr;
   };
 
@@ -135,7 +138,8 @@ class QgsWfsModule: public QgsServiceModule
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsg( QStringLiteral( "WFSModule::registerSelf called" ) );
-      registry.registerService( new  QgsWfs::Service( serverIface ) );
+      registry.registerService( new  QgsWfs::Service( QgsWfs::implementationVersion(), serverIface ) ); // 1.1.0 default version
+      registry.registerService( new  QgsWfs::Service( QStringLiteral( "1.0.0" ), serverIface ) ); // second version
     }
 };
 
