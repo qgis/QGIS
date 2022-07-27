@@ -383,14 +383,12 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       //satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
-      
       if ( currentSatellite.sig > 0 )
       {
         satelliteInfo.inUse = 1;
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
       }  
     }
-
   }
 }
 
