@@ -34,37 +34,37 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     /**
      * Returns the id of the referencing layer
      */
-    QString referencingLayerId();
+    QString referencingLayerId() const;
 
     /**
      * Returns the field in the referencing layer that stores the referenced layer representation
      */
-    QString referencedLayerField();
+    QString referencedLayerField() const;
 
     /**
      * Returns the expression used to generate the referenced layer representation
      */
-    QString referencedLayerExpression();
+    QString referencedLayerExpression() const;
 
     /**
      * Returns field pairs
      */
-    QList< QPair< QString, QString > > fieldPairs();
+    QList< QPair< QString, QString > > fieldPairs() const;
 
     /**
      * Returns the polymorphic relation id
      */
-    QString relationId();
+    QString relationId() const;
 
     /**
      * Returns the polymorphic relation name
      */
-    QString relationName();
+    QString relationName() const;
 
     /**
      * Returns a list of layer ids used as referenced layers and stored in the referencing layers
      */
-    QStringList referencedLayerIds();
+    QStringList referencedLayerIds() const;
 
     /**
       * Return the relation strength for the generated normal relations
@@ -74,7 +74,7 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     /**
      * Sets the values of form fields in the dialog with the values of the passed \a polyRel
      */
-    void setPolymorphicRelation( const QgsPolymorphicRelation polyRel );
+    void setPolymorphicRelation( const QgsPolymorphicRelation &polyRel );
 
   private slots:
     void addFieldsRow();

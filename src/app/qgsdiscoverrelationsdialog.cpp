@@ -45,8 +45,10 @@ void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
   QString referencingFields, referencedFields;
   for ( int i = 0; i < rel.fieldPairs().count(); i++ )
   {
-    referencingFields.append( QStringLiteral( "%1%2" ).arg( referencingFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencingField() ) );
-    referencedFields.append( QStringLiteral( "%1%2" ).arg( referencedFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+    referencingFields.append( QStringLiteral( "%1%2" ).arg( ( referencingFields.isEmpty() ? "" : ", " ),
+                              rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( "%1%2" ).arg( ( referencedFields.isEmpty() ? "" : ", " ),
+                             rel.fieldPairs().at( i ).referencedField() ) );
   }
 
   const int row = mRelationsTable->rowCount();
