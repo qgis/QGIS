@@ -237,6 +237,13 @@ Delayed initialization, needed because the provider registry must be already pop
 .. seealso:: :py:func:`initialized`
 %End
 
+    QVector<QgsDataItem *> rootItems() const;
+%Docstring
+Returns the root items for the model.
+
+.. versionadded:: 3.28
+%End
+
   protected:
     void addRootItems();
 %Docstring
