@@ -3253,7 +3253,7 @@ QList<QgsRelation> QgsOgrProvider::discoverRelations( const QgsVectorLayer *targ
 #else
   Q_UNUSED( target )
   Q_UNUSED( layers )
-  return {}
+  return {};
 #endif
 }
 
