@@ -32,6 +32,16 @@ class QgsDataItem;
  */
 class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsBrowserTreeView *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsBrowserTreeView;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 

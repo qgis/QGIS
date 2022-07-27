@@ -22,6 +22,12 @@ The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tre
 %TypeHeaderCode
 #include "qgsbrowsertreeview.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsBrowserTreeView *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsBrowserTreeView;
+    else
+      sipType = nullptr;
+%End
   public:
 
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
