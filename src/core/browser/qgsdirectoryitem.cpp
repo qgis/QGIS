@@ -276,7 +276,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     bool handledByProvider = false;
     for ( QgsDataItemProvider *provider : providers )
     {
-      if ( provider->handlesDirectoryPath( path ) )
+      if ( provider->handlesDirectoryPath( subdirPath ) )
       {
         handledByProvider = true;
         break;
@@ -488,7 +488,11 @@ bool QgsDirectoryItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  return ( path() == other->path() );
+  const QgsDirectoryItem *otherDirItem = qobject_cast< const QgsDirectoryItem * >( other );
+  if ( !otherDirItem )
+    return false;
+
+  return dirPath() == otherDirItem->dirPath();
 }
 
 QWidget *QgsDirectoryItem::paramWidget()
