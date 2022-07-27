@@ -18,7 +18,7 @@
 #include <QDialog>
 #include "qgis_app.h"
 #include "ui_qgsrelationmanageradddialogbase.h"
-#include "qgsrelation.h"
+#include "qgis.h"
 
 class QDialogButtonBox;
 class QComboBox;

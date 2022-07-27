@@ -30,11 +30,12 @@
 // version without notice, or even be removed.
 //
 
-#include "qgspolymorphicrelation.h"
-#include "qgsrelation.h"
-
 #include <QSharedData>
 #include <QPointer>
+#include "qgis.h"
+#include "qgsrelation.h"
+
+class QgsVectorLayer;
 
 class QgsPolymorphicRelationPrivate : public QSharedData
 {

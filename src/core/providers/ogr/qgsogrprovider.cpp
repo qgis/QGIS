@@ -35,7 +35,6 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
-#include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
 
