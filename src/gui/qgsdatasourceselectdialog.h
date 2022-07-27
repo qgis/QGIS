@@ -78,6 +78,15 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
     void setDescription( const QString &description );
 
     /**
+     * Expands out a file \a path in the view.
+     *
+     * The \a path must correspond to a valid directory existing on the file system.
+     *
+     * \since QGIS 3.28
+     */
+    void expandPath( const QString &path );
+
+    /**
      * Returns the (possibly invalid) uri of the selected data source
      */
     QgsMimeDataUtils::Uri uri() const;
@@ -180,6 +189,15 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
      * \since 3.8
      */
     void setDescription( const QString &description );
+
+    /**
+     * Expands out a file \a path in the view.
+     *
+     * The \a path must correspond to a valid directory existing on the file system.
+     *
+     * \since QGIS 3.28
+     */
+    void expandPath( const QString &path );
 
     /**
      * Returns the (possibly invalid) uri of the selected data source

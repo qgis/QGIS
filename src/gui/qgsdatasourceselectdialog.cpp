@@ -194,6 +194,11 @@ void QgsDataSourceSelectWidget::setDescription( const QString &description )
   }
 }
 
+void QgsDataSourceSelectWidget::expandPath( const QString &path )
+{
+  mBrowserTreeView->expandPath( path );
+}
+
 void QgsDataSourceSelectWidget::setFilter()
 {
   const QString filter = mLeFilter->text();
@@ -347,6 +352,11 @@ void QgsDataSourceSelectDialog::setLayerTypeFilter( QgsMapLayerType layerType )
 void QgsDataSourceSelectDialog::setDescription( const QString &description )
 {
   mWidget->setDescription( description );
+}
+
+void QgsDataSourceSelectDialog::expandPath( const QString &path )
+{
+  mWidget->expandPath( path );
 }
 
 QgsMimeDataUtils::Uri QgsDataSourceSelectDialog::uri() const
