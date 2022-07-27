@@ -390,8 +390,8 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         //set QgsSatelliteInfo.inuse to true for the satellites in use
         for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
         {
-          QgsSatelliteInfo satInView = mLastGPSInformation.satellitesInView.at( j );
-          if ( satInView.id == currentSatellite.id )
+          QgsSatelliteInfo FindsatInView = mLastGPSInformation.satellitesInView.at( j );
+          if ( FindsatInView.id == currentSatellite.id )
           {
             IDfind = 1;
           }
