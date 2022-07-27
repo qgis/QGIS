@@ -141,17 +141,17 @@ void QgsRelationAddDlg::updateFieldsMappingHeaders()
   mFieldsMappingTable->setVerticalHeaderLabels( verticalHeaderLabels );
 }
 
-QString QgsRelationAddDlg::referencingLayerId()
+QString QgsRelationAddDlg::referencingLayerId() const
 {
   return mReferencingLayerCombobox->currentLayer()->id();
 }
 
-QString QgsRelationAddDlg::referencedLayerId()
+QString QgsRelationAddDlg::referencedLayerId() const
 {
   return mReferencedLayerCombobox->currentLayer()->id();
 }
 
-QList< QPair< QString, QString > > QgsRelationAddDlg::references()
+QList< QPair< QString, QString > > QgsRelationAddDlg::references() const
 {
   QList< QPair< QString, QString > > references;
   for ( int i = 0, l = mFieldsMappingTable->rowCount(); i < l; i++ )
@@ -168,12 +168,12 @@ QList< QPair< QString, QString > > QgsRelationAddDlg::references()
   return references;
 }
 
-QString QgsRelationAddDlg::relationId()
+QString QgsRelationAddDlg::relationId() const
 {
   return mIdLineEdit->text();
 }
 
-QString QgsRelationAddDlg::relationName()
+QString QgsRelationAddDlg::relationName() const
 {
   return mNameLineEdit->text();
 }
