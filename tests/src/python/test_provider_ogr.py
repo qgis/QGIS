@@ -51,7 +51,8 @@ from qgis.core import (
     QgsDirectoryItem,
     QgsAbstractDatabaseProviderConnection,
     QgsProviderConnectionException,
-    QgsProviderMetadata
+    QgsProviderMetadata,
+    QgsRelation
 )
 
 from qgis.gui import (
@@ -2619,6 +2620,118 @@ class PyQgsOGRProvider(unittest.TestCase):
         ok, err = metadata.createDatabase('aaa.tif')
         self.assertFalse(ok)
         self.assertTrue(err)
+
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def testDiscoverRelationships(self):
+        table1 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table1')
+        self.assertTrue(table1.isValid())
+        table2 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table2')
+        self.assertTrue(table2.isValid())
+        table3 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table3')
+        self.assertTrue(table3.isValid())
+        table4 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table4')
+        self.assertTrue(table4.isValid())
+        table6 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table6')
+        self.assertTrue(table6.isValid())
+        table7 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table7')
+        self.assertTrue(table7.isValid())
+        table8 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table8')
+        self.assertTrue(table8.isValid())
+        table9 = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=table9')
+        self.assertTrue(table9.isValid())
+        composite_many_to_many = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=composite_many_to_many')
+        self.assertTrue(composite_many_to_many.isValid())
+        points = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=points')
+        self.assertTrue(points.isValid())
+        points__ATTACH = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=points__ATTACH')
+        self.assertTrue(points__ATTACH.isValid())
+        simple_attributed = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=simple_attributed')
+        self.assertTrue(simple_attributed.isValid())
+        simple_many_to_many = QgsVectorLayer(TEST_DATA_DIR + '/' + 'relationships.gdb|layerName=simple_many_to_many')
+        self.assertTrue(simple_many_to_many.isValid())
+        all_tables = [table1, table2, table3, table4, table6, table7, table8, table9, composite_many_to_many, points, points__ATTACH, simple_attributed, simple_many_to_many]
+        for table in all_tables:
+            QgsProject.instance().addMapLayer(table)
+
+        relations = table1.dataProvider().discoverRelations(table1, [])
+        # should be no valid relations
+        self.assertFalse(relations)
+
+        relations = table1.dataProvider().discoverRelations(table1, all_tables)
+        self.assertCountEqual([r.id() for r in relations], ['composite_one_to_one', 'simple_many_to_many_forward', 'simple_many_to_many_backward', 'simple_one_to_many', 'simple_relationship_one_to_one'])
+        rel = [r for r in relations if r.name() == 'simple_relationship_one_to_one'][0]
+        self.assertEqual(rel.id(), 'simple_relationship_one_to_one')
+        self.assertEqual(rel.referencedLayer(), table1)
+        self.assertEqual(rel.referencingLayer(), table2)
+        self.assertEqual(rel.strength(), QgsRelation.Association)
+        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+
+        rel = [r for r in relations if r.name() == 'simple_one_to_many'][0]
+        self.assertEqual(rel.id(), 'simple_one_to_many')
+        self.assertEqual(rel.referencedLayer(), table1)
+        self.assertEqual(rel.referencingLayer(), table2)
+        self.assertEqual(rel.strength(), QgsRelation.Association)
+        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+
+        rel = [r for r in relations if r.name() == 'composite_one_to_one'][0]
+        self.assertEqual(rel.id(), 'composite_one_to_one')
+        self.assertEqual(rel.referencedLayer(), table1)
+        self.assertEqual(rel.referencingLayer(), table3)
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+
+        rel = [r for r in relations if r.id() == 'simple_many_to_many_forward'][0]
+        self.assertEqual(rel.name(), 'simple_many_to_many')
+        self.assertEqual(rel.id(), 'simple_many_to_many_forward')
+        self.assertEqual(rel.referencedLayer(), table1)
+        self.assertEqual(rel.referencingLayer(), simple_many_to_many)
+        self.assertEqual(rel.strength(), QgsRelation.Association)
+        self.assertEqual(rel.fieldPairs(), {'origin_foreign_key': 'pk'})
+
+        rel = [r for r in relations if r.id() == 'simple_many_to_many_backward'][0]
+        self.assertEqual(rel.name(), 'simple_many_to_many')
+        self.assertEqual(rel.id(), 'simple_many_to_many_backward')
+        self.assertEqual(rel.referencedLayer(), table2)
+        self.assertEqual(rel.referencingLayer(), simple_many_to_many)
+        self.assertEqual(rel.strength(), QgsRelation.Association)
+        self.assertEqual(rel.fieldPairs(), {'destination_foreign_key': 'parent_pk'})
+
+        relations = table6.dataProvider().discoverRelations(table6, all_tables)
+        self.assertCountEqual([r.id() for r in relations],
+                              ['composite_many_to_many_forward', 'composite_many_to_many_backward'])
+        rel = [r for r in relations if r.id() == 'composite_many_to_many_forward'][0]
+        self.assertEqual(rel.id(), 'composite_many_to_many_forward')
+        self.assertEqual(rel.referencedLayer(), table6)
+        self.assertEqual(rel.referencingLayer(), composite_many_to_many)
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'origin_foreign_key': 'pk'})
+
+        rel = [r for r in relations if r.id() == 'composite_many_to_many_backward'][0]
+        self.assertEqual(rel.id(), 'composite_many_to_many_backward')
+        self.assertEqual(rel.referencedLayer(), table7)
+        self.assertEqual(rel.referencingLayer(), composite_many_to_many)
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'dest_foreign_key': 'parent_pk'})
+
+        relations = table8.dataProvider().discoverRelations(table8, all_tables)
+        self.assertCountEqual([r.id() for r in relations],
+                              ['simple_attributed', 'simple_backward_message_direction', 'simple_both_message_direction', 'simple_forward_message_direction'])
+        rel = [r for r in relations if r.id() == 'simple_attributed'][0]
+        self.assertEqual(rel.id(), 'simple_attributed')
+        self.assertEqual(rel.referencedLayer(), table8)
+        self.assertEqual(rel.referencingLayer(), table9)
+        self.assertEqual(rel.strength(), QgsRelation.Association)
+        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+
+        relations = points.dataProvider().discoverRelations(points, all_tables)
+        self.assertCountEqual([r.id() for r in relations],
+                              ['points__ATTACHREL'])
+        rel = [r for r in relations if r.id() == 'points__ATTACHREL'][0]
+        self.assertEqual(rel.id(), 'points__ATTACHREL')
+        self.assertEqual(rel.referencedLayer(), points)
+        self.assertEqual(rel.referencingLayer(), points__ATTACH)
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'REL_OBJECTID': 'OBJECTID'})
 
 
 if __name__ == '__main__':
