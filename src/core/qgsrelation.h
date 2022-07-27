@@ -21,9 +21,9 @@
 #include <QPair>
 
 #include "qgis_core.h"
-#include "qgsfields.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationcontext.h"
+#include "qgsattributes.h"
 
 #include "qgis_sip.h"
 
