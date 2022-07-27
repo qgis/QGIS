@@ -183,6 +183,16 @@ desired.
 
 
 
+
+    static QStringList splitPathToComponents( const QString &path );
+%Docstring
+Given a file ``path``, returns a list of all the components leading to that path.
+
+E.g. if ``path`` is "/home/user/Pictures/test.png", the returned list will contain
+"/" , "home", "user", "Pictures", "test.png".
+
+.. versionadded:: 3.28
+%End
 };
 
 /************************************************************************
