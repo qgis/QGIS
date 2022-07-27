@@ -269,7 +269,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
 
     QgsDebugMsgLevel( QStringLiteral( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
-    const QString path = mPath + '/' + subdir; // may differ from subdirPath
+    const QString path = mPath + ( mPath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + subdir; // may differ from subdirPath
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
