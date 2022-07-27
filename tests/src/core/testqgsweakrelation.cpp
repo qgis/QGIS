@@ -70,7 +70,7 @@ void TestQgsWeakRelation::testResolved()
 
   QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
                            QStringLiteral( "my_relation_name" ),
-                           QgsRelation::RelationStrength::Association,
+                           Qgis::RelationshipStrength::Association,
                            QStringLiteral( "referencingLayerId" ),
                            QStringLiteral( "referencingLayerName" ),
                            QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
@@ -112,7 +112,7 @@ void TestQgsWeakRelation::testReadWrite()
 
   const QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
                                  QStringLiteral( "my_relation_name" ),
-                                 QgsRelation::RelationStrength::Association,
+                                 Qgis::RelationshipStrength::Association,
                                  QStringLiteral( "referencingLayerId" ),
                                  QStringLiteral( "referencingLayerName" ),
                                  QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
@@ -144,7 +144,7 @@ void TestQgsWeakRelation::testReadWrite()
   QgsWeakRelation::writeXml( &referencedLayer, QgsWeakRelation::Referenced, relation, node, doc );
   const QgsWeakRelation weakRelReferenced( QgsWeakRelation::readXml( &referencedLayer, QgsWeakRelation::Referenced, node,  QgsProject::instance()->pathResolver() ) );
   QCOMPARE( weakRelReferenced.fieldPairs(), fieldPairs );
-  QCOMPARE( weakRelReferenced.strength(), QgsRelation::RelationStrength::Association );
+  QCOMPARE( weakRelReferenced.strength(), Qgis::RelationshipStrength::Association );
   QCOMPARE( weakRelReferenced.referencedLayer().resolve( QgsProject::instance() ), &referencedLayer );
 
   // Check the XML is written for the referencing layer
@@ -152,7 +152,7 @@ void TestQgsWeakRelation::testReadWrite()
   QgsWeakRelation::writeXml( &referencingLayer, QgsWeakRelation::Referencing, relation, node, doc );
   const QgsWeakRelation weakRelReferencing( QgsWeakRelation::readXml( &referencingLayer, QgsWeakRelation::Referencing, node,  QgsProject::instance()->pathResolver() ) );
   QCOMPARE( weakRelReferencing.fieldPairs(), fieldPairs );
-  QCOMPARE( weakRelReferencing.strength(), QgsRelation::RelationStrength::Association );
+  QCOMPARE( weakRelReferencing.strength(), Qgis::RelationshipStrength::Association );
   QCOMPARE( weakRelReferencing.referencingLayer().resolve( QgsProject::instance() ), &referencingLayer );
 }
 

@@ -68,7 +68,7 @@ class QgsPolymorphicRelationPrivate : public QSharedData
     QMap<QString, QgsVectorLayer *> mReferencedLayersMap;
 
     //! The relation strength for all the generated normal relations
-    QgsRelation::RelationStrength mRelationStrength;
+    Qgis::RelationshipStrength mRelationStrength = Qgis::RelationshipStrength::Association;
 
     //! Whether the polymorphic relation is valid
     bool mValid = false;

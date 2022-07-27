@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 
 
-QgsWeakRelation::QgsWeakRelation( const QString &relationId, const QString &relationName, const QgsRelation::RelationStrength strength,
+QgsWeakRelation::QgsWeakRelation( const QString &relationId, const QString &relationName, const Qgis::RelationshipStrength strength,
                                   const QString &referencingLayerId, const QString &referencingLayerName, const QString &referencingLayerSource, const QString &referencingLayerProviderKey,
                                   const QString &referencedLayerId, const QString &referencedLayerName, const QString &referencedLayerSource, const QString &referencedLayerProviderKey,
                                   const QList<QgsRelation::FieldPair> &fieldPairs )
@@ -67,7 +67,7 @@ QgsVectorLayerRef QgsWeakRelation::referencedLayer() const
   return mReferencedLayer;
 }
 
-QgsRelation::RelationStrength QgsWeakRelation::strength() const
+Qgis::RelationshipStrength QgsWeakRelation::strength() const
 {
   return mStrength;
 }
@@ -101,7 +101,7 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
     case Referencing:
       return QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
                                relationElement.attribute( QStringLiteral( "name" ) ),
-                               static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                               static_cast<Qgis::RelationshipStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
                                // Referencing
                                layer->id(),
                                layer->name(),
@@ -117,7 +117,7 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
     case Referenced:
       return QgsWeakRelation { relationElement.attribute( QStringLiteral( "id" ) ),
                                relationElement.attribute( QStringLiteral( "name" ) ),
-                               static_cast<QgsRelation::RelationStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                               static_cast<Qgis::RelationshipStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
                                // Referencing
                                relationElement.attribute( QStringLiteral( "layerId" ) ),
                                relationElement.attribute( QStringLiteral( "layerName" ) ),
@@ -132,7 +132,7 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
                            };
   }
   // avoid build warnings
-  return QgsWeakRelation( QString(), QString(), QgsRelation::RelationStrength::Association, QString(), QString(), QString(),
+  return QgsWeakRelation( QString(), QString(), Qgis::RelationshipStrength::Association, QString(), QString(), QString(),
                           QString(), QString(), QString(), QString(), QString(), QList< QgsRelation::FieldPair >() );
 }
 

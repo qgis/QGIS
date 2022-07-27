@@ -55,7 +55,7 @@ class CORE_EXPORT QgsWeakRelation
      */
     QgsWeakRelation( const QString &relationId,
                      const QString &relationName,
-                     const QgsRelation::RelationStrength strength,
+                     const Qgis::RelationshipStrength strength,
                      const QString &referencingLayerId,
                      const QString &referencingLayerName,
                      const QString &referencingLayerSource,
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsWeakRelation
     /**
      * Returns the strength of the relation
      */
-    QgsRelation::RelationStrength strength() const;
+    Qgis::RelationshipStrength strength() const;
 
     /**
      * Returns the list of field pairs
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsWeakRelation
     QgsVectorLayerRef mReferencedLayer;
     QString mRelationId;
     QString mRelationName;
-    QgsRelation::RelationStrength mStrength = QgsRelation::RelationStrength::Association;
+    Qgis::RelationshipStrength mStrength = Qgis::RelationshipStrength::Association;
     QList<QgsRelation::FieldPair> mFieldPairs;
 
     friend class TestQgsWeakRelation;

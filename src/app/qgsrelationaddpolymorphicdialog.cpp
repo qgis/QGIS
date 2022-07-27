@@ -57,8 +57,8 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
     mReferencedLayersComboBox->addItem( vl->name(), vl->id() );
   }
 
-  mRelationStrengthComboBox->addItem( tr( "Association" ), QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
-  mRelationStrengthComboBox->addItem( tr( "Composition" ), QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
+  mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast< int >( Qgis::RelationshipStrength::Association ) );
+  mRelationStrengthComboBox->addItem( tr( "Composition" ), static_cast< int >( Qgis::RelationshipStrength::Composition ) );
   mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
                                          "Duplications are made by the feature duplication action.\n"
                                          "The default actions are activated in the Action section of the layer properties." ) );
@@ -88,7 +88,7 @@ void QgsRelationAddPolymorphicDialog::setPolymorphicRelation( const QgsPolymorph
   mReferencedLayerFieldComboBox->setLayer( polyRel.referencingLayer() );
   mReferencedLayerFieldComboBox->setField( polyRel.referencedLayerField() );
   mReferencedLayerExpressionWidget->setExpression( polyRel.referencedLayerExpression() );
-  mRelationStrengthComboBox->setCurrentIndex( mRelationStrengthComboBox->findData( polyRel.strength() ) );
+  mRelationStrengthComboBox->setCurrentIndex( mRelationStrengthComboBox->findData( static_cast< int >( polyRel.strength() ) ) );
 
   const QStringList layerIds = polyRel.referencedLayerIds();
   for ( const QString &layerId : layerIds )
@@ -219,9 +219,9 @@ QString QgsRelationAddPolymorphicDialog::relationName()
   return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : QStringLiteral( "<NO LAYER>" ) );
 }
 
-QgsRelation::RelationStrength QgsRelationAddPolymorphicDialog::relationStrength()
+Qgis::RelationshipStrength QgsRelationAddPolymorphicDialog::relationStrength() const
 {
-  return mRelationStrengthComboBox->currentData().value<QgsRelation::RelationStrength>();
+  return static_cast< Qgis::RelationshipStrength >( mRelationStrengthComboBox->currentData().toInt() );
 }
 
 void QgsRelationAddPolymorphicDialog::updateDialogButtons()

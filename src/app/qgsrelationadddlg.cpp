@@ -49,8 +49,8 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   mReferencingLayerCombobox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mFieldsMappingTable->setCellWidget( 0, 1, mReferencingLayerCombobox );
 
-  mRelationStrengthComboBox->addItem( tr( "Association" ), QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
-  mRelationStrengthComboBox->addItem( tr( "Composition" ), QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
+  mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast< int >( Qgis::RelationshipStrength::Association ) );
+  mRelationStrengthComboBox->addItem( tr( "Composition" ), static_cast< int >( Qgis::RelationshipStrength::Composition ) );
   mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
                                          "Duplications are made by the feature duplication action.\n"
                                          "The default actions are activated in the Action section of the layer properties." ) );
@@ -178,9 +178,9 @@ QString QgsRelationAddDlg::relationName()
   return mNameLineEdit->text();
 }
 
-QgsRelation::RelationStrength QgsRelationAddDlg::relationStrength()
+Qgis::RelationshipStrength QgsRelationAddDlg::relationStrength() const
 {
-  return mRelationStrengthComboBox->currentData().value<QgsRelation::RelationStrength>();
+  return static_cast< Qgis::RelationshipStrength >( mRelationStrengthComboBox->currentData().toInt() );
 }
 
 void QgsRelationAddDlg::updateDialogButtons()

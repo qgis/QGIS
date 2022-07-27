@@ -52,27 +52,6 @@ class CORE_EXPORT QgsRelation
 
   public:
 
-    /**
-     * Enum holding the relations type
-     */
-    enum RelationType
-    {
-      Normal, //!< A normal relation
-      Generated, //!< A generated relation is a child of a polymorphic relation
-    };
-    Q_ENUM( RelationType )
-
-    /**
-    * enum for the relation strength
-    * Association, Composition
-    */
-    enum RelationStrength
-    {
-      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
-      Composition  //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
-    };
-    Q_ENUM( RelationStrength )
-
 #ifndef SIP_RUN
 
     /**
@@ -161,7 +140,7 @@ class CORE_EXPORT QgsRelation
      * Set a strength for this relation
      * \since QGIS 3.0
      */
-    void setStrength( RelationStrength strength );
+    void setStrength( Qgis::RelationshipStrength strength );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
@@ -273,7 +252,7 @@ class CORE_EXPORT QgsRelation
      * \returns strength
      * \since QGIS 3.0
      */
-    RelationStrength strength() const;
+    Qgis::RelationshipStrength strength() const;
 
     /**
      * A (project-wide) unique id for this relation
@@ -416,7 +395,7 @@ class CORE_EXPORT QgsRelation
      * Returns the type of the relation
      * \since QGIS 3.18
      */
-    RelationType type() const;
+    Qgis::RelationshipType type() const;
 
   private:
 
@@ -427,6 +406,5 @@ class CORE_EXPORT QgsRelation
 
 // Register QgsRelation for usage with QVariant
 Q_DECLARE_METATYPE( QgsRelation )
-Q_DECLARE_METATYPE( QgsRelation::RelationStrength )
 
 #endif // QGSRELATION_H
