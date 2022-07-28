@@ -27,6 +27,7 @@
 #include "qgsdbquerylog.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsweakrelation.h"
+#include "qgsgdalutils.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
