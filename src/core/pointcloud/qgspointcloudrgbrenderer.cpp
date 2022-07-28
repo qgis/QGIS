@@ -87,7 +87,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
   const bool renderElevation = context.useEyeDomeLighting();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite();
+  const bool considerZ = !zRange.isInfinite() || renderElevation;
 
   int rendered = 0;
   double x = 0;
@@ -160,7 +160,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
       drawPoint( x, y, QColor( red, green, blue ), context );
       if ( renderElevation )
-        drawElevation( x, y, z, context );
+        drawPointToElevationMap( x, y, z, context );
       rendered++;
     }
   }

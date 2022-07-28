@@ -226,13 +226,15 @@ Returns the minimum Z value rendered into the elevation map
     double maxZ() const;
 %Docstring
 Returns the maximum Z value rendered into the elevation map
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     void updateZRange( double z );
 %Docstring
 Updates the Z range of the points rendered into the elevation map
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
 
@@ -530,37 +532,43 @@ Returns a list of all rule keys for legend nodes created by the renderer.
     bool useEyeDomeLighting() const;
 %Docstring
 Sets whether eye dome lighting effect will be used
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     void setUseEyeDomeLighting( bool useEyeDomeLighting );
 %Docstring
 Returns whether eye dome lighting effect will be used
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     double eyeDomeLightingStrength() const;
 %Docstring
 Returns the eye dome lighting strength value
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     void setEyeDomeLightingStrength( double strength );
 %Docstring
 Sets the eye dome lighting strength value
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     int eyeDomeLightingDistance() const;
 %Docstring
 Returns the eye dome lighting distance value
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
     void setEyeDomeLightingDistance( int distance );
 %Docstring
 Sets the eye dome lighting distance value
-\sine QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
   protected:
@@ -582,7 +590,7 @@ Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordin
 
     QColor encodeElevation( float z ) const;
 
-    void drawElevation( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
+    void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
 %Docstring
