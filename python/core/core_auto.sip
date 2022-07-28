@@ -156,6 +156,7 @@
 %Include auto_generated/qgspolymorphicrelation.sip
 %Include auto_generated/qgsrelationcontext.sip
 %Include auto_generated/qgsremappingproxyfeaturesink.sip
+%Include auto_generated/qgsweakrelation.sip
 %Include auto_generated/qgsrelationmanager.sip
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
