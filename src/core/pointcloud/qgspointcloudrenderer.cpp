@@ -164,20 +164,17 @@ void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double 
   const QPointF originalXY( x, y );
   context.renderContext().mapToPixel().transformInPlace( x, y );
   QPainter *elevationPainter = context.elevationPainter();
-  const double zMin = -5000;//context.zMin();//-37.2;
-  const double zMax = +5000;//context.zMax();// 532.87;
+  const double zMin = -5000;
+  const double zMax = +5000;
   float zFloat = ( z - zMin ) / ( zMax - zMin );
-  zFloat = std::max<double>( 0.0, std::min<double>( 1.0, zFloat ) );
+  zFloat = std::clamp<float>( zFloat, 0.0, 1.0 );
   context.updateZRange( zFloat );
+  int zInt = zFloat * 0x00ffffff;
 
   QColor c;
-  c.setRedF( zFloat );
-  zFloat *= std::pow<float>( 2, 8 );
-  zFloat -= ( int )zFloat;
-  c.setGreenF( zFloat );
-  zFloat *= std::pow<float>( 2, 8 );
-  zFloat -= ( int )zFloat;
-  c.setBlueF( zFloat );
+  c.setRed( ( zInt & 0xff0000 ) >> 16 );
+  c.setGreen( ( zInt & 0xff00 ) >> 8 );
+  c.setBlue( zInt & 0xff );
   c.setAlphaF( 1.0f );
 
   QBrush brush( c );
