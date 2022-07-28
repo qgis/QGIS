@@ -1315,6 +1315,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsAttributeEditorContext createAttributeEditorContext();
 
+    //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
+    QgsMessageBar *visibleMessageBar();
+
   protected:
     void showEvent( QShowEvent *event ) override;
 
@@ -2135,7 +2138,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
-    void postProcessAddedLayer( QgsMapLayer *layer );
 
     //! Open a vector tile layer - this is the generic function which takes all parameters
     QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
@@ -2361,9 +2363,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
-
-    //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
-    QgsMessageBar *visibleMessageBar();
 
     /**
      * Searches for layer dependencies by querying the form widgets and the
