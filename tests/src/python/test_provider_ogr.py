@@ -2747,8 +2747,7 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         relationships = conn.relationships()
         self.assertCountEqual([r.id() for r in relationships],
-                              ['composite_many_to_many_forward',
-                               'composite_many_to_many_backward',
+                              ['composite_many_to_many',
                                'composite_one_to_many',
                                'composite_one_to_one',
                                'points__ATTACHREL',
@@ -2756,8 +2755,7 @@ class PyQgsOGRProvider(unittest.TestCase):
                                'simple_backward_message_direction',
                                'simple_both_message_direction',
                                'simple_forward_message_direction',
-                               'simple_many_to_many_forward',
-                               'simple_many_to_many_backward',
+                               'simple_many_to_many',
                                'simple_one_to_many',
                                'simple_relationship_one_to_one'])
 
@@ -2770,31 +2768,31 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(rel.referencingLayerProvider(), 'ogr')
         self.assertEqual(rel.referencingLayerName(), 'table2')
         self.assertEqual(rel.strength(), QgsRelation.Association)
-        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+        self.assertEqual(rel.referencingLayerFields(), ['parent_pk'])
+        self.assertEqual(rel.referencedLayerFields(), ['pk'])
         self.assertEqual(rel.cardinality(), Qgis.RelationshipCardinality.OneToOne)
         self.assertEqual(rel.forwardPathLabel(), 'my forward path label')
         self.assertEqual(rel.backwardPathLabel(), 'my backward path label')
         self.assertEqual(rel.relatedTableType(), 'feature')
 
-        rel = [r for r in relationships if r.id() == 'composite_many_to_many_forward'][0]
-        self.assertEqual(rel.id(), 'composite_many_to_many_forward')
+        rel = [r for r in relationships if r.id() == 'composite_many_to_many'][0]
+        self.assertEqual(rel.id(), 'composite_many_to_many')
         self.assertEqual(rel.name(), 'composite_many_to_many')
         self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table6')
         self.assertEqual(rel.referencedLayerProvider(), 'ogr')
-        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=composite_many_to_many')
+        self.assertEqual(rel.referencedLayerName(), 'table6')
+        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table7')
         self.assertEqual(rel.referencingLayerProvider(), 'ogr')
+        self.assertEqual(rel.referencingLayerName(), 'table7')
+        self.assertEqual(rel.mappingTableSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=composite_many_to_many')
+        self.assertEqual(rel.mappingTableProvider(), 'ogr')
+        self.assertEqual(rel.mappingTableName(), 'composite_many_to_many')
         self.assertEqual(rel.strength(), QgsRelation.Composition)
-        self.assertEqual(rel.fieldPairs(), {'origin_foreign_key': 'pk'})
-
-        rel = [r for r in relationships if r.id() == 'composite_many_to_many_backward'][0]
-        self.assertEqual(rel.id(), 'composite_many_to_many_backward')
-        self.assertEqual(rel.name(), 'composite_many_to_many')
-        self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table7')
-        self.assertEqual(rel.referencedLayerProvider(), 'ogr')
-        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=composite_many_to_many')
-        self.assertEqual(rel.referencingLayerProvider(), 'ogr')
-        self.assertEqual(rel.strength(), QgsRelation.Composition)
-        self.assertEqual(rel.fieldPairs(), {'dest_foreign_key': 'parent_pk'})
+        self.assertEqual(rel.cardinality(), Qgis.RelationshipCardinality.ManyToMany)
+        self.assertEqual(rel.referencingLayerFields(), ['parent_pk'])
+        self.assertEqual(rel.mappingReferencingLayerFields(), ['dest_foreign_key'])
+        self.assertEqual(rel.referencedLayerFields(), ['pk'])
+        self.assertEqual(rel.mappingReferencedLayerFields(), ['origin_foreign_key'])
 
         # with table filter
         relationships = conn.relationships('', 'table5')
@@ -2808,7 +2806,9 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table4')
         self.assertEqual(rel.referencingLayerProvider(), 'ogr')
         self.assertEqual(rel.strength(), QgsRelation.Composition)
-        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+        self.assertEqual(rel.cardinality(), Qgis.RelationshipCardinality.OneToMany)
+        self.assertEqual(rel.referencingLayerFields(), ['parent_pk'])
+        self.assertEqual(rel.referencedLayerFields(), ['pk'])
 
         relationships = conn.relationships('', 'table2')
         self.assertFalse(relationships)
