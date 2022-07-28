@@ -64,6 +64,34 @@ Returns the relationship's name.
 %End
 
 
+    QString referencingLayerSource() const;
+%Docstring
+Returns the source URI for the referencing (or "child" / "right") layer.
+
+.. versionadded:: 3.28
+%End
+
+    QString referencingLayerProvider() const;
+%Docstring
+Returns the provider ID for the referencing (or "child" / "right") layer.
+
+.. versionadded:: 3.28
+%End
+
+
+    QString referencedLayerSource() const;
+%Docstring
+Returns the source URI for the referenced (or "parent" / "left") layer.
+
+.. versionadded:: 3.28
+%End
+
+    QString referencedLayerProvider() const;
+%Docstring
+Returns the provider ID for the referenced (or "parent" / "left") layer.
+
+.. versionadded:: 3.28
+%End
 
     Qgis::RelationshipStrength strength() const;
 %Docstring

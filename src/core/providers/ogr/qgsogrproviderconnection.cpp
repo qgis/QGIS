@@ -15,21 +15,18 @@
  ***************************************************************************/
 
 #include "qgsogrproviderconnection.h"
-#include "qgsogrdbconnection.h"
-#include "qgssettings.h"
 #include "qgsogrprovider.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
-#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
 #include "qgsogrproviderutils.h"
-#include "qgsgdalutils.h"
 #include "qgsdbquerylog.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsweakrelation.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -491,6 +488,13 @@ void QgsOgrProviderConnection::setDefaultCapabilities()
   }
 #endif
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RELATIONSHIPS, false ) )
+  {
+    mCapabilities |= Capability::RetrieveRelationships;
+  }
+#endif
+
   mSqlLayerDefinitionCapabilities =
   {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
@@ -901,6 +905,166 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsOgrProviderConne
     options.sql = QStringLiteral( "SELECT * FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( decoded[ QStringLiteral( "layerName" ) ].toString() ) );
   }
   return options;
+}
+
+QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &schema, const QString &tableName ) const
+{
+  checkCapability( Capability::RetrieveRelationships );
+
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by OGR, ignoring" ), QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
+  }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  gdal::ogr_datasource_unique_ptr hDS( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  if ( !hDS )
+  {
+    // In some cases (empty geopackage for example), opening in read-only
+    // mode fails, so retry in update mode
+    hDS.reset( GDALOpenEx( uri().toUtf8().constData(), GDAL_OF_UPDATE | GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
+  }
+
+  if ( hDS )
+  {
+    QList<QgsWeakRelation> output;
+
+    char **relationNames = GDALDatasetGetRelationshipNames( hDS.get(), nullptr );
+    if ( !relationNames )
+      return {};
+
+    const QStringList names = QgsOgrUtils::cStringListToQStringList( relationNames );
+    CSLDestroy( relationNames );
+
+    QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+    const QVariantMap datasetUriParts = ogrProviderMetadata->decodeUri( uri() );
+
+    for ( const QString &name : names )
+    {
+      GDALRelationshipH relationship = GDALDatasetGetRelationship( hDS.get(), name.toUtf8().constData() );
+      if ( !relationship )
+        continue;
+
+      const QString leftTableName( GDALRelationshipGetLeftTableName( relationship ) );
+      if ( !tableName.isEmpty() && leftTableName != tableName )
+        continue;
+
+      QVariantMap leftTableUriParts = datasetUriParts;
+      leftTableUriParts.insert( QStringLiteral( "layerName" ), leftTableName );
+      const QString leftTableSource = ogrProviderMetadata->encodeUri( leftTableUriParts );
+
+      const QString rightTableName( GDALRelationshipGetRightTableName( relationship ) );
+      if ( rightTableName.isEmpty() )
+        continue;
+      QVariantMap rightTableUriParts = datasetUriParts;
+      rightTableUriParts.insert( QStringLiteral( "layerName" ), rightTableName );
+      const QString rightTableSource = ogrProviderMetadata->encodeUri( rightTableUriParts );
+
+      const QString mappingTableName( GDALRelationshipGetMappingTableName( relationship ) );
+      QString mappingTableSource;
+      if ( !mappingTableName.isEmpty() )
+      {
+        QVariantMap mappingTableUriParts = datasetUriParts;
+        mappingTableUriParts.insert( QStringLiteral( "layerName" ), mappingTableName );
+        mappingTableSource = ogrProviderMetadata->encodeUri( mappingTableUriParts );
+      }
+
+      const QString relationshipName( GDALRelationshipGetName( relationship ) );
+
+      char **cslLeftTableFieldNames = GDALRelationshipGetLeftTableFields( relationship );
+      const QStringList leftTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftTableFieldNames );
+      CSLDestroy( cslLeftTableFieldNames );
+
+      char **cslRightTableFieldNames = GDALRelationshipGetRightTableFields( relationship );
+      const QStringList rightTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightTableFieldNames );
+      CSLDestroy( cslRightTableFieldNames );
+
+      char **cslLeftMappingTableFieldNames = GDALRelationshipGetLeftMappingTableFields( relationship );
+      const QStringList leftMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftMappingTableFieldNames );
+      CSLDestroy( cslLeftMappingTableFieldNames );
+
+      char **cslRightMappingTableFieldNames = GDALRelationshipGetRightMappingTableFields( relationship );
+      const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
+      CSLDestroy( cslRightMappingTableFieldNames );
+
+      const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
+      Qgis::RelationshipStrength strength = Qgis::RelationshipStrength::Association;
+      switch ( relationshipType )
+      {
+        case GRT_COMPOSITE:
+          strength = Qgis::RelationshipStrength::Composition;
+          break;
+
+        case GRT_ASSOCIATION:
+          strength = Qgis::RelationshipStrength::Association;
+          break;
+
+        case GRT_AGGREGATION:
+          QgsLogger::warning( "Aggregation relationships are not supported" );
+          continue;
+      }
+
+      const GDALRelationshipCardinality cardinality = GDALRelationshipGetCardinality( relationship );
+      switch ( cardinality )
+      {
+        case GRC_ONE_TO_ONE:
+        case GRC_ONE_TO_MANY:
+        case GRC_MANY_TO_ONE:
+          {
+            QList<QgsRelation::FieldPair> fieldPairs;
+            for ( int i = 0; i < std::min( leftTableFieldNames.length(), rightTableFieldNames.length() ); ++i )
+            {
+              fieldPairs.append( QgsRelation::FieldPair( rightTableFieldNames.at( i ), leftTableFieldNames.at( i ) ) );
+            }
+
+            output.append( QgsWeakRelation( relationshipName,
+                                            relationshipName,
+                                            strength,
+                                            QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                                            QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
+                                            fieldPairs ) );
+            break;
+          }
+
+        case GRC_MANY_TO_MANY:
+          {
+            QList<QgsRelation::FieldPair> leftFieldPairs;
+            for ( int i = 0; i < std::min( leftTableFieldNames.length(), leftMappingTableFieldNames.length() ); ++i )
+            {
+              leftFieldPairs.append( QgsRelation::FieldPair( leftMappingTableFieldNames.at( i ), leftTableFieldNames.at( i ) ) );
+            }
+            output.append( QgsWeakRelation( relationshipName + "_forward",
+                                            relationshipName,
+                                            strength,
+                                            QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
+                                            QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
+                                            leftFieldPairs ) );
+
+            QList<QgsRelation::FieldPair> rightFieldPairs;
+            for ( int i = 0; i < std::min( rightTableFieldNames.length(), rightMappingTableFieldNames.length() ); ++i )
+            {
+              rightFieldPairs.append( QgsRelation::FieldPair( rightMappingTableFieldNames.at( i ), rightTableFieldNames.at( i ) ) );
+            }
+            output.append( QgsWeakRelation( relationshipName + "_backward",
+                                            relationshipName,
+                                            strength,
+                                            QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
+                                            QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                                            rightFieldPairs ) );
+            break;
+          }
+      }
+    }
+    return output;
+  }
+  else
+  {
+    throw QgsProviderConnectionException( QObject::tr( "There was an error opening the dataset %1!" ).arg( uri() ) );
+  }
+#else
+  Q_UNUSED( tableName )
+  throw QgsProviderConnectionException( QObject::tr( "Retrieving relationships for datasets requires GDAL 3.5 or later" ) );
+#endif
 }
 
 ///@endcond

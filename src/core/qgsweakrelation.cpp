@@ -64,9 +64,29 @@ QgsVectorLayerRef QgsWeakRelation::referencingLayer() const
   return mReferencingLayer;
 }
 
+QString QgsWeakRelation::referencingLayerSource() const
+{
+  return mReferencingLayer.source;
+}
+
+QString QgsWeakRelation::referencingLayerProvider() const
+{
+  return mReferencingLayer.provider;
+}
+
 QgsVectorLayerRef QgsWeakRelation::referencedLayer() const
 {
   return mReferencedLayer;
+}
+
+QString QgsWeakRelation::referencedLayerSource() const
+{
+  return mReferencedLayer.source;
+}
+
+QString QgsWeakRelation::referencedLayerProvider() const
+{
+  return mReferencedLayer.provider;
 }
 
 Qgis::RelationshipStrength QgsWeakRelation::strength() const

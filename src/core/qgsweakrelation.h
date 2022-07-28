@@ -108,11 +108,39 @@ class CORE_EXPORT QgsWeakRelation
     QgsVectorLayerRef referencingLayer() const SIP_SKIP;
 
     /**
+     * Returns the source URI for the referencing (or "child" / "right") layer.
+     *
+     * \since QGIS 3.28
+     */
+    QString referencingLayerSource() const;
+
+    /**
+     * Returns the provider ID for the referencing (or "child" / "right") layer.
+     *
+     * \since QGIS 3.28
+     */
+    QString referencingLayerProvider() const;
+
+    /**
      * Returns a weak reference to the referenced (or "parent" / "left") layer.
      *
      * \note Not available in Python bindings.
      */
     QgsVectorLayerRef referencedLayer() const SIP_SKIP;
+
+    /**
+     * Returns the source URI for the referenced (or "parent" / "left") layer.
+     *
+     * \since QGIS 3.28
+     */
+    QString referencedLayerSource() const;
+
+    /**
+     * Returns the provider ID for the referenced (or "parent" / "left") layer.
+     *
+     * \since QGIS 3.28
+     */
+    QString referencedLayerProvider() const;
 
     /**
      * Returns the strength of the relation.
