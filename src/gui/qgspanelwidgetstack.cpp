@@ -57,8 +57,15 @@ QgsPanelWidget *QgsPanelWidgetStack::takeMainPanel()
   acceptAllPanels();
 
   QWidget *widget = mStackedWidget->widget( 0 );
-  mStackedWidget->removeWidget( widget );
-  return qobject_cast<QgsPanelWidget *>( widget );
+  if ( widget )
+  {
+    mStackedWidget->removeWidget( widget );
+    return qobject_cast<QgsPanelWidget *>( widget );
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 void QgsPanelWidgetStack::clear()
