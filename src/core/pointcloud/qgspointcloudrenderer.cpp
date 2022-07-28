@@ -159,6 +159,46 @@ QStringList QgsPointCloudRenderer::legendRuleKeys() const
   return QStringList();
 }
 
+void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const
+{
+  const QPointF originalXY( x, y );
+  context.renderContext().mapToPixel().transformInPlace( x, y );
+  QPainter *elevationPainter = context.elevationPainter();
+  const double zMin = -5000;//context.zMin();//-37.2;
+  const double zMax = +5000;//context.zMax();// 532.87;
+  float zFloat = ( z - zMin ) / ( zMax - zMin );
+  zFloat = std::max<double>( 0.0, std::min<double>( 1.0, zFloat ) );
+  context.updateZRange( zFloat );
+
+  QColor c;
+  c.setRedF( zFloat );
+  zFloat *= std::pow<float>( 2, 8 );
+  zFloat -= ( int )zFloat;
+  c.setGreenF( zFloat );
+  zFloat *= std::pow<float>( 2, 8 );
+  zFloat -= ( int )zFloat;
+  c.setBlueF( zFloat );
+  c.setAlphaF( 1.0f );
+
+  QBrush brush( c );
+  switch ( mPointSymbol )
+  {
+    case Qgis::PointCloudSymbol::Square:
+      elevationPainter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
+                                          y - mPainterPenWidth * 0.5,
+                                          mPainterPenWidth, mPainterPenWidth ), brush );
+      break;
+
+    case Qgis::PointCloudSymbol::Circle:
+      elevationPainter->setBrush( brush );
+      elevationPainter->setPen( Qt::NoPen );
+      elevationPainter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
+                                             y - mPainterPenWidth * 0.5,
+                                             mPainterPenWidth, mPainterPenWidth ) );
+      break;
+  };
+}
+
 void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destination ) const
 {
   destination->setPointSize( mPointSize );
