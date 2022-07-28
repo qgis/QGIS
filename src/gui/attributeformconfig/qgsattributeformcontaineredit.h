@@ -45,6 +45,8 @@ class GUI_EXPORT QgsAttributeFormContainerEdit: public QWidget, private Ui_QgsAt
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
+    QString name();
+
     void updateItemData();
 
   private:

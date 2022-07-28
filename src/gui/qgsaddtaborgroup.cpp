@@ -24,6 +24,7 @@
 #include <QTreeWidgetItem>
 #include <QComboBox>
 #include <QRadioButton>
+#include <QMessageBox>
 
 QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair > &tabList, QTreeWidgetItem *currentTab, QWidget *parent )
   : QDialog( parent )
@@ -88,6 +89,13 @@ void QgsAddTabOrGroup::accept()
 {
   if ( mColumnCountSpinBox->value() > 0 )
   {
+    if ( name().isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "Add Container for %1" ).arg( mLayer->name() ),
+                            tr( "No name specified. Please specify a name to create a new container." ) );
+      return;
+    }
+
     if ( mGroupButton->isChecked() )
     {
       QgsSettings().setValue( QStringLiteral( "/qgis/attributeForm/defaultGroupColumnCount" ), mColumnCountSpinBox->value() );

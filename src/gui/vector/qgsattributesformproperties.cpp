@@ -857,9 +857,16 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
 
 void QgsAttributesFormProperties::apply()
 {
+
   storeAttributeWidgetEdit();
   storeAttributeContainerEdit();
   storeAttributeTypeDialog();
+
+  if ( mAttributeContainerEdit && mAttributeContainerEdit->name().isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Container Properties" ), tr( "Container name cannot be blank. Please specify a name to edit a container." ) );
+    return;
+  }
 
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 

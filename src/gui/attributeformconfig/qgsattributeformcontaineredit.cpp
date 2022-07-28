@@ -65,6 +65,11 @@ void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpre
   mCollapsedExpressionWidget->registerExpressionContextGenerator( generator );
 }
 
+QString QgsAttributeFormContainerEdit::name()
+{
+  return mTitleLineEdit->text();
+}
+
 void QgsAttributeFormContainerEdit::updateItemData()
 {
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
