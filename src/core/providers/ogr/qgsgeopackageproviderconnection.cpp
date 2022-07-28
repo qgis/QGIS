@@ -336,6 +336,10 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
   mCapabilities |= Capability::ListFieldDomains;
 #endif
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  mCapabilities |= Capability::RetrieveRelationships;
+#endif
+
   mGeometryColumnCapabilities =
   {
     GeometryColumnCapability::Z,

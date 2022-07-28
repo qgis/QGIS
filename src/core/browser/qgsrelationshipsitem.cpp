@@ -1,7 +1,7 @@
 /***************************************************************************
-                             qgsfielddomainsitem.h
+                             qgsrelationshipsitem.cpp
                              -------------------
-    begin                : 2022-01-27
+    begin                : 2022-07-28
     copyright            : (C) 2022 Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
@@ -15,26 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfielddomainsitem.h"
+#include "qgsrelationshipsitem.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsapplication.h"
-#include "qgsfielddomain.h"
 #include "qgsmessagelog.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
-QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
+QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
     const QString &path,
     const QString &connectionUri,
     const QString &providerKey )
-  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Field Domains" ), path, providerKey )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Relationships" ), path, providerKey )
   , mConnectionUri( connectionUri )
 {
   mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
 }
 
-QgsFieldDomainsItem::~QgsFieldDomainsItem() = default;
+QgsRelationshipsItem::~QgsRelationshipsItem() = default;
 
-QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
+QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
 {
   QVector<QgsDataItem *> children;
   try
@@ -43,26 +43,25 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
     if ( md )
     {
       std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( mConnectionUri, {} ) ) };
-      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveFieldDomain ) )
+      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
       {
-        QString domainError;
-        QStringList fieldDomains;
+        QString relationError;
+        QList< QgsWeakRelation > relations;
         try
         {
-          fieldDomains = conn->fieldDomainNames();
+          relations = conn->relationships();
         }
         catch ( QgsProviderConnectionException &ex )
         {
-          domainError = ex.what();
+          relationError = ex.what();
         }
 
-        for ( const QString &name : std::as_const( fieldDomains ) )
+        for ( const QgsWeakRelation &relation : std::as_const( relations ) )
         {
           try
           {
-            std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( name ) );
-            QgsFieldDomainItem *fieldDomainItem { new QgsFieldDomainItem( this, domain.release() ) };
-            children.push_back( fieldDomainItem );
+            QgsRelationshipItem *relationshipItem { new QgsRelationshipItem( this, relation ) };
+            children.push_back( relationshipItem );
           }
           catch ( QgsProviderConnectionException &ex )
           {
@@ -70,9 +69,9 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
           }
         }
 
-        if ( !domainError.isEmpty() )
+        if ( !relationError.isEmpty() )
         {
-          children.push_back( new QgsErrorItem( this, domainError, path() + QStringLiteral( "/domainerror" ) ) );
+          children.push_back( new QgsErrorItem( this, relationError, path() + QStringLiteral( "/relationerror" ) ) );
         }
       }
     }
@@ -84,48 +83,39 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
   return children;
 }
 
-QIcon QgsFieldDomainsItem::icon()
+QIcon QgsRelationshipsItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mSourceFields.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/relations.svg" ) );
 }
 
-QString QgsFieldDomainsItem::connectionUri() const
+QString QgsRelationshipsItem::connectionUri() const
 {
   return mConnectionUri;
 }
 
 //
-// QgsFieldDomainItem
+// QgsRelationshipItem
 //
 
-QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *domain )
-  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, domain->name(), parent->path() + '/' + domain->name(), parent->providerKey() )
-  , mDomain( domain )
+QgsRelationshipItem::QgsRelationshipItem( QgsDataItem *parent, const QgsWeakRelation &relation )
+  : QgsDataItem( Qgis::BrowserItemType::Custom, parent, relation.name(), parent->path() + '/' + relation.name(), parent->providerKey() )
+  , mRelation( relation )
 {
   // Precondition
-  Q_ASSERT( dynamic_cast<QgsFieldDomainsItem *>( parent ) );
+  Q_ASSERT( dynamic_cast<QgsRelationshipsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
-  setToolTip( domain->description().isEmpty() ? domain->name() : domain->description() );
+  setToolTip( mRelation.name() );
 }
 
-QIcon QgsFieldDomainItem::icon()
+QIcon QgsRelationshipItem::icon()
 {
-  switch ( mDomain->type() )
-  {
-    case Qgis::FieldDomainType::Coded:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
-    case Qgis::FieldDomainType::Range:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) );
-    case Qgis::FieldDomainType::Glob:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
-  }
-  BUILTIN_UNREACHABLE
+  return QgsApplication::getThemeIcon( QStringLiteral( "/relation.svg" ) );
 }
 
-const QgsFieldDomain *QgsFieldDomainItem::fieldDomain()
+const QgsWeakRelation &QgsRelationshipItem::relation() const
 {
-  return mDomain.get();
+  return mRelation;
 }
 
-QgsFieldDomainItem::~QgsFieldDomainItem() = default;
+QgsRelationshipItem::~QgsRelationshipItem() = default;
 

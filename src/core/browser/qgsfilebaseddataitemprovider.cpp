@@ -26,6 +26,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgsfieldsitem.h"
 #include "qgsfielddomainsitem.h"
+#include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsmbtiles.h"
 #include "qgsvectortiledataitems.h"
@@ -218,6 +219,27 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
+    }
+  }
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+  {
+    QString relationError;
+    QList< QgsWeakRelation > relations;
+    try
+    {
+      relations = conn->relationships();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      relationError = ex.what();
+    }
+
+    if ( !relations.empty() || !relationError.isEmpty() )
+    {
+      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+      children.append( relationsItem.release() );
     }
   }
 
