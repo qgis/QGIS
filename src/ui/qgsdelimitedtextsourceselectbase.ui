@@ -159,6 +159,9 @@
        <height>16777215</height>
       </size>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -178,6 +181,18 @@
        </sizepolicy>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="fileFormatGroupBox">
          <property name="sizePolicy">
@@ -329,151 +344,26 @@
                  </property>
                  <item>
                   <layout class="QGridLayout" name="layoutDelimChars">
-                   <item row="1" column="0">
-                    <widget class="QCheckBox" name="cbxDelimSemicolon">
-                     <property name="toolTip">
-                      <string>Semicolon character is one of the delimiters</string>
-                     </property>
-                     <property name="statusTip">
-                      <string>Semicolon character is one of the delimiters</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Semicolon character is one of the delimiters</string>
+                   <item row="2" column="3">
+                    <widget class="QLabel" name="labelEscape">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
                      <property name="text">
-                      <string>Semicolon</string>
+                      <string>Escape</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="buddy">
+                      <cstring>txtEscapeChars</cstring>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="2">
-                    <layout class="QHBoxLayout" name="horizontalLayout_3">
-                     <item>
-                      <widget class="QLabel" name="labelDelimOther">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Others</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                       </property>
-                       <property name="buddy">
-                        <cstring>txtDelimiterOther</cstring>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLineEdit" name="txtDelimiterOther">
-                       <property name="enabled">
-                        <bool>true</bool>
-                       </property>
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="maximumSize">
-                        <size>
-                         <width>32767</width>
-                         <height>32767</height>
-                        </size>
-                       </property>
-                       <property name="toolTip">
-                        <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
-                       </property>
-                       <property name="statusTip">
-                        <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
-                       </property>
-                       <property name="whatsThis">
-                        <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
-                       </property>
-                       <property name="maxLength">
-                        <number>10</number>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QCheckBox" name="cbxDelimTab">
-                     <property name="toolTip">
-                      <string>Tab character is one of the delimiters</string>
-                     </property>
-                     <property name="statusTip">
-                      <string>Tab character is one of the delimiters</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Tab character is one of the delimiters</string>
-                     </property>
-                     <property name="text">
-                      <string>Tab</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QCheckBox" name="cbxDelimColon">
-                     <property name="toolTip">
-                      <string>Colon character is one of the delimiters</string>
-                     </property>
-                     <property name="statusTip">
-                      <string>Colon character is one of the delimiters</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Colon character is one of the delimiters</string>
-                     </property>
-                     <property name="text">
-                      <string>Colon</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <widget class="QCheckBox" name="cbxDelimComma">
-                     <property name="toolTip">
-                      <string>Comma character is one of the delimiters</string>
-                     </property>
-                     <property name="statusTip">
-                      <string>Comma character is one of the delimiters</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Comma character is one of the delimiters</string>
-                     </property>
-                     <property name="text">
-                      <string>Comma</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QCheckBox" name="cbxDelimSpace">
-                     <property name="toolTip">
-                      <string>Space character is one of the delimiters</string>
-                     </property>
-                     <property name="statusTip">
-                      <string>Space character is one of the delimiters</string>
-                     </property>
-                     <property name="whatsThis">
-                      <string>Space character is one of the delimiters</string>
-                     </property>
-                     <property name="text">
-                      <string>Space</string>
-                     </property>
-                     <property name="checked">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout">
-                   <item>
+                   <item row="2" column="0">
                     <widget class="QLabel" name="labelQuote">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -492,7 +382,58 @@
                      </property>
                     </widget>
                    </item>
-                   <item>
+                   <item row="1" column="0" colspan="2">
+                    <widget class="QCheckBox" name="cbxDelimSemicolon">
+                     <property name="toolTip">
+                      <string>Semicolon character is one of the delimiters</string>
+                     </property>
+                     <property name="statusTip">
+                      <string>Semicolon character is one of the delimiters</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Semicolon character is one of the delimiters</string>
+                     </property>
+                     <property name="text">
+                      <string>Semicolon</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0" colspan="2">
+                    <widget class="QCheckBox" name="cbxDelimTab">
+                     <property name="toolTip">
+                      <string>Tab character is one of the delimiters</string>
+                     </property>
+                     <property name="statusTip">
+                      <string>Tab character is one of the delimiters</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Tab character is one of the delimiters</string>
+                     </property>
+                     <property name="text">
+                      <string>Tab</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QCheckBox" name="cbxDelimComma">
+                     <property name="toolTip">
+                      <string>Comma character is one of the delimiters</string>
+                     </property>
+                     <property name="statusTip">
+                      <string>Comma character is one of the delimiters</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Comma character is one of the delimiters</string>
+                     </property>
+                     <property name="text">
+                      <string>Comma</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
                     <widget class="QLineEdit" name="txtQuoteChars">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -517,39 +458,23 @@
                      </property>
                     </widget>
                    </item>
-                   <item>
-                    <spacer name="horizontalSpacer_2">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
+                   <item row="0" column="2">
+                    <widget class="QCheckBox" name="cbxDelimColon">
+                     <property name="toolTip">
+                      <string>Colon character is one of the delimiters</string>
                      </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
+                     <property name="statusTip">
+                      <string>Colon character is one of the delimiters</string>
                      </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QLabel" name="labelEscape">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                     <property name="whatsThis">
+                      <string>Colon character is one of the delimiters</string>
                      </property>
                      <property name="text">
-                      <string>Escape</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                     </property>
-                     <property name="buddy">
-                      <cstring>txtEscapeChars</cstring>
+                      <string>Colon</string>
                      </property>
                     </widget>
                    </item>
-                   <item>
+                   <item row="2" column="4">
                     <widget class="QLineEdit" name="txtEscapeChars">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -571,6 +496,75 @@
                      </property>
                      <property name="maxLength">
                       <number>10</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="QLineEdit" name="txtDelimiterOther">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>32767</width>
+                       <height>32767</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                     </property>
+                     <property name="statusTip">
+                      <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character. These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                     </property>
+                     <property name="maxLength">
+                      <number>10</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QLabel" name="labelDelimOther">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="text">
+                      <string>Others</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="buddy">
+                      <cstring>txtDelimiterOther</cstring>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3" colspan="2">
+                    <widget class="QCheckBox" name="cbxDelimSpace">
+                     <property name="toolTip">
+                      <string>Space character is one of the delimiters</string>
+                     </property>
+                     <property name="statusTip">
+                      <string>Space character is one of the delimiters</string>
+                     </property>
+                     <property name="whatsThis">
+                      <string>Space character is one of the delimiters</string>
+                     </property>
+                     <property name="text">
+                      <string>Space</string>
+                     </property>
+                     <property name="checked">
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -865,7 +859,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="geometryDefinitionGroupBox">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1350,7 +1344,7 @@
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>20</height>
+                <height>0</height>
                </size>
               </property>
              </spacer>
@@ -1561,21 +1555,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFileWidget</class>
@@ -1587,12 +1575,17 @@
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>txtLayerName</tabstop>
   <tabstop>cmbEncoding</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>fileFormatGroupBox</tabstop>
   <tabstop>delimiterCSV</tabstop>
   <tabstop>delimiterRegexp</tabstop>
   <tabstop>delimiterChars</tabstop>
@@ -1605,14 +1598,14 @@
   <tabstop>txtQuoteChars</tabstop>
   <tabstop>txtEscapeChars</tabstop>
   <tabstop>txtDelimiterRegexp</tabstop>
-  <tabstop>recordOptionsGroupBox</tabstop>
   <tabstop>rowCounter</tabstop>
   <tabstop>cbxUseHeader</tabstop>
   <tabstop>cbxDetectTypes</tabstop>
   <tabstop>cbxPointIsComma</tabstop>
   <tabstop>cbxTrimFields</tabstop>
   <tabstop>cbxSkipEmptyFields</tabstop>
-  <tabstop>geometryDefinitionGroupBox</tabstop>
+  <tabstop>mBooleanTrue</tabstop>
+  <tabstop>mBooleanFalse</tabstop>
   <tabstop>geomTypeXY</tabstop>
   <tabstop>geomTypeWKT</tabstop>
   <tabstop>geomTypeNone</tabstop>
@@ -1623,12 +1616,11 @@
   <tabstop>cbxXyDms</tabstop>
   <tabstop>cmbWktField</tabstop>
   <tabstop>cmbGeometryType</tabstop>
-  <tabstop>crsGeometry</tabstop>
-  <tabstop>layerSettingsGroupBox</tabstop>
   <tabstop>cbxSpatialIndex</tabstop>
   <tabstop>cbxSubsetIndex</tabstop>
   <tabstop>cbxWatchFile</tabstop>
   <tabstop>tblSample</tabstop>
+  <tabstop>mCancelButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
