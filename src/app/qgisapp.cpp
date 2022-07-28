@@ -90,14 +90,11 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsgeometryvalidationservice.h"
 #include "qgssourceselectproviderregistry.h"
-#include "qgssourceselectprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsfixattributedialog.h"
 #include "qgsprojecttimesettings.h"
-#include "qgsmaplayertemporalproperties.h"
 #include "qgsmaplayerutils.h"
 #include "qgsgeometrycollection.h"
-#include "qgsmeshlayertemporalproperties.h"
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
@@ -111,9 +108,11 @@
 #include "qgsannotationlayer.h"
 #include "qgsdockablewidgethelper.h"
 #include "vertextool/qgsvertexeditor.h"
-#include "qgsanalysis.h"
-#include "qgsgeometrycheckregistry.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsabstractdatasourcewidget.h"
+#include "qgsmeshlayer.h"
+#include <geos_c.h>
 
 #include "options/qgscodeeditoroptions.h"
 #include "options/qgsfontoptions.h"
@@ -128,6 +127,8 @@
 #include "mesh/qgsmeshelevationpropertieswidget.h"
 #include "elevation/qgselevationprofilewidget.h"
 
+#include "layers/qgsapplayerhandling.h"
+
 #ifdef HAVE_3D
 #include "qgs3d.h"
 #include "qgs3danimationsettings.h"
@@ -139,7 +140,6 @@
 #include "qgslayoutitem3dmap.h"
 #include "processing/qgs3dalgorithms.h"
 #include "qgs3dmaptoolmeasureline.h"
-#include "qgs3dsymbolregistry.h"
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
 #include "qgsvectorlayer3drendererwidget.h"
@@ -149,8 +149,6 @@
 #include "qgs3doptions.h"
 #include "qgsmapviewsmanager.h"
 #include "qgs3dmapcanvaswidget.h"
-#include "qgs3dviewsmanagerdialog.h"
-#include "qgs3dutils.h"
 #endif
 
 #ifdef HAVE_GEOREFERENCER
@@ -195,7 +193,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
 #include "qgis.h"
-#include "qgisplugin.h"
 #include "qgsabout.h"
 #include "qgsabstractmaptoolhandler.h"
 #include "qgsalignrasterdialog.h"
@@ -211,16 +208,11 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
-#ifndef QT_NO_SSL
-#include "qgsauthcertutils.h"
-#include "qgsauthsslerrorsdialog.h"
-#endif
 #include "qgsappscreenshots.h"
 #include "qgsapplicationexitblockerinterface.h"
 #include "qgsbookmarks.h"
 #include "qgsbookmarkeditordialog.h"
 #include "qgsbrowserdockwidget.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
@@ -246,9 +238,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsdecorationscalebar.h"
 #include "qgsdecorationgrid.h"
 #include "qgsdecorationlayoutextent.h"
-#include "qgsencodingfiledialog.h"
 #include "qgserror.h"
-#include "qgserrordialog.h"
 #include "qgseventtracing.h"
 #include "qgsexception.h"
 #include "qgsexpressionselectiondialog.h"
@@ -259,13 +249,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsfileutils.h"
 #include "qgsfontmanager.h"
 #include "qgsformannotation.h"
-#include "qgsgeos.h"
 #include "qgsguiutils.h"
-#include "qgshtmlannotation.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
-#include "qgslabelingwidget.h"
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
@@ -288,7 +275,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeviewtemporalindicator.h"
 #include "qgslayertreeviewofflineindicator.h"
 #include "qgsrasterpipe.h"
-#include "qgslayout.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
@@ -309,7 +295,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutlocatorfilter.h"
 #include "qgsnominatimlocatorfilter.h"
 #include "qgssettingslocatorfilter.h"
-#include "qgsgeocoderlocatorfilter.h"
 #include "qgsnominatimgeocoder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -317,12 +302,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsmaplayer.h"
-#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmapsettings.h"
 #include "qgsmaptip.h"
 #include "qgsmbtiles.h"
-#include "qgsmenuheader.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
@@ -333,7 +316,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmemoryproviderutils.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
-#include "qgsmultibandcolorrenderer.h"
 #include "qgsnative.h"
 #include "qgsnativealgorithms.h"
 #include "qgsnewvectorlayerdialog.h"
@@ -368,12 +350,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmeshcalculatordialog.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterfilewritertask.h"
-#include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasternuller.h"
 #include "qgsbrightnesscontrastfilter.h"
-#include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterprojector.h"
 #include "qgsreadwritecontext.h"
@@ -383,7 +363,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsgroupwmsdatadialog.h"
 #include "qgsselectbyformdialog.h"
 #include "qgsshortcutsmanager.h"
-#include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingwidget.h"
 #include "qgsstatisticalsummarydockwidget.h"
 #include "qgsstatusbar.h"
@@ -392,13 +371,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsstatusbarscalewidget.h"
 #include "qgsstyle.h"
 #include "qgssubsetstringeditorproviderregistry.h"
-#include "qgssubsetstringeditorprovider.h"
 #include "qgssubsetstringeditorinterface.h"
-#include "qgssvgannotation.h"
 #include "qgstaskmanager.h"
 #include "qgstaskmanagerwidget.h"
 #include "qgssymbolselectordialog.h"
-#include "qgstextannotation.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputwidget.h"
 #include "qgsvectordataprovider.h"
@@ -411,7 +387,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspointcloudlayerproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
-#include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgswelcomepage.h"
 #include "qgsversioninfo.h"
@@ -425,7 +400,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgshelp.h"
 #include "qgsvectorfilewritertask.h"
 #include "qgsmapsavedialog.h"
-#include "qgsmaprenderertask.h"
 #include "qgsmapdecoration.h"
 #include "qgsnewnamedialog.h"
 #include "qgsgui.h"
@@ -434,7 +408,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvaliditycheckregistry.h"
 #include "qgsappcoordinateoperationhandlers.h"
 #include "qgsprojectviewsettings.h"
-#include "qgscoordinateformatter.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
@@ -451,7 +424,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 
-#include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 #include "qgsannotationitemguiregistry.h"
 #include "annotations/qgsannotationlayerproperties.h"
@@ -5810,7 +5782,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layers, const QString &
     }
 
     askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
-    postProcessAddedLayer( l );
+    QgsAppLayerHandling::postProcessAddedLayer( l );
   }
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -5943,7 +5915,7 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
     }
 
     askUserForDatumTransform( ml->crs(), projectCrsAfterLayerAdd, ml );
-    postProcessAddedLayer( ml );
+    QgsAppLayerHandling::postProcessAddedLayer( ml );
   }
 
   if ( group )
@@ -5956,79 +5928,6 @@ QList< QgsMapLayer * > QgisApp::addSublayers( const QList<QgsProviderSublayerDet
   }
 
   return result;
-}
-
-void QgisApp::postProcessAddedLayer( QgsMapLayer *layer )
-{
-  switch ( layer->type() )
-  {
-    case QgsMapLayerType::VectorLayer:
-    case QgsMapLayerType::RasterLayer:
-    {
-      bool ok = false;
-      layer->loadDefaultStyle( ok );
-      layer->loadDefaultMetadata( ok );
-      break;
-    }
-
-    case QgsMapLayerType::PluginLayer:
-      break;
-
-    case QgsMapLayerType::MeshLayer:
-    {
-      QgsMeshLayer *meshLayer = qobject_cast< QgsMeshLayer *>( layer );
-      QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-      if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
-        referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0 ), Qt::UTC );
-
-      if ( meshLayer->dataProvider() && !qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->referenceTime().isValid() )
-        qobject_cast< QgsMeshLayerTemporalProperties * >( meshLayer->temporalProperties() )->setReferenceTime( referenceTime, meshLayer->dataProvider()->temporalCapabilities() );
-
-      bool ok = false;
-      meshLayer->loadDefaultStyle( ok );
-      meshLayer->loadDefaultMetadata( ok );
-      break;
-    }
-
-    case QgsMapLayerType::VectorTileLayer:
-    {
-      bool ok = false;
-      QString error = layer->loadDefaultStyle( ok );
-      if ( !ok )
-        visibleMessageBar()->pushMessage( tr( "Error loading style" ), error, Qgis::MessageLevel::Warning );
-      error = layer->loadDefaultMetadata( ok );
-      if ( !ok )
-        visibleMessageBar()->pushMessage( tr( "Error loading layer metadata" ), error, Qgis::MessageLevel::Warning );
-
-      break;
-    }
-
-    case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::GroupLayer:
-      break;
-
-    case QgsMapLayerType::PointCloudLayer:
-    {
-      bool ok = false;
-      layer->loadDefaultStyle( ok );
-      layer->loadDefaultMetadata( ok );
-
-#ifdef HAVE_3D
-      if ( !layer->renderer3D() )
-      {
-        QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer );
-        // If the layer has no 3D renderer and syncing 3D to 2D renderer is enabled, we create a renderer and set it up with the 2D renderer
-        if ( pcLayer->sync3DRendererTo2DRenderer() )
-        {
-          std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = std::make_unique< QgsPointCloudLayer3DRenderer >();
-          renderer3D->convertFrom2DRenderer( pcLayer->renderer() );
-          layer->setRenderer3D( renderer3D.release() );
-        }
-      }
-#endif
-      break;
-    }
-  }
 }
 
 QgsVectorTileLayer *QgisApp::addVectorTileLayer( const QString &url, const QString &baseName )
@@ -6071,7 +5970,7 @@ QgsVectorTileLayer *QgisApp::addVectorTileLayerPrivate( const QString &url, cons
     return nullptr;
   }
 
-  postProcessAddedLayer( layer.get() );
+  QgsAppLayerHandling::postProcessAddedLayer( layer.get() );
 
   QgsProject::instance()->addMapLayer( layer.get() );
   activateDeactivateLayerRelatedActions( activeLayer() );
@@ -6108,7 +6007,7 @@ QgsPointCloudLayer *QgisApp::addPointCloudLayerPrivate( const QString &uri, cons
     return nullptr;
   }
 
-  postProcessAddedLayer( layer.get() );
+  QgsAppLayerHandling::postProcessAddedLayer( layer.get() );
 
 
   QgsProject::instance()->addMapLayer( layer.get() );
@@ -7725,7 +7624,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
     if ( vtLayer->isValid() )
     {
-      postProcessAddedLayer( vtLayer.get() );
+      QgsAppLayerHandling::postProcessAddedLayer( vtLayer.get() );
       QgsProject::instance()->addMapLayer( vtLayer.release() );
       return true;
     }
@@ -13933,7 +13832,7 @@ T *QgisApp::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QSt
       QgsProject::instance()->addMapLayer( result );
 
       askUserForDatumTransform( result->crs(), QgsProject::instance()->crs(), result );
-      postProcessAddedLayer( result );
+      QgsAppLayerHandling::postProcessAddedLayer( result );
     }
   }
 

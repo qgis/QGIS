@@ -199,6 +199,8 @@ set(QGIS_APP_SRCS
   labeling/qgsmaptoolmovelabel.cpp
   labeling/qgsmaptoolrotatelabel.cpp
 
+  layers/qgsapplayerhandling.cpp
+
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutimagedrophandler.cpp
