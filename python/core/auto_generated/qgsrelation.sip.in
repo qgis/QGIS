@@ -337,6 +337,20 @@ Returns the type of the relation
 .. versionadded:: 3.18
 %End
 
+    static QString cardinalityToDisplayString( Qgis::RelationshipCardinality cardinality );
+%Docstring
+Returns a user-friendly translated string representing a relationship ``cardinality``.
+
+.. versionadded:: 3.28
+%End
+
+    static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
+%Docstring
+Returns a user-friendly translated string representing a relationship ``strength``.
+
+.. versionadded:: 3.28
+%End
+
 };
 
 
