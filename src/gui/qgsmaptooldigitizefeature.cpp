@@ -139,6 +139,15 @@ void QgsMapToolDigitizeFeature::deactivate()
   emit digitizingFinished();
 }
 
+void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+    emit digitizingCanceled();
+  }
+  QgsMapToolCaptureLayerGeometry::keyPressEvent( e );
+}
+
 bool QgsMapToolDigitizeFeature::checkGeometryType() const
 {
   return mCheckGeometryType;

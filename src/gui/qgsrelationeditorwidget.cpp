@@ -437,7 +437,8 @@ void QgsRelationEditorWidget::addFeatureGeometry()
   setMapTool( mMapToolDigitize );
 
   connect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
-  connect( mEditorContext.mapCanvas(), &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
+
+  connect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCanceled, this, &QgsRelationEditorWidget::onDigitizingCanceled );
 
   if ( auto *lMainMessageBar = mEditorContext.mainMessageBar() )
   {
@@ -454,8 +455,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 void QgsRelationEditorWidget::onDigitizingCompleted( const QgsFeature &feature )
 {
   QgsAbstractRelationEditorWidget::addFeature( feature.geometry() );
-
-  unsetMapTool();
+  digitizingFinished();
 }
 
 void QgsRelationEditorWidget::multiEditItemSelectionChanged()
@@ -590,7 +590,6 @@ void QgsRelationEditorWidget::unsetMapTool()
   // this will call mapToolDeactivated
   mapCanvas->unsetMapTool( mMapToolDigitize );
 
-  disconnect( mapCanvas, &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
   disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
 }
 
@@ -779,15 +778,17 @@ QTreeWidgetItem *QgsRelationEditorWidget::createMultiEditTreeWidgetItem( const Q
   return treeWidgetItem;
 }
 
-void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
+void QgsRelationEditorWidget::onDigitizingCanceled( )
 {
-  if ( e->key() == Qt::Key_Escape )
-  {
-    window()->setVisible( true );
-    window()->raise();
-    window()->activateWindow();
-    unsetMapTool();
-  }
+  digitizingFinished();
+}
+
+void QgsRelationEditorWidget::digitizingFinished( )
+{
+  window()->setVisible( true );
+  window()->raise();
+  window()->activateWindow();
+  unsetMapTool();
 }
 
 void QgsRelationEditorWidget::mapToolDeactivated()
