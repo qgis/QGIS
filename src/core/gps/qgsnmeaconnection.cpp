@@ -373,6 +373,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
     //mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
     mLastGPSInformation.satInfoComplete = true;
 
+    int IDfind = 0;
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
       const nmeaSATELLITE currentSatellite = result.sat_data[i];
@@ -384,7 +385,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
 
-      int IDfind = 0;
+      IDfind = 0;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
         for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
