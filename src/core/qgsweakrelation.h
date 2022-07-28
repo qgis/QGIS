@@ -29,6 +29,13 @@
  * implemented and can be used to create a QgsRelation after the
  * dependent layers are loaded and available.
  *
+ * In constrast to QgsRelation, QgsWeakRelation can be used to encapsulate
+ * information about a relationship which does not currently exist in a QGIS project.
+ * E.g. it can be used to represent a relationship which exists in a database
+ * backend (but not within a QGIS project). Accordingly, some properties
+ * available in QgsWeakRelation are included for informational purposes only,
+ * and cannot be translated to QgsRelations or respected in QGIS relationships.
+ *
  * \ingroup core
  * \since QGIS 3.12
  */
@@ -122,6 +129,16 @@ class CORE_EXPORT QgsWeakRelation
     QString referencingLayerProvider() const;
 
     /**
+     * Returns the layer name of the referencing (or "child" / "right") layer.
+     *
+     * \note the layer name refers to the layer name used in the datasource, not in any associated
+     * QgsVectorLayer.
+     *
+     * \since QGIS 3.28
+     */
+    QString referencingLayerName() const;
+
+    /**
      * Returns a weak reference to the referenced (or "parent" / "left") layer.
      *
      * \note Not available in Python bindings.
@@ -141,6 +158,16 @@ class CORE_EXPORT QgsWeakRelation
      * \since QGIS 3.28
      */
     QString referencedLayerProvider() const;
+
+    /**
+     * Returns the layer name of the referenced (or "parent" / "left") layer.
+     *
+     * \note the layer name refers to the layer name used in the datasource, not in any associated
+     * QgsVectorLayer.
+     *
+     * \since QGIS 3.28
+     */
+    QString referencedLayerName() const;
 
     /**
      * Returns the strength of the relation.
@@ -163,6 +190,124 @@ class CORE_EXPORT QgsWeakRelation
     }
     % End
 #endif
+
+    /**
+     * Returns the relationship's cardinality.
+     *
+     * \see setCardinality()
+     * \since QGIS 3.28
+     */
+    Qgis::RelationshipCardinality cardinality() const { return mCardinality; }
+
+    /**
+     * Sets the relationship's \a cardinality.
+     *
+     * \see cardinality()
+     * \since QGIS 3.28
+     */
+    void setCardinality( Qgis::RelationshipCardinality cardinality ) { mCardinality = cardinality; }
+
+    /**
+     * Returns the label of the forward path for the relationship.
+     *
+     * The forward and backward path labels are free-form, user-friendly strings
+     * which can be used to generate descriptions of the relationship between features
+     * from the right and left tables.
+     *
+     * E.g. when the left table contains buildings and the right table contains
+     * furniture, the forward path label could be "contains" and the backward path
+     * label could be "is located within". A client could then generate a
+     * user friendly description string such as "fire hose 1234 is located within building 15a".
+     *
+     * \see setForwardPathLabel()
+     * \see backwardPathLabel()
+     *
+     * \since QGIS 3.28
+    */
+    QString forwardPathLabel() const { return mForwardPathLabel; }
+
+    /**
+     * Returns the label of the backward path for the relationship.
+     *
+     * The forward and backward path labels are free-form, user-friendly strings
+     * which can be used to generate descriptions of the relationship between features
+     * from the right and left tables.
+     *
+     * E.g. when the left table contains buildings and the right table contains
+     * furniture, the forward path label could be "contains" and the backward path
+     * label could be "is located within". A client could then generate a
+     * user friendly description string such as "fire hose 1234 is located within building 15a".
+     *
+     * \see setBackwardPathLabel()
+     * \see forwardPathLabel()
+     *
+     * \since QGIS 3.28
+    */
+    QString backwardPathLabel() const { return mBackwardPathLabel; }
+
+    /**
+     * Sets the \a label of the forward path for the relationship.
+     *
+     * The forward and backward path labels are free-form, user-friendly strings
+     * which can be used to generate descriptions of the relationship between features
+     * from the right and left tables.
+     *
+     * E.g. when the left table contains buildings and the right table contains
+     * furniture, the forward path label could be "contains" and the backward path
+     * label could be "is located within". A client could then generate a
+     * user friendly description string such as "fire hose 1234 is located within building 15a".
+     *
+     * \see forwardPathLabel()
+     * \see setBackwardPathLabel()
+     *
+     * \since QGIS 3.28
+    */
+    void setForwardPathLabel( const QString &label ) { mForwardPathLabel = label; }
+
+    /**
+     * Sets the \a label of the backward path for the relationship.
+     *
+     * The forward and backward path labels are free-form, user-friendly strings
+     * which can be used to generate descriptions of the relationship between features
+     * from the right and left tables.
+     *
+     * E.g. when the left table contains buildings and the right table contains
+     * furniture, the forward path label could be "contains" and the backward path
+     * label could be "is located within". A client could then generate a
+     * user friendly description string such as "fire hose 1234 is located within building 15a".
+     *
+     * \see backwardPathLabel()
+     * \see setForwardPathLabel()
+     *
+     * \since QGIS 3.28
+    */
+    void setBackwardPathLabel( const QString &label ) { mBackwardPathLabel = label; }
+
+    /**
+     * Returns the type string of the related table.
+     *
+     * This a free-form string representing the type of related features, where the
+     * exact interpretation is format dependent. For instance, table types from GeoPackage
+     * relationships will directly reflect the categories from the GeoPackage related
+     * tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+     *
+     * \see setRelatedTableType()
+     * \since QGIS 3.28
+    */
+    QString relatedTableType() const { return mRelatedTableType; }
+
+    /**
+     * Sets the \a type string of the related table.
+     *
+     * This a free-form string representing the type of related features, where the
+     * exact interpretation is format dependent. For instance, table types from GeoPackage
+     * relationships will directly reflect the categories from the GeoPackage related
+     * tables extension (i.e. "media", "simple attributes", "features", "attributes" and "tiles").
+     *
+     * \see relatedTableType()
+     * \since QGIS 3.28
+    */
+    void setRelatedTableType( const QString &type ) { mRelatedTableType = type; }
 
     /**
      * Returns a weak relation for the given layer.
@@ -217,6 +362,11 @@ class CORE_EXPORT QgsWeakRelation
     QString mRelationName;
     Qgis::RelationshipStrength mStrength = Qgis::RelationshipStrength::Association;
     QList<QgsRelation::FieldPair> mFieldPairs;
+
+    Qgis::RelationshipCardinality mCardinality = Qgis::RelationshipCardinality::OneToMany;
+    QString mForwardPathLabel;
+    QString mBackwardPathLabel;
+    QString mRelatedTableType;
 
     friend class TestQgsWeakRelation;
 

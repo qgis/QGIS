@@ -1222,6 +1222,14 @@ The development version
       Composition,
     };
 
+    enum class RelationshipCardinality
+    {
+      OneToOne,
+      OneToMany,
+      ManyToOne,
+      ManyToMany,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

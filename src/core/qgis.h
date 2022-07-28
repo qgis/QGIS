@@ -2101,6 +2101,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( RelationshipStrength )
 
     /**
+     * Relationship cardinality.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RelationshipCardinality : int
+    {
+      OneToOne, //!< One to one relationship
+      OneToMany, //!< One to many relationship
+      ManyToOne, //!< Many to one relationship
+      ManyToMany, //!< Many to many relationship
+    };
+    Q_ENUM( RelationshipCardinality )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

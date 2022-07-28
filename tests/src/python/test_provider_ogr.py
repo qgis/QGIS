@@ -2764,11 +2764,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         rel = [r for r in relationships if r.name() == 'simple_relationship_one_to_one'][0]
         self.assertEqual(rel.id(), 'simple_relationship_one_to_one')
         self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table1')
+        self.assertEqual(rel.referencedLayerName(), 'table1')
         self.assertEqual(rel.referencedLayerProvider(), 'ogr')
         self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table2')
         self.assertEqual(rel.referencingLayerProvider(), 'ogr')
+        self.assertEqual(rel.referencingLayerName(), 'table2')
         self.assertEqual(rel.strength(), QgsRelation.Association)
         self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+        self.assertEqual(rel.cardinality(), Qgis.RelationshipCardinality.OneToOne)
+        self.assertEqual(rel.forwardPathLabel(), 'my forward path label')
+        self.assertEqual(rel.backwardPathLabel(), 'my backward path label')
+        self.assertEqual(rel.relatedTableType(), 'feature')
 
         rel = [r for r in relationships if r.id() == 'composite_many_to_many_forward'][0]
         self.assertEqual(rel.id(), 'composite_many_to_many_forward')

@@ -987,6 +987,10 @@ QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &s
       const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
       CSLDestroy( cslRightMappingTableFieldNames );
 
+      const QString forwardPathLabel( GDALRelationshipGetForwardPathLabel( relationship ) );
+      const QString backwardPathLabel( GDALRelationshipGetBackwardPathLabel( relationship ) );
+      const QString relatedTableType( GDALRelationshipGetRelatedTableType( relationship ) );
+
       const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
       Qgis::RelationshipStrength strength = Qgis::RelationshipStrength::Association;
       switch ( relationshipType )
@@ -1004,12 +1008,29 @@ QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &s
           continue;
       }
 
-      const GDALRelationshipCardinality cardinality = GDALRelationshipGetCardinality( relationship );
-      switch ( cardinality )
+      const GDALRelationshipCardinality eCardinality = GDALRelationshipGetCardinality( relationship );
+      Qgis::RelationshipCardinality cardinality = Qgis::RelationshipCardinality::OneToOne;
+      switch ( eCardinality )
       {
         case GRC_ONE_TO_ONE:
+          cardinality = Qgis::RelationshipCardinality::OneToOne;
+          break;
         case GRC_ONE_TO_MANY:
+          cardinality = Qgis::RelationshipCardinality::OneToMany;
+          break;
         case GRC_MANY_TO_ONE:
+          cardinality = Qgis::RelationshipCardinality::ManyToOne;
+          break;
+        case GRC_MANY_TO_MANY:
+          cardinality = Qgis::RelationshipCardinality::ManyToMany;
+          break;
+      }
+
+      switch ( cardinality )
+      {
+        case Qgis::RelationshipCardinality::OneToOne:
+        case Qgis::RelationshipCardinality::OneToMany:
+        case Qgis::RelationshipCardinality::ManyToOne:
           {
             QList<QgsRelation::FieldPair> fieldPairs;
             for ( int i = 0; i < std::min( leftTableFieldNames.length(), rightTableFieldNames.length() ); ++i )
@@ -1017,40 +1038,55 @@ QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &s
               fieldPairs.append( QgsRelation::FieldPair( rightTableFieldNames.at( i ), leftTableFieldNames.at( i ) ) );
             }
 
-            output.append( QgsWeakRelation( relationshipName,
-                                            relationshipName,
-                                            strength,
-                                            QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
-                                            QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
-                                            fieldPairs ) );
+            QgsWeakRelation rel( relationshipName,
+                                 relationshipName,
+                                 strength,
+                                 QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                                 QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
+                                 fieldPairs );
+            rel.setCardinality( cardinality );
+            rel.setForwardPathLabel( forwardPathLabel );
+            rel.setBackwardPathLabel( backwardPathLabel );
+            rel.setRelatedTableType( relatedTableType );
+            output.append( rel );
             break;
           }
 
-        case GRC_MANY_TO_MANY:
+        case Qgis::RelationshipCardinality::ManyToMany:
           {
             QList<QgsRelation::FieldPair> leftFieldPairs;
             for ( int i = 0; i < std::min( leftTableFieldNames.length(), leftMappingTableFieldNames.length() ); ++i )
             {
               leftFieldPairs.append( QgsRelation::FieldPair( leftMappingTableFieldNames.at( i ), leftTableFieldNames.at( i ) ) );
             }
-            output.append( QgsWeakRelation( relationshipName + "_forward",
-                                            relationshipName,
-                                            strength,
-                                            QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
-                                            QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
-                                            leftFieldPairs ) );
+            QgsWeakRelation rel( relationshipName + "_forward",
+                                 relationshipName,
+                                 strength,
+                                 QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
+                                 QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
+                                 leftFieldPairs );
+            rel.setCardinality( cardinality );
+            rel.setForwardPathLabel( forwardPathLabel );
+            rel.setBackwardPathLabel( backwardPathLabel );
+            rel.setRelatedTableType( relatedTableType );
+            output.append( rel );
 
             QList<QgsRelation::FieldPair> rightFieldPairs;
             for ( int i = 0; i < std::min( rightTableFieldNames.length(), rightMappingTableFieldNames.length() ); ++i )
             {
               rightFieldPairs.append( QgsRelation::FieldPair( rightMappingTableFieldNames.at( i ), rightTableFieldNames.at( i ) ) );
             }
-            output.append( QgsWeakRelation( relationshipName + "_backward",
-                                            relationshipName,
-                                            strength,
-                                            QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
-                                            QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
-                                            rightFieldPairs ) );
+            rel = QgsWeakRelation( relationshipName + "_backward",
+                                   relationshipName,
+                                   strength,
+                                   QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
+                                   QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                                   rightFieldPairs );
+            rel.setCardinality( cardinality );
+            rel.setForwardPathLabel( forwardPathLabel );
+            rel.setBackwardPathLabel( backwardPathLabel );
+            rel.setRelatedTableType( relatedTableType );
+            output.append( rel );
             break;
           }
       }
