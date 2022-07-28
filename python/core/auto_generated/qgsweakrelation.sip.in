@@ -124,22 +124,101 @@ Returns the layer name of the referenced (or "parent" / "left") layer.
 .. versionadded:: 3.28
 %End
 
+
+
+    QString mappingTableSource() const;
+%Docstring
+Returns the source URI for the mapping table, which forms the middle table in many-to-many relationships.
+
+.. versionadded:: 3.28
+%End
+
+    QString mappingTableProvider() const;
+%Docstring
+Returns the provider ID for the mapping table, which forms the middle table in many-to-many relationships.
+
+.. versionadded:: 3.28
+%End
+
+    QString mappingTableName() const;
+%Docstring
+Returns the layer name of the mapping table, which forms the middle table in many-to-many relationships.
+
+.. note::
+
+   the layer name refers to the layer name used in the datasource, not in any associated
+   :py:class:`QgsVectorLayer`.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList referencingLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.referencingLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    void setReferencingLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.referencingLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList mappingReferencingLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencingLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    void setMappingReferencingLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencingLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList referencedLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.referencedLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    void setReferencedLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.referencedLayer` involved in the relationship.
+
+.. versionadded:: 3.28
+%End
+
+    QStringList mappingReferencedLayerFields() const;
+%Docstring
+Returns the list of fields from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencedLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
+    void setMappingReferencedLayerFields( const QStringList &fields );
+%Docstring
+Sets the list of ``fields`` from the :py:func:`~QgsWeakRelation.mappingTable` involved in the relationship.
+
+These fields will be matched to the :py:func:`~QgsWeakRelation.referencedLayerFields` in many-to-many joins.
+
+.. versionadded:: 3.28
+%End
+
     Qgis::RelationshipStrength strength() const;
 %Docstring
 Returns the strength of the relation.
-%End
-
-    QMap< QString, QString > fieldPairs() const;
-%Docstring
-Returns the list of field pairs.
-%End
-%MethodCode
-    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
-    sipRes = new QMap< QString, QString >();
-    for ( const QgsRelation::FieldPair &pair : pairs )
-    {
-      sipRes->insert( pair.first, pair.second );
-    }
 %End
 
     Qgis::RelationshipCardinality cardinality() const;

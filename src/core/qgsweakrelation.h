@@ -75,8 +75,7 @@ class CORE_EXPORT QgsWeakRelation
                      const QString &referencedLayerId,
                      const QString &referencedLayerName,
                      const QString &referencedLayerSource,
-                     const QString &referencedLayerProviderKey,
-                     const QList<QgsRelation::FieldPair> &fieldPairs
+                     const QString &referencedLayerProviderKey
                    );
 #endif
 
@@ -170,26 +169,115 @@ class CORE_EXPORT QgsWeakRelation
     QString referencedLayerName() const;
 
     /**
+     * Returns a weak reference to the mapping table, which forms the middle table in many-to-many relationships.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.28
+     */
+    QgsVectorLayerRef mappingTable() const SIP_SKIP;
+
+    /**
+     * Sets a weak reference to the mapping \a table, which forms the middle table in many-to-many relationships.
+     *
+     * \note Not available in Python bindings.
+     *
+     * \since QGIS 3.28
+     */
+    void setMappingTable( const QgsVectorLayerRef &table ) SIP_SKIP;
+
+    /**
+     * Returns the source URI for the mapping table, which forms the middle table in many-to-many relationships.
+     *
+     * \since QGIS 3.28
+     */
+    QString mappingTableSource() const;
+
+    /**
+     * Returns the provider ID for the mapping table, which forms the middle table in many-to-many relationships.
+     *
+     * \since QGIS 3.28
+     */
+    QString mappingTableProvider() const;
+
+    /**
+     * Returns the layer name of the mapping table, which forms the middle table in many-to-many relationships.
+     *
+     * \note the layer name refers to the layer name used in the datasource, not in any associated
+     * QgsVectorLayer.
+     *
+     * \since QGIS 3.28
+     */
+    QString mappingTableName() const;
+
+    /**
+     * Returns the list of fields from the referencingLayer() involved in the relationship.
+     *
+     * \since QGIS 3.28
+     */
+    QStringList referencingLayerFields() const { return mReferencingLayerFields; }
+
+    /**
+     * Sets the list of \a fields from the referencingLayer() involved in the relationship.
+     *
+     * \since QGIS 3.28
+     */
+    void setReferencingLayerFields( const QStringList &fields ) { mReferencingLayerFields = fields; }
+
+    /**
+     * Returns the list of fields from the mappingTable() involved in the relationship.
+     *
+     * These fields will be matched to the referencingLayerFields() in many-to-many joins.
+     *
+     * \since QGIS 3.28
+     */
+    QStringList mappingReferencingLayerFields() const { return mMappingReferencingLayerFields; }
+
+    /**
+     * Sets the list of \a fields from the mappingTable() involved in the relationship.
+     *
+     * These fields will be matched to the referencingLayerFields() in many-to-many joins.
+     *
+     * \since QGIS 3.28
+     */
+    void setMappingReferencingLayerFields( const QStringList &fields ) { mMappingReferencingLayerFields = fields; }
+
+    /**
+     * Returns the list of fields from the referencedLayer() involved in the relationship.
+     *
+     * \since QGIS 3.28
+     */
+    QStringList referencedLayerFields() const { return mReferencedLayerFields; }
+
+    /**
+     * Sets the list of \a fields from the referencedLayer() involved in the relationship.
+     *
+     * \since QGIS 3.28
+     */
+    void setReferencedLayerFields( const QStringList &fields ) { mReferencedLayerFields = fields; }
+
+    /**
+     * Returns the list of fields from the mappingTable() involved in the relationship.
+     *
+     * These fields will be matched to the referencedLayerFields() in many-to-many joins.
+     *
+     * \since QGIS 3.28
+     */
+    QStringList mappingReferencedLayerFields() const { return mMappingReferencedLayerFields; }
+
+    /**
+     * Sets the list of \a fields from the mappingTable() involved in the relationship.
+     *
+     * These fields will be matched to the referencedLayerFields() in many-to-many joins.
+     *
+     * \since QGIS 3.28
+     */
+    void setMappingReferencedLayerFields( const QStringList &fields ) { mMappingReferencedLayerFields = fields; }
+
+    /**
      * Returns the strength of the relation.
      */
     Qgis::RelationshipStrength strength() const;
-
-    /**
-     * Returns the list of field pairs.
-     */
-#ifndef SIP_RUN
-    QList<QgsRelation::FieldPair> fieldPairs() const;
-#else
-    QMap< QString, QString > fieldPairs() const;
-    % MethodCode
-    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
-    sipRes = new QMap< QString, QString >();
-    for ( const QgsRelation::FieldPair &pair : pairs )
-    {
-      sipRes->insert( pair.first, pair.second );
-    }
-    % End
-#endif
 
     /**
      * Returns the relationship's cardinality.
@@ -358,10 +446,16 @@ class CORE_EXPORT QgsWeakRelation
 
     QgsVectorLayerRef mReferencingLayer;
     QgsVectorLayerRef mReferencedLayer;
+    QgsVectorLayerRef mMappingTable;
+
     QString mRelationId;
     QString mRelationName;
     Qgis::RelationshipStrength mStrength = Qgis::RelationshipStrength::Association;
-    QList<QgsRelation::FieldPair> mFieldPairs;
+
+    QStringList mReferencingLayerFields;
+    QStringList mMappingReferencingLayerFields;
+    QStringList mReferencedLayerFields;
+    QStringList mMappingReferencedLayerFields;
 
     Qgis::RelationshipCardinality mCardinality = Qgis::RelationshipCardinality::OneToMany;
     QString mForwardPathLabel;

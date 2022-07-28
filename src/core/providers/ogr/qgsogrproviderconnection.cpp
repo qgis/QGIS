@@ -1032,60 +1032,37 @@ QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &s
         case Qgis::RelationshipCardinality::OneToMany:
         case Qgis::RelationshipCardinality::ManyToOne:
           {
-            QList<QgsRelation::FieldPair> fieldPairs;
-            for ( int i = 0; i < std::min( leftTableFieldNames.length(), rightTableFieldNames.length() ); ++i )
-            {
-              fieldPairs.append( QgsRelation::FieldPair( rightTableFieldNames.at( i ), leftTableFieldNames.at( i ) ) );
-            }
-
             QgsWeakRelation rel( relationshipName,
                                  relationshipName,
                                  strength,
                                  QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
-                                 QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
-                                 fieldPairs );
+                                 QString(), QString(), leftTableSource, QStringLiteral( "ogr" ) );
             rel.setCardinality( cardinality );
             rel.setForwardPathLabel( forwardPathLabel );
             rel.setBackwardPathLabel( backwardPathLabel );
             rel.setRelatedTableType( relatedTableType );
+            rel.setReferencedLayerFields( leftTableFieldNames );
+            rel.setReferencingLayerFields( rightTableFieldNames );
             output.append( rel );
             break;
           }
 
         case Qgis::RelationshipCardinality::ManyToMany:
           {
-            QList<QgsRelation::FieldPair> leftFieldPairs;
-            for ( int i = 0; i < std::min( leftTableFieldNames.length(), leftMappingTableFieldNames.length() ); ++i )
-            {
-              leftFieldPairs.append( QgsRelation::FieldPair( leftMappingTableFieldNames.at( i ), leftTableFieldNames.at( i ) ) );
-            }
-            QgsWeakRelation rel( relationshipName + "_forward",
+            QgsWeakRelation rel( relationshipName,
                                  relationshipName,
                                  strength,
-                                 QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
-                                 QString(), QString(), leftTableSource, QStringLiteral( "ogr" ),
-                                 leftFieldPairs );
+                                 QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
+                                 QString(), QString(), leftTableSource, QStringLiteral( "ogr" ) );
             rel.setCardinality( cardinality );
             rel.setForwardPathLabel( forwardPathLabel );
             rel.setBackwardPathLabel( backwardPathLabel );
             rel.setRelatedTableType( relatedTableType );
-            output.append( rel );
-
-            QList<QgsRelation::FieldPair> rightFieldPairs;
-            for ( int i = 0; i < std::min( rightTableFieldNames.length(), rightMappingTableFieldNames.length() ); ++i )
-            {
-              rightFieldPairs.append( QgsRelation::FieldPair( rightMappingTableFieldNames.at( i ), rightTableFieldNames.at( i ) ) );
-            }
-            rel = QgsWeakRelation( relationshipName + "_backward",
-                                   relationshipName,
-                                   strength,
-                                   QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ),
-                                   QString(), QString(), rightTableSource, QStringLiteral( "ogr" ),
-                                   rightFieldPairs );
-            rel.setCardinality( cardinality );
-            rel.setForwardPathLabel( forwardPathLabel );
-            rel.setBackwardPathLabel( backwardPathLabel );
-            rel.setRelatedTableType( relatedTableType );
+            rel.setMappingTable( QgsVectorLayerRef( QString(), QString(), mappingTableSource, QStringLiteral( "ogr" ) ) );
+            rel.setReferencedLayerFields( leftTableFieldNames );
+            rel.setMappingReferencedLayerFields( leftMappingTableFieldNames );
+            rel.setReferencingLayerFields( rightTableFieldNames );
+            rel.setMappingReferencingLayerFields( rightMappingTableFieldNames );
             output.append( rel );
             break;
           }
