@@ -28,6 +28,7 @@
 #include "qgsguiutils.h"
 #include "qgsfileutils.h"
 #include "qgsnewnamedialog.h"
+#include "layers/qgsapplayerhandling.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
@@ -145,7 +146,7 @@ QString QgsQlrDropHandler::customUriProviderKey() const
 void QgsQlrDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
 {
   const QString path = uri.uri;
-  QgisApp::instance()->openLayerDefinition( path );
+  QgsAppLayerHandling::openLayerDefinition( path );
 }
 
 //

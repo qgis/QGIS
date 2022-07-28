@@ -118,6 +118,7 @@ typedef SInt32 SRefCon;
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+#include "layers/qgsapplayerhandling.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1440,11 +1441,11 @@ int main( int argc, char *argv[] )
     }
     else if ( layerName.endsWith( QLatin1String( ".qlr" ), Qt::CaseInsensitive ) )
     {
-      qgis->openLayerDefinition( layerName );
+      QgsAppLayerHandling::openLayerDefinition( layerName );
     }
     else
     {
-      qgis->openLayer( layerName );
+      QgsAppLayerHandling::openLayer( layerName );
     }
   }
 
