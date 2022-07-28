@@ -69,18 +69,13 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
 float decodeElevation( const uchar *colorRaw )
 {
-  const float red = *( ( quint16 * )colorRaw );
-  const float green = *( ( ( quint16 * )colorRaw ) + 1 );
-  const float blue = *( ( ( quint16 * )colorRaw ) + 2 );
-  return ( red + ( green + blue / 65535 ) / 65535 ) / 65535;
+  return ( float )( ( *( ( const int * )colorRaw ) ) & 0x00ffffff ) / ( ( float ) 0x00ffffff );
 }
 
-float decodeElevation( const QColor &color )
-{
-  return color.redF() + ( color.greenF() + color.blueF() / 256.0 ) / 256.0;
-}
-
-void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRenderContext &context )
+/**
+ * Applies eye dome lighting effect on \a img using the elevation data from \a elevationImg and \a context
+ */
+void applyEyeDomeLighting( QImage *img, const QImage *elevationImg, const QgsPointCloudRenderContext &context )
 {
   double strength = context.eyeDomeLightingStrength();
   double distance = context.eyeDomeLightingDistance();
@@ -95,13 +90,13 @@ void applyEyeDomeLighting( QImage *img, QImage *elevationImg, QgsPointCloudRende
       QColor originalColor = img->pixelColor( i, j );
       int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
       float factor = 0.0f;
-      float centerDepth = decodeElevation( elevationImg->pixelColor( i, j ) );
+      float centerDepth = decodeElevation( elevationImg->constBits() + j * elevationImg->bytesPerLine() + i * 4 );
       centerDepth = ( centerDepth - minZ ) / ( maxZ - minZ );
       for ( int k = 0; k < 4; ++k )
       {
         int neighbourCoordsX = i + distance * neighbours[2 * k];
         int neighbourCoordsY = j + distance * neighbours[2 * k + 1];
-        float neighbourDepth = decodeElevation( elevationImg->pixelColor( neighbourCoordsX, neighbourCoordsY ) );
+        float neighbourDepth = decodeElevation( elevationImg->constBits() + neighbourCoordsY * elevationImg->bytesPerLine() + neighbourCoordsX * 4 );
         neighbourDepth = ( neighbourDepth - minZ ) / ( maxZ - minZ );
         factor += std::max<float>( 0, centerDepth - neighbourDepth );
       }

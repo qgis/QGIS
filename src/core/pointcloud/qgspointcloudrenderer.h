@@ -243,13 +243,13 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     /**
      * Returns the maximum Z value rendered into the elevation map
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     double maxZ() const { return mMaxZ; }
 
     /**
      * Updates the Z range of the points rendered into the elevation map
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     void updateZRange( double z )
     {
@@ -663,37 +663,37 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     /**
      * Sets whether eye dome lighting effect will be used
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     bool useEyeDomeLighting() const { return mUseEyeDomeLighting; }
 
     /**
      * Returns whether eye dome lighting effect will be used
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     void setUseEyeDomeLighting( bool useEyeDomeLighting ) { mUseEyeDomeLighting = useEyeDomeLighting; }
 
     /**
      * Returns the eye dome lighting strength value
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
 
     /**
      * Sets the eye dome lighting strength value
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     void setEyeDomeLightingStrength( double strength ) { mEyeDomeLightingStrength = strength; }
 
     /**
      * Returns the eye dome lighting distance value
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
     /**
      * Sets the eye dome lighting distance value
-     * \sine QGIS 3.28
+     * \since QGIS 3.28
      */
     void setEyeDomeLightingDistance( int distance ) { mEyeDomeLightingDistance = distance; }
 
@@ -763,7 +763,7 @@ class CORE_EXPORT QgsPointCloudRenderer
       return c;
     }
 
-    void drawElevation( double x, double y, double z, QgsPointCloudRenderContext &context ) const
+    void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const
     {
       const QPointF originalXY( x, y );
       context.renderContext().mapToPixel().transformInPlace( x, y );
