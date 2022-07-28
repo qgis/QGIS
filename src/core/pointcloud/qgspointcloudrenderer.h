@@ -749,48 +749,11 @@ class CORE_EXPORT QgsPointCloudRenderer
       };
     }
 
-    QColor encodeElevation( float z ) const
-    {
-      QColor c;
-      c.setRedF( z );
-      z *= std::pow<float>( 2, 8 );
-      z -= ( int )z;
-      c.setGreenF( z );
-      z *= std::pow<float>( 2, 8 );
-      z -= ( int )z;
-      c.setBlueF( z );
-      c.setAlphaF( 1.0f );
-      return c;
-    }
-
-    void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const
-    {
-      const QPointF originalXY( x, y );
-      context.renderContext().mapToPixel().transformInPlace( x, y );
-      QPainter *elevationPainter = context.elevationPainter();
-      const double zMin = -5000;//context.zMin();//-37.2;
-      const double zMax = +5000;//context.zMax();// 532.87;
-      float zFloat = ( z - zMin ) / ( zMax - zMin );
-      zFloat = std::max<double>( 0.0, std::min<double>( 1.0, zFloat ) );
-      context.updateZRange( zFloat );
-      QBrush brush( encodeElevation( zFloat ) );
-      switch ( mPointSymbol )
-      {
-        case Qgis::PointCloudSymbol::Square:
-          elevationPainter->fillRect( QRectF( x - mPainterPenWidth * 0.5,
-                                              y - mPainterPenWidth * 0.5,
-                                              mPainterPenWidth, mPainterPenWidth ), brush );
-          break;
-
-        case Qgis::PointCloudSymbol::Circle:
-          elevationPainter->setBrush( brush );
-          elevationPainter->setPen( Qt::NoPen );
-          elevationPainter->drawEllipse( QRectF( x - mPainterPenWidth * 0.5,
-                                                 y - mPainterPenWidth * 0.5,
-                                                 mPainterPenWidth, mPainterPenWidth ) );
-          break;
-      };
-    }
+    /**
+     * Draws a point at the elevation \a z using at the specified \a x and \a y (in map coordinates) on the elevation map.
+     * \since QGIS 3.28
+     */
+    void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
 
     /**
      * Copies common point cloud properties (such as point size and screen error) to the \a destination renderer.
