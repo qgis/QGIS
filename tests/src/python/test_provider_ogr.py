@@ -2733,6 +2733,80 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(rel.strength(), QgsRelation.Composition)
         self.assertEqual(rel.fieldPairs(), {'REL_OBJECTID': 'OBJECTID'})
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(3, 6, 0), "GDAL 3.6 required")
+    def test_provider_connection_relationships(self):
+        """
+        Test retrieving relationships via the connections API
+        """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        # start with a connection which only supports one layer
+        conn = metadata.createConnection(TEST_DATA_DIR + '/' + 'relationships.gdb', {})
+        self.assertTrue(conn)
+
+        self.assertTrue(conn.capabilities() & QgsAbstractDatabaseProviderConnection.RetrieveRelationships)
+
+        relationships = conn.relationships()
+        self.assertCountEqual([r.id() for r in relationships],
+                              ['composite_many_to_many_forward',
+                               'composite_many_to_many_backward',
+                               'composite_one_to_many',
+                               'composite_one_to_one',
+                               'points__ATTACHREL',
+                               'simple_attributed',
+                               'simple_backward_message_direction',
+                               'simple_both_message_direction',
+                               'simple_forward_message_direction',
+                               'simple_many_to_many_forward',
+                               'simple_many_to_many_backward',
+                               'simple_one_to_many',
+                               'simple_relationship_one_to_one'])
+
+        rel = [r for r in relationships if r.name() == 'simple_relationship_one_to_one'][0]
+        self.assertEqual(rel.id(), 'simple_relationship_one_to_one')
+        self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table1')
+        self.assertEqual(rel.referencedLayerProvider(), 'ogr')
+        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table2')
+        self.assertEqual(rel.referencingLayerProvider(), 'ogr')
+        self.assertEqual(rel.strength(), QgsRelation.Association)
+        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+
+        rel = [r for r in relationships if r.id() == 'composite_many_to_many_forward'][0]
+        self.assertEqual(rel.id(), 'composite_many_to_many_forward')
+        self.assertEqual(rel.name(), 'composite_many_to_many')
+        self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table6')
+        self.assertEqual(rel.referencedLayerProvider(), 'ogr')
+        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=composite_many_to_many')
+        self.assertEqual(rel.referencingLayerProvider(), 'ogr')
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'origin_foreign_key': 'pk'})
+
+        rel = [r for r in relationships if r.id() == 'composite_many_to_many_backward'][0]
+        self.assertEqual(rel.id(), 'composite_many_to_many_backward')
+        self.assertEqual(rel.name(), 'composite_many_to_many')
+        self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table7')
+        self.assertEqual(rel.referencedLayerProvider(), 'ogr')
+        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=composite_many_to_many')
+        self.assertEqual(rel.referencingLayerProvider(), 'ogr')
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'dest_foreign_key': 'parent_pk'})
+
+        # with table filter
+        relationships = conn.relationships('', 'table5')
+        self.assertCountEqual([r.id() for r in relationships],
+                              ['composite_one_to_many'])
+
+        rel = [r for r in relationships if r.name() == 'composite_one_to_many'][0]
+        self.assertEqual(rel.id(), 'composite_one_to_many')
+        self.assertEqual(rel.referencedLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table5')
+        self.assertEqual(rel.referencedLayerProvider(), 'ogr')
+        self.assertEqual(rel.referencingLayerSource(), TEST_DATA_DIR + '/' + 'relationships.gdb|layername=table4')
+        self.assertEqual(rel.referencingLayerProvider(), 'ogr')
+        self.assertEqual(rel.strength(), QgsRelation.Composition)
+        self.assertEqual(rel.fieldPairs(), {'parent_pk': 'pk'})
+
+        relationships = conn.relationships('', 'table2')
+        self.assertFalse(relationships)
+
 
 if __name__ == '__main__':
     unittest.main()
