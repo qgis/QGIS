@@ -74,7 +74,6 @@ class QgsMapTool;
 class QgsMapToolsDigitizingTechniqueManager;
 class QgsOptions;
 class QgsPluginLayer;
-class QgsPluginLayer;
 class QgsPluginManager;
 class QgsPointCloudLayer;
 class QgsPointXY;
@@ -168,7 +167,6 @@ class QgsElevationProfileWidget;
 #include "qgspointxy.h"
 #include "qgsmimedatautils.h"
 #include "qgsrecentprojectsitemsmodel.h"
-#include "qgsraster.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgsmaplayeractionregistry.h"
@@ -180,7 +178,6 @@ class QgsElevationProfileWidget;
 #include "qgis.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
-#include "qgsvectorlayerref.h"
 #include "devtools/qgsappdevtoolutils.h"
 #include "options/qgsoptionsutils.h"
 
@@ -225,9 +222,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QString crsAndFormatAdjustedLayerUri( const QString &uri, const QStringList &supportedCrs, const QStringList &supportedFormats ) const;
 
-    //! Add a 'pre-made' map layer to the project
-    void addMapLayer( QgsMapLayer *mapLayer );
-
     //! Sets the extents of the map canvas
     void setExtent( const QgsRectangle &rect );
 
@@ -236,8 +230,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Used to process a commandline argument, FileOpen or Drop event.
      */
     void openProject( const QString &fileName );
-
-    void openLayerDefinition( const QString &filename );
 
     /**
      * Opens a layout template file and creates a new layout designer window for it.
@@ -1302,6 +1294,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
     QgsMessageBar *visibleMessageBar();
 
+    //! Returns the message log dock
+    QgsDockWidget *logDock();
+
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
 
@@ -1381,8 +1376,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! About QGIS
     void about();
 
-    //! Add a list of database layers to the map
-    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     //! Add a vector layer defined by uri, layer name, data source uri
     void addSelectedVectorLayer( const QString &uri, const QString &layerName, const QString &provider );
     //! Replace the selected layer by a vector layer defined by uri, layer name, data source uri
@@ -1845,8 +1838,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeMapToolMessage();
     void updateMouseCoordinatePrecision();
     //    void debugHook();
-    //! Add a Layer Definition file
-    void addLayerDefinition();
+
     //! Exit Qgis
     void fileExit();
     //! Sets map tool to Zoom out
@@ -2035,13 +2027,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onActiveLayerChanged( QgsMapLayer *layer );
 
-    /**
-     * Triggered when a vector layer style has changed, checks for widget config layer dependencies
-     * \param categories style categories
-     * \since QGIS 3.12
-     */
-    void vectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
-
     //! Enable or disable event tracing (for debugging)
     void toggleEventTracing();
 
@@ -2138,9 +2123,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
 
     void showProgress( int progress, int totalSteps );
-
-    //! Open a vector tile layer - this is the generic function which takes all parameters
-    QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
 
     /**
      * Add the current project to the recently opened/saved projects list
@@ -2322,32 +2304,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create the option dialog
     QgsOptions *createOptionsDialog( QWidget *parent = nullptr );
-
-    /**
-     * Searches for layer dependencies by querying the form widgets and the
-     * \a vectorLayer itself for broken relations. Style \a categories can be
-     * used to limit the search to one or more of the currently implemented search
-     * categories ("Forms" for the form widgets and "Relations" for layer weak relations).
-     * \return a list of weak references to broken layer dependencies
-     */
-    const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories ) const;
-
-    /**
-     * Scans the \a vectorLayer for broken dependencies and automatically
-     * try to load the missing layers, users are notified about the operation
-     * result. Style \a categories can be
-     * used to exclude one of the currently implemented search categories
-     * ("Forms" for the form widgets and "Relations" for layer weak relations).
-     */
-    void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
-                                         QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
-
-    /**
-     * Scans the \a vectorLayer for weak relations and automatically
-     * try to resolve and create the broken relations.
-     */
-    void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
 
     /**
      * Pastes the \a features to the \a pasteVectorLayer and gives feedback to the user

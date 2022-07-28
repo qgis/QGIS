@@ -16,17 +16,24 @@
 #define QGSAPPLAYERHANDLING_H
 
 #include "qgis.h"
+#include "qgis_app.h"
 #include "qgsconfig.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayerref.h"
 
 class QgsMapLayer;
 class QgsProviderSublayerDetails;
 class QgsPointCloudLayer;
+class QgsVectorLayer;
 class QgsRasterLayer;
+class QgsMeshLayer;
+class QgsPluginLayer;
+class QgsVectorTileLayer;
 
 /**
  * Contains logic related to general layer handling in QGIS app.
  */
-class QgsAppLayerHandling
+class APP_EXPORT QgsAppLayerHandling
 {
 
   public:
@@ -38,18 +45,52 @@ class QgsAppLayerHandling
       AbortLoading
     };
 
-    static void postProcessAddedLayer( QgsMapLayer *layer );
+    /**
+     * Add a vector layer directly without prompting user for location
+     * The caller must provide information compatible with the provider plugin
+     * using the \a vectorLayerPath and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
+    static QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey = QLatin1String( "ogr" ) );
 
+    /**
+     * Add a raster layer directly without prompting user for location
+     * The caller must provide information compatible with the provider plugin
+     * using the \a uri and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
+    static QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey = QLatin1String( "gdal" ) );
 
-
-    static bool addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
-
+    /**
+     * Adds a mesh layer directly without prompting user for location
+     * The caller must provide information compatible with the provider plugin
+     * using the \a url and \a baseName. The provider can use these
+     * parameters in any way necessary to initialize the layer. The \a baseName
+     * parameter is used in the Map Legend so it should be formed in a meaningful
+     * way.
+     */
+    static QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
     //! Open a point cloud layer - this is the generic function which takes all parameters
     static QgsPointCloudLayer *addPointCloudLayer( const QString &uri,
         const QString &baseName,
         const QString &providerKey,
         bool guiWarning = true );
+
+    //! Open a plugin layer using its provider
+    static QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
+
+    //! Open a vector tile layer - this is the generic function which takes all parameters
+    static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool guiWarning = true );
+
+    static void postProcessAddedLayer( QgsMapLayer *layer );
+
+    static bool addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
+
 
     /**
      * This method will open a dialog so the user can select GDAL sublayers to load
@@ -74,15 +115,6 @@ class QgsAppLayerHandling
 
     template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
 
-    /**
-     * Add a raster layer directly without prompting user for location
-     * The caller must provide information compatible with the provider plugin
-     * using the \a uri and \a baseName. The provider can use these
-     * parameters in any way necessary to initialize the layer. The \a baseName
-     * parameter is used in the Map Legend so it should be formed in a meaningful
-     * way.
-     */
-    static QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey = QLatin1String( "gdal" ) );
 
     /**
      * Overloaded version of the private addRasterLayer()
@@ -91,6 +123,52 @@ class QgsAppLayerHandling
      * \returns TRUE if successfully added layer(s)
      */
     static bool addRasterLayers( const QStringList &files, bool guiWarning = true );
+
+    //! Add a 'pre-made' map layer to the project
+    static void addMapLayer( QgsMapLayer *mapLayer );
+
+    static void openLayerDefinition( const QString &filename );
+
+    //! Add a Layer Definition file
+    static void addLayerDefinition();
+
+    //! Add a list of database layers to the map
+    static void addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey );
+
+    /**
+     * Searches for layer dependencies by querying the form widgets and the
+     * \a vectorLayer itself for broken relations. Style \a categories can be
+     * used to limit the search to one or more of the currently implemented search
+     * categories ("Forms" for the form widgets and "Relations" for layer weak relations).
+     * \return a list of weak references to broken layer dependencies
+     */
+    static const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories );
+
+    /**
+     * Scans the \a vectorLayer for broken dependencies and automatically
+     * try to load the missing layers, users are notified about the operation
+     * result. Style \a categories can be
+     * used to exclude one of the currently implemented search categories
+     * ("Forms" for the form widgets and "Relations" for layer weak relations).
+     */
+    static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+
+    /**
+     * Scans the \a vectorLayer for weak relations and automatically
+     * try to resolve and create the broken relations.
+     */
+    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+
+    /**
+     * Triggered when a vector layer style has changed, checks for widget config layer dependencies
+     * \param categories style categories
+     */
+    static void onVectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
+
+
 
 };
 
