@@ -4080,10 +4080,8 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   }
 
   // update layout based widgets
-  QgsLayoutPropertiesWidget *oldLayoutWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
-  delete oldLayoutWidget;
-  QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
-  delete oldGuideWidget;
+  delete qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  delete qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
 
   mLayoutPropertiesWidget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
   mLayoutPropertiesWidget->setDockMode( true );
