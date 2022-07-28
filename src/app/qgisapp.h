@@ -232,15 +232,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setExtent( const QgsRectangle &rect );
 
     /**
-     * Open a raster or vector file; ignore other files.
-     * Used to process a commandline argument, FileOpen or Drop event.
-     * Set \a allowInteractive to TRUE if it is OK to ask the user for information (mostly for
-     * when a vector layer has sublayers and we want to ask which sublayers to use).
-     * \returns TRUE if the file is successfully opened
-     */
-    bool openLayer( const QString &fileName, bool allowInteractive = false );
-
-    /**
      * Open the specified project file; prompt to save previous project if necessary.
      * Used to process a commandline argument, FileOpen or Drop event.
      */
@@ -1212,13 +1203,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
 
-    /**
-     * Overloaded version of the private addRasterLayer()
-     * Method that takes a list of file names instead of prompting
-     * user with a dialog.
-     * \returns TRUE if successfully added layer(s)
-     */
-    bool addRasterLayers( const QStringList &files, bool guiWarning = true );
 
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
@@ -1317,6 +1301,45 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
     QgsMessageBar *visibleMessageBar();
+
+    //! Checks for running tasks dependent on the open project
+    bool checkTasksDependOnProject();
+
+    /**
+     * Checks for unsaved changes in open layers and prompts the user to save
+     * or discard these changes for each layer.
+     *
+     * Returns TRUE if there are no unsaved layer edits remaining, or the user
+     * opted to discard them all. Returns FALSE if the user opted to cancel
+     * on any layer.
+     */
+    bool checkUnsavedLayerEdits();
+
+    /**
+     * Checks whether memory layers (with features) exist in the project, and if so
+     * shows a warning to users that their contents will be lost on
+     * project unload.
+     *
+     * Returns TRUE if there are no memory layers present, or if the
+     * user opted to discard their contents. Returns FALSE if there
+     * are memory layers present and the user clicked 'Cancel' on
+     * the warning dialog.
+     */
+    bool checkMemoryLayers();
+
+    /**
+     * Check to see if the current project file is dirty and if so, prompt the user to save it.
+     * \returns TRUE if saved or discarded, FALSE if canceled
+     */
+    bool saveDirty();
+
+  public slots:
+
+    /**
+     * Activates or deactivates actions depending on the current maplayer type.
+     * Is called from the legend when the current legend item has changed.
+    */
+    void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
 
   protected:
     void showEvent( QShowEvent *event ) override;
@@ -1808,12 +1831,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates or deactivates actions depending on the selected layers in the layer panel.
     void activateDeactivateMultipleLayersRelatedActions();
 
-    /**
-     * Activates or deactivates actions depending on the current maplayer type.
-     * Is called from the legend when the current legend item has changed.
-    */
-    void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
-
     void selectionChanged( QgsMapLayer *layer );
 
     void extentChanged();
@@ -2122,35 +2139,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showProgress( int progress, int totalSteps );
 
-    /**
-     * This method will open a dialog so the user can select GDAL sublayers to load
-     * \returns TRUE if any items were loaded
-     */
-    bool askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes );
-
-    enum class SublayerHandling
-    {
-      AskUser,
-      LoadAll,
-      AbortLoading
-    };
-    SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false ) const;
-
-    QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
-
-
     //! Open a vector tile layer - this is the generic function which takes all parameters
     QgsVectorTileLayer *addVectorTileLayerPrivate( const QString &uri, const QString &baseName, bool guiWarning = true );
-
-    //! Open a point cloud layer - this is the generic function which takes all parameters
-    QgsPointCloudLayer *addPointCloudLayerPrivate( const QString &uri,
-        const QString &baseName,
-        const QString &providerKey,
-        bool guiWarning = true );
-
-    bool addVectorLayersPrivate( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
-
-    template<typename T> T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
 
     /**
      * Add the current project to the recently opened/saved projects list
@@ -2171,41 +2161,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     // void pasteTransformations();
 
     /**
-     * Check to see if the current project file is dirty and if so, prompt the user to save it.
-     * \returns TRUE if saved or discarded, FALSE if canceled
-     */
-    bool saveDirty();
-
-    /**
-     * Checks for unsaved changes in open layers and prompts the user to save
-     * or discard these changes for each layer.
-     *
-     * Returns TRUE if there are no unsaved layer edits remaining, or the user
-     * opted to discard them all. Returns FALSE if the user opted to cancel
-     * on any layer.
-     */
-    bool checkUnsavedLayerEdits();
-
-    /**
-     * Checks whether memory layers (with features) exist in the project, and if so
-     * shows a warning to users that their contents will be lost on
-     * project unload.
-     *
-     * Returns TRUE if there are no memory layers present, or if the
-     * user opted to discard their contents. Returns FALSE if there
-     * are memory layers present and the user clicked 'Cancel' on
-     * the warning dialog.
-     */
-    bool checkMemoryLayers();
-
-    /**
      * Checks whether any registered application exit blockers should prevent
      * the application from exiting.
      */
     bool checkExitBlockers();
-
-    //! Checks for running tasks dependent on the open project
-    bool checkTasksDependOnProject();
 
     /**
      * Helper function to union several geometries together (used in function mergeSelectedFeatures)
@@ -2752,45 +2711,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSet<Qgs3DMapCanvasWidget *> mOpen3DMapViews;
 #endif
 
-    class QgsCanvasRefreshBlocker
-    {
-      public:
-
-        QgsCanvasRefreshBlocker()
-        {
-          if ( QgisApp::instance()->mFreezeCount++ == 0 )
-          {
-            // going from unfrozen to frozen, so freeze canvases
-            QgisApp::instance()->freezeCanvases( true );
-          }
-        }
-        QgsCanvasRefreshBlocker( const QgsCanvasRefreshBlocker &other ) = delete;
-        QgsCanvasRefreshBlocker &operator=( const QgsCanvasRefreshBlocker &other ) = delete;
-
-        void release()
-        {
-          if ( mReleased )
-            return;
-
-          mReleased = true;
-          if ( --QgisApp::instance()->mFreezeCount == 0 )
-          {
-            // going from frozen to unfrozen, so unfreeze canvases
-            QgisApp::instance()->freezeCanvases( false );
-            QgisApp::instance()->refreshMapCanvas();
-          }
-        }
-
-        ~QgsCanvasRefreshBlocker()
-        {
-          if ( !mReleased )
-            release();
-        }
-
-      private:
-
-        bool mReleased = false;
-    };
     int mFreezeCount = 0;
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
