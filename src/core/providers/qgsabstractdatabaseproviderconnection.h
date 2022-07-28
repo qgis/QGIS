@@ -20,13 +20,14 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_core.h"
 #include "qgsfields.h"
-#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 
 #include <QObject>
 
 class QgsFeedback;
 class QgsFieldDomain;
+class QgsWeakRelation;
+
 
 /**
  * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
@@ -504,6 +505,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() (since QGIS 3.26)
       AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
       RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
+      RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database (since QGIS 3.28)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -887,6 +889,20 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.26
      */
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a list of relationships detected in the database.
+     *
+     * This is supported on providers with the Capability::RetrieveRelationships capability only.
+     *
+     * If a \a schema and/or \a tableName are specified, then only relationships where the specified table
+     * forms the left (or "parent" / "referenced") side of the relationship are retrieved.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \since QGIS 3.28
+     */
+    virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const SIP_THROW( QgsProviderConnectionException );
 
   protected:
 

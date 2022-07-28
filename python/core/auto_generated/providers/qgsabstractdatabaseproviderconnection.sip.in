@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
@@ -354,6 +355,7 @@ This information is calculated from the geometry columns types.
       SetFieldDomain,
       AddFieldDomain,
       RenameField,
+      RetrieveRelationships,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -779,6 +781,20 @@ Adds a new field ``domain`` to the database.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.26
+%End
+
+    virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns a list of relationships detected in the database.
+
+This is supported on providers with the Capability.RetrieveRelationships capability only.
+
+If a ``schema`` and/or ``tableName`` are specified, then only relationships where the specified table
+forms the left (or "parent" / "referenced") side of the relationship are retrieved.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.28
 %End
 
   protected:

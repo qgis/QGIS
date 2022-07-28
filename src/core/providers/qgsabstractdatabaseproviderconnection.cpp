@@ -16,7 +16,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
-#include "qgslogger.h"
+#include "qgsweakrelation.h"
 #include "qgsfeedback.h"
 
 #include <QVariant>
@@ -1316,6 +1316,12 @@ void QgsAbstractDatabaseProviderConnection::setFieldDomainName( const QString &,
 void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain &, const QString & ) const
 {
   checkCapability( Capability::AddFieldDomain );
+}
+
+QList< QgsWeakRelation > QgsAbstractDatabaseProviderConnection::relationships( const QString &, const QString & ) const
+{
+  checkCapability( Capability::RetrieveRelationships );
+  return {};
 }
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const
