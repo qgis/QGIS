@@ -421,6 +421,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 
 class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsSpatiaLiteProviderMetadata();
     QIcon icon() const override;

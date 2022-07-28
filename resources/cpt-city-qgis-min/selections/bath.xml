@@ -22,6 +22,6 @@
     <gradient dir="xkcd" file="xkcd-bath"/>
     <gradient dir="wkp/lilleskut" file="afrikakarte-bath"/>
     <gradient dir="wkp/country" file="wiki-caucasus-bath"/>
-    <gradient dir="ibcso" file="ibcso"/>
+    <gradient dir="ibcso" file="ibcso-bath"/>
   </gradients>
 </selection>

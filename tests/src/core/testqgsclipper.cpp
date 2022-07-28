@@ -73,9 +73,15 @@ void TestQgsClipper::basicWithZ()
   // QgsClipper is static only
   QgsBox3d clipRect( 10, 10, 11, 25, 30, 19 );
 
-  QVector< double > x = { 10.4, 20.2 };
-  QVector< double > y = {20.5, 30.2 };
-  QVector< double > z = {10.0, 20.0 };
+  QVector< double > x;
+  QVector< double > y;
+  QVector< double > z;
+  // check that clipping an empty polygon doesn't crash
+  QgsClipper::trimPolygon( x, y, z, clipRect );
+
+  x = { 10.4, 20.2 };
+  y = { 20.5, 30.2 };
+  z = { 10.0, 20.0 };
   QgsClipper::trimPolygon( x, y, z, clipRect );
 
   // Check nothing sticks out.

@@ -33,7 +33,7 @@ target_include_directories(provider_wms_a PUBLIC
 target_compile_features(provider_wms_a PRIVATE cxx_std_17)
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(WMS_UIS_H ${WMS_UIS})
   else()
     QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})

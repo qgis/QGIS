@@ -254,6 +254,7 @@ class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 
 class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsDelimitedTextProviderMetadata();
     QIcon icon() const override;

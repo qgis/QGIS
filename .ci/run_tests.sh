@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # check for docker-compose and docker availability
 command -v docker > /dev/null || {
 	echo "Please install docker" >&2
@@ -91,7 +93,7 @@ else
     --env-file .docker/docker-variables.env \
     --env PUSH_TO_CDASH=false \
     --env WITH_QT5=true \
-    --env WITH_QT6=false \
+    --env BUILD_WITH_QT6=false \
     --env WITH_QUICK=false \
     --env WITH_3D=false \
     --env PATCH_QT_3D=false \
@@ -120,6 +122,9 @@ else
   echo "--=[ Starting interactive shell into test environment"
   COMMAND=bash
 fi
+
+# Create an empty webdav folder with appropriate permissions so www user can write inside it
+mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
 
 docker-compose \
   -f .docker/docker-compose-testing.yml \

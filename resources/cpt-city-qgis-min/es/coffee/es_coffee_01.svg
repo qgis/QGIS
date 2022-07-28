@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Coffe 01yeni" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(209,214,191)" stop-opacity="1.0000"/>
+        <stop offset="5.10%" stop-color="rgb(209,203,180)" stop-opacity="1.0000"/>
+        <stop offset="10.01%" stop-color="rgb(208,192,169)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(199,149,116)" stop-opacity="1.0000"/>
+        <stop offset="34.01%" stop-color="rgb(186,118,83)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(168,72,34)" stop-opacity="1.0000"/>
+        <stop offset="60.01%" stop-color="rgb(154,47,11)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(132,23,2)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(114,17,1)" stop-opacity="1.0000"/>
+        <stop offset="85.01%" stop-color="rgb(85,8,0)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(62,1,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Coffe 01yeni)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:38:45 2012"/>
+  </metadata>
+</svg>

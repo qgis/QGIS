@@ -1526,6 +1526,8 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   {
     // preview render - always use optimization
     jobMapSettings.setFlag( Qgis::MapSettingsFlag::UseRenderingOptimization, true );
+    // in a preview render we disable vector masking, as that is considerably slower vs raster masking
+    jobMapSettings.setFlag( Qgis::MapSettingsFlag::ForceRasterMasks, true );
     jobMapSettings.setRendererUsage( Qgis::RendererUsage::View );
   }
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Autumn 19" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(106,14,8)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(153,41,19)" stop-opacity="1.0000"/>
+        <stop offset="33.01%" stop-color="rgb(190,70,24)" stop-opacity="1.0000"/>
+        <stop offset="40.99%" stop-color="rgb(201,202,136)" stop-opacity="1.0000"/>
+        <stop offset="43.99%" stop-color="rgb(187,137,5)" stop-opacity="1.0000"/>
+        <stop offset="48.00%" stop-color="rgb(199,200,142)" stop-opacity="1.0000"/>
+        <stop offset="49.00%" stop-color="rgb(201,202,135)" stop-opacity="1.0000"/>
+        <stop offset="53.00%" stop-color="rgb(187,137,5)" stop-opacity="1.0000"/>
+        <stop offset="56.01%" stop-color="rgb(202,203,129)" stop-opacity="1.0000"/>
+        <stop offset="63.99%" stop-color="rgb(187,68,24)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(142,35,17)" stop-opacity="1.0000"/>
+        <stop offset="98.00%" stop-color="rgb(90,5,4)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(90,5,4)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Autumn 19)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:39:26 2012"/>
+  </metadata>
+</svg>

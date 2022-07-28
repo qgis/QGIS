@@ -432,7 +432,7 @@ QWidget *QgsNewVectorTableDialogFieldsDelegate::createEditor( QWidget *parent, c
       connect( cbo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorTableDialogFieldsDelegate::onFieldTypeChanged );
       for ( const auto &f : std::as_const( mTypeList ) )
       {
-        cbo->addItem( f.mTypeDesc, f.mTypeName );
+        cbo->addItem( QgsFields::iconForFieldType( f.mType, f.mSubType ), f.mTypeDesc, f.mTypeName );
       }
       return cbo;
     }

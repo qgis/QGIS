@@ -1334,6 +1334,7 @@ class CORE_EXPORT Qgis
       Render3DMap              = 0x2000, //!< Render is for a 3D map
       HighQualityImageTransforms = 0x4000, //!< Enable high quality image transformations, which results in better appearance of scaled or rotated raster components of a map (since QGIS 3.24)
       SkipSymbolRendering      = 0x8000, //!< Disable symbol rendering while still drawing labels if enabled (since QGIS 3.24)
+      ForceRasterMasks         = 0x10000,  //!< Force symbol masking to be applied using a raster method. This is considerably faster when compared to the vector method, but results in a inferior quality output. (since QGIS 3.26.1)
     };
     //! Map settings flags
     Q_DECLARE_FLAGS( MapSettingsFlags, MapSettingsFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsMapSettings, Flags )
@@ -1999,7 +2000,7 @@ class CORE_EXPORT Qgis
       TrustLayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( FlagTrustLayerMetadata ) = 1 << 2, //!< Trust layer metadata. Improves project read time. Do not use it if layers' extent is not fixed during the project's use by QGIS and QGIS Server.
       DontStoreOriginalStyles SIP_MONKEYPATCH_COMPAT_NAME( FlagDontStoreOriginalStyles ) = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
       DontLoad3DViews SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoad3DViews ) = 1 << 4, //!< Skip loading 3D views (since QGIS 3.26)
-      DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (since QGIS 3.26)
+      DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (deprecated -- use ProjectCapability::ProjectStyles flag instead)
     };
     Q_ENUM( ProjectReadFlag )
 
@@ -2012,6 +2013,28 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( ProjectReadFlags, ProjectReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsProject, ReadFlags )
     Q_FLAG( ProjectReadFlags )
+
+    /**
+     * Flags which control project capabilities.
+     *
+     * These flags are specific upfront on creation of a QgsProject object, and can
+     * be used to selectively enable potentially costly functionality for the project.
+     *
+     * \since QGIS 3.26.1
+     */
+    enum class ProjectCapability : int
+    {
+      ProjectStyles = 1 << 0, //!< Enable the project embedded style library. Enabling this flag can increase the time required to clear and load projects.
+    };
+    Q_ENUM( ProjectCapability )
+
+    /**
+     * Flags which control project capabilities.
+     *
+     * \since QGIS 3.26.1
+     */
+    Q_DECLARE_FLAGS( ProjectCapabilities, ProjectCapability )
+    Q_FLAG( ProjectCapabilities )
 
     /**
      * Available MapBox GL style source types.
@@ -2029,6 +2052,25 @@ class CORE_EXPORT Qgis
       Unknown, //!< Other/unknown source type
     };
     Q_ENUM( MapBoxGlStyleSourceType )
+
+    /**
+     * Available ArcGIS REST service types.
+     *
+     * \note Prior to QGIS 3.26 this was available as QgsArcGisPortalUtils::ItemType.
+     *
+     * \since QGIS 3.28
+     */
+    enum class ArcGisRestServiceType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsArcGisPortalUtils, ItemType ) : int
+      {
+      FeatureServer SIP_MONKEYPATCH_COMPAT_NAME( FeatureService ), //!< FeatureServer
+      MapServer SIP_MONKEYPATCH_COMPAT_NAME( MapService ), //!< MapServer
+      ImageServer SIP_MONKEYPATCH_COMPAT_NAME( ImageService ), //!< ImageServer
+      GlobeServer, //!< GlobeServer
+      GPServer, //!< GPServer
+      GeocodeServer, //!< GeocodeServer
+      Unknown, //!< Other unknown/unsupported type
+    };
+    Q_ENUM( ArcGisRestServiceType )
 
     /**
      * Identify search radius in mm
@@ -2171,6 +2213,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SnappingTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::PlotToolFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProfileGeneratorFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectReadFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )

@@ -215,6 +215,7 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
 class QgsWfsProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsWfsProviderMetadata();
     QIcon icon() const override;

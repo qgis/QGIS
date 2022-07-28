@@ -353,6 +353,7 @@ This information is calculated from the geometry columns types.
       RetrieveFieldDomain,
       SetFieldDomain,
       AddFieldDomain,
+      RenameField,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -527,6 +528,25 @@ Adds a field.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.16
+%End
+
+    virtual void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
+%Docstring
+Renames an existing field.
+
+:param schema: name of the schema (schema is ignored if not supported by the backend).
+:param tableName: name of the table
+:param name: current name of field
+:param newName: new name for field
+
+.. note::
+
+   it is responsibility of the caller to handle open layers and registry entries.
+
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.28
 %End
 
     virtual void renameSchema( const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
@@ -708,6 +728,13 @@ This is supported on providers with the Capability.ListFieldDomains capability o
 .. seealso:: :py:func:`fieldDomain`
 
 .. versionadded:: 3.26
+%End
+
+    virtual QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const;
+%Docstring
+Returns a list of field domain types which are supported by the provider.
+
+.. versionadded:: 3.28
 %End
 
     virtual QgsFieldDomain *fieldDomain( const QString &name ) const throw( QgsProviderConnectionException ) /Factory/;

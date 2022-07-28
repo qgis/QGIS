@@ -112,6 +112,7 @@ class QgsAppQueryLogger : public QAbstractItemModel
  */
 class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
   public:
 
     /**

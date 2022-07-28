@@ -49,6 +49,7 @@ class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
     QIcon icon() const override;
     QgsFields fields( const QString &schema, const QString &table ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
+    QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
 
   protected:
     QString databaseQueryLogIdentifier() const override;

@@ -261,6 +261,13 @@ Qgis::VectorExportResult QgsOgrProvider::createEmptyLayer( const QString &uri,
     update = options->value( QStringLiteral( "update" ) ).toBool();
     if ( update )
     {
+      // when updating an existing dataset, always use the original driver
+      GDALDriverH hDriver = GDALIdentifyDriverEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
+      if ( hDriver )
+      {
+        driverName = GDALGetDriverShortName( hDriver );
+      }
+
       if ( !overwrite && !layerName.isEmpty() )
       {
         gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
@@ -411,130 +418,15 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   open( OpenModeInitial );
 
-  int nMaxIntLen = 11;
-  int nMaxInt64Len = 21;
-  int nMaxDoubleLen = 20;
-  int nMaxDoublePrec = 15;
-  int nDateLen = 8;
-  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
-  {
-    // GPKG only supports field length for text (and binary)
-    nMaxIntLen = 0;
-    nMaxInt64Len = 0;
-    nMaxDoubleLen = 0;
-    nMaxDoublePrec = 0;
-    nDateLen = 0;
-  }
-
   QList<NativeType> nativeTypes;
-  nativeTypes
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Int ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::LongLong ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
-      << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::String ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
-
-  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
-    nativeTypes << QgsVectorDataProvider::NativeType( tr( "JSON (string)" ), QStringLiteral( "JSON" ), QVariant::Map, 0, 0, 0, 0, QVariant::String );
-
-  bool supportsDate = true;
-  bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
-  bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
-  bool supportsBinary = false;
-  bool supportIntegerList = false;
-  bool supportInteger64List = false;
-  bool supportRealList = false;
-  bool supportsStringList = false;
-  const char *pszDataTypes = nullptr;
   if ( mOgrOrigLayer )
   {
-    pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+    nativeTypes = QgsOgrUtils::nativeFieldTypesForDriver( mOgrOrigLayer->driver() );
   }
-  // For drivers that advertise their data type, use that instead of the
-  // above hardcoded defaults.
-  if ( pszDataTypes )
-  {
-    char **papszTokens = CSLTokenizeString2( pszDataTypes, " ", 0 );
-    supportsDate = CSLFindString( papszTokens, "Date" ) >= 0;
-    supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
-    supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
-    supportsBinary = CSLFindString( papszTokens, "Binary" ) >= 0;
-    supportIntegerList = CSLFindString( papszTokens, "IntegerList" ) >= 0;
-    supportInteger64List = CSLFindString( papszTokens, "Integer64List" ) >= 0;
-    supportRealList = CSLFindString( papszTokens, "RealList" ) >= 0;
-    supportsStringList = CSLFindString( papszTokens, "StringList" ) >= 0;
-    CSLDestroy( papszTokens );
-  }
-
-  // Older versions of GDAL incorrectly report that shapefiles support
-  // DateTime.
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
-  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
-  {
-    supportsDateTime = false;
-  }
-#endif
-
-  if ( supportsDate )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Date ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
-  }
-  if ( supportsTime )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::Time ), QStringLiteral( "time" ), QVariant::Time );
-  }
-  if ( supportsDateTime )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::DateTime ), QStringLiteral( "datetime" ), QVariant::DateTime );
-  }
-  if ( supportsBinary )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::ByteArray ), QStringLiteral( "binary" ), QVariant::ByteArray );
-  }
-  if ( supportIntegerList )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Int ), QStringLiteral( "integerlist" ), QVariant::List, 0, 0, 0, 0, QVariant::Int );
-  }
-  if ( supportInteger64List )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::LongLong ), QStringLiteral( "integer64list" ), QVariant::List, 0, 0, 0, 0, QVariant::LongLong );
-  }
-  if ( supportRealList )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::List, QVariant::Double ), QStringLiteral( "doublelist" ), QVariant::List, 0, 0, 0, 0, QVariant::Double );
-  }
-  if ( supportsStringList )
-  {
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QVariant::StringList ), QStringLiteral( "stringlist" ), QVariant::List, 0, 0, 0, 0, QVariant::String );
-  }
-
-  bool supportsBoolean = false;
+  setNativeTypes( nativeTypes );
 
   // layer metadata
   loadMetadata();
-
-  if ( mOgrOrigLayer )
-  {
-    const char *pszDataSubTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
-    if ( pszDataSubTypes && strstr( pszDataSubTypes, "Boolean" ) )
-      supportsBoolean = true;
-  }
-
-  if ( supportsBoolean )
-  {
-    // boolean data type
-    nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool );
-  }
-
-  setNativeTypes( nativeTypes );
 
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
 }

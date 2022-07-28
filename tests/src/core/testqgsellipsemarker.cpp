@@ -55,6 +55,16 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void ellipseMarkerSymbol();
+
+    void ellipseMarkerSymbolThirdCircle();
+    void ellipseMarkerSymbolQuarterCircle();
+
+    void ellipseMarkerSymbolPentagon();
+    void ellipseMarkerSymbolHexagon();
+    void ellipseMarkerSymbolOctagon();
+
+    void ellipseMarkerSymbolStar();
+
     void ellipseMarkerSymbolSize();
     void ellipseMarkerSymbolBevelJoin();
     void ellipseMarkerSymbolMiterJoin();
@@ -141,6 +151,84 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setStrokeWidth( 0.8 );
   QVERIFY( imageCheck( "ellipsemarker" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolThirdCircle()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol third circle test</h2>\n" );
+
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::ThirdCircle );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
+  QVERIFY( imageCheck( "ellipsemarker_thirdcircle" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolQuarterCircle()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol quarter circle test</h2>\n" );
+
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::QuarterCircle );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
+  QVERIFY( imageCheck( "ellipsemarker_quartercircle" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolPentagon()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol pentagon test</h2>\n" );
+
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Pentagon );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
+  QVERIFY( imageCheck( "ellipsemarker_pentagon" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolHexagon()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol hexagon test</h2>\n" );
+
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Hexagon );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
+  QVERIFY( imageCheck( "ellipsemarker_hexagon" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolOctagon()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol octagon test</h2>\n" );
+
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Octagon );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
+  QVERIFY( imageCheck( "ellipsemarker_octagon" ) );
+}
+
+void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolStar()
+{
+  mReport += QLatin1String( "<h2>Ellipse marker symbol star test</h2>\n" );
+
+  mEllipseMarkerLayer->setFillColor( Qt::blue );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
+  mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Star );
+  mEllipseMarkerLayer->setSymbolHeight( 3 );
+  mEllipseMarkerLayer->setSymbolWidth( 6 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
+  QVERIFY( imageCheck( "ellipsemarker_star" ) );
 }
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolSize()

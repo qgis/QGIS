@@ -28,6 +28,7 @@ email                : nyall dot dawson at gmail dot com
  */
 class QgsOgrProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
 
     QgsOgrProviderMetadata();
@@ -54,6 +55,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
       const QMap<QString, QVariant> *options ) override;
+    bool createDatabase( const QString &uri, QString &errorMessage ) override;
 
     // -----
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;

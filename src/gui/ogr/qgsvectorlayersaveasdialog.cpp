@@ -26,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerutils.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextCodec>
@@ -57,6 +58,14 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, O
     mLayerExtent = layer->extent();
   }
   setup();
+
+  if ( layer && leLayername->isEnabled() )
+  {
+    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name() );
+    leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
+    leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
+    leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
+  }
 
   if ( !( mOptions & Symbology ) )
   {
@@ -188,10 +197,16 @@ void QgsVectorLayerSaveAsDialog::setup()
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
-    if ( !filePath.isEmpty() && leLayername->isEnabled() )
+
+    const QFileInfo fileInfo( filePath );
+    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
+    if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
+      leLayername->setDefaultValue( suggestedLayerName );
+
+    // if no layer name set, then automatically match the output layer name to the file name
+    if ( leLayername->text().isEmpty() && !filePath.isEmpty() && leLayername->isEnabled() )
     {
-      QFileInfo fileInfo( filePath );
-      leLayername->setText( fileInfo.completeBaseName() );
+      leLayername->setText( suggestedLayerName );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
@@ -486,10 +501,16 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 
   if ( !leLayername->isEnabled() )
     leLayername->setText( QString() );
-  else if ( leLayername->text().isEmpty() &&
-            !mFilename->filePath().isEmpty() )
+  else if ( leLayername->text().isEmpty() )
   {
-    QString layerName = QFileInfo( mFilename->filePath() ).baseName();
+    QString layerName = mDefaultOutputLayerNameFromInputLayerName;
+    if ( layerName.isEmpty() && !mFilename->filePath().isEmpty() )
+    {
+      layerName = QFileInfo( mFilename->filePath() ).baseName();
+      leLayername->setDefaultValue( layerName );
+    }
+    if ( layerName.isEmpty() )
+      layerName = tr( "new_layer" );
     leLayername->setText( layerName );
   }
 

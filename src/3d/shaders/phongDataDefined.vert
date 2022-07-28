@@ -24,6 +24,7 @@ uniform mat3 modelNormalMatrix;
 uniform mat4 modelViewProjection;
 
 uniform float texCoordScale;
+uniform float opacity;
 
 void main()
 {
@@ -33,11 +34,10 @@ void main()
 
 
     // colors defined data
-    vs_out.ambient=vec4(dataDefinedAmbiantColor,1.0);
-    vs_out.diffuse=vec4(dataDefinedDiffuseColor,1.0);
-    vs_out.specular=vec4(dataDefinedSpecularColor,1.0);
+    vs_out.ambient = vec4(dataDefinedAmbiantColor, opacity);
+    vs_out.diffuse = vec4(dataDefinedDiffuseColor, opacity);
+    vs_out.specular = vec4(dataDefinedSpecularColor, opacity);
 
     // Calculate vertex position in clip coordinates
     gl_Position = modelViewProjection * vec4(vertexPosition, 1.0);
 }
-

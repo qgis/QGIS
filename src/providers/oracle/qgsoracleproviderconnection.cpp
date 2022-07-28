@@ -35,6 +35,7 @@ const QStringList CONFIGURATION_PARAMETERS
   QStringLiteral( "disableInvalidGeometryHandling" ),
   QStringLiteral( "onlyExistingTypes" ),
   QStringLiteral( "includeGeoAttributes" ),
+  QStringLiteral( "projectsInDatabase" ),
   QStringLiteral( "saveUsername" ),
   QStringLiteral( "savePassword" ),
   QStringLiteral( "schema" )

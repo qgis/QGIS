@@ -126,6 +126,7 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
  */
 class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
 {
+    Q_OBJECT
   public:
     QgsMeshAvailableDatasetGroupTreeModel( QObject *parent = nullptr );
 
@@ -146,6 +147,7 @@ class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
  */
 class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
 {
+    Q_OBJECT
   public:
     QgsMeshDatasetGroupProxyModel( QAbstractItemModel *sourceModel );
 
@@ -301,6 +303,7 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
  */
 class GUI_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
 {
+    Q_OBJECT
   public:
     explicit QgsMeshDatasetGroupListModel( QObject *parent );
 

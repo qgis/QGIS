@@ -148,6 +148,7 @@ library object.
       PriorityForUri,
       LayerTypesForUri,
       QuerySublayers,
+      CreateDatabase,
     };
     typedef QFlags<QgsProviderMetadata::ProviderMetadataCapability> ProviderMetadataCapabilities;
 
@@ -425,6 +426,27 @@ eg. "yes" value will be returned as ``True``, 0 will be returned as ``False``
 %End
 
 
+
+    virtual bool createDatabase( const QString &uri, QString &errorMessage /Out/ );
+%Docstring
+Creates a new empty database at the specified ``uri``.
+
+This method can be used for supported providers to construct a new empty database. For instance, the OGR provider
+metadata :py:func:`~QgsProviderMetadata.createDatabase` method can be used to create new empty GeoPackage or FileGeodatabase databases.
+
+:param uri: destination URI for newly created database.
+
+:return: - ``True`` if the database was successfully created
+         - errorMessage: will be set to a descriptive error message if the database could not be successfully created.
+
+
+.. note::
+
+   This method is only supported by providers which return the QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase capability.
+
+
+.. versionadded:: 3.28
+%End
 
     virtual QgsRasterDataProvider *createRasterDataProvider(
       const QString &uri,

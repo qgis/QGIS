@@ -50,7 +50,7 @@ target_compile_features(provider_virtuallayer_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_virtuallayer_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(VLAYER_PROVIDER_UIS_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
   else()
     QT5_WRAP_UI(VLAYER_PROVIDER_UIS_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)

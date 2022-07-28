@@ -47,7 +47,7 @@ target_compile_features(provider_spatialite_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_spatialite_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})
   else()
     QT5_WRAP_UI(SPATIALITE_UIS_H ${SPATIALITE_UIS})

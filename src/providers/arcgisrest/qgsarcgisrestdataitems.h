@@ -194,7 +194,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, const QString &serviceType );
+    QgsArcGisMapServiceItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &baseUrl, const QString &authcfg, const QgsHttpHeaders &headers, Qgis::ArcGisRestServiceType serviceType );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 
@@ -203,7 +203,7 @@ class QgsArcGisMapServiceItem : public QgsDataCollectionItem
     QString mBaseUrl;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
-    QString mServiceType;
+    Qgis::ArcGisRestServiceType mServiceType = Qgis::ArcGisRestServiceType::Unknown;
 };
 
 /**

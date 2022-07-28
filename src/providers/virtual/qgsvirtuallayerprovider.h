@@ -135,6 +135,7 @@ class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 
 class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsVirtualLayerProviderMetadata();
     QIcon icon() const override;

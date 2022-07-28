@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Autumn 24" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(112,95,50)" stop-opacity="1.0000"/>
+        <stop offset="1.00%" stop-color="rgb(115,98,53)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(156,138,95)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(181,163,121)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(187,150,111)" stop-opacity="1.0000"/>
+        <stop offset="66.99%" stop-color="rgb(192,101,94)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(157,76,76)" stop-opacity="1.0000"/>
+        <stop offset="98.00%" stop-color="rgb(91,49,49)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(91,49,49)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Autumn 24)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:39:29 2012"/>
+  </metadata>
+</svg>

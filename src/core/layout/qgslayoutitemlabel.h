@@ -283,7 +283,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     double mMarginY = 0.0;
 
     //! Horizontal Alignment
-    Qt::AlignmentFlag mHAlignment = Qt::AlignJustify;
+    Qt::AlignmentFlag mHAlignment = Qt::AlignLeft;
 
     //! Vertical Alignment
     Qt::AlignmentFlag mVAlignment = Qt::AlignTop;

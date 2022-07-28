@@ -137,20 +137,17 @@ QMap<QString, QString> QgsPhongMaterialSettings::toExportParameters() const
 
 void QgsPhongMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *effect ) const
 {
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor::fromRgbF( 0.05f, 0.05f, 0.05f, 1.0f ) );
-  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor::fromRgbF( 0.01f, 0.01f, 0.01f, 1.0f ) );
-  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), 150.0f );
-
-  diffuseParameter->setValue( mDiffuse );
-  ambientParameter->setValue( mAmbient );
-  specularParameter->setValue( mSpecular );
-  shininessParameter->setValue( mShininess );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ka" ), mAmbient );
+  Qt3DRender::QParameter *diffuseParameter = new Qt3DRender::QParameter( QStringLiteral( "kd" ), mDiffuse );
+  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "ks" ), mSpecular );
+  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess );
+  Qt3DRender::QParameter *opacityParameter = new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity );
 
   effect->addParameter( ambientParameter );
   effect->addParameter( diffuseParameter );
   effect->addParameter( specularParameter );
   effect->addParameter( shininessParameter );
+  effect->addParameter( opacityParameter );
 }
 
 QByteArray QgsPhongMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
@@ -248,7 +245,8 @@ Qt3DRender::QMaterial *QgsPhongMaterialSettings::dataDefinedMaterial() const
   renderPass->setShaderProgram( shaderProgram );
   technique->addRenderPass( renderPass );
 
-  technique->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
+  eff->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
 
   eff->addTechnique( technique );
   material->setEffect( eff );

@@ -62,6 +62,7 @@
 #include <gdal.h>
 #include <ogr_srs_api.h>
 #include <cpl_conv.h>
+#include <cpl_minixml.h>
 #include <cpl_string.h>
 
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
@@ -2682,7 +2683,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   QgsDebugMsgLevel( "Raster extension list built: " + extensions.join( ' ' ), 2 );
 }                               // buildSupportedRasterFileFilter_()
 
-
 bool QgsGdalProvider::isValidRasterFileName( QString const &fileNameQString, QString &retErrMsg )
 {
   gdal::dataset_unique_ptr myDataset;
@@ -2978,6 +2978,61 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
 
 } // QgsGdalProvider::bandStatistics
 
+static void sanitizeVRTFile( QString const &fileName )
+{
+  Q_UNUSED( fileName );
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,5,2)
+  // Works around https://github.com/qgis/QGIS/issues/49285
+  // where there is bad performance when computing statistics on a VRT file
+  // with an explicit OverviewList node.
+  // The presence of that node is just a bonus for some use cases. We can
+  // safely remove it.
+  if ( !fileName.startsWith( QLatin1String( "/vsi" ) ) && fileName.endsWith( QLatin1String( ".vrt" ) ) )
+  {
+    GDALDriverH hDriver = GDALIdentifyDriver( fileName.toUtf8().toStdString().c_str(), nullptr );
+    if ( hDriver && GDALGetDescription( hDriver ) == QLatin1String( "VRT" ) )
+    {
+      CPLXMLNode *psRoot = CPLParseXMLFile( fileName.toUtf8().toStdString().c_str() );
+      if ( psRoot )
+      {
+        CPLXMLNode *psNode = CPLGetXMLNode( psRoot, "=VRTDataset" );
+        if ( psNode )
+        {
+          bool rewriteFile = false;
+          CPLXMLNode *psPrev = nullptr;
+          for ( CPLXMLNode *psIter = psNode->psChild; psIter; )
+          {
+            CPLXMLNode *psNext = psIter->psNext;
+            if ( psIter->eType == CXT_Element && strcmp( psIter->pszValue, "OverviewList" ) == 0 )
+            {
+              rewriteFile = true;
+              // Unlink OverviewList node and destroy it
+              if ( psPrev )
+                psPrev->psNext = psNext;
+              else
+                psNode->psChild = psNext;
+              psIter->psNext = nullptr;
+              CPLDestroyXMLNode( psIter );
+            }
+            else
+            {
+              psPrev = psIter;
+            }
+            psIter = psNext;
+          }
+          if ( rewriteFile )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Removing <OverviewList> node from file %1" ).arg( fileName ), 2 );
+            CPLSerializeXMLTreeToFile( psRoot,  fileName.toUtf8().toStdString().c_str() );
+          }
+        }
+        CPLDestroyXMLNode( psRoot );
+      }
+    }
+  }
+#endif
+}
 bool QgsGdalProvider::initIfNeeded()
 {
   if ( mHasInit )
@@ -2997,6 +3052,8 @@ bool QgsGdalProvider::initIfNeeded()
   }
 
   gdalUri = dataSourceUri( true );
+
+  sanitizeVRTFile( gdalUri );
 
   CPLErrorReset();
   mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );

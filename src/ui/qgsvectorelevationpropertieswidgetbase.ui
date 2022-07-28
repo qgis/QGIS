@@ -108,6 +108,44 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="mBindingGroupBox">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title">
+      <string>Elevation Binding</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">vectorgeneral</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="mComboBinding"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="mLabelBindingExplanation">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="mExtrusionGroupBox">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
@@ -157,50 +195,12 @@
        </widget>
       </item>
       <item row="0" column="0" colspan="3">
-       <widget class="QLabel" name="mLabelBindingExplanation_2">
+       <widget class="QLabel" name="mLabelExtrusionExplanation">
         <property name="text">
          <string>Extrusion controls how high features extend vertically above their base.</string>
         </property>
         <property name="textFormat">
          <enum>Qt::PlainText</enum>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="mBindingGroupBox">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-     <property name="title">
-      <string>Elevation Binding</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="syncGroup" stdset="0">
-      <string notr="true">vectorgeneral</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="mComboBinding"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="Line" name="line_4">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="mLabelBindingExplanation">
-        <property name="text">
-         <string/>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -498,11 +498,22 @@
   <tabstop>mScaleZSpinBox</tabstop>
   <tabstop>mOffsetZSpinBox</tabstop>
   <tabstop>mOffsetDDBtn</tabstop>
+  <tabstop>mBindingGroupBox</tabstop>
+  <tabstop>mComboBinding</tabstop>
   <tabstop>mExtrusionGroupBox</tabstop>
   <tabstop>mExtrusionSpinBox</tabstop>
   <tabstop>mExtrusionDDBtn</tabstop>
-  <tabstop>mBindingGroupBox</tabstop>
-  <tabstop>mComboBinding</tabstop>
+  <tabstop>mTypeComboBox</tabstop>
+  <tabstop>mCheckRespectLayerSymbology</tabstop>
+  <tabstop>mMarkerStyleButton</tabstop>
+  <tabstop>mLineStyleButton</tabstop>
+  <tabstop>mFillStyleButton</tabstop>
+  <tabstop>mStyleComboBox</tabstop>
+  <tabstop>mSymbologyStackedWidget</tabstop>
+  <tabstop>mSurfaceLineStyleButton</tabstop>
+  <tabstop>mSurfaceFillStyleButton</tabstop>
+  <tabstop>mCheckBoxShowMarkersAtSampledPoints</tabstop>
+  <tabstop>mSurfaceMarkerStyleButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

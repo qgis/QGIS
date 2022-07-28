@@ -296,6 +296,7 @@ class QgsMssqlSharedData
 
 class QgsMssqlProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsMssqlProviderMetadata();
     QIcon icon() const override;

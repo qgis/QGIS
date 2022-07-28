@@ -1013,6 +1013,12 @@ bool QgsOracleConn::allowGeometrylessTables( const QString &connName )
   return settings.value( "/Oracle/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
 }
 
+bool QgsOracleConn::allowProjectsInDatabase( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/projectsInDatabase", false ).toBool();
+}
+
 bool QgsOracleConn::estimatedMetadata( const QString &connName )
 {
   QgsSettings settings;

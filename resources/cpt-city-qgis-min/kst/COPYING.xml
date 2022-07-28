@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>C. Barth Netterfield</name>
+      <org>University of Toronto</org>
+    </author>
+    <author>
+      <name>George Staikos</name>
+      <org>Stakios Computing Services Inc.</org>
+    </author>
+    <author href="http://www.sumusltd.com/">
+      <name>Sumus Technology Ltd.</name>
+    </author>
+    <author>
+      <name>Rick Chern</name>
+      <org>University of British Columbia</org>
+    </author>
+    <author>
+      <name>Duncan Hansen</name>
+      <org>University of British Columbia</org>
+    </author>
+    <author>
+      <name>Nicholas Brisset</name>
+    </author>
+    <author>
+      <!-- href="http://mat.truch.net/"> -->
+      <name>Matthew Truch</name>
+    </author>
+    <author>
+      <name>Theodore Kisner</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2007</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>GIMP palette</format>
+    <link href="http://kst-plot.kde.org/download/">Download page</link>
+    <remark>Reimplementation of the IDL gradients</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>
