@@ -399,8 +399,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
   mStackedWidget->setCurrentIndex( mLayerPage );
 
-  QgsPanelWidget *current = mWidgetStack->takeMainPanel();
-  if ( current )
+  if ( QgsPanelWidget *current = mWidgetStack->takeMainPanel() )
   {
     if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
     {
