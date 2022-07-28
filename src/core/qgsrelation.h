@@ -397,6 +397,20 @@ class CORE_EXPORT QgsRelation
      */
     Qgis::RelationshipType type() const;
 
+    /**
+     * Returns a user-friendly translated string representing a relationship \a cardinality.
+     *
+     * \since QGIS 3.28
+     */
+    static QString cardinalityToDisplayString( Qgis::RelationshipCardinality cardinality );
+
+    /**
+     * Returns a user-friendly translated string representing a relationship \a strength.
+     *
+     * \since QGIS 3.28
+     */
+    static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
+
   private:
 
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;

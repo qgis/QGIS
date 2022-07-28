@@ -465,3 +465,31 @@ Qgis::RelationshipType QgsRelation::type() const
   else
     return Qgis::RelationshipType::Generated;
 }
+
+QString QgsRelation::cardinalityToDisplayString( Qgis::RelationshipCardinality cardinality )
+{
+  switch ( cardinality )
+  {
+    case Qgis::RelationshipCardinality::OneToOne:
+      return QObject::tr( "One-to-one" );
+    case Qgis::RelationshipCardinality::OneToMany:
+      return QObject::tr( "One-to-many" );
+    case Qgis::RelationshipCardinality::ManyToOne:
+      return QObject::tr( "Many-to-one" );
+    case Qgis::RelationshipCardinality::ManyToMany:
+      return QObject::tr( "Many-to-many" );
+  }
+  BUILTIN_UNREACHABLE
+}
+
+QString QgsRelation::strengthToDisplayString( Qgis::RelationshipStrength strength )
+{
+  switch ( strength )
+  {
+    case Qgis::RelationshipStrength::Association:
+      return QObject::tr( "Association" );
+    case Qgis::RelationshipStrength::Composition:
+      return QObject::tr( "Composition" );
+  }
+  BUILTIN_UNREACHABLE
+}
