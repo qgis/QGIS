@@ -1,0 +1,139 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsweakrelation.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsWeakRelation
+{
+%Docstring(signature="appended")
+The :py:class:`QgsWeakRelation` class represent a :py:class:`QgsRelation` with possibly
+unresolved layers or unmatched fields.
+
+This class is used to store relation information attached to a
+layer style, a method to attempt relation resolution is also
+implemented and can be used to create a :py:class:`QgsRelation` after the
+dependent layers are loaded and available.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsweakrelation.h"
+%End
+  public:
+
+    enum WeakRelationType
+    {
+      Referencing,
+      Referenced
+    };
+
+    QgsWeakRelation();
+%Docstring
+Default constructor for an invalid relation.
+%End
+
+
+    QgsRelation resolvedRelation( const QgsProject *project ) const;
+%Docstring
+Resolves a weak relation in the given ``project`` returning a possibly invalid :py:class:`QgsRelation`
+and without performing any kind of validity check.
+
+.. note::
+
+   Client code should never assume that the returned relation is valid and the
+   layer components are not NULL.
+%End
+
+    QString id() const;
+%Docstring
+Returns the relationship's ID.
+
+.. versionadded:: 3.28
+%End
+
+    QString name() const;
+%Docstring
+Returns the relationship's name.
+
+.. versionadded:: 3.28
+%End
+
+
+
+    Qgis::RelationshipStrength strength() const;
+%Docstring
+Returns the strength of the relation.
+%End
+
+    QMap< QString, QString > fieldPairs() const;
+%Docstring
+Returns the list of field pairs.
+%End
+%MethodCode
+    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
+    sipRes = new QMap< QString, QString >();
+    for ( const QgsRelation::FieldPair &pair : pairs )
+    {
+      sipRes->insert( pair.first, pair.second );
+    }
+%End
+
+    static QgsWeakRelation readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node, const QgsPathResolver resolver );
+%Docstring
+Returns a weak relation for the given layer.
+
+:param layer: the layer of the weak relation
+:param type: determines if the layer is referencing or referenced
+:param node: the QDomNode
+:param resolver: the path resolver
+
+.. versionadded:: 3.16
+%End
+
+    static void writeXml( const QgsVectorLayer *layer, WeakRelationType type, const QgsRelation &relation, QDomNode &node, QDomDocument &doc );
+%Docstring
+Writes a weak relation infoto an XML structure. Used for saving .qgs projects
+
+:param layer: the layer which we save the weak relation for
+:param type: determines if the layer is referencing or referenced
+:param relation: the relation to save as a weak relation
+:param node: The parent node in which the relation will be created
+:param doc: The document in which the relation will be saved
+
+.. versionadded:: 3.16
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+
+    QString leftIdentifier;
+    if ( !sipCpp->referencedLayer().source.isEmpty() )
+      leftIdentifier = sipCpp->referencedLayer().source;
+
+    QString rightIdentifier;
+    if ( !sipCpp->referencingLayer().source.isEmpty() )
+      rightIdentifier = sipCpp->referencingLayer().source;
+
+    QString str;
+    if ( leftIdentifier.isEmpty() && rightIdentifier.isEmpty() )
+      str = QStringLiteral( "<QgsWeakRelation: %1>" ).arg( sipCpp->id() );
+    else
+      str = QStringLiteral( "<QgsWeakRelation: %1 - %2 -> %3>" ).arg( sipCpp->id(), leftIdentifier, rightIdentifier );
+
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsweakrelation.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
