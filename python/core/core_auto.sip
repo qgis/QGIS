@@ -250,6 +250,7 @@
 %Include auto_generated/browser/qgsfieldsitem.sip
 %Include auto_generated/browser/qgslayeritem.sip
 %Include auto_generated/browser/qgsprojectitem.sip
+%Include auto_generated/browser/qgsrelationshipsitem.sip
 %Include auto_generated/browser/qgszipitem.sip
 %Include auto_generated/callouts/qgscallout.sip
 %Include auto_generated/callouts/qgscalloutsregistry.sip

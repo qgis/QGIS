@@ -1,7 +1,7 @@
 /***************************************************************************
-                             qgsfielddomainsitem.h
+                             qgsrelationshipsitem.h
                              -------------------
-    begin                : 2022-01-27
+    begin                : 2022-07-28
     copyright            : (C) 2022 Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
@@ -14,27 +14,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSFIELDDOMAINSITEM_H
-#define QGSFIELDDOMAINSITEM_H
+#ifndef QGSRELATIONSHIPSITEM_H
+#define QGSRELATIONSHIPSITEM_H
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgsdataitem.h"
-#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsweakrelation.h"
 
 /**
  * \ingroup core
- * \brief Contains a collection of field domain items.
- * \since QGIS 3.26
+ * \brief Contains a collection of relationship items.
+ * \since QGIS 3.28
 */
-class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
+class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Constructor for QgsFieldDomainsItem, with the specified \a parent item.
+     * Constructor for QgsRelationshipsItem, with the specified \a parent item.
      *
      * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
      * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
@@ -42,17 +42,17 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
      * a connection and retrieve fields information.
      * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
      */
-    QgsFieldDomainsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                         const QString &path,
-                         const QString &connectionUri,
-                         const QString &providerKey );
+    QgsRelationshipsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                          const QString &path,
+                          const QString &connectionUri,
+                          const QString &providerKey );
 
-    ~QgsFieldDomainsItem() override;
+    ~QgsRelationshipsItem() override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
+    QString str = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -69,37 +69,35 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
   private:
 
     QString mConnectionUri;
-    QStringList mFieldDomainNames;
+    QStringList mRelationshipNames;
 
 };
 
 
 /**
  * \ingroup core
- * \brief A browser item representing a field domain.
- * \since QGIS 3.26
+ * \brief A browser item representing a relationship.
+ * \since QGIS 3.28
 */
-class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
+class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
 {
     Q_OBJECT
   public:
 
     /**
-     * Constructor for QgsFieldDomainItem, with the specified \a parent item and \a domain.
+     * Constructor for QgsRelationshipItem, with the specified \a parent item and \a relation.
      *
-     * Ownership of \a domain is transferred to the item.
-     *
-     * \note parent item must be a QgsFieldDomainsItem.
+     * \note parent item must be a QgsRelationshipsItem.
      */
-    QgsFieldDomainItem( QgsDataItem *parent SIP_TRANSFERTHIS,
-                        QgsFieldDomain *domain SIP_TRANSFER );
+    QgsRelationshipItem( QgsDataItem *parent SIP_TRANSFERTHIS,
+                         const QgsWeakRelation &relation );
 
-    ~QgsFieldDomainItem() override;
+    ~QgsRelationshipItem() override;
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
+    QString str = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -107,16 +105,16 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
     QIcon icon() override;
 
     /**
-     * Returns the associated field domain.
+     * Returns the associated relationship.
      */
-    const QgsFieldDomain *fieldDomain();
+    const QgsWeakRelation &relation() const;
 
   private:
 
-    std::unique_ptr< QgsFieldDomain > mDomain;
+    QgsWeakRelation mRelation;
 
 };
 
-#endif // QGSFIELDDOMAINSITEM_H
+#endif // QGSRELATIONSHIPSITEM_H
 
 
