@@ -1884,3 +1884,11 @@ QgsRelation.Composition.__doc__ = "Fix relation, related elements are part of th
 Qgis.RelationshipStrength.__doc__ = 'Relationship strength.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsRelation`.RelationStrength.\n\n.. versionadded:: 3.28\n\n' + '* ``Association``: ' + Qgis.RelationshipStrength.Association.__doc__ + '\n' + '* ``Composition``: ' + Qgis.RelationshipStrength.Composition.__doc__
 # --
 Qgis.RelationshipStrength.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RelationshipCardinality.OneToOne.__doc__ = "One to one relationship"
+Qgis.RelationshipCardinality.OneToMany.__doc__ = "One to many relationship"
+Qgis.RelationshipCardinality.ManyToOne.__doc__ = "Many to one relationship"
+Qgis.RelationshipCardinality.ManyToMany.__doc__ = "Many to many relationship"
+Qgis.RelationshipCardinality.__doc__ = 'Relationship cardinality.\n\n.. versionadded:: 3.28\n\n' + '* ``OneToOne``: ' + Qgis.RelationshipCardinality.OneToOne.__doc__ + '\n' + '* ``OneToMany``: ' + Qgis.RelationshipCardinality.OneToMany.__doc__ + '\n' + '* ``ManyToOne``: ' + Qgis.RelationshipCardinality.ManyToOne.__doc__ + '\n' + '* ``ManyToMany``: ' + Qgis.RelationshipCardinality.ManyToMany.__doc__
+# --
+Qgis.RelationshipCardinality.baseClass = Qgis

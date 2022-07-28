@@ -17,7 +17,8 @@
 #include <QApplication>
 #include "qgsweakrelation.h"
 #include "qgslogger.h"
-
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 QgsWeakRelation::QgsWeakRelation() = default;
 
@@ -74,6 +75,15 @@ QString QgsWeakRelation::referencingLayerProvider() const
   return mReferencingLayer.provider;
 }
 
+QString QgsWeakRelation::referencingLayerName() const
+{
+  if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( mReferencingLayer.provider ) )
+  {
+    return metadata->decodeUri( mReferencingLayer.source ).value( QStringLiteral( "layerName" ) ).toString();
+  }
+  return QString();
+}
+
 QgsVectorLayerRef QgsWeakRelation::referencedLayer() const
 {
   return mReferencedLayer;
@@ -87,6 +97,15 @@ QString QgsWeakRelation::referencedLayerSource() const
 QString QgsWeakRelation::referencedLayerProvider() const
 {
   return mReferencedLayer.provider;
+}
+
+QString QgsWeakRelation::referencedLayerName() const
+{
+  if ( QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( mReferencedLayer.provider ) )
+  {
+    return metadata->decodeUri( mReferencedLayer.source ).value( QStringLiteral( "layerName" ) ).toString();
+  }
+  return QString();
 }
 
 Qgis::RelationshipStrength QgsWeakRelation::strength() const
