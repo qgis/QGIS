@@ -70,16 +70,6 @@ Goes to qCritical.
 Goes to qFatal.
 %End
 
-    static bool isDebugEnabled();
-%Docstring
-Returns true if log level is => than trace level
-%End
-
-    static bool isTraceEnabled();
-%Docstring
-Returns true if log level is => than debug level
-%End
-
     static int debugLevel();
 %Docstring
 Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
