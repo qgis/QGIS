@@ -111,6 +111,8 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
+          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;

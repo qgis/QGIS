@@ -13,6 +13,10 @@ if (WITH_GUI)
   )
 endif()
 
+set(GEONODE_HDRS
+  qgsgeonodeprovider.h
+)
+
 ########################################################
 # Build
 
@@ -21,7 +25,7 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/ui
 )
 
-add_library(provider_geonode MODULE ${GEONODE_SRCS})
+add_library(provider_geonode MODULE ${GEONODE_SRCS} ${GEONODE_HDRS})
 
 # require c++17
 target_compile_features(provider_geonode PRIVATE cxx_std_17)
@@ -50,4 +54,3 @@ endif()
 install (TARGETS provider_geonode
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
-

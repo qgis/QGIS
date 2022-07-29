@@ -15,11 +15,15 @@ from qgis.PyQt.QtCore import QSize, QCoreApplication
 from qgis.PyQt.QtGui import (QColor, QImage)
 from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsMapBoxGlStyleConversionContext,
+                       QgsMapBoxGlStyleRasterSource,
                        QgsSymbolLayer,
                        QgsWkbTypes,
                        QgsApplication,
                        QgsFontManager,
-                       QgsSettings
+                       QgsSettings,
+                       Qgis,
+                       QgsRasterLayer,
+                       QgsRasterPipe
                        )
 from qgis.testing import start_app, unittest
 
@@ -153,7 +157,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["Water Transport"],
             "#d8e6f3",
             "#e7e7e7"
-        ], QgsMapBoxGlStyleConverter.Color, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IN (\'Air Transport\',\'Airport\') THEN \'#e6e6e6\' WHEN "type" IN (\'Education\') THEN \'#f7eaca\' WHEN "type" IN (\'Medical Care\') THEN \'#f3d8e7\' WHEN "type" IN (\'Road Transport\') THEN \'#f7f3ca\' WHEN "type" IN (\'Water Transport\') THEN \'#d8e6f3\' ELSE \'#e7e7e7\' END')
         self.assertEqual(default_color.name(), '#e7e7e7')
@@ -166,7 +170,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["Index"],
             0.5,
             0.2
-        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2.5, 200)
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IN (\'Normal\') THEN 0.625 WHEN "type" IN (\'Index\') THEN 1.25 ELSE 0.5 END')
         self.assertEqual(default_number, 0.5)
@@ -187,7 +191,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["Water Transport"],
             "#d8e6f3",
             "#e7e7e7"
-        ], QgsMapBoxGlStyleConverter.Color, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Color, conversion_context, 2.5, 200)
         self.assertEqual(res.asExpression(),
                          'CASE WHEN "type" IN (\'Air Transport\',\'Airport\') THEN \'#e6e6e6\' WHEN "type" IN (\'Education\') THEN \'#f7eaca\' WHEN "type" IN (\'Medical Care\') THEN \'#f3d8e7\' WHEN "type" IN (\'Road Transport\') THEN \'#f7f3ca\' WHEN "type" IN (\'Water Transport\') THEN \'#d8e6f3\' ELSE \'#e7e7e7\' END')
         self.assertEqual(default_color.name(), '#e7e7e7')
@@ -202,7 +206,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             0.3,
             18,
             0.6
-        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2.5, 200)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2.5, 200)
         self.assertEqual(res.asExpression(),
                          'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2.5 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2.5 WHEN @vector_tile_zoom > 18 THEN 1.5 END')
         self.assertEqual(default_number, 0.25)
@@ -287,7 +291,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             0.3,
             18,
             0.6
-        ], QgsMapBoxGlStyleConverter.Opacity, conversion_context, 2)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Opacity, conversion_context, 2)
         self.assertEqual(prop.expressionString(),
                          "CASE WHEN @vector_tile_zoom < 10 THEN set_color_part(@symbol_color, 'alpha', 25.5) WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom < 15 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,10,15,25.5,76.5)) WHEN @vector_tile_zoom >= 15 AND @vector_tile_zoom < 18 THEN set_color_part(@symbol_color, 'alpha', scale_linear(@vector_tile_zoom,15,18,76.5,153)) WHEN @vector_tile_zoom >= 18 THEN set_color_part(@symbol_color, 'alpha', 153) END")
 
@@ -301,7 +305,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             0.3,
             18,
             0.6
-        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
         self.assertEqual(prop.expressionString(),
                          "CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2 WHEN @vector_tile_zoom > 18 THEN 1.2 END")
         self.assertEqual(default_val, 0.2)
@@ -320,7 +324,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["match", ["get", "class"], ["ice", "glacier"], 0.2, 0.3],
             14,
             ["match", ["get", "class"], ["ice", "glacier"], 0, 0.3]
-        ], QgsMapBoxGlStyleConverter.Numeric, conversion_context, 2)
+        ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
         self.assertEqual(prop.expressionString(),
                          "CASE WHEN @vector_tile_zoom > 5 AND @vector_tile_zoom <= 6 THEN scale_exp(@vector_tile_zoom,5,6,0,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN scale_exp(@vector_tile_zoom,6,10,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,11,14,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END ) * 2 ) END")
 
@@ -936,6 +940,98 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(has_labeling)
         self.assertFalse(labeling_style.labelSettings().isExpression)
         self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
+
+    def test_parse_raster_source(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "sources": {
+                "Basemaps": {
+                    "type": "vector",
+                    "url": "https://xxxxxx"
+                },
+                "Texture-Relief": {
+                    "tiles": [
+                        "https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/{z}/{x}/{y}.webp"
+                    ],
+                    "type": "raster",
+                    "minzoom": 3,
+                    "maxzoom": 20,
+                    "tileSize": 256,
+                    "attribution": "© 2022",
+                }
+            },
+            "layers": [
+                {
+                    "layout": {
+                        "visibility": "visible"
+                    },
+                    "paint": {
+                        "raster-brightness-min": 0,
+                        "raster-opacity": {
+                            "stops": [
+                                [
+                                    1,
+                                    0.35
+                                ],
+                                [
+                                    7,
+                                    0.35
+                                ],
+                                [
+                                    8,
+                                    0.65
+                                ],
+                                [
+                                    15,
+                                    0.65
+                                ],
+                                [
+                                    16,
+                                    0.3
+                                ]
+                            ]
+                        },
+                        "raster-resampling": "nearest",
+                        "raster-contrast": 0
+                    },
+                    "id": "texture-relief-combined",
+                    "source": "Texture-Relief",
+                    "type": "raster"
+                },
+            ]
+        }
+
+        converter = QgsMapBoxGlStyleConverter()
+        converter.convert(style, context)
+
+        sources = converter.sources()
+        self.assertEqual(len(sources), 1)
+
+        raster_source = sources[0]
+        self.assertIsInstance(raster_source, QgsMapBoxGlStyleRasterSource)
+
+        self.assertEqual(raster_source.name(), 'Texture-Relief')
+        self.assertEqual(raster_source.type(), Qgis.MapBoxGlStyleSourceType.Raster)
+        self.assertEqual(raster_source.attribution(), '© 2022')
+        self.assertEqual(raster_source.minimumZoom(), 3)
+        self.assertEqual(raster_source.maximumZoom(), 20)
+        self.assertEqual(raster_source.tileSize(), 256)
+        self.assertEqual(raster_source.tiles(), ['https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/{z}/{x}/{y}.webp'])
+
+        # convert to raster layer
+        rl = raster_source.toRasterLayer()
+        self.assertIsInstance(rl, QgsRasterLayer)
+        self.assertEqual(rl.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
+        self.assertEqual(rl.providerType(), 'wms')
+
+        # raster sublayers
+        sub_layers = converter.createSubLayers()
+        self.assertEqual(len(sub_layers), 1)
+        raster_layer = sub_layers[0]
+        self.assertIsInstance(raster_layer, QgsRasterLayer)
+        self.assertEqual(raster_layer.name(), 'Texture-Relief')
+        self.assertEqual(raster_layer.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
+        self.assertEqual(raster_layer.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity).asExpression(), 'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 7 THEN 35 WHEN @vector_tile_zoom > 7 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,7,8,0.35,0.65) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 15 THEN 65 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,15,16,0.65,0.3) * 100 WHEN @vector_tile_zoom > 16 THEN 30 END')
 
     def testLabelWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()

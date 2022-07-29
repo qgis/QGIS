@@ -144,10 +144,12 @@ QgsMapTool::Flags QgsMapToolSelect::flags() const
 bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEvent *event )
 {
   Q_ASSERT( menu );
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+  QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( mCanvas );
 
-  if ( !vlayer )
+  if ( !layer  || layer->type() != QgsMapLayerType::VectorLayer )
     return false;
+
+  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
 
   menu->addSeparator();
 
@@ -166,7 +168,7 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
   else if ( modifiers & Qt::ControlModifier )
     behavior = Qgis::SelectBehavior::RemoveFromSelection;
 
-  const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, vlayer );
+  const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mapPoint, mCanvas, layer );
 
   QgsMapToolSelectUtils::QgsMapToolSelectMenuActions *menuActions
     = new QgsMapToolSelectUtils::QgsMapToolSelectMenuActions( mCanvas, vlayer, behavior, QgsGeometry::fromRect( r ), menu );
@@ -183,8 +185,8 @@ void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
   if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
        mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
   {
-    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-    const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );
+    QgsMapLayer *layer = QgsMapToolSelectUtils::getCurrentTargetLayer( mCanvas );
+    const QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, layer );
     QgsMapToolSelectUtils::selectSingleFeature( mCanvas, QgsGeometry::fromRect( r ), modifiers );
   }
   else

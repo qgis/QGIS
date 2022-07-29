@@ -84,8 +84,10 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
     return nullptr;
   }
 
-  Qt3DCore::QEntity *entity = nullptr;
+  if ( mSymbol->verticalDatasetGroupIndex() < 0 )
+    return nullptr;
 
+  Qt3DCore::QEntity *entity = nullptr;
 
   const QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
   meshLayer->updateTriangularMesh( coordTrans );

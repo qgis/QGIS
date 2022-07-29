@@ -370,6 +370,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
  */
 class QgsGdalProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsGdalProviderMetadata();
     QIcon icon() const override;

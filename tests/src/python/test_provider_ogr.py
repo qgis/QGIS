@@ -50,7 +50,8 @@ from qgis.core import (
     Qgis,
     QgsDirectoryItem,
     QgsAbstractDatabaseProviderConnection,
-    QgsProviderConnectionException
+    QgsProviderConnectionException,
+    QgsProviderMetadata
 )
 
 from qgis.gui import (
@@ -2598,6 +2599,26 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(len(table.geometryColumnTypes()), 1)
         self.assertEqual(table.geometryColumnTypes()[0].wkbType, QgsWkbTypes.Point)
         self.assertEqual(table.flags(), QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+
+    def testCreateEmptyDatabase(self):
+        """ Test creating an empty database via the provider metadata """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        self.assertTrue(metadata.capabilities() & QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase)
+
+        # empty path should error out
+        ok, err = metadata.createDatabase('')
+        self.assertFalse(ok)
+        self.assertTrue(err)
+
+        # invalid driver should error out
+        ok, err = metadata.createDatabase('aaa.xyz')
+        self.assertFalse(ok)
+        self.assertTrue(err)
+
+        # non-database driver should error out
+        ok, err = metadata.createDatabase('aaa.tif')
+        self.assertFalse(ok)
+        self.assertTrue(err)
 
 
 if __name__ == '__main__':

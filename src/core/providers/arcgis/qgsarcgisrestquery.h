@@ -41,7 +41,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Service types
      */
-    enum ServiceTypeFilter
+    enum class ServiceTypeFilter
     {
       AllTypes, //!< All types
       Vector,   //!< Vector type
@@ -62,7 +62,16 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * Retrieves all object IDs for the specified layer URL.
      */
     static QVariantMap getObjectIds( const QString &layerurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),
-                                     const QgsRectangle &bbox = QgsRectangle() );
+                                     const QgsRectangle &bbox = QgsRectangle(),
+                                     const QString &whereClause = QString() );
+
+
+    /**
+     * Retrieves the extent for the features matching a \a whereClause.
+     *
+     * \since QGIS 3.28
+     */
+    static QgsRectangle getExtent( const QString &layerurl, const QString &whereClause, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders() );
 
     /**
      * Retrieves all matching objects from the specified layer URL.
@@ -74,7 +83,8 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Gets a list of object IDs which fall within the specified extent.
      */
-    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr,
+        const QString &whereClause = QString() );
 
     /**
      * Performs a blocking request to a URL and returns the retrieved data.
@@ -94,16 +104,20 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Calls the specified \a visitor function on all service items found within the given service data.
      */
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url, const QString &service, ServiceTypeFilter serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url, Qgis::ArcGisRestServiceType serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
 
     /**
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = AllTypes );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, QgsWkbTypes::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes );
+
+    /**
+     * Parses and processes a \a url.
+     */
+    static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
 
   private:
 
-    static QUrl parseUrl( const QUrl &url );
     static void adjustBaseUrl( QString &baseUrl, const QString &name );
 
     friend class TestQgsArcGisRestUtils;

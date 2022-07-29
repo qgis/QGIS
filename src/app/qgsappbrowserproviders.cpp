@@ -491,12 +491,11 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
 {
   QVector<QgsDataItem *> childItems;
 
-  QgsProject p;
+  QgsProject p( nullptr, Qgis::ProjectCapabilities() );
   if ( !p.read( mPath, Qgis::ProjectReadFlag::DontResolveLayers
                 | Qgis::ProjectReadFlag::DontLoadLayouts
                 | Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                | Qgis::ProjectReadFlag::DontLoad3DViews
-                | Qgis::ProjectReadFlag::DontLoadProjectStyles ) )
+                | Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
     return childItems;

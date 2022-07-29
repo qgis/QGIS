@@ -23,6 +23,7 @@ DEB_TEST_TARGET ?= Experimental
 
 QGIS_BUILDDIR ?= debian/build
 
+export QGIS_TEST_ACCEPT_GITSTATUS_CHECK_FAILURE=1
 export QT_SELECT=5
 
 QGIS_VERSION=$(shell echo $(DEB_VERSION_UPSTREAM) | sed -e 's/\+.*//')
@@ -114,6 +115,10 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS$(GRASSVER)=TRUE \
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 
 $(shell test -f /usr/include/$(DEB_BUILD_MULTIARCH)/qt5/Qt3DExtras/qt3dextrasversion.h -a -f /usr/lib/$(DEB_BUILD_MULTIARCH)/cmake/Qt53DExtras/Qt53DExtrasConfig.cmake)

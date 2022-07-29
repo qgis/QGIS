@@ -1016,6 +1016,10 @@ QVariantMap QgsCptCityColorRamp::properties() const
   return map;
 }
 
+QString QgsCptCityColorRamp::fileNameForVariant( const QString &schema, const QString &variant )
+{
+  return QgsCptCityArchive::defaultBaseDir() + QDir::separator() + schema + variant + ".svg";
+}
 
 QString QgsCptCityColorRamp::fileName() const
 {
@@ -1048,7 +1052,7 @@ bool QgsCptCityColorRamp::loadFile()
 {
   if ( mFileLoaded )
   {
-    QgsDebugMsg( "File already loaded for " + mSchemeName + mVariantName );
+    QgsDebugMsgLevel( "File already loaded for " + mSchemeName + mVariantName, 2 );
     return true;
   }
 
@@ -1056,7 +1060,6 @@ bool QgsCptCityColorRamp::loadFile()
   QString filename = fileName();
   if ( filename.isNull() )
   {
-    QgsDebugMsg( "Couldn't get fileName() for " + mSchemeName + mVariantName );
     return false;
   }
 

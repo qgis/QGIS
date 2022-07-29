@@ -149,6 +149,7 @@ void QgsBufferedLine3DSymbolHandler::processFeature( const QgsFeature &f, const 
     }
     delete buffered;
   }
+  mFeatureCount++;
 }
 
 void QgsBufferedLine3DSymbolHandler::processPolygon( QgsPolygon *polyBuffered, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, LineData &out )
@@ -276,6 +277,7 @@ void QgsSimpleLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qg
       out.addLineString( *ls );
     }
   }
+  mFeatureCount++;
 }
 
 void QgsSimpleLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
@@ -398,6 +400,7 @@ void QgsThickLine3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs
       out.addLineString( *ls );
     }
   }
+  mFeatureCount++;
 }
 
 void QgsThickLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )

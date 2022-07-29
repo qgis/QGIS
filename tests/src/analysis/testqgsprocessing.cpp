@@ -639,6 +639,7 @@ class DummyParameterType : public QgsProcessingParameterType
 
 class DummyPluginLayer: public QgsPluginLayer
 {
+    Q_OBJECT
   public:
 
     DummyPluginLayer( const QString &layerType, const QString &layerName ): QgsPluginLayer( layerType, layerName )

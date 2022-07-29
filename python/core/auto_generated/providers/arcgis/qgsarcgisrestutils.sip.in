@@ -10,6 +10,52 @@
 
 
 
+
+class QgsArcGisRestContext
+{
+%Docstring(signature="appended")
+Contains the context of a ArcGIS REST service operation.
+
+.. seealso:: :py:class:`QgsArcGisRestUtils`
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsarcgisrestutils.h"
+%End
+  public:
+
+    void setTimeZone( const QTimeZone &zone );
+%Docstring
+Sets the time ``zone`` for datetime values.
+
+.. seealso:: :py:func:`timeZone`
+%End
+
+    QTimeZone timeZone() const;
+%Docstring
+Returns the time zone for datetime values.
+
+.. seealso:: :py:func:`setTimeZone`
+%End
+
+    void setObjectIdFieldName( const QString &name );
+%Docstring
+Sets the name of the objectId field.
+
+.. seealso:: :py:func:`objectIdFieldName`
+%End
+
+    QString objectIdFieldName() const;
+%Docstring
+Returns the name of the objectId field.
+
+.. seealso:: :py:func:`setObjectIdFieldName`
+%End
+
+};
+
 class QgsArcGisRestUtils
 {
 %Docstring(signature="appended")
@@ -23,6 +69,9 @@ Utility functions for working with ArcGIS REST services.
 %TypeHeaderCode
 #include "qgsarcgisrestutils.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
     static QVariant::Type convertFieldType( const QString &type );
@@ -101,7 +150,68 @@ Converts an ESRI fill ``style`` to a Qt brush style.
 Converts a date time ``value`` to a QDateTime.
 %End
 
+    static QVariantMap geometryToJson( const QgsGeometry &geometry, const QgsArcGisRestContext &context, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+Converts a ``geometry`` to an ArcGIS REST JSON representation.
+
+Returns an empty map if the geometry cannot be converted.
+
+.. versionadded:: 3.28
+%End
+
+    static QVariantMap crsToJson( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Converts a ``crs`` to an ArcGIS REST JSON representation.
+
+Returns an empty map if the ``crs`` is not valid.
+
+.. versionadded:: 3.28
+%End
+
+    enum class FeatureToJsonFlag
+    {
+      IncludeGeometry,
+      IncludeNonObjectIdAttributes,
+    };
+
+    typedef QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> FeatureToJsonFlags;
+
+
+    static QVariantMap featureToJson( const QgsFeature &feature,
+                                      const QgsArcGisRestContext &context,
+                                      const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
+%Docstring
+Converts a ``feature`` to an ArcGIS REST JSON representation.
+
+.. versionadded:: 3.28
+%End
+
+    static QVariant variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context );
+%Docstring
+Converts a variant to a REST attribute value.
+
+.. versionadded:: 3.28
+%End
+
+    static QVariantMap fieldDefinitionToJson( const QgsField &field );
+%Docstring
+Converts a ``field``'s definition to an ArcGIS REST JSON representation.
+
+.. versionadded:: 3.28
+%End
+
+    static Qgis::ArcGisRestServiceType serviceTypeFromString( const QString &type );
+%Docstring
+Converts a string value to a REST service type.
+
+.. versionadded:: 3.28
+%End
+
 };
+
+QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> operator|(QgsArcGisRestUtils::FeatureToJsonFlag f1, QFlags<QgsArcGisRestUtils::FeatureToJsonFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

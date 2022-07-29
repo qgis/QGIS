@@ -43,6 +43,7 @@ from qgis.core import (Qgis,
                        QgsDataProvider,
                        QgsVectorDataProvider,
                        QgsLayerMetadata,
+                       QgsProviderMetadata,
                        NULL)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant, QDate, QTime, QDateTime, Qt, QTemporaryDir, QFileInfo
 from qgis.PyQt.QtXml import QDomDocument
@@ -2577,6 +2578,23 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl = QgsVectorLayer('{}'.format(tmpfile) + '|geometryType=CurvePolygon', 'test', 'ogr')
         got = [feat for feat in vl.getFeatures()]
         self.assertEqual(len(got), 2)
+
+    def testCreateEmptyDatabase(self):
+        """ Test creating an empty database via the provider metadata """
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        self.assertTrue(metadata.capabilities() & QgsProviderMetadata.ProviderMetadataCapability.CreateDatabase)
+
+        with tempfile.TemporaryDirectory() as dest_dir:
+            database_path = os.path.join(dest_dir, 'new_gpkg.gpkg')
+            ok, err = metadata.createDatabase(database_path)
+            self.assertTrue(ok)
+            self.assertFalse(err)
+            self.assertTrue(os.path.exists(database_path))
+
+            # try to create again, should error out
+            ok, err = metadata.createDatabase(database_path)
+            self.assertFalse(ok)
+            self.assertTrue(err)
 
 
 if __name__ == '__main__':

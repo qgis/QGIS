@@ -31,6 +31,8 @@
 #include "qgsgeometry.h"
 #include "qgspoint.h"
 #include "qgssettings.h"
+#include "qgsvectortilelayer.h"
+#include "qgsselectioncontext.h"
 
 /**
  * \ingroup UnitTests
@@ -56,6 +58,7 @@ class TestQgisAppClipboard : public QObject
     void pasteGeoJson();
     void retrieveFields();
     void clipboardLogic(); //test clipboard logic
+    void testVectorTileLayer();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -516,6 +519,67 @@ void TestQgisAppClipboard::clipboardLogic()
   features = mQgisApp->clipboard()->copyOf( mQgisApp->clipboard()->fields() );
   QCOMPARE( features.length(), 1 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
+}
+
+void TestQgisAppClipboard::testVectorTileLayer()
+{
+  QString dataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  dataDir += "/vector_tile";
+
+  QgsDataSourceUri ds;
+  ds.setParam( "type", "xyz" );
+  ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( dataDir ) );
+  ds.setParam( "zmax", "1" );
+  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
+  QVERIFY( layer->isValid() );
+
+  QgsGeometry selectionGeometry = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((13934091.75684908032417297 -1102962.40819426625967026, 11360512.80439674854278564 -2500048.12523981928825378, 12316413.55816475301980972 -5661873.69539554417133331, 16948855.67257896065711975 -6617774.44916355609893799, 18125348.90798573195934296 -2058863.16196227818727493, 15257646.64668171107769012 -735308.27212964743375778, 13934091.75684908032417297 -1102962.40819426625967026))" ) );
+  QgsSelectionContext context;
+  context.setScale( 315220096 );
+  layer->selectByGeometry( selectionGeometry, context, Qgis::SelectBehavior::SetSelection, Qgis::SelectGeometryRelationship::Intersect );
+
+  QCOMPARE( layer->selectedFeatureCount(), 4 );
+  const QList< QgsFeature > features = layer->selectedFeatures();
+
+  mQgisApp->clipboard()->replaceWithCopyOf( layer.get() );
+
+  // test that clipboard features are a "superset" of the incoming fields
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "disputed" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "maritime" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "admin_level" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "class" ) ) > -1 );
+  QVERIFY( mQgisApp->clipboard()->fields().lookupField( QStringLiteral( "name:th" ) ) > -1 );
+
+  QgsFeatureId maritimeId = -1;
+  QgsFeatureId oceanId = -1;
+  for ( const QgsFeature &feature :  features )
+  {
+    if ( feature.fields().lookupField( QStringLiteral( "maritime" ) ) > -1 )
+      maritimeId = feature.id();
+    else if ( feature.attribute( QStringLiteral( "class" ) ).toString() == QStringLiteral( "ocean" ) )
+      oceanId = feature.id();
+  }
+
+  const QgsFeatureList clipboardFeatures = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( clipboardFeatures.size(), 4 );
+
+  QgsFeature maritimeFeature;
+  QgsFeature oceanFeature;
+  for ( const QgsFeature &feature : clipboardFeatures )
+  {
+    if ( feature.id() == maritimeId )
+      maritimeFeature = feature;
+    else if ( feature.id() == oceanId )
+      oceanFeature = feature;
+  }
+  QVERIFY( maritimeFeature.isValid() );
+  QVERIFY( oceanFeature.isValid() );
+
+  // ensure that clipboard features are the superset of incoming fields, and that features have consistent fields with this superset
+  QCOMPARE( maritimeFeature.fields(), mQgisApp->clipboard()->fields() );
+  QCOMPARE( maritimeFeature.attribute( QStringLiteral( "maritime" ) ).toString(), QStringLiteral( "0" ) );
+  QCOMPARE( oceanFeature.fields(), mQgisApp->clipboard()->fields() );
+  QCOMPARE( oceanFeature.attribute( QStringLiteral( "class" ) ).toString(), QStringLiteral( "ocean" ) );
 }
 
 QGSTEST_MAIN( TestQgisAppClipboard )

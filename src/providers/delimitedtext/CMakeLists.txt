@@ -30,7 +30,7 @@ target_compile_features(provider_delimitedtext_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_delimitedtext_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     QT6_WRAP_UI(DTEXT_UIS_H ${DTEXT_UIS})
   else()
     QT5_WRAP_UI(DTEXT_UIS_H ${DTEXT_UIS})

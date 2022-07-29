@@ -77,7 +77,7 @@ jobs:
             with-clazy: OFF
             patch-qt-3d: false
             with-grass7: OFF
-            with-grass8: ON
+            with-grass8: OFF
             LD_PRELOAD: ''
             experimental: false
 
@@ -174,7 +174,7 @@ jobs:
                      --env-file .docker/docker-variables.env \
                      --env PUSH_TO_CDASH=true \
                      --env WITH_QT5=${{ matrix.with-qt5 }} \
-                     --env WITH_QT6=${{ matrix.with-qt6 }} \
+                     --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
                      --env PATCH_QT_3D=${{ matrix.patch-qt-3d }} \

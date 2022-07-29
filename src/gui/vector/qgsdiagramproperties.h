@@ -123,6 +123,23 @@ class GUI_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 };
 
 
+/**
+ * \ingroup gui
+ * \class EditBlockerDelegate
+ */
+class EditBlockerDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+  public:
+    EditBlockerDelegate( QObject *parent = nullptr )
+      : QStyledItemDelegate( parent )
+    {}
+
+    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
+    {
+      return nullptr;
+    }
+};
 
 
 #endif // QGSDIAGRAMPROPERTIES_H

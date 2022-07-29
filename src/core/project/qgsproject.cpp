@@ -366,8 +366,9 @@ void removeKey_( const QString &scope,
   }
 }
 
-QgsProject::QgsProject( QObject *parent )
+QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities )
   : QObject( parent )
+  , mCapabilities( capabilities )
   , mLayerStore( new QgsMapLayerStore( this ) )
   , mBadLayerHandler( new QgsProjectBadLayerHandler() )
   , mSnappingConfig( this )
@@ -1803,7 +1804,7 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   const bool clean = _getMapLayers( *doc, brokenNodes, flags );
 
   // review the integrity of the retrieved map layers
-  if ( !clean )
+  if ( !clean && !( flags & Qgis::ProjectReadFlag::DontResolveLayers ) )
   {
     QgsDebugMsg( QStringLiteral( "Unable to get map layers from project file." ) );
 

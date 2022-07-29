@@ -38,6 +38,10 @@
 #include "qgslinesymbol.h"
 #include "qgsapplication.h"
 #include "qgsfontmanager.h"
+#include "qgis.h"
+#include "qgsrasterlayer.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterpipe.h"
 
 #include <QBuffer>
 #include <QRegularExpression>
@@ -50,6 +54,12 @@ QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QVar
 {
   mError.clear();
   mWarnings.clear();
+
+  if ( style.contains( QStringLiteral( "sources" ) ) )
+  {
+    parseSources( style.value( QStringLiteral( "sources" ) ).toMap(), context );
+  }
+
   if ( style.contains( QStringLiteral( "layers" ) ) )
   {
     parseLayers( style.value( QStringLiteral( "layers" ) ).toList(), context );
@@ -67,7 +77,10 @@ QgsMapBoxGlStyleConverter::Result QgsMapBoxGlStyleConverter::convert( const QStr
   return convert( QgsJsonUtils::parseJson( style ).toMap(), context );
 }
 
-QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter() = default;
+QgsMapBoxGlStyleConverter::~QgsMapBoxGlStyleConverter()
+{
+  qDeleteAll( mSources );
+}
 
 void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapBoxGlStyleConversionContext *context )
 {
@@ -104,6 +117,22 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
 
     const QString styleId = jsonLayer.value( QStringLiteral( "id" ) ).toString();
     context->setLayerId( styleId );
+
+    if ( layerType.compare( QLatin1String( "raster" ), Qt::CaseInsensitive ) == 0 )
+    {
+      QgsMapBoxGlStyleRasterSubLayer raster( styleId, jsonLayer.value( QStringLiteral( "source" ) ).toString() );
+      const QVariantMap jsonPaint = jsonLayer.value( QStringLiteral( "paint" ) ).toMap();
+      if ( jsonPaint.contains( QStringLiteral( "raster-opacity" ) ) )
+      {
+        const QVariant jsonRasterOpacity = jsonPaint.value( QStringLiteral( "raster-opacity" ) );
+        double defaultOpacity = 1;
+        raster.dataDefinedProperties().setProperty( QgsRasterPipe::Property::RendererOpacity, parseInterpolateByZoom( jsonRasterOpacity.toMap(), *context, 100, &defaultOpacity ) );
+      }
+
+      mRasterSubLayers.append( raster );
+      continue;
+    }
+
     const QString layerName = jsonLayer.value( QStringLiteral( "source-layer" ) ).toString();
 
     const int minZoom = jsonLayer.value( QStringLiteral( "minzoom" ), QStringLiteral( "-1" ) ).toInt();
@@ -2616,28 +2645,28 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
     QString valueString;
     switch ( type )
     {
-      case Color:
+      case PropertyType::Color:
       {
         const QColor color = parseColor( value, context );
         valueString = QgsExpression::quotedString( color.name() );
         break;
       }
 
-      case Numeric:
+      case PropertyType::Numeric:
       {
         const double v = value.toDouble() * multiplier;
         valueString = QString::number( v );
         break;
       }
 
-      case Opacity:
+      case PropertyType::Opacity:
       {
         const double v = value.toDouble() * maxOpacity;
         valueString = QString::number( v );
         break;
       }
 
-      case Point:
+      case PropertyType::Point:
       {
         valueString = QStringLiteral( "array(%1,%2)" ).arg( value.toList().value( 0 ).toDouble() * multiplier,
                       value.toList().value( 0 ).toDouble() * multiplier );
@@ -2654,7 +2683,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
   QString elseValue;
   switch ( type )
   {
-    case Color:
+    case PropertyType::Color:
     {
       const QColor color = parseColor( json.constLast(), context );
       if ( defaultColor )
@@ -2664,7 +2693,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
       break;
     }
 
-    case Numeric:
+    case PropertyType::Numeric:
     {
       const double v = json.constLast().toDouble() * multiplier;
       if ( defaultNumber )
@@ -2673,7 +2702,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
       break;
     }
 
-    case Opacity:
+    case PropertyType::Opacity:
     {
       const double v = json.constLast().toDouble() * maxOpacity;
       if ( defaultNumber )
@@ -2682,7 +2711,7 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
       break;
     }
 
-    case Point:
+    case PropertyType::Point:
     {
       elseValue = QStringLiteral( "array(%1,%2)" ).arg( json.constLast().toList().value( 0 ).toDouble() * multiplier,
                   json.constLast().toList().value( 0 ).toDouble() * multiplier );
@@ -3369,6 +3398,109 @@ QgsVectorTileLabeling *QgsMapBoxGlStyleConverter::labeling() const
   return mLabeling ? mLabeling->clone() : nullptr;
 }
 
+QList<QgsMapBoxGlStyleAbstractSource *> QgsMapBoxGlStyleConverter::sources()
+{
+  return mSources;
+}
+
+QList<QgsMapBoxGlStyleRasterSubLayer> QgsMapBoxGlStyleConverter::rasterSubLayers() const
+{
+  return mRasterSubLayers;
+}
+
+QList<QgsMapLayer *> QgsMapBoxGlStyleConverter::createSubLayers() const
+{
+  QList<QgsMapLayer *> subLayers;
+  for ( const QgsMapBoxGlStyleRasterSubLayer &subLayer : mRasterSubLayers )
+  {
+    const QString sourceName = subLayer.source();
+    std::unique_ptr< QgsRasterLayer > rl;
+    for ( const QgsMapBoxGlStyleAbstractSource *source : mSources )
+    {
+      if ( source->type() == Qgis::MapBoxGlStyleSourceType::Raster && source->name() == sourceName )
+      {
+        const QgsMapBoxGlStyleRasterSource *rasterSource = qgis::down_cast< const QgsMapBoxGlStyleRasterSource * >( source );
+        rl.reset( rasterSource->toRasterLayer() );
+        rl->pipe()->setDataDefinedProperties( subLayer.dataDefinedProperties() );
+        break;
+      }
+    }
+
+    if ( rl )
+    {
+      subLayers.append( rl.release() );
+    }
+  }
+  return subLayers;
+}
+
+
+void QgsMapBoxGlStyleConverter::parseSources( const QVariantMap &sources, QgsMapBoxGlStyleConversionContext *context )
+{
+  std::unique_ptr< QgsMapBoxGlStyleConversionContext > tmpContext;
+  if ( !context )
+  {
+    tmpContext = std::make_unique< QgsMapBoxGlStyleConversionContext >();
+    context = tmpContext.get();
+  }
+
+  auto typeFromString = [context]( const QString & string, const QString & name )->Qgis::MapBoxGlStyleSourceType
+  {
+    if ( string.compare( QLatin1String( "vector" ), Qt::CaseInsensitive ) == 0 )
+      return Qgis::MapBoxGlStyleSourceType::Vector;
+    else if ( string.compare( QLatin1String( "raster" ), Qt::CaseInsensitive ) == 0 )
+      return Qgis::MapBoxGlStyleSourceType::Raster;
+    else if ( string.compare( QLatin1String( "raster-dem" ), Qt::CaseInsensitive ) == 0 )
+      return Qgis::MapBoxGlStyleSourceType::RasterDem;
+    else if ( string.compare( QLatin1String( "geojson" ), Qt::CaseInsensitive ) == 0 )
+      return Qgis::MapBoxGlStyleSourceType::GeoJson;
+    else if ( string.compare( QLatin1String( "image" ), Qt::CaseInsensitive ) == 0 )
+      return Qgis::MapBoxGlStyleSourceType::Image;
+    else if ( string.compare( QLatin1String( "video" ), Qt::CaseInsensitive ) == 0 )
+      return Qgis::MapBoxGlStyleSourceType::Video;
+    context->pushWarning( QObject::tr( "Invalid source type \"%1\" for source \"%2\"" ).arg( string, name ) );
+    return Qgis::MapBoxGlStyleSourceType::Unknown;
+  };
+
+  for ( auto it = sources.begin(); it != sources.end(); ++it )
+  {
+    const QString name = it.key();
+    const QVariantMap jsonSource = it.value().toMap();
+    const QString typeString = jsonSource.value( QStringLiteral( "type" ) ).toString();
+
+    const Qgis::MapBoxGlStyleSourceType type = typeFromString( typeString, name );
+
+    switch ( type )
+    {
+      case Qgis::MapBoxGlStyleSourceType::Raster:
+        parseRasterSource( jsonSource, name, context );
+        break;
+      case Qgis::MapBoxGlStyleSourceType::Vector:
+      case Qgis::MapBoxGlStyleSourceType::RasterDem:
+      case Qgis::MapBoxGlStyleSourceType::GeoJson:
+      case Qgis::MapBoxGlStyleSourceType::Image:
+      case Qgis::MapBoxGlStyleSourceType::Video:
+      case Qgis::MapBoxGlStyleSourceType::Unknown:
+        QgsDebugMsg( QStringLiteral( "Ignoring vector tile style source %1 (%2)" ).arg( name, qgsEnumValueToKey( type ) ) );
+        continue;
+    }
+  }
+}
+
+void QgsMapBoxGlStyleConverter::parseRasterSource( const QVariantMap &source, const QString &name, QgsMapBoxGlStyleConversionContext *context )
+{
+  std::unique_ptr< QgsMapBoxGlStyleConversionContext > tmpContext;
+  if ( !context )
+  {
+    tmpContext = std::make_unique< QgsMapBoxGlStyleConversionContext >();
+    context = tmpContext.get();
+  }
+
+  std::unique_ptr< QgsMapBoxGlStyleRasterSource > raster = std::make_unique< QgsMapBoxGlStyleRasterSource >( name );
+  if ( raster->setFromJson( source, context ) )
+    mSources.append( raster.release() );
+}
+
 bool QgsMapBoxGlStyleConverter::numericArgumentsOnly( const QVariant &bottomVariant, const QVariant &topVariant, double &bottom, double &top )
 {
   if ( bottomVariant.canConvert( QMetaType::Double ) && topVariant.canConvert( QMetaType::Double ) )
@@ -3439,4 +3571,90 @@ QString QgsMapBoxGlStyleConversionContext::layerId() const
 void QgsMapBoxGlStyleConversionContext::setLayerId( const QString &value )
 {
   mLayerId = value;
+}
+
+//
+// QgsMapBoxGlStyleAbstractSource
+//
+QgsMapBoxGlStyleAbstractSource::QgsMapBoxGlStyleAbstractSource( const QString &name )
+  : mName( name )
+{
+}
+
+QString QgsMapBoxGlStyleAbstractSource::name() const
+{
+  return mName;
+}
+
+QgsMapBoxGlStyleAbstractSource::~QgsMapBoxGlStyleAbstractSource() = default;
+
+//
+// QgsMapBoxGlStyleRasterSource
+//
+
+QgsMapBoxGlStyleRasterSource::QgsMapBoxGlStyleRasterSource( const QString &name )
+  : QgsMapBoxGlStyleAbstractSource( name )
+{
+
+}
+
+Qgis::MapBoxGlStyleSourceType QgsMapBoxGlStyleRasterSource::type() const
+{
+  return Qgis::MapBoxGlStyleSourceType::Raster;
+}
+
+bool QgsMapBoxGlStyleRasterSource::setFromJson( const QVariantMap &json, QgsMapBoxGlStyleConversionContext *context )
+{
+  mAttribution = json.value( QStringLiteral( "attribution" ) ).toString();
+
+  const QString scheme = json.value( QStringLiteral( "scheme" ), QStringLiteral( "xyz" ) ).toString();
+  if ( scheme.compare( QLatin1String( "xyz" ) ) == 0 )
+  {
+    // xyz scheme is supported
+  }
+  else
+  {
+    context->pushWarning( QObject::tr( "%1 scheme is not supported for raster source %2" ).arg( scheme, name() ) );
+    return false;
+  }
+
+  mMinZoom = json.value( QStringLiteral( "minzoom" ), QStringLiteral( "0" ) ).toInt();
+  mMaxZoom = json.value( QStringLiteral( "maxzoom" ), QStringLiteral( "22" ) ).toInt();
+  mTileSize = json.value( QStringLiteral( "tileSize" ), QStringLiteral( "512" ) ).toInt();
+
+  const QVariantList tiles = json.value( QStringLiteral( "tiles" ) ).toList();
+  for ( const QVariant &tile : tiles )
+  {
+    mTiles.append( tile.toString() );
+  }
+
+  return true;
+}
+
+QgsRasterLayer *QgsMapBoxGlStyleRasterSource::toRasterLayer() const
+{
+  QVariantMap parts;
+  parts.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+  parts.insert( QStringLiteral( "url" ), mTiles.value( 0 ) );
+
+  if ( mTileSize == 256 )
+    parts.insert( QStringLiteral( "tilePixelRation" ), QStringLiteral( "1" ) );
+  else if ( mTileSize == 512 )
+    parts.insert( QStringLiteral( "tilePixelRation" ), QStringLiteral( "2" ) );
+
+  parts.insert( QStringLiteral( "zmax" ), QString::number( mMaxZoom ) );
+  parts.insert( QStringLiteral( "zmin" ), QString::number( mMinZoom ) );
+
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts ), name(), QStringLiteral( "wms" ) );
+  return rl.release();
+}
+
+//
+// QgsMapBoxGlStyleRasterSubLayer
+//
+QgsMapBoxGlStyleRasterSubLayer::QgsMapBoxGlStyleRasterSubLayer( const QString &id, const QString &source )
+  : mId( id )
+  , mSource( source )
+{
+
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>idv</dir>
+  <name>Unidata IDV schemes</name>
+  <full>
+    Schemes from the Integrated Data Viewer (IDV) from Unidata,
+    a Java-based software framework for analyzing and visualizing 
+    geoscience data. 
+  </full>
+  <date>06/06/2014</date>
+</description>

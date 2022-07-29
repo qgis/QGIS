@@ -52,24 +52,6 @@
 #include <QStyledItemDelegate>
 #include <QRandomGenerator>
 
-/**
- * \ingroup gui
- * \class EditBlockerDelegate
- */
-class EditBlockerDelegate: public QStyledItemDelegate
-{
-  public:
-    EditBlockerDelegate( QObject *parent = nullptr )
-      : QStyledItemDelegate( parent )
-    {}
-
-    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
-    {
-      return nullptr;
-    }
-};
-
-
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
@@ -445,9 +427,7 @@ void QgsDiagramProperties::syncToLayer()
         newItem->setText( 0, *catIt );
         newItem->setData( 0, RoleAttributeExpression, *catIt );
         newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
-        QColor col( *coIt );
-        col.setAlpha( 255 );
-        newItem->setData( ColumnColor, Qt::EditRole, col );
+        newItem->setData( ColumnColor, Qt::EditRole, *coIt );
         newItem->setText( 2, *labIt );
         newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
       }
@@ -836,7 +816,6 @@ void QgsDiagramProperties::apply()
   for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
   {
     QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->data( ColumnColor, Qt::EditRole ).value<QColor>();
-    color.setAlphaF( ds.opacity );
     categoryColors.append( color );
     categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, RoleAttributeExpression ).toString() );
     categoryLabels.append( mDiagramAttributesTreeWidget->topLevelItem( i )->text( 2 ) );

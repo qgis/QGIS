@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.igpp.ucsd.edu/~agnew/">
+      <name>Duncan Agnew</name>
+      <org>University of California, San Diego</org>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2009</year>
+  </license>
+  <src>
+    <format>GMT cpt</format>
+    <remark>Contributed by email Tue, 29 Dec 2009</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

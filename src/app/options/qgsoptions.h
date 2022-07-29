@@ -112,13 +112,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Slot to choose path to project to open after launch
     void selectProjectOnLaunch();
 
-    /**
-     * Returns the desired state of newly added layers. If a layer
-     * is to be drawn when added to the map, this function returns
-     * TRUE.
-     */
-    bool newVisible();
-
     //! Slot to select the default font point size for app
     void spinFontSize_valueChanged( int fontSize );
 
@@ -277,10 +270,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsSettings *mSettings = nullptr;
     QStringList i18nList();
 
-    void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
-    void saveContrastEnhancement( QComboBox *cbox, const QString &name );
-    void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );
-    void saveMinMaxLimits( QComboBox *cbox, const QString &name );
     void setZoomFactorValue();
     double zoomFactorValue();
     QgsCoordinateReferenceSystem mLayerDefaultCrs;

@@ -274,6 +274,12 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   , mShared( shared )
   , mCachedFeaturesIter( mCachedFeatures.begin() )
 {
+  QString serverExpression;
+  if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression() && mRequest.filterExpression()->isValid() )
+  {
+    serverExpression = mShared->computedExpression( *mRequest.filterExpression() );
+  }
+
   if ( !shared->clientSideFilterExpression().isEmpty() )
   {
     // backup current request because combine filter expression will remove the fid(s) filtering
@@ -363,8 +369,8 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   }
 
   int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ) );
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression ) :
+                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;

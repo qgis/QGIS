@@ -385,6 +385,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   }
 
   QFileInfo fi( filePath );
+  QDir dir;
+  if ( !dir.exists( fi.absolutePath() ) )
+  {
+    dir.mkpath( fi.absolutePath() );
+  }
 
   PageExportDetails pageDetails;
   pageDetails.directory = fi.path();
@@ -594,7 +599,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         //error beginning print
         return FileError;
       }
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+      p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+#endif
       layerExportResult = printPrivate( printer, p, false, subSettings.dpi, subSettings.rasterizeWholeImage );
       p.end();
       return layerExportResult;
@@ -696,7 +703,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       //error beginning print
       return FileError;
     }
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+    p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+#endif
     result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
     p.end();
 
@@ -778,6 +787,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
         //error beginning print
         return PrintError;
       }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+      p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+#endif
     }
 
     QgsLayoutExporter exporter( iterator->layout() );
@@ -883,7 +895,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
     //error beginning print
     return PrintError;
   }
-
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+  p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+#endif
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
@@ -948,6 +962,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
         //error beginning print
         return PrintError;
       }
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+      p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
+#endif
     }
 
     QgsLayoutExporter exporter( iterator->layout() );
@@ -1210,6 +1227,13 @@ QMap<QString, QgsLabelingResults *> QgsLayoutExporter::takeLabelingResults()
 
 void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
+  QFileInfo fi( filePath );
+  QDir dir;
+  if ( !dir.exists( fi.absolutePath() ) )
+  {
+    dir.mkpath( fi.absolutePath() );
+  }
+
   printer.setOutputFileName( filePath );
   printer.setOutputFormat( QPrinter::PdfFormat );
 

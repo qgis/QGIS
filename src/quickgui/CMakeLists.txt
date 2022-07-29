@@ -34,7 +34,7 @@ include_directories(SYSTEM
 
 ############################################################
 # qgis_quick shared library
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   QT6_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
 else()
   QT5_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
@@ -55,14 +55,14 @@ add_library(qgis_quick ${LIBRARY_TYPE}
 # require c++17
 target_compile_features(qgis_quick PRIVATE cxx_std_17)
 
-if (WITH_QT6)
+if (BUILD_WITH_QT6)
   target_link_libraries(qgis_quick Qt6::Quick Qt6::Qml Qt6::Xml Qt6::Concurrent Qt6::Positioning qgis_core)
 else()
   target_link_libraries(qgis_quick Qt5::Quick Qt5::Qml Qt5::Xml Qt5::Concurrent Qt5::Positioning qgis_core)
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Android")
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     target_link_libraries(qgis_quick Qt6::AndroidExtras)
   else()
     target_link_libraries(qgis_quick Qt5::AndroidExtras)

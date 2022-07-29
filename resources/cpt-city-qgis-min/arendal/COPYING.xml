@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.grida.no/graphicslib/">
+      <name>GRID-Arendal</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Attribution and linkback requested.
+    </informal>
+    <year>2014</year>
+    <text>
+      Using this graphic and referring to it is encouraged, 
+      and please use it in presentations, web pages, newspapers, 
+      blogs and reports.
+
+      For any form of publication, please include the link to 
+      this page and give the cartographer/designer credit.
+    </text>
+  </license>
+  <src>
+    <format>PNG images</format>
+    <link href="http://www.grida.no/graphicslib/detail/mean-surface-temperature_c7e4"
+	  >Temperature</link>
+    <link href="http://www.grida.no/graphicslib/detail/arctic-topography-and-bathymetry_5645"
+	  >Arctic bathymetry</link>
+    <link href="http://www.grida.no/graphicslib/detail/map-of-zimbabwe_36a5"
+	  >Zambezi</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

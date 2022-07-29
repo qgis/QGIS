@@ -70,6 +70,8 @@ class QgsPdalProvider: public QgsPointCloudDataProvider
 
 class QgsPdalProviderMetadata : public QgsProviderMetadata
 {
+    Q_OBJECT
+
   public:
     QgsPdalProviderMetadata();
     QIcon icon() const override;
@@ -83,6 +85,12 @@ class QgsPdalProviderMetadata : public QgsProviderMetadata
     QString filters( FilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
     QList< QgsMapLayerType > supportedLayerTypes() const override;
+
+  private:
+    static QString sFilterString;
+    static QStringList sExtensions;
+    void buildSupportedPointCloudFileFilterAndExtensions();
+
 };
 
 #endif // QGSPDALPROVIDER_H

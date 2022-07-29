@@ -1014,6 +1014,11 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConn
   };
 }
 
+QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFieldDomainTypes() const
+{
+  return {};
+}
+
 void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
@@ -1176,6 +1181,38 @@ void QgsAbstractDatabaseProviderConnection::addField( const QgsField &field, con
   {
     throw QgsProviderConnectionException( QObject::tr( "Unknown error adding field '%1' in table '%2' in schema '%3'" )
                                           .arg( field.name(), tableName, schema ) );
+  }
+}
+
+void QgsAbstractDatabaseProviderConnection::renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameField );
+
+  QgsVectorLayer::LayerOptions options { false, false };
+  options.skipCrsValidation = true;
+  std::unique_ptr<QgsVectorLayer> vl( std::make_unique<QgsVectorLayer>( tableUri( schema, tableName ), QStringLiteral( "temp_layer" ), mProviderKey, options ) );
+  if ( ! vl->isValid() )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not create a vector layer for table '%1' in schema '%2'" )
+                                          .arg( tableName, schema ) );
+  }
+  int existingIndex = vl->fields().lookupField( name );
+  if ( existingIndex == -1 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Field '%1' in table '%2' in does not exist" )
+                                          .arg( name, tableName ) );
+
+  }
+  if ( vl->fields().lookupField( newName ) != -1 )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "A field with name '%1' already exists in table '%2'" )
+                                          .arg( newName, tableName ) );
+
+  }
+  if ( ! vl->dataProvider()->renameAttributes( {{existingIndex, newName}} ) )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Unknown error renaming field '%1' in table '%2' to '%3'" )
+                                          .arg( name, tableName, newName ) );
   }
 }
 

@@ -255,6 +255,9 @@ set(QGIS_APP_SRCS
   options/qgsgpsdeviceoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
+  options/qgsrasterrenderingoptions.cpp
+  options/qgsrenderingoptions.cpp
+  options/qgsvectorrenderingoptions.cpp
 
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp

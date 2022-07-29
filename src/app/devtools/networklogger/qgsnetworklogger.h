@@ -131,6 +131,7 @@ class QgsNetworkLogger : public QAbstractItemModel
  */
 class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
   public:
 
     /**

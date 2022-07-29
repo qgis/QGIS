@@ -119,6 +119,7 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
 class QgsGpxProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsGpxProviderMetadata();
     QIcon icon() const override;

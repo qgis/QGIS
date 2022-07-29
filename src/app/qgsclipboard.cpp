@@ -40,6 +40,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -57,8 +59,47 @@ void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
   mFeatureFields = src->fields();
   mFeatureClipboard = src->selectedFeatures();
   mCRS = src->crs();
-  mSrcLayer = src;
-  QgsDebugMsg( QStringLiteral( "replaced QGIS clipboard." ) );
+  QgsDebugMsgLevel( QStringLiteral( "replaced QGIS clipboard." ), 2 );
+
+  setSystemClipboard();
+  mUseSystemClipboard = false;
+  emit changed();
+}
+
+void QgsClipboard::replaceWithCopyOf( QgsVectorTileLayer *src )
+{
+  if ( !src )
+    return;
+
+  // things are a bit tricky for vector tile features, as each will have different fields
+  // so we build a "super set" of fields first, and then make sure each feature has that superset present
+
+  const QList< QgsFeature > selectedFeatures = src->selectedFeatures();
+  QgsFields supersetFields;
+  for ( const QgsFeature &feature : selectedFeatures )
+  {
+    const QgsFields fields = feature.fields();
+    for ( const QgsField &field : fields )
+    {
+      if ( supersetFields.lookupField( field.name() ) == -1 )
+      {
+        supersetFields.append( field );
+      }
+    }
+  }
+
+  mFeatureFields = supersetFields;
+
+  mFeatureClipboard.clear();
+  for ( const QgsFeature &feature : selectedFeatures )
+  {
+    QgsFeature superSetFeature = feature;
+    QgsVectorLayerUtils::matchAttributesToFields( superSetFeature, mFeatureFields );
+    mFeatureClipboard.append( superSetFeature );
+  }
+
+  mCRS = src->crs();
+  QgsDebugMsgLevel( QStringLiteral( "replaced QGIS clipboard." ), 2 );
 
   setSystemClipboard();
   mUseSystemClipboard = false;
@@ -71,7 +112,6 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
   mFeatureFields = featureStore.fields();
   mFeatureClipboard = featureStore.features();
   mCRS = featureStore.crs();
-  mSrcLayer = nullptr;
   setSystemClipboard();
   mUseSystemClipboard = false;
   emit changed();

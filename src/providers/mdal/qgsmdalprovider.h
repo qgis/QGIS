@@ -141,6 +141,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
 
 class QgsMdalProviderMetadata: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsMdalProviderMetadata();
     QIcon icon() const override;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>imagej</dir>
+  <name>ImageJ lookup tables for astronomy</name>
+  <full>
+    ImageJ is a public domain Java image processing program 
+    inspired by NIH Image for the Macintosh. The package includes 
+    a set of lookup tables which are also included with the CIAO 
+    (Chandra Interactive Analysis of Observations) toolset.
+  </full>
+  <date>05/04/2013</date>
+</description>

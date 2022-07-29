@@ -25,6 +25,7 @@
 %Include auto_generated/qgscolorrampimpl.sip
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
+%Include auto_generated/qgscolorutils.sip
 %Include auto_generated/qgsconditionalstyle.sip
 %Include auto_generated/qgsconnectionregistry.sip
 %Include auto_generated/qgscoordinateformatter.sip
@@ -164,6 +165,7 @@
 %Include auto_generated/qgsruntimeprofiler.sip
 %Include auto_generated/qgsscalecalculator.sip
 %Include auto_generated/qgsscaleutils.sip
+%Include auto_generated/qgsselectioncontext.sip
 %Include auto_generated/qgssimplifymethod.sip
 %Include auto_generated/qgssingleitemmodel.sip
 %Include auto_generated/qgssnappingconfig.sip

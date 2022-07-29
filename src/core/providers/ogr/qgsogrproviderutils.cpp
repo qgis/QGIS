@@ -1133,7 +1133,11 @@ bool QgsOgrProviderUtils::IsLocalFile( const QString &path )
        ( dirName[2] == '\\' || dirName[2] == '/' ) )
   {
     dirName.resize( 3 );
+#ifdef UNICODE
+    return GetDriveType( qUtf16Printable( dirName ) ) != DRIVE_REMOTE;
+#else
     return GetDriveType( dirName.toLatin1().constData() ) != DRIVE_REMOTE;
+#endif
   }
   return true;
 #elif defined(Q_OS_LINUX)

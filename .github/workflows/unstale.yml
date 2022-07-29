@@ -2,8 +2,13 @@ name: Remove Labels
 
 on: [issue_comment]
 
+permissions:
+  contents: read
+
 jobs:
   remove_labels:
+    permissions:
+      issues: write  # for actions-ecosystem/action-remove-labels to remove issue labels
     if: contains(github.event.issue.labels.*.name, 'stale')
     runs-on: ubuntu-latest
     steps:

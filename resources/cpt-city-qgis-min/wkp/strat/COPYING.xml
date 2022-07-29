@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: COPYING.xml,v 1.4 2012/08/15 15:32:51 jjg Exp $ -->
+<copying>
+  <authors>
+    <author href="http://fr.wikipedia.org/wiki/Utilisateur:Sémhur">
+      <name>Sémhur</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative commons attribution share-alike 3.0 unported</informal>
+    <year>2010</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr"/>
+  </license>
+  <src>
+    <format>GIMP palette</format>
+    <link href="http://fr.wikipedia.org/wiki/Aide:Cartographie#Palettes_de_couleurs"
+	  >Palette page</link>
+    <link href="http://en.wikipedia.org/wiki/International_Commission_on_Stratigraphy"
+	  >ICS page</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>
+
+

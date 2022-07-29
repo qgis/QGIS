@@ -210,8 +210,9 @@ void QgsPolygon3DSymbolHandler::processFeature( const QgsFeature &f, const Qgs3D
   }
   else
     qWarning() << "not a polygon";
-}
 
+  mFeatureCount++;
+}
 
 void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context )
 {

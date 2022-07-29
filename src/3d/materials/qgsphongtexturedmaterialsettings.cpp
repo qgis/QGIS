@@ -19,12 +19,13 @@
 #include "qgsapplication.h"
 #include "qgsimagecache.h"
 #include "qgsimagetexture.h"
-#include <Qt3DExtras/QDiffuseSpecularMaterial>
-#include <Qt3DExtras/QPhongMaterial>
+#include "qgsphongmaterialsettings.h"
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <QMap>
 
 
@@ -71,6 +72,7 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
   mAmbient = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
   mSpecular = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toFloat();
+  mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toFloat();
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
   mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
   mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
@@ -83,6 +85,7 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   elem.setAttribute( QStringLiteral( "ambient" ), QgsSymbolLayerUtils::encodeColor( mAmbient ) );
   elem.setAttribute( QStringLiteral( "specular" ), QgsSymbolLayerUtils::encodeColor( mSpecular ) );
   elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
+  elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
   elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mDiffuseTexturePath );
   elem.setAttribute( QStringLiteral( "texture_scale" ), mTextureScale );
   elem.setAttribute( QStringLiteral( "texture-rotation" ), mTextureRotation );
@@ -106,56 +109,76 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
       ( void )fitsInCache;
 
-      if ( !textureSourceImage.isNull() )
+      // No texture image was provided.
+      // Fallback to QgsPhongMaterialSettings.
+      if ( textureSourceImage.isNull() )
       {
-        QgsImageTexture *textureImage = new QgsImageTexture( textureSourceImage );
-        Qt3DExtras::QDiffuseSpecularMaterial *material = new Qt3DExtras::QDiffuseSpecularMaterial;
-
-        Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
-        texture->addTextureImage( textureImage );
-
-        texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
-        texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
-        texture->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
-
-        texture->setSamples( 4 );
-
-        texture->setGenerateMipMaps( true );
-        texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-        texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-
-        material->setDiffuse( QVariant::fromValue( texture ) );
-
-        material->setSpecular( mSpecular );
-        material->setAmbient( mAmbient );
-        material->setShininess( mShininess );
-        material->setTextureScale( mTextureScale );
-
-        if ( context.isSelected() )
-        {
-          // update the material with selection colors
-          // TODO : dampen the color of diffuse texture
-          //      mat->setDiffuse( context.map().selectionColor() );
-          material->setAmbient( context.selectionColor().darker() );
-        }
-
+        QgsPhongMaterialSettings phongSettings = QgsPhongMaterialSettings();
+        phongSettings.setAmbient( mAmbient );
+        phongSettings.setDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) ); // default diffuse color from QDiffuseSpecularMaterial
+        phongSettings.setOpacity( mOpacity );
+        phongSettings.setShininess( mShininess );
+        phongSettings.setSpecular( mSpecular );
+        Qt3DRender::QMaterial *material = phongSettings.toMaterial( technique, context );
         return material;
       }
-      else
-      {
-        Qt3DExtras::QPhongMaterial *material  = new Qt3DExtras::QPhongMaterial;
-        material->setAmbient( mAmbient );
-        material->setSpecular( mSpecular );
-        material->setShininess( mShininess );
 
-        if ( context.isSelected() )
-        {
-          // update the material with selection colors
-          material->setDiffuse( context.selectionColor() );
-          material->setAmbient( context.selectionColor().darker() );
-        }
-        return material;
-      }
+      // Use a custom material because Qt3DRender::QTexture2D does not handle opacity.
+      Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+
+      Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
+
+      Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique;
+      technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
+      technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
+      technique->graphicsApiFilter()->setMajorVersion( 3 );
+      technique->graphicsApiFilter()->setMinorVersion( 3 );
+      Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey();
+      filterKey->setName( QStringLiteral( "renderingStyle" ) );
+      filterKey->setValue( QStringLiteral( "forward" ) );
+      technique->addFilterKey( filterKey );
+
+      Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
+      Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
+
+      //Load shader programs
+      const QUrl urlVert( QStringLiteral( "qrc:/shaders/diffuseSpecular.vert" ) );
+      shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
+      const QUrl urlFrag( QStringLiteral( "qrc:/shaders/diffuseSpecular.frag" ) );
+      shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Fragment, Qt3DRender::QShaderProgram::loadSource( urlFrag ) );
+
+      renderPass->setShaderProgram( shaderProgram );
+      technique->addRenderPass( renderPass );
+
+      int opacity = mOpacity * 255;
+      QColor ambient = context.isSelected() ? context.selectionColor().darker() : mAmbient;
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ka" ), QColor( ambient.red(), ambient.green(), ambient.blue(), opacity ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "ks" ), QColor( mSpecular.red(), mSpecular.green(), mSpecular.blue(), opacity ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "shininess" ), mShininess ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "opacity" ), mOpacity ) );
+
+      // TODO : if ( context.isSelected() ) dampen the color of diffuse texture
+      // with context.map().selectionColor()
+      QgsImageTexture *textureImage = new QgsImageTexture( textureSourceImage );
+      Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D();
+      texture->addTextureImage( textureImage );
+
+      texture->wrapMode()->setX( Qt3DRender::QTextureWrapMode::Repeat );
+      texture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::Repeat );
+      texture->wrapMode()->setZ( Qt3DRender::QTextureWrapMode::Repeat );
+
+      texture->setSamples( 4 );
+
+      texture->setGenerateMipMaps( true );
+      texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+      texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseTexture" ), QVariant::fromValue( texture ) ) );
+      effect->addParameter( new Qt3DRender::QParameter( QStringLiteral( "texCoordScale" ), mTextureScale ) );
+
+      effect->addTechnique( technique );
+      material->setEffect( effect );
+      return material;
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES EDragon 30" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,10,24)" stop-opacity="1.0000"/>
+        <stop offset="7.65%" stop-color="rgb(0,8,21)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(1,7,19)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(15,34,49)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(25,43,57)" stop-opacity="1.0000"/>
+        <stop offset="52.65%" stop-color="rgb(34,54,70)" stop-opacity="1.0000"/>
+        <stop offset="60.01%" stop-color="rgb(44,65,84)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(71,103,116)" stop-opacity="1.0000"/>
+        <stop offset="89.25%" stop-color="rgb(135,162,175)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(199,221,234)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES EDragon 30)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:39:39 2012"/>
+  </metadata>
+</svg>

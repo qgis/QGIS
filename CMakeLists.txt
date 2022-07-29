@@ -441,8 +441,8 @@ if(WITH_CORE)
   #############################################################
   # search for Qt
 
-  set (WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
-  if (WITH_QT6)
+  set (BUILD_WITH_QT6 FALSE CACHE BOOL "Enable (broken, experimental) Qt6 support")
+  if (BUILD_WITH_QT6)
     set(QT_MIN_VERSION 6.0.0)
     set(QT_VERSION_BASE "Qt6")
   else()
@@ -462,7 +462,7 @@ if(WITH_CORE)
   endif()
 
   find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test UiTools Sql REQUIRED)
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
   else()
     # TODO only available starting from Qt 6.2
@@ -473,7 +473,7 @@ if(WITH_CORE)
   else()
     add_definitions(-DQT_NO_PRINTER)
   endif()
-  if (WITH_QTWEBKIT AND NOT WITH_QT6)
+  if (WITH_QTWEBKIT AND NOT BUILD_WITH_QT6)
     find_package(Qt5WebKit REQUIRED)
     find_package(Qt5WebKitWidgets REQUIRED)
   endif()
@@ -491,7 +491,7 @@ if(WITH_CORE)
   EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE DEFAULT_QT_PLUGINS_DIR )
   set (QT_PLUGINS_DIR ${DEFAULT_QT_PLUGINS_DIR} CACHE STRING "Path to installation directory for Qt Plugins. Defaults to Qt native plugin directory")
 
-  if (WITH_QT6)
+  if (BUILD_WITH_QT6)
     message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
   else()
     message(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
@@ -731,6 +731,10 @@ if(ENABLE_COVERAGE)
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
 endif()
 
+if(USE_ALTERNATE_LINKER)
+  include("cmake/modules/linker.cmake")
+endif()
+
 #############################################################
 # platform specific stuff
 if (WITH_CORE)
@@ -883,7 +887,7 @@ if (WITH_CORE)
   if (WITH_CLAZY)
     set(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
     #  qcolor-from-literal crashes clang with clazy 1.11
-    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count")
+    set(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lowercase-qml-type-name,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,isempty-vs-count,missing-qobject-macro")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
 
     if (WERROR AND NOT ${QGISDEBUG})
@@ -971,7 +975,7 @@ message("-- Found Python executable: ${Python_EXECUTABLE} (version ${Python_VERS
 message("-- Python library: ${Python_LIBRARIES}")
 message("-- Python site-packages: ${Python_SITEARCH}")
 
-if (WITH_CORE AND WITH_BINDINGS AND NOT WITH_QT6)
+if (WITH_CORE AND WITH_BINDINGS AND NOT BUILD_WITH_QT6)
   set(PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
   set (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 

@@ -121,6 +121,7 @@ class QgsOapifProvider final: public QgsVectorDataProvider
 
 class QgsOapifProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsOapifProviderMetadata();
     QIcon icon() const override;
@@ -139,11 +140,16 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     //! Compute OAPIF filter from the filter in the URI
     bool computeServerFilter( QString &errorMsg );
 
+    QString computedExpression( const QgsExpression &expression ) const override;
+
     bool hasGeometry() const override { return mWKBType != QgsWkbTypes::Unknown; }
 
     std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
     bool isRestrictedToRequestBBOX() const override;
+
+    //! Creates a deep copy of this shared data
+    QgsOapifSharedData *clone() const;
 
   signals:
 

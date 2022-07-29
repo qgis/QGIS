@@ -207,12 +207,13 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void toggleEditing( bool state );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void mapToolDeactivated();
-    void onKeyPressed( QKeyEvent *e );
     void onDigitizingCompleted( const QgsFeature &feature );
-
+    void onDigitizingCanceled( );
     void multiEditItemSelectionChanged();
 
   private:
+
+    void digitizingFinished( );
 
     enum class MultiEditFeatureType : int
     {

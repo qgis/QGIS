@@ -599,6 +599,7 @@ class QgsPostgresSharedData
 
 class QgsPostgresProviderMetadata final: public QgsProviderMetadata
 {
+    Q_OBJECT
   public:
     QgsPostgresProviderMetadata();
     QIcon icon() const override;
