@@ -110,7 +110,7 @@ void QgsNmeaConnection::processStringBuffer()
           QgsDebugMsgLevel( QStringLiteral( "*******************GPS data received****************" ), 2 );
         }
         
-        // GPS+SBAS GLONASS GALILEO BEIDOU
+        // GPS+SBAS GLONASS GALILEO BEIDOU;
         else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) )
         //else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) || substring.startsWith( QLatin1String( "$GQGSV" ) ) )
         //else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) )
@@ -204,7 +204,7 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     {
       mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
     }
-    // use GSA for satellites in use
+    // use GSA for satellites in use;
     //mLastGPSInformation.satellitesUsed = result.satinuse;
   }
 }
@@ -379,7 +379,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.azimuth = currentSatellite.azimuth;
       satelliteInfo.elevation = currentSatellite.elv;
       satelliteInfo.id = currentSatellite.id;
-      //satelliteInfo.inUse = currentSatellite.in_use; // ????
+      //satelliteInfo.inUse = currentSatellite.in_use; // check where used ????;
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
 
@@ -397,7 +397,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       }
       //set QgsSatelliteInfo.inuse to true for the satellites in view
       //if ( IDfind == 0 && currentSatellite.sig > 0 )
-      if ( IDfind == 0 && currentSatellite.azimuth > 0 && currentSatellite..elv > 0 )
+      if ( IDfind == 0 && ( currentSatellite.azimuth > 0 && currentSatellite.elv > 0 ) )
       {
         satelliteInfo.inUse = 1; // check where used ???? (+=1)
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
