@@ -78,7 +78,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QLineEdit" name="leLayername">
+       <widget class="QgsFilterLineEdit" name="leLayername">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -340,6 +340,11 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

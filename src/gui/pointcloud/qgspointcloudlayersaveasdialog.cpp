@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgspointcloudlayer.h"
+#include "qgsmaplayerutils.h"
 
 QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -142,12 +143,21 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
   {
     QgsSettings settings;
-    QFileInfo tmplFileInfo( filePath );
-    settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), tmplFileInfo.absolutePath() );
-    if ( !filePath.isEmpty() && leLayername->text().isEmpty() )
+    if ( !filePath.isEmpty() )
+      mLastUsedFilename = filePath;
+
+    const QFileInfo fileInfo( filePath );
+    settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), fileInfo.absolutePath() );
+    const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
+    if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
     {
-      QFileInfo fileInfo( filePath );
-      leLayername->setText( fileInfo.completeBaseName() );
+      leLayername->setDefaultValue( suggestedLayerName );
+    }
+
+    // if no layer name set, then automatically match the output layer name to the file name
+    if ( leLayername->text().isEmpty() && !filePath.isEmpty() && leLayername->isEnabled() )
+    {
+      leLayername->setText( suggestedLayerName );
     }
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !filePath.isEmpty() );
   } );
@@ -168,8 +178,14 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mAddToCanvas->setEnabled( true );
 
-  leLayername->setEnabled( true );
-  leLayername->setText( mLayer->name() );
+  if ( mLayer )
+  {
+    mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( mLayer->name() );
+    leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
+    leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
+    if ( leLayername->isEnabled() )
+      leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
+  }
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( format() == QLatin1String( "memory" ) || !mFilename->filePath().isEmpty() );
 }
@@ -311,48 +327,54 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
 {
   Q_UNUSED( idx )
 
-  mFilename->setEnabled( true );
-  mFilename->setFilter( filterForDriver( format() ) );
+  const QString sFormat( format() );
+  mAttributesSelection->setEnabled( sFormat == QLatin1String( "DXF" ) ||
+                                    sFormat == QLatin1String( "LAZ" ) );
 
-  // if output filename already defined we need to replace old suffix
-  // to avoid double extensions like .gpkg.shp
-  if ( !mFilename->filePath().isEmpty() )
+
+  mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
+
+  if ( mFilename->isEnabled() )
   {
-    QRegularExpression rx( "\\.(.*?)[\\s]" );
-    QString ext;
-    ext = rx.match( filterForDriver( format() ) ).captured( 1 );
-    if ( !ext.isEmpty() )
+    mFilename->setFilter( filterForDriver( format() ) );
+
+    // if output filename already defined we need to replace old suffix
+    // to avoid double extensions like .gpkg.shp
+    if ( !mLastUsedFilename.isEmpty() )
     {
-      QFileInfo fi( mFilename->filePath() );
-      mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path(), fi.baseName(), ext ) );
+      QRegularExpression rx( "\\.(.*?)[\\s]" );
+      QString ext;
+      ext = rx.match( filterForDriver( format() ) ).captured( 1 );
+      if ( !ext.isEmpty() )
+      {
+        QFileInfo fi( mLastUsedFilename );
+        mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path(), fi.baseName(), ext ) );
+      }
     }
   }
 
-  const QString sFormat( format() );
-  if ( sFormat == QLatin1String( "DXF" ) ||
-       sFormat == QLatin1String( "LAZ" ) )
-  {
-    mAttributesSelection->setEnabled( false );
-  }
-  else
-  {
-    mAttributesSelection->setEnabled( true );
-  }
+  leLayername->setEnabled( sFormat == QLatin1String( "memory" ) ||
+                           sFormat == QLatin1String( "GPKG" ) );
 
-  if ( sFormat == QLatin1String( "memory" ) )
-  {
-    mFilename->setEnabled( false );
+  if ( !mFilename->isEnabled() )
     mFilename->setFilePath( QString() );
-  }
-  else
-  {
-    mFilename->setEnabled( true );
-  }
 
-  if ( leLayername->text().isEmpty() &&
-       !mFilename->filePath().isEmpty() )
+  if ( !leLayername->isEnabled() )
   {
-    QString layerName = QFileInfo( mFilename->filePath() ).baseName();
+    leLayername->setText( QString() );
+  }
+  else if ( leLayername->text().isEmpty() )
+  {
+    QString layerName = mDefaultOutputLayerNameFromInputLayerName;
+    if ( layerName.isEmpty() && !mFilename->filePath().isEmpty() )
+    {
+      layerName = QFileInfo( mFilename->filePath() ).baseName();
+      leLayername->setDefaultValue( layerName );
+    }
+    if ( layerName.isEmpty() )
+    {
+      layerName = tr( "new_layer" );
+    }
     leLayername->setText( layerName );
   }
 

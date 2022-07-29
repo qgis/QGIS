@@ -157,6 +157,8 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     QgsPointCloudLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
+    QString mDefaultOutputLayerNameFromInputLayerName;
+    QString mLastUsedFilename;
 };
 
 #endif // QGSPOINTCLOUDLAYERSAVEASDIALOG_H

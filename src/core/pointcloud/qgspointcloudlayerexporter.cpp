@@ -193,13 +193,21 @@ QgsMapLayer *QgsPointCloudLayerExporter::getExportedLayer()
     return retVal;
   }
 
-  if ( mFormat == QLatin1String( "LAZ" ) )
-    return new QgsPointCloudLayer( mFilename, mName, QStringLiteral( "pdal" ) );
+  const QFileInfo fileInfo( mFilename );
 
-  QString uri( mFilename );
-  if ( ! mName.isEmpty() )
+  if ( mFormat == QLatin1String( "LAZ" ) )
+  {
+    return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
+  }
+
+  if ( mFormat == QLatin1String( "GPKG" ) )
+  {
+    QString uri( mFilename );
     uri += "|layername=" + mName;
-  return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
+    return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
+  }
+
+  return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 
 //
