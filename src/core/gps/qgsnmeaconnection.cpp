@@ -17,6 +17,7 @@
 
 #include "qgsnmeaconnection.h"
 #include "qgslogger.h"
+#include "qgsgpsconnection.h"
 
 #include <QIODevice>
 #include <QApplication>
