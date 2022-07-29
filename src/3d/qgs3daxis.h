@@ -133,6 +133,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     // axis picking and menu
     void init3DObjectPicking( );
     bool eventFilter( QObject *watched, QEvent *event ) override;
+    void createKeyboardShortCut();
     void createMenu();
     void hideMenu();
     void displayMenuAt( const QPoint &position );

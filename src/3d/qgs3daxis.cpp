@@ -67,6 +67,8 @@ Qgs3DAxis::Qgs3DAxis( Qt3DExtras::Qt3DWindow *parentWindow,
   onAxisViewportSizeUpdate();
 
   init3DObjectPicking();
+
+  createKeyboardShortCut();
 }
 
 Qgs3DAxis::~Qgs3DAxis()
@@ -475,6 +477,39 @@ void Qgs3DAxis::createAxisScene()
   }
 }
 
+void Qgs3DAxis::createKeyboardShortCut()
+{
+  QgsWindow3DEngine *eng = dynamic_cast<QgsWindow3DEngine *>( mMapScene->engine() );
+  if ( eng )
+  {
+    QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );
+    if ( mapCanvas == nullptr )
+    {
+      QgsLogger::warning( "Qgs3DAxis: no canvas defined!" );
+    }
+    else
+    {
+      QShortcut *shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
+      connect( shortcutHome, &QShortcut::activated, this, [this]( ) {onCameraViewChangeHome();} );
+
+      QShortcut *shortcutTop = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_5 ), mapCanvas );
+      connect( shortcutTop, &QShortcut::activated, this, [this]( ) {onCameraViewChangeTop();} );
+
+      QShortcut *shortcutNorth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_8 ), mapCanvas );
+      connect( shortcutNorth, &QShortcut::activated, this, [this]( ) {onCameraViewChangeNorth();} );
+
+      QShortcut *shortcutEast = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_6 ), mapCanvas );
+      connect( shortcutEast, &QShortcut::activated, this, [this]( ) {onCameraViewChangeEast();} );
+
+      QShortcut *shortcutSouth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_2 ), mapCanvas );
+      connect( shortcutSouth, &QShortcut::activated, this, [this]( ) {onCameraViewChangeSouth();} );
+
+      QShortcut *shortcutWest = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_4 ), mapCanvas );
+      connect( shortcutWest, &QShortcut::activated, this, [this]( ) {onCameraViewChangeWest();} );
+    }
+  }
+}
+
 void Qgs3DAxis::createMenu()
 {
   mMenu = new QMenu();
@@ -619,36 +654,6 @@ void Qgs3DAxis::createMenu()
   connect( viewSouthAct, &QAction::triggered, this, &Qgs3DAxis::onCameraViewChangeSouth );
   connect( viewWestAct, &QAction::triggered, this, &Qgs3DAxis::onCameraViewChangeWest );
   connect( viewBottomAct, &QAction::triggered, this, &Qgs3DAxis::onCameraViewChangeBottom );
-
-  QgsWindow3DEngine *eng = dynamic_cast<QgsWindow3DEngine *>( mMapScene->engine() );
-  if ( eng )
-  {
-    QWidget *mapCanvas = dynamic_cast<QWidget *>( eng->parent() );
-    if ( mapCanvas == nullptr )
-    {
-      QgsLogger::warning( "Qgs3DAxis: no canvas defined!" );
-    }
-    else
-    {
-      QShortcut *shortcutHome = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_1 ), mapCanvas );
-      connect( shortcutHome, &QShortcut::activated, this, [this]( ) {onCameraViewChangeHome();} );
-
-      QShortcut *shortcutTop = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_5 ), mapCanvas );
-      connect( shortcutTop, &QShortcut::activated, this, [this]( ) {onCameraViewChangeTop();} );
-
-      QShortcut *shortcutNorth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_8 ), mapCanvas );
-      connect( shortcutNorth, &QShortcut::activated, this, [this]( ) {onCameraViewChangeNorth();} );
-
-      QShortcut *shortcutEast = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_6 ), mapCanvas );
-      connect( shortcutEast, &QShortcut::activated, this, [this]( ) {onCameraViewChangeEast();} );
-
-      QShortcut *shortcutSouth = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_2 ), mapCanvas );
-      connect( shortcutSouth, &QShortcut::activated, this, [this]( ) {onCameraViewChangeSouth();} );
-
-      QShortcut *shortcutWest = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_4 ), mapCanvas );
-      connect( shortcutWest, &QShortcut::activated, this, [this]( ) {onCameraViewChangeWest();} );
-    }
-  }
 
   QMenu *viewMenu = new QMenu( QStringLiteral( "Camera View" ), mMenu );
   viewMenu->addAction( viewHomeAct );
