@@ -68,7 +68,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mFormatComboBox->addItem( tr( "AutoCAD DXF" ), QStringLiteral( "DXF" ) );
 
   QgsSettings settings;
-  const QString defaultFormat = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "memory" ).toString();
+  const QString defaultFormat = settings.value( QStringLiteral( "UI/lastPointCloudFormat" ), "memory" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( defaultFormat ) );
   mFormatComboBox->blockSignals( false );
   mFormatComboBox_currentIndexChanged( 0 );
@@ -137,13 +137,13 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
-  mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
+  mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QDir::homePath() ).toString() );
   mFilename->setConfirmOverwrite( false );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
   {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
-    settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), tmplFileInfo.absolutePath() );
     if ( !filePath.isEmpty() && leLayername->text().isEmpty() )
     {
       QFileInfo fileInfo( filePath );
@@ -289,8 +289,8 @@ void QgsPointCloudLayerSaveAsDialog::accept()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
-  settings.setValue( QStringLiteral( "UI/lastVectorFormat" ), format() );
+  settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
+  settings.setValue( QStringLiteral( "UI/lastPointCloudFormat" ), format() );
   QDialog::accept();
 }
 
