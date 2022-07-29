@@ -39,6 +39,7 @@ class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::Q
 
   protected slots:
     void rangeWidgetChanged( int index );
+    void setPrecision( int precision );
 };
 
 #endif // QGSRANGECONFIGDLG_H
