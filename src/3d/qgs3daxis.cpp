@@ -133,11 +133,11 @@ bool Qgs3DAxis::eventFilter( QObject *watched, QEvent *event )
       QPointF normalizedPos( static_cast<float>( mouseEvent->pos().x() ) / mParentWindow->width(),
                              ( float )mouseEvent->pos().y() / mParentWindow->height() );
 
-      if ( QgsLogger::isTraceEnabled() && event->type() == QEvent::MouseButtonRelease )
+      if ( 2 <= QgsLogger::debugLevel() && event->type() == QEvent::MouseButtonRelease )
       {
         std::ostringstream os;
         os << "QGS3DAxis: normalized pos: " << normalizedPos << " / viewport: " << mAxisViewport->normalizedRect();
-        QgsTraceMsg( os.str().c_str() );
+        QgsDebugMsgLevel( os.str().c_str(), 2 );
       }
 
       if ( mAxisViewport->normalizedRect().contains( normalizedPos ) )
@@ -169,7 +169,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
   int mHitsFound = -1;
   if ( !hits.empty() )
   {
-    if ( QgsLogger::isTraceEnabled() )
+    if ( 2 <= QgsLogger::debugLevel() )
     {
       std::ostringstream os;
       os << "Qgs3DAxis::onTouchedByRay " << hits.length() << " hits at pos " << mLastClickedPos << " with QButton: " << mLastClickedButton;
@@ -181,7 +181,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
         os << "\tHit distance: " << hits.at( i ).distance() << "\n";
         os << "\tHit entity name: " << hits.at( i ).entity()->objectName().toStdString();
       }
-      QgsTraceMsg( os.str().c_str() );
+      QgsDebugMsgLevel( os.str().c_str(), 2 );
     }
 
     for ( int i = 0; i < hits.length() && mHitsFound == -1; ++i )
@@ -201,7 +201,7 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
       {
         mPreviousCursor = mParentWindow->cursor();
         mParentWindow->setCursor( Qt::ArrowCursor );
-        QgsTraceMsg( "Enabling arrow cursor" );
+        QgsDebugMsgLevel( "Enabling arrow cursor", 2 );
       }
     }
   }
@@ -220,32 +220,32 @@ void Qgs3DAxis::onTouchedByRay( const Qt3DRender::QAbstractRayCaster::Hits &hits
         switch ( hits.at( mHitsFound ).primitiveIndex() / 2 )
         {
           case 0: // "East face";
-            QgsTraceMsg( "Qgs3DAxis: East face clicked" );
+            QgsDebugMsgLevel( "Qgs3DAxis: East face clicked", 2 );
             onCameraViewChangeEast();
             break;
 
           case 1: // "West face ";
-            QgsTraceMsg( "Qgs3DAxis: West face clicked" );
+            QgsDebugMsgLevel( "Qgs3DAxis: West face clicked", 2 );
             onCameraViewChangeWest();
             break;
 
           case 2: // "North face ";
-            QgsTraceMsg( "Qgs3DAxis: North face clicked" );
+            QgsDebugMsgLevel( "Qgs3DAxis: North face clicked", 2 );
             onCameraViewChangeNorth();
             break;
 
           case 3: // "South face";
-            QgsTraceMsg( "Qgs3DAxis: South face clicked" );
+            QgsDebugMsgLevel( "Qgs3DAxis: South face clicked", 2 );
             onCameraViewChangeSouth();
             break;
 
           case 4: // "Top face ";
-            QgsTraceMsg( "Qgs3DAxis: Top face clicked" );
+            QgsDebugMsgLevel( "Qgs3DAxis: Top face clicked", 2 );
             onCameraViewChangeTop();
             break;
 
           case 5: // "Bottom face ";
-            QgsTraceMsg( "Qgs3DAxis: Bottom face clicked" );
+            QgsDebugMsgLevel( "Qgs3DAxis: Bottom face clicked", 2 );
             onCameraViewChangeBottom();
             break;
 
@@ -362,13 +362,13 @@ QVector3D Qgs3DAxis::from3DTo2DLabelPosition( const QVector3D &sourcePos,
   destPos.setY( destPos.y() - viewTranslation.y() );
   destPos.setZ( 0.0f );
 
-  if ( QgsLogger::isTraceEnabled() )
+  if ( 2 <= QgsLogger::debugLevel() )
   {
     std::ostringstream os;
     os << "Qgs3DAxis::from3DTo2DLabelPosition: sourcePos: " << sourcePos.toPoint()
        << " with translation: " << viewTranslation.toPoint()
        << " corrected to pos: " << destPos.toPoint();
-    QgsTraceMsg( os.str().c_str() );
+    QgsDebugMsgLevel( os.str().c_str(), 2 );
   }
   return destPos;
 }
@@ -714,17 +714,17 @@ void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
   double elevation = 0.0;
   if ( mMapSettings->terrainRenderingEnabled() )
   {
-    QgsTraceMsg( "Checking elevation from terrain..." );
+    QgsDebugMsgLevel( "Checking elevation from terrain...", 2 );
     QVector3D intersectionPoint;
     QVector3D camPos = mCameraController->camera()->position();
     QgsRayCastingUtils::Ray3D r( camPos, pos.toVector3D() - camPos );
     if ( mMapScene->terrainEntity()->rayIntersection( r, intersectionPoint ) )
     {
       elevation = intersectionPoint.y();
-      QgsTraceMsg( QString( "Computed elevation from terrain: %1" ).arg( elevation ) );
+      QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
     }
     else
-      QgsTraceMsg( "Unable to obtain elevation from terrain" );
+      QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
 
   }
   pos.set( pos.x(), elevation, pos.z() );
@@ -1004,28 +1004,28 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   double windowHeight = ( double )mParentWindow->height();
 
   QgsMapSettings set;
-  if ( QgsLogger::isTraceEnabled() )
+  if ( 2 <= QgsLogger::debugLevel() )
   {
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window w/h: %1px / %2px" )
-                 .arg( windowWidth ).arg( windowHeight ) );
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window physicalDpi %1 (%2, %3)" )
-                 .arg( mParentWindow->screen()->physicalDotsPerInch() )
-                 .arg( mParentWindow->screen()->physicalDotsPerInchX() )
-                 .arg( mParentWindow->screen()->physicalDotsPerInchY() ) );
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window logicalDotsPerInch %1 (%2, %3)" )
-                 .arg( mParentWindow->screen()->logicalDotsPerInch() )
-                 .arg( mParentWindow->screen()->logicalDotsPerInchX() )
-                 .arg( mParentWindow->screen()->logicalDotsPerInchY() ) );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window w/h: %1px / %2px" )
+                      .arg( windowWidth ).arg( windowHeight ), 2 );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window physicalDpi %1 (%2, %3)" )
+                      .arg( mParentWindow->screen()->physicalDotsPerInch() )
+                      .arg( mParentWindow->screen()->physicalDotsPerInchX() )
+                      .arg( mParentWindow->screen()->physicalDotsPerInchY() ), 2 );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window logicalDotsPerInch %1 (%2, %3)" )
+                      .arg( mParentWindow->screen()->logicalDotsPerInch() )
+                      .arg( mParentWindow->screen()->logicalDotsPerInchX() )
+                      .arg( mParentWindow->screen()->logicalDotsPerInchY() ), 2 );
 
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate window pixel ratio %1" )
-                 .arg( mParentWindow->screen()->devicePixelRatio() ) );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate window pixel ratio %1" )
+                      .arg( mParentWindow->screen()->devicePixelRatio() ), 2 );
 
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate set pixel ratio %1" )
-                 .arg( set.devicePixelRatio() ) );
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate set outputDpi %1" )
-                 .arg( set.outputDpi() ) );
-    QgsTraceMsg( QString( "onAxisViewportSizeUpdate set dpiTarget %1" )
-                 .arg( set.dpiTarget() ) );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate set pixel ratio %1" )
+                      .arg( set.devicePixelRatio() ), 2 );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate set outputDpi %1" )
+                      .arg( set.outputDpi() ), 2 );
+    QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate set dpiTarget %1" )
+                      .arg( set.dpiTarget() ), 2 );
   }
 
   // default viewport size in pixel according to 92 dpi
@@ -1035,22 +1035,22 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   // then we limit the growth by using a factor on the dpi difference.
   double viewportPixelSize = defaultViewportPixelSize + ( ( double )settings.defaultViewportSize() / 25.4 )
                              * ( mParentWindow->screen()->physicalDotsPerInch() - 92.0 ) * 0.7;
-  QgsTraceMsg( QString( "onAxisViewportSizeUpdate viewportPixelSize %1" ).arg( viewportPixelSize ) );
+  QgsDebugMsgLevel( QString( "onAxisViewportSizeUpdate viewportPixelSize %1" ).arg( viewportPixelSize ), 2 );
   double widthRatio = viewportPixelSize / windowWidth;
   double heightRatio = widthRatio * windowWidth / windowHeight;
 
-  QgsTraceMsg( QString( "3DAxis viewport ratios width: %1% / height: %2%" ).arg( widthRatio ).arg( heightRatio ) );
+  QgsDebugMsgLevel( QString( "3DAxis viewport ratios width: %1% / height: %2%" ).arg( widthRatio ).arg( heightRatio ), 2 );
 
   if ( heightRatio * windowHeight < viewportPixelSize )
   {
     heightRatio = viewportPixelSize / windowHeight;
     widthRatio = heightRatio * windowHeight / windowWidth;
-    QgsTraceMsg( QString( "3DAxis viewport, height too small, ratios adjusted to width: %1% / height: %2%" ).arg( widthRatio ).arg( heightRatio ) );
+    QgsDebugMsgLevel( QString( "3DAxis viewport, height too small, ratios adjusted to width: %1% / height: %2%" ).arg( widthRatio ).arg( heightRatio ), 2 );
   }
 
   if ( heightRatio > settings.maxViewportRatio() || widthRatio > settings.maxViewportRatio() )
   {
-    QgsTraceMsg( "viewport takes too much place into the 3d view, disabling it" );
+    QgsDebugMsgLevel( "viewport takes too much place into the 3d view, disabling it", 2 );
     // take too much place into the 3d view
     mAxisViewport->setEnabled( false );
     setEnableCube( false );
@@ -1060,7 +1060,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
   {
     // will be used to adjust the axis label translations/sizes
     mAxisScaleFactor = viewportPixelSize / defaultViewportPixelSize;
-    QgsTraceMsg( QString( "3DAxis viewport mAxisScaleFactor %1" ).arg( mAxisScaleFactor ) );
+    QgsDebugMsgLevel( QString( "3DAxis viewport mAxisScaleFactor %1" ).arg( mAxisScaleFactor ), 2 );
 
     if ( ! mAxisViewport->isEnabled() )
     {
@@ -1087,7 +1087,7 @@ void Qgs3DAxis::onAxisViewportSizeUpdate( int )
     else
       yRatio = 1.0f - heightRatio;
 
-    QgsTraceMsg( QString( "Qgs3DAxis: update viewport: %1 x %2 x %3 x %4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ) );
+    QgsDebugMsgLevel( QString( "Qgs3DAxis: update viewport: %1 x %2 x %3 x %4" ).arg( xRatio ).arg( yRatio ).arg( widthRatio ).arg( heightRatio ), 2 );
     mAxisViewport->setNormalizedRect( QRectF( xRatio, yRatio, widthRatio, heightRatio ) );
 
     if ( settings.mode() == Qgs3DAxisSettings::Mode::Crs )
