@@ -24,7 +24,9 @@
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"
+#ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"
+#endif
 #include "canvas/qgscanvasrefreshblocker.h"
 #include "qgsproviderutils.h"
 #include "qgszipitem.h"
