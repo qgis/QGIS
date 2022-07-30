@@ -188,7 +188,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mpSatellitesWidget->setScale( QwtPolar::ScaleRadius,
                                 90, //min - reverse the min/max to get 0 at edge, 90 at center
                                 0, //max
-                                45 //interval
+                                30 //45 //interval
                               );
 
   // grids, axes
