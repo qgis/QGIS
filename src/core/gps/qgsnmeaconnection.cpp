@@ -396,10 +396,12 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         }
       }
       //set QgsSatelliteInfo.inuse to true for the satellites in view
-      //if ( IDfind == 0 && currentSatellite.sig > 0 )
+      if ( currentSatellite.sig > 0 )
+      {  
+        satelliteInfo.inUse = 1; // check where used ???? (+=1)
+      }
       if ( IDfind == 0 && ( currentSatellite.azimuth > 0 && currentSatellite.elv > 0 ) )
       {
-        satelliteInfo.inUse = 1; // check where used ???? (+=1)
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
       }
     
