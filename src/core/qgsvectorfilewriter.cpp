@@ -342,6 +342,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
     options[ datasourceOptions.size()] = nullptr;
   }
+
   mAttrIdxToOgrIdx.remove( 0 );
 
   // create the data source
