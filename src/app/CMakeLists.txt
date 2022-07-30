@@ -361,7 +361,8 @@ if (WITH_3D)
 endif()
 
 
-set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
+# set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
+set (WITH_QWTPOLAR TRUE CACHE BOOL "Determines whether QwtPolar should be built")
 
 if (WITH_QWTPOLAR)
   add_definitions(-DWITH_QWTPOLAR)
