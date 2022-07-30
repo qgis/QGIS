@@ -28,7 +28,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mGroupBox">
      <property name="title">
       <string>Style</string>
@@ -57,7 +57,7 @@
      </layout>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="6" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -94,13 +94,6 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="mShowAsGroupBox">
-     <property name="text">
-      <string>Show as Group Box</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
     <widget class="QLineEdit" name="mTitleLineEdit"/>
    </item>
@@ -111,24 +104,38 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QCheckBox" name="mCollapsedCheckBox">
-     <property name="text">
-      <string>Collapsed</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="QgsCollapsibleGroupBox" name="mControlCollapsedGroupBox">
+   <item row="4" column="0" colspan="2">
+    <widget class="QgsCollapsibleGroupBox" name="mShowAsGroupBox">
      <property name="title">
-      <string>Control Collapsed by Expression</string>
+      <string>Show as Group Box</string>
      </property>
      <property name="checkable">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QgsFieldExpressionWidget" name="mCollapsedExpressionWidget" native="true"/>
+      <item row="0" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCollapsedCheckBox">
+        <property name="toolTip">
+         <string>Always collapse the group box at the form opening</string>
+        </property>
+        <property name="text">
+         <string>Collapse</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelExpressionCollapse">
+        <property name="text">
+         <string>Collapsing expression</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsFieldExpressionWidget" name="mCollapsedExpressionWidget" native="true">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Collapses the group box using an expression.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Comment out or delete the expression to deactivate the option.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -172,7 +179,6 @@
   <tabstop>mColumnCountSpinBox</tabstop>
   <tabstop>mShowAsGroupBox</tabstop>
   <tabstop>mCollapsedCheckBox</tabstop>
-  <tabstop>mControlCollapsedGroupBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
  </tabstops>
  <resources/>

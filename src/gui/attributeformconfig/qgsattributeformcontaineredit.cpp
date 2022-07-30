@@ -29,15 +29,16 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
 
   if ( item->parent() )
   {
-    // only top level items can be tabs
-    // i.e. it's always a group box if it's a nested container
-    mShowAsGroupBox->hide();
-    mShowAsGroupBox->setEnabled( false );
+    // a nested container is always a group box, then hide the checkbox
+    mShowAsGroupBox->setCheckable( false );
+  }
+  else
+  {
+    mShowAsGroupBox->setChecked( itemData.showAsGroupBox() );
   }
 
   mTitleLineEdit->setText( itemData.name() );
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
-  mShowAsGroupBox->setChecked( itemData.showAsGroupBox() );
 
   mVisibilityExpressionWidget->setAllowEmptyFieldName( true );
   mVisibilityExpressionWidget->setLayer( layer );
@@ -45,15 +46,11 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   mColumnCountSpinBox->setValue( itemData.columnCount() );
   mBackgroundColorButton->setColor( itemData.backgroundColor() );
   mCollapsedCheckBox->setChecked( itemData.collapsed() );
-  mCollapsedCheckBox->setEnabled( itemData.showAsGroupBox() );
-  mControlCollapsedGroupBox->setChecked( itemData.collapsedExpression().enabled() );
-  mControlCollapsedGroupBox->setEnabled( itemData.showAsGroupBox() );
+  mCollapsedExpressionWidget->setAllowEmptyFieldName( true );
+  mCollapsedExpressionWidget->setLayer( layer );
   mCollapsedExpressionWidget->setExpression( itemData.collapsedExpression()->expression() );
 
   mFormLabelFormatWidget->setLabelStyle( itemData.labelStyle() );
-
-  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mCollapsedCheckBox, &QCheckBox::setEnabled );
-  connect( mShowAsGroupBox, &QCheckBox::stateChanged, mControlCollapsedGroupBox, &QCheckBox::setEnabled );
 }
 
 void QgsAttributeFormContainerEdit::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
@@ -67,7 +64,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setShowAsGroupBox( mShowAsGroupBox->isEnabled() ? mShowAsGroupBox->isChecked() : false );
+  itemData.setShowAsGroupBox( mShowAsGroupBox->isCheckable() ? mShowAsGroupBox->isChecked() : true );
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );
@@ -80,7 +77,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
 
   QgsOptionalExpression collapsedExpression;
   collapsedExpression.setData( QgsExpression( mCollapsedExpressionWidget->expression() ) );
-  collapsedExpression.setEnabled( mControlCollapsedGroupBox->isChecked() );
+  collapsedExpression.setEnabled( itemData.showAsGroupBox() );
   itemData.setCollapsedExpression( collapsedExpression );
   itemData.setCollapsed( mCollapsedCheckBox->isEnabled() ? mCollapsedCheckBox->isChecked() : false );
 
