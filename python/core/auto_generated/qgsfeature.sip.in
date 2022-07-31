@@ -156,7 +156,9 @@ Copy constructor
 %End
 
 
+    bool operator==( const QgsFeature &other ) const;
 
+    bool operator!=( const QgsFeature &other ) const;
 
     virtual ~QgsFeature();
 

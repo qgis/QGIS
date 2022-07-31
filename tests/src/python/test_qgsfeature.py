@@ -57,6 +57,47 @@ class TestQgsFeature(unittest.TestCase):
         feat = QgsFeature(QgsFields(), 1234)
         self.assertEqual(feat.id(), 1234)
 
+    def test_equality(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+
+        feat = QgsFeature(fields, 0)
+        feat.initAttributes(1)
+        feat.setAttribute(0, "text")
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertNotEqual(feat, QgsFeature())
+
+        feat2 = QgsFeature(fields, 0)
+        feat2.initAttributes(1)
+        feat2.setAttribute(0, "text")
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertEqual(feat, feat2)
+
+        feat2.setId(5)
+        self.assertNotEqual(feat, feat2)
+        feat2.setId(0)
+        self.assertEqual(feat, feat2)
+
+        feat2.setAttribute(0, "text2")
+        self.assertNotEqual(feat, feat2)
+        feat2.setAttribute(0, "text")
+        self.assertEqual(feat, feat2)
+
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1231, 4561)))
+        self.assertNotEqual(feat, feat2)
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+        self.assertEqual(feat, feat2)
+
+        field2 = QgsField('my_field3')
+        fields.append(field2)
+        feat2.setFields(fields)
+        self.assertNotEqual(feat, feat2)
+
     def test_ValidFeature(self):
         myPath = os.path.join(unitTestDataPath(), 'points.shp')
         myLayer = QgsVectorLayer(myPath, 'Points', 'ogr')
