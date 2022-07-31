@@ -1978,7 +1978,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertTrue(
             h2.templatePath(ctx).endswith('/resources/server/api/ogc/templates/services/api2/handlerTwo.html'))
 
-        del(project)
+        del project
 
     def testOgcApiHandlerContentType(self):
         """Test OGC API Handler content types"""
@@ -2029,7 +2029,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
             'http://localhost:8000/project/7ecb/wfs3/collections/zg.grundnutzung.html')
         self.assertEqual(h3.contentTypeFromRequest(req), QgsServerOgcApi.HTML)
 
-        del(project)
+        del project
 
     def testOgcApiHandlerException(self):
         """Test OGC API Handler exception"""
@@ -2061,7 +2061,7 @@ class QgsServerOgcAPITest(QgsServerAPITestBase):
         self.assertEqual(
             str(ex.exception), "UTF-8 Exception 2 $ù~à^£")
 
-        del(project)
+        del project
 
     def test_path_capture(self):
         """Test issue GH #45439"""
