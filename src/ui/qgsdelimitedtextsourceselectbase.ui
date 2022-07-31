@@ -7,14 +7,8 @@
     <x>0</x>
     <y>0</y>
     <width>730</width>
-    <height>643</height>
+    <height>557</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Create a Layer from a Delimited Text File</string>
@@ -32,7 +26,7 @@
   <property name="whatsThis">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_17" stretch="0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout_17">
    <item>
     <widget class="QWidget" name="widget_3" native="true">
      <property name="sizePolicy">
@@ -147,12 +141,6 @@
    </item>
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
@@ -170,8 +158,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>703</width>
-        <height>647</height>
+        <width>698</width>
+        <height>757</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -180,7 +168,7 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
+      <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,1">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -195,12 +183,6 @@
        </property>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="fileFormatGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>File Format</string>
          </property>
@@ -655,12 +637,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="recordOptionsGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Record and Fields Options</string>
          </property>
@@ -858,12 +834,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="geometryDefinitionGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Geometry Definition</string>
          </property>
@@ -1356,12 +1326,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBox" name="layerSettingsGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Layer Settings</string>
          </property>
@@ -1429,12 +1393,6 @@
        </item>
        <item>
         <widget class="QGroupBox" name="sampleDataGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Column data type is determined automatically scanning the file but it is possible to override the types through the type combo boxes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
@@ -1509,19 +1467,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

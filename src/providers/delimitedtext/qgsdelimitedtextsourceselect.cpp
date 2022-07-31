@@ -46,6 +46,10 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
+  // force sample table to show at least 10 rows, even if we have to vertically scroll the widget. Allowing it to shrink
+  // any smaller to avoid a vertical scroll bar makes the sample preview unusable.
+  tblSample->setMinimumHeight( QFontMetrics( font() ).height() * 10 );
+
   bgFileFormat = new QButtonGroup( this );
   bgFileFormat->addButton( delimiterCSV, swFileFormat->indexOf( swpCSVOptions ) );
   bgFileFormat->addButton( delimiterChars, swFileFormat->indexOf( swpDelimOptions ) );
