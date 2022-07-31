@@ -200,17 +200,17 @@ class CORE_EXPORT QgsFeature
     /**
      * Assignment operator
      */
-    QgsFeature &operator=( const QgsFeature &rhs ) SIP_SKIP;
+    QgsFeature &operator=( const QgsFeature &rhs );
 
     /**
      * Compares two features
      */
-    bool operator==( const QgsFeature &other ) const SIP_SKIP;
+    bool operator==( const QgsFeature &other ) const;
 
     /**
      * Compares two features
      */
-    bool operator!=( const QgsFeature &other ) const SIP_SKIP;
+    bool operator!=( const QgsFeature &other ) const;
 
     virtual ~QgsFeature();
 
