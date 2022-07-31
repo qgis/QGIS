@@ -81,10 +81,10 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
             cls.basetestpath, 'geopackage_poly.gpkg')
         cls.vl = QgsVectorLayer(
             cls.basetestfile + '|layername=geopackage', 'test', 'ogr')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.vl_poly = QgsVectorLayer(cls.basetestpolyfile, 'test', 'ogr')
-        assert (cls.vl_poly.isValid())
+        assert cls.vl_poly.isValid()
         cls.poly_provider = cls.vl_poly.dataProvider()
 
         cls.dirs_to_cleanup = [cls.basetestpath, cls.repackfilepath]
@@ -102,10 +102,10 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        del(cls.vl)
-        del(cls.vl_poly)
-        del(cls.check_constraint)
-        del(cls.unique_not_null_constraints)
+        del cls.vl
+        del cls.vl_poly
+        del cls.check_constraint
+        del cls.unique_not_null_constraints
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
