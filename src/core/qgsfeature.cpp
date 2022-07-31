@@ -64,15 +64,22 @@ bool QgsFeature::operator ==( const QgsFeature &other ) const
   if ( d == other.d )
     return true;
 
-  if ( d->fid == other.d->fid
-       && d->valid == other.d->valid
-       && d->fields == other.d->fields
-       && d->attributes == other.d->attributes
-       && d->geometry.equals( other.d->geometry )
-       && d->symbol == other.d->symbol )
-    return true;
+  if ( !( d->fid == other.d->fid
+          && d->valid == other.d->valid
+          && d->fields == other.d->fields
+          && d->attributes == other.d->attributes
+          && d->symbol == other.d->symbol ) )
+    return false;
 
-  return false;
+  // compare geometry
+  if ( d->geometry.isNull() && other.d->geometry.isNull() )
+    return true;
+  else if ( d->geometry.isNull() || other.d->geometry.isNull() )
+    return false;
+  else if ( !d->geometry.equals( other.d->geometry ) )
+    return false;
+
+  return true;
 }
 
 bool QgsFeature::operator!=( const QgsFeature &other ) const
