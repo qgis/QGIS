@@ -2090,7 +2090,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request_project(qs, project))
         t = et.fromstring(r)
         ns = t.nsmap
-        del(ns[None])
+        del ns[None]
         ns['wms'] = 'http://www.opengis.net/wms'
 
         date_dimension = t.xpath("//wms:Layer/wms:Name[text()='test_date']/../wms:Dimension", namespaces=ns)[0]

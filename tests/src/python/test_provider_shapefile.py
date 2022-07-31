@@ -77,10 +77,10 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         cls.repackfile = os.path.join(cls.repackfilepath, 'shapefile.shp')
         cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
         cls.vl = QgsVectorLayer('{}|layerid=0'.format(cls.basetestfile), 'test', 'ogr')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.vl_poly = QgsVectorLayer('{}|layerid=0'.format(cls.basetestpolyfile), 'test', 'ogr')
-        assert (cls.vl_poly.isValid())
+        assert cls.vl_poly.isValid()
         cls.poly_provider = cls.vl_poly.dataProvider()
 
         cls.dirs_to_cleanup = [cls.basetestpath, cls.repackfilepath]
@@ -88,8 +88,8 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        del(cls.vl)
-        del(cls.vl_poly)
+        del cls.vl
+        del cls.vl_poly
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
@@ -759,7 +759,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(testPath, 'test', 'ogr')
         self.assertTrue(vl.isValid())
         unfiltered_extent = _lessdigits(vl.extent().toString())
-        del(vl)
+        del vl
 
         # filter after construction ...
         subSet_vl2 = QgsVectorLayer(testPath, 'test', 'ogr')
@@ -769,7 +769,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(subSet_vl2.subsetString(), subSetString)
         self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
         filtered_extent = _lessdigits(subSet_vl2.extent().toString())
-        del(subSet_vl2)
+        del subSet_vl2
 
         # filtered in constructor
         subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'ogr')

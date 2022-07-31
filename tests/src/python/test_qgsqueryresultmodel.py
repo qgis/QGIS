@@ -94,7 +94,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
         """Test that when a model is deleted fetching query rows is also interrupted"""
 
         def model_deleter():
-            del(self.model)
+            del self.model
 
         def loop_exiter():
             self.running = False
@@ -149,7 +149,7 @@ class TestPyQgsQgsQueryResultModel(unittest.TestCase):
 
         # Because exit handler will exit QGIS and clear the connections pool before
         # the model is deleted (and it will in turn clear the connection)
-        del(model)
+        del model
 
 
 if __name__ == '__main__':

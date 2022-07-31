@@ -44,7 +44,7 @@ class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
         self.assertTrue(vl.writeStyle(node, style, "Error writing style", QgsReadWriteContext(), QgsMapLayer.Rendering))
 
         style_content = style.toString()
-        del(vl)
+        del vl
 
         # Read
         vl2 = QgsVectorLayer("LineString?crs=epsg:4326", "result", "memory")
