@@ -91,8 +91,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
     def test_SplitMultipolygon(self):
         """Split multipolygon"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite")
-        assert(layer.isValid())
-        assert(layer.isSpatial())
+        assert layer.isValid()
+        assert layer.isSpatial()
         layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
         layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0) == 0 or die("error in split of one polygon of multipolygon")
@@ -103,8 +103,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
     def test_SplitTruToCreateCutEdge(self):
         """Try to creat a cut edge"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite")
-        assert(layer.isValid())
-        assert(layer.isSpatial())
+        assert layer.isValid()
+        assert layer.isSpatial()
         layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
         layer.splitFeatures([QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0) == 0 or die("error when trying to create an invalid polygon in split")
