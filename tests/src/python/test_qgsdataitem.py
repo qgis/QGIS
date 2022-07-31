@@ -70,7 +70,7 @@ class TestQgsDataItem(unittest.TestCase):
             self.assertEqual(children[0].name(), "name")
             self.assertEqual(children[1].name(), "name2")
 
-            del(children)
+            del children
 
             # Delete the object and make sure all deferred deletions are processed
             item.destroyed.connect(loop.quit)
