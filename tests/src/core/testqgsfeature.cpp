@@ -519,6 +519,30 @@ void TestQgsFeature::equality()
   feature7.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
 
   QVERIFY( feature != feature7 );
+
+  // features without geometry
+  QgsFeature feature8;
+  feature8.setFields( mFields, true );
+  feature8.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature8.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature8.setAttribute( 2, QStringLiteral( "attr3" ) );
+  feature8.setValid( true );
+  feature8.setId( 1 );
+  QgsFeature feature9;
+  feature9.setFields( mFields, true );
+  feature9.setAttribute( 0, QStringLiteral( "attr1" ) );
+  feature9.setAttribute( 1, QStringLiteral( "attr2" ) );
+  feature9.setAttribute( 2, QStringLiteral( "attr3" ) );
+  feature9.setValid( true );
+  feature9.setId( 1 );
+  QVERIFY( feature8 == feature9 );
+  feature8.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
+  QVERIFY( feature8 != feature9 );
+  feature8.clearGeometry();
+  feature9.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
+  QVERIFY( feature8 != feature9 );
+  feature8.setGeometry( QgsGeometry( new QgsPoint( 1, 3 ) ) );
+  QVERIFY( feature8 == feature9 );
 }
 
 void TestQgsFeature::attributeUsingField()
