@@ -20,8 +20,10 @@ from qgis.PyQt.QtGui import (QImage,
                              QPainter,
                              QColor)
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (QgsUnsetAttributeValue,
-                       )
+from qgis.core import (
+    QgsUnsetAttributeValue,
+    QgsFeature
+)
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath, compareWkt
@@ -49,6 +51,18 @@ class TestQgsUnsetAttributeValue(unittest.TestCase):
         self.assertEqual(QgsUnsetAttributeValue('Autonumber'), QgsUnsetAttributeValue('Autonumber2'))
         self.assertEqual(QgsUnsetAttributeValue('Autonumber'), QgsUnsetAttributeValue())
         self.assertEqual(QgsUnsetAttributeValue(), QgsUnsetAttributeValue('Autonumber2'))
+
+        # some deeper tests...
+        self.assertEqual([1, 2, QgsUnsetAttributeValue(), 3], [1, 2, QgsUnsetAttributeValue(), 3])
+        self.assertEqual([1, 2, QgsUnsetAttributeValue(), 3], [1, 2, QgsUnsetAttributeValue('Autogenerate'), 3])
+
+        # requires fixes in QgsFeature!
+        # feature = QgsFeature()
+        # feature.setAttributes([1, 2, QgsUnsetAttributeValue(), 3])
+        # feature2 = QgsFeature()
+        # feature2.setAttributes([1, 2, QgsUnsetAttributeValue('Autogenerate'), 3])
+        # self.assertEqual(feature.attributes(), feature2.attributes())
+        # self.assertEqual(feature, feature2)
 
     def testEqualityToString(self):
         self.assertEqual(QgsUnsetAttributeValue('Autonumber'), 'Autonumber')
