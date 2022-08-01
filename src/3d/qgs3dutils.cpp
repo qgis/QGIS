@@ -531,7 +531,7 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
   }
 
   zMin = std::numeric_limits<double>::max();
-  zMax = std::numeric_limits<double>::min();
+  zMax = std::numeric_limits<double>::lowest();
 
   QgsFeature f;
   QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes().setLimit( 100 ) );
@@ -546,7 +546,7 @@ void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin,
     }
   }
 
-  if ( zMin == std::numeric_limits<double>::max() && zMax == std::numeric_limits<double>::min() )
+  if ( zMin == std::numeric_limits<double>::max() && zMax == std::numeric_limits<double>::lowest() )
   {
     zMin = 0;
     zMax = 0;
