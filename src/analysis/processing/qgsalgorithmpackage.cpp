@@ -76,9 +76,6 @@ QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
 bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
 
-  const bool exportRelatedLayers = parameterAsBoolean( parameters, QStringLiteral( "EXPORT_RELATED_LAYERS" ), context );
-  const bool selectedFeaturesOnly = parameterAsBoolean( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
-
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
@@ -93,8 +90,41 @@ bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
     feedback->reportError( QObject::tr( "No layers selected, geopackage will be empty" ), false );
   }
 
+  return true;
+}
+
+QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
+  const bool saveStyles = parameterAsBoolean( parameters, QStringLiteral( "SAVE_STYLES" ), context );
+  const bool saveMetadata = parameterAsBoolean( parameters, QStringLiteral( "SAVE_METADATA" ), context );
+  const bool selectedFeaturesOnly = parameterAsBoolean( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
+  const bool exportRelatedLayers = parameterAsBoolean( parameters, QStringLiteral( "EXPORT_RELATED_LAYERS" ), context );
+  const QString packagePath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+
+  if ( packagePath.isEmpty() )
+    throw QgsProcessingException( QObject::tr( "No output file specified." ) );
+
+  // delete existing geopackage if it exists
+  if ( overwrite && QFile::exists( packagePath ) )
+  {
+    feedback->pushInfo( QObject::tr( "Removing existing file '%1'" ).arg( packagePath ) );
+    if ( !QFile( packagePath ).remove() )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( packagePath ) );
+    }
+  }
+
+  OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
+  if ( !hGpkgDriver )
+  {
+    throw QgsProcessingException( QObject::tr( "GeoPackage driver not found." ) );
+  }
+
+
   // Collect related layers from project relations
-  else if ( exportRelatedLayers )
+  if ( exportRelatedLayers )
   {
     const QgsProject *project { context.project() };
     if ( project && ! project->relationManager()->relations().isEmpty() )
@@ -265,36 +295,6 @@ bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPr
       }
 
     }
-  }
-
-  return true;
-}
-
-QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-{
-  const bool overwrite = parameterAsBoolean( parameters, QStringLiteral( "OVERWRITE" ), context );
-  const bool saveStyles = parameterAsBoolean( parameters, QStringLiteral( "SAVE_STYLES" ), context );
-  const bool saveMetadata = parameterAsBoolean( parameters, QStringLiteral( "SAVE_METADATA" ), context );
-  const bool selectedFeaturesOnly = parameterAsBoolean( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
-
-  const QString packagePath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
-  if ( packagePath.isEmpty() )
-    throw QgsProcessingException( QObject::tr( "No output file specified." ) );
-
-  // delete existing geopackage if it exists
-  if ( overwrite && QFile::exists( packagePath ) )
-  {
-    feedback->pushInfo( QObject::tr( "Removing existing file '%1'" ).arg( packagePath ) );
-    if ( !QFile( packagePath ).remove() )
-    {
-      throw QgsProcessingException( QObject::tr( "Could not remove existing file '%1'" ).arg( packagePath ) );
-    }
-  }
-
-  OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
-  if ( !hGpkgDriver )
-  {
-    throw QgsProcessingException( QObject::tr( "GeoPackage driver not found." ) );
   }
 
   gdal::ogr_datasource_unique_ptr hDS;
