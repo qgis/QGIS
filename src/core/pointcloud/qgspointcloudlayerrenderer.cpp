@@ -87,7 +87,10 @@ void applyEyeDomeLighting( QImage *img, const QImage *elevationImg, const QgsPoi
   {
     for ( int j = distance; j < img->height() - distance; ++j )
     {
-      QColor originalColor = img->pixelColor( i, j );
+      uchar &red = *( img->bits() + j * img->bytesPerLine() + i * 4 );
+      uchar &green = *( img->bits() + j * img->bytesPerLine() + i * 4 + 1 );
+      uchar &blue = *( img->bits() + j * img->bytesPerLine() + i * 4 + 2 );
+
       int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
       float factor = 0.0f;
       float centerDepth = decodeElevation( elevationImg->constBits() + j * elevationImg->bytesPerLine() + i * 4 );
@@ -101,7 +104,9 @@ void applyEyeDomeLighting( QImage *img, const QImage *elevationImg, const QgsPoi
         factor += std::max<float>( 0, centerDepth - neighbourDepth );
       }
       float shade = exp( -factor / 4 * strength );
-      img->setPixelColor( i, j, QColor::fromRgbF( shade * originalColor.redF(), shade * originalColor.greenF(), shade * originalColor.blueF(), originalColor.alphaF() ) );
+      red = red * shade;
+      green = green * shade;
+      blue = blue * shade;
     }
   }
 };
