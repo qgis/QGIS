@@ -80,16 +80,16 @@ class CORE_EXPORT QgsWeakRelation
 #endif
 
     /**
-     * Resolves a weak relation in the given \a project returning a possibly invalid QgsRelation
+     * Resolves a weak relation in the given \a project returning a list of possibly invalid QgsRelations
      * and without performing any kind of validity check.
      *
-     * \note Client code should never assume that the returned relation is valid and the
+     * \note Client code should never assume that the returned relations are valid and the
      * layer components are not NULL.
      */
 #ifndef SIP_RUN
-    QgsRelation resolvedRelation( const QgsProject *project, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::All ) const;
+    QList< QgsRelation > resolvedRelations( const QgsProject *project, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::All ) const;
 #else
-    QgsRelation resolvedRelation( const QgsProject *project ) const;
+    QList< QgsRelation > resolvedRelations( const QgsProject *project ) const;
 #endif
 
     /**
