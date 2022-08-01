@@ -70,6 +70,29 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
                                              path() + QStringLiteral( "/columns/ " ),
                                              path(),
                                              QStringLiteral( "ogr" ), QString(), name() ) );
+
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+      {
+        QString relationError;
+        QList< QgsWeakRelation > relations;
+        try
+        {
+          relations = conn->relationships( QString(), mDetails.name() );
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          relationError = ex.what();
+        }
+
+        if ( !relations.empty() || !relationError.isEmpty() )
+        {
+          std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ), QString(), mDetails.name() );
+          // force this item to appear last by setting a maximum string value for the sort key
+          relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+          children.append( relationsItem.release() );
+        }
+      }
     }
   }
   return children;

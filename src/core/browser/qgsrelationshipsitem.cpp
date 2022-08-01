@@ -25,9 +25,11 @@
 QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
     const QString &path,
     const QString &connectionUri,
-    const QString &providerKey )
+    const QString &providerKey, const QString &schema, const QString &tableName )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Relationships" ), path, providerKey )
   , mConnectionUri( connectionUri )
+  , mSchema( schema )
+  , mTableName( tableName )
 {
   mCapabilities |= ( Qgis::BrowserItemCapability::Fertile | Qgis::BrowserItemCapability::Collapse | Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed );
 }
@@ -49,7 +51,7 @@ QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
         QList< QgsWeakRelation > relations;
         try
         {
-          relations = conn->relationships();
+          relations = conn->relationships( mSchema, mTableName );
         }
         catch ( QgsProviderConnectionException &ex )
         {

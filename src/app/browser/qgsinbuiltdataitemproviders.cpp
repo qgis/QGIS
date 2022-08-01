@@ -2292,7 +2292,7 @@ QWidget *QgsRelationshipItemGuiProvider::createParamWidget( QgsDataItem *item, Q
   }
   else if ( QgsRelationshipsItem *relationsItem = qobject_cast< QgsRelationshipsItem * >( item ) )
   {
-    return new QgsRelationshipsDetailsWidget( nullptr, relationsItem->providerKey(), relationsItem->connectionUri() );
+    return new QgsRelationshipsDetailsWidget( nullptr, relationsItem->providerKey(), relationsItem->connectionUri(), relationsItem->schema(), relationsItem->tableName() );
   }
   else
   {
@@ -2399,7 +2399,7 @@ QgsRelationshipDetailsWidget::~QgsRelationshipDetailsWidget() = default;
 // QgsRelationshipsDetailsWidget
 //
 
-QgsRelationshipsDetailsWidget::QgsRelationshipsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri )
+QgsRelationshipsDetailsWidget::QgsRelationshipsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema, const QString &tableName )
   : QWidget( parent )
 {
   setupUi( this );
@@ -2419,7 +2419,7 @@ QgsRelationshipsDetailsWidget::QgsRelationshipsDetailsWidget( QWidget *parent, c
         QList< QgsWeakRelation > relationships;
         try
         {
-          relationships = conn->relationships();
+          relationships = conn->relationships( schema, tableName );
         }
         catch ( QgsProviderConnectionException &ex )
         {
