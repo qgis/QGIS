@@ -256,7 +256,7 @@ class QgsRelationshipsDetailsWidget : public QWidget, private Ui_QgsBrowserItemM
 
   public:
 
-    QgsRelationshipsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri );
+    QgsRelationshipsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema, const QString &tableName );
 };
 
 

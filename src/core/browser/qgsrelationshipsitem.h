@@ -41,11 +41,16 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
      * The \a connectionUri argument is the connection part of the layer URI that it is used internally to create
      * a connection and retrieve fields information.
      * The \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     *
+     * The optional \a schema and \a tableName arguments can be used to restrict the visible relationships to
+     * those with a matching parent table.
      */
     QgsRelationshipsItem( QgsDataItem *parent SIP_TRANSFERTHIS,
                           const QString &path,
                           const QString &connectionUri,
-                          const QString &providerKey );
+                          const QString &providerKey,
+                          const QString &schema = QString(),
+                          const QString &tableName = QString() );
 
     ~QgsRelationshipsItem() override;
 
@@ -66,9 +71,25 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
      */
     QString connectionUri() const;
 
+    /**
+     * Returns the schema for filtering relationships, if set.
+     *
+     * \see tableName()
+     */
+    QString schema() const { return mSchema; }
+
+    /**
+     * Returns the table name for filtering relationships, if set.
+     *
+     * \see schema()
+     */
+    QString tableName() const {return mTableName;}
+
   private:
 
     QString mConnectionUri;
+    QString mSchema;
+    QString mTableName;
     QStringList mRelationshipNames;
 
 };
