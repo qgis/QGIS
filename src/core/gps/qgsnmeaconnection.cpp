@@ -112,8 +112,6 @@ void QgsNmeaConnection::processStringBuffer()
         
         // GPS+SBAS GLONASS GALILEO BEIDOU;
         else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) )
-        //else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) || substring.startsWith( QLatin1String( "$GLGSV" ) ) || substring.startsWith( QLatin1String( "$GAGSV" ) ) || substring.startsWith( QLatin1String( "$GBGSV" ) ) || substring.startsWith( QLatin1String( "$GQGSV" ) ) )
-        //else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) || substring.startsWith( QLatin1String( "$GNGSV" ) ) )
         {
           QgsDebugMsgLevel( substring, 2 );
           processGsvSentence( ba.data(), ba.length() );
@@ -204,8 +202,6 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
     {
       mLastGPSInformation.qualityIndicator = Qgis::GpsQualityIndicator::Unknown;
     }
-    // use GSA for satellites in use;
-    //mLastGPSInformation.satellitesUsed = result.satinuse;
   }
 }
 
@@ -360,16 +356,10 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
-    // clear() on VTG ---MB
-    //clear satellite information when a new series of packs arrives
-    //if ( result.pack_index == 1 )
-    //{
-    //  mLastGPSInformation.satellitesInView.clear();
-    //}
+    // clear() on VTG
 
     // for determining when to graph sat info
     mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
-    //mLastGPSInformation.satInfoComplete = true; 
 
     int IDfind = 0;
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
@@ -379,7 +369,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.azimuth = currentSatellite.azimuth;
       satelliteInfo.elevation = currentSatellite.elv;
       satelliteInfo.id = currentSatellite.id;
-      //satelliteInfo.inUse = currentSatellite.in_use; // check where used ????;
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
 
@@ -395,7 +384,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
           }
         }
       }
-      //set QgsSatelliteInfo.inuse to true for the satellites in view
       if ( currentSatellite.sig > 0 )
       {  
         satelliteInfo.inUse = 1; // check where used ???? (+=1)
@@ -429,9 +417,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )
   {
-    
-    // clear() on VTG ---MB
-    //mLastGPSInformation.satPrn.clear();    
+    // clear() on VTG
     
     mLastGPSInformation.hdop = result.HDOP;
     mLastGPSInformation.pdop = result.PDOP;
@@ -442,8 +428,6 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     {
       if ( result.sat_prn[ i ] > 0 )
       {
-        // SAVE SAT_ID
-        // spostata in GSV per salvare SNR
         mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
         mLastGPSInformation.satellitesUsed +=1;
       }
