@@ -430,7 +430,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
   if ( nmea_parse_GPGSA( data, len, &result ) )
   {
     
-    // clear() on RMS ---MB
+    // clear() on VTG ---MB
     //mLastGPSInformation.satPrn.clear();    
     
     mLastGPSInformation.hdop = result.HDOP;
