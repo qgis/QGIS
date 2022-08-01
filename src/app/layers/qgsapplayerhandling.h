@@ -155,10 +155,12 @@ class APP_EXPORT QgsAppLayerHandling
     static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
         QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
 
-
     /**
      * Scans the \a vectorLayer for weak relations and automatically
      * try to resolve and create the broken relations.
+     *
+     * This method will automatically attempt to repair any relations using
+     * other layers already present in the current project.
      */
     static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
 

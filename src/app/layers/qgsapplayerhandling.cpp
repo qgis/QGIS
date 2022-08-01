@@ -1314,51 +1314,54 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
     const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
     for ( const QgsWeakRelation &rel : constWeakRelations )
     {
-      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
-      QgsVectorLayerRef dependency;
-      bool found = false;
-      if ( ! relation.isValid() )
+      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      for ( const QgsRelation &relation : relations )
       {
-        // This is the big question: do we really
-        // want to automatically load the referencing layer(s) too?
-        // This could potentially lead to a cascaded load of a
-        // long list of layers.
-        // The code is in place but let's leave it disabled for now.
-        if ( relation.referencedLayer() == vl )
+        QgsVectorLayerRef dependency;
+        bool found = false;
+        if ( ! relation.isValid() )
         {
-          // Do nothing because vl is the referenced layer
+          // This is the big question: do we really
+          // want to automatically load the referencing layer(s) too?
+          // This could potentially lead to a cascaded load of a
+          // long list of layers.
+          // The code is in place but let's leave it disabled for now.
+          if ( relation.referencedLayer() == vl )
+          {
+            // Do nothing because vl is the referenced layer
 #if 0
-          dependency = rel.referencingLayer();
-          found = true;
+            dependency = rel.referencingLayer();
+            found = true;
 #endif
-        }
-        else if ( relation.referencingLayer() == vl )
-        {
-          dependency = rel.referencedLayer();
-          found = true;
-        }
-        else
-        {
-          // Something wrong is going on here, maybe this relation
-          // does not really apply to this layer?
-          QgsMessageLog::logMessage( QObject::tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
-        }
-
-        if ( found )
-        {
-          // Make sure we don't add it twice if it was already added by the form widgets check
-          bool refFound = false;
-          for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
-          {
-            if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
-            {
-              refFound = true;
-              break;
-            }
           }
-          if ( ! refFound )
+          else if ( relation.referencingLayer() == vl )
           {
-            brokenDependencies.append( dependency );
+            dependency = rel.referencedLayer();
+            found = true;
+          }
+          else
+          {
+            // Something wrong is going on here, maybe this relation
+            // does not really apply to this layer?
+            QgsMessageLog::logMessage( QObject::tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
+          }
+
+          if ( found )
+          {
+            // Make sure we don't add it twice if it was already added by the form widgets check
+            bool refFound = false;
+            for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
+            {
+              if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
+              {
+                refFound = true;
+                break;
+              }
+            }
+            if ( ! refFound )
+            {
+              brokenDependencies.append( dependency );
+            }
           }
         }
       }
@@ -1472,19 +1475,22 @@ void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vecto
     const QList<QgsWeakRelation> constWeakRelations { vectorLayer->weakRelations( ) };
     for ( const QgsWeakRelation &rel : constWeakRelations )
     {
-      QgsRelation relation { rel.resolvedRelation( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
-      if ( relation.isValid() )
+      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      for ( const QgsRelation &relation : relations )
       {
-        // Avoid duplicates
-        const QList<QgsRelation> constRelations { QgsProject::instance()->relationManager()->relations().values() };
-        for ( const QgsRelation &other : constRelations )
+        if ( relation.isValid() )
         {
-          if ( relation.hasEqualDefinition( other ) )
+          // Avoid duplicates
+          const QList<QgsRelation> constRelations { QgsProject::instance()->relationManager()->relations().values() };
+          for ( const QgsRelation &other : constRelations )
           {
-            continue;
+            if ( relation.hasEqualDefinition( other ) )
+            {
+              continue;
+            }
           }
+          QgsProject::instance()->relationManager()->addRelation( relation );
         }
-        QgsProject::instance()->relationManager()->addRelation( relation );
       }
     }
   }

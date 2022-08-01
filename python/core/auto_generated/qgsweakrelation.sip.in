@@ -45,14 +45,14 @@ Default constructor for an invalid relation.
 %End
 
 
-    QgsRelation resolvedRelation( const QgsProject *project ) const;
+    QList< QgsRelation > resolvedRelations( const QgsProject *project ) const;
 %Docstring
-Resolves a weak relation in the given ``project`` returning a possibly invalid :py:class:`QgsRelation`
+Resolves a weak relation in the given ``project`` returning a list of possibly invalid :py:class:`QgsRelations`
 and without performing any kind of validity check.
 
 .. note::
 
-   Client code should never assume that the returned relation is valid and the
+   Client code should never assume that the returned relations are valid and the
    layer components are not NULL.
 %End
 

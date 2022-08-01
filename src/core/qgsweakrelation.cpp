@@ -33,30 +33,98 @@ QgsWeakRelation::QgsWeakRelation( const QString &relationId, const QString &rela
 {
 }
 
-QgsRelation QgsWeakRelation::resolvedRelation( const QgsProject *project, QgsVectorLayerRef::MatchType matchType ) const
+QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *project, QgsVectorLayerRef::MatchType matchType ) const
 {
-  QgsRelation relation;
-  relation.setId( mRelationId );
-  relation.setName( mRelationName );
-  relation.setStrength( mStrength );
-  QgsVectorLayerRef referencedLayerRef { mReferencedLayer };
-  QgsMapLayer *referencedLayer { referencedLayerRef.resolveWeakly( project, matchType ) };
-  if ( referencedLayer )
+  QList< QgsRelation > res;
+
+  switch ( mCardinality )
   {
-    relation.setReferencedLayer( referencedLayer->id() );
-  }
-  QgsVectorLayerRef referencingLayerRef { mReferencingLayer };
-  QgsMapLayer *referencingLayer { referencingLayerRef.resolveWeakly( project, matchType ) };
-  if ( referencingLayer )
-  {
-    relation.setReferencingLayer( referencingLayer->id() );
+    case Qgis::RelationshipCardinality::OneToOne:
+    case Qgis::RelationshipCardinality::OneToMany:
+    case Qgis::RelationshipCardinality::ManyToOne:
+    {
+
+      QgsRelation relation;
+      relation.setId( mRelationId );
+      relation.setName( mRelationName );
+      relation.setStrength( mStrength );
+      QgsVectorLayerRef referencedLayerRef { mReferencedLayer };
+      QgsMapLayer *referencedLayer { referencedLayerRef.resolveWeakly( project, matchType ) };
+      if ( referencedLayer )
+      {
+        relation.setReferencedLayer( referencedLayer->id() );
+      }
+      QgsVectorLayerRef referencingLayerRef { mReferencingLayer };
+      QgsMapLayer *referencingLayer { referencingLayerRef.resolveWeakly( project, matchType ) };
+      if ( referencingLayer )
+      {
+        relation.setReferencingLayer( referencingLayer->id() );
+      }
+
+      for ( int i = 0 ; i < std::min( mReferencingLayerFields.size(), mReferencedLayerFields.size() ); ++i )
+      {
+        relation.addFieldPair( mReferencingLayerFields.at( i ), mReferencedLayerFields.at( i ) );
+      }
+
+      res.push_back( relation );
+      break;
+    }
+
+    case Qgis::RelationshipCardinality::ManyToMany:
+    {
+      // a many-to-many relationship is represented by two QgsRelations
+      QgsRelation relationLeft;
+      relationLeft.setId( mRelationId + QStringLiteral( "_forward" ) );
+      relationLeft.setName( mRelationName + QStringLiteral( "_forward" ) );
+      relationLeft.setStrength( mStrength );
+      QgsVectorLayerRef referencedLayerRef { mReferencedLayer };
+      QgsMapLayer *referencedLayer { referencedLayerRef.resolveWeakly( project, matchType ) };
+      if ( referencedLayer )
+      {
+        relationLeft.setReferencedLayer( referencedLayer->id() );
+      }
+
+      QgsVectorLayerRef mappingTableRef { mMappingTable };
+      QgsMapLayer *mappingLayer { mappingTableRef.resolveWeakly( project, matchType ) };
+      if ( mappingLayer )
+      {
+        relationLeft.setReferencingLayer( mappingLayer->id() );
+      }
+
+      for ( int i = 0 ; i < std::min( mMappingReferencedLayerFields.size(), mReferencedLayerFields.size() ); ++i )
+      {
+        relationLeft.addFieldPair( mMappingReferencedLayerFields.at( i ), mReferencedLayerFields.at( i ) );
+      }
+
+      res.push_back( relationLeft );
+
+      QgsRelation relationRight;
+      relationRight.setId( mRelationId + QStringLiteral( "_backward" ) );
+      relationRight.setName( mRelationName + QStringLiteral( "_backward" ) );
+      relationRight.setStrength( mStrength );
+
+      QgsVectorLayerRef referencingLayerRef { mReferencingLayer };
+      QgsMapLayer *referencingLayer { referencingLayerRef.resolveWeakly( project, matchType ) };
+      if ( referencingLayer )
+      {
+        relationRight.setReferencedLayer( referencingLayer->id() );
+      }
+      if ( mappingLayer )
+      {
+        relationRight.setReferencingLayer( mappingLayer->id() );
+      }
+
+      for ( int i = 0 ; i < std::min( mMappingReferencingLayerFields.size(), mReferencingLayerFields.size() ); ++i )
+      {
+        relationRight.addFieldPair( mMappingReferencingLayerFields.at( i ), mReferencingLayerFields.at( i ) );
+      }
+
+      res.push_back( relationRight );
+      break;
+    }
   }
 
-  for ( int i = 0 ; i < std::min( mReferencingLayerFields.size(), mReferencedLayerFields.size() ); ++i )
-  {
-    relation.addFieldPair( mReferencingLayerFields.at( i ), mReferencedLayerFields.at( i ) );
-  }
-  return relation;
+  return res;
 }
 
 QgsVectorLayerRef QgsWeakRelation::referencingLayer() const
