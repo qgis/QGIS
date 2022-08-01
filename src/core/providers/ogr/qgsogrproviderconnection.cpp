@@ -1077,7 +1077,7 @@ QList<QgsWeakRelation> QgsOgrProviderConnection::relationships( const QString &s
   }
 #else
   Q_UNUSED( tableName )
-  throw QgsProviderConnectionException( QObject::tr( "Retrieving relationships for datasets requires GDAL 3.5 or later" ) );
+  throw QgsProviderConnectionException( QObject::tr( "Retrieving relationships for datasets requires GDAL 3.6 or later" ) );
 #endif
 }
 
