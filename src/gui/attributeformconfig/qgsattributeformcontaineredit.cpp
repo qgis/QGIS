@@ -75,7 +75,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
 
   QgsOptionalExpression visibilityExpression;
   visibilityExpression.setData( QgsExpression( mVisibilityExpressionWidget->expression() ) );
-  visibilityExpression.setEnabled( true );
+  visibilityExpression.setEnabled( !mVisibilityExpressionWidget->currentText().isEmpty() );
   itemData.setVisibilityExpression( visibilityExpression );
 
   QgsOptionalExpression collapsedExpression;
