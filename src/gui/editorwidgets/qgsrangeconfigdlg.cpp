@@ -107,7 +107,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
   connect( rangeWidget, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( allowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( suffixLineEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
-  connect( precisionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsRangeConfigDlg::setPrecision );
+  connect( precisionSpinBox, qOverload< int > ( &QSpinBox::valueChanged ), this, &QgsRangeConfigDlg::setPrecision );
 }
 
 QVariantMap QgsRangeConfigDlg::config()
