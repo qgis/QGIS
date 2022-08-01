@@ -53,7 +53,8 @@ from qgis.core import (
     QgsProviderConnectionException,
     QgsProviderMetadata,
     QgsRelation,
-    QgsUnsetAttributeValue
+    QgsUnsetAttributeValue,
+    QgsFieldConstraints
 )
 
 from qgis.gui import (
@@ -468,20 +469,39 @@ class PyQgsOGRProvider(unittest.TestCase):
         """
         with tempfile.TemporaryDirectory() as temp_dir:
             tmpfile = os.path.join(temp_dir, 'test_unset_value.gpkg')
+
             ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
-            lyr = ds.CreateLayer('test', geom_type=ogr.wkbMultiPolygon)
-            lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+            ds.ExecuteSQL(
+                "CREATE TABLE test(fid INTEGER PRIMARY KEY, name TEXT DEFAULT 'default_value', auto_number INTEGER DEFAULT 55)")
+
             ds = None
 
             layer = QgsVectorLayer(tmpfile, 'test')
             self.assertTrue(layer.isValid())
 
+            self.assertFalse(
+                layer.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 5))
+            self.assertTrue(layer.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 'Autogenerate'))
+            self.assertTrue(
+                layer.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, QgsUnsetAttributeValue()))
+            self.assertTrue(
+                layer.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, QgsUnsetAttributeValue('Autogenerate')))
+            self.assertFalse(layer.dataProvider().skipConstraintCheck(1, QgsFieldConstraints.ConstraintUnique, 'my name'))
+            self.assertFalse(
+                layer.dataProvider().skipConstraintCheck(1, QgsFieldConstraints.ConstraintUnique, NULL))
+            self.assertTrue(
+                layer.dataProvider().skipConstraintCheck(1, QgsFieldConstraints.ConstraintUnique, QgsUnsetAttributeValue()))
+            self.assertFalse(
+                layer.dataProvider().skipConstraintCheck(2, QgsFieldConstraints.ConstraintUnique, 11))
+            self.assertTrue(
+                layer.dataProvider().skipConstraintCheck(2, QgsFieldConstraints.ConstraintUnique, QgsUnsetAttributeValue()))
+
             feature = QgsFeature(layer.fields())
-            feature.setAttributes([1, 'test1'])
+            feature.setAttributes([1, 'test1', 11])
             self.assertTrue(layer.dataProvider().addFeature(feature))
             f1 = feature.id()
 
-            feature.setAttributes([QgsUnsetAttributeValue('Autonumber'), 'test2'])
+            feature.setAttributes([QgsUnsetAttributeValue('Autonumber'), 'test2', 22])
             self.assertTrue(layer.dataProvider().addFeature(feature))
             f2 = feature.id()
 
@@ -490,10 +510,10 @@ class PyQgsOGRProvider(unittest.TestCase):
 
             # read back in features and test
             f1_read = layer.getFeature(f1)
-            self.assertEqual(f1_read.attributes(), [1, 'test1'])
+            self.assertEqual(f1_read.attributes(), [1, 'test1', 11])
 
             f2_read = layer.getFeature(f2)
-            self.assertEqual(f2_read.attributes(), [f2, 'test2'])
+            self.assertEqual(f2_read.attributes(), [f2, 'test2', 22])
 
     def testDataItems(self):
         dataitem = QgsDirectoryItem(None, 'name', unitTestDataPath())
