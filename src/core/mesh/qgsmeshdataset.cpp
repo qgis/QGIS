@@ -856,7 +856,7 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataset::metadata() const
 void QgsMeshMemoryDataset::calculateMinMax()
 {
   double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
+  double max = std::numeric_limits<double>::lowest();
 
   if ( !valid )
     return;
@@ -1004,7 +1004,7 @@ void QgsMeshDatasetGroup::updateStatictic() const
     return;
 
   double min = std::numeric_limits<double>::max();
-  double max = std::numeric_limits<double>::min();
+  double max = std::numeric_limits<double>::lowest();
 
   const int count = datasetCount();
   for ( int i = 0; i < count; ++i )
