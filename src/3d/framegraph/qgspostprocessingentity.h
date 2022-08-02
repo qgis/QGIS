@@ -19,6 +19,7 @@
 #include "qgsrenderpassquad.h"
 
 class QgsFrameGraph;
+class QgsShadowRenderView;
 
 #define SIP_NO_FILE
 

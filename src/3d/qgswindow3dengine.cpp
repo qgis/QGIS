@@ -19,9 +19,12 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 
+#include "framegraph/qgsabstractrenderview.h"
+#include "framegraph/qgspreviewquad.h"
 #include "qgs3dmapcanvas.h"
-#include "framegraph/qgsframegraph.h"
 
+#include "qgsframegraph.h"
+#include "qgsshadowrenderview.h"
 
 QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   : QgsAbstract3DEngine( parent )
@@ -35,7 +38,7 @@ QgsWindow3DEngine::QgsWindow3DEngine( Qgs3DMapCanvas *parent )
   mMapCanvas3D->setActiveFrameGraph( mFrameGraph->frameGraphRoot() );
 
   // force switching to no shadow rendering
-  setShadowRenderingEnabled( false );
+  mFrameGraph->setEnableRenderView( QgsFrameGraph::SHADOW_RENDERVIEW, false );
 }
 
 QWindow *QgsWindow3DEngine::window()
@@ -46,12 +49,6 @@ QWindow *QgsWindow3DEngine::window()
 Qt3DCore::QEntity *QgsWindow3DEngine::root() const
 {
   return mRoot;
-}
-
-void QgsWindow3DEngine::setShadowRenderingEnabled( bool enabled )
-{
-  mShadowRenderingEnabled = enabled;
-  mFrameGraph->setShadowRenderingEnabled( mShadowRenderingEnabled );
 }
 
 void QgsWindow3DEngine::setClearColor( const QColor &color )
@@ -70,7 +67,11 @@ void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
   mSceneRoot->addComponent( mFrameGraph->forwardRenderLayer() );
-  mSceneRoot->addComponent( mFrameGraph->castShadowsLayer() );
+  if ( mFrameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) )
+  {
+    QgsShadowRenderView *rv = dynamic_cast<QgsShadowRenderView *>( mFrameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );
+    mSceneRoot->addComponent( rv->layerToFilter() );
+  }
 }
 
 Qt3DRender::QRenderSettings *QgsWindow3DEngine::renderSettings()
