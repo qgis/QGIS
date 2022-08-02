@@ -548,6 +548,8 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
       format = QgsRaster::IdentifyFormatFeature;
     else if ( f.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
       format = QgsRaster::IdentifyFormatFeature;
+    else if ( f == QLatin1String( "text/xml" ) )
+      format = QgsRaster::IdentifyFormatFeature;
 
     mIdentifyFormats.insert( format, f );
   }
