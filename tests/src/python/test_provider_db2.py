@@ -36,11 +36,11 @@ class TestPyQgsDb2Provider(unittest.TestCase, ProviderTestCase):
             cls.dbconn = os.environ['QGIS_DB2TEST_DB']
         # Create test layer
         cls.vl = QgsVectorLayer(cls.dbconn + ' srid=4326 type=Point  table="QGIS_TEST"."SOMEDATA" (GEOM) sql=', 'test', 'DB2')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' srid=4326 type=POLYGON table="QGIS_TEST"."SOME_POLY_DATA" (geom) sql=', 'test', 'DB2')
-        assert(cls.poly_vl.isValid())
+        assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
     @classmethod
