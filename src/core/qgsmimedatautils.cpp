@@ -18,10 +18,7 @@
 
 #include "qgslayertree.h"
 #include "qgslogger.h"
-#include "qgspluginlayer.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 

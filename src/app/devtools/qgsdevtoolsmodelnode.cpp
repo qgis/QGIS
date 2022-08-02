@@ -15,7 +15,6 @@
 
 #include "qgsdevtoolsmodelnode.h"
 #include "qgis.h"
-#include "qgsjsonutils.h"
 #include <QUrlQuery>
 #include <QColor>
 #include <QBrush>
