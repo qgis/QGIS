@@ -48,14 +48,14 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
       relation.setId( mRelationId );
       relation.setName( mRelationName );
       relation.setStrength( mStrength );
-      QgsVectorLayerRef referencedLayerRef { mReferencedLayer };
-      QgsMapLayer *referencedLayer { referencedLayerRef.resolveWeakly( project, matchType ) };
+      QgsVectorLayerRef referencedLayerRef = mReferencedLayer;
+      QgsMapLayer *referencedLayer = referencedLayerRef.resolveWeakly( project, matchType );
       if ( referencedLayer )
       {
         relation.setReferencedLayer( referencedLayer->id() );
       }
-      QgsVectorLayerRef referencingLayerRef { mReferencingLayer };
-      QgsMapLayer *referencingLayer { referencingLayerRef.resolveWeakly( project, matchType ) };
+      QgsVectorLayerRef referencingLayerRef = mReferencingLayer;
+      QgsMapLayer *referencingLayer = referencingLayerRef.resolveWeakly( project, matchType );
       if ( referencingLayer )
       {
         relation.setReferencingLayer( referencingLayer->id() );
@@ -77,15 +77,15 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
       relationLeft.setId( mRelationId + QStringLiteral( "_forward" ) );
       relationLeft.setName( mRelationName + QStringLiteral( "_forward" ) );
       relationLeft.setStrength( mStrength );
-      QgsVectorLayerRef referencedLayerRef { mReferencedLayer };
-      QgsMapLayer *referencedLayer { referencedLayerRef.resolveWeakly( project, matchType ) };
+      QgsVectorLayerRef referencedLayerRef = mReferencedLayer;
+      QgsMapLayer *referencedLayer = referencedLayerRef.resolveWeakly( project, matchType );
       if ( referencedLayer )
       {
         relationLeft.setReferencedLayer( referencedLayer->id() );
       }
 
-      QgsVectorLayerRef mappingTableRef { mMappingTable };
-      QgsMapLayer *mappingLayer { mappingTableRef.resolveWeakly( project, matchType ) };
+      QgsVectorLayerRef mappingTableRef = mMappingTable;
+      QgsMapLayer *mappingLayer = mappingTableRef.resolveWeakly( project, matchType );
       if ( mappingLayer )
       {
         relationLeft.setReferencingLayer( mappingLayer->id() );
@@ -103,8 +103,8 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
       relationRight.setName( mRelationName + QStringLiteral( "_backward" ) );
       relationRight.setStrength( mStrength );
 
-      QgsVectorLayerRef referencingLayerRef { mReferencingLayer };
-      QgsMapLayer *referencingLayer { referencingLayerRef.resolveWeakly( project, matchType ) };
+      QgsVectorLayerRef referencingLayerRef = mReferencingLayer;
+      QgsMapLayer *referencingLayer = referencingLayerRef.resolveWeakly( project, matchType );
       if ( referencingLayer )
       {
         relationRight.setReferencedLayer( referencingLayer->id() );

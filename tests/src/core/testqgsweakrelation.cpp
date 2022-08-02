@@ -79,8 +79,8 @@ void TestQgsWeakRelation::testResolved()
                            QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ),
                            QStringLiteral( "memory" )
                          );
-  weakRel.setReferencingLayerFields( {"fk_province" } );
-  weakRel.setReferencedLayerFields( {"pk" } );
+  weakRel.setReferencingLayerFields( { "fk_province" } );
+  weakRel.setReferencedLayerFields( { "pk" } );
 
   QList< QgsRelation > res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 1 );
@@ -138,10 +138,10 @@ void TestQgsWeakRelation::testResolvedManyToMany()
   weakRel.setCardinality( Qgis::RelationshipCardinality::ManyToMany );
   weakRel.setMappingTable( QgsVectorLayerRef( QStringLiteral( "mappingTableId" ), QStringLiteral( "mappingTableName" ), QStringLiteral( "None?field=origin_key:int&field=destination_key:int" ), QStringLiteral( "memory" ) ) );
 
-  weakRel.setReferencingLayerFields( {"fk_province" } );
-  weakRel.setMappingReferencingLayerFields( {"destination_key" } );
-  weakRel.setReferencedLayerFields( {"pk" } );
-  weakRel.setMappingReferencedLayerFields( {"origin_key" } );
+  weakRel.setReferencingLayerFields( { "fk_province" } );
+  weakRel.setMappingReferencingLayerFields( { "destination_key" } );
+  weakRel.setReferencedLayerFields( { "pk" } );
+  weakRel.setMappingReferencedLayerFields( { "origin_key" } );
 
   QList< QgsRelation > res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 2 );

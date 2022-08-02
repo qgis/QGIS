@@ -62,7 +62,7 @@ QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
         {
           try
           {
-            QgsRelationshipItem *relationshipItem { new QgsRelationshipItem( this, relation ) };
+            QgsRelationshipItem *relationshipItem = new QgsRelationshipItem( this, relation );
             children.push_back( relationshipItem );
           }
           catch ( QgsProviderConnectionException &ex )
