@@ -30,7 +30,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgstemporalcontroller.h"
-#include "qgsframegraph.h"
+#include "framegraph/qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
 
