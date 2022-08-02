@@ -136,8 +136,49 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
   }
 }
 
-void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> & )
+void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &layers )
 {
+  for ( QgsMapLayer *layer : layers )
+  {
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+
+        // try to automatically load related tables for OGR layers
+        if ( vl->providerType() == QLatin1String( "ogr" ) )
+        {
+          // first need to create weak relations!!
+          std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { QgsMapLayerUtils::databaseConnection( vl ) };
+          if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+          {
+            const QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+            const QString layerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+            if ( layerName.isEmpty() )
+              continue;
+
+            const QList< QgsWeakRelation > relations = conn->relationships( QString(), layerName );
+            if ( !relations.isEmpty() )
+            {
+              vl->setWeakRelations( relations );
+              resolveVectorLayerDependencies( vl, QgsMapLayer::StyleCategory::Relations, QgsVectorLayerRef::MatchType::Source, DependencyFlag::LoadAllRelationships | DependencyFlag::SilentLoad );
+              resolveVectorLayerWeakRelations( vl, QgsVectorLayerRef::MatchType::Source );
+            }
+          }
+        }
+        break;
+      }
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
+  }
 }
 
 QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringList &layers, const QString &encoding, const QString &dataSourceType, bool &ok, bool showWarningOnInvalid )
@@ -1319,7 +1360,7 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
   return result;
 }
 
-const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
+const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories, QgsVectorLayerRef::MatchType matchType, DependencyFlags dependencyFlags )
 {
   QList<QgsVectorLayerRef> brokenDependencies;
 
@@ -1340,7 +1381,7 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
                ! dependency.source.isEmpty() ||
                ! dependency.layerId.isEmpty() )
           {
-            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance(), matchType ) };
             if ( ! depVl || ! depVl->isValid() )
             {
               brokenDependencies.append( dependency );
@@ -1354,58 +1395,65 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
   if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
   {
     // Check for layer weak relations
-    const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
-    for ( const QgsWeakRelation &rel : constWeakRelations )
+    const QList<QgsWeakRelation> weakRelations { vl->weakRelations() };
+    for ( const QgsWeakRelation &weakRelation : weakRelations )
     {
-      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
-      for ( const QgsRelation &relation : relations )
-      {
-        QgsVectorLayerRef dependency;
-        bool found = false;
-        if ( ! relation.isValid() )
-        {
-          // This is the big question: do we really
-          // want to automatically load the referencing layer(s) too?
-          // This could potentially lead to a cascaded load of a
-          // long list of layers.
-          // The code is in place but let's leave it disabled for now.
-          if ( relation.referencedLayer() == vl )
-          {
-            // Do nothing because vl is the referenced layer
-#if 0
-            dependency = rel.referencingLayer();
-            found = true;
-#endif
-          }
-          else if ( relation.referencingLayer() == vl )
-          {
-            dependency = rel.referencedLayer();
-            found = true;
-          }
-          else
-          {
-            // Something wrong is going on here, maybe this relation
-            // does not really apply to this layer?
-            QgsMessageLog::logMessage( QObject::tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
-          }
+      QList< QgsVectorLayerRef > dependencies;
 
-          if ( found )
+      if ( !( dependencyFlags & DependencyFlag::LoadAllRelationships ) )
+      {
+        // This is the big question: do we really
+        // want to automatically load the referencing layer(s) too?
+        // This could potentially lead to a cascaded load of a
+        // long list of layers.
+
+        // for now, unless we are forcing load of all relationships we only consider relationships
+        // where the referencing layer is a match.
+        if ( weakRelation.referencingLayer().resolveWeakly( QgsProject::instance(), matchType ) != vl )
+        {
+          continue;
+        }
+      }
+
+      switch ( weakRelation.cardinality() )
+      {
+        case Qgis::RelationshipCardinality::ManyToMany:
+        {
+          if ( !weakRelation.mappingTable().resolveWeakly( QgsProject::instance(), matchType ) )
+            dependencies << weakRelation.mappingTable();
+          FALLTHROUGH;
+        }
+
+        case Qgis::RelationshipCardinality::OneToOne:
+        case Qgis::RelationshipCardinality::OneToMany:
+        case Qgis::RelationshipCardinality::ManyToOne:
+        {
+          if ( !weakRelation.referencedLayer().resolveWeakly( QgsProject::instance(), matchType ) )
+            dependencies << weakRelation.referencedLayer();
+
+          if ( !weakRelation.referencingLayer().resolveWeakly( QgsProject::instance(), matchType ) )
+            dependencies << weakRelation.referencingLayer();
+
+          break;
+        }
+      }
+
+      for ( const QgsVectorLayerRef &dependency : std::as_const( dependencies ) )
+      {
+        // Make sure we don't add it twice if it was already added by the form widgets check
+        bool refFound = false;
+        for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
+        {
+          if ( ( !dependency.layerId.isEmpty() && dependency.layerId == otherRef.layerId )
+               || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
           {
-            // Make sure we don't add it twice if it was already added by the form widgets check
-            bool refFound = false;
-            for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
-            {
-              if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
-              {
-                refFound = true;
-                break;
-              }
-            }
-            if ( ! refFound )
-            {
-              brokenDependencies.append( dependency );
-            }
+            refFound = true;
+            break;
           }
+        }
+        if ( ! refFound )
+        {
+          brokenDependencies.append( dependency );
         }
       }
     }
@@ -1413,12 +1461,12 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
   return brokenDependencies;
 }
 
-void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
+void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories, QgsVectorLayerRef::MatchType matchType, DependencyFlags dependencyFlags )
 {
   if ( vl && vl->isValid() )
   {
-    const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
-    for ( const QgsVectorLayerRef &dependency : constDependencies )
+    const QList<QgsVectorLayerRef> dependencies { findBrokenLayerDependencies( vl, categories, matchType, dependencyFlags ) };
+    for ( const QgsVectorLayerRef &dependency : dependencies )
     {
       // Check for projects without layer dependencies (see 7e8c7b3d0e094737336ff4834ea2af625d2921bf)
       if ( QgsProject::instance()->mapLayer( dependency.layerId ) || ( dependency.name.isEmpty() && dependency.source.isEmpty() ) )
@@ -1426,7 +1474,7 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
         continue;
       }
       // try to aggressively resolve the broken dependencies
-      bool loaded = false;
+      QgsVectorLayer *loadedLayer = nullptr;
       const QString providerName { vl->dataProvider()->name() };
       QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
       if ( providerMetadata )
@@ -1455,40 +1503,41 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
           }
 
           // Helper to find layers in connections
-          auto layerFinder = [ &conn, &dependency, &providerName ]( const QString & tableSchema, const QString & tableName ) -> bool
+          auto layerFinder = [ &conn, &dependency, &providerName ]( const QString & tableSchema, const QString & tableName ) -> QgsVectorLayer *
           {
             // First try the current schema (or no schema if it's not supported from the provider)
             try
             {
               const QString layerUri { conn->tableUri( tableSchema, tableName )};
               // Load it!
-              std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+              std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, !dependency.name.isEmpty() ? dependency.name : tableName, providerName );
               if ( newVl->isValid() )
               {
+                QgsVectorLayer *res = newVl.get();
                 QgsProject::instance()->addMapLayer( newVl.release() );
-                return true;
+                return res;
               }
             }
             catch ( QgsProviderConnectionException & )
             {
               // Do nothing!
             }
-            return false;
+            return nullptr;
           };
 
-          loaded = layerFinder( tableSchema, tableName );
+          loadedLayer = layerFinder( tableSchema, tableName );
 
           // Try different schemas
-          if ( ! loaded && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
+          if ( ! loadedLayer && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
           {
             const QStringList schemas { conn->schemas() };
             for ( const QString &schemaName : schemas )
             {
               if ( schemaName != tableSchema )
               {
-                loaded = layerFinder( schemaName, tableName );
+                loadedLayer = layerFinder( schemaName, tableName );
               }
-              if ( loaded )
+              if ( loadedLayer )
               {
                 break;
               }
@@ -1496,29 +1545,29 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
           }
         }
       }
-      if ( ! loaded )
+      if ( ! loadedLayer )
       {
         const QString msg { QObject::tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." ).arg( vl->name(), dependency.name ) };
         QgisApp::instance()->messageBar()->pushWarning( QObject::tr( "Missing layer form dependency" ), msg );
       }
-      else
+      else if ( !( dependencyFlags & DependencyFlag::SilentLoad ) )
       {
         QgisApp::instance()->messageBar()->pushSuccess( QObject::tr( "Missing layer form dependency" ), QObject::tr( "Layer dependency '%2' required by '%1' was automatically loaded." )
             .arg( vl->name(),
-                  dependency.name ) );
+                  loadedLayer->name() ) );
       }
     }
   }
 }
 
-void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer )
+void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType )
 {
   if ( vectorLayer && vectorLayer->isValid() )
   {
     const QList<QgsWeakRelation> constWeakRelations { vectorLayer->weakRelations( ) };
     for ( const QgsWeakRelation &rel : constWeakRelations )
     {
-      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), matchType ) };
       for ( const QgsRelation &relation : relations )
       {
         if ( relation.isValid() )
