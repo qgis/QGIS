@@ -79,6 +79,7 @@
 
 #include "qgswindow3dengine.h"
 #include "qgspointcloudlayer.h"
+#include "framegraph/qgsshadowrenderview.h"
 
 std::function< QMap< QString, Qgs3DMapScene * >() > Qgs3DMapScene::sOpenScenesFunction = [] { return QMap< QString, Qgs3DMapScene * >(); };
 
@@ -922,18 +923,22 @@ void Qgs3DMapScene::onShadowSettingsChanged()
     }
   }
 
-  QgsShadowSettings shadowSettings = mMap.shadowSettings();
-  int selectedLight = shadowSettings.selectedDirectionalLight();
-  if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
+  QgsShadowRenderView *shadowRenderView = dynamic_cast<QgsShadowRenderView *>( frameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) ) ;
+  if ( shadowRenderView )
   {
-    frameGraph->setShadowRenderingEnabled( true );
-    frameGraph->setShadowBias( shadowSettings.shadowBias() );
-    frameGraph->setShadowMapResolution( shadowSettings.shadowMapResolution() );
-    QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
-    frameGraph->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance() );
+    QgsShadowSettings shadowSettings = mMap.shadowSettings();
+    int selectedLight = shadowSettings.selectedDirectionalLight();
+    if ( shadowSettings.renderShadows() && selectedLight >= 0 && selectedLight < directionalLightSources.count() )
+    {
+      shadowRenderView->setShadowBias( shadowSettings.shadowBias() );
+      shadowRenderView->updateTargetOutputSize( shadowSettings.shadowMapResolution(), shadowSettings.shadowMapResolution() );
+      QgsDirectionalLightSettings light = *directionalLightSources.at( selectedLight );
+      shadowRenderView->setupDirectionalLight( light, shadowSettings.maximumShadowRenderingDistance(), frameGraph->mainCamera() );
+      shadowRenderView->setEnabled( true );
+    }
+    else
+      shadowRenderView->setEnabled( false );
   }
-  else
-    frameGraph->setShadowRenderingEnabled( false );
 }
 
 void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()

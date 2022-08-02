@@ -41,14 +41,21 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QUrl>
 
 #include "qgsframegraph.h"
+#include "qgsshadowrenderview.h"
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
   , mFrameGraph( frameGraph )
 {
+  QgsShadowRenderView *shadowRenderView = dynamic_cast<QgsShadowRenderView *>( frameGraph->renderView( QgsFrameGraph::SHADOW_RENDERVIEW ) );
+  connect( shadowRenderView, &QgsShadowRenderView::shadowDirectionLightUpdated, this, &QgsPostprocessingEntity::setupDirectionalLight );
+  connect( shadowRenderView, &QgsShadowRenderView::shadowExtentChanged, this, &QgsPostprocessingEntity::setupShadowRenderingExtent );
+  connect( shadowRenderView, &QgsShadowRenderView::shadowBiasChanged, this, &QgsPostprocessingEntity::setShadowBias );
+  connect( shadowRenderView, &QgsShadowRenderView::shadowRenderingEnabled, this, &QgsPostprocessingEntity::setShadowRenderingEnabled );
+
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
-  mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );
+  mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), shadowRenderView->outputTexture( Qt3DRender::QRenderTargetOutput::Depth ) );
   mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredAmbientOcclusionFactorMap() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
@@ -56,7 +63,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mMaterial->addParameter( mAmbientOcclusionTextureParameter );
 
   mMainCamera = frameGraph->mainCamera();
-  mLightCamera = frameGraph->lightCamera();
+  mLightCamera = shadowRenderView->lightCamera();
 
   mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), mMainCamera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
@@ -134,7 +141,7 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
 }
 
-void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ )
+void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float, float, float minZ, float maxZ )
 {
   mShadowMinX->setValue( minX );
   mShadowMaxX->setValue( maxX );

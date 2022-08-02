@@ -81,6 +81,7 @@ set(QGIS_3D_SRCS
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgspreviewquad.cpp
   framegraph/qgsrenderpassquad.cpp
+  framegraph/qgsshadowrenderview.cpp
   framegraph/qgsframegraph.cpp
   framegraph/qgsframegraphutils.cpp
 
@@ -180,6 +181,7 @@ set(QGIS_3D_HDRS
   framegraph/qgspostprocessingentity.h
   framegraph/qgspreviewquad.h
   framegraph/qgsrenderpassquad.h
+  framegraph/qgsshadowrenderview.h
 
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
