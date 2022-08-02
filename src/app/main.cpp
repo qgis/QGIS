@@ -1445,7 +1445,8 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      QgsAppLayerHandling::openLayer( layerName );
+      bool ok = false;
+      QgsAppLayerHandling::openLayer( layerName, ok );
     }
   }
 

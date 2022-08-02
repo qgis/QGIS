@@ -1359,8 +1359,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     emit connectionsChanged();
     mBlockBrowser1Refresh--;
   } );
-  connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
-  connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
+  connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, [this]( const QString & file ) { openFile( file ); } );
+  connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, [this]( const QgsMimeDataUtils::UriList & list ) { handleDropUriList( list ); } );
 
   mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser (2)" ), mBrowserModel, this );
   mBrowserWidget2->setObjectName( QStringLiteral( "Browser2" ) );
@@ -1372,8 +1372,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
     emit connectionsChanged();
     mBlockBrowser2Refresh--;
   } );
-  connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, &QgisApp::openFile );
-  connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, &QgisApp::handleDropUriList );
+  connect( mBrowserWidget2, &QgsBrowserDockWidget::openFile, this, [this]( const QString & file ) { openFile( file ); } );
+  connect( mBrowserWidget2, &QgsBrowserDockWidget::handleDropUriList, this, [this]( const QgsMimeDataUtils::UriList & list ) { handleDropUriList( list ); } );
 
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
@@ -2100,6 +2100,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
+    QList< QgsMapLayer * > addedLayers;
     for ( const QString &file : std::as_const( files ) )
     {
       bool handled = false;
@@ -2116,13 +2117,18 @@ void QgisApp::dropEvent( QDropEvent *event )
       }
 
       if ( !handled )
-        openFile( file );
+      {
+        addedLayers.append( openFile( file, QString(), true ) );
+      }
     }
 
     if ( !lst.isEmpty() )
     {
-      handleDropUriList( lst );
+      addedLayers.append( handleDropUriList( lst, true ) );
     }
+
+    if ( !addedLayers.isEmpty() )
+      QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
 
     timer->deleteLater();
   } );
@@ -2197,7 +2203,7 @@ QVector<QPointer<QgsLayoutCustomDropHandler> > QgisApp::customLayoutDropHandlers
   return mCustomLayoutDropHandlers;
 }
 
-void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
+QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing )
 {
   // avoid unnecessary work when adding lots of layers at once - defer emitting the active layer changed signal until we've
   // added all layers, and only emit the signal once for the final layer added
@@ -2224,6 +2230,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
   };
 
   // insert items in reverse order as each one is inserted on top of previous one
+  QList< QgsMapLayer * > addedLayers;
   int count = 0;
   for ( int i = lst.size() - 1 ; i >= 0 ; i--, count++ )
   {
@@ -2233,23 +2240,26 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 
     if ( u.layerType == QLatin1String( "collection" ) )
     {
-      QgsAppLayerHandling::openLayer( uri, true );
+      bool ok = false;
+      const QList< QgsMapLayer * > collectionLayers = QgsAppLayerHandling::openLayer( uri, ok, true, true );
+      if ( ok )
+        addedLayers.append( collectionLayers );
     }
     else if ( u.layerType == QLatin1String( "vector" ) )
     {
-      addVectorLayer( uri, u.name, u.providerKey );
+      addedLayers << QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "raster" ) )
     {
-      addRasterLayer( uri, u.name, u.providerKey );
+      addedLayers << QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
-      addMeshLayer( uri, u.name, u.providerKey );
+      addedLayers << QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      addPointCloudLayer( uri, u.name, u.providerKey );
+      addedLayers << QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
@@ -2284,6 +2294,7 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
       if ( subLayers.empty() )
       {
         QgsAppLayerHandling::addMapLayer( layer );
+        addedLayers << layer;
       }
       else
       {
@@ -2329,14 +2340,16 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
         {
           QgsProject::instance()->addMapLayer( subLayer, false );
           group->addLayer( subLayer );
+          addedLayers <<  subLayer;
         }
         QgsProject::instance()->addMapLayer( layer, false );
         group->addLayer( layer );
+        addedLayers << layer;
       }
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
-      addPluginLayer( uri, u.name, u.providerKey );
+      addedLayers << QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey );
     }
     else if ( u.layerType == QLatin1String( "custom" ) )
     {
@@ -2358,8 +2371,13 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     task.setProgress( 100.0 * static_cast< double >( count ) / lst.size() );
   }
 
+  if ( !suppressBulkLayerPostProcessing )
+    QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
+
   mBlockActiveLayerChanged = false;
   onActiveLayerChanged( activeLayer() );
+
+  return addedLayers;
 }
 
 bool QgisApp::event( QEvent *event )
@@ -2410,22 +2428,47 @@ void QgisApp::dataSourceManager( const QString &pageName )
     mDataSourceManagerDialog = new QgsDataSourceManagerDialog( mBrowserModel, this, mapCanvas() );
     connect( this, &QgisApp::connectionsChanged, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::refresh );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::connectionsChanged, this, &QgisApp::connectionsChanged );
-    connect( mDataSourceManagerDialog, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-             this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayers, this, [ = ]( const QStringList & layersList ) { QgsAppLayerHandling::addRasterLayers( layersList ); } );
-    connect( mDataSourceManagerDialog, SIGNAL( addVectorLayer( QString const &, QString const &, QString const & ) ),
-             this, SLOT( addVectorLayer( QString const &, QString const &, QString const & ) ) );
-    connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
-             this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayer,
+             this, [this]( const QString & uri, const QString & baseName, const QString & providerKey )
+    {
+      addRasterLayer( uri, baseName, providerKey );
+    } );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayers, this, [ = ]( const QStringList & layersList )
+    {
+      bool ok = false;
+      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addRasterLayers( layersList, ok );
+      if ( ok )
+        QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
+    } );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorLayer, this, [this]( const QString & vectorLayerPath, const QString & baseName, const QString & providerKey )
+    {
+      QgsVectorLayer *layer = addVectorLayer( vectorLayerPath, baseName, providerKey );
+      if ( layer )
+        QgsAppLayerHandling::postProcessAddedLayers( {layer} );
+    } );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorLayers, this, []( const QStringList & layerList, const QString & enc, const QString & dataSourceType )
+    {
+      bool ok = false;
+      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addVectorLayers( layerList, enc, dataSourceType, ok );
+      if ( ok )
+        QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
+    } );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addMeshLayer, this, &QgisApp::addMeshLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorTileLayer, this, &QgisApp::addVectorTileLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addPointCloudLayer, this, &QgisApp::addPointCloudLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, []( const QStringList & layerPathList, const QString & providerKey ) { QgsAppLayerHandling::addDatabaseLayers( layerPathList, providerKey ); } );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, []( const QStringList & layerPathList, const QString & providerKey )
+    {
+      bool ok = false;
+      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addDatabaseLayers( layerPathList, providerKey, ok );
+      if ( ok )
+        QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
+    } );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer, this, &QgisApp::replaceSelectedVectorLayer );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::handleDropUriList, this, &QgisApp::handleDropUriList );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::handleDropUriList, this, [this]( const QgsMimeDataUtils::UriList & list ) { handleDropUriList( list ); } );
+
     connect( this, &QgisApp::newProject, mDataSourceManagerDialog, &QgsDataSourceManagerDialog::updateProjectHome );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, &QgisApp::openFile );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::openFile, this, [this]( const QString & file ) { openFile( file ); } );
 
   }
   else
@@ -5350,7 +5393,9 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
 bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
 {
-  return QgsAppLayerHandling::addVectorLayers( layerQStringList, enc, dataSourceType );
+  bool ok = false;
+  QgsAppLayerHandling::addVectorLayers( layerQStringList, enc, dataSourceType, ok );
+  return ok;
 }
 
 QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
@@ -6657,8 +6702,10 @@ void QgisApp::openProject( const QString &fileName )
 }
 
 // Open a file specified by a commandline argument, Drop or FileOpen event.
-void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
+QList< QgsMapLayer * > QgisApp::openFile( const QString &fileName, const QString &fileTypeHint, bool suppressBulkLayerPostProcessing )
 {
+  QList< QgsMapLayer * > res;
+
   // check to see if we are opening a project file
   QFileInfo fi( fileName );
   if ( fileTypeHint == QLatin1String( "project" ) || fi.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
@@ -6681,8 +6728,11 @@ void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
   else
   {
     QgsDebugMsgLevel( "Adding " + fileName + " to the map canvas", 2 );
-    QgsAppLayerHandling::openLayer( fileName, true );
+    bool ok = false;
+    res = QgsAppLayerHandling::openLayer( fileName, ok, true, suppressBulkLayerPostProcessing );
   }
+
+  return res;
 }
 
 void QgisApp::newPrintLayout()
@@ -7887,11 +7937,13 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
     {
       if ( outputFormat == QLatin1String( "GPKG" ) && !outputLayerName.isEmpty() )
       {
-        QgsAppLayerHandling::addRasterLayers( QStringList( QStringLiteral( "GPKG:%1:%2" ).arg( fileName, outputLayerName ) ) );
+        bool ok = false;
+        QgsAppLayerHandling::addRasterLayers( QStringList( QStringLiteral( "GPKG:%1:%2" ).arg( fileName, outputLayerName ) ), ok );
       }
       else
       {
-        QgsAppLayerHandling::addRasterLayers( QStringList( fileName ) );
+        bool ok = false;
+        QgsAppLayerHandling::addRasterLayers( QStringList( fileName ), ok );
       }
     }
     if ( rlWeakPointer )

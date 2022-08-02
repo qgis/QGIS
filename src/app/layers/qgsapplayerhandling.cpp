@@ -136,9 +136,14 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
   }
 }
 
-bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning )
+void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> & )
+{
+}
+
+QList< QgsMapLayer * > QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool &ok, bool guiWarning )
 {
   //note: this method ONLY supports vector layers from the OGR provider!
+  ok = false;
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
@@ -301,7 +306,7 @@ bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QStr
   {
     // we also return true if we asked the user for sublayers, but they choose none. In this case nothing
     // went wrong, so we shouldn't return false and cause GUI warnings to appear
-    return userAskedToAddLayers || !addedLayers.isEmpty();
+    ok = userAskedToAddLayers || !addedLayers.isEmpty();
   }
 
   // Register this layer with the layers registry
@@ -319,7 +324,9 @@ bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QStr
   }
   QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
 
-  return true;
+  ok = true;
+  addedLayers.append( layersToAdd );
+  return addedLayers;
 }
 
 QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarning )
@@ -665,9 +672,16 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   return result;
 }
 
-bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteractive )
+QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, bool &ok, bool allowInteractive, bool suppressBulkLayerPostProcessing )
 {
-  bool ok = false;
+  QList< QgsMapLayer * > openedLayers;
+  auto postProcessAddedLayers = [suppressBulkLayerPostProcessing, &openedLayers]
+  {
+    if ( !suppressBulkLayerPostProcessing )
+      QgsAppLayerHandling::postProcessAddedLayers( openedLayers );
+  };
+
+  ok = false;
   const QFileInfo fileInfo( fileName );
 
   // highest priority = delegate to provider registry to handle
@@ -688,13 +702,22 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         break;
 
       case QgsMapLayerType::PointCloudLayer:
-        ok = static_cast< bool >( addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
+      {
+        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) )
+        {
+          ok = true;
+          openedLayers << layer;
+        }
         break;
+      }
     }
   }
 
   if ( ok )
-    return true;
+  {
+    postProcessAddedLayers();
+    return openedLayers;
+  }
 
   CPLPushErrorHandler( CPLQuietErrorHandler );
 
@@ -705,7 +728,8 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
     if ( askUserForZipItemLayers( fileName, {} ) )
     {
       CPLPopErrorHandler();
-      return true;
+      ok = true;
+      return openedLayers;
     }
   }
 
@@ -724,8 +748,11 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
         if ( vtLayer->isValid() )
         {
+          openedLayers << vtLayer.get();
           QgsProject::instance()->addMapLayer( vtLayer.release() );
-          return true;
+          postProcessAddedLayers();
+          ok = true;
+          return openedLayers;
         }
       }
       else // raster tiles
@@ -734,8 +761,13 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( fileName ).toString() );
-        if ( addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
-          return true;
+        if ( QgsRasterLayer *rasterLayer = addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
+        {
+          openedLayers << rasterLayer;
+          postProcessAddedLayers();
+          ok = true;
+          return openedLayers;
+        }
       }
     }
   }
@@ -749,9 +781,12 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
     std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
     if ( vtLayer->isValid() )
     {
+      openedLayers << vtLayer.get();
       QgsAppLayerHandling::postProcessAddedLayer( vtLayer.get() );
       QgsProject::instance()->addMapLayer( vtLayer.release() );
-      return true;
+      postProcessAddedLayers();
+      ok = true;
+      return openedLayers;
     }
   }
 
@@ -839,14 +874,15 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         base = QgsMapLayer::formatLayerName( base );
       }
 
-      addSublayers( sublayers, base, groupName );
+      openedLayers.append( addSublayers( sublayers, base, groupName ) );
       QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
     }
     else if ( !nonLayerItems.empty() )
     {
+      ok = true;
       QgsCanvasRefreshBlocker refreshBlocker;
       if ( QgisApp::instance()->checkTasksDependOnProject() )
-        return true;
+        return {};
 
       // possibly save any pending work before opening a different project
       if ( QgisApp::instance()->checkUnsavedLayerEdits() && QgisApp::instance()->checkMemoryLayers() && QgisApp::instance()->saveDirty() )
@@ -854,7 +890,7 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         // error handling and reporting is in addProject() function
         QgisApp::instance()->addProject( nonLayerItems.at( 0 ).uri() );
       }
-      return true;
+      return {};
     }
   }
 
@@ -883,8 +919,12 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
     const QString msg = QObject::tr( "%1 is not a valid or recognized data source." ).arg( fileName );
     QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
   }
+  else
+  {
+    postProcessAddedLayers();
+  }
 
-  return ok;
+  return openedLayers;
 }
 
 QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
@@ -902,11 +942,12 @@ QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &url, const QStri
   return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, url, baseName, providerKey, true );
 }
 
-bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWarning )
+QList<QgsMapLayer *> QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool &ok, bool guiWarning )
 {
+  ok = false;
   if ( files.empty() )
   {
-    return false;
+    return {};
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -914,11 +955,12 @@ bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWar
   // this is messy since some files in the list may be rasters and others may
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
-  bool returnValue = true;
+
+  QList< QgsMapLayer * > res;
+
   for ( const QString &src : files )
   {
     QString errMsg;
-    bool ok = false;
 
     // if needed prompt for zipitem layers
     QString vsiPrefix = QgsZipItem::vsiPrefix( src );
@@ -959,6 +1001,7 @@ bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWar
       // try to create the layer
       cursorOverride.reset();
       QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
+      res << layer;
 
       if ( layer && layer->isValid() )
       {
@@ -990,12 +1033,8 @@ bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWar
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Unsupported Data Source" ), msg, Qgis::MessageLevel::Critical );
       }
     }
-    if ( ! ok )
-    {
-      returnValue = false;
-    }
   }
-  return returnValue;
+  return res;
 }
 
 void QgsAppLayerHandling::addMapLayer( QgsMapLayer *mapLayer )
@@ -1084,8 +1123,9 @@ void QgsAppLayerHandling::addLayerDefinition()
   openLayerDefinition( path );
 }
 
-void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey )
+QList< QgsMapLayer * > QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok )
 {
+  ok = false;
   QList<QgsMapLayer *> myList;
 
   if ( layerPathList.empty() )
@@ -1093,7 +1133,7 @@ void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, c
     // no layers to add so bail out, but
     // allow mMapCanvas to handle events
     // first
-    return;
+    return {};
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -1116,7 +1156,7 @@ void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, c
       QApplication::restoreOverrideCursor();
 
       // XXX insert meaningful whine to the user here
-      return;
+      return {};
     }
 
     if ( layer->isValid() )
@@ -1150,6 +1190,9 @@ void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, c
   }
 
   QApplication::restoreOverrideCursor();
+
+  ok = true;
+  return myList;
 }
 
 template<typename T>
