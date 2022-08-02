@@ -193,7 +193,7 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
 
 void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 {
-  QgsRelationAddDlg addDlg;
+  QgsCreateRelationDialog addDlg;
 
   if ( addDlg.exec() )
   {

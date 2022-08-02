@@ -33,15 +33,15 @@ class QgsFieldComboBox;
 class QgsMapLayerComboBox;
 
 /**
- * QgsRelationAddDlg allows configuring a new relation.
+ * QgsCreateRelationDialog allows configuring a new relation.
  * Multiple field pairs can be set.
  */
-class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationManagerAddDialogBase
+class APP_EXPORT QgsCreateRelationDialog : public QDialog, private Ui::QgsRelationManagerAddDialogBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsRelationAddDlg( QWidget *parent = nullptr );
+    explicit QgsCreateRelationDialog( QWidget *parent = nullptr );
 
     QString referencingLayerId() const;
     QString referencedLayerId() const;
