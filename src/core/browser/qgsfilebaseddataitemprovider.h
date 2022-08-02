@@ -92,6 +92,18 @@ class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollection
      * \param path item path
      */
     QgsFileDataCollectionGroupItem( QgsDataItem *parent, const QString &groupName, const QString &path );
+
+    /**
+     * Adds a \a sublayer to the group.
+     */
+    void appendSublayer( const QgsProviderSublayerDetails &sublayer );
+
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::UriList mimeUris() const override;
+
+  private:
+
+    QList< QgsProviderSublayerDetails > mSublayers;
 };
 
 /**
