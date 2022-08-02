@@ -19,6 +19,8 @@
 #include "qgsrenderpassquad.h"
 
 class QgsFrameGraph;
+class QgsShadowRenderView;
+class QgsDirectionalLightSettings;
 
 #define SIP_NO_FILE
 
@@ -51,6 +53,12 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     void setEyeDomeLightingStrength( double strength );
     //! Sets the eye dome lighting distance (contributes to the contrast of the image)
     void setEyeDomeLightingDistance( int distance );
+
+    /**
+     * Sets shadow rendering to use a directional light
+     * \since QGIS 3.44
+     */
+    void updateShadowSettings( const QgsDirectionalLightSettings &light, float maximumShadowRenderingDistance );
 
     /**
      * Sets whether screen space ambient occlusion is enabled
