@@ -2005,10 +2005,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns the layer's weak relations as specified in the layer's style.
      * \returns A list of weak relations
      * \note not available in Python bindings
+     *
+     * \see setWeakRelations()
+     *
      * \since QGIS 3.12
      */
-    QList<QgsWeakRelation> weakRelations( ) const SIP_SKIP;
+    QList<QgsWeakRelation> weakRelations() const SIP_SKIP;
 
+    /**
+     * Sets the layer's weak \a relations.
+     *
+     * \note Not available in Python bindings.
+     * \see weakRelations()
+     *
+     * \since QGIS 3.28
+     */
+    void setWeakRelations( const QList< QgsWeakRelation > &relations ) SIP_SKIP;
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     Q_INVOKABLE QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }

@@ -5434,6 +5434,11 @@ QList<QgsWeakRelation> QgsVectorLayer::weakRelations() const
   return mWeakRelations;
 }
 
+void QgsVectorLayer::setWeakRelations( const QList<QgsWeakRelation> &relations )
+{
+  mWeakRelations = relations;
+}
+
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
   return QgsProviderRegistry::instance()->listStyles( mProviderKey, mDataSource, ids, names, descriptions, msgError );
