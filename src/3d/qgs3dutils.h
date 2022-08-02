@@ -363,6 +363,22 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.44
      */
     static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+
+    /**
+     * Computes the portion of the Y=y plane the camera is looking at
+     * \param camera
+     * \param maxRenderingDistance
+     * \param z the horizontal plane Z
+     * \param minX
+     * \param maxX
+     * \param minY
+     * \param maxY
+     * \param minZ
+     * \param maxZ
+     *
+     * \since QGIS 3.44
+     */
+    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
 };
 
 #endif // QGS3DUTILS_H

@@ -1026,3 +1026,62 @@ QgsPoint Qgs3DUtils::screenPointToMapCoordinates( const QPoint &screenPoint, con
   const QgsPoint mapPoint( mapTransform.x(), mapTransform.y(), mapTransform.z() );
   return mapPoint;
 }
+
+// computes the portion of the Y=y plane the camera is looking at
+void Qgs3DUtils::calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
+{
+  const QVector3D cameraPos = camera->position();
+  const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
+  const QMatrix4x4 viewMatrix = camera->viewMatrix();
+  float depth = 1.0f;
+  QVector4D viewCenter = viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
+  viewCenter /= viewCenter.w();
+  viewCenter = projectionMatrix * viewCenter;
+  viewCenter /= viewCenter.w();
+  depth = viewCenter.z();
+  QVector<QVector3D> viewFrustumPoints = {
+    QVector3D( 0.0f, 0.0f, depth ),
+    QVector3D( 0.0f, 1.0f, depth ),
+    QVector3D( 1.0f, 0.0f, depth ),
+    QVector3D( 1.0f, 1.0f, depth ),
+    QVector3D( 0.0f, 0.0f, 0 ),
+    QVector3D( 0.0f, 1.0f, 0 ),
+    QVector3D( 1.0f, 0.0f, 0 ),
+    QVector3D( 1.0f, 1.0f, 0 )
+  };
+  maxX = std::numeric_limits<float>::lowest();
+  maxY = std::numeric_limits<float>::lowest();
+  maxZ = std::numeric_limits<float>::lowest();
+  minX = std::numeric_limits<float>::max();
+  minY = std::numeric_limits<float>::max();
+  minZ = std::numeric_limits<float>::max();
+  for ( int i = 0; i < viewFrustumPoints.size(); ++i )
+  {
+    // convert from view port space to world space
+    viewFrustumPoints[i] = viewFrustumPoints[i].unproject( viewMatrix, projectionMatrix, QRect( 0, 0, 1, 1 ) );
+    minX = std::min( minX, viewFrustumPoints[i].x() );
+    maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minY = std::min( minY, viewFrustumPoints[i].y() );
+    maxY = std::max( maxY, viewFrustumPoints[i].y() );
+    minZ = std::min( minZ, viewFrustumPoints[i].z() );
+    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
+    // find the intersection between the line going from cameraPos to the frustum quad point
+    // and the horizontal plane Z=z
+    // if the intersection is on the back side of the viewing panel we get a point that is
+    // maxRenderingDistance units in front of the camera
+    const QVector3D pt = cameraPos;
+    const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
+    float t = ( z - pt.z() ) / vect.z();
+    if ( t < 0 )
+      t = maxRenderingDistance;
+    else
+      t = std::min( t, maxRenderingDistance );
+    viewFrustumPoints[i] = pt + t * vect;
+    minX = std::min( minX, viewFrustumPoints[i].x() );
+    maxX = std::max( maxX, viewFrustumPoints[i].x() );
+    minY = std::min( minY, viewFrustumPoints[i].y() );
+    maxY = std::max( maxY, viewFrustumPoints[i].y() );
+    minZ = std::min( minZ, viewFrustumPoints[i].z() );
+    maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
+  }
+}
