@@ -24,6 +24,7 @@
 // QgsProviderSublayerModelNode
 //
 
+///@cond PRIVATE
 QgsProviderSublayerModelNode::~QgsProviderSublayerModelNode() = default;
 
 void QgsProviderSublayerModelGroup::populateFromSublayers( const QList<QgsProviderSublayerDetails> &sublayers )
@@ -334,6 +335,7 @@ QVariant QgsProviderSublayerModelNonLayerItemNode::data( int role, int column ) 
   }
 }
 
+///@endcond
 
 //
 // QgsProviderSublayerModel
