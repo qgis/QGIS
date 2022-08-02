@@ -2436,7 +2436,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addRasterLayers, this, [ = ]( const QStringList & layersList )
     {
       bool ok = false;
-      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addRasterLayers( layersList, ok );
+      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addGdalRasterLayers( layersList, ok );
       if ( ok )
         QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
     } );
@@ -2446,10 +2446,10 @@ void QgisApp::dataSourceManager( const QString &pageName )
       if ( layer )
         QgsAppLayerHandling::postProcessAddedLayers( {layer} );
     } );
-    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorLayers, this, []( const QStringList & layerList, const QString & enc, const QString & dataSourceType )
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addVectorLayers, this, []( const QStringList & layerList, const QString & encoding, const QString & dataSourceType )
     {
       bool ok = false;
-      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addVectorLayers( layerList, enc, dataSourceType, ok );
+      QList< QgsMapLayer * > addedLayers = QgsAppLayerHandling::addOgrVectorLayers( layerList, encoding, dataSourceType, ok );
       if ( ok )
         QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
     } );
@@ -5391,13 +5391,6 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
   return newuri;
 }
 
-bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType )
-{
-  bool ok = false;
-  QgsAppLayerHandling::addVectorLayers( layerQStringList, enc, dataSourceType, ok );
-  return ok;
-}
-
 QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
   return QgsAppLayerHandling::addMeshLayer( url, baseName, providerKey );
@@ -5780,9 +5773,9 @@ void QgisApp::fileNewFromTemplateAction( QAction *qAction )
 
 void QgisApp::newVectorLayer()
 {
-  QString enc;
+  QString encoding;
   QString error;
-  QString fileName = QgsNewVectorLayerDialog::execAndCreateLayer( error, this, QString(), &enc, QgsProject::instance()->defaultCrsForNewLayers() );
+  QString fileName = QgsNewVectorLayerDialog::execAndCreateLayer( error, this, QString(), &encoding, QgsProject::instance()->defaultCrsForNewLayers() );
 
   if ( !fileName.isEmpty() )
   {
@@ -5790,7 +5783,8 @@ void QgisApp::newVectorLayer()
     QStringList fileNames;
     fileNames.append( fileName );
     //todo: the last parameter will change accordingly to layer type
-    addVectorLayers( fileNames, enc, QStringLiteral( "file" ) );
+    bool ok = false;
+    QgsAppLayerHandling::addOgrVectorLayers( fileNames, encoding, QStringLiteral( "file" ), ok );
   }
   else if ( !error.isEmpty() )
   {
@@ -7938,12 +7932,12 @@ QString QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer, const bool defau
       if ( outputFormat == QLatin1String( "GPKG" ) && !outputLayerName.isEmpty() )
       {
         bool ok = false;
-        QgsAppLayerHandling::addRasterLayers( QStringList( QStringLiteral( "GPKG:%1:%2" ).arg( fileName, outputLayerName ) ), ok );
+        QgsAppLayerHandling::addGdalRasterLayers( QStringList( QStringLiteral( "GPKG:%1:%2" ).arg( fileName, outputLayerName ) ), ok );
       }
       else
       {
         bool ok = false;
-        QgsAppLayerHandling::addRasterLayers( QStringList( fileName ), ok );
+        QgsAppLayerHandling::addGdalRasterLayers( QStringList( fileName ), ok );
       }
     }
     if ( rlWeakPointer )
@@ -8290,7 +8284,8 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
       QString uri( newFilename );
       if ( !layerName.isEmpty() )
         uri += "|layername=" + layerName;
-      this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
+      bool ok = false;
+      QgsAppLayerHandling::addOgrVectorLayers( {uri}, encoding, QStringLiteral( "file" ), ok );
     }
 
     // We need to re-retrieve the map layer here, in case it's been deleted during the lifetime of the task

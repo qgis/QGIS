@@ -1196,16 +1196,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
-    /**
-     * \brief overloaded version of the private addLayer method that takes a list of
-     * file names instead of prompting user with a dialog.
-     * \param enc encoding type for the layer
-     * \param dataSourceType type of ogr datasource
-     * \returns TRUE if successfully added layer
-     */
-    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
-
-
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
 

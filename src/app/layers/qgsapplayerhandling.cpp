@@ -140,7 +140,7 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> & )
 {
 }
 
-QList< QgsMapLayer * > QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool &ok, bool guiWarning )
+QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringList &layers, const QString &encoding, const QString &dataSourceType, bool &ok, bool showWarningOnInvalid )
 {
   //note: this method ONLY supports vector layers from the OGR provider!
   ok = false;
@@ -292,9 +292,9 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addVectorLayers( const QStringList &
       {
         QString fileUri = uri;
         fileUri.replace( QLatin1String( "/vsicurl/" ), " " );
-        return addVectorLayers( QStringList() << fileUri, enc, dataSourceType, guiWarning );
+        return addOgrVectorLayers( QStringList() << fileUri, encoding, dataSourceType, showWarningOnInvalid );
       }
-      else if ( guiWarning )
+      else if ( showWarningOnInvalid )
       {
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
       }
@@ -313,10 +313,10 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addVectorLayers( const QStringList &
   QgsProject::instance()->addMapLayers( layersToAdd );
   for ( QgsMapLayer *l : std::as_const( layersToAdd ) )
   {
-    if ( !enc.isEmpty() )
+    if ( !encoding.isEmpty() )
     {
       if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l ) )
-        vl->setProviderEncoding( enc );
+        vl->setProviderEncoding( encoding );
     }
 
     QgisApp::instance()->askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
@@ -329,7 +329,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addVectorLayers( const QStringList &
   return addedLayers;
 }
 
-QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarning )
+QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &provider, bool showWarningOnInvalid )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -344,11 +344,11 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, providerKey ) );
+  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, provider ) );
 
   if ( !layer || !layer->isValid() )
   {
-    if ( guiWarning )
+    if ( showWarningOnInvalid )
     {
       QString msg = QObject::tr( "%1 is not a valid or recognized data source, error: \"%2\"" ).arg( uri, layer->error().message( QgsErrorMessage::Format::Text ) );
       QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
@@ -367,9 +367,9 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
   return layer.release();
 }
 
-QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey )
+QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  QgsPluginLayer *layer = QgsApplication::pluginLayerRegistry()->createLayer( providerKey, uri );
+  QgsPluginLayer *layer = QgsApplication::pluginLayerRegistry()->createLayer( provider, uri );
   if ( !layer )
     return nullptr;
 
@@ -380,7 +380,7 @@ QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const Q
   return layer;
 }
 
-QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool guiWarning )
+QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -400,7 +400,7 @@ QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri,
 
   if ( !layer || !layer->isValid() )
   {
-    if ( guiWarning )
+    if ( showWarningOnInvalid )
     {
       QString msg = QObject::tr( "%1 is not a valid or recognized data source." ).arg( uri );
       QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
@@ -927,25 +927,25 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
   return openedLayers;
 }
 
-QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
+QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, baseName, !providerKey.isEmpty() ? providerKey : QLatin1String( "ogr" ), true );
+  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "ogr" ), true );
 }
 
-QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &providerKey )
+QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !providerKey.isEmpty() ? providerKey : QLatin1String( "gdal" ), true );
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "gdal" ), true );
 }
 
-QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
+QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, url, baseName, providerKey, true );
+  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, uri, baseName, provider, true );
 }
 
-QList<QgsMapLayer *> QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool &ok, bool guiWarning )
+QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid )
 {
   ok = false;
-  if ( files.empty() )
+  if ( uris.empty() )
   {
     return {};
   }
@@ -958,49 +958,49 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addRasterLayers( const QStringList &fi
 
   QList< QgsMapLayer * > res;
 
-  for ( const QString &src : files )
+  for ( const QString &uri : uris )
   {
     QString errMsg;
 
     // if needed prompt for zipitem layers
-    QString vsiPrefix = QgsZipItem::vsiPrefix( src );
-    if ( ( !src.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || src.endsWith( QLatin1String( ".zip" ) ) || src.endsWith( QLatin1String( ".tar" ) ) ) &&
+    QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+    if ( ( !uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || uri.endsWith( QLatin1String( ".zip" ) ) || uri.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {
-      if ( askUserForZipItemLayers( src, { QgsMapLayerType::RasterLayer } ) )
+      if ( askUserForZipItemLayers( uri, { QgsMapLayerType::RasterLayer } ) )
         continue;
     }
 
-    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
-    const bool isRemoteUrl { src.startsWith( QLatin1String( "http" ) ) || src == QLatin1String( "ftp" ) };
+    const bool isVsiCurl { uri.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
+    const bool isRemoteUrl { uri.startsWith( QLatin1String( "http" ) ) || uri == QLatin1String( "ftp" ) };
 
     std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
     if ( isVsiCurl || isRemoteUrl )
     {
       cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-      QgisApp::instance()->visibleMessageBar()->pushInfo( QObject::tr( "Remote layer" ), QObject::tr( "loading %1, please wait …" ).arg( src ) );
+      QgisApp::instance()->visibleMessageBar()->pushInfo( QObject::tr( "Remote layer" ), QObject::tr( "loading %1, please wait …" ).arg( uri ) );
       qApp->processEvents();
     }
 
-    if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
+    if ( QgsRasterLayer::isValidRasterFileName( uri, errMsg ) )
     {
-      QFileInfo myFileInfo( src );
+      QFileInfo myFileInfo( uri );
 
       // set the layer name to the file base name unless provided explicitly
       QString layerName;
-      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), src );
+      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
       if ( !uriDetails[ QStringLiteral( "layerName" ) ].toString().isEmpty() )
       {
         layerName = uriDetails[ QStringLiteral( "layerName" ) ].toString();
       }
       else
       {
-        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( src );
+        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( uri );
       }
 
       // try to create the layer
       cursorOverride.reset();
-      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
+      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, layerName, QStringLiteral( "gdal" ), showWarningOnInvalid );
       res << layer;
 
       if ( layer && layer->isValid() )
@@ -1024,9 +1024,9 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addRasterLayers( const QStringList &fi
       // Issue message box warning unless we are loading from cmd line since
       // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
-      if ( guiWarning )
+      if ( showWarningOnInvalid )
       {
-        QString msg = QObject::tr( "%1 is not a supported raster data source" ).arg( src );
+        QString msg = QObject::tr( "%1 is not a supported raster data source" ).arg( uri );
         if ( !errMsg.isEmpty() )
           msg += '\n' + errMsg;
 
