@@ -21,6 +21,8 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayerref.h"
 
+#include <QObject>
+
 class QgsMapLayer;
 class QgsProviderSublayerDetails;
 class QgsPointCloudLayer;
@@ -35,6 +37,7 @@ class QgsVectorTileLayer;
  */
 class APP_EXPORT QgsAppLayerHandling
 {
+    Q_GADGET
 
   public:
 
@@ -157,6 +160,15 @@ class APP_EXPORT QgsAppLayerHandling
     //! Add a list of database layers to the map
     static QList< QgsMapLayer * > addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
 
+    enum class DependencyFlag : int
+    {
+      LoadAllRelationships = 1 << 1,
+      SilentLoad = 1 << 2,
+    };
+    Q_ENUM( DependencyFlag )
+    Q_DECLARE_FLAGS( DependencyFlags, DependencyFlag )
+    Q_FLAG( DependencyFlags )
+
     /**
      * Searches for layer dependencies by querying the form widgets and the
      * \a vectorLayer itself for broken relations. Style \a categories can be
@@ -165,7 +177,9 @@ class APP_EXPORT QgsAppLayerHandling
      * \return a list of weak references to broken layer dependencies
      */
     static const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories );
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories,
+        QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+        DependencyFlags dependencyFlags = DependencyFlags() );
 
     /**
      * Scans the \a vectorLayer for broken dependencies and automatically
@@ -175,7 +189,9 @@ class APP_EXPORT QgsAppLayerHandling
      * ("Forms" for the form widgets and "Relations" for layer weak relations).
      */
     static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+        QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+        DependencyFlags dependencyFlags = DependencyFlags() );
 
     /**
      * Scans the \a vectorLayer for weak relations and automatically
@@ -184,7 +200,7 @@ class APP_EXPORT QgsAppLayerHandling
      * This method will automatically attempt to repair any relations using
      * other layers already present in the current project.
      */
-    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name );
 
     /**
      * Triggered when a vector layer style has changed, checks for widget config layer dependencies
@@ -217,5 +233,6 @@ class APP_EXPORT QgsAppLayerHandling
     static QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppLayerHandling::DependencyFlags );
 
 #endif // QGSAPPLAYERHANDLING_H
