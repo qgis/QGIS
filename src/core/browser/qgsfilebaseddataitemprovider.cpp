@@ -250,7 +250,6 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( nullptr, sublayer.name(), sublayer, QString() );
-    item->setState( Qgis::BrowserItemState::Populated ); // children are not expected
 
     if ( !sublayer.path().isEmpty() )
     {
