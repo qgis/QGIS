@@ -187,6 +187,28 @@ QgsFileDataCollectionGroupItem::QgsFileDataCollectionGroupItem( QgsDataItem *par
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
 }
 
+void QgsFileDataCollectionGroupItem::appendSublayer( const QgsProviderSublayerDetails &sublayer )
+{
+  mSublayers.append( sublayer );
+}
+
+bool QgsFileDataCollectionGroupItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::UriList QgsFileDataCollectionGroupItem::mimeUris() const
+{
+  QgsMimeDataUtils::UriList res;
+  res.reserve( mSublayers.size() );
+
+  for ( const QgsProviderSublayerDetails &sublayer : mSublayers )
+  {
+    res << sublayer.toMimeUri();
+  }
+  return res;
+}
+
 //
 // QgsFileDataCollectionItem
 //
@@ -258,6 +280,9 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
         {
           groupItem = it.value();
         }
+
+        if ( groupItem )
+          groupItem->appendSublayer( sublayer );
       }
 
       if ( groupItem )
