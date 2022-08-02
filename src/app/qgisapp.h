@@ -898,10 +898,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveAsLayerDefinition();
     //! save current raster layer
     QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true );
-    //! Process the list of URIs that have been dropped in QGIS
-    void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
-    //! Convenience function to open either a project or a layer file.
-    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
+
+    /**
+     * Process the list of URIs that have been dropped in QGIS.
+     *
+     * Returns a list of layers loaded as a result of opening the URIs.
+     */
+    QList< QgsMapLayer * > handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing = false );
+
+    /**
+     * Convenience function to open either a project or a layer file.
+     *
+     * Returns a list of layers loaded as a result of opening the file.
+     */
+    QList< QgsMapLayer * > openFile( const QString &fileName, const QString &fileTypeHint = QString(), bool suppressBulkLayerPostProcessing = false );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();

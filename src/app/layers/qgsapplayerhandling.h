@@ -87,9 +87,26 @@ class APP_EXPORT QgsAppLayerHandling
     //! Open a vector tile layer - this is the generic function which takes all parameters
     static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool guiWarning = true );
 
+    /**
+     * Post processes a single added \a layer, applying any default behaviour which should
+     * happen to newly added layers.
+     *
+     * \note If a group of a layers is added at once, this method will be called one-by-one
+     * for each layer BEFORE the postProcessAddedLayers() method is called for the entire
+     * group.
+     */
     static void postProcessAddedLayer( QgsMapLayer *layer );
 
-    static bool addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
+    /**
+     * Post processes an entire group of added \a layers.
+     *
+     * \note This method will be called for the group AFTER the postProcessAddedLayer()
+     * method has been called for each layer in turn. All added layers will already
+     * have been added to the project.
+     */
+    static void postProcessAddedLayers( const QList< QgsMapLayer * > &layers );
+
+    static QList< QgsMapLayer * > addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool &ok, bool guiWarning = true );
 
 
     /**
@@ -105,13 +122,14 @@ class APP_EXPORT QgsAppLayerHandling
 
 
     /**
-     * Open a raster or vector file; ignore other files.
-     * Used to process a commandline argument, FileOpen or Drop event.
+     * Open a map layer from a file.
+     *
      * Set \a allowInteractive to TRUE if it is OK to ask the user for information (mostly for
      * when a vector layer has sublayers and we want to ask which sublayers to use).
-     * \returns TRUE if the file is successfully opened
+     *
+     * \returns a list of added map layers if the file is successfully opened
      */
-    static bool openLayer( const QString &fileName, bool allowInteractive = false );
+    static QList< QgsMapLayer * > openLayer( const QString &fileName, bool &ok, bool allowInteractive = false, bool suppressBulkLayerPostProcessing = false );
 
     template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
 
@@ -120,9 +138,10 @@ class APP_EXPORT QgsAppLayerHandling
      * Overloaded version of the private addRasterLayer()
      * Method that takes a list of file names instead of prompting
      * user with a dialog.
-     * \returns TRUE if successfully added layer(s)
+     *
+     * Returns a list of opened layers.
      */
-    static bool addRasterLayers( const QStringList &files, bool guiWarning = true );
+    static QList< QgsMapLayer * > addRasterLayers( const QStringList &files, bool &ok, bool guiWarning = true );
 
     //! Add a 'pre-made' map layer to the project
     static void addMapLayer( QgsMapLayer *mapLayer );
@@ -133,7 +152,7 @@ class APP_EXPORT QgsAppLayerHandling
     static void addLayerDefinition();
 
     //! Add a list of database layers to the map
-    static void addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey );
+    static QList< QgsMapLayer * > addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
 
     /**
      * Searches for layer dependencies by querying the form widgets and the
