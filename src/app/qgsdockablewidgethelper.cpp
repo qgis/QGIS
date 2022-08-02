@@ -208,7 +208,9 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
 
     mDialogGeometry = mDialog->geometry();
 
-    mDialog->layout()->removeWidget( mWidget );
+    if ( mWidget )
+      mDialog->layout()->removeWidget( mWidget );
+
     delete mDialog;
     mDialog = nullptr;
   }
@@ -216,7 +218,7 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
   mIsDocked = docked;
 
   // If there is no widget set, do not create a dock or a dialog
-  if ( mWidget == nullptr )
+  if ( !mWidget )
     return;
 
   if ( docked )
