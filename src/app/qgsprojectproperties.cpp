@@ -111,11 +111,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  // not supported on Qt < 5.13
-  mGroupBoxStyleDatabases->hide();
-#endif
-
   connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
   connect( pbnImportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnImportScales_clicked );

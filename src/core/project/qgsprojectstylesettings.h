@@ -200,9 +200,6 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      */
     void setStyleDatabasePaths( const QStringList &paths );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    SIP_IF_FEATURE( CONCATENATED_TABLES_MODEL )
-
     /**
      * Returns the combined style model which includes all style databases
      * associated with the project.
@@ -214,8 +211,6 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      * \see styles()
      */
     QgsCombinedStyleModel *combinedStyleModel();
-    SIP_END
-#endif
 
   signals:
 

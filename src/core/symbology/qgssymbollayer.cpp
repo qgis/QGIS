@@ -909,11 +909,7 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 
 void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  mClipPath = QPainterPath();
-#else
   mClipPath.clear();
-#endif
 
   const QgsRenderContext &renderContext = context.renderContext();
   const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( this );
