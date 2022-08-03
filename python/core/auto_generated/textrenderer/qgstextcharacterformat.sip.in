@@ -65,6 +65,88 @@ is desired and the default format color should be used.
 .. seealso:: :py:func:`textColor`
 %End
 
+    double fontPointSize() const;
+%Docstring
+Returns the font point size, or -1 if the font size is not set
+and should be inherited.
+
+.. seealso:: :py:func:`setFontPointSize`
+
+.. versionadded:: 3.28
+%End
+
+    void setFontPointSize( double size );
+%Docstring
+Sets the font point ``size``.
+
+Set ``size`` to -1 if the font size is not set
+and should be inherited.
+
+.. seealso:: :py:func:`fontPointSize`
+
+.. versionadded:: 3.28
+%End
+
+    QString family() const;
+%Docstring
+Returns the font family name, or an empty string if the
+family is not set and should be inherited.
+
+.. seealso:: :py:func:`setFamily`
+
+.. versionadded:: 3.28
+%End
+
+    void setFamily( const QString &family );
+%Docstring
+Sets the font ``family`` name.
+
+Set to an empty string if the family should be inherited.
+
+.. seealso:: :py:func:`family`
+
+.. versionadded:: 3.28
+%End
+
+    int fontWeight() const;
+%Docstring
+Returns the font weight, or -1 if the font weight is not set
+and should be inherited.
+
+.. seealso:: :py:func:`setFontWeight`
+
+.. versionadded:: 3.28
+%End
+
+    void setFontWeight( int fontWeight );
+%Docstring
+Sets the font ``weight``.
+
+Set ``weight`` to -1 if the font weight is not set
+and should be inherited.
+
+.. seealso:: :py:func:`fontWeight`
+
+.. versionadded:: 3.28
+%End
+
+    BooleanValue italic() const;
+%Docstring
+Returns whether the format has italic enabled.
+
+.. seealso:: :py:func:`setItalic`
+
+.. versionadded:: 3.28
+%End
+
+    void setItalic( BooleanValue enabled );
+%Docstring
+Sets whether the format has italic ``enabled``.
+
+.. seealso:: :py:func:`italic`
+
+.. versionadded:: 3.28
+%End
 
     BooleanValue strikeOut() const;
 %Docstring
