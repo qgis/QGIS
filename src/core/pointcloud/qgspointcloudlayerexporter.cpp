@@ -402,7 +402,7 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
   mParent = exp;
 
   mOptions.add( "filename", mParent->mFilename.toStdString() );
-  mOptions.add( "a_srs", mParent->mTargetCrs.authid().toStdString() );
+  mOptions.add( "a_srs", mParent->mTargetCrs.toWkt().toStdString() );
   mOptions.add( "minor_version", QStringLiteral( "4" ).toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
   mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
 
