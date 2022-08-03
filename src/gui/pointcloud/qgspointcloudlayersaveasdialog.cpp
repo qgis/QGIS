@@ -328,8 +328,8 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   Q_UNUSED( idx )
 
   const QString sFormat( format() );
-  mAttributesSelection->setEnabled( sFormat == QLatin1String( "DXF" ) ||
-                                    sFormat == QLatin1String( "LAZ" ) );
+  mAttributesSelection->setEnabled( sFormat != QLatin1String( "DXF" ) &&
+                                    sFormat != QLatin1String( "LAZ" ) );
 
 
   mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
