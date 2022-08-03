@@ -81,6 +81,8 @@ set(QGIS_3D_SRCS
   framegraph/qgs3daxisrenderview.cpp
   framegraph/qgsambientocclusionrenderentity.cpp
   framegraph/qgsambientocclusionblurentity.cpp
+  framegraph/qgsdepthentity.cpp
+  framegraph/qgsdepthrenderview.cpp
   framegraph/qgsforwardrenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgspreviewquad.cpp
@@ -191,6 +193,8 @@ set(QGIS_3D_HDRS
   framegraph/qgs3daxisrenderview.h
   framegraph/qgsambientocclusionrenderentity.h
   framegraph/qgsambientocclusionblurentity.h
+  framegraph/qgsdepthentity.h
+  framegraph/qgsdepthrenderview.h
   framegraph/qgsforwardrenderview.h
   framegraph/qgsframegraph.h
   framegraph/qgsframegraphutils.h
