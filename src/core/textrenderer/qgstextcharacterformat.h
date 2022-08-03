@@ -76,13 +76,51 @@ class CORE_EXPORT QgsTextCharacterFormat
      */
     void setTextColor( const QColor &textColor );
 
-#if 0
+    /**
+     * Returns the font point size, or -1 if the font size is not set
+     * and should be inherited.
+     *
+     * \see setFontPointSize()
+     * \since QGIS 3.28
+     */
+    double fontPointSize() const;
+
+    /**
+     * Sets the font point \a size.
+     *
+     * Set \a size to -1 if the font size is not set
+     * and should be inherited.
+     *
+     * \see fontPointSize()
+     * \since QGIS 3.28
+     */
+    void setFontPointSize( double size );
+
+    /**
+     * Returns the font family name, or an empty string if the
+     * family is not set and should be inherited.
+     *
+     * \see setFamily()
+     * \since QGIS 3.28
+     */
+    QString family() const;
+
+    /**
+     * Sets the font \a family name.
+     *
+     * Set to an empty string if the family should be inherited.
+     *
+     * \see family()
+     * \since QGIS 3.28
+     */
+    void setFamily( const QString &family );
 
     /**
      * Returns the font weight, or -1 if the font weight is not set
      * and should be inherited.
      *
      * \see setFontWeight()
+     * \since QGIS 3.28
      */
     int fontWeight() const;
 
@@ -93,6 +131,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * and should be inherited.
      *
      * \see fontWeight()
+     * \since QGIS 3.28
      */
     void setFontWeight( int fontWeight );
 
@@ -100,6 +139,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Returns whether the format has italic enabled.
      *
      * \see setItalic()
+     * \since QGIS 3.28
      */
     BooleanValue italic() const;
 
@@ -107,9 +147,9 @@ class CORE_EXPORT QgsTextCharacterFormat
      * Sets whether the format has italic \a enabled.
      *
      * \see italic()
+     * \since QGIS 3.28
      */
     void setItalic( BooleanValue enabled );
-#endif
 
     /**
      * Returns whether the format has strikethrough enabled.
@@ -167,14 +207,10 @@ class CORE_EXPORT QgsTextCharacterFormat
   private:
 
     QColor mTextColor;
-
-#if 0 // settings which affect font metrics are disabled for now
     int mFontWeight = -1;
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
     QString mFontFamily;
-#endif
-
     BooleanValue mStrikethrough = BooleanValue::NotSet;
     BooleanValue mUnderline = BooleanValue::NotSet;
     BooleanValue mOverline = BooleanValue::NotSet;

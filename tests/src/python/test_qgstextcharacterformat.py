@@ -36,6 +36,8 @@ class TestQgsTextCharacterFormat(unittest.TestCase):
         self.assertEqual(format.underline(), QgsTextCharacterFormat.BooleanValue.NotSet)
         self.assertEqual(format.strikeOut(), QgsTextCharacterFormat.BooleanValue.NotSet)
         self.assertEqual(format.overline(), QgsTextCharacterFormat.BooleanValue.NotSet)
+        self.assertEqual(format.fontPointSize(), -1)
+        self.assertFalse(format.family())
 
         format.setTextColor(QColor(255, 0, 0))
         self.assertTrue(format.textColor().isValid())
@@ -50,14 +52,26 @@ class TestQgsTextCharacterFormat(unittest.TestCase):
         format.setOverline(QgsTextCharacterFormat.BooleanValue.SetTrue)
         self.assertEqual(format.overline(), QgsTextCharacterFormat.BooleanValue.SetTrue)
 
+        format.setFontPointSize(12.5)
+        self.assertEqual(format.fontPointSize(), 12.5)
+
+        format.setFamily('comic sans')
+        self.assertEqual(format.family(), 'comic sans')
+
     def testUpdateFont(self):
         font = QgsFontUtils.getStandardTestFont()
+
+        old_size = font.pointSizeF()
+        old_family = font.family()
+
         format = QgsTextCharacterFormat()
         format.updateFontForFormat(font)
 
         self.assertFalse(font.underline())
         self.assertFalse(font.strikeOut())
         self.assertFalse(font.overline())
+        self.assertEqual(font.family(), old_family)
+        self.assertEqual(font.pointSizeF(), old_size)
 
         format.setUnderline(QgsTextCharacterFormat.BooleanValue.SetTrue)
         format.updateFontForFormat(font)
@@ -89,6 +103,24 @@ class TestQgsTextCharacterFormat(unittest.TestCase):
         format.setOverline(QgsTextCharacterFormat.BooleanValue.SetFalse)
         format.updateFontForFormat(font)
         self.assertFalse(font.overline())
+        self.assertEqual(font.pointSizeF(), old_size)
+
+        format.setFontPointSize(49)
+        format.updateFontForFormat(font)
+        self.assertEqual(font.pointSizeF(), 49)
+        format.setFontPointSize(-1)
+        font.setPointSizeF(old_size)
+        format.updateFontForFormat(font)
+        self.assertEqual(font.pointSizeF(), old_size)
+
+        self.assertEqual(font.family(), old_family)
+        format.setFamily('Serif')
+        format.updateFontForFormat(font)
+        self.assertEqual(font.family(), 'Serif')
+        format.setFamily('')
+        font.setFamily(old_family)
+        format.updateFontForFormat(font)
+        self.assertEqual(font.family(), old_family)
 
 
 if __name__ == '__main__':

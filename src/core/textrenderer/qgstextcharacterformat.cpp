@@ -19,12 +19,10 @@
 
 QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   : mTextColor( format.hasProperty( QTextFormat::ForegroundBrush ) ? format.foreground().color() : QColor() )
-#if 0 // settings which affect font metrics are disabled for now
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
   , mFontFamily( format.hasProperty( QTextFormat::FontFamily ) ? format.fontFamily() : QString() )
-#endif
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
@@ -40,6 +38,26 @@ QColor QgsTextCharacterFormat::textColor() const
 void QgsTextCharacterFormat::setTextColor( const QColor &textColor )
 {
   mTextColor = textColor;
+}
+
+double QgsTextCharacterFormat::fontPointSize() const
+{
+  return mFontPointSize;
+}
+
+void QgsTextCharacterFormat::setFontPointSize( double size )
+{
+  mFontPointSize = size;
+}
+
+QString QgsTextCharacterFormat::family() const
+{
+  return mFontFamily;
+}
+
+void QgsTextCharacterFormat::setFamily( const QString &family )
+{
+  mFontFamily = family;
 }
 
 QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::strikeOut() const
@@ -75,7 +93,7 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const double scaleFactor ) const
 {
   Q_UNUSED( scaleFactor );
-#if 0 // settings which affect font metrics are disabled for now
+
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mFontWeight != -1 )
@@ -84,8 +102,6 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const double scal
     font.setFamily( mFontFamily );
   if ( mFontPointSize != -1 )
     font.setPointSizeF( mFontPointSize );
-#endif
-
   if ( mUnderline != BooleanValue::NotSet )
     font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mOverline != BooleanValue::NotSet )
@@ -94,7 +110,6 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const double scal
     font.setStrikeOut( mStrikethrough == QgsTextCharacterFormat::BooleanValue::SetTrue );
 }
 
-#if 0 // settings which affect font metrics are disabled for now
 QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const
 {
   return mItalic;
@@ -114,4 +129,3 @@ void QgsTextCharacterFormat::setFontWeight( int fontWeight )
 {
   mFontWeight = fontWeight;
 }
-#endif
