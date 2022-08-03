@@ -2007,14 +2007,17 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // NOTE: this should come AFTER any option that affects font metrics
   std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
-  double labelX, labelY, rotatedLabelX, rotatedLabelY; // will receive label size
+  double labelWidth;
+  double labelHeight;
+  double rotatedLabelX;
+  double rotatedLabelY;
 
   QgsTextDocument doc;
   if ( format().allowHtmlFormatting() )
     doc = QgsTextDocument::fromHtml( QStringList() << labelText );
 
   // also applies the line split to doc!
-  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, format().allowHtmlFormatting() ? &doc : nullptr );
+  calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, format().allowHtmlFormatting() ? &doc : nullptr );
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
   //
@@ -2468,11 +2471,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
             QString haliString = exprVal.toString();
             if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
             {
-              xdiff -= labelX / 2.0;
+              xdiff -= labelWidth / 2.0;
             }
             else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
             {
-              xdiff -= labelX;
+              xdiff -= labelWidth;
             }
           }
         }
@@ -2488,22 +2491,22 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
             {
               if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
               {
-                ydiff -= labelY;
+                ydiff -= labelHeight;;
               }
               else
               {
                 double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
                 if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
                 {
-                  ydiff -= labelY * descentRatio;
+                  ydiff -= labelHeight * descentRatio;
                 }
                 else //'Cap' or 'Half'
                 {
                   double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
-                  ydiff -= labelY * capHeightRatio;
+                  ydiff -= labelHeight * capHeightRatio;
                   if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
                   {
-                    ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
+                    ydiff += labelHeight * ( capHeightRatio - descentRatio ) / 2.0;
                   }
                 }
               }
@@ -2619,7 +2622,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //  feature to the layer
-  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
+  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelWidth, labelHeight ) );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
   labelFeature->setSymbol( symbol );
