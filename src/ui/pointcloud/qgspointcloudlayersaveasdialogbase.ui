@@ -170,7 +170,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mZRangeGroupBox">
          <property name="title">
-          <string>Elevation Rage</string>
+          <string>Elevation Range</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
