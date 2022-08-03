@@ -341,6 +341,7 @@ QRect QgsLayoutItemPicture::clippedImageRect( double &boundRectWidthMM, double &
 
 void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
 {
+  const Format origFormat = mMode;
   const QgsExpressionContext scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
@@ -359,6 +360,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     if ( !ok || !source.canConvert( QMetaType::QString ) )
     {
       mHasExpressionError = true;
+      mMode = origFormat;
       source = QString();
       QgsMessageLog::logMessage( tr( "Picture expression eval error" ) );
     }
