@@ -239,9 +239,6 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      */
     explicit QgsStyleProxyModel( QgsStyleModel *model, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-    SIP_IF_FEATURE( CONCATENATED_TABLES_MODEL )
-
     /**
      * Constructor for QgsStyleProxyModel, using the specified source combined \a model and \a parent object.
      *
@@ -252,8 +249,6 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
      * \since QGIS 3.26
      */
     explicit QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    SIP_END
-#endif
 
     /**
      * Returns the current filter string, if set.
@@ -473,9 +468,7 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void initialize();
 
     QgsStyleModel *mModel = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
     QgsCombinedStyleModel *mCombinedModel = nullptr;
-#endif
     QgsStyle *mStyle = nullptr;
 
     QString mFilterString;
