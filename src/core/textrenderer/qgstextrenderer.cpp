@@ -577,7 +577,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
         double blockWidth = 0;
         for ( const QgsTextFragment &fragment : block )
         {
-          blockWidth += fragment.horizontalAdvance( baseFont, scaleFactor );
+          blockWidth += fragment.horizontalAdvance( baseFont, false, scaleFactor );
         }
         maxLineWidth = std::max( maxLineWidth, blockWidth );
       }
