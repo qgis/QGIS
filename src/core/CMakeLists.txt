@@ -313,6 +313,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextbuffersettings.cpp
   textrenderer/qgstextcharacterformat.cpp
   textrenderer/qgstextdocument.cpp
+  textrenderer/qgstextdocumentmetrics.cpp
   textrenderer/qgstextformat.cpp
   textrenderer/qgstextfragment.cpp
   textrenderer/qgstextmasksettings.cpp
@@ -1825,6 +1826,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextbuffersettings.h
   textrenderer/qgstextcharacterformat.h
   textrenderer/qgstextdocument.h
+  textrenderer/qgstextdocumentmetrics.h
   textrenderer/qgstextformat.h
   textrenderer/qgstextfragment.h
   textrenderer/qgstextmasksettings.h
