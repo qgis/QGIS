@@ -43,6 +43,7 @@ class TestQgsMapRotation : public QgsTest
     Q_OBJECT
   public:
     TestQgsMapRotation()
+      : QgsTest( QStringLiteral( "Map Rotation Tests" ) )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -52,8 +53,6 @@ class TestQgsMapRotation : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void rasterLayer();
     void pointsLayer();
@@ -102,8 +101,6 @@ void TestQgsMapRotation::initTestCase()
   // the actual size doesn't matter as QgsRenderChecker will
   // re-set it to the size of the expected image
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
-
-  mReport += QLatin1String( "<h1>Map Rotation Tests</h1>\n" );
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
@@ -210,7 +207,6 @@ void TestQgsMapRotation::linesLayer()
 
 bool TestQgsMapRotation::render( const QString &testType )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "maprotation" ) );

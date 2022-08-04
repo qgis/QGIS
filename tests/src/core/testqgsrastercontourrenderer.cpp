@@ -35,7 +35,7 @@ class TestQgsRasterContourRenderer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsRasterContourRenderer() = default;
+    TestQgsRasterContourRenderer() : QgsTest( QStringLiteral( "Raster Contour Renderer Tests" ) ) {}
 
   private:
     QString mDataDir;
@@ -78,7 +78,6 @@ void TestQgsRasterContourRenderer::cleanupTestCase()
 
 bool TestQgsRasterContourRenderer::imageCheck( const QString &testType, QgsRasterLayer *layer, QgsRectangle extent )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setExtent( extent );
   mMapSettings->setDestinationCrs( layer->crs() );
   mMapSettings->setOutputDpi( 96 );

@@ -49,7 +49,7 @@ class TestQgsRasterSubLayer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsRasterSubLayer();
+    TestQgsRasterSubLayer() : QgsTest( QStringLiteral( "Raster Sub Layer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -65,8 +65,6 @@ class TestQgsRasterSubLayer : public QgsTest
     QgsRasterLayer *mpRasterLayer = nullptr;
     bool mHasNetCDF =  false ;
 };
-
-TestQgsRasterSubLayer::TestQgsRasterSubLayer() = default;
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()
@@ -87,7 +85,6 @@ void TestQgsRasterSubLayer::initTestCase()
 
   mFileName = mTestDataDir + "landsat2.nc";
 
-  mReport += QLatin1String( "<h1>Raster Sub Layer Tests</h1>\n" );
   //mReport += "<p>" + mySettings + "</p>";
 
   if ( mHasNetCDF )

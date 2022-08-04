@@ -58,6 +58,8 @@ class TestQgsDataDefinedSizeLegend : public QgsTest
 
   public:
 
+    TestQgsDataDefinedSizeLegend() : QgsTest( QStringLiteral( "Data Defined Size Legend Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -74,8 +76,6 @@ void TestQgsDataDefinedSizeLegend::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
-  mReport += QLatin1String( "<h1>Data Defined Size Legend Tests</h1>\n" );
 }
 
 void TestQgsDataDefinedSizeLegend::cleanupTestCase()

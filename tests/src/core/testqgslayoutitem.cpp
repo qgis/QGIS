@@ -134,10 +134,10 @@ class TestQgsLayoutItem: public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsLayoutItem() : QgsTest( QStringLiteral( "Layout Item Tests" ) ) {}
+
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayoutItem
     void uuid();
     void id();
@@ -183,21 +183,6 @@ class TestQgsLayoutItem: public QgsTest
     std::unique_ptr< QgsLayoutItem > createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
 
 };
-
-void TestQgsLayoutItem::initTestCase()
-{
-  mReport = QStringLiteral( "<h1>Layout Item Tests</h1>\n" );
-}
-
-void TestQgsLayoutItem::init()
-{
-
-}
-
-void TestQgsLayoutItem::cleanup()
-{
-
-}
 
 void TestQgsLayoutItem::creation()
 {
@@ -370,7 +355,6 @@ void TestQgsLayoutItem::draw()
 
 bool TestQgsLayoutItem::renderCheck( QString testName, QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + QDir::separator();
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

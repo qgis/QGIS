@@ -39,6 +39,7 @@ class TestQgsMapDevicePixelRatio : public QgsTest
     Q_OBJECT
   public:
     TestQgsMapDevicePixelRatio()
+      : QgsTest( QStringLiteral( "Map Device Pixel Ratio Tests" ) )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -48,8 +49,6 @@ class TestQgsMapDevicePixelRatio : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void pointsLayer();
 
@@ -75,8 +74,6 @@ void TestQgsMapDevicePixelRatio::initTestCase()
   const QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
-
-  mReport += QLatin1String( "<h1>Map Device Pixel Ratio Tests</h1>\n" );
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
@@ -107,7 +104,6 @@ void TestQgsMapDevicePixelRatio::pointsLayer()
 
 bool TestQgsMapDevicePixelRatio::render( const QString &testType, float dpr )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setDevicePixelRatio( dpr );

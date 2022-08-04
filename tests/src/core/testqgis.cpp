@@ -23,7 +23,6 @@
 //qgis includes...
 #include "qgis.h"
 #include "qgsmaplayermodel.h"
-#include "qgsattributeeditorelement.h"
 #include "qgsfieldproxymodel.h"
 
 /**
@@ -43,8 +42,10 @@ class TestQgis : public QgsTest
     };
     Q_ENUM( TestEnum )
 
+  public:
+    TestQgis() : QgsTest( QStringLiteral( "Qgis Tests" ) ) {}
+
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
     void init() {}// will be called before each testfunction is executed.
     void cleanup() {}// will be called after every testfunction.
 
@@ -68,12 +69,6 @@ class TestQgis : public QgsTest
     void testQMapQVariantList();
 
 };
-
-//runs before all tests
-void TestQgis::initTestCase()
-{
-  mReport = QStringLiteral( "<h1>Qgis Tests</h1>\n" );
-}
 
 void TestQgis::permissiveToDouble()
 {

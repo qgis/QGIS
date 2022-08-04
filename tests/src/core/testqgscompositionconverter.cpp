@@ -59,6 +59,9 @@ class TestQgsCompositionConverter: public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsCompositionConverter() : QgsTest( QStringLiteral( "Composition Converter Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void init();// will be called before each testfunction is executed.
@@ -163,7 +166,6 @@ void TestQgsCompositionConverter::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
   QgsApplication::settingsSearchPathsForSVG.setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
 }
 

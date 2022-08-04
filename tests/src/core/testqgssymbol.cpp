@@ -46,7 +46,7 @@ class TestQgsSymbol : public QgsTest
 
   public:
 
-    TestQgsSymbol();
+    TestQgsSymbol() : QgsTest( QStringLiteral( "Symbol Tests" ) ) {}
 
   private:
 
@@ -63,8 +63,6 @@ class TestQgsSymbol : public QgsTest
     // init / cleanup
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
     void testCanvasClip();
@@ -72,8 +70,6 @@ class TestQgsSymbol : public QgsTest
     void testParseColorList();
     void symbolProperties();
 };
-
-TestQgsSymbol::TestQgsSymbol() = default;
 
 // slots
 void TestQgsSymbol::initTestCase()
@@ -135,8 +131,6 @@ void TestQgsSymbol::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
-
-  mReport += QLatin1String( "<h1>StyleV2 Tests</h1>\n" );
 }
 
 void TestQgsSymbol::cleanupTestCase()
@@ -164,7 +158,6 @@ void TestQgsSymbol::testCanvasClip()
   ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
 
   //line
-  mReport += QLatin1String( "<h2>Line canvas clip</h2>\n" );
   ms.setLayers( QList<QgsMapLayer *>() << mpLinesLayer );
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
@@ -185,7 +178,6 @@ void TestQgsSymbol::testCanvasClip()
   QVERIFY( result );
 
   //poly
-  mReport += QLatin1String( "<h2>Polygon canvas clip</h2>\n" );
   ms.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   QgsCentroidFillSymbolLayer *centroidFill = new QgsCentroidFillSymbolLayer();

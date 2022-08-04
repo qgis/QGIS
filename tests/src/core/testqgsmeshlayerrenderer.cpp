@@ -50,7 +50,7 @@ class TestQgsMeshRenderer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsMeshRenderer() = default;
+    TestQgsMeshRenderer() : QgsTest( QStringLiteral( "Mesh Layer Rendering Tests" ) ) {}
 
   private:
     QString mDataDir;
@@ -64,7 +64,6 @@ class TestQgsMeshRenderer : public QgsTest
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
     bool imageCheck( const QString &testType, QgsMeshLayer *layer, double rotation = 0.0 );
     QString readFile( const QString &fname ) const;
 
@@ -152,8 +151,6 @@ void TestQgsMeshRenderer::initTestCase()
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
 
-  mReport = QStringLiteral( "<h1>Mesh Layer Rendering Tests</h1>\n" );
-
   mMapSettings = new QgsMapSettings();
 
   // Memory 1D layer
@@ -221,7 +218,6 @@ QString TestQgsMeshRenderer::readFile( const QString &fname ) const
 
 bool TestQgsMeshRenderer::imageCheck( const QString &testType, QgsMeshLayer *layer, double rotation )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setDestinationCrs( layer->crs() );
   mMapSettings->setExtent( layer->extent() );
   mMapSettings->setRotation( rotation );

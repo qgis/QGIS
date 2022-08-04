@@ -63,6 +63,9 @@ class TestQgs3DRendering : public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgs3DRendering() : QgsTest( QStringLiteral( "3D Rendering Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -107,8 +110,6 @@ void TestQgs3DRendering::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
-
-  mReport = QStringLiteral( "<h1>3D Rendering Tests</h1>\n" );
 
   mProject.reset( new QgsProject );
 
@@ -976,7 +977,6 @@ void TestQgs3DRendering::testRuleBasedRenderer()
 
 bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount, int colorTolerance )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

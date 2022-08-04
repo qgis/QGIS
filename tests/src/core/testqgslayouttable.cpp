@@ -47,13 +47,12 @@ class TestQgsLayoutTable : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutTable() = default;
+    TestQgsLayoutTable() : QgsTest( QStringLiteral( "Layout Table Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
 
     void attributeTableHeadings(); //test retrieving attribute table headers
     void attributeTableRows(); //test retrieving attribute table rows
@@ -111,8 +110,6 @@ void TestQgsLayoutTable::initTestCase()
                                      QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( mVectorLayer );
 
-  mReport = QStringLiteral( "<h1>Layout Table Tests</h1>\n" );
-
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
@@ -140,10 +137,6 @@ void TestQgsLayoutTable::init()
   table->setContentTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setHeaderTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) ) );
   table->setBackgroundColor( Qt::yellow );
-}
-
-void TestQgsLayoutTable::cleanup()
-{
 }
 
 void TestQgsLayoutTable::attributeTableHeadings()
