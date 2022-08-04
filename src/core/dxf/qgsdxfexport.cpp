@@ -2193,7 +2193,7 @@ QStringList QgsDxfExport::encodings()
   for ( const QByteArray &codec : codecs )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcasecmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
       ;
 
     if ( i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )
