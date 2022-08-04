@@ -240,70 +240,66 @@ datasets with maximum width and height specified below.</string>
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="0" column="0">
-             <widget class="QRadioButton" name="mResolutionRadioButton">
-              <property name="text">
-               <string>Horizontal</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="mXResolutionLineEdit"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QRadioButton" name="mSizeRadioButton">
-              <property name="text">
-               <string>Columns</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="mColumnsLineEdit"/>
-            </item>
-            <item row="1" column="2">
-             <widget class="QLabel" name="mRowsLabel">
-              <property name="text">
-               <string>Rows</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLineEdit" name="mYResolutionLineEdit"/>
-            </item>
-            <item row="1" column="3">
-             <widget class="QLineEdit" name="mRowsLineEdit"/>
-            </item>
-            <item row="0" column="4">
-             <widget class="QPushButton" name="mOriginalResolutionPushButton">
-              <property name="text">
-               <string>Layer Resolution</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="4">
-             <widget class="QPushButton" name="mOriginalSizePushButton">
-              <property name="text">
-               <string>Layer Size</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Vertical</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mResolutionRadioButton">
+            <property name="text">
+             <string>Horizontal</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mXResolutionLineEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mSizeRadioButton">
+            <property name="text">
+             <string>Columns</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mColumnsLineEdit"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="mRowsLabel">
+            <property name="text">
+             <string>Rows</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="mYResolutionLineEdit"/>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="mRowsLineEdit"/>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="mOriginalResolutionPushButton">
+            <property name="text">
+             <string>Layer Resolution</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="mOriginalSizePushButton">
+            <property name="text">
+             <string>Layer Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Vertical</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -515,115 +511,111 @@ datasets with maximum width and height specified below.</string>
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_7">
-          <item>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="2" column="1">
-             <widget class="QPushButton" name="mRemoveSelectedNoDataToolButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>Remove selected row</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true"/>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QPushButton" name="mAddNoDataManuallyToolButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>Add values manually</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0" colspan="5">
-             <widget class="QTableWidget" name="mNoDataTableWidget">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <attribute name="horizontalHeaderDefaultSectionSize">
-               <number>250</number>
-              </attribute>
-              <attribute name="horizontalHeaderMinimumSectionSize">
-               <number>200</number>
-              </attribute>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QPushButton" name="mLoadTransparentNoDataToolButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>Load user defined fully transparent (100%) values </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3">
-             <widget class="QPushButton" name="mRemoveAllNoDataToolButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="toolTip">
-               <string>Clear all</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionRemove.svg</normaloff>:/images/themes/default/mActionRemove.svg</iconset>
-              </property>
-             </widget>
-            </item>
-           </layout>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mRemoveSelectedNoDataToolButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Remove selected row</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="mAddNoDataManuallyToolButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Add values manually</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="5">
+           <widget class="QTableWidget" name="mNoDataTableWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>200</number>
+            </attribute>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>250</number>
+            </attribute>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="mLoadTransparentNoDataToolButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Load user defined fully transparent (100%) values </string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mRemoveAllNoDataToolButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Clear all</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../../images/images.qrc">
+              <normaloff>:/images/themes/default/mActionRemove.svg</normaloff>:/images/themes/default/mActionRemove.svg</iconset>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
