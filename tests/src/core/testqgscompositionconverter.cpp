@@ -55,15 +55,12 @@ QDebug operator<<( QDebug dbg, const QDomNode &node )
   return dbg;
 }
 
-class TestQgsCompositionConverter: public QObject
+class TestQgsCompositionConverter: public QgsTest
 {
     Q_OBJECT
 
-
-
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
@@ -160,8 +157,6 @@ class TestQgsCompositionConverter: public QObject
 
     QDomElement loadComposer( const QString &name );
 
-    QString mReport;
-
 };
 
 void TestQgsCompositionConverter::initTestCase()
@@ -170,18 +165,6 @@ void TestQgsCompositionConverter::initTestCase()
   QgsApplication::initQgis();
   mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
   QgsApplication::settingsSearchPathsForSVG.setValue( QStringList() << QStringLiteral( TEST_DATA_DIR ) );
-}
-
-void TestQgsCompositionConverter::cleanupTestCase()
-{
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsCompositionConverter::init()

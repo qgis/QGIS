@@ -38,7 +38,7 @@
  * \ingroup UnitTests
  * This is a unit test for raster marker types.
  */
-class TestQgsRasterMarker : public QObject
+class TestQgsRasterMarker : public QgsTest
 {
     Q_OBJECT
 
@@ -77,7 +77,6 @@ class TestQgsRasterMarker : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -119,15 +118,6 @@ void TestQgsRasterMarker::initTestCase()
 
 void TestQgsRasterMarker::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

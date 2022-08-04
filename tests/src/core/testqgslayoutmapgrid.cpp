@@ -27,7 +27,7 @@
 #include "qgstest.h"
 #include "qgsmarkersymbol.h"
 
-class TestQgsLayoutMapGrid : public QObject
+class TestQgsLayoutMapGrid : public QgsTest
 {
     Q_OBJECT
 
@@ -65,9 +65,6 @@ class TestQgsLayoutMapGrid : public QObject
     void lineBorderAnnotated(); //test line border frame with annotations
     void annotationFormats(); //various tests for annotation formats
     void descendingAnnotations(); //test descending annotation direction
-
-  private:
-    QString mReport;
 };
 
 void TestQgsLayoutMapGrid::initTestCase()
@@ -82,15 +79,6 @@ void TestQgsLayoutMapGrid::initTestCase()
 
 void TestQgsLayoutMapGrid::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

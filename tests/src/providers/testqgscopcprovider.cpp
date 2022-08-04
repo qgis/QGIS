@@ -52,7 +52,7 @@
  * \ingroup UnitTests
  * This is a unit test for the COPC provider
  */
-class TestQgsCopcProvider : public QObject
+class TestQgsCopcProvider : public QgsTest
 {
     Q_OBJECT
 
@@ -87,7 +87,6 @@ class TestQgsCopcProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
 };
 
 //runs before all tests
@@ -105,14 +104,6 @@ void TestQgsCopcProvider::initTestCase()
 void TestQgsCopcProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsCopcProvider::filters()

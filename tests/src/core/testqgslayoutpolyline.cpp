@@ -26,7 +26,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutPolyline : public QObject
+class TestQgsLayoutPolyline : public QgsTest
 {
     Q_OBJECT
 
@@ -43,7 +43,6 @@ class TestQgsLayoutPolyline : public QObject
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
 
-    QString mReport;
 };
 
 void TestQgsLayoutPolyline::initTestCase()
@@ -56,15 +55,6 @@ void TestQgsLayoutPolyline::initTestCase()
 
 void TestQgsLayoutPolyline::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

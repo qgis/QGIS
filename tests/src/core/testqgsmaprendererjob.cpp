@@ -59,7 +59,7 @@
  * It will do some performance testing too
  *
  */
-class TestQgsMapRendererJob : public QObject
+class TestQgsMapRendererJob : public QgsTest
 {
     Q_OBJECT
 
@@ -109,7 +109,6 @@ class TestQgsMapRendererJob : public QObject
     QgsFields mFields;
     QgsMapSettings *mMapSettings = nullptr;
     QgsMapLayer *mpPolysLayer = nullptr;
-    QString mReport;
 };
 
 
@@ -214,16 +213,6 @@ void TestQgsMapRendererJob::initTestCase()
 void TestQgsMapRendererJob::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsMapRendererJob::performanceTest()

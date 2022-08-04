@@ -42,7 +42,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutTable : public QObject
+class TestQgsLayoutTable : public QgsTest
 {
     Q_OBJECT
 
@@ -94,7 +94,6 @@ class TestQgsLayoutTable : public QObject
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
-    QString mReport;
 
     //compares rows in table to expected rows
     void compareTable( QgsLayoutItemAttributeTable *table, const QVector<QStringList> &expectedRows );
@@ -119,14 +118,6 @@ void TestQgsLayoutTable::initTestCase()
 
 void TestQgsLayoutTable::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

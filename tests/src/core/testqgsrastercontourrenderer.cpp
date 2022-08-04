@@ -30,7 +30,7 @@
  * \ingroup UnitTests
  * This is a unit test for contour renderer
  */
-class TestQgsRasterContourRenderer : public QObject
+class TestQgsRasterContourRenderer : public QgsTest
 {
     Q_OBJECT
 
@@ -40,7 +40,6 @@ class TestQgsRasterContourRenderer : public QObject
   private:
     QString mDataDir;
     QgsRasterLayer *mLayer = nullptr;
-    QString mReport;
     QgsMapSettings *mMapSettings = nullptr;
 
     bool imageCheck( const QString &testType, QgsRasterLayer *layer, QgsRectangle extent );

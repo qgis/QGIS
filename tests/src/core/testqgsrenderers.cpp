@@ -39,7 +39,7 @@
  * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsRenderers : public QObject
+class TestQgsRenderers : public QgsTest
 {
     Q_OBJECT
 
@@ -71,7 +71,6 @@ class TestQgsRenderers : public QObject
     QgsMapLayer *mpLinesLayer = nullptr;
     QgsMapLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -135,16 +134,6 @@ void TestQgsRenderers::initTestCase()
 void TestQgsRenderers::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsRenderers::singleSymbol()

@@ -42,7 +42,7 @@
  * \ingroup UnitTests
  * This is a unit test for SVG marker symbol types.
  */
-class TestQgsSvgMarkerSymbol : public QObject
+class TestQgsSvgMarkerSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -79,7 +79,6 @@ class TestQgsSvgMarkerSymbol : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -126,15 +125,6 @@ void TestQgsSvgMarkerSymbol::initTestCase()
 }
 void TestQgsSvgMarkerSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

@@ -45,7 +45,7 @@
  * \ingroup UnitTests
  * This is a unit test for the different renderers for mesh layers.
  */
-class TestQgsMeshRenderer : public QObject
+class TestQgsMeshRenderer : public QgsTest
 {
     Q_OBJECT
 
@@ -59,7 +59,6 @@ class TestQgsMeshRenderer : public QObject
     QgsMeshLayer *mMdalLayer = nullptr;
     QgsMeshLayer *mMdal3DLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
-    QString mReport;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -208,15 +207,6 @@ void TestQgsMeshRenderer::initTestCase()
 
 void TestQgsMeshRenderer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

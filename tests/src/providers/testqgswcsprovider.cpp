@@ -35,7 +35,7 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsWcsProvider: public QObject
+class TestQgsWcsProvider: public QgsTest
 {
     Q_OBJECT
   private slots:
@@ -49,7 +49,6 @@ class TestQgsWcsProvider: public QObject
   private:
     bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
     QString mTestDataDir;
-    QString mReport;
     QString mUrl;
 };
 
@@ -84,15 +83,6 @@ void TestQgsWcsProvider::initTestCase()
 //runs after all tests
 void TestQgsWcsProvider::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

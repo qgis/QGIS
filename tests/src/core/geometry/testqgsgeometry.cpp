@@ -60,7 +60,7 @@
  * \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
-class TestQgsGeometry : public QObject
+class TestQgsGeometry : public QgsTest
 {
     Q_OBJECT
 
@@ -229,7 +229,6 @@ class TestQgsGeometry : public QObject
     QPainter *mpPainter = nullptr;
     QPen mPen1;
     QPen mPen2;
-    QString mReport;
 
 };
 
@@ -260,18 +259,6 @@ void TestQgsGeometry::cleanupTestCase()
 {
   delete mpPainter;
   mpPainter = nullptr;
-
-  // Runs once after all tests are run
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-
   QgsApplication::exitQgis();
 }
 

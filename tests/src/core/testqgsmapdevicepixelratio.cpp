@@ -34,7 +34,7 @@
  * \ingroup UnitTests
  * This is a unit test for the map rotation feature
  */
-class TestQgsMapDevicePixelRatio : public QObject
+class TestQgsMapDevicePixelRatio : public QgsTest
 {
     Q_OBJECT
   public:
@@ -59,7 +59,6 @@ class TestQgsMapDevicePixelRatio : public QObject
     QString mTestDataDir;
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
-    QString mReport;
 };
 
 //runs before all tests
@@ -90,15 +89,6 @@ void TestQgsMapDevicePixelRatio::cleanupTestCase()
   delete mMapSettings;
   delete mPointsLayer;
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsMapDevicePixelRatio::pointsLayer()

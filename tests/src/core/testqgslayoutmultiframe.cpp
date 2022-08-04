@@ -33,7 +33,7 @@
 
 #include "qgstest.h"
 
-class TestQgsLayoutMultiFrame : public QObject
+class TestQgsLayoutMultiFrame : public QgsTest
 {
     Q_OBJECT
 
@@ -58,7 +58,6 @@ class TestQgsLayoutMultiFrame : public QObject
 
   private:
     QgsLayout *mLayout = nullptr;
-    QString mReport;
 };
 
 class TestMultiFrame : public QgsLayoutMultiFrame
@@ -105,15 +104,6 @@ void TestQgsLayoutMultiFrame::initTestCase()
 void TestQgsLayoutMultiFrame::cleanupTestCase()
 {
   delete mLayout;
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 
   QgsApplication::exitQgis();
 }

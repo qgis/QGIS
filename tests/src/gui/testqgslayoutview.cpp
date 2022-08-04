@@ -251,11 +251,6 @@ class TestItem : public QgsLayoutItem // clazy:exclude=missing-qobject-macro
     {    }
 };
 
-QgsLayout *mLayout = nullptr;
-QString mReport;
-
-bool renderCheck( QString testName, QImage &image, int mismatchCount );
-
 void TestQgsLayoutView::guiRegistry()
 {
   // test QgsLayoutItemGuiRegistry
