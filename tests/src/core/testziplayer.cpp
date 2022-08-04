@@ -46,7 +46,6 @@ class TestZipLayer: public QObject
 
     QString mDataDir;
     QString mScanZipSetting;
-    QStringList mScanZipSettings;
     QString mSettingsKey;
 
     // get map layer using Passthru
@@ -143,17 +142,14 @@ QgsMapLayer *TestZipLayer::getZipLayer( const QString &myPath, const QString &my
 
 bool TestZipLayer::testZipItemPassthru( const QString &myFileName, const QString &myProviderKey )
 {
-  QgsMapLayer *myLayer = getLayer( myFileName, QString(), myProviderKey );
-  bool ok = myLayer && myLayer->isValid();
-  if ( myLayer )
-    delete myLayer;
-  return ok;
+  std::unique_ptr< QgsMapLayer > layer( getLayer( myFileName, QString(), myProviderKey ) );
+  return layer && layer->isValid();
 }
 
 bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChildName, const QString &myProviderName )
 {
-  QgsDebugMsg( QStringLiteral( "\n=======================================\nfile = %1 name = %2 provider = %3"
-                             ).arg( myFileName, myChildName, myProviderName ) );
+  QgsDebugMsgLevel( QStringLiteral( "\n=======================================\nfile = %1 name = %2 provider = %3"
+                                  ).arg( myFileName, myChildName, myProviderName ), 2 );
   QFileInfo myFileInfo( myFileName );
   QgsZipItem *myZipItem = new QgsZipItem( nullptr, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
@@ -165,21 +161,21 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
     QTest::qSleep( 100 );
     QCoreApplication::processEvents();
   }
-  QgsDebugMsg( QStringLiteral( "time.elapsed() = %1 ms" ).arg( time.elapsed() ) );
+  QgsDebugMsgLevel( QStringLiteral( "time.elapsed() = %1 ms" ).arg( time.elapsed() ), 2 );
   bool ok = false;
 
   QVector<QgsDataItem *> myChildren = myZipItem->children();
 
-  QgsDebugMsg( QStringLiteral( "has %1 items" ).arg( myChildren.size() ) );
+  QgsDebugMsgLevel( QStringLiteral( "has %1 items" ).arg( myChildren.size() ), 2 );
   if ( !myChildren.isEmpty() )
   {
     for ( QgsDataItem *item : std::as_const( myChildren ) )
     {
-      QgsDebugMsg( QStringLiteral( "child name=%1" ).arg( item->name() ) );
+      QgsDebugMsgLevel( QStringLiteral( "child name=%1" ).arg( item->name() ), 2 );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
       if ( layerItem )
       {
-        QgsDebugMsg( QStringLiteral( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name(), layerItem->providerKey(), layerItem->path() ) );
+        QgsDebugMsgLevel( QStringLiteral( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name(), layerItem->providerKey(), layerItem->path() ), 2 );
         if ( myChildName.isEmpty() || myChildName == item->name() )
         {
           QgsMapLayer *layer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
@@ -187,7 +183,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
           {
             // we got a layer, check if it is valid and exit
             // if no child name given in argument, then pass to next one (unless current child is invalid)
-            QgsDebugMsg( QStringLiteral( "valid: %1" ).arg( layer->isValid() ) );
+            QgsDebugMsgLevel( QStringLiteral( "valid: %1" ).arg( layer->isValid() ), 2 );
             ok = layer->isValid();
             delete layer;
             if ( ! ok )
@@ -266,16 +262,20 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
 
 bool TestZipLayer::testZipItemTransparency( const QString &myFileName, const QString &myProviderKey, int myTarget )
 {
-  int myTransparency;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
+  int myTransparency = getLayerTransparency( myFileName, myProviderKey, QStringLiteral( "basic" ) );
+  if ( myTransparency != myTarget )
   {
-    myTransparency = getLayerTransparency( myFileName, myProviderKey, s );
-    if ( myTransparency != myTarget )
-    {
-      QWARN( QString( "Transparency of %1 is %2, should be %3" ).arg( myFileName ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-      return false;
-    }
+    QWARN( QString( "Basic Transparency of %1 is %2, should be %3" ).arg( myFileName ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+    return false;
   }
+
+  myTransparency = getLayerTransparency( myFileName, myProviderKey, QStringLiteral( "full" ) );
+  if ( myTransparency != myTarget )
+  {
+    QWARN( QString( "Full Transparency of %1 is %2, should be %3" ).arg( myFileName ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+    return false;
+  }
+
   return true;
 }
 
@@ -304,7 +304,6 @@ void TestZipLayer::initTestCase()
   QgsSettings settings;
   mSettingsKey = QStringLiteral( "/qgis/scanZipInBrowser2" );
   mScanZipSetting = settings.value( mSettingsKey, "" ).toString();
-  mScanZipSettings << QString() << QStringLiteral( "basic" ) << QStringLiteral( "full" );
 }
 
 void TestZipLayer::cleanupTestCase()
@@ -320,114 +319,107 @@ void TestZipLayer::testPassthruVectorZip()
 {
   QgsSettings settings;
   QString myFileName = mDataDir + "points2.zip";
-  QgsDebugMsg( "GDAL: " + QString( GDAL_RELEASE_NAME ) );
-  QgsDebugMsg( "FILE: " + QString( myFileName ) );
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
-  }
+
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
 }
 
 void TestZipLayer::testPassthruVectorTar()
 {
   QgsSettings settings;
   QString myFileName = mDataDir + "points2.tar";
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
-  }
+
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
 }
 
 void TestZipLayer::testPassthruVectorGzip()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
 }
 
 void TestZipLayer::testPassthruRasterZip()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
 }
 
 void TestZipLayer::testPassthruRasterTar()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tar", "gdal" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tar", "gdal" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tar", "gdal" ) );
 }
 
 void TestZipLayer::testPassthruRasterGzip()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
 }
 
 void TestZipLayer::testZipItemRaster()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
-  }
+
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
 }
 
 void TestZipLayer::testTarItemRaster()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testtar.tgz", "landsat_b1.tif" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "landsat_b1.tif" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "landsat_b1.tif" ) );
 }
 
 void TestZipLayer::testZipItemVector()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
-  }
+
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
 }
 
 void TestZipLayer::testTarItemVector()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testtar.tgz", "points.shp" ) );
-  }
+
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "points.shp" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "points.shp" ) );
 }
 
 void TestZipLayer::testZipItemAll()
@@ -438,7 +430,6 @@ void TestZipLayer::testZipItemAll()
   // test file does not contain invalid items (some of dash tests failed because of them)
   QgsSettings settings;
   settings.setValue( mSettingsKey, "full" );
-  QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
   QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "" ) );
 }
 
@@ -446,7 +437,6 @@ void TestZipLayer::testTarItemAll()
 {
   QgsSettings settings;
   settings.setValue( mSettingsKey, "full" );
-  QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "" ) );
 }
 
@@ -485,37 +475,38 @@ void TestZipLayer::testGzipItemRasterTransparency()
 void TestZipLayer::testZipItemSubfolder()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
 }
 
 void TestZipLayer::testTarItemSubfolder()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( mDataDir + "testtar.tgz", "folder/folder2/landsat_b2.tif" ) );
-  }
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "folder/folder2/landsat_b2.tif" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "folder/folder2/landsat_b2.tif" ) );
 }
 
 
 void TestZipLayer::testZipItemVRT()
 {
   QgsSettings settings;
-  for ( const QString &s : std::as_const( mScanZipSettings ) )
-  {
-    settings.setValue( mSettingsKey, s );
-    QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt", "gdal" ) );
-    // this file is buggy with gdal svn - skip for now
-    // QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.vrt", "ogr" ) );
-  }
+
+  settings.setValue( mSettingsKey, QStringLiteral( "basic" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt", "gdal" ) );
+  // this file is buggy with gdal svn - skip for now
+  // QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.vrt", "ogr" ) );
+
+  settings.setValue( mSettingsKey, QStringLiteral( "full" ) );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt", "gdal" ) );
+  // this file is buggy with gdal svn - skip for now
+  // QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.vrt", "ogr" ) );
+
 }
 
 QGSTEST_MAIN( TestZipLayer )
