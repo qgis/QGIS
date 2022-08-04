@@ -34,7 +34,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthManager
  */
-class TestQgsAuthManager: public QObject
+class TestQgsAuthManager: public QgsTest
 {
     Q_OBJECT
 
@@ -66,7 +66,7 @@ class TestQgsAuthManager: public QObject
     QString mPkiData;
     QString mTempDir;
     const char *mPass = nullptr;
-    QString mReport;
+
 };
 
 
@@ -161,16 +161,6 @@ void TestQgsAuthManager::cleanupTestCase()
 {
   QgsApplication::exitQgis();
   cleanupTempDir();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    // QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsAuthManager::init()

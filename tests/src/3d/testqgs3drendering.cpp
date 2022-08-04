@@ -59,7 +59,7 @@
 #include <QDir>
 #include <QDesktopWidget>
 
-class TestQgs3DRendering : public QObject
+class TestQgs3DRendering : public QgsTest
 {
     Q_OBJECT
 
@@ -89,8 +89,6 @@ class TestQgs3DRendering : public QObject
   private:
     // color tolerance < 2 was failing polygon3d_extrusion test
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0, int colorTolerance = 2 );
-
-    QString mReport;
 
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm;
@@ -210,16 +208,6 @@ void TestQgs3DRendering::initTestCase()
 void TestQgs3DRendering::cleanupTestCase()
 {
   mProject.reset();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

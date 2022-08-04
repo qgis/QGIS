@@ -32,13 +32,11 @@
  * \ingroup UnitTests
  * This is a unit test for QgsImageCache.
  */
-class TestQgsImageCache : public QObject
+class TestQgsImageCache : public QgsTest
 {
     Q_OBJECT
 
   private:
-
-    QString mReport;
 
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
@@ -74,16 +72,6 @@ void TestQgsImageCache::initTestCase()
 void TestQgsImageCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsImageCache::fillCache()

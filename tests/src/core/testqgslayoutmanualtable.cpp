@@ -30,7 +30,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutManualTable : public QObject
+class TestQgsLayoutManualTable : public QgsTest
 {
     Q_OBJECT
 
@@ -55,7 +55,6 @@ class TestQgsLayoutManualTable : public QObject
     void cellTextAlignment();
 
   private:
-    QString mReport;
 
     //compares rows in table to expected rows
     void compareTable( QgsLayoutItemManualTable *table, const QVector<QStringList> &expectedRows );
@@ -73,14 +72,6 @@ void TestQgsLayoutManualTable::initTestCase()
 
 void TestQgsLayoutManualTable::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

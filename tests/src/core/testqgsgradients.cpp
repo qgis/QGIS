@@ -39,7 +39,7 @@
  * \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
-class TestQgsGradients : public QObject
+class TestQgsGradients : public QgsTest
 {
     Q_OBJECT
 
@@ -77,7 +77,6 @@ class TestQgsGradients : public QObject
     QgsFillSymbol *mFillSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -122,15 +121,6 @@ void TestQgsGradients::initTestCase()
 }
 void TestQgsGradients::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPolysLayer;
 
   QgsApplication::exitQgis();

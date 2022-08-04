@@ -130,13 +130,12 @@ class FixedMinSizedItem : public TestItem
 };
 
 
-class TestQgsLayoutItem: public QObject
+class TestQgsLayoutItem: public QgsTest
 {
     Q_OBJECT
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void creation(); //test creation of QgsLayoutItem
@@ -179,8 +178,6 @@ class TestQgsLayoutItem: public QObject
 
   private:
 
-    QString mReport;
-
     bool renderCheck( QString testName, QImage &image, int mismatchCount );
 
     std::unique_ptr< QgsLayoutItem > createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
@@ -190,18 +187,6 @@ class TestQgsLayoutItem: public QObject
 void TestQgsLayoutItem::initTestCase()
 {
   mReport = QStringLiteral( "<h1>Layout Item Tests</h1>\n" );
-}
-
-void TestQgsLayoutItem::cleanupTestCase()
-{
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsLayoutItem::init()

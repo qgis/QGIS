@@ -54,7 +54,7 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsRasterLayer : public QObject
+class TestQgsRasterLayer : public QgsTest
 {
     Q_OBJECT
   public:
@@ -120,7 +120,6 @@ class TestQgsRasterLayer : public QObject
     QgsRasterLayer *mTemporalRasterLayer = nullptr;
 
     QgsMapSettings *mMapSettings = nullptr;
-    QString mReport;
 };
 
 //runs before all tests
@@ -189,16 +188,6 @@ void TestQgsRasterLayer::initTestCase()
 void TestQgsRasterLayer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsRasterLayer::isValid()

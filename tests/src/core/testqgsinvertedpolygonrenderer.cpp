@@ -36,7 +36,7 @@
  * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsInvertedPolygon : public QObject
+class TestQgsInvertedPolygon : public QgsTest
 {
     Q_OBJECT
 
@@ -64,7 +64,6 @@ class TestQgsInvertedPolygon : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -98,15 +97,6 @@ void TestQgsInvertedPolygon::initTestCase()
 
 void TestQgsInvertedPolygon::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPolysLayer;
 
   QgsApplication::exitQgis();

@@ -39,7 +39,7 @@
  * \ingroup UnitTests
  * This is a unit test for 25d renderer.
  */
-class TestQgs25DRenderer : public QObject
+class TestQgs25DRenderer : public QgsTest
 {
     Q_OBJECT
   public:
@@ -59,7 +59,6 @@ class TestQgs25DRenderer : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -96,15 +95,6 @@ void TestQgs25DRenderer::initTestCase()
 }
 void TestQgs25DRenderer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPolysLayer;
 
   QgsApplication::exitQgis();
