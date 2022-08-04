@@ -268,19 +268,6 @@ void QgsPointCloudLayerSaveAsDialog::accept()
       }
     }
   }
-
-  if ( mActionOnExistingFile == QgsVectorFileWriter::AppendToLayerNoNewFields )
-  {
-//    if ( QgsVectorFileWriter::areThereNewFieldsToCreate( filename(), layername(), mLayer, selectedAttributes() ) )
-//    {
-//      if ( QMessageBox::question( this,
-//                                  tr( "Save Vector Layer As" ),
-//                                  tr( "The existing layer has additional fields. Do you want to add the missing fields to the layer?" ) ) == QMessageBox::Yes )
-//      {
-//        mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerAddFields;
-//      }
-//    }
-  }
   else if ( mActionOnExistingFile == QgsVectorFileWriter::CreateOrOverwriteFile && QFile::exists( filename() ) )
   {
     const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->querySublayers( filename() );
@@ -487,6 +474,11 @@ bool QgsPointCloudLayerSaveAsDialog::hasPointsLimit() const
 int QgsPointCloudLayerSaveAsDialog::pointsLimit() const
 {
   return mPointsLimitSpinBox->value();
+}
+
+QgsVectorFileWriter::ActionOnExistingFile QgsPointCloudLayerSaveAsDialog::creationActionOnExistingFile() const
+{
+  return mActionOnExistingFile;
 }
 
 void QgsPointCloudLayerSaveAsDialog::mSelectAllAttributes_clicked()

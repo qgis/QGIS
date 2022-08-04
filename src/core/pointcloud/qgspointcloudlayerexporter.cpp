@@ -177,7 +177,7 @@ void QgsPointCloudLayerExporter::doExport()
     saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( mFormat );
     saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( mFormat );
     saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-    saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+    saveOptions.actionOnExistingFile = mActionOnExistingFile;
     saveOptions.feedback = mFeedback;
     mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
     ExporterVector exp = ExporterVector( this );

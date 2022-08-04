@@ -9610,6 +9610,8 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     vectorFilename = dialog.filename();
     exp->setFileName( vectorFilename );
 
+    exp->setActionOnExistingFile( dialog.creationActionOnExistingFile() );
+
     const bool addToCanvas = dialog.addToCanvas();
 
     QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp );

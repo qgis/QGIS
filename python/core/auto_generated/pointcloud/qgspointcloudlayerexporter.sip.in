@@ -147,6 +147,14 @@ Sets the maximum number of points to be exported.
 %Docstring
 Gets the maximum number of points to be exported.
 %End
+    void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action );
+%Docstring
+Sets whether an existing output vector file should be overwritten on appended to.
+
+.. note::
+
+   Only applies to vector formats
+%End
     void doExport();
 %Docstring
 Performs the actual exporting operation.

@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgstaskmanager.h"
+#include "qgsvectorfilewriter.h"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/PointView.hpp>
@@ -171,6 +172,12 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     qint64 pointsLimit() { return mPointsLimit; };
 
     /**
+     * Sets whether an existing output vector file should be overwritten on appended to.
+     * \note Only applies to vector formats
+     */
+    void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action ) { mActionOnExistingFile = action; };
+
+    /**
      * Performs the actual exporting operation.
      */
     void doExport();
@@ -216,6 +223,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
     int mPointRecordFormat;
+    QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile = QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile;
 
     QgsMapLayer *mMemoryLayer = nullptr;
     QgsFeatureSink *mVectorSink = nullptr;
