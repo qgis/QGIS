@@ -405,6 +405,15 @@ QgsPointCloudLayerExporter::ExporterPdal::ExporterPdal( QgsPointCloudLayerExport
   mOptions.add( "a_srs", mParent->mTargetCrs.toWkt().toStdString() );
   mOptions.add( "minor_version", QStringLiteral( "4" ).toStdString() ); // delault to LAZ 1.4 to properly handle pdrf >= 6
   mOptions.add( "format", QString::number( mPointFormat ).toStdString() );
+  if ( mParent->mTransform->isShortCircuited() )
+  {
+    mOptions.add( "offset_x", QString::number( mParent->mIndex->offset().x() ).toStdString() );
+    mOptions.add( "offset_y", QString::number( mParent->mIndex->offset().y() ).toStdString() );
+    mOptions.add( "offset_z", QString::number( mParent->mIndex->offset().z() ).toStdString() );
+    mOptions.add( "scale_x", QString::number( mParent->mIndex->scale().x() ).toStdString() );
+    mOptions.add( "scale_y", QString::number( mParent->mIndex->scale().y() ).toStdString() );
+    mOptions.add( "scale_z", QString::number( mParent->mIndex->scale().z() ).toStdString() );
+  }
 
   mTable.layout()->registerDim( pdal::Dimension::Id::X );
   mTable.layout()->registerDim( pdal::Dimension::Id::Y );
