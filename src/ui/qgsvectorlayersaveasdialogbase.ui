@@ -89,6 +89,9 @@
    </item>
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -97,11 +100,23 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>557</width>
-        <height>1000</height>
+        <width>559</width>
+        <height>973</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>9</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
@@ -417,7 +432,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>0</height>
           </size>
          </property>
         </spacer>
@@ -495,15 +510,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFileWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfilewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsExtentGroupBox</class>
    <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -527,6 +542,7 @@
   <tabstop>mAttributeTable</tabstop>
   <tabstop>mSelectAllAttributes</tabstop>
   <tabstop>mDeselectAllAttributes</tabstop>
+  <tabstop>mUseAliasesForExportedName</tabstop>
   <tabstop>mReplaceRawFieldValues</tabstop>
   <tabstop>mCheckPersistMetadata</tabstop>
   <tabstop>mSymbologyExportComboBox</tabstop>
