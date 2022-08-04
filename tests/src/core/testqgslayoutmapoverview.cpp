@@ -33,7 +33,7 @@ class TestQgsLayoutMapOverview : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutMapOverview() = default;
+    TestQgsLayoutMapOverview() : QgsTest( QStringLiteral( "Layout Map Overview Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,7 +63,6 @@ void TestQgsLayoutMapOverview::initTestCase()
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
-  mReport = QStringLiteral( "<h1>Composer Map Overview Tests</h1>\n" );
 }
 
 void TestQgsLayoutMapOverview::cleanupTestCase()

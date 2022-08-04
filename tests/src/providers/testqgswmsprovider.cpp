@@ -30,6 +30,11 @@
 class TestQgsWmsProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsWmsProvider() : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
+
   private slots:
 
     void initTestCase()
@@ -46,8 +51,6 @@ class TestQgsWmsProvider: public QgsTest
 
       mCapabilities = new QgsWmsCapabilities();
       QVERIFY( mCapabilities->parseResponse( content, config ) );
-
-      mReport += QLatin1String( "<h1>WMS Provider Tests</h1>\n" );
     }
 
     //runs after all tests

@@ -44,13 +44,11 @@ class TestQgsGradients : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsGradients() = default;
+    TestQgsGradients() : QgsTest( QStringLiteral( "Gradient Renderer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void gradientSymbol();
     void gradientSymbolColors();
@@ -116,7 +114,6 @@ void TestQgsGradients::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Gradient Renderer Tests</h1>\n" );
 
 }
 void TestQgsGradients::cleanupTestCase()
@@ -128,7 +125,6 @@ void TestQgsGradients::cleanupTestCase()
 
 void TestQgsGradients::gradientSymbol()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer test</h2>\n" );
   mGradientFill->setColor( QColor( "red" ) );
   mGradientFill->setColor2( QColor( "blue" ) );
   mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
@@ -142,7 +138,6 @@ void TestQgsGradients::gradientSymbol()
 
 void TestQgsGradients::gradientSymbolColors()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer color test</h2>\n" );
   mGradientFill->setColor( QColor( "green" ) );
   mGradientFill->setColor2( QColor( "white" ) );
   QVERIFY( imageCheck( "gradient_colors" ) );
@@ -165,7 +160,6 @@ void TestQgsGradients::gradientSymbolRamp()
 
 void TestQgsGradients::gradientSymbolRadial()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer radial test</h2>\n" );
   mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Radial );
   QVERIFY( imageCheck( "gradient_radial" ) );
   mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Linear );
@@ -173,7 +167,6 @@ void TestQgsGradients::gradientSymbolRadial()
 
 void TestQgsGradients::gradientSymbolConical()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer conical test</h2>\n" );
   mGradientFill->setGradientType( QgsGradientFillSymbolLayer::Conical );
   mGradientFill->setReferencePoint1( QPointF( 0.5, 0.5 ) );
   QVERIFY( imageCheck( "gradient_conical" ) );
@@ -183,7 +176,6 @@ void TestQgsGradients::gradientSymbolConical()
 
 void TestQgsGradients::gradientSymbolViewport()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer viewport test</h2>\n" );
   mGradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Viewport );
   QVERIFY( imageCheck( "gradient_viewport" ) );
   mGradientFill->setCoordinateMode( QgsGradientFillSymbolLayer::Feature );
@@ -191,7 +183,6 @@ void TestQgsGradients::gradientSymbolViewport()
 
 void TestQgsGradients::gradientSymbolReferencePoints()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer reference points test</h2>\n" );
   mGradientFill->setReferencePoint1( QPointF( 0.5, 0.4 ) );
   mGradientFill->setReferencePoint2( QPointF( 0, 0.2 ) );
   QVERIFY( imageCheck( "gradient_refpoints" ) );
@@ -201,7 +192,6 @@ void TestQgsGradients::gradientSymbolReferencePoints()
 
 void TestQgsGradients::gradientSymbolCentroid()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer centroid reference point test</h2>\n" );
   mGradientFill->setReferencePoint1IsCentroid( true );
   QVERIFY( imageCheck( "gradient_ref1centroid" ) );
   mGradientFill->setReferencePoint1IsCentroid( false );
@@ -212,7 +202,6 @@ void TestQgsGradients::gradientSymbolCentroid()
 
 void TestQgsGradients::gradientSymbolReflectSpread()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer reflect spread test</h2>\n" );
   mGradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
   mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Reflect );
   QVERIFY( imageCheck( "gradient_reflect" ) );
@@ -222,7 +211,6 @@ void TestQgsGradients::gradientSymbolReflectSpread()
 
 void TestQgsGradients::gradientSymbolRepeatSpread()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer repeat spread test</h2>\n" );
   mGradientFill->setReferencePoint2( QPointF( 0.5, 0.5 ) );
   mGradientFill->setGradientSpread( QgsGradientFillSymbolLayer::Repeat );
   QVERIFY( imageCheck( "gradient_repeat" ) );
@@ -232,7 +220,6 @@ void TestQgsGradients::gradientSymbolRepeatSpread()
 
 void TestQgsGradients::gradientSymbolRotate()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol renderer rotate test</h2>\n" );
   mGradientFill->setAngle( 90 );
   QVERIFY( imageCheck( "gradient_rotate" ) );
   mGradientFill->setAngle( 0 );
@@ -261,7 +248,6 @@ void TestQgsGradients::dataDefinedOpacity()
 
 void TestQgsGradients::gradientSymbolFromQml()
 {
-  mReport += QLatin1String( "<h2>Gradient symbol from QML test</h2>\n" );
   QVERIFY( setQml( "gradient" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );

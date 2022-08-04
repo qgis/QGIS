@@ -28,19 +28,15 @@ class TestQgsClipper: public QgsTest
 {
 
     Q_OBJECT
+
+  public:
+    TestQgsClipper() : QgsTest( QStringLiteral( "Clipper Rendering Tests" ) ) {}
+
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
     void basic();
   private:
     bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
 };
-
-void TestQgsClipper::initTestCase()
-{
-
-}
 
 void TestQgsClipper::basic()
 {

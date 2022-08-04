@@ -48,7 +48,6 @@ class TestQgsAuthManager: public QgsTest
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init();
     void cleanup();
 
     void testMasterPassword();
@@ -71,7 +70,8 @@ class TestQgsAuthManager: public QgsTest
 
 
 TestQgsAuthManager::TestQgsAuthManager()
-  : mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
+  : QgsTest( QStringLiteral( "QgsAuthManager Tests" ) )
+  , mPkiData( QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys" )
   , mTempDir( QDir::tempPath() + "/auth" )
   , mPass( "pass" )
 {
@@ -80,8 +80,6 @@ TestQgsAuthManager::TestQgsAuthManager()
 void TestQgsAuthManager::initTestCase()
 {
   cleanupTempDir();
-
-  mReport += QLatin1String( "<h1>QgsAuthManager Tests</h1>\n" );
 
   // make QGIS_AUTH_DB_DIR_PATH temp dir for qgis-auth.db and master password file
   const QDir tmpDir = QDir::temp();
@@ -93,10 +91,6 @@ void TestQgsAuthManager::initTestCase()
   QgsApplication::initQgis();
   QVERIFY2( !QgsApplication::authManager()->isDisabled(),
             "Authentication system is DISABLED" );
-
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />\n" ) );
-  mReport += "<p>" + mySettings + "</p>\n";
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
   const QString db1( QFileInfo( QgsApplication::authManager()->authenticationDatabasePath() ).canonicalFilePath() );
@@ -161,11 +155,6 @@ void TestQgsAuthManager::cleanupTestCase()
 {
   QgsApplication::exitQgis();
   cleanupTempDir();
-}
-
-void TestQgsAuthManager::init()
-{
-  mReport += "<h2>" + QString( QTest::currentTestFunction() ) + "</h2>\n";
 }
 
 void TestQgsAuthManager::reportRow( const QString &msg )

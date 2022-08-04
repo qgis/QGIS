@@ -51,13 +51,11 @@ class TestQgsPointPatternFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsPointPatternFillSymbol() = default;
+    TestQgsPointPatternFillSymbol() : QgsTest( QStringLiteral( "Point Pattern Fill Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void pointPatternFillSymbol();
     void pointPatternFillSymbolVector();
@@ -116,8 +114,6 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   mpPolysLayer->setRenderer( mSymbolRenderer );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Point Pattern Fill Tests</h1>\n" );
-
 }
 void TestQgsPointPatternFillSymbol::cleanupTestCase()
 {
@@ -126,8 +122,6 @@ void TestQgsPointPatternFillSymbol::cleanupTestCase()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -141,8 +135,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -191,8 +183,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -218,8 +208,6 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -247,8 +235,6 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 {
-  mReport += QLatin1String( "<h2>Point pattern symbol data defined sub symbol test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -263,8 +249,6 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 
 void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -282,8 +266,6 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );

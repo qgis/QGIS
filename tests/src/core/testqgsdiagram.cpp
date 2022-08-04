@@ -30,15 +30,12 @@
 #include "diagram/qgshistogramdiagram.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsmaplayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgsproviderregistry.h"
 #include "qgsrenderer.h"
 #include "qgssinglesymbolrenderer.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsshadoweffect.h"
 #include "qgslinesymbol.h"
@@ -53,7 +50,7 @@ class TestQgsDiagram : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsDiagram() = default;
+    TestQgsDiagram() : QgsTest( QStringLiteral( "Diagram Tests" ) ) {}
 
   private:
     bool mTestHasError =  false ;
@@ -101,8 +98,6 @@ class TestQgsDiagram : public QgsTest
       // Create map composition to draw on
       QgsProject::instance()->addMapLayer( mPointsLayer );
       mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
-
-      mReport += QLatin1String( "<h1>Diagram Tests</h1>\n" );
     }
 
     // will be called after the last testfunction was executed.

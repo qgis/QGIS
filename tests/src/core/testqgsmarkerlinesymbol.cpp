@@ -46,6 +46,7 @@ class TestQgsMarkerLineSymbol : public QgsTest
     Q_OBJECT
   public:
     TestQgsMarkerLineSymbol()
+      : QgsTest( QStringLiteral( "Line Marker Symbol Tests" ) )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -55,8 +56,6 @@ class TestQgsMarkerLineSymbol : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void lineOffset();
     void pointNumInterval();
@@ -97,8 +96,6 @@ void TestQgsMarkerLineSymbol::initTestCase()
   // the actual size doesn't matter as QgsRenderChecker will
   // re-set it to the size of the expected image
   mMapSettings->setOutputSize( QSize( 256, 256 ) );
-
-  mReport += QLatin1String( "<h1>Line Marker Symbol Tests</h1>\n" );
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
@@ -425,7 +422,6 @@ void TestQgsMarkerLineSymbol::collectPoints()
 
 bool TestQgsMarkerLineSymbol::render( const QString &testType )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
   QgsRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "symbol_markerline" ) );

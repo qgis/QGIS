@@ -58,7 +58,7 @@ class TestQgsRasterLayer : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsRasterLayer() = default;
+    TestQgsRasterLayer() : QgsTest( QStringLiteral( "Raster Layer Tests" ) ) {}
     ~TestQgsRasterLayer() override
     {
       delete mMapSettings;
@@ -133,8 +133,6 @@ void TestQgsRasterLayer::initTestCase()
 
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
@@ -177,8 +175,6 @@ void TestQgsRasterLayer::initTestCase()
 
   // add the test layer to the maprender
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpRasterLayer );
-  mReport += QLatin1String( "<h1>Raster Layer Tests</h1>\n" );
-  mReport += "<p>" + mySettings + "</p>";
 
   mTemporalRasterLayer = new QgsRasterLayer();
 
@@ -361,19 +357,15 @@ void TestQgsRasterLayer::landsatBasic875Qml()
 }
 void TestQgsRasterLayer::checkDimensions()
 {
-  mReport += QLatin1String( "<h2>Check Dimensions</h2>\n" );
   QVERIFY( mpRasterLayer->width() == 10 );
   QVERIFY( mpRasterLayer->height() == 10 );
   // regression check for ticket #832
   // note bandStatistics call is base 1
   // TODO: elementCount is not collected by GDAL, use other stats.
   //QVERIFY( mpRasterLayer->dataProvider()->bandStatistics( 1 ).elementCount == 100 );
-  mReport += QLatin1String( "<p>Passed</p>" );
 }
 void TestQgsRasterLayer::checkStats()
 {
-
-  mReport += QLatin1String( "<h2>Check Stats</h2>\n" );
   QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
                                     QgsRasterBandStats::Min | QgsRasterBandStats::Max |
                                     QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
@@ -385,9 +377,7 @@ void TestQgsRasterLayer::checkStats()
   QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
   const double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
   QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
-  mReport += QLatin1String( "<p>Passed</p>" );
 
   // limited extent
   myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
@@ -433,8 +423,6 @@ void TestQgsRasterLayer::checkStats()
 // see https://github.com/qgis/QGIS/issues/17186
 void TestQgsRasterLayer::checkScaleOffset()
 {
-  mReport += QLatin1String( "<h2>Check Stats with scale/offset</h2>\n" );
-
   const QFileInfo myRasterFileInfo( mTestDataDir + "scaleoffset.tif" );
   QgsRasterLayer *myRasterLayer = nullptr;
   myRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
@@ -443,7 +431,6 @@ void TestQgsRasterLayer::checkScaleOffset()
   if ( ! myRasterLayer->isValid() )
   {
     qDebug() << QStringLiteral( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
-    mReport += QStringLiteral( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
     delete myRasterLayer;
     QVERIFY( false );
     return;
@@ -622,7 +609,6 @@ void TestQgsRasterLayer::registry()
 
 bool TestQgsRasterLayer::render( const QString &testType, int mismatchCount )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );

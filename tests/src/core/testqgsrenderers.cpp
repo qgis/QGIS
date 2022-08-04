@@ -44,7 +44,8 @@ class TestQgsRenderers : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsRenderers() = default;
+    TestQgsRenderers() : QgsTest( QStringLiteral( "Vector Renderer Tests" ) ) {}
+
     ~TestQgsRenderers() override
     {
       delete mMapSettings;
@@ -53,8 +54,6 @@ class TestQgsRenderers : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void singleSymbol();
     void emptyGeometry();
@@ -129,7 +128,6 @@ void TestQgsRenderers::initTestCase()
   //
   mMapSettings->setLayers(
     QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
-  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()
 {
@@ -138,7 +136,6 @@ void TestQgsRenderers::cleanupTestCase()
 
 void TestQgsRenderers::singleSymbol()
 {
-  mReport += QLatin1String( "<h2>Single symbol renderer test</h2>\n" );
   QVERIFY( setQml( "single" ) );
   QVERIFY( imageCheck( "single" ) );
 }

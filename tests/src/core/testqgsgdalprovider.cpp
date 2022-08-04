@@ -46,11 +46,12 @@ class TestQgsGdalProvider : public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsGdalProvider() : QgsTest( QStringLiteral( "GDAL Provider Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
 
     void decodeUri(); // test decode URI implementation
     void encodeUri(); // test encode URI implementation
@@ -87,7 +88,6 @@ void TestQgsGdalProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>GDAL Provider Tests</h1>\n" );
 
   mGdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
 
