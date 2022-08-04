@@ -30,6 +30,7 @@
 #include <mutex>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QFileInfo>
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
@@ -276,7 +277,52 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
     CPLSetThreadLocalConfigOption( "OGR_GPKG_FOREIGN_KEY_CHECK", "NO" );
   }
 
-  GDALDatasetH hDS = GDALOpenEx( encodeGdalUri( parts ).toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+  QString gdalUri = encodeGdalUri( parts );
+  GDALDatasetH hDS = GDALOpenEx( gdalUri.toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+
+  if ( !hDS )
+  {
+    const QString vsiPrefix = parts.value( QStringLiteral( "vsiPrefix" ) ).toString();
+    const QString vsiSuffix = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
+    if ( vsiSuffix.isEmpty() && ( vsiPrefix == QLatin1String( "/vsizip/" )
+                                  || vsiPrefix == QLatin1String( "/vsigzip/" )
+                                  || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
+    {
+      // in the case that a direct path to a vsi supported archive was specified BUT
+      // no file suffix was given, see if there's only one valid file we could read anyway and
+      // passthrough directly to this
+      char **papszSiblingFiles = VSIReadDirRecursive( gdalUri.toUtf8().constData( ) );
+      if ( papszSiblingFiles )
+      {
+        bool foundMultipleCandidates = false;
+        QString filename;
+        for ( int i = 0; papszSiblingFiles[i]; i++ )
+        {
+          const QString tmpPath = papszSiblingFiles[i];
+          const QString suffix = QFileInfo( tmpPath ).completeSuffix();
+          if ( suffix.endsWith( QLatin1String( "aux.xml" ), Qt::CaseInsensitive ) )
+            continue;
+
+          if ( !filename.isEmpty() )
+          {
+            foundMultipleCandidates = true;
+            break;
+          }
+          filename = tmpPath;
+        }
+        CSLDestroy( papszSiblingFiles );
+
+        if ( !foundMultipleCandidates )
+        {
+          parts.insert( QStringLiteral( "vsiSuffix" ), filename );
+          // try again with suffix
+          gdalUri = encodeGdalUri( parts );
+          hDS = GDALOpenEx( gdalUri.toUtf8().constData(), nOpenFlags, nullptr, papszOpenOptions, nullptr );
+        }
+      }
+    }
+  }
+
   CSLDestroy( papszOpenOptions );
 
   if ( modify_OGR_GPKG_FOREIGN_KEY_CHECK )
@@ -411,7 +457,12 @@ QString QgsGdalProviderBase::encodeGdalUri( const QVariantMap &parts )
   const QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
   const QString authcfg = parts.value( QStringLiteral( "authcfg" ) ).toString();
 
-  QString uri = vsiPrefix + path + vsiSuffix;
+  QString uri = vsiPrefix + path;
+  if ( !vsiSuffix.isEmpty() && !vsiSuffix.startsWith( '/' ) )
+    uri += '/' + vsiSuffix;
+  else
+    uri += vsiSuffix;
+
   if ( !layerName.isEmpty() && uri.endsWith( QLatin1String( "gpkg" ) ) )
     uri = QStringLiteral( "GPKG:%1:%2" ).arg( uri, layerName );
   else if ( !layerName.isEmpty() )
