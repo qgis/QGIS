@@ -139,7 +139,6 @@ void QgsOffscreen3DEngine::setRootEntity( Qt3DCore::QEntity *root )
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
   root->addComponent( mFrameGraph->forwardRenderLayer() );
-  root->addComponent( mFrameGraph->castShadowsLayer() );
 }
 
 Qt3DRender::QRenderSettings *QgsOffscreen3DEngine::renderSettings()
