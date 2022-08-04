@@ -1936,6 +1936,10 @@ QgsPoint QgsLineString::centroid() const
 
 void QgsLineString::sumUpArea( double &sum ) const
 {
+  // Please note that the area calculated in this method will be negative if the line points are defined in clockwise order.
+  // If you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
+  // since otherwise a bug can be introduced (such as the bug fixed for github issue 49578)
+  // https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
   int maxIndex = numPoints() - 1;
 
   for ( int i = 0; i < maxIndex; ++i )
