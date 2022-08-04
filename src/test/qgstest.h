@@ -112,7 +112,7 @@ class TEST_EXPORT QgsTest : public QObject
     {
       const QString reportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
       QFile file( reportFile );
-      if ( file.open( QIODevice::WriteOnly | QIODevice::Append ) )
+      if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
       {
         QTextStream stream( &file );
         stream << report;
