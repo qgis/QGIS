@@ -39,6 +39,7 @@
 #include "qgsregularpolygon.h"
 #include "qgsrange.h"
 #include "qgsinterval.h"
+#include "qgis_test.h"
 
 #define QGSTEST_MAIN(TestObject) \
   QT_BEGIN_NAMESPACE \
