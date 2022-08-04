@@ -32,8 +32,10 @@
 class TestContrastEnhancements: public QgsTest
 {
     Q_OBJECT
+  public:
+    TestContrastEnhancements() : QgsTest( QStringLiteral( "Raster Contrast Enhancement Tests" ) ) {}
+
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
@@ -42,12 +44,6 @@ class TestContrastEnhancements: public QgsTest
     void linearMinMaxEnhancementTest();
 
 };
-
-//runs before all tests
-void TestContrastEnhancements::initTestCase()
-{
-  mReport += QLatin1String( "<h1>Raster Contrast Enhancement Tests</h1>\n" );
-}
 
 void TestContrastEnhancements::clipMinMaxEnhancementTest()
 {

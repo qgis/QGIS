@@ -118,6 +118,10 @@ class TEST_EXPORT QgsTest : public QObject
       return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
     }
 
+    QgsTest( const QString &name )
+      : mName( name )
+    {}
+
     ~QgsTest() override
     {
       if ( !mReport.isEmpty() )
@@ -137,6 +141,7 @@ class TEST_EXPORT QgsTest : public QObject
       if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
       {
         QTextStream stream( &file );
+        stream << QStringLiteral( "<h1>%1</h1>\n" ).arg( mName );
         stream << report;
         file.close();
 
@@ -147,6 +152,7 @@ class TEST_EXPORT QgsTest : public QObject
 
   protected:
 
+    QString mName;
     QString mReport;
 };
 

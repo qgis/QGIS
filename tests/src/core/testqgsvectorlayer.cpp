@@ -47,7 +47,7 @@ class TestQgsVectorLayer : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsVectorLayer() = default;
+    TestQgsVectorLayer() : QgsTest( QStringLiteral( "Vector Renderer Tests" ) ) {}
 
   private:
     bool mTestHasError =  false ;
@@ -62,8 +62,6 @@ class TestQgsVectorLayer : public QgsTest
 
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void nonSpatialIterator();
     void getValues();
@@ -135,8 +133,6 @@ void TestQgsVectorLayer::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer );
-
-  mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 
 void TestQgsVectorLayer::cleanupTestCase()

@@ -56,6 +56,10 @@ class TestQgsCopcProvider : public QgsTest
 {
     Q_OBJECT
 
+  public:
+
+    TestQgsCopcProvider() : QgsTest( QStringLiteral( "COPC Provider Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -97,7 +101,6 @@ void TestQgsCopcProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>COPC Provider Tests</h1>\n" );
 }
 
 //runs after all tests

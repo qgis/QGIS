@@ -22,20 +22,21 @@
 //header for class being tested
 #include <qgsclipper.h>
 #include <qgspoint.h>
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgslinesymbol.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgsmultirenderchecker.h"
+#include "qgsrenderchecker.h"
 
 class TestQgsClipper: public QgsTest
 {
 
     Q_OBJECT
+
+  public:
+    TestQgsClipper() : QgsTest( QStringLiteral( "Clipper Rendering Tests" ) ) {}
+
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+
     void basic();
     void basicWithZ();
     void basicWithZInf();
@@ -47,12 +48,6 @@ class TestQgsClipper: public QgsTest
     bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect );
     bool render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent );
 };
-
-void TestQgsClipper::initTestCase()
-{
-  mReport = QStringLiteral( "<h1>Clipper Rendering Tests</h1>\n" );
-
-}
 
 void TestQgsClipper::basicWithZ()
 {
@@ -199,8 +194,6 @@ void TestQgsClipper::epsg4978LineRendering()
 
 bool TestQgsClipper::render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
-
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
 

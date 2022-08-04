@@ -43,6 +43,10 @@ class TestQgsPdalProvider : public QgsTest
 {
     Q_OBJECT
 
+  public:
+
+    TestQgsPdalProvider() : QgsTest( QStringLiteral( "PDAL Provider Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -72,7 +76,6 @@ void TestQgsPdalProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>PDAL Provider Tests</h1>\n" );
 }
 
 //runs after all tests

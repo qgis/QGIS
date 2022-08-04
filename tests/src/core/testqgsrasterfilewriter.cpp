@@ -43,6 +43,11 @@
 class TestQgsRasterFileWriter: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsRasterFileWriter() : QgsTest( QStringLiteral( "Raster File Writer Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -68,13 +73,9 @@ void TestQgsRasterFileWriter::initTestCase()
   QgsApplication::initQgis();
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport += QLatin1String( "<h1>Raster File Writer Tests</h1>\n" );
-  mReport += "<p>" + mySettings + "</p>";
 }
 //runs after all tests
 void TestQgsRasterFileWriter::cleanupTestCase()
@@ -101,8 +102,6 @@ void TestQgsRasterFileWriter::writeTest()
 
 bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 {
-  mReport += "<h2>" + rasterName + "</h2>\n";
-
   const QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
   const QFileInfo myRasterFileInfo( myFileName );

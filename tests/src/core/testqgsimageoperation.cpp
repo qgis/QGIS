@@ -20,12 +20,14 @@
 #include <QObject>
 #include "qgstest.h"
 #include "qgsrenderchecker.h"
-#include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 
 class TestQgsImageOperation : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsImageOperation() : QgsTest( QStringLiteral( "Image Operation Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -93,7 +95,6 @@ void TestQgsImageOperation::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mReport += QLatin1String( "<h1>Image Operation Tests</h1>\n" );
   mSampleImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mTransparentSampleImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_alpha_image.png";
 }
@@ -445,7 +446,6 @@ bool TestQgsImageOperation::imageCheck( const QString &testName, QImage &image, 
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
