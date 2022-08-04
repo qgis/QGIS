@@ -65,7 +65,7 @@ class TestStyle : public QgsTest
     Q_OBJECT
 
   public:
-    TestStyle();
+    TestStyle() : QgsTest( QStringLiteral( "Style Tests" ) ) {}
 
   private:
 
@@ -136,9 +136,6 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
 
 };
 
-
-TestStyle::TestStyle() = default;
-
 // slots
 void TestStyle::initTestCase()
 {
@@ -165,8 +162,6 @@ void TestStyle::initTestCase()
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
-
-  mReport += QLatin1String( "<h1>Style Tests</h1>\n" );
 
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "dummy" ), QObject::tr( "Dummy" ),
       &Dummy3DSymbol::create, nullptr, nullptr ) );

@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitempicture.h"
 #include "qgsproject.h"
 #include "qgsproperty.h"
+#include "qgslayout.h"
+
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
@@ -29,6 +30,10 @@
 class TestQgsLayoutPicture : public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsLayoutPicture() : QgsTest( QStringLiteral( "Layout Picture Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -93,8 +98,6 @@ void TestQgsLayoutPicture::initTestCase()
   mPicture->setPicturePath( mPngImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   mPicture->setFrameEnabled( true );
-
-  mReport = QStringLiteral( "<h1>Layout Picture Tests</h1>\n" );
 }
 
 void TestQgsLayoutPicture::cleanupTestCase()

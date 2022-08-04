@@ -42,7 +42,8 @@ class TestQgsBlendModes : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsBlendModes() = default;
+    TestQgsBlendModes() : QgsTest( QStringLiteral( "Blending modes" ) ) {}
+
     ~TestQgsBlendModes() override
     {
       delete mMapSettings;

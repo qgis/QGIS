@@ -16,10 +16,8 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgslayoutitemlabel.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
@@ -35,13 +33,11 @@ class TestQgsLayoutLabel : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutLabel() = default;
+    TestQgsLayoutLabel() : QgsTest( QStringLiteral( "Layout Label Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
 
     // test simple expression evaluation
     void evaluation();
@@ -79,14 +75,6 @@ void TestQgsLayoutLabel::cleanupTestCase()
   delete mVectorLayer;
 
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutLabel::init()
-{
-}
-
-void TestQgsLayoutLabel::cleanup()
-{
 }
 
 void TestQgsLayoutLabel::evaluation()

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapoverview.h"
@@ -39,7 +38,7 @@ class TestQgsLayoutAtlas : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutAtlas() = default;
+    TestQgsLayoutAtlas() : QgsTest( QStringLiteral( "Layout Atlas Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -98,8 +97,6 @@ void TestQgsLayoutAtlas::initTestCase()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
-
-  mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
 
 void TestQgsLayoutAtlas::cleanupTestCase()

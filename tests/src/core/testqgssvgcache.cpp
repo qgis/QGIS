@@ -36,6 +36,9 @@ class TestQgsSvgCache : public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsSvgCache() : QgsTest( QStringLiteral( "QgsSvgCache Tests" ) ) {}
+
   private:
 
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
@@ -62,7 +65,6 @@ void TestQgsSvgCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mReport += "<h1>QgsSvgCache Tests</h1>\n";
 }
 
 void TestQgsSvgCache::cleanupTestCase()
@@ -371,7 +373,6 @@ bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mi
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

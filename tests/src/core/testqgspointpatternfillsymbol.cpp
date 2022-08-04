@@ -51,13 +51,11 @@ class TestQgsPointPatternFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsPointPatternFillSymbol() = default;
+    TestQgsPointPatternFillSymbol() : QgsTest( QStringLiteral( "Point Pattern Fill Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void pointPatternFillSymbol();
     void pointPatternFillSymbolVector();
@@ -128,7 +126,6 @@ void TestQgsPointPatternFillSymbol::initTestCase()
   mpPolysLayer->setRenderer( mSymbolRenderer );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Point Pattern Fill Tests</h1>\n" );
 
 }
 void TestQgsPointPatternFillSymbol::cleanupTestCase()
@@ -138,8 +135,6 @@ void TestQgsPointPatternFillSymbol::cleanupTestCase()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -153,8 +148,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -203,8 +196,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Viewport coordinate reference point pattern fill symbol renderer test</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -231,8 +222,6 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Viewport coordinate reference point pattern fill symbol renderer test</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -264,8 +253,6 @@ void TestQgsPointPatternFillSymbol::viewportPointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -291,8 +278,6 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Offsetted point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -320,8 +305,6 @@ void TestQgsPointPatternFillSymbol::offsettedPointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 {
-  mReport += QLatin1String( "<h2>Point pattern symbol data defined sub symbol test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -336,8 +319,6 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 
 void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -355,8 +336,6 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbol()
 
 void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
 {
-  mReport += QLatin1String( "<h2>Zero distance point pattern fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
@@ -377,8 +356,6 @@ void TestQgsPointPatternFillSymbol::zeroSpacedPointPatternFillSymbolVector()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
 {
-  mReport += QLatin1String( "<h2>Point pattern no clip mode</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -403,8 +380,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillNoClip()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
 {
-  mReport += QLatin1String( "<h2>Point pattern completely within</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -429,8 +404,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCompletelyWithin()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
 {
-  mReport += QLatin1String( "<h2>Point pattern centroid within</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -455,8 +428,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillCentroidWithin()
 
 void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
 {
-  mReport += QLatin1String( "<h2>Point pattern data defined clip</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -482,8 +453,6 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
 {
-  mReport += QLatin1String( "<h2>Point pattern random offset</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -511,8 +480,6 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffset()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
 {
-  mReport += QLatin1String( "<h2>Point pattern random offset in percent</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -571,8 +538,6 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngle()
 {
-  mReport += QLatin1String( "<h2>Point pattern angle</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -598,8 +563,6 @@ void TestQgsPointPatternFillSymbol::pointPatternAngle()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
 {
-  mReport += QLatin1String( "<h2>Point pattern angle data defined</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -626,8 +589,6 @@ void TestQgsPointPatternFillSymbol::pointPatternAngleDataDefined()
 
 void TestQgsPointPatternFillSymbol::pointPatternAngleViewport()
 {
-  mReport += QLatin1String( "<h2>Point pattern angle viewport mode</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 

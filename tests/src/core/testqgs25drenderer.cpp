@@ -30,10 +30,10 @@
 #include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgs25drenderer.h>
-#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslayout.h"
 
 /**
  * \ingroup UnitTests
@@ -43,13 +43,11 @@ class TestQgs25DRenderer : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgs25DRenderer() = default;
+    TestQgs25DRenderer() : QgsTest( QStringLiteral( "25D Renderer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void render();
     void renderLayout();
@@ -90,7 +88,6 @@ void TestQgs25DRenderer::initTestCase()
   QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_angle" ), 45 );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>25D Renderer Tests</h1>\n" );
 
 }
 void TestQgs25DRenderer::cleanupTestCase()
@@ -102,8 +99,6 @@ void TestQgs25DRenderer::cleanupTestCase()
 
 void TestQgs25DRenderer::render()
 {
-  mReport += QLatin1String( "<h2>Render</h2>\n" );
-
   //setup 25d renderer
   Qgs25DRenderer *renderer = new Qgs25DRenderer();
   renderer->setShadowEnabled( false );
