@@ -64,8 +64,11 @@ class CORE_EXPORT QgsRenderChecker
 
     /**
      * Returns the HTML report describing the results of the test run.
+     *
+     * If \a ignoreSuccess is TRUE then the report will always be empty if
+     * the test was successful.
      */
-    QString report() const { return mReport; }
+    QString report( bool ignoreSuccess = true ) const;
 
     /**
      * Returns the percent of pixels which matched the control image.
@@ -235,6 +238,8 @@ class CORE_EXPORT QgsRenderChecker
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
     void dumpRenderedImageAsBase64();
+
+    bool mResult = false;
 
     QString mBasePath;
 
