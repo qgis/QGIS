@@ -440,7 +440,7 @@ QStringList QgsPointCloudLayerSaveAsDialog::attributes() const
 
 bool QgsPointCloudLayerSaveAsDialog::addToCanvas() const
 {
-  return mAddToCanvas->isChecked() && mAddToCanvas->isEnabled();
+  return mAddToCanvas->isChecked();
 }
 
 void QgsPointCloudLayerSaveAsDialog::setAddToCanvas( bool enabled )
