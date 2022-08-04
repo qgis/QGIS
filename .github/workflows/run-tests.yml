@@ -404,3 +404,11 @@ jobs:
           echo "DOCKERFILE=$DOCKERFILE"
           mkdir -p /tmp/webdav_tests && chmod 777 /tmp/webdav_tests
           docker-compose -f .docker/$DOCKERFILE run qgis-deps /root/QGIS/.docker/docker-qgis-test.sh $TEST_BATCH
+
+      - name: Archive test results report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: qgis_test_report
+
