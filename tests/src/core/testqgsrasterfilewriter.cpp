@@ -102,6 +102,8 @@ void TestQgsRasterFileWriter::writeTest()
 
 bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 {
+  const QString oldReport = mReport;
+
   const QString myFileName = mTestDataDir + '/' + rasterName;
   qDebug() << myFileName;
   const QFileInfo myRasterFileInfo( myFileName );
@@ -176,6 +178,12 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   // All OK, we can delete the file
   tmpFile.setAutoRemove( ok );
+
+  if ( ok )
+  {
+    // don't output reports if test is successful
+    mReport = oldReport;
+  }
 
   return ok;
 }
