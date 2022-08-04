@@ -117,7 +117,9 @@ Test using renderer to generate the image to be compared.
 
     QString report() const;
 %Docstring
-Returns a report for this test
+Returns a report for this test.
+
+The report will be empty if the test was successfully run.
 %End
 
     QString controlImagePath() const;
