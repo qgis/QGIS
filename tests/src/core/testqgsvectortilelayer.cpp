@@ -37,7 +37,7 @@
  * \ingroup UnitTests
  * This is a unit test for a vector tile layer
  */
-class TestQgsVectorTileLayer : public QObject
+class TestQgsVectorTileLayer : public QgsTest
 {
     Q_OBJECT
 
@@ -47,7 +47,6 @@ class TestQgsVectorTileLayer : public QObject
   private:
     QString mDataDir;
     QgsVectorTileLayer *mLayer = nullptr;
-    QString mReport;
     QgsMapSettings *mMapSettings = nullptr;
 
     bool imageCheck( const QString &testType, QgsVectorTileLayer *layer, QgsRectangle extent );
@@ -113,15 +112,6 @@ void TestQgsVectorTileLayer::initTestCase()
 
 void TestQgsVectorTileLayer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

@@ -38,7 +38,7 @@
  * \ingroup UnitTests
  * This is a unit test for the map rotation feature
  */
-class TestQgsMapRotation : public QObject
+class TestQgsMapRotation : public QgsTest
 {
     Q_OBJECT
   public:
@@ -68,7 +68,6 @@ class TestQgsMapRotation : public QObject
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsVectorLayer *mLinesLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
-    QString mReport;
 };
 
 //runs before all tests
@@ -119,15 +118,6 @@ void TestQgsMapRotation::cleanupTestCase()
   delete mLinesLayer;
   delete mRasterLayer;
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsMapRotation::rasterLayer()

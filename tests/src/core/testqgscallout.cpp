@@ -108,7 +108,7 @@ class TestSimpleCalloutUnder : public QgsSimpleLineCallout
 };
 
 
-class TestQgsCallout: public QObject
+class TestQgsCallout: public QgsTest
 {
     Q_OBJECT
 
@@ -184,7 +184,6 @@ class TestQgsCallout: public QObject
   private:
     bool imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount = 0 );
 
-    QString mReport;
     QString mTestDataDir;
     QgsVectorLayer *vl = nullptr;
 
@@ -209,14 +208,6 @@ void TestQgsCallout::initTestCase()
 
 void TestQgsCallout::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

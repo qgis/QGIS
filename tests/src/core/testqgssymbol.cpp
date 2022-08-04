@@ -40,7 +40,7 @@
  * \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
  */
-class TestQgsSymbol : public QObject
+class TestQgsSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -50,7 +50,6 @@ class TestQgsSymbol : public QObject
 
   private:
 
-    QString mReport;
     QString mTestDataDir;
 
     QgsVectorLayer *mpPointsLayer = nullptr;
@@ -143,16 +142,6 @@ void TestQgsSymbol::initTestCase()
 void TestQgsSymbol::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 bool TestQgsSymbol::imageCheck( QgsMapSettings &ms, const QString &testName )

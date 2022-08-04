@@ -42,7 +42,7 @@
  * \ingroup UnitTests
  * This is a unit test for QgsFilledMarkerSymbolLayer.
  */
-class TestQgsFilledMarkerSymbol : public QObject
+class TestQgsFilledMarkerSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -71,7 +71,6 @@ class TestQgsFilledMarkerSymbol : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -125,15 +124,6 @@ void TestQgsFilledMarkerSymbol::initTestCase()
 }
 void TestQgsFilledMarkerSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPointsLayer;
 
   QgsApplication::exitQgis();

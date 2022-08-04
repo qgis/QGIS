@@ -42,7 +42,7 @@
  * \ingroup UnitTests
  * This is a unit test for font marker symbol types.
  */
-class TestQgsFontMarkerSymbol : public QObject
+class TestQgsFontMarkerSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -74,7 +74,6 @@ class TestQgsFontMarkerSymbol : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -116,15 +115,6 @@ void TestQgsFontMarkerSymbol::initTestCase()
 }
 void TestQgsFontMarkerSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPointsLayer;
 
   QgsApplication::exitQgis();

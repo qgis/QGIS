@@ -42,7 +42,7 @@
  * \ingroup UnitTests
  * This is a unit test for the gdal provider
  */
-class TestQgsGdalProvider : public QObject
+class TestQgsGdalProvider : public QgsTest
 {
     Q_OBJECT
 
@@ -74,7 +74,6 @@ class TestQgsGdalProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
     bool mSupportsNetCDF;
     QgsProviderMetadata *mGdalMetadata;
 
@@ -105,14 +104,6 @@ void TestQgsGdalProvider::initTestCase()
 void TestQgsGdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsGdalProvider::decodeUri()

@@ -43,7 +43,7 @@
  * \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsVectorLayer : public QObject
+class TestQgsVectorLayer : public QgsTest
 {
     Q_OBJECT
   public:
@@ -56,7 +56,6 @@ class TestQgsVectorLayer : public QObject
     QgsVectorLayer *mpPolysLayer = nullptr;
     QgsVectorLayer *mpNonSpatialLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 
 
   private slots:
@@ -142,15 +141,6 @@ void TestQgsVectorLayer::initTestCase()
 
 void TestQgsVectorLayer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
   QgsApplication::exitQgis();
 }
 

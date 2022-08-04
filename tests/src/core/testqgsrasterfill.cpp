@@ -39,7 +39,7 @@
  * \ingroup UnitTests
  * This is a unit test for raster fill types.
  */
-class TestQgsRasterFill : public QObject
+class TestQgsRasterFill : public QgsTest
 {
     Q_OBJECT
 
@@ -75,7 +75,6 @@ class TestQgsRasterFill : public QObject
     QgsFillSymbol *mFillSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -124,15 +123,6 @@ void TestQgsRasterFill::initTestCase()
 
 void TestQgsRasterFill::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
