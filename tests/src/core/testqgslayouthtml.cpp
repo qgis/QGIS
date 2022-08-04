@@ -28,7 +28,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutHtml : public QObject
+class TestQgsLayoutHtml : public QgsTest
 {
     Q_OBJECT
 
@@ -47,7 +47,6 @@ class TestQgsLayoutHtml : public QObject
     void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
 
   private:
-    QString mReport;
     QFont mTestFont;
 };
 
@@ -64,14 +63,6 @@ void TestQgsLayoutHtml::initTestCase()
 
 void TestQgsLayoutHtml::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

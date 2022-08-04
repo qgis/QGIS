@@ -57,7 +57,7 @@ static bool _verifyImage( const QString &testName, QString &report )
  * \ingroup UnitTests
  * This is a unit test for simple marker symbol types.
  */
-class TestQgsSimpleMarkerSymbol : public QObject
+class TestQgsSimpleMarkerSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -101,7 +101,6 @@ class TestQgsSimpleMarkerSymbol : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -146,15 +145,6 @@ void TestQgsSimpleMarkerSymbol::initTestCase()
 }
 void TestQgsSimpleMarkerSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

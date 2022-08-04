@@ -34,7 +34,7 @@
 #include "qgstest.h"
 #include "qgsfillsymbol.h"
 
-class TestQgsLayoutAtlas : public QObject
+class TestQgsLayoutAtlas : public QgsTest
 {
     Q_OBJECT
 
@@ -79,7 +79,6 @@ class TestQgsLayoutAtlas : public QObject
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsVectorLayer *mVectorLayer2 = nullptr;
     QgsLayoutAtlas *mAtlas = nullptr;
-    QString mReport;
 };
 
 void TestQgsLayoutAtlas::initTestCase()
@@ -108,15 +107,6 @@ void TestQgsLayoutAtlas::cleanupTestCase()
   delete mLayout;
   delete mVectorLayer;
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsLayoutAtlas::init()

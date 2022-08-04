@@ -32,7 +32,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsLayoutShapes : public QObject
+class TestQgsLayoutShapes : public QgsTest
 {
     Q_OBJECT
 
@@ -52,10 +52,6 @@ class TestQgsLayoutShapes : public QObject
     void readWriteXml();
     void bounds();
     void shapeRotation();
-
-  private:
-
-    QString mReport;
 };
 
 void TestQgsLayoutShapes::initTestCase()
@@ -68,14 +64,6 @@ void TestQgsLayoutShapes::initTestCase()
 
 void TestQgsLayoutShapes::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

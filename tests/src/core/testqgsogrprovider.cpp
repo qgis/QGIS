@@ -35,7 +35,7 @@
  * \ingroup UnitTests
  * This is a unit test for the ogr provider
  */
-class TestQgsOgrProvider : public QObject
+class TestQgsOgrProvider : public QgsTest
 {
     Q_OBJECT
 
@@ -53,7 +53,6 @@ class TestQgsOgrProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
   signals:
 
   public slots:
@@ -76,14 +75,6 @@ void TestQgsOgrProvider::initTestCase()
 void TestQgsOgrProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsOgrProvider::setupProxy()

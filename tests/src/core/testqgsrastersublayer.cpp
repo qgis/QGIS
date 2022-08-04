@@ -44,7 +44,7 @@
  * \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
-class TestQgsRasterSubLayer : public QObject
+class TestQgsRasterSubLayer : public QgsTest
 {
     Q_OBJECT
 
@@ -63,7 +63,6 @@ class TestQgsRasterSubLayer : public QObject
     QString mTestDataDir;
     QString mFileName;
     QgsRasterLayer *mpRasterLayer = nullptr;
-    QString mReport;
     bool mHasNetCDF =  false ;
 };
 
@@ -110,14 +109,6 @@ void TestQgsRasterSubLayer::cleanupTestCase()
 {
   delete mpRasterLayer;
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsRasterSubLayer::subLayersList()

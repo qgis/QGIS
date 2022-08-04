@@ -47,7 +47,7 @@
 */
 
 
-class TestQgsVirtualRasterProvider : public QObject
+class TestQgsVirtualRasterProvider : public QgsTest
 {
     Q_OBJECT
 
@@ -67,7 +67,6 @@ class TestQgsVirtualRasterProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
     QgsRasterLayer *mDemRasterLayer = nullptr;
     QgsRasterLayer *mLandsatRasterLayer = nullptr;
 
@@ -112,14 +111,6 @@ void TestQgsVirtualRasterProvider::validLayer()
 void TestQgsVirtualRasterProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsVirtualRasterProvider::testUriProviderDecoding()

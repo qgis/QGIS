@@ -24,13 +24,12 @@
 #include <qgspoint.h>
 #include "qgslogger.h"
 
-class TestQgsClipper: public QObject
+class TestQgsClipper: public QgsTest
 {
 
     Q_OBJECT
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
-    void cleanupTestCase() {} // will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void basic();

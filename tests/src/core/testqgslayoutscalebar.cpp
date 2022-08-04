@@ -40,7 +40,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutScaleBar : public QObject
+class TestQgsLayoutScaleBar : public QgsTest
 {
     Q_OBJECT
 
@@ -72,9 +72,6 @@ class TestQgsLayoutScaleBar : public QObject
     void hollow();
     void hollowDefaults();
     void tickSubdivisions();
-
-  private:
-    QString mReport;
 };
 
 void TestQgsLayoutScaleBar::initTestCase()
@@ -98,15 +95,6 @@ void TestQgsLayoutScaleBar::initTestCase()
 
 void TestQgsLayoutScaleBar::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

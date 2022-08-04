@@ -22,7 +22,7 @@ Email                : sherman at mrcc dot com
 #include <qgsapplication.h>
 #include "qgsrenderchecker.h"
 
-class TestQgsApplication: public QObject
+class TestQgsApplication: public QgsTest
 {
     Q_OBJECT
   private slots:
@@ -39,7 +39,7 @@ class TestQgsApplication: public QObject
   private:
     QString getQgisPath();
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
-    QString mReport;
+
 };
 
 
@@ -59,14 +59,6 @@ void TestQgsApplication::initTestCase()
 
 void TestQgsApplication::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

@@ -26,7 +26,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsLayoutPicture : public QObject
+class TestQgsLayoutPicture : public QgsTest
 {
     Q_OBJECT
 
@@ -69,7 +69,6 @@ class TestQgsLayoutPicture : public QObject
   private:
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemPicture *mPicture = nullptr;
-    QString mReport;
     QString mPngImage;
     QString mSvgImage;
     QString mSvgParamsImage;
@@ -103,14 +102,6 @@ void TestQgsLayoutPicture::cleanupTestCase()
   delete mPicture;
   delete mLayout;
 
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 
