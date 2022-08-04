@@ -131,7 +131,7 @@ QgsMapLayer *TestZipLayer::getZipLayer( const QString &myPath, const QString &my
   QgsDataItem *myItem = QgsZipItem::itemFromPath( dirItem, myPath, myName );
   if ( myItem )
   {
-    QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( myItem );
+    QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( myItem->children().at( 0 ) );
     if ( layerItem )
       myLayer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
   }
@@ -216,11 +216,6 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
             break;
           }
         }
-      }
-      else
-      {
-        QWARN( QString( "Invalid layer %1" ).arg( layerItem ? layerItem->path() : "(null)" ).toLocal8Bit().data() );
-        break;
       }
     }
   }
