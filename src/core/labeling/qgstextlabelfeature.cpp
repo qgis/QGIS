@@ -47,11 +47,6 @@ bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
   return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount();
 }
 
-void QgsTextLabelFeature::setFontMetrics( const QFontMetricsF &metrics )
-{
-  mFontMetrics = metrics; // duplicate metrics for when drawing label
-}
-
 QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QString &text, QgsTextDocument *document )
 {
   // create label info!
@@ -66,6 +61,9 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     {
       for ( const QgsTextFragment &fragment : block )
       {
+
+        // fragment.horizontalAdvance( ..., false,  .... );
+
         const QStringList fragmentGraphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
         for ( const QString &grapheme : fragmentGraphemes )
         {
@@ -117,7 +115,13 @@ QgsTextDocument QgsTextLabelFeature::document() const
   return mDocument;
 }
 
-void QgsTextLabelFeature::setDocument( const QgsTextDocument &document )
+QgsTextDocumentMetrics QgsTextLabelFeature::documentMetrics() const
+{
+  return mDocumentMetrics;
+}
+
+void QgsTextLabelFeature::setDocument( const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics )
 {
   mDocument = document;
+  mDocumentMetrics = metrics;
 }

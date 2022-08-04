@@ -575,7 +575,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       component.size = QSizeF( labelWidthPx, labelHeightPx );
     }
 
-    QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QgsTextDocument(), Qgis::TextLayoutMode::Labeling );
+    QgsTextRenderer::drawBackground( context, component, tmpLyr.format(), QgsTextDocumentMetrics(), Qgis::TextLayoutMode::Labeling );
   }
 
   else if ( drawType == Qgis::TextComponent::Buffer
@@ -585,7 +585,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     // TODO: optimize access :)
     QgsTextLabelFeature *lf = static_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
-    QFontMetricsF *labelfm = lf->labelFontMetrics();
 
     if ( auto *lMaskIdProvider = context.maskIdProvider() )
     {
@@ -660,20 +659,25 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.rotation = label->getAlpha();
 
     QgsTextDocument document;
+    QgsTextDocumentMetrics metrics;
     if ( !tmpLyr.format().allowHtmlFormatting() || tmpLyr.placement == Qgis::LabelPlacement::Curved )
     {
       const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
       const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
       for ( const QString &line : multiLineList )
         document.append( QgsTextBlock( QgsTextFragment( line, c ) ) );
+
+      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
+      metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
     }
     else
     {
       document = lf->document();
+      metrics = lf->documentMetrics();
     }
 
-    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document, labelfm,
-                                       hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document,
+                                       metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
 
   }
   if ( label->nextPart() )

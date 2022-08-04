@@ -26,6 +26,7 @@
 #include <QPicture>
 
 class QgsTextDocument;
+class QgsTextDocumentMetrics;
 class QgsTextFormat;
 class QgsRenderContext;
 
@@ -284,7 +285,7 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document,
+    static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           Qgis::TextComponent part );
 
@@ -294,6 +295,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param rotation text rotation
      * \param alignment horizontal alignment
      * \param document document to draw
+     * \param metrics precalculated document metrics
      * \param context render context
      * \param format text format
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
@@ -303,6 +305,7 @@ class CORE_EXPORT QgsTextRenderer
      * \since QGIS 3.14
      */
     static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document,
+                          const QgsTextDocumentMetrics &metrics,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           Qgis::TextComponent part );
 
@@ -314,7 +317,7 @@ class CORE_EXPORT QgsTextRenderer
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
                                 const QgsTextFormat &format,
-                                const QgsTextDocument &document,
+                                const QgsTextDocumentMetrics &metrics,
                                 Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
 
     static void drawShadow( QgsRenderContext &context,
@@ -335,7 +338,7 @@ class CORE_EXPORT QgsTextRenderer
                                   const QgsTextFormat &format,
                                   const Component &component,
                                   const QgsTextDocument &document,
-                                  const QFontMetricsF *fontMetrics,
+                                  const QgsTextDocumentMetrics &metrics,
                                   Qgis::TextHorizontalAlignment alignment,
                                   Qgis::TextVerticalAlignment vAlignment,
                                   Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
@@ -351,8 +354,8 @@ class CORE_EXPORT QgsTextRenderer
                                             Qgis::TextLayoutMode mode,
                                             const Component &component,
                                             const QgsTextDocument &document,
+                                            const QgsTextDocumentMetrics &metrics,
                                             double fontScale,
-                                            const QFontMetricsF *fontMetrics,
                                             Qgis::TextHorizontalAlignment hAlignment,
                                             Qgis::TextVerticalAlignment vAlignment,
                                             double rotation );
@@ -364,7 +367,7 @@ class CORE_EXPORT QgsTextRenderer
                                           const Component &component,
                                           const QgsTextDocument &document,
                                           double fontScale,
-                                          const QFontMetricsF *fontMetrics,
+                                          const QFont &baseFont,
                                           Qgis::TextHorizontalAlignment hAlignment,
                                           Qgis::TextVerticalAlignment vAlignment,
                                           double rotation );
