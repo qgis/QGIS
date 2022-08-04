@@ -185,6 +185,8 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 
 class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
 {
+    Q_OBJECT
+
   public:
     QgsMeshDataset3DGeometryBuilder( const QgsTriangularMesh &mesh,
                                      const QgsMesh &nativeMesh,

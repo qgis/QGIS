@@ -53,6 +53,8 @@
  */
 class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -88,6 +90,8 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
  */
 class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 {
+    Q_OBJECT
+
   public:
 
     /**
