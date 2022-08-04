@@ -25,6 +25,11 @@ Email                : sherman at mrcc dot com
 class TestQgsApplication: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsApplication() : QgsTest( QStringLiteral( "QgsApplication Tests" ) ) {}
+
   private slots:
     void checkPaths();
     void checkGdalSkip();
@@ -52,9 +57,6 @@ void TestQgsApplication::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
-
-  mReport = QStringLiteral( "<h1>QgsApplication Tests</h1>\n" );
-
 }
 
 void TestQgsApplication::cleanupTestCase()
@@ -110,7 +112,6 @@ void TestQgsApplication::themeIcon()
 
 bool TestQgsApplication::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

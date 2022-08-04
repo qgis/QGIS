@@ -15,13 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayout.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemregistry.h"
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgssymbol.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
@@ -35,10 +33,11 @@ class TestQgsLayoutPage : public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsLayoutPage() : QgsTest( QStringLiteral( "Layout Page Tests" ) ) {}
+
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+
     void itemType();
     void pageSize();
     void decodePageOrientation();
@@ -53,21 +52,6 @@ class TestQgsLayoutPage : public QgsTest
     void pageLayout(); //test page layout
 
 };
-
-void TestQgsLayoutPage::initTestCase()
-{
-  mReport = QStringLiteral( "<h1>Layout Page Tests</h1>\n" );
-}
-
-void TestQgsLayoutPage::init()
-{
-
-}
-
-void TestQgsLayoutPage::cleanup()
-{
-
-}
 
 void TestQgsLayoutPage::itemType()
 {

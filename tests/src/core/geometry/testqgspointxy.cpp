@@ -30,6 +30,10 @@
 class TestQgsPointXY: public QgsTest
 {
     Q_OBJECT
+  public:
+
+    TestQgsPointXY() : QgsTest( QStringLiteral( "QgsPointXY Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void init();// will be called before each testfunction is executed.
@@ -162,7 +166,6 @@ void TestQgsPointXY::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
-  mReport += QLatin1String( "<h1>Point Tests</h1>\n" );
 }
 
 void TestQgsPointXY::toString()

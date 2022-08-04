@@ -51,6 +51,10 @@ class TestQgsVirtualRasterProvider : public QgsTest
 {
     Q_OBJECT
 
+  public:
+
+    TestQgsVirtualRasterProvider() : QgsTest( QStringLiteral( "Virtual Raster Provider Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -80,7 +84,6 @@ void TestQgsVirtualRasterProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>Virtual Raster Provider Tests</h1>\n" );
 
   QString demFileName = mTestDataDir + "raster/dem.tif";
   QFileInfo demRasterFileInfo( demFileName );

@@ -233,7 +233,8 @@ class TestQgsGeometry : public QgsTest
 };
 
 TestQgsGeometry::TestQgsGeometry()
-  : mpPolylineGeometryD( nullptr )
+  : QgsTest( QStringLiteral( "Geometry Tests" ) )
+  , mpPolylineGeometryD( nullptr )
   , mpPolygonGeometryA( nullptr )
   , mpPolygonGeometryB( nullptr )
   , mpPolygonGeometryC( nullptr )
@@ -248,10 +249,6 @@ void TestQgsGeometry::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  mReport += QLatin1String( "<h1>Geometry Tests</h1>\n" );
-  mReport += QLatin1String( "<p><font color=\"green\">Green = polygonA</font></p>\n" );
-  mReport += QLatin1String( "<p><font color=\"red\">Red = polygonB</font></p>\n" );
-  mReport += QLatin1String( "<p><font color=\"blue\">Blue = polygonC</font></p>\n" );
 }
 
 
@@ -1745,10 +1742,8 @@ void TestQgsGeometry::exportToGeoJSON()
   QCOMPARE( obtained, geojson );
 }
 
-bool TestQgsGeometry::renderCheck( const QString &testName, const QString &comment, int mismatchCount )
+bool TestQgsGeometry::renderCheck( const QString &testName, const QString &, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
-  mReport += "<h3>" + comment + "</h3>\n";
   QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   mImage.save( myFileName, "PNG" );

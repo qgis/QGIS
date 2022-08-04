@@ -29,7 +29,6 @@
 #include <qgsproject.h>
 #include <qgssymbol.h>
 #include <qgssinglesymbolrenderer.h>
-#include "qgsmarkersymbollayer.h"
 #include "qgsellipsesymbollayer.h"
 #include "qgsproperty.h"
 #include "qgsmarkersymbol.h"
@@ -46,7 +45,7 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsEllipseMarkerSymbol() = default;
+    TestQgsEllipseMarkerSymbol() : QgsTest( QStringLiteral( "Ellipse Marker Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -120,7 +119,6 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
-  mReport += QLatin1String( "<h1>Ellipse Marker Tests</h1>\n" );
 
 }
 void TestQgsEllipseMarkerSymbol::cleanupTestCase()
@@ -132,8 +130,6 @@ void TestQgsEllipseMarkerSymbol::cleanupTestCase()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol layer test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
@@ -145,8 +141,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolThirdCircle()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol third circle test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::ThirdCircle );
@@ -158,8 +152,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolThirdCircle()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolQuarterCircle()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol quarter circle test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::QuarterCircle );
@@ -171,8 +163,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolQuarterCircle()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolPentagon()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol pentagon test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Pentagon );
@@ -184,8 +174,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolPentagon()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolHexagon()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol hexagon test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Hexagon );
@@ -197,8 +185,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolHexagon()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolOctagon()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol octagon test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Octagon );
@@ -210,8 +196,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolOctagon()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolStar()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol star test</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Star );
@@ -223,8 +207,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolStar()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolSize()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker symbol layer setSize / size test</h2>\n" );
-
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   // Verify size value derived from width/height (largest value)
@@ -238,8 +220,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolSize()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolBevelJoin()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker bevel join style</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Triangle );
@@ -252,8 +232,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolBevelJoin()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolMiterJoin()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker miter join style</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Triangle );
@@ -266,8 +244,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolMiterJoin()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker round join style</h2>\n" );
-
   mEllipseMarkerLayer->setFillColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Triangle );
@@ -280,8 +256,6 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
 
 void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolCapStyle()
 {
-  mReport += QLatin1String( "<h2>Ellipse marker round cap style</h2>\n" );
-
   mEllipseMarkerLayer->setColor( Qt::blue );
   mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Cross );

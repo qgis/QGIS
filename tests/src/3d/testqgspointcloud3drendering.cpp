@@ -42,6 +42,8 @@
 class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT
+  public:
+    TestQgsPointCloud3DRendering() : QgsTest( QStringLiteral( "Point Cloud 3D Rendering Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -66,7 +68,6 @@ class TestQgsPointCloud3DRendering : public QgsTest
 
 bool TestQgsPointCloud3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
@@ -87,8 +88,6 @@ void TestQgsPointCloud3DRendering::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
-
-  mReport = QStringLiteral( "<h1>3D Rendering Tests</h1>\n" );
 
   mProject.reset( new QgsProject );
 
