@@ -1797,51 +1797,36 @@ void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578()   // https://
   // and also verifies which rings were removed (by checking the area of the polygon if/when holes were removed).
 
 
-  // Creating four squares as linestrings (one big square to be used as exteriorRing and three smaller interiorRing squares with different areas)
+  // Lambda function below is used as a nested method (since only used from this test method and therefore do not need to be in a more 'global' scope)
+  // They can be used for C++11 and later. See also: https://stackoverflow.com/questions/4324763/can-we-have-functions-inside-functions-in-c/4324780#4324780
+  // The function returns the area for the square.
+  // Note that it is important (i.e. relevant for the bug in github issue #49578) that some (e.g. every second)
+  // of the squares are defining the points in clockwise direction.
+  auto setUpLineStringAsSquare = []( QgsLineString & square, int lower_xy, int upper_xy, bool use_clockwise_direction ) -> int
+  {
+    square.setPoints(
+      QgsPointSequence()
+      << QgsPoint( lower_xy, lower_xy )
+      << ( use_clockwise_direction ? QgsPoint( lower_xy, upper_xy ) : QgsPoint( upper_xy, lower_xy ) )
+      << QgsPoint( upper_xy, upper_xy )
+      << ( use_clockwise_direction ? QgsPoint( upper_xy, lower_xy ) : QgsPoint( lower_xy, upper_xy ) )
+      << QgsPoint( lower_xy, lower_xy )
+    );
+    int sideLength = std::abs( upper_xy - lower_xy );
+    return sideLength * sideLength;
+  };
+
+  // Creating five squares as linestrings (one big square to be used as exteriorRing and four smaller interiorRing squares with different areas)
   QgsLineString square_20x20_with_area_400, square_2x2_with_area_4, square_3x3_with_area_9, square_4x4_with_area_16, square_6x6_with_area_36;
   // the square to be used as exteriorRing:
-  square_20x20_with_area_400.setPoints(
-    QgsPointSequence()
-    << QgsPoint( 0, 0 )
-    << QgsPoint( 20, 0 )
-    << QgsPoint( 20, 20 )
-    << QgsPoint( 0, 20 )
-    << QgsPoint( 0, 0 )
-  );
+  const int area_400 = setUpLineStringAsSquare( square_20x20_with_area_400, 0, 20, false );
   // the four squares to be used as interiorRings:
-  square_2x2_with_area_4.setPoints(
-    QgsPointSequence()
-    << QgsPoint( 1, 1 )
-    << QgsPoint( 3, 1 ) // counter clockwise direction
-    << QgsPoint( 3, 3 )
-    << QgsPoint( 1, 3 )
-    << QgsPoint( 1, 1 )
-  );
-  square_3x3_with_area_9.setPoints(
-    QgsPointSequence()
-    << QgsPoint( 4, 4 )
-    << QgsPoint( 4, 7 ) // clockwise direction
-    << QgsPoint( 7, 7 )
-    << QgsPoint( 7, 4 )
-    << QgsPoint( 4, 4 )
-  );
-  square_4x4_with_area_16.setPoints(
-    QgsPointSequence()
-    << QgsPoint( 8, 8 )
-    << QgsPoint( 12, 8 ) // counter clockwise  direction
-    << QgsPoint( 12, 12 )
-    << QgsPoint( 8, 12 )
-    << QgsPoint( 8, 8 )
-  );
-  square_6x6_with_area_36.setPoints(
-    QgsPointSequence()
-    << QgsPoint( 13, 13 )
-    << QgsPoint( 13, 19 ) // clockwise direction
-    << QgsPoint( 19, 19 )
-    << QgsPoint( 19, 13 )
-    << QgsPoint( 13, 13 )
-  );
-  // as mentioned further above, every second interiorRings are defined in clockwise direction (and this is indeed relevant for the reported github issue)
+  const int area_4  = setUpLineStringAsSquare( square_2x2_with_area_4, 1, 3, false );
+  const int area_9  = setUpLineStringAsSquare( square_3x3_with_area_9, 4, 7, true );
+  const int area_16 = setUpLineStringAsSquare( square_4x4_with_area_16, 8, 12, false );
+  const int area_36 = setUpLineStringAsSquare( square_6x6_with_area_36, 13, 19, true );
+
+  // as mentioned further above, every second interiorRings are defined in clockwise direction (and this is indeed relevant for the reported github issue #49578)
   QCOMPARE( square_2x2_with_area_4.orientation(),  Qgis::AngularDirection::CounterClockwise );
   QCOMPARE( square_3x3_with_area_9.orientation(),  Qgis::AngularDirection::Clockwise ); // "negative area"
   QCOMPARE( square_4x4_with_area_16.orientation(),  Qgis::AngularDirection::CounterClockwise );
@@ -1849,7 +1834,7 @@ void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578()   // https://
 
   // This test method is not intended for testing the method 'QgsLineString::sumUpArea' but is
   // using it below for one of the linestrings just to illustrate that the method can produce a negative value
-  // (since it is relevant for the issue, i.e. the negative value caused problems when the absolute value was not used for the area)
+  // (since it is relevant for the github issue #49578, i.e. the negative value caused problems when the absolute value was not used for the area)
   double area = 0.0;
   square_6x6_with_area_36.sumUpArea( area );
   QCOMPARE( area, -36 );  // negative since the sequence was defined in clockwise direction
@@ -1858,13 +1843,25 @@ void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578()   // https://
   QgsPolygon polygon;
   polygon.setExteriorRing( square_20x20_with_area_400.clone() );
 
-  // these two values below will be expected when the interiorRings have been set further below
-  const int expectedInitialPolygonArea = 20 * 20 - 2 * 2 - 3 * 3 - 4 * 4 - 6 * 6;
-  const int expectedInitialNumberOfInteriorRings = 4;
+  // This lambda function will be used just to avoid duplication of the code in the function
+  auto setInteriorRingsForPolygon = [&]()
+  {
+    polygon.setInteriorRings(
+      QVector< QgsCurve * >()
+      << square_2x2_with_area_4.clone()
+      << square_3x3_with_area_9.clone()
+      << square_4x4_with_area_16.clone()
+      << square_6x6_with_area_36.clone()
+    );
+  };
 
+  // these two values below will be expected when the interiorRings have been set further below
+  // (by invoking the above lambda function)
+  const int expectedInitialNumberOfInteriorRings = 4;
+  const int expectedInitialPolygonArea = area_400 - area_4 - area_9 - area_16 - area_36;
 
   // Test removing all holes with areas less than 3 (i.e. no holes should be removed)
-  polygon.setInteriorRings( QVector< QgsCurve * >() << square_2x2_with_area_4.clone() << square_3x3_with_area_9.clone()  << square_4x4_with_area_16.clone()  << square_6x6_with_area_36.clone() );
+  setInteriorRingsForPolygon();
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings );
   QCOMPARE( polygon.area(), expectedInitialPolygonArea );
   polygon.removeInteriorRings( 3 ); // no hole has smaller area than 4 so nothing should become removed
@@ -1873,39 +1870,39 @@ void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578()   // https://
 
 
   // Test removing all holes with areas less than 5 (i.e. only the hole with area 4 should be removed)
-  polygon.setInteriorRings( QVector< QgsCurve * >() << square_2x2_with_area_4.clone() << square_3x3_with_area_9.clone()  << square_4x4_with_area_16.clone()  << square_6x6_with_area_36.clone() );
+  setInteriorRingsForPolygon();
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings );
   QCOMPARE( polygon.area(), expectedInitialPolygonArea );
   polygon.removeInteriorRings( 5 );
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings - 1 );
-  QCOMPARE( polygon.area(), expectedInitialPolygonArea + 2 * 2 ); // when holes are removed the polygon area increases with the area of the removed holes
+  QCOMPARE( polygon.area(), expectedInitialPolygonArea + area_4 ); // when holes are removed the polygon area increases with the area of the removed holes
 
 
   // Test removing all holes with areas less than 10 (i.e. the holes with area 4 and 9 should be removed)
-  polygon.setInteriorRings( QVector< QgsCurve * >() << square_2x2_with_area_4.clone() << square_3x3_with_area_9.clone()  << square_4x4_with_area_16.clone()  << square_6x6_with_area_36.clone() );
+  setInteriorRingsForPolygon();
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings );
   QCOMPARE( polygon.area(), expectedInitialPolygonArea );
   polygon.removeInteriorRings( 10 );
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings - 2 );
-  QCOMPARE( polygon.area(), expectedInitialPolygonArea + 2 * 2 + 3 * 3 );
+  QCOMPARE( polygon.area(), expectedInitialPolygonArea + area_4 + area_9 );
 
 
   // Test removing all holes with areas less than 17 (i.e. the holes with area 4, 9 and 16 should be removed)
-  polygon.setInteriorRings( QVector< QgsCurve * >() << square_2x2_with_area_4.clone() << square_3x3_with_area_9.clone()  << square_4x4_with_area_16.clone()  << square_6x6_with_area_36.clone() );
+  setInteriorRingsForPolygon();
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings );
   QCOMPARE( polygon.area(), expectedInitialPolygonArea );
   polygon.removeInteriorRings( 17 );
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings - 3 );
-  QCOMPARE( polygon.area(), expectedInitialPolygonArea + 2 * 2 + 3 * 3 + 4 * 4 );
+  QCOMPARE( polygon.area(), expectedInitialPolygonArea + area_4 + area_9 + area_16 );
 
 
   // Test removing all holes with areas less than 37 (i.e. the holes with area 4, 9, 16 and 36 should be removed)
-  polygon.setInteriorRings( QVector< QgsCurve * >() << square_2x2_with_area_4.clone() << square_3x3_with_area_9.clone()  << square_4x4_with_area_16.clone()  << square_6x6_with_area_36.clone() );
+  setInteriorRingsForPolygon();
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings );
   QCOMPARE( polygon.area(), expectedInitialPolygonArea );
   polygon.removeInteriorRings( 37 );
   QCOMPARE( polygon.numInteriorRings(), expectedInitialNumberOfInteriorRings - 4 );
-  QCOMPARE( polygon.area(), expectedInitialPolygonArea + 2 * 2 + 3 * 3 + 4 * 4 + 6 * 6 );
+  QCOMPARE( polygon.area(), expectedInitialPolygonArea + area_4 + area_9 + area_16 + area_36 );
 }
 
 QGSTEST_MAIN( TestQgsCurvePolygon )
