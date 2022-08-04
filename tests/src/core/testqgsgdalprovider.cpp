@@ -585,6 +585,16 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsizip/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testzip.zip/landsat_b1.vrt" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/testzip.zip/landsat_b1.vrt" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "VRT" ) );
+
   // multi-layer archive, format not supported by gdal
   res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml" );
   QCOMPARE( res.count(), 0 );
@@ -726,6 +736,15 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   // multi-layer archive, format not supported by gdal
   res = gdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 0 );
+
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsizip/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testzip.zip/landsat_b1.vrt", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/testzip.zip/landsat_b1.vrt" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
