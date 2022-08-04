@@ -47,9 +47,12 @@ Sets the base ``path`` containing the reference images.
 .. versionadded:: 3.18
 %End
 
-    QString report() const;
+    QString report( bool ignoreSuccess = true ) const;
 %Docstring
 Returns the HTML report describing the results of the test run.
+
+If ``ignoreSuccess`` is ``True`` then the report will always be empty if
+the test was successful.
 %End
 
     float matchPercent() const;
