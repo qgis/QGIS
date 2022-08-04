@@ -176,7 +176,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mCrsSelector->setShowAccuracyWarnings( true );
 
-  mAddToCanvas->setEnabled( true );
+  mAddToCanvas->setEnabled( format() != QLatin1String( "memory" ) );
 
   if ( mLayer )
   {
@@ -332,7 +332,23 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
                                     sFormat != QLatin1String( "LAZ" ) );
 
 
-  mFilename->setEnabled( sFormat != QLatin1String( "memory" ) );
+  if ( sFormat == QLatin1String( "memory" ) )
+  {
+    mWasAddToCanvasForced = !mAddToCanvas->isChecked();
+    mAddToCanvas->setEnabled( false );
+    mAddToCanvas->setChecked( true );
+    mFilename->setEnabled( false );
+  }
+  else
+  {
+    mAddToCanvas->setEnabled( true );
+    if ( mWasAddToCanvasForced )
+    {
+      mAddToCanvas->setChecked( !mAddToCanvas->isChecked() );
+      mWasAddToCanvasForced = false;
+    }
+    mFilename->setEnabled( true );
+  }
 
   if ( mFilename->isEnabled() )
   {
