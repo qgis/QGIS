@@ -58,6 +58,8 @@ class QgsPreviewQuad;
  */
 class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsShadowRenderingFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *mainCamera, Qt3DCore::QEntity *root );

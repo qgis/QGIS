@@ -38,6 +38,8 @@ class QgsShadowRenderingFrameGraph;
  */
 class QgsPostprocessingEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent = nullptr );
