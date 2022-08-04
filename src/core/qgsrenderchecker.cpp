@@ -34,6 +34,16 @@ QgsRenderChecker::QgsRenderChecker()
     mIsCiRun = true;
 }
 
+QDir QgsRenderChecker::testReportDir()
+{
+  return QDir( QDir::temp().filePath( QStringLiteral( "qgis_test_report" ) ) );
+}
+
+bool QgsRenderChecker::shouldGenerateReport()
+{
+  return true;
+}
+
 QString QgsRenderChecker::controlImagePath() const
 {
   return mBasePath + ( mBasePath.endsWith( '/' ) ? QString() : QStringLiteral( "/" ) ) + mControlPathPrefix;
@@ -182,6 +192,35 @@ void QgsRenderChecker::dumpRenderedImageAsBase64()
   qDebug() << "End dump";
 }
 
+void QgsRenderChecker::performPostTestActions()
+{
+  if ( mResult )
+    return;
+
+  if ( mIsCiRun && QFile::exists( mRenderedImageFile ) )
+    dumpRenderedImageAsBase64();
+
+  if ( shouldGenerateReport() )
+  {
+    const QDir reportDir = QgsRenderChecker::testReportDir();
+    if ( !reportDir.exists() )
+      QDir().mkpath( reportDir.path() );
+
+    if ( QFile::exists( mRenderedImageFile ) )
+    {
+      QFileInfo fi( mRenderedImageFile );
+      const QString destPath = reportDir.filePath( fi.fileName() );
+      QFile::copy( mRenderedImageFile, destPath );
+    }
+    if ( QFile::exists( mDiffImageFile ) )
+    {
+      QFileInfo fi( mDiffImageFile );
+      const QString destPath = reportDir.filePath( fi.fileName() );
+      QFile::copy( mDiffImageFile, destPath );
+    }
+  }
+}
+
 bool QgsRenderChecker::runTest( const QString &testName,
                                 unsigned int mismatchCount )
 {
@@ -193,6 +232,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
+    performPostTestActions();
     return mResult;
   }
   //
@@ -206,6 +246,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File could not be loaded.</td></tr></table>\n";
+    performPostTestActions();
     return mResult;
   }
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
@@ -243,6 +284,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File could not be saved.</td></tr></table>\n";
+    performPostTestActions();
     return mResult;
   }
 
@@ -277,6 +319,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
+    performPostTestActions();
     return mResult;
   }
 
@@ -301,6 +344,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File not set.</td></tr></table>\n";
+    performPostTestActions();
     return mResult;
   }
 
@@ -316,12 +360,13 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File could not be loaded.</td></tr></table>\n";
+    performPostTestActions();
     return mResult;
   }
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
-  const QString myDiffImageFile = QDir::tempPath() + '/' + testName + "_result_diff.png";
+  mDiffImageFile = QDir::tempPath() + '/' + testName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //check for mask
@@ -365,21 +410,23 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
   }
 
+  const QString renderedImageFileName = QFileInfo( mRenderedImageFile ).fileName();
+  const QString diffImageFileName = QFileInfo( mDiffImageFile ).fileName();
   const QString myImagesString = QString(
                                    "<tr>"
                                    "<td colspan=2>Compare actual and expected result</td>"
                                    "<td>Difference (all blue is good, any red is bad)</td>"
                                    "</tr>\n<tr>"
                                    "<td colspan=2 id=\"td-%1-%7\"></td>\n"
-                                   "<td align=center><img width=%5 height=%6 src=\"file://%2\"></td>\n"
+                                   "<td align=center><img width=%5 height=%6 src=\"%2\"></td>\n"
                                    "</tr>"
                                    "</table>\n"
-                                   "<script>\naddComparison(\"td-%1-%7\",\"file://%3\",\"file://%4\",%5,%6);\n</script>\n"
+                                   "<script>\naddComparison(\"td-%1-%7\",\"%3\",\"file://%4\",%5,%6);\n</script>\n"
                                    "<p>If the new image looks good, create or update a test mask with<br>"
                                    "<code>scripts/generate_test_mask_image.py \"%8\" \"%9\"</code>" )
                                  .arg( testName,
-                                       myDiffImageFile,
-                                       mRenderedImageFile,
+                                       diffImageFileName,
+                                       renderedImageFileName,
                                        referenceImageFile )
                                  .arg( imgWidth ).arg( imgHeight )
                                  .arg( QUuid::createUuid().toString().mid( 1, 6 ),
@@ -421,7 +468,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      return false;
+      performPostTestActions();
+      return mResult;
     }
     else
     {
@@ -441,8 +489,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and result image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      if ( mIsCiRun )
-        dumpRenderedImageAsBase64();
+      performPostTestActions();
       return mResult;
     }
 
@@ -507,8 +554,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   //save the diff image to disk
   //
-  myDifferenceImage.save( myDiffImageFile );
-  emitDashMessage( "Difference Image " + testName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
+  myDifferenceImage.save( mDiffImageFile );
+  emitDashMessage( "Difference Image " + testName + prefix, QgsDartMeasurement::ImagePng, mDiffImageFile );
 
   //
   // Send match result to debug
@@ -542,25 +589,26 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      if ( mIsCiRun )
-        dumpRenderedImageAsBase64();
+      performPostTestActions();
       return mResult;
     }
     else
     {
       mReport += myImagesString;
       mResult = true;
+      performPostTestActions();
       return mResult;
     }
   }
 
-  const bool myAnomalyMatchFlag = isKnownAnomaly( myDiffImageFile );
+  const bool myAnomalyMatchFlag = isKnownAnomaly( mDiffImageFile );
   if ( myAnomalyMatchFlag )
   {
     mReport += "<tr><td colspan=3>"
                "Difference image matched a known anomaly - passing test! "
                "</td></tr>";
     mResult = true;
+    performPostTestActions();
     return mResult;
   }
 
@@ -568,7 +616,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   emitDashMessage( QStringLiteral( "Image mismatch" ), QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
                    " If you feel the difference image should be considered an anomaly "
                    "you can do something like this\n"
-                   "cp '" + myDiffImageFile + "' " + controlImagePath() + mControlName +
+                   "cp '" + mDiffImageFile + "' " + controlImagePath() + mControlName +
                    "/\nIf it should be included in the mask run\n"
                    "scripts/generate_test_mask_image.py '" + referenceImageFile + "' '" + mRenderedImageFile + "'\n" );
 
@@ -576,7 +624,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   mReport += "<font color=red>Test image and result image for " + testName + " are mismatched</font><br>";
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
-  if ( mIsCiRun )
-    dumpRenderedImageAsBase64();
+
+  performPostTestActions();
   return mResult;
 }

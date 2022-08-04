@@ -24,6 +24,7 @@
 
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
+#include "qgsrenderchecker.h"
 #include "qgis_test.h"
 
 #define QGSTEST_MAIN(TestObject) \
@@ -116,9 +117,13 @@ class TEST_EXPORT QgsTest : public QObject
      */
     void writeLocalHtmlReport( const QString &report )
     {
-      const QString reportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+      const QDir reportDir = QgsRenderChecker::testReportDir();
+      if ( !reportDir.exists() )
+        QDir().mkpath( reportDir.path() );
+
+      const QString reportFile = reportDir.filePath( "index.html" );
       QFile file( reportFile );
-      if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+      if ( file.open( QIODevice::WriteOnly | QIODevice::Append ) )
       {
         QTextStream stream( &file );
         stream << QStringLiteral( "<h1>%1</h1>\n" ).arg( mName );
