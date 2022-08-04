@@ -20,6 +20,8 @@
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
+#include <QDesktopServices>
+
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
 #include "qgis_test.h"
@@ -117,6 +119,9 @@ class TEST_EXPORT QgsTest : public QObject
         QTextStream stream( &file );
         stream << report;
         file.close();
+
+        if ( !isCIRun() )
+          QDesktopServices::openUrl( QStringLiteral( "file:///%1" ).arg( reportFile ) );
       }
     }
 
