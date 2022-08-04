@@ -17,6 +17,12 @@
 #include "qgslayout.h"
 #include <QDebug>
 
+QgsMultiRenderChecker::QgsMultiRenderChecker()
+{
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
+    mIsCiRun = true;
+}
+
 void QgsMultiRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;
@@ -34,7 +40,9 @@ void QgsMultiRenderChecker::setMapSettings( const QgsMapSettings &mapSettings )
 
 bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int mismatchCount )
 {
-  bool successful = false;
+  mResult = false;
+
+  mReport += "<h2>" + testName + "</h2>\n";
 
   const QString baseDir = controlImagePath();
 
@@ -74,14 +82,14 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
       mRenderedImage = checker.renderedImage();
     }
 
-    successful |= result;
+    mResult |= result;
 
     dartMeasurements << checker.dartMeasurements();
 
-    mReport += checker.report();
+    mReport += checker.report( false );
   }
 
-  if ( !successful )
+  if ( !mResult && mIsCiRun )
   {
     const auto constDartMeasurements = dartMeasurements;
     for ( const QgsDartMeasurement &measurement : constDartMeasurements )
@@ -92,7 +100,12 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     msg.send();
   }
 
-  return successful;
+  return mResult;
+}
+
+QString QgsMultiRenderChecker::report() const
+{
+  return !mResult ? mReport : QString();
 }
 
 QString QgsMultiRenderChecker::controlImagePath() const
