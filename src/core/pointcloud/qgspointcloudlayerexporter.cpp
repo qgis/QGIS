@@ -17,6 +17,7 @@
 
 #include <QQueue>
 #include <QFileInfo>
+#include <QApplication>
 
 #include "qgspointcloudlayerexporter.h"
 #include "qgsmemoryproviderutils.h"
@@ -348,6 +349,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleAll()
 {
+  mParent->mMemoryLayer->moveToThread( QApplication::instance()->thread() );
 }
 
 //
