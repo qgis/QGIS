@@ -36,7 +36,7 @@
 #include "qgsexpressioncontextutils.h"
 #include <QSignalSpy>
 
-class TestQgsLayout: public QObject
+class TestQgsLayout: public QgsTest
 {
     Q_OBJECT
 
@@ -73,9 +73,6 @@ class TestQgsLayout: public QObject
     void atlasLayerRestoredFromTemplate();
     void overviewStackingLayerRestoredFromTemplate();
 
-  private:
-    QString mReport;
-
 };
 
 void TestQgsLayout::initTestCase()
@@ -88,14 +85,6 @@ void TestQgsLayout::initTestCase()
 
 void TestQgsLayout::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

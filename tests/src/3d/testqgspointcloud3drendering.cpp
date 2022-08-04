@@ -39,7 +39,7 @@
 #include <QDir>
 #include <QDesktopWidget>
 
-class TestQgsPointCloud3DRendering : public QObject
+class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT
 
@@ -58,8 +58,6 @@ class TestQgsPointCloud3DRendering : public QObject
 
   private:
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
-
-    QString mReport;
 
     std::unique_ptr<QgsProject> mProject;
     QgsPointCloudLayer *mLayer;
@@ -113,16 +111,6 @@ void TestQgsPointCloud3DRendering::initTestCase()
 void TestQgsPointCloud3DRendering::cleanupTestCase()
 {
   mProject.reset();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

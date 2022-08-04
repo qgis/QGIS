@@ -30,7 +30,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutLabel : public QObject
+class TestQgsLayoutLabel : public QgsTest
 {
     Q_OBJECT
 
@@ -59,7 +59,6 @@ class TestQgsLayoutLabel : public QObject
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
-    QString mReport;
 };
 
 void TestQgsLayoutLabel::initTestCase()
@@ -77,15 +76,6 @@ void TestQgsLayoutLabel::initTestCase()
 
 void TestQgsLayoutLabel::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mVectorLayer;
 
   QgsApplication::exitQgis();

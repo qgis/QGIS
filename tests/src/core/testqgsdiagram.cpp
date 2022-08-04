@@ -48,7 +48,7 @@
  * \ingroup UnitTests
  * Unit tests for the diagram renderer
  */
-class TestQgsDiagram : public QObject
+class TestQgsDiagram : public QgsTest
 {
     Q_OBJECT
 
@@ -60,7 +60,6 @@ class TestQgsDiagram : public QObject
     QgsMapSettings *mMapSettings = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 
     bool imageCheck( const QString &testType );
 
@@ -112,15 +111,6 @@ class TestQgsDiagram : public QObject
       delete mMapSettings;
       delete mPointsLayer;
 
-      const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-      QFile myFile( myReportFile );
-      if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-      {
-        QTextStream myQTextStream( &myFile );
-        myQTextStream << mReport;
-        myFile.close();
-        //QDesktopServices::openUrl( "file:///" + myReportFile );
-      }
       QgsApplication::exitQgis();
     }
 

@@ -28,13 +28,12 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsmultirenderchecker.h"
 
-class TestQgsClipper: public QObject
+class TestQgsClipper: public QgsTest
 {
 
     Q_OBJECT
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void basic();
@@ -43,24 +42,11 @@ class TestQgsClipper: public QObject
     void epsg4978LineRendering();
 
   private:
-    QString mReport;
 
     bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
     bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect );
     bool render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent );
 };
-
-void TestQgsClipper::cleanupTestCase()
-{
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-}
 
 void TestQgsClipper::initTestCase()
 {

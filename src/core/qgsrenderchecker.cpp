@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
-#include "qgsgeometry.h"
 
 #include <QColor>
 #include <QPainter>

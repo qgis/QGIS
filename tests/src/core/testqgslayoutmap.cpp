@@ -42,7 +42,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutMap : public QObject
+class TestQgsLayoutMap : public QgsTest
 {
     Q_OBJECT
 
@@ -83,7 +83,6 @@ class TestQgsLayoutMap : public QObject
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsVectorLayer *mPolysLayer = nullptr;
     QgsVectorLayer *mLinesLayer = nullptr;
-    QString mReport;
 };
 
 void TestQgsLayoutMap::initTestCase()
@@ -121,15 +120,6 @@ void TestQgsLayoutMap::initTestCase()
 
 void TestQgsLayoutMap::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
