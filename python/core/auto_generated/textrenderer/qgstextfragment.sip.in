@@ -64,10 +64,10 @@ Sets the character ``format`` for the fragment.
 .. seealso:: :py:func:`characterFormat`
 %End
 
-    double horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
+    double horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment = false, double scaleFactor = 1.0 ) const;
 %Docstring
 Returns the horizontal advance associated with this fragment, when rendered using
-the specified base ``font``.
+the specified base ``font`` within the specified render ``context``.
 
 Set ``fontHasBeenUpdatedForFragment`` to ``True`` if ``font`` already represents the character
 format for this fragment.

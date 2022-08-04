@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstextcharacterformat.h"
+#include "qgsrendercontext.h"
 
 #include <QTextCharFormat>
 
@@ -90,10 +91,8 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
   mOverline = enabled;
 }
 
-void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const double scaleFactor ) const
+void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderContext &context, const double scaleFactor ) const
 {
-  Q_UNUSED( scaleFactor );
-
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mFontWeight != -1 )
@@ -101,7 +100,7 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const double scal
   if ( !mFontFamily.isEmpty() )
     font.setFamily( mFontFamily );
   if ( mFontPointSize != -1 )
-    font.setPointSizeF( mFontPointSize );
+    font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, QgsUnitTypes::RenderPoints ) );
   if ( mUnderline != BooleanValue::NotSet )
     font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mOverline != BooleanValue::NotSet )

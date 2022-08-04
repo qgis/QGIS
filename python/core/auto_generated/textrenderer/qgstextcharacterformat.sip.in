@@ -190,7 +190,7 @@ Sets whether the format has overline ``enabled``.
 .. seealso:: :py:func:`overline`
 %End
 
-    void updateFontForFormat( QFont &font, double scaleFactor = 1.0 ) const;
+    void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying character formatting options which
 are applicable on a font level.

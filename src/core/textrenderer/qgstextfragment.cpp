@@ -45,7 +45,7 @@ void QgsTextFragment::setCharacterFormat( const QgsTextCharacterFormat &charForm
   mCharFormat = charFormat;
 }
 
-double QgsTextFragment::horizontalAdvance( const QFont &font, bool fontHasBeenUpdatedForFragment, double scaleFactor ) const
+double QgsTextFragment::horizontalAdvance( const QFont &font, const QgsRenderContext &context, bool fontHasBeenUpdatedForFragment, double scaleFactor ) const
 {
   if ( fontHasBeenUpdatedForFragment )
   {
@@ -55,7 +55,7 @@ double QgsTextFragment::horizontalAdvance( const QFont &font, bool fontHasBeenUp
   else
   {
     QFont updatedFont = font;
-    mCharFormat.updateFontForFormat( updatedFont, scaleFactor );
+    mCharFormat.updateFontForFormat( updatedFont, context, scaleFactor );
     const QFontMetricsF fm( updatedFont );
     return fm.horizontalAdvance( mText );
   }
