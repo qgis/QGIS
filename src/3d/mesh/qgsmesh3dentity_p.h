@@ -68,8 +68,10 @@ class QgsMesh3dEntity
 };
 
 //! Entity that handles rendering of dataset
-class QgsMeshDataset3dEntity: public QgsMesh3dEntity, public Qt3DCore::QEntity
+class QgsMeshDataset3dEntity: public Qt3DCore::QEntity, public QgsMesh3dEntity
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsMeshDataset3dEntity( const Qgs3DMapSettings &map,
@@ -87,8 +89,10 @@ class QgsMeshDataset3dEntity: public QgsMesh3dEntity, public Qt3DCore::QEntity
 };
 
 //! Entity that handles rendering of terrain mesh
-class QgsMesh3dTerrainTileEntity: public QgsMesh3dEntity, public QgsTerrainTileEntity
+class QgsMesh3dTerrainTileEntity: public QgsTerrainTileEntity, public QgsMesh3dEntity
 {
+    Q_OBJECT
+
   public:
     QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &map,
                                 const QgsTriangularMesh &triangularMesh,
