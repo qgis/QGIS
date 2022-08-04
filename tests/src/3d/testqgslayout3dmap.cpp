@@ -29,7 +29,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayout3DMap : public QObject
+class TestQgsLayout3DMap : public QgsTest
 {
     Q_OBJECT
 
@@ -42,7 +42,6 @@ class TestQgsLayout3DMap : public QObject
     void testBasic();
 
   private:
-    QString mReport;
     QFont mTestFont;
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm;
@@ -71,15 +70,6 @@ void TestQgsLayout3DMap::initTestCase()
 void TestQgsLayout3DMap::cleanupTestCase()
 {
   mProject.reset();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

@@ -60,7 +60,7 @@
  * \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
-class TestStyle : public QObject
+class TestStyle : public QgsTest
 {
     Q_OBJECT
 
@@ -68,8 +68,6 @@ class TestStyle : public QObject
     TestStyle();
 
   private:
-
-    QString mReport;
 
     QgsStyle *mStyle = nullptr;
     QString mTestDataDir;
@@ -183,16 +181,6 @@ void TestStyle::cleanupTestCase()
 
   QgsCptCityArchive::clearArchives();
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestStyle::testCreateSymbols()

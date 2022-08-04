@@ -26,7 +26,7 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsrenderchecker.h"
 
-class TestQgsPalLabeling: public QObject
+class TestQgsPalLabeling: public QgsTest
 {
     Q_OBJECT
 
@@ -39,9 +39,6 @@ class TestQgsPalLabeling: public QObject
     void graphemes(); //test splitting strings to graphemes
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
     void testGeometryGenerator();
-
-  private:
-    QString mReport;
 };
 
 void TestQgsPalLabeling::initTestCase()
@@ -51,14 +48,6 @@ void TestQgsPalLabeling::initTestCase()
 void TestQgsPalLabeling::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsPalLabeling::init()

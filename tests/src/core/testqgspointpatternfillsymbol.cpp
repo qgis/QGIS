@@ -46,7 +46,7 @@
  * \ingroup UnitTests
  * This is a unit test for point pattern fill symbol types.
  */
-class TestQgsPointPatternFillSymbol : public QObject
+class TestQgsPointPatternFillSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -77,7 +77,6 @@ class TestQgsPointPatternFillSymbol : public QObject
     QgsFillSymbol *mFillSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -122,15 +121,6 @@ void TestQgsPointPatternFillSymbol::initTestCase()
 }
 void TestQgsPointPatternFillSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

@@ -40,7 +40,7 @@
  * \ingroup UnitTests
  * This is a unit test for shapeburst fill types.
  */
-class TestQgsShapeburst : public QObject
+class TestQgsShapeburst : public QgsTest
 {
     Q_OBJECT
   public:
@@ -71,7 +71,6 @@ class TestQgsShapeburst : public QObject
     QgsFillSymbol *mFillSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -120,15 +119,6 @@ void TestQgsShapeburst::initTestCase()
 }
 void TestQgsShapeburst::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

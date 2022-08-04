@@ -41,7 +41,7 @@
  * \ingroup UnitTests
  * This is a unit test for ellipse marker symbol types.
  */
-class TestQgsEllipseMarkerSymbol : public QObject
+class TestQgsEllipseMarkerSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -75,7 +75,6 @@ class TestQgsEllipseMarkerSymbol : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -116,15 +115,6 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
 }
 void TestQgsEllipseMarkerSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPointsLayer;
 
   QgsApplication::exitQgis();

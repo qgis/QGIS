@@ -27,12 +27,11 @@
 #include <qgspoint.h>
 #include "qgsreferencedgeometry.h"
 
-class TestQgsPointXY: public QObject
+class TestQgsPointXY: public QgsTest
 {
     Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void equality();
@@ -56,7 +55,6 @@ class TestQgsPointXY: public QObject
     QgsPointXY mPoint2;
     QgsPointXY mPoint3;
     QgsPointXY mPoint4;
-    QString mReport;
 };
 
 void TestQgsPointXY::init()
@@ -165,24 +163,6 @@ void TestQgsPointXY::initTestCase()
   QgsApplication::init();
   QgsApplication::showSettings();
   mReport += QLatin1String( "<h1>Point Tests</h1>\n" );
-}
-
-
-void TestQgsPointXY::cleanupTestCase()
-{
-  //
-  // Runs once after all tests are run
-  //
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-
 }
 
 void TestQgsPointXY::toString()

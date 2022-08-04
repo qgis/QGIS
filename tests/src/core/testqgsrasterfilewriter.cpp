@@ -40,7 +40,7 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterFileWriter class.
  */
-class TestQgsRasterFileWriter: public QObject
+class TestQgsRasterFileWriter: public QgsTest
 {
     Q_OBJECT
   private slots:
@@ -58,7 +58,6 @@ class TestQgsRasterFileWriter: public QObject
     void log( const QString &msg );
     void logError( const QString &msg );
     QString mTestDataDir;
-    QString mReport;
 };
 
 //runs before all tests
@@ -81,14 +80,6 @@ void TestQgsRasterFileWriter::initTestCase()
 void TestQgsRasterFileWriter::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsRasterFileWriter::writeTest()

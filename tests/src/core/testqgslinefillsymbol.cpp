@@ -42,7 +42,7 @@
  * \ingroup UnitTests
  * This is a unit test for line fill symbol types.
  */
-class TestQgsLineFillSymbol : public QObject
+class TestQgsLineFillSymbol : public QgsTest
 {
     Q_OBJECT
 
@@ -72,7 +72,6 @@ class TestQgsLineFillSymbol : public QObject
     QgsFillSymbol *mFillSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -117,15 +116,6 @@ void TestQgsLineFillSymbol::initTestCase()
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPolysLayer;
 
   QgsApplication::exitQgis();

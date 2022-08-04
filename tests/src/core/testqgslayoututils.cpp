@@ -26,7 +26,7 @@
 
 #include <QStyleOptionGraphicsItem>
 
-class TestQgsLayoutUtils: public QObject
+class TestQgsLayoutUtils: public QgsTest
 {
     Q_OBJECT
 
@@ -61,7 +61,6 @@ class TestQgsLayoutUtils: public QObject
 
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
 
-    QString mReport;
     QFont mTestFont;
 };
 
@@ -76,14 +75,6 @@ void TestQgsLayoutUtils::initTestCase()
 
 void TestQgsLayoutUtils::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsLayoutUtils::init()

@@ -42,7 +42,7 @@ class TestGeoPdfExporter : public QgsAbstractGeoPdfExporter
 
 };
 
-class TestQgsGeoPdfExport : public QObject
+class TestQgsGeoPdfExport : public QgsTest
 {
     Q_OBJECT
 
@@ -62,10 +62,6 @@ class TestQgsGeoPdfExport : public QObject
     void testGroups();
     void testCustomGroups();
     void compositionMode();
-
-  private:
-
-    QString mReport;
 };
 
 void TestQgsGeoPdfExport::initTestCase()
@@ -78,15 +74,6 @@ void TestQgsGeoPdfExport::initTestCase()
 
 void TestQgsGeoPdfExport::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

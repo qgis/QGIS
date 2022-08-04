@@ -41,7 +41,7 @@
  * \ingroup UnitTests
  * This is a unit test for the Marker Line symbol
  */
-class TestQgsMarkerLineSymbol : public QObject
+class TestQgsMarkerLineSymbol : public QgsTest
 {
     Q_OBJECT
   public:
@@ -70,7 +70,6 @@ class TestQgsMarkerLineSymbol : public QObject
     QString mTestDataDir;
     QgsVectorLayer *mLinesLayer = nullptr;
     QgsMapSettings *mMapSettings = nullptr;
-    QString mReport;
 };
 
 //runs before all tests
@@ -111,15 +110,6 @@ void TestQgsMarkerLineSymbol::cleanupTestCase()
 {
   delete mMapSettings;
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsMarkerLineSymbol::lineOffset()

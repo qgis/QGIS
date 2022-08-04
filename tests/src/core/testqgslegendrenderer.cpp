@@ -149,7 +149,7 @@ class TestRasterRenderer : public QgsPalettedRasterRenderer
 
 };
 
-class TestQgsLegendRenderer : public QObject
+class TestQgsLegendRenderer : public QgsTest
 {
     Q_OBJECT
 
@@ -218,7 +218,6 @@ class TestQgsLegendRenderer : public QObject
     QgsVectorLayer *mVL2 =  nullptr ; // polygon
     QgsVectorLayer *mVL3 =  nullptr ; // point
     QgsRasterLayer *mRL = nullptr;
-    QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
 };
 
@@ -233,15 +232,6 @@ void TestQgsLegendRenderer::initTestCase()
 
 void TestQgsLegendRenderer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

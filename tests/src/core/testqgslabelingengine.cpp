@@ -38,7 +38,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgsfillsymbol.h"
 
-class TestQgsLabelingEngine : public QObject
+class TestQgsLabelingEngine : public QgsTest
 {
     Q_OBJECT
   public:
@@ -111,8 +111,6 @@ class TestQgsLabelingEngine : public QObject
   private:
     QgsVectorLayer *vl = nullptr;
 
-    QString mReport;
-
     void setDefaultLabelParams( QgsPalLayerSettings &settings );
     QgsLabelingEngineSettings createLabelEngineSettings();
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
@@ -132,14 +130,6 @@ void TestQgsLabelingEngine::initTestCase()
 void TestQgsLabelingEngine::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsLabelingEngine::init()

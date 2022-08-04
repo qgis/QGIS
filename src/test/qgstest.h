@@ -17,6 +17,9 @@
 #define QGSTEST_H
 
 #include <QtTest/QTest>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
 #include "qgis_test.h"
@@ -72,23 +75,55 @@
   }
 
 /**
- * QGIS unit test utilities.
- * \since QGIS 3.0
+ * Base class for tests.
+ *
+ * \since QGIS 3.28
  */
-namespace QgsTest
+class TEST_EXPORT QgsTest : public QObject
 {
+    Q_OBJECT
 
-  //! Returns TRUE if test is running on a CI infrastructure
-  bool isCIRun()
-  {
-    return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" );
-  }
+  public:
 
-  bool runFlakyTests()
-  {
-    return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
-  }
-}
+    //! Returns TRUE if test is running on a CI infrastructure
+    static bool isCIRun()
+    {
+      return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" );
+    }
+
+    static bool runFlakyTests()
+    {
+      return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
+    }
+
+    ~QgsTest() override
+    {
+      if ( !mReport.isEmpty() )
+        writeLocalHtmlReport( mReport );
+    }
+
+  private:
+
+    /**
+     * Writes out a HTML report to a temporary file for visual comparison
+     * of test results on a local build.
+     */
+    void writeLocalHtmlReport( const QString &report )
+    {
+      const QString reportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+      QFile file( reportFile );
+      if ( file.open( QIODevice::WriteOnly | QIODevice::Append ) )
+      {
+        QTextStream stream( &file );
+        stream << report;
+        file.close();
+      }
+    }
+
+  protected:
+
+    QString mReport;
+};
 
 /**
  * Formatting QgsRectangle for QCOMPARE pretty printing

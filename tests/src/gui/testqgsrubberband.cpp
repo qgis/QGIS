@@ -30,7 +30,7 @@
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 
-class TestQgsRubberband : public QObject
+class TestQgsRubberband : public QgsTest
 {
     Q_OBJECT
   public:
@@ -58,7 +58,6 @@ class TestQgsRubberband : public QObject
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mTestDataDir;
     QgsRubberBand *mRubberband = nullptr;
-    QString mReport;
 };
 
 void TestQgsRubberband::initTestCase()
@@ -94,15 +93,6 @@ void TestQgsRubberband::cleanupTestCase()
   delete mRubberband;
   delete mPolygonLayer;
   delete mCanvas;
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 
   QgsApplication::exitQgis();
 }

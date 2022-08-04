@@ -92,7 +92,7 @@ class DummyPaintEffect : public QgsPaintEffect
  * \ingroup UnitTests
  * This is a unit test for paint effects
  */
-class TestQgsPaintEffect: public QObject
+class TestQgsPaintEffect: public QgsTest
 {
     Q_OBJECT
 
@@ -128,7 +128,6 @@ class TestQgsPaintEffect: public QObject
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
     bool mapRenderCheck( const QString &testName, QgsMapSettings &mapSettings, int mismatchCount = 0 );
 
-    QString mReport;
     QString mTestDataDir;
 
     QPicture *mPicture = nullptr;
@@ -154,14 +153,6 @@ void TestQgsPaintEffect::initTestCase()
 
 void TestQgsPaintEffect::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 
