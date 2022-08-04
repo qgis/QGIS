@@ -9620,6 +9620,9 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     // when writer is successful:
     connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this, addToCanvas, exp ]()
     {
+      if ( exp->feedback() && exp->feedback()->isCanceled() )
+        return;
+
       QgsMapLayer *ml = exp->getExportedLayer();
       if ( ! ml->isValid() )
       {

@@ -318,6 +318,11 @@ QgsPointCloudLayerExporter::ExporterMemory::ExporterMemory( QgsPointCloudLayerEx
   mParent = exp;
 }
 
+QgsPointCloudLayerExporter::ExporterMemory::~ExporterMemory()
+{
+  mParent->mMemoryLayer->moveToThread( QApplication::instance()->thread() );
+}
+
 void QgsPointCloudLayerExporter::ExporterMemory::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )
 {
   Q_UNUSED( pointNumber )
@@ -349,7 +354,7 @@ void QgsPointCloudLayerExporter::ExporterMemory::handleNode()
 
 void QgsPointCloudLayerExporter::ExporterMemory::handleAll()
 {
-  mParent->mMemoryLayer->moveToThread( QApplication::instance()->thread() );
+
 }
 
 //
@@ -359,6 +364,12 @@ void QgsPointCloudLayerExporter::ExporterMemory::handleAll()
 QgsPointCloudLayerExporter::ExporterVector::ExporterVector( QgsPointCloudLayerExporter *exp )
 {
   mParent = exp;
+}
+
+QgsPointCloudLayerExporter::ExporterVector::~ExporterVector()
+{
+  delete mParent->mVectorSink;
+  mParent->mVectorSink = nullptr;
 }
 
 void QgsPointCloudLayerExporter::ExporterVector::handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber )
@@ -388,8 +399,7 @@ void QgsPointCloudLayerExporter::ExporterVector::handleNode()
 
 void QgsPointCloudLayerExporter::ExporterVector::handleAll()
 {
-  delete mParent->mVectorSink;
-  mParent->mVectorSink = nullptr;
+
 }
 
 //

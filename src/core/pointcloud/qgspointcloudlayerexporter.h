@@ -247,6 +247,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     {
       public:
         ExporterMemory( QgsPointCloudLayerExporter *exp );
+        ~ExporterMemory() override;
 
       private:
         void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) override;
@@ -259,6 +260,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     {
       public:
         ExporterVector( QgsPointCloudLayerExporter *exp );
+        ~ExporterVector() override;
 
       private:
         void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) override;
