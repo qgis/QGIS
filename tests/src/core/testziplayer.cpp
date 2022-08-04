@@ -57,7 +57,6 @@ class TestZipLayer: public QObject
     bool testZipItem( const QString &myFileName, const QString &myChildName = QString(), const QString &myDriverName = QString() );
     // get layer transparency to test for .qml loading
     int getLayerTransparency( const QString &myFileName, const QString &myProviderKey, const QString &myScanZipSetting = QStringLiteral( "basic" ) );
-    bool testZipItemTransparency( const QString &myFileName, const QString &myProviderKey, int myTarget );
 
   private slots:
 
@@ -255,26 +254,6 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
   return myTransparency;
 }
 
-bool TestZipLayer::testZipItemTransparency( const QString &myFileName, const QString &myProviderKey, int myTarget )
-{
-  int myTransparency = getLayerTransparency( myFileName, myProviderKey, QStringLiteral( "basic" ) );
-  if ( myTransparency != myTarget )
-  {
-    QWARN( QString( "Basic Transparency of %1 is %2, should be %3" ).arg( myFileName ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-    return false;
-  }
-
-  myTransparency = getLayerTransparency( myFileName, myProviderKey, QStringLiteral( "full" ) );
-  if ( myTransparency != myTarget )
-  {
-    QWARN( QString( "Full Transparency of %1 is %2, should be %3" ).arg( myFileName ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-    return false;
-  }
-
-  return true;
-}
-
-
 // slots
 void TestZipLayer::initTestCase()
 {
@@ -454,17 +433,20 @@ void TestZipLayer::testGzipItemVectorTransparency()
 
 void TestZipLayer::testZipItemRasterTransparency()
 {
-  QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.zip", "gdal", 250 ) );
+  QCOMPARE( getLayerTransparency( mDataDir + "landsat_b1.zip", "gdal", QStringLiteral( "basic" ) ), 250 );
+  QCOMPARE( getLayerTransparency( mDataDir + "landsat_b1.zip", "gdal", QStringLiteral( "full" ) ), 250 );
 }
 
 void TestZipLayer::testTarItemRasterTransparency()
 {
-  QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.tar", "gdal", 250 ) );
+  QCOMPARE( getLayerTransparency( mDataDir + "landsat_b1.tar", "gdal", QStringLiteral( "basic" ) ), 250 );
+  QCOMPARE( getLayerTransparency( mDataDir + "landsat_b1.tar", "gdal", QStringLiteral( "full" ) ), 250 );
 }
 
 void TestZipLayer::testGzipItemRasterTransparency()
 {
-  QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 250 ) );
+  QCOMPARE( getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", QStringLiteral( "basic" ) ), 250 );
+  QCOMPARE( getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", QStringLiteral( "full" ) ), 250 );
 }
 
 void TestZipLayer::testZipItemSubfolder()
