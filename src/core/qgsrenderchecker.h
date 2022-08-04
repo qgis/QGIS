@@ -38,6 +38,8 @@ class QImage;
  */
 class CORE_EXPORT QgsRenderChecker
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -171,6 +173,25 @@ class CORE_EXPORT QgsRenderChecker
     void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
 
     /**
+     * Render checker flags.
+     *
+     * \since QGIS 3.28
+     */
+    enum class Flag : int
+    {
+      AvoidExportingRenderedImage = 1 << 0, //!< Avoids exporting rendered images to reports
+    };
+    Q_ENUM( Flag )
+
+    /**
+     * Render checker flags.
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
+
+    /**
      * Test using renderer to generate the image to be compared.
      * \param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
@@ -178,9 +199,10 @@ class CORE_EXPORT QgsRenderChecker
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
+     * \param flags render checker flags
      * \note make sure to call setExpectedImage and setMapRenderer first
      */
-    bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
+    bool runTest( const QString &testName, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 
     /**
      * Test using two arbitrary images (map renderer will not be used)
@@ -191,16 +213,17 @@ class CORE_EXPORT QgsRenderChecker
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      * \param renderedImageFile to optionally override the output filename
+     * \param flags render checker flags
      * \note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
+    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString(), QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 
     /**
      * Test using two arbitrary images at the specified paths for equality.
      *
      * \since QGIS 3.18
      */
-    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0 );
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 
     /**
      * Gets a list of all the anomalies. An anomaly is a rendered difference
@@ -253,7 +276,7 @@ class CORE_EXPORT QgsRenderChecker
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
     void dumpRenderedImageAsBase64();
-    void performPostTestActions();
+    void performPostTestActions( Flags flags );
 
     bool mResult = false;
 
@@ -273,8 +296,9 @@ class CORE_EXPORT QgsRenderChecker
     QVector<QgsDartMeasurement> mDashMessages;
     bool mBufferDashMessages = false;
     QString mDiffImageFile;
-}; // class QgsRenderChecker
+};
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderChecker::Flags )
 
 /**
  * Compare two WKT strings with some tolerance
