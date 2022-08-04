@@ -33,11 +33,11 @@ class TestQgsLayoutMapGrid : public QgsTest
 
   public:
 
+    TestQgsLayoutMapGrid() : QgsTest( QStringLiteral( "Layout Map Grid Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
 
     void grid(); //test if grid and grid annotation works
     void reprojected(); //test if reprojected grid works
@@ -73,21 +73,11 @@ void TestQgsLayoutMapGrid::initTestCase()
   QgsApplication::initQgis();
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
-
-  mReport = QStringLiteral( "<h1>Composer Map Grid Tests</h1>\n" );
 }
 
 void TestQgsLayoutMapGrid::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutMapGrid::init()
-{
-}
-
-void TestQgsLayoutMapGrid::cleanup()
-{
 }
 
 void TestQgsLayoutMapGrid::grid()

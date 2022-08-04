@@ -37,6 +37,11 @@
 class TestQgsWcsProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsWcsProvider() : QgsTest( QStringLiteral( "WCS provider tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -56,10 +61,7 @@ void TestQgsWcsProvider::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
-  mReport += QLatin1String( "<h1>WCS provider tests</h1>\n" );
-  mReport += "<p>" + mySettings + "</p>";
+
   // Style is now inlined by QgsRasterChecker
 #if 0
   mReport += "<style>";

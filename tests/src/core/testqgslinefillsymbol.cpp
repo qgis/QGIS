@@ -47,7 +47,7 @@ class TestQgsLineFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLineFillSymbol() = default;
+    TestQgsLineFillSymbol() : QgsTest( QStringLiteral( "Line Fill Symbol Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -111,7 +111,6 @@ void TestQgsLineFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Line Fill Symbol Tests</h1>\n" );
 
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
@@ -123,8 +122,6 @@ void TestQgsLineFillSymbol::cleanupTestCase()
 
 void TestQgsLineFillSymbol::lineFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
@@ -137,8 +134,6 @@ void TestQgsLineFillSymbol::lineFillSymbol()
 
 void TestQgsLineFillSymbol::lineFillSymbolOffset()
 {
-  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
-
   mLineFill->setOffset( 0.5 );
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_posoffset" ) ) );
 
@@ -171,8 +166,6 @@ void TestQgsLineFillSymbol::lineFillNegativeAngle()
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 {
-  mReport += QLatin1String( "<h2>Line fill symbol data defined sub symbol test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );

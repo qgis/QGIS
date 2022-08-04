@@ -42,7 +42,7 @@ class TestQgsVectorTileLayer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsVectorTileLayer() = default;
+    TestQgsVectorTileLayer() : QgsTest( QStringLiteral( "Vector Tile Layer Tests" ) ) {}
 
   private:
     QString mDataDir;
@@ -54,8 +54,6 @@ class TestQgsVectorTileLayer : public QgsTest
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void test_basic();
     void test_render();
@@ -106,8 +104,6 @@ void TestQgsVectorTileLayer::initTestCase()
                      lineStrokeColor, lineStrokeWidth,
                      pointFillColor, pointStrokeColor, pointSize ) );
   mLayer->setRenderer( rend );  // takes ownership
-
-  mReport += QLatin1String( "<h1>Vector Tile Layer Tests</h1>\n" );
 }
 
 void TestQgsVectorTileLayer::cleanupTestCase()
@@ -128,7 +124,6 @@ void TestQgsVectorTileLayer::test_basic()
 
 bool TestQgsVectorTileLayer::imageCheck( const QString &testType, QgsVectorTileLayer *layer, QgsRectangle extent )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setExtent( extent );
   mMapSettings->setDestinationCrs( layer->crs() );
   mMapSettings->setOutputDpi( 96 );

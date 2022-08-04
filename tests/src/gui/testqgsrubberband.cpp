@@ -34,7 +34,7 @@ class TestQgsRubberband : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsRubberband() = default;
+    TestQgsRubberband() : QgsTest( QStringLiteral( "Rubberband Tests" ) ) {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -85,7 +85,6 @@ void TestQgsRubberband::initTestCase()
   mCanvas->hide();
 
   mRubberband = nullptr;
-  mReport += QLatin1String( "<h1>Rubberband Tests</h1>\n" );
 }
 
 void TestQgsRubberband::cleanupTestCase()

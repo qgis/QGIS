@@ -18,13 +18,12 @@
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
 #include "qgsflatterraingenerator.h"
-#include "qgslayoutframe.h"
 #include "qgslayoutitem3dmap.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgslayout.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -32,6 +31,9 @@
 class TestQgsLayout3DMap : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsLayout3DMap() : QgsTest( QStringLiteral( "Layout 3D Map Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -60,8 +62,6 @@ void TestQgsLayout3DMap::initTestCase()
   mProject->addMapLayer( mLayerDtm );
 
   mProject->setCrs( mLayerDtm->crs() );
-
-  mReport = QStringLiteral( "<h1>Layout 3D Map Tests</h1>\n" );
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Oblique" ) );
   mTestFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Oblique " ) );

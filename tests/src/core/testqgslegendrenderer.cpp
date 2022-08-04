@@ -154,7 +154,7 @@ class TestQgsLegendRenderer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLegendRenderer() = default;
+    TestQgsLegendRenderer() : QgsTest( QStringLiteral( "Legend Renderer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -226,8 +226,6 @@ void TestQgsLegendRenderer::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport += QLatin1String( "<h1>Legend Renderer Tests</h1>\n" );
 }
 
 void TestQgsLegendRenderer::cleanupTestCase()

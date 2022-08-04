@@ -97,7 +97,7 @@ class TestQgsPaintEffect: public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsPaintEffect();
+    TestQgsPaintEffect() : QgsTest( QStringLiteral( "Paint Effect Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -133,15 +133,11 @@ class TestQgsPaintEffect: public QgsTest
     QPicture *mPicture = nullptr;
 };
 
-
-TestQgsPaintEffect::TestQgsPaintEffect() = default;
-
 void TestQgsPaintEffect::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mReport += QLatin1String( "<h1>Paint Effect Tests</h1>\n" );
   mPicture = nullptr;
 
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
@@ -804,7 +800,6 @@ void TestQgsPaintEffect::layerEffectPolygon()
   ms.setLayers( QList<QgsMapLayer *>() << polysLayer );
   ms.setExtent( polysLayer->extent() );
 
-  mReport += QLatin1String( "<h2>Paint effect symbol layer test (polygon)</h2>\n" );
   const bool result = mapRenderCheck( QStringLiteral( "painteffect_poly" ), ms );
   QVERIFY( result );
   delete polysLayer;
@@ -836,7 +831,6 @@ void TestQgsPaintEffect::layerEffectLine()
   ms.setLayers( QList<QgsMapLayer *>() << lineLayer );
   ms.setExtent( lineLayer->extent() );
 
-  mReport += QLatin1String( "<h2>Paint effect symbol layer test (line)</h2>\n" );
   const bool result = mapRenderCheck( QStringLiteral( "painteffect_line" ), ms );
   QVERIFY( result );
   delete lineLayer;
@@ -864,7 +858,6 @@ void TestQgsPaintEffect::layerEffectMarker()
   ms.setLayers( QList<QgsMapLayer *>() << pointLayer );
   ms.setExtent( pointLayer->extent() );
 
-  mReport += QLatin1String( "<h2>Paint effect symbol layer test (point)</h2>\n" );
   const bool result = mapRenderCheck( QStringLiteral( "painteffect_marker" ), ms );
   QVERIFY( result );
   delete pointLayer;
@@ -899,7 +892,6 @@ void TestQgsPaintEffect::vectorLayerEffect()
   ms.setLayers( QList<QgsMapLayer *>() << polysLayer );
   ms.setExtent( polysLayer->extent() );
 
-  mReport += QLatin1String( "<h2>Paint effect layer test</h2>\n" );
   const bool result = mapRenderCheck( QStringLiteral( "painteffect_layer" ), ms );
   QVERIFY( result );
   delete polysLayer;
@@ -934,7 +926,6 @@ void TestQgsPaintEffect::mapUnits()
   ms.setLayers( QList<QgsMapLayer *>() << lineLayer );
   ms.setExtent( lineLayer->extent() );
 
-  mReport += QLatin1String( "<h2>Paint effect map units test</h2>\n" );
   const bool result = mapRenderCheck( QStringLiteral( "painteffect_mapunits" ), ms );
   QVERIFY( result );
   delete lineLayer;
@@ -1006,7 +997,6 @@ bool TestQgsPaintEffect::imageCheck( const QString &testName, QImage &image, int
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

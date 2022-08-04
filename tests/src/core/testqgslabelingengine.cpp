@@ -42,7 +42,7 @@ class TestQgsLabelingEngine : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsLabelingEngine() = default;
+    TestQgsLabelingEngine() : QgsTest( QStringLiteral( "Labeling Engine Tests" ) ) {}
 
   private slots:
     void initTestCase();
@@ -119,8 +119,6 @@ class TestQgsLabelingEngine : public QgsTest
 
 void TestQgsLabelingEngine::initTestCase()
 {
-  mReport += QLatin1String( "<h1>Labeling Engine Tests</h1>\n" );
-
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
@@ -865,7 +863,6 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
