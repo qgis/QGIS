@@ -3736,7 +3736,8 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
     }
 
     // if this is a VRT file make sure it is raster VRT
-    if ( suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::RasterLayer ) )
+    if ( ( vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( path, QgsMapLayerType::RasterLayer ) )
+         || ( !vsiPrefix.isEmpty() && suffix == QLatin1String( "vrt" ) && !QgsGdalUtils::vrtMatchesLayerType( gdalUri, QgsMapLayerType::RasterLayer ) ) )
     {
       return {};
     }
