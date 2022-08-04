@@ -1243,10 +1243,10 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
 {
   const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
 
-  QgsCoordinateReferenceSystem oldCrs = mProject->crs();
-  QgsCoordinateReferenceSystem newCrs;
-  newCrs.createFromString( "EPSG:4978" );
-  mProject->setCrs( newCrs );
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( QStringLiteral( "EPSG:4978" ) );
+  p.setCrs( newCrs );
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
 
@@ -1259,7 +1259,7 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
+  map->setCrs( p.crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
 
@@ -1289,10 +1289,9 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
   delete map;
-  QVERIFY( renderCheck( "4978_line_rendering_2", img2, 40, 15 ) );
-
   delete layerLines;
-  mProject->setCrs( oldCrs );
+
+  QVERIFY( renderCheck( "4978_line_rendering_2", img2, 40, 15 ) );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )
