@@ -40,6 +40,8 @@ class QgsDemHeightMapGenerator;
  */
 class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 {
+    Q_OBJECT
+
   public:
     //! Constructor for QgsDemTerrainGenerator
     QgsDemTerrainGenerator() = default;

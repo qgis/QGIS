@@ -32,6 +32,8 @@
  */
 class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *texture, const QMatrix4x4 &modelMatrix, QVector<Qt3DRender::QParameter *> additionalShaderParameters = QVector<Qt3DRender::QParameter *>(), QNode *parent = nullptr );
@@ -53,6 +55,8 @@ class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
  */
 class QgsPreviewQuad : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
 
     /**
