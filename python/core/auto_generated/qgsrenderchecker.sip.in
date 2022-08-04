@@ -29,6 +29,21 @@ or render time.
 Constructor for QgsRenderChecker.
 %End
 
+    static QDir testReportDir();
+%Docstring
+Returns the directory to use for generating a test report.
+
+.. versionadded:: 3.28
+%End
+
+    static bool shouldGenerateReport();
+%Docstring
+Returns ``True`` if a test report should be generated given the
+current environment.
+
+.. versionadded:: 3.28
+%End
+
     QString controlImagePath() const;
 %Docstring
 Returns the base path containing the reference images.
