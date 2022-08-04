@@ -20,10 +20,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsmeshlayer.h"
-#include "qgsmapsettings.h"
 #include "qgs3dmapsettings.h"
-#include "qgsmeshlayerrenderer.h"
-#include "qgsterraintextureimage_p.h"
 #include "qgsmesh3dmaterial_p.h"
 
 
@@ -85,8 +82,8 @@ QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity(
   const QgsMesh3DSymbol *symbol,
   QgsChunkNodeId nodeId,
   Qt3DCore::QNode *parent )
-  : QgsMesh3dEntity( map, triangularMesh, symbol )
-  , QgsTerrainTileEntity( nodeId, parent )
+  : QgsTerrainTileEntity( nodeId, parent )
+  , QgsMesh3dEntity( map, triangularMesh, symbol )
 {}
 
 void QgsMesh3dTerrainTileEntity::buildGeometry()

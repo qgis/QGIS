@@ -99,26 +99,6 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 };
 
 
-class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
-{
-  public:
-    ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength ):
-      mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
-    {}
-
-  protected:
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
-    {
-      return Qt3DRender::QTextureImageDataGeneratorPtr( new ArrowsTextureGenerator( mVectors, mSize, mFixedSize, mMaxVectorLength ) );
-    }
-
-  private:
-    const QVector<QgsVector> mVectors;
-    const QSize mSize;
-    const bool mFixedSize;
-    const double mMaxVectorLength;
-};
-
 
 QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
                                       const QgsDateTimeRange &timeRange,
@@ -279,4 +259,16 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowTexture", arrowTexture ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsGridTexture", arrowsGridTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsMinCorner", QVector2D( minCorner.x() - mOrigin.x(), -minCorner.y() + mOrigin.y() ) ) ) ;
+}
+
+ArrowsGridTexture::ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength )
+  : mVectors( vectors )
+  , mSize( size )
+  , mFixedSize( fixedSize )
+  , mMaxVectorLength( maxVectorLength )
+{}
+
+Qt3DRender::QTextureImageDataGeneratorPtr ArrowsGridTexture::dataGenerator() const
+{
+  return Qt3DRender::QTextureImageDataGeneratorPtr( new ArrowsTextureGenerator( mVectors, mSize, mFixedSize, mMaxVectorLength ) );
 }
