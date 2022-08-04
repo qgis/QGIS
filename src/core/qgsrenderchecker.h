@@ -46,6 +46,21 @@ class CORE_EXPORT QgsRenderChecker
     QgsRenderChecker();
 
     /**
+     * Returns the directory to use for generating a test report.
+     *
+     * \since QGIS 3.28
+     */
+    static QDir testReportDir();
+
+    /**
+     * Returns TRUE if a test report should be generated given the
+     * current environment.
+     *
+     * \since QGIS 3.28
+     */
+    static bool shouldGenerateReport();
+
+    /**
      * Returns the base path containing the reference images.
      *
      * This defaults to an internal QGIS test data path, but can be changed via setControlImagePath().
@@ -238,6 +253,7 @@ class CORE_EXPORT QgsRenderChecker
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
     void dumpRenderedImageAsBase64();
+    void performPostTestActions();
 
     bool mResult = false;
 
@@ -256,6 +272,7 @@ class CORE_EXPORT QgsRenderChecker
     bool mIsCiRun = false;
     QVector<QgsDartMeasurement> mDashMessages;
     bool mBufferDashMessages = false;
+    QString mDiffImageFile;
 }; // class QgsRenderChecker
 
 
