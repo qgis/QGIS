@@ -59,6 +59,8 @@ class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerato
 
 class QgsColorRampTexture: public Qt3DRender::QAbstractTextureImage
 {
+    Q_OBJECT
+
   public:
     QgsColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale = 1, Qt3DCore::QNode *parent = nullptr );
     // QAbstractTextureImage interface

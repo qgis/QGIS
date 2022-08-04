@@ -146,6 +146,8 @@ class QgsClassificationPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolH
 
 class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 {
+    Q_OBJECT
+
   public:
     QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride );
 
@@ -167,6 +169,8 @@ class QgsPointCloud3DGeometry: public Qt3DRender::QGeometry
 
 class QgsSingleColorPointCloud3DGeometry : public QgsPointCloud3DGeometry
 {
+    Q_OBJECT
+
   public:
     QgsSingleColorPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride );
 
@@ -176,6 +180,8 @@ class QgsSingleColorPointCloud3DGeometry : public QgsPointCloud3DGeometry
 
 class QgsColorRampPointCloud3DGeometry : public QgsPointCloud3DGeometry
 {
+    Q_OBJECT
+
   public:
     QgsColorRampPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride );
 
@@ -185,6 +191,8 @@ class QgsColorRampPointCloud3DGeometry : public QgsPointCloud3DGeometry
 
 class QgsRGBPointCloud3DGeometry : public QgsPointCloud3DGeometry
 {
+    Q_OBJECT
+
   public:
     QgsRGBPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride );
   private:

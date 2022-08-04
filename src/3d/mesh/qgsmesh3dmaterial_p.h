@@ -49,6 +49,8 @@ class QgsMeshLayer;
  */
 class QgsMesh3dMaterial : public Qt3DRender::QMaterial
 {
+    Q_OBJECT
+
   public:
     //! enum used to defined which type of value will be used to render the 3D entity
     enum MagnitudeType
@@ -83,6 +85,25 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     void configure();
     void configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange );
 };
+
+
+class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
+{
+    Q_OBJECT
+
+  public:
+    ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength );
+
+  protected:
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
+
+  private:
+    const QVector<QgsVector> mVectors;
+    const QSize mSize;
+    const bool mFixedSize;
+    const double mMaxVectorLength;
+};
+
 
 ///@endcond
 
