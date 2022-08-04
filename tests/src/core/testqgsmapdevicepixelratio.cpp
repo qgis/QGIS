@@ -114,7 +114,7 @@ bool TestQgsMapDevicePixelRatio::render( const QString &testType, float dpr )
   checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );
   const bool result = checker.runTest( testType );
-  mReport += "\n\n\n" + checker.report();
+  mReport += checker.report();
   return result;
 }
 
