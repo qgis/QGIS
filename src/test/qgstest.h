@@ -19,6 +19,7 @@
 #include <QtTest/QTest>
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
+#include "qgis_test.h"
 
 #define QGSTEST_MAIN(TestObject) \
   QT_BEGIN_NAMESPACE \
