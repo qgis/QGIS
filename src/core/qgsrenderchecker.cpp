@@ -370,13 +370,18 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                                    "<td align=center><img width=%5 height=%6 src=\"file://%2\"></td>\n"
                                    "</tr>"
                                    "</table>\n"
-                                   "<script>\naddComparison(\"td-%1-%7\",\"file://%3\",\"file://%4\",%5,%6);\n</script>\n" )
+                                   "<script>\naddComparison(\"td-%1-%7\",\"file://%3\",\"file://%4\",%5,%6);\n</script>\n"
+                                   "<p>If the new image looks good, create or update a test mask with<br>"
+                                   "<code>scripts/generate_test_mask_image.py \"%8\" \"%9\"</code>" )
                                  .arg( testName,
                                        myDiffImageFile,
                                        mRenderedImageFile,
                                        referenceImageFile )
                                  .arg( imgWidth ).arg( imgHeight )
-                                 .arg( QUuid::createUuid().toString().mid( 1, 6 ) );
+                                 .arg( QUuid::createUuid().toString().mid( 1, 6 ),
+                                       referenceImageFile,
+                                       mRenderedImageFile
+                                     );
 
   QString prefix;
   if ( !mControlPathPrefix.isNull() )
