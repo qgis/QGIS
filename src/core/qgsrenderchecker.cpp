@@ -175,7 +175,11 @@ void QgsRenderChecker::dumpRenderedImageAsBase64()
 
   const QByteArray blob = fileSource.readAll();
   const QByteArray encoded = blob.toBase64();
+  qDebug() << "Dumping rendered image " << mRenderedImageFile << " as base64\n";
+  qDebug() << "################################################################";
   qDebug() << encoded;
+  qDebug() << "################################################################";
+  qDebug() << "End dump";
 }
 
 bool QgsRenderChecker::runTest( const QString &testName,
