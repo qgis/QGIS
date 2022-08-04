@@ -509,8 +509,6 @@ void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetPercent()
 
 void TestQgsPointPatternFillSymbol::pointPatternRandomOffsetDataDefined()
 {
-  mReport += QLatin1String( "<h2>Point pattern data defined random offset</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 

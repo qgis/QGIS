@@ -170,11 +170,6 @@ void TestQgsPointXY::initTestCase()
 
 void TestQgsPointXY::toString()
 {
-  mReport += QLatin1String( "<p>Testing toString()</p>" );
-  mReport += "<p>" + mPoint1.toString( 2 )  +  "</p>";
-  mReport += "<p>" + mPoint2.toString( 2 )  +  "</p>";
-  mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
-  mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
   QCOMPARE( mPoint1.toString( 2 ), QString( "20.00,-20.00" ) );
   QCOMPARE( QgsPointXY().toString( 2 ), QString( "0.00,0.00" ) );
 }
