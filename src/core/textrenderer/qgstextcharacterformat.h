@@ -23,6 +23,7 @@
 #include <QColor>
 
 class QTextCharFormat;
+class QgsRenderContext;
 
 /**
  * \class QgsTextCharacterFormat
@@ -202,7 +203,7 @@ class CORE_EXPORT QgsTextCharacterFormat
      * based on the resultant font metrics. Failure to do so will result in poor quality text rendering
      * at small font sizes.
      */
-    void updateFontForFormat( QFont &font, double scaleFactor = 1.0 ) const;
+    void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
 
