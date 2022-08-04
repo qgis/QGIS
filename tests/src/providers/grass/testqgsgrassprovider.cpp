@@ -189,10 +189,12 @@ class TestQgsGrassCommandGroup
 class TestQgsGrassProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsGrassProvider() : QgsTest( QStringLiteral( "Grass provider tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void fatalError();
     void locations();
