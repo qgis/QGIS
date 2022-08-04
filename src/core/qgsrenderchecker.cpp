@@ -36,7 +36,10 @@ QgsRenderChecker::QgsRenderChecker()
 
 QDir QgsRenderChecker::testReportDir()
 {
-  return QDir( QDir::temp().filePath( QStringLiteral( "qgis_test_report" ) ) );
+  if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" ) )
+    return QDir( QDir( "/root/QGIS" ).filePath( QStringLiteral( "qgis_test_report" ) ) );
+  else
+    return QDir( QDir::temp().filePath( QStringLiteral( "qgis_test_report" ) ) );
 }
 
 bool QgsRenderChecker::shouldGenerateReport()
@@ -192,27 +195,35 @@ void QgsRenderChecker::dumpRenderedImageAsBase64()
   qDebug() << "End dump";
 }
 
-void QgsRenderChecker::performPostTestActions()
+void QgsRenderChecker::performPostTestActions( Flags flags )
 {
   if ( mResult )
     return;
 
-  if ( mIsCiRun && QFile::exists( mRenderedImageFile ) )
+  if ( mIsCiRun && QFile::exists( mRenderedImageFile ) && !( flags & Flag::AvoidExportingRenderedImage ) )
     dumpRenderedImageAsBase64();
 
   if ( shouldGenerateReport() )
   {
     const QDir reportDir = QgsRenderChecker::testReportDir();
     if ( !reportDir.exists() )
-      QDir().mkpath( reportDir.path() );
+    {
+      if ( !QDir().mkpath( reportDir.path() ) )
+      {
+        qDebug() << "!!!!! cannot create " << reportDir.path();
+      }
+    }
 
-    if ( QFile::exists( mRenderedImageFile ) )
+    if ( QFile::exists( mRenderedImageFile ) && !( flags & Flag::AvoidExportingRenderedImage ) )
     {
       QFileInfo fi( mRenderedImageFile );
       const QString destPath = reportDir.filePath( fi.fileName() );
-      QFile::copy( mRenderedImageFile, destPath );
+      if ( !QFile::copy( mRenderedImageFile, destPath ) )
+      {
+        qDebug() << "!!!!! could not copy " << mRenderedImageFile << " to " << destPath;
+      }
     }
-    if ( QFile::exists( mDiffImageFile ) )
+    if ( QFile::exists( mDiffImageFile ) && !( flags & Flag::AvoidExportingRenderedImage ) )
     {
       QFileInfo fi( mDiffImageFile );
       const QString destPath = reportDir.filePath( fi.fileName() );
@@ -222,7 +233,8 @@ void QgsRenderChecker::performPostTestActions()
 }
 
 bool QgsRenderChecker::runTest( const QString &testName,
-                                unsigned int mismatchCount )
+                                unsigned int mismatchCount,
+                                QgsRenderChecker::Flags flags )
 {
   mResult = false;
   if ( mExpectedImageFile.isEmpty() )
@@ -232,7 +244,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
   //
@@ -246,7 +258,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File could not be loaded.</td></tr></table>\n";
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
@@ -284,7 +296,7 @@ bool QgsRenderChecker::runTest( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File could not be saved.</td></tr></table>\n";
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
 
@@ -303,13 +315,14 @@ bool QgsRenderChecker::runTest( const QString &testName,
                  qgsDoubleToString( r.yMaximum() - mMapSettings.mapUnitsPerPixel() / 2.0 ) );
   }
 
-  return compareImages( testName, mismatchCount );
+  return compareImages( testName, mismatchCount, QString(), flags );
 }
 
 
 bool QgsRenderChecker::compareImages( const QString &testName,
                                       unsigned int mismatchCount,
-                                      const QString &renderedImageFile )
+                                      const QString &renderedImageFile,
+                                      QgsRenderChecker::Flags flags )
 {
   mResult = false;
   if ( mExpectedImageFile.isEmpty() )
@@ -319,14 +332,14 @@ bool QgsRenderChecker::compareImages( const QString &testName,
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
 
-  return compareImages( testName, mExpectedImageFile, renderedImageFile, mismatchCount );
+  return compareImages( testName, mExpectedImageFile, renderedImageFile, mismatchCount, flags );
 }
 
-bool QgsRenderChecker::compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount )
+bool QgsRenderChecker::compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount, QgsRenderChecker::Flags flags )
 {
   mResult = false;
   if ( ! renderedImageFile.isEmpty() )
@@ -344,7 +357,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File not set.</td></tr></table>\n";
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
 
@@ -360,7 +373,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
               "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
               "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
               "Image File could not be loaded.</td></tr></table>\n";
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
   QImage myDifferenceImage( myExpectedImage.width(),
@@ -468,7 +481,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      performPostTestActions();
+      performPostTestActions( flags );
       return mResult;
     }
     else
@@ -489,7 +502,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += "<font color=red>Expected image and result image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      performPostTestActions();
+      performPostTestActions( flags );
       return mResult;
     }
 
@@ -589,14 +602,14 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "<font color=red>Test failed because render step took too long</font>" );
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      performPostTestActions();
+      performPostTestActions( flags );
       return mResult;
     }
     else
     {
       mReport += myImagesString;
       mResult = true;
-      performPostTestActions();
+      performPostTestActions( flags );
       return mResult;
     }
   }
@@ -608,7 +621,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                "Difference image matched a known anomaly - passing test! "
                "</td></tr>";
     mResult = true;
-    performPostTestActions();
+    performPostTestActions( flags );
     return mResult;
   }
 
@@ -625,6 +638,6 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   mReport += QLatin1String( "</td></tr>" );
   mReport += myImagesString;
 
-  performPostTestActions();
+  performPostTestActions( flags );
   return mResult;
 }

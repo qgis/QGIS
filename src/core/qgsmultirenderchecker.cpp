@@ -74,11 +74,11 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     if ( !mRenderedImage.isNull() )
     {
       checker.setRenderedImage( mRenderedImage );
-      result = checker.compareImages( testName, mismatchCount, mRenderedImage );
+      result = checker.compareImages( testName, mismatchCount, mRenderedImage, QgsRenderChecker::Flag::AvoidExportingRenderedImage );
     }
     else
     {
-      result = checker.runTest( testName, mismatchCount );
+      result = checker.runTest( testName, mismatchCount, QgsRenderChecker::Flag::AvoidExportingRenderedImage );
       mRenderedImage = checker.renderedImage();
     }
 
@@ -98,6 +98,39 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
                             "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
     msg.send();
+
+    QFile fileSource( mRenderedImage );
+    fileSource.open( QIODevice::ReadOnly );
+
+    const QByteArray blob = fileSource.readAll();
+    const QByteArray encoded = blob.toBase64();
+    qDebug() << "Dumping rendered image " << mRenderedImage << " as base64\n";
+    qDebug() << "################################################################";
+    qDebug() << encoded;
+    qDebug() << "################################################################";
+    qDebug() << "End dump";
+
+  }
+
+  if ( !mResult )
+  {
+    const QDir reportDir = QgsRenderChecker::testReportDir();
+    if ( !reportDir.exists() )
+    {
+      if ( !QDir().mkpath( reportDir.path() ) )
+      {
+        qDebug() << "!!!!! cannot create " << reportDir.path();
+      }
+    }
+    if ( QFile::exists( mRenderedImage ) )
+    {
+      QFileInfo fi( mRenderedImage );
+      const QString destPath = reportDir.filePath( fi.fileName() );
+      if ( !QFile::copy( mRenderedImage, destPath ) )
+      {
+        qDebug() << "!!!!! could not copy " << mRenderedImage << " to " << destPath;
+      }
+    }
   }
 
   return mResult;

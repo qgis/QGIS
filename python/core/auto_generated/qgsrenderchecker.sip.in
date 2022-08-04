@@ -23,6 +23,9 @@ or render time.
 #include "qgsrenderchecker.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsRenderChecker();
 %Docstring
@@ -163,7 +166,15 @@ Sets the largest allowable difference in size between the rendered and the expec
 .. versionadded:: 2.12
 %End
 
-    bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
+    enum class Flag
+    {
+      AvoidExportingRenderedImage,
+    };
+
+    typedef QFlags<QgsRenderChecker::Flag> Flags;
+
+
+    bool runTest( const QString &testName, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 %Docstring
 Test using renderer to generate the image to be compared.
 
@@ -173,13 +184,14 @@ Test using renderer to generate the image to be compared.
                       are allowed to be different from the control image. In some cases
                       rendering may be non-deterministic. This parameter allows you to account
                       for that by providing a tolerance.
+:param flags: render checker flags
 
 .. note::
 
    make sure to call setExpectedImage and setMapRenderer first
 %End
 
-    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
+    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString(), QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 %Docstring
 Test using two arbitrary images (map renderer will not be used)
 
@@ -190,10 +202,11 @@ Test using two arbitrary images (map renderer will not be used)
                       rendering may be non-deterministic. This parameter allows you to account
                       for that by providing a tolerance.
 :param renderedImageFile: to optionally override the output filename
+:param flags: render checker flags
 \note: make sure to call setExpectedImage and setRenderedImage first.
 %End
 
-    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0 );
+    bool compareImages( const QString &testName, const QString &referenceImageFile, const QString &renderedImageFile, unsigned int mismatchCount = 0, QgsRenderChecker::Flags flags = QgsRenderChecker::Flags() );
 %Docstring
 Test using two arbitrary images at the specified paths for equality.
 
@@ -243,7 +256,9 @@ Only will return something if you call enableDashBuffering( ``True`` ); before.
 
   protected:
 
-}; // class QgsRenderChecker
+};
+
+QFlags<QgsRenderChecker::Flag> operator|(QgsRenderChecker::Flag f1, QFlags<QgsRenderChecker::Flag> f2);
 
 
 
