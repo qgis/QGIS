@@ -727,11 +727,6 @@ void TestQgsCoordinateReferenceSystem::fromString()
   crs.createFromString( QStringLiteral( "IGNF:LAMB1" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "IGNF:LAMB1" ) );
-#if PROJ_VERSION_MAJOR>=7
-  crs.createFromString( QStringLiteral( "IAU2000:69918" ) );
-  QVERIFY( crs.isValid() );
-  QCOMPARE( crs.authid(), QStringLiteral( "IAU2000:69918" ) );
-#endif
 }
 
 void TestQgsCoordinateReferenceSystem::fromStringCache()
