@@ -15,7 +15,7 @@
 
 
 #include "qgstest.h"
-
+#include "qgsconfig.h"
 #include <editorwidgets/qgslistwidgetfactory.h>
 #include <qgslistwidget.h>
 #include <editorwidgets/core/qgseditorwidgetwrapper.h>
@@ -28,21 +28,28 @@ class TestQgsListWidget : public QObject
 {
     Q_OBJECT
   private:
+
+#ifdef ENABLE_PGTEST
     QString dbConn;
+#endif
+
   private slots:
     void initTestCase() // will be called before the first testfunction is executed.
     {
       QgsApplication::init();
       QgsApplication::initQgis();
+#ifdef ENABLE_PGTEST
       dbConn = getenv( "QGIS_PGTEST_DB" );
       if ( dbConn.isEmpty() )
       {
         dbConn = "service=\"qgis_test\"";
       }
+#endif
     }
 
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
+#ifdef ENABLE_PGTEST
       // delete new features in db from postgres test
       QgsVectorLayer *vl_array_int = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
       vl_array_int->startEditing( );
@@ -53,7 +60,9 @@ class TestQgsListWidget : public QObject
       vl_array_str->startEditing( );
       vl_array_str->deleteFeatures( delete_ids );
       vl_array_str->commitChanges( false );
+#endif
       QgsApplication::exitQgis();
+
     }
 
     void testStringUpdate()
@@ -141,6 +150,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( widget->valid() );
     }
 
+#ifdef ENABLE_PGTEST
     void testPostgres()
     {
       //create pg layers
@@ -234,6 +244,7 @@ class TestQgsListWidget : public QObject
       w_array_str.setFeature( vl_array_str->getFeature( 999 ) );
       QCOMPARE( widget->list( ), QList<QVariant>() << QStringLiteral( "ten" ) << QStringLiteral( "eleven" ) << QStringLiteral( "twelve" ) );
     }
+#endif
 };
 
 QGSTEST_MAIN( TestQgsListWidget )
