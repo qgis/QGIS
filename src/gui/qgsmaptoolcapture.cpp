@@ -451,7 +451,8 @@ void QgsMapToolCapture::setCurrentShapeMapTool( const QgsMapToolShapeMetadata *s
   if ( mCurrentCaptureTechnique == Qgis::CaptureTechnique::Shape && isActive() )
   {
     clean();
-    mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
+    if ( mCurrentShapeMapTool )
+      mCurrentShapeMapTool->activate( mCaptureMode, mCaptureLastPoint );
   }
 }
 
