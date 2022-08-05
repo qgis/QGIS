@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include "qgsconfig.h"
 #include <QObject>
 
 #include <qgspostgresconn.h>
@@ -56,7 +57,9 @@ class TestQgsPostgresConn: public QObject
     Q_OBJECT
 
   private:
+#ifdef ENABLE_PGTEST
     QgsPostgresConn *_connection;
+
 
     QgsPostgresConn *getConnection()
     {
@@ -69,15 +72,20 @@ class TestQgsPostgresConn: public QObject
       }
       return _connection;
     }
+#endif
 
   private slots:
     void initTestCase() // will be called before the first testfunction is executed.
     {
+#ifdef ENABLE_PGTEST
       this->_connection = 0;
+#endif
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
+#ifdef ENABLE_PGTEST
       if ( this->_connection ) this->_connection->unref();
+#endif
     }
 
     void quotedValueHstore()
@@ -150,6 +158,7 @@ class TestQgsPostgresConn: public QObject
       QCOMPARE( actual, QString( "E'{{\"hello foo\",b},{c,\"hello bar\"}}'" ) );
     }
 
+#ifdef ENABLE_PGTEST
     void supportedLayers()
     {
       QgsPostgresConn *conn = getConnection();
@@ -194,7 +203,7 @@ class TestQgsPostgresConn: public QObject
       // TODO: add more tests
 
     }
-
+#endif
 };
 
 QGSTEST_MAIN( TestQgsPostgresConn )
