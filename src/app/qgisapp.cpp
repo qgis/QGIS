@@ -9566,7 +9566,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
 QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
 {
-  QgsPointCloudLayerSaveAsDialog dialog = QgsPointCloudLayerSaveAsDialog( pclayer );
+  QgsPointCloudLayerSaveAsDialog dialog = QgsPointCloudLayerSaveAsDialog( pclayer, this );
 
   dialog.setMapCanvas( mMapCanvas );
 
@@ -9632,10 +9632,11 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
                                           tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
                                           Qgis::MessageLevel::Warning );
       }
-      else if ( addToCanvas )
-      {
+
+      if ( addToCanvas )
         QgsProject::instance()->addMapLayer( ml );
-      }
+      else
+        delete ml;
     } );
   }
   return vectorFilename;
