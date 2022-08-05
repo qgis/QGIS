@@ -724,11 +724,6 @@ void TestQgsCoordinateReferenceSystem::fromString()
   crs.createFromString( QStringLiteral( "esri:102499" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "ESRI:102499" ) );
-#if PROJ_VERSION_MAJOR>=7
-  crs.createFromString( QStringLiteral( "OSGEO:41001" ) );
-  QVERIFY( crs.isValid() );
-  QCOMPARE( crs.authid(), QStringLiteral( "OSGEO:41001" ) );
-#endif
   crs.createFromString( QStringLiteral( "IGNF:LAMB1" ) );
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "IGNF:LAMB1" ) );
