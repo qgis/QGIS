@@ -53,6 +53,12 @@ static bool _projectsTableExists( QgsPostgresConn &conn, const QString &schemaNa
                .arg( QgsPostgresConn::quotedValue( tableName ), QgsPostgresConn::quotedValue( schemaName ) )
              );
   QgsPostgresResult res( conn.PQexec( sql ) );
+
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    return false;
+  }
+
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
