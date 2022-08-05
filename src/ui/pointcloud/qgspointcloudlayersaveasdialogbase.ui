@@ -217,7 +217,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Limit total number of exported points to:</string>
+             <string>Limit total number of exported points to</string>
             </property>
            </widget>
           </item>
