@@ -102,6 +102,9 @@ void TestQgsMeshContours::equals( QgsGeometry geom, QgsGeometry expected )
   QVERIFY( geom.type() == expected.type() );
   QVERIFY( geom.isMultipart() == expected.isMultipart() );
 
+  geom.normalize();
+  expected.normalize();
+
   const QString gWkt = geom.asWkt();
   const QString eWkt = expected.asWkt();
 
