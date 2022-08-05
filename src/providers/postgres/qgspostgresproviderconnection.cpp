@@ -38,7 +38,7 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
   mProviderKey = QStringLiteral( "postgres" );
   // Remove the sql and table empty parts
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
-  setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
+  setUri( QgsPostgresConn::connUri( name ).uri( false ).replace( removePartsRe, QString() ) );
   setDefaultCapabilities();
 }
 
@@ -283,6 +283,11 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
                    .arg( conn->PQstatus() )
                    .arg( err );
       }
+    }
+
+    if ( ! errCause.isEmpty() )
+    {
+      throw QgsProviderConnectionException( errCause );
     }
 
     const qlonglong numRows { res->PQntuples() };
