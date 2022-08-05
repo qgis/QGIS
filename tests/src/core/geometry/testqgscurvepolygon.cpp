@@ -1782,7 +1782,7 @@ void TestQgsCurvePolygon::removeInteriorRings_github_issue_49578()   // https://
   // The exterior ring has area 400 (with sides 20x20) and the interior rings have these areas:
   //    4 (2x2) , 9 (3x3) , 16 (4x4) , 36 (6x6)
   //    (By the way, a hole with 5x5 is not used here, since then in the test code if the area 25 is removed it would not be obvious if 5*5 or 3*3+4*4 was removed)
-  // The test code will verify the behaviour when trying to delete interiorRings smaller than a certain area.
+  // The test code will verify the behavior when trying to delete interiorRings smaller than a certain area.
   // The following five different kind of area thresold values 'a' should be used in the tests below:
   //    a < 4        e.g. 3  (should remove no holes)
   //    4 < a < 9    e.g. 5  (should remove the hole with area 4)
