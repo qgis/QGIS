@@ -178,6 +178,13 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action ) { mActionOnExistingFile = action; };
 
     /**
+     * Creates the QgsVectorLayer for exporting to a memory layer, if necessary.
+     * This method allows the exported memory layer to be created in the main thread. If not explicitly called, this method
+     * will be implicitly called by doExport().
+     */
+    void prepareExport();
+
+    /**
      * Performs the actual exporting operation.
      */
     void doExport();

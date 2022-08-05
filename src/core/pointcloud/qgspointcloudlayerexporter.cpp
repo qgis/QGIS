@@ -18,6 +18,7 @@
 #include <QQueue>
 #include <QFileInfo>
 #include <QApplication>
+#include <QThread>
 
 #include "qgspointcloudlayerexporter.h"
 #include "qgsmemoryproviderutils.h"
@@ -131,6 +132,20 @@ QgsFields QgsPointCloudLayerExporter::outputFields()
   return fields;
 }
 
+void QgsPointCloudLayerExporter::prepareExport()
+{
+  delete mMemoryLayer;
+  mMemoryLayer = nullptr;
+
+  if ( mFormat == QLatin1String( "memory" ) )
+  {
+    if ( QApplication::instance()->thread() != QThread::currentThread() )
+      QgsDebugMsgLevel( QStringLiteral( "prepareExport() should better be called from the main thread!" ), 2 );
+
+    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mTargetCrs );
+  }
+}
+
 void QgsPointCloudLayerExporter::doExport()
 {
   mTransform = new QgsCoordinateTransform( mSourceCrs, mTargetCrs, mTransformContext );
@@ -148,7 +163,9 @@ void QgsPointCloudLayerExporter::doExport()
 
   if ( mFormat == QLatin1String( "memory" ) )
   {
-    mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), QgsWkbTypes::PointZ, mTargetCrs );
+    if ( !mMemoryLayer )
+      prepareExport();
+
     ExporterMemory exp = ExporterMemory( this );
     exp.run();
   }

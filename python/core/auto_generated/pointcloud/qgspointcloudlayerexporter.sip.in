@@ -155,6 +155,13 @@ Sets whether an existing output vector file should be overwritten on appended to
 
    Only applies to vector formats
 %End
+    void prepareExport();
+%Docstring
+Creates the :py:class:`QgsVectorLayer` for exporting to a memory layer, if necessary.
+This method allows the exported memory layer to be created in the main thread. If not explicitly called, this method
+will be implicitly called by :py:func:`~QgsPointCloudLayerExporter.doExport`.
+%End
+
     void doExport();
 %Docstring
 Performs the actual exporting operation.

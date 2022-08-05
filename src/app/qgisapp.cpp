@@ -9614,6 +9614,8 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
 
     const bool addToCanvas = dialog.addToCanvas();
 
+    exp->prepareExport();
+
     QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp );
     QgsApplication::taskManager()->addTask( task );
 
