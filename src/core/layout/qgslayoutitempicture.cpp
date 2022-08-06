@@ -497,10 +497,10 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
     case FormatRaster:
     {
       bool fitsInCache = false;
-      bool isMissing = false;
-      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, mLayout->renderContext().dpi(), -1, &isMissing );
-      if ( mImage.isNull() || isMissing )
-        mMode = FormatUnknown;
+      bool isMissingImage = false;
+      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true, mLayout->renderContext().dpi(), -1, &isMissingImage );
+      if ( mImage.isNull() || isMissingImage )
+        mIsMissingImage = true;
       break;
     }
 
@@ -526,7 +526,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
       }
       else
       {
-        mMode = FormatUnknown;
+        mIsMissingImage = true;
       }
       break;
     }
@@ -578,7 +578,8 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   {
     recalculateSize();
   }
-  else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
+
+  if ( mHasExpressionError || mIsMissingImage )
   {
     //trying to load an invalid file or bad expression, show cross picture
     mIsMissingImage = true;
