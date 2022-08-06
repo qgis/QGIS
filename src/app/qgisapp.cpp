@@ -2925,6 +2925,7 @@ void QgisApp::createActions()
 
   connect( mActionHelpContents, &QAction::triggered, this, &QgisApp::helpContents );
   connect( mActionHelpAPI, &QAction::triggered, this, &QgisApp::apiDocumentation );
+  connect( mActionHelpPyQgisAPI, &QAction::triggered, this, &QgisApp::pyQgisApiDocumentation );
   connect( mActionReportaBug, &QAction::triggered, this, &QgisApp::reportaBug );
   connect( mActionNeedSupport, &QAction::triggered, this, &QgisApp::supportProviders );
   connect( mActionQgisHomePage, &QAction::triggered, this, &QgisApp::helpQgisHomePage );
@@ -12433,6 +12434,14 @@ void QgisApp::apiDocumentation()
                                          QStringLiteral( "https://qgis.org/api/" ) ).toString();
     openURL( QgisApiUrl, false );
   }
+}
+
+void QgisApp::pyQgisApiDocumentation()
+{
+  QgsSettings settings;
+  QString PyQgisApiUrl = settings.value( QStringLiteral( "qgis/PyQgisApiUrl" ),
+                                         QStringLiteral( "https://qgis.org/pyqgis/" ) ).toString();
+  openURL( PyQgisApiUrl, false );
 }
 
 void QgisApp::reportaBug()

@@ -625,6 +625,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionHelpContents() { return mActionHelpContents; }
     QAction *actionHelpAPI() { return mActionHelpAPI; }
+    QAction *actionHelpPyQgisAPI() { return mActionHelpPyQgisAPI; }
     QAction *actionReportaBug() { return mActionReportaBug; }
     QAction *actionQgisHomePage() { return mActionQgisHomePage; }
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
@@ -1687,8 +1688,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open the help contents in a browser
     void helpContents();
-    //! Open the API documentation in a browser
+    //! Open the C++ API documentation in a browser
     void apiDocumentation();
+    //! Open the PyQGIS API documentation in a browser
+    void pyQgisApiDocumentation();
     //! Open the Bugtracker page in a browser
     void reportaBug();
     //! Open the QGIS support page
