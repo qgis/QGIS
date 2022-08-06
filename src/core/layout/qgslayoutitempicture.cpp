@@ -352,7 +352,6 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   mHasExpressionError = false;
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::PictureSource ) )
   {
-    mMode = FormatUnknown;
     bool ok = false;
     const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::PictureSource );
     source = sourceProperty.value( *evalContext, source, &ok );
