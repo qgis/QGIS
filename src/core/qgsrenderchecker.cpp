@@ -372,7 +372,18 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // Load /create the images
   //
-  QImage myExpectedImage( referenceImageFile );
+  QImage expectedImage( referenceImageFile );
+  if ( expectedImage.isNull() )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not load control image from " << referenceImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because control "
+              "image file could not be loaded.</td></tr></table>\n";
+    performPostTestActions( flags );
+    return mResult;
+  }
+
   QImage myResultImage( mRenderedImageFile );
   if ( myResultImage.isNull() )
   {
@@ -384,8 +395,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     performPostTestActions( flags );
     return mResult;
   }
-  QImage myDifferenceImage( myExpectedImage.width(),
-                            myExpectedImage.height(),
+  QImage myDifferenceImage( expectedImage.width(),
+                            expectedImage.height(),
                             QImage::Format_RGB32 );
   mDiffImageFile = QDir::tempPath() + '/' + testName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
@@ -400,7 +411,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // Set pixel count score and target
   //
-  mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
+  mMatchTarget = expectedImage.width() * expectedImage.height();
   const unsigned int myPixelCount = myResultImage.width() * myResultImage.height();
   //
   // Set the report with the result
@@ -414,7 +425,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
                       "Actual   size: %5 w x %6 h (%7 pixels)"
                       "</td></tr>" )
              .arg( testName )
-             .arg( myExpectedImage.width() ).arg( myExpectedImage.height() ).arg( mMatchTarget )
+             .arg( expectedImage.width() ).arg( expectedImage.height() ).arg( mMatchTarget )
              .arg( myResultImage.width() ).arg( myResultImage.height() ).arg( myPixelCount );
   mReport += QString( "<tr><td colspan=2>\n"
                       "Expected Duration : <= %1 (0 indicates not specified)<br>"
@@ -425,10 +436,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   // limit image size in page to something reasonable
   int imgWidth = 420;
   int imgHeight = 280;
-  if ( ! myExpectedImage.isNull() )
+  if ( ! expectedImage.isNull() )
   {
-    imgWidth = std::min( myExpectedImage.width(), imgWidth );
-    imgHeight = myExpectedImage.height() * imgWidth / myExpectedImage.width();
+    imgWidth = std::min( expectedImage.width(), imgWidth );
+    imgHeight = expectedImage.height() * imgWidth / expectedImage.width();
   }
 
   const QString renderedImageFileName = QFileInfo( mRenderedImageFile ).fileName();
@@ -470,9 +481,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   // Put the same info to debug too
   //
 
-  if ( myExpectedImage.width() != myResultImage.width() || myExpectedImage.height() != myResultImage.height() )
+  if ( expectedImage.width() != myResultImage.width() || expectedImage.height() != myResultImage.height() )
   {
-    qDebug( "Expected size: %dw x %dh", myExpectedImage.width(), myExpectedImage.height() );
+    qDebug( "Expected size: %dw x %dh", expectedImage.width(), expectedImage.height() );
     qDebug( "Actual   size: %dw x %dh", myResultImage.width(), myResultImage.height() );
     if ( hasMask )
       qDebug( "Mask size: %dw x %dh", maskImage.width(), maskImage.height() );
@@ -482,8 +493,8 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   {
     qDebug( "Test image and result image for %s are different dimensions", testName.toLocal8Bit().constData() );
 
-    if ( std::abs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
-         std::abs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
+    if ( std::abs( expectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
+         std::abs( expectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
     {
       mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
@@ -500,7 +511,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     }
   }
 
-  if ( myExpectedImage.format() == QImage::Format_Indexed8 )
+  if ( expectedImage.format() == QImage::Format_Indexed8 )
   {
     if ( myResultImage.format() != QImage::Format_Indexed8 )
     {
@@ -518,7 +529,7 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     // but this method returns color table index for 8 bit image, not color.
     // So we convert the 2 images in 32 bits so the diff works correctly
     myResultImage = myResultImage.convertToFormat( QImage::Format_ARGB32 );
-    myExpectedImage = myExpectedImage.convertToFormat( QImage::Format_ARGB32 );
+    expectedImage = expectedImage.convertToFormat( QImage::Format_ARGB32 );
   }
 
 
@@ -527,14 +538,14 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   // dissimilar pixel values there are
   //
 
-  const int maxHeight = std::min( myExpectedImage.height(), myResultImage.height() );
-  const int maxWidth = std::min( myExpectedImage.width(), myResultImage.width() );
+  const int maxHeight = std::min( expectedImage.height(), myResultImage.height() );
+  const int maxWidth = std::min( expectedImage.width(), myResultImage.width() );
 
   mMismatchCount = 0;
   const int colorTolerance = static_cast< int >( mColorTolerance );
   for ( int y = 0; y < maxHeight; ++y )
   {
-    const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( myExpectedImage.constScanLine( y ) );
+    const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( expectedImage.constScanLine( y ) );
     const QRgb *resultScanline = reinterpret_cast< const QRgb * >( myResultImage.constScanLine( y ) );
     const QRgb *maskScanline = ( hasMask && maskImage.height() > y ) ? reinterpret_cast< const QRgb * >( maskImage.constScanLine( y ) ) : nullptr;
     QRgb *diffScanline = reinterpret_cast< QRgb * >( myDifferenceImage.scanLine( y ) );

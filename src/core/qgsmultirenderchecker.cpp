@@ -45,6 +45,11 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
   mReport += "<h2>" + testName + "</h2>\n";
 
   const QString baseDir = controlImagePath();
+  if ( !QFile::exists( baseDir ) )
+  {
+    qDebug() << "Control image path " << baseDir << " does not exist!";
+    return mResult;
+  }
 
   QStringList subDirs = QDir( baseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
 
