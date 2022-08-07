@@ -30,6 +30,8 @@
 
 class QImage;
 
+#define DUMP_BASE64_IMAGES 0
+
 /**
  * \ingroup core
  * \brief This is a helper class for unit tests that need to
@@ -275,7 +277,11 @@ class CORE_EXPORT QgsRenderChecker
   private:
     void emitDashMessage( const QgsDartMeasurement &dashMessage );
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
+
+#if DUMP_BASE64_IMAGES
     void dumpRenderedImageAsBase64();
+#endif
+
     void performPostTestActions( Flags flags );
 
     bool mResult = false;

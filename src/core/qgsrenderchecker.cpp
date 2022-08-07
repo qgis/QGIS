@@ -178,6 +178,7 @@ void QgsRenderChecker::emitDashMessage( const QString &name, QgsDartMeasurement:
   emitDashMessage( QgsDartMeasurement( name, type, value ) );
 }
 
+#if DUMP_BASE64_IMAGES
 void QgsRenderChecker::dumpRenderedImageAsBase64()
 {
   QFile fileSource( mRenderedImageFile );
@@ -194,14 +195,17 @@ void QgsRenderChecker::dumpRenderedImageAsBase64()
   qDebug() << "################################################################";
   qDebug() << "End dump";
 }
+#endif
 
 void QgsRenderChecker::performPostTestActions( Flags flags )
 {
   if ( mResult )
     return;
 
+#if DUMP_BASE64_IMAGES
   if ( mIsCiRun && QFile::exists( mRenderedImageFile ) && !( flags & Flag::AvoidExportingRenderedImage ) )
     dumpRenderedImageAsBase64();
+#endif
 
   if ( shouldGenerateReport() )
   {
