@@ -409,6 +409,7 @@ void QgsLayoutItemPicture::loadRemotePicture( const QString &url )
   else
   {
     mMode = FormatUnknown;
+    mIsMissingImage = true;
   }
 }
 
@@ -420,6 +421,7 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
   if ( !pic.exists() )
   {
     mMode = FormatUnknown;
+    mIsMissingImage = true;
   }
   else
   {
@@ -447,6 +449,7 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
       else
       {
         mMode = FormatUnknown;
+        mIsMissingImage = true;
       }
     }
     else
@@ -476,6 +479,7 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
       else
       {
         mMode = FormatUnknown;
+        mIsMissingImage = true;
       }
     }
   }
@@ -493,6 +497,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
   switch ( mMode )
   {
     case FormatUnknown:
+      mIsMissingImage = true;
       break;
 
     case FormatRaster:
