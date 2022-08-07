@@ -455,6 +455,7 @@ void TestQgsLayoutPicture::pictureExpression()
 {
   //test picture source via expression
   mLayout->addLayoutItem( mPicture );
+  mPicture->setMode( QgsLayoutItemPicture::FormatSVG );
 
   const QString expr = QStringLiteral( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mPicture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( expr ) );
