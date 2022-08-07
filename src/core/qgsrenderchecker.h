@@ -317,7 +317,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderChecker::Flags )
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
   QgsDebugMsg( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ) );
-  const QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
+  const thread_local QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
   a0.replace( re, QStringLiteral( "#" ) );
@@ -338,7 +338,6 @@ inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0
     pos = match.capturedStart( 0 ) + match.capturedLength( 0 );
     match = re.match( a, pos );
   }
-  pos = 0;
   match = re.match( b );
   while ( match.hasMatch() )
   {
