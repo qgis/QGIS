@@ -35,7 +35,7 @@ from qgis.core import (QgsGeometry,
                        QgsRenderContext,
                        QgsFeature,
                        QgsMapSettings,
-                       QgsRenderChecker,
+                       QgsMultiRenderChecker,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
@@ -59,13 +59,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsRandomMarkerFillSymbolLayer Tests</h1>\n"
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsRandomMarkerFillSymbolLayer Tests</h1>\n"
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+            report_file.write(cls.report)
 
     def testSimple(self):
         s = QgsFillSymbol()
@@ -327,14 +329,13 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlPathPrefix("symbol_randommarkerfill")
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print((self.report))
+        result = checker.runTest(name, 20)
+        TestQgsRandomMarkerSymbolLayer.report += checker.report()
         return result
 
 
