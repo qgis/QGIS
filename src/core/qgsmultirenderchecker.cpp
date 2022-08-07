@@ -45,6 +45,11 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
   mReport += "<h2>" + testName + "</h2>\n";
 
   const QString baseDir = controlImagePath();
+  if ( !QFile::exists( baseDir ) )
+  {
+    qDebug() << "Control image path " << baseDir << " does not exist!";
+    return mResult;
+  }
 
   QStringList subDirs = QDir( baseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
 
@@ -127,6 +132,9 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     {
       QFileInfo fi( mRenderedImage );
       const QString destPath = reportDir.filePath( fi.fileName() );
+      if ( QFile::exists( destPath ) )
+        QFile::remove( destPath );
+
       if ( !QFile::copy( mRenderedImage, destPath ) )
       {
         qDebug() << "!!!!! could not copy " << mRenderedImage << " to " << destPath;
