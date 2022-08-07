@@ -99,6 +99,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
                             "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
     msg.send();
 
+#if DUMP_BASE64_IMAGES
     QFile fileSource( mRenderedImage );
     fileSource.open( QIODevice::ReadOnly );
 
@@ -109,7 +110,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     qDebug() << encoded;
     qDebug() << "################################################################";
     qDebug() << "End dump";
-
+#endif
   }
 
   if ( !mResult )
