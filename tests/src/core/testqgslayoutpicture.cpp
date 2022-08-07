@@ -398,7 +398,7 @@ void TestQgsLayoutPicture::svgParameters()
   //test rendering an SVG file with parameters
   mLayout->addLayoutItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
-  mPicture->setPicturePath( mSvgParamsImage );
+  mPicture->setPicturePath( mSvgParamsImage, QgsLayoutItemPicture::FormatSVG );
   mPicture->setSvgFillColor( QColor( 30, 90, 200, 100 ) );
   mPicture->setSvgStrokeColor( QColor( 255, 45, 20, 200 ) );
   mPicture->setSvgStrokeWidth( 2.2 );
@@ -408,8 +408,8 @@ void TestQgsLayoutPicture::svgParameters()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 
   mLayout->removeItem( mPicture );
+  mPicture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
-  mPicture->setPicturePath( mPngImage );
 }
 
 void TestQgsLayoutPicture::dynamicSvgParameters()
@@ -417,7 +417,7 @@ void TestQgsLayoutPicture::dynamicSvgParameters()
   //test rendering an SVG file with parameters
   mLayout->addLayoutItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
-  mPicture->setPicturePath( mDynamicSvgParamsImage );
+  mPicture->setPicturePath( mDynamicSvgParamsImage, QgsLayoutItemPicture::FormatSVG );
 
   QMap<QString, QgsProperty> parametersProperties;
   parametersProperties.insert( QStringLiteral( "text1" ), QgsProperty::fromExpression( QStringLiteral( "'green?'" ) ) );
@@ -431,8 +431,8 @@ void TestQgsLayoutPicture::dynamicSvgParameters()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 
   mLayout->removeItem( mPicture );
-  mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
-  mPicture->setPicturePath( mPngImage );
+  mPicture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
+  mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );;
 }
 
 void TestQgsLayoutPicture::issue_14644()
@@ -440,15 +440,15 @@ void TestQgsLayoutPicture::issue_14644()
   //test rendering SVG file with text
   mLayout->addLayoutItem( mPicture );
   mPicture->setResizeMode( QgsLayoutItemPicture::Zoom );
-  mPicture->setPicturePath( QStringLiteral( TEST_DATA_DIR ) + "/svg/issue_14644.svg" );
+  mPicture->setPicturePath( QStringLiteral( TEST_DATA_DIR ) + "/svg/issue_14644.svg", QgsLayoutItemPicture::FormatSVG );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpicture_issue_14644" ), mLayout );
   checker.setControlPathPrefix( QStringLiteral( "composer_picture" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 
   mLayout->removeItem( mPicture );
+  mPicture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
-  mPicture->setPicturePath( mPngImage );
 }
 
 void TestQgsLayoutPicture::pictureExpression()
