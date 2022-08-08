@@ -856,12 +856,12 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
       return true;
 
     case Qgis::MarkerShape::Heart:
-      mPath.moveTo( 0, 1 );
-      mPath.lineTo( 0.84, -0.13 );
-      mPath.arcTo( 0, -1, 1, 1, -45, 225 );
-      mPath.arcTo( -1, -1, 1, 1, 0, 225 );
-      mPath.lineTo( -0.84, -0.13 );
-      mPath.lineTo( 0, 1 );
+      mPath.moveTo( 0, 0.75 );
+      //mPath.lineTo( 0.84, -0.13 );
+      mPath.arcTo( 0, -1, 1, 1, -45, 210 );
+      mPath.arcTo( -1, -1, 1, 1, 15, 210 );
+      //mPath.lineTo( -0.84, -0.13 );
+      mPath.lineTo( 0, 0.75 );
       return true;
 
     case Qgis::MarkerShape::Square:
