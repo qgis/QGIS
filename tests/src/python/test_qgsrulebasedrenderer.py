@@ -65,6 +65,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         # Super ugly hack to make sure python does not clean up our mapsetting objects
         # this might lead to occasional crashes on travis
         cls.mapsettings_archive = list()

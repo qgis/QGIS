@@ -58,15 +58,13 @@ def createEmptyLayer():
 class PyQgsTextRenderer(unittest.TestCase):
 
     @classmethod
-    def setUpClass(cls):
-        cls.report = "<h1>Python QgsTextRenderer Tests</h1>\n"
-        QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
+    def control_path_prefix(cls):
+        return 'text_renderer'
 
     @classmethod
-    def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
+    def setUpClass(cls):
+        super().setUpClass()
+        QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
 
     def testValid(self):
         t = QgsTextFormat()
@@ -1449,21 +1447,6 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertAlmostEqual(metrics.width(string), 51.9, 1)
         self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
-    def imageCheck(self, name, reference_image, image):
-        PyQgsTextRenderer.report += "<h2>Render {}</h2>\n".format(name)
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
-        checker.setControlPathPrefix("text_renderer")
-        checker.setControlName(reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        PyQgsTextRenderer.report += checker.report()
-        print(checker.report())
-        return result
-
     def checkRender(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                     text=['test'],
                     rect=QRectF(100, 100, 50, 250),
@@ -1519,7 +1502,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         # painter.drawText(rect, align, '\n'.join(text))
 
         painter.end()
-        return self.imageCheck(name, name, image)
+        return self.image_check(name, name, image, control_name=name)
 
     def checkRenderPoint(self, format, name, part=None, angle=0, alignment=QgsTextRenderer.AlignLeft,
                          text=['test'],
@@ -1566,7 +1549,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         # painter.drawText(point, '\n'.join(text))
 
         painter.end()
-        return self.imageCheck(name, name, image)
+        return self.image_check(name, name, image, control_name=name)
 
     def testDrawMassiveFont(self):
         """

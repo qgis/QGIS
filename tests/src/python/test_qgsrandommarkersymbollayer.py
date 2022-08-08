@@ -35,7 +35,6 @@ from qgis.core import (QgsGeometry,
                        QgsRenderContext,
                        QgsFeature,
                        QgsMapSettings,
-                       QgsMultiRenderChecker,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
@@ -47,7 +46,6 @@ from qgis.core import (QgsGeometry,
                        QgsProperty,
                        QgsSymbolLayer,
                        QgsRectangle,
-                       QgsMultiRenderChecker,
                        QgsSymbol
                        )
 
@@ -58,16 +56,6 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.report = "<h1>Python QgsRandomMarkerFillSymbolLayer Tests</h1>\n"
-
-    @classmethod
-    def tearDownClass(cls):
-        report_file_path = "%s/qgistest.html" % QDir.tempPath()
-        with open(report_file_path, 'a') as report_file:
-            report_file.write(cls.report)
 
     def testSimple(self):
         s = QgsFillSymbol()
@@ -109,26 +97,26 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertTrue(self.imageCheck('randommarkerfill', 'randommarkerfill', rendered_image))
+        self.assertTrue(self.image_check('randommarkerfill', 'randommarkerfill', rendered_image))
 
         s3.symbolLayer(0).setPointCount(3)
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertTrue(self.imageCheck('randommarkerfill_3', 'randommarkerfill_3', rendered_image))
+        self.assertTrue(self.image_check('randommarkerfill_3', 'randommarkerfill_3', rendered_image))
 
         s3.symbolLayer(0).setSeed(12783)
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertTrue(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
+        self.assertTrue(self.image_check('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
 
         # random seed
         s3.symbolLayer(0).setSeed(0)
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertFalse(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
+        self.assertFalse(self.image_check('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
 
         # density-based count
         s3.symbolLayer(0).setSeed(1)
@@ -139,7 +127,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
         self.assertTrue(
-            self.imageCheck('randommarkerfill_densitybasedcount', 'randommarkerfill_densitybasedcount', rendered_image))
+            self.image_check('randommarkerfill_densitybasedcount', 'randommarkerfill_densitybasedcount', rendered_image))
 
     def testCreate(self):
         random_fill = QgsRandomMarkerFillSymbolLayer(10, seed=5)
@@ -179,7 +167,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt(
             'MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('randommarkerfill_multipoly', 'randommarkerfill_multipoly', rendered_image))
+        self.assertTrue(self.image_check('randommarkerfill_multipoly', 'randommarkerfill_multipoly', rendered_image))
 
     def testMultiLayer(self):
         """
@@ -207,7 +195,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt(
             'MultiPolygon(((0 0, 5 0, 5 10, 0 10, 0 0),(1 1, 1 9, 4 9, 4 1, 1 1)), ((6 0, 10 0, 10 5, 6 5, 6 0)), ((8 6, 10 6, 10 10, 8 10, 8 6)))')
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.imageCheck('randommarkerfill_multilayer', 'randommarkerfill_multilayer', rendered_image))
+        self.assertTrue(self.image_check('randommarkerfill_multilayer', 'randommarkerfill_multilayer', rendered_image))
 
     def testOpacityWithDataDefinedColor(self):
         poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -242,13 +230,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         ms.setLayers([poly_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_randommarkerfill')
-        renderchecker.setControlName('expected_randommarker_opacityddcolor')
-        res = renderchecker.runTest('expected_randommarker_opacityddcolor')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(self.render_map_settings_check('randommarker_opacityddcolor', 'randommarker_opacityddcolor', ms))
 
     def testDataDefinedOpacity(self):
         poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -283,13 +265,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         ms.setLayers([poly_layer])
 
         # Test rendering
-        renderchecker = QgsMultiRenderChecker()
-        renderchecker.setMapSettings(ms)
-        renderchecker.setControlPathPrefix('symbol_randommarkerfill')
-        renderchecker.setControlName('expected_randommarker_ddopacity')
-        res = renderchecker.runTest('expected_randommarker_ddopacity')
-        self.report += renderchecker.report()
-        self.assertTrue(res)
+        self.assertTrue(self.render_map_settings_check('randommarker_ddopacity', 'randommarker_ddopacity', ms))
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
@@ -323,20 +299,6 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
             painter.end()
 
         return image
-
-    def imageCheck(self, name, reference_image, image):
-        self.report += "<h2>Render {}</h2>\n".format(name)
-        temp_dir = QDir.tempPath() + '/'
-        file_name = temp_dir + 'symbol_' + name + ".png"
-        image.save(file_name, "PNG")
-        checker = QgsMultiRenderChecker()
-        checker.setControlPathPrefix("symbol_randommarkerfill")
-        checker.setControlName("expected_" + reference_image)
-        checker.setRenderedImage(file_name)
-        checker.setColorTolerance(2)
-        result = checker.runTest(name, 20)
-        TestQgsRandomMarkerSymbolLayer.report += checker.report()
-        return result
 
 
 if __name__ == '__main__':
