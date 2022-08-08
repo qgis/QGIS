@@ -78,6 +78,9 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+            normalize: True
+          fields:
+            fid: skip
 
   - name: Aggregate using field
     algorithm: qgis:aggregate
@@ -127,6 +130,9 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+            normalize: True
+          fields:
+            fid: skip
 
   - algorithm: qgis:aggregate
     name: Aggregate using two fields
@@ -176,6 +182,9 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+            normalize: True
+          fields:
+            fid: skip
 
   - name: Aggregate points
     algorithm: qgis:aggregate
@@ -214,6 +223,9 @@ tests:
       OUTPUT:
         name: expected/aggregate_points.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - name: Aggregate lines
     algorithm: qgis:aggregate
@@ -239,6 +251,8 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+          fields:
+            fid: skip
 
   - name: Aggregate with a quoted delimiter
     algorithm: qgis:aggregate
@@ -264,6 +278,8 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+          fields:
+            fid: skip
 
   - name: Delete Holes
     algorithm: native:deleteholes
@@ -302,6 +318,9 @@ tests:
       OUTPUT:
         name: expected/clip_lines_by_multipolygon.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:clip
     name: Clip polygons by multipolygons
@@ -316,6 +335,9 @@ tests:
       OUTPUT:
         name: expected/clip_polys_by_multipolygon.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:clip
     name: Clip multipolygons by polygons
@@ -330,6 +352,9 @@ tests:
       OUTPUT:
         name: expected/clip_multipolygons_by_polygons.gml
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:clip
     name: Clip points by polygons
@@ -377,6 +402,9 @@ tests:
       OUTPUT:
         name: expected/intersection_collection_fallback.shp
         type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - name: Densify geometries
     algorithm: native:densifygeometries
@@ -478,6 +506,9 @@ tests:
         type: vector
         pk:
         - id2
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:listuniquevalues
     name: Unique values (multiple fields)
@@ -670,6 +701,7 @@ tests:
           geometry:
             precision: 4
             ignore_part_order: True
+            normalize: True
 
   - algorithm: native:dissolve
     name: Dissolve using two fields
@@ -686,6 +718,7 @@ tests:
           geometry:
             precision: 4
             ignore_part_order: True
+            normalize: True
 
   - name: Dissolve with geometries reported as valid but as invalid with isGeosValid
     algorithm: native:dissolve
@@ -700,6 +733,7 @@ tests:
         compare:
           geometry:
             precision: 0
+            normalize: True
 
   - name: Dissolve with NULL geometries
     algorithm: native:dissolve
@@ -714,6 +748,7 @@ tests:
         compare:
           geometry:
             precision: 7
+            normalize: True
 
   - name: Dissolve with invalid geometries
     algorithm: native:dissolve
@@ -729,6 +764,7 @@ tests:
         compare:
           geometry:
             precision: 7
+            normalize: True
 
   - algorithm: native:buffer
     name: Basic polygon buffer
@@ -763,6 +799,7 @@ tests:
         compare:
           geometry:
             precision: 7
+            normalize: True
           fields:
             fid: skip
             name: skip
@@ -1344,7 +1381,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 7
+            precision: 3
 
   - algorithm: native:centroids
     name: Centroid (lines)
@@ -1958,6 +1995,8 @@ tests:
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
 
   - algorithm: qgis:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)
@@ -1969,6 +2008,9 @@ tests:
       OUTPUT:
         name: expected/multipoint_delaunay.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 0
@@ -1982,6 +2024,9 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 2
@@ -1995,6 +2040,9 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent_rounded_2.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:pointtolayer
     name: Test (native:pointtolayer)
@@ -2004,6 +2052,9 @@ tests:
       OUTPUT:
         name: expected/point_to_layer.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:climbalongline
     name: Climb line layer with DTM
