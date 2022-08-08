@@ -356,7 +356,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic", max_size_diff=QSize(1, 1))
 
     def test_wms_GetLegendGraphic_Transparent(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -431,7 +431,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_BoxSpace", max_size_diff=QSize(5, 5))
 
     def test_wms_GetLegendGraphic_SymbolSpace(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -932,7 +932,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 2"
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -949,7 +949,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 2" and 3
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -966,7 +966,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_and_3", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_and_3", max_size_diff=QSize(10, 5))
 
         # Visible is "Type 1" and 3
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -983,7 +983,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1_and_3", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type1_and_3", max_size_diff=QSize(10, 5))
 
         # Change CRS: 3857
         # Visible is "Type 2"
@@ -1001,7 +1001,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self.assertFalse(b'Exception' in r)
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_3857", max_size_diff=QSize(10, 2))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Regression32020_type2_3857", max_size_diff=QSize(10, 5))
 
     def test_wms_GetLegendGraphic_JSON(self):
         self.wms_request_compare("GetLegendGraphic",
