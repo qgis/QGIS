@@ -16,6 +16,7 @@ tests:
           fields:
             __all__:
               precision: 5
+            fid: skip
 
   - algorithm: native:meancoordinates
     name: Mean coordinates, multiple grouped
@@ -187,12 +188,25 @@ tests:
       ERROR_OUTPUT:
         name: expected/poly_ring_self_intersection_error.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
+
       INVALID_OUTPUT:
         name: expected/poly_ring_self_intersection_invalid.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       VALID_OUTPUT:
         name: expected/poly_ring_self_intersection_valid.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
 
   - algorithm: qgis:checkvalidity
     name: Check validity polygon ring self intersection, ignoring self intersections
@@ -206,12 +220,24 @@ tests:
       ERROR_OUTPUT:
         name: expected/poly_ring_self_intersection_error_ignore_self.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          fields:
+            fid: skip
       INVALID_OUTPUT:
         name: expected/poly_ring_self_intersection_invalid_ignore_self.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          fields:
+            fid: skip
       VALID_OUTPUT:
         name: expected/poly_ring_self_intersection_valid_ignore_self.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          fields:
+            fid: skip
 
   - algorithm: native:polygonize
     name: Polygonize
@@ -227,6 +253,8 @@ tests:
         compare:
           geometry:
             topo_equal_check: True
+          fields:
+            fid: skip
 
   - algorithm: qgis:voronoipolygons
     name: Standard voronoi
@@ -345,6 +373,9 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:topologicalcoloring
     name: Topological coloring
@@ -391,6 +422,8 @@ tests:
         compare:
           geometry:
             precision: 5
+          fields:
+            fid: skip
 
   - algorithm: qgis:rectanglesovalsdiamondsvariable
     name: Rectangular buffer shape
@@ -461,6 +494,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:convertgeometrytype
     name: polygon to centroid
@@ -767,6 +801,9 @@ tests:
       OUTPUT:
         name: expected/randompointsonlines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:randompointsonlines
     name: Random points on lines, global min distance 2, seed 1, attributes, multilines - one empty geom
@@ -801,6 +838,9 @@ tests:
       OUTPUT:
         name: expected/randompointsonlines_min2.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:randompointsonlines
     name: Random points on lines, min distance 2, global min distance 2, seed 1, attributes, multilines - one empty geom
@@ -946,6 +986,7 @@ tests:
           fields:
             __all__:
               precision: 2
+            fid: skip
 
   - algorithm: qgis:pointsdisplacement
     name: Point displacement
@@ -974,6 +1015,9 @@ tests:
       OUTPUT:
         name: expected/pixel_centroids_polygon.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:generatepointspixelcentroidsalongline
     name: Pixel centroids along line
@@ -988,6 +1032,9 @@ tests:
       OUTPUT:
         name: expected/pixel_centroids_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:fieldcalculator
     name: Test field calculator points
@@ -1050,6 +1097,9 @@ tests:
       OUTPUT:
         name: expected/raster_extent.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:minimumenclosingcircle
     name: Minimal enclosing circle each features
@@ -2201,6 +2251,7 @@ tests:
           fields:
             __all__:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:distancematrix
     name: Summary distance matrix (mean, std. dev., min, max)
@@ -2223,6 +2274,7 @@ tests:
           fields:
             __all__:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:distancematrix
     name: Summary matrix different layers
@@ -2245,6 +2297,7 @@ tests:
           fields:
             __all__:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:buildvirtualvector
     name: Build virtual vector
