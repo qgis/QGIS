@@ -40,6 +40,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
 
@@ -47,6 +48,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
+        super().tearDownClass()
 
     def testFidSupport(self):
         tmpfile = os.path.join(self.basetestpath, 'testFidSupport.sqlite')

@@ -49,6 +49,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         TestPyQgsProviderConnectionBase.setUpClass()
         cls.postgres_conn = "service='qgis_test'"

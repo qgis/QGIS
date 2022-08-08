@@ -60,10 +60,6 @@ class TestPyQgsProjectStorageOracle(TestPyQgsProjectStorageBase, unittest.TestCa
 
         assert cls.con.open()
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-
     def execSQLCommand(self, sql, ignore_errors=False):
         self.assertTrue(self.con)
         query = QSqlQuery(self.con)

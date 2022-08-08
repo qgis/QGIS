@@ -31,6 +31,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
 
     def createLayerWithOnePoint(self):

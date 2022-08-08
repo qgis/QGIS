@@ -36,6 +36,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.TMP_DIR = tempfile.mkdtemp()
         # print('TMP_DIR: ' + cls.TMP_DIR)
         # subprocess.call(['open', cls.TMP_DIR])
@@ -43,6 +44,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.TMP_DIR, ignore_errors=True)
+        super().tearDownClass()
 
     # TODO: refactor parameters to **kwargs to handle all startup combinations
     def doTestStartup(self, option='', testDir='', testFile='',

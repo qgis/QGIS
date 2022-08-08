@@ -241,6 +241,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
@@ -3548,6 +3549,7 @@ class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSo
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
+        super().setUpClass()
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
@@ -3618,6 +3620,7 @@ class TestQgsVectorLayerSourceChangedGeometriesInBuffer(unittest.TestCase, Featu
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer for FeatureSourceTestCase
+        super().setUpClass()
         cls.source = cls.getSource()
 
     def testGetFeaturesSubsetAttributes2(self):
@@ -3718,6 +3721,7 @@ class TestQgsVectorLayerSourceChangedAttributesInBuffer(unittest.TestCase, Featu
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
@@ -3838,6 +3842,7 @@ class TestQgsVectorLayerSourceChangedGeometriesAndAttributesInBuffer(unittest.Te
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 
@@ -3938,6 +3943,7 @@ class TestQgsVectorLayerSourceDeletedFeaturesInBuffer(unittest.TestCase, Feature
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
 

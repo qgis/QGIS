@@ -41,14 +41,11 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer
         cls.vl = cls.createLayer()
         assert (cls.vl.isValid())
         cls.source = cls.vl.dataProvider()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     @property
     def pk_name(self):

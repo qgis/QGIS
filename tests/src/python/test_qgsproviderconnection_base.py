@@ -66,15 +66,11 @@ class TestPyQgsProviderConnectionBase():
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
         start_app()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
 
     def setUp(self):
         QgsSettings().clear()

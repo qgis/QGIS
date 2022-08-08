@@ -38,6 +38,7 @@ class TestQgsAttributeForm(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.mCanvas = QgsMapCanvas()
         QgsGui.editorWidgetRegistry().initEditors(cls.mCanvas)
 

@@ -24,11 +24,10 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
     @classmethod
     def setUpClass(cls):
         """Run before all tests:"""
+        super().setUpClass()
 
         cls.temp_dir = QTemporaryDir()
         cls.url = cls.temp_dir.path()
-
-        super().setUpClass()
 
     @classmethod
     def tearDownClass(cls):

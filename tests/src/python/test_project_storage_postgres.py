@@ -54,10 +54,6 @@ class TestPyQgsProjectStoragePostgres(TestPyQgsProjectStorageBase, unittest.Test
         cls.provider = 'postgres'
         cls.project_storage_type = 'postgresql'
 
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-
     def execSQLCommand(self, sql):
         self.assertTrue(self.con)
         cur = self.con.cursor()

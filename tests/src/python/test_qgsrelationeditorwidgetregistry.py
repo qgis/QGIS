@@ -37,6 +37,7 @@ class TestQgsRelationEditorWidgetRegistry(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
+        super().setUpClass()
         cls.registry = QgsGui.relationWidgetRegistry()
 
     def test_cannot_delete_relation_editor(self):

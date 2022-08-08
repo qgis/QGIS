@@ -61,6 +61,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         TestPyQgsProviderConnectionBase.setUpClass()
         cls.basetestpath = tempfile.mkdtemp()
         spatialite_original_path = f'{TEST_DATA_DIR}/qgis_server/test_project_wms_grouped_layers.sqlite'
@@ -74,6 +75,7 @@ class TestPyQgsProviderConnectionSpatialite(unittest.TestCase, TestPyQgsProvider
     def tearDownClass(cls):
         """Run after all tests"""
         os.unlink(cls.spatialite_path)
+        super().tearDownClass()
 
     def test_spatialite_connections_from_uri(self):
         """Create a connection from a layer uri and retrieve it"""

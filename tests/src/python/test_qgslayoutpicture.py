@@ -41,6 +41,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.item_class = QgsLayoutItemPicture
 
         # Bring up a simple HTTP server, for remote picture tests

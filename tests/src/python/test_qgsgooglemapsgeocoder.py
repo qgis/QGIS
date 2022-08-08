@@ -30,6 +30,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestQgsGeocoderLocatorFilter.com")
@@ -54,6 +55,7 @@ class TestQgsGeocoderLocatorFilter(unittest.TestCase):
         """Run after all tests"""
         QgsSettings().clear()
         # shutil.rmtree(cls.basetestpath, True)
+        super().tearDownClass()
 
     def test_basic(self):
         """

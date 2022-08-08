@@ -23,6 +23,7 @@ from utilities import unitTestDataPath
 class TestQgsRasterTransparencyWidget(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        super().setUpClass()
         cls.iface = get_iface()
 
     @staticmethod

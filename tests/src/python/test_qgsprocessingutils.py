@@ -19,6 +19,7 @@ class TestQgsProcessingUtils(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         start_app()
 
     def test_combineFields_no_name_conflict(self):

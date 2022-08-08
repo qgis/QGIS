@@ -40,6 +40,7 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
+        super().setUpClass()
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
         authm = QgsApplication.authManager()
@@ -56,6 +57,7 @@ class TestAuthManager(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         rmtree(QGIS_AUTH_DB_DIR_PATH)
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

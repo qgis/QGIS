@@ -36,6 +36,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsNewGeoPackageLayerDialog.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsNewGeoPackageLayerDialog")
@@ -49,6 +50,8 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         QgsSettings().clear()
         if cls.basetestpath is not None:
             shutil.rmtree(cls.basetestpath, True)
+
+        super().tearDownClass()
 
     def test(self):
 

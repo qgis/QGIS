@@ -35,6 +35,7 @@ class TestQgsActionManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
                                    "test_layer", "memory")
         cls.manager = QgsActionManager(cls.layer)
@@ -50,6 +51,7 @@ class TestQgsActionManager(unittest.TestCase):
     def tearDownClass(cls):
         cls.layer = None
         cls.manager = None
+        super().tearDownClass()
 
     def get_temp_filename(self):
         tmpFile = QTemporaryFile()

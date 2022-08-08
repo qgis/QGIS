@@ -140,6 +140,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         cls.basetestpath = tempfile.mkdtemp()
         cls.dots_per_meter = int(96 / 25.4 * 1000)
 
