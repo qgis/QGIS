@@ -185,6 +185,7 @@ tests:
             directory: skip
             timestamp:
               cast: str
+            fid: skip
 
   - algorithm: qgis:concavehull
     name: Concave Hull - Points (0.3)
@@ -231,6 +232,9 @@ tests:
       OUTPUT:
         name: expected/knearest_concave_hull_points_7.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Group by field
@@ -244,6 +248,9 @@ tests:
       OUTPUT:
         name: expected/knearest_concave_hull_points_id2.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Lines (k=3)
@@ -256,6 +263,9 @@ tests:
       OUTPUT:
         name: expected/knearest_concave_hull_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Polys (k=3)
@@ -268,6 +278,9 @@ tests:
       OUTPUT:
         name: expected/knearest_concave_hull_polys.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - MultiPoints (k=3)
@@ -280,6 +293,9 @@ tests:
       OUTPUT:
         name: expected/knearest_concave_hull_multipoints.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:knearestconcavehull
     name: K-nearest Neighbor Concave Hull - Duplicate Points
@@ -804,6 +820,9 @@ tests:
       OUTPUT:
         name: expected/vectorize.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:pixelstopoints
     name: Pixels to points
@@ -817,6 +836,9 @@ tests:
       OUTPUT:
         name: expected/pixels_to_points.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:kmeansclustering
     name: K means, points, 3 clusters
@@ -1673,6 +1695,9 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_above.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume Below
@@ -1694,6 +1719,9 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_below.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume subtract below
@@ -1715,6 +1743,9 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_subtract.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume add below
@@ -1736,6 +1767,9 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_add.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume above (meters)
@@ -1762,6 +1796,7 @@ tests:
             volume:
               cast: float
               precision: 5
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume below (meters)
@@ -1788,6 +1823,7 @@ tests:
             volume:
               cast: float
               precision: 5
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume subtract below (meters)
@@ -1809,6 +1845,9 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_subtract_crs.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume add below (meters)
@@ -1835,6 +1874,7 @@ tests:
             volume:
               cast: float
               precision: 5
+            fid: skip
 
   - algorithm: native:rastersurfacevolume
     name: Surface volume with gaps
@@ -1849,6 +1889,9 @@ tests:
       OUTPUT_TABLE:
         name: expected/surface_vol_gaps.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:dissolve
     name: Test dissolve with consecutive lines
@@ -2233,6 +2276,10 @@ tests:
               precision: 5
             nearest_x:
               precision: 5
+            feature_y:
+              precision: 5
+            nearest_y:
+              precision: 5
 
   - algorithm: native:joinbynearest
     name: Nearest lines to points, reprojected
@@ -2414,6 +2461,7 @@ tests:
               precision: 4
             custom_overlay3_b.geojson_pc:
               precision: 3
+            fid: skip
 
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis reprojected
@@ -2468,6 +2516,7 @@ tests:
               precision: 4
             custom_overlay3_b.geojson_pc:
               precision: 3
+            fid: skip
 
   - algorithm: native:calculatevectoroverlaps
     name: Overlap analysis 3, reordered inputs
@@ -2522,6 +2571,7 @@ tests:
               precision: 4
             custom_overlay3_b.geojson_pc:
               precision: 3
+            fid: skip
 
   - algorithm: native:splitfeaturesbycharacter
     name: Split features by character
@@ -2536,6 +2586,9 @@ tests:
       OUTPUT:
         name: expected/split_by_char_a.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:splitfeaturesbycharacter
     name: Split features by character 2
@@ -2550,6 +2603,9 @@ tests:
       OUTPUT:
         name: expected/split_by_char_b.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:splitfeaturesbycharacter
     name: Split features by character regex
@@ -2564,6 +2620,9 @@ tests:
       OUTPUT:
         name: expected/split_by_char_regex.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:affinetransform
     name: Affine transform
@@ -2608,15 +2667,30 @@ tests:
       LINES:
         name: expected/filter_geom_polys_line.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       NO_GEOMETRY:
         name: expected/filter_geom_polys_null.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
       POINTS:
         name: expected/filter_geom_polys_point.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       POLYGONS:
         name: expected/filter_geom_polys_poly.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
 
   - algorithm: native:filterbygeometry
     name: Filter by geometry type point input
@@ -2628,15 +2702,30 @@ tests:
       LINES:
         name: expected/filter_geom_points_line.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       NO_GEOMETRY:
         name: expected/filter_geom_points_null.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
       POINTS:
         name: expected/filter_geom_points_point.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       POLYGONS:
         name: expected/filter_geom_points_poly.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
 
   - algorithm: native:filterbygeometry
     name: Filter by geometry type line input
@@ -2648,15 +2737,30 @@ tests:
       LINES:
         name: expected/filter_geom_lines_line.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       NO_GEOMETRY:
         name: expected/filter_geom_lines_null.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
       POINTS:
         name: expected/filter_geom_lines_point.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       POLYGONS:
         name: expected/filter_geom_lines_poly.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
 
   - algorithm: native:rescaleraster
     name: Rescale raster (original nodata)
@@ -2740,6 +2844,9 @@ tests:
       OUTPUT:
         name: expected/drop_fields_one.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:deletecolumn
     name: Delete two columns
@@ -2754,6 +2861,9 @@ tests:
       OUTPUT:
         name: expected/delete_columns_two.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:deletecolumn
     name: Delete three columns
@@ -2770,6 +2880,9 @@ tests:
       OUTPUT:
         name: expected/delete_columns_three.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:retainfields
     name: Retain one field
@@ -2783,6 +2896,9 @@ tests:
       OUTPUT:
         name: expected/retain_fields_one.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:retainfields
     name: Retain two fields
@@ -2797,6 +2913,9 @@ tests:
       OUTPUT:
         name: expected/retain_fields_two.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:retainfields
     name: Retain three fields
@@ -2813,6 +2932,9 @@ tests:
       OUTPUT:
         name: expected/retain_fields_three.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:extractwithindistance
     name: Points within distance
@@ -2923,6 +3045,12 @@ tests:
       OUTPUT:
         name: expected/shortest_line_point_to_polygon_4326_to_31256.shp
         type: vector
+        compare:
+          geometry:
+            precision: 4
+          fields:
+            distance:
+              precision: 4
 
   - algorithm: native:shortestline
     name: Test native:shortestline using nearest point on line geometry destination and differing CRSs
@@ -2939,6 +3067,10 @@ tests:
       OUTPUT:
         name: expected/shortest_line_point_to_line_4326_to_3857.shp
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 4
 
   - algorithm: native:joinattributestable
     name: Test native:joinattributestable with name conflict, fix for issue 47650

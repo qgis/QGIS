@@ -79,6 +79,8 @@ tests:
           geometry:
             ignore_part_order: True
             normalize: True
+          fields:
+            fid: skip
 
   - name: Aggregate using field
     algorithm: qgis:aggregate
@@ -129,6 +131,8 @@ tests:
           geometry:
             ignore_part_order: True
             normalize: True
+          fields:
+            fid: skip
 
   - algorithm: qgis:aggregate
     name: Aggregate using two fields
@@ -179,6 +183,8 @@ tests:
           geometry:
             ignore_part_order: True
             normalize: True
+          fields:
+            fid: skip
 
   - name: Aggregate points
     algorithm: qgis:aggregate
@@ -217,6 +223,9 @@ tests:
       OUTPUT:
         name: expected/aggregate_points.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - name: Aggregate lines
     algorithm: qgis:aggregate
@@ -242,6 +251,8 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+          fields:
+            fid: skip
 
   - name: Aggregate with a quoted delimiter
     algorithm: qgis:aggregate
@@ -267,6 +278,8 @@ tests:
         compare:
           geometry:
             ignore_part_order: True
+          fields:
+            fid: skip
 
   - name: Aggregate to array field
     algorithm: qgis:aggregate
@@ -522,6 +535,9 @@ tests:
         type: vector
         pk:
         - id2
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:listuniquevalues
     name: Unique values (multiple fields)
@@ -1427,7 +1443,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 7
+            precision: 3
 
   - algorithm: native:centroids
     name: Centroid (lines)
@@ -2041,6 +2057,8 @@ tests:
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
 
   - algorithm: qgis:delaunaytriangulation
     name: Delaunay triangulation (multipoint data)
@@ -2052,6 +2070,9 @@ tests:
       OUTPUT:
         name: expected/multipoint_delaunay.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 0
@@ -2065,6 +2086,9 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:polygonfromlayerextent
     name: Polygon from layer extent rounded to 2
@@ -2078,6 +2102,9 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent_rounded_2.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:pointtolayer
     name: Test (native:pointtolayer)
@@ -2087,6 +2114,9 @@ tests:
       OUTPUT:
         name: expected/point_to_layer.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:climbalongline
     name: Climb line layer with DTM
