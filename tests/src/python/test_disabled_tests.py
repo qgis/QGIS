@@ -10,8 +10,17 @@ __author__ = 'Nyall Dawson'
 __date__ = '10/08/2022'
 __copyright__ = 'Copyright 2022, The QGIS Project'
 
+import tempfile
+import os
+import shutil
+
 from qgis.PyQt.QtCore import QEventLoop, QT_VERSION
 from qgis.core import QgsDataCollectionItem, QgsLayerItem
+from qgis.testing import start_app, unittest
+from qgis.PyQt.QtCore import QVariant, QLocale
+from qgis.PyQt.QtGui import QValidator
+from qgis.core import QgsVectorLayer
+from qgis.gui import QgsFieldValidator
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -53,6 +62,22 @@ DO NOT ADD TESTS TO THIS FILE WITHOUT A DETAILED EXPLANATION ON WHY!!!!
 
 
 class TestQgsDisabledTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests."""
+        testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg'
+        # Copy it
+        tempdir = tempfile.mkdtemp()
+        testPathCopy = os.path.join(tempdir, 'bug_17878.gpkg')
+        shutil.copy(testPath, testPathCopy)
+        cls.vl = QgsVectorLayer(testPathCopy + '|layername=bug_17878', "test_data", "ogr")
+        assert cls.vl.isValid()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests."""
+        cls.vl = None
 
     @unittest.skipIf(QT_VERSION >= 0x050d00, 'Crashes on newer Qt/PyQt versions')
     def testPythonCreateChildrenCalledFromCplusplus(self):
@@ -112,6 +137,48 @@ class TestQgsDisabledTests(unittest.TestCase):
             # Check that the PyQgsLayerItem Python object is now destroyed
             self.assertTrue(tabSetDestroyedFlag[0])
             tabSetDestroyedFlag[0] = False
+
+    def _fld_checker(self, field):
+        """
+        Expected results from validate
+        QValidator::Invalid 0 The string is clearly invalid.
+        QValidator::Intermediate 1 The string is a plausible intermediate value.
+        QValidator::Acceptable 2 The string is acceptable as a final result; i.e. it is valid.
+        """
+        validator = QgsFieldValidator(None, field, '0.0', '')
+
+        def _test(value, expected):
+            ret = validator.validate(value, 0)
+            self.assertEqual(ret[0], expected)
+            if value:
+                self.assertEqual(validator.validate('-' + value, 0)[0], expected, '-' + value)
+
+        # Valid
+        _test('0.1234', QValidator.Acceptable)
+
+        # If precision is > 0, regexp validator is used (and it does not support sci notation)
+        if field.precision() == 0:
+            _test('12345.1234e+123', QValidator.Acceptable)
+            _test('12345.1234e-123', QValidator.Acceptable)
+
+    @unittest.skipIf(QT_VERSION >= 0x050d00, 'Fails newer Qt/PyQt versions')
+    def test_doubleValidatorCommaLocale(self):
+        """Test the double with german locale
+
+        On newer Qt versions QDoubleValidator with comma as decimal locales now
+        reports the Intermediate state for values like 0.1234, but we require
+        it to report Acceptable as we always allow dot as decimal separator even
+        for these locales.
+
+        The underling fix will likely require a refactor of QgsFieldValidator to remove
+        the use of the QDoubleValidator class entirely.
+
+        When fixed these tests should be merged back into test_qgsfieldvalidator.py
+        """
+        QLocale.setDefault(QLocale(QLocale.German, QLocale.Germany))
+        self.assertEqual(QLocale().decimalPoint(), ',')
+        field = self.vl.fields()[self.vl.fields().indexFromName('double_field')]
+        self._fld_checker(field)
 
 
 if __name__ == '__main__':
