@@ -3827,7 +3827,13 @@ QList<QgsProviderSublayerDetails> QgsGdalProviderMetadata::querySublayers( const
 
       QString name;
       const QVariantMap parts = decodeUri( uri );
-      if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
+
+      const QString identifier = GDALGetMetadataItem( dataset.get(), "IDENTIFIER", "" );
+      if ( !identifier.isEmpty() )
+      {
+        name = identifier;
+      }
+      else if ( !parts.value( QStringLiteral( "vsiSuffix" ) ).toString().isEmpty() )
       {
         name = parts.value( QStringLiteral( "vsiSuffix" ) ).toString();
         if ( name.startsWith( '/' ) )
