@@ -24,6 +24,12 @@ from qgis.core import (Qgis,
                        QgsVectorFileWriter,
                        QgsCoordinateTransformContext)
 from qgis.testing import start_app, unittest
+from osgeo import gdal
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
 
 start_app()
 
@@ -791,7 +797,11 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
                 self.assertEqual(f.attribute(2), None)
 
         _test(Qgis.TransactionMode.Disabled)
-        _test(Qgis.TransactionMode.AutomaticGroups)
+
+        # this functionality is broken when using newer GDAL builds
+        if int(gdal.VersionInfo('VERSION_NUM')) <= GDAL_COMPUTE_VERSION(3, 4, 0):
+            _test(Qgis.TransactionMode.AutomaticGroups)
+
         _test(Qgis.TransactionMode.BufferedGroups)
 
 

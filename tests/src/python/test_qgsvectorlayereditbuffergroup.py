@@ -22,12 +22,18 @@ from qgis.core import (Qgis,
                        QgsVectorFileWriter,
                        QgsCoordinateTransformContext)
 from qgis.testing import start_app, unittest
+from osgeo import gdal
 
 start_app()
 
 
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
+
+
 class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
 
+    @unittest.skipIf(int(gdal.VersionInfo('VERSION_NUM')) > GDAL_COMPUTE_VERSION(3, 4, 0), "Transaction groups on GPKG are broken on GDAL 3.4 and later")
     def testStartEditingCommitRollBack(self):
 
         ml = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
