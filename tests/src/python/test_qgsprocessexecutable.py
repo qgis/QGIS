@@ -47,7 +47,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def _strip_ignorable_errors(output: str):
         return '\n'.join([e for e in output.splitlines() if e not in (
             'Problem with GRASS installation: GRASS was not found or is not correctly installed',
-            'QStandardPaths: wrong permissions on runtime directory / tmp, 0777 instead of 0700'
+            'QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700'
         )
         ])
 
@@ -524,12 +524,12 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testPythonScriptRunError(self):
         rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/script_with_error.py'])
-        self.assertEqual(rc, 1)
+        self.assertNotEqual(rc, 0)
         self.assertIn('is not a valid Processing script', err)
 
     def testPythonScriptHelpError(self):
         rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/script_with_error.py'])
-        self.assertEqual(rc, 1)
+        self.assertNotEqual(rc, 0)
         self.assertIn('is not a valid Processing script', err)
 
     def testComplexParameterNames(self):
