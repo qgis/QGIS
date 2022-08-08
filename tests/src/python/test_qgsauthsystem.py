@@ -691,7 +691,9 @@ class TestQgsAuthManager(unittest.TestCase):
         # Expired intermediate CA
         bundle = self.mkPEMBundle('marinus_cert-EXPIRED.pem', 'marinus_key_w-pass.pem', 'password', 'chain_issuer2-root2.pem')
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
-        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        res = QgsAuthCertUtils.validatePKIBundle(bundle, False)
+        self.assertIn('The issuer certificate of a locally looked up certificate could not be found', res)
+        self.assertIn('No certificates could be verified', res)
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The certificate has expired'])
 
         # Expired client cert
