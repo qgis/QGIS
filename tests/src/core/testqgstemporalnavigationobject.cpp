@@ -22,17 +22,6 @@
 //qgis includes...
 #include <qgstemporalnavigationobject.h>
 
-char *toString( const QgsDateTimeRange &range )
-{
-  const QString str = QStringLiteral( "<QgsDateTimeRange: %1%2, %3%4>" ).arg(
-                        range.includeBeginning() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
-                        range.begin().toString( Qt::ISODateWithMs ),
-                        range.end().toString( Qt::ISODateWithMs ),
-                        range.includeEnd() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
-  char *dst = new char[str.size() + 1];
-  return qstrcpy( dst, str.toLocal8Bit().constData() );
-}
-
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsTemporalNavigationObject class.
