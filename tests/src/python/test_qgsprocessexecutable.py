@@ -43,6 +43,14 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def tearDownClass(cls):
         shutil.rmtree(cls.TMP_DIR, ignore_errors=True)
 
+    @staticmethod
+    def _strip_ignorable_errors(output: str):
+        return '\n'.join([e for e in output.splitlines() if e not in (
+            'Problem with GRASS installation: GRASS was not found or is not correctly installed',
+            'QStandardPaths: wrong permissions on runtime directory / tmp, 0777 instead of 0700'
+        )
+        ])
+
     def run_process(self, arguments):
         call = [QGIS_PROCESS_BIN] + arguments
         print(' '.join(call))
@@ -59,9 +67,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testNoArgs(self):
         rc, output, err = self.run_process([])
         self.assertIn('Available commands', output)
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testPlugins(self):
@@ -69,9 +75,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         self.assertIn('available plugins', output.lower())
         self.assertIn('processing', output.lower())
         self.assertNotIn('metasearch', output.lower())
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testPluginsJson(self):
@@ -92,9 +96,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         rc, output, err = self.run_process(['list'])
         self.assertIn('available algorithms', output.lower())
         self.assertIn('native:reprojectlayer', output.lower())
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testAlgorithmsListJson(self):
@@ -125,9 +127,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
         rc, output, err = self.run_process(['help', 'native:centroids'])
         self.assertIn('representing the centroid', output.lower())
         self.assertIn('argument type', output.lower())
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testAlgorithmHelpJson(self):
@@ -166,9 +166,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testAlgorithmRunLegacy(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
         rc, output, err = self.run_process(['run', 'native:centroids', '--INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), '--OUTPUT={}'.format(output_file)])
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
         self.assertIn('OUTPUT:\t' + output_file, output)
@@ -178,9 +176,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testAlgorithmRun(self):
         output_file = self.TMP_DIR + '/polygon_centroid.shp'
         rc, output, err = self.run_process(['run', 'native:centroids', '--', 'INPUT={}'.format(TEST_DATA_DIR + '/polys.shp'), 'OUTPUT={}'.format(output_file)])
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
         self.assertIn('OUTPUT:\t' + output_file, output)
@@ -237,18 +233,14 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     def testModelHelp(self):
         rc, output, err = self.run_process(['help', TEST_DATA_DIR + '/test_model.model3'])
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
         self.assertIn('model description', output.lower())
 
     def testModelRun(self):
         output_file = self.TMP_DIR + '/model_output.shp'
         rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
         self.assertIn('0...10...20...30...40...50...60...70...80...90', output.lower())
         self.assertIn('results', output.lower())
@@ -257,9 +249,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def testModelRunJson(self):
         output_file = self.TMP_DIR + '/model_output2.shp'
         rc, output, err = self.run_process(['run', TEST_DATA_DIR + '/test_model.model3', '--json', '--', 'FEATS={}'.format(TEST_DATA_DIR + '/polys.shp'), 'native:centroids_1:CENTROIDS={}'.format(output_file)])
-        if os.environ.get('TRAVIS', '') != 'true':
-            # Travis DOES have errors, due to QStandardPaths: XDG_RUNTIME_DIR not set warnings raised by Qt
-            self.assertFalse(err)
+        self.assertFalse(self._strip_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
         res = json.loads(output)
