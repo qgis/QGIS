@@ -89,6 +89,7 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         # qgis iface
         cls._Iface = get_iface()
@@ -119,10 +120,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         cls.setDefaultEngineSettings()
 
         cls._BaseSetup = True
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def setUp(self):
         """Run before each test."""
@@ -373,12 +370,14 @@ class TestPALConfig(TestQgsPalLabeling):
 
     @classmethod
     def setUpClass(cls):
-        TestQgsPalLabeling.setUpClass()
+        super().setUpClass()
+
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
     @classmethod
     def tearDownClass(cls):
         cls.removeMapLayer(cls.layer)
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

@@ -33,6 +33,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # create test db
         if os.path.exists("test.sqlite"):
             os.remove("test.sqlite")
@@ -78,7 +79,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
         # for the time being, keep the file to check with qgis
         # if os.path.exists("test.sqlite") :
         #    os.remove("test.sqlite")
-        pass
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

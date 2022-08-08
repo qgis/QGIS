@@ -53,6 +53,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = "<h1>Python QgsAnnotationMarkerItem Tests</h1>\n"
 
     @classmethod
@@ -60,6 +61,7 @@ class TestQgsAnnotationMarkerItem(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def testBasic(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))

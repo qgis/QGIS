@@ -35,6 +35,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.TMP_DIR = tempfile.mkdtemp()
         # print('TMP_DIR: ' + cls.TMP_DIR)
         # subprocess.call(['open', cls.TMP_DIR])
@@ -42,6 +43,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(cls.TMP_DIR, ignore_errors=True)
+        super().tearDownClass()
 
     def run_process(self, arguments):
         call = [QGIS_PROCESS_BIN] + arguments

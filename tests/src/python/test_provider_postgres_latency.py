@@ -35,6 +35,7 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -44,6 +45,7 @@ class TestPyQgsPostgresProviderLatency(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         os.system('tc qdisc del dev eth0 root')
+        super().tearDownClass()
 
     def setDelay(self, delay_in_ms):
         if delay_in_ms == 0:

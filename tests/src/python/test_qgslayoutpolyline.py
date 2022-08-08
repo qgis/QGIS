@@ -37,6 +37,7 @@ class TestQgsLayoutPolyline(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.item_class = QgsLayoutItemPolyline
 
     def __init__(self, methodName):

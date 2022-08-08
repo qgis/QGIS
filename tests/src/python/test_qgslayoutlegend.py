@@ -56,6 +56,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.item_class = QgsLayoutItemLegend
         cls.report = "<h1>Python QgsLayoutItemLegend Tests</h1>\n"
 
@@ -64,6 +65,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""

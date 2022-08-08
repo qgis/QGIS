@@ -39,6 +39,7 @@ class TestQgsSvgCache(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         # Bring up a simple HTTP server, for remote SVG tests
         os.chdir(unitTestDataPath() + '')
         handler = SlowHTTPRequestHandler

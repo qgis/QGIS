@@ -37,6 +37,7 @@ class TestQgsConnectionRegistry(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain(cls.__name__)
         QCoreApplication.setApplicationName(cls.__name__)
@@ -54,6 +55,7 @@ class TestQgsConnectionRegistry(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests"""
         os.unlink(cls.gpkg_path)
+        super().tearDownClass()
 
     def testCreateConnectionBad(self):
         """

@@ -65,6 +65,7 @@ class TestWFST(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         cls.port = QGIS_SERVER_PORT
         # Create tmp folder
@@ -109,6 +110,8 @@ class TestWFST(unittest.TestCase):
         for ln in ['test_point', 'test_polygon', 'test_linestring']:
             cls._clearLayer(ln)
         rmtree(cls.temp_path)
+
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

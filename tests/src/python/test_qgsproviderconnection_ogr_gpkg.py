@@ -70,6 +70,7 @@ class TestPyQgsProviderConnectionGpkg(unittest.TestCase, TestPyQgsProviderConnec
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         TestPyQgsProviderConnectionBase.setUpClass()
         gpkg_original_path = '{}/qgis_server/test_project_wms_grouped_layers.gpkg'.format(TEST_DATA_DIR)
         cls.temp_dir = QTemporaryDir()

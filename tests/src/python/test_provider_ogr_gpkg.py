@@ -69,6 +69,7 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
         cls.repackfilepath = tempfile.mkdtemp()
@@ -109,6 +110,7 @@ class TestPyQgsOGRProviderGpkgConformance(unittest.TestCase, ProviderTestCase):
         del cls.unique_not_null_constraints
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
+        super().tearDownClass()
 
     def getSource(self):
         tmpdir = tempfile.mkdtemp()
@@ -248,6 +250,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsOGRProviderGpkg.com")
@@ -264,6 +267,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         shutil.rmtree(cls.basetestpath, True)
 
         QgsSettings().clear()
+        super().tearDownClass()
 
     def testDecodeUri(self):
 

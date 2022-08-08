@@ -28,6 +28,7 @@ class TestQgsFontUtils(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsFontUtils.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsFontUtils")

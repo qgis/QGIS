@@ -55,6 +55,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.report = "<h1>Python QgsSimpleFillSymbolLayer Tests</h1>\n"
 
     @classmethod
@@ -62,6 +63,7 @@ class TestQgsSimpleFillSymbolLayer(unittest.TestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def testRender(self):
         # rendering test

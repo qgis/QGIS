@@ -66,6 +66,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -108,10 +109,6 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertTrue(gdal_rl.isValid())
         self.assertEqual(value, gdal_rl.dataProvider().block(
             band, self.rl.extent(), 6, 5).data().toHex())
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
 
     def testExtent(self):
         extent = self.rl.extent()

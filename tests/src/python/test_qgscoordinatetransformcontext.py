@@ -32,6 +32,7 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestQgsCoordinateTransformContext.com")
         QCoreApplication.setApplicationName("TestQgsCoordinateTransformContext")

@@ -39,6 +39,7 @@ class TestQgsActionWidgetWrapper(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=flddate:datetime",
                                    "test_layer", "memory")
 
@@ -53,6 +54,7 @@ class TestQgsActionWidgetWrapper(unittest.TestCase):
     def tearDownClass(cls):
         cls.layer = None
         cls.manager = None
+        super().tearDownClass()
 
     def testWrapper(self):
 

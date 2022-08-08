@@ -33,6 +33,7 @@ class TestQgsEditFormConfig(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
         QgsSettings().clear()
 

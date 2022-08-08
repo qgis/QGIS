@@ -33,6 +33,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.testdatapath = unitTestDataPath('qgis_server_security') + '/'
         cls.db = os.path.join(cls.testdatapath, 'db.sqlite')
         cls.db_clone = os.path.join(cls.testdatapath, 'db_clone.sqlite')
@@ -46,6 +47,8 @@ class TestQgsServerSecurity(QgsServerTestBase):
             os.remove(cls.db_clone)
         except OSError:
             pass
+
+        super().tearDownClass()
 
     def setUp(self):
         self.server = QgsServer()

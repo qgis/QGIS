@@ -122,6 +122,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsOapifProvider.com")
@@ -176,6 +177,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
+        super().tearDownClass()
 
     def testExtentSubsetString(self):
         # can't run the base provider test suite here - WFS/OAPIF extent handling is different

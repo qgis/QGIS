@@ -62,6 +62,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.item_class = QgsLayoutItemMap
         cls.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
 
@@ -70,6 +71,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
             report_file.write(cls.report)
+        super().tearDownClass()
 
     def __init__(self, methodName):
         """Run once on class initialization."""

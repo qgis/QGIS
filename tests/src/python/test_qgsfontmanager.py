@@ -39,6 +39,7 @@ class TestQgsFontManager(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsFontManager.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsFontManager")

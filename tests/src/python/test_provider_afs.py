@@ -92,6 +92,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("TestPyQgsAFSProvider.com")
@@ -694,6 +695,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         QgsSettings().clear()
         # shutil.rmtree(cls.basetestpath, True)
         cls.vl = None  # so as to properly close the provider and remove any temporary file
+        super().tearDownClass()
 
     def testGetFeaturesSubsetAttributes2(self):
         """ Override and skip this test for AFS provider, as it's actually more efficient for the AFS provider to return

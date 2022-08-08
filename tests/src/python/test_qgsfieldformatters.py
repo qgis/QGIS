@@ -311,6 +311,7 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
@@ -322,6 +323,7 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
     def tearDownClass(cls):
         """Reset locale"""
         QLocale.setDefault(QLocale(QLocale.English))
+        super().tearDownClass()
 
     def test_representValue(self):
         layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long",
@@ -411,6 +413,7 @@ class TestQgsCheckBoxFieldFormatter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsCheckBoxFieldFormatter.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsCheckBoxFieldFormatter")
@@ -468,6 +471,7 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsFieldFormatter.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsFieldFormatter")
@@ -479,6 +483,7 @@ class TestQgsFallbackFieldFormatter(unittest.TestCase):
     def tearDownClass(cls):
         """Reset locale"""
         QLocale.setDefault(QLocale(QLocale.English))
+        super().tearDownClass()
 
     def test_representValue(self):
 
@@ -670,6 +675,7 @@ class TestQgsDateTimeFieldFormatter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestQgsDateTimeFieldFormatter.com")
         QCoreApplication.setApplicationName("QGIS_TestQgsDateTimeFieldFormatter")
@@ -681,6 +687,7 @@ class TestQgsDateTimeFieldFormatter(unittest.TestCase):
     def tearDownClass(cls):
         """Reset locale"""
         QgsApplication.setLocale(QLocale(QLocale.English))
+        super().tearDownClass()
 
     def test_representValue(self):
         layer = QgsVectorLayer("point?field=datetime:datetime&field=date:date&field=time:time",
