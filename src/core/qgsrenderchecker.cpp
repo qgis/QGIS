@@ -199,7 +199,7 @@ void QgsRenderChecker::dumpRenderedImageAsBase64()
 
 void QgsRenderChecker::performPostTestActions( Flags flags )
 {
-  if ( mResult )
+  if ( mResult || mExpectFail )
     return;
 
 #if DUMP_BASE64_IMAGES
