@@ -2127,8 +2127,18 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   // maps NULL values)
   // If there are more cases like QByteArray, we should consider using a allowlist
   // instead of a blocklist.
-  if ( varp->isNull() && varp->type() != QVariant::ByteArray )
+  if ( varp->isNull()
+       && varp->type() != QVariant::ByteArray
+       && varp->type() != QMetaType::VoidStar
+       && varp->type() != QMetaType::Nullptr
+       && varp->type() != QMetaType::QObjectStar )
   {
+    if ( varp->type() == QVariant::UserType
+         && varp->userType() == QMetaType::type("QgsLayoutItem*") )
+    {
+      return false;
+    }
+
     sWatchDog = true;
     PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QVariant_Type );
     PyObject *args = PyTuple_Pack( 1, vartype );
