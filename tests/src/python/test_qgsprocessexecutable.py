@@ -47,7 +47,7 @@ class TestQgsProcessExecutable(unittest.TestCase):
     def _strip_ignorable_errors(output: str):
         return '\n'.join([e for e in output.splitlines() if e not in (
             'Problem with GRASS installation: GRASS was not found or is not correctly installed',
-            'QStandardPaths: wrong permissions on runtime directory / tmp, 0777 instead of 0700'
+            'QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700'
         )
         ])
 
