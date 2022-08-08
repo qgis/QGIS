@@ -101,7 +101,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
 
         # now we expect the canvas check to fail (since they'll be a new polygon rendered over it)
-        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
 
     def testRefreshOnTimer(self):
         """ test that map canvas refreshes with auto refreshing layers """
@@ -156,7 +156,7 @@ class TestQgsMapCanvas(unittest.TestCase):
             self.assertTrue(time.time() < timeout)
 
         # now canvas should look different...
-        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas))
+        self.assertFalse(self.canvasImageCheck('empty_canvas', 'empty_canvas', canvas, expect_fail=True))
 
         # switch off auto refresh
         layer.setAutoRefreshEnabled(False)
@@ -337,7 +337,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.refresh()
         canvas.waitWhileRendering()
         # should be different - we should now render project layers
-        self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas))
+        self.assertFalse(self.canvasImageCheck('theme4', 'theme4', canvas, expect_fail=True))
 
         # set canvas to theme1
         canvas.setTheme('theme1')
@@ -390,7 +390,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         canvas.waitWhileRendering()
 
         # no annotation yet...
-        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
+        self.assertFalse(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas, expect_fail=True))
 
         annotation_layer = QgsProject.instance().mainAnnotationLayer()
         annotation_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
@@ -408,7 +408,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         self.assertTrue(self.canvasImageCheck('main_annotation_layer', 'main_annotation_layer', canvas))
         annotation_layer.clear()
 
-    def canvasImageCheck(self, name, reference_image, canvas):
+    def canvasImageCheck(self, name, reference_image, canvas, expect_fail=False):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'mapcanvas_' + name + ".png"
@@ -419,6 +419,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
         checker.setColorTolerance(2)
+        checker.setExpectFail(expect_fail)
         result = checker.runTest(name, 20)
         self.report += checker.report()
         print((self.report))

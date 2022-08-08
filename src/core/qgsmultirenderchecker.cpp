@@ -89,7 +89,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     mReport += checker.report( false );
   }
 
-  if ( !mResult && mIsCiRun )
+  if ( !mResult && !mExpectFail && mIsCiRun )
   {
     const auto constDartMeasurements = dartMeasurements;
     for ( const QgsDartMeasurement &measurement : constDartMeasurements )
@@ -113,7 +113,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 #endif
   }
 
-  if ( !mResult )
+  if ( !mResult && !mExpectFail )
   {
     const QDir reportDir = QgsRenderChecker::testReportDir();
     if ( !reportDir.exists() )
