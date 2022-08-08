@@ -138,6 +138,12 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 
     std::shared_ptr<QgsTransaction> transaction;
     transaction.reset( QgsTransaction::create( connectionString, providerKey ) );
+    if ( !transaction )
+    {
+      commitErrors << tr( "ERROR: data source '%1', is not available for transactions." ).arg( connectionString );
+      success = false;
+      break;
+    }
 
     QString errorMsg;
     if ( ! transaction->begin( errorMsg ) )
