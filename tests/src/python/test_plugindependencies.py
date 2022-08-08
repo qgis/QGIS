@@ -30,6 +30,7 @@ class PluginDependenciesTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Runs at start."""
+        super().setUpClass()
 
         QCoreApplication.setOrganizationName("QGIS")
         QCoreApplication.setOrganizationDomain("qgis.org")

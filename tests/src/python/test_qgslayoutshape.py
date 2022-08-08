@@ -34,6 +34,7 @@ class TestQgsLayoutShape(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         cls.item_class = QgsLayoutItemShape
 
     def testClipPath(self):

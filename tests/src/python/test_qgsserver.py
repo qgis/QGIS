@@ -124,6 +124,7 @@ class QgsServerTestBase(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         """Create the server instance"""
+        super().setUpClass()
         self.fontFamily = QgsFontUtils.standardTestFontFamily()
         QgsFontUtils.loadStandardTestFonts(['All'])
 
@@ -184,14 +185,13 @@ class QgsServerTestBase(unittest.TestCase):
     @classmethod
     def tearDownClass(self):
         """Cleanup env"""
-
-        super().tearDownClass()
         try:
             del os.environ["QGIS_SERVER_DISABLED_APIS"]
         except KeyError:
             pass
 
         self.temporary_dir.cleanup()
+        super().tearDownClass()
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""

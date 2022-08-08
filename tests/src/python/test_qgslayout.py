@@ -46,12 +46,14 @@ class TestQgsLayout(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         cls.basetestpath = tempfile.mkdtemp()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         shutil.rmtree(cls.basetestpath, True)
+        super().tearDownClass()
 
     def testReadWriteXml(self):
         p = QgsProject()

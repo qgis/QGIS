@@ -136,6 +136,7 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
+        super().setUpClass()
         cls.port = QGIS_POSTGRES_SERVER_PORT
         cls.username = 'username'
         cls.password = 'password'
@@ -185,6 +186,7 @@ class TestAuthManager(unittest.TestCase):
         time.sleep(2)
         rmtree(QGIS_AUTH_DB_DIR_PATH)
         rmtree(cls.tempfolder)
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""

@@ -94,6 +94,7 @@ class PyQgsOGRProvider(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
         cls.datasource = os.path.join(cls.basetestpath, 'test.csv')
@@ -108,6 +109,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         """Run after all tests"""
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
+        super().tearDownClass()
 
     def testUpdateMode(self):
 

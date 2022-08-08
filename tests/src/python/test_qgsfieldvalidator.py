@@ -32,6 +32,7 @@ class TestQgsFieldValidator(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests."""
+        super().setUpClass()
         testPath = TEST_DATA_DIR + '/' + 'bug_17878.gpkg'
         # Copy it
         tempdir = tempfile.mkdtemp()
@@ -44,6 +45,7 @@ class TestQgsFieldValidator(unittest.TestCase):
     def tearDownClass(cls):
         """Run after all tests."""
         cls.vl = None
+        super().tearDownClass()
 
     def _fld_checker(self, field):
         """

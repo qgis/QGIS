@@ -22,6 +22,7 @@ class TestQgsRangeWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
 
     def setUp(self):

@@ -38,6 +38,7 @@ class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QgsGui.editorWidgetRegistry().initEditors()
         # Create test layer for FeatureSourceTestCase
         cls.source = cls.getSource()
@@ -45,6 +46,7 @@ class TestQgsVectorLayerShapefile(unittest.TestCase, FeatureSourceTestCase):
     @classmethod
     def tearDownClass(cls):
         cls.source = None
+        super().tearDownClass()
 
     def treat_time_as_string(self):
         return True

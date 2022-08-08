@@ -60,6 +60,7 @@ class TestAuthManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
         """Run before all tests:
         Creates an auth configuration"""
         cls.username = 'username'
@@ -67,11 +68,6 @@ class TestAuthManager(unittest.TestCase):
         cls.dbname = 'test_basic'
         cls.hostname = 'localhost'
         cls.setUpAuth()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Run after all tests"""
-        pass
 
     def setUp(self):
         """Run before each test."""

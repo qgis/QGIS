@@ -22,6 +22,7 @@ class TestQgsShortcutsManager(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsWFSProviderGUI.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsWFSProviderGUI")
