@@ -1138,7 +1138,10 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
     bufferedLines << QgsGeometry::unaryUnion( parts );
   }
 
-  return QgsGeometry::collectGeometry( bufferedLines );
+  QgsGeometry res = QgsGeometry::collectGeometry( bufferedLines );
+  // happens on some GEOS versions...
+  res.removeDuplicateNodes();
+  return res;
 }
 
 QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, int segments ) const
