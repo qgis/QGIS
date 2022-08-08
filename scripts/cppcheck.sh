@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -eu
 
@@ -64,12 +64,12 @@ fi
 for category in "style" "performance" "portability"; do
     if grep "${category}," ${LOG_FILE} >/dev/null; then
         echo "INFO: Issues in '${category}' category found, but not considered as making script to fail:"
-        grep "${category}," ${LOG_FILE} | grep -v `printf -- "-e %s, " "${ERROR_CATEGORIES[@]}" `
+        grep "${category}," ${LOG_FILE} | grep -v $(printf -- "-e %s, " "${ERROR_CATEGORIES[@]}")
         echo ""
     fi
 done
 
-for category in "error" "warning" ${ERROR_CATEGORIES[@]}; do
+for category in "error" "warning" "${ERROR_CATEGORIES[@]}"; do
     if test "${category}" != ""; then
         if grep "${category}," ${LOG_FILE}  >/dev/null; then
             echo "ERROR: Issues in '${category}' category found:"
