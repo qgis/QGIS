@@ -84,7 +84,7 @@ bool QgsSpatiaLiteTransaction::executeSql( const QString &sql, QString &errorMsg
     emit dirtied( sql, name );
   }
 
-  QgsDebugMsg( QStringLiteral( "... ok" ) );
+  QgsDebugMsgLevel( QStringLiteral( "... ok" ), 2 );
   return true;
 }
 
