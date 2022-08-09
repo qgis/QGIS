@@ -37,12 +37,32 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   {
     mNearPlaneParameter->setValue( nearPlane );
   } );
+  mProjMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "origProjMatrix" ), camera->projectionMatrix() );
+  mMaterial->addParameter( mProjMatrixParameter );
+  connect( camera, &Qt3DRender::QCamera::projectionMatrixChanged, mProjMatrixParameter, [&]( const QMatrix4x4 & projectionMatrix )
+  {
+    mProjMatrixParameter->setValue( projectionMatrix );
+  } );
+  mAspectRatioParameter = new Qt3DRender::QParameter( QStringLiteral( "uAspectRatio" ), camera->aspectRatio() );
+  mMaterial->addParameter( mAspectRatioParameter );
+  connect( camera, &Qt3DRender::QCamera::aspectRatioChanged, mAspectRatioParameter, [&]( float ratio )
+  {
+    mAspectRatioParameter->setValue( ratio );
+  } );
+  mTanHalfFovParameter = new Qt3DRender::QParameter( QStringLiteral( "uTanHalfFov" ), tan( camera->fieldOfView() / 2 * M_PI / 180 ) );
+  mMaterial->addParameter( mTanHalfFovParameter );
+  connect( camera, &Qt3DRender::QCamera::fieldOfViewChanged, mTanHalfFovParameter, [&]( float fov )
+  {
+    mTanHalfFovParameter->setValue( tan( fov / 2 * M_PI / 180 ) );
+  } );
+
 
   QVariantList ssaoKernelValues;
 
   std::uniform_real_distribution<float> randomFloats( 0.0, 1.0 ); // random floats between [0.0, 1.0]
   std::default_random_engine generator;
-  for ( unsigned int i = 0; i < 64; ++i )
+  unsigned int kernelSize = 64;
+  for ( unsigned int i = 0; i < kernelSize; ++i )
   {
     QVector3D sample(
       randomFloats( generator ) * 2.0 - 1.0,
@@ -50,20 +70,33 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
       randomFloats( generator ) * 2.0 - 1.0
     );
     sample.normalize();
-    sample *= randomFloats( generator );
+    float scale = i / kernelSize;
+    scale = 0.1 + 0.9 * scale * scale;
+    sample *= scale;
     ssaoKernelValues.push_back( sample );
   }
 
+  // 4x4 array of random rotation vectors
+  QVariantList ssaoNoise;
+  for ( unsigned int i = 0; i < 16; ++i )
+  {
+    QVector3D sample(
+      randomFloats( generator ),
+      randomFloats( generator ),
+      0.0
+    );
+    ssaoNoise.push_back( sample );
+  }
   mAmbientOcclusionKernelParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoKernel[0]" ), ssaoKernelValues );
   mMaterial->addParameter( mAmbientOcclusionKernelParameter );
+
+  Qt3DRender::QParameter *noiseParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoNoise[0]" ), ssaoNoise );
+  mMaterial->addParameter( noiseParameter );
 
   mShadingFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "shadingFactor" ), 50.0f );
   mMaterial->addParameter( mShadingFactorParameter );
 
-  mDistanceAttenuationFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "distanceAttenuationFactor" ), 500.0f );
-  mMaterial->addParameter( mDistanceAttenuationFactorParameter );
-
-  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radiusParameter" ), 0.05f );
+  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radius" ), 10.0f );
   mMaterial->addParameter( mRadiusParameter );
 
   const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.vert" );
@@ -76,11 +109,6 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
 void QgsAmbientOcclusionRenderEntity::setShadingFactor( float factor )
 {
   mShadingFactorParameter->setValue( factor );
-}
-
-void QgsAmbientOcclusionRenderEntity::setDistanceAttenuationFactor( float factor )
-{
-  mDistanceAttenuationFactorParameter->setValue( factor );
 }
 
 void QgsAmbientOcclusionRenderEntity::setRadiusParameter( float radius )

@@ -723,11 +723,6 @@ void QgsShadowRenderingFrameGraph::setAmbientOcclusionShadingFactor( float facto
   mAmbientOcclusionShadingFactor = factor;
   mAmbientOcclusionRenderEntity->setShadingFactor( factor );
 }
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionDistanceAttenuationFactor( float factor )
-{
-  mAmbientOcclusionDistanceAttenuationFactor = factor;
-  mAmbientOcclusionRenderEntity->setDistanceAttenuationFactor( factor );
-}
 
 void QgsShadowRenderingFrameGraph::setAmbientOcclusionRadiusParameter( float radius )
 {

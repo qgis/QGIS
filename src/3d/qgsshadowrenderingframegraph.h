@@ -175,18 +175,6 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     float ambientOcclusionShadingFactor() const { return mAmbientOcclusionShadingFactor; }
 
     /**
-     * Sets the ambient occlusion distance attenuation factor parameter
-     * \since QGIS 3.28
-     */
-    void setAmbientOcclusionDistanceAttenuationFactor( float factor );
-
-    /**
-     * Returns the ambient occlusion distance attenuation factor parameter
-     * \since QGIS 3.28
-     */
-    float ambientOcclusionDistanceAttenuationFactor() const { return mAmbientOcclusionDistanceAttenuationFactor; }
-
-    /**
      * Sets the ambient occlusion radius parameter
      * \since QGIS 3.28
      */

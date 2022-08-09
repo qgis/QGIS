@@ -65,12 +65,6 @@ class _3D_EXPORT QgsAmbientOcclusionSettings
     //! Returns the shading factor of the ambient occlusion effect
     float shadingFactor() const { return mShadingFactor; }
 
-    //! Sets the distance attenuation factor of the ambient occlusion effect
-    void setDistanceAttenuationFactor( float factor ) { mDistanceAttenuationFactor = factor; }
-
-    //! Returns the distance attenuation factor of the ambient occlusion effect
-    float distanceAttenuationFactor() const { return mDistanceAttenuationFactor; }
-
     //! Sets the radius parameter of the ambient occlusion effect
     void setRadiusParameter( float radius ) { mRadiusParameter = radius; }
 
@@ -81,8 +75,7 @@ class _3D_EXPORT QgsAmbientOcclusionSettings
     bool mEnabled = false;
     bool mBlurEnabled = true;
     float mShadingFactor = 50.0f;
-    float mDistanceAttenuationFactor = 500.0f;
-    float mRadiusParameter = 0.05f;
+    float mRadiusParameter = 10.0f;
 };
 
 #endif // QGSAMBIENTOCCLUSIONSETTINGS_H

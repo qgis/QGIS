@@ -24,7 +24,6 @@ QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclus
   : mEnabled( other.mEnabled )
   , mBlurEnabled( other.mBlurEnabled )
   , mShadingFactor( other.mShadingFactor )
-  , mDistanceAttenuationFactor( other.mDistanceAttenuationFactor )
   , mRadiusParameter( other.mRadiusParameter )
 {
 
@@ -35,7 +34,6 @@ QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientO
   mEnabled = rhs.mEnabled;
   mBlurEnabled = rhs.mBlurEnabled;
   mShadingFactor = rhs.mShadingFactor;
-  mDistanceAttenuationFactor = rhs.mDistanceAttenuationFactor;
   mRadiusParameter = rhs.mRadiusParameter;
   return *this;
 }
@@ -45,8 +43,7 @@ void QgsAmbientOcclusionSettings::readXml( const QDomElement &element, const Qgs
   mEnabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mBlurEnabled = element.attribute( QStringLiteral( "blur-enabled" ), QStringLiteral( "1" ) ).toInt();
   mShadingFactor = element.attribute( QStringLiteral( "shading-factor" ), QStringLiteral( "50.0" ) ).toFloat();
-  mDistanceAttenuationFactor = element.attribute( QStringLiteral( "distance-attenuation-factor" ), QStringLiteral( "500.0" ) ).toFloat();
-  mRadiusParameter = element.attribute( QStringLiteral( "radius-parameter" ), QStringLiteral( "0.05" ) ).toFloat();
+  mRadiusParameter = element.attribute( QStringLiteral( "radius-parameter" ), QStringLiteral( "10" ) ).toFloat();
 
   Q_UNUSED( context );
 }
@@ -56,7 +53,6 @@ void QgsAmbientOcclusionSettings::writeXml( QDomElement &element, const QgsReadW
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled );
   element.setAttribute( QStringLiteral( "blur-enabled" ), mBlurEnabled );
   element.setAttribute( QStringLiteral( "shading-factor" ), mShadingFactor );
-  element.setAttribute( QStringLiteral( "distance-attenuation-factor" ), mDistanceAttenuationFactor );
   element.setAttribute( QStringLiteral( "radius-parameter" ), mRadiusParameter );
 
   Q_UNUSED( context );

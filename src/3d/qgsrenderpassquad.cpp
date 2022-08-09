@@ -74,29 +74,13 @@ QgsRenderPassQuad::QgsRenderPassQuad( QNode *parent )
 
   mMaterial = new Qt3DRender::QMaterial( this );
 
-  QVariantList ssaoKernelValues;
-
-  std::uniform_real_distribution<float> randomFloats( 0.0, 1.0 ); // random floats between [0.0, 1.0]
-  std::default_random_engine generator;
-  for ( unsigned int i = 0; i < 64; ++i )
-  {
-    QVector3D sample(
-      randomFloats( generator ) * 2.0 - 1.0,
-      randomFloats( generator ) * 2.0 - 1.0,
-      randomFloats( generator ) * 2.0 - 1.0
-    );
-    sample.normalize();
-    sample *= randomFloats( generator );
-    ssaoKernelValues.push_back( sample );
-  }
-
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( this );
   Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( this );
   Qt3DRender::QGraphicsApiFilter *graphicsApiFilter = technique->graphicsApiFilter();
   graphicsApiFilter->setApi( Qt3DRender::QGraphicsApiFilter::Api::OpenGL );
   graphicsApiFilter->setProfile( Qt3DRender::QGraphicsApiFilter::OpenGLProfile::CoreProfile );
-  graphicsApiFilter->setMajorVersion( 1 );
-  graphicsApiFilter->setMinorVersion( 5 );
+  graphicsApiFilter->setMajorVersion( 3 );
+  graphicsApiFilter->setMinorVersion( 1 );
   Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
   mShader = new Qt3DRender::QShaderProgram( this );
 
