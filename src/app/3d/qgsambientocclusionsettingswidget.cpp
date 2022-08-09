@@ -20,24 +20,22 @@ QgsAmbientOcclusionSettingsWidget::QgsAmbientOcclusionSettingsWidget( QWidget *p
 {
   setupUi( this );
 
-  mShadingFactorSpinBox->setToolTip( tr( "The strength of the shading applied, bigger values means more pronounced and darker colors." ) );
-  mRadiusParameterSpinBox->setToolTip( tr( "The radius of the neighborhood: bigger values mean objects further away will add to the occlusion." ) );
+  mIntensitySpinBox->setToolTip( tr( "The strength of the shading applied, bigger values means more pronounced and darker colors." ) );
+  mRadiusSpinBox->setToolTip( tr( "The radius of the neighborhood: bigger values mean objects further away will add to the occlusion." ) );
 }
 
 void QgsAmbientOcclusionSettingsWidget::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings )
 {
-  mAmbientOcclusionGroupBox->setChecked( settings.ambientOcclusionEnabled() );
-  mAmbientOcclusionBlurCheckbox->setChecked( settings.blurringEnabled() );
-  mShadingFactorSpinBox->setValue( settings.shadingFactor() );
-  mRadiusParameterSpinBox->setValue( settings.radiusParameter() );
+  mAmbientOcclusionGroupBox->setChecked( settings.isEnabled() );
+  mIntensitySpinBox->setValue( settings.intensity() );
+  mRadiusSpinBox->setValue( settings.radius() );
 }
 
 QgsAmbientOcclusionSettings QgsAmbientOcclusionSettingsWidget::toAmbientOcclusionSettings()
 {
   QgsAmbientOcclusionSettings settings;
-  settings.setAmbientOcclusionEnabled( mAmbientOcclusionGroupBox->isChecked() );
-  settings.setBlurringEnabled( mAmbientOcclusionBlurCheckbox->isChecked() );
-  settings.setShadingFactor( mShadingFactorSpinBox->value() );
-  settings.setRadiusParameter( mRadiusParameterSpinBox->value() );
+  settings.setEnabled( mAmbientOcclusionGroupBox->isChecked() );
+  settings.setIntensity( mIntensitySpinBox->value() );
+  settings.setRadius( mRadiusSpinBox->value() );
   return settings;
 }

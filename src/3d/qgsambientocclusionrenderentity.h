@@ -34,11 +34,11 @@ class QgsAmbientOcclusionRenderEntity : public QgsRenderPassQuad
     //! Constructor
     QgsAmbientOcclusionRenderEntity( Qt3DRender::QTexture2D *depthTexture, Qt3DRender::QCamera *camera, QNode *parent = nullptr );
 
-    //! Sets the shading factor for the ambient occlusion effect
-    void setShadingFactor( float factor );
+    //! Sets the intensity for the ambient occlusion effect
+    void setIntensity( float intensity );
 
-    //! Sets the radius parameter for the ambient occlusion effect
-    void setRadiusParameter( float radius );
+    //! Sets the radius for the ambient occlusion effect
+    void setRadius( float radius );
 
   private:
 
@@ -46,7 +46,7 @@ class QgsAmbientOcclusionRenderEntity : public QgsRenderPassQuad
     Qt3DRender::QParameter *mAmbientOcclusionKernelParameter = nullptr;
 
     // user configurable
-    Qt3DRender::QParameter *mShadingFactorParameter = nullptr;
+    Qt3DRender::QParameter *mIntensityParameter = nullptr;
     Qt3DRender::QParameter *mRadiusParameter = nullptr;
 
     // derived from camera parameters

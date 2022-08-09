@@ -711,23 +711,16 @@ void QgsShadowRenderingFrameGraph::setAmbientOcclusionEnabled( bool enabled )
   mPostprocessingEntity->setAmbientOcclusionEnabled( enabled );
 }
 
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionBlurEnabled( bool enabled )
+void QgsShadowRenderingFrameGraph::setAmbientOcclusionIntensity( float intensity )
 {
-  mAmbientOcclusionBlurEnabled = enabled;
-  mPostprocessingEntity->setAmbientOcclusionBlurEnabled( enabled );
-  mAmbientOcclusionBlurEntity->setEnabled( enabled );
+  mAmbientOcclusionIntensity = intensity;
+  mAmbientOcclusionRenderEntity->setIntensity( intensity );
 }
 
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionShadingFactor( float factor )
+void QgsShadowRenderingFrameGraph::setAmbientOcclusionRadius( float radius )
 {
-  mAmbientOcclusionShadingFactor = factor;
-  mAmbientOcclusionRenderEntity->setShadingFactor( factor );
-}
-
-void QgsShadowRenderingFrameGraph::setAmbientOcclusionRadiusParameter( float radius )
-{
-  mAmbientOcclusionRadiusParameter = radius;
-  mAmbientOcclusionRenderEntity->setRadiusParameter( radius );
+  mAmbientOcclusionRadius = radius;
+  mAmbientOcclusionRenderEntity->setRadius( radius );
 }
 
 void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )

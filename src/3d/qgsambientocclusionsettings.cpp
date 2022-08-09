@@ -22,9 +22,8 @@
 
 QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other )
   : mEnabled( other.mEnabled )
-  , mBlurEnabled( other.mBlurEnabled )
-  , mShadingFactor( other.mShadingFactor )
-  , mRadiusParameter( other.mRadiusParameter )
+  , mIntensity( other.mIntensity )
+  , mRadius( other.mRadius )
 {
 
 }
@@ -32,18 +31,16 @@ QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclus
 QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientOcclusionSettings const &rhs )
 {
   mEnabled = rhs.mEnabled;
-  mBlurEnabled = rhs.mBlurEnabled;
-  mShadingFactor = rhs.mShadingFactor;
-  mRadiusParameter = rhs.mRadiusParameter;
+  mIntensity = rhs.mIntensity;
+  mRadius = rhs.mRadius;
   return *this;
 }
 
 void QgsAmbientOcclusionSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mEnabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mBlurEnabled = element.attribute( QStringLiteral( "blur-enabled" ), QStringLiteral( "1" ) ).toInt();
-  mShadingFactor = element.attribute( QStringLiteral( "shading-factor" ), QStringLiteral( "50.0" ) ).toFloat();
-  mRadiusParameter = element.attribute( QStringLiteral( "radius-parameter" ), QStringLiteral( "10" ) ).toFloat();
+  mIntensity = element.attribute( QStringLiteral( "intensity" ), QStringLiteral( "1.0" ) ).toFloat();
+  mRadius = element.attribute( QStringLiteral( "radius" ), QStringLiteral( "10" ) ).toFloat();
 
   Q_UNUSED( context );
 }
@@ -51,9 +48,8 @@ void QgsAmbientOcclusionSettings::readXml( const QDomElement &element, const Qgs
 void QgsAmbientOcclusionSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "enabled" ), mEnabled );
-  element.setAttribute( QStringLiteral( "blur-enabled" ), mBlurEnabled );
-  element.setAttribute( QStringLiteral( "shading-factor" ), mShadingFactor );
-  element.setAttribute( QStringLiteral( "radius-parameter" ), mRadiusParameter );
+  element.setAttribute( QStringLiteral( "intensity" ), mIntensity );
+  element.setAttribute( QStringLiteral( "radius" ), mRadius );
 
   Q_UNUSED( context );
 }

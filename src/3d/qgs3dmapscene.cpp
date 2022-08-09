@@ -1109,10 +1109,9 @@ void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
 {
   QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
   QgsAmbientOcclusionSettings ambientOcclusionSettings = mMap.ambientOcclusionSettings();
-  shadowRenderingFrameGraph->setAmbientOcclusionEnabled( ambientOcclusionSettings.ambientOcclusionEnabled() );
-  shadowRenderingFrameGraph->setAmbientOcclusionBlurEnabled( ambientOcclusionSettings.blurringEnabled() );
-  shadowRenderingFrameGraph->setAmbientOcclusionShadingFactor( ambientOcclusionSettings.shadingFactor() );
-  shadowRenderingFrameGraph->setAmbientOcclusionRadiusParameter( ambientOcclusionSettings.radiusParameter() );
+  shadowRenderingFrameGraph->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
+  shadowRenderingFrameGraph->setAmbientOcclusionRadius( ambientOcclusionSettings.radius() );
+  shadowRenderingFrameGraph->setAmbientOcclusionIntensity( ambientOcclusionSettings.intensity() );
 }
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()

@@ -10,7 +10,7 @@ uniform vec3 ssaoKernel[64];  // Random sample vectors in a unit sphere
 const int kernelSize = 64;
 uniform vec3 ssaoNoise[16];  // 4x4 random noise pattern
 
-//uniform float	shadingFactor; // Amplification of shading
+uniform float	intensity;  // Amplification of shading
 uniform float	radius;     // Radius of neighborhood sphere (in world units)
 
 noperspective in vec3 vViewRay;   // Ray to far plane
@@ -72,5 +72,5 @@ void main()
 
     float ssao_res = ssao(originPos, noise);
 
-    fragColor = vec4(pow(ssao_res,0.7));
+    fragColor = vec4(pow(ssao_res,intensity));
 }

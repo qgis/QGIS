@@ -151,40 +151,28 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     bool ambientOcclusionEnabled() const { return mAmbientOcclusionEnabled; }
 
     /**
-     * Sets whether Screen Space Ambient Occlusion blurring pass will be enabled
+     * Sets the ambient occlusion intensity
      * \since QGIS 3.28
      */
-    void setAmbientOcclusionBlurEnabled( bool enabled );
+    void setAmbientOcclusionIntensity( float intensity );
 
     /**
-     * Returns whether Screen Space Ambient Occlusion blurring pass is enabled
+     * Returns the ambient occlusion intensity
      * \since QGIS 3.28
      */
-    bool ambientOcclusionBlurEnabled() const { return mAmbientOcclusionBlurEnabled; }
+    float ambientOcclusionIntensity() const { return mAmbientOcclusionIntensity; }
 
     /**
-     * Sets the ambient occlusion shading factor parameter
+     * Sets the ambient occlusion radius
      * \since QGIS 3.28
      */
-    void setAmbientOcclusionShadingFactor( float factor );
+    void setAmbientOcclusionRadius( float radius );
 
     /**
-     * Returns the ambient occlusion shading factor parameter
+     * Returns the ambient occlusion radius
      * \since QGIS 3.28
      */
-    float ambientOcclusionShadingFactor() const { return mAmbientOcclusionShadingFactor; }
-
-    /**
-     * Sets the ambient occlusion radius parameter
-     * \since QGIS 3.28
-     */
-    void setAmbientOcclusionRadiusParameter( float radius );
-
-    /**
-     * Returns the ambient occlusion radius parameter
-     * \since QGIS 3.28
-     */
-    float ambientOcclusionRadiusParameter() const { return mAmbientOcclusionRadiusParameter; }
+    float ambientOcclusionRadius() const { return mAmbientOcclusionRadius; }
 
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
@@ -301,10 +289,8 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 
     // Ambient occlusion related settings
     bool mAmbientOcclusionEnabled = false;
-    bool mAmbientOcclusionBlurEnabled = true;
-    float mAmbientOcclusionShadingFactor = 50.0f;
-    float mAmbientOcclusionDistanceAttenuationFactor = 500.0f;
-    float mAmbientOcclusionRadiusParameter = 0.05f;
+    float mAmbientOcclusionIntensity = 1.0f;
+    float mAmbientOcclusionRadius = 10.f;
 
     QSize mSize = QSize( 1024, 768 );
 

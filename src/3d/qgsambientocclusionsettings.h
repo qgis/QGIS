@@ -48,34 +48,27 @@ class _3D_EXPORT QgsAmbientOcclusionSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Sets whether ambient occlusion effect is enabled
-    void setAmbientOcclusionEnabled( bool enabled ) { mEnabled = enabled; }
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     //! Returns whether ambient occlusion effect is enabled
-    bool ambientOcclusionEnabled() const { return mEnabled; }
-
-    //! Sets whether the ambient occlusion texture will be blurred
-    void setBlurringEnabled( bool enabled ) { mBlurEnabled = enabled; }
-
-    //! Retuens whether the ambient occlusion texture is blurred
-    bool blurringEnabled() const { return mBlurEnabled; }
+    bool isEnabled() const { return mEnabled; }
 
     //! Sets the shading factor of the ambient occlusion effect
-    void setShadingFactor( float factor ) { mShadingFactor = factor; }
+    void setIntensity( float factor ) { mIntensity = factor; }
 
     //! Returns the shading factor of the ambient occlusion effect
-    float shadingFactor() const { return mShadingFactor; }
+    float intensity() const { return mIntensity; }
 
     //! Sets the radius parameter of the ambient occlusion effect
-    void setRadiusParameter( float radius ) { mRadiusParameter = radius; }
+    void setRadius( float radius ) { mRadius = radius; }
 
     //! Returns the radius parameter of the ambient occlusion effect
-    float radiusParameter() const { return mRadiusParameter; }
+    float radius() const { return mRadius; }
 
   private:
     bool mEnabled = false;
-    bool mBlurEnabled = true;
-    float mShadingFactor = 50.0f;
-    float mRadiusParameter = 10.0f;
+    float mIntensity = 1.0f;
+    float mRadius = 10.0f;
 };
 
 #endif // QGSAMBIENTOCCLUSIONSETTINGS_H

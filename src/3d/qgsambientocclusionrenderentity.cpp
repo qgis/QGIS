@@ -56,7 +56,6 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
     mTanHalfFovParameter->setValue( tan( fov / 2 * M_PI / 180 ) );
   } );
 
-
   QVariantList ssaoKernelValues;
 
   std::uniform_real_distribution<float> randomFloats( 0.0, 1.0 ); // random floats between [0.0, 1.0]
@@ -93,8 +92,8 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   Qt3DRender::QParameter *noiseParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoNoise[0]" ), ssaoNoise );
   mMaterial->addParameter( noiseParameter );
 
-  mShadingFactorParameter = new Qt3DRender::QParameter( QStringLiteral( "shadingFactor" ), 50.0f );
-  mMaterial->addParameter( mShadingFactorParameter );
+  mIntensityParameter = new Qt3DRender::QParameter( QStringLiteral( "intensity" ), 1.0f );
+  mMaterial->addParameter( mIntensityParameter );
 
   mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radius" ), 10.0f );
   mMaterial->addParameter( mRadiusParameter );
@@ -106,12 +105,12 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
 }
 
-void QgsAmbientOcclusionRenderEntity::setShadingFactor( float factor )
+void QgsAmbientOcclusionRenderEntity::setIntensity( float intensity )
 {
-  mShadingFactorParameter->setValue( factor );
+  mIntensityParameter->setValue( intensity );
 }
 
-void QgsAmbientOcclusionRenderEntity::setRadiusParameter( float radius )
+void QgsAmbientOcclusionRenderEntity::setRadius( float radius )
 {
   mRadiusParameter->setValue( radius );
 }

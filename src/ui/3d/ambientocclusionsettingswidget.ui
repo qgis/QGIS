@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>185</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -35,32 +35,34 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="0">
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mIntensitySpinBox">
+        <property name="decimals">
+         <number>1</number>
+        </property>
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>3.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Shading factor</string>
+         <string>Intensity</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QCheckBox" name="mAmbientOcclusionBlurCheckbox">
-        <property name="text">
-         <string>Enable Ambient Occlusion blurring</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QgsDoubleSpinBox" name="mShadingFactorSpinBox">
-        <property name="maximum">
-         <double>100000.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsDoubleSpinBox" name="mRadiusParameterSpinBox">
+      <item row="0" column="1">
+       <widget class="QgsDoubleSpinBox" name="mRadiusSpinBox">
         <property name="suffix">
          <string> map units</string>
         </property>
@@ -81,10 +83,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Neighborhood radius</string>
+         <string>Radius</string>
         </property>
        </widget>
       </item>
@@ -102,9 +104,8 @@
  </customwidgets>
  <tabstops>
   <tabstop>mAmbientOcclusionGroupBox</tabstop>
-  <tabstop>mAmbientOcclusionBlurCheckbox</tabstop>
-  <tabstop>mRadiusParameterSpinBox</tabstop>
-  <tabstop>mShadingFactorSpinBox</tabstop>
+  <tabstop>mRadiusSpinBox</tabstop>
+  <tabstop>mIntensitySpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
