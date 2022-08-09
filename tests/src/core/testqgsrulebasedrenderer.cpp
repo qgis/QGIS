@@ -164,7 +164,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
     void test_many_rules_expression_filter()
     {
 
-      QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "point?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsRenderContext ctx; // dummy render context
       ctx.expressionContext().setFields( layer->fields() );
 
@@ -490,7 +490,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
 
-      QgsRuleBasedRenderer *renderer = new QgsRuleBasedRenderer( rootrule );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootrule );
 
       QgsMapSettings mapsettings;
       mapsettings.setOutputSize( QSize( 400, 400 ) );
@@ -631,7 +631,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -695,7 +695,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -750,7 +750,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr<QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule>( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -826,7 +826,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -909,7 +909,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -972,7 +972,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       QgsRuleBasedRenderer::Rule *r2 = new QgsRuleBasedRenderer::Rule( sym2, 0, 0, "\"id\" = 2" );
       QgsRuleBasedRenderer::Rule *r3 = new QgsRuleBasedRenderer::Rule( sym3, 0, 0, "ELSE" );
 
-      QgsRuleBasedRenderer::Rule *rootrule = new QgsRuleBasedRenderer::Rule( nullptr );
+      std::unique_ptr< QgsRuleBasedRenderer::Rule > rootrule = std::make_unique< QgsRuleBasedRenderer::Rule >( nullptr );
       rootrule->appendChild( r1 );
       rootrule->appendChild( r2 );
       rootrule->appendChild( r3 );
@@ -1096,7 +1096,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
     void testLegendKeyToExpression()
     {
       QgsRuleBasedRenderer::Rule *rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      QgsRuleBasedRenderer *renderer = new QgsRuleBasedRenderer( rootRule );
+      std::unique_ptr< QgsRuleBasedRenderer > renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
 
       bool ok = false;
       QString exp = renderer->legendKeyToExpression( "xxxx", nullptr, ok );
@@ -1160,7 +1160,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
 
       // else rules
       rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      renderer = new QgsRuleBasedRenderer( rootRule );
+      renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
 
       rule2 = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, "\"field_name\" = 5" );
       rule3 = new QgsRuleBasedRenderer::Rule( nullptr, 2000, 0, "\"field_name\" = 6" );
@@ -1196,7 +1196,7 @@ class TestQgsRuleBasedRenderer: public QgsTest
       // isolated ELSE rule, with no siblings
 
       rootRule = new QgsRuleBasedRenderer::Rule( nullptr );
-      renderer = new QgsRuleBasedRenderer( rootRule );
+      renderer = std::make_unique< QgsRuleBasedRenderer >( rootRule );
 
       rule2 = new QgsRuleBasedRenderer::Rule( nullptr, 0, 0, "\"field_name\" = 5" );
       rule3 = new QgsRuleBasedRenderer::Rule( nullptr, 2000, 0, "\"field_name\" = 6" );
