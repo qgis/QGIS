@@ -474,7 +474,8 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
         << QStringLiteral( "mssql" )
         << QStringLiteral( "ogr" )
         << QStringLiteral( "hana" )
-        << QStringLiteral( "spatialite" ), this );
+        << QStringLiteral( "spatialite" )
+        << QStringLiteral( "oracle" ), this );
     widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
     widget->setAcceptButtonVisible( true );
 
@@ -489,7 +490,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
       if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
       {
         if ( sink->hasGeometry() )
-          geomColumn = QStringLiteral( "geom" );
+          geomColumn = widget->dataProviderKey() == QLatin1String( "oracle" ) ? QStringLiteral( "GEOM" ) : QStringLiteral( "geom" );
       }
 
       if ( widget->dataProviderKey() == QLatin1String( "ogr" ) )
