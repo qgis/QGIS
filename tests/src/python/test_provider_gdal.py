@@ -258,9 +258,13 @@ class PyQgsGdalProvider(unittest.TestCase):
         """Test qgsgdalprovider.cpp sanitizeVRTFile() / workaround for https://github.com/qgis/QGIS/issues/49285 """
 
         tmp_dir = QTemporaryDir()
-        vrtfilename = os.path.join(tmp_dir.path(), 'out.vrt')
+        tmpfilename = os.path.join(tmp_dir.path(), 'tmp.tif')
         path = os.path.join(unitTestDataPath(), 'landsat_4326.tif')
-        ds = gdal.BuildVRT(vrtfilename, [path])
+        tmp_ds = gdal.Translate(tmpfilename, path, options='-outsize 1024 0')
+        tmp_ds.BuildOverviews('NEAR', [2])
+        tmp_ds = None
+        vrtfilename = os.path.join(tmp_dir.path(), 'out.vrt')
+        ds = gdal.BuildVRT(vrtfilename, [tmpfilename])
         ds = None
         assert 'OverviewList' in open(vrtfilename, 'rt').read()
 
