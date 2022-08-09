@@ -72,7 +72,7 @@ namespace QgsVirtualLayerQueryParser
 
     // look for special comments in SQL
     // a column name followed by /*:type*/
-    const QRegularExpression rx( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", QRegularExpression::CaseInsensitiveOption );
+    const thread_local QRegularExpression rx( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", QRegularExpression::CaseInsensitiveOption );
     int pos = 0;
 
     QRegularExpressionMatch match = rx.match( query, pos );
@@ -106,7 +106,7 @@ namespace QgsVirtualLayerQueryParser
   void setColumnDefType( const QString &columnType, ColumnDef &d )
   {
     // geometry type
-    const QRegularExpression geometryTypeRx( "\\(([0-9]+),([0-9]+)\\)" );
+    const thread_local QRegularExpression geometryTypeRx( "\\(([0-9]+),([0-9]+)\\)" );
 
     // see qgsvirtuallayersqlitemodule for possible declared types
     // the type returned by PRAGMA table_info will be either
