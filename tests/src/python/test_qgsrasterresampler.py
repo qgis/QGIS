@@ -20,6 +20,7 @@ import tempfile
 import qgis  # NOQA
 
 import os
+import shutil
 
 from qgis.PyQt.QtGui import qRed
 
@@ -48,268 +49,276 @@ class TestQgsRasterResampler(unittest.TestCase):
         self.assertEqual(res, expected)
 
     def testBilinearResample(self):
-        path = os.path.join(unitTestDataPath(), 'landsat.tif')
-        raster_layer = QgsRasterLayer(path, 'test')
-        self.assertTrue(raster_layer.isValid())
+        with tempfile.TemporaryDirectory() as dest_dir:
+            path = os.path.join(unitTestDataPath(), 'landsat.tif')
+            dest_path = shutil.copy(path, os.path.join(dest_dir, 'landsat.tif'))
 
-        extent = QgsRectangle(785994.37761193525511771,
-                              3346249.2209800467826426,
-                              786108.49096253968309611,
-                              3346362.94137834152206779)
+            raster_layer = QgsRasterLayer(dest_path, 'test')
+            raster_layer.dataProvider().setNoDataValue(1, -9999)
+            self.assertTrue(raster_layer.isValid())
 
-        renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
-        filter = QgsRasterResampleFilter(renderer)
+            extent = QgsRectangle(785994.37761193525511771,
+                                  3346249.2209800467826426,
+                                  786108.49096253968309611,
+                                  3346362.94137834152206779)
 
-        # default (nearest neighbour) resampling
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[124, 127], [125, 126]])
+            renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
+            filter = QgsRasterResampleFilter(renderer)
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block, [[124, 124, 127, 127],
-                                        [124, 124, 127, 127],
-                                        [125, 125, 126, 126],
-                                        [125, 125, 126, 126]]
-                                )
+            # default (nearest neighbour) resampling
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[124, 127], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block, [[124, 124, 124, 124, 127, 127, 127, 127],
-                                        [124, 124, 124, 124, 127, 127, 127, 127],
-                                        [124, 124, 124, 124, 127, 127, 127, 127],
-                                        [124, 124, 124, 124, 127, 127, 127, 127],
-                                        [125, 125, 125, 125, 126, 126, 126, 126],
-                                        [125, 125, 125, 125, 126, 126, 126, 126],
-                                        [125, 125, 125, 125, 126, 126, 126, 126],
-                                        [125, 125, 125, 125, 126, 126, 126, 126]])
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block, [[124, 124, 127, 127],
+                                            [124, 124, 127, 127],
+                                            [125, 125, 126, 126],
+                                            [125, 125, 126, 126]]
+                                    )
 
-        # with resampling
-        filter.setZoomedInResampler(QgsBilinearRasterResampler())
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[124, 127], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block, [[124, 124, 124, 124, 127, 127, 127, 127],
+                                            [124, 124, 124, 124, 127, 127, 127, 127],
+                                            [124, 124, 124, 124, 127, 127, 127, 127],
+                                            [124, 124, 124, 124, 127, 127, 127, 127],
+                                            [125, 125, 125, 125, 126, 126, 126, 126],
+                                            [125, 125, 125, 125, 126, 126, 126, 126],
+                                            [125, 125, 125, 125, 126, 126, 126, 126],
+                                            [125, 125, 125, 125, 126, 126, 126, 126]])
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[124, 124, 126, 126],
-                                 [124, 124, 125, 126],
-                                 [124, 124, 125, 126],
-                                 [125, 125, 125, 126]]
-                                )
+            # with resampling
+            filter.setZoomedInResampler(QgsBilinearRasterResampler())
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[124, 127], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[124, 124, 124, 125, 125, 126, 126, 126],
-                                 [124, 124, 124, 125, 125, 126, 126, 126],
-                                 [124, 124, 124, 124, 125, 125, 126, 126],
-                                 [124, 124, 124, 124, 125, 125, 126, 126],
-                                 [124, 124, 124, 124, 125, 125, 126, 126],
-                                 [124, 124, 124, 124, 125, 125, 126, 126],
-                                 [125, 125, 125, 125, 125, 125, 126, 126],
-                                 [125, 125, 125, 125, 125, 125, 126, 126]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[124, 124, 126, 126],
+                                     [124, 124, 125, 126],
+                                     [124, 124, 125, 126],
+                                     [125, 125, 125, 126]]
+                                    )
 
-        # with oversampling
-        extent = QgsRectangle(785878.92593475803732872, 3346136.27493690419942141, 786223.56509550288319588, 3346477.7564090033993125)
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[127, 126], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[124, 124, 124, 125, 125, 126, 126, 126],
+                                     [124, 124, 124, 125, 125, 126, 126, 126],
+                                     [124, 124, 124, 124, 125, 125, 126, 126],
+                                     [124, 124, 124, 124, 125, 125, 126, 126],
+                                     [124, 124, 124, 124, 125, 125, 126, 126],
+                                     [124, 124, 124, 124, 125, 125, 126, 126],
+                                     [125, 125, 125, 125, 125, 125, 126, 126],
+                                     [125, 125, 125, 125, 125, 125, 126, 126]]
+                                    )
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[125, 127, 127, 127],
-                                 [126, 127, 127, 126],
-                                 [125, 126, 126, 126],
-                                 [127, 125, 125, 125]]
-                                )
+            # with oversampling
+            extent = QgsRectangle(785878.92593475803732872, 3346136.27493690419942141, 786223.56509550288319588, 3346477.7564090033993125)
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[127, 126], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[126, 126, 126, 126, 125, 125, 125, 126],
-                                 [126, 126, 125, 125, 125, 126, 126, 126],
-                                 [126, 125, 124, 124, 125, 126, 126, 126],
-                                 [126, 125, 124, 124, 125, 126, 126, 126],
-                                 [125, 125, 124, 124, 124, 126, 126, 126],
-                                 [125, 125, 125, 125, 125, 126, 126, 126],
-                                 [125, 125, 125, 125, 125, 126, 126, 126],
-                                 [125, 125, 126, 126, 125, 125, 125, 125]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[125, 127, 127, 127],
+                                     [126, 127, 127, 126],
+                                     [125, 126, 126, 126],
+                                     [127, 125, 125, 125]]
+                                    )
 
-        filter.setMaxOversampling(2)
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[127, 126], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[126, 126, 126, 126, 125, 125, 125, 126],
+                                     [126, 126, 125, 125, 125, 126, 126, 126],
+                                     [126, 125, 124, 124, 125, 126, 126, 126],
+                                     [126, 125, 124, 124, 125, 126, 126, 126],
+                                     [125, 125, 124, 124, 124, 126, 126, 126],
+                                     [125, 125, 125, 125, 125, 126, 126, 126],
+                                     [125, 125, 125, 125, 125, 126, 126, 126],
+                                     [125, 125, 126, 126, 125, 125, 125, 125]]
+                                    )
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[125, 127, 127, 127],
-                                 [126, 127, 127, 126],
-                                 [125, 126, 126, 126],
-                                 [127, 125, 125, 125]]
-                                )
+            filter.setMaxOversampling(2)
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[127, 126], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[126, 126, 126, 126, 125, 125, 125, 126],
-                                 [126, 126, 125, 125, 125, 126, 126, 126],
-                                 [126, 125, 124, 124, 125, 126, 126, 126],
-                                 [126, 125, 124, 124, 125, 126, 126, 126],
-                                 [125, 125, 124, 124, 124, 126, 126, 126],
-                                 [125, 125, 125, 125, 125, 126, 126, 126],
-                                 [125, 125, 125, 125, 125, 126, 126, 126],
-                                 [125, 125, 126, 126, 125, 125, 125, 125]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[125, 127, 127, 127],
+                                     [126, 127, 127, 126],
+                                     [125, 126, 126, 126],
+                                     [127, 125, 125, 125]]
+                                    )
 
-        filter.setMaxOversampling(4)
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[127, 126], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[126, 126, 126, 126, 125, 125, 125, 126],
+                                     [126, 126, 125, 125, 125, 126, 126, 126],
+                                     [126, 125, 124, 124, 125, 126, 126, 126],
+                                     [126, 125, 124, 124, 125, 126, 126, 126],
+                                     [125, 125, 124, 124, 124, 126, 126, 126],
+                                     [125, 125, 125, 125, 125, 126, 126, 126],
+                                     [125, 125, 125, 125, 125, 126, 126, 126],
+                                     [125, 125, 126, 126, 125, 125, 125, 125]]
+                                    )
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[125, 127, 127, 127],
-                                 [126, 127, 127, 126],
-                                 [125, 126, 126, 126],
-                                 [127, 125, 125, 125]]
-                                )
+            filter.setMaxOversampling(4)
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[127, 126], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[126, 126, 126, 126, 125, 125, 125, 126],
-                                 [126, 126, 125, 125, 125, 126, 126, 126],
-                                 [126, 125, 124, 124, 125, 126, 126, 126],
-                                 [126, 125, 124, 124, 125, 126, 126, 126],
-                                 [125, 125, 124, 124, 124, 126, 126, 126],
-                                 [125, 125, 125, 125, 125, 126, 126, 126],
-                                 [125, 125, 125, 125, 125, 126, 126, 126],
-                                 [125, 125, 126, 126, 125, 125, 125, 125]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[125, 127, 127, 127],
+                                     [126, 127, 127, 126],
+                                     [125, 126, 126, 126],
+                                     [127, 125, 125, 125]]
+                                    )
+
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[126, 126, 126, 126, 125, 125, 125, 126],
+                                     [126, 126, 125, 125, 125, 126, 126, 126],
+                                     [126, 125, 124, 124, 125, 126, 126, 126],
+                                     [126, 125, 124, 124, 125, 126, 126, 126],
+                                     [125, 125, 124, 124, 124, 126, 126, 126],
+                                     [125, 125, 125, 125, 125, 126, 126, 126],
+                                     [125, 125, 125, 125, 125, 126, 126, 126],
+                                     [125, 125, 126, 126, 125, 125, 125, 125]]
+                                    )
 
     def testCubicResample(self):
-        path = os.path.join(unitTestDataPath(), 'landsat.tif')
-        raster_layer = QgsRasterLayer(path, 'test')
-        self.assertTrue(raster_layer.isValid())
+        with tempfile.TemporaryDirectory() as dest_dir:
+            path = os.path.join(unitTestDataPath(), 'landsat.tif')
+            dest_path = shutil.copy(path, os.path.join(dest_dir, 'landsat.tif'))
 
-        extent = QgsRectangle(785994.37761193525511771,
-                              3346249.2209800467826426,
-                              786108.49096253968309611,
-                              3346362.94137834152206779)
+            raster_layer = QgsRasterLayer(dest_path, 'test')
+            raster_layer.dataProvider().setNoDataValue(1, -9999)
+            self.assertTrue(raster_layer.isValid())
 
-        renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
-        filter = QgsRasterResampleFilter(renderer)
+            extent = QgsRectangle(785994.37761193525511771,
+                                  3346249.2209800467826426,
+                                  786108.49096253968309611,
+                                  3346362.94137834152206779)
 
-        # default (nearest neighbour) resampling
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[124, 127], [125, 126]])
+            renderer = QgsSingleBandGrayRenderer(raster_layer.dataProvider(), 1)
+            filter = QgsRasterResampleFilter(renderer)
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block, [[124, 124, 127, 127],
-                                        [124, 124, 127, 127],
-                                        [125, 125, 126, 126],
-                                        [125, 125, 126, 126]]
-                                )
+            # default (nearest neighbour) resampling
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[124, 127], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block, [[124, 124, 124, 124, 127, 127, 127, 127],
-                                        [124, 124, 124, 124, 127, 127, 127, 127],
-                                        [124, 124, 124, 124, 127, 127, 127, 127],
-                                        [124, 124, 124, 124, 127, 127, 127, 127],
-                                        [125, 125, 125, 125, 126, 126, 126, 126],
-                                        [125, 125, 125, 125, 126, 126, 126, 126],
-                                        [125, 125, 125, 125, 126, 126, 126, 126],
-                                        [125, 125, 125, 125, 126, 126, 126, 126]])
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block, [[124, 124, 127, 127],
+                                            [124, 124, 127, 127],
+                                            [125, 125, 126, 126],
+                                            [125, 125, 126, 126]]
+                                    )
 
-        # with resampling
-        filter.setZoomedInResampler(QgsCubicRasterResampler())
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[124, 127], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block, [[124, 124, 124, 124, 127, 127, 127, 127],
+                                            [124, 124, 124, 124, 127, 127, 127, 127],
+                                            [124, 124, 124, 124, 127, 127, 127, 127],
+                                            [124, 124, 124, 124, 127, 127, 127, 127],
+                                            [125, 125, 125, 125, 126, 126, 126, 126],
+                                            [125, 125, 125, 125, 126, 126, 126, 126],
+                                            [125, 125, 125, 125, 126, 126, 126, 126],
+                                            [125, 125, 125, 125, 126, 126, 126, 126]])
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[124, 125, 127, 127],
-                                 [124, 125, 126, 127],
-                                 [125, 125, 126, 126],
-                                 [125, 125, 126, 126]]
-                                )
+            # with resampling
+            filter.setZoomedInResampler(QgsCubicRasterResampler())
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[124, 127], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[125, 124, 124, 125, 126, 127, 127, 127],
-                                 [125, 124, 124, 125, 126, 127, 127, 127],
-                                 [125, 124, 124, 125, 126, 127, 127, 127],
-                                 [125, 124, 124, 125, 126, 126, 127, 127],
-                                 [125, 125, 125, 125, 126, 126, 126, 126],
-                                 [125, 125, 125, 125, 126, 126, 126, 126],
-                                 [125, 125, 125, 125, 126, 126, 126, 126],
-                                 [125, 125, 125, 125, 126, 126, 126, 126]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[124, 125, 127, 127],
+                                     [124, 125, 126, 127],
+                                     [125, 125, 126, 126],
+                                     [125, 125, 126, 126]]
+                                    )
 
-        # with oversampling
-        extent = QgsRectangle(785878.92593475803732872, 3346136.27493690419942141, 786223.56509550288319588, 3346477.7564090033993125)
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[127, 126], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[125, 124, 124, 125, 126, 127, 127, 127],
+                                     [125, 124, 124, 125, 126, 127, 127, 127],
+                                     [125, 124, 124, 125, 126, 127, 127, 127],
+                                     [125, 124, 124, 125, 126, 126, 127, 127],
+                                     [125, 125, 125, 125, 126, 126, 126, 126],
+                                     [125, 125, 125, 125, 126, 126, 126, 126],
+                                     [125, 125, 125, 125, 126, 126, 126, 126],
+                                     [125, 125, 125, 125, 126, 126, 126, 126]]
+                                    )
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[125, 127, 127, 127],
-                                 [126, 127, 127, 126],
-                                 [125, 126, 126, 126],
-                                 [127, 125, 125, 125]]
-                                )
+            # with oversampling
+            extent = QgsRectangle(785878.92593475803732872, 3346136.27493690419942141, 786223.56509550288319588, 3346477.7564090033993125)
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[127, 126], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[127, 126, 127, 126, 126, 125, 126, 126],
-                                 [127, 127, 127, 126, 126, 126, 126, 126],
-                                 [126, 127, 125, 125, 126, 127, 127, 127],
-                                 [126, 126, 126, 124, 126, 127, 126, 127],
-                                 [126, 126, 125, 124, 125, 126, 126, 127],
-                                 [126, 126, 125, 125, 125, 126, 127, 127],
-                                 [126, 125, 127, 125, 125, 127, 128, 126],
-                                 [126, 125, 127, 127, 126, 125, 125, 126]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[125, 127, 127, 127],
+                                     [126, 127, 127, 126],
+                                     [125, 126, 126, 126],
+                                     [127, 125, 125, 125]]
+                                    )
 
-        filter.setMaxOversampling(2)
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[127, 126], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[127, 126, 127, 126, 126, 125, 126, 126],
+                                     [127, 127, 127, 126, 126, 126, 126, 126],
+                                     [126, 127, 125, 125, 126, 127, 127, 127],
+                                     [126, 126, 126, 124, 126, 127, 126, 127],
+                                     [126, 126, 125, 124, 125, 126, 126, 127],
+                                     [126, 126, 125, 125, 125, 126, 127, 127],
+                                     [126, 125, 127, 125, 125, 127, 128, 126],
+                                     [126, 125, 127, 127, 126, 125, 125, 126]]
+                                    )
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[125, 127, 127, 127],
-                                 [126, 127, 127, 126],
-                                 [125, 126, 126, 126],
-                                 [127, 125, 125, 125]]
-                                )
+            filter.setMaxOversampling(2)
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[127, 126], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[127, 126, 127, 126, 126, 125, 126, 126],
-                                 [127, 127, 127, 126, 126, 126, 126, 126],
-                                 [126, 127, 125, 125, 126, 127, 127, 127],
-                                 [126, 126, 126, 124, 126, 127, 126, 127],
-                                 [126, 126, 125, 124, 125, 126, 126, 127],
-                                 [126, 126, 125, 125, 125, 126, 127, 127],
-                                 [126, 125, 127, 125, 125, 127, 128, 126],
-                                 [126, 125, 127, 127, 126, 125, 125, 126]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[125, 127, 127, 127],
+                                     [126, 127, 127, 126],
+                                     [125, 126, 126, 126],
+                                     [127, 125, 125, 125]]
+                                    )
 
-        filter.setMaxOversampling(4)
-        block = filter.block(1, extent, 2, 2)
-        self.checkBlockContents(block, [[127, 126], [125, 126]])
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[127, 126, 127, 126, 126, 125, 126, 126],
+                                     [127, 127, 127, 126, 126, 126, 126, 126],
+                                     [126, 127, 125, 125, 126, 127, 127, 127],
+                                     [126, 126, 126, 124, 126, 127, 126, 127],
+                                     [126, 126, 125, 124, 125, 126, 126, 127],
+                                     [126, 126, 125, 125, 125, 126, 127, 127],
+                                     [126, 125, 127, 125, 125, 127, 128, 126],
+                                     [126, 125, 127, 127, 126, 125, 125, 126]]
+                                    )
 
-        block = filter.block(1, extent, 4, 4)
-        self.checkBlockContents(block,
-                                [[125, 127, 127, 127],
-                                 [126, 127, 127, 126],
-                                 [125, 126, 126, 126],
-                                 [127, 125, 125, 125]]
-                                )
+            filter.setMaxOversampling(4)
+            block = filter.block(1, extent, 2, 2)
+            self.checkBlockContents(block, [[127, 126], [125, 126]])
 
-        block = filter.block(1, extent, 8, 8)
-        self.checkBlockContents(block,
-                                [[127, 126, 127, 126, 126, 125, 126, 126],
-                                 [127, 127, 127, 126, 126, 126, 126, 126],
-                                 [126, 127, 125, 125, 126, 127, 127, 127],
-                                 [126, 126, 126, 124, 126, 127, 126, 127],
-                                 [126, 126, 125, 124, 125, 126, 126, 127],
-                                 [126, 126, 125, 125, 125, 126, 127, 127],
-                                 [126, 125, 127, 125, 125, 127, 128, 126],
-                                 [126, 125, 127, 127, 126, 125, 125, 126]]
-                                )
+            block = filter.block(1, extent, 4, 4)
+            self.checkBlockContents(block,
+                                    [[125, 127, 127, 127],
+                                     [126, 127, 127, 126],
+                                     [125, 126, 126, 126],
+                                     [127, 125, 125, 125]]
+                                    )
+
+            block = filter.block(1, extent, 8, 8)
+            self.checkBlockContents(block,
+                                    [[127, 126, 127, 126, 126, 125, 126, 126],
+                                     [127, 127, 127, 126, 126, 126, 126, 126],
+                                     [126, 127, 125, 125, 126, 127, 127, 127],
+                                     [126, 126, 126, 124, 126, 127, 126, 127],
+                                     [126, 126, 125, 124, 125, 126, 126, 127],
+                                     [126, 126, 125, 125, 125, 126, 127, 127],
+                                     [126, 125, 127, 125, 125, 127, 128, 126],
+                                     [126, 125, 127, 127, 126, 125, 125, 126]]
+                                    )
 
     @contextmanager
     def setupGDALResampling(self):
