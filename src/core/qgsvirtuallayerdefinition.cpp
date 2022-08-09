@@ -107,7 +107,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     {
       // geometry field definition, optional
       // geometry_column(:wkb_type:srid)?
-      const QRegularExpression reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
+      const thread_local QRegularExpression reGeom( "(" + columnNameRx + ")(?::([a-zA-Z0-9]+):(\\d+))?" );
       const QRegularExpressionMatch match = reGeom.match( value );
       if ( match.hasMatch() )
       {
@@ -141,7 +141,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
     else if ( key == QLatin1String( "field" ) )
     {
       // field_name:type (int, real, text)
-      const QRegularExpression reField( "(" + columnNameRx + "):(int|real|text)" );
+      const thread_local QRegularExpression reField( "(" + columnNameRx + "):(int|real|text)" );
       const QRegularExpressionMatch match = reField.match( value );
       if ( match.hasMatch() )
       {
