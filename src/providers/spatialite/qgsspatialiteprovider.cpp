@@ -18,13 +18,10 @@ email                : a.furieri@lqt.it
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
-#include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsspatialiteutils.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
@@ -153,9 +150,9 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
   QString primaryKey = dsUri.keyColumn();
   QString primaryKeyType;
 
-  QgsDebugMsg( "Database is: " + sqlitePath );
-  QgsDebugMsg( "Table name is: " + tableName );
-  QgsDebugMsg( "Geometry column is: " + geometryColumn );
+  QgsDebugMsgLevel( "Database is: " + sqlitePath, 2 );
+  QgsDebugMsgLevel( "Table name is: " + tableName, 2 );
+  QgsDebugMsgLevel( "Geometry column is: " + geometryColumn, 2 );
 
   // create the table
   {
@@ -372,7 +369,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
     }
 
     QgsSqliteHandle::closeDb( handle );
-    QgsDebugMsg( "layer " + tableName  + " created." );
+    QgsDebugMsgLevel( "layer " + tableName  + " created.", 2 );
   }
 
   // use the provider to edit the table
@@ -391,7 +388,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
     return Qgis::VectorExportResult::ErrorInvalidLayer;
   }
 
-  QgsDebugMsg( QStringLiteral( "layer loaded" ) );
+  QgsDebugMsgLevel( QStringLiteral( "layer loaded" ), 2 );
 
   // add fields to the layer
   if ( oldToNewAttrIdxMap )
@@ -426,13 +423,13 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
         return Qgis::VectorExportResult::ErrorAttributeTypeUnsupported;
       }
 
-      QgsDebugMsg( "creating field #" + QString::number( fldIdx ) +
-                   " -> #" + QString::number( offset ) +
-                   " name " + fld.name() +
-                   " type " + QString( QVariant::typeToName( fld.type() ) ) +
-                   " typename " + fld.typeName() +
-                   " width " + QString::number( fld.length() ) +
-                   " precision " + QString::number( fld.precision() ) );
+      QgsDebugMsgLevel( "creating field #" + QString::number( fldIdx ) +
+                        " -> #" + QString::number( offset ) +
+                        " name " + fld.name() +
+                        " type " + QString( QVariant::typeToName( fld.type() ) ) +
+                        " typename " + fld.typeName() +
+                        " width " + QString::number( fld.length() ) +
+                        " precision " + QString::number( fld.precision() ), 2 );
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
@@ -451,7 +448,7 @@ Qgis::VectorExportResult QgsSpatiaLiteProvider::createEmptyLayer( const QString 
       return Qgis::VectorExportResult::ErrorAttributeCreationFailed;
     }
 
-    QgsDebugMsg( QStringLiteral( "Done creating fields" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Done creating fields" ), 2 );
   }
   return Qgis::VectorExportResult::Success;
 }
@@ -523,7 +520,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
       lyr = list->First;
 
     ret = lyr && checkLayerTypeAbstractInterface( lyr );
-    QgsDebugMsg( QStringLiteral( "Using checkLayerTypeAbstractInterface" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Using checkLayerTypeAbstractInterface" ), 2 );
   }
   else  // views, no geometry etc
   {
@@ -842,7 +839,7 @@ QString QgsSpatiaLiteProvider::spatialiteVersion()
   mSpatialiteVersionInfo = QString::fromUtf8( results[( 1 * columns ) + 0] );
   sqlite3_free_table( results );
 
-  QgsDebugMsg( "SpatiaLite version info: " + mSpatialiteVersionInfo );
+  QgsDebugMsgLevel( "SpatiaLite version info: " + mSpatialiteVersionInfo, 2 );
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   QStringList spatialiteParts = mSpatialiteVersionInfo.split( ' ', QString::SkipEmptyParts );
@@ -940,10 +937,6 @@ void QgsSpatiaLiteProvider::fetchConstraints()
     {
       QString errMsg;
       uniqueFieldNames = QgsSqliteUtils::uniqueFields( mSqliteHandle, mTableName, errMsg );
-      if ( ! errMsg.isEmpty() )
-      {
-        QgsMessageLog::logMessage( tr( "Error searching for unique constraints on fields for table %1" ).arg( mTableName ), tr( "spatialite" ) );
-      }
     }
 
     QString sqlDef = QString::fromUtf8( results[ 1 ] );
@@ -1210,7 +1203,7 @@ void QgsSpatiaLiteProvider::loadFields()
           else
             pkName.clear();
           mPrimaryKeyAttrs << realFieldIndex;
-          QgsDebugMsg( "found primaryKey " + name );
+          QgsDebugMsgLevel( "found primaryKey " + name, 2 );
         }
 
         const TypeSubType fieldType = getVariantType( type );
@@ -1278,7 +1271,7 @@ void QgsSpatiaLiteProvider::loadFields()
           else
             pkName.clear();
           mPrimaryKeyAttrs << i - 1;
-          QgsDebugMsg( "found primaryKey " + name );
+          QgsDebugMsgLevel( "found primaryKey " + name, 2 );
         }
 
         if ( name.toLower() != mGeometryColumn )
@@ -5957,7 +5950,7 @@ QList<QgsVectorLayer *> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVect
 
 void QgsSpatiaLiteProvider::setTransaction( QgsTransaction *transaction )
 {
-  QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "set transaction %1" ).arg( transaction != nullptr ), 2 );
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsSpatiaLiteTransaction *>( transaction );
 }
@@ -6036,7 +6029,7 @@ bool QgsSpatiaLiteProviderMetadata::saveStyle( const QString &uri, const QString
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
-  QgsDebugMsg( "Database is: " + sqlitePath );
+  QgsDebugMsgLevel( "Database is: " + sqlitePath, 2 );
 
   // trying to open the SQLite DB
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
@@ -6257,7 +6250,6 @@ QString QgsSpatiaLiteProviderMetadata::loadStyle( const QString &uri, QString &e
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Could not load styles from %1 (Query: %2)" ).arg( sqlitePath, selectQmlQuery ) );
     errCause = QObject::tr( "Error executing loading style. The query was logged" );
     return QString();
   }
@@ -6274,7 +6266,7 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
-  QgsDebugMsg( "Database is: " + sqlitePath );
+  QgsDebugMsgLevel( "Database is: " + sqlitePath, 2 );
 
   // trying to open the SQLite DB
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
@@ -6298,7 +6290,6 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( countIfExist ) );
     errCause = QObject::tr( "Error looking for style. The query was logged" );
     return -1;
   }
@@ -6313,7 +6304,6 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( 0 == howMany )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
     errCause = QObject::tr( "No styles available on DB" );
     return false;
   }
@@ -6333,7 +6323,6 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
     errCause = QObject::tr( "Error loading styles. The query was logged" );
     return -1;
   }
@@ -6359,7 +6348,6 @@ int QgsSpatiaLiteProviderMetadata::listStyles( const QString &uri, QStringList &
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
     errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
     return -1;
   }
@@ -6380,7 +6368,7 @@ QString QgsSpatiaLiteProviderMetadata::getStyleById( const QString &uri, QString
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
-  QgsDebugMsg( "Database is: " + sqlitePath );
+  QgsDebugMsgLevel( "Database is: " + sqlitePath, 2 );
 
   // trying to open the SQLite DB
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
