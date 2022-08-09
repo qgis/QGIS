@@ -1042,6 +1042,16 @@ if (WITH_CORE)
   endif()
 endif()
 
+####################################################
+# asan
+set (WITH_ASAN FALSE CACHE BOOL "Use AddressSanitizer")
+mark_as_advanced(WITH_ASAN)
+if(WITH_ASAN)
+  message(STATUS "Enabling AddressSanitizer")
+  add_compile_options(-fsanitize=address)
+  add_link_options(-fsanitize=address)
+endif()
+
 #############################################################
 # process subdirs
 
