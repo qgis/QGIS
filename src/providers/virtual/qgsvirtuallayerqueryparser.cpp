@@ -112,13 +112,13 @@ namespace QgsVirtualLayerQueryParser
     // the type returned by PRAGMA table_info will be either
     // the type declared by one of the virtual tables
     // or null
-    if ( columnType == QLatin1String( "int" ) )
+    if ( columnType.compare( QLatin1String( "int" ), Qt::CaseInsensitive ) == 0 )
       d.setScalarType( QVariant::LongLong );
-    else if ( columnType == QLatin1String( "real" ) )
+    else if ( columnType.compare( QLatin1String( "real" ), Qt::CaseInsensitive ) == 0 )
       d.setScalarType( QVariant::Double );
-    else if ( columnType == QLatin1String( "text" ) )
+    else if ( columnType.compare( QLatin1String( "text" ), Qt::CaseInsensitive ) == 0 )
       d.setScalarType( QVariant::String );
-    else if ( columnType.startsWith( QLatin1String( "geometry" ) ) )
+    else if ( columnType.startsWith( QLatin1String( "geometry" ), Qt::CaseInsensitive ) )
     {
       // parse the geometry type and srid
       // geometry(type,srid)
@@ -130,6 +130,10 @@ namespace QgsVirtualLayerQueryParser
         d.setGeometry( type );
         d.setSrid( srid );
       }
+    }
+    else
+    {
+      QgsDebugMsg( QStringLiteral( "Unknown column type %1" ).arg( columnType ) );
     }
   }
 
