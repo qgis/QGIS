@@ -361,11 +361,11 @@ Qgis::MarkerShape QgsSimpleMarkerSymbolLayerBase::decodeShape( const QString &na
     return Qgis::MarkerShape::Triangle;
   else if ( cleaned == QLatin1String( "equilateral_triangle" ) )
     return Qgis::MarkerShape::EquilateralTriangle;
-  else if ( cleaned == QLatin1String( "star_diamond" ))
+  else if ( cleaned == QLatin1String( "star_diamond" ) )
     return Qgis::MarkerShape::DiamondStar;
   else if ( cleaned == QLatin1String( "star" ) || cleaned == QLatin1String( "regular_star" ) )
     return Qgis::MarkerShape::Star;
-  else if ( cleaned == QLatin1String( "heart" ))
+  else if ( cleaned == QLatin1String( "heart" ) )
     return Qgis::MarkerShape::Heart;
   else if ( cleaned == QLatin1String( "arrow" ) )
     return Qgis::MarkerShape::Arrow;
@@ -797,7 +797,7 @@ bool QgsSimpleMarkerSymbolLayerBase::prepareMarkerPath( Qgis::MarkerShape symbol
 
     case Qgis::MarkerShape::RoundedSquare:
       mPath.moveTo( -1, -1 );
-      mPath.addRoundedRect(-1, -1, 2, 2, 0.25, 0.25);
+      mPath.addRoundedRect( -1, -1, 2, 2, 0.25, 0.25 );
       return true;
 
     case Qgis::MarkerShape::SemiCircle:
