@@ -40,6 +40,7 @@
 
 #include <QUrl>
 #include <QUrlQuery>
+#include <QTemporaryDir>
 
 /**
 * \ingroup UnitTests
@@ -186,9 +187,18 @@ void TestQgsVirtualRasterProvider::testConstructor()
   QCOMPARE( sampledValueCalc_1, sampledValue + 200. );
   QCOMPARE( layer_1->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
+  QTemporaryDir dir;
+  const QString landsatPath = dir.filePath( QStringLiteral( "landsat.tif" ) );
+  QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", landsatPath ) );
+  // remove nodata values from layer for consistent test results
+  std::unique_ptr< QgsRasterLayer > landsat = std::make_unique< QgsRasterLayer >( landsatPath, QString(), QStringLiteral( "gdal" ) );
+  QVERIFY( landsat->isValid() );
+  landsat->dataProvider()->setNoDataValue( 1, -999999 );
+  landsat->dataProvider()->setNoDataValue( 2, -999999 );
+  landsat.reset();
 
   QString str2 = QStringLiteral( "?crs=EPSG:32633&extent=781662.375,3339523.125,793062.375,3350923.125&width=200&height=200&formula=\"landsat@1\" + \"landsat@2\"&landsat:provider=gdal" );
-  QString uri2 = QString( "%1&%2" ).arg( str2, QStringLiteral( "landsat:uri=" ) % mTestDataDir % QStringLiteral( "landsat.tif" ) );
+  QString uri2 = QString( "%1&%2" ).arg( str2, QStringLiteral( "landsat:uri=" ) % landsatPath );
   std::unique_ptr< QgsRasterLayer > layer_2 = std::make_unique< QgsRasterLayer >( uri2,
       QStringLiteral( "layer_2" ),
       QStringLiteral( "virtualraster" ) );
@@ -201,7 +211,7 @@ void TestQgsVirtualRasterProvider::testConstructor()
 
   //use wrong formula
   QString str3 = QStringLiteral( "?crs=EPSG:32633&extent=781662.375,3339523.125,793062.375,3350923.125&width=200&height=200&formula=\"landsat@1\" xxxxxx+ \"landsat@2\"&landsat:provider=gdal" );
-  QString uri3 = QString( "%1&%2" ).arg( str3, QStringLiteral( "landsat:uri=" ) % mTestDataDir % QStringLiteral( "landsat.tif" ) );
+  QString uri3 = QString( "%1&%2" ).arg( str3, QStringLiteral( "landsat:uri=" ) % landsatPath );
   std::unique_ptr< QgsRasterLayer > layer_3 = std::make_unique< QgsRasterLayer >( uri3,
       QStringLiteral( "layer_3" ),
       QStringLiteral( "virtualraster" ) );
