@@ -59,7 +59,19 @@ std::vector<std::string> directoryList(const std::string& dir)
     dpdf = opendir(dir.c_str());
     if (dpdf != NULL){
        while ((epdf = readdir(dpdf))){
-           files.push_back(untwine::fromNative(epdf->d_name));
+            std::string name = untwine::fromNative(epdf->d_name);
+            // Skip paths
+            if (pdal::Utils::iequals(name, ".") ||
+                pdal::Utils::iequals(name, ".."))
+            {
+                continue;
+            }
+            else
+            {
+                // we expect the path + name
+                std::string p = dir + "/" + untwine::fromNative(epdf->d_name);
+                files.push_back(p);
+           }
        }
     }
     closedir(dpdf);
