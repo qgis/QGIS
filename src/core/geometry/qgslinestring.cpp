@@ -1093,6 +1093,12 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
 {
   clearCache(); //set bounding box invalid
 
+  if ( size == 0 )
+  {
+    clear();
+    return;
+  }
+
   const bool hasZ = static_cast< bool >( z );
   const bool hasM = static_cast< bool >( m );
 
