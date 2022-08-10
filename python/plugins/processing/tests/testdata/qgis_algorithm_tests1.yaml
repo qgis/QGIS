@@ -1087,7 +1087,7 @@ tests:
     name: Merge points with mixed attribute types (GDAL < 3.4)
     condition:
       gdal:
-        less_than: 30400
+        less_than: 3040000
     params:
       LAYERS:
         params:
@@ -1109,7 +1109,7 @@ tests:
     name: Merge points with mixed attribute types (GDAL >= 3.4)
     condition:
       gdal:
-        at_least: 30400
+        at_least: 3040000
     params:
       LAYERS:
         params:
@@ -1150,7 +1150,7 @@ tests:
     name: Merge polygons with CRS (GDAL < 3.4)
     condition:
       gdal:
-        less_than: 30400
+        less_than: 3040000
     params:
       CRS: EPSG:3785
       LAYERS:
@@ -1176,7 +1176,7 @@ tests:
     name: Merge polygons with CRS (GDAL >= 3.4)
     condition:
       gdal:
-        at_least: 30400
+        at_least: 3040000
     params:
       CRS: EPSG:3857
       LAYERS:
@@ -1268,7 +1268,7 @@ tests:
     name: Bounding boxes for multipoints (GDAL < 3.4)
     condition:
       gdal:
-        less_than: 30400
+        less_than: 3040000
     params:
       INPUT:
         name: multipoints.gml
@@ -1282,7 +1282,7 @@ tests:
     name: Bounding boxes for multipoints (GDAL >= 3.4)
     condition:
       gdal:
-        at_least: 30400
+        at_least: 3040000
     params:
       INPUT:
         name: multipoints.gml|geometrytype=Point
@@ -2444,7 +2444,7 @@ tests:
     name: Line intersections with geometry collection (GEOS >= 3.9)
     condition:
       geos:
-      at_least: 30900
+        at_least: 30900
     params:
       INPUT:
         name: custom/line_intersection_collection1.gml|layername=line_intersection_collection1
