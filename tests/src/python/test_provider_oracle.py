@@ -310,6 +310,9 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.check_geom(multipoints_z, fid, 'MultiPointZ ((1 2 7),(3 4 8))')
 
     def testLayerStyles(self):
+
+        self.execSQLCommand('DROP TABLE "QGIS"."LAYER_STYLES"', True)
+
         # Table without geometry column
         vl_no_geom = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'id\' table="QGIS"."DATE_TIMES" sql=', 'test', 'oracle')
