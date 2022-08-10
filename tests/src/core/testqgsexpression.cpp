@@ -3843,7 +3843,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "array_remove_at(\"strings\", 4)" ).evaluate( &context ), QVariant( array ) );
       QCOMPARE( QgsExpression( "array_remove_at(\"strings\", -40)" ).evaluate( &context ), QVariant( array ) );
 
-      QStringList removeAllExpected;
+      QVariantList removeAllExpected;
       removeAllExpected << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "d" );
       QCOMPARE( QgsExpression( "array_remove_all(array('a', 'b', 'c', 'd', 'c'), 'c')" ).evaluate( &context ), QVariant( removeAllExpected ) );
 
@@ -3873,8 +3873,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression( "array_slice(array('Dufour','Valmiera','Chugiak','Brighton'),-2,-1) = array('Chugiak','Brighton')" ).evaluate( &context ), QVariant( true ) );
       QCOMPARE( QgsExpression( "array_slice( array(), 0, 3) = array()" ).evaluate( &context ), QVariant( true ) );
 
-      QCOMPARE( QgsExpression( "array_sort(array('Banana','Cake','Apple'))" ).evaluate( & context ), QVariant( QStringList() << QStringLiteral( "Apple" ) <<  QStringLiteral( "Banana" ) << QStringLiteral( "Cake" ) ) );
-      QCOMPARE( QgsExpression( "array_sort(array('Banana','Cake','Apple'),false)" ).evaluate( & context ), QVariant( QStringList() << QStringLiteral( "Cake" ) <<  QStringLiteral( "Banana" ) << QStringLiteral( "Apple" ) ) );
+      QCOMPARE( QgsExpression( "array_sort(array('Banana','Cake','Apple'))" ).evaluate( & context ), QVariant( QVariantList() << QStringLiteral( "Apple" ) <<  QStringLiteral( "Banana" ) << QStringLiteral( "Cake" ) ) );
+      QCOMPARE( QgsExpression( "array_sort(array('Banana','Cake','Apple'),false)" ).evaluate( & context ), QVariant( QVariantList() << QStringLiteral( "Cake" ) <<  QStringLiteral( "Banana" ) << QStringLiteral( "Apple" ) ) );
     }
 
     void eval_int_array()
