@@ -36,6 +36,8 @@ class TestContrastEnhancements: public QgsTest
     TestContrastEnhancements() : QgsTest( QStringLiteral( "Raster Contrast Enhancement Tests" ) ) {}
 
   private slots:
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
@@ -44,6 +46,18 @@ class TestContrastEnhancements: public QgsTest
     void linearMinMaxEnhancementTest();
 
 };
+
+
+void TestContrastEnhancements::initTestCase()
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
+
+void TestContrastEnhancements::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestContrastEnhancements::clipMinMaxEnhancementTest()
 {

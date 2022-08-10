@@ -81,7 +81,15 @@ class TestQgsSimpleMarkerSymbol : public QgsTest
     void simpleMarkerSymbolRoundJoin();
     void simpleMarkerSymbolCapStyle();
     void simpleMarkerOctagon();
+    void simpleMarkerDecagon();
+    void simpleMarkerDiamondStar();
+    void simpleMarkerHeart();
     void simpleMarkerSquareWithCorners();
+    void simpleMarkerRoundedSquare();
+    void simpleMarkerShield();
+    void simpleMarkerTrapezoid();
+    void simpleMarkerParallelogramLeft();
+    void simpleMarkerParallelogramRight();
     void simpleMarkerAsterisk();
     void bounds();
     void boundsWithOffset();
@@ -159,15 +167,22 @@ void TestQgsSimpleMarkerSymbol::decodeShape_data()
   QTest::newRow( "square case" ) << "SQUARE" << static_cast< int >( Qgis::MarkerShape::Square ) << true;
   QTest::newRow( "square case spaces" ) << "  SQUARE  " << static_cast< int >( Qgis::MarkerShape::Square ) << true;
   QTest::newRow( "square_with_corners" ) << "square_with_corners" << static_cast< int >( Qgis::MarkerShape::SquareWithCorners ) << true;
+  QTest::newRow( "shield" ) << "shield" << static_cast< int >( Qgis::MarkerShape::Shield ) << true;
+  QTest::newRow( "rounded_square" ) << "rounded_square" << static_cast< int >( Qgis::MarkerShape::RoundedSquare ) << true;
+  QTest::newRow( "trapezoid" ) << "trapezoid" << static_cast< int >( Qgis::MarkerShape::Trapezoid ) << true;
+  QTest::newRow( "parallelogram_left" ) << "parallelogram_left" << static_cast< int >( Qgis::MarkerShape::ParallelogramLeft ) << true;
   QTest::newRow( "rectangle" ) << "rectangle" << static_cast< int >( Qgis::MarkerShape::Square ) << true;
   QTest::newRow( "diamond" ) << "diamond" << static_cast< int >( Qgis::MarkerShape::Diamond ) << true;
   QTest::newRow( "pentagon" ) << "pentagon" << static_cast< int >( Qgis::MarkerShape::Pentagon ) << true;
   QTest::newRow( "hexagon" ) << "hexagon" << static_cast< int >( Qgis::MarkerShape::Hexagon ) << true;
   QTest::newRow( "octagon" ) << "octagon" << static_cast< int >( Qgis::MarkerShape::Octagon ) << true;
+  QTest::newRow( "decagon" ) << "decagon" << static_cast< int >( Qgis::MarkerShape::Decagon ) << true;
   QTest::newRow( "triangle" ) << "triangle" << static_cast< int >( Qgis::MarkerShape::Triangle ) << true;
   QTest::newRow( "equilateral_triangle" ) << "equilateral_triangle" << static_cast< int >( Qgis::MarkerShape::EquilateralTriangle ) << true;
+  QTest::newRow( "star_diamond" ) << "star_diamond" << static_cast< int >( Qgis::MarkerShape::DiamondStar ) << true;
   QTest::newRow( "star" ) << "star" << static_cast< int >( Qgis::MarkerShape::Star ) << true;
   QTest::newRow( "regular_star" ) << "regular_star" << static_cast< int >( Qgis::MarkerShape::Star ) << true;
+  QTest::newRow( "heart" ) << "heart" << static_cast< int >( Qgis::MarkerShape::Heart ) << true;
   QTest::newRow( "arrow" ) << "arrow" << static_cast< int >( Qgis::MarkerShape::Arrow ) << true;
   QTest::newRow( "circle" ) << "circle" << static_cast< int >( Qgis::MarkerShape::Circle ) << true;
   QTest::newRow( "cross" ) << "cross" << static_cast< int >( Qgis::MarkerShape::Cross ) << true;
@@ -311,6 +326,45 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerOctagon()
   QVERIFY( imageCheck( "simplemarker_octagon" ) );
 }
 
+void TestQgsSimpleMarkerSymbol::simpleMarkerDecagon()
+{
+  mReport += QLatin1String( "<h2>Simple marker decagon</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::Decagon );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_decagon" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerDiamondStar()
+{
+  mReport += QLatin1String( "<h2>Simple marker diamond star</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::DiamondStar );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_diamondstar" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerHeart()
+{
+  mReport += QLatin1String( "<h2>Simple marker heart</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::Heart );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_heart" ) );
+}
+
 void TestQgsSimpleMarkerSymbol::simpleMarkerSquareWithCorners()
 {
   mSimpleMarkerLayer->setColor( Qt::blue );
@@ -320,6 +374,71 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSquareWithCorners()
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
   QVERIFY( imageCheck( "simplemarker_square_with_corners" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerRoundedSquare()
+{
+  mReport += QLatin1String( "<h2>Simple marker square with rounded corners</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::RoundedSquare );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_roundedsquare" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerShield()
+{
+  mReport += QLatin1String( "<h2>Simple marker shield</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::Shield );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_shield" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerTrapezoid()
+{
+  mReport += QLatin1String( "<h2>Simple marker trapezoid</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::Trapezoid );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_trapezoid" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerParallelogramLeft()
+{
+  mReport += QLatin1String( "<h2>Simple marker parallelogram slanted to the left</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::ParallelogramLeft );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_parallelogramleft" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerParallelogramRight()
+{
+  mReport += QLatin1String( "<h2>Simple marker parallelogram slanted to the right</h2>\n" );
+
+  mSimpleMarkerLayer->setColor( Qt::blue );
+  mSimpleMarkerLayer->setStrokeColor( Qt::black );
+  mSimpleMarkerLayer->setShape( Qgis::MarkerShape::ParallelogramRight );
+  mSimpleMarkerLayer->setSize( 25 );
+  mSimpleMarkerLayer->setStrokeWidth( 2 );
+  mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
+  QVERIFY( imageCheck( "simplemarker_parallelogramright" ) );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerAsterisk()

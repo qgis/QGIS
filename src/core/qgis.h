@@ -1450,6 +1450,14 @@ class CORE_EXPORT Qgis
       HalfArc, //!< A line-only half arc (since QGIS 3.20)
       ThirdArc, //!< A line-only one third arc (since QGIS 3.20)
       QuarterArc, //!< A line-only one quarter arc (since QGIS 3.20)
+      ParallelogramRight, //!< Parallelogram that slants right (since QGIS 3.28)
+      ParallelogramLeft, //!< Parallelogram that slants left (since QGIS 3.28)
+      Trapezoid, //!< Trapezoid (since QGIS 3.28)
+      Shield, //!< A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)
+      DiamondStar, //!< A 4-sided star (since QGIS 3.28)
+      Heart, //!< Heart (since QGIS 3.28)
+      Decagon, //!< Decagon (since QGIS 3.28)
+      RoundedSquare, //!< A square with rounded corners (since QGIS 3.28)
     };
     Q_ENUM( MarkerShape )
 

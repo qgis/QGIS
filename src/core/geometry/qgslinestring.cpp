@@ -1093,7 +1093,7 @@ void QgsLineString::setPoints( size_t size, const double *x, const double *y, co
 {
   clearCache(); //set bounding box invalid
 
-  if ( size <= 0 )
+  if ( size == 0 )
   {
     clear();
     return;

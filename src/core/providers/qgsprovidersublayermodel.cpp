@@ -18,6 +18,7 @@
 #include "qgsprovidersublayermodel.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsiconutils.h"
+#include "qgsapplication.h"
 #include <QLocale>
 
 //
@@ -168,7 +169,10 @@ QVariant QgsProviderSublayerModelGroup::data( int role, int column ) const
 
     case Qt::DecorationRole:
     {
-      return QVariant();
+      if ( column == 0 )
+        return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+      else
+        return QVariant();
     }
 
     default:

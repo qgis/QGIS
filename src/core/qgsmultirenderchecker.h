@@ -82,6 +82,13 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setRenderedImage( const QString &renderedImagePath ) { mRenderedImage = renderedImagePath; }
 
     /**
+     * Sets whether the comparison is expected to fail.
+     *
+     * \since QGIS 3.28
+     */
+    void setExpectFail( bool expectFail ) { mExpectFail = expectFail; }
+
+    /**
      * Set the map settings to use to render the image
      *
      * \param mapSettings The map settings
@@ -148,6 +155,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     int mMaxSizeDifferenceX = 0;
     int mMaxSizeDifferenceY = 0;
     QgsMapSettings mMapSettings;
+    bool mExpectFail = false;
 
     bool mIsCiRun = false;
 };

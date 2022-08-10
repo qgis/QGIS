@@ -144,6 +144,11 @@ class TestCase(_TestCase):
         except KeyError:
             unordered = False
 
+        try:
+            equate_null_and_empty = compare['geometry']['equate_null_and_empty']
+        except KeyError:
+            equate_null_and_empty = False
+
         if unordered:
             features_expected = [f for f in layer_expected.getFeatures(request)]
             for feat in layer_result.getFeatures(request):
@@ -151,7 +156,10 @@ class TestCase(_TestCase):
                 for feat_expected in features_expected:
                     if self.checkGeometriesEqual(feat.geometry(), feat_expected.geometry(),
                                                  feat.id(), feat_expected.id(),
-                                                 False, precision, topo_equal_check, ignore_part_order, normalize=normalize, explode_collections=explode_collections, snap_to_grid=snap_to_grid) and \
+                                                 False, precision, topo_equal_check, ignore_part_order, normalize=normalize,
+                                                 explode_collections=explode_collections,
+                                                 snap_to_grid=snap_to_grid,
+                                                 equate_null_and_empty=equate_null_and_empty) and \
                        self.checkAttributesEqual(feat, feat_expected, layer_expected.fields(), False, compare):
                         feat_expected_equal = feat_expected
                         break
@@ -205,7 +213,7 @@ class TestCase(_TestCase):
                                            feats[0].id(),
                                            feats[1].id(),
                                            use_asserts, precision, topo_equal_check, ignore_part_order, normalize=normalize, explode_collections=explode_collections,
-                                           snap_to_grid=snap_to_grid)
+                                           snap_to_grid=snap_to_grid, equate_null_and_empty=equate_null_and_empty)
             if not eq and not use_asserts:
                 return False
 
@@ -279,18 +287,23 @@ class TestCase(_TestCase):
             if p.is_dir():
                 self.assertDirectoriesEqual(str(p), path_result / p.stem)
 
-    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False, ignore_part_order=False, normalize=False, explode_collections=False, snap_to_grid=None):
-        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check, ignore_part_order=ignore_part_order, normalize=normalize, explode_collections=explode_collections, snap_to_grid=snap_to_grid)
+    def assertGeometriesEqual(self, geom0, geom1, geom0_id='geometry 1', geom1_id='geometry 2', precision=14, topo_equal_check=False, ignore_part_order=False, normalize=False, explode_collections=False, snap_to_grid=None, equate_null_and_empty=False):
+        self.checkGeometriesEqual(geom0, geom1, geom0_id, geom1_id, use_asserts=True, precision=precision, topo_equal_check=topo_equal_check, ignore_part_order=ignore_part_order, normalize=normalize, explode_collections=explode_collections, snap_to_grid=snap_to_grid, equate_null_and_empty=equate_null_and_empty)
 
-    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False, ignore_part_order=False, normalize=False, explode_collections=False, snap_to_grid=None):
+    def checkGeometriesEqual(self, geom0, geom1, geom0_id, geom1_id, use_asserts=False, precision=14, topo_equal_check=False, ignore_part_order=False, normalize=False, explode_collections=False, snap_to_grid=None, equate_null_and_empty=False):
         """ Checks whether two geometries are the same - using either a strict check of coordinates (up to given precision)
         or by using topological equality (where e.g. a polygon with clockwise is equal to a polygon with counter-clockwise
         order of vertices)
         .. versionadded:: 3.2
         """
         geom0_wkt = ''
+        geom0_wkt_full = ''
         geom1_wkt = ''
-        if not geom0.isNull() and not geom1.isNull():
+        geom1_wkt_full = ''
+
+        geom0_is_null = geom0.isNull() or (equate_null_and_empty and geom0.isEmpty())
+        geom1_is_null = geom1.isNull() or (equate_null_and_empty and geom1.isEmpty())
+        if not geom0_is_null and not geom1_is_null:
             if snap_to_grid is not None:
                 geom0 = geom0.snappedToGrid(snap_to_grid, snap_to_grid, snap_to_grid, snap_to_grid)
                 geom1 = geom1.snappedToGrid(snap_to_grid, snap_to_grid, snap_to_grid, snap_to_grid)
@@ -304,15 +317,21 @@ class TestCase(_TestCase):
                 raw_geom0 = raw_geom0.simplifiedTypeRef()
                 raw_geom1 = raw_geom1.simplifiedTypeRef()
             geom0_wkt = raw_geom0.asWkt(precision)
+            geom0_wkt_full = raw_geom0.asWkt()
             geom1_wkt = raw_geom1.asWkt(precision)
+            geom1_wkt_full = raw_geom1.asWkt()
             equal = geom0_wkt == geom1_wkt
             if not equal and topo_equal_check:
                 equal = geom0.isGeosEqual(geom1)
             if not equal and ignore_part_order and geom0.isMultipart():
                 equal = sorted([p.asWkt(precision) for p in geom0.constParts()]) == sorted([p.asWkt(precision) for p in geom1.constParts()])
-        elif geom0.isNull() and geom1.isNull():
+        elif geom0_is_null and geom1_is_null:
             equal = True
         else:
+            geom0_wkt = geom0.asWkt(precision)
+            geom1_wkt = geom1.asWkt(precision)
+            geom0_wkt_full = geom0.asWkt()
+            geom1_wkt_full = geom1.asWkt()
             equal = False
 
         if use_asserts:
@@ -330,10 +349,10 @@ class TestCase(_TestCase):
                     geom1_id,
                     'geos' if topo_equal_check else 'wkt',
                     precision,
-                    geom0_wkt if not geom0.isNull() else 'NULL',
-                    geom1_wkt if not geom1.isNull() else 'NULL',
-                    geom0_wkt if not geom1.isNull() else 'NULL',
-                    geom1_wkt if not geom0.isNull() else 'NULL'
+                    geom0_wkt if not geom0_is_null else 'NULL',
+                    geom1_wkt if not geom1_is_null else 'NULL',
+                    geom0_wkt_full if not geom0_is_null else 'NULL',
+                    geom1_wkt_full if not geom1_is_null else 'NULL'
                 )
             )
         else:

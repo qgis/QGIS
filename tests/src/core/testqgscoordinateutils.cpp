@@ -26,9 +26,21 @@ class TestQgsCoordinateUtils : public QObject
 
     void testDegreeWithSuffix();
     void testLocale();
-
+    void initTestCase();
+    void cleanupTestCase();
 };
 
+
+void TestQgsCoordinateUtils::initTestCase()
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
+
+void TestQgsCoordinateUtils::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsCoordinateUtils::testDegreeWithSuffix()
 {

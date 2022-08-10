@@ -40,6 +40,7 @@ class TestNineCellFilters : public QObject
   private slots:
 
     void initTestCase();
+    void cleanupTestCase();
     void init();
 
     void testHillshade();
@@ -86,6 +87,11 @@ void TestNineCellFilters::initTestCase()
 
   SRC_FILE = QStringLiteral( TEST_DATA_DIR ) + "/analysis/dem.tif";
   QgsApplication::init(); // needed for CRS database
+}
+
+void TestNineCellFilters::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 template <class T>
