@@ -2026,7 +2026,7 @@ bool QgsOgrProvider::rollbackTransaction()
 
 bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities, bool hasExistingRef )
 {
-  QgsCPLErrorHandler handler;
+  QgsCPLErrorHandler handler( QObject::tr( "OGR" ) );
 
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
