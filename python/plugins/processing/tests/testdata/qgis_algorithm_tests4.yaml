@@ -27,6 +27,7 @@ tests:
       OUTPUT:
         name: expected/projected_multipoints.gml
         type: vector
+        pk: d
 
   - algorithm: native:removeduplicatevertices
     name: Remove duplicate vertices from lines
@@ -80,7 +81,10 @@ tests:
         type: vector
 
   - algorithm: native:multiringconstantbuffer
-    name: Multi-ring buffer with points
+    name: Multi-ring buffer with points (GEOS < 3.9)
+    condition:
+      geos:
+        less_than: 30900
     params:
       DISTANCE: 0.05
       INPUT:
@@ -96,7 +100,29 @@ tests:
             normalize: True
 
   - algorithm: native:multiringconstantbuffer
-    name: Multi-ring negative buffer with polygons
+    name: Multi-ring buffer with points (GEOS >= 3.9)
+    condition:
+      geos:
+        at_least: 30900
+    params:
+      DISTANCE: 0.05
+      INPUT:
+        name: points.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/geos39/multiring_buffer.gml
+        type: vector
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring negative buffer with polygons (GEOS < 3.9)
+    condition:
+      geos:
+        less_than: 30900
     params:
       DISTANCE: -0.05
       INPUT:
@@ -110,9 +136,30 @@ tests:
         compare:
           geometry:
             normalize: True
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring negative buffer with polygons (GEOS >= 3.9)
+    condition:
+      geos:
+        at_least: 30900
+    params:
+      DISTANCE: -0.05
+      INPUT:
+        name: polys.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/geos39/multiring_negative_buffer.gml
+        type: vector
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:segmentizebymaxangle
-    name: Segmentize by angle
+    name: Segmentize by angle (GDAL < 3.4)
+    condition:
+      gdal:
+        less_than: 3040000
     params:
       ANGLE: 20.0
       INPUT:
@@ -123,8 +170,26 @@ tests:
         name: expected/segmentize_by_angle.gml
         type: vector
 
+  - algorithm: native:segmentizebymaxangle
+    name: Segmentize by angle (GDAL >= 3.4)
+    condition:
+      gdal:
+        at_least: 3040000
+    params:
+      ANGLE: 20.0
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/gdal34/segmentize_by_angle.gml
+        type: vector
+
   - algorithm: native:segmentizebymaxdistance
-    name: Segmentize by distance
+    name: Segmentize by distance (GDAL < 3.4)
+    condition:
+      gdal:
+        less_than: 3040000
     params:
       DISTANCE: 0.2
       INPUT:
@@ -133,6 +198,21 @@ tests:
     results:
       OUTPUT:
         name: expected/segmentize_by_distance.gml
+        type: vector
+
+  - algorithm: native:segmentizebymaxdistance
+    name: Segmentize by distance (GDAL >= 3.4)
+    condition:
+      gdal:
+        at_least: 3040000
+    params:
+      DISTANCE: 0.2
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/gdal34/segmentize_by_distance.gml
         type: vector
 
   - algorithm: native:rotatefeatures
@@ -175,6 +255,7 @@ tests:
           fields:
             photo: skip
             directory: skip
+            fid: skip
 
       OUTPUT:
         name: expected/import_photos.gml
@@ -397,7 +478,10 @@ tests:
             normalize: True
 
   - algorithm: native:wedgebuffers
-    name: Wedge buffers
+    name: Wedge buffers (GEOS < 3.9)
+    condition:
+      geos:
+        less_than: 30900
     params:
       AZIMUTH: 90.0
       INNER_RADIUS: 0.5
@@ -409,6 +493,24 @@ tests:
     results:
       OUTPUT:
         name: expected/wedge_buffers.gml
+        type: vector
+
+  - algorithm: native:wedgebuffers
+    name: Wedge buffers (GEOS >= 3.9)
+    condition:
+      geos:
+        at_least: 30900
+    params:
+      AZIMUTH: 90.0
+      INNER_RADIUS: 0.5
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTER_RADIUS: 1.0
+      WIDTH: 45.0
+    results:
+      OUTPUT:
+        name: expected/geos39/wedge_buffers.gml
         type: vector
 
   - algorithm: native:difference
@@ -970,6 +1072,7 @@ tests:
       OUTPUT:
         name: expected/stdbscan_multiple_clusters.gml
         type: vector
+        pk: id
 
   - algorithm: qgis:rastersampling
     name: Single band raster
@@ -2915,6 +3018,7 @@ tests:
       OUTPUT:
         name: expected/points_within_distance.gml
         type: vector
+        pk: id
 
   - algorithm: native:extractwithindistance
     name: Lines within distance
