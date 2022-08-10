@@ -6434,7 +6434,7 @@ static QVariant fcnWriteJson( const QVariantList &values, const QgsExpressionCon
 {
   Q_UNUSED( parent )
   QJsonDocument document = QJsonDocument::fromVariant( values.at( 0 ) );
-  return document.toJson( QJsonDocument::Compact );
+  return QString( document.toJson( QJsonDocument::Compact ) );
 }
 
 static QVariant fcnHstoreToMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
