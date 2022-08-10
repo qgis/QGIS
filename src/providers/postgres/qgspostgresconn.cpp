@@ -661,11 +661,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   // NOTE: we intentionally continue if the query fails
   //       (for example because PostGIS is not installed)
 
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  if ( ! result.result() )
   {
     return true;
   }
-  
+
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     QString tableName = result.PQgetvalue( idx, 0 );
