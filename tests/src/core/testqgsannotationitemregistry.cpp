@@ -85,10 +85,12 @@ class TestQgsAnnotationItemRegistry: public QObject
 
 void TestQgsAnnotationItemRegistry::initTestCase()
 {
+  QgsApplication::initQgis();
 }
 
 void TestQgsAnnotationItemRegistry::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsAnnotationItemRegistry::init()
