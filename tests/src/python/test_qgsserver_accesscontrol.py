@@ -11,6 +11,7 @@ __date__ = '28/08/2015'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
+import shutil
 
 import os
 from shutil import copyfile
@@ -146,23 +147,26 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         cls._accesscontrol = RestrictedAccessControl(cls._server_iface)
         cls._server_iface.registerAccessControl(cls._accesscontrol, 100)
 
+    @classmethod
+    def project_file(cls):
+        return 'project_grp.qgs'
+
     def setUp(self):
         super().setUp()
         self.testdata_path = unitTestDataPath("qgis_server_accesscontrol")
 
-        data_file = os.path.join(self.testdata_path, "helloworld.db")
-        self.assertTrue(os.path.isfile(data_file), 'Could not find data file "{}"'.format(data_file))
-        copyfile(data_file, os.path.join(self.testdata_path, "_helloworld.db"))
+        self.tmp_path = tempfile.mkdtemp()
+        shutil.copytree(self.testdata_path, self.tmp_path, dirs_exist_ok=True)
 
         for k in ["QUERY_STRING", "QGIS_PROJECT_FILE"]:
             if k in os.environ:
                 del os.environ[k]
 
-        self.projectPath = os.path.join(self.testdata_path, "project_grp.qgs")
+        self.projectPath = os.path.join(self.tmp_path, self.project_file())
         self.assertTrue(os.path.isfile(self.projectPath), 'Could not find project file "{}"'.format(self.projectPath))
 
     def tearDown(self):
-        copyfile(os.path.join(self.testdata_path, "_helloworld.db"), os.path.join(self.testdata_path, "helloworld.db"))
+        shutil.rmtree(self.tmp_path, True)
 
     def _handle_request(self, restricted, query_string, **kwargs):
         self._accesscontrol._active = restricted
