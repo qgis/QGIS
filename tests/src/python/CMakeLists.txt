@@ -4,6 +4,7 @@ set (ENABLE_HANATEST FALSE CACHE BOOL "Enable HANA provider tests")
 
 include(UsePythonTest)
 
+ADD_PYTHON_TEST(PyQgsDisabledTests test_disabled_tests.py)
 ADD_PYTHON_TEST(PyCoreAdditions test_core_additions.py)
 ADD_PYTHON_TEST(PyPythonRepr test_python_repr.py)
 ADD_PYTHON_TEST(PyPythonUtils test_python_utils.py)
