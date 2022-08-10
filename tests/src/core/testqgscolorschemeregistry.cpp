@@ -111,7 +111,7 @@ void TestQgsColorSchemeRegistry::initTestCase()
 
 void TestQgsColorSchemeRegistry::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsColorSchemeRegistry::init()
@@ -244,6 +244,7 @@ void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
 
   // remove current random style color scheme
   registry->removeColorScheme( dummyScheme2 );
+  delete dummyScheme2;
   QVERIFY( !registry->randomStyleColorScheme() );
   // no crash!
   for ( int i = 0; i < 10; ++i )

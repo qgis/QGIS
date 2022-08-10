@@ -36,7 +36,8 @@ class TestQgsClipper: public QgsTest
     TestQgsClipper() : QgsTest( QStringLiteral( "Clipper Rendering Tests" ) ) {}
 
   private slots:
-
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void basic();
     void basicWithZ();
     void basicWithZInf();
@@ -48,6 +49,17 @@ class TestQgsClipper: public QgsTest
     bool checkBoundingBox( const QgsLineString &polygon, const QgsBox3d &clipRect );
     bool render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent );
 };
+
+void TestQgsClipper::initTestCase()
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+}
+
+void TestQgsClipper::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsClipper::basicWithZ()
 {
@@ -180,16 +192,14 @@ bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectan
 
 void TestQgsClipper::epsg4978LineRendering()
 {
-  QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
+  std::unique_ptr< QgsVectorLayer >layerLines = std::make_unique< QgsVectorLayer >( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
 
   QgsLineSymbol *fillSymbol = new QgsLineSymbol();
   fillSymbol->setWidth( 0.5 );
   fillSymbol->setColor( QColor( 255, 0, 0 ) );
   layerLines->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
-  QVERIFY( render2dCheck( "4978_2D_line_rendering", layerLines, QgsRectangle( -2.5e7, -2.5e7, 2.5e7, 2.5e7 ) ) );
-
-  delete layerLines;
+  QVERIFY( render2dCheck( "4978_2D_line_rendering", layerLines.get(), QgsRectangle( -2.5e7, -2.5e7, 2.5e7, 2.5e7 ) ) );
 }
 
 bool TestQgsClipper::render2dCheck( const QString &testName, QgsVectorLayer *layer, QgsRectangle extent )
@@ -197,18 +207,18 @@ bool TestQgsClipper::render2dCheck( const QString &testName, QgsVectorLayer *lay
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
 
-  auto mMapSettings = new QgsMapSettings();
-  mMapSettings->setLayers( QList<QgsMapLayer *>() << layer );
-  mMapSettings->setExtent( extent );
-  mMapSettings->setOutputDpi( 96 );
+  QgsMapSettings mMapSettings;
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << layer );
+  mMapSettings.setExtent( extent );
+  mMapSettings.setOutputDpi( 96 );
   QgsCoordinateReferenceSystem newCrs;
   newCrs.createFromString( "EPSG:3857" );
-  mMapSettings->setDestinationCrs( newCrs );
+  mMapSettings.setDestinationCrs( newCrs );
 
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
   myChecker.setControlName( "expected_" + testName );
-  myChecker.setMapSettings( *mMapSettings );
+  myChecker.setMapSettings( mMapSettings );
   myChecker.setRenderedImage( myFileName );
   myChecker.setColorTolerance( 50 );
   const bool myResultFlag = myChecker.runTest( testName, 0 );

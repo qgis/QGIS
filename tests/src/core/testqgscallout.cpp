@@ -250,18 +250,18 @@ void TestQgsCallout::saveRestore()
   QCOMPARE( calloutElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
-  QgsCallout *restoredCallout = QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() );
+  std::unique_ptr< QgsCallout > restoredCallout( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading bad node
   const QDomElement badCalloutElem = doc.createElement( QStringLiteral( "parent" ) );
-  restoredCallout = QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), badCalloutElem, QgsReadWriteContext() );
+  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), badCalloutElem, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading node
-  restoredCallout = QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), calloutElem, QgsReadWriteContext() );
+  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), calloutElem, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
-  DummyCallout *restoredDummyCallout = dynamic_cast<DummyCallout *>( restoredCallout );
+  DummyCallout *restoredDummyCallout = dynamic_cast<DummyCallout *>( restoredCallout.get() );
   QVERIFY( restoredDummyCallout );
 
   //test properties
@@ -269,7 +269,6 @@ void TestQgsCallout::saveRestore()
   QCOMPARE( restoredDummyCallout->prop2(), callout->prop2() );
 
   delete callout;
-  delete restoredCallout;
 }
 
 void TestQgsCallout::calloutsInLabeling()
@@ -4151,7 +4150,7 @@ void TestQgsCallout::balloonCalloutCornerRadius()
 
 void TestQgsCallout::blendMode()
 {
-  QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
+  std::unique_ptr< QgsManhattanLineCallout > callout = std::make_unique< QgsManhattanLineCallout >();
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
   callout->setBlendMode( QPainter::CompositionMode_Multiply );
