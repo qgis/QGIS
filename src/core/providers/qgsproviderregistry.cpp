@@ -334,7 +334,7 @@ void QgsProviderRegistry::init()
   }
 
 #endif
-  QgsDebugMsg( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "Loaded %1 providers (%2) " ).arg( mProviders.size() ).arg( providerList().join( ';' ) ), 0 );
 
   QStringList pointCloudWildcards;
   QStringList pointCloudFilters;
