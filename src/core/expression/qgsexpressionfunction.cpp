@@ -6525,7 +6525,10 @@ static QVariant fcnMapAVals( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnEnvVar( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
-  QString envVarName = values.at( 0 ).toString();
+  const QString envVarName = values.at( 0 ).toString();
+  if ( !QProcessEnvironment::systemEnvironment().contains( envVarName ) )
+    return QVariant();
+
   return QProcessEnvironment::systemEnvironment().value( envVarName );
 }
 
