@@ -928,7 +928,7 @@ bool QgsPostgresProvider::loadFields()
     sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
     QgsPostgresResult tresult( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
 
-    if ( tresult.PQresultStatus() != PGRES_TUPLES_OK )
+    if ( ! tresult.result() )
     {
       throw PGException( tresult );
     }
@@ -997,7 +997,7 @@ bool QgsPostgresProvider::loadFields()
 
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
 
-      if ( fmtFieldTypeResult.PQresultStatus() != PGRES_TUPLES_OK )
+      if ( ! fmtFieldTypeResult.result() )
       {
         throw PGException( fmtFieldTypeResult );
       }
