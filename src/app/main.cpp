@@ -485,6 +485,7 @@ int main( int argc, char *argv[] )
 {
   //log messages written before creating QgsApplication
   QStringList preApplicationLogMessages;
+  QStringList preApplicationWarningMessages;
 
 #ifdef Q_OS_UNIX
   // Increase file resource limits (i.e., number of allowed open files)
@@ -511,17 +512,17 @@ int main( int argc, char *argv[] )
 
       if ( setrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
       {
-        QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
-                     .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
+        QgsDebugMsgLevel( QStringLiteral( "RLIMIT_NOFILE Soft NEW: %1 / %2" )
+                          .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ), 2 );
       }
     }
     Q_UNUSED( oldSoft ) //avoid warnings
-    QgsDebugMsg( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
-                 .arg( oldSoft ).arg( rescLimit.rlim_max ) );
+    QgsDebugMsgLevel( QStringLiteral( "RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
+                      .arg( oldSoft ).arg( rescLimit.rlim_max ), 2 );
   }
 #endif
 
-  QgsDebugMsg( QStringLiteral( "Starting qgis main" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Starting qgis main" ), 0 );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -957,7 +958,7 @@ int main( int argc, char *argv[] )
   {
     if ( !QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      preApplicationLogMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
+      preApplicationWarningMessages << QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" );
     }
     else
     {
@@ -1063,8 +1064,11 @@ int main( int argc, char *argv[] )
   QgsApplication::setLocale( QLocale() );
 
   //write the log messages written before creating QgsApplication
+  for ( const QString &preApplicationLogMessage : std::as_const( preApplicationWarningMessages ) )
+    QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Warning );
+
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
-    QgsMessageLog::logMessage( preApplicationLogMessage );
+    QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == QLatin1String( "default" ) )
