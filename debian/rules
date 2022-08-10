@@ -105,7 +105,7 @@ ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
 endif
 
-ifeq (,$(findstring $(DISTRIBUTION),"sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"sid kinetic"))
 	CMAKE_OPTS += -DWITH_PDAL=TRUE
 endif
 
