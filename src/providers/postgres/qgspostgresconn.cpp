@@ -663,7 +663,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   if ( ! result.result() )
   {
-    return true;
+    return false;
   }
 
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
