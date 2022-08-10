@@ -54,7 +54,7 @@ static bool _projectsTableExists( QgsPostgresConn &conn, const QString &schemaNa
              );
   QgsPostgresResult res( conn.PQexec( sql ) );
 
-  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  if ( ! res.result() )
   {
     return false;
   }
