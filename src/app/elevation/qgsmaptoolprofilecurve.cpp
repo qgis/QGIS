@@ -80,6 +80,4 @@ void QgsMapToolProfileCurve::lineCaptured( const QgsCurve *line )
 {
   const QgsGeometry geom( line->clone() );
   emit curveCaptured( geom );
-
-  canvas()->setMapTool( mPreviousTool );
 }
