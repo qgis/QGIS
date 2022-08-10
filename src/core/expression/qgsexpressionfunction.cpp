@@ -5370,25 +5370,25 @@ static QVariant fncColorPart( const QVariantList &values, const QgsExpressionCon
   else if ( part.compare( QLatin1String( "alpha" ), Qt::CaseInsensitive ) == 0 )
     return color.alpha();
   else if ( part.compare( QLatin1String( "hue" ), Qt::CaseInsensitive ) == 0 )
-    return color.hsvHueF() * 360;
+    return static_cast< double >( color.hsvHueF() * 360 );
   else if ( part.compare( QLatin1String( "saturation" ), Qt::CaseInsensitive ) == 0 )
-    return color.hsvSaturationF() * 100;
+    return static_cast< double >( color.hsvSaturationF() * 100 );
   else if ( part.compare( QLatin1String( "value" ), Qt::CaseInsensitive ) == 0 )
-    return color.valueF() * 100;
+    return static_cast< double >( color.valueF() * 100 );
   else if ( part.compare( QLatin1String( "hsl_hue" ), Qt::CaseInsensitive ) == 0 )
-    return color.hslHueF() * 360;
+    return static_cast< double >( color.hslHueF() * 360 );
   else if ( part.compare( QLatin1String( "hsl_saturation" ), Qt::CaseInsensitive ) == 0 )
-    return color.hslSaturationF() * 100;
+    return static_cast< double >( color.hslSaturationF() * 100 );
   else if ( part.compare( QLatin1String( "lightness" ), Qt::CaseInsensitive ) == 0 )
-    return color.lightnessF() * 100;
+    return static_cast< double >( color.lightnessF() * 100 );
   else if ( part.compare( QLatin1String( "cyan" ), Qt::CaseInsensitive ) == 0 )
-    return color.cyanF() * 100;
+    return static_cast< double >( color.cyanF() * 100 );
   else if ( part.compare( QLatin1String( "magenta" ), Qt::CaseInsensitive ) == 0 )
-    return color.magentaF() * 100;
+    return static_cast< double >( color.magentaF() * 100 );
   else if ( part.compare( QLatin1String( "yellow" ), Qt::CaseInsensitive ) == 0 )
-    return color.yellowF() * 100;
+    return static_cast< double >( color.yellowF() * 100 );
   else if ( part.compare( QLatin1String( "black" ), Qt::CaseInsensitive ) == 0 )
-    return color.blackF() * 100;
+    return static_cast< double >( color.blackF() * 100 );
 
   parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
   return QVariant();
