@@ -1118,6 +1118,7 @@ tests:
       OUTPUT:
         name: expected/removed_holes.gml
         type: vector
+        pk: intval
 
   - algorithm: native:deleteholes
     name: Delete holes (with min)
@@ -1130,6 +1131,7 @@ tests:
       OUTPUT:
         name: expected/removed_holes_min_area.gml
         type: vector
+        pk: intval
 
   - algorithm: qgis:basicstatisticsforfields
     name: Basic stats datetime
@@ -1228,6 +1230,7 @@ tests:
       OUTPUT:
         name: expected/oriented_bounds.gml
         type: vector
+        pk: intval
         compare:
           geometry:
             precision: 7
@@ -1620,7 +1623,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 6
+            precision: 2
 
   - algorithm: native:hublines
     name: Hub lines, geodesic, split
@@ -1644,7 +1647,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 6
+            precision: 2
 
   - algorithm: qgis:pointstopath
     name: Points to path (non grouped)
