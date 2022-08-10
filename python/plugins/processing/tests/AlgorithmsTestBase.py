@@ -37,6 +37,7 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 from copy import deepcopy
 
+from qgis.PyQt.QtCore import QT_VERSION
 from qgis.core import (Qgis,
                        QgsVectorLayer,
                        QgsRasterLayer,
@@ -102,7 +103,18 @@ class AlgorithmsTest(object):
                             if int(gdal.VersionInfo('VERSION_NUM')) < at_least_condition:
                                 print('!!! Skipping {}, requires GDAL >= {}, have version {}'.format(algtest['name'], at_least_condition, gdal.VersionInfo('VERSION_NUM')))
                                 continue
-
+                    qt_condition = condition.get('qt')
+                    if qt_condition:
+                        less_than_condition = qt_condition.get('less_than')
+                        if less_than_condition:
+                            if QT_VERSION >= less_than_condition:
+                                print('!!! Skipping {}, requires Qt < {}, have version {}'.format(algtest['name'], less_than_condition, QT_VERSION))
+                                continue
+                        at_least_condition = qt_condition.get('at_least')
+                        if at_least_condition:
+                            if QT_VERSION < at_least_condition:
+                                print('!!! Skipping {}, requires Qt >= {}, have version {}'.format(algtest['name'], at_least_condition, QT_VERSION))
+                                continue
                 print('About to start {} of {}: "{}"'.format(idx, len(algorithm_tests['tests']), algtest['name']))
                 yield self.check_algorithm, algtest['name'], algtest
 
