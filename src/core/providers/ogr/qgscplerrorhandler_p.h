@@ -29,7 +29,7 @@ class QgsCPLErrorHandler
     {
       if ( errClass != CE_None )
       {
-        const QString *sourceName = reinterpret_cast< QString * >( CPLGetErrorHandlerUserData() );
+        const QString *sourceName = static_cast< QString * >( CPLGetErrorHandlerUserData() );
         const QString identifier = sourceName ? *sourceName : QObject::tr( "OGR" );
         QgsMessageLog::logMessage( QObject::tr( "%1[%2] error %3: %4" ).arg( identifier ).arg( errClass ).arg( errNo ).arg( msg ), identifier );
       }
@@ -39,7 +39,7 @@ class QgsCPLErrorHandler
     QgsCPLErrorHandler( const QString &sourceName = QObject::tr( "OGR" ) )
       : mSourceName( sourceName )
     {
-      CPLPushErrorHandlerEx( showError, reinterpret_cast< void *>( &mSourceName ) );
+      CPLPushErrorHandlerEx( showError, &mSourceName );
     }
 
     ~QgsCPLErrorHandler()
@@ -53,6 +53,58 @@ class QgsCPLErrorHandler
   private:
 
     QString mSourceName;
+
+};
+
+/**
+ * \ingroup core
+ * \class QgsCPLErrorCollectorHandler
+ *
+ * A GDAL error handler which collects errors for later processing.
+ *
+ * \since QGIS 3.28
+ */
+class QgsCPLErrorCollectorHandler
+{
+    static void CPL_STDCALL showError( CPLErr errClass, int, const char *msg )
+    {
+      if ( errClass != CE_None )
+      {
+        QStringList *errors = static_cast< QStringList * >( CPLGetErrorHandlerUserData() );
+        if ( errors )
+        {
+          errors->append( QString( msg ) );
+        }
+      }
+    }
+
+  public:
+    QgsCPLErrorCollectorHandler()
+    {
+      CPLPushErrorHandlerEx( showError, &mErrors );
+    }
+
+    ~QgsCPLErrorCollectorHandler()
+    {
+      CPLPopErrorHandler();
+    }
+
+    /**
+     * Takes all collected errors.
+     */
+    QStringList popErrors()
+    {
+      const QStringList errors = mErrors;
+      mErrors.clear();
+      return errors;
+    }
+
+    QgsCPLErrorCollectorHandler( const QgsCPLErrorCollectorHandler &other ) = delete;
+    QgsCPLErrorCollectorHandler &operator=( const QgsCPLErrorCollectorHandler &other ) = delete;
+
+  private:
+
+    QStringList mErrors;
 
 };
 
