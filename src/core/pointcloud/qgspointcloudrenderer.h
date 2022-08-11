@@ -88,53 +88,16 @@ class CORE_EXPORT QgsPointCloudRenderContext
     QPainter *elevationPainter() const { return mElevationPainter; }
 
     /**
-     * Sets the image used to store elevation data
-     * \since QGIS 3.28
-     */
-    void setElevationImage( QImage *image ) SIP_SKIP { mElevationImage = image; }
-
-    /**
-     * Returns the image used to store elevation data
-     * \since QGIS 3.28
-     */
-    QImage *elevationImage() const { return mElevationImage; }
-
-    /**
      * Sets whether eye dome lighting will be used
      * \since QGIS 3.28
      */
-    void setUseEyeDomeLighting( bool useEyeDomeLighting ) { mUseEyeDomeLighting = useEyeDomeLighting; }
+    void setUseElevationMap( bool useEyeDomeLighting ) { mUseElevationMap = useEyeDomeLighting; }
 
     /**
      * Returns whether eye dome lighting will be used
      * \since QGIS 3.28
      */
-    bool useEyeDomeLighting() const { return mUseEyeDomeLighting; }
-
-    /**
-     * Sets the eye dome lighting strength
-     * \since QGIS 3.28
-     */
-    void setEyeDomeLightingStrength( int strength ) { mEyeDomeLightingStrength = strength; }
-
-    /**
-     * Returns the eye dome lighting strength
-     * \since QGIS 3.28
-     */
-    double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
-
-    /**
-     * Sets the eye dome lighting distance
-     * \since QGIS 3.28
-     */
-    void setEyeDomeLightingDistance( int distance ) { mEyeDomeLightingDistance = distance; }
-
-    /**
-     * Returns the eye dome lighting distance
-     * \since QGIS 3.28
-     */
-    int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
-
+    bool useElevationMap() const { return mUseElevationMap; }
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -235,28 +198,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
-    /**
-     * Returns the minimum Z value rendered into the elevation map
-     * \since QGIS 3.28
-     */
-    double minZ() const { return mMinZ; }
-
-    /**
-     * Returns the maximum Z value rendered into the elevation map
-     * \since QGIS 3.28
-     */
-    double maxZ() const { return mMaxZ; }
-
-    /**
-     * Updates the Z range of the points rendered into the elevation map
-     * \since QGIS 3.28
-     */
-    void updateZRange( double z )
-    {
-      mMinZ = std::min<double>( mMinZ, z );
-      mMaxZ = std::max<double>( mMaxZ, z );
-    }
-
 #ifndef SIP_RUN
 
     /**
@@ -315,7 +256,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
 
     QgsRenderContext &mRenderContext;
     QPainter *mElevationPainter = nullptr;
-    QImage *mElevationImage = nullptr;
     QgsVector3D mScale;
     QgsVector3D mOffset;
     long mPointsRendered = 0;
@@ -326,11 +266,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
-    bool mUseEyeDomeLighting = false;
-    double mEyeDomeLightingStrength = 1000;
-    int mEyeDomeLightingDistance = 1;
-    double mMinZ = std::numeric_limits<double>::max();
-    double mMaxZ = std::numeric_limits<double>::lowest();
+    bool mUseElevationMap = false;
 
     QgsFeedback *mFeedback = nullptr;
 };

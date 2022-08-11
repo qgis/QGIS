@@ -57,56 +57,19 @@ Returns the painter used to render elevation data
 .. versionadded:: 3.28
 %End
 
-
-    QImage *elevationImage() const;
-%Docstring
-Returns the image used to store elevation data
-
-.. versionadded:: 3.28
-%End
-
-    void setUseEyeDomeLighting( bool useEyeDomeLighting );
+    void setUseElevationMap( bool useEyeDomeLighting );
 %Docstring
 Sets whether eye dome lighting will be used
 
 .. versionadded:: 3.28
 %End
 
-    bool useEyeDomeLighting() const;
+    bool useElevationMap() const;
 %Docstring
 Returns whether eye dome lighting will be used
 
 .. versionadded:: 3.28
 %End
-
-    void setEyeDomeLightingStrength( int strength );
-%Docstring
-Sets the eye dome lighting strength
-
-.. versionadded:: 3.28
-%End
-
-    double eyeDomeLightingStrength() const;
-%Docstring
-Returns the eye dome lighting strength
-
-.. versionadded:: 3.28
-%End
-
-    void setEyeDomeLightingDistance( int distance );
-%Docstring
-Sets the eye dome lighting distance
-
-.. versionadded:: 3.28
-%End
-
-    int eyeDomeLightingDistance() const;
-%Docstring
-Returns the eye dome lighting distance
-
-.. versionadded:: 3.28
-%End
-
 
     QgsVector3D scale() const;
 %Docstring
@@ -214,27 +177,6 @@ Returns any constant offset which must be applied to z values taken from the poi
 Returns the feedback object used to cancel rendering
 
 .. versionadded:: 3.20
-%End
-
-    double minZ() const;
-%Docstring
-Returns the minimum Z value rendered into the elevation map
-
-.. versionadded:: 3.28
-%End
-
-    double maxZ() const;
-%Docstring
-Returns the maximum Z value rendered into the elevation map
-
-.. versionadded:: 3.28
-%End
-
-    void updateZRange( double z );
-%Docstring
-Updates the Z range of the points rendered into the elevation map
-
-.. versionadded:: 3.28
 %End
 
 

@@ -269,10 +269,10 @@
                <item row="0" column="1">
                 <widget class="QgsSpinBox" name="mEdlStrength" native="true">
                  <property name="minimum" stdset="0">
-                  <number>100</number>
+                  <number>1</number>
                  </property>
                  <property name="maximum" stdset="0">
-                  <number>10000</number>
+                  <number>100000</number>
                  </property>
                  <property name="singleStep" stdset="0">
                   <number>100</number>
@@ -291,7 +291,7 @@
                   <number>1</number>
                  </property>
                  <property name="maximum" stdset="0">
-                  <number>5</number>
+                  <number>10</number>
                  </property>
                  <property name="clearValue" stdset="0">
                   <number>1</number>

@@ -62,7 +62,7 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
     return;
   const QgsPointCloudAttribute::DataType attributeType = attribute->type();
 
-  const bool renderElevation = context.useEyeDomeLighting();
+  const bool renderElevation = context.useElevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
   const bool considerZ = !zRange.isInfinite() || renderElevation;
 
