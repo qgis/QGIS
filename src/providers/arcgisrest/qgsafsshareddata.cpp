@@ -144,39 +144,62 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
   }
 
-  // Fetch 100 features at the time
-  const int startId = ( id / 100 ) * 100;
-  const int stopId = std::min< size_t >( startId + 100, mObjectIds.length() );
+  bool featureFetched = false;
+  int startId, stopId;
   QList<quint32> objectIds;
-  objectIds.reserve( stopId );
-  for ( int i = startId; i < stopId; ++i )
+  QVariantMap queryData;
+  while ( !featureFetched )
   {
-    if ( i >= 0 && i < mObjectIds.count() && !mDeletedFeatureIds.contains( i ) && !mCache.contains( i ) )
-      objectIds.append( mObjectIds.at( i ) );
-  }
+    startId = ( id / mMaximumFetchObjectsCount ) * mMaximumFetchObjectsCount;
+    stopId = std::min< size_t >( startId + mMaximumFetchObjectsCount, mObjectIds.length() );
+    objectIds.clear();
+    objectIds.reserve( stopId );
+    for ( int i = startId; i < stopId; ++i )
+    {
+      if ( i >= 0 && i < mObjectIds.count() && !mDeletedFeatureIds.contains( i ) && !mCache.contains( i ) )
+        objectIds.append( mObjectIds.at( i ) );
+    }
 
-  if ( objectIds.empty() )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "No valid features IDs to fetch" ), 2 );
-    return false;
-  }
+    if ( objectIds.empty() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "No valid features IDs to fetch" ), 2 );
+      return false;
+    }
 
-  // don't lock while doing the fetch
-  locker.unlock();
+    // don't lock while doing the fetch
+    locker.unlock();
 
-  // Query
-  QString errorTitle, errorMessage;
+    // Query
+    QString errorTitle, errorMessage;
 
-  const QString authcfg = mDataSource.authConfigId();
-  const QVariantMap queryData = QgsArcGisRestQueryUtils::getObjects(
-                                  mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
-                                  QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
-                                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), feedback );
+    const QString authcfg = mDataSource.authConfigId();
+    queryData = QgsArcGisRestQueryUtils::getObjects(
+                  mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
+                  QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
+                  filterRect, errorTitle, errorMessage, mDataSource.httpHeaders(), feedback );
 
-  if ( queryData.isEmpty() )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
-    return false;
+    if ( feedback->isCanceled() )
+    {
+      return false;
+    }
+
+    if ( queryData.isEmpty() )
+    {
+      if ( mMaximumFetchObjectsCount <= 1 )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
+        return false;
+      }
+      else
+      {
+        locker.changeMode( QgsReadWriteLocker::Read );
+        mMaximumFetchObjectsCount = std::max( 1, mMaximumFetchObjectsCount / 5 );
+      }
+    }
+    else
+    {
+      featureFetched = true;
+    }
   }
 
   // but re-lock while updating cache
