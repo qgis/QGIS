@@ -725,7 +725,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     bool mUseEyeDomeLighting = false;
     double mEyeDomeLightingStrength = 1000.0;
-    int mEyeDomeLightingDistance = 1;
+    int mEyeDomeLightingDistance = 2;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

@@ -216,7 +216,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mDrawOrder2d = static_cast< Qgis::PointCloudDrawOrder >( element.attribute( QStringLiteral( "drawOrder2d" ), QStringLiteral( "0" ) ).toInt() );
   mUseEyeDomeLighting = element.attribute( QStringLiteral( "use-eye-dome-lighting" ), QStringLiteral( "0" ) ).toInt();
   mEyeDomeLightingStrength = element.attribute( QStringLiteral( "eye-dome-lighting-strength" ), QStringLiteral( "1000" ) ).toInt();
-  mEyeDomeLightingDistance = element.attribute( QStringLiteral( "eye-dome-lighting-distance" ), QStringLiteral( "1" ) ).toInt();
+  mEyeDomeLightingDistance = element.attribute( QStringLiteral( "eye-dome-lighting-distance" ), QStringLiteral( "2" ) ).toInt();
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
