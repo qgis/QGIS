@@ -48,29 +48,6 @@ Returns a reference to the context's render context.
 %End
 
 
-
-
-    QPainter *elevationPainter() const;
-%Docstring
-Returns the painter used to render elevation data
-
-.. versionadded:: 3.28
-%End
-
-    void setUseElevationMap( bool useEyeDomeLighting );
-%Docstring
-Sets whether eye dome lighting will be used
-
-.. versionadded:: 3.28
-%End
-
-    bool useElevationMap() const;
-%Docstring
-Returns whether eye dome lighting will be used
-
-.. versionadded:: 3.28
-%End
-
     QgsVector3D scale() const;
 %Docstring
 Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -177,6 +154,24 @@ Returns any constant offset which must be applied to z values taken from the poi
 Returns the feedback object used to cancel rendering
 
 .. versionadded:: 3.20
+%End
+
+    void setElevationMap( QgsElevationMap *elevationMap /Transfer/ );
+%Docstring
+Sets elevation map that will be used to record elevation of rendered points.
+
+.. note::
+
+   Takes ownership of the passed object
+
+.. versionadded:: 3.28
+%End
+
+    QgsElevationMap *elevationMap();
+%Docstring
+Returns elevation map. It may be a null pointer if elevation map is not needed in rendering.
+
+.. versionadded:: 3.28
 %End
 
 

@@ -18,6 +18,7 @@
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloudrendererregistry.h"
 #include "qgsapplication.h"
+#include "qgselevationmap.h"
 #include "qgssymbollayerutils.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
@@ -36,6 +37,11 @@ QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &contex
   , mFeedback( feedback )
 {
 
+}
+
+void QgsPointCloudRenderContext::setElevationMap( QgsElevationMap *elevationMap )
+{
+  mElevationMap.reset( elevationMap );
 }
 
 long QgsPointCloudRenderContext::pointsRendered() const
@@ -159,30 +165,13 @@ QStringList QgsPointCloudRenderer::legendRuleKeys() const
   return QStringList();
 }
 
-QColor encodeElevation( float zFloat )
-{
-  int zInt = zFloat * 0x00ffffff;
-
-  QColor c;
-  c.setRed( ( zInt & 0xff0000 ) >> 16 );
-  c.setGreen( ( zInt & 0xff00 ) >> 8 );
-  c.setBlue( zInt & 0xff );
-  c.setAlphaF( 1.0f );
-  return c;
-}
-
 void QgsPointCloudRenderer::drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const
 {
   const QPointF originalXY( x, y );
   context.renderContext().mapToPixel().transformInPlace( x, y );
-  QPainter *elevationPainter = context.elevationPainter();
+  QPainter *elevationPainter = context.elevationMap()->painter();
 
-  const double zMin = -5000;
-  const double zMax = +5000;
-  float zFloat = ( z - zMin ) / ( zMax - zMin );
-  zFloat = std::clamp<float>( zFloat, 0.0, 1.0 );
-
-  QBrush brush( encodeElevation( zFloat ) );
+  QBrush brush( QgsElevationMap::encodeElevation( z ) );
   switch ( mPointSymbol )
   {
     case Qgis::PointCloudSymbol::Square:

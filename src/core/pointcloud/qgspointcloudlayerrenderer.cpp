@@ -24,6 +24,7 @@
 #include "qgspointcloudindex.h"
 #include "qgsstyle.h"
 #include "qgscolorramp.h"
+#include "qgselevationmap.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudrenderer.h"
@@ -115,20 +116,12 @@ bool QgsPointCloudLayerRenderer::render()
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
-  std::unique_ptr<QImage> elevationImage;
-  std::unique_ptr<QPainter> elevationPainter;
   bool applyEdl = mRenderer && mRenderer->useEyeDomeLighting();
-  context.setUseElevationMap( applyEdl );
+
   if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
   {
     if ( applyEdl )
-    {
-      elevationImage.reset( new QImage( painterImage->size(), QImage::Format_ARGB32 ) );
-      elevationImage->fill( QColor::fromRgbF( 0, 0, 0, 0 ) );
-      elevationPainter.reset( new QPainter );
-      elevationPainter->begin( elevationImage.get() );
-      context.setElevationPainter( elevationPainter.get() );
-    }
+      context.setElevationMap( new QgsElevationMap( painterImage->size() ) );
   }
 
   QgsScopedQPainterState painterState( painter );
@@ -289,16 +282,10 @@ bool QgsPointCloudLayerRenderer::render()
   {
     if ( QImage *drawnImage = dynamic_cast<QImage *>( painter->device() ) )
     {
-      if ( QPainter *elevationPainter = context.elevationPainter() )
-      {
-        elevationPainter->end();
-      }
-
       double strength = mRenderer->eyeDomeLightingStrength();
       int distance = mRenderer->eyeDomeLightingDistance();
-      float zScale = context.renderContext().rendererScale() / 3 / 10000;
-
-      applyEyeDomeLighting( drawnImage, elevationImage.get(), distance, strength, zScale );
+      float zScale = context.renderContext().rendererScale() / 3;
+      context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, zScale );
     }
   }
 
