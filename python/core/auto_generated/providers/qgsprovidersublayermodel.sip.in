@@ -158,6 +158,8 @@ Sets the item's ``icon``.
 Constructor for QgsProviderSublayerModel, with the specified ``parent`` object.
 %End
 
+    ~QgsProviderSublayerModel();
+
     void setSublayerDetails( const QList< QgsProviderSublayerDetails > &details );
 %Docstring
 Sets the sublayer ``details`` to show in the model.

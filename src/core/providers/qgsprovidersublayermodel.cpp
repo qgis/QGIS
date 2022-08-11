@@ -69,6 +69,8 @@ QgsProviderSublayerModelGroup::QgsProviderSublayerModelGroup( const QString &tit
 
 }
 
+QgsProviderSublayerModelGroup::~QgsProviderSublayerModelGroup() = default;
+
 QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::addChild( std::unique_ptr<QgsProviderSublayerModelNode> child )
 {
   if ( !child )
@@ -185,6 +187,8 @@ QgsProviderSublayerModelSublayerNode::QgsProviderSublayerModelSublayerNode( cons
 {
 }
 
+QgsProviderSublayerModelSublayerNode::~QgsProviderSublayerModelSublayerNode() = default;
+
 QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) const
 {
   switch ( role )
@@ -293,6 +297,8 @@ QgsProviderSublayerModelNonLayerItemNode::QgsProviderSublayerModelNonLayerItemNo
 {
 }
 
+QgsProviderSublayerModelNonLayerItemNode::~QgsProviderSublayerModelNonLayerItemNode() = default;
+
 QVariant QgsProviderSublayerModelNonLayerItemNode::data( int role, int column ) const
 {
   switch ( role )
@@ -351,6 +357,8 @@ QgsProviderSublayerModel::QgsProviderSublayerModel( QObject *parent )
 {
 
 }
+
+QgsProviderSublayerModel::~QgsProviderSublayerModel() = default;
 
 void QgsProviderSublayerModel::setSublayerDetails( const QList<QgsProviderSublayerDetails> &details )
 {

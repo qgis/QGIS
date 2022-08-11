@@ -179,6 +179,8 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
      */
     QgsProviderSublayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsProviderSublayerModel() override;
+
     /**
      * Sets the sublayer \a details to show in the model.
      *
@@ -280,6 +282,7 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
      * Constructor for a QgsProviderSublayerModelGroup, with the specified \a title.
      */
     QgsProviderSublayerModelGroup( const QString &title );
+    ~QgsProviderSublayerModelGroup() override;
 
     /**
      * Returns the group's name
@@ -339,6 +342,7 @@ class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSubla
   public:
 
     QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer );
+    ~QgsProviderSublayerModelSublayerNode() override;
     int childCount() const override final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
     QgsProviderSublayerDetails sublayer() const { return mSublayer; }
@@ -353,6 +357,7 @@ class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderS
   public:
 
     QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item );
+    ~QgsProviderSublayerModelNonLayerItemNode() override;
     int childCount() const override final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
 
