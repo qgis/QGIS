@@ -68,48 +68,6 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   mReadyToCompose = false;
 }
 
-float decodeElevation( const uchar *colorRaw )
-{
-  return ( float )( ( *( ( const int * )colorRaw ) ) & 0x00ffffff ) / ( ( float ) 0x00ffffff );
-}
-
-/**
- * Applies eye dome lighting effect on \a img using the elevation data from \a elevationImg and \a context
- */
-void applyEyeDomeLighting( QImage *img, const QImage *elevationImg, int distance, double strength, float zScale )
-{
-  int imgWidth = img->width();
-  uchar *imgPtr = img->bits();
-  const uchar *elevPtr = elevationImg->constBits();
-  for ( int i = distance; i < img->width() - distance; ++i )
-  {
-    for ( int j = distance; j < img->height() - distance; ++j )
-    {
-      int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
-      float factor = 0.0f;
-      float centerDepth = decodeElevation( elevPtr + ( j * imgWidth + i ) * 4 );
-      for ( int k = 0; k < 4; ++k )
-      {
-        int iNeighbour = i + distance * neighbours[2 * k];
-        int jNeighbour = j + distance * neighbours[2 * k + 1];
-        float neighbourDepth = decodeElevation( elevPtr + ( jNeighbour * imgWidth + iNeighbour ) * 4 );
-        factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) );
-      }
-      factor /= zScale;
-      float shade = exp( -factor / 4 * strength );
-
-      uchar *imgPixel = imgPtr + ( j * imgWidth + i ) * 4;
-      uchar &red = *( imgPixel );
-      uchar &green = *( imgPixel + 1 );
-      uchar &blue = *( imgPixel + 2 );
-
-      red = red * shade;
-      green = green * shade;
-      blue = blue * shade;
-    }
-  }
-};
-
 bool QgsPointCloudLayerRenderer::render()
 {
   QgsPointCloudRenderContext context( *renderContext(), mScale, mOffset, mZScale, mZOffset, mFeedback.get() );
