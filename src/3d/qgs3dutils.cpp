@@ -60,6 +60,7 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   {
     if ( scene->sceneState() == Qgs3DMapScene::Ready )
     {
+      engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
       engine.requestCaptureImage();
     }
   };
@@ -105,7 +106,8 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
   {
     if ( scene->sceneState() == Qgs3DMapScene::Ready )
     {
-      engine.requestCaptureImage();
+      engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::OnDemand );
+      engine.requestDepthBufferCapture();
     }
   };
 
@@ -115,7 +117,7 @@ QImage Qgs3DUtils::captureSceneDepthBuffer( QgsAbstract3DEngine &engine, Qgs3DMa
     evLoop.quit();
   };
 
-  QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
+  QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::depthBufferCaptured, saveImageFcn );
   QMetaObject::Connection conn2;
 
   if ( scene->sceneState() == Qgs3DMapScene::Ready )
