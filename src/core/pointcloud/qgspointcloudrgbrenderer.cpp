@@ -85,7 +85,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
   const bool useBlueContrastEnhancement = mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   const bool useGreenContrastEnhancement = mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
 
-  const bool renderElevation = context.useEyeDomeLighting();
+  const bool renderElevation = context.useElevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
   const bool considerZ = !zRange.isInfinite() || renderElevation;
 

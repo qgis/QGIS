@@ -75,35 +75,33 @@ float decodeElevation( const uchar *colorRaw )
 /**
  * Applies eye dome lighting effect on \a img using the elevation data from \a elevationImg and \a context
  */
-void applyEyeDomeLighting( QImage *img, const QImage *elevationImg, const QgsPointCloudRenderContext &context )
+void applyEyeDomeLighting( QImage *img, const QImage *elevationImg, int distance, double strength, float zScale )
 {
-  double strength = context.eyeDomeLightingStrength();
-  double distance = context.eyeDomeLightingDistance();
-
-  float minZ = context.minZ();
-  float maxZ = context.maxZ();
-
+  int imgWidth = img->width();
+  uchar *imgPtr = img->bits();
+  const uchar *elevPtr = elevationImg->constBits();
   for ( int i = distance; i < img->width() - distance; ++i )
   {
     for ( int j = distance; j < img->height() - distance; ++j )
     {
-      uchar &red = *( img->bits() + j * img->bytesPerLine() + i * 4 );
-      uchar &green = *( img->bits() + j * img->bytesPerLine() + i * 4 + 1 );
-      uchar &blue = *( img->bits() + j * img->bytesPerLine() + i * 4 + 2 );
-
       int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
       float factor = 0.0f;
-      float centerDepth = decodeElevation( elevationImg->constBits() + j * elevationImg->bytesPerLine() + i * 4 );
-      centerDepth = ( centerDepth - minZ ) / ( maxZ - minZ );
+      float centerDepth = decodeElevation( elevPtr + ( j * imgWidth + i ) * 4 );
       for ( int k = 0; k < 4; ++k )
       {
-        int neighbourCoordsX = i + distance * neighbours[2 * k];
-        int neighbourCoordsY = j + distance * neighbours[2 * k + 1];
-        float neighbourDepth = decodeElevation( elevationImg->constBits() + neighbourCoordsY * elevationImg->bytesPerLine() + neighbourCoordsX * 4 );
-        neighbourDepth = ( neighbourDepth - minZ ) / ( maxZ - minZ );
-        factor += std::max<float>( 0, centerDepth - neighbourDepth );
+        int iNeighbour = i + distance * neighbours[2 * k];
+        int jNeighbour = j + distance * neighbours[2 * k + 1];
+        float neighbourDepth = decodeElevation( elevPtr + ( jNeighbour * imgWidth + iNeighbour ) * 4 );
+        factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) );
       }
+      factor /= zScale;
       float shade = exp( -factor / 4 * strength );
+
+      uchar *imgPixel = imgPtr + ( j * imgWidth + i ) * 4;
+      uchar &red = *( imgPixel );
+      uchar &green = *( imgPixel + 1 );
+      uchar &blue = *( imgPixel + 2 );
+
       red = red * shade;
       green = green * shade;
       blue = blue * shade;
@@ -120,7 +118,7 @@ bool QgsPointCloudLayerRenderer::render()
   std::unique_ptr<QImage> elevationImage;
   std::unique_ptr<QPainter> elevationPainter;
   bool applyEdl = mRenderer && mRenderer->useEyeDomeLighting();
-  context.setUseEyeDomeLighting( applyEdl );
+  context.setUseElevationMap( applyEdl );
   if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
   {
     if ( applyEdl )
@@ -295,7 +293,12 @@ bool QgsPointCloudLayerRenderer::render()
       {
         elevationPainter->end();
       }
-      applyEyeDomeLighting( drawnImage, elevationImage.get(), context );
+
+      double strength = mRenderer->eyeDomeLightingStrength();
+      int distance = mRenderer->eyeDomeLightingDistance();
+      float zScale = context.renderContext().rendererScale() / 3 / 10000;
+
+      applyEyeDomeLighting( drawnImage, elevationImage.get(), distance, strength, zScale );
     }
   }
 
