@@ -1,5 +1,5 @@
 /*
- * Poly2Tri Copyright (c) 2009-2018, Poly2Tri Contributors
+ * Poly2Tri Copyright (c) 2009-2022, Poly2Tri Contributors
  * https://github.com/jhasse/poly2tri
  *
  * All rights reserved.
@@ -29,8 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SWEEP_CONTEXT_H
-#define SWEEP_CONTEXT_H
+#pragma once
 
 #include <list>
 #include <vector>
@@ -52,7 +51,7 @@ class SweepContext {
 public:
 
 /// Constructor
-SweepContext(const std::vector<Point*>& polyline);
+explicit SweepContext(std::vector<Point*> polyline);
 /// Destructor
 ~SweepContext();
 
@@ -103,15 +102,16 @@ struct Basin {
   double width;
   bool left_highest;
 
-  Basin() : left_node(NULL), bottom_node(NULL), right_node(NULL), width(0.0), left_highest(false)
+  Basin()
+  : left_node(nullptr), bottom_node(nullptr), right_node(nullptr), width(0.0), left_highest(false)
   {
   }
 
   void Clear()
   {
-    left_node = NULL;
-    bottom_node = NULL;
-    right_node = NULL;
+    left_node = nullptr;
+    bottom_node = nullptr;
+    right_node = nullptr;
     width = 0.0;
     left_highest = false;
   }
@@ -182,5 +182,3 @@ inline Point* SweepContext::tail() const
 }
 
 }
-
-#endif

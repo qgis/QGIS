@@ -107,4 +107,4 @@ AdvancingFront::~AdvancingFront()
 {
 }
 
-}
+} // namespace p2t

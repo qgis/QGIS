@@ -1,5 +1,5 @@
 /*
- * Poly2Tri Copyright (c) 2009-2018, Poly2Tri Contributors
+ * Poly2Tri Copyright (c) 2009-2022, Poly2Tri Contributors
  * https://github.com/jhasse/poly2tri
  *
  * All rights reserved.
@@ -31,5 +31,23 @@
 
 #pragma once
 
-#include "common/shapes.h"
-#include "sweep/cdt.h"
+#if defined(_WIN32)
+#  define P2T_COMPILER_DLLEXPORT __declspec(dllexport)
+#  define P2T_COMPILER_DLLIMPORT __declspec(dllimport)
+#elif defined(__GNUC__)
+#  define P2T_COMPILER_DLLEXPORT __attribute__ ((visibility ("default")))
+#  define P2T_COMPILER_DLLIMPORT __attribute__ ((visibility ("default")))
+#else
+#  define P2T_COMPILER_DLLEXPORT
+#  define P2T_COMPILER_DLLIMPORT
+#endif
+
+#ifndef P2T_DLL_SYMBOL
+#  if defined(P2T_STATIC_EXPORTS)
+#    define P2T_DLL_SYMBOL
+#  elif defined(P2T_SHARED_EXPORTS)
+#    define P2T_DLL_SYMBOL P2T_COMPILER_DLLEXPORT
+#  else
+#    define P2T_DLL_SYMBOL P2T_COMPILER_DLLIMPORT
+#  endif
+#endif

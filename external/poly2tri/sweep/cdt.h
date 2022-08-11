@@ -29,12 +29,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CDT_H
-#define CDT_H
+#pragma once
 
 #include "advancing_front.h"
 #include "sweep_context.h"
 #include "sweep.h"
+
+#include "../common/dll_symbol.h"
 
 /**
  *
@@ -44,7 +45,7 @@
 
 namespace p2t {
 
-class CDT
+class P2T_DLL_SYMBOL CDT
 {
 public:
 
@@ -101,5 +102,3 @@ public:
 };
 
 }
-
-#endif

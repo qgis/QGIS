@@ -29,8 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ADVANCED_FRONT_H
-#define ADVANCED_FRONT_H
+#pragma once
 
 #include "../common/shapes.h"
 
@@ -114,5 +113,3 @@ inline void AdvancingFront::set_search(Node* node)
 }
 
 }
-
-#endif

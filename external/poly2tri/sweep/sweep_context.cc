@@ -1,5 +1,5 @@
 /*
- * Poly2Tri Copyright (c) 2009-2018, Poly2Tri Contributors
+ * Poly2Tri Copyright (c) 2009-2022, Poly2Tri Contributors
  * https://github.com/jhasse/poly2tri
  *
  * All rights reserved.
@@ -34,7 +34,7 @@
 
 namespace p2t {
 
-SweepContext::SweepContext(const std::vector<Point*>& polyline) : points_(polyline),
+SweepContext::SweepContext(std::vector<Point*> polyline) : points_(std::move(polyline)),
   front_(nullptr),
   head_(nullptr),
   tail_(nullptr),
@@ -48,8 +48,8 @@ SweepContext::SweepContext(const std::vector<Point*>& polyline) : points_(polyli
 void SweepContext::AddHole(const std::vector<Point*>& polyline)
 {
   InitEdges(polyline);
-  for(unsigned int i = 0; i < polyline.size(); i++) {
-    points_.push_back(polyline[i]);
+  for (auto i : polyline) {
+    points_.push_back(i);
   }
 }
 
@@ -73,8 +73,8 @@ void SweepContext::InitTriangulation()
   double ymax(points_[0]->y), ymin(points_[0]->y);
 
   // Calculate bounds.
-  for (unsigned int i = 0; i < points_.size(); i++) {
-    Point& p = *points_[i];
+  for (auto& point : points_) {
+    Point& p = *point;
     if (p.x > xmax)
       xmax = p.x;
     if (p.x < xmin)
@@ -194,17 +194,13 @@ SweepContext::~SweepContext()
     delete af_middle_;
     delete af_tail_;
 
-    typedef std::list<Triangle*> type_list;
-
-    for(type_list::iterator iter = map_.begin(); iter != map_.end(); ++iter) {
-        Triangle* ptr = *iter;
-        delete ptr;
+    for (auto ptr : map_) {
+      delete ptr;
     }
 
-     for(unsigned int i = 0; i < edge_list.size(); i++) {
-        delete edge_list[i];
+    for (auto& i : edge_list) {
+      delete i;
     }
-
 }
 
 } // namespace p2t
