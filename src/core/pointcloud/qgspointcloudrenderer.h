@@ -29,6 +29,7 @@ class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
 class QgsPointCloudLayer;
+class QgsElevationMap;
 
 /**
  * \ingroup core
@@ -73,31 +74,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \note Not available in Python bindings.
      */
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
-
-
-    /**
-     * Sets the painter used to render elevation data
-     * \since QGIS 3.28
-     */
-    void setElevationPainter( QPainter *painter ) SIP_SKIP { mElevationPainter = painter; }
-
-    /**
-     * Returns the painter used to render elevation data
-     * \since QGIS 3.28
-     */
-    QPainter *elevationPainter() const { return mElevationPainter; }
-
-    /**
-     * Sets whether eye dome lighting will be used
-     * \since QGIS 3.28
-     */
-    void setUseElevationMap( bool useEyeDomeLighting ) { mUseElevationMap = useEyeDomeLighting; }
-
-    /**
-     * Returns whether eye dome lighting will be used
-     * \since QGIS 3.28
-     */
-    bool useElevationMap() const { return mUseElevationMap; }
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -198,6 +174,21 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
+    /**
+     * Sets elevation map that will be used to record elevation of rendered points.
+     * \note Takes ownership of the passed object
+     *
+     * \since QGIS 3.28
+     */
+    void setElevationMap( QgsElevationMap *elevationMap SIP_TRANSFER );
+
+    /**
+     * Returns elevation map. It may be a null pointer if elevation map is not needed in rendering.
+     *
+     * \since QGIS 3.28
+     */
+    QgsElevationMap *elevationMap() { return mElevationMap.get(); }
+
 #ifndef SIP_RUN
 
     /**
@@ -255,7 +246,6 @@ class CORE_EXPORT QgsPointCloudRenderContext
 #endif
 
     QgsRenderContext &mRenderContext;
-    QPainter *mElevationPainter = nullptr;
     QgsVector3D mScale;
     QgsVector3D mOffset;
     long mPointsRendered = 0;
@@ -266,7 +256,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
     int mZOffset = 0;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
-    bool mUseElevationMap = false;
+    std::unique_ptr<QgsElevationMap> mElevationMap;
 
     QgsFeedback *mFeedback = nullptr;
 };
