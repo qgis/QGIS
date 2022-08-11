@@ -82,20 +82,20 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     /**
      * Validate that the provided keys are compliant with the associated field.
      *
-     * Will return TRUE if all entries are valid.
+     * Returns TRUE if all entries are valid.
      *
-     * \since QGIS 3.27
+     * \since QGIS 3.28
      */
     bool validateKeys() const;
 
     /**
      * Check if the provided key is compliant with the associated field.
      *
-     * Will return TRUE if entrie is valid.
+     * Returns TRUE if the entry is valid.
      *
-     * \since QGIS 3.27
+     * \since QGIS 3.28
      */
-    bool validateKey( QTableWidgetItem *key ) const;
+    bool validateKey( std::unique_ptr< QTableWidgetItem > &key ) const;
 
   private:
     void setRow( int row, const QString &value, const QString &description );

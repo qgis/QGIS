@@ -357,10 +357,12 @@ bool QgsValueMapConfigDlg::validateKeys() const
 {
   bool allValid = true;
   if ( !tableWidget )
+  {
     return false;
+  }
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
   {
-    QTableWidgetItem *ki = tableWidget->item( i, 0 );
+    std::unique_ptr< QTableWidgetItem > *ki = std::make_unique< QTableWidgetItem >( tableWidget->item( i, 0 ) );
 
     if ( !ki )
       continue;
@@ -371,10 +373,12 @@ bool QgsValueMapConfigDlg::validateKeys() const
   return allValid;
 }
 
-bool QgsValueMapConfigDlg::validateKey( QTableWidgetItem *key ) const
+bool QgsValueMapConfigDlg::validateKey( std::unique_ptr< QTableWidgetItem > &key ) const
 {
   if ( !key )
+  {
     return false;
+  }
   QVariant ks = QVariant( key->text() );
   if ( ! mField.convertCompatible( ks ) )
   {
