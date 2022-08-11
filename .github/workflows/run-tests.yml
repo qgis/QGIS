@@ -157,7 +157,7 @@ jobs:
                      -v $(pwd):/root/QGIS \
                      -v /home/runner/QGIS/.ccache:/root/.ccache \
                      --env-file .docker/docker-variables.env \
-                     --env PUSH_TO_CDASH=true \
+                     --env PUSH_TO_CDASH=false \
                      --env WITH_QT5=${{ matrix.with-qt5 }} \
                      --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
