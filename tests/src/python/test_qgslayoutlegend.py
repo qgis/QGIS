@@ -731,6 +731,52 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().clear()
 
+    def testReferencePoint(self):
+        """Test reference point parameter when resizeToContent is enabled"""
+        QgsProject.instance().removeAllMapLayers()
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        QgsProject.instance().clear()
+        QgsProject.instance().addMapLayers([point_layer])
+
+        marker_symbol = QgsMarkerSymbol.createSimple(
+            {'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
+
+        point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
+
+        s = QgsMapSettings()
+        s.setLayers([point_layer])
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map.setFrameEnabled(True)
+        map.setLayers([point_layer])
+        layout.addLayoutItem(map)
+        map.zoomToExtent(point_layer.extent())
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setReferencePoint(QgsLayoutItem.LowerLeft)
+        legend.setResizeToContents(True)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(20, 20, 300, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundEnabled(False)
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        checker = QgsLayoutChecker(
+            'composer_legend_reference_point', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        TestQgsLayoutItemLegend.report += checker.report()
+        self.assertTrue(result, message)
+
 
 if __name__ == '__main__':
     unittest.main()
