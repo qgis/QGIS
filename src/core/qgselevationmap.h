@@ -23,15 +23,21 @@
 #include <memory>
 
 /**
+ * \ingroup core
  * Stores digital elevation model in a raster image which may get updated
  * as a part of map layer rendering process. Afterwards the elevations can
  * be used for post-processing effects of the rendered color map image.
+ *
+ * Elevations are encoded as colors in QImage, thanks to this it is not
+ * only possible to set elevation for each pixel, but also to use QPainter
+ * for more complex updates of elevations.
  *
  * \since QGIS 3.28
  */
 class CORE_EXPORT QgsElevationMap
 {
   public:
+    //! Constructs an elevation map with the given width and height
     explicit QgsElevationMap( const QSize &size );
 
     /**
