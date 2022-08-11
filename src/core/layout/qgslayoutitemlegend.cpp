@@ -136,6 +136,8 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
 
+  const QPointF oldPos = pos();
+
   //adjust box if width or height is too small
   if ( mSizeToContents )
   {
@@ -166,7 +168,15 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     }
   }
 
+  // attemptResize may change the legend position and would call setPos
+  // BUT the position is actually changed for the next draw, so we need to translate of the difference
+  // between oldPos and newPos
+  // the issue doesn't appear in desktop rendering but only in export because in the first one,
+  // Qt triggers a redraw on position change
+  painter->save();
+  painter->translate( pos() - oldPos );
   QgsLayoutItem::paint( painter, itemStyle, pWidget );
+  painter->restore();
 }
 
 void QgsLayoutItemLegend::finalizeRestoreFromXml()
@@ -1183,5 +1193,3 @@ void QgsLegendModel::forceRefresh()
 {
   emit refreshLegend();
 }
-
-
