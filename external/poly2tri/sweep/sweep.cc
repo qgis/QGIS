@@ -54,8 +54,8 @@ void Sweep::SweepPoints(SweepContext& tcx)
   for (size_t i = 1; i < tcx.point_count(); i++) {
     Point& point = *tcx.GetPoint(i);
     Node* node = &PointEvent(tcx, point);
-    for (unsigned int j = 0; j < point.edge_list.size(); j++) {
-      EdgeEvent(tcx, point.edge_list[j], node);
+    for (auto& j : point.edge_list) {
+      EdgeEvent(tcx, j, node);
     }
   }
 }
@@ -262,12 +262,44 @@ void Sweep::FillAdvancingFront(SweepContext& tcx, Node& n)
 }
 
 // True if HoleAngle exceeds 90 degrees.
+// LargeHole_DontFill checks if the advancing front has a large hole.
+// A "Large hole" is a triangle formed by a sequence of points in the advancing
+// front where three neighbor points form a triangle.
+// And angle between left-top, bottom, and right-top points is more than 90 degrees.
+// The first part of the algorithm reviews only three neighbor points, e.g. named A, B, C.
+// Additional part of this logic reviews a sequence of 5 points -
+// additionally reviews one point before and one after the sequence of three (A, B, C),
+// e.g. named X and Y.
+// In this case, angles are XBC and ABY and this if angles are negative or more
+// than 90 degrees LargeHole_DontFill returns true.
+// But there is a configuration when ABC has a negative angle but XBC or ABY is less
+// than 90 degrees and positive.
+// Then function LargeHole_DontFill return false and initiates filling.
+// This filling creates a triangle ABC and adds it to the advancing front.
+// But in the case when angle ABC is negative this triangle goes inside the advancing front
+// and can intersect previously created triangles.
+// This triangle leads to making wrong advancing front and problems in triangulation in the future.
+// Looks like such a triangle should not be created.
+// The simplest way to check and fix it is to check an angle ABC.
+// If it is negative LargeHole_DontFill should return true and
+// not initiate creating the ABC triangle in the advancing front.
+// X______A         Y
+//        \        /
+//         \      /
+//          \ B  /
+//           |  /
+//           | /
+//           |/
+//           C
 bool Sweep::LargeHole_DontFill(const Node* node) const {
 
   const Node* nextNode = node->next;
   const Node* prevNode = node->prev;
   if (!AngleExceeds90Degrees(node->point, nextNode->point, prevNode->point))
           return false;
+
+  if (AngleIsNegative(node->point, nextNode->point, prevNode->point))
+          return true;
 
   // Check additional points on front.
   const Node* next2Node = nextNode->next;
@@ -281,6 +313,11 @@ bool Sweep::LargeHole_DontFill(const Node* node) const {
           return false;
 
   return true;
+}
+
+bool Sweep::AngleIsNegative(const Point* origin, const Point* pa, const Point* pb) const {
+    const double angle = Angle(origin, pa, pb);
+    return angle < 0;
 }
 
 bool Sweep::AngleExceeds90Degrees(const Point* origin, const Point* pa, const Point* pb) const {
@@ -815,10 +852,9 @@ void Sweep::FlipScanEdgeEvent(SweepContext& tcx, Point& ep, Point& eq, Triangle&
 Sweep::~Sweep() {
 
     // Clean up memory
-    for(size_t i = 0; i < nodes_.size(); i++) {
-        delete nodes_[i];
+    for (auto& node : nodes_) {
+      delete node;
     }
-
 }
 
 } // namespace p2t

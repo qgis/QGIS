@@ -29,10 +29,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef POLY2TRI_H
-#define POLY2TRI_H
+#pragma once
 
 #include "common/shapes.h"
 #include "sweep/cdt.h"
-
-#endif
