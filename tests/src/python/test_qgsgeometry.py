@@ -5166,6 +5166,15 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+        # already orthogonal polygon with a vertex on a "straight line" (https://github.com/qgis/QGIS/issues/49621)
+        polygon = QgsGeometry.fromWkt(
+            'Polygon ((0 0, 5 0, 10 0, 10 10, 0 10, 0 0))')
+        o = polygon.orthogonalize()
+        exp = 'Polygon ((0 0, 5 0, 10 0, 10 10, 0 10, 0 0))'
+        result = o.asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "orthogonalize: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
     def testPolygonize(self):
         o = QgsGeometry.polygonize([])
         self.assertFalse(o)
