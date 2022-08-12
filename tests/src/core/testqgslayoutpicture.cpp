@@ -101,6 +101,7 @@ void TestQgsLayoutPicture::initTestCase()
   mPicture->setPicturePath( mPngImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   mPicture->setFrameEnabled( true );
+
 }
 
 void TestQgsLayoutPicture::cleanupTestCase()

@@ -60,6 +60,9 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
+  // we can only report one diff image, so just use the first
+  QString diffImageFile;
+
   for ( const QString &suffix : std::as_const( subDirs ) )
   {
     if ( subDirs.count() > 1 )
@@ -92,6 +95,11 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     dartMeasurements << checker.dartMeasurements();
 
     mReport += checker.report( false );
+
+    if ( !mResult && diffImageFile.isEmpty() )
+    {
+      diffImageFile = checker.mDiffImageFile;
+    }
   }
 
   if ( !mResult && !mExpectFail && mIsCiRun )
@@ -138,6 +146,19 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
       if ( !QFile::copy( mRenderedImage, destPath ) )
       {
         qDebug() << "!!!!! could not copy " << mRenderedImage << " to " << destPath;
+      }
+    }
+
+    if ( !diffImageFile.isEmpty() && QFile::exists( diffImageFile ) )
+    {
+      QFileInfo fi( diffImageFile );
+      const QString destPath = reportDir.filePath( fi.fileName() );
+      if ( QFile::exists( destPath ) )
+        QFile::remove( destPath );
+
+      if ( !QFile::copy( diffImageFile, destPath ) )
+      {
+        qDebug() << "!!!!! could not copy " << diffImageFile << " to " << destPath;
       }
     }
   }
