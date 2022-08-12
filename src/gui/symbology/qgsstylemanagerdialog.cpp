@@ -204,11 +204,6 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QWidget *parent, Qt::WindowFlags f
 
   connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, [ = ] { addStyleDatabase( false ); } );
   connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, [ = ] { addStyleDatabase( true ); } );
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  // you don't get nice stuff
-  mStyleDatabaseWidget->hide();
-#endif
 }
 
 void QgsStyleManagerDialog::init()
