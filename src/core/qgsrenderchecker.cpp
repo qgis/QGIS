@@ -499,7 +499,21 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
-      mReport += myImagesString;
+
+      const QString diffSizeImagesString = QString(
+                                             "<tr>"
+                                             "<td colspan=3>Compare actual and expected result</td>"
+                                             "</tr>\n<tr>"
+                                             "<td align=center><img src=\"%1\"></td>\n"
+                                             "<td align=center><img width=%3 height=%4 src=\"%2\"></td>\n"
+                                             "</tr>"
+                                             "</table>\n" )
+                                           .arg(
+                                             renderedImageFileName,
+                                             referenceImageFile )
+                                           .arg( imgWidth ).arg( imgHeight );
+
+      mReport += diffSizeImagesString;
       performPostTestActions( flags );
       return mResult;
     }
