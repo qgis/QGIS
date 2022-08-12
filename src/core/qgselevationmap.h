@@ -24,13 +24,16 @@
 
 /**
  * \ingroup core
- * Stores digital elevation model in a raster image which may get updated
+ * \brief Stores digital elevation model in a raster image which may get updated
  * as a part of map layer rendering process. Afterwards the elevations can
  * be used for post-processing effects of the rendered color map image.
  *
  * Elevations are encoded as colors in QImage, thanks to this it is not
  * only possible to set elevation for each pixel, but also to use QPainter
- * for more complex updates of elevations.
+ * for more complex updates of elevations. We encode elevations to 24 bits
+ * in range of [-8000, 8777] with precision of three decimal digits, which
+ * should give millimiter precision and enough range for elevation values
+ * in meters.
  *
  * \since QGIS 3.28
  */
@@ -41,22 +44,34 @@ class CORE_EXPORT QgsElevationMap
     explicit QgsElevationMap( const QSize &size );
 
     /**
-     * Applies eye dome lighting effect to the given image.
+     * Applies eye dome lighting effect to the given image. The effect makes
+     * angled surfaces darker and adds silhouettes in case of larger differences
+     * of elevations between neighboring pixels.
+     *
+     * The distance parameter tells how many pixels away from the original pixel
+     * to sample neighboring pixels. Normally distance of 2 pixels gives good results.
+     *
+     * The strength parameter adjusts how strong the added shading will be.
+     * Good default for this value seems to be 1000.
+     *
+     * The zScale parameter adjusts scale of elevation values. It is recommended
+     * to set this to the map's scale denominator to get similarly looking results
+     * at different map scales.
      */
-    void applyEyeDomeLighting( QImage &img, int distance, float strength, float zScale );
+    void applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale );
+
+    //! Returns raw elevation image with elevations encoded as color values
+    QImage rawElevationImage() const { return mElevationImage; }
 
     //! Returns painter to the underlying QImage with elevations
-    QPainter *painter() { return mPainter.get(); }
+    QPainter *painter() const { return mPainter.get(); }
 
     //! Converts elevation value to an actual color
-    static QColor encodeElevation( float z );
+    static QRgb encodeElevation( float z );
     //! Converts a color back to elevation value
-    static float decodeElevation( const QRgb *colorRaw );
+    static float decodeElevation( QRgb colorRaw );
 
   private:
-
-    static const double mZMin;
-    static const double mZMax;
 
     QImage mElevationImage;
     std::unique_ptr<QPainter> mPainter;

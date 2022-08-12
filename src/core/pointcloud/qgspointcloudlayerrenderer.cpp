@@ -242,8 +242,7 @@ bool QgsPointCloudLayerRenderer::render()
     {
       double strength = mRenderer->eyeDomeLightingStrength();
       int distance = mRenderer->eyeDomeLightingDistance();
-      float zScale = context.renderContext().rendererScale() / 3;
-      context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, zScale );
+      context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, context.renderContext().rendererScale() );
     }
   }
 
