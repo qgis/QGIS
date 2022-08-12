@@ -127,6 +127,9 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     {
       QFileInfo fi( mRenderedImage );
       const QString destPath = reportDir.filePath( fi.fileName() );
+      if ( QFile::exists( destPath ) )
+        QFile::remove( destPath );
+
       if ( !QFile::copy( mRenderedImage, destPath ) )
       {
         qDebug() << "!!!!! could not copy " << mRenderedImage << " to " << destPath;
