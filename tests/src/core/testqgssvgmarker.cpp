@@ -34,6 +34,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsfontutils.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -87,6 +88,8 @@ void TestQgsSvgMarkerSymbol::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  QgsFontUtils::loadStandardTestFonts( {QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
 
   //create some objects that will be used in all tests...
   const QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
