@@ -71,6 +71,8 @@ Converts elevation value to an actual color
 Converts a color back to elevation value
 %End
 
+  private:
+    QgsElevationMap( const QgsElevationMap & );
 };
 
 /************************************************************************

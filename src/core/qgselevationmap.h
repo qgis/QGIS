@@ -73,6 +73,12 @@ class CORE_EXPORT QgsElevationMap
 
   private:
 
+#ifdef SIP_RUN
+    QgsElevationMap( const QgsElevationMap & );
+#endif
+
+    Q_DISABLE_COPY( QgsElevationMap )
+
     QImage mElevationImage;
     std::unique_ptr<QPainter> mPainter;
 };
