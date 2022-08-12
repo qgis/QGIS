@@ -130,7 +130,7 @@ col_first    [A-Za-z_]|{non_ascii}
 col_next     [A-Za-z0-9_]|{non_ascii}
 identifier  {col_first}{col_next}*
 
-deprecated_function "$"[xXyY]_?[aA][tT]
+deprecated_function "$"[xXyYzZmM]_?[aA][tT]
 special_col "$"{identifier}
 variable "@"{identifier}
 

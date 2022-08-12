@@ -70,6 +70,7 @@
 #include <QRegularExpression>
 #include <QUuid>
 #include <QUrlQuery>
+#include <QVector4D>
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 
@@ -3621,23 +3622,41 @@ static QVariant pointAt( const QVariantList &values, const QgsExpressionContext 
     return QVariant();
   }
 
-  QgsPointXY p = g.vertexAt( idx );
-  return QVariant( QPointF( p.x(), p.y() ) );
+  QgsPoint p = g.vertexAt( idx );
+  return QVariant( QVector4D( p.x(), p.y(), p.z(), p.m() ) );
 }
 
 static QVariant fcnXat( const QVariantList &values, const QgsExpressionContext *f, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariant v = pointAt( values, f, parent );
-  if ( v.type() == QVariant::PointF )
-    return QVariant( v.toPointF().x() );
+  if ( v.type() == QVariant::Vector4D )
+    return QVariant( v.value<QVector4D>().x() );
   else
     return QVariant();
 }
 static QVariant fcnYat( const QVariantList &values, const QgsExpressionContext *f, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QVariant v = pointAt( values, f, parent );
-  if ( v.type() == QVariant::PointF )
-    return QVariant( v.toPointF().y() );
+  if ( v.type() == QVariant::Vector4D )
+    return QVariant( v.value<QVector4D>().y() );
+  else
+    return QVariant();
+}
+static QVariant fcnZat( const QVariantList &values, const QgsExpressionContext *f, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariant v = pointAt( values, f, parent );
+  FEAT_FROM_CONTEXT( f, feature )
+  if ( v.type() == QVariant::Vector4D && feature.geometry().constGet()->is3D() )
+    return QVariant( v.value<QVector4D>().z() );
+  else
+    return QVariant();
+}
+static QVariant fcnMat( const QVariantList &values, const QgsExpressionContext *f, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QVariant v = pointAt( values, f, parent );
+  FEAT_FROM_CONTEXT( f, feature )
+  if ( v.type() == QVariant::Vector4D  && feature.geometry().constGet()->isMeasure() )
+    return QVariant( v.value<QVector4D>().w() );
   else
     return QVariant();
 }
@@ -7840,6 +7859,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsStaticExpressionFunction *yAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$y_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "i" ) ), fcnYat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "yat" ) << QStringLiteral( "y_at" ) );
     yAtFunc->setIsStatic( false );
     functions << yAtFunc;
+
+    QgsStaticExpressionFunction *zAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$z_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "i" ) ), fcnZat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "zat" ) << QStringLiteral( "z_at" ) );
+    zAtFunc->setIsStatic( false );
+    functions << zAtFunc;
+
+    QgsStaticExpressionFunction *mAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$m_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "i" ) ), fcnMat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "mat" ) << QStringLiteral( "m_at" ) );
+    mAtFunc->setIsStatic( false );
+    functions << mAtFunc;
 
     functions
         << new QgsStaticExpressionFunction( QStringLiteral( "geometry_type" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeometryType, QStringLiteral( "GeometryGroup" ) )
