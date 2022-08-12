@@ -1,0 +1,11 @@
+{
+  "name": "$m",
+  "type": "function",
+  "groups": ["GeometryGroup"],
+  "description": "Returns the m value of the current point feature, or NULL if the geometry has no m value. If the feature is a multipoint feature, then the m value of the first point will be returned.",
+  "examples": [{
+    "expression": "$m",
+    "returns": "12"
+  }],
+  "tags": ["first", "point", "current", "multipoint", "altitude", "measure"]
+}
