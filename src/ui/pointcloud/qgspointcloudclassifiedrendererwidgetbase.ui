@@ -25,6 +25,12 @@
    </property>
    <item row="1" column="0" colspan="2">
     <widget class="QTreeView" name="viewCategories">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>250</height>
+      </size>
+     </property>
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>

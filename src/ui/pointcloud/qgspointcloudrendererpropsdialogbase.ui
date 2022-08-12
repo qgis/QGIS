@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>569</width>
-    <height>521</height>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -251,6 +251,9 @@
               <property name="checkable">
                <bool>true</bool>
               </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
               <layout class="QGridLayout" name="gridLayout_3">
                <property name="leftMargin">
                 <number>0</number>
@@ -258,48 +261,55 @@
                <property name="rightMargin">
                 <number>3</number>
                </property>
-               <item row="0" column="0">
+               <item row="0" column="0" colspan="2">
+                <widget class="QLabel" name="mEdlWarningLabel">
+                 <property name="text">
+                  <string>Note: with default draw order, the shading may be incorrect.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
                 <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>Strength</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
+               <item row="3" column="0">
                 <widget class="QLabel" name="label_4">
                  <property name="text">
                   <string>Distance</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
-                <widget class="QgsSpinBox" name="mEdlStrength" native="true">
-                 <property name="minimum" stdset="0">
+               <item row="1" column="1">
+                <widget class="QgsSpinBox" name="mEdlStrength">
+                 <property name="minimum">
                   <number>1</number>
                  </property>
-                 <property name="maximum" stdset="0">
+                 <property name="maximum">
                   <number>100000</number>
                  </property>
-                 <property name="singleStep" stdset="0">
+                 <property name="singleStep">
                   <number>100</number>
                  </property>
-                 <property name="value" stdset="0">
-                  <number>1000</number>
-                 </property>
-                 <property name="clearValue" stdset="0">
+                 <property name="value">
                   <number>1000</number>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QgsSpinBox" name="mEdlDistance" native="true">
-                 <property name="minimum" stdset="0">
+               <item row="3" column="1">
+                <widget class="QgsSpinBox" name="mEdlDistance">
+                 <property name="minimum">
                   <number>1</number>
                  </property>
-                 <property name="maximum" stdset="0">
+                 <property name="maximum">
                   <number>10</number>
                  </property>
-                 <property name="clearValue" stdset="0">
+                 <property name="value">
                   <number>2</number>
                  </property>
                 </widget>
@@ -356,7 +366,7 @@
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
-   <extends>QWidget</extends>
+   <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
@@ -365,10 +375,14 @@
   <tabstop>mPointSizeSpinBox</tabstop>
   <tabstop>mPointSizeUnitWidget</tabstop>
   <tabstop>mPointStyleComboBox</tabstop>
+  <tabstop>mDrawOrderComboBox</tabstop>
   <tabstop>mMaxErrorSpinBox</tabstop>
   <tabstop>mMaxErrorUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mEyeDomeLightingGroupBox</tabstop>
+  <tabstop>mEdlStrength</tabstop>
+  <tabstop>mEdlDistance</tabstop>
  </tabstops>
  <resources/>
  <connections/>
