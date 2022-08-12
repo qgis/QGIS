@@ -3264,7 +3264,7 @@ class TestQgsExpression: public QObject
       context.setFeature( fPolygon );
       yAt = expYAt.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 6.0 );
-      QgsExpression expYAt2( QStringLiteral( "$y_at(1)" ) );
+      QgsExpression expYAt2( QStringLiteral( "y_at(1)" ) );
       context.setFeature( fPolyline );
       yAt = expYAt2.evaluate( &context );
       QCOMPARE( yAt.toDouble(), 0.0 );
