@@ -379,7 +379,11 @@ void TestQgsLabelingEngine::testRuleBased()
   s1.dist = 2;
   QgsTextFormat format = s1.format();
   format.setColor( QColor( 200, 0, 200 ) );
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
+  font.setStretch( 100 );
+#endif
+  format.setFont( font );
   format.setSize( 12 );
   s1.setFormat( format );
   s1.placement = Qgis::LabelPlacement::OverPoint;
@@ -395,7 +399,8 @@ void TestQgsLabelingEngine::testRuleBased()
   s2.dist = 2;
   format = s2.format();
   format.setColor( Qt::red );
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  format.setFont( font );
+
   s2.setFormat( format );
   s2.placement = Qgis::LabelPlacement::OverPoint;
   s2.quadOffset = Qgis::LabelQuadrantPosition::BelowRight;
