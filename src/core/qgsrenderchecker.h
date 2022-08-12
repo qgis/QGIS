@@ -310,6 +310,8 @@ class CORE_EXPORT QgsRenderChecker
     QVector<QgsDartMeasurement> mDashMessages;
     bool mBufferDashMessages = false;
     QString mDiffImageFile;
+
+    friend class QgsMultiRenderChecker;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderChecker::Flags )
