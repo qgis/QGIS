@@ -222,6 +222,8 @@ void QgsRenderChecker::performPostTestActions( Flags flags )
     {
       QFileInfo fi( mRenderedImageFile );
       const QString destPath = reportDir.filePath( fi.fileName() );
+      if ( QFile::exists( destPath ) )
+        QFile::remove( destPath );
       if ( !QFile::copy( mRenderedImageFile, destPath ) )
       {
         qDebug() << "!!!!! could not copy " << mRenderedImageFile << " to " << destPath;
@@ -231,6 +233,8 @@ void QgsRenderChecker::performPostTestActions( Flags flags )
     {
       QFileInfo fi( mDiffImageFile );
       const QString destPath = reportDir.filePath( fi.fileName() );
+      if ( QFile::exists( destPath ) )
+        QFile::remove( destPath );
       QFile::copy( mDiffImageFile, destPath );
     }
   }
