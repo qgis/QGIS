@@ -384,7 +384,6 @@ class Grass7Utils:
             if sys.version_info >= (3, 6):
                 kw['encoding'] = "cp{}".format(Grass7Utils.getWindowsCodePage())
 
-
         def readline_with_recover(stdout):
             """A method wrapping stdout.readline() with try-except recovering.
             detailed in https://github.com/qgis/QGIS/pull/49226
