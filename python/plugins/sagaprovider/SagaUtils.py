@@ -183,7 +183,7 @@ def executeSaga(feedback):
         """
         try:
             return stdout.readline()
-        except Exception as e:
+        except UnicodeDecodeError:
             return ''  # replaced-text
 
     with subprocess.Popen(
