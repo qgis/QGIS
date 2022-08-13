@@ -52,6 +52,20 @@ QgsBackgroundCachedSharedData::~QgsBackgroundCachedSharedData()
   Q_ASSERT( mCacheIdDbname.isEmpty() );
 }
 
+void QgsBackgroundCachedSharedData::copyStateToClone( QgsBackgroundCachedSharedData *clone ) const
+{
+  clone->mFields = mFields;
+  clone->mSourceCrs = mSourceCrs;
+  clone->mDistinctSelect = mDistinctSelect;
+  clone->mClientSideFilterExpression = mClientSideFilterExpression;
+  clone->mMaxFeatures = mMaxFeatures;
+  clone->mServerMaxFeatures = mServerMaxFeatures;
+  clone->mCapabilityExtent = mCapabilityExtent;
+  clone->mComputedExtent = mComputedExtent;
+  clone->mHasNumberMatched = mHasNumberMatched;
+  clone->mHideProgressDialog = mHideProgressDialog;
+}
+
 void QgsBackgroundCachedSharedData::cleanup()
 {
   invalidateCache();
