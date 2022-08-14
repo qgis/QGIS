@@ -160,10 +160,13 @@ class APP_EXPORT QgsAppLayerHandling
     //! Add a list of database layers to the map
     static QList< QgsMapLayer * > addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
 
+    /**
+     * Flags which control the behavior of loading layer dependencies.
+     */
     enum class DependencyFlag : int
     {
-      LoadAllRelationships = 1 << 1,
-      SilentLoad = 1 << 2,
+      LoadAllRelationships = 1 << 1, //!< Causes all relationships to be loaded, regardless of whether the originating table is the referenced or referencing table. By default relationships are only loaded when the originating table is the referencing table.
+      SilentLoad = 1 << 2, //!< Dependencies are loaded without any user-visible notifications.
     };
     Q_ENUM( DependencyFlag )
     Q_DECLARE_FLAGS( DependencyFlags, DependencyFlag )
