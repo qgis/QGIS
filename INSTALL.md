@@ -99,13 +99,13 @@ Required build tools:
 
 Required build dependencies:
 
-* Qt >= 5.13.0
-* Proj >= 4.9.3
+* Qt >= 5.14.0
+* Proj >= 6.3.1
 * GEOS >= 3.4
 * Sqlite3 >= 3.0.0
 * SpatiaLite >= 4.2.0
 * libspatialindex
-* GDAL/OGR >= 2.1
+* GDAL/OGR >= 3.0.0
 * Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 * expat >= 1.95
 * QScintilla2
