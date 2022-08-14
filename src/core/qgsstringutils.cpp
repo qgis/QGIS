@@ -75,11 +75,7 @@ QString QgsStringUtils::capitalize( const QString &string, Qgis::Capitalization 
       }
 
       const bool allSameCase = string.toLower() == string || string.toUpper() == string;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, QString::SkipEmptyParts );
-#else
       const QStringList parts = ( allSameCase ? string.toLower() : string ).split( splitWords, Qt::SkipEmptyParts );
-#endif
       QString result;
       bool firstWord = true;
       int i = 0;

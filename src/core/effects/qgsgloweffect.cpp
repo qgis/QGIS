@@ -125,11 +125,7 @@ QVariantMap QgsGlowEffect::properties() const
 
   if ( mRamp )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    props.unite( mRamp->properties() );
-#else
     props.insert( mRamp->properties() );
-#endif
   }
 
   return props;

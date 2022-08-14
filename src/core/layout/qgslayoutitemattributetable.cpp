@@ -808,11 +808,7 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     }
 
     const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
-#else
-    const QSet<QString> filteredAttributesSet { filteredAttributes.toSet() };
-#endif
     if ( filteredAttributesSet != allowedAttributes )
     {
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };

@@ -72,11 +72,7 @@
 #define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
-#else
 Q_GLOBAL_STATIC( QRecursiveMutex, sGdalProviderMutex )
-#endif
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -151,11 +147,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &options, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri, options )
   , mpRefCounter( new QAtomicInt( 1 ) )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  , mpMutex( new QMutex( QMutex::Recursive ) )
-#else
   , mpMutex( new QRecursiveMutex() )
-#endif
   , mpParent( new QgsGdalProvider * ( this ) )
   , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( update )
@@ -237,11 +229,7 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
 
     mpRefCounter = new QAtomicInt( 1 );
     mpLightRefCounter = other.mpLightRefCounter;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mpMutex = new QMutex( QMutex::Recursive );
-#else
     mpMutex = new QRecursiveMutex();
-#endif
 
     mpParent = other.mpParent;
 
@@ -2583,11 +2571,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     // the next driver
     if ( !( myGdalDriverExtensions.isEmpty() || myGdalDriverLongName.isEmpty() ) )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', QString::SkipEmptyParts );
-#else
       const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', Qt::SkipEmptyParts );
-#endif
 
       // XXX add check for SDTS; in that case we want (*CATD.DDF)
       QString glob;
@@ -2651,11 +2635,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   }                           // each loaded GDAL driver
 
   // sort file filters alphabetically
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
   QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
   filters.sort();
   fileFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
@@ -4027,12 +4007,12 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
 
   // sidecars which could be present for any file
   for ( const QString &ext :
-        {
-          QStringLiteral( "aux.xml" ),
-          QStringLiteral( "vat.dbf" ),
-          QStringLiteral( "ovr" ),
-          QStringLiteral( "wld" ),
-        } )
+{
+  QStringLiteral( "aux.xml" ),
+                    QStringLiteral( "vat.dbf" ),
+                    QStringLiteral( "ovr" ),
+                    QStringLiteral( "wld" ),
+  } )
   {
     res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
     res.append( path + '.' + ext );

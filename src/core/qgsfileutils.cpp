@@ -91,11 +91,7 @@ bool QgsFileUtils::fileMatchesFilter( const QString &fileName, const QString &fi
   const QStringList parts = filter.split( QStringLiteral( ";;" ) );
   for ( const QString &part : parts )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QStringList globPatterns = wildcardsFromFilter( part ).split( ' ', QString::SkipEmptyParts );
-#else
     const QStringList globPatterns = wildcardsFromFilter( part ).split( ' ', Qt::SkipEmptyParts );
-#endif
     for ( const QString &glob : globPatterns )
     {
       const QString re = QRegularExpression::wildcardToRegularExpression( glob );

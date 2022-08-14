@@ -90,9 +90,6 @@
 #include "qgsrecentstylehandler.h"
 #include "qgsdatetimefieldformatter.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QDesktopWidget>
-#endif
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -111,9 +108,7 @@
 #include <QRegularExpression>
 #include <QTextStream>
 #include <QScreen>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
 #include <QRecursiveMutex>
-#endif
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>
@@ -1706,13 +1701,8 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList targetElems = tPathUrl.split( '/', QString::SkipEmptyParts );
-  QStringList aPathElems = aPathUrl.split( '/', QString::SkipEmptyParts );
-#else
   QStringList targetElems = tPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList aPathElems = aPathUrl.split( '/', Qt::SkipEmptyParts );
-#endif
 
   targetElems.removeAll( QStringLiteral( "." ) );
   aPathElems.removeAll( QStringLiteral( "." ) );
@@ -1770,13 +1760,8 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   bool uncPath = targetPathUrl.startsWith( "//" );
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList srcElems = rPathUrl.split( '/', QString::SkipEmptyParts );
-  QStringList targetElems = targetPathUrl.split( '/', QString::SkipEmptyParts );
-#else
   QStringList srcElems = rPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList targetElems = targetPathUrl.split( '/', Qt::SkipEmptyParts );
-#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -1991,16 +1976,11 @@ int QgsApplication::scaleIconSize( int standardSize, bool applyDevicePixelRatio 
   QFontMetrics fm( ( QFont() ) );
   const double scale = 1.1 * standardSize / 24;
   int scaledIconSize = static_cast< int >( std::floor( std::max( Qgis::UI_SCALE_FACTOR * fm.height() * scale, static_cast< double >( standardSize ) ) ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  if ( applyDevicePixelRatio && QApplication::desktop() )
-    scaledIconSize *= QApplication::desktop()->devicePixelRatio();
-#else
   if ( applyDevicePixelRatio )
   {
     if ( QWidget *activeWindow = QApplication::activeWindow() )
       scaledIconSize *= ( activeWindow->screen() ? QApplication::activeWindow()->screen()->devicePixelRatio() : 1 );
   }
-#endif
   return scaledIconSize;
 }
 
@@ -2772,11 +2752,7 @@ QgsApplication::ApplicationMembers *QgsApplication::members()
   }
   else
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    static QMutex sMemberMutex( QMutex::Recursive );
-#else
     static QRecursiveMutex sMemberMutex;
-#endif
     QMutexLocker lock( &sMemberMutex );
     if ( !sApplicationMembers )
       sApplicationMembers = new ApplicationMembers();

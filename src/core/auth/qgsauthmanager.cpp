@@ -34,10 +34,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QRegularExpression>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
-#endif
 
 #include <QtCrypto>
 
@@ -103,13 +100,8 @@ QgsAuthManager *QgsAuthManager::instance()
 
 QgsAuthManager::QgsAuthManager()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  mMutex.reset( new QMutex( QMutex::Recursive ) );
-  mMasterPasswordMutex.reset( new QMutex( QMutex::Recursive ) );
-#else
   mMutex = std::make_unique<QRecursiveMutex>();
   mMasterPasswordMutex = std::make_unique<QRecursiveMutex>();
-#endif
   connect( this, &QgsAuthManager::messageOut,
            this, &QgsAuthManager::writeToConsole );
 }
@@ -859,35 +851,18 @@ const QString QgsAuthManager::uniqueConfigId() const
   QTimer::singleShot( 3, &loop, &QEventLoop::quit );
   loop.exec();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  uint seed = static_cast< uint >( QTime::currentTime().msec() );
-  qsrand( seed );
-#endif
-
   while ( true )
   {
     id.clear();
     for ( int i = 0; i < len; i++ )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      switch ( qrand() % 2 )
-#else
       switch ( QRandomGenerator::system()->generate() % 2 )
-#endif
       {
         case 0:
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-          id += ( '0' + qrand() % 10 );
-#else
           id += static_cast<char>( '0' + QRandomGenerator::system()->generate() % 10 );
-#endif
           break;
         case 1:
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-          id += ( 'a' + qrand() % 26 );
-#else
           id += static_cast<char>( 'a' + QRandomGenerator::system()->generate() % 26 );
-#endif
           break;
       }
     }
@@ -3125,11 +3100,7 @@ void QgsAuthManager::writeToConsole( const QString &message,
   msg += message;
 
   QTextStream out( stdout, QIODevice::WriteOnly );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  out << msg << endl;
-#else
   out << msg << Qt::endl;
-#endif
 }
 
 void QgsAuthManager::tryToStartDbErase()

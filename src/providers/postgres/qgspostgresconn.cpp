@@ -1099,17 +1099,10 @@ QString QgsPostgresConn::postgisVersion() const
 
   QgsDebugMsgLevel( "PostGIS version info: " + mPostgisVersionInfo, 2 );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QStringList postgisParts = mPostgisVersionInfo.split( ' ', QString::SkipEmptyParts );
-
-  // Get major and minor version
-  QStringList postgisVersionParts = postgisParts[0].split( '.', QString::SkipEmptyParts );
-#else
   QStringList postgisParts = mPostgisVersionInfo.split( ' ', Qt::SkipEmptyParts );
 
   // Get major and minor version
   QStringList postgisVersionParts = postgisParts[0].split( '.', Qt::SkipEmptyParts );
-#endif
   if ( postgisVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( mPostgisVersionInfo ), tr( "PostGIS" ) );
@@ -1346,7 +1339,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
     if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
     {
       const QString error { tr( "Erroneous query: %1 returned %2 [%3]" )
-                            .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) };
+        .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) };
       logWrapper->setError( error );
 
       if ( logError )
@@ -1365,7 +1358,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
   if ( PQstatus() != CONNECTION_OK )
   {
     const QString error { tr( "Connection error: %1 returned %2 [%3]" )
-                          .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) };
+      .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) };
     logWrapper->setError( error );
     if ( logError )
     {

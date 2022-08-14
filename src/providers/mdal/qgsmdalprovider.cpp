@@ -594,19 +594,11 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   }
 
   // sort file filters alphabetically
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList filters = fileMeshFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
   QStringList filters = fileMeshFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
   filters.sort();
   fileMeshFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  filters = fileMeshDatasetFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
   filters = fileMeshDatasetFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
   filters.sort();
   fileMeshDatasetFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
@@ -646,11 +638,7 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
     }
 
     const QString driverFilters = MDAL_DR_filters( mdalDriver );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList extensions = driverFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
     QStringList extensions = driverFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
     bool isMeshDriver = MDAL_DR_meshLoadCapability( mdalDriver );
 
     if ( !extensions.isEmpty() )

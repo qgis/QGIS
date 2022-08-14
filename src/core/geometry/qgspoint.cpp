@@ -178,11 +178,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return true;
 
   const thread_local QRegularExpression rx( QStringLiteral( "\\s" ) );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
-#else
   QStringList coordinates = parts.second.split( rx, Qt::SkipEmptyParts );
-#endif
 
   // So far the parser hasn't looked at the coordinates. We'll avoid having anything but numbers and return NULL instead of 0 as a coordinate.
   // Without this check, "POINT (a, b)" or "POINT (( 4, 3 ))" returned "POINT (0 ,0)"

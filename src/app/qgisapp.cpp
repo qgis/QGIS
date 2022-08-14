@@ -5863,11 +5863,7 @@ void QgisApp::newGpxLayer()
     outStream.setCodec( "UTF-8" );
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    outStream << "<gpx></gpx>" << endl;
-#else
     outStream << "<gpx></gpx>" << Qt::endl;
-#endif
     outputFile.close();
 
     if ( QgsVectorLayer *trackLayer = addVectorLayer( fileName + "?type=track",

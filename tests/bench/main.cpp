@@ -507,9 +507,6 @@ int main( int argc, char *argv[] )
       if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
       else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
       else if ( q == QLatin1String( "SmoothPixmapTransform" ) ) hints |= QPainter::SmoothPixmapTransform;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      else if ( q == QLatin1String( "NonCosmeticDefaultPen" ) ) hints |= QPainter::NonCosmeticDefaultPen;
-#endif
       else
       {
         fprintf( stderr, "Unknown quality option\n" );
@@ -565,7 +562,7 @@ int main( int argc, char *argv[] )
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
 #else
-      coords[i] = QStringView {myInitialExtent}.mid( posOld, pos - posOld ).toDouble( &ok );
+      coords[i] = QStringView {myInitialExtent} .mid( posOld, pos - posOld ).toDouble( &ok );
 #endif
       if ( !ok )
         break;
@@ -579,7 +576,7 @@ int main( int argc, char *argv[] )
       coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
 #else
     if ( ok )
-      coords[3] = QStringView {myInitialExtent}.mid( posOld ).toDouble( &ok );
+      coords[3] = QStringView {myInitialExtent} .mid( posOld ).toDouble( &ok );
 #endif
 
     if ( !ok )
