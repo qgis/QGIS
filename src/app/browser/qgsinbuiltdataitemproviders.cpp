@@ -1730,12 +1730,21 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
           if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
           {
             // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( tableName ) );
+            sql = QStringLiteral( "FROM %1.%2" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( tableName ) );
           }
           else
           {
             // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( tableName ) );
+            sql = QStringLiteral( "FROM %1" ).arg( QgsSqliteUtils::quotedIdentifier( tableName ) );
+          }
+
+          if ( conn2->providerKey() == QStringLiteral( "mssql" ) )
+          {
+            sql = QStringLiteral( "SELECT TOP 10 * %1" ).arg( sql );
+          }
+          else
+          {
+            sql = QStringLiteral( "SELECT * %1 LIMIT 10" ).arg( sql );
           }
         }
 
