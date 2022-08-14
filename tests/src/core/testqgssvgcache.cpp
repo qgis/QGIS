@@ -333,6 +333,9 @@ void TestQgsSvgCache::dynamicSvg()
   const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
   const QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
                                  1.0, 0, false, {} );
+  qDebug() << control_svg;
+  qDebug() << svg;
+
   QCOMPARE( svg, control_svg );
 }
 
