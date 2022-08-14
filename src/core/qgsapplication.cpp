@@ -938,11 +938,7 @@ QString QgsApplication::resolvePkgPath()
       QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      *sCfgIntDir() = prefix.split( '/', QString::SkipEmptyParts ).last();
-#else
       *sCfgIntDir() = prefix.split( '/', Qt::SkipEmptyParts ).last();
-#endif
       qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
 #endif
     }
@@ -1792,13 +1788,8 @@ QString QgsApplication::absolutePathToRelativePath( const QString &aPath, const 
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList targetElems = tPathUrl.split( '/', QString::SkipEmptyParts );
-  QStringList aPathElems = aPathUrl.split( '/', QString::SkipEmptyParts );
-#else
   QStringList targetElems = tPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList aPathElems = aPathUrl.split( '/', Qt::SkipEmptyParts );
-#endif
 
   targetElems.removeAll( QStringLiteral( "." ) );
   aPathElems.removeAll( QStringLiteral( "." ) );
@@ -1856,13 +1847,8 @@ QString QgsApplication::relativePathToAbsolutePath( const QString &rpath, const 
   bool uncPath = targetPathUrl.startsWith( "//" );
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList srcElems = rPathUrl.split( '/', QString::SkipEmptyParts );
-  QStringList targetElems = targetPathUrl.split( '/', QString::SkipEmptyParts );
-#else
   QStringList srcElems = rPathUrl.split( '/', Qt::SkipEmptyParts );
   QStringList targetElems = targetPathUrl.split( '/', Qt::SkipEmptyParts );
-#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )

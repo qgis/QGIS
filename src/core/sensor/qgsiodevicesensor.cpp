@@ -57,12 +57,7 @@ QgsTcpSocketSensor::QgsTcpSocketSensor( QObject *parent )
   , mTcpSocket( new QTcpSocket() )
 {
   connect( mTcpSocket, &QAbstractSocket::stateChanged, this, &QgsTcpSocketSensor::socketStateChanged );
-
-#if QT_VERSION < QT_VERSION_CHECK( 5, 15, 0 )
-  connect( mTcpSocket, qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::error ), this, &QgsTcpSocketSensor::handleError );
-#else
   connect( mTcpSocket, qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::errorOccurred ), this, &QgsTcpSocketSensor::handleError );
-#endif
 
   initIODevice( mTcpSocket );
 }
@@ -206,11 +201,7 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
     }
   } );
 
-#if QT_VERSION < QT_VERSION_CHECK( 5, 15, 0 )
-  connect( mUdpSocket.get(), qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::error ), this, &QgsUdpSocketSensor::handleError );
-#else
   connect( mUdpSocket.get(), qOverload<QAbstractSocket::SocketError>( &QAbstractSocket::errorOccurred ), this, &QgsUdpSocketSensor::handleError );
-#endif
 
   initIODevice( mBuffer );
 }

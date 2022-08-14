@@ -62,16 +62,6 @@ namespace QgsWms
 
     QStringList layersList;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    if ( parameters.contains( QStringLiteral( "LAYERS" ) ) )
-    {
-      layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', QString::SkipEmptyParts );
-    }
-    else
-    {
-      layersList = parameters[ QStringLiteral( "LAYER" )].split( ',', QString::SkipEmptyParts );
-    }
-#else
     if ( parameters.contains( QStringLiteral( "LAYERS" ) ) )
     {
       layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
@@ -80,7 +70,6 @@ namespace QgsWms
     {
       layersList = parameters[ QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
     }
-#endif
     if ( layersList.isEmpty() )
     {
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Layers is empty" ), 400 );

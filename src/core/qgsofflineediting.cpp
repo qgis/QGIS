@@ -370,18 +370,10 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   if ( ret == SQLITE_OK && rows == 1 && columns == 1 )
   {
     const QString version = QString::fromUtf8( results[1] );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList parts = version.split( ' ', QString::SkipEmptyParts );
-#else
     const QStringList parts = version.split( ' ', Qt::SkipEmptyParts );
-#endif
     if ( !parts.empty() )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QStringList verparts = parts.at( 0 ).split( '.', QString::SkipEmptyParts );
-#else
       const QStringList verparts = parts.at( 0 ).split( '.', Qt::SkipEmptyParts );
-#endif
       above41 = verparts.size() >= 2 && ( verparts.at( 0 ).toInt() > 4 || ( verparts.at( 0 ).toInt() == 4 && verparts.at( 1 ).toInt() >= 1 ) );
     }
   }
