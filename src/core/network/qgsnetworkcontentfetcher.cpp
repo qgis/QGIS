@@ -80,11 +80,7 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QSt
       emit errorOccurred( code, mReply->errorString() );
   };
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  connect( mReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, onError );
-#else
   connect( mReply, &QNetworkReply::errorOccurred, this, onError );
-#endif
 }
 
 QNetworkReply *QgsNetworkContentFetcher::reply()

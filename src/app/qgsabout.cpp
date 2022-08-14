@@ -88,11 +88,7 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if ( !line.isEmpty() && line.at( 0 ) == '#' )
         continue;
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QStringList myTokens = line.split( '\t', QString::SkipEmptyParts );
-#else
       QStringList myTokens = line.split( '\t', Qt::SkipEmptyParts );
-#endif
       lines << myTokens[0];
     }
     file.close();

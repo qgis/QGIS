@@ -1597,11 +1597,7 @@ int main( int argc, char *argv[] )
         break;
       }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
-#else
       coords[i] = QStringView {myInitialExtent}.mid( posOld, pos - posOld ).toDouble( &ok );
-#endif
       if ( !ok )
         break;
 
@@ -1611,11 +1607,7 @@ int main( int argc, char *argv[] )
     // parse last coordinate
     if ( ok )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-      coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
-#else
       coords[3] = QStringView {myInitialExtent}.mid( posOld ).toDouble( &ok );
-#endif
     }
 
     if ( !ok )

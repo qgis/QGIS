@@ -17,9 +17,7 @@
 #include "qgsclassificationjenks.h"
 #include "qgsapplication.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
-#endif
 
 QgsClassificationJenks::QgsClassificationJenks()
   : QgsClassificationMethod()
