@@ -3629,11 +3629,7 @@ QVariantMap QgsLineburstSymbolLayer::properties() const
   map[QStringLiteral( "color_type" )] = QString::number( static_cast< int >( mGradientColorType ) );
   if ( mGradientRamp )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    map.unite( mGradientRamp->properties() );
-#else
     map.insert( mGradientRamp->properties() );
-#endif
   }
 
   return map;

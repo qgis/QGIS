@@ -161,13 +161,8 @@ QString QgsPathResolver::readPath( const QString &f ) const
   // Make sure the path is absolute (see GH #33200)
   projPath = QFileInfo( projPath ).absoluteFilePath();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
-  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
-#else
   const QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
   QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
-#endif
 
 #if defined(Q_OS_WIN)
   if ( uncPath )
@@ -325,13 +320,8 @@ QString QgsPathResolver::writePath( const QString &s ) const
   const Qt::CaseSensitivity cs = Qt::CaseSensitive;
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
-  QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
-#else
   QStringList projElems = projPath.split( '/', Qt::SkipEmptyParts );
   QStringList srcElems = srcPath.split( '/', Qt::SkipEmptyParts );
-#endif
 
   projElems.removeAll( QStringLiteral( "." ) );
   srcElems.removeAll( QStringLiteral( "." ) );

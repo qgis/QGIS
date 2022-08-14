@@ -1138,11 +1138,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   const int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  const QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
-#else
   const QStringList coordList = wktCoordinateList.split( ',', Qt::SkipEmptyParts );
-#endif
 
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
@@ -1151,11 +1147,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   const thread_local QRegularExpression rxIsNumber( QStringLiteral( "^[+-]?(\\d\\.?\\d*[Ee][+\\-]?\\d+|(\\d+\\.\\d*|\\d*\\.\\d+)|\\d+)$" ) );
   for ( const QString &pointCoordinates : coordList )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
-#else
     const QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
-#endif
 
     // exit with an empty set if one list contains invalid value.
     if ( coordinates.filter( rxIsNumber ).size() != coordinates.size() )
@@ -1178,11 +1170,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 
   for ( const QString &pointCoordinates : coordList )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
-#else
     QStringList coordinates = pointCoordinates.split( rx, Qt::SkipEmptyParts );
-#endif
     if ( coordinates.size() < dim )
       continue;
 

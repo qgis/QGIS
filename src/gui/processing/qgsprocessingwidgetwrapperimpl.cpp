@@ -6756,11 +6756,7 @@ QVariant QgsProcessingBandWidgetWrapper::widgetValue() const
     const QgsProcessingParameterBand *bandParam = static_cast< const QgsProcessingParameterBand * >( parameterDefinition() );
     if ( bandParam->allowMultiple() )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      const QStringList parts = mLineEdit->text().split( ';', QString::SkipEmptyParts );
-#else
       const QStringList parts = mLineEdit->text().split( ';', Qt::SkipEmptyParts );
-#endif
       QVariantList res;
       res.reserve( parts.count() );
       for ( const QString &s : parts )

@@ -2824,11 +2824,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   }                           // each loaded GDAL driver
 
   // sort file filters alphabetically
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
   QStringList filters = fileFiltersString.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
   filters.sort();
   fileFiltersString = filters.join( QLatin1String( ";;" ) ) + ";;";
 
@@ -4471,12 +4467,12 @@ QStringList QgsGdalProviderMetadata::sidecarFilesForUri( const QString &uri ) co
 
   // sidecars which could be present for any file
   for ( const QString &ext :
-        {
-          QStringLiteral( "aux.xml" ),
-          QStringLiteral( "vat.dbf" ),
-          QStringLiteral( "ovr" ),
-          QStringLiteral( "wld" ),
-        } )
+{
+  QStringLiteral( "aux.xml" ),
+                    QStringLiteral( "vat.dbf" ),
+                    QStringLiteral( "ovr" ),
+                    QStringLiteral( "wld" ),
+  } )
   {
     res.append( fileInfo.dir().filePath( fileInfo.completeBaseName() + '.' + ext ) );
     res.append( path + '.' + ext );

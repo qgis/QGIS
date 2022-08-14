@@ -1428,7 +1428,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
     if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
     {
       const QString error { tr( "Erroneous query: %1 returned %2 [%3]" )
-                            .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) };
+        .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) };
       logWrapper->setError( error );
 
       if ( logError )
@@ -1447,7 +1447,7 @@ PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError, bool ret
   if ( PQstatus() != CONNECTION_OK )
   {
     const QString error { tr( "Connection error: %1 returned %2 [%3]" )
-                          .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) };
+      .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) };
     logWrapper->setError( error );
     if ( logError )
     {

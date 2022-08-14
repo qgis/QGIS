@@ -707,11 +707,7 @@ void QgsStyleManagerDialog::copyItemsToDefault()
     if ( !ok )
       return;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    const QStringList parts = tags.split( ',', QString::SkipEmptyParts );
-#else
     const QStringList parts = tags.split( ',', Qt::SkipEmptyParts );
-#endif
     QStringList additionalTags;
     additionalTags.reserve( parts.count() );
     for ( const QString &tag : parts )

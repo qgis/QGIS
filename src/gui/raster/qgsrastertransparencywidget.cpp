@@ -350,11 +350,7 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
         {
           if ( !myInputLine.simplified().startsWith( '#' ) )
           {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
-#else
             QStringList myTokens = myInputLine.split( QRegularExpression( "\\s+" ), Qt::SkipEmptyParts );
-#endif
             if ( myTokens.count() != 4 )
             {
               myImportError = true;
@@ -387,11 +383,7 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
         {
           if ( !myInputLine.simplified().startsWith( '#' ) )
           {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-            QStringList myTokens = myInputLine.split( QRegExp( "\\s+" ), QString::SkipEmptyParts );
-#else
             QStringList myTokens = myInputLine.split( QRegularExpression( "\\s+" ), Qt::SkipEmptyParts );
-#endif
             if ( myTokens.count() != 3 && myTokens.count() != 2 ) // 2 for QGIS < 1.9 compatibility
             {
               myImportError = true;

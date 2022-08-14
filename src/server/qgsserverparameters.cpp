@@ -77,22 +77,14 @@ QStringList QgsServerParameterDefinition::toStringList( const char delimiter, co
 {
   if ( skipEmptyParts )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    return toString().split( delimiter, QString::SkipEmptyParts );
-#else
     return toString().split( delimiter, Qt::SkipEmptyParts );
-#endif
   }
   else
   {
     QStringList list;
     if ( !toString().isEmpty() )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      list = toString().split( delimiter, QString::KeepEmptyParts );
-#else
       list = toString().split( delimiter, Qt::KeepEmptyParts );
-#endif
     }
     return list;
   }

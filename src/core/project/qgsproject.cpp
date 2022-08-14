@@ -104,11 +104,7 @@ QgsProject *QgsProject::sProject = nullptr;
 QStringList makeKeyTokens_( const QString &scope, const QString &key )
 {
   QStringList keyTokens = QStringList( scope );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  keyTokens += key.split( '/', QString::SkipEmptyParts );
-#else
   keyTokens += key.split( '/', Qt::SkipEmptyParts );
-#endif
 
   // be sure to include the canonical root node
   keyTokens.push_front( QStringLiteral( "properties" ) );

@@ -29,10 +29,7 @@
 #include <QSettings>
 #include <QUrl>
 #include <QUrlQuery>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
-#endif
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
@@ -253,12 +250,7 @@ void QgsO2::link()
 
 void QgsO2::setState( const QString & )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  qsrand( QTime::currentTime().msec() );
-  state_ = QString::number( qrand() );
-#else
   state_ = QString::number( QRandomGenerator::system()->generate() );
-#endif
   Q_EMIT stateChanged();
 }
 
@@ -319,11 +311,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, data );
     timedReplies_.add( tokenReply );
     connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    connect( tokenReply, qOverload<QNetworkReply::NetworkError>( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
-#else
     connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
-#endif
   }
   else if ( grantFlow_ == GrantFlowImplicit )
   {

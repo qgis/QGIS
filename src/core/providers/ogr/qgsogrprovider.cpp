@@ -542,11 +542,11 @@ QStringList subLayerDetailsToStringList( const QList< QgsProviderSublayerDetails
     const OGRwkbGeometryType ogrGeomType = QgsOgrProviderUtils::ogrTypeFromQgisType( layer.wkbType() );
 
     const QStringList parts { QString::number( layer.layerNumber() ),
-                              layer.name(),
-                              QString::number( layer.featureCount() ),
-                              QgsOgrProviderUtils::ogrWkbGeometryTypeName( ogrGeomType ),
-                              layer.geometryColumnName(),
-                              layer.description() };
+            layer.name(),
+            QString::number( layer.featureCount() ),
+            QgsOgrProviderUtils::ogrWkbGeometryTypeName( ogrGeomType ),
+            layer.geometryColumnName(),
+            layer.description() };
     res << parts.join( QgsDataProvider::sublayerSeparator() );
   }
   return res;

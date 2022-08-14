@@ -109,55 +109,7 @@ void QgsCrashDialog::userFeedbackText_textChanged()
 
 QStringList QgsCrashDialog::splitCommand( const QString &command )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
   return QProcess::splitCommand( command );
-#else
-  // taken from Qt 5.15's implementation
-  QStringList args;
-  QString tmp;
-  int quoteCount = 0;
-  bool inQuote = false;
-
-  // handle quoting. tokens can be surrounded by double quotes
-  // "hello world". three consecutive double quotes represent
-  // the quote character itself.
-  for ( int i = 0; i < command.size(); ++i )
-  {
-    if ( command.at( i ) == QLatin1Char( '"' ) )
-    {
-      ++quoteCount;
-      if ( quoteCount == 3 )
-      {
-        // third consecutive quote
-        quoteCount = 0;
-        tmp += command.at( i );
-      }
-      continue;
-    }
-    if ( quoteCount )
-    {
-      if ( quoteCount == 1 )
-        inQuote = !inQuote;
-      quoteCount = 0;
-    }
-    if ( !inQuote && command.at( i ).isSpace() )
-    {
-      if ( !tmp.isEmpty() )
-      {
-        args += tmp;
-        tmp.clear();
-      }
-    }
-    else
-    {
-      tmp += command.at( i );
-    }
-  }
-  if ( !tmp.isEmpty() )
-    args += tmp;
-
-  return args;
-#endif
 }
 
 void QgsCrashDialog::createBugReport()

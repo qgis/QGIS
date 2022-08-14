@@ -933,11 +933,7 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &
     tupelSeparator = elem.attribute( QStringLiteral( "ts" ) );
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList tupels = elem.text().split( tupelSeparator, QString::SkipEmptyParts );
-#else
   const QStringList tupels = elem.text().split( tupelSeparator, Qt::SkipEmptyParts );
-#endif
   QStringList tuple_coords;
   double x, y;
   bool conversionSuccess;
@@ -945,11 +941,7 @@ bool QgsOgcUtils::readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &
   QStringList::const_iterator it;
   for ( it = tupels.constBegin(); it != tupels.constEnd(); ++it )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    tuple_coords = ( *it ).split( coordSeparator, QString::SkipEmptyParts );
-#else
     tuple_coords = ( *it ).split( coordSeparator, Qt::SkipEmptyParts );
-#endif
     if ( tuple_coords.size() < 2 )
     {
       continue;
@@ -1009,11 +1001,7 @@ bool QgsOgcUtils::readGMLPositions( QgsPolylineXY &coords, const QDomElement &el
 {
   coords.clear();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  QStringList pos = elem.text().split( ' ', QString::SkipEmptyParts );
-#else
   const QStringList pos = elem.text().split( ' ', Qt::SkipEmptyParts );
-#endif
   double x, y;
   bool conversionSuccess;
   const int posSize = pos.size();
@@ -2782,13 +2770,8 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
 static QString mapBinarySpatialToOgc( const QString &name )
 {
   QString nameCompare( name );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-  if ( name.size() > 3 && name.midRef( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
+  if ( name.size() > 3 && QStringView {name} .mid( 0, 3 ).toString().compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
-#else
-  if ( name.size() > 3 && QStringView {name}.mid( 0, 3 ).toString().compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
-    nameCompare = name.mid( 3 );
-#endif
   QStringList spatialOps;
   spatialOps << QStringLiteral( "BBOX" ) << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "Crosses" ) << QStringLiteral( "Equals" )
              << QStringLiteral( "Disjoint" ) << QStringLiteral( "Overlaps" ) << QStringLiteral( "Touches" ) << QStringLiteral( "Within" );
@@ -2804,13 +2787,8 @@ static QString mapBinarySpatialToOgc( const QString &name )
 static QString mapTernarySpatialToOgc( const QString &name )
 {
   QString nameCompare( name );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
-  if ( name.size() > 3 && name.midRef( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
+  if ( name.size() > 3 && QStringView {name} .mid( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
     nameCompare = name.mid( 3 );
-#else
-  if ( name.size() > 3 && QStringView {name}.mid( 0, 3 ).compare( QLatin1String( "ST_" ), Qt::CaseInsensitive ) == 0 )
-    nameCompare = name.mid( 3 );
-#endif
   if ( nameCompare.compare( QLatin1String( "DWithin" ), Qt::CaseInsensitive ) == 0 )
     return QStringLiteral( "DWithin" );
   if ( nameCompare.compare( QLatin1String( "Beyond" ), Qt::CaseInsensitive ) == 0 )

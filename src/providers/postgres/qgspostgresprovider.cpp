@@ -2196,11 +2196,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
       if ( arrayPosition != -1 )
       {
         QString valueList = checkDefinition.mid( arrayPosition + 6, closingBracketPos );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-        const QStringList commaSeparation = valueList.split( ',', QString::SkipEmptyParts );
-#else
         const QStringList commaSeparation = valueList.split( ',', Qt::SkipEmptyParts );
-#endif
         QStringList::const_iterator cIt = commaSeparation.constBegin();
         for ( ; cIt != commaSeparation.constEnd(); ++cIt )
         {

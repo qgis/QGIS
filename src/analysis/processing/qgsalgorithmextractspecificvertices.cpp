@@ -132,11 +132,7 @@ bool QgsExtractSpecificVerticesAlgorithm::prepareAlgorithm( const QVariantMap &p
   mGeometryType = QgsWkbTypes::geometryType( source->wkbType() );
 
   const QString verticesString = parameterAsString( parameters, QStringLiteral( "VERTICES" ), context );
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  const QStringList verticesList = verticesString.split( ',', QString::SkipEmptyParts );
-#else
   const QStringList verticesList = verticesString.split( ',', Qt::SkipEmptyParts );
-#endif
   for ( const QString &vertex : verticesList )
   {
     bool ok = false;

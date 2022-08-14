@@ -408,11 +408,7 @@ void QgsProviderRegistry::init()
     {
       QgsDebugMsgLevel( "point cloud filters: " + filePointCloudFilters, 2 );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      const QStringList filters = filePointCloudFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
       const QStringList filters = filePointCloudFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
       for ( const QString &filter : filters )
       {
         pointCloudFilters.append( filter );
@@ -426,11 +422,7 @@ void QgsProviderRegistry::init()
     {
       QgsDebugMsgLevel( "vector tile filters: " + fileVectorTileFilters, 2 );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      const QStringList filters = fileVectorTileFilters.split( QStringLiteral( ";;" ), QString::SkipEmptyParts );
-#else
       const QStringList filters = fileVectorTileFilters.split( QStringLiteral( ";;" ), Qt::SkipEmptyParts );
-#endif
       for ( const QString &filter : filters )
       {
         vectorTileFilters.append( filter );

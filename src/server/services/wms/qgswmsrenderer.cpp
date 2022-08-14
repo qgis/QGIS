@@ -2196,11 +2196,7 @@ namespace QgsWms
       return false;
     }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QStringList tokens = filter.split( ' ', QString::SkipEmptyParts );
-#else
     QStringList tokens = filter.split( ' ', Qt::SkipEmptyParts );
-#endif
     groupStringList( tokens, QStringLiteral( "'" ) );
     groupStringList( tokens, QStringLiteral( "\"" ) );
 

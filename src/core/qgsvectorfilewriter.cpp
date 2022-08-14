@@ -274,11 +274,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     if ( metadataFound )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      QStringList allExts = metadata.ext.split( ' ', QString::SkipEmptyParts );
-#else
       QStringList allExts = metadata.ext.split( ' ', Qt::SkipEmptyParts );
-#endif
       bool found = false;
       const auto constAllExts = allExts;
       for ( const QString &ext : constAllExts )

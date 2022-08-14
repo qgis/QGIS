@@ -35,10 +35,7 @@
 #include <QDomElement>
 #include <QDomDocument>
 #include <QRegularExpression>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
 #include <QRandomGenerator>
-#endif
 
 #include <QtCrypto>
 
@@ -855,35 +852,18 @@ const QString QgsAuthManager::uniqueConfigId() const
   QTimer::singleShot( 3, &loop, &QEventLoop::quit );
   loop.exec();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-  uint seed = static_cast< uint >( QTime::currentTime().msec() );
-  qsrand( seed );
-#endif
-
   while ( true )
   {
     id.clear();
     for ( int i = 0; i < len; i++ )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-      switch ( qrand() % 2 )
-#else
       switch ( QRandomGenerator::system()->generate() % 2 )
-#endif
       {
         case 0:
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-          id += ( '0' + qrand() % 10 );
-#else
           id += static_cast<char>( '0' + QRandomGenerator::system()->generate() % 10 );
-#endif
           break;
         case 1:
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-          id += ( 'a' + qrand() % 26 );
-#else
           id += static_cast<char>( 'a' + QRandomGenerator::system()->generate() % 26 );
-#endif
           break;
       }
     }
