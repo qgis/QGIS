@@ -2879,8 +2879,10 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     if ( !project->viewSettings()->defaultViewExtent().isNull() )
     {
       setReferencedExtent( project->viewSettings()->defaultViewExtent() );
-      clearExtentHistory(); // clear the extent history on project load
     }
+
+    setRotation( project->viewSettings()->defaultRotation() );
+    clearExtentHistory(); // clear the extent history on project load
   }
 }
 
