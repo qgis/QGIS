@@ -30,10 +30,10 @@
 #include <QStringList>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QDesktopWidget>
 #include <QImageReader>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QScreen>
 
 #include <cstdio>
 #include <cstdlib>
@@ -1375,8 +1375,14 @@ int main( int argc, char *argv[] )
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QStringLiteral( "splash.png" ) );
 
-  int w = 600 * qApp->desktop()->logicalDpiX() / 96;
-  int h = 300 * qApp->desktop()->logicalDpiY() / 96;
+  double screenDpi = 96;
+  if ( QScreen *screen = QGuiApplication::primaryScreen() )
+  {
+    screenDpi = screen->physicalDotsPerInch();
+  }
+
+  int w = 600 * screenDpi / 96;
+  int h = 300 * screenDpi / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
   if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
