@@ -1385,6 +1385,14 @@ int main( int argc, char *argv[] )
   int h = 300 * screenDpi / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+
+  // Force splash screen to start on primary screen
+  if ( QScreen *screen = QGuiApplication::primaryScreen() )
+  {
+    const QPoint currentDesktopsCenter = screen->availableGeometry().center();
+    mypSplash->move( currentDesktopsCenter - mypSplash->rect().center() );
+  }
+
   if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
