@@ -37,7 +37,6 @@
 
 #include <QFileInfo>
 #include <QDir>
-#include <QDesktopWidget>
 
 class TestQgsPointCloud3DRendering : public QgsTest
 {
