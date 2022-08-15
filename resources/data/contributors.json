@@ -1151,7 +1151,7 @@
       "properties": {
         "Name": "Nicolas Godet",
         "Committer": "No",
-        "First Commit Message": "Fix qgis#41977",
+        "First Commit Message": "Fix QgsCellStatisticsAlgorithm::name() should not return a translatable string",
         "First Commit Date": "03-03-2021",
         "GIT Nickname": "nicogodet"
       },
