@@ -26,7 +26,6 @@
 #include <QColor>
 #include <QCursor>
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDir>
@@ -77,6 +76,7 @@
 #include <mutex>
 #include <QWindow>
 
+#include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
@@ -947,6 +947,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   startProfile( tr( "Setting up UI" ) );
   setupUi( this );
   endProfile();
+
+  mScreenHelper = new QgsScreenHelper( this );
 
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
@@ -1905,6 +1907,9 @@ QgisApp::QgisApp()
 {
   sInstance = this;
   setupUi( this );
+
+  mScreenHelper = new QgsScreenHelper( this );
+
   mInternalClipboard = new QgsClipboard;
   mMapCanvas = new QgsMapCanvas();
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
@@ -5155,8 +5160,8 @@ void QgisApp::restoreWindowState()
   {
     QgsDebugMsg( QStringLiteral( "restore of UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
-    resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
-    QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
+    resize( mScreenHelper->availableGeometry().size() * 0.8 );
+    QSize pos = mScreenHelper->availableGeometry().size() * 0.1;
     move( pos.width(), pos.height() );
   }
 

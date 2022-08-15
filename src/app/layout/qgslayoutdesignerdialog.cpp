@@ -78,7 +78,6 @@
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
-#include <QDesktopWidget>
 #include <QSlider>
 #include <QLabel>
 #include <QUndoView>
@@ -4031,8 +4030,8 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   {
     QgsDebugMsg( QStringLiteral( "restore of layout UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
-    resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
-    QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
+    resize( mScreenHelper->availableGeometry().size() * 0.8 );
+    QSize pos = mScreenHelper->availableGeometry().size() * 0.1;
     move( pos.width(), pos.height() );
   }
 }
