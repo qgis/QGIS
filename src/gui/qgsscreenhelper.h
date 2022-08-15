@@ -61,6 +61,13 @@ class GUI_EXPORT QgsScreenHelper : public QObject
     double screenDpi() const { return mScreenDpi; }
 
     /**
+     * Returns the current logical DPI for the screen that the parent widget appears on.
+     *
+     * \see logicalDpiChanged()
+     */
+    double logicalDpi() const { return mLogicalDpi; }
+
+    /**
      * Returns the current screen available geometry in pixels.
      *
      * The available geometry is the geometry excluding window manager reserved areas such as task bars and system menus.
@@ -79,6 +86,13 @@ class GUI_EXPORT QgsScreenHelper : public QObject
     void screenDpiChanged( double dpi );
 
     /**
+     * Emitted whenever the logical \a dpi associated with the widget is changed.
+     *
+     * \see logicalDpi()
+     */
+    void logicalDpiChanged( double dpi );
+
+    /**
      * Emitted whenever the available geometry of the screen associated with the widget is changed.
      *
      * \see availableGeometry()
@@ -91,6 +105,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
   private slots:
 
     void updateDevicePixelFromScreen();
+    void updateLogicalDpiFromScreen();
     void updateAvailableGeometryFromScreen();
 
   private:
@@ -99,6 +114,9 @@ class GUI_EXPORT QgsScreenHelper : public QObject
 
     double mScreenDpi = 96.0;
     QMetaObject::Connection mScreenDpiChangedConnection;
+
+    double mLogicalDpi = 96.0;
+    QMetaObject::Connection mLogicalDpiChangedConnection;
 
     QRect mAvailableGeometry;
     QMetaObject::Connection mAvailableGeometryChangedConnection;
