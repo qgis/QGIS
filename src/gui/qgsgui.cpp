@@ -66,6 +66,9 @@
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
 
+#include <QPushButton>
+#include <QToolButton>
+
 QgsGui *QgsGui::instance()
 {
   static QgsGui *sInstance( new QgsGui() );
