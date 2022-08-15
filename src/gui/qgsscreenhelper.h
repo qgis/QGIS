@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 
 #include <QObject>
+#include <QRect>
 
 class QWidget;
 class QScreen;
@@ -59,6 +60,15 @@ class GUI_EXPORT QgsScreenHelper : public QObject
      */
     double screenDpi() const { return mScreenDpi; }
 
+    /**
+     * Returns the current screen available geometry in pixels.
+     *
+     * The available geometry is the geometry excluding window manager reserved areas such as task bars and system menus.
+     *
+     * \see availableGeometryChanged()
+     */
+    QRect availableGeometry() const { return mAvailableGeometry; }
+
   signals:
 
     /**
@@ -68,12 +78,20 @@ class GUI_EXPORT QgsScreenHelper : public QObject
      */
     void screenDpiChanged( double dpi );
 
+    /**
+     * Emitted whenever the available geometry of the screen associated with the widget is changed.
+     *
+     * \see availableGeometry()
+     */
+    void availableGeometryChanged( const QRect &geometry );
+
   protected:
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private slots:
 
     void updateDevicePixelFromScreen();
+    void updateAvailableGeometryFromScreen();
 
   private:
 
@@ -81,6 +99,9 @@ class GUI_EXPORT QgsScreenHelper : public QObject
 
     double mScreenDpi = 96.0;
     QMetaObject::Connection mScreenDpiChangedConnection;
+
+    QRect mAvailableGeometry;
+    QMetaObject::Connection mAvailableGeometryChangedConnection;
 
 };
 

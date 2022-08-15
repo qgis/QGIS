@@ -55,20 +55,28 @@ bool QgsScreenHelper::eventFilter( QObject *watched, QEvent *event )
     case QEvent::Show:
     {
       updateDevicePixelFromScreen();
+      updateAvailableGeometryFromScreen();
+
       // keep device pixel ratio up to date on screen or resolution change
       if ( QWindow *handle = windowHandle() )
       {
         connect( handle, &QWindow::screenChanged, this, [ = ]( QScreen * )
         {
           disconnect( mScreenDpiChangedConnection );
+          disconnect( mAvailableGeometryChangedConnection );
+
           if ( QWindow *windowHandleInLambda = windowHandle() )
           {
             mScreenDpiChangedConnection = connect( windowHandleInLambda->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsScreenHelper::updateDevicePixelFromScreen );
             updateDevicePixelFromScreen();
+
+            mAvailableGeometryChangedConnection = connect( windowHandleInLambda->screen(), &QScreen::availableGeometryChanged, this, &QgsScreenHelper::updateAvailableGeometryFromScreen );
+            updateAvailableGeometryFromScreen();
           }
         } );
 
         mScreenDpiChangedConnection = connect( handle->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsScreenHelper::updateDevicePixelFromScreen );
+        mAvailableGeometryChangedConnection = connect( handle->screen(), &QScreen::availableGeometryChanged, this, &QgsScreenHelper::updateAvailableGeometryFromScreen );
       }
     }
 
@@ -88,6 +96,19 @@ void QgsScreenHelper::updateDevicePixelFromScreen()
     {
       mScreenDpi = newDpi;
       emit screenDpiChanged( mScreenDpi );
+    }
+  }
+}
+
+void QgsScreenHelper::updateAvailableGeometryFromScreen()
+{
+  if ( QScreen *screen = QgsScreenHelper::screen() )
+  {
+    const QRect newGeometry = screen->availableGeometry();
+    if ( newGeometry != mAvailableGeometry )
+    {
+      mAvailableGeometry = newGeometry;
+      emit availableGeometryChanged( mAvailableGeometry );
     }
   }
 }
