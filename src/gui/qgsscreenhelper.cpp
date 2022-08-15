@@ -55,7 +55,6 @@ bool QgsScreenHelper::eventFilter( QObject *watched, QEvent *event )
     case QEvent::Show:
     {
       updateDevicePixelFromScreen();
-      updateLogicalDpiFromScreen();
       updateAvailableGeometryFromScreen();
 
       // keep device pixel ratio up to date on screen or resolution change
@@ -64,7 +63,6 @@ bool QgsScreenHelper::eventFilter( QObject *watched, QEvent *event )
         connect( handle, &QWindow::screenChanged, this, [ = ]( QScreen * )
         {
           disconnect( mScreenDpiChangedConnection );
-          disconnect( mLogicalDpiChangedConnection );
           disconnect( mAvailableGeometryChangedConnection );
 
           if ( QWindow *windowHandleInLambda = windowHandle() )
@@ -72,16 +70,12 @@ bool QgsScreenHelper::eventFilter( QObject *watched, QEvent *event )
             mScreenDpiChangedConnection = connect( windowHandleInLambda->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsScreenHelper::updateDevicePixelFromScreen );
             updateDevicePixelFromScreen();
 
-            mLogicalDpiChangedConnection = connect( windowHandleInLambda->screen(), &QScreen::logicalDotsPerInchChanged, this, &QgsScreenHelper::updateLogicalDpiFromScreen );
-            updateLogicalDpiFromScreen();
-
             mAvailableGeometryChangedConnection = connect( windowHandleInLambda->screen(), &QScreen::availableGeometryChanged, this, &QgsScreenHelper::updateAvailableGeometryFromScreen );
             updateAvailableGeometryFromScreen();
           }
         } );
 
         mScreenDpiChangedConnection = connect( handle->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsScreenHelper::updateDevicePixelFromScreen );
-        mLogicalDpiChangedConnection = connect( handle->screen(), &QScreen::logicalDotsPerInchChanged, this, &QgsScreenHelper::updateLogicalDpiFromScreen );
         mAvailableGeometryChangedConnection = connect( handle->screen(), &QScreen::availableGeometryChanged, this, &QgsScreenHelper::updateAvailableGeometryFromScreen );
       }
     }
@@ -102,19 +96,6 @@ void QgsScreenHelper::updateDevicePixelFromScreen()
     {
       mScreenDpi = newDpi;
       emit screenDpiChanged( mScreenDpi );
-    }
-  }
-}
-
-void QgsScreenHelper::updateLogicalDpiFromScreen()
-{
-  if ( QScreen *screen = QgsScreenHelper::screen() )
-  {
-    const double newDpi = screen->logicalDotsPerInch();
-    if ( !qgsDoubleNear( newDpi, mLogicalDpi ) )
-    {
-      mLogicalDpi = newDpi;
-      emit logicalDpiChanged( mLogicalDpi );
     }
   }
 }
