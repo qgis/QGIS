@@ -44,13 +44,6 @@ Returns the current screen DPI for the screen that the parent widget appears on.
 .. seealso:: :py:func:`screenDpiChanged`
 %End
 
-    double logicalDpi() const;
-%Docstring
-Returns the current logical DPI for the screen that the parent widget appears on.
-
-.. seealso:: :py:func:`logicalDpiChanged`
-%End
-
     QRect availableGeometry() const;
 %Docstring
 Returns the current screen available geometry in pixels.
@@ -67,13 +60,6 @@ The available geometry is the geometry excluding window manager reserved areas s
 Emitted whenever the screen ``dpi`` associated with the widget is changed.
 
 .. seealso:: :py:func:`screenDpi`
-%End
-
-    void logicalDpiChanged( double dpi );
-%Docstring
-Emitted whenever the logical ``dpi`` associated with the widget is changed.
-
-.. seealso:: :py:func:`logicalDpi`
 %End
 
     void availableGeometryChanged( const QRect &geometry );
