@@ -78,6 +78,7 @@ bool QgsScreenHelper::eventFilter( QObject *watched, QEvent *event )
         mScreenDpiChangedConnection = connect( handle->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsScreenHelper::updateDevicePixelFromScreen );
         mAvailableGeometryChangedConnection = connect( handle->screen(), &QScreen::availableGeometryChanged, this, &QgsScreenHelper::updateAvailableGeometryFromScreen );
       }
+      break;
     }
 
     default:
