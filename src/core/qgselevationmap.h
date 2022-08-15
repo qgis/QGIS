@@ -22,6 +22,8 @@
 #include <QImage>
 #include <memory>
 
+class QgsRasterBlock;
+
 /**
  * \ingroup core
  * \brief Stores digital elevation model in a raster image which may get updated
@@ -70,6 +72,9 @@ class CORE_EXPORT QgsElevationMap
     static QRgb encodeElevation( float z );
     //! Converts a color back to elevation value
     static float decodeElevation( QRgb colorRaw );
+
+    //! Creates an elevation map based on data from the given raster block.
+    static std::unique_ptr<QgsElevationMap> fromRasterBlock( QgsRasterBlock *block ) SIP_SKIP;
 
   private:
 

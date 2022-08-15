@@ -51,6 +51,7 @@ set(TESTS
  testqgsdiagram.cpp
  testqgsdistancearea.cpp
  testqgsdxfexport.cpp
+ testqgselevationmap.cpp
  testqgsellipsemarker.cpp
  testqgsexpression.cpp
  testqgsexpressioncontext.cpp
