@@ -28,7 +28,6 @@
 #include <QToolButton>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QScreen>
 #include <QInputDialog>
@@ -39,6 +38,9 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   : QgsPanelWidget( parent )
 {
   setupUi( this );
+
+  mScreenHelper = new QgsScreenHelper( this );
+
   connect( mHueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mHueRadio_toggled );
   connect( mSaturationRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mSaturationRadio_toggled );
   connect( mValueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mValueRadio_toggled );
@@ -792,7 +794,7 @@ QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
   {
     return QColor();
   }
-  const QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(),
+  const QPixmap snappedPixmap = screen->grabWindow( 0,
                                 point.x() - sampleRadius,
                                 point.y() - sampleRadius,
                                 1 + sampleRadius * 2,
