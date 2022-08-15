@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QDesktopWidget>
 
 #include "qgsapplication.h"
 #include "qgs3d.h"
@@ -30,6 +29,8 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapcanvas.h"
 #include "qgsprojectviewsettings.h"
+
+#include <QScreen>
 
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
@@ -63,7 +64,14 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
   map->setLightSources( {defaultPointLight.clone() } );
-  map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
+  if ( QScreen *screen = QGuiApplication::primaryScreen() )
+  {
+    map->setOutputDpi( screen->physicalDotsPerInch() );
+  }
+  else
+  {
+    map->setOutputDpi( 96 );
+  }
 
   canvas->setMap( map );
 
