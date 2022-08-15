@@ -15,6 +15,8 @@
 
 #include "qgselevationmap.h"
 
+#include "qgsrasterblock.h"
+
 #include <QPainter>
 #include <algorithm>
 #include <cmath>
@@ -39,6 +41,24 @@ float QgsElevationMap::decodeElevation( QRgb colorRaw )
 {
   unsigned int zScaled = colorRaw & 0xffffff;
   return ( ( double ) zScaled ) / 1000 - 8000;
+}
+
+std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBlock *block )
+{
+  std::unique_ptr<QgsElevationMap> elevMap( new QgsElevationMap( QSize( block->width(), block->height() ) ) );
+  QRgb *dataPtr = reinterpret_cast<QRgb *>( elevMap->mElevationImage.bits() );
+  for ( int row = 0; row < block->height(); ++row )
+  {
+    for ( int col = 0; col < block->width(); ++col )
+    {
+      bool isNoData;
+      double value = block->valueAndNoData( row, col, isNoData );
+      if ( !isNoData )
+        *dataPtr = encodeElevation( value );
+      ++dataPtr;
+    }
+  }
+  return elevMap;
 }
 
 void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale )

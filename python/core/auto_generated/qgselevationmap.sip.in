@@ -9,6 +9,7 @@
 
 
 
+
 class QgsElevationMap
 {
 %Docstring(signature="appended")
@@ -70,6 +71,7 @@ Converts elevation value to an actual color
 %Docstring
 Converts a color back to elevation value
 %End
+
 
   private:
     QgsElevationMap( const QgsElevationMap & );
