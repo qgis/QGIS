@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutview.h"
-#include "qgslayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutviewtool.h"
@@ -24,25 +23,22 @@
 #include "qgslayoutviewtooltemporarykeypan.h"
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 #include "qgslayoutviewtooltemporarymousepan.h"
-#include "qgslayoutmousehandles.h"
 #include "qgslayoutruler.h"
 #include "qgslayoutmodel.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
-#include "qgsapplication.h"
-#include "qgslayoutitemundocommand.h"
 #include "qgsproject.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
+#include "qgsscreenhelper.h"
+
 #include <memory>
 #include <QMenu>
 #include <QClipboard>
 #include <QMimeData>
-#include <QWindow>
-#include <QScreen>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -68,6 +64,8 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   viewport()->setGraphicsEffect( mPreviewEffect );
 
   connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
+
+  mScreenHelper = new QgsScreenHelper( this );
 }
 
 QgsLayoutView::~QgsLayoutView()
@@ -208,7 +206,7 @@ void QgsLayoutView::setZoomLevel( double level )
   }
   else
   {
-    double dpi = mScreenDpi;
+    double dpi = mScreenHelper->screenDpi();
     //monitor dpi is not always correct - so make sure the value is sane
     if ( ( dpi < 60 ) || ( dpi > 1200 ) )
       dpi = 72;
@@ -1155,25 +1153,6 @@ void QgsLayoutView::paintEvent( QPaintEvent *event )
   }
 }
 
-void QgsLayoutView::showEvent( QShowEvent *event )
-{
-  QGraphicsView::showEvent( event );
-
-  updateDevicePixelFromScreen();
-  // keep device pixel ratio up to date on screen or resolution change
-  if ( window()->windowHandle() )
-  {
-    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
-    {
-      disconnect( mScreenDpiChangedConnection );
-      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutView::updateDevicePixelFromScreen );
-      updateDevicePixelFromScreen();
-    } );
-
-    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutView::updateDevicePixelFromScreen );
-  }
-}
-
 void QgsLayoutView::invalidateCachedRenders()
 {
   if ( !currentLayout() )
@@ -1187,12 +1166,6 @@ void QgsLayoutView::invalidateCachedRenders()
   {
     item->invalidateCache();
   }
-}
-
-void QgsLayoutView::updateDevicePixelFromScreen()
-{
-  if ( window()->windowHandle() )
-    mScreenDpi = window()->windowHandle()->screen()->physicalDotsPerInch();
 }
 
 void QgsLayoutView::viewChanged()

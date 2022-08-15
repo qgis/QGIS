@@ -41,7 +41,6 @@
 #include "qgslayoututils.h"
 #include "qgsprintlayout.h"
 #include "qgsmapcanvas.h"
-#include "qgsrendercontext.h"
 #include "qgsmessagebar.h"
 #include "qgsmessageviewer.h"
 #include "qgshelp.h"
@@ -57,7 +56,6 @@
 #include "qgslayoutpagepropertieswidget.h"
 #include "qgslayoutguidewidget.h"
 #include "qgslayoutmousehandles.h"
-#include "qgslayoutmodel.h"
 #include "qgslayoutitemslistview.h"
 #include "qgsproject.h"
 #include "qgsbusyindicatordialog.h"
@@ -68,14 +66,13 @@
 #include "qgsreportorganizerwidget.h"
 #include "qgsreadwritecontext.h"
 #include "ui_qgssvgexportoptions.h"
-#include "ui_qgspdfexportoptions.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsvaliditycheckresultswidget.h"
 #include "qgsabstractvaliditycheck.h"
 #include "qgsvaliditycheckcontext.h"
-#include "qgsprojectviewsettings.h"
 #include "qgslayoutlabelwidget.h"
 #include "qgslabelingresults.h"
+#include "qgsscreenhelper.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -323,6 +320,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 
   QgsGui::enableAutoGeometryRestore( this );
+
+  mScreenHelper = new QgsScreenHelper( this );
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [ = ]( double )
+  {
+    updateStatusZoom();
+  } );
 
   //create layout view
   QGridLayout *viewLayout = new QGridLayout();
@@ -1620,25 +1623,6 @@ void QgsLayoutDesignerDialog::dragEnterEvent( QDragEnterEvent *event )
   }
 }
 
-void QgsLayoutDesignerDialog::showEvent( QShowEvent *event )
-{
-  QMainWindow::showEvent( event );
-
-  updateDevicePixelFromScreen();
-  // keep device pixel ratio up to date on screen or resolution change
-  if ( window()->windowHandle() )
-  {
-    connect( window()->windowHandle(), &QWindow::screenChanged, this, [ = ]( QScreen * )
-    {
-      disconnect( mScreenDpiChangedConnection );
-      mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutDesignerDialog::updateDevicePixelFromScreen );
-      updateDevicePixelFromScreen();
-    } );
-
-    mScreenDpiChangedConnection = connect( window()->windowHandle()->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsLayoutDesignerDialog::updateDevicePixelFromScreen );
-  }
-}
-
 void QgsLayoutDesignerDialog::setTitle( const QString &title )
 {
   mTitle = title;
@@ -1823,7 +1807,7 @@ void QgsLayoutDesignerDialog::updateStatusZoom()
   }
   else
   {
-    double dpi = mScreenDpi;
+    double dpi = mScreenHelper->screenDpi();
     //monitor dpi is not always correct - so make sure the value is sane
     if ( ( dpi < 60 ) || ( dpi > 1200 ) )
       dpi = 72;
@@ -4939,13 +4923,6 @@ void QgsLayoutDesignerDialog::onItemAdded( QgsLayoutItem *item )
   {
     connect( map, &QgsLayoutItemMap::previewRefreshed, this, &QgsLayoutDesignerDialog::onMapPreviewRefreshed );
   }
-}
-
-void QgsLayoutDesignerDialog::updateDevicePixelFromScreen()
-{
-  if ( window()->windowHandle() )
-    mScreenDpi = window()->windowHandle()->screen()->physicalDotsPerInch();
-  updateStatusZoom();
 }
 
 void QgsLayoutDesignerDialog::storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter )
