@@ -23,7 +23,6 @@
 #include <QPixmap>
 #include <QMenu>
 #include <QClipboard>
-#include <QDesktopWidget>
 #include <QMenuBar>
 #include <QPushButton>
 #include <QPrinter>
@@ -50,7 +49,6 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
-#include "qgsattributedialog.h"
 #include "qgsdockwidget.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureaction.h"
@@ -59,7 +57,6 @@
 #include "qgsgeometry.h"
 #include "qgsguiutils.h"
 #include "qgshighlight.h"
-#include "qgsmaptoolidentifyaction.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
