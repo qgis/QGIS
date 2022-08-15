@@ -153,6 +153,7 @@ class QgsNetworkLoggerWidgetFactory;
 class QgsAppQueryLogger;
 class QgsMapToolCapture;
 class QgsElevationProfileWidget;
+class QgsScreenHelper;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2361,6 +2362,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns a list of all capture map tools.
      */
     QList< QgsMapToolCapture * > captureTools();
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
