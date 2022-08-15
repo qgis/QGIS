@@ -13,7 +13,6 @@
  ***************************************************************************/
 #include "qgsdelimitedtextsourceselect.h"
 
-#include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgssettings.h"
