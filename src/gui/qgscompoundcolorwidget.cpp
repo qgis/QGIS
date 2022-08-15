@@ -19,6 +19,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsscreenhelper.h"
+#include "qgsguiutils.h"
 
 #include <QHeaderView>
 #include <QPushButton>
