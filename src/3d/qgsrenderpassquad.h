@@ -37,6 +37,7 @@
  */
 class QgsRenderPassQuad : public Qt3DCore::QEntity
 {
+    Q_OBJECT
   public:
     //! Constructor
     QgsRenderPassQuad( QNode *parent = nullptr );
