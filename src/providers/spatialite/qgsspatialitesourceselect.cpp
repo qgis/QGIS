@@ -19,8 +19,6 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitesourceselect.h"
 #include "qgsspatialiteconnection.h"
 
-#include "qgslogger.h"
-#include "qgsapplication.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
@@ -31,7 +29,7 @@ email                : a.furieri@lqt.it
 #include "qgsprovidermetadata.h"
 #include "qgsspatialiteproviderconnection.h"
 #include "qgsspatialitetablemodel.h"
-#include "qgsdbfilterproxymodel.h"
+#include "qgshelp.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
