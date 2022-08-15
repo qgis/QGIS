@@ -17,7 +17,6 @@
 
 
 #include <QScreen>
-#include <QDesktopWidget>
 #include <QMessageBox>
 
 #include "qgsgui.h"
@@ -239,7 +238,7 @@ QColor QgsGui::sampleColor( QPoint point )
   {
     return QColor();
   }
-  const QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  const QPixmap snappedPixmap = screen->grabWindow( 0, point.x(), point.y(), 1, 1 );
   const QImage snappedImage = snappedPixmap.toImage();
   return snappedImage.pixel( 0, 0 );
 }
