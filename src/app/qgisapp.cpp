@@ -7589,37 +7589,6 @@ void QgisApp::reprojectAnnotations()
   }
 }
 
-void QgisApp::labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontfamily )
-{
-  // TODO: update when pref for how to resolve missing family (use matching algorithm or just default font) is implemented
-  QString substitute = tr( "Default system font substituted." );
-
-  QToolButton *btnOpenPrefs = new QToolButton();
-  btnOpenPrefs->setStyleSheet( QStringLiteral( "QToolButton{ background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline; }" ) );
-  btnOpenPrefs->setCursor( Qt::PointingHandCursor );
-  btnOpenPrefs->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-  btnOpenPrefs->setToolButtonStyle( Qt::ToolButtonTextOnly );
-
-  // store pointer to vlayer in data of QAction
-  QAction *act = new QAction( btnOpenPrefs );
-  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
-  act->setText( tr( "Open labeling dialog" ) );
-  btnOpenPrefs->addAction( act );
-  btnOpenPrefs->setDefaultAction( act );
-  btnOpenPrefs->setToolTip( QString() );
-  connect( btnOpenPrefs, &QToolButton::triggered, this, &QgisApp::labelingDialogFontNotFound );
-
-  // no timeout set, since notice needs attention and is only shown first time layer is labeled
-  QgsMessageBarItem *fontMsg = new QgsMessageBarItem(
-    tr( "Labeling" ),
-    tr( "Font for layer <b><u>%1</u></b> was not found (<i>%2</i>). %3" ).arg( vlayer->name(), fontfamily, substitute ),
-    btnOpenPrefs,
-    Qgis::MessageLevel::Warning,
-    0,
-    messageBar() );
-  messageBar()->pushItem( fontMsg );
-}
-
 void QgisApp::commitError( QgsVectorLayer *vlayer, const QStringList &commitErrorsList )
 {
   QStringList commitErrors = commitErrorsList;
@@ -7661,31 +7630,6 @@ void QgisApp::commitError( QgsVectorLayer *vlayer, const QStringList &commitErro
     0,
     messageBar() );
   messageBar()->pushItem( errorMsg );
-}
-
-void QgisApp::labelingDialogFontNotFound( QAction *act )
-{
-  if ( !act )
-  {
-    return;
-  }
-
-  // get base pointer to layer
-  QObject *obj = qvariant_cast<QObject *>( act->data() );
-
-  // remove calling messagebar widget
-  messageBar()->popWidget();
-
-  if ( !obj )
-  {
-    return;
-  }
-
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( obj );
-  if ( layer && setActiveLayer( layer ) )
-  {
-    labeling();
-  }
 }
 
 void QgisApp::labeling()
@@ -13925,9 +13869,6 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
 
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      // notify user about any font family substitution, but only when rendering labels (i.e. not when opening settings dialog)
-      connect( vlayer, &QgsVectorLayer::labelingFontNotFound, this, &QgisApp::labelingFontNotFound );
-
       // Do not check for layer editing capabilities because they may change
       // (for example when subsetString is added/removed) and signals need to
       // be in place in order to update the GUI
