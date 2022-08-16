@@ -142,6 +142,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
        */
       bool skipCrsValidation = false;
 
+      //! Sets to TRUE to load the default raster attribute table for providers that support it
+      bool loadDefaultRat = true;
+
+      //! Sets to the path of a DBF raster attribute table to load it
+      QString fileBasedRat;
+
+
     };
 
     /**
@@ -315,6 +322,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns the name of a band given its number.
      */
     QString bandName( int bandNoInt ) const;
+
+    /**
+     * Returns the (possibly NULL) raster attribute table for the given band \a bandNumber.
+     * \since QGIS 3.30
+     */
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 
     /**
      * Returns the source data provider.

@@ -70,6 +70,11 @@ Constructor for LayerOptions.
 
       bool skipCrsValidation;
 
+      bool loadDefaultRat;
+
+      QString fileBasedRat;
+
+
     };
 
     explicit QgsRasterLayer( const QString &uri,
@@ -252,6 +257,13 @@ Returns the number of bands in this layer.
     QString bandName( int bandNoInt ) const;
 %Docstring
 Returns the name of a band given its number.
+%End
+
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+%Docstring
+Returns the (possibly NULL) raster attribute table for the given band ``bandNumber``.
+
+.. versionadded:: 3.30
 %End
 
     virtual QgsRasterDataProvider *dataProvider();

@@ -123,20 +123,10 @@ bool QgsRasterAttributeTable::appendRow( const QVariantList data )
   return insertRow( data, mData.count() );
 }
 
-bool QgsRasterAttributeTable::isValid()
+bool QgsRasterAttributeTable::isValid() const
 {
   // TODO: check for mandatory fields
   return mFields.count() > 0 && mData.count( ) > 0;
-}
-
-bool QgsRasterAttributeTable::saveToFile( const QString &path )
-{
-  return true;
-}
-
-bool QgsRasterAttributeTable::loadFromFile( const QString &path )
-{
-  return true;
 }
 
 QgsRasterAttributeTable::Origin QgsRasterAttributeTable::origin() const
