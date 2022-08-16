@@ -651,11 +651,19 @@ void QgsModelDesignerDialog::newModel()
 
 void QgsModelDesignerDialog::exportToImage()
 {
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as Image" ), tr( "PNG files (*.png *.PNG)" ) );
+  QgsSettings settings;
+  QString lastExportDir = settings.value( QStringLiteral( "lastModelDesignerExportDir" ), QDir::homePath(), QgsSettings::App ).toString();
+
+  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as Image" ),
+                     lastExportDir,
+                     tr( "PNG files (*.png *.PNG)" ) );
   if ( filename.isEmpty() )
     return;
 
   filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "png" ) );
+
+  const QFileInfo saveFileInfo( filename );
+  settings.setValue( QStringLiteral( "lastModelDesignerExportDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
   repaintModel( false );
 
@@ -680,11 +688,19 @@ void QgsModelDesignerDialog::exportToImage()
 
 void QgsModelDesignerDialog::exportToPdf()
 {
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as PDF" ), tr( "PDF files (*.pdf *.PDF)" ) );
+  QgsSettings settings;
+  QString lastExportDir = settings.value( QStringLiteral( "lastModelDesignerExportDir" ), QDir::homePath(), QgsSettings::App ).toString();
+
+  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as PDF" ),
+                     lastExportDir,
+                     tr( "PDF files (*.pdf *.PDF)" ) );
   if ( filename.isEmpty() )
     return;
 
   filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "pdf" ) );
+
+  const QFileInfo saveFileInfo( filename );
+  settings.setValue( QStringLiteral( "lastModelDesignerExportDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
   repaintModel( false );
 
@@ -709,11 +725,19 @@ void QgsModelDesignerDialog::exportToPdf()
 
 void QgsModelDesignerDialog::exportToSvg()
 {
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as SVG" ), tr( "SVG files (*.svg *.SVG)" ) );
+  QgsSettings settings;
+  QString lastExportDir = settings.value( QStringLiteral( "lastModelDesignerExportDir" ), QDir::homePath(), QgsSettings::App ).toString();
+
+  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as SVG" ),
+                     lastExportDir,
+                     tr( "SVG files (*.svg *.SVG)" ) );
   if ( filename.isEmpty() )
     return;
 
   filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "svg" ) );
+
+  const QFileInfo saveFileInfo( filename );
+  settings.setValue( QStringLiteral( "lastModelDesignerExportDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
   repaintModel( false );
 
@@ -737,11 +761,19 @@ void QgsModelDesignerDialog::exportToSvg()
 
 void QgsModelDesignerDialog::exportAsPython()
 {
-  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as Python Script" ), tr( "Processing scripts (*.py *.PY)" ) );
+  QgsSettings settings;
+  QString lastExportDir = settings.value( QStringLiteral( "lastModelDesignerExportDir" ), QDir::homePath(), QgsSettings::App ).toString();
+
+  QString filename = QFileDialog::getSaveFileName( this, tr( "Save Model as Python Script" ),
+                     lastExportDir,
+                     tr( "Processing scripts (*.py *.PY)" ) );
   if ( filename.isEmpty() )
     return;
 
   filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "py" ) );
+
+  const QFileInfo saveFileInfo( filename );
+  settings.setValue( QStringLiteral( "lastModelDesignerExportDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
   const QString text = mModel->asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 4 ).join( '\n' );
 
