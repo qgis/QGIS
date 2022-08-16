@@ -1742,7 +1742,7 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         QgsGui::enableAutoGeometryRestore( &dialog );
         QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
         widget->setQuery( sql );
-        widget->layout()->setMargin( 0 );
+        widget->layout()->setContentsMargins( 0, 0, 0, 0 );
         dialog.layout()->addWidget( widget );
 
         connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ item, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
