@@ -958,7 +958,7 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     {
       // Preserve open options so pooled connections always carry those on
       QString openOptions;
-      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      const thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
       QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
       if ( match.hasMatch() )
       {

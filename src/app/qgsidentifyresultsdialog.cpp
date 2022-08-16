@@ -55,6 +55,7 @@
 #include "qgsfeatureaction.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturestore.h"
+#include "qgsfileutils.h"
 #include "qgsgeometry.h"
 #include "qgsguiutils.h"
 #include "qgshighlight.h"
@@ -133,7 +134,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
     // Try to get some information from the URL
     const QFileInfo info( url.toString() );
     QString savePath = settings.value( DOWNLOADER_LAST_DIR_KEY ).toString();
-    const QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), QStringLiteral( "_" ) );
+    const QString fileName = QgsFileUtils::stringToSafeFilename( info.fileName() );
     if ( ! savePath.isEmpty() && ! fileName.isEmpty() )
     {
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );

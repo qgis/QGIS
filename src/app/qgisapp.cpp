@@ -5368,13 +5368,13 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Adjust layer CRS to project CRS
   QgsCoordinateReferenceSystem testCrs;
-  const auto constSupportedCrs = supportedCrs;
-  for ( const QString &c : constSupportedCrs )
+  for ( const QString &c : supportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
     {
-      newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
+      const thread_local QRegularExpression sCrsRegEx( QStringLiteral( "crs=[^&]+" ) );
+      newuri.replace( sCrsRegEx, "crs=" + c );
       QgsDebugMsgLevel( QStringLiteral( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ), 2 );
       break;
     }
@@ -5382,12 +5382,12 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
 
   // Use the last used image format
   QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  const auto constSupportedFormats = supportedFormats;
-  for ( const QString &fmt : constSupportedFormats )
+  for ( const QString &fmt : supportedFormats )
   {
     if ( fmt == lastImageEncoding )
     {
-      newuri.replace( QRegExp( "format=[^&]+" ), "format=" + fmt );
+      const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
+      newuri.replace( sFormatRegEx, "format=" + fmt );
       QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
       break;
     }
@@ -6833,6 +6833,13 @@ QList< QgsMapDecoration * > QgisApp::activeDecorations()
   }
   return decorations;
 }
+
+QString QgisApp::normalizedMenuName( const QString &name )
+{
+  const thread_local QRegularExpression sNonAlphaChars( QStringLiteral( "[^a-zA-Z]" ) );
+  return name.normalized( QString::NormalizationForm_KD ).remove( sNonAlphaChars );
+}
+
 void QgisApp::saveMapAsImage()
 {
   QgsMapSaveDialog *dlg = new QgsMapSaveDialog( this, mMapCanvas, activeDecorations(), QgsProject::instance()->annotationManager()->annotations() );

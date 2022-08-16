@@ -78,6 +78,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
+#include <QRegularExpression>
 #include <QRegularExpressionValidator>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
@@ -1389,7 +1390,7 @@ void QgsProjectProperties::apply()
   QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
   if ( !keywordStringList.isEmpty() )
   {
-    keywordStringList.replaceInStrings( QRegExp( "^\\s+" ), QString() ).replaceInStrings( QRegExp( "\\s+$" ), QString() );
+    keywordStringList.replaceInStrings( QRegularExpression( QStringLiteral( "^\\s+" ) ), QString() ).replaceInStrings( QRegularExpression( "\\s+$" ), QString() );
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), keywordStringList );
   }
   else
@@ -2582,12 +2583,12 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegExp regExp( "1:0*[1-9]\\d*" );
-  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  const thread_local QRegularExpression sRegExp( "^1:0*[1-9]\\d*$" );
+  if ( sRegExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator
-    regExp.setPattern( QStringLiteral( "1:0*" ) );
-    changedScaleItem->setText( changedScaleItem->text().replace( regExp, QStringLiteral( "1:" ) ) );
+    const thread_local QRegularExpression sNoLeadingZeroRegExp( "1:0*" );
+    changedScaleItem->setText( changedScaleItem->text().replace( sNoLeadingZeroRegExp, QStringLiteral( "1:" ) ) );
   }
   else
   {

@@ -90,13 +90,13 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   if ( !vl || !vl->dataProvider() )
     return;
 
-  QString filter = QStringLiteral( "$id IN (" );
-  const auto constFeatureList = featureList;
-  for ( const QgsFeature &feature : constFeatureList )
+  QStringList idList;
+  idList.reserve( featureList.size() );
+  for ( const QgsFeature &feature : featureList )
   {
-    filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
+    idList.append( FID_TO_STRING( feature.id() ) );
   }
-  filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
+  const QString filter = QStringLiteral( "$id IN (%1)" ).arg( idList.join( ',' ) );
 
   QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
   tableDialog->setFilterExpression( filter );

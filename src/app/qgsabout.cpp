@@ -308,7 +308,7 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
     }
   }
 
-  static thread_local QRegularExpression sNonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  const thread_local QRegularExpression sNonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9]" ) );
   result.replace( sNonAlphaNumericRx, QStringLiteral( "_" ) );
   QgsDebugMsgLevel( result, 3 );
 
