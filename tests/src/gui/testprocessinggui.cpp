@@ -10036,13 +10036,13 @@ void TestProcessingGui::testMeshDatasetWrapperLayerInProject()
   QCOMPARE( QgsProcessingParameterMeshDatasetTime::valueAsTimeType( timeWrapper.widgetValue() ), QStringLiteral( "static" ) );
 
   groupsWrapper.setWidgetValue( 3, context );
-  QCOMPARE( datasetGroupWidget->value(), QVariantList( {3} ) );
+  QCOMPARE( datasetGroupWidget->value(), QVariantList() << 3 );
   groupsWrapper.setWidgetValue( QVariantList( {1, 2, 3} ), context );
   QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {1, 2, 3} ) );
   groupsWrapper.setWidgetValue( QVariantList( {"1", "2", "3"} ), context );
   QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {1, 2, 3} ) );
   groupsWrapper.setWidgetValue( QgsProperty::fromExpression( QStringLiteral( "1+3" ) ), context );
-  QCOMPARE( datasetGroupWidget->value().toList(), QVariantList( {4} ) );
+  QCOMPARE( datasetGroupWidget->value().toList(), QVariantList() << 4 );
 
   timeWrapper.setWidgetValue( QDateTime( QDate( 2020, 01, 02 ), QTime( 1, 2, 3 ) ), context );
   pythonString = timeDefinition.valueAsPythonString( timeWrapper.widgetValue(), context );
