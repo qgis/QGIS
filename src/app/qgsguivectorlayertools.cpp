@@ -163,7 +163,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
   QToolButton *showMore = new QToolButton();
   // store pointer to vlayer in data of QAction
   QAction *act = new QAction( showMore );
-  act->setData( QVariant( QMetaType::QObjectStar, &vlayer ) );
+  act->setData( QVariant::fromValue( vlayer ) );
   act->setText( tr( "Show more" ) );
   showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
   showMore->setCursor( Qt::PointingHandCursor );
