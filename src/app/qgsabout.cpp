@@ -77,8 +77,10 @@ void QgsAbout::init()
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     // Always use UTF-8
     stream.setCodec( "UTF-8" );
+#endif
     QString line;
     while ( !stream.atEnd() )
     {
@@ -111,8 +113,10 @@ void QgsAbout::init()
   if ( file2.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file2 );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     // Always use UTF-8
     stream.setCodec( "UTF-8" );
+#endif
     QString line;
     while ( !stream.atEnd() )
     {
@@ -181,7 +185,9 @@ void QgsAbout::init()
     QString translatorHTML;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     translatorStream.setCodec( "UTF-8" );
+#endif
     const QString myStyle = QgsApplication::reportStyleSheet();
     translatorHTML += "<style>" + myStyle + "</style>";
     while ( !translatorStream.atEnd() )
