@@ -102,6 +102,7 @@ void QgsCrashHandler::handleCrash( int processID, int threadID,
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream stream( &file );
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     stream << QString::number( processID ) << endl;
     stream << QString::number( threadID ) << endl;
     stream << ptrStr << endl;
@@ -109,6 +110,15 @@ void QgsCrashHandler::handleCrash( int processID, int threadID,
     stream << sPythonCrashLogFile << endl;
     stream << arguments.join( ' ' ) << endl;
     stream << reportData.join( '\n' ) << endl;
+#else
+    stream << QString::number( processID ) << Qt::endl;
+    stream << QString::number( threadID ) << Qt::endl;
+    stream << ptrStr << Qt::endl;
+    stream << symbolPath << Qt::endl;
+    stream << sPythonCrashLogFile << Qt::endl;
+    stream << arguments.join( ' ' ) << Qt::endl;
+    stream << reportData.join( '\n' ) << Qt::endl;
+#endif
   }
 
   file.close();
