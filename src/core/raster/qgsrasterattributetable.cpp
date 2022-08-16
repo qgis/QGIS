@@ -63,7 +63,7 @@ bool QgsRasterAttributeTable::insertField( const Field field, int position )
 
   for ( auto it = mData.begin(); it != mData.end(); ++it )
   {
-    mData.insert( realPos, QVariant( field.type ) );
+    it->insert( realPos, QVariant( field.type ) );
   }
 
   setIsDirty( true );
@@ -98,7 +98,7 @@ bool QgsRasterAttributeTable::removeField( const QString &name )
     mFields.erase( toRemove, mFields.end() );
     for ( auto it = mData.begin(); it != mData.end(); ++it )
     {
-      mData.removeAt( idx );
+      it->removeAt( idx );
     }
     setIsDirty( true );
     return true;
@@ -113,7 +113,21 @@ bool QgsRasterAttributeTable::insertRow( const QVariantList data, int position )
   {
     return false;
   }
-  mData.insert( position, data );
+
+  QVariantList dataValid;
+
+  if ( dataValid.size() > mFields.size() )
+  {
+    for ( int colIdx = 0; colIdx < mFields.size(); colIdx++ )
+    {
+      dataValid.append( data[ colIdx ] );
+    }
+  }
+  else
+  {
+    dataValid = data;
+  }
+  mData.insert( position, dataValid );
   setIsDirty( true );
   return true;
 }
@@ -121,6 +135,16 @@ bool QgsRasterAttributeTable::insertRow( const QVariantList data, int position )
 bool QgsRasterAttributeTable::appendRow( const QVariantList data )
 {
   return insertRow( data, mData.count() );
+}
+
+bool QgsRasterAttributeTable::saveToFile( const QString &path, int bandNoInt )
+{
+  return false;
+}
+
+bool QgsRasterAttributeTable::loadFromFile( const QString &path )
+{
+  return false;
 }
 
 bool QgsRasterAttributeTable::isValid() const
@@ -132,4 +156,9 @@ bool QgsRasterAttributeTable::isValid() const
 QgsRasterAttributeTable::Origin QgsRasterAttributeTable::origin() const
 {
   return mOrigin;
+}
+
+const QList<QList<QVariant> > &QgsRasterAttributeTable::data() const
+{
+  return mData;
 }

@@ -3081,13 +3081,11 @@ bool QgsGdalProvider::loadNativeAttributeTable()
       GDALRasterAttributeTableH hRat = GDALGetDefaultRAT( hBand );
       if ( hRat )
       {
-        std::unique_ptr<QgsRasterAttributeTable> rat;
-
         // Fields
-        QgsFields fields;
+        QgsFields ratFields;
         QStringList lowerNames;
         QList<QgsRasterAttributeTable::FieldUsage> usages;
-        for ( int columnNumber = 0; GDALRATGetColumnCount( hRat ); ++columnNumber )
+        for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
           QgsRasterAttributeTable::FieldUsage usage { static_cast<QgsRasterAttributeTable::FieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
           QVariant::Type type;
@@ -3111,11 +3109,11 @@ bool QgsGdalProvider::loadNativeAttributeTable()
           }
           const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };
           lowerNames.append( name.toLower() );
-          fields.append( QgsField( name, type ) );
+          ratFields.append( QgsField( name, type ) );
           usages.append( usage );
         }
 
-        QStringList cNames { fields.names( ) };
+        QStringList cNames { ratFields.names( ) };
         QStringList lNames;
 
         // Try to identify fields in case of RAT with wrong usages
@@ -3161,9 +3159,7 @@ bool QgsGdalProvider::loadNativeAttributeTable()
                 break;
               }
             }
-
           }
-
         }
 
         if ( ! usages.contains( QgsRasterAttributeTable::FieldUsage::PixelCount ) )
@@ -3174,46 +3170,49 @@ bool QgsGdalProvider::loadNativeAttributeTable()
           }
         }
 
-        for ( int fieldIdx = 0; fieldIdx < fields.count(); ++fieldIdx )
+        std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+
+        for ( const auto &field : std::as_const( ratFields ) )
         {
-          const auto field { fields.at( fieldIdx ) };
-          rat->appendField( field.name(), usages[ fieldIdx ], field.type() );
+          rat->appendField( field.name(), usages[ lowerNames.indexOf( field.name().toLower() ) ], field.type() );
         }
 
-        // Data
-        for ( int rowNumber = 0; rowNumber <= GDALRATGetRowCount( hRat ); ++rowNumber )
+        for ( int rowIdx = 0; rowIdx < GDALRATGetRowCount( hRat ); ++rowIdx )
         {
-          QVariantList data;
-          for ( int columnNumber = 0; GDALRATGetColumnCount( hRat ); ++columnNumber )
+          QVariantList rowData;
+          const auto cFields { rat->fields() };
+          int colIdx { 0 };
+          for ( const auto &field : std::as_const( cFields ) )
           {
-            switch ( static_cast<int>( usages[ columnNumber ] ) )
+            switch ( field.type )
             {
-              case GFT_Integer:
+              case QVariant::Int:
+              case QVariant::UInt:
+              case QVariant::LongLong:
+              case QVariant::ULongLong:
               {
-                data.append( GDALRATGetValueAsInt( hRat, rowNumber, columnNumber ) );
+                rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, colIdx ) );
                 break;
               }
-              case GFT_Real:
+              case QVariant::Double:
               {
-                data.append( GDALRATGetValueAsDouble( hRat, rowNumber, columnNumber ) );
+                rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, colIdx ) );
                 break;
               }
-              case GFT_String:
-              {
-                data.append( GDALRATGetValueAsString( hRat, rowNumber, columnNumber ) );
-                break;
-              }
+              default:
+                rowData.push_back( GDALRATGetValueAsString( hRat, rowIdx, colIdx ) );
             }
+            colIdx++;
           }
-          rat->insertRow( data );
+          rat->appendRow( rowData );
         }
 
-        if ( rat->isValid( ) )
+        if ( rat->isValid() )
         {
-          rat->setIsDirty( false );
-          setAttributeTable( bandNumber, rat.release() );
           hasAtLeastOneValidRat = true;
+          setAttributeTable( bandNumber, rat.release() );
         }
+
       }
     }
   }
@@ -3223,17 +3222,24 @@ bool QgsGdalProvider::loadNativeAttributeTable()
 
 bool QgsGdalProvider::saveNativeAttributeTable()
 {
+  bool success { false };
   for ( int band = 1; band <= bandCount(); band++ )
   {
-    const QgsRasterAttributeTable *rat { attributeTable( band ) };
-    if ( rat->isValid() && rat->isDirty() )
+    QgsRasterAttributeTable *rat { attributeTable( band ) };
+    if ( rat && rat->isValid() && rat->isDirty() )
     {
-
       GDALRasterBandH hBand { GDALGetRasterBand( mGdalBaseDataset, band ) };
-      GDALRasterAttributeTableH hRat = GDALGetDefaultRAT( hBand );
-      GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) );
+      GDALRasterAttributeTableH hRat = GDALCreateRasterAttributeTable( );
+      if ( GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) ) != CE_None )
+      {
+        GDALDestroyRasterAttributeTable( hRat );
+        return false;
+      }
       const auto cFields { rat->fields() };
-      for ( const auto &field : cFields )
+      QMap<int, GDALRATFieldType> typeMap;
+
+      int colIdx { 0 };
+      for ( const auto &field : std::as_const( cFields ) )
       {
         GDALRATFieldType fType { GFT_String };
         switch ( field.type )
@@ -3254,11 +3260,51 @@ bool QgsGdalProvider::saveNativeAttributeTable()
           default:
             fType = GFT_String;
         }
-        GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) );
+        if ( GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) ) != CE_None )
+        {
+          GDALDestroyRasterAttributeTable( hRat );
+          return false;
+        }
+        typeMap[ colIdx ] = fType;
+        colIdx++;
       }
+
+      // Save data
+      const QList<QVariantList> data { rat->data() };
+      int rowIdx { 0 };
+      for ( const auto &row : std::as_const( data ) )
+      {
+        for ( int colIdx = 0; colIdx < row.size(); colIdx++ )
+        {
+          switch ( typeMap[ colIdx ] )
+          {
+            case GFT_Real:
+              GDALRATSetValueAsDouble( hRat, rowIdx, colIdx, row[ colIdx ].toDouble( ) );
+              break;
+            case GFT_Integer:
+              GDALRATSetValueAsInt( hRat, rowIdx, colIdx, row[ colIdx ].toInt( ) );
+              break;
+            default:
+              GDALRATSetValueAsString( hRat, rowIdx, colIdx, row[ colIdx ].toString().toStdString().c_str() );
+          }
+        }
+        rowIdx++;
+      }
+
+      if ( GDALSetDefaultRAT( hBand, hRat ) != CE_None )
+      {
+        GDALDestroyRasterAttributeTable( hRat );
+        return false;
+      }
+
+      rat->setIsDirty( false );
+      GDALFlushCache( mGdalBaseDataset );
+      success = true;
+
     }
+
   }
-  return true;
+  return success;
 }
 
 

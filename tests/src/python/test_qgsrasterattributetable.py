@@ -23,7 +23,7 @@ import numpy as np
 
 import os
 
-from qgis.PyQt.QtCore import QTemporaryDir
+from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 
 
 from qgis.core import (Qgis,
@@ -44,12 +44,12 @@ start_app()
 class TestQgsRasterAttributeTable(unittest.TestCase):
 
     def setUp(self):
-        self.iface = get_iface()
 
-    def createTestRaster(self, path):
+        self.iface = get_iface()
+        self.temp_dir = QTemporaryDir()
+        self.temp_path = self.temp_dir.path()
 
         # Create a 2x2 int raster
-        dest = path
 
         #  Initialize the Image Size
         image_size = (2, 2)
@@ -83,8 +83,9 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         geotransform = (xmin, xres, 0, ymax, 0, -yres)
 
         # create the 2-band raster file
+        self.uri_2x2_2_BANDS_INT16 = os.path.join(self.temp_path, '2x2_2_BANDS_INT16.tif')
         dst_ds = gdal.GetDriverByName('GTiff').Create(
-            os.path.join(dest, '2x2_2_BANDS_INT16.tif'), ny, nx, 2, gdal.GDT_Int16)
+            self.uri_2x2_2_BANDS_INT16, ny, nx, 2, gdal.GDT_Int16)
 
         dst_ds.SetGeoTransform(geotransform)    # specify coords
         srs = osr.SpatialReference()            # establish encoding
@@ -95,50 +96,6 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
-
-        # Create RAT
-        rat = QgsRasterAttributeTable()
-        rat.appendField(QgsRasterAttributeTable.Field('Value', gdal.GFU_MinMax, gdal.GFT_Integer))
-        rat.appendField(QgsRasterAttributeTable.Field('Count', gdal.GFU_PixelCount, gdal.GFT_Integer))
-        rat.appendField(QgsRasterAttributeTable.Field('Class', gdal.GFU_Name, gdal.GFT_String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class2', gdal.GFU_Name, gdal.GFT_String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', gdal.GFU_Generic, gdal.GFT_String))
-        rat.appendField(QgsRasterAttributeTable.Field('Red', gdal.GFU_Red, gdal.GFT_Integer))
-        rat.appendField(QgsRasterAttributeTable.Field('Green', gdal.GFU_Green, gdal.GFT_Integer))
-        rat.appendField(QgsRasterAttributeTable.Field('Blue', gdal.GFU_Blue, gdal.GFT_Integer))
-
-        data = {
-            'Value': [0, 2, 4],
-            'Count': [1, 1, 2],
-            'Class': ['zero', 'one', 'two'],
-            'Class2': ['zero2', 'one2', 'two2'],
-            'Class3': ['zero3', 'one3', 'two3'],
-            'Red': [0, 100, 200],
-            'Green': [10, 20, 30],
-            'Blue': [100, 0, 50],
-        }
-
-        for row in data:
-            rat.appendRow(row)
-
-        assert rat.saveToFile(os.path.join(
-            dest, '2x2_2_BANDS_INT16.tif.aux.xml')), 'Error saving RAT for band 1'
-
-        # Band 2
-        data = {
-            'Value': [1, 3, 5],
-            'Count': [1, 1, 2],
-            'Class': ['one', 'three', 'five'],
-            'Class2': ['one2', 'three2', 'five2'],
-            'Class3': ['one3', 'three3', 'five3'],
-            'Red': [100, 200, 50],
-            'Green': [20, 10, 40],
-            'Blue': [10, 20, 250],
-        }
-
-        rat = RAT(data, False, fields, os.path.join(
-            dest, '2x2_2_BANDS_INT16.tif.aux.xml'))
-        assert rat.save(2), 'Error saving RAT for band 2'
 
         # Create a 2x2 single band float raster
 
@@ -153,10 +110,9 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         r_pixels[1, 0] = 3.456E12
         r_pixels[1, 1] = 4.567E23
 
-        # set geotransform
-        # create the 1-band raster file
+        self.uri_2x2_1_BAND_FLOAT = os.path.join(self.temp_path, '2x2_1_BAND_FLOAT.tif')
         dst_ds = gdal.GetDriverByName('GTiff').Create(
-            os.path.join(dest, '2x2_1_BAND_FLOAT.tif'), ny, nx, 1, gdal.GDT_Float32)
+            self.uri_2x2_1_BAND_FLOAT, ny, nx, 1, gdal.GDT_Float32)
 
         dst_ds.SetGeoTransform(geotransform)    # specify coords
         srs = osr.SpatialReference()            # establish encoding
@@ -167,45 +123,98 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
 
+    def testCreateRat(self):
+
         # Create RAT
-        fields = []
-        rat.appendField(QgsRasterAttributeTable.Field('Value Min', gdal.GFU_Min, gdal.GFT_Real))
-        rat.appendField(QgsRasterAttributeTable.Field('Value Max', gdal.GFU_Max, gdal.GFT_Real))
-        rat.appendField(QgsRasterAttributeTable.Field('Class', gdal.GFU_Name, gdal.GFT_String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class2', gdal.GFU_Name, gdal.GFT_String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', gdal.GFU_Generic, gdal.GFT_String))
-        rat.appendField(QgsRasterAttributeTable.Field('Red', gdal.GFU_Red, gdal.GFT_Integer))
-        rat.appendField(QgsRasterAttributeTable.Field('Green', gdal.GFU_Green, gdal.GFT_Integer))
-        rat.appendField(QgsRasterAttributeTable.Field('Blue', gdal.GFU_Blue, gdal.GFT_Integer))
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('Value', QgsRasterAttributeTable.FieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
 
-        fields = {field.name: field for field in fields}
+        data_rows = [
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50],
+        ]
 
-        data = {
-            'Value Min': [-1E25, 3E12, 1E20],
-            'Value Max': [3E12, 1E20, 5E25],
-            'Count': [1, 1, 2],
-            'Class': ['zero', 'one', 'two'],
-            'Class2': ['zero2', 'one2', 'zero2'],  # for classify test!
-            'Class3': ['zero3', 'one3', 'two3'],
-            'Red': [0, 100, 200],
-            'Green': [10, 20, 30],
-            'Blue': [100, 0, 50],
-        }
+        for row in data_rows:
+            rat.appendRow(row)
 
-        rat = RAT(data, False, fields, os.path.join(
-            dest, '2x2_1_BAND_FLOAT.tif.aux.xml'))
-        assert rat.save(1), 'Error saving RAT for band 1'
+        raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, rat)
+        d = raster.dataProvider()
+        self.assertTrue(d.saveNativeAttributeTable())
 
-    def testEmbeddedRAT(self):
+        # Check written data
+        raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
+        self.assertTrue(raster.isValid())
+        d = raster.dataProvider()
+        self.assertTrue(d.loadNativeAttributeTable())
+        self.assertIsNone(d.attributeTable(2))
 
-        temp_dir = QTemporaryDir()
-        temp_path = temp_dir.path()
-        self.createTestRaster(temp_path)
+        rat = d.attributeTable(1)
+        rat.isValid()
+        rat.fields()
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue'])
+        self.assertEqual(rat.data(), [
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50]])
 
-        raster_layer = QgsRasterLayer(os.path.join(temp_path, '2x2_1_BAND_FLOAT.tif'))
-        self.assertTrue(raster_layer.isValid())
-        from IPython import embed
-        embed(using=False)
+        # Band 2
+        data_rows = [
+            [1, 1, 'one', 'one2', 'one3', 100, 20, 10],
+            [3, 1, 'three', 'three2', 'tree3', 200, 10, 20],
+            [3, 1, 'five', 'five2', 'five3', 50, 40, 250],
+        ]
+
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('Value', QgsRasterAttributeTable.FieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(2, rat)
+        d = raster.dataProvider()
+        self.assertTrue(d.saveNativeAttributeTable())
+
+        # Check written data
+        raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
+        self.assertTrue(raster.isValid())
+        d = raster.dataProvider()
+        self.assertTrue(d.loadNativeAttributeTable())
+        rat = d.attributeTable(1)
+        rat.isValid()
+        rat.fields()
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue'])
+        self.assertEqual(rat.data(), [
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50]])
+
+        rat = d.attributeTable(2)
+        rat.isValid()
+        rat.fields()
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue'])
+        self.assertEqual(rat.data(), [
+            [1, 1, 'one', 'one2', 'one3', 100, 20, 10],
+            [3, 1, 'three', 'three2', 'tree3', 200, 10, 20],
+            [3, 1, 'five', 'five2', 'five3', 50, 40, 250]])
 
 
 if __name__ == '__main__':
