@@ -647,17 +647,6 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     }
   }
 
-  const bool myAnomalyMatchFlag = isKnownAnomaly( mDiffImageFile );
-  if ( myAnomalyMatchFlag )
-  {
-    mReport += "<tr><td colspan=3>"
-               "Difference image matched a known anomaly - passing test! "
-               "</td></tr>";
-    mResult = true;
-    performPostTestActions( flags );
-    return mResult;
-  }
-
   mReport += QLatin1String( "<tr><td colspan=3></td></tr>" );
   emitDashMessage( QStringLiteral( "Image mismatch" ), QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
                    " If you feel the difference image should be considered an anomaly "
