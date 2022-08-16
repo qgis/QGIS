@@ -699,8 +699,13 @@ Returns maximum oversampling factor for zoomed-out operations.
 
 
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+%Docstring
+Returns the (possibly NULL) attribute table for the specified ``bandNumber``.
 
-    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable );
+.. versionadded:: 3.30
+%End
+
+    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable /Transfer/ );
 %Docstring
 Set the attribute table to ``attributeTable`` for the specified ``bandNumber``,
 if the ``attributeTable`` is NULL any existing attribute table for the specified
@@ -714,6 +719,12 @@ band will be removed.
 %End
 
     void removeAttributeTable( int bandNumber );
+%Docstring
+Remove the attribute table for the specified ``bandNumber``.
+If the attribute table does not exist this method does nothing.
+
+.. versionadded:: 3.30
+%End
 
     bool loadFileBasedAttributeTable( const QString &path );
 %Docstring
@@ -726,10 +737,10 @@ Loads the filesystem-based attribute table.
 
     virtual bool saveNativeAttributeTable( );
 %Docstring
-Saves the embedded attribute table.
+Saves the native attribute table.
 The default implementation does nothing and returns ``False``.
 Data providers that have NativeRasterAttributeTable
-provider capability will try to save the embedded attribute table.
+provider capability will try to save the native attribute table.
 
 :return: ``True`` on success
 
@@ -738,10 +749,10 @@ provider capability will try to save the embedded attribute table.
 
     virtual bool loadNativeAttributeTable( );
 %Docstring
-Saves the embedded attribute table.
+Saves the native attribute table.
 The default implementation does nothing and returns ``False``.
-Data providers that have EmbeddedRasterAttributeTable
-provider capability will try to save the embedded attribute table.
+Data providers that have NativeRasterAttributeTable
+provider capability will try to save the native attribute table.
 
 :return: ``True`` on success
 

@@ -66,6 +66,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     struct Field
     {
+      Field( const QString &name, const FieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
       QString name;
       FieldUsage usage;
       QVariant::Type type;
@@ -97,11 +98,13 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     QgsRasterAttributeTable::Origin origin() const;
 
+    const QList<QList<QVariant>> &data() const;
+
   private:
 
     RatType mType;
     QList<Field> mFields;
-    QVariantList mData;
+    QList<QVariantList> mData;
     bool mIsDirty;
     Origin mOrigin;
 

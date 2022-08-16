@@ -72,6 +72,7 @@ the Free Software Foundation; either version 2 of the License, or     *
 
     struct Field
     {
+      Field( const QString &name, const FieldUsage &usage, const QVariant::Type type );
       QString name;
       FieldUsage usage;
       QVariant::Type type;
@@ -102,6 +103,8 @@ the Free Software Foundation; either version 2 of the License, or     *
     bool loadFromFile( const QString &path );
 
     QgsRasterAttributeTable::Origin origin() const;
+
+    const QList<QList<QVariant>> &data() const;
 
 };
 

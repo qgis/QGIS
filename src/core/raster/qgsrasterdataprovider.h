@@ -742,7 +742,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     /**
-     *
+     * Returns the (possibly NULL) attribute table for the specified \a bandNumber.
+     * \since QGIS 3.30
      */
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 
@@ -753,8 +754,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note Ownership of the attribute table is transferred to the provider.
      * \since QGIS 3.30
      */
-    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable );
+    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable SIP_TRANSFER );
 
+    /**
+     * Remove the attribute table for the specified \a bandNumber.
+     * If the attribute table does not exist this method does nothing.
+     * \since QGIS 3.30
+     */
     void removeAttributeTable( int bandNumber );
 
     /**
@@ -765,20 +771,20 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool loadFileBasedAttributeTable( const QString &path );
 
     /**
-     * Saves the embedded attribute table.
+     * Saves the native attribute table.
      * The default implementation does nothing and returns FALSE.
      * Data providers that have NativeRasterAttributeTable
-     * provider capability will try to save the embedded attribute table.
+     * provider capability will try to save the native attribute table.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
     virtual bool saveNativeAttributeTable( );
 
     /**
-     * Saves the embedded attribute table.
+     * Saves the native attribute table.
      * The default implementation does nothing and returns FALSE.
-     * Data providers that have EmbeddedRasterAttributeTable
-     * provider capability will try to save the embedded attribute table.
+     * Data providers that have NativeRasterAttributeTable
+     * provider capability will try to save the native attribute table.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
