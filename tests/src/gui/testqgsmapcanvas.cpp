@@ -374,26 +374,26 @@ void TestQgsMapCanvas::testZoomByWheel()
   mCanvas->setWheelFactor( 2 );
 
   //test zoom out
-  QWheelEvent e( QPoint( 0, 0 ), -QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::NoModifier );
-  mCanvas->wheelEvent( &e );
+  std::unique_ptr< QWheelEvent > e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth * 2.0, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight * 2.0, 0.1 );
 
   //test zoom in
-  e = QWheelEvent( QPoint( 0, 0 ), QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::NoModifier );
-  mCanvas->wheelEvent( &e );
+  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 
   // test zoom out with ctrl
-  e = QWheelEvent( QPoint( 0, 0 ), -QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::ControlModifier );
-  mCanvas->wheelEvent( &e );
+  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), 1.05 * originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), 1.05 * originalHeight, 0.1 );
 
   //test zoom in with ctrl
-  e = QWheelEvent( QPoint( 0, 0 ), QWheelEvent::DefaultDeltasPerStep, Qt::NoButton, Qt::ControlModifier );
-  mCanvas->wheelEvent( &e );
+  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
+  mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 }
