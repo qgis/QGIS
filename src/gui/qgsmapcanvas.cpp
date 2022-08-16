@@ -82,8 +82,6 @@ email                : sherman at mrcc.com
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayertemporalproperties.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsprojectionselectiondialog.h"
@@ -3332,23 +3330,20 @@ void QgsMapCanvas::mapToolDestroyed()
 
 bool QgsMapCanvas::event( QEvent *e )
 {
-  if ( !QTouchDevice::devices().empty() )
+  if ( e->type() == QEvent::Gesture )
   {
-    if ( e->type() == QEvent::Gesture )
+    if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
     {
-      if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
-      {
-        QPointF pos = tapAndHoldGesture->position();
-        pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
-        QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
-        emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
-      }
+      QPointF pos = tapAndHoldGesture->position();
+      pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
+      QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+      emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
+    }
 
-      // call handler of current map tool
-      if ( mMapTool )
-      {
-        return mMapTool->gestureEvent( static_cast<QGestureEvent *>( e ) );
-      }
+    // call handler of current map tool
+    if ( mMapTool )
+    {
+      return mMapTool->gestureEvent( static_cast<QGestureEvent *>( e ) );
     }
   }
 
