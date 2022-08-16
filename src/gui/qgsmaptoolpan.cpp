@@ -34,7 +34,8 @@ QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
 
 QgsMapToolPan::~QgsMapToolPan()
 {
-  mCanvas->ungrabGesture( Qt::PinchGesture );
+  if ( mCanvas )
+    mCanvas->ungrabGesture( Qt::PinchGesture );
 }
 
 void QgsMapToolPan::activate()

@@ -37,12 +37,17 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   const QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   mLayers << new QgsVectorLayer( layerPath );
   setLayers( mLayers );
-  setMapTool( new QgsMapToolPan( this ) );
+  mPanTool = new QgsMapToolPan( this );
+  setMapTool( mPanTool );
   setPreviewJobsEnabled( true );
 }
 
 QgsCoordinateBoundsPreviewMapWidget::~QgsCoordinateBoundsPreviewMapWidget()
 {
+  setMapTool( nullptr );
+  delete mPanTool;
+  mPanTool = nullptr;
+
   qDeleteAll( mLayers );
   delete mPreviewBand;
   delete mCanvasPreviewBand;
