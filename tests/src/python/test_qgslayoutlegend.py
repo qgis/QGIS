@@ -758,6 +758,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         map.zoomToExtent(point_layer.extent())
 
         legend = QgsLayoutItemLegend(layout)
+        legend.setStyleFont(QgsLegendStyle.SymbolLabel, QgsFontUtils.getStandardTestFont('Bold', 16))
         legend.setReferencePoint(QgsLayoutItem.LowerLeft)
         legend.setResizeToContents(True)
         legend.setTitle("Legend")
@@ -776,6 +777,8 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         result, message = checker.testLayout()
         TestQgsLayoutItemLegend.report += checker.report()
         self.assertTrue(result, message)
+
+        QgsProject.instance().clear()
 
 
 if __name__ == '__main__':
