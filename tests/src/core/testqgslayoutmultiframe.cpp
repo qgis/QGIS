@@ -44,10 +44,14 @@ class TestQgsLayoutMultiFrame : public QgsTest
     void layoutMethods();
     void addFrame(); //test creating new frame inherits all properties of existing frame
     void displayName();
+#ifdef WITH_QTWEBKIT
     void frameIsEmpty(); //test if frame is empty works
     void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
+#endif
     void undoRedo(); //test that combinations of frame/multiframe undo/redo don't crash
+#ifdef WITH_QTWEBKIT
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
+#endif
     void undoRedoRemovedFrame2();
     void registry();
     void deleteFrame();
@@ -232,6 +236,7 @@ void TestQgsLayoutMultiFrame::displayName()
   QCOMPARE( frame1->displayName(), QStringLiteral( "my frame" ) );
 }
 
+#ifdef WITH_QTWEBKIT
 void TestQgsLayoutMultiFrame::frameIsEmpty()
 {
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
@@ -323,6 +328,7 @@ void TestQgsLayoutMultiFrame::addRemovePage()
   mLayout->removeMultiFrame( htmlItem );
   delete htmlItem;
 }
+#endif
 
 void TestQgsLayoutMultiFrame::undoRedo()
 {
@@ -400,7 +406,7 @@ void TestQgsLayoutMultiFrame::undoRedo()
   delete htmlItem;
 }
 
-
+#ifdef WITH_QTWEBKIT
 void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 {
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
@@ -492,6 +498,7 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame2()
   htmlItem->addFrame( frame1 );
 
 }
+#endif
 
 void TestQgsLayoutMultiFrame::registry()
 {
