@@ -490,15 +490,15 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
   delete htmlItem;
 }
 
+#endif
+
 void TestQgsLayoutMultiFrame::undoRedoRemovedFrame2()
 {
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
   QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, htmlItem );
   frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
   htmlItem->addFrame( frame1 );
-
 }
-#endif
 
 void TestQgsLayoutMultiFrame::registry()
 {
