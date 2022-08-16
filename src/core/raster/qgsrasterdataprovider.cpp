@@ -674,18 +674,23 @@ void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
   }
 }
 
-bool QgsRasterDataProvider::loadNativeAttributeTable()
+bool QgsRasterDataProvider::writeFileBasedAttributeTable( const QString &path )
 {
   return false;
 }
 
-bool QgsRasterDataProvider::loadFileBasedAttributeTable( const QString &path )
+bool QgsRasterDataProvider::readNativeAttributeTable()
+{
+  return false;
+}
+
+bool QgsRasterDataProvider::readFileBasedAttributeTable( const QString &path )
 {
   Q_UNUSED( path );
   return false;
 }
 
-bool QgsRasterDataProvider::saveNativeAttributeTable()
+bool QgsRasterDataProvider::writeNativeAttributeTable()
 {
   return false;
 }

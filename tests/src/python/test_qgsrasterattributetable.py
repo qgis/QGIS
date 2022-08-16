@@ -123,7 +123,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
 
-    def testCreateRat(self):
+    def testCreateNativeRat(self):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
@@ -149,13 +149,13 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(raster.isValid())
         raster.dataProvider().setAttributeTable(1, rat)
         d = raster.dataProvider()
-        self.assertTrue(d.saveNativeAttributeTable())
+        self.assertTrue(d.writeNativeAttributeTable())
 
         # Check written data
         raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
         self.assertTrue(raster.isValid())
         d = raster.dataProvider()
-        self.assertTrue(d.loadNativeAttributeTable())
+        self.assertTrue(d.readNativeAttributeTable())
         self.assertIsNone(d.attributeTable(2))
 
         rat = d.attributeTable(1)
@@ -191,13 +191,13 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(raster.isValid())
         raster.dataProvider().setAttributeTable(2, rat)
         d = raster.dataProvider()
-        self.assertTrue(d.saveNativeAttributeTable())
+        self.assertTrue(d.writeNativeAttributeTable())
 
         # Check written data
         raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
         self.assertTrue(raster.isValid())
         d = raster.dataProvider()
-        self.assertTrue(d.loadNativeAttributeTable())
+        self.assertTrue(d.readNativeAttributeTable())
         rat = d.attributeTable(1)
         rat.isValid()
         rat.fields()
