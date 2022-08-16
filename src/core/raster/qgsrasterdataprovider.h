@@ -764,31 +764,38 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void removeAttributeTable( int bandNumber );
 
     /**
-     * Loads the filesystem-based attribute table.
+     * Writes the filesystem-based attribute table to \a path.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    bool loadFileBasedAttributeTable( const QString &path );
+    bool writeFileBasedAttributeTable( const QString &path );
 
     /**
-     * Saves the native attribute table.
+     * Loads the filesystem-based attribute table from \a path.
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    bool readFileBasedAttributeTable( const QString &path );
+
+    /**
+     * Writes the native attribute table.
      * The default implementation does nothing and returns FALSE.
      * Data providers that have NativeRasterAttributeTable
      * provider capability will try to save the native attribute table.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    virtual bool saveNativeAttributeTable( );
+    virtual bool writeNativeAttributeTable( );
 
     /**
-     * Saves the native attribute table.
+     * Reads the native attribute table.
      * The default implementation does nothing and returns FALSE.
      * Data providers that have NativeRasterAttributeTable
-     * provider capability will try to save the native attribute table.
+     * provider capability will try to read the native attribute table.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    virtual bool loadNativeAttributeTable( );
+    virtual bool readNativeAttributeTable( );
 
 
   signals:

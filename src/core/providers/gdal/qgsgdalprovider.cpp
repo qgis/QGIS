@@ -3067,7 +3067,7 @@ void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo
   }
 }
 
-bool QgsGdalProvider::loadNativeAttributeTable()
+bool QgsGdalProvider::readNativeAttributeTable()
 {
   bool hasAtLeastOneValidRat { false };
 
@@ -3220,7 +3220,7 @@ bool QgsGdalProvider::loadNativeAttributeTable()
   return hasAtLeastOneValidRat;
 }
 
-bool QgsGdalProvider::saveNativeAttributeTable()
+bool QgsGdalProvider::writeNativeAttributeTable()
 {
   bool success { false };
   for ( int band = 1; band <= bandCount(); band++ )

@@ -150,11 +150,11 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
       const QgsDataSourceUri dsUri { uri };
       if ( options.loadDefaultRat )
       {
-        mDataProvider->loadNativeAttributeTable();
+        mDataProvider->readNativeAttributeTable();
       }
       else if ( ! options.fileBasedRat.isEmpty() )
       {
-        mDataProvider->loadFileBasedAttributeTable( options.fileBasedRat );
+        mDataProvider->readFileBasedAttributeTable( options.fileBasedRat );
       }
     }
   }
