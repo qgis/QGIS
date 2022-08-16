@@ -15,6 +15,7 @@ RUN dnf -y --refresh install \
     git \
     gdal-devel \
     geos-devel \
+    gpsbabel \
     grass \
     grass-devel \
     gsl-devel \
