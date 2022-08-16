@@ -6,27 +6,12 @@ test_core_dxfexport
 test_core_expression
 test_core_field
 test_core_geometry
-test_core_labelingengine
-test_core_layout
-test_core_layouthtml
-test_core_layoutlabel
-test_core_layoutmanualtable
-test_core_layoutmultiframe
 test_core_layoutpicture
-test_core_layoutscalebar
-test_core_layouttable
-test_core_legendrenderer
 test_core_maprendererjob
-test_core_maprotation
-test_core_networkaccessmanager
 test_core_ogcutils
-test_core_pallabeling
-test_core_pointpatternfillsymbol
-test_core_rasterlayer
 test_core_tiledownloadmanager
 test_core_vectortilelayer
 test_core_geometry_pointxy
-test_analysis_processingalgspt2
 
 # block list
 PyQgsPalLabelingServer
