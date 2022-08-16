@@ -49,8 +49,10 @@ class TestQgsLayoutLabel : public QgsTest
     void pageSizeEvaluation();
     void marginMethods(); //tests getting/setting margins
     void render();
+#ifdef WITH_QTWEBKIT
     void renderAsHtml();
     void renderAsHtmlRelative();
+#endif
     void labelRotation();
 
   private:
@@ -281,6 +283,7 @@ void TestQgsLayoutLabel::render()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
+#ifdef WITH_QTWEBKIT
 void TestQgsLayoutLabel::renderAsHtml()
 {
   QgsLayout l( QgsProject::instance() );
@@ -337,6 +340,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
   checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
+#endif
 
 void TestQgsLayoutLabel::labelRotation()
 {
