@@ -24,6 +24,8 @@
 #include <QWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include <QMultiMap>
+
 #include "qgis_gui.h"
 
 
@@ -544,13 +546,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * Dependency map for default values. Attribute index -> widget wrapper.
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
-    QMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
+    QMultiMap<int, QgsWidgetWrapper *> mDefaultValueDependencies;
 
     /**
      * Dependency map for values from virtual fields. Attribute index -> widget wrapper.
      * Attribute indexes will be added multiple times if more than one widget depends on them.
      */
-    QMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
+    QMultiMap<int, QgsWidgetWrapper *> mVirtualFieldsDependencies;
 
     /**
      * Dependency list for values depending on related layers.
