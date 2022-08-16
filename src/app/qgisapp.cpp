@@ -11361,7 +11361,7 @@ void QgisApp::removeLayer()
   {
     if ( hiddenLayerNames.count( ) > 10 )
     {
-      const int layerCount { hiddenLayerNames.count( ) };
+      const int layerCount = hiddenLayerNames.count();
       hiddenLayerNames = hiddenLayerNames.mid( 0, 10 );
       hiddenLayerNames.push_back( tr( "(%n more hidden layer(s))",  "number of hidden layers not shown", layerCount - 10 ) );
     }
