@@ -528,6 +528,7 @@ set(QGIS_CORE_SRCS
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
+  qgsunsetattributevalue.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
   qgsarchive.cpp
@@ -549,6 +550,7 @@ set(QGIS_CORE_SRCS
   browser/qgsfilebaseddataitemprovider.cpp
   browser/qgslayeritem.cpp
   browser/qgsprojectitem.cpp
+  browser/qgsrelationshipsitem.cpp
   browser/qgszipitem.cpp
 
   dxf/qgsdxfexport.cpp
@@ -1200,6 +1202,7 @@ set(QGIS_CORE_HDRS
   qgstransactiongroup.h
   qgstranslationcontext.h
   qgsunittypes.h
+  qgsunsetattributevalue.h
   qgsuserprofile.h
   qgsuserprofilemanager.h
   qgsvariantutils.h
@@ -1264,6 +1267,7 @@ set(QGIS_CORE_HDRS
   browser/qgsfilebaseddataitemprovider.h
   browser/qgslayeritem.h
   browser/qgsprojectitem.h
+  browser/qgsrelationshipsitem.h
   browser/qgszipitem.h
 
   callouts/qgscallout.h

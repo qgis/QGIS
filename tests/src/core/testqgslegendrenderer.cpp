@@ -151,12 +151,12 @@ class TestRasterRenderer : public QgsPalettedRasterRenderer
 
 };
 
-class TestQgsLegendRenderer : public QObject
+class TestQgsLegendRenderer : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLegendRenderer() = default;
+    TestQgsLegendRenderer() : QgsTest( QStringLiteral( "Legend Renderer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -220,7 +220,6 @@ class TestQgsLegendRenderer : public QObject
     QgsVectorLayer *mVL2 =  nullptr ; // polygon
     QgsVectorLayer *mVL3 =  nullptr ; // point
     QgsRasterLayer *mRL = nullptr;
-    QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
 };
 
@@ -229,21 +228,10 @@ void TestQgsLegendRenderer::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport += QLatin1String( "<h1>Legend Renderer Tests</h1>\n" );
 }
 
 void TestQgsLegendRenderer::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 

@@ -18,7 +18,7 @@
 #include <QDialog>
 #include "qgis_app.h"
 #include "ui_qgsrelationmanageradddialogbase.h"
-#include "qgsrelation.h"
+#include "qgis.h"
 
 class QDialogButtonBox;
 class QComboBox;
@@ -33,22 +33,22 @@ class QgsFieldComboBox;
 class QgsMapLayerComboBox;
 
 /**
- * QgsRelationAddDlg allows configuring a new relation.
+ * QgsCreateRelationDialog allows configuring a new relation.
  * Multiple field pairs can be set.
  */
-class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationManagerAddDialogBase
+class APP_EXPORT QgsCreateRelationDialog : public QDialog, private Ui::QgsRelationManagerAddDialogBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsRelationAddDlg( QWidget *parent = nullptr );
+    explicit QgsCreateRelationDialog( QWidget *parent = nullptr );
 
-    QString referencingLayerId();
-    QString referencedLayerId();
-    QList< QPair< QString, QString > > references();
-    QString relationId();
-    QString relationName();
-    QgsRelation::RelationStrength relationStrength();
+    QString referencingLayerId() const;
+    QString referencedLayerId() const;
+    QList< QPair< QString, QString > > references() const;
+    QString relationId() const;
+    QString relationName() const;
+    Qgis::RelationshipStrength relationStrength() const;
 
   private slots:
     void addFieldsRow();

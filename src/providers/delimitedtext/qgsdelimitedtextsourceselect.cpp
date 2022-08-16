@@ -13,7 +13,6 @@
  ***************************************************************************/
 #include "qgsdelimitedtextsourceselect.h"
 
-#include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgssettings.h"
@@ -56,9 +55,15 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   bgGeomType->addButton( geomTypeWKT, swGeomType->indexOf( swpGeomWKT ) );
   bgGeomType->addButton( geomTypeNone, swGeomType->indexOf( swpGeomNone ) );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   connect( bgFileFormat, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swFileFormat, &QStackedWidget::setCurrentIndex );
   connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), swGeomType, &QStackedWidget::setCurrentIndex );
   connect( bgGeomType, static_cast < void ( QButtonGroup::* )( int ) > ( &QButtonGroup::buttonClicked ), this, &QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility );
+#else
+  connect( bgFileFormat, &QButtonGroup::idClicked, swFileFormat, &QStackedWidget::setCurrentIndex );
+  connect( bgGeomType, &QButtonGroup::idClicked, swGeomType, &QStackedWidget::setCurrentIndex );
+  connect( bgGeomType, &QButtonGroup::idClicked, this, &QgsDelimitedTextSourceSelect::updateCrsWidgetVisibility );
+#endif
 
   cmbEncoding->clear();
   cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings() );

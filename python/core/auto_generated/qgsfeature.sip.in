@@ -156,7 +156,9 @@ Copy constructor
 %End
 
 
+    bool operator==( const QgsFeature &other ) const;
 
+    bool operator!=( const QgsFeature &other ) const;
 
     virtual ~QgsFeature();
 
@@ -701,6 +703,32 @@ Alternatively, in Python it is possible to directly retrieve a field's value via
       {
         QVariant *v = new QVariant( sipCpp->attribute( a0 ) );
         sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      }
+    }
+%End
+
+
+
+    bool isUnsetValue( int fieldIdx ) const;
+%Docstring
+Returns ``True`` if the attribute at the specified index is an unset value.
+
+:raises KeyError: if the field is not found
+
+.. seealso:: :py:class:`QgsUnsetAttributeValue`
+
+.. versionadded:: 3.28
+%End
+%MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        sipRes = sipCpp->isUnsetValue( a0 );
       }
     }
 %End

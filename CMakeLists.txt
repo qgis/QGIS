@@ -446,7 +446,7 @@ if(WITH_CORE)
     set(QT_MIN_VERSION 6.0.0)
     set(QT_VERSION_BASE "Qt6")
   else()
-    set(QT_MIN_VERSION 5.12.0)
+    set(QT_MIN_VERSION 5.13.0)
     set(QT_VERSION_BASE "Qt5")
     set(HAS_KDE_QT5_PDF_TRANSFORM_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the PDF brush transform fix")
     set(HAS_KDE_QT5_SMALL_CAPS_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont::SmallCaps fix")
@@ -1040,6 +1040,16 @@ if (WITH_CORE)
       set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
     endif()
   endif()
+endif()
+
+####################################################
+# asan
+set (WITH_ASAN FALSE CACHE BOOL "Use AddressSanitizer")
+mark_as_advanced(WITH_ASAN)
+if(WITH_ASAN)
+  message(STATUS "Enabling AddressSanitizer")
+  add_compile_options(-fsanitize=address)
+  add_link_options(-fsanitize=address)
 endif()
 
 #############################################################

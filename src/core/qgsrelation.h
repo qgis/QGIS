@@ -21,16 +21,15 @@
 #include <QPair>
 
 #include "qgis_core.h"
-#include "qgsfields.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrelationcontext.h"
+#include "qgsattributes.h"
 
 #include "qgis_sip.h"
 
 class QgsFeatureIterator;
 class QgsFeature;
 class QgsFeatureRequest;
-class QgsAttributes;
 class QgsVectorLayer;
 class QgsRelationPrivate;
 class QgsPolymorphicRelation;
@@ -52,27 +51,6 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
   public:
-
-    /**
-     * Enum holding the relations type
-     */
-    enum RelationType
-    {
-      Normal, //!< A normal relation
-      Generated, //!< A generated relation is a child of a polymorphic relation
-    };
-    Q_ENUM( RelationType )
-
-    /**
-    * enum for the relation strength
-    * Association, Composition
-    */
-    enum RelationStrength
-    {
-      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
-      Composition  //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
-    };
-    Q_ENUM( RelationStrength )
 
 #ifndef SIP_RUN
 
@@ -162,7 +140,7 @@ class CORE_EXPORT QgsRelation
      * Set a strength for this relation
      * \since QGIS 3.0
      */
-    void setStrength( RelationStrength strength );
+    void setStrength( Qgis::RelationshipStrength strength );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
@@ -274,7 +252,7 @@ class CORE_EXPORT QgsRelation
      * \returns strength
      * \since QGIS 3.0
      */
-    RelationStrength strength() const;
+    Qgis::RelationshipStrength strength() const;
 
     /**
      * A (project-wide) unique id for this relation
@@ -417,7 +395,21 @@ class CORE_EXPORT QgsRelation
      * Returns the type of the relation
      * \since QGIS 3.18
      */
-    RelationType type() const;
+    Qgis::RelationshipType type() const;
+
+    /**
+     * Returns a user-friendly translated string representing a relationship \a cardinality.
+     *
+     * \since QGIS 3.28
+     */
+    static QString cardinalityToDisplayString( Qgis::RelationshipCardinality cardinality );
+
+    /**
+     * Returns a user-friendly translated string representing a relationship \a strength.
+     *
+     * \since QGIS 3.28
+     */
+    static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
 
   private:
 
@@ -428,6 +420,5 @@ class CORE_EXPORT QgsRelation
 
 // Register QgsRelation for usage with QVariant
 Q_DECLARE_METATYPE( QgsRelation )
-Q_DECLARE_METATYPE( QgsRelation::RelationStrength )
 
 #endif // QGSRELATION_H

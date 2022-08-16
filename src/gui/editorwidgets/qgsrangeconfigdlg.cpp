@@ -22,6 +22,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
 {
   setupUi( this );
   precisionSpinBox->setClearValue( 4 );
+  setPrecision( precisionSpinBox->value() );
 
   minimumSpinBox->setMinimum( std::numeric_limits<int>::lowest() );
   minimumSpinBox->setMaximum( std::numeric_limits<int>::max() );
@@ -106,6 +107,7 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
   connect( rangeWidget, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( allowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( suffixLineEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+  connect( precisionSpinBox, qOverload< int > ( &QSpinBox::valueChanged ), this, &QgsRangeConfigDlg::setPrecision );
 }
 
 QVariantMap QgsRangeConfigDlg::config()
@@ -163,4 +165,11 @@ void QgsRangeConfigDlg::rangeWidgetChanged( int index )
 {
   const QString style = rangeWidget->itemData( index ).toString();
   allowNullCheckBox->setEnabled( style == QLatin1String( "SpinBox" ) );
+}
+
+void QgsRangeConfigDlg::setPrecision( int precision )
+{
+  minimumDoubleSpinBox->setDecimals( precision );
+  maximumDoubleSpinBox->setDecimals( precision );
+  stepDoubleSpinBox->setDecimals( precision );
 }

@@ -60,7 +60,7 @@
  * \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
-class TestQgsGeometry : public QObject
+class TestQgsGeometry : public QgsTest
 {
     Q_OBJECT
 
@@ -229,12 +229,12 @@ class TestQgsGeometry : public QObject
     QPainter *mpPainter = nullptr;
     QPen mPen1;
     QPen mPen2;
-    QString mReport;
 
 };
 
 TestQgsGeometry::TestQgsGeometry()
-  : mpPolylineGeometryD( nullptr )
+  : QgsTest( QStringLiteral( "Geometry Tests" ) )
+  , mpPolylineGeometryD( nullptr )
   , mpPolygonGeometryA( nullptr )
   , mpPolygonGeometryB( nullptr )
   , mpPolygonGeometryC( nullptr )
@@ -249,10 +249,6 @@ void TestQgsGeometry::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  mReport += QLatin1String( "<h1>Geometry Tests</h1>\n" );
-  mReport += QLatin1String( "<p><font color=\"green\">Green = polygonA</font></p>\n" );
-  mReport += QLatin1String( "<p><font color=\"red\">Red = polygonB</font></p>\n" );
-  mReport += QLatin1String( "<p><font color=\"blue\">Blue = polygonC</font></p>\n" );
 }
 
 
@@ -260,18 +256,6 @@ void TestQgsGeometry::cleanupTestCase()
 {
   delete mpPainter;
   mpPainter = nullptr;
-
-  // Runs once after all tests are run
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -1758,10 +1742,8 @@ void TestQgsGeometry::exportToGeoJSON()
   QCOMPARE( obtained, geojson );
 }
 
-bool TestQgsGeometry::renderCheck( const QString &testName, const QString &comment, int mismatchCount )
+bool TestQgsGeometry::renderCheck( const QString &testName, const QString &, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
-  mReport += "<h3>" + comment + "</h3>\n";
   QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   mImage.save( myFileName, "PNG" );
@@ -2063,7 +2045,6 @@ void TestQgsGeometry::isSimple_data()
   QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT((1 1), (2 2))" ) << true;
   QTest::newRow( "must not contain the same point twice" ) << QStringLiteral( "MULTIPOINT((1 1), (1 1))" ) << false;
   QTest::newRow( "multiline string simple" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 1, 1 1))" ) << true;
-  QTest::newRow( "may be touching at endpoints" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 0, 1 0))" ) << true;
   QTest::newRow( "must not intersect each other" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 1), (0 1, 1 0))" ) << false;
 }
 

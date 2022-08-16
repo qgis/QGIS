@@ -110,6 +110,8 @@ set(QGIS_APP_SRCS
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
 
+  canvas/qgscanvasrefreshblocker.cpp
+
   decorations/qgsdecorationitem.cpp
   decorations/qgsdecorationtitle.cpp
   decorations/qgsdecorationtitledialog.cpp
@@ -198,6 +200,8 @@ set(QGIS_APP_SRCS
   labeling/qgsmaptoollabel.cpp
   labeling/qgsmaptoolmovelabel.cpp
   labeling/qgsmaptoolrotatelabel.cpp
+
+  layers/qgsapplayerhandling.cpp
 
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutdesignerdialog.cpp

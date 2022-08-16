@@ -35,15 +35,16 @@
  * \ingroup UnitTests
  * This is a unit test for the ogr provider
  */
-class TestQgsOgrProvider : public QObject
+class TestQgsOgrProvider : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsOgrProvider() : QgsTest( QStringLiteral( "OGR Provider Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
 
     void setupProxy();
     void decodeUri();
@@ -53,7 +54,6 @@ class TestQgsOgrProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
   signals:
 
   public slots:
@@ -69,21 +69,12 @@ void TestQgsOgrProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>OGR Provider Tests</h1>\n" );
 }
 
 //runs after all tests
 void TestQgsOgrProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsOgrProvider::setupProxy()

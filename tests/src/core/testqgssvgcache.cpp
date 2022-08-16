@@ -32,13 +32,14 @@
  * \ingroup UnitTests
  * This is a unit test for QgsSvgCache.
  */
-class TestQgsSvgCache : public QObject
+class TestQgsSvgCache : public QgsTest
 {
     Q_OBJECT
 
-  private:
+  public:
+    TestQgsSvgCache() : QgsTest( QStringLiteral( "QgsSvgCache Tests" ) ) {}
 
-    QString mReport;
+  private:
 
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
@@ -64,22 +65,11 @@ void TestQgsSvgCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mReport += "<h1>QgsSvgCache Tests</h1>\n";
 }
 
 void TestQgsSvgCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsSvgCache::fillCache()
@@ -338,12 +328,20 @@ void TestQgsSvgCache::dynamicSvg()
   // test rendering SVGs with manual aspect ratio
   QgsSvgCache cache;
   const QString dynamicImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
-  const QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+  const QString svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
   1.0, 0, false, {{"text1", "green?"}, {"text2", "supergreen"}, {"align",  "middle" }} );
-  const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
-  const QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
-                                 1.0, 0, false, {} );
-  QCOMPARE( svg, control_svg );
+  const QString controlImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
+  const QString controlSvg = cache.svgContent( controlImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                             1.0, 0, false, {} );
+  if ( controlSvg != svg )
+  {
+    QString reportString;
+    reportString.append( QStringLiteral( "<h3>Expected SVG content</h3><p><code>%1</code></p>" ).arg( controlSvg.toHtmlEscaped() ) );
+    reportString.append( QStringLiteral( "<h3>Actual SVG content</h3><p><code>%1</code></p>" ).arg( svg.toHtmlEscaped() ) );
+    appendToReport( QStringLiteral( "Dynamic SVG content" ), reportString );
+  }
+
+  QCOMPARE( svg, controlSvg );
 }
 
 void TestQgsSvgCache::aspectRatio()
@@ -383,7 +381,6 @@ bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mi
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

@@ -271,6 +271,7 @@
     </widget>
     <addaction name="mActionHelpContents"/>
     <addaction name="mActionHelpAPI"/>
+    <addaction name="mActionHelpPyQgisAPI"/>
     <addaction name="separator"/>
     <addaction name="mMenuPluginHelp"/>
     <addaction name="separator"/>
@@ -1942,7 +1943,12 @@ Shift+R to enable range selection.</string>
   </action>
   <action name="mActionHelpAPI">
    <property name="text">
-    <string>API Documentation</string>
+    <string>C++ API Documentation</string>
+   </property>
+  </action>
+  <action name="mActionHelpPyQgisAPI">
+   <property name="text">
+    <string>PyQGIS API Documentation</string>
    </property>
   </action>
   <action name="mActionQgisHomePage">

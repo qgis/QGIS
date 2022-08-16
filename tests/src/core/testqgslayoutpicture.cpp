@@ -16,19 +16,25 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitempicture.h"
 #include "qgsproject.h"
 #include "qgsproperty.h"
+#include "qgslayout.h"
+#include "qgsfontutils.h"
+
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
 #include <QPainter>
 
-class TestQgsLayoutPicture : public QObject
+class TestQgsLayoutPicture : public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsLayoutPicture() : QgsTest( QStringLiteral( "Layout Picture Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -69,7 +75,6 @@ class TestQgsLayoutPicture : public QObject
   private:
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemPicture *mPicture = nullptr;
-    QString mReport;
     QString mPngImage;
     QString mSvgImage;
     QString mSvgParamsImage;
@@ -81,6 +86,8 @@ void TestQgsLayoutPicture::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  QgsFontUtils::loadStandardTestFonts( {QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
@@ -95,7 +102,6 @@ void TestQgsLayoutPicture::initTestCase()
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   mPicture->setFrameEnabled( true );
 
-  mReport = QStringLiteral( "<h1>Layout Picture Tests</h1>\n" );
 }
 
 void TestQgsLayoutPicture::cleanupTestCase()
@@ -103,14 +109,6 @@ void TestQgsLayoutPicture::cleanupTestCase()
   delete mPicture;
   delete mLayout;
 
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

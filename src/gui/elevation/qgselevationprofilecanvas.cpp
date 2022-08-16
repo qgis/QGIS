@@ -35,10 +35,10 @@
 #include "qgsprofilesnapping.h"
 #include "qgsmaplayerelevationproperties.h"
 #include "qgsapplication.h"
+#include "qgsscreenhelper.h"
 
 #include <QWheelEvent>
 #include <QTimer>
-#include <QDesktopWidget>
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
@@ -323,6 +323,8 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
 QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   : QgsPlotCanvas( parent )
 {
+  mScreenHelper = new QgsScreenHelper( this );
+
   mPlotItem = new QgsElevationProfilePlotItem( this );
   mCrossHairsItem = new QgsElevationProfileCrossHairsItem( this, mPlotItem );
   mCrossHairsItem->setZValue( 100 );
@@ -568,14 +570,24 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
   QRectF viewportRect = mPlotItem->plotArea();
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
   if ( viewportRect.contains( event->pos() ) )
+#else
+  if ( viewportRect.contains( event->position() ) )
+#endif
   {
     //adjust view center
     const double oldCenterX = 0.5 * ( mPlotItem->xMaximum() + mPlotItem->xMinimum() );
     const double oldCenterY = 0.5 * ( mPlotItem->yMaximum() + mPlotItem->yMinimum() );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     const double eventPosX = ( event->pos().x() - viewportRect.left() ) / viewportRect.width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
     const double eventPosY = ( viewportRect.bottom() - event->pos().y() ) / viewportRect.height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
+#else
+    const double eventPosX = ( event->position().x() - viewportRect.left() ) / viewportRect.width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
+    const double eventPosY = ( viewportRect.bottom() - event->position().y() ) / viewportRect.height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
+#endif
 
     const double newCenterX = eventPosX + ( ( oldCenterX - eventPosX ) * scaleFactor );
     const double newCenterY = eventPosY + ( ( oldCenterY - eventPosY ) * scaleFactor );
@@ -671,7 +683,7 @@ void QgsElevationProfileCanvas::refresh()
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
-  generationContext.setDpi( QgsApplication::desktop()->logicalDpiX() );
+  generationContext.setDpi( mScreenHelper->screenDpi() );
   generationContext.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * ( mProfileCurve->length() ) / mPlotItem->plotArea().width() );
   generationContext.setMapUnitsPerDistancePixel( mProfileCurve->length() / mPlotItem->plotArea().width() );
   mCurrentJob->setContext( generationContext );
@@ -814,7 +826,7 @@ void QgsElevationProfileCanvas::refineResults()
   if ( mCurrentJob )
   {
     QgsProfileGenerationContext context;
-    context.setDpi( QgsApplication::desktop()->logicalDpiX() );
+    context.setDpi( mScreenHelper->screenDpi() );
     const double plotDistanceRange = mPlotItem->xMaximum() - mPlotItem->xMinimum();
     const double plotElevationRange = mPlotItem->yMaximum() - mPlotItem->yMinimum();
     const double plotDistanceUnitsPerPixel = plotDistanceRange / mPlotItem->plotArea().width();

@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QClipboard>
 #include <QFileDialog>
@@ -37,7 +36,6 @@
 #include "qgsgui.h"
 #include "qgisapp.h"
 
-#include "qgslayout.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemtexttable.h"
@@ -52,7 +50,6 @@
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "../../gui/raster/qgsrasterlayerproperties.h"
 #include "qgsproviderregistry.h"
 
 #include "qgsgeorefdatapoint.h"
@@ -70,6 +67,7 @@
 #include "qgsgeorefmainwindow.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
+#include "qgsscreenhelper.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -83,6 +81,8 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
   setAcceptDrops( true );
+
+  mScreenHelper = new QgsScreenHelper( this );
 
   QWidget *centralWidget = this->centralWidget();
   mCentralLayout = new QGridLayout( centralWidget );
@@ -1332,7 +1332,7 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
 void QgsGeoreferencerMainWindow::readSettings()
 {
   QgsSettings s;
-  QRect georefRect = QApplication::desktop()->screenGeometry( QgisApp::instance() );
+  const QRect georefRect = mScreenHelper->availableGeometry();
   resize( s.value( QStringLiteral( "/Plugin-GeoReferencer/size" ), QSize( georefRect.width() / 2 + georefRect.width() / 5,
                    QgisApp::instance()->height() ) ).toSize() );
   move( s.value( QStringLiteral( "/Plugin-GeoReferencer/pos" ), QPoint( parentWidget()->width() / 2 - width() / 2, 0 ) ).toPoint() );

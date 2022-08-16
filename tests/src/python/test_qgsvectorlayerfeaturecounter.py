@@ -68,8 +68,8 @@ class TestQgsVectorLayerFeatureCounter(unittest.TestCase):
         assert (self.vl2.isValid())
 
     def tearDown(self):
-        del(self.vl)
-        del(self.vl2)
+        del self.vl
+        del self.vl2
 
     def testFeaturesCount(self):
 

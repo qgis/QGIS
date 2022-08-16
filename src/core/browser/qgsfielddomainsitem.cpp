@@ -16,12 +16,9 @@
  ***************************************************************************/
 
 #include "qgsfielddomainsitem.h"
-#include "qgsiconutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
-#include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
 #include "qgsfielddomain.h"
 #include "qgsmessagelog.h"
 

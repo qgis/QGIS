@@ -632,13 +632,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Returns the current configuration of 3d axis
      * \return QGIS 3.26
      */
-    Qgs3DAxisSettings get3dAxisSettings() const SIP_SKIP { return m3dAxisSettings; }
+    Qgs3DAxisSettings get3DAxisSettings() const SIP_SKIP { return m3dAxisSettings; }
 
     /**
      * Sets the current configuration of 3d axis
      * \since QGIS 3.26
      */
-    void set3dAxisSettings( const Qgs3DAxisSettings &axisSettings ) SIP_SKIP;
+    void set3DAxisSettings( const Qgs3DAxisSettings &axisSettings, bool force = false ) SIP_SKIP;
 
     /**
      * Returns whether debug overlay is enabled

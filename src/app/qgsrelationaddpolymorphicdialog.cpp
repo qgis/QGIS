@@ -22,8 +22,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsfieldcombobox.h"
-#include "qgsmaplayerproxymodel.h"
-#include "qgsapplication.h"
 #include "qgshelp.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
@@ -57,9 +55,9 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
     mReferencedLayersComboBox->addItem( vl->name(), vl->id() );
   }
 
-  mRelationStrengthComboBox->addItem( tr( "Association" ), QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
-  mRelationStrengthComboBox->addItem( tr( "Composition" ), QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
-  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will be duplicated too.\n"
+  mRelationStrengthComboBox->addItem( tr( "Association" ), static_cast< int >( Qgis::RelationshipStrength::Association ) );
+  mRelationStrengthComboBox->addItem( tr( "Composition" ), static_cast< int >( Qgis::RelationshipStrength::Composition ) );
+  mRelationStrengthComboBox->setToolTip( tr( "When composition is selected the child features will also be duplicated and deleted.\n"
                                          "Duplications are made by the feature duplication action.\n"
                                          "The default actions are activated in the Action section of the layer properties." ) );
 
@@ -81,14 +79,14 @@ QgsRelationAddPolymorphicDialog::QgsRelationAddPolymorphicDialog( bool isEditDia
   connect( mReferencingLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsRelationAddPolymorphicDialog::updateReferencedLayerFieldComboBox );
 }
 
-void QgsRelationAddPolymorphicDialog::setPolymorphicRelation( const QgsPolymorphicRelation polyRel )
+void QgsRelationAddPolymorphicDialog::setPolymorphicRelation( const QgsPolymorphicRelation &polyRel )
 {
   mIdLineEdit->setText( polyRel.id() );
   mReferencingLayerComboBox->setLayer( polyRel.referencingLayer() );
   mReferencedLayerFieldComboBox->setLayer( polyRel.referencingLayer() );
   mReferencedLayerFieldComboBox->setField( polyRel.referencedLayerField() );
   mReferencedLayerExpressionWidget->setExpression( polyRel.referencedLayerExpression() );
-  mRelationStrengthComboBox->setCurrentIndex( mRelationStrengthComboBox->findData( polyRel.strength() ) );
+  mRelationStrengthComboBox->setCurrentIndex( mRelationStrengthComboBox->findData( static_cast< int >( polyRel.strength() ) ) );
 
   const QStringList layerIds = polyRel.referencedLayerIds();
   for ( const QString &layerId : layerIds )
@@ -172,27 +170,27 @@ void QgsRelationAddPolymorphicDialog::updateFieldsMappingHeaders()
   mFieldsMappingTable->setVerticalHeaderLabels( verticalHeaderLabels );
 }
 
-QString QgsRelationAddPolymorphicDialog::referencingLayerId()
+QString QgsRelationAddPolymorphicDialog::referencingLayerId() const
 {
   return mReferencingLayerComboBox->currentLayer()->id();
 }
 
-QString QgsRelationAddPolymorphicDialog::referencedLayerField()
+QString QgsRelationAddPolymorphicDialog::referencedLayerField() const
 {
   return mReferencedLayerFieldComboBox->currentField();
 }
 
-QString QgsRelationAddPolymorphicDialog::referencedLayerExpression()
+QString QgsRelationAddPolymorphicDialog::referencedLayerExpression() const
 {
   return mReferencedLayerExpressionWidget->expression();
 }
 
-QStringList QgsRelationAddPolymorphicDialog::referencedLayerIds()
+QStringList QgsRelationAddPolymorphicDialog::referencedLayerIds() const
 {
   return QVariant( mReferencedLayersComboBox->checkedItemsData() ).toStringList();
 }
 
-QList< QPair< QString, QString > > QgsRelationAddPolymorphicDialog::fieldPairs()
+QList< QPair< QString, QString > > QgsRelationAddPolymorphicDialog::fieldPairs() const
 {
   QList< QPair< QString, QString > > references;
   for ( int i = 0, l = mFieldsMappingTable->rowCount(); i < l; i++ )
@@ -208,20 +206,20 @@ QList< QPair< QString, QString > > QgsRelationAddPolymorphicDialog::fieldPairs()
   return references;
 }
 
-QString QgsRelationAddPolymorphicDialog::relationId()
+QString QgsRelationAddPolymorphicDialog::relationId() const
 {
   return mIdLineEdit->text();
 }
 
-QString QgsRelationAddPolymorphicDialog::relationName()
+QString QgsRelationAddPolymorphicDialog::relationName() const
 {
   QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( mReferencingLayerComboBox->currentLayer() );
   return tr( "Polymorphic relations for \"%1\"" ).arg( vl ? vl->name() : QStringLiteral( "<NO LAYER>" ) );
 }
 
-QgsRelation::RelationStrength QgsRelationAddPolymorphicDialog::relationStrength()
+Qgis::RelationshipStrength QgsRelationAddPolymorphicDialog::relationStrength() const
 {
-  return mRelationStrengthComboBox->currentData().value<QgsRelation::RelationStrength>();
+  return static_cast< Qgis::RelationshipStrength >( mRelationStrengthComboBox->currentData().toInt() );
 }
 
 void QgsRelationAddPolymorphicDialog::updateDialogButtons()

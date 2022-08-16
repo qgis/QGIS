@@ -1,0 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsrelationshipsitem.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsRelationshipsItem : QgsDataItem
+{
+%Docstring(signature="appended")
+Contains a collection of relationship items.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsrelationshipsitem.h"
+%End
+  public:
+
+    QgsRelationshipsItem( QgsDataItem *parent /TransferThis/,
+                          const QString &path,
+                          const QString &connectionUri,
+                          const QString &providerKey,
+                          const QString &schema = QString(),
+                          const QString &tableName = QString() );
+%Docstring
+Constructor for QgsRelationshipsItem, with the specified ``parent`` item.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but :py:class:`QgsDataItem` items pointing to different logical locations should always use a different item ``path``.
+The ``connectionUri`` argument is the connection part of the layer URI that it is used internally to create
+a connection and retrieve fields information.
+The ``providerKey`` string can be used to specify the key for the :py:class:`QgsDataItemProvider` that created this item.
+
+The optional ``schema`` and ``tableName`` arguments can be used to restrict the visible relationships to
+those with a matching parent table.
+%End
+
+    ~QgsRelationshipsItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QVector<QgsDataItem *> createChildren();
+
+
+    virtual QIcon icon();
+
+
+    QString connectionUri() const;
+%Docstring
+Returns the connection URI
+%End
+
+    QString schema() const;
+%Docstring
+Returns the schema for filtering relationships, if set.
+
+.. seealso:: :py:func:`tableName`
+%End
+
+    QString tableName() const;
+%Docstring
+Returns the table name for filtering relationships, if set.
+
+.. seealso:: :py:func:`schema`
+%End
+
+};
+
+
+class QgsRelationshipItem : QgsDataItem
+{
+%Docstring(signature="appended")
+A browser item representing a relationship.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsrelationshipsitem.h"
+%End
+  public:
+
+    QgsRelationshipItem( QgsDataItem *parent /TransferThis/,
+                         const QgsWeakRelation &relation );
+%Docstring
+Constructor for QgsRelationshipItem, with the specified ``parent`` item and ``relation``.
+
+.. note::
+
+   parent item must be a :py:class:`QgsRelationshipsItem`.
+%End
+
+    ~QgsRelationshipItem();
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    virtual QIcon icon();
+
+
+    const QgsWeakRelation &relation() const;
+%Docstring
+Returns the associated relationship.
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/browser/qgsrelationshipsitem.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

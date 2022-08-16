@@ -28,10 +28,8 @@
 #include "qgsnewnamedialog.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowserdockwidget_p.h"
-#include "qgswindowmanagerinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsnewvectorlayerdialog.h"
-#include "qgsnewgeopackagelayerdialog.h"
 #include "qgsfileutils.h"
 #include "qgsapplication.h"
 #include "processing/qgsprojectstylealgorithms.h"
@@ -41,7 +39,6 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsprovidermetadata.h"
 #include "qgsnewvectortabledialog.h"
-#include "qgsdataitemproviderregistry.h"
 #include "qgscolordialog.h"
 #include "qgsdirectoryitem.h"
 #include "qgsdatacollectionitem.h"
@@ -54,7 +51,6 @@
 #include "qgsfielddomain.h"
 #include "qgsconnectionsitem.h"
 #include "qgsqueryresultwidget.h"
-#include "qgsogrproviderutils.h"
 #include "qgsprojectutils.h"
 #include "qgsvariantutils.h"
 #include "qgsfielddomainwidget.h"
@@ -62,6 +58,7 @@
 #include "qgsfilebaseddataitemprovider.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
+#include "qgsrelationshipsitem.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -2273,6 +2270,199 @@ QgsFieldDomainsDetailsWidget::QgsFieldDomainsDetailsWidget( QWidget *parent, con
     mTextBrowser->setPlainText( ex.what() );
   }
 }
+
+
+
+
+
+//
+// QgsRelationshipItemGuiProvider
+//
+
+QString QgsRelationshipItemGuiProvider::name()
+{
+  return QStringLiteral( "relationship_item" );
+}
+
+QWidget *QgsRelationshipItemGuiProvider::createParamWidget( QgsDataItem *item, QgsDataItemGuiContext )
+{
+  if ( QgsRelationshipItem *relationshipItem = qobject_cast< QgsRelationshipItem * >( item ) )
+  {
+    return new QgsRelationshipDetailsWidget( nullptr, relationshipItem->relation() );
+  }
+  else if ( QgsRelationshipsItem *relationsItem = qobject_cast< QgsRelationshipsItem * >( item ) )
+  {
+    return new QgsRelationshipsDetailsWidget( nullptr, relationsItem->providerKey(), relationsItem->connectionUri(), relationsItem->schema(), relationsItem->tableName() );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+//
+// QgsRelationshipDetailsWidget
+//
+
+QgsRelationshipDetailsWidget::QgsRelationshipDetailsWidget( QWidget *parent, const QgsWeakRelation &relation )
+  : QWidget( parent )
+  , mRelation( relation )
+{
+  setupUi( this );
+
+  const QString style = QgsApplication::reportStyleSheet();
+  mTextBrowser->document()->setDefaultStyleSheet( style );
+
+
+  QString metadata = QStringLiteral( "<html>\n<body>\n" );
+  metadata += htmlMetadata( mRelation, mRelation.name() );
+
+  mTextBrowser->setHtml( metadata );
+}
+
+QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relation, const QString &title )
+{
+  QString metadata;
+  metadata += QStringLiteral( "<h1>" ) + title + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table class=\"list-view\">\n" );
+
+  if ( title != relation.name() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + relation.name() + QStringLiteral( "</td></tr>\n" );
+
+  if ( relation.cardinality() != Qgis::RelationshipCardinality::ManyToMany )
+  {
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Tables" ) + QStringLiteral( "</td><td>" ) + relation.referencedLayerName()
+                + QStringLiteral( "%1 → %2" ).arg( relation.referencedLayerName(),
+                    relation.referencingLayerName() ) + QStringLiteral( "</td></tr>\n" );
+
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Fields" ) + QStringLiteral( "</td><td>" );
+    QStringList fieldMetadata;
+    for ( int i = 0; i < std::min( relation.referencedLayerFields().size(), relation.referencingLayerFields().size() ); ++i )
+    {
+      fieldMetadata << QStringLiteral( "%1.%2 → %3.%4" ).arg(
+                      relation.referencedLayerName(),
+                      relation.referencedLayerFields().at( i ),
+                      relation.referencingLayerName(),
+                      relation.referencingLayerFields().at( i ) );
+    }
+    metadata += fieldMetadata.join( QStringLiteral( "<br>" ) );
+    metadata += QStringLiteral( "</td></tr>\n" );
+  }
+  else
+  {
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Tables" ) + QStringLiteral( "</td><td>" ) + relation.referencedLayerName()
+                + QStringLiteral( "%1 → %2 → %3" ).arg( relation.referencedLayerName(),
+                    relation.mappingTableName(),
+                    relation.referencingLayerName() ) + QStringLiteral( "</td></tr>\n" );
+
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Fields" ) + QStringLiteral( "</td><td>" );
+    QStringList fieldMetadata;
+    for ( int i = 0; i < std::min( relation.referencedLayerFields().size(), relation.mappingReferencedLayerFields().size() ); ++i )
+    {
+      fieldMetadata << QStringLiteral( "%1.%2 → %3.%4" ).arg(
+                      relation.referencedLayerName(),
+                      relation.referencedLayerFields().at( i ),
+                      relation.mappingTableName(),
+                      relation.mappingReferencedLayerFields().at( i ) );
+    }
+    for ( int i = 0; i < std::min( relation.referencingLayerFields().size(), relation.mappingReferencingLayerFields().size() ); ++i )
+    {
+      fieldMetadata << QStringLiteral( "%1.%2 → %3.%4" ).arg(
+                      relation.mappingTableName(),
+                      relation.mappingReferencingLayerFields().at( i ),
+                      relation.referencingLayerName(),
+                      relation.referencingLayerFields().at( i )
+                    );
+    }
+    metadata += fieldMetadata.join( QStringLiteral( "<br>" ) );
+    metadata += QStringLiteral( "</td></tr>\n" );
+  }
+
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Cardinality" ) + QStringLiteral( "</td><td>" ) + QgsRelation::cardinalityToDisplayString( relation.cardinality() ) + QStringLiteral( "</td></tr>\n" );
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Strength" ) + QStringLiteral( "</td><td>" ) + QgsRelation::strengthToDisplayString( relation.strength() ) + QStringLiteral( "</td></tr>\n" );
+
+  if ( !relation.forwardPathLabel().isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Forward label" ) + QStringLiteral( "</td><td>" ) + relation.forwardPathLabel() + QStringLiteral( "</td></tr>\n" );
+  if ( !relation.backwardPathLabel().isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Backward label" ) + QStringLiteral( "</td><td>" ) + relation.backwardPathLabel() + QStringLiteral( "</td></tr>\n" );
+
+  if ( !relation.relatedTableType().isEmpty() )
+    metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Relation type" ) + QStringLiteral( "</td><td>" ) + relation.relatedTableType() + QStringLiteral( "</td></tr>\n" );
+
+  metadata += QLatin1String( "</table>" );
+
+  return metadata;
+}
+
+QgsRelationshipDetailsWidget::~QgsRelationshipDetailsWidget() = default;
+
+//
+// QgsRelationshipsDetailsWidget
+//
+
+QgsRelationshipsDetailsWidget::QgsRelationshipsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema, const QString &tableName )
+  : QWidget( parent )
+{
+  setupUi( this );
+
+  const QString style = QgsApplication::reportStyleSheet();
+  mTextBrowser->document()->setDefaultStyleSheet( style );
+
+  try
+  {
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+    if ( md )
+    {
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn { static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri, {} ) ) };
+      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+      {
+        QString relationError;
+        QList< QgsWeakRelation > relationships;
+        try
+        {
+          relationships = conn->relationships( schema, tableName );
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          relationError = ex.what();
+        }
+
+        QString metadata = QStringLiteral( "<html>\n<body>\n" );
+        metadata += QStringLiteral( "<h1>" ) + tr( "Relationships" ) + QStringLiteral( "</h1>\n<hr>\n" ) + QStringLiteral( "<table width=\"100%\" class=\"tabular-view\">\n" );
+
+        int i = 0;
+
+        for ( const QgsWeakRelation &relation : std::as_const( relationships ) )
+        {
+          QString rowClass;
+          if ( i % 2 )
+            rowClass = QStringLiteral( "class=\"odd-row\"" );
+
+          metadata += QStringLiteral( "<tr %1><td class=\"highlight\">" ).arg( rowClass ) + relation.name() + QStringLiteral( "</td><td>" ) + relation.referencedLayerName()
+                      + QStringLiteral( " → " ) + relation.referencingLayerName()
+                      + QStringLiteral( "</td><td>" ) + QObject::tr( "%1 (%2)" ).arg( QgsRelation::cardinalityToDisplayString( relation.cardinality() ),
+                          QgsRelation::strengthToDisplayString( relation.strength() ) )
+                      + QStringLiteral( "</td></tr>\n" );
+          i++;
+        }
+        metadata += QLatin1String( "</table>\n<br><br>\n" );
+
+        if ( !relationError.isEmpty() )
+        {
+          mTextBrowser->setPlainText( relationError );
+        }
+        else
+        {
+          mTextBrowser->setHtml( metadata );
+        }
+      }
+    }
+  }
+  catch ( const QgsProviderConnectionException &ex )
+  {
+    mTextBrowser->setPlainText( ex.what() );
+  }
+}
+
 
 //
 // QgsFieldsDetailsWidget

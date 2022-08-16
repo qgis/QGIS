@@ -72,6 +72,13 @@ will be rendered based on the provided mapsettings
 :param renderedImagePath: A path to the rendered image with which control images will be compared
 %End
 
+    void setExpectFail( bool expectFail );
+%Docstring
+Sets whether the comparison is expected to fail.
+
+.. versionadded:: 3.28
+%End
+
     void setMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
 Set the map settings to use to render the image
@@ -117,7 +124,9 @@ Test using renderer to generate the image to be compared.
 
     QString report() const;
 %Docstring
-Returns a report for this test
+Returns a report for this test.
+
+The report will be empty if the test was successfully run.
 %End
 
     QString controlImagePath() const;

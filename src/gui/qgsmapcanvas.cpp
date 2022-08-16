@@ -47,7 +47,6 @@ email                : sherman at mrcc.com
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
-#include "qgsdatumtransformdialog.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -56,9 +55,7 @@ email                : sherman at mrcc.com
 #include "qgsmaplayer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolpan.h"
-#include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"
-#include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererjob.h"
@@ -66,8 +63,6 @@ email                : sherman at mrcc.com
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsmessagelog.h"
-#include "qgsmessageviewer.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
@@ -97,6 +92,7 @@ email                : sherman at mrcc.com
 #include "qgstemporalnavigationobject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectortilelayer.h"
+#include "qgsscreenhelper.h"
 
 /**
  * \ingroup gui
@@ -139,6 +135,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setMouseTracking( true );
   setFocusPolicy( Qt::StrongFocus );
+
+  mScreenHelper = new QgsScreenHelper( this );
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
 
   mResizeTimer = new QTimer( this );
   mResizeTimer->setSingleShot( true );
@@ -1234,6 +1233,7 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
     mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
+  refresh();
 }
 
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
@@ -3069,23 +3069,6 @@ void QgsMapCanvas::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
   updateDevicePixelFromScreen();
-  // keep device pixel ratio up to date on screen or resolution change
-  QWindow *l_window = window()->windowHandle();
-  if ( l_window )
-  {
-    connect( l_window, &QWindow::screenChanged, this, [ = ]( QScreen * )
-    {
-      disconnect( mScreenDpiChangedConnection );
-      QWindow *windowInLambda = window()->windowHandle();
-      if ( windowInLambda )
-      {
-        mScreenDpiChangedConnection = connect( windowInLambda->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
-        updateDevicePixelFromScreen();
-      }
-    } );
-
-    mScreenDpiChangedConnection = connect( l_window->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
-  }
 }
 
 QPoint QgsMapCanvas::mouseLastXY()
@@ -3210,8 +3193,10 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     if ( !project->viewSettings()->defaultViewExtent().isNull() )
     {
       setReferencedExtent( project->viewSettings()->defaultViewExtent() );
-      clearExtentHistory(); // clear the extent history on project load
     }
+
+    setRotation( project->viewSettings()->defaultRotation() );
+    clearExtentHistory(); // clear the extent history on project load
   }
 }
 

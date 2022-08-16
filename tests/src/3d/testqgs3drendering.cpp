@@ -58,11 +58,13 @@
 
 #include <QFileInfo>
 #include <QDir>
-#include <QDesktopWidget>
 
-class TestQgs3DRendering : public QObject
+class TestQgs3DRendering : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgs3DRendering() : QgsTest( QStringLiteral( "3D Rendering Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -93,8 +95,6 @@ class TestQgs3DRendering : public QObject
     // color tolerance < 2 was failing polygon3d_extrusion test
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0, int colorTolerance = 2 );
 
-    QString mReport;
-
     std::unique_ptr<QgsProject> mProject;
     QgsRasterLayer *mLayerDtm;
     QgsRasterLayer *mLayerRgb;
@@ -112,8 +112,6 @@ void TestQgs3DRendering::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   Qgs3D::initialize();
-
-  mReport = QStringLiteral( "<h1>3D Rendering Tests</h1>\n" );
 
   mProject.reset( new QgsProject );
 
@@ -213,16 +211,6 @@ void TestQgs3DRendering::initTestCase()
 void TestQgs3DRendering::cleanupTestCase()
 {
   mProject.reset();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -1052,7 +1040,6 @@ void TestQgs3DRendering::testRuleBasedRenderer()
 
 bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, int mismatchCount, int colorTolerance )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
@@ -1255,10 +1242,10 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
 {
   const QgsRectangle fullExtent( 0, 0, 1000, 1000 );
 
-  QgsCoordinateReferenceSystem oldCrs = mProject->crs();
-  QgsCoordinateReferenceSystem newCrs;
-  newCrs.createFromString( "EPSG:4978" );
-  mProject->setCrs( newCrs );
+  QgsProject p;
+
+  QgsCoordinateReferenceSystem newCrs( QStringLiteral( "EPSG:4978" ) );
+  p.setCrs( newCrs );
 
   QgsVectorLayer *layerLines = new QgsVectorLayer( QString( TEST_DATA_DIR ) + "/3d/earth_size_sphere_4978.gpkg", "lines", "ogr" );
 
@@ -1271,7 +1258,7 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   layerLines->setRenderer3D( new QgsVectorLayer3DRenderer( lineSymbol ) );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( mProject->crs() );
+  map->setCrs( p.crs() );
   map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
   map->setLayers( QList<QgsMapLayer *>() << layerLines );
 
@@ -1301,10 +1288,9 @@ void TestQgs3DRendering::testEpsg4978LineRendering()
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
   delete scene;
   delete map;
-  QVERIFY( renderCheck( "4978_line_rendering_2", img2, 40, 15 ) );
-
   delete layerLines;
-  mProject->setCrs( oldCrs );
+
+  QVERIFY( renderCheck( "4978_line_rendering_2", img2, 40, 15 ) );
 }
 
 QGSTEST_MAIN( TestQgs3DRendering )

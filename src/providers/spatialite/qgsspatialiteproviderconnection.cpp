@@ -454,7 +454,9 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
   {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
-    GeometryColumnCapability::SinglePart,
+    GeometryColumnCapability::SinglePoint,
+    GeometryColumnCapability::SingleLineString,
+    GeometryColumnCapability::SinglePolygon,
   };
   mSqlLayerDefinitionCapabilities =
   {

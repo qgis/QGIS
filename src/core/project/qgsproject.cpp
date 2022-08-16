@@ -450,9 +450,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
   Q_NOWARN_DEPRECATED_POP
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mStyleSettings->combinedStyleModel()->addDefaultStyle();
-#endif
 }
 
 

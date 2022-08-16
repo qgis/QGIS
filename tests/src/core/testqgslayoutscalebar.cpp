@@ -17,13 +17,9 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsfontutils.h"
 #include "qgsproperty.h"
 #include "qgsproject.h"
@@ -40,18 +36,16 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutScaleBar : public QObject
+class TestQgsLayoutScaleBar : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutScaleBar() = default;
+    TestQgsLayoutScaleBar() : QgsTest( QStringLiteral( "Layout Scalebar Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void singleBox();
     void singleBoxLineSymbol();
     void singleBoxFillSymbol();
@@ -72,9 +66,6 @@ class TestQgsLayoutScaleBar : public QObject
     void hollow();
     void hollowDefaults();
     void tickSubdivisions();
-
-  private:
-    QString mReport;
 };
 
 void TestQgsLayoutScaleBar::initTestCase()
@@ -92,32 +83,11 @@ void TestQgsLayoutScaleBar::initTestCase()
   const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:4326" ) );
   QgsProject::instance()->setCrs( destCRS );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
-
-  mReport = QStringLiteral( "<h1>Layout Scalebar Tests</h1>\n" );
 }
 
 void TestQgsLayoutScaleBar::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutScaleBar::init()
-{
-
-}
-
-void TestQgsLayoutScaleBar::cleanup()
-{
-
 }
 
 void TestQgsLayoutScaleBar::singleBox()

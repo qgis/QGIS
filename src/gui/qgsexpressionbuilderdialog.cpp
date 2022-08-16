@@ -115,8 +115,6 @@ void QgsExpressionBuilderDialog::syncOkButtonEnabledState()
 
   if ( builder->parserError() )
     okButton->setEnabled( false );
-  else if ( !builder->evalError() || mAllowEvalErrors )
-    okButton->setEnabled( true );
   else
     okButton->setEnabled( true );
 }

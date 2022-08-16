@@ -156,6 +156,7 @@
 %Include auto_generated/qgspolymorphicrelation.sip
 %Include auto_generated/qgsrelationcontext.sip
 %Include auto_generated/qgsremappingproxyfeaturesink.sip
+%Include auto_generated/qgsweakrelation.sip
 %Include auto_generated/qgsrelationmanager.sip
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
@@ -197,6 +198,7 @@
 %Include auto_generated/qgstransactiongroup.sip
 %Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsunittypes.sip
+%Include auto_generated/qgsunsetattributevalue.sip
 %Include auto_generated/qgsuserprofile.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/qgsvariantutils.sip
@@ -248,6 +250,7 @@
 %Include auto_generated/browser/qgsfieldsitem.sip
 %Include auto_generated/browser/qgslayeritem.sip
 %Include auto_generated/browser/qgsprojectitem.sip
+%Include auto_generated/browser/qgsrelationshipsitem.sip
 %Include auto_generated/browser/qgszipitem.sip
 %Include auto_generated/callouts/qgscallout.sip
 %Include auto_generated/callouts/qgscalloutsregistry.sip
@@ -632,9 +635,7 @@
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
-%If ( CONCATENATED_TABLES_MODEL )
 %Include auto_generated/symbology/qgscombinedstylemodel.sip
-%End
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
 %Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip

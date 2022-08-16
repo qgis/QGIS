@@ -1035,7 +1035,7 @@ namespace QgsWfs
       {
         response.setHeader( "Content-Type", "application/vnd.geo+json; charset=utf-8" );
         fcString = QStringLiteral( "{\"type\": \"FeatureCollection\",\n" );
-        fcString += QStringLiteral( " \"timeStamp\": \"%1\"\n" ).arg( now.toString( Qt::ISODate ) );
+        fcString += QStringLiteral( " \"timeStamp\": \"%1\",\n" ).arg( now.toString( Qt::ISODate ) );
         fcString += QStringLiteral( " \"numberOfFeatures\": %1\n" ).arg( QString::number( numberOfFeatures ) );
         fcString += QLatin1Char( '}' );
       }

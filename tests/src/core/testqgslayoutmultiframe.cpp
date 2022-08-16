@@ -18,8 +18,6 @@
 #include "qgslayoutframe.h"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemlabel.h"
-#include "qgslayout.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgslayoutitemhtml.h"
@@ -33,15 +31,16 @@
 
 #include "qgstest.h"
 
-class TestQgsLayoutMultiFrame : public QObject
+class TestQgsLayoutMultiFrame : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsLayoutMultiFrame() : QgsTest( QStringLiteral( "Layout MultiFrame Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void layoutMethods();
     void addFrame(); //test creating new frame inherits all properties of existing frame
     void displayName();
@@ -58,7 +57,6 @@ class TestQgsLayoutMultiFrame : public QObject
 
   private:
     QgsLayout *mLayout = nullptr;
-    QString mReport;
 };
 
 class TestMultiFrame : public QgsLayoutMultiFrame
@@ -98,34 +96,13 @@ void TestQgsLayoutMultiFrame::initTestCase()
 
   mLayout = new QgsLayout( QgsProject::instance() );
   mLayout->initializeDefaults();
-
-  mReport = QStringLiteral( "<h1>Layout MultiFrame Tests</h1>\n" );
 }
 
 void TestQgsLayoutMultiFrame::cleanupTestCase()
 {
   delete mLayout;
 
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutMultiFrame::init()
-{
-
-}
-
-void TestQgsLayoutMultiFrame::cleanup()
-{
-
 }
 
 void TestQgsLayoutMultiFrame::layoutMethods()

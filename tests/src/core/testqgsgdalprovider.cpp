@@ -42,15 +42,16 @@
  * \ingroup UnitTests
  * This is a unit test for the gdal provider
  */
-class TestQgsGdalProvider : public QObject
+class TestQgsGdalProvider : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsGdalProvider() : QgsTest( QStringLiteral( "GDAL Provider Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
 
     void decodeUri(); // test decode URI implementation
     void encodeUri(); // test encode URI implementation
@@ -74,7 +75,6 @@ class TestQgsGdalProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
     bool mSupportsNetCDF;
     QgsProviderMetadata *mGdalMetadata;
 
@@ -88,7 +88,6 @@ void TestQgsGdalProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>GDAL Provider Tests</h1>\n" );
 
   mGdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
 
@@ -105,14 +104,6 @@ void TestQgsGdalProvider::initTestCase()
 void TestQgsGdalProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsGdalProvider::decodeUri()
@@ -601,6 +592,16 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsizip/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testzip.zip/landsat_b1.vrt" );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/testzip.zip/landsat_b1.vrt" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "VRT" ) );
+
   // multi-layer archive, format not supported by gdal
   res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml" );
   QCOMPARE( res.count(), 0 );
@@ -756,6 +757,15 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
   // multi-layer archive, format not supported by gdal
   res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/points.qml", Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( res.count(), 0 );
+
+  res = mGdalMetadata->querySublayers( QStringLiteral( "/vsizip/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testzip.zip/landsat_b1.vrt", Qgis::SublayerQueryFlag::FastScan );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).layerNumber(), 0 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
+  QCOMPARE( res.at( 0 ).description(), QString() );
+  QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "/vsizip/%1/zip/testzip.zip/landsat_b1.vrt" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+  QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
+  QCOMPARE( res.at( 0 ).type(), QgsMapLayerType::RasterLayer );
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()

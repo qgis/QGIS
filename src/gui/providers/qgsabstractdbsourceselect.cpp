@@ -19,6 +19,7 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
+#include <QActionGroup>
 
 QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

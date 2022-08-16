@@ -49,7 +49,9 @@ void  TestQgsTriangulation::initTestCase()
 }
 
 void TestQgsTriangulation::cleanupTestCase()
-{}
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsTriangulation::init()
 {}
@@ -170,7 +172,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
 
-  QgsVectorLayer *mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:32620" ),
+  std::unique_ptr< QgsVectorLayer > mLayerPointZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "PointZ?crs=EPSG:32620" ),
       QStringLiteral( "point Z" ),
       QStringLiteral( "memory" ) );
 
@@ -214,7 +216,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   const QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
-  QgsVectorLayer *mLayerBreakLine = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
+  std::unique_ptr< QgsVectorLayer > mLayerBreakLine = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
       QStringLiteral( "line" ),
       QStringLiteral( "memory" ) );
 
@@ -245,7 +247,7 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  QgsVectorLayer *mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ" ),
+  std::unique_ptr< QgsVectorLayer > mLayerLineZ = std::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ" ),
       QStringLiteral( "break line Z" ),
       QStringLiteral( "memory" ) );
 
@@ -297,7 +299,7 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  QgsVectorLayer *mLayerPointsZ = new QgsVectorLayer( QStringLiteral( "PointZ" ),
+  std::unique_ptr< QgsVectorLayer > mLayerPointsZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "PointZ" ),
       QStringLiteral( "points Z" ),
       QStringLiteral( "memory" ) );
 
@@ -324,7 +326,7 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   QCOMPARE( mesh.vertexCount(), 40 );
   QCOMPARE( mesh.faceCount(), 54 );
 
-  QgsVectorLayer *mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ" ),
+  std::unique_ptr< QgsVectorLayer > mLayerLineZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ" ),
       QStringLiteral( "break line Z" ),
       QStringLiteral( "memory" ) );
 

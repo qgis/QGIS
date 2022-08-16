@@ -140,7 +140,9 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   mCrs->setShowAccuracyWarnings( true );
 
   // geometry types
+  Q_NOWARN_DEPRECATED_PUSH
   const bool hasSinglePart { conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePart ) };
+  Q_NOWARN_DEPRECATED_POP
 
   const auto addGeomItem = [this]( QgsWkbTypes::Type type )
   {
@@ -148,13 +150,13 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
   };
 
   mGeomTypeCbo->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconTableLayer.svg" ) ), tr( "No Geometry" ), QgsWkbTypes::Type::NoGeometry );
-  if ( hasSinglePart )
+  if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePoint ) )
     addGeomItem( QgsWkbTypes::Type::Point );
   addGeomItem( QgsWkbTypes::Type::MultiPoint );
-  if ( hasSinglePart )
+  if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SingleLineString ) )
     addGeomItem( QgsWkbTypes::Type::LineString );
   addGeomItem( QgsWkbTypes::Type::MultiLineString );
-  if ( hasSinglePart )
+  if ( hasSinglePart || conn->geometryColumnCapabilities().testFlag( QgsAbstractDatabaseProviderConnection::GeometryColumnCapability::SinglePolygon ) )
     addGeomItem( QgsWkbTypes::Type::Polygon );
   addGeomItem( QgsWkbTypes::Type::MultiPolygon );
 
