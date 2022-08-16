@@ -5915,8 +5915,8 @@ void QgisApp::showRasterCalculator()
     for ( const QgsRasterCalculatorEntry &r : rasterEntries )
     {
       if ( ( ! rLayerDictionaryRef.contains( r.ref ) ) ||
-           uniqueRasterUriTmp.contains( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
-      uniqueRasterUriTmp.insert( QPair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
+           uniqueRasterUriTmp.contains( qMakePair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) ) ) continue;
+      uniqueRasterUriTmp.insert( qMakePair( r.raster->source(), r.ref.mid( 0, r.ref.lastIndexOf( "@" ) ) ) );
 
       QgsRasterDataProvider::VirtualRasterInputLayers projectRLayer;
       projectRLayer.name = r.ref.mid( 0, r.ref.lastIndexOf( "@" ) );
