@@ -575,56 +575,7 @@
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mMainViewButtonGroup</sender>
-   <signal>buttonClicked(int)</signal>
-   <receiver>mMainView</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>393</x>
-     <y>266</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mActionToggleEditing</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mActionSaveEdits</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mActionToggleEditing</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mActionReload</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <buttongroups>
   <buttongroup name="mMainViewButtonGroup"/>
  </buttongroups>
