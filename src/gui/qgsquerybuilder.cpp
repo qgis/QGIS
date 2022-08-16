@@ -28,7 +28,6 @@
 #include <QInputDialog>
 #include <QListView>
 #include <QMessageBox>
-#include <QRegExp>
 #include <QPushButton>
 #include <QTextStream>
 

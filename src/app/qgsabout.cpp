@@ -27,6 +27,7 @@
 #include <QSqlDatabase>
 #include <QTcpSocket>
 #include <QUrl>
+#include <QRegularExpression>
 
 #ifdef Q_OS_MACX
 QgsAbout::QgsAbout( QWidget *parent )
@@ -300,8 +301,10 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
       result = result + QString( c );
     }
   }
-  result.replace( QRegExp( "[^a-z0-9A-Z]" ), QStringLiteral( "_" ) );
-  QgsDebugMsg( result );
+
+  static thread_local QRegularExpression sNonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  result.replace( sNonAlphaNumericRx, QStringLiteral( "_" ) );
+  QgsDebugMsgLevel( result, 3 );
 
   return result;
 }
