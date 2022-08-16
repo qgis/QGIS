@@ -471,11 +471,6 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   {
     prefix = QStringLiteral( " (prefix %1)" ).arg( mControlPathPrefix );
   }
-  //
-  // To get the images into CDash
-  //
-  emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
-  emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
 
   //
   // Put the same info to debug too
@@ -496,6 +491,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     if ( std::abs( expectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
          std::abs( expectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
     {
+      emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
+      emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
+
       mReport += QLatin1String( "<tr><td colspan=3>" );
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
@@ -529,6 +527,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   {
     if ( myResultImage.format() != QImage::Format_Indexed8 )
     {
+      emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
+      emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
+
       qDebug() << "Expected image and result image for " << testName << " have different formats (8bit format is expected) - FAILING!";
 
       mReport += QLatin1String( "<tr><td colspan=3>" );
@@ -597,18 +598,22 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
       }
     }
   }
-  //
-  //save the diff image to disk
-  //
-  myDifferenceImage.save( mDiffImageFile );
-  emitDashMessage( "Difference Image " + testName + prefix, QgsDartMeasurement::ImagePng, mDiffImageFile );
 
   //
   // Send match result to debug
   //
   if ( mMismatchCount > mismatchCount )
   {
+    emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
+    emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
+
     qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, mismatchCount );
+
+    //
+    //save the diff image to disk
+    //
+    myDifferenceImage.save( mDiffImageFile );
+    emitDashMessage( "Difference Image " + testName + prefix, QgsDartMeasurement::ImagePng, mDiffImageFile );
   }
 
   //
@@ -620,7 +625,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   //
   // And send it to CDash
   //
-  emitDashMessage( QStringLiteral( "Mismatch Count" ), QgsDartMeasurement::Integer, QStringLiteral( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
+  if ( mMismatchCount > 0 )
+  {
+    emitDashMessage( QStringLiteral( "Mismatch Count" ), QgsDartMeasurement::Integer, QStringLiteral( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
+  }
 
   if ( mMismatchCount <= mismatchCount )
   {
