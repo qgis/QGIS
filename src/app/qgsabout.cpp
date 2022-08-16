@@ -298,7 +298,7 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
     }
     else
     {
-      result = result + QString( c );
+      result = result + QChar( c );
     }
   }
 
