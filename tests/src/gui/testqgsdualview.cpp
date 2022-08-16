@@ -58,8 +58,10 @@ class TestQgsDualView : public QObject
     void testAttributeFormSharedValueScanning();
     void testNoGeom();
 
+#ifdef WITH_QTWEBKIT
     void testHtmlWidget_data();
     void testHtmlWidget();
+#endif
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -344,6 +346,8 @@ void TestQgsDualView::testNoGeom()
   QVERIFY( ( model->request().flags() & QgsFeatureRequest::NoGeometry ) );
 }
 
+#ifdef WITH_QTWEBKIT
+
 void TestQgsDualView::testHtmlWidget_data()
 {
   QTest::addColumn<QString>( "expression" );
@@ -387,6 +391,7 @@ void TestQgsDualView::testHtmlWidget()
 
   QgsProject::instance()->removeMapLayer( &layer );
 }
+#endif
 
 QGSTEST_MAIN( TestQgsDualView )
 #include "testqgsdualview.moc"

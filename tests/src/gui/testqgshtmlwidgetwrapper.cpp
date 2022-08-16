@@ -35,8 +35,11 @@ class TestQgsHtmlWidgetWrapper : public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
+
+#ifdef WITH_QTWEBKIT
     void testExpressionEvaluate_data();
     void testExpressionEvaluate();
+#endif
 };
 
 void TestQgsHtmlWidgetWrapper::initTestCase()
@@ -58,6 +61,8 @@ void TestQgsHtmlWidgetWrapper::init()
 void TestQgsHtmlWidgetWrapper::cleanup()
 {
 }
+
+#ifdef WITH_QTWEBKIT
 
 void TestQgsHtmlWidgetWrapper::testExpressionEvaluate_data()
 {
@@ -93,12 +98,12 @@ void TestQgsHtmlWidgetWrapper::testExpressionEvaluate()
 
   htmlWrapper->setFeature( f );
 
-#ifdef WITH_QTWEBKIT
   QCOMPARE( webView->page()->mainFrame()->toPlainText(), expectedText );
-#endif
 
   QgsProject::instance()->removeMapLayer( &layer );
 }
+
+#endif
 
 QGSTEST_MAIN( TestQgsHtmlWidgetWrapper )
 #include "testqgshtmlwidgetwrapper.moc"
