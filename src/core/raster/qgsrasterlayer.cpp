@@ -150,7 +150,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
       const QgsDataSourceUri dsUri { uri };
       if ( options.loadDefaultRat )
       {
-        mDataProvider->loadEmbeddedAttributeTable();
+        mDataProvider->loadNativeAttributeTable();
       }
       else if ( ! options.fileBasedRat.isEmpty() )
       {

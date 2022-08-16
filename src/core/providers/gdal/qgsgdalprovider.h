@@ -229,7 +229,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool initIfNeeded();
 
     //! Load attribute tables
-    bool loadEmbeddedAttributeTable() override;
+    bool loadNativeAttributeTable() override;
 
     bool saveNativeAttributeTable() override;
 

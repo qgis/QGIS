@@ -758,16 +758,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void removeAttributeTable( int bandNumber );
 
     /**
-     * Loads the native attribute table.
-     * The default implementation does nothing and returns FALSE.
-     * Data providers that have NativeRasterAttributeTable
-     * provider capability will try to load the embedded attribute table.
-     * \returns TRUE on success
-     * \since QGIS 3.30
-     */
-    virtual bool loadEmbeddedAttributeTable( );
-
-    /**
      * Loads the filesystem-based attribute table.
      * \returns TRUE on success
      * \since QGIS 3.30
