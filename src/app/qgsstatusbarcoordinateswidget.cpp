@@ -18,10 +18,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QRegExpValidator>
 #include <QSpacerItem>
 #include <QTimer>
 #include <QToolButton>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QRandomGenerator>
 
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsapplication.h"
@@ -58,8 +60,8 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLineEdit->setAlignment( Qt::AlignCenter );
   connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates );
 
-  const QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
-  mCoordsEditValidator = new QRegExpValidator( coordValidator, this );
+  const QRegularExpression coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
+  mCoordsEditValidator = new QRegularExpressionValidator( coordValidator, this );
   mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
@@ -164,7 +166,8 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   double first = 0;
   double second = 0;
   QString coordText = mLineEdit->text();
-  coordText.replace( QRegExp( " {2,}" ), QStringLiteral( " " ) );
+  const thread_local QRegularExpression sMultipleWhitespaceRx( QStringLiteral( " {2,}" ) );
+  coordText.replace( sMultipleWhitespaceRx, QStringLiteral( " " ) );
 
   QStringList parts = coordText.split( ',' );
   if ( parts.size() == 2 )
