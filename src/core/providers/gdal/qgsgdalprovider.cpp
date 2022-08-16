@@ -3067,7 +3067,7 @@ void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo
   }
 }
 
-bool QgsGdalProvider::loadEmbeddedAttributeTable()
+bool QgsGdalProvider::loadNativeAttributeTable()
 {
   bool hasAtLeastOneValidRat { false };
 

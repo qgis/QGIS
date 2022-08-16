@@ -715,18 +715,6 @@ band will be removed.
 
     void removeAttributeTable( int bandNumber );
 
-    virtual bool loadEmbeddedAttributeTable( );
-%Docstring
-Loads the native attribute table.
-The default implementation does nothing and returns ``False``.
-Data providers that have NativeRasterAttributeTable
-provider capability will try to load the embedded attribute table.
-
-:return: ``True`` on success
-
-.. versionadded:: 3.30
-%End
-
     bool loadFileBasedAttributeTable( const QString &path );
 %Docstring
 Loads the filesystem-based attribute table.
