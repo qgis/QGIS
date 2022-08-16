@@ -998,8 +998,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
           {
             // Precision is not set, let's guess it from the
             // standard conversion to string
-            const auto strVal { value.toString() };
-            const int dotPosition { strVal.indexOf( '.' ) };
+            const QString strVal = value.toString();
+            const auto dotPosition = strVal.indexOf( '.' );
             int precision;
             if ( dotPosition < 0 )
             {
