@@ -32,7 +32,7 @@ bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttribu
     f = new QgsFeature();
 
   f->setGeometry( defaultGeometry );
-  QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QString(), -1, parentWidget );
+  QgsFeatureAction *a = new QgsFeatureAction( tr( "Add feature" ), *f, layer, QUuid(), -1, parentWidget );
   a->setForceSuppressFormPopup( forceSuppressFormPopup() );
   connect( a, &QgsFeatureAction::addFeatureFinished, a, &QObject::deleteLater );
   const bool added = a->addFeature( defaultValues, showModal, nullptr, hideParent );
