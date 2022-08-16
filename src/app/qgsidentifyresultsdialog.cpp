@@ -38,6 +38,7 @@
 #include <QRegExp>
 #include <QScreen>
 #include <QFont>
+#include <QActionGroup>
 
 //graph
 #include <qwt_plot.h>

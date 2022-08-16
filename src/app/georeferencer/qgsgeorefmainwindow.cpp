@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QList>
 #include <QUrl>
+#include <QActionGroup>
 
 #include "qgssettings.h"
 #include "qgisinterface.h"

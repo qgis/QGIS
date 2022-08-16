@@ -39,7 +39,6 @@ email                : tim@linfiniti.com
 #include <QMenu>
 #include <QDate>
 #include <QDomDocument>
-#include <QMatrix>
 #include <QFile>
 
 //non qt includes

@@ -19,14 +19,10 @@
 #include "qgsguivectorlayertools.h"
 
 #include "qgisapp.h"
-#include "qgsapplication.h"
 #include "qgsfeatureaction.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat, QWidget *parentWidget, bool showModal, bool hideParent ) const

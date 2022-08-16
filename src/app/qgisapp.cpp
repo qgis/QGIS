@@ -42,15 +42,12 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPainter>
-#include <QPictureIO>
 #include <QPixmap>
 #include <QPoint>
 #include <QPrinter>
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
-#include <QRegExp>
-#include <QRegExpValidator>
 #include <QScreen>
 #include <QShortcut>
 #include <QSpinBox>
@@ -75,6 +72,7 @@
 #include <QWidgetAction>
 #include <mutex>
 #include <QWindow>
+#include <QActionGroup>
 
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"

@@ -95,6 +95,7 @@
 #include <QUrl>
 #include <QWindow>
 #include <QScreen>
+#include <QActionGroup>
 
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
