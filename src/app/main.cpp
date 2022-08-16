@@ -551,8 +551,10 @@ int main( int argc, char *argv[] )
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
-  // initialize random number seed
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  // initialize random number seed - not required for Qt 6
   qsrand( time( nullptr ) );
+#endif
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behavior' flag setup
