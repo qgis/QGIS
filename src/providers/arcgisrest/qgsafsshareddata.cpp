@@ -144,16 +144,17 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
   }
 
+  const QString authcfg = mDataSource.authConfigId();
   bool featureFetched = false;
-  int startId, stopId;
+  int startId;
   QList<quint32> objectIds;
   QVariantMap queryData;
   while ( !featureFetched )
   {
     startId = ( id / mMaximumFetchObjectsCount ) * mMaximumFetchObjectsCount;
-    stopId = std::min< size_t >( startId + mMaximumFetchObjectsCount, mObjectIds.length() );
+    const int stopId = std::min< size_t >( startId + mMaximumFetchObjectsCount, mObjectIds.length() );
     objectIds.clear();
-    objectIds.reserve( stopId );
+    objectIds.reserve( stopId - startId );
     for ( int i = startId; i < stopId; ++i )
     {
       if ( i >= 0 && i < mObjectIds.count() && !mDeletedFeatureIds.contains( i ) && !mCache.contains( i ) )
@@ -171,8 +172,6 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
     // Query
     QString errorTitle, errorMessage;
-
-    const QString authcfg = mDataSource.authConfigId();
     queryData = QgsArcGisRestQueryUtils::getObjects(
                   mDataSource.param( QStringLiteral( "url" ) ), authcfg, objectIds, mDataSource.param( QStringLiteral( "crs" ) ), true,
                   QStringList(), QgsWkbTypes::hasM( mGeometryType ), QgsWkbTypes::hasZ( mGeometryType ),
@@ -185,7 +184,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
 
     if ( queryData.isEmpty() )
     {
-      if ( mMaximumFetchObjectsCount <= 1 )
+      if ( mMaximumFetchObjectsCount <= 1 || errorMessage.isEmpty() )
       {
         QgsDebugMsgLevel( QStringLiteral( "Query returned empty result" ), 2 );
         return false;
