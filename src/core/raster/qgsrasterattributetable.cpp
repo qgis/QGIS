@@ -40,6 +40,36 @@ QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fields() const
   return mFields;
 }
 
+QgsFields QgsRasterAttributeTable::qgisFields() const
+{
+  QgsFields qFields;
+
+  const auto cFields { fields() };
+  for ( const auto &field : std::as_const( cFields ) )
+  {
+    qFields.append( QgsField( field.name, field.type ) );
+  }
+  return qFields;
+}
+
+QgsFeatureList QgsRasterAttributeTable::qgisFeatures() const
+{
+  QgsFeatureList features;
+  const auto cData { data( ) };
+  for ( const auto &row : std::as_const( cData ) )
+  {
+    QgsAttributes attributes;
+    for ( const auto &cell : std::as_const( row ) )
+    {
+      attributes.append( cell );
+    }
+    QgsFeature feature { qgisFields() };
+    feature.setAttributes( attributes );
+    features.append( feature );
+  }
+  return features;
+}
+
 bool QgsRasterAttributeTable::isDirty() const
 {
   return mIsDirty;

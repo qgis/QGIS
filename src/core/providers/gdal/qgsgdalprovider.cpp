@@ -3220,7 +3220,7 @@ bool QgsGdalProvider::readNativeAttributeTable()
   return hasAtLeastOneValidRat;
 }
 
-bool QgsGdalProvider::writeNativeAttributeTable()
+bool QgsGdalProvider::writeNativeAttributeTable() const
 {
   bool success { false };
   for ( int band = 1; band <= bandCount(); band++ )

@@ -726,25 +726,25 @@ If the attribute table does not exist this method does nothing.
 .. versionadded:: 3.30
 %End
 
-    bool writeFileBasedAttributeTable( const QString &path );
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path ) const;
 %Docstring
-Writes the filesystem-based attribute table to ``path``.
+Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``.
 
 :return: ``True`` on success
 
 .. versionadded:: 3.30
 %End
 
-    bool readFileBasedAttributeTable( const QString &path );
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path );
 %Docstring
-Loads the filesystem-based attribute table from ``path``.
+Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``.
 
 :return: ``True`` on success
 
 .. versionadded:: 3.30
 %End
 
-    virtual bool writeNativeAttributeTable( );
+    virtual bool writeNativeAttributeTable( ) const;
 %Docstring
 Writes the native attribute table.
 The default implementation does nothing and returns ``False``.

@@ -24,6 +24,8 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgspoint.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QTime>
 #include <QMap>
@@ -674,9 +676,30 @@ void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
   }
 }
 
-bool QgsRasterDataProvider::writeFileBasedAttributeTable( const QString &path )
+bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const QString &path ) const
 {
-  return false;
+
+  const QgsRasterAttributeTable *rat { attributeTable( bandNumber ) };
+  if ( ! rat )
+  {
+    return false;
+  }
+
+  QString nPath { path };
+  if ( ! path.endsWith( QStringLiteral( ".vat" ) ) )
+  {
+    nPath += QStringLiteral( ".vat" );
+  }
+
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.driverName = QStringLiteral( "ESRI Shapefile" );
+  options.layerOptions = QStringList() << QStringLiteral( "SHPT=NULL" );
+
+  std::unique_ptr<QgsVectorFileWriter> writer { QgsVectorFileWriter::create( nPath, rat->qgisFields(), QgsWkbTypes::Unknown, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) };
+  QgsFeatureList features { rat->qgisFeatures() };
+  writer->addFeatures( features );
+
+  return true;
 }
 
 bool QgsRasterDataProvider::readNativeAttributeTable()
@@ -684,13 +707,164 @@ bool QgsRasterDataProvider::readNativeAttributeTable()
   return false;
 }
 
-bool QgsRasterDataProvider::readFileBasedAttributeTable( const QString &path )
+bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const QString &path )
 {
-  Q_UNUSED( path );
+  QgsVectorLayer ratLayer { path, QStringLiteral( "RAT layer" ), QStringLiteral( "ogr" ) };
+  if ( ratLayer.isValid() )
+  {
+    std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+    const auto cFields { ratLayer.fields( ) };
+    for ( const auto &field : std::as_const( cFields ) )
+    {
+      const QString fieldLowerName { field.name().toLower() };
+
+      // Colors
+      if ( fieldLowerName.contains( QStringLiteral( "red" ) ) )
+      {
+        if ( fieldLowerName.contains( QStringLiteral( "min" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::RedMin, QVariant::Int );
+        }
+        else if ( fieldLowerName.contains( QStringLiteral( "max" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::RedMax, QVariant::Int );
+        }
+        else
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Red, QVariant::Int );
+        }
+      }
+      else if ( fieldLowerName.contains( QStringLiteral( "green" ) ) )
+      {
+        if ( fieldLowerName.contains( QStringLiteral( "min" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::GreenMin, QVariant::Int );
+        }
+        else if ( fieldLowerName.contains( QStringLiteral( "max" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::GreenMax, QVariant::Int );
+        }
+        else
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Green, QVariant::Int );
+        }
+      }
+      else if ( fieldLowerName.contains( QStringLiteral( "blue" ) ) )
+      {
+        if ( fieldLowerName.contains( QStringLiteral( "min" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::BlueMin, QVariant::Int );
+        }
+        else if ( fieldLowerName.contains( QStringLiteral( "max" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::BlueMax, QVariant::Int );
+        }
+        else
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Blue, QVariant::Int );
+        }
+      }
+      else if ( fieldLowerName.contains( QStringLiteral( "alpha" ) ) )
+      {
+        if ( fieldLowerName.contains( QStringLiteral( "min" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::AlphaMin, QVariant::Int );
+        }
+        else if ( fieldLowerName.contains( QStringLiteral( "max" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::AlphaMax, QVariant::Int );
+        }
+        else
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Alpha, QVariant::Int );
+        }
+      }
+      else if ( fieldLowerName == QStringLiteral( "count" ) )
+      {
+        rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::PixelCount, QVariant::Int );
+      }
+      else if ( fieldLowerName.contains( QStringLiteral( "value" ) ) )
+      {
+        if ( fieldLowerName.contains( QStringLiteral( "min" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Min, field.type() == QVariant::Double ? QVariant::Double : QVariant::Int );
+        }
+        else if ( fieldLowerName.contains( QStringLiteral( "max" ) ) )
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Max, field.type() == QVariant::Double ? QVariant::Double : QVariant::Int );
+        }
+        else
+        {
+          rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::MinMax, field.type() == QVariant::Double ? QVariant::Double : QVariant::Int );
+        }
+      }
+      else
+      {
+        switch ( field.type() )
+        {
+          case QVariant::Double:
+            rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Generic, QVariant::Double );
+            break;
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LongLong:
+          case QVariant::ULongLong:
+            rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Generic, QVariant::Int );
+            break;
+          default:
+            rat->appendField( field.name(), QgsRasterAttributeTable::FieldUsage::Generic, QVariant::String );
+        }
+      }
+    }
+
+    QgsFeature feature;
+    QgsFeatureIterator it { ratLayer.getFeatures() };
+    while ( it.nextFeature( feature ) )
+    {
+      QVariantList rowData;
+      const auto cFields { rat->fields() };
+      int colIdx { 0 };
+      for ( const auto &field : std::as_const( cFields ) )
+      {
+
+        if ( colIdx >= feature.attributeCount() )
+        {
+          break;
+        }
+
+        switch ( field.type )
+        {
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LongLong:
+          case QVariant::ULongLong:
+          {
+            rowData.push_back( feature.attribute( colIdx ).toInt() );
+            break;
+          }
+          case QVariant::Double:
+          {
+            rowData.push_back( feature.attribute( colIdx ).toDouble() );
+            break;
+          }
+          default:
+            rowData.push_back( feature.attribute( colIdx ).toString() );
+        }
+        colIdx++;
+      }
+      rat->appendRow( rowData );
+    }
+
+    if ( rat->isValid() )
+    {
+      setAttributeTable( bandNumber, rat.release() );
+      return true;
+    }
+  }
   return false;
 }
 
-bool QgsRasterDataProvider::writeNativeAttributeTable()
+bool QgsRasterDataProvider::writeNativeAttributeTable() const
 {
   return false;
 }
