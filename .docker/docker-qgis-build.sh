@@ -66,6 +66,13 @@ if [[ ${PATCH_QT_3D} == "true" ]]; then
   )
 fi
 
+if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+   "-DQSCINTILLA_INCLUDE_DIR:STRING=/usr/include/qt6"
+   "-DQSCINTILLA_LIBRARY:STRING=/usr/lib64/libqscintilla2_qt6.so"
+  )
+fi
+
 if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DGRASS_PREFIX$( grass --config version | cut -b 1 )=$( grass --config path )"
