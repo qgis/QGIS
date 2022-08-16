@@ -328,15 +328,20 @@ void TestQgsSvgCache::dynamicSvg()
   // test rendering SVGs with manual aspect ratio
   QgsSvgCache cache;
   const QString dynamicImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
-  const QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+  const QString svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
   1.0, 0, false, {{"text1", "green?"}, {"text2", "supergreen"}, {"align",  "middle" }} );
-  const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
-  const QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
-                                 1.0, 0, false, {} );
-  qDebug() << control_svg;
-  qDebug() << svg;
+  const QString controlImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
+  const QString controlSvg = cache.svgContent( controlImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                             1.0, 0, false, {} );
+  if ( controlSvg != svg )
+  {
+    QString reportString;
+    reportString.append( QStringLiteral( "<h3>Expected SVG content</h3><p><code>%1</code></p>" ).arg( controlSvg.toHtmlEscaped() ) );
+    reportString.append( QStringLiteral( "<h3>Actual SVG content</h3><p><code>%1</code></p>" ).arg( svg.toHtmlEscaped() ) );
+    appendToReport( QStringLiteral( "Dynamic SVG content" ), reportString );
+  }
 
-  QCOMPARE( svg, control_svg );
+  QCOMPARE( svg, controlSvg );
 }
 
 void TestQgsSvgCache::aspectRatio()
