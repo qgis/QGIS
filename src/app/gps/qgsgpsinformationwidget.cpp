@@ -1240,7 +1240,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         return;
       }
 
-      QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QString(), -1, this );
+      QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
         if ( mCbxAutoCommit->isChecked() )
@@ -1335,7 +1335,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       }
 
       f.setGeometry( g );
-      QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QString(), -1, this );
+      QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
         if ( mCbxAutoCommit->isChecked() )

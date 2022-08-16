@@ -7298,7 +7298,7 @@ void QgisApp::updateDefaultFeatureAction( QAction *action )
   else
   {
     //action is from QgsMapLayerActionRegistry
-    vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), QString() );
+    vlayer->actions()->setDefaultAction( QStringLiteral( "Canvas" ), QUuid() );
 
     QgsMapLayerAction *mapLayerAction = qobject_cast<QgsMapLayerAction *>( action );
     if ( mapLayerAction )
