@@ -281,12 +281,12 @@ void QgsPluginManager::loadPlugin( const QString &id )
   if ( plugin->value( QStringLiteral( "pythonic" ) ) == QLatin1String( "true" ) )
   {
     library = plugin->value( QStringLiteral( "id" ) );
-    QgsDebugMsg( "Loading Python plugin: " + library );
+    QgsDebugMsgLevel( "Loading Python plugin: " + library, 2 );
     pRegistry->loadPythonPlugin( library );
   }
   else // C++ plugin
   {
-    QgsDebugMsg( "Loading C++ plugin: " + library );
+    QgsDebugMsgLevel( "Loading C++ plugin: " + library, 2 );
     pRegistry->loadCppPlugin( library );
   }
 
@@ -403,7 +403,7 @@ void QgsPluginManager::getCppPluginsMetadata()
       }
       else
       {
-        QgsDebugMsg( "dlopen succeeded for " + lib );
+        QgsDebugMsgLevel( "dlopen succeeded for " + lib, 2 );
         dlclose( handle );
       }
 #endif //#ifndef Q_OS_WIN && Q_OS_MACX
@@ -665,19 +665,19 @@ void QgsPluginManager::pluginItemChanged( QStandardItem *item )
   {
     if ( mPluginsAreEnabled && ! isPluginEnabled( id ) )
     {
-      QgsDebugMsg( " Loading plugin: " + id );
+      QgsDebugMsgLevel( " Loading plugin: " + id, 2 );
       loadPlugin( id );
     }
     else
     {
       // only enable the plugin, as we're in --noplugins mode
-      QgsDebugMsg( " Enabling plugin: " + id );
+      QgsDebugMsgLevel( " Enabling plugin: " + id, 2 );
       savePluginState( id, true );
     }
   }
   else if ( ! item->checkState() )
   {
-    QgsDebugMsg( " Unloading plugin: " + id );
+    QgsDebugMsgLevel( " Unloading plugin: " + id, 2 );
     unloadPlugin( id );
   }
 }
@@ -792,7 +792,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteLabel->show();
     voteSlider->show();
     voteSubmit->show();
-    QgsDebugMsg( QStringLiteral( "vote slider:%1" ).arg( std::round( metadata->value( "average_vote" ).toFloat() ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "vote slider:%1" ).arg( std::round( metadata->value( "average_vote" ).toFloat() ) ), 2 );
     voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
@@ -1469,12 +1469,12 @@ void QgsPluginManager::leFilter_textChanged( QString text )
   {
     text = text.remove( QStringLiteral( "tag:" ) );
     mModelProxy->setFilterRole( PLUGIN_TAGS_ROLE );
-    QgsDebugMsg( "PluginManager TAG filter changed to :" + text );
+    QgsDebugMsgLevel( "PluginManager TAG filter changed to :" + text, 3 );
   }
   else
   {
     mModelProxy->setFilterRole( 0 );
-    QgsDebugMsg( "PluginManager filter changed to :" + text );
+    QgsDebugMsgLevel( "PluginManager filter changed to :" + text, 3 );
   }
 
   const QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
@@ -1483,14 +1483,10 @@ void QgsPluginManager::leFilter_textChanged( QString text )
   mModelProxy->setFilterRegExp( myRegExp );
 }
 
-
-
 void QgsPluginManager::buttonUpgradeAll_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().upgradeAllUpgradeable()" ) );
 }
-
-
 
 void QgsPluginManager::buttonInstall_clicked()
 {
@@ -1570,7 +1566,7 @@ void QgsPluginManager::setRepositoryFilter()
   {
     QString key = current->text( 1 );
     key = key.replace( '\'', QLatin1String( "\\\'" ) ).replace( '\"', QLatin1String( "\\\"" ) );
-    QgsDebugMsg( "Disabling all repositories but selected: " + key );
+    QgsDebugMsgLevel( "Disabling all repositories but selected: " + key, 2 );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().setRepositoryInspectionFilter('%1')" ).arg( key ) );
   }
 }
@@ -1579,7 +1575,7 @@ void QgsPluginManager::setRepositoryFilter()
 
 void QgsPluginManager::clearRepositoryFilter()
 {
-  QgsDebugMsg( QStringLiteral( "Enabling all repositories back" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Enabling all repositories back" ), 2 );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().setRepositoryInspectionFilter()" ) );
 }
 
@@ -1587,7 +1583,7 @@ void QgsPluginManager::clearRepositoryFilter()
 
 void QgsPluginManager::buttonRefreshRepos_clicked()
 {
-  QgsDebugMsg( QStringLiteral( "Refreshing repositories..." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Refreshing repositories..." ), 2 );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().reloadAndExportData()" ) );
 }
 
@@ -1595,7 +1591,7 @@ void QgsPluginManager::buttonRefreshRepos_clicked()
 
 void QgsPluginManager::buttonAddRep_clicked()
 {
-  QgsDebugMsg( QStringLiteral( "Adding repository connection..." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Adding repository connection..." ), 2 );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().addRepository()" ) );
 }
 
@@ -1608,7 +1604,7 @@ void QgsPluginManager::buttonEditRep_clicked()
   {
     QString key = current->text( 1 );
     key = key.replace( '\'', QLatin1String( "\\\'" ) ).replace( '\"', QLatin1String( "\\\"" ) );
-    QgsDebugMsg( "Editing repository connection: " + key );
+    QgsDebugMsgLevel( "Editing repository connection: " + key, 2 );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().editRepository('%1')" ).arg( key ) );
   }
 }
@@ -1622,7 +1618,7 @@ void QgsPluginManager::buttonDeleteRep_clicked()
   {
     QString key = current->text( 1 );
     key = key.replace( '\'', QLatin1String( "\\\'" ) ).replace( '\"', QLatin1String( "\\\"" ) );
-    QgsDebugMsg( "Deleting repository connection: " + key );
+    QgsDebugMsgLevel( "Deleting repository connection: " + key, 2 );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().deleteRepository('%1')" ).arg( key ) );
   }
 }
