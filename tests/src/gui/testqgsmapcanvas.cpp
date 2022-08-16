@@ -413,15 +413,15 @@ void TestQgsMapCanvas::testShiftZoom()
   // start by testing a tool with shift-zoom enabled
   mCanvas->setMapTool( &panTool );
 
-  QMouseEvent e( QMouseEvent::MouseButtonPress, startPos,
-                 Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mousePressEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseMoveEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseReleaseEvent( &e );
+  std::unique_ptr< QMouseEvent > e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
+                                     Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth / 2.0, 0.2 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight / 2.0, 0.2 );
@@ -430,15 +430,15 @@ void TestQgsMapCanvas::testShiftZoom()
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
 
   //test that a shift-click (no movement) will not zoom
-  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mousePressEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseMove, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseMoveEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseButtonRelease, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseReleaseEvent( &e );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.0001 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.0001 );
@@ -450,15 +450,15 @@ void TestQgsMapCanvas::testShiftZoom()
   QgsMapToolTest mapTool( mCanvas );
   mCanvas->setMapTool( &mapTool );
 
-  e = QMouseEvent( QMouseEvent::MouseButtonPress, startPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mousePressEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseMove, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseMoveEvent( &e );
-  e = QMouseEvent( QMouseEvent::MouseButtonRelease, endPos,
-                   Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
-  mCanvas->mouseReleaseEvent( &e );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mousePressEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseMoveEvent( e.get() );
+  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, endPos,
+                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.00001 );
