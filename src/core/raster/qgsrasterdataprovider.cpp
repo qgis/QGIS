@@ -642,23 +642,52 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
                                   QString::number( mMaxOversampling ) );
 }
 
-QgsRasterAttributeTable QgsRasterDataProvider::attributeTable( int bandNumber )
+QgsRasterAttributeTable *QgsRasterDataProvider::attributeTable( int bandNumber ) const
 {
-  if ( mAttributeTables.contains( bandNumber ) )
+  try
   {
-    return mAttributeTables.value( bandNumber );
+    return mAttributeTables.at( bandNumber ).get();
   }
-  return QgsRasterAttributeTable();
+  catch ( std::out_of_range const & )
+  {
+    return nullptr;
+  }
 }
 
-void QgsRasterDataProvider::setAttributeTable( int bandNumber, const QgsRasterAttributeTable &attributeTable )
+void QgsRasterDataProvider::setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable )
 {
-  mAttributeTables.insert( bandNumber, attributeTable );
+  if ( attributeTable )
+  {
+    mAttributeTables[ bandNumber ] = std::unique_ptr<QgsRasterAttributeTable>( attributeTable );
+  }
+  else
+  {
+    removeAttributeTable( bandNumber );
+  }
 }
 
 void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
 {
-  mAttributeTables.remove( bandNumber );
+  if ( mAttributeTables.find( bandNumber ) !=  std::end( mAttributeTables ) )
+  {
+    mAttributeTables.erase( bandNumber );
+  }
+}
+
+bool QgsRasterDataProvider::loadNativeAttributeTable()
+{
+  return false;
+}
+
+bool QgsRasterDataProvider::loadFileBasedAttributeTable( const QString &path )
+{
+  Q_UNUSED( path );
+  return false;
+}
+
+bool QgsRasterDataProvider::saveNativeAttributeTable()
+{
+  return false;
 }
 
 QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const

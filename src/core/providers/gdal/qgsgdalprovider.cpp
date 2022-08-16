@@ -1727,7 +1727,8 @@ QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilitie
 {
   return ProviderCapability::ProviderHintBenefitsFromResampling |
          ProviderCapability::ProviderHintCanPerformProviderResampling |
-         ProviderCapability::ReloadData;
+         ProviderCapability::ReloadData |
+         ProviderCapability::NativeRasterAttributeTable;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
@@ -3066,7 +3067,7 @@ void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo
   }
 }
 
-bool QgsGdalProvider::loadRat()
+bool QgsGdalProvider::loadEmbeddedAttributeTable()
 {
   bool hasAtLeastOneValidRat { false };
 
@@ -3080,7 +3081,7 @@ bool QgsGdalProvider::loadRat()
       GDALRasterAttributeTableH hRat = GDALGetDefaultRAT( hBand );
       if ( hRat )
       {
-        QgsRasterAttributeTable rat;
+        std::unique_ptr<QgsRasterAttributeTable> rat;
 
         // Fields
         QgsFields fields;
@@ -3176,7 +3177,7 @@ bool QgsGdalProvider::loadRat()
         for ( int fieldIdx = 0; fieldIdx < fields.count(); ++fieldIdx )
         {
           const auto field { fields.at( fieldIdx ) };
-          rat.appendField( field.name(), usages[ fieldIdx ], field.type() );
+          rat->appendField( field.name(), usages[ fieldIdx ], field.type() );
         }
 
         // Data
@@ -3204,12 +3205,13 @@ bool QgsGdalProvider::loadRat()
               }
             }
           }
-          rat.insertRow( data );
+          rat->insertRow( data );
         }
 
-        if ( rat.isValid( ) )
+        if ( rat->isValid( ) )
         {
-          setAttributeTable( bandNumber, rat );
+          rat->setIsDirty( false );
+          setAttributeTable( bandNumber, rat.release() );
           hasAtLeastOneValidRat = true;
         }
       }
@@ -3217,6 +3219,46 @@ bool QgsGdalProvider::loadRat()
   }
 
   return hasAtLeastOneValidRat;
+}
+
+bool QgsGdalProvider::saveNativeAttributeTable()
+{
+  for ( int band = 1; band <= bandCount(); band++ )
+  {
+    const QgsRasterAttributeTable *rat { attributeTable( band ) };
+    if ( rat->isValid() && rat->isDirty() )
+    {
+
+      GDALRasterBandH hBand { GDALGetRasterBand( mGdalBaseDataset, band ) };
+      GDALRasterAttributeTableH hRat = GDALGetDefaultRAT( hBand );
+      GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) );
+      const auto cFields { rat->fields() };
+      for ( const auto &field : cFields )
+      {
+        GDALRATFieldType fType { GFT_String };
+        switch ( field.type )
+        {
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LongLong:
+          case QVariant::ULongLong:
+          {
+            fType = GFT_Integer;
+            break;
+          }
+          case QVariant::Double:
+          {
+            fType = GFT_Real;
+            break;
+          }
+          default:
+            fType = GFT_String;
+        }
+        GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) );
+      }
+    }
+  }
+  return true;
 }
 
 

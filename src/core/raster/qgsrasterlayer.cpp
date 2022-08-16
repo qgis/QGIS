@@ -139,11 +139,24 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   {
     providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
   }
+
   setDataSource( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
   {
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+    if ( mDataProvider )
+    {
+      const QgsDataSourceUri dsUri { uri };
+      if ( options.loadDefaultRat )
+      {
+        mDataProvider->loadEmbeddedAttributeTable();
+      }
+      else if ( ! options.fileBasedRat.isEmpty() )
+      {
+        mDataProvider->loadFileBasedAttributeTable( options.fileBasedRat );
+      }
+    }
   }
 
 } // QgsRasterLayer ctor
@@ -247,6 +260,13 @@ QString QgsRasterLayer::bandName( int bandNo ) const
 {
   if ( !mDataProvider ) return QString();
   return mDataProvider->generateBandName( bandNo );
+}
+
+QgsRasterAttributeTable *QgsRasterLayer::attributeTable( int bandNoInt ) const
+{
+  if ( !mDataProvider )
+    return nullptr;
+  return mDataProvider->attributeTable( bandNoInt );
 }
 
 void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
@@ -735,7 +755,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
 
   QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
-  if ( mDataProvider->bandCount() == 1 && mDataProvider->attributeTable( 1 ).isValid() )
+  if ( mDataProvider->bandCount() == 1 && mDataProvider->attributeTable( 1 ) )
   {
     setRendererForDrawingStyle( QgsRaster::AttributeTable );
   }

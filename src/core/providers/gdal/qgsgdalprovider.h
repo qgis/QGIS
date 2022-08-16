@@ -229,7 +229,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool initIfNeeded();
 
     //! Load attribute tables
-    bool loadRat();
+    bool loadEmbeddedAttributeTable() override;
+
+    bool saveNativeAttributeTable() override;
 
     // There are 2 cloning mechanisms.
     // * Either the cloned provider use the same GDAL handles as the main provider

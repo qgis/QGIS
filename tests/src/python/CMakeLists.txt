@@ -293,6 +293,7 @@ ADD_PYTHON_TEST(TestQgsRandomMarkerSymbolLayer test_qgsrandommarkersymbollayer.p
 ADD_PYTHON_TEST(PyQgsRange test_qgsrange.py)
 ADD_PYTHON_TEST(PyQgsRangeSlider test_qgsrangeslider.py)
 ADD_PYTHON_TEST(PyQgsRangeWidgets test_qgsrangewidgets.py)
+ADD_PYTHON_TEST(PyQgsRasterAttributeTable test_qgsrasterattributetable.py)
 ADD_PYTHON_TEST(PyQgsRasterBandComboBox test_qgsrasterbandcombobox.py)
 ADD_PYTHON_TEST(PyQgsRasterFileWriter test_qgsrasterfilewriter.py)
 ADD_PYTHON_TEST(PyQgsRasterFileWriterTask test_qgsrasterfilewritertask.py)

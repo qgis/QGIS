@@ -79,6 +79,8 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool isDirty() const;
     void setIsDirty( bool newIsDirty );
 
+    bool isValid() const;
+
     bool insertField( const QgsRasterAttributeTable::Field field, int position = 0 );
     bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
 
@@ -90,11 +92,8 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool insertRow( const QVariantList data, int position = 0 );
     bool appendRow( const QVariantList data );
 
-    bool isValid();
-
-    bool saveToFile( const QString &path );
+    bool saveToFile( const QString &path, int bandNoInt = 1 );
     bool loadFromFile( const QString &path );
-
 
     QgsRasterAttributeTable::Origin origin() const;
 
