@@ -713,7 +713,15 @@ void QgsModelDesignerDialog::exportToPdf()
   QPrinter printer;
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( filename );
-  printer.setPaperSize( QSizeF( printerRect.width(), printerRect.height() ), QPrinter::DevicePixel );
+
+  const double scaleFactor = 96 / 25.4; // based on 96 dpi sizes
+
+  QPageLayout pageLayout( QPageSize( totalRect.size() / scaleFactor, QPageSize::Millimeter ),
+                          QPageLayout::Portrait,
+                          QMarginsF( 0, 0, 0, 0 ) );
+  pageLayout.setMode( QPageLayout::FullPageMode );
+  printer.setPageLayout( pageLayout );
+
   printer.setFullPage( true );
 
   QPainter painter( &printer );
