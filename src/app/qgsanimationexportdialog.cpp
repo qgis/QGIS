@@ -17,12 +17,12 @@
 
 #include "qgsanimationexportdialog.h"
 #include "qgsmapcanvas.h"
-#include "qgsdecorationitem.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalutils.h"
+#include "qgsmapdecoration.h"
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 

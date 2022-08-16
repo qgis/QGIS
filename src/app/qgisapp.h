@@ -32,7 +32,6 @@ class QRect;
 class QgsSettings;
 class QSpinBox;
 class QSplashScreen;
-class QStringList;
 class QToolButton;
 class QTcpSocket;
 class QValidator;

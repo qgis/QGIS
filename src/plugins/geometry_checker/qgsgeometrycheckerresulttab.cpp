@@ -21,7 +21,6 @@
 #include <QDialogButtonBox>
 #include <QPlainTextEdit>
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerresulttab.h"
 #include "qgsgeometrycheckfixdialog.h"
 
@@ -34,16 +33,14 @@
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgsproviderregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvscrollarea.h"
 #include "qgssettings.h"
-#include "qgsscrollarea.h"
 #include "qgsgeometrycheckerror.h"
-#include "qgsogrprovider.h"
+#include "qgsogrproviderutils.h"
 
 QString QgsGeometryCheckerResultTab::sSettingsGroup = QStringLiteral( "/geometry_checker/default_fix_methods/" );
 
