@@ -315,15 +315,12 @@ void QgsPlotCanvas::wheelZoom( QWheelEvent * )
 
 bool QgsPlotCanvas::event( QEvent *e )
 {
-  if ( !QTouchDevice::devices().empty() )
+  if ( e->type() == QEvent::Gesture )
   {
-    if ( e->type() == QEvent::Gesture )
+    // call handler of current map tool
+    if ( mTool )
     {
-      // call handler of current map tool
-      if ( mTool )
-      {
-        return mTool->gestureEvent( static_cast<QGestureEvent *>( e ) );
-      }
+      return mTool->gestureEvent( static_cast<QGestureEvent *>( e ) );
     }
   }
 
