@@ -57,7 +57,7 @@ QString QgsFileUtils::representFileSize( qint64 bytes )
 
 QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
 {
-  const QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]+)" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]+)" ) );
   QStringList extensions;
   QRegularExpressionMatchIterator matches = rx.globalMatch( filter );
 
@@ -76,7 +76,7 @@ QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
 
 QString QgsFileUtils::wildcardsFromFilter( const QString &filter )
 {
-  const QRegularExpression globPatternsRx( QStringLiteral( ".*\\((.*?)\\)$" ) );
+  const thread_local QRegularExpression globPatternsRx( QStringLiteral( ".*\\((.*?)\\)$" ) );
   const QRegularExpressionMatch matches = globPatternsRx.match( filter );
   if ( matches.hasMatch() )
     return matches.captured( 1 );
@@ -143,7 +143,7 @@ QString QgsFileUtils::addExtensionFromFilter( const QString &fileName, const QSt
 
 QString QgsFileUtils::stringToSafeFilename( const QString &string )
 {
-  QRegularExpression rx( QStringLiteral( "[/\\\\\\?%\\*\\:\\|\"<>]" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "[/\\\\\\?%\\*\\:\\|\"<>]" ) );
   QString s = string;
   s.replace( rx, QStringLiteral( "_" ) );
   return s;

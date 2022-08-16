@@ -1477,10 +1477,8 @@ void QgsPluginManager::leFilter_textChanged( QString text )
     QgsDebugMsg( "PluginManager filter changed to :" + text );
   }
 
-  const QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
-  const Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
-  const QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
-  mModelProxy->setFilterRegExp( myRegExp );
+  const QRegularExpression filterRegExp( text, QRegularExpression::CaseInsensitiveOption );
+  mModelProxy->setFilterRegularExpression( filterRegExp );
 }
 
 

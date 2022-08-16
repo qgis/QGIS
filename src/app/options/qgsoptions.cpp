@@ -81,6 +81,7 @@
 #include <QMessageBox>
 #include <QNetworkDiskCache>
 #include <QStandardPaths>
+#include <QRegularExpression>
 
 #include <limits>
 #include <sqlite3.h>
@@ -2694,12 +2695,12 @@ void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
 void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegExp regExp( "1:0*[1-9]\\d*" );
-  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  const thread_local QRegularExpression sRegExp( QStringLiteral( "^1:0*[1-9]\\d*$" ) );
+  if ( sRegExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator
-    regExp.setPattern( QStringLiteral( "1:0*" ) );
-    changedScaleItem->setText( changedScaleItem->text().replace( regExp, QStringLiteral( "1:" ) ) );
+    const thread_local QRegularExpression sRemoveLeadingZeroesRegEx( QStringLiteral( "^1:0*" ) );
+    changedScaleItem->setText( changedScaleItem->text().replace( sRemoveLeadingZeroesRegEx, QStringLiteral( "1:" ) ) );
   }
   else
   {
