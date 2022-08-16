@@ -145,18 +145,6 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   if ( isValid() )
   {
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
-    if ( mDataProvider )
-    {
-      const QgsDataSourceUri dsUri { uri };
-      if ( options.loadDefaultRat )
-      {
-        mDataProvider->readNativeAttributeTable();
-      }
-      else if ( ! options.fileBasedRat.isEmpty() )
-      {
-        mDataProvider->readFileBasedAttributeTable( options.fileBasedRat );
-      }
-    }
   }
 
 } // QgsRasterLayer ctor

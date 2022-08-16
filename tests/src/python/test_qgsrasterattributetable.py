@@ -123,7 +123,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
 
-    def testCreateNativeRat(self):
+    def testRat(self):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
@@ -135,11 +135,12 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Double', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.Double))
 
         data_rows = [
-            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100],
-            [2, 1, 'one', 'one2', 'one3', 100, 20, 0],
-            [4, 2, 'two', 'two2', 'two3', 200, 30, 50],
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456],
         ]
 
         for row in data_rows:
@@ -161,11 +162,12 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat = d.attributeTable(1)
         rat.isValid()
         rat.fields()
-        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue'])
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
+        self.assertEqual([f.type for f in rat.fields()], [QVariant.Int, QVariant.Int, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
         self.assertEqual(rat.data(), [
-            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100],
-            [2, 1, 'one', 'one2', 'one3', 100, 20, 0],
-            [4, 2, 'two', 'two2', 'two3', 200, 30, 50]])
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
 
         # Band 2
         data_rows = [
@@ -201,11 +203,12 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat = d.attributeTable(1)
         rat.isValid()
         rat.fields()
-        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue'])
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
+        self.assertEqual([f.type for f in rat.fields()], [QVariant.Int, QVariant.Int, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
         self.assertEqual(rat.data(), [
-            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100],
-            [2, 1, 'one', 'one2', 'one3', 100, 20, 0],
-            [4, 2, 'two', 'two2', 'two3', 200, 30, 50]])
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
 
         rat = d.attributeTable(2)
         rat.isValid()
@@ -214,7 +217,27 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(rat.data(), [
             [1, 1, 'one', 'one2', 'one3', 100, 20, 10],
             [3, 1, 'three', 'three2', 'tree3', 200, 10, 20],
-            [3, 1, 'five', 'five2', 'five3', 50, 40, 250]])
+            [3, 1, 'five', 'five2', 'five3', 50, 40, 250],
+        ])
+
+        # Test DBF RATs
+        self.assertTrue(d.writeFileBasedAttributeTable(1, self.uri_2x2_2_BANDS_INT16))
+        del raster
+        os.unlink(self.uri_2x2_2_BANDS_INT16 + '.aux.xml')
+        raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
+        self.assertTrue(raster.isValid())
+        d = raster.dataProvider()
+        self.assertFalse(d.readNativeAttributeTable())
+        self.assertTrue(d.readFileBasedAttributeTable(1, self.uri_2x2_2_BANDS_INT16 + '.vat.dbf'))
+        rat = d.attributeTable(1)
+        rat.isValid()
+        rat.fields()
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
+        self.assertEqual([f.type for f in rat.fields()], [QVariant.Int, QVariant.Int, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
+        self.assertEqual(rat.data(), [
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@
 #define QGSRASTERATTRIBUTETABLE_H
 
 #include "qgsfields.h"
+#include "qgsfeature.h"
 #include "qgis_core.h"
 #include "gdal.h"
 
@@ -76,6 +77,9 @@ class CORE_EXPORT QgsRasterAttributeTable
     void setType( const RatType &newType );
     bool hasColor();
     QList<QgsRasterAttributeTable::Field> fields() const;
+
+    QgsFields qgisFields() const;
+    QgsFeatureList qgisFeatures( ) const;
 
     bool isDirty() const;
     void setIsDirty( bool newIsDirty );
