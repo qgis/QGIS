@@ -27,6 +27,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
+#include "qgsvariantutils.h"
 
 #include <QThread>
 #include <QLocale>
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsExpressionUtils
     static TVL getTVLValue( const QVariant &value, QgsExpression *parent )
     {
       // we need to convert to TVL
-      if ( value.isNull() )
+      if ( QgsVariantUtils::isNull( value ) )
         return Unknown;
 
       //handle some special cases
@@ -185,7 +186,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isNull( const QVariant &v )
     {
-      return v.isNull();
+      return QgsVariantUtils::isNull( v );
     }
 
     static inline bool isList( const QVariant &v )

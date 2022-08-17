@@ -38,6 +38,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsfileutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsvariantutils.h"
 #include <functional>
 #include <QRegularExpression>
 
@@ -5095,7 +5096,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterString::clone() const
 
 QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "None" );
 
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
@@ -7440,7 +7441,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterLayout::clone() const
 
 QString QgsProcessingParameterLayout::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "None" );
 
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
@@ -7515,7 +7516,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterLayoutItem::clone() cons
 
 QString QgsProcessingParameterLayoutItem::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "None" );
 
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
@@ -7648,7 +7649,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterColor::clone() const
 
 QString QgsProcessingParameterColor::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "None" );
 
   if ( value.userType() == QMetaType::type( "QgsProperty" ) )
@@ -7796,7 +7797,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameterCoordinateOperation::clo
 
 QString QgsProcessingParameterCoordinateOperation::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
 {
-  if ( !value.isValid() || value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "None" );
 
   if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )

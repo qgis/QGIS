@@ -17,6 +17,7 @@
 #include "qgspropertycollection.h"
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"
+#include "qgsvariantutils.h"
 
 void QgsLabelObstacleSettings::setObstacleGeometry( const QgsGeometry &obstacleGeom )
 {
@@ -34,7 +35,7 @@ void QgsLabelObstacleSettings::updateDataDefinedProperties( const QgsPropertyCol
   {
     context.setOriginalValueVariable( mObstacleFactor );
     QVariant exprVal = properties.value( QgsPalLayerSettings::ObstacleFactor, context );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       bool ok;
       double factorD = exprVal.toDouble( &ok );

@@ -1063,7 +1063,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
       for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QString valueString;
-        if ( it.value().isNull() )
+        if ( QgsVariantUtils::isNull( it.value() ) )
         {
           valueString = tr( "no data" );
         }

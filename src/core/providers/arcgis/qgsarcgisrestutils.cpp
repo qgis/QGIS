@@ -40,6 +40,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -942,7 +943,7 @@ Qt::BrushStyle QgsArcGisRestUtils::convertFillStyle( const QString &style )
 
 QDateTime QgsArcGisRestUtils::convertDateTime( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QDateTime();
   bool ok = false;
   QDateTime dt = QDateTime::fromMSecsSinceEpoch( value.toLongLong( &ok ) );
@@ -1475,7 +1476,7 @@ QVariantMap QgsArcGisRestUtils::featureToJson( const QgsFeature &feature, const 
 
 QVariant QgsArcGisRestUtils::variantToAttributeValue( const QVariant &variant, QVariant::Type expectedType, const QgsArcGisRestContext &context )
 {
-  if ( variant.isNull() )
+  if ( QgsVariantUtils::isNull( variant ) )
     return QVariant();
 
   switch ( expectedType )

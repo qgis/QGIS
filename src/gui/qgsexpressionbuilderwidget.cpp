@@ -355,7 +355,7 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
 QgsVectorLayer *QgsExpressionBuilderWidget::contextLayer( const QgsExpressionItem *item ) const
 {
   QgsVectorLayer *layer = nullptr;
-  if ( ! item->data( QgsExpressionItem::LAYER_ID_ROLE ).isNull() )
+  if ( ! QgsVariantUtils::isNull( item->data( QgsExpressionItem::LAYER_ID_ROLE ) ) )
   {
     layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
   }
@@ -558,7 +558,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, QgsV
   {
     QString strValue;
     bool forceRepresentedValue = false;
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       strValue = QStringLiteral( "NULL" );
     else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
       strValue = value.toString();

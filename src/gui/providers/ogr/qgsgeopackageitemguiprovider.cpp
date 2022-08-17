@@ -131,7 +131,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
 
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
     QString errCause;
-    if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( QStringLiteral( "layerName" ) ).isNull() )
+    if ( parts.empty() || QgsVariantUtils::isNull( parts.value( QStringLiteral( "path" ) ) ) || QgsVariantUtils::isNull( parts.value( QStringLiteral( "layerName" ) ) ) )
     {
       errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( layerItem->uri() );
     }

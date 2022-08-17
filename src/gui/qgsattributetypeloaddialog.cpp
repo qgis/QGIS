@@ -139,8 +139,8 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   {
     const QVariant val1 = f.attribute( idx );
     const QVariant val2 = f.attribute( idx2 );
-    if ( val1.isValid() && !val1.isNull() && !val1.toString().isEmpty()
-         && val2.isValid() && !val2.isNull() && !val2.toString().isEmpty() )
+    if ( val1.isValid() && !QgsVariantUtils::isNull( val1 ) && !val1.toString().isEmpty()
+         && val2.isValid() && !QgsVariantUtils::isNull( val2 ) && !val2.toString().isEmpty() )
     {
       valueMap.insert( val1.toString(), val2.toString() );
     }
@@ -186,7 +186,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   while ( fit.nextFeature( f ) )
   {
     const QVariant val = f.attribute( idx );
-    if ( val.isValid() && !val.isNull() && !val.toString().isEmpty() )
+    if ( val.isValid() && !QgsVariantUtils::isNull( val ) && !val.toString().isEmpty() )
     {
       mValueMap.insert( f.attribute( idx2 ).toString(), val );
     }

@@ -38,6 +38,7 @@
 #include "qgsregularpolygon.h"
 #include "qgsquadrilateral.h"
 #include "qgsmultipolygon.h"
+#include "qgsvariantutils.h"
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
 #include "qgsgeometryengine.h"
@@ -530,7 +531,7 @@ static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *
   double maxVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
-    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    double testVal = QgsVariantUtils::isNull( val ) ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
     if ( std::isnan( maxVal ) )
     {
       maxVal = testVal;
@@ -554,7 +555,7 @@ static QVariant fcnMin( const QVariantList &values, const QgsExpressionContext *
   double minVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
-    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    double testVal = QgsVariantUtils::isNull( val ) ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
     if ( std::isnan( minVal ) )
     {
       minVal = testVal;
@@ -905,7 +906,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
     QgsExpression groupByExp( groupBy );
     QVariant groupByValue = groupByExp.evaluate( context );
     QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
-                            groupByValue.isNull() ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
+                            QgsVariantUtils::isNull( groupByValue ) ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
                             QgsExpression::quotedValue( groupByValue ) );
     if ( !parameters.filter.isEmpty() )
       parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
@@ -1103,7 +1104,7 @@ static QVariant fcnMapScale( const QVariantList &, const QgsExpressionContext *c
 
   QVariant scale = context->variable( QStringLiteral( "map_scale" ) );
   bool ok = false;
-  if ( !scale.isValid() || scale.isNull() )
+  if ( QgsVariantUtils::isNull( scale ) )
     return QVariant();
 
   const double v = scale.toDouble( &ok );
@@ -1258,7 +1259,7 @@ static QVariant fcnCoalesce( const QVariantList &values, const QgsExpressionCont
 {
   for ( const QVariant &value : values )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       continue;
     return value;
   }
@@ -1711,7 +1712,7 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsFeature feature;
-  if ( values.size() == 0 || values.at( 0 ).isNull() )
+  if ( values.size() == 0 || QgsVariantUtils::isNull( values.at( 0 ) ) )
   {
     feature = context->feature();
   }
@@ -2123,7 +2124,7 @@ static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContex
   QString concat;
   for ( const QVariant &value : values )
   {
-    if ( !value.isNull() )
+    if ( !QgsVariantUtils::isNull( value ) )
       concat += QgsExpressionUtils::getStringValue( value, parent );
   }
   return concat;
@@ -4108,7 +4109,7 @@ static QVariant fcnIsEmpty( const QVariantList &values, const QgsExpressionConte
 
 static QVariant fcnIsEmptyOrNull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  if ( values.at( 0 ).isNull() )
+  if ( QgsVariantUtils::isNull( values.at( 0 ) ) )
     return QVariant::fromValue( true );
 
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );

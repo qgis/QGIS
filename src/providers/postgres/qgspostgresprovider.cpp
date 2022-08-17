@@ -479,7 +479,7 @@ void QgsPostgresProvider::disconnectDb()
 
 QString QgsPostgresProvider::quotedByteaValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   const QByteArray ba = value.toByteArray();
@@ -658,7 +658,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
       {
         QgsField fld = fields.at( pkAttrs[0] );
         whereClause = conn->fieldExpression( fld );
-        if ( !pkVals[0].isNull() )
+        if ( !QgsVariantUtils::isNull( pkVals[0] ) )
           whereClause += '=' + pkVals[0].toString();
         else
           whereClause += QLatin1String( " IS NULL" );
@@ -680,7 +680,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
           QgsField fld = fields.at( idx );
 
           whereClause += delim + conn->fieldExpressionForWhereClause( fld, pkVals[i].type() );
-          if ( pkVals[i].isNull() )
+          if ( QgsVariantUtils::isNull( pkVals[i] ) )
             whereClause += QLatin1String( " IS NULL" );
           else
             whereClause += '=' + QgsPostgresConn::quotedValue( pkVals[i] ); // remove toString as it must be handled by quotedValue function
@@ -2317,7 +2317,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
   {
     // stricter check - if we are evaluating default values only on commit then we can only bypass the check
     // if the attribute values matches the original default clause
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !QgsVariantUtils::isNull( value );
   }
 }
 
@@ -2486,7 +2486,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) );
           // a PK field with a sequence val is auto populate by QGIS with this default
           // we are only interested in non default values
-          if ( !v2.isNull() && v2.toString() != defaultValue )
+          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue )
           {
             foundNonEmptyPK = true;
             break;
@@ -2672,7 +2672,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QVariant( QVariant::Int );
 
         QString v;
-        if ( value.isNull() )
+        if ( QgsVariantUtils::isNull( value ) )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[ i ], defaultValues[ i ] );

@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsvariantutils.h"
 
 #include <QDataStream>
 #include <QIcon>
@@ -254,7 +255,7 @@ void QgsField::setConfigurationFlags( QgsField::ConfigurationFlags flags )
 
 QString QgsField::displayString( const QVariant &v ) const
 {
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     return QgsApplication::nullRepresentation();
   }
@@ -414,7 +415,7 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
   if ( errorMessage )
     errorMessage->clear();
 
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     v.convert( d->type );
     return true;

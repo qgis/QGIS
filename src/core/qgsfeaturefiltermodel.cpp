@@ -19,7 +19,7 @@
 #include "qgsconditionalstyle.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
-
+#include "qgsvariantutils.h"
 
 bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 {
@@ -96,7 +96,7 @@ bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
   const QVariantList values = identifier.toList();
   for ( const QVariant &value : values )
   {
-    if ( !value.isNull() )
+    if ( !QgsVariantUtils::isNull( value ) )
     {
       return false;
     }

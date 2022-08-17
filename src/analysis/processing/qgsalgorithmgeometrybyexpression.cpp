@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmgeometrybyexpression.h"
-#include "qgsgeometrycollection.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -139,7 +139,7 @@ QgsFeatureList QgsGeometryByExpressionAlgorithm::processFeature( const QgsFeatur
     throw QgsProcessingException( QObject::tr( "Evaluation error: %1" ).arg( mExpression.evalErrorString() ) );
   }
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     feature.setGeometry( QgsGeometry() );
   }

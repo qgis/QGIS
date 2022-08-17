@@ -17,6 +17,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpression.h"
+#include "qgsvariantutils.h"
 
 QgsSqlExpressionCompiler::QgsSqlExpressionCompiler( const QgsFields &fields, Flags flags, bool ignoreStaticNodes )
   : mFields( fields )
@@ -62,7 +63,7 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )
@@ -530,5 +531,5 @@ bool QgsSqlExpressionCompiler::nodeIsNullLiteral( const QgsExpressionNode *node 
     return false;
 
   const QgsExpressionNodeLiteral *nLit = static_cast<const QgsExpressionNodeLiteral *>( node );
-  return nLit->value().isNull();
+  return QgsVariantUtils::isNull( nLit->value() );
 }

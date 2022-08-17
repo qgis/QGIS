@@ -25,6 +25,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgsexpression_p.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -86,7 +87,7 @@ QString QgsExpression::quotedValue( const QVariant &value )
 
 QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( type )
@@ -1129,7 +1130,7 @@ QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, 
 {
   QString expr;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
   else if ( fieldType == QVariant::Type::Invalid )
     expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );

@@ -23,7 +23,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 #include "qgslinestring.h"
-#include "qgslogger.h"
+#include "qgsvariantutils.h"
 #include "qgsgeos.h"
 #include "qgsgeometryutils.h"
 #include "qgscircularstring.h"
@@ -1236,7 +1236,7 @@ QPolygonF QgsBalloonCallout::getPoints( QgsRenderContext &context, QgsPointXY or
   if ( dataDefinedProperties().isActive( QgsCallout::Margins ) )
   {
     const QVariant value = dataDefinedProperties().value( QgsCallout::Margins, context.expressionContext() );
-    if ( !value.isNull() )
+    if ( !QgsVariantUtils::isNull( value ) )
     {
       if ( value.type() == QVariant::List )
       {

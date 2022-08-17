@@ -2585,7 +2585,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-      if ( !redirect.isNull() )
+      if ( !QgsVariantUtils::isNull( redirect ) )
       {
         emit statusChanged( tr( "Capabilities request redirected." ) );
 

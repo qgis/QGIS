@@ -270,7 +270,7 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
   for ( int i = 0; i < attrs.count(); ++i )
   {
     const QVariant v = attrs.at( i );
-    if ( !v.isValid() || v.isNull() )
+    if ( QgsVariantUtils::isNull( v ) )
       continue;
 
     int valueIndex;

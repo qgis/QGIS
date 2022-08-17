@@ -26,6 +26,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
 #include "qgsfileutils.h"
+#include "qgsvariantutils.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -1327,7 +1328,7 @@ QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QStrin
 
 QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )
