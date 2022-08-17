@@ -57,7 +57,7 @@ jobs:
             docker-tag-suffix: ''
             with-qt6: ON
             with-qt5: OFF
-            with-3d: OFF
+            with-3d: ON
             with-quick: OFF
             with-clazy: OFF
             patch-qt-3d: false
