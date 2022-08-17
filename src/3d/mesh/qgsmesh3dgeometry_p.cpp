@@ -160,9 +160,7 @@ static QByteArray createIndexData( const QgsTriangularMesh &mesh )
   return indexBytes;
 }
 
-// TODO -- port to Qt 6
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMeshDataBlock &mActiveFaceFlagValues )
+static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const QgsMeshDataBlock &mActiveFaceFlagValues )
 {
   int activeFaceCount = 0;
 
@@ -198,7 +196,6 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMesh
 
   return indexBytes;
 }
-#endif
 
 QgsMesh3dGeometry::QgsMesh3dGeometry( const QgsTriangularMesh &triangularMesh,
                                       const QgsVector3D &origin,
@@ -485,9 +482,6 @@ void QgsMeshDataset3DGeometryBuilder::start()
   mWatcherIndex = new QFutureWatcher<QByteArray>( this );
   connect( mWatcherIndex, &QFutureWatcher<int>::finished, this, &QgsMeshDataset3DGeometryBuilder::indexFinished );
 
-  // TODO -- port to Qt 6
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mFutureIndex = QtConcurrent::run( createDatasetIndexData, mMesh, mVertexData.activeFaceFlagValues );
   mWatcherIndex->setFuture( mFutureIndex );
-#endif
 }
