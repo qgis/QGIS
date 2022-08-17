@@ -162,6 +162,8 @@ static QByteArray createIndexData( const QgsTriangularMesh &mesh )
   return indexBytes;
 }
 
+// TODO -- port to Qt 6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMeshDataBlock &mActiveFaceFlagValues )
 {
   int activeFaceCount = 0;
@@ -198,6 +200,7 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, QgsMesh
 
   return indexBytes;
 }
+#endif
 
 QgsMesh3dGeometry::QgsMesh3dGeometry( const QgsTriangularMesh &triangularMesh,
                                       const QgsVector3D &origin,
