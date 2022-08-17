@@ -38,6 +38,9 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 using namespace Qt3DRender;
 
 
+// TODO -- work out how to correctly port this to qt6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
 static QByteArray createPlaneVertexData( int res, float side, float vertScale, float skirtHeight, const QByteArray &heights )
 {
   Q_ASSERT( res >= 2 );
@@ -153,7 +156,6 @@ inline int ijToHeightMapIndex( int i, int j, int resX, int resZ )
   return j * resX + i;
 }
 
-
 static bool hasNoData( int i, int j, const float *heightMap, int resX, int resZ )
 {
   return std::isnan( heightMap[ ijToHeightMapIndex( i, j, resX, resZ ) ] ) ||
@@ -214,8 +216,6 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
 
   return indexBytes;
 }
-
-
 
 //! Generates vertex buffer for DEM terrain tiles
 class PlaneVertexBufferFunctor : public QBufferDataGenerator
@@ -292,6 +292,7 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
     QByteArray mHeightMap;
 };
 
+#endif
 
 // ------------
 
@@ -417,8 +418,12 @@ void DemTerrainTileGeometry::init()
 
   // switched to setting data instead of just setting data generators because we also need the buffers
   // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
+
+// TODO -- work out how to correctly port this to qt6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap )() );
   mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
+#endif
 
   addAttribute( mPositionAttribute );
   addAttribute( mTexCoordAttribute );
