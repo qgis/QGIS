@@ -17,7 +17,6 @@
 #define QGS3DSCENEEXPORTER_H
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QAttribute>
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QMesh>

@@ -29,12 +29,9 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
-#include <Qt3DRender/QBuffer>
 #include <QByteArray>
 
-#include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgstriangularmesh.h"
+#include "qgscolorrampshader.h"
 
 #define SIP_NO_FILE
 

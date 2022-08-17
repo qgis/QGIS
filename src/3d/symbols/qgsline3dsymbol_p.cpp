@@ -29,12 +29,25 @@
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
 #include "qgssimplelinematerialsettings.h"
-
+#include "qgspolygon.h"
 #include "qgsphongtexturedmaterialsettings.h"
 
 #include <Qt3DExtras/QPhongMaterial>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+#endif
 #include <Qt3DRender/QGeometryRenderer>
 
 /// @cond PRIVATE
@@ -307,7 +320,7 @@ void QgsSimpleLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
-  Qt3DRender::QGeometry *geom = out.createGeometry( entity );
+  Qt3DQGeometry *geom = out.createGeometry( entity );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStrip );

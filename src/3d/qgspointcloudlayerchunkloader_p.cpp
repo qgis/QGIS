@@ -19,22 +19,20 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgschunknode_p.h"
 #include "qgslogger.h"
-#include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgseventtracing.h"
 
-#include "qgspoint3dsymbol.h"
-#include "qgsphongmaterialsettings.h"
 
 #include "qgspointcloud3dsymbol.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
 #include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
 #include "qgspointcloud3dsymbol_p.h"
 
 #include <QtConcurrent>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
+#else
+#include <Qt3DCore/QAttribute>
+#endif
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QGraphicsApiFilter>

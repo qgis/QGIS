@@ -15,21 +15,35 @@
 
 #include <QVector3D>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+#endif
+
 #include "qgsbillboardgeometry.h"
 
 QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
-  : Qt3DRender::QGeometry( parent )
-  , mPositionAttribute( new Qt3DRender::QAttribute( this ) )
-  , mVertexBuffer( new Qt3DRender::QBuffer( this ) )
+  : QGeometry( parent )
+  , mPositionAttribute( new Qt3DQAttribute( this ) )
+  , mVertexBuffer( new Qt3DQBuffer( this ) )
 {
 
-  mPositionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
   mPositionAttribute->setByteOffset( 0 );
   mPositionAttribute->setByteStride( 3 * sizeof( float ) );
-  mPositionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
 
   addAttribute( mPositionAttribute );
 
