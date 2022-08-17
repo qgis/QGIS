@@ -1710,11 +1710,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   shortcutTracing->setObjectName( QStringLiteral( "ToggleTracing" ) );
   connect( shortcutTracing, &QShortcut::activated, this, &QgisApp::toggleEventTracing );
 
-  if ( ! QTouchDevice::devices().isEmpty() )
-  {
-    //add reacting to long click in touch
-    grabGesture( Qt::TapAndHoldGesture );
-  }
+  //add reacting to long click in touch
+  grabGesture( Qt::TapAndHoldGesture );
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
@@ -2393,7 +2390,7 @@ bool QgisApp::event( QEvent *event )
     openFile( foe->file() );
     done = true;
   }
-  else if ( !QTouchDevice::devices().isEmpty() && event->type() == QEvent::Gesture )
+  else if ( event->type() == QEvent::Gesture )
   {
     done = gestureEvent( static_cast<QGestureEvent *>( event ) );
   }
