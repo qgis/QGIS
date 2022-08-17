@@ -26,7 +26,12 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
+#else
+#include <Qt3DCore/QBuffer>
+#endif
+
 #include <QByteArray>
 
 #include "qgsmeshlayer.h"

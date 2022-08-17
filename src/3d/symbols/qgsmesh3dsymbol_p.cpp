@@ -26,6 +26,7 @@
 #include <Qt3DRender/QCullFace>
 
 #include "qgsmultipolygon.h"
+#include "qgspolygon.h"
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
 #include "qgsexpressioncontextutils.h"

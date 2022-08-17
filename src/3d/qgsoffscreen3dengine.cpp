@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
-#include "qgslogger.h"
 
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
