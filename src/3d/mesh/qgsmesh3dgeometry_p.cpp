@@ -483,6 +483,10 @@ void QgsMeshDataset3DGeometryBuilder::start()
 
   mWatcherIndex = new QFutureWatcher<QByteArray>( this );
   connect( mWatcherIndex, &QFutureWatcher<int>::finished, this, &QgsMeshDataset3DGeometryBuilder::indexFinished );
+
+  // TODO -- port to Qt 6
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mFutureIndex = QtConcurrent::run( createDatasetIndexData, mMesh, mVertexData.activeFaceFlagValues );
   mWatcherIndex->setFuture( mFutureIndex );
+#endif
 }
