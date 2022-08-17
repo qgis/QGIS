@@ -169,7 +169,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
 
     case QVariant::Char:
       element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
-      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
+      element.setAttribute( QStringLiteral( "value" ), value.isNull() || value.toChar().isNull() ? QString() : QString( value.toChar() ) );
       break;
 
     case QVariant::Color:
