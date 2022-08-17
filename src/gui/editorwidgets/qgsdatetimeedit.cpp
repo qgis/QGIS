@@ -314,6 +314,13 @@ void QgsDateTimeEdit::resetBeforeChange( int delta )
   QDateTimeEdit::setDateTime( dt );
 }
 
+void QgsDateTimeEdit::setMinimumEditDateTime()
+{
+  setDateRange( QDate( 1, 1, 1 ), maximumDate() );
+  setMinimumTime( QTime( 0, 0, 0 ) );
+  setMaximumTime( QTime( 23, 59, 59, 999 ) );
+}
+
 void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
 {
   mIsEmpty = false;
