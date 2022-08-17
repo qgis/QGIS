@@ -24,8 +24,6 @@
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QBufferDataGenerator>
-#include <Qt3DRender/QBufferDataGeneratorPtr>
 
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
 typedef Qt3DRender::QBuffer Qt3DQBuffer;
@@ -34,8 +32,6 @@ typedef Qt3DRender::QGeometry Qt3DQGeometry;
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-//#include <Qt3DRender/QBufferDataGenerator>
-//#include <Qt3DRender/QBufferDataGeneratorPtr>
 
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;

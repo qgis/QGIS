@@ -15,18 +15,22 @@
 
 #include "qgsdemterraintilegeometry_p.h"
 #include <QMatrix4x4>
+
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/qbufferdatagenerator.h>
+#include <Qt3DRender/QAbstractFunctor>
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
 typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QAbstractFunctor Qt3DQAbstractFunctor;
 #else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
-//#include <Qt3DRender/qbufferdatagenerator.h>
+#include <Qt3DCore/QAbstractFunctor>
 typedef Qt3DCore::QAttribute Qt3DQAttribute;
 typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QAbstractFunctor Qt3DQAbstractFunctor;
 #endif
 #include <limits>
 #include <cmath>
@@ -36,10 +40,6 @@ typedef Qt3DCore::QBuffer Qt3DQBuffer;
 ///@cond PRIVATE
 
 using namespace Qt3DRender;
-
-
-// TODO -- work out how to correctly port this to qt6
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 
 static QByteArray createPlaneVertexData( int res, float side, float vertScale, float skirtHeight, const QByteArray &heights )
 {
@@ -217,8 +217,11 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
   return indexBytes;
 }
 
+// QAbstractFunctor marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+Q_NOWARN_DEPRECATED_PUSH
+
 //! Generates vertex buffer for DEM terrain tiles
-class PlaneVertexBufferFunctor : public QBufferDataGenerator
+class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
 {
   public:
     explicit PlaneVertexBufferFunctor( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap )
@@ -229,12 +232,12 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       , mHeightMap( heightMap )
     {}
 
-    QByteArray operator()() final
+    QByteArray operator()()
     {
       return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap );
     }
 
-    bool operator ==( const QBufferDataGenerator &other ) const final
+    bool operator ==( const Qt3DQAbstractFunctor &other ) const
     {
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
@@ -246,10 +249,7 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       return false;
     }
 
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( PlaneVertexBufferFunctor )
-    Q_NOWARN_DEPRECATED_POP
 
   private:
     int mResolution;
@@ -261,7 +261,7 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 
 
 //! Generates index buffer for DEM terrain tiles
-class PlaneIndexBufferFunctor : public QBufferDataGenerator
+class PlaneIndexBufferFunctor: public Qt3DQAbstractFunctor
 {
   public:
     explicit PlaneIndexBufferFunctor( int resolution, const QByteArray &heightMap )
@@ -269,12 +269,12 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
       , mHeightMap( heightMap )
     {}
 
-    QByteArray operator()() final
+    QByteArray operator()()
     {
       return createPlaneIndexData( mResolution, mHeightMap );
     }
 
-    bool operator ==( const QBufferDataGenerator &other ) const final
+    bool operator ==( const Qt3DQAbstractFunctor &other ) const
     {
       const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
@@ -282,17 +282,14 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
       return false;
     }
 
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( PlaneIndexBufferFunctor )
-    Q_NOWARN_DEPRECATED_POP
 
   private:
     int mResolution;
     QByteArray mHeightMap;
 };
 
-#endif
+Q_NOWARN_DEPRECATED_POP
 
 // ------------
 
@@ -419,11 +416,8 @@ void DemTerrainTileGeometry::init()
   // switched to setting data instead of just setting data generators because we also need the buffers
   // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
 
-// TODO -- work out how to correctly port this to qt6
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap )() );
   mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
-#endif
 
   addAttribute( mPositionAttribute );
   addAttribute( mTexCoordAttribute );
