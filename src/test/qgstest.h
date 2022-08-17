@@ -93,6 +93,12 @@
     QGSCOMPARENEAR( rectangle1.yMaximum(), rectangle2.yMaximum(), epsilon ); \
   }(void)(0)
 
+#define QGSCOMPARENEARVECTOR3D(v1,v2,epsilon) { \
+    QGSCOMPARENEAR( v1.x(), v2.x(), epsilon ); \
+    QGSCOMPARENEAR( v1.y(), v2.y(), epsilon ); \
+    QGSCOMPARENEAR( v1.z(), v2.z(), epsilon ); \
+  }(void)(0)
+
 //sometimes GML attributes are in a different order - but that's ok
 #define QGSCOMPAREGML(result,expected) { \
     QCOMPARE( result.replace( QStringLiteral("ts=\" \" cs=\",\""), QStringLiteral("cs=\",\" ts=\" \"") ), expected ); \
