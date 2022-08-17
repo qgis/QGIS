@@ -1215,7 +1215,6 @@ void TestQgsLegendRenderer::testFilterByPolygon()
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ true, geom );
 
   const QString testName2 = testName + "2";
-  QString report2 = mReport + "2";
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName2 ) );
@@ -1252,7 +1251,6 @@ void TestQgsLegendRenderer::testFilterByExpression()
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
 
   const QString testName2 = testName + "2";
-  QString report2 = mReport + "2";
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   res = _renderLegend( &legendModel, settings );
   QVERIFY( _verifyImage( res, testName2 ) );
