@@ -12845,7 +12845,7 @@ void QgisApp::new3DMapCanvas()
 
     // new scenes default to a single directional light
     map->setLightSources( QList<QgsLightSource *>() << new QgsDirectionalLightSettings() );
-    map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
+    map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
     map->setRendererUsage( Qgis::RendererUsage::View );
 
     connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
@@ -15478,7 +15478,7 @@ void QgisApp::read3DMapViewSettings( Qgs3DMapCanvasWidget *widget, QDomElement &
     QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
     flatTerrainGen->setExtent( mMapCanvas->projectExtent() );
   }
-  map->setOutputDpi( QgsApplication::desktop()->logicalDpiX() );
+  map->setOutputDpi( QGuiApplication::primaryScreen()->logicalDotsPerInch() );
 
   widget->setMapSettings( map );
 
