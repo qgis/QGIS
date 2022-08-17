@@ -35,7 +35,6 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsmapthemecollection.h"
-#include "qgstemporalcontroller.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -44,8 +43,6 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
-#include "qgs3dsceneexporter.h"
-#include "qgsabstract3drenderer.h"
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
 
@@ -53,6 +50,7 @@
 #include "qgsrubberband.h"
 
 #include <QWidget>
+#include <QActionGroup>
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
