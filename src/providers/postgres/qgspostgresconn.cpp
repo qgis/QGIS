@@ -1289,7 +1289,7 @@ static QString quotedList( const QVariantList &list )
 
 QString QgsPostgresConn::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )
@@ -1320,7 +1320,7 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
 
 QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
-  if ( value.isNull() || !value.isValid() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "null" );
   // where json is a string literal just construct it from that rather than dump
   if ( value.type() == QVariant::String )

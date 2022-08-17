@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthmanager.h"
+#include "qgsvariantutils.h"
 
 #include <QDir>
 #include <QEventLoop>
@@ -2707,11 +2708,11 @@ const QList<QSslCertificate> QgsAuthManager::extraFileCAs()
   QList<QSslCertificate> certs;
   QList<QSslCertificate> filecerts;
   QVariant cafileval = QgsAuthManager::instance()->authSetting( QStringLiteral( "cafile" ) );
-  if ( cafileval.isNull() )
+  if ( QgsVariantUtils::isNull( cafileval ) )
     return certs;
 
   QVariant allowinvalid = QgsAuthManager::instance()->authSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( false ) );
-  if ( allowinvalid.isNull() )
+  if ( QgsVariantUtils::isNull( allowinvalid ) )
     return certs;
 
   QString cafile( cafileval.toString() );
@@ -2945,7 +2946,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
 {
   QMutexLocker locker( mMutex.get() );
   QVariant policy( authSetting( QStringLiteral( "certdefaulttrust" ) ) );
-  if ( policy.isNull() )
+  if ( QgsVariantUtils::isNull( policy ) )
   {
     return QgsAuthCertUtils::Trusted;
   }

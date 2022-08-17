@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmsplitvectorlayer.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -120,7 +121,7 @@ QVariantMap QgsSplitVectorLayerAlgorithm::processAlgorithm( const QVariantMap &p
       break;
 
     QString fileName;
-    if ( ( *it ).isNull() )
+    if ( QgsVariantUtils::isNull( *it ) )
     {
       fileName = QStringLiteral( "%1_NULL.%2" ).arg( baseName ).arg( outputFormat );
     }

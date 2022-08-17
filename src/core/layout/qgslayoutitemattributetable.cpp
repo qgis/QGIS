@@ -35,6 +35,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 #include "qgsfontutils.h"
+#include "qgsvariantutils.h"
 
 //
 // QgsLayoutItemAttributeTable
@@ -601,7 +602,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
           val = fieldFormatter->representValue( layer, idx, setup.config(), cache, val );
         }
 
-        QVariant v = val.isNull() ? QString() : replaceWrapChar( val );
+        QVariant v = QgsVariantUtils::isNull( val ) ? QString() : replaceWrapChar( val );
         currentRow << Cell( v, style, f );
         rowContents << v;
       }

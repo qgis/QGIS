@@ -18,6 +18,7 @@
 #include "qgsvectorlayer.h"
 #include "qgscolorrampimpl.h"
 #include "qgsproviderregistry.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -63,7 +64,7 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, QgsExpressi
   if ( res.isEmpty() )
     res = value.toString();
 
-  if ( res.isEmpty() && !value.isNull() )
+  if ( res.isEmpty() && !QgsVariantUtils::isNull( value ) )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert value to a file path" ) );
   }
@@ -91,7 +92,7 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
   {
     context.setFeature( f );
     const QVariant value = exp.evaluate( &context );
-    if ( !value.isNull() )
+    if ( !QgsVariantUtils::isNull( value ) )
     {
       return std::make_tuple( value.type(), value.userType() );
     }

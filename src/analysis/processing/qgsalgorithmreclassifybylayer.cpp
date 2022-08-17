@@ -20,6 +20,7 @@
 #include "qgsreclassifyutils.h"
 #include "qgsrasteranalysisutils.h"
 #include "qgis.h"
+#include "qgsvariantutils.h"
 
 ///@cond PRIVATE
 
@@ -230,7 +231,7 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByLayerAlgorithm::createCl
     // null values map to nan, which corresponds to a range extended to +/- infinity....
     const QVariant minVariant = f.attribute( mMinFieldIdx );
     double minValue;
-    if ( minVariant.isNull() || minVariant.toString().isEmpty() )
+    if ( QgsVariantUtils::isNull( minVariant ) || minVariant.toString().isEmpty() )
     {
       minValue = std::numeric_limits<double>::quiet_NaN();
     }
@@ -242,7 +243,7 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByLayerAlgorithm::createCl
     }
     const QVariant maxVariant = f.attribute( mMaxFieldIdx );
     double maxValue;
-    if ( maxVariant.isNull() || maxVariant.toString().isEmpty() )
+    if ( QgsVariantUtils::isNull( maxVariant ) || maxVariant.toString().isEmpty() )
     {
       maxValue = std::numeric_limits<double>::quiet_NaN();
       ok = true;
@@ -323,7 +324,7 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createCl
     // null values map to nan, which corresponds to a range extended to +/- infinity....
     const QVariant minVariant = table.at( row * 3 );
     double minValue;
-    if ( minVariant.isNull()  || minVariant.toString().isEmpty() )
+    if ( QgsVariantUtils::isNull( minVariant )  || minVariant.toString().isEmpty() )
     {
       minValue = std::numeric_limits<double>::quiet_NaN();
     }
@@ -335,7 +336,7 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createCl
     }
     const QVariant maxVariant = table.at( row * 3 + 1 );
     double maxValue;
-    if ( maxVariant.isNull() || maxVariant.toString().isEmpty() )
+    if ( QgsVariantUtils::isNull( maxVariant ) || maxVariant.toString().isEmpty() )
     {
       maxValue = std::numeric_limits<double>::quiet_NaN();
       ok = true;

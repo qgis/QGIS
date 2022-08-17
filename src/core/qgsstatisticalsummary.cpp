@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstatisticalsummary.h"
+#include "qgsvariantutils.h"
 #include <limits>
 #include <QString>
 #include <QObject>
@@ -101,7 +102,7 @@ void QgsStatisticalSummary::addValue( double value )
 void QgsStatisticalSummary::addVariant( const QVariant &value )
 {
   bool convertOk = false;
-  if ( !value.isValid() || value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     mMissing++;
   else
   {

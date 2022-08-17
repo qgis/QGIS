@@ -19,7 +19,7 @@
 #include "qgscheckboxfieldformatter.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-
+#include "qgsvariantutils.h"
 
 QString QgsCheckBoxFieldFormatter::id() const
 {
@@ -44,7 +44,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     else (value.toString)
   */
 
-  bool isNull = value.isNull();
+  bool isNull = QgsVariantUtils::isNull( value );
   bool boolValue = false;
   QString textValue = QgsApplication::nullRepresentation();
 

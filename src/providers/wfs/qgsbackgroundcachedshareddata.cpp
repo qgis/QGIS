@@ -627,7 +627,7 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       {
         const QVariant &v = srcFeature.attributes().value( i );
         const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
-        if ( v.type() == QVariant::DateTime && !v.isNull() )
+        if ( v.type() == QVariant::DateTime && !QgsVariantUtils::isNull( v ) )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
         else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
           cachedFeature.setAttribute( idx, v );
@@ -1119,7 +1119,7 @@ bool QgsBackgroundCachedSharedData::changeAttributeValues( const QgsChangedAttri
     {
       int idx = dataProviderFields.indexFromName( mMapUserVisibleFieldNameToSpatialiteColumnName[mFields.at( siter.key() ).name()] );
       Q_ASSERT( idx >= 0 );
-      if ( siter.value().type() == QVariant::DateTime && !siter.value().isNull() )
+      if ( siter.value().type() == QVariant::DateTime && !QgsVariantUtils::isNull( siter.value() ) )
         newAttrMap[idx] = QVariant( siter.value().toDateTime().toMSecsSinceEpoch() );
       else
         newAttrMap[idx] = siter.value();
@@ -1139,7 +1139,7 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
   {
     const QVariant &v = attrs[i];
     hash.addData( QByteArray( ( const char * )&i, sizeof( i ) ) );
-    if ( v.isNull() )
+    if ( QgsVariantUtils::isNull( v ) )
     {
       // nothing to do
     }

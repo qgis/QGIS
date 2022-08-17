@@ -950,7 +950,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     for ( int i = 0; i < nAttrs; ++i )
     {
       const QVariant &value = featureAttributes.at( i );
-      if ( value.isValid() && !value.isNull() )
+      if ( value.isValid() && !QgsVariantUtils::isNull( value ) )
       {
         QDomElement fieldElem = transactionDoc.createElementNS( mApplicationNamespace, mShared->mFields.at( i ).name() );
         QDomText fieldText = transactionDoc.createTextNode( convertToXML( value ) );
@@ -1237,7 +1237,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 
       QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
 
-      if ( attMapIt.value().isValid() && !attMapIt.value().isNull() )
+      if ( attMapIt.value().isValid() && !QgsVariantUtils::isNull( attMapIt.value() ) )
       {
         // WFS does not support :nil='true'
         // if value is NULL, do not add value element

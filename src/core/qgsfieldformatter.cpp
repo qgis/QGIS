@@ -37,7 +37,7 @@ QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex
   {
     return defVal;
   }
-  else if ( value.isNull() )
+  else if ( QgsVariantUtils::isNull( value ) )
   {
     return QgsApplication::nullRepresentation();
   }

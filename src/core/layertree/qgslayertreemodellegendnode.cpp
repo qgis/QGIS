@@ -39,6 +39,7 @@
 #include "qgssettings.h"
 #include "qgsfileutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsvariantutils.h"
 
 #include <QBuffer>
 
@@ -390,7 +391,7 @@ QString QgsSymbolLegendNode::symbolLabel() const
   if ( mEmbeddedInParent )
   {
     const QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
-    const QString layerName = legendlabel.isNull() ? mLayerNode->name() : legendlabel.toString();
+    const QString layerName = QgsVariantUtils::isNull( legendlabel ) ? mLayerNode->name() : legendlabel.toString();
     label = mUserLabel.isEmpty() ? layerName : mUserLabel;
   }
   else

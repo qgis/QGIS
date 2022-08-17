@@ -25,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
+#include "qgsvariantutils.h"
 
 #include <QObject>
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
@@ -394,7 +395,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         bool ok = true;
 
         const QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-        if ( !status.isNull() && status.toInt() >= 400 )
+        if ( !QgsVariantUtils::isNull( status ) && status.toInt() >= 400 )
         {
           const QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
           QgsMessageLog::logMessage( tr( "%4 request error [status: %1 - reason phrase: %2] for %3" ).arg( status.toInt() ).arg( phrase.toString(), path, mTypeString ), mTypeString );

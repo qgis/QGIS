@@ -24,8 +24,7 @@
 #include "qgsdatetimeedit.h"
 
 #include "qgsapplication.h"
-#include "qgslogger.h"
-
+#include "qgsvariantutils.h"
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
@@ -218,7 +217,7 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
 void QgsDateTimeEdit::changed( const QVariant &dateTime )
 {
   mIsEmpty = false;
-  const bool isNull = dateTime.isNull();
+  const bool isNull = QgsVariantUtils::isNull( dateTime );
   if ( isNull != mIsNull )
   {
     mIsNull = isNull;

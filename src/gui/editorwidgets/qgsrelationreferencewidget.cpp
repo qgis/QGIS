@@ -54,7 +54,7 @@ bool qVariantListIsNull( const QVariantList &list )
 
   for ( int i = 0; i < list.size(); ++i )
   {
-    if ( !list.at( i ).isNull() )
+    if ( !QgsVariantUtils::isNull( list.at( i ) ) )
       return false;
   }
   return true;
@@ -270,7 +270,7 @@ void QgsRelationReferenceWidget::setForeignKeys( const QVariantList &values )
     for ( int i = 0; i < count; i++ )
     {
       QVariant v = mFeature.attribute( mFilterFields[i] );
-      QString f = v.isNull() ? nullValue.toString() : v.toString();
+      QString f = QgsVariantUtils::isNull( v ) ? nullValue.toString() : v.toString();
       mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
     }
   }
@@ -464,8 +464,8 @@ void QgsRelationReferenceWidget::init()
           {
             QVariant cv = ft.attribute( mFilterFields.at( i ) );
             QVariant nv = ft.attribute( mFilterFields.at( i + 1 ) );
-            QString cf = cv.isNull() ? nullValue.toString() : cv.toString();
-            QString nf = nv.isNull() ? nullValue.toString() : nv.toString();
+            QString cf = QgsVariantUtils::isNull( cv ) ? nullValue.toString() : cv.toString();
+            QString nf = QgsVariantUtils::isNull( nv ) ? nullValue.toString() : nv.toString();
             mFilterCache[mFilterFields[i]][cf] << nf;
           }
         }
@@ -498,7 +498,7 @@ void QgsRelationReferenceWidget::init()
       for ( int i = 0; i < mFilterFields.size(); i++ )
       {
         QVariant v = mFeature.attribute( mFilterFields[i] );
-        QString f = v.isNull() ? nullValue.toString() : v.toString();
+        QString f = QgsVariantUtils::isNull( v ) ? nullValue.toString() : v.toString();
         mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
       }
     }

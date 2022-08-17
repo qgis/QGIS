@@ -200,7 +200,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
     for ( int idx = 0; idx < mFields.size(); ++idx )
     {
       QVariant attribute = attributesData[mFields.at( idx ).name()];
-      if ( attribute.isNull() )
+      if ( QgsVariantUtils::isNull( attribute ) )
       {
         // ensure that null values are mapped correctly for PyQGIS
         attribute = QVariant( QVariant::Int );
