@@ -181,6 +181,9 @@ QVariant QgsDateTimeEditWrapper::value() const
     dateTime = mQDateTimeEdit->dateTime();
   }
 
+  if ( dateTime.isNull() )
+    return QVariant( field().type() );
+
   switch ( field().type() )
   {
     case QVariant::DateTime:
