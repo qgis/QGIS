@@ -71,7 +71,6 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mRenderAspect = new Qt3DRender::QRenderAspect( Qt3DRender::QRenderAspect::Threaded ); // Only threaded mode seems to work right now.
 #else
-  // TODO -- verify that threaded mode is no longer required/relevany
   mRenderAspect = new Qt3DRender::QRenderAspect();
 #endif
 
