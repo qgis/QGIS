@@ -67,6 +67,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QString lastError() override;
     int capabilities() const override;
     QgsFields fields() const override;
+    QgsLayerMetadata layerMetadata() const override;
+    QgsRasterDataProvider::ProviderCapabilities providerCapabilities() const override;
 
     // QgsRasterInterface interface
     int xSize() const override;
@@ -254,6 +256,11 @@ class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
     QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() ) override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QList< QgsMapLayerType > supportedLayerTypes() const override;
+    QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) override;
+    bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
+    QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
+    void initProvider() override;
+    void cleanupProvider() override;
 };
 
 

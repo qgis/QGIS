@@ -32,6 +32,23 @@ extern "C"
 #include <libpq-fe.h>
 }
 
+// From configuration
+const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS =
+{
+  QStringLiteral( "publicOnly" ),
+  QStringLiteral( "geometryColumnsOnly" ),
+  QStringLiteral( "dontResolveType" ),
+  QStringLiteral( "allowGeometrylessTables" ),
+  QStringLiteral( "saveUsername" ),
+  QStringLiteral( "savePassword" ),
+  QStringLiteral( "estimatedMetadata" ),
+  QStringLiteral( "projectsInDatabase" ),
+  QStringLiteral( "metadataInDatabase" ),
+};
+
+const QString QgsPostgresProviderConnection::SETTINGS_BASE_KEY = QStringLiteral( "/PostgreSQL/connections/" );
+
+
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
 {
@@ -39,6 +56,26 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
   // Remove the sql and table empty parts
   const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
   setUri( QgsPostgresConn::connUri( name ).uri( false ).replace( removePartsRe, QString() ) );
+
+  QgsSettings settings;
+  settings.beginGroup( SETTINGS_BASE_KEY );
+  settings.beginGroup( name );
+
+  QVariantMap config;
+
+  for ( const QString &p : std::as_const( CONFIGURATION_PARAMETERS ) )
+  {
+    const QVariant val = settings.value( p );
+    if ( val.isValid() )
+    {
+      config.insert( p, val );
+    }
+  }
+
+  settings.endGroup();
+  settings.endGroup();
+
+  setConfiguration( config );
   setDefaultCapabilities();
 }
 
@@ -700,12 +737,11 @@ QStringList QgsPostgresProviderConnection::schemas( ) const
 void QgsPostgresProviderConnection::store( const QString &name ) const
 {
   // TODO: move this to class configuration?
-  QString baseKey = QStringLiteral( "/PostgreSQL/connections/" );
   // delete the original entry first
   remove( name );
 
   QgsSettings settings;
-  settings.beginGroup( baseKey );
+  settings.beginGroup( SETTINGS_BASE_KEY );
   settings.beginGroup( name );
 
   // From URI
@@ -719,19 +755,7 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
   settings.setValue( "authcfg", dsUri.authConfigId() );
   settings.setEnumValue( "sslmode", dsUri.sslMode() );
 
-  // From configuration
-  static const QStringList configurationParameters
-  {
-    QStringLiteral( "publicOnly" ),
-    QStringLiteral( "geometryColumnsOnly" ),
-    QStringLiteral( "dontResolveType" ),
-    QStringLiteral( "allowGeometrylessTables" ),
-    QStringLiteral( "saveUsername" ),
-    QStringLiteral( "savePassword" ),
-    QStringLiteral( "estimatedMetadata" ),
-    QStringLiteral( "projectsInDatabase" )
-  };
-  for ( const auto &p : configurationParameters )
+  for ( const auto &p : std::as_const( CONFIGURATION_PARAMETERS ) )
   {
     if ( configuration().contains( p ) )
     {

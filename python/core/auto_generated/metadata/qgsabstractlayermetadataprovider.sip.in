@@ -1,0 +1,119 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsabstractlayermetadataprovider.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+struct QgsLayerMetadataProviderResult
+{
+  QgsLayerMetadata metadata;
+  QgsPolygon geographicExtent;
+  QgsWkbTypes::GeometryType geometryType;
+  QString crs;
+  QString uri;
+  QString dataProviderName;
+  QgsMapLayerType layerType;
+  QString standardUri;
+
+
+  QString identifier() const;
+%Docstring
+Metadata identifier
+%End
+  QString title() const;
+%Docstring
+Metadata title
+%End
+  QString abstract() const;
+%Docstring
+Metadata abstract
+%End
+};
+
+class QgsLayerMetadataSearchResult
+{
+%Docstring(signature="appended")
+Container of result records from a layer metadata search.
+
+Contains the records of the layer metadata provider that matched the
+search criteria and the list of the errors that occurred while
+searching for metadata.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
+%End
+  public:
+
+    const QList<QgsLayerMetadataProviderResult> &metadata() const;
+%Docstring
+Returns the list of metadata results.
+%End
+
+    void addMetadata( const QgsLayerMetadataProviderResult &newMetadata );
+%Docstring
+Adds a ``newMetadata`` record to the list of results.
+%End
+
+    const QStringList &errors() const;
+%Docstring
+Returns the list of errors occurred during a metadata search.
+%End
+
+    void addError( const QString &newError );
+%Docstring
+Adds a ``newError`` to the list of errors.
+%End
+
+};
+
+class QgsAbstractLayerMetadataProvider
+{
+%Docstring(signature="appended")
+Layer metadata provider backends interface.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
+%End
+  public:
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the name of the layer metadata provider implementation, usually the name of the data provider
+but if can be another unique identifier.
+%End
+
+    virtual QgsLayerMetadataSearchResult search( const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const = 0;
+%Docstring
+Searches for metadata optionally filtering by search string and geographic extent.
+
+:param searchString: defines a filter to limit the results to the records where the search string appears in the "identifier", "title" or "abstract" metadata fields, a case-insensitive comparison is used for the match.
+:param geographicExtent: defines a filter where the spatial extent matches the given extent in EPSG:4326
+:param feedback: can be used to monitor and control the search process.
+
+:return: a :py:class:`QgsLayerMetadataSearchResult` object with a list of metadata and errors
+%End
+
+    virtual ~QgsAbstractLayerMetadataProvider();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/metadata/qgsabstractlayermetadataprovider.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

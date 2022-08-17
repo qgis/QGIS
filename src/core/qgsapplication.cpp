@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsannotationitemregistry.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
@@ -2518,6 +2519,11 @@ QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
   return members()->mProjectStorageRegistry.get();
 }
 
+QgsLayerMetadataProviderRegistry *QgsApplication::layerMetadataProviderRegistry()
+{
+  return members()->mLayerMetadataProviderRegistry.get();
+}
+
 QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
 {
   return members()->mExternalStorageRegistry;
@@ -2683,6 +2689,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Setup project storage registry" ) );
     mProjectStorageRegistry.reset( new QgsProjectStorageRegistry() );
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup layer metadata provider registry" ) );
+    mLayerMetadataProviderRegistry.reset( new QgsLayerMetadataProviderRegistry() );
     profiler->end();
   }
   {

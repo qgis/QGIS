@@ -904,6 +904,9 @@ void QgsOgrProvider::loadFields()
 
 void QgsOgrProvider::loadMetadata()
 {
+  // Set default, may be overridden by stored metadata
+  mLayerMetadata.setCrs( crs() );
+
   if ( mOgrOrigLayer )
   {
     QRecursiveMutex *mutex = nullptr;

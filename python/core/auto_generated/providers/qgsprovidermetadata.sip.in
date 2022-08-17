@@ -556,6 +556,24 @@ Lists stored layer styles in the provider defined by ``uri``
 .. versionadded:: 3.10
 %End
 
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QString &uri, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) throw( QgsProviderConnectionException );
+%Docstring
+Search the stored layer metadata in the connection defined by ``uri``,
+optionally limiting the search to the metadata identifier, title and abstract matching
+``searchString`` or to metadata having an extent intersecting ``geographicExtent``,
+an optional ``feedback`` can be used to monitor and control the search process.
+
+The default implementation returns an empty list, data providers may implement
+the search functionality.
+
+:return: a (possibly empty) list of :py:class:`QgsLayerMetadataProviderResult`, throws a :py:class:`QgsProviderConnectionException`
+         if any error occurred during the search.
+
+:raises QgsProviderConnectionException: 
+
+.. versionadded:: 3.28
+%End
+
     virtual bool styleExists( const QString &uri, const QString &styleId, QString &errorCause /Out/ );
 %Docstring
 Returns ``True`` if a layer style with the specified ``styleId`` exists in the provider defined by ``uri``.

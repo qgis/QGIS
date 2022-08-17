@@ -39,6 +39,7 @@ class QgsPaintEffectRegistry;
 class QgsProjectStorageRegistry;
 class QgsExternalStorageRegistry;
 class QgsLocalizedDataPathRegistry;
+class QgsLayerMetadataProviderRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsImageCache;
@@ -936,6 +937,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsProjectStorageRegistry *projectStorageRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns registry of available layer metadata provider implementations.
+     * \since QGIS 3.28
+     */
+    static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns registry of available external storage implementations.
      * \since QGIS 3.20
      */
@@ -1134,6 +1141,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
       QgsConnectionRegistry *mConnectionRegistry = nullptr;
       std::unique_ptr<QgsProjectStorageRegistry> mProjectStorageRegistry;
+      std::unique_ptr<QgsLayerMetadataProviderRegistry> mLayerMetadataProviderRegistry;
       QgsExternalStorageRegistry *mExternalStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;

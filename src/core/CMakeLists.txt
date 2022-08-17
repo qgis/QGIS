@@ -166,6 +166,8 @@ set(QGIS_CORE_SRCS
   metadata/qgslayermetadataformatter.cpp
   metadata/qgsmetadatautils.cpp
   metadata/qgsprojectmetadata.cpp
+  metadata/qgsabstractlayermetadataprovider.cpp
+  metadata/qgslayermetadataproviderregistry.cpp
 
   numericformats/qgsbasicnumericformat.cpp
   numericformats/qgsbearingnumericformat.cpp
@@ -279,6 +281,7 @@ set(QGIS_CORE_SRCS
 
   providers/meshmemory/qgsmeshmemorydataprovider.cpp
 
+  providers/ogr/qgsogrlayermetadataprovider.cpp
   providers/ogr/qgsogrprovider.cpp
   providers/ogr/qgsogrprovidermetadata.cpp
   providers/ogr/qgsogrproviderutils.cpp
@@ -1597,6 +1600,8 @@ set(QGIS_CORE_HDRS
   metadata/qgslayermetadatavalidator.h
   metadata/qgsmetadatautils.h
   metadata/qgsprojectmetadata.h
+  metadata/qgsabstractlayermetadataprovider.h
+  metadata/qgslayermetadataproviderregistry.h
 
   network/qgsblockingnetworkrequest.h
   network/qgsfiledownloader.h
@@ -1693,6 +1698,7 @@ set(QGIS_CORE_HDRS
 
   providers/meshmemory/qgsmeshmemorydataprovider.h
 
+  providers/ogr/qgsogrlayermetadataprovider.h
   providers/ogr/qgsgeopackagedataitems.h
   providers/ogr/qgsgeopackageprojectstorage.h
   providers/ogr/qgsgeopackageproviderconnection.h

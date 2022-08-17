@@ -499,6 +499,8 @@
 %Include auto_generated/metadata/qgslayermetadatavalidator.sip
 %Include auto_generated/metadata/qgsmetadatautils.sip
 %Include auto_generated/metadata/qgsprojectmetadata.sip
+%Include auto_generated/metadata/qgsabstractlayermetadataprovider.sip
+%Include auto_generated/metadata/qgslayermetadataproviderregistry.sip
 %Include auto_generated/network/qgsblockingnetworkrequest.sip
 %Include auto_generated/network/qgsfiledownloader.sip
 %Include auto_generated/network/qgsnetworkaccessmanager.sip

@@ -80,6 +80,9 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
+    static const QStringList CONFIGURATION_PARAMETERS;
+    static const QString SETTINGS_BASE_KEY;
+
   private:
 
     QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
@@ -87,6 +90,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
+
 
 };
 

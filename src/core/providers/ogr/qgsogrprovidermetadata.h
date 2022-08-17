@@ -22,6 +22,8 @@ email                : nyall dot dawson at gmail dot com
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+struct QgsLayerMetadataProviderResult;
+
 /**
  * Entry point for registration of the OGR data provider
  * \since QGIS 3.10
@@ -69,6 +71,8 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) final;
 
+    QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback = nullptr ) override;
+
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;
 
@@ -82,6 +86,7 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
   protected:
 
     QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+
 
 };
 

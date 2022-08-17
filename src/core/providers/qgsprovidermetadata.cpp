@@ -240,6 +240,15 @@ int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList
   return -1;
 }
 
+QList<QgsLayerMetadataProviderResult> QgsProviderMetadata::searchLayerMetadata( const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
+{
+  Q_UNUSED( feedback );
+  Q_UNUSED( searchString );
+  Q_UNUSED( uri );
+  Q_UNUSED( geographicExtent );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "searchLayerMetadata" ) ) );
+}
+
 bool QgsProviderMetadata::styleExists( const QString &, const QString &, QString &errorCause )
 {
   errorCause.clear();
@@ -315,7 +324,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QStrin
 QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
 }
 
 
@@ -323,7 +332,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QStr
 {
   Q_UNUSED( configuration );
   Q_UNUSED( uri );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
 }
 
 void QgsProviderMetadata::deleteConnection( const QString &name )
