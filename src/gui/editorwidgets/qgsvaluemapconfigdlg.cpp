@@ -119,7 +119,9 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 void QgsValueMapConfigDlg::vCellChanged( int row, int column )
 {
   Q_UNUSED( column )
-  validateKey( tableWidget->item( row, 0 ) );
+  std::unique_ptr< QTableWidgetItem > ki = std::unique_ptr< QTableWidgetItem >( tableWidget->item( row, 0 ) );
+  if ( ki )
+      validateKey( ki );
   if ( row == tableWidget->rowCount() - 1 )
   {
     tableWidget->insertRow( row + 1 );
@@ -362,7 +364,7 @@ bool QgsValueMapConfigDlg::validateKeys() const
   }
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
   {
-    std::unique_ptr< QTableWidgetItem > *ki = std::make_unique< QTableWidgetItem >( tableWidget->item( i, 0 ) );
+    std::unique_ptr< QTableWidgetItem > ki = std::unique_ptr< QTableWidgetItem >( tableWidget->item( i, 0 ) );
 
     if ( !ki )
       continue;
