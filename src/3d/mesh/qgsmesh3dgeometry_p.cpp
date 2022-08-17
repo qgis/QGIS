@@ -71,7 +71,7 @@ static QByteArray createTerrainVertexData(
 
     QVector3D normal = normals.at( i );
     normal = QVector3D( normal.x() * vertScale, -normal.y() * vertScale, normal.z() );
-    normal.normalized();
+    normal.normalize();
 
     *fptr++ = normal.x();
     *fptr++ = normal.z();
@@ -122,7 +122,7 @@ static QByteArray createDatasetVertexData(
 
     QVector3D normal = normals.at( i );
     normal = QVector3D( normal.x() * vertScale, -normal.y() * vertScale, normal.z() );
-    normal.normalized();
+    normal.normalize();
 
     *fptr++ = normal.x();
     *fptr++ = normal.z();
