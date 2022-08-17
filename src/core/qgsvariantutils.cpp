@@ -14,7 +14,23 @@
  ***************************************************************************/
 
 #include "qgsvariantutils.h"
-
+#include <QDate>
+#include <QTime>
+#include <QDateTime>
+#include <QBitArray>
+#include <QRect>
+#include <QLine>
+#include <QUuid>
+#include <QImage>
+#include <QPixmap>
+#include <QBrush>
+#include <QColor>
+#include <QBitmap>
+#include <QIcon>
+#include <QVector2D>
+#include <QVector3D>
+#include <QVector4D>
+#include <QQuaternion>
 
 QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Type subType )
 {
@@ -142,3 +158,111 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
   }
   return QString();
 }
+
+bool QgsVariantUtils::isNull( const QVariant &variant )
+{
+  if ( variant.isNull() || !variant.isValid() )
+    return true;
+
+  switch ( variant.type() )
+  {
+    case QVariant::Invalid:
+    case QVariant::Bool:
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+    case QVariant::Double:
+    case QVariant::Map:
+    case QVariant::List:
+    case QVariant::StringList:
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RegularExpression:
+    case QVariant::Hash:
+    case QVariant::EasingCurve:
+    case QVariant::ModelIndex:
+    case QVariant::PersistentModelIndex:
+
+    case QVariant::LastType:
+
+      return false;
+
+    case QVariant::Date:
+      return variant.toDate().isNull();
+    case QVariant::Time:
+      return variant.toTime().isNull();
+    case QVariant::DateTime:
+      return variant.toDate().isNull();
+    case QVariant::Char:
+      return variant.toChar().isNull();
+    case QVariant::String:
+      return variant.toString().isNull();
+    case QVariant::ByteArray:
+      return variant.toByteArray().isNull();
+    case QVariant::BitArray:
+      return variant.toBitArray().isNull();
+    case QVariant::Rect:
+      return variant.toRect().isNull();
+    case QVariant::RectF:
+      return variant.toRectF().isNull();
+    case QVariant::Size:
+      return variant.toSize().isNull();
+    case QVariant::SizeF:
+      return variant.toSizeF().isNull();
+    case QVariant::Line:
+      return variant.toLine().isNull();
+    case QVariant::LineF:
+      return variant.toLineF().isNull();
+    case QVariant::Point:
+      return variant.toPoint().isNull();
+    case QVariant::PointF:
+      return variant.toPointF().isNull();
+    case QVariant::Uuid:
+      return variant.toUuid().isNull();
+    case QVariant::Pixmap:
+      return variant.value< QPixmap >().isNull();
+    case QVariant::Image:
+      return variant.value< QImage >().isNull();
+    case QVariant::Color:
+      return !variant.value< QColor >().isValid();
+    case QVariant::Region:
+      return variant.value< QRegion >().isNull();
+    case QVariant::Bitmap:
+      return variant.value< QBitmap >().isNull();
+    case QVariant::Icon:
+      return variant.value< QIcon>().isNull();
+    case QVariant::Vector2D:
+      return variant.value< QVector2D>().isNull();
+    case QVariant::Vector3D:
+      return variant.value< QVector3D>().isNull();
+    case QVariant::Vector4D:
+      return variant.value< QVector4D>().isNull();
+    case QVariant::Quaternion:
+      return variant.value< QQuaternion>().isNull();
+
+    case QVariant::LastCoreType:
+    case QVariant::Font:
+    case QVariant::Brush:
+    case QVariant::Polygon:
+    case QVariant::Palette:
+    case QVariant::Cursor:
+    case QVariant::KeySequence:
+    case QVariant::Pen:
+    case QVariant::TextLength:
+    case QVariant::PolygonF:
+    case QVariant::TextFormat:
+    case QVariant::Transform:
+    case QVariant::Matrix4x4:
+    case QVariant::SizePolicy:
+    case QVariant::LastGuiType:
+      break;
+
+    case QVariant::UserType:
+      break;
+  }
+
+  return false;
+}
+
+
