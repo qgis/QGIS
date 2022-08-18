@@ -157,7 +157,7 @@ namespace QgsWms
         break;
       default:
         QgsMessageLog::logMessage( QString( "Unsupported format string %1" ).arg( formatStr ) );
-        saveFormat = UNKN;
+        saveFormat = "Unknown";
         break;
     }
 
