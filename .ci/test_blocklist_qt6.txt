@@ -17,6 +17,8 @@ test_core_geometry_pointxy
 test_gui_datetimeedit
 test_gui_processinggui
 test_gui_querybuilder
+test_app_advanceddigitizing
+test_app_vertextool
 
 # Crashes -- also disabled on qt5 builds!
 test_gui_queryresultwidget
