@@ -228,7 +228,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
       const int nodePointCount = it.value().toInt();
       const IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
       mHierarchyMutex.lock();
-      if ( nodePointCount > 0 )
+      if ( nodePointCount >= 0 )
         mHierarchy[nodeId] = nodePointCount;
       else if ( nodePointCount == -1 )
         mHierarchyNodes.insert( nodeId );
