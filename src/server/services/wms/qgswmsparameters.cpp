@@ -649,17 +649,17 @@ namespace QgsWms
   void QgsWmsParameters::dump() const
   {
     log( QStringLiteral( "WMS Request parameters:" ) );
-    for ( auto parameter : mWmsParameters.toStdMultiMap() )
+    for ( auto it = mWmsParameters.constBegin(); it != mWmsParameters.constEnd(); ++it )
     {
-      const QString value = parameter.second.toString();
+      const QString value = it->toString();
 
       if ( ! value.isEmpty() )
       {
-        QString name = QgsWmsParameter::name( parameter.first );
+        QString name = QgsWmsParameter::name( it.key() );
 
-        if ( parameter.second.mMapId >= 0 )
+        if ( it->mMapId >= 0 )
         {
-          name = QStringLiteral( "%1:%2" ).arg( QString::number( parameter.second.mMapId ), name );
+          name = QStringLiteral( "%1:%2" ).arg( QString::number( it->mMapId ), name );
         }
 
         log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
