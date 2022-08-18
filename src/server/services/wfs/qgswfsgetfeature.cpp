@@ -39,6 +39,8 @@
 
 #include "qgswfsgetfeature.h"
 
+#include <QRegularExpression>
+
 namespace QgsWfs
 {
 
@@ -272,7 +274,8 @@ namespace QgsWfs
         for ( const QgsField &field : fields )
         {
           fieldnames.append( field.name() );
-          propertynames.append( field.name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+          const thread_local QRegularExpression sCleanTagNameRegExp( QStringLiteral( "[^\\w\\.-_]" ), QRegularExpression::PatternOption::UseUnicodePropertiesOption );
+          propertynames.append( field.name().replace( ' ', '_' ).replace( sCleanTagNameRegExp, QString() ) );
         }
         QString fieldName;
         for ( plstIt = propertyList.constBegin(); plstIt != propertyList.constEnd(); ++plstIt )
@@ -1547,7 +1550,8 @@ namespace QgsWfs
     QDomElement createFieldElement( const QgsField &field, const QVariant &value, QDomDocument &doc )
     {
       const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
-      const QString attributeName = field.name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() );
+      const thread_local QRegularExpression sCleanTagNameRegExp( QStringLiteral( "[^\\w\\.-_]" ), QRegularExpression::PatternOption::UseUnicodePropertiesOption );
+      const QString attributeName = field.name().replace( ' ', '_' ).replace( sCleanTagNameRegExp, QString() );
       QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:" ) + attributeName );
       if ( QgsVariantUtils::isNull( value ) )
       {
