@@ -1162,6 +1162,23 @@
           43.387951
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Arnaud Morvan",
+        "Committer": "No",
+        "First Commit Message": "Apply default selection color alpha channel to mapsettings on newfile.",
+        "First Commit Date": "03-10-2014",
+        "GIT Nickname": "arnaud-morvan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+           5.92159791264892554,
+           45.56177551668844927
+        ]
+      }
     }
   ]
 }
