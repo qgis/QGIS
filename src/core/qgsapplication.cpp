@@ -111,6 +111,7 @@
 #include <QRegularExpression>
 #include <QTextStream>
 #include <QScreen>
+#include <QAuthenticator>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
 #include <QRecursiveMutex>
 #endif
@@ -318,6 +319,7 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QMap<QNetworkRequest::Attribute, QVariant>>( "QMap<QNetworkRequest::Attribute,QVariant>" );
     qRegisterMetaType<QMap<QNetworkRequest::KnownHeaders, QVariant>>( "QMap<QNetworkRequest::KnownHeaders,QVariant>" );
     qRegisterMetaType<QList<QNetworkReply::RawHeaderPair>>( "QList<QNetworkReply::RawHeaderPair>" );
+    qRegisterMetaType< QAuthenticator * >( "QAuthenticator*" );
   } );
 
   ( void ) resolvePkgPath();
