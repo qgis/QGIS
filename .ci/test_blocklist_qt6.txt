@@ -37,7 +37,6 @@ test_core_projectstorage
 test_core_rasterlayer
 test_core_rastermarker
 test_core_style
-test_core_tiledownloadmanager
 test_core_vectortilelayer
 test_core_coordinatereferencesystem
 test_analysis_processingalgs
