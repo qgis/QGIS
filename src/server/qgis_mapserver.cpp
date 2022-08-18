@@ -269,7 +269,7 @@ class TcpServerWorker: public QObject
                 }
               }
 
-              const int headersSize { endHeadersPos + 4 };
+              const auto headersSize { endHeadersPos + 4 };
 
               // Check for content length and if we have got all data
               if ( headers.contains( QStringLiteral( "Content-Length" ) ) )
