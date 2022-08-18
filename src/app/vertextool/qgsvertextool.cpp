@@ -2834,18 +2834,20 @@ bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const 
     return false;  // currently not supported for circular edges
 
   QgsRectangle visible_extent = canvas()->mapSettings().visibleExtent();
-  // Check if one point is inside and the other outside the visible extent in order to transpose the mid marker
-  // If both are inside or outside there is no such need
-  if ( visible_extent.contains( p0 ) != visible_extent.contains( p1 ) )
+  if ( !visible_extent.contains( p0 ) || !visible_extent.contains( p1 ) )
   {
     // clip line segment to the extent so the mid-point marker is always visible
     QgsGeometry extentGeom = QgsGeometry::fromRect( visible_extent );
     QgsGeometry lineGeom = QgsGeometry::fromPolylineXY( QgsPolylineXY() << p0 << p1 );
     lineGeom = extentGeom.intersection( lineGeom );
-    QgsPolylineXY polyline = lineGeom.asPolyline();
-    Q_ASSERT_X( polyline.count() == 2, "QgsVertexTool::matchEdgeCenterTest", QgsLineString( polyline ).asWkt().toUtf8().constData() );
-    p0 = polyline[0];
-    p1 = polyline[1];
+    // The intersection can be empty if the whole lineGeom is just outside the extent
+    if ( !lineGeom.isEmpty() )
+    {
+      QgsPolylineXY polyline = lineGeom.asPolyline();
+      Q_ASSERT_X( polyline.count() == 2, "QgsVertexTool::matchEdgeCenterTest", QgsLineString( polyline ).asWkt().toUtf8().constData() );
+      p0 = polyline[0];
+      p1 = polyline[1];
+    }
   }
 
   QgsPointXY edgeCenter( ( p0.x() + p1.x() ) / 2, ( p0.y() + p1.y() ) / 2 );
