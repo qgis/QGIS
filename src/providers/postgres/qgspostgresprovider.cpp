@@ -810,6 +810,12 @@ bool QgsPostgresProvider::loadFields()
     // Get the table description
     sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
     QgsPostgresResult tresult( connectionRO()->PQexec( sql ) );
+
+    if ( ! tresult.result() )
+    {
+      throw PGException( tresult );
+    }
+
     if ( tresult.PQntuples() > 0 )
     {
       mDataComment = tresult.PQgetvalue( 0, 0 );
@@ -873,6 +879,12 @@ bool QgsPostgresProvider::loadFields()
                    tableoidsFilter );
 
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->PQexec( sql ) );
+
+      if ( ! fmtFieldTypeResult.result() )
+      {
+        throw PGException( fmtFieldTypeResult );
+      }
+
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
       {
         Oid attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toUInt();
