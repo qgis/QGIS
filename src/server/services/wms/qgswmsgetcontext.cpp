@@ -31,6 +31,8 @@
 
 #include "qgsexception.h"
 
+#include <QRegularExpression>
+
 namespace QgsWms
 {
   namespace
@@ -308,7 +310,8 @@ namespace QgsWms
           // layer wms name
           layerElem.setAttribute( QStringLiteral( "name" ), wmsName );
           // define an id based on layer wms name
-          layerElem.setAttribute( QStringLiteral( "id" ), wmsName.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) ) );
+          const thread_local QRegularExpression sRegEx( QStringLiteral( "[\\W]" ), QRegularExpression::UseUnicodePropertiesOption );
+          layerElem.setAttribute( QStringLiteral( "id" ), wmsName.replace( sRegEx, QStringLiteral( "_" ) ) );
 
           // layer title
           QDomElement titleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
