@@ -2408,7 +2408,7 @@ class TestQgsExpression: public QObject
         qDebug() << exp.evalErrorString();
 
       QCOMPARE( exp.hasEvalError(), false );
-      QCOMPARE( res.canConvert<QgsFeature>(), featureMatched );
+      QCOMPARE( res.userType() == QMetaType::type( "QgsFeature" ), featureMatched );
       if ( featureMatched )
       {
         QgsFeature feat = res.value<QgsFeature>();
@@ -3500,7 +3500,7 @@ class TestQgsExpression: public QObject
       QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
 
-      QCOMPARE( out.canConvert<QgsGeometry>(), true );
+      QCOMPARE( out.userType() == QMetaType::type( "QgsGeometry" ), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom.equals( outGeom ), true );
     }
@@ -3561,7 +3561,7 @@ class TestQgsExpression: public QObject
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
       QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
-      QCOMPARE( out.canConvert<QgsGeometry>(), true );
+      QCOMPARE( out.userType() == QMetaType::type( "QgsGeometry" ), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom.equals( outGeom ), true );
     }
@@ -3704,7 +3704,7 @@ class TestQgsExpression: public QObject
       QVariant out = exp.evaluate( &context );
       QCOMPARE( exp.hasEvalError(), evalError );
 
-      QCOMPARE( out.canConvert<QgsGeometry>(), true );
+      QCOMPARE( out.userType() == QMetaType::type( "QgsGeometry" ), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       outGeom.normalize();
       result.normalize();

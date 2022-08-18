@@ -982,7 +982,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
-  if ( value.canConvert<QgsGeometry>() )
+  if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
@@ -1000,13 +1000,13 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
-  else if ( value.canConvert< QgsFeature >() )
+  else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
-  else if ( value.canConvert< QgsInterval >() )
+  else if ( value.userType() == QMetaType::type( "QgsInterval" ) )
   {
     QgsInterval interval = value.value<QgsInterval>();
     if ( interval.days() > 1 )
@@ -1026,7 +1026,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
     }
   }
-  else if ( value.canConvert< QgsGradientColorRamp >() )
+  else if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
   {
     return startToken + tr( "gradient ramp" ) + endToken;
   }

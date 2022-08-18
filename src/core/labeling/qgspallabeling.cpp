@@ -2446,7 +2446,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
         ddPosition = true;
 
         QgsPoint point;
-        if ( pointPosProperty.canConvert<QgsReferencedGeometry>() )
+        if ( pointPosProperty.userType() == QMetaType::type( "QgsReferencedGeometry" ) )
         {
           QgsReferencedGeometry referencedGeometryPoint = pointPosProperty.value<QgsReferencedGeometry>();
           point = QgsPoint( referencedGeometryPoint.asPoint() );
@@ -2455,7 +2455,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
                && ct.sourceCrs() != referencedGeometryPoint.crs() )
             QgsMessageLog::logMessage( QObject::tr( "Label position geometry is not in layer coordinates reference system. Layer CRS: '%1', Geometry CRS: '%2'" ).arg( ct.sourceCrs().userFriendlyIdentifier(), referencedGeometryPoint.crs().userFriendlyIdentifier() ), QObject::tr( "Labeling" ), Qgis::Warning );
         }
-        else if ( pointPosProperty.canConvert<QgsGeometry>() )
+        else if ( pointPosProperty.userType() == QMetaType::type( "QgsGeometry" ) )
         {
           point = QgsPoint( pointPosProperty.value<QgsGeometry>().asPoint() );
         }

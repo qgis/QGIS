@@ -5,7 +5,6 @@ test_core_compositionconverter
 test_core_dxfexport
 test_core_expression
 test_core_field
-test_core_geometry
 test_core_labelingengine
 test_core_layoutpicture
 test_core_maprendererjob
@@ -13,7 +12,6 @@ test_core_networkaccessmanager
 test_core_ogcutils
 test_core_tiledownloadmanager
 test_core_vectortilelayer
-test_core_geometry_pointxy
 test_gui_datetimeedit
 test_gui_processinggui
 test_gui_querybuilder

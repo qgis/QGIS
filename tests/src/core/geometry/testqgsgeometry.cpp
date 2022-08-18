@@ -393,7 +393,7 @@ void TestQgsGeometry::asVariant()
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
-  QVERIFY( !var.canConvert< QgsReferencedGeometry >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsGeometry" ) );
 
   QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
   QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
@@ -425,7 +425,7 @@ void TestQgsGeometry::referenced()
   QVariant var = QVariant::fromValue( geom1 );
   QVERIFY( var.isValid() );
 
-  QVERIFY( var.canConvert< QgsReferencedGeometry >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
 
   QgsReferencedGeometry geom2 = qvariant_cast<QgsReferencedGeometry>( var );
   QCOMPARE( geom2.asWkt(), geom1.asWkt() );

@@ -40,7 +40,7 @@ QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
 
 QgsGradientColorRamp QgsExpressionUtils::getRamp( const QVariant &value, QgsExpression *parent, bool report_error )
 {
-  if ( value.canConvert<QgsGradientColorRamp>() )
+  if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
     return value.value<QgsGradientColorRamp>();
 
   // If we get here then we can't convert so we just error and return invalid.

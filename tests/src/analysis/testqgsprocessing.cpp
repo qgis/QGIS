@@ -10947,14 +10947,14 @@ void TestQgsProcessing::generateIteratingDestination()
   def.sink = QgsProperty::fromValue( "ape.shp" );
   def.destinationProject = &p;
   QVariant res = QgsProcessingUtils::generateIteratingDestination( def, 2, context );
-  QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( res.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
   QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
   QCOMPARE( fromVar.sink.staticValue().toString(), QStringLiteral( "ape_2.shp" ) );
   QCOMPARE( fromVar.destinationProject, &p );
 
   def.sink = QgsProperty::fromExpression( "'ape' || '.shp'" );
   res = QgsProcessingUtils::generateIteratingDestination( def, 2, context );
-  QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( res.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
   fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
   QCOMPARE( fromVar.sink.staticValue().toString(), QStringLiteral( "ape_2.shp" ) );
   QCOMPARE( fromVar.destinationProject, &p );
@@ -10963,7 +10963,7 @@ void TestQgsProcessing::generateIteratingDestination()
   def2.sink = QgsProperty::fromValue( QgsProcessing::TEMPORARY_OUTPUT );
   def2.destinationProject = &p;
   res = QgsProcessingUtils::generateIteratingDestination( def2, 2, context );
-  QVERIFY( res.canConvert<QgsProcessingOutputLayerDefinition>() );
+  QCOMPARE( res.userType(), QMetaType::type( "QgsProcessingOutputLayerDefinition" ) );
   fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( res );
   QCOMPARE( fromVar.sink.staticValue().toString(), QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( fromVar.destinationProject, &p );
