@@ -92,13 +92,13 @@ class CORE_EXPORT QgsExpressionUtils
         return Unknown;
 
       //handle some special cases
-      if ( value.canConvert<QgsGeometry>() )
+      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
       {
         //geom is false if empty
         const QgsGeometry geom = value.value<QgsGeometry>();
         return geom.isNull() ? False : True;
       }
-      else if ( value.canConvert<QgsFeature>() )
+      else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
       {
         //feat is false if non-valid
         const QgsFeature feat = value.value<QgsFeature>();
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static inline bool isIntervalSafe( const QVariant &v )
     {
-      if ( v.canConvert<QgsInterval>() )
+      if ( v.userType() == QMetaType::type( "QgsInterval" ) )
       {
         return true;
       }
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsInterval getInterval( const QVariant &value, QgsExpression *parent, bool report_error = false )
     {
-      if ( value.canConvert<QgsInterval>() )
+      if ( value.userType() == QMetaType::type( "QgsInterval" ) )
         return value.value<QgsInterval>();
 
       QgsInterval inter = QgsInterval::fromString( value.toString() );
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.canConvert<QgsGeometry>() )
+      if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
         return value.value<QgsGeometry>();
 
       parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsFeature getFeature( const QVariant &value, QgsExpression *parent )
     {
-      if ( value.canConvert<QgsFeature>() )
+      if ( value.userType() == QMetaType::type( "QgsFeature" ) )
         return value.value<QgsFeature>();
 
       parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );

@@ -80,6 +80,8 @@
 #include "qgsdbquerylog.h"
 #include "qgsfontmanager.h"
 #include "qgsunsetattributevalue.h"
+#include "qgscolorrampimpl.h"
+#include "qgsinterval.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -290,12 +292,17 @@ void QgsApplication::init( QString profileFolder )
     qRegisterMetaType<QgsAuthManager::MessageLevel>( "QgsAuthManager::MessageLevel" );
     qRegisterMetaType<QgsNetworkRequestParameters>( "QgsNetworkRequestParameters" );
     qRegisterMetaType<QgsNetworkReplyContent>( "QgsNetworkReplyContent" );
+    qRegisterMetaType<QgsFeature>( "QgsFeature" );
     qRegisterMetaType<QgsGeometry>( "QgsGeometry" );
+    qRegisterMetaType<QgsInterval>( "QgsInterval" );
+    qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
+    qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
     qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
     qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
     qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
     qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
     qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
+    qRegisterMetaType<QgsGradientColorRamp>( "QgsGradientColorRamp" );
     qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     // Qt6 documentation says these are not needed anymore (https://www.qt.io/blog/whats-new-in-qmetatype-qvariant) #spellok

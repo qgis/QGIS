@@ -468,7 +468,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
       // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
-      else if ( vL.canConvert< QgsInterval >() && vR.canConvert< QgsInterval >() )
+      else if ( vL.userType() == QMetaType::type( "QgsInterval" ) && vR.userType() == QMetaType::type( "QgsInterval" ) )
       {
         double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
         ENSURE_NO_EVAL_ERROR
