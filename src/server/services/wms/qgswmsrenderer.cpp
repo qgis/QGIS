@@ -375,7 +375,7 @@ namespace QgsWms
         }
 
         // Handles the pk-less case
-        const int pkIndexesSize {std::max( pkIndexes.size(), 1 )};
+        const int pkIndexesSize {std::max< int >( pkIndexes.size(), 1 )};
 
         QStringList pkAttributeNames;
         for ( int pkIndex : std::as_const( pkIndexes ) )
