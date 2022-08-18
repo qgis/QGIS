@@ -6,7 +6,6 @@ test_core_expression
 test_core_labelingengine
 test_core_layoutpicture
 test_core_ogcutils
-test_core_tiledownloadmanager
 test_core_vectortilelayer
 test_gui_datetimeedit
 test_gui_processinggui
