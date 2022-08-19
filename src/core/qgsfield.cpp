@@ -572,6 +572,23 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     return false;
   }
 
+  if ( ( d->type == QVariant::StringList || ( d->type == QVariant::List && d->subType == QVariant::String ) )
+       && ( v.type() == QVariant::String ) )
+  {
+    v = QStringList( { v.toString() } );
+    return true;
+  }
+
+  if ( ( d->type == QVariant::StringList || d->type == QVariant::List ) && !( v.type() == QVariant::StringList || v.type() == QVariant::List ) )
+  {
+    v = QVariant( d->type );
+
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target list type" ).arg( original.toString() );
+
+    return false;
+  }
+
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );

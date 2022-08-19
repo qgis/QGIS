@@ -892,6 +892,27 @@ void TestQgsField::collection()
 
   QVariant str( "hello" );
   QVERIFY( !field.convertCompatible( str ) );
+
+  QVariant intList = QVariantList( {1, 2, 3 } );
+  QVERIFY( field.convertCompatible( intList ) );
+  QCOMPARE( intList.toList(), QVariantList( {1, 2, 3} ) );
+
+  QVariant doubleList = QVariantList( {1.1, 2.2, 3.3 } );
+  QVERIFY( field.convertCompatible( doubleList ) );
+  QCOMPARE( doubleList.toList(), QVariantList( {1.1, 2.2, 3.3 } ) );
+
+  QgsField stringListField( QStringLiteral( "collection" ), QVariant::StringList );
+  str = QVariant( "hello" );
+  QVERIFY( stringListField.convertCompatible( str ) );
+  QCOMPARE( str, QStringList{ QStringLiteral( "hello" )} );
+
+  QVariant strList = QVariant( QStringList( { "hello", "there" } ) );
+  QVERIFY( stringListField.convertCompatible( strList ) );
+  QCOMPARE( strList, QVariant( QStringList( { "hello", "there" } ) ) );
+
+  QVariant strInVariantList = QVariant( QVariantList( { "hello", "there" } ) );
+  QVERIFY( stringListField.convertCompatible( strInVariantList ) );
+  QCOMPARE( strInVariantList, QVariant( QStringList( { "hello", "there" } ) ) );
 }
 
 QGSTEST_MAIN( TestQgsField )
