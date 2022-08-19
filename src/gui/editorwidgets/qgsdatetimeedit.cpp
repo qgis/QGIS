@@ -82,7 +82,7 @@ void QgsDateTimeEdit::clear()
     // Check if it's really changed or crash, see GH #29937
     if ( ! dateTime().isNull() )
     {
-      changed( QDateTime() );
+      changed( QVariant() );
     }
 
     // emit signal of QDateTime::dateTimeChanged with an invalid date
@@ -237,7 +237,7 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
   if ( !mBlockChangedSignal )
-    emitValueChanged( dateTime );
+    emitValueChanged( isNull ? QVariant() : dateTime );
 }
 ///@endcond
 
