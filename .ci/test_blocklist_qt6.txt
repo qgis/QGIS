@@ -1,6 +1,5 @@
 # Qt6 blocklist
 test_core_authconfig
-test_core_callout
 test_core_compositionconverter
 test_core_dxfexport
 test_core_expression
