@@ -114,8 +114,8 @@ namespace QgsWms
     {
       case PNG:
         result = img;
-        contentType = "image/png";
-        saveFormat = "PNG";
+        contentType = QStringLiteral( "image/png" );
+        saveFormat = QStringLiteral( "PNG" );
         break;
       case PNG8:
       {
@@ -130,25 +130,25 @@ namespace QgsWms
                                          Qt::ColorOnly | Qt::ThresholdDither |
                                          Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
-      contentType = "image/png";
-      saveFormat = "PNG";
+      contentType = QStringLiteral( "image/png" );
+      saveFormat = QStringLiteral( "PNG" );
       break;
       case PNG16:
         result = img.convertToFormat( QImage::Format_ARGB4444_Premultiplied );
-        contentType = "image/png";
-        saveFormat = "PNG";
+        contentType = QStringLiteral( "image/png" );
+        saveFormat = QStringLiteral( "PNG" );
         break;
       case PNG1:
         result = img.convertToFormat( QImage::Format_Mono,
                                       Qt::MonoOnly | Qt::ThresholdDither |
                                       Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
-        contentType = "image/png";
-        saveFormat = "PNG";
+        contentType = QStringLiteral( "image/png" );
+        saveFormat = QStringLiteral( "PNG" );
         break;
       case JPEG:
         result = img;
-        contentType = "image/jpeg";
-        saveFormat = "JPEG";
+        contentType = QStringLiteral( "image/jpeg" );
+        saveFormat = QStringLiteral( "JPEG" );
         break;
       case WEBP:
         result = img;
@@ -156,8 +156,8 @@ namespace QgsWms
         saveFormat = QStringLiteral( "WEBP" );
         break;
       default:
-        QgsMessageLog::logMessage( QString( "Unsupported format string %1" ).arg( formatStr ) );
-        saveFormat = "Unknown";
+        QgsMessageLog::logMessage( QStringLiteral( "Unsupported format string %1" ).arg( formatStr ) );
+        saveFormat = QStringLiteral( "Unknown" );
         break;
     }
 
