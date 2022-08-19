@@ -32,7 +32,7 @@ QString QgsFixGeometriesAlgorithm::displayName() const
 
 QStringList QgsFixGeometriesAlgorithm::tags() const
 {
-  return QObject::tr( "repair,invalid,geometry,make,valid" ).split( ',' );
+  return QObject::tr( "repair,invalid,geometry,make,valid,error" ).split( ',' );
 }
 
 QString QgsFixGeometriesAlgorithm::group() const
