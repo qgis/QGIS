@@ -290,7 +290,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   static int MAX_HIDDEN_ENTRIES = 5;
   for ( const QString &path : hiddenPathList )
   {
-    QAction *action = new QAction( QDir::toNativeSeparators( path ), hiddenMenu );
+    QAction *action = new QAction( QDir::toNativeSeparators( QString( path ).replace( QChar( '|' ), QChar( '/' ) ) ), hiddenMenu );
     connect( action, &QAction::triggered, this, [ = ]
     {
       QgsSettings s;
@@ -300,10 +300,21 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
       // get parent path and refresh corresponding node
       int idx = path.lastIndexOf( QLatin1Char( '/' ) );
-      if ( idx != -1 && path.count( QStringLiteral( "/" ) ) > 1 )
+      if ( idx != -1 )
       {
         QString parentPath = path.left( idx );
-        QgisApp::instance()->browserModel()->refresh( parentPath );
+        if ( path.count( QStringLiteral( "/" ) ) > 1 || parentPath.endsWith( QLatin1Char( ':' ) ) )
+        {
+          QgisApp::instance()->browserModel()->refresh( parentPath );
+        }
+        else if ( parentPath.isEmpty() )
+        {
+          QgisApp::instance()->browserModel()->refresh( QChar( '/' ) );
+        }
+        else
+        {
+          QgisApp::instance()->browserModel()->refreshDrives();
+        }
       }
       else
       {

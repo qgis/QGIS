@@ -78,6 +78,10 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 
   private:
     QVector<QgsDataItem *> createChildren( const QString &directory, const QString &name );
+
+    //! Check if the given path is hidden from the browser model
+    static bool hiddenPath( const QString &path );
+
 };
 
 #ifndef SIP_RUN

@@ -57,6 +57,11 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
     if ( parts.count() > 1 )
       name = parts.at( 1 );
 
+    if ( hiddenPath( QStringLiteral( "%1/%2" ).arg( path(), QString( dir ).replace( QChar( '/' ), QChar( '|' ) ) ) ) )
+    {
+      continue;
+    }
+
     children << createChildren( dir, name );
   }
 
@@ -181,6 +186,15 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &director
     children.append( new QgsFavoriteItem( this, name, directory, mPath + '/' + pathName ) );
   }
   return children;
+}
+
+bool QgsFavoritesItem::hiddenPath( const QString &path )
+{
+  const QgsSettings settings;
+  const QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
+                                  QStringList() ).toStringList();
+  const int idx = hiddenItems.indexOf( path );
+  return ( idx > -1 );
 }
 
 //
