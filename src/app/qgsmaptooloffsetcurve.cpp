@@ -369,7 +369,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
         QgsAttributeMap attrs;
         for ( int idx = 0; idx < destLayer->fields().count(); ++idx )
         {
-          if ( !feature.attribute( idx ).isNull() )
+          if ( !QgsVariantUtils::isNull( feature.attribute( idx ) ) )
             attrs[idx] = feature.attribute( idx );
         }
 

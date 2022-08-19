@@ -2082,7 +2082,7 @@ namespace QgsWms
           attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
 
           QString value;
-          if ( ! it.value().isNull() )
+          if ( ! QgsVariantUtils::isNull( it.value() ) )
           {
             value  = QString::number( it.value().toDouble() );
           }

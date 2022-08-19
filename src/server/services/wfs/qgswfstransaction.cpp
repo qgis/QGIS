@@ -429,7 +429,7 @@ namespace QgsWfs
           }
           QgsField field = fields.at( fieldMapIt.value() );
           QVariant value = it.value();
-          if ( value.isNull() )
+          if ( QgsVariantUtils::isNull( value ) )
           {
             if ( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull )
             {
