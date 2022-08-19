@@ -18,6 +18,7 @@
 
 #include "qgsserversettings.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QSettings>
 #include <QDir>
@@ -445,7 +446,7 @@ void QgsServerSettings::prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QSt
       varValue.setValue( env.value( e ) );
     }
 
-    if ( ! varValue.isNull() && varValue.canConvert( s.type ) )
+    if ( !QgsVariantUtils::isNull( varValue ) && varValue.canConvert( s.type ) )
     {
       s.val = varValue;
       s.src = QgsServerSettingsEnv::ENVIRONMENT_VARIABLE;

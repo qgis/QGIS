@@ -378,7 +378,7 @@ QgsMapToolLabel::LabelAlignment QgsMapToolLabel::currentAlignment()
     if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::OffsetQuad ) )
     {
       QVariant exprVal = evaluateDataDefinedProperty( QgsPalLayerSettings::OffsetQuad, mCurrentLabel.settings, f, static_cast< int >( quadrantOffset ) );
-      if ( !exprVal.isNull() )
+      if ( !QgsVariantUtils::isNull( exprVal ) )
       {
         bool ok;
         int quadInt = exprVal.toInt( &ok );
@@ -829,7 +829,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::PositionPoint ) )
     {
       if ( pointCol >= 0
-           && !attributes.at( pointCol ).isNull() )
+           && !QgsVariantUtils::isNull( attributes.at( pointCol ) ) )
       {
         QVariant pointAsVariant = attributes.at( pointCol );
         if ( pointAsVariant.userType() == QMetaType::type( "QgsGeometry" ) )
@@ -848,9 +848,9 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
     }
     else
     {
-      if ( !attributes.at( xCol ).isNull() )
+      if ( !QgsVariantUtils::isNull( attributes.at( xCol ) ) )
         x = attributes.at( xCol ).toDouble( &xSuccess );
-      if ( !attributes.at( yCol ).isNull() )
+      if ( !QgsVariantUtils::isNull( attributes.at( yCol ) ) )
         y = attributes.at( yCol ).toDouble( &ySuccess );
     }
   }
@@ -891,7 +891,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
 
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorPercent ) )
   {
-    if ( !attributes.at( lineAnchorPercentCol ).isNull() )
+    if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorPercentCol ) ) )
     {
       lineAnchorPercent = attributes.at( lineAnchorPercentCol ).toDouble( &lineAnchorPercentSuccess );
     }
@@ -899,7 +899,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
 
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorClipping ) )
   {
-    if ( !attributes.at( lineAnchorClippingCol ).isNull() )
+    if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorClippingCol ) ) )
     {
       lineAnchorClipping = attributes.at( lineAnchorClippingCol ).toString();
     }
@@ -911,7 +911,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
 
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorType ) )
   {
-    if ( !attributes.at( lineAnchorTypeCol ).isNull() )
+    if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorTypeCol ) ) )
     {
       lineAnchorType = attributes.at( lineAnchorTypeCol ).toString();
     }
@@ -923,7 +923,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedLineAnchorPercent( double &lineAnch
 
   if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::LineAnchorTextPoint ) )
   {
-    if ( !attributes.at( lineAnchorTextPointCol ).isNull() )
+    if ( !QgsVariantUtils::isNull( attributes.at( lineAnchorTextPointCol ) ) )
     {
       lineAnchorTextPoint = attributes.at( lineAnchorTextPointCol ).toString();
     }

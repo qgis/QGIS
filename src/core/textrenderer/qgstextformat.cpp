@@ -1030,7 +1030,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.stretch() );
     const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStretchFactor, context.expressionContext(), d->textFont.stretch() );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->textFont.setStretch( val.toInt() );
     }

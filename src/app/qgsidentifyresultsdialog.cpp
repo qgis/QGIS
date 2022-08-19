@@ -706,7 +706,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
-    if ( attrs.at( i ).isNull() && QgsIdentifyResultsDialog::settingHideNullValues.value() )
+    if ( QgsVariantUtils::isNull( attrs.at( i ) ) && QgsIdentifyResultsDialog::settingHideNullValues.value() )
     {
       continue;
     }
@@ -1259,7 +1259,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer,
     if ( i >= fields.count() )
       break;
 
-    if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
+    if ( QgsVariantUtils::isNull( attrs.at( i ) ) )
       continue;  // skip attributes that are not present (there can be many of them)
 
     const QString value = fields.at( i ).displayString( attrs.at( i ) );

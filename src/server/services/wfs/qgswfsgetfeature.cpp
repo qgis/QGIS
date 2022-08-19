@@ -1549,7 +1549,7 @@ namespace QgsWfs
       const QgsEditorWidgetSetup setup = field.editorWidgetSetup();
       const QString attributeName = field.name().replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() );
       QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:" ) + attributeName );
-      if ( value.isNull() )
+      if ( QgsVariantUtils::isNull( value ) )
       {
         fieldElem.setAttribute( QStringLiteral( "xsi:nil" ), QStringLiteral( "true" ) );
       }
@@ -1571,7 +1571,7 @@ namespace QgsWfs
 
     QString encodeValueToText( const QVariant &value, const QgsEditorWidgetSetup &setup )
     {
-      if ( value.isNull() )
+      if ( QgsVariantUtils::isNull( value ) )
         return QString();
 
       if ( setup.type() ==  QStringLiteral( "DateTime" ) )

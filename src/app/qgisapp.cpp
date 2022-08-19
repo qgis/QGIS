@@ -1010,7 +1010,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
 
-  if ( settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ) ).isNull() )
+  if ( !settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ) ).isValid() )
   {
     // So that it appears in advanced settings
     settings.setValue( QStringLiteral( "qgis/main_canvas_preview_jobs" ), true );

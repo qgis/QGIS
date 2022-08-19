@@ -567,7 +567,7 @@ QWidget *CoordinateItemDelegate::createEditor( QWidget *parent, const QStyleOpti
 {
   QLineEdit *lineEdit = new QLineEdit( parent );
   QgsDoubleValidator *validator = new QgsDoubleValidator( lineEdit );
-  if ( !index.data( MIN_RADIUS_ROLE ).isNull() )
+  if ( index.data( MIN_RADIUS_ROLE ).isValid() )
     validator->setBottom( index.data( MIN_RADIUS_ROLE ).toDouble() );
   lineEdit->setValidator( validator );
   return lineEdit;
