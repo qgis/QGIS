@@ -341,6 +341,15 @@ QString QgsField::displayString( const QVariant &v ) const
         return QString::number( v.toDouble(), 'f', d->precision );
       }
     }
+    else
+    {
+      const double vDouble = v.toDouble();
+      // mimic Qt 5 handling of when to switch to exponential forms
+      if ( std::fabs( vDouble ) < 1e-04 )
+        return QString::number( vDouble, 'g', QLocale::FloatingPointShortest );
+      else
+        return QString::number( vDouble, 'f', QLocale::FloatingPointShortest );
+    }
   }
   // Other numeric types than doubles
   else if ( isNumeric() &&
