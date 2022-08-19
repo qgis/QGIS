@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsvariantutils.h"
+#include "qgslogger.h"
+
 #include <QDate>
 #include <QTime>
 #include <QDateTime>
@@ -189,57 +191,187 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
       return false;
 
     case QVariant::Date:
-      return variant.toDate().isNull();
+      if ( variant.toDate().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QDateTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Time:
-      return variant.toTime().isNull();
+      if ( variant.toTime().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QTime was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::DateTime:
-      return variant.toDate().isNull();
+      if ( variant.toDate().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QDate was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Char:
-      return variant.toChar().isNull();
+      if ( variant.toChar().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QChar was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::String:
-      return variant.toString().isNull();
+      if ( variant.toString().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QString was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::ByteArray:
-      return variant.toByteArray().isNull();
+      if ( variant.toByteArray().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QByteArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::BitArray:
-      return variant.toBitArray().isNull();
+      if ( variant.toBitArray().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QBitArray was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Rect:
-      return variant.toRect().isNull();
+      if ( variant.toRect().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QRect was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::RectF:
-      return variant.toRectF().isNull();
+      if ( variant.toRectF().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QRectF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Size:
-      return variant.toSize().isNull();
+      if ( variant.toSize().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QSize was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::SizeF:
-      return variant.toSizeF().isNull();
+      if ( variant.toSizeF().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QSizeF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Line:
-      return variant.toLine().isNull();
+      if ( variant.toLine().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QLine was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::LineF:
-      return variant.toLineF().isNull();
+      if ( variant.toLineF().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QLineF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Point:
-      return variant.toPoint().isNull();
+      if ( variant.toPoint().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QPoint was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::PointF:
-      return variant.toPointF().isNull();
+      if ( variant.toPointF().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QPointF was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Uuid:
-      return variant.toUuid().isNull();
+      if ( variant.toUuid().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QUuid was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Pixmap:
-      return variant.value< QPixmap >().isNull();
+      if ( variant.value< QPixmap >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QPixmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Image:
-      return variant.value< QImage >().isNull();
+      if ( variant.value< QImage >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QImage was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Color:
-      return !variant.value< QColor >().isValid();
+      if ( !variant.value< QColor >().isValid() )
+      {
+        QgsDebugMsg( QStringLiteral( "Invalid QColor was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Region:
-      return variant.value< QRegion >().isNull();
+      if ( variant.value< QRegion >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QRegion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Bitmap:
-      return variant.value< QBitmap >().isNull();
+      if ( variant.value< QBitmap >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QBitmap was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Icon:
-      return variant.value< QIcon>().isNull();
+      if ( variant.value< QIcon >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QIcon was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Vector2D:
-      return variant.value< QVector2D>().isNull();
+      if ( variant.value< QVector2D >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QVector2D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Vector3D:
-      return variant.value< QVector3D>().isNull();
+      if ( variant.value< QVector3D >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QVector3D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Vector4D:
-      return variant.value< QVector4D>().isNull();
+      if ( variant.value< QVector4D >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QVector4D was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
     case QVariant::Quaternion:
-      return variant.value< QQuaternion>().isNull();
+      if ( variant.value< QQuaternion >().isNull() )
+      {
+        QgsDebugMsg( QStringLiteral( "NULL QQuaternion was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
+        return true;
+      }
+      return false;
 
     case QVariant::LastCoreType:
     case QVariant::Font:
@@ -259,6 +391,9 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
       break;
 
     case QVariant::UserType:
+      break;
+
+    default:
       break;
   }
 
