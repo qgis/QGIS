@@ -316,13 +316,6 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
         return true;
       }
       return false;
-    case QVariant::Color:
-      if ( !variant.value< QColor >().isValid() )
-      {
-        QgsDebugMsg( QStringLiteral( "Invalid QColor was stored in a QVariant -- stop it! Always use an invalid QVariant() instead." ) );
-        return true;
-      }
-      return false;
     case QVariant::Region:
       if ( variant.value< QRegion >().isNull() )
       {
@@ -374,6 +367,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant )
       return false;
 
     case QVariant::LastCoreType:
+    case QVariant::Color:
     case QVariant::Font:
     case QVariant::Brush:
     case QVariant::Polygon:
