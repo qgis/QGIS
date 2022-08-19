@@ -39,7 +39,7 @@ namespace QgsWms
   //! Supported image output format
   enum ImageOutputFormat
   {
-    UNKN,
+    Unknown,
     PNG,
     PNG8,
     PNG16,
