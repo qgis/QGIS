@@ -155,7 +155,7 @@ namespace QgsWms
         contentType = QStringLiteral( "image/webp" );
         saveFormat = QStringLiteral( "WEBP" );
         break;
-      default:
+      case Unknown:
         QgsMessageLog::logMessage( QStringLiteral( "Unsupported format string %1" ).arg( formatStr ) );
         saveFormat = QStringLiteral( "Unknown" );
         break;
@@ -165,7 +165,7 @@ namespace QgsWms
     result.setDotsPerMeterX( img.dotsPerMeterX() );
     result.setDotsPerMeterY( img.dotsPerMeterY() );
 
-    if ( outputFormat != UNKN )
+    if ( outputFormat != Unknown )
     {
       response.setHeader( "Content-Type", contentType );
       if ( saveFormat == QLatin1String( "JPEG" ) || saveFormat == QLatin1String( "WEBP" ) )
