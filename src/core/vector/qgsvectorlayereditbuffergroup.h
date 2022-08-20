@@ -18,6 +18,7 @@
 #define QGSVECTORLAYEREDITBUFFERGROUP_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QObject>
 #include <QSet>
@@ -91,14 +92,14 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      *
      * \returns TRUE on success
      */
-    bool commitChanges( QStringList &commitErrors, bool stopEditing = true );
+    bool commitChanges( QStringList &commitErrors SIP_OUT, bool stopEditing = true );
 
     /**
      * Stop editing and discard the edits
      *
      * \returns FALSE if errors occurred during rollback
      */
-    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true );
+    bool rollBack( QStringList &rollbackErrors SIP_OUT, bool stopEditing = true );
 
     /**
      * Returns TRUE if the layers are in editing mode
