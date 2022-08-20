@@ -21,6 +21,8 @@ from qgis.processing import alg
 
 # Processing scripts can be written using the @alg decorator, which simplifies
 # the creation of algorithms and the specification of inputs and outputs.
+# More details at:
+# https://docs.qgis.org/latest/en/docs/user_manual/processing/scripts.html#the-alg-decorator
 
 # 'name' is the algorithm name, which must not be localised and is used for
 # identifying the algorithm.

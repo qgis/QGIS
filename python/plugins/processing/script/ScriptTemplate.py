@@ -33,6 +33,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
 
     All Processing algorithms should extend the QgsProcessingAlgorithm
     class.
+
+    More details at:
+    https://docs.qgis.org/latest/en/docs/user_manual/processing/scripts.html#extending-qgsprocessingalgorithm
     """
 
     # Constants used to refer to parameters and outputs. They will be
