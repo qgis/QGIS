@@ -19,14 +19,29 @@ from qgis import processing
 from qgis.processing import alg
 
 
-@alg(name='myscriptdecorators', label='My Script (with decorators)',
-     group='examplescripts', group_label='Example scripts')
+# Processing scripts can be written using the @alg decorator, which simplifies
+# the creation of algorithms and the specification of inputs and outputs.
+
+# 'name' is the algorithm name, which must not be localised and is used for
+# identifying the algorithm.
+# 'label' is the translated algorithm name, which should be used for any
+# user-visible display of the algorithm name.
+# 'group' is the unique ID of the group this algorithm belongs to. This string
+# must not be localised.
+# 'group_label' is the name of the group this algorithm belongs to. This string
+# should be localised.
+# Use alg.tr() to get a translatable string.
+@alg(name='myscriptdecorators', label=alg.tr('My Script (with decorators)'),
+     group='examplescripts', group_label=alg.tr('Example scripts'))
 # 'INPUT' is the recommended name for the main input parameter
 @alg.input(type=alg.SOURCE, name='INPUT', label='Input layer')
 # 'OUTPUT' is the recommended name for the main output parameter
 @alg.input(type=alg.SINK, name='OUTPUT', label='Output layer')
+# help() returns a localised short helper string for the algorithm. This string
+# should provide a basic description about what the algorithm does and the
+# parameters and outputs associated with it.
 @alg.help(alg.tr('Example algorithm short description'))
-def myScript(instance, parameters, context, feedback, inputs):
+def myAlgorithm(instance, parameters, context, feedback, inputs):
     """
     Here is where the processing itself takes place.
     """

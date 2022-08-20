@@ -37,6 +37,7 @@ from processing.gui.ProviderActions import (ProviderActions,
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.script.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.AddScriptFromTemplateAction import AddScriptFromTemplateAction
+from processing.script.AddScriptFromTemplateWithDecoratorsAction import AddScriptFromTemplateWithDecoratorsAction
 from processing.script.DeleteScriptAction import DeleteScriptAction
 from processing.script.EditScriptAction import EditScriptAction
 from processing.script.OpenScriptFromFileAction import OpenScriptFromFileAction
@@ -52,6 +53,7 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         self.additional_algorithm_classes = []
         self.actions = [CreateNewScriptAction(),
                         AddScriptFromTemplateAction(),
+                        AddScriptFromTemplateWithDecoratorsAction(),
                         OpenScriptFromFileAction(),
                         AddScriptFromFileAction()
                         ]
