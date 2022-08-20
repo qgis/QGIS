@@ -259,6 +259,24 @@ Sets whether system and internal tables will be shown in the model.
 .. seealso:: :py:func:`includeSystemTables`
 %End
 
+    bool includeEmptyLayers() const;
+%Docstring
+Returns ``True`` if empty tables will be shown in the model.
+
+.. seealso:: :py:func:`setIncludeEmptyLayers`
+
+.. versionadded:: 3.28
+%End
+
+    void setIncludeEmptyLayers( bool include );
+%Docstring
+Sets whether empty tables will be shown in the model.
+
+.. seealso:: :py:func:`includeEmptyLayers`
+
+.. versionadded:: 3.28
+%End
+
   protected:
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
 

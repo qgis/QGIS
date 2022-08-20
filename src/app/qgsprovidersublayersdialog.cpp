@@ -190,6 +190,7 @@ QgsProviderSublayersDialog::QgsProviderSublayersDialog( const QString &uri, cons
   connect( mLayersTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProviderSublayersDialog::treeSelectionChanged );
   connect( mSearchLineEdit, &QgsFilterLineEdit::textChanged, mProxyModel, &QgsProviderSublayerProxyModel::setFilterString );
   connect( mCheckShowSystem, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeSystemTables );
+  connect( mCheckShowEmpty, &QCheckBox::toggled, mProxyModel, &QgsProviderSublayerProxyModel::setIncludeEmptyLayers );
   connect( mLayersTree, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
   {
     const QModelIndex left = mLayersTree->model()->index( index.row(), 0, index.parent() );

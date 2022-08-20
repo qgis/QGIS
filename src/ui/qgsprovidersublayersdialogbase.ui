@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>584</width>
-    <height>236</height>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="7" column="0">
+   <item row="6" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -83,11 +83,40 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="0">
-    <widget class="QCheckBox" name="mCheckShowSystem">
-     <property name="text">
-      <string>Show system and internal tables</string>
+   <item row="5" column="0">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="title">
+      <string>Options</string>
      </property>
+     <property name="collapsed" stdset="0">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="mCbxAddToGroup">
+        <property name="text">
+         <string>Add layers to a group</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="mCheckShowSystem">
+        <property name="text">
+         <string>Show system and internal tables</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="mCheckShowEmpty">
+        <property name="text">
+         <string>Show empty vector layers</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="2" column="0">
@@ -120,17 +149,16 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="mCbxAddToGroup">
-     <property name="text">
-      <string>Add layers to a group</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
@@ -142,8 +170,6 @@
   <tabstop>mLayersTree</tabstop>
   <tabstop>mBtnSelectAll</tabstop>
   <tabstop>mBtnDeselectAll</tabstop>
-  <tabstop>mCbxAddToGroup</tabstop>
-  <tabstop>mCheckShowSystem</tabstop>
  </tabstops>
  <resources/>
  <connections/>
