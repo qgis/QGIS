@@ -348,7 +348,12 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
     {
       importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( dropUri.name ) );
       hasError = true;
-
+    }
+    // Neither we should support copying the whole GPKG file
+    else if ( dropUri.providerKey == QString() && dropUri.uri == dropUri.filePath )
+    {
+      importResults.append( tr( "You cannot import a GeoPackage file over another GeoPackage file!" ) );
+      hasError = true;
     }
     else
     {
