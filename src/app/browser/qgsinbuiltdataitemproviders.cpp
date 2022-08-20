@@ -290,6 +290,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
   static int MAX_HIDDEN_ENTRIES = 5;
   for ( const QString &path : hiddenPathList )
   {
+    // Replace | back to / (no idea why they are replaced)
     QAction *action = new QAction( QDir::toNativeSeparators( QString( path ).replace( QChar( '|' ), QChar( '/' ) ) ), hiddenMenu );
     connect( action, &QAction::triggered, this, [ = ]
     {
@@ -303,7 +304,7 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       if ( idx != -1 )
       {
         QString parentPath = path.left( idx );
-        if ( path.count( QStringLiteral( "/" ) ) > 1 || parentPath.endsWith( QLatin1Char( ':' ) ) )
+        if ( path.count( QStringLiteral( "/" ) ) > 1 || parentPath.startsWith( QStringLiteral( "favorites:" ) ) )
         {
           QgisApp::instance()->browserModel()->refresh( parentPath );
         }
