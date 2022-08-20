@@ -26,8 +26,6 @@ import codecs
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import QgsApplication
-
 from processing.gui.ToolboxAction import ToolboxAction
 
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
