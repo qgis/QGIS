@@ -3,7 +3,6 @@ test_core_authconfig
 test_core_compositionconverter
 test_core_dxfexport
 test_core_expression
-test_core_field
 test_core_labelingengine
 test_core_layoutpicture
 test_core_ogcutils
