@@ -556,7 +556,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
         return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND (%4 %5 %6 OR %4 IS NULL)" ).arg( dateTimefieldCast( mStartFieldName ),
                filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
                dateTimeExpressionLiteral( filterRange.end() ),
-               QgsExpression::quotedColumnRef( mEndFieldName ),
+               dateTimefieldCast( mEndFieldName ),
                limitMode() == Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                dateTimeExpressionLiteral( filterRange.begin() ) );
 
