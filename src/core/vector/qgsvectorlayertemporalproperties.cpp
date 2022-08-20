@@ -540,7 +540,7 @@ QString QgsVectorLayerTemporalProperties::createFilterString( const QgsVectorLay
         case QgsUnitTypes::TemporalIrregularStep:
           return QString();
       }
-      return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 %5 %6) OR %7 IS NULL)" ).arg( QgsExpression::quotedColumnRef( mStartFieldName ),
+      return QStringLiteral( "(%1 %2 %3 OR %1 IS NULL) AND ((%1 + %4 %5 %6) OR %7 IS NULL)" ).arg( dateTimefieldCast( mStartFieldName ),
              filterRange.includeEnd() ? QStringLiteral( "<=" ) : QStringLiteral( "<" ),
              dateTimeExpressionLiteral( filterRange.end() ),
              intervalExpression,
