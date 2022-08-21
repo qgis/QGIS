@@ -17,6 +17,7 @@
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"
+#include <QMessageBox>
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
@@ -33,6 +34,8 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setExpressionText( startText );
   builder->expressionTree()->loadRecent( mRecentKey );
   builder->expressionTree()->loadUserExpressions( );
+
+  mInitialText = startText;
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
@@ -81,6 +84,19 @@ void QgsExpressionBuilderDialog::accept()
 {
   builder->expressionTree()->saveToRecent( builder->expressionText(), mRecentKey );
   QDialog::accept();
+}
+
+void QgsExpressionBuilderDialog::reject()
+{
+	if (builder->expressionText() != mInitialText)
+	{
+		const int res = QMessageBox::warning( this, tr( "Expression was edited" ),
+											  tr( "Closing the dialog will discard the changes to the expression. Proceed?" ),
+											  QMessageBox::Yes | QMessageBox::No );
+		if ( res != QMessageBox::Yes )
+		  return;
+	}
+  QDialog::reject();
 }
 
 void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea &da )
