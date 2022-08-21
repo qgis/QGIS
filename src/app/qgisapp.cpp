@@ -2927,6 +2927,8 @@ void QgisApp::createActions()
   connect( mActionHelpAPI, &QAction::triggered, this, &QgisApp::apiDocumentation );
   connect( mActionHelpPyQgisAPI, &QAction::triggered, this, &QgisApp::pyQgisApiDocumentation );
   connect( mActionReportaBug, &QAction::triggered, this, &QgisApp::reportaBug );
+  connect( mActionDonate, &QAction::triggered, this, &QgisApp::donate );
+  connect( mActionGetInvolved, &QAction::triggered, this, &QgisApp::getInvolved );
   connect( mActionNeedSupport, &QAction::triggered, this, &QgisApp::supportProviders );
   connect( mActionQgisHomePage, &QAction::triggered, this, &QgisApp::helpQgisHomePage );
   connect( mActionCheckQgisVersion, &QAction::triggered, this, &QgisApp::checkQgisVersion );
@@ -12402,6 +12404,22 @@ void QgisApp::reportaBug()
   QString reportaBugUrl = settings.value( QStringLiteral( "qgis/reportaBugUrl" ),
                                           tr( "https://qgis.org/en/site/getinvolved/development/bugreporting.html" ) ).toString();
   openURL( reportaBugUrl, false );
+}
+
+void QgisApp::getInvolved()
+{
+  QgsSettings settings;
+  QString getInvolvedUrl = settings.value( QStringLiteral( "qgis/getInvolved" ),
+                           tr( "https://qgis.org/en/site/getinvolved/" ) ).toString();
+  openURL( getInvolvedUrl, false );
+}
+
+void QgisApp::donate()
+{
+  QgsSettings settings;
+  QString donateUrl = settings.value( QStringLiteral( "qgis/donate" ),
+                                      tr( "https://donate.qgis.org/" ) ).toString();
+  openURL( donateUrl, false );
 }
 
 void QgisApp::supportProviders()
