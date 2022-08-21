@@ -88,14 +88,15 @@ void QgsExpressionBuilderDialog::accept()
 
 void QgsExpressionBuilderDialog::reject()
 {
-	if (builder->expressionText() != mInitialText)
-	{
-		const int res = QMessageBox::warning( this, tr( "Expression was edited" ),
-											  tr( "Closing the dialog will discard the changes to the expression. Proceed?" ),
-											  QMessageBox::Yes | QMessageBox::No );
-		if ( res != QMessageBox::Yes )
-		  return;
-	}
+  if ( builder->expressionText() != mInitialText )
+  {
+    const int res = QMessageBox::warning( this, tr( "Expression was edited" ),
+                                          tr( "Closing the dialog will discard the changes to the expression. Proceed?" ),
+                                          QMessageBox::Yes | QMessageBox::No
+                                          QMessageBox::Yes );
+    if ( res != QMessageBox::Yes )
+      return;
+  }
   QDialog::reject();
 }
 
