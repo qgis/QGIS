@@ -299,18 +299,28 @@ void QgsAppDirectoryItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
       pathsList.removeAll( path );
       s.setValue( QStringLiteral( "/browser/hiddenPaths" ), pathsList );
 
-      // get parent path and refresh corresponding node
+      // get the parent path and refresh corresponding node
       int idx = path.lastIndexOf( QLatin1Char( '/' ) );
       if ( idx != -1 )
       {
         QString parentPath = path.left( idx );
-        if ( path.count( QStringLiteral( "/" ) ) > 1 || parentPath.startsWith( QStringLiteral( "favorites:" ) ) )
+        // Favorites use | as directory separator
+        if ( parentPath.startsWith( QStringLiteral( "favorites:/" ) ) )
         {
-          QgisApp::instance()->browserModel()->refresh( parentPath );
+          parentPath.remove( QStringLiteral( "favorites:/" ) ).replace( QChar( '|' ), QChar( '/' ) );
         }
-        else if ( parentPath.isEmpty() )
+
+        // Find the the parent
+        const QModelIndex parentIndex { QgisApp::instance()->browserModel()->findPath( parentPath.isEmpty() ? QChar( '/' ) : parentPath ) };
+
+        if ( parentIndex.isValid() )
         {
-          QgisApp::instance()->browserModel()->refresh( QChar( '/' ) );
+          QgsDataItem *parentItem { QgisApp::instance()->browserModel()->dataItem( parentIndex ) };
+          if ( parentItem )
+          {
+            parentItem->refresh();
+            return ;
+          }
         }
         else
         {
