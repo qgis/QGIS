@@ -350,7 +350,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
       hasError = true;
     }
     // Neither we should support copying the whole GPKG file
-    else if ( dropUri.providerKey == QString() && dropUri.uri == dropUri.filePath )
+    else if ( dropUri.providerKey.isEmpty() && dropUri.uri == dropUri.filePath )
     {
       importResults.append( tr( "You cannot import a GeoPackage file over another GeoPackage file!" ) );
       hasError = true;
