@@ -48,17 +48,6 @@ jobs:
             patch-qt-3d: true
             LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
 
-          - distro-version: '21.10'
-            qt-version: 5
-            run-tests: false
-            docker-tag-suffix: _21.10
-            with-qt6: OFF
-            with-qt5: ON
-            with-3d: OFF
-            with-quick: ON
-            patch-qt-3d: false
-            LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
-
           - distro-version: '34'
             qt-version: 6
             run-tests: true
