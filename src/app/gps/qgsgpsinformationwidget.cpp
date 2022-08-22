@@ -96,9 +96,20 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnAddVertex, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnAddVertex_clicked );
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
-  connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
   connect( mMapCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsInformationWidget::tapAndHold );
+
+  mLogFilename->setDialogTitle( tr( "GPS Log File" ) );
+  mLogFilename->setStorageMode( QgsFileWidget::SaveFile );
+  mLogFilename->setFilter( tr( "NMEA files" ) + " (*.nmea)" );
+  mLogFilename->lineEdit()->setShowClearButton( false );
+  const QString lastLogFolder = settingLastLogFolder.value();
+  mLogFilename->setDefaultRoot( lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder );
+  connect( mLogFilename, &QgsFileWidget::fileChanged, this, [ = ]
+  {
+    settingLastLogFolder.setValue( QFileInfo( mLogFilename->filePath() ).absolutePath() );
+  } );
+
 
   mRecenterButton->setEnabled( false );
 
@@ -684,11 +695,11 @@ void QgsGpsInformationWidget::connected( QgsGpsConnection *conn )
   QgsApplication::gpsConnectionRegistry()->registerConnection( mNmea );
   showStatusBarMessage( tr( "Connected to GPS device." ) );
 
-  if ( mLogFileGroupBox->isChecked() && ! mTxtLogFile->text().isEmpty() )
+  if ( mLogFileGroupBox->isChecked() && !mLogFilename->filePath().isEmpty() )
   {
-    if ( ! mLogFile )
+    if ( !mLogFile )
     {
-      mLogFile = new QFile( mTxtLogFile->text() );
+      mLogFile = new QFile( mLogFilename->filePath() );
     }
 
     if ( mLogFile->open( QIODevice::Append ) )  // open in binary and explicitly output CR + LF per NMEA
@@ -1412,32 +1423,6 @@ void QgsGpsInformationWidget::createRubberBand()
   mRubberBand->setColor( mBtnTrackColor->color() );
   mRubberBand->setWidth( mSpinTrackWidth->value() );
   mRubberBand->show();
-}
-
-void QgsGpsInformationWidget::mBtnLogFile_clicked()
-{
-//=========================
-  // This does not allow for an extension other than ".nmea"
-  // Retrieve last used log file dir from persistent settings
-  QgsSettings settings;
-  const QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
-  const QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file As" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
-  if ( saveFilePath.isNull() ) //canceled
-  {
-    return;
-  }
-  const QFileInfo myFI( saveFilePath );
-  const QString myPath = myFI.path();
-  settings.setValue( settingPath, myPath );
-
-  // make sure the .nmea extension is included in the path name. if not, add it...
-  if ( "nmea" != myFI.suffix() )
-  {
-    saveFilePath = myFI.filePath() + ".nmea";
-  }
-  mTxtLogFile->setText( saveFilePath );
-  mTxtLogFile->setToolTip( saveFilePath );
 }
 
 void QgsGpsInformationWidget::logNmeaSentence( const QString &nmeaString )
