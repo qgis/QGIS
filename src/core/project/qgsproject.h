@@ -2080,8 +2080,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Therefore any error message returned by commitErrors also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
      *
-     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * \param commitErrors will be set to a list of descriptive errors if the commit fails.
+     * \param stopEditing if set to FALSE, the layer will stay in editing mode.
      * Otherwise the layer editing mode will be disabled if the commit is successful.
+     * \param vectorLayer for which the changes will be committed. For buffered transactions this
+     * parameter is not mandatory, as the changes from all layers will be committed.
      *
      * \see startEditing()
      * \see rollBack()
@@ -2092,6 +2095,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Stops a current editing operation on vectorLayer and discards any uncommitted edits.
+     *
+     * \param rollbackErrors will be set to a list of descriptive errors if the rollback fails.
+     * \param stopEditing if set to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the rollback is successful.
+     * \param vectorLayer for which the changes will be rolled back. For buffered transactions this
+     * parameter is not mandatory, as the changes from all layers will be rolled back.
      *
      * \see startEditing()
      * \see commitChanges()

@@ -90,12 +90,20 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
      * Therefore any error message also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
      *
+     * \param commitErrors will be set to a list of descriptive errors if the commit fails.
+     * \param stopEditing if set to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the commit is successful.
+     *
      * \returns TRUE on success
      */
     bool commitChanges( QStringList &commitErrors SIP_OUT, bool stopEditing = true );
 
     /**
      * Stop editing and discard the edits
+     *
+     * \param rollbackErrors will be set to a list of descriptive errors if the rollback fails.
+     * \param stopEditing if set to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the rollback is successful.
      *
      * \returns FALSE if errors occurred during rollback
      */
