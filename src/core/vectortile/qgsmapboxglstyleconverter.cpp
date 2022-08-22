@@ -276,7 +276,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
       case QVariant::Map:
         if ( ddProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
         {
-          symbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, parseInterpolateOpacityByZoom( jsonFillOpacity.toMap(), 255, &context ) );
+          symbol->setDataDefinedProperty( QgsSymbol::PropertyOpacity, parseInterpolateByZoom( jsonFillOpacity.toMap(), context, 100 ) );
         }
         else
         {
