@@ -94,9 +94,9 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
 
     /**
      * Returns TRUE if at least one rule needs geometry.
-     * \since QGIS 3.26
+     * \since QGIS 3.26.3
      */
-    bool rulesNeedGeometry( );
+    bool rulesNeedGeometry() const;
 
   signals:
 
