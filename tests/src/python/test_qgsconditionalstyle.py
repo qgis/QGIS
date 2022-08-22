@@ -175,6 +175,16 @@ class TestPyQgsConditionalStyle(unittest.TestCase):
         self.assertEqual(styles.fieldStyles('test'), [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
         self.assertEqual(styles.fieldStyles('test2'), [QgsConditionalStyle("@value > 50")])
 
+    def testRequiresGeometry(self):
+
+        styles = QgsConditionalLayerStyles()
+        styles.setRowStyles([QgsConditionalStyle("@value > 10")])
+        self.assertFalse(styles.rulesNeedGeometry())
+        styles.setRowStyles([QgsConditionalStyle("@value > 10"), QgsConditionalStyle('$geometry IS NULL')])
+        self.assertTrue(styles.rulesNeedGeometry())
+        styles.setRowStyles([QgsConditionalStyle('$geometry IS NULL'), QgsConditionalStyle("@value > 10")])
+        self.assertTrue(styles.rulesNeedGeometry())
+
 
 if __name__ == '__main__':
     unittest.main()
