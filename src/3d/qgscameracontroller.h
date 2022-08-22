@@ -267,14 +267,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void onKeyReleased( Qt3DInput::QKeyEvent *event );
     void onPickerMousePressed( Qt3DRender::QPickEvent *pick );
     void applyFlyModeKeyMovements();
+    void applyZoomMovements();
 
   private:
     void onKeyPressedFlyNavigation( Qt3DInput::QKeyEvent *event );
     void onKeyPressedTerrainNavigation( Qt3DInput::QKeyEvent *event );
     void onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent *mouse );
     void onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse );
-
-    void handleTerrainNavigationWheelZoom();
 
     /**
      * Returns the minimum depth value in the square [px - 3, px + 3] * [py - 3, py + 3]
@@ -336,6 +335,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mCaptureFpsMouseMovements = false;
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;
+
+    QTimer *mZoomTimer = nullptr;
+    double mZoomTimerProgress = 0.0;
+    const double mZoomAnimationTime = 500; // Zoom animation time in milliseconds
 
     double mCumulatedWheelY = 0;
 

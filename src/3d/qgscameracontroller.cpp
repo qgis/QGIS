@@ -68,6 +68,11 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mFpsNavTimer->setInterval( 10 );
   connect( mFpsNavTimer, &QTimer::timeout, this, &QgsCameraController::applyFlyModeKeyMovements );
   mFpsNavTimer->start();
+
+  mZoomTimer = new QTimer( this );
+  mZoomTimer->setInterval( 20 );
+  connect( mZoomTimer, &QTimer::timeout, this, &QgsCameraController::applyZoomMovements );
+  mZoomTimer->start();
 }
 
 void QgsCameraController::setCameraNavigationMode( QgsCameraController::NavigationMode navigationMode )
@@ -503,9 +508,9 @@ void QgsCameraController::zoom( float factor )
   updateCameraFromPose();
 }
 
-void QgsCameraController::handleTerrainNavigationWheelZoom()
+void QgsCameraController::applyZoomMovements()
 {
-  if ( !mDepthBufferIsReady )
+  if ( !mDepthBufferIsReady || !mIsInZoomInState || mZoomTimerProgress >= 1.0f )
     return;
 
   if ( !mZoomPointCalculated )
@@ -519,7 +524,8 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
   float f = mCumulatedWheelY / ( 120.0 * 24.0 );
 
   double dist = ( mZoomPoint - mCameraBeforeZoom->position() ).length();
-  dist -= dist * f;
+  dist -= dist * f * mZoomTimerProgress;
+  mZoomTimerProgress += 1.0 / mZoomAnimationTime * 20;
 
   // First transformation : Shift camera position and view center and rotate the camera
   {
@@ -546,12 +552,17 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
     mCameraPose.setCenterPoint( newViewCenterWorld );
     updateCameraFromPose();
   }
-  mIsInZoomInState = false;
-  mCumulatedWheelY = 0;
+
+  if ( mZoomTimerProgress >= 1.0f )
+  {
+    mCumulatedWheelY = 0;
+    mIsInZoomInState = false;
+  }
 }
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
+  qDebug() << __PRETTY_FUNCTION__;
   switch ( mCameraNavigationMode )
   {
     case QgsCameraController::WalkNavigation:
@@ -583,10 +594,9 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
         mZoomPointCalculated = false;
         mIsInZoomInState = true;
         mDepthBufferIsReady = false;
+        mZoomTimerProgress = 0.0f;
         emit requestDepthBufferCapture();
       }
-      else
-        handleTerrainNavigationWheelZoom();
 
       break;
     }
@@ -1043,7 +1053,4 @@ void QgsCameraController::depthBufferCaptured( const QImage &depthImage )
 {
   mDepthBufferImage = depthImage;
   mDepthBufferIsReady = true;
-
-  if ( mIsInZoomInState )
-    handleTerrainNavigationWheelZoom();
 }
