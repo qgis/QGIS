@@ -2044,6 +2044,14 @@ namespace QgsWms
       {
         wmsUri.setParam( QStringLiteral( "dpiMode" ), paramIt.value() );
       }
+      else if ( paramName == QLatin1String( "stepwidth" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "stepWidth" ), paramIt.value() );
+      }
+      else if ( paramName == QLatin1String( "stepheight" ) )
+      {
+        wmsUri.setParam( QStringLiteral( "stepHeight" ), paramIt.value() );
+      }
       else
       {
         wmsUri.setParam( paramName, paramIt.value() );
