@@ -71,6 +71,18 @@ QgsRectangle QgsOWSSourceWidget::extent() const
   return mSpatialExtentBox->outputExtent();
 }
 
+void QgsOWSSourceWidget::setTime(const QString &time)
+{
+  int index = mTimeBox->findText( time );
+  if ( index != -1 )
+     mTimeBox->setCurrentIndex(index);
+}
+
+QString QgsOWSSourceWidget::time() const
+{
+    return mTimeBox->currentText();
+}
+
 void QgsOWSSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, uri );
@@ -99,6 +111,22 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
 
   setExtent( extent );
   mSpatialExtentBox->setChecked( !extent.isNull() );
+
+  QString time = mSourceParts.value( QStringLiteral( "time" ) ).toString();
+  QString timeList = mSourceParts.value( QStringLiteral( "timeExtent" ) ).toString();
+  QStringList timeListParts;
+
+  if ( !timeList.isEmpty() )
+  {
+      timeListParts = timeList.split( QStringLiteral( "," ) );
+  }
+
+  for ( QString part : timeListParts ){
+      mTimeBox->addItem( part );
+  }
+
+  setTime(time);
+
 }
 
 QString QgsOWSSourceWidget::sourceUri() const

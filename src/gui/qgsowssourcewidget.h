@@ -59,6 +59,19 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
      */
     QgsRectangle extent() const;
 
+    /**
+     * Sets time instant.
+     *
+     * \since QGIS 3.28
+     */
+    void setTime( const QString &time );
+
+    /**
+     * Retuns widget time instant.
+     *
+     * \since QGIS 3.28
+     */
+    QString time() const;
 
     void setMapCanvas( QgsMapCanvas *canvas ) override;
 
