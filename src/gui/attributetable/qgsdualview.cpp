@@ -140,18 +140,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   // create an empty form to find out if it needs geometry or not
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
 
-  bool conditionalFormattingRulesNeedsGeometry { false };
-  const auto cConditionalStyles { mLayer->conditionalStyles()->rowStyles() };
-  for ( const auto &style : std::as_const( cConditionalStyles ) )
-  {
-    if ( QgsExpression( style.rule() ).needsGeometry() )
-    {
-      conditionalFormattingRulesNeedsGeometry = true;
-      break;
-    }
-  }
-
-  const bool needsGeometry = conditionalFormattingRulesNeedsGeometry ||
+  const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry() ||
                              !( request.flags() & QgsFeatureRequest::NoGeometry )
                              || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
                              || emptyForm.needsGeometry();
