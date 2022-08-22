@@ -18,7 +18,8 @@ from qgis.core import (QgsMapBoxGlStyleConverter,
                        QgsMapBoxGlStyleConversionContext,
                        QgsSymbolLayer,
                        QgsWkbTypes,
-                       QgsEffectStack
+                       QgsEffectStack,
+                       QgsSymbol
                        )
 
 from qgis.testing import start_app, unittest
@@ -786,6 +787,81 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(has_labeling)
         self.assertFalse(labeling_style.labelSettings().isExpression)
         self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
+
+    def testFillOpacityWithStops(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "Land/Not ice",
+            "type": "fill",
+            "source": "esri",
+            "source-layer": "Land",
+            "filter": [
+                "==",
+                "_symbol",
+                0
+            ],
+            "minzoom": 0,
+            "layout": {},
+            "paint": {
+                "fill-opacity": {
+                    "stops": [
+                        [
+                            0,
+                            0.1
+                        ],
+                        [
+                            8,
+                            0.2
+                        ],
+                        [
+                            14,
+                            0.32
+                        ],
+                        [
+                            15,
+                            0.6
+                        ],
+                        [
+                            17,
+                            0.8
+                        ]
+                    ]
+                },
+                "fill-color": {
+                    "stops": [
+                        [
+                            0,
+                            "#e1e3d0"
+                        ],
+                        [
+                            8,
+                            "#e1e3d0"
+                        ],
+                        [
+                            14,
+                            "#E1E3D0"
+                        ],
+                        [
+                            15,
+                            "#ecede3"
+                        ],
+                        [
+                            17,
+                            "#f1f2ea"
+                        ]
+                    ]
+                }
+            }
+        }
+        has_renderer, renderer = QgsMapBoxGlStyleConverter.parseFillLayer(style, context)
+        self.assertTrue(has_renderer)
+        dd_props = renderer.symbol().dataDefinedProperties()
+        prop = dd_props.property(QgsSymbol.PropertyOpacity)
+        self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,0,8,0.1,0.2) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 14 THEN scale_linear(@vector_tile_zoom,8,14,0.2,0.32) * 100 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,14,15,0.32,0.6) * 100 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,15,17,0.6,0.8) * 100 WHEN @vector_tile_zoom > 17 THEN 80 END')
+
+        dd_props = renderer.symbol()[0].dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.PropertyFillColor)
+        self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 8 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 8 AND @vector_tile_zoom < 14 THEN color_hsla(66, 25, 85, 255) WHEN @vector_tile_zoom >= 14 AND @vector_tile_zoom < 15 THEN color_hsla(66, scale_linear(@vector_tile_zoom,14,15,25,21), scale_linear(@vector_tile_zoom,14,15,85,90), 255) WHEN @vector_tile_zoom >= 15 AND @vector_tile_zoom < 17 THEN color_hsla(scale_linear(@vector_tile_zoom,15,17,66,67), scale_linear(@vector_tile_zoom,15,17,21,23), scale_linear(@vector_tile_zoom,15,17,90,93), 255) WHEN @vector_tile_zoom >= 17 THEN color_hsla(67, 23, 93, 255) ELSE color_hsla(67, 23, 93, 255) END')
 
 
 if __name__ == '__main__':
