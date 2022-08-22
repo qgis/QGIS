@@ -698,7 +698,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
     }
 
     QgisApp::instance()->askUserForDatumTransform( ml->crs(), projectCrsAfterLayerAdd, ml );
-    QgsAppLayerHandling::postProcessAddedLayer( ml );
   }
 
   if ( group )
@@ -708,6 +707,12 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
     const bool newLayersVisible = settings.value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool();
     if ( !newLayersVisible )
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
+  }
+
+  // Post process all added layers
+  for ( QgsMapLayer *ml : std::as_const( result ) )
+  {
+    QgsAppLayerHandling::postProcessAddedLayer( ml );
   }
 
   return result;
@@ -1509,6 +1514,19 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
             try
             {
               const QString layerUri { conn->tableUri( tableSchema, tableName )};
+              // Aggressive doesn't mean stupid: check if a layer with the same URI
+              // was already loaded, this catches a corner case for renamed/moved GPKGS
+              // where the dependency was actually loaded but it was found as broken
+              // because the source does not match anymore (for instance when loaded
+              // from a style definition).
+              QStringList layerUris;
+              for ( auto it = QgsProject::instance()->mapLayers().cbegin(); it != QgsProject::instance()->mapLayers().cend(); ++it )
+              {
+                if ( it.value()->publicSource() == layerUri )
+                {
+                  return nullptr;
+                }
+              }
               // Load it!
               std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, !dependency.name.isEmpty() ? dependency.name : tableName, providerName );
               if ( newVl->isValid() )
