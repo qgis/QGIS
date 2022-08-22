@@ -127,7 +127,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
     mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
-  mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
@@ -630,7 +629,8 @@ void QgsGpsInformationWidget::connectGps()
   mTxtSatellitesUsed->clear();
   mTxtStatus->clear();
 
-  mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
+  mLastGpsPosition = QgsPointXY();
+  mSecondLastGpsPosition = QgsPointXY();
 
   QString port;
 
