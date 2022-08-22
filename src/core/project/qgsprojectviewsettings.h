@@ -173,7 +173,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * that project.)
      *
      * \see setDefaultRotation()
-     * \since QGIS 3.28
+     * \since QGIS 3.22.12
      */
     double defaultRotation() const;
 
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * that project.)
      *
      * \see defaultRotation()
-     * \since QGIS 3.28
+     * \since QGIS 3.22.12
      */
     void setDefaultRotation( double rotation );
 
