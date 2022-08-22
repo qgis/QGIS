@@ -86,7 +86,7 @@ bool QgsConditionalLayerStyles::writeXml( QDomNode &node, QDomDocument &doc, con
   return true;
 }
 
-bool QgsConditionalLayerStyles::rulesNeedGeometry()
+bool QgsConditionalLayerStyles::rulesNeedGeometry() const
 {
   for ( const QgsConditionalStyle &style : std::as_const( mRowStyles ) )
   {
