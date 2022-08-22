@@ -23,15 +23,12 @@
 #include <QStringList>
 #include <QFileInfo>
 
-#include "qgsnmeaconnection.h"
-#include "qgslogger.h"
 #include "info.h"
-
 
 bool QgsGpsInformation::isValid() const
 {
   bool valid = false;
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid || qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     valid = false;
   }
@@ -39,7 +36,7 @@ bool QgsGpsInformation::isValid() const
   {
     valid = true;
   }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid && qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
+  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good
   {
     valid = true;
   }
@@ -52,7 +49,7 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
   FixStatus fixStatus = NoData;
 
   // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
-  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid || qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( status == 'V' || fixType == NMEA_FIX_BAD || qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     fixStatus = NoFix;
   }
@@ -60,7 +57,7 @@ QgsGpsInformation::FixStatus QgsGpsInformation::fixStatus() const
   {
     fixStatus = Fix2D;
   }
-  else if ( status == 'A' || fixType == NMEA_FIX_3D || ( qualityIndicator != Qgis::GpsQualityIndicator::Invalid && qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
+  else if ( status == 'A' || fixType == NMEA_FIX_3D || qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) // good
   {
     fixStatus = Fix3D;
   }
