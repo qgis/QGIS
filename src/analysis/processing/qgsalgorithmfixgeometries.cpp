@@ -65,6 +65,7 @@ QString QgsFixGeometriesAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm attempts to create a valid representation of a given invalid geometry without "
                       "losing any of the input vertices. Already-valid geometries are returned without further intervention. "
                       "Always outputs multi-geometry layer.\n\n"
+                      "Optionally, fixed errors can be logged by the algorithm.\n\n"
                       "NOTE: M values will be dropped from the output." );
 }
 
@@ -72,6 +73,18 @@ QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
 {
   return new QgsFixGeometriesAlgorithm();
 }
+
+void QgsFixGeometriesAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "LOG_FIXED_ERRORS" ), QObject::tr( "Log fixed errors" ), false ) );
+}
+
+bool QgsFixGeometriesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mLogFixedErrors = parameterAsBoolean( parameters, QStringLiteral( "LOG_FIXED_ERRORS" ), context );
+  return true;
+}
+
 
 bool QgsFixGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
@@ -98,6 +111,19 @@ QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feat
     feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
     outputFeature.clearGeometry();
     return QgsFeatureList() << outputFeature;
+  }
+  else
+  {
+    if ( mLogFixedErrors )
+    {
+      const Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags();
+      QVector<QgsGeometry::Error> errors;
+      outputFeature.geometry().validateGeometry( errors, Qgis::GeometryValidationEngine( Qgis::GeometryValidationEngine::Geos ), flags );
+      for ( auto error : errors )
+      {
+        feedback->pushInfo( QObject::tr( "Fixed '%1' for feature %2." ).arg( error.what() ).arg( feature.id() ) );
+      }
+    }
   }
 
   if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
