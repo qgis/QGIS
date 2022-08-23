@@ -268,6 +268,7 @@ bool QgsMapBoxGlStyleConverter::parseFillLayer( const QVariantMap &jsonLayer, Qg
     switch ( jsonFillOpacity.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         fillOpacity = jsonFillOpacity.toDouble();
         rasterOpacity = fillOpacity;
@@ -474,6 +475,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     switch ( jsonLineWidth.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         lineWidth = jsonLineWidth.toDouble() * context.pixelSizeConversionFactor();
         break;
@@ -503,6 +505,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     switch ( jsonLineOffset.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         lineOffset = -jsonLineOffset.toDouble() * context.pixelSizeConversionFactor();
         break;
@@ -530,6 +533,7 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
     switch ( jsonLineOpacity.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         lineOpacity = jsonLineOpacity.toDouble();
         break;
@@ -717,6 +721,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     switch ( jsonCircleRadius.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         circleDiameter = jsonCircleRadius.toDouble() * context.pixelSizeConversionFactor() * 2;
         break;
@@ -744,6 +749,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     switch ( jsonCircleOpacity.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         circleOpacity = jsonCircleOpacity.toDouble();
         break;
@@ -801,6 +807,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     switch ( circleStrokeWidthJson.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         circleStrokeWidth = circleStrokeWidthJson.toDouble() * context.pixelSizeConversionFactor();
         break;
@@ -828,6 +835,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
     switch ( jsonCircleStrokeOpacity.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         circleStrokeOpacity = jsonCircleStrokeOpacity.toDouble();
         break;
@@ -942,6 +950,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonTextSize.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         textSize = jsonTextSize.toDouble() * context.pixelSizeConversionFactor();
         break;
@@ -979,6 +988,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonTextMaxWidth.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         textMaxWidth = jsonTextMaxWidth.toDouble() * EM_TO_CHARS;
         break;
@@ -1010,6 +1020,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonTextLetterSpacing.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         textLetterSpacing = jsonTextLetterSpacing.toDouble();
         break;
@@ -1259,6 +1270,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonHaloWidth.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
         bufferSize = jsonHaloWidth.toDouble() * context.pixelSizeConversionFactor() * BUFFER_SIZE_SCALE;
         break;
@@ -1287,6 +1299,7 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     switch ( jsonTextHaloBlur.type() )
     {
       case QVariant::Int:
+      case QVariant::LongLong:
       case QVariant::Double:
       {
         haloBlurSize = jsonTextHaloBlur.toDouble() * context.pixelSizeConversionFactor();
@@ -1752,6 +1765,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       switch ( jsonSpacing.type() )
       {
         case QVariant::Int:
+        case QVariant::LongLong:
         case QVariant::Double:
           spacing = jsonSpacing.toDouble() * context.pixelSizeConversionFactor();
           break;
@@ -1798,6 +1812,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       switch ( jsonIconRotate.type() )
       {
         case QVariant::Int:
+        case QVariant::LongLong:
         case QVariant::Double:
           rotation = jsonIconRotate.toDouble();
           break;
@@ -1851,6 +1866,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
       switch ( jsonIconSize.type() )
       {
         case QVariant::Int:
+        case QVariant::LongLong:
         case QVariant::Double:
         {
           size = jsonIconSize.toDouble();
@@ -1931,6 +1947,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
         switch ( jsonIconSize.type() )
         {
           case QVariant::Int:
+          case QVariant::LongLong:
           case QVariant::Double:
           {
             size = jsonIconSize.toDouble();
@@ -1975,6 +1992,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
         switch ( jsonIconRotate.type() )
         {
           case QVariant::Int:
+          case QVariant::LongLong:
           case QVariant::Double:
             rotation = jsonIconRotate.toDouble();
             break;
@@ -2001,6 +2019,7 @@ bool QgsMapBoxGlStyleConverter::parseSymbolLayerAsRenderer( const QVariantMap &j
         switch ( jsonIconOpacity.type() )
         {
           case QVariant::Int:
+          case QVariant::LongLong:
           case QVariant::Double:
             iconOpacity = jsonIconOpacity.toDouble();
             break;
@@ -2835,7 +2854,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
           return QgsExpression::createFieldEqualityExpression( attribute, expression.at( 2 ).toList().value( 0 ) );
       }
       else if ( expression.at( 2 ).type() == QVariant::String || expression.at( 2 ).type() == QVariant::Int
-                || expression.at( 2 ).type() == QVariant::Double )
+                || expression.at( 2 ).type() == QVariant::Double || expression.at( 2 ).type() == QVariant::LongLong )
       {
         return QgsExpression::createFieldEqualityExpression( attribute, expression.at( 2 ) );
       }
@@ -2864,7 +2883,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
             caseString += QStringLiteral( "WHEN %1 " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ).toList().value( 0 ) ) );
         }
         else if ( expression.at( i ).type() == QVariant::String || expression.at( i ).type() == QVariant::Int
-                  || expression.at( i ).type() == QVariant::Double )
+                  || expression.at( i ).type() == QVariant::Double || expression.at( i ).type() == QVariant::LongLong )
         {
           caseString += QStringLiteral( "WHEN (%1) " ).arg( QgsExpression::createFieldEqualityExpression( attribute, expression.at( i ) ) );
         }
@@ -3124,6 +3143,7 @@ QString QgsMapBoxGlStyleConverter::parseValue( const QVariant &value, QgsMapBoxG
       return QgsExpression::quotedValue( value );
 
     case QVariant::Int:
+    case QVariant::LongLong:
     case QVariant::Double:
       return value.toString();
 
