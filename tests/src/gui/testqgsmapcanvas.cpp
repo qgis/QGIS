@@ -80,6 +80,7 @@ class TestQgsMapCanvas : public QObject
     void testZoomResolutions();
     void testTooltipEvent();
     void testMapLayers();
+    void testExtentHistory();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -585,6 +586,22 @@ void TestQgsMapCanvas::testMapLayers()
   QCOMPARE( canvas->layer( vl1->id() ), vl1 );
   QCOMPARE( canvas->layer( vl2->id() ), vl2.get() );
   QCOMPARE( canvas->layer( QStringLiteral( "xxx" ) ), nullptr );
+}
+
+void TestQgsMapCanvas::testExtentHistory()
+{
+  QgsRectangle initialExtent;
+  const QList<double> rotations = QList<double>() << 0.0 << 30.0;
+  for ( double rotation : rotations )
+  {
+    mCanvas->setRotation( rotation );
+    mCanvas->clearExtentHistory();
+    mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+    initialExtent = mCanvas->extent();
+    mCanvas->setExtent( QgsRectangle( 100, 100, 110, 110 ) );
+    mCanvas->zoomToPreviousExtent();
+    QCOMPARE( mCanvas->extent(), initialExtent );
+  }
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )
