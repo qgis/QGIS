@@ -397,7 +397,7 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "MSSQL" ) ) )
       {
-        sDatabaseDrivers += QObject::tr( "MSSQL" ) + ",MSSQL;";
+        sDatabaseDrivers += QObject::tr( "MS SQL Server" ) + ",MSSQL;";
       }
       else if ( driverName.startsWith( QLatin1String( "OCI" ) ) )
       {
