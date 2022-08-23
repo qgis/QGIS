@@ -2468,8 +2468,11 @@ QString QgsMapBoxGlStyleConverter::parseStops( double base, const QVariantList &
       return QString();
     }
 
-    caseString += QStringLiteral( "WHEN @vector_tile_zoom > %1 AND @vector_tile_zoom <= %2 "
-                                  "THEN %3 " ).arg( bz.toString(),
+    const QString lowerComparator = i == 0 ? QStringLiteral( ">=" ) : QStringLiteral( ">" );
+
+    caseString += QStringLiteral( "WHEN @vector_tile_zoom %1 %2 AND @vector_tile_zoom <= %3 "
+                                  "THEN %4 " ).arg( lowerComparator,
+                                      bz.toString(),
                                       tz.toString(),
                                       interpolateExpression( bz.toDouble(), tz.toDouble(), bv, tv, base, multiplier, &context ) );
   }
