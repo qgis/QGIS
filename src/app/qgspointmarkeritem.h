@@ -122,10 +122,14 @@ class APP_EXPORT QgsMapCanvasMarkerSymbolItem: public QgsMapCanvasSymbolItem
     void updateSize();
 
     void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
+    QRectF boundingRect() const override;
+    void updatePosition() override;
 
   private:
 
+    QgsPointXY mMapLocation;
     QPointF mLocation;
+    QRectF mCanvasBounds;
 
     QgsMarkerSymbol *markerSymbol();
 };
