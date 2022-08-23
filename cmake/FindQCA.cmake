@@ -1,100 +1,106 @@
-# Find QCA (Qt Cryptography Architecture 2+)
-# ~~~~~~~~~~~~~~~~
-# When run this will define
-#
-#  QCA_FOUND - system has QCA
-#  QCA_LIBRARY - the QCA library or framework
-#  QCA_INCLUDE_DIR - the QCA include directory
-#  QCA_VERSION_STR - e.g. "2.0.3"
-#
-# Copyright (c) 2006, Michael Larouche, <michael.larouche@kdemail.net>
-# Copyright (c) 2014, Larry Shaffer, <larrys (at) dakotacarto (dot) com>
-#
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file COPYING-CMAKE-SCRIPTS or https://cmake.org/licensing for details.
+
+#[=======================================================================[.rst:
+FindQCA
+---------
+
+CMake module to search for QCA library
+
+IMPORTED targets
+^^^^^^^^^^^^^^^^
+This module defines the following :prop_tgt:`IMPORTED` target:
+``Qca::qca``
+
+The macro sets the following variables:
+``QCA_FOUND``
+  if the library found
+
+``QCA_LIBRARIES``
+  full path to the library
+
+``QCA_INCLUDE_DIRS``
+  where to find the library headers
+
+``QCA_VERSION_STRING``
+  version string of QCA
+
+#]=======================================================================]
+
+if(BUILD_WITH_QT6)
+  set(QCA_INCLUDE_SUFFIXES
+            QtCrypto
+            qt6/QtCrypto
+            Qca-qt6/QtCrypto
+            qt6/Qca-qt6/QtCrypto)
+  set(QCA_NAMES ${QCA_NAMES} qca-qt6 qca)
+else()
+  set(QCA_INCLUDE_SUFFIXES
+            QtCrypto
+            qt5/QtCrypto
+            Qca-qt5/QtCrypto
+            qt5/Qca-qt5/QtCrypto)
+  set(QCA_NAMES ${QCA_NAMES} qca-qt5 qca)
+endif()
+find_path(QCA_INCLUDE_DIR qca.h
+          PATHS
+            ${QCA_ROOT}/include/
+          PATH_SUFFIXES
+            ${QCA_INCLUDE_SUFFIXES}
+          DOC "Path to QCA include directory")
 
 
-if(QCA_INCLUDE_DIR AND QCA_LIBRARY)
+if(NOT QCA_LIBRARY)
+  find_library(QCA_LIBRARY_RELEASE NAMES ${QCA_NAMES})
+  find_library(QCA_LIBRARY_DEBUG NAMES ${QCA_NAMES})
+  include(SelectLibraryConfigurations)
+  select_library_configurations(QCA)
+  mark_as_advanced(QCA_LIBRARY_RELEASE QCA_LIBRARY_DEBUG)
+endif()
 
-  set(QCA_FOUND TRUE)
+unset(QCA_INCLUDE_SUFFIXES)
+unset(QCA_NAMES)
 
-else(QCA_INCLUDE_DIR AND QCA_LIBRARY)
-
-  set(QCA_LIBRARY_NAMES qca-qt5 qca2-qt5 qca-qt6 qca)
-
-  find_library(QCA_LIBRARY
-    NAMES ${QCA_LIBRARY_NAMES}
-    PATHS
-      ${LIB_DIR}
-      $ENV{LIB}
-      "$ENV{LIB_DIR}"
-      $ENV{LIB_DIR}/lib
-      /usr/local/lib
-  )
-
-  set(_qca_fw)
-  if(QCA_LIBRARY MATCHES "/qca.*\\.framework")
-    string(REGEX REPLACE "^(.*/qca.*\\.framework).*$" "\\1" _qca_fw "${QCA_LIBRARY}")
-  endif()
-
-  find_path(QCA_INCLUDE_DIR
-    NAMES QtCrypto
-    PATHS
-      "${_qca_fw}/Headers"
-      ${LIB_DIR}/include
-      "$ENV{LIB_DIR}/include"
-      $ENV{INCLUDE}
-      /usr/local/include
-      PATH_SUFFIXES QtCrypto qt5/QtCrypto Qca-qt5/QtCrypto qt/Qca-qt5/QtCrypto qt5/Qca-qt5/QtCrypto Qca-qt6/QtCrypto
-  )
-
-  if(QCA_LIBRARY AND QCA_INCLUDE_DIR)
-    set(QCA_FOUND TRUE)
-  endif()
-
-endif(QCA_INCLUDE_DIR AND QCA_LIBRARY)
-
-if(NOT QCA_FOUND)
-
-  if(QCA_FIND_REQUIRED)
-    message(FATAL_ERROR "Could not find QCA")
-  else()
-    message(STATUS "Could not find QCA")
-  endif()
-
-else(NOT QCA_FOUND)
-
-  # Check version is valid (>= 2.0.3)
-  # find_package(QCA 2.0.3) works with 2.1.0+, which has a QcaConfigVersion.cmake, but 2.0.3 does not
-
+if(QCA_INCLUDE_DIR)
   # qca_version.h header only available with 2.1.0+
   set(_qca_version_h "${QCA_INCLUDE_DIR}/qca_version.h")
-  if(EXISTS "${_qca_version_h}")
-    file(STRINGS "${_qca_version_h}" _qca_version_str REGEX "^.*QCA_VERSION_STR +\"[^\"]+\".*$")
-    string(REGEX REPLACE "^.*QCA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QCA_VERSION_STR "${_qca_version_str}")
-  else()
-    # qca_core.h contains hexadecimal version in <= 2.0.3
-    set(_qca_core_h "${QCA_INCLUDE_DIR}/qca_core.h")
-    if(EXISTS "${_qca_core_h}")
-      file(STRINGS "${_qca_core_h}" _qca_version_str REGEX "^#define +QCA_VERSION +0x[0-9a-fA-F]+.*")
-      string(REGEX REPLACE "^#define +QCA_VERSION +0x([0-9a-fA-F]+)$" "\\1" _qca_version_int "${_qca_version_str}")
-      if("${_qca_version_int}" STREQUAL "020003")
-        set(QCA_VERSION_STR "2.0.3")
-      endif()
+  file(STRINGS "${_qca_version_h}" _qca_version_str REGEX "^.*QCA_VERSION_STR +\"[^\"]+\".*$")
+  string(REGEX REPLACE "^.*QCA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QCA_VERSION_STRING "${_qca_version_str}")
+endif ()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(QCA
+                                  REQUIRED_VARS QCA_LIBRARY QCA_INCLUDE_DIR
+                                  VERSION_VAR QCA_VERSION_STRING)
+mark_as_advanced(QCA_INCLUDE_DIR QCA_LIBRARY)
+
+if(QCA_FOUND)
+  set(QCA_LIBRARIES ${QCA_LIBRARY})
+  set(QCA_INCLUDE_DIRS ${QCA_INCLUDE_DIR})
+  if(NOT TARGET Qca::qca)
+    add_library(Qca::qca UNKNOWN IMPORTED)
+    set_target_properties(Qca::qca PROPERTIES
+                          INTERFACE_INCLUDE_DIRECTORIES ${QCA_INCLUDE_DIR}
+                          IMPORTED_LINK_INTERFACE_LANGUAGES "C")
+    if(EXISTS "${QCA_LIBRARY}")
+      set_target_properties(Qca::qca PROPERTIES
+        IMPORTED_LINK_INTERFACE_LANGUAGES "C"
+        IMPORTED_LOCATION "${QCA_LIBRARY}")
+    endif()
+    if(EXISTS "${QCA_LIBRARY_RELEASE}")
+      set_property(TARGET Qca::qca APPEND PROPERTY
+        IMPORTED_CONFIGURATIONS RELEASE)
+      set_target_properties(Qca::qca PROPERTIES
+        IMPORTED_LINK_INTERFACE_LANGUAGES_RELEASE "C"
+        IMPORTED_LOCATION_RELEASE "${QCA_LIBRARY_RELEASE}")
+    endif()
+    if(EXISTS "${QCA_LIBRARY_DEBUG}")
+      set_property(TARGET Qca::qca APPEND PROPERTY
+        IMPORTED_CONFIGURATIONS DEBUG)
+      set_target_properties(Qca::qca PROPERTIES
+        IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "C"
+        IMPORTED_LOCATION_DEBUG "${QCA_LIBRARY_DEBUG}")
     endif()
   endif()
+endif()
 
-  if(NOT QCA_VERSION_STR)
-    set(QCA_FOUND FALSE)
-    if(QCA_FIND_REQUIRED)
-      message(FATAL_ERROR "Could not find QCA >= 2.0.3")
-    else()
-      message(STATUS "Could not find QCA >= 2.0.3")
-    endif()
-  else()
-    if(NOT QCA_FIND_QUIETLY)
-      message(STATUS "Found QCA: ${QCA_LIBRARY} (${QCA_VERSION_STR})")
-    endif()
-  endif()
-
-endif(NOT QCA_FOUND)

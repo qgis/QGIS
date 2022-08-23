@@ -33,7 +33,7 @@ target_compile_features(provider_arcgisfeatureserver_a PRIVATE cxx_std_17)
 
 target_link_libraries (provider_arcgisfeatureserver_a
   qgis_core
-  ${QCA_LIBRARY}
+  Qca::qca
 )
 
 if (WITH_GUI)
@@ -110,7 +110,6 @@ target_compile_features(provider_arcgismapserver_a PRIVATE cxx_std_17)
 
 target_link_libraries (provider_arcgismapserver_a
   qgis_core
-  ${QCA_LIBRARY}
 )
 
 if (FORCE_STATIC_LIBS)

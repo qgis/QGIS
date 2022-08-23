@@ -121,7 +121,6 @@ target_link_libraries(qgis_server
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
-  ${QCA_LIBRARY}
 )
 
 if (WITH_ANALYSIS)
