@@ -1418,6 +1418,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       } );
 
       QgsFieldExpressionWidget *expressionWidget = new QgsFieldExpressionWidget;
+      expressionWidget->registerExpressionContextGenerator( this );
       expressionWidget->setLayer( mLayer );
       QToolButton *addExpressionButton = new QToolButton();
       addExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
@@ -1464,6 +1465,19 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
     }
     break;
   }
+}
+
+QgsExpressionContext QgsAttributesDnDTree::createExpressionContext() const
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+
+  if ( mLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mLayer );
+
+  expContext.appendScope( QgsExpressionContextUtils::formScope( ) );
+  return expContext;
 }
 
 QgsAttributesDnDTree::Type QgsAttributesDnDTree::type() const
