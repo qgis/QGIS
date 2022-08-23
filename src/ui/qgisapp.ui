@@ -1627,7 +1627,7 @@ Shift+R to enable range selection.</string>
      <normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</normaloff>:/images/themes/default/mActionAddMssqlLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Add MSSQL Spatial Layer…</string>
+    <string>Add MS SQL Server Layer…</string>
    </property>
   </action>
   <action name="mActionAddOracleLayer">
