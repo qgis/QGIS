@@ -1405,9 +1405,9 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
     mLastExtent.removeAt( i );
   }
 
-  if ( !mLastExtent.isEmpty() && mLastExtent.last() != extent() )
+  if ( !mLastExtent.isEmpty() && mLastExtent.last() != mSettings.extent() )
   {
-    mLastExtent.append( extent() );
+    mLastExtent.append( mSettings.extent() );
   }
 
   // adjust history to no more than 100
@@ -1553,7 +1553,7 @@ void QgsMapCanvas::zoomToNextExtent()
 void QgsMapCanvas::clearExtentHistory()
 {
   mLastExtent.clear(); // clear the zoom history list
-  mLastExtent.append( extent() ) ; // set the current extent in the list
+  mLastExtent.append( mSettings.extent() ) ; // set the current extent in the list
   mLastExtentIndex = mLastExtent.size() - 1;
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
