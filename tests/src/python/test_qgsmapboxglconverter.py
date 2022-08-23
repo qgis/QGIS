@@ -134,13 +134,13 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
     def testParseStops(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
-                         'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 2 THEN scale_linear(@vector_tile_zoom,1,2,10,20) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_linear(@vector_tile_zoom,2,5,20,100) WHEN @vector_tile_zoom > 5 THEN 100 END')
+                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN scale_linear(@vector_tile_zoom,1,2,10,20) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_linear(@vector_tile_zoom,2,5,20,100) WHEN @vector_tile_zoom > 5 THEN 100 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
-                         'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 2 THEN scale_exp(@vector_tile_zoom,1,2,10,20,1.5) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_exp(@vector_tile_zoom,2,5,20,100,1.5) WHEN @vector_tile_zoom > 5 THEN 100 END')
+                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN scale_exp(@vector_tile_zoom,1,2,10,20,1.5) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_exp(@vector_tile_zoom,2,5,20,100,1.5) WHEN @vector_tile_zoom > 5 THEN 100 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
-                         'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 2 THEN scale_linear(@vector_tile_zoom,1,2,10,20) * 8 WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_linear(@vector_tile_zoom,2,5,20,100) * 8 WHEN @vector_tile_zoom > 5 THEN 800 END')
+                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN scale_linear(@vector_tile_zoom,1,2,10,20) * 8 WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_linear(@vector_tile_zoom,2,5,20,100) * 8 WHEN @vector_tile_zoom > 5 THEN 800 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
-                         'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 2 THEN scale_exp(@vector_tile_zoom,1,2,10,20,1.5) * 8 WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_exp(@vector_tile_zoom,2,5,20,100,1.5) * 8 WHEN @vector_tile_zoom > 5 THEN 800 END')
+                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN scale_exp(@vector_tile_zoom,1,2,10,20,1.5) * 8 WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_exp(@vector_tile_zoom,2,5,20,100,1.5) * 8 WHEN @vector_tile_zoom > 5 THEN 800 END')
 
     def testParseMatchList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -209,7 +209,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             0.6
         ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2.5, 200)
         self.assertEqual(res.asExpression(),
-                         'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2.5 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2.5 WHEN @vector_tile_zoom > 18 THEN 1.5 END')
+                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2.5 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2.5 WHEN @vector_tile_zoom > 18 THEN 1.5 END')
         self.assertEqual(default_number, 0.25)
 
     def testInterpolateByZoom(self):
@@ -220,7 +220,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
                                                                                         [250, 22]]
                                                                               }, conversion_context)
         self.assertEqual(prop.expressionString(),
-                         'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 150 THEN scale_linear(@vector_tile_zoom,0,150,11,15) WHEN @vector_tile_zoom > 150 AND @vector_tile_zoom <= 250 THEN scale_linear(@vector_tile_zoom,150,250,15,22) WHEN @vector_tile_zoom > 250 THEN 22 END')
+                         'CASE WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom <= 150 THEN scale_linear(@vector_tile_zoom,0,150,11,15) WHEN @vector_tile_zoom > 150 AND @vector_tile_zoom <= 250 THEN scale_linear(@vector_tile_zoom,150,250,15,22) WHEN @vector_tile_zoom > 250 THEN 22 END')
         self.assertEqual(default_val, 11.0)
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 1,
                                                                               'stops': [[0, 11],
@@ -308,7 +308,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             0.6
         ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
         self.assertEqual(prop.expressionString(),
-                         "CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2 WHEN @vector_tile_zoom > 18 THEN 1.2 END")
+                         "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,10,15,0.1,0.3) * 2 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,15,18,0.3,0.6) * 2 WHEN @vector_tile_zoom > 18 THEN 1.2 END")
         self.assertEqual(default_val, 0.2)
 
         prop, default_color, default_val = QgsMapBoxGlStyleConverter.parseInterpolateListByZoom([
@@ -327,7 +327,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
             ["match", ["get", "class"], ["ice", "glacier"], 0, 0.3]
         ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
         self.assertEqual(prop.expressionString(),
-                         "CASE WHEN @vector_tile_zoom > 5 AND @vector_tile_zoom <= 6 THEN scale_exp(@vector_tile_zoom,5,6,0,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN scale_exp(@vector_tile_zoom,6,10,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,11,14,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END ) * 2 ) END")
+                         "CASE WHEN @vector_tile_zoom >= 5 AND @vector_tile_zoom <= 6 THEN scale_exp(@vector_tile_zoom,5,6,0,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN scale_exp(@vector_tile_zoom,6,10,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,1.5) * 2 WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,11,14,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END,1.5) * 2 WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN \"class\" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END ) * 2 ) END")
 
     def testParseExpression(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -779,9 +779,9 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(),
-                         'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
+                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(),
-                         'array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), \';\')')
+                         'array_to_string(array_foreach(CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), \';\')')
 
     def testParseLineDashArrayOddNumber(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -811,9 +811,9 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertEqual(rendererStyle.symbol()[0].customDashVector(), [6.0, 3.0])
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(),
-                         'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
+                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).asExpression(),
-                         """array_to_string(array_foreach(array(4,2),@element * (CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')""")
+                         """array_to_string(array_foreach(array(4,2),@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')""")
 
     def testParseLineDashArraySingleNumber(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -842,7 +842,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.PropertyStrokeWidth).asExpression(),
-                         'CASE WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
+                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exp(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exp(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exp(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exp(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exp(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exp(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertFalse(dd_properties.property(QgsSymbolLayer.PropertyCustomDash).isActive())
 
     def testLinePattern(self):
@@ -1032,7 +1032,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertIsInstance(raster_layer, QgsRasterLayer)
         self.assertEqual(raster_layer.name(), 'Texture-Relief')
         self.assertEqual(raster_layer.source(), 'tilePixelRation=1&type=xyz&url=https://yyyyyy/v1/tiles/texturereliefshade/EPSG:3857/%7Bz%7D/%7Bx%7D/%7By%7D.webp&zmax=20&zmin=3')
-        self.assertEqual(raster_layer.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity).asExpression(), 'CASE WHEN @vector_tile_zoom > 1 AND @vector_tile_zoom <= 7 THEN 35 WHEN @vector_tile_zoom > 7 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,7,8,0.35,0.65) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 15 THEN 65 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,15,16,0.65,0.3) * 100 WHEN @vector_tile_zoom > 16 THEN 30 END')
+        self.assertEqual(raster_layer.pipe().dataDefinedProperties().property(QgsRasterPipe.RendererOpacity).asExpression(), 'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 7 THEN 35 WHEN @vector_tile_zoom > 7 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,7,8,0.35,0.65) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 15 THEN 65 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16 THEN scale_linear(@vector_tile_zoom,15,16,0.65,0.3) * 100 WHEN @vector_tile_zoom > 16 THEN 30 END')
 
     def testLabelWithStops(self):
         context = QgsMapBoxGlStyleConversionContext()
@@ -1131,7 +1131,7 @@ class TestQgsMapBoxGlStyleConverter(unittest.TestCase):
         self.assertTrue(has_renderer)
         dd_props = renderer.symbol().dataDefinedProperties()
         prop = dd_props.property(QgsSymbol.PropertyOpacity)
-        self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom > 0 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,0,8,0.1,0.2) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 14 THEN scale_linear(@vector_tile_zoom,8,14,0.2,0.32) * 100 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,14,15,0.32,0.6) * 100 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,15,17,0.6,0.8) * 100 WHEN @vector_tile_zoom > 17 THEN 80 END')
+        self.assertEqual(prop.asExpression(), 'CASE WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom <= 8 THEN scale_linear(@vector_tile_zoom,0,8,0.1,0.2) * 100 WHEN @vector_tile_zoom > 8 AND @vector_tile_zoom <= 14 THEN scale_linear(@vector_tile_zoom,8,14,0.2,0.32) * 100 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 15 THEN scale_linear(@vector_tile_zoom,14,15,0.32,0.6) * 100 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,15,17,0.6,0.8) * 100 WHEN @vector_tile_zoom > 17 THEN 80 END')
 
         dd_props = renderer.symbol()[0].dataDefinedProperties()
         prop = dd_props.property(QgsSymbolLayer.PropertyFillColor)
