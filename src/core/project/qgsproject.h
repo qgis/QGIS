@@ -2086,6 +2086,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param vectorLayer for which the changes will be committed. For buffered transactions this
      * parameter is not mandatory, as the changes from all layers will be committed.
      *
+     * \returns TRUE if the commit was successful.
+     *
      * \see startEditing()
      * \see rollBack()
      *
@@ -2101,6 +2103,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Otherwise the layer editing mode will be disabled if the rollback is successful.
      * \param vectorLayer for which the changes will be rolled back. For buffered transactions this
      * parameter is not mandatory, as the changes from all layers will be rolled back.
+     *
+     * \returns TRUE if the rollback was successful.
      *
      * \see startEditing()
      * \see commitChanges()
