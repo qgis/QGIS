@@ -140,7 +140,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   // create an empty form to find out if it needs geometry or not
   const QgsAttributeForm emptyForm( mLayer, QgsFeature(), mEditorContext );
 
-  const bool needsGeometry = !( request.flags() & QgsFeatureRequest::NoGeometry )
+  const bool needsGeometry = mLayer->conditionalStyles()->rulesNeedGeometry() ||
+                             !( request.flags() & QgsFeatureRequest::NoGeometry )
                              || ( request.spatialFilterType() != Qgis::SpatialFilterType::NoFilter )
                              || emptyForm.needsGeometry();
 
