@@ -303,7 +303,7 @@ jobs:
           - distro-version: '36'
             qt-version: 6
             test-batch: [ALL_BUT_PROVIDERS, POSTGRES]
-	    docker-target: [binary-only]
+            docker-target: single
 
       fail-fast: false
 
