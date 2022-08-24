@@ -298,8 +298,8 @@ void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
-  mIsInZoomInState = false;
-  mCumulatedWheelY = 0;
+  if ( mIsInZoomInState )
+    return;
   switch ( mCameraNavigationMode )
   {
     case TerrainBasedNavigation:
@@ -562,7 +562,6 @@ void QgsCameraController::applyZoomMovements()
 
 void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 {
-  qDebug() << __PRETTY_FUNCTION__;
   switch ( mCameraNavigationMode )
   {
     case QgsCameraController::WalkNavigation:
@@ -579,7 +578,18 @@ void QgsCameraController::onWheel( Qt3DInput::QWheelEvent *wheel )
 
       // Apparently angleDelta needs to be accumulated
       // see: https://doc.qt.io/qt-5/qwheelevent.html#angleDelta
-      mCumulatedWheelY += scaling * wheel->angleDelta().y();
+      if ( ( wheel->angleDelta().y() < 0 && mCumulatedWheelY > 0 ) || ( wheel->angleDelta().y() > 0 && mCumulatedWheelY < 0 ) )
+      {
+        mCumulatedWheelY = 0;
+        mZoomTimerProgress = 0;
+        mIsInZoomInState = false;
+      }
+      else
+      {
+        // Scale the zoom timer progress
+        mZoomTimerProgress = mZoomTimerProgress * ( mCumulatedWheelY / ( mCumulatedWheelY + scaling * wheel->angleDelta().y() ) );
+        mCumulatedWheelY += scaling * wheel->angleDelta().y();
+      }
 
       if ( !mIsInZoomInState )
       {
@@ -608,6 +618,8 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
   mKeyboardHandler->setFocus( true );
   if ( mouse->button() == Qt3DInput::QMouseEvent::LeftButton || mouse->button() == Qt3DInput::QMouseEvent::RightButton )
   {
+    mIsInZoomInState = false;
+    // Started drag
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mDragButtonClickPos = QPoint( mouse->x(), mouse->y() );
     mPressedButton = mouse->button();
@@ -632,6 +644,8 @@ void QgsCameraController::onMousePressed( Qt3DInput::QMouseEvent *mouse )
 
   if ( mouse->button() == Qt3DInput::QMouseEvent::MiddleButton || ( ( mouse->modifiers() & Qt::ShiftModifier ) != 0 && mouse->button() == Qt3DInput::QMouseEvent::LeftButton ) )
   {
+    // Started rotation
+    mIsInZoomInState = false;
     mMousePos = QPoint( mouse->x(), mouse->y() );
     mMiddleButtonClickPos = QPoint( mouse->x(), mouse->y() );
     mPressedButton = mouse->button();
