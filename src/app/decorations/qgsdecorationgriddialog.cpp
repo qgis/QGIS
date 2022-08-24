@@ -19,17 +19,13 @@
 
 #include "qgsdecorationgrid.h"
 
-#include "qgslogger.h"
 #include "qgshelp.h"
-#include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
-#include "qgsguiutils.h"
 #include "qgsgui.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
-#include "qgsdoublevalidator.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
@@ -188,6 +184,7 @@ void QgsDecorationGridDialog::updateSymbolButtons()
       mLineSymbolButton->setVisible( false );
       mLineSymbolButton->setEnabled( false );
       mLineSymbolLabel->setVisible( false );
+      mMarkerSymbolFrame->setVisible( true );
       break;
     }
     case ( QgsDecorationGrid::Line ):
@@ -198,6 +195,7 @@ void QgsDecorationGridDialog::updateSymbolButtons()
       mMarkerSymbolButton->setVisible( false );
       mMarkerSymbolButton->setEnabled( false );
       mMarkerSymbolLabel->setVisible( false );
+      mMarkerSymbolFrame->setVisible( false );
       break;
     }
   }
