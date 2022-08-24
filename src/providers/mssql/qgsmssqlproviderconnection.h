@@ -75,6 +75,7 @@ class QgsMssqlProviderConnection : public QgsAbstractDatabaseProviderConnection
     void remove( const QString &name ) const override;
     QIcon icon() const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
+    QgsProviderSqlQueryBuilder *queryBuilder() const override;
 
   private:
 
