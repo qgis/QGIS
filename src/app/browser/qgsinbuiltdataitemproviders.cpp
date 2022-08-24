@@ -59,6 +59,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
 #include "qgsrelationshipsitem.h"
+#include "qgsprovidersqlquerybuilder.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1727,16 +1728,10 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             tableName = item->name();
           }
 
-          if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
-          {
-            // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( tableName ) );
-          }
-          else
-          {
-            // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( tableName ) );
-          }
+          std::unique_ptr< QgsProviderSqlQueryBuilder > queryBuilder( conn2->queryBuilder() );
+          sql = queryBuilder->createLimitQueryForTable(
+                  conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) ? item->parent()->name() : QString(),
+                  tableName, 10 );
         }
 
         QgsGui::enableAutoGeometryRestore( &dialog );

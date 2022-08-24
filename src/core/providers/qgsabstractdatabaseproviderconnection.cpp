@@ -18,6 +18,7 @@
 #include "qgsexception.h"
 #include "qgsweakrelation.h"
 #include "qgsfeedback.h"
+#include "qgsprovidersqlquerybuilder.h"
 
 #include <QVariant>
 #include <QObject>
@@ -1017,6 +1018,11 @@ QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsAbstractDatabaseProviderConn
 QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFieldDomainTypes() const
 {
   return {};
+}
+
+QgsProviderSqlQueryBuilder *QgsAbstractDatabaseProviderConnection::queryBuilder() const
+{
+  return new QgsProviderSqlQueryBuilder();
 }
 
 void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
