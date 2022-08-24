@@ -140,3 +140,8 @@ jobs:
         run: |
           cd ${BUILD_DIR}
           make -j $(sysctl -n hw.ncpu)
+
+      - name: Debug
+        uses: m-kuhn/action-tmate@patch-1
+        if: failure()
+
