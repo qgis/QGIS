@@ -1,5 +1,5 @@
 /***************************************************************************
-                     qgsprovidersqlquerybuilder.cpp
+                     qgsmssqlsqlquerybuilder.h
 begin                : August 2022
 copyright            : (C) 2022 by Nyall Dawson
 email                : nyall dot dawson at gmail dot com
@@ -13,22 +13,19 @@ email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSMSSQLSQLQUERYBUILDER_H
+#define QGSMSSQLSQLQUERYBUILDER_H
+
+#include <QString>
 
 #include "qgsprovidersqlquerybuilder.h"
-#include "qgssqliteutils.h"
 
-QgsProviderSqlQueryBuilder::~QgsProviderSqlQueryBuilder() = default;
-
-QString QgsProviderSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const
+class  QgsMsSqlSqlQueryBuilder : public QgsProviderSqlQueryBuilder
 {
-  if ( schema.isEmpty() )
-    return QStringLiteral( "SELECT * FROM %1 LIMIT %2" ).arg( quoteIdentifier( name ) ).arg( limit );
-  else
-    return QStringLiteral( "SELECT * FROM %1.%2 LIMIT %3" ).arg( quoteIdentifier( schema ), quoteIdentifier( name ) ).arg( limit );
-}
 
-QString QgsProviderSqlQueryBuilder::quoteIdentifier( const QString &identifier ) const
-{
-  // TODO: handle backend-specific identifier quoting...
-  return QgsSqliteUtils::quotedIdentifier( identifier );
-}
+  public:
+    QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const override;
+    QString quoteIdentifier( const QString &identifier ) const override;
+};
+
+#endif // QGSMSSQLSQLQUERYBUILDER_H

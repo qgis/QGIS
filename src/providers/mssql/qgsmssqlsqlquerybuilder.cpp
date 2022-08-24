@@ -1,5 +1,5 @@
 /***************************************************************************
-                     qgsprovidersqlquerybuilder.cpp
+                     qgsmssqlsqlquerybuilder.cpp
 begin                : August 2022
 copyright            : (C) 2022 by Nyall Dawson
 email                : nyall dot dawson at gmail dot com
@@ -14,21 +14,18 @@ email                : nyall dot dawson at gmail dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprovidersqlquerybuilder.h"
-#include "qgssqliteutils.h"
+#include "qgsmssqlsqlquerybuilder.h"
+#include "qgsmssqlprovider.h"
 
-QgsProviderSqlQueryBuilder::~QgsProviderSqlQueryBuilder() = default;
-
-QString QgsProviderSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const
+QString QgsMsSqlSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const
 {
   if ( schema.isEmpty() )
-    return QStringLiteral( "SELECT * FROM %1 LIMIT %2" ).arg( quoteIdentifier( name ) ).arg( limit );
+    return QStringLiteral( "SELECT TOP %1 * FROM %2" ).arg( limit ).arg( quoteIdentifier( name ) );
   else
-    return QStringLiteral( "SELECT * FROM %1.%2 LIMIT %3" ).arg( quoteIdentifier( schema ), quoteIdentifier( name ) ).arg( limit );
+    return QStringLiteral( "SELECT TOP %1 * FROM %2.%3" ).arg( limit ).arg( quoteIdentifier( schema ), quoteIdentifier( name ) );
 }
 
-QString QgsProviderSqlQueryBuilder::quoteIdentifier( const QString &identifier ) const
+QString QgsMsSqlSqlQueryBuilder::quoteIdentifier( const QString &identifier ) const
 {
-  // TODO: handle backend-specific identifier quoting...
-  return QgsSqliteUtils::quotedIdentifier( identifier );
+  return QgsMssqlProvider::quotedIdentifier( identifier );
 }
