@@ -42,13 +42,6 @@ else()
             qt5/Qca-qt5/QtCrypto)
   set(QCA_NAMES ${QCA_NAMES} qca-qt5 qca)
 endif()
-find_path(QCA_INCLUDE_DIR qca.h
-          PATHS
-            ${QCA_ROOT}/include/
-          PATH_SUFFIXES
-            ${QCA_INCLUDE_SUFFIXES}
-          DOC "Path to QCA include directory")
-
 
 if(NOT QCA_LIBRARY)
   find_library(QCA_LIBRARY_RELEASE NAMES ${QCA_NAMES})
@@ -58,7 +51,15 @@ if(NOT QCA_LIBRARY)
   mark_as_advanced(QCA_LIBRARY_RELEASE QCA_LIBRARY_DEBUG)
 endif()
 
+find_path(QCA_INCLUDE_DIR qca.h
+          PATHS
+            ${QCA_ROOT}/include/
+            ${QCA_LIBRARY}/Headers/
+          PATH_SUFFIXES
+            ${QCA_INCLUDE_SUFFIXES}
+          DOC "Path to QCA include directory")
 unset(QCA_INCLUDE_SUFFIXES)
+
 unset(QCA_NAMES)
 
 if(QCA_INCLUDE_DIR)
