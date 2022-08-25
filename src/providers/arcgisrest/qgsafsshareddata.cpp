@@ -239,7 +239,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       attributes[idx] = attribute;
       if ( mFields.at( idx ).name() == mObjectIdFieldName )
       {
-        featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
+        featureId = mObjectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
       }
     }
     feature.setAttributes( attributes );
