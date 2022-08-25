@@ -50,7 +50,7 @@ bool QgsPostgresUtils::deleteLayer( const QString &uri, QString &errCause )
   }
   schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -138,7 +138,7 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
 
   QString schemaName = QgsPostgresConn::quotedIdentifier( schema );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
