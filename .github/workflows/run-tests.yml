@@ -291,15 +291,15 @@ jobs:
       matrix:
         qt-version: [5, 6]
         test-batch: [ALL_BUT_PROVIDERS, POSTGRES, HANA]
-        docker-target: [binary-only]
 
         include:
           - qt-version: 5
             distro-version: 22.04
+            docker-target: binary-only
 
           - qt-version: 6
-            docker-target: single
             distro-version: 36
+            docker-target: single
 
           - qt-version: 5
             test-batch: ORACLE
