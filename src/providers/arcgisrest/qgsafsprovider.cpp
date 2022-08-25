@@ -197,6 +197,17 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), editorConfig ) );
     }
 
+    if ( fieldDataMap.contains( QStringLiteral( "editable" ) ) && !fieldDataMap.value( QStringLiteral( "editable" ) ).toBool() )
+    {
+      field.setReadOnly( true );
+    }
+    if ( !field.isReadOnly() && fieldDataMap.contains( QStringLiteral( "nullable" ) ) && !fieldDataMap.value( QStringLiteral( "nullable" ) ).toBool() )
+    {
+      QgsFieldConstraints constraints;
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      field.setConstraints( constraints );
+    }
+
     mSharedData->mFields.append( field );
   }
   if ( objectIdFieldName.isEmpty() )
