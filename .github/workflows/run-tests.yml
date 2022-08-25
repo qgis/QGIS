@@ -295,6 +295,9 @@ jobs:
         docker-target: [binary-only]
 
         include:
+          - qt-version: 6
+            docker-target: single
+
           - qt-version: 5
             test-batch: ORACLE
             docker-target: binary-for-oracle
