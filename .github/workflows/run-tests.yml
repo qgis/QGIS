@@ -310,9 +310,6 @@ jobs:
           - qt-version: 6
             test-batch: HANA
 
-          - qt-version: 6
-            test-batch: POSTGRES
-
       fail-fast: false
 
     steps:
