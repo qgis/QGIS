@@ -302,12 +302,16 @@ jobs:
             docker-target: single
 
           - qt-version: 5
+            distro-version: 22.04
             test-batch: ORACLE
             docker-target: binary-for-oracle
 
         exclude:
           - qt-version: 6
             test-batch: HANA
+
+          - qt-version: 6
+            test-batch: POSTGRES
 
       fail-fast: false
 
