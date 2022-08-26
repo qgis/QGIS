@@ -8409,7 +8409,9 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
                                       Qgis::MessageLevel::Info );
     return;
   }
-  //display a warning
+
+  //display an "ooutside of view" warning
+  bool confirmationServed = false;
   if ( checkFeaturesVisible )
   {
     QgsFeature feat;
@@ -8430,10 +8432,11 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
     {
       // for extra safety to make sure we are not removing geometries by accident
       int res = QMessageBox::warning( mMapCanvas, tr( "Delete %n feature(s) from layer \"%1\"", nullptr, numberOfSelectedFeatures ).arg( vlayer->name() ),
-                                      tr( "Some of the selected features are outside of the current map view. Would you still like to continue?" ),
+                                      tr( "Some of the <b>%n</b> selected feature(s) about to be deleted <b>are outside of the current map view</b>. Would you still like to continue?", nullptr, numberOfSelectedFeatures ),
                                       QMessageBox::Yes | QMessageBox::No );
       if ( res != QMessageBox::Yes )
         return;
+      confirmationServed = true;
     }
   }
 
@@ -8455,6 +8458,31 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       return;
+    confirmationServed = true;
+  }
+
+  if ( !confirmationServed )
+  {
+    QgsSettings settings;
+    const bool showConfirmation = settings.value( QStringLiteral( "showDeletionConfirmation" ), true, QgsSettings::App ).toBool();
+    if ( showConfirmation )
+    {
+      QMessageBox confirmMessage( QMessageBox::Question,
+                                  tr( "Delete %n feature(s) from layer \"%1\"", nullptr, numberOfSelectedFeatures ).arg( vlayer->name() ),
+                                  tr( "<b>%n</b> selected feature(s) is/are about to be deleted. Would you like to continue?", nullptr, numberOfSelectedFeatures ),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  mMapCanvas );
+      confirmMessage.setCheckBox( new QCheckBox( tr( "Show this again next time" ) ) );
+      confirmMessage.checkBox()->setChecked( true );
+      int res = confirmMessage.exec();
+      if ( res != QMessageBox::Yes )
+        return;
+
+      if ( !confirmMessage.checkBox()->isChecked() )
+      {
+        settings.setValue( QStringLiteral( "showDeletionConfirmation" ), false, QgsSettings::App );
+      }
+    }
   }
 
   vlayer->beginEditCommand( tr( "Features deleted" ) );
