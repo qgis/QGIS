@@ -481,9 +481,6 @@ if(WITH_CORE)
     find_package(${QT_VERSION_BASE} COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
-  if (APPLE)
-    find_package(${QT_VERSION_BASE} COMPONENTS MacExtras REQUIRED)
-  endif()
 
   # get the Qt plugins directory
   get_target_property(QMAKE_EXECUTABLE ${QT_VERSION_BASE}::qmake LOCATION)
@@ -498,7 +495,7 @@ if(WITH_CORE)
   endif()
   if (WITH_QUICK)
     find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Android" AND NOT BUILD_WITH_QT6)
       find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
     endif()
 
