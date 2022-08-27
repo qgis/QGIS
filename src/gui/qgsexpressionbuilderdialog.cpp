@@ -88,15 +88,35 @@ void QgsExpressionBuilderDialog::accept()
 
 void QgsExpressionBuilderDialog::reject()
 {
+
   if ( builder->expressionText() != mInitialText )
   {
-    const int res = QMessageBox::warning( this, tr( "Expression was edited" ),
-                                          tr( "Closing the dialog will discard the changes to the expression. Proceed?" ),
-                                          QMessageBox::Yes | QMessageBox::No
-                                          QMessageBox::Yes );
-    if ( res != QMessageBox::Yes )
-      return;
+
+    QgsSettings settings;
+    const bool askToDiscardEditedExpression = settings.value( QStringLiteral( "askToDiscardEditedExpression" ), true, QgsSettings::Gui ).toBool();
+
+    if ( askToDiscardEditedExpression )
+    {
+      QMessageBox confirmMessage( QMessageBox::Question,
+                                  tr( "Expression was edited" ),
+                                  tr( "Closing the dialog now will discard the changes to the expression. Proceed?" ),
+                                  QMessageBox::Yes | QMessageBox::No,
+                                  this );
+      confirmMessage.setCheckBox( new QCheckBox( tr( "Don't show this message again" ) ) );
+      confirmMessage.checkBox()->setChecked( false );
+
+      int res = confirmMessage.exec();
+
+      if ( confirmMessage.checkBox()->isChecked() )
+      {
+        settings.setValue( QStringLiteral( "askToDiscardEditedExpression" ), false, QgsSettings::Gui );
+      }
+
+      if ( res != QMessageBox::Yes )
+        return;
+    }
   }
+
   QDialog::reject();
 }
 
