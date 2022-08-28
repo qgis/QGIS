@@ -2344,8 +2344,8 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
                       relation.referencingLayerName(),
                       relation.referencingLayerFields().at( i ) );
     }
-    metadata += fieldMetadata.join( QStringLiteral( "<br>" ) );
-    metadata += QStringLiteral( "</td></tr>\n" );
+    metadata += fieldMetadata.join( QLatin1String( "<br>" ) );
+    metadata += QLatin1String( "</td></tr>\n" );
   }
   else
   {
@@ -2373,8 +2373,8 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
                       relation.referencingLayerFields().at( i )
                     );
     }
-    metadata += fieldMetadata.join( QStringLiteral( "<br>" ) );
-    metadata += QStringLiteral( "</td></tr>\n" );
+    metadata += fieldMetadata.join( QLatin1String( "<br>" ) );
+    metadata += QLatin1String( "</td></tr>\n" );
   }
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Cardinality" ) + QStringLiteral( "</td><td>" ) + QgsRelation::cardinalityToDisplayString( relation.cardinality() ) + QStringLiteral( "</td></tr>\n" );

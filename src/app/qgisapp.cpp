@@ -1850,7 +1850,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
 
   connect( QgsApplication::fontManager(), &QgsFontManager::fontDownloaded, this, [ = ]( const QStringList & families, const QString & licenseDetails )
   {
-    const QString shortMessage = tr( "Installed font %1" ).arg( families.join( QStringLiteral( ", " ) ) );
+    const QString shortMessage = tr( "Installed font %1" ).arg( families.join( QLatin1String( ", " ) ) );
     QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( QString(), shortMessage );
     if ( !licenseDetails.isEmpty() )
     {

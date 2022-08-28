@@ -3478,7 +3478,7 @@ bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
   {
     const QStringList errors = handler.popErrors();
     if ( !errors.empty() )
-      QgsDebugMsg( QStringLiteral( "Cannot set no data value: %1" ).arg( errors.join( QStringLiteral( ", " ) ) ) );
+      QgsDebugMsg( QStringLiteral( "Cannot set no data value: %1" ).arg( errors.join( QLatin1String( ", " ) ) ) );
     else
       QgsDebugMsg( QStringLiteral( "Cannot set no data value" ) );
     return false;

@@ -74,7 +74,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     // we may want to consider exposing the admin url as an option for users to set
     if ( adminUrl.contains( QStringLiteral( "/rest/services/" ) ) )
     {
-      adminUrl.replace( QStringLiteral( "/rest/services/" ), QStringLiteral( "/rest/admin/services/" ) );
+      adminUrl.replace( QLatin1String( "/rest/services/" ), QLatin1String( "/rest/admin/services/" ) );
       const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
                                     authcfg, errorTitle, errorMessage, mRequestHeaders );
       if ( !adminData.isEmpty() )
