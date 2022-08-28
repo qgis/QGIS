@@ -8400,7 +8400,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
     return;
   }
 
-  //validate selection
+  // validate selection
   const int numberOfSelectedFeatures = vlayer->selectedFeatureCount();
   if ( numberOfSelectedFeatures == 0 )
   {
@@ -8410,7 +8410,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget *, bool checkFeaturesV
     return;
   }
 
-  //display an "ooutside of view" warning
+  // display an "outside of view" warning
   bool confirmationServed = false;
   if ( checkFeaturesVisible )
   {
