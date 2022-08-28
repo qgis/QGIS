@@ -304,6 +304,7 @@ bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::Orde
 QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request )
 {
   const bool geometryRequested = ( request.flags() & QgsFeatureRequest::NoGeometry ) == 0
+                                 || !mFilterRect.isNull()
                                  || request.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
   bool limitAtProvider = ( request.limit() >= 0 ) && mRequest.spatialFilterType() != Qgis::SpatialFilterType::DistanceWithin;
 
