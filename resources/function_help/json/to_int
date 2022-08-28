@@ -2,14 +2,20 @@
   "name": "to_int",
   "type": "function",
   "groups": ["Conversions"],
-  "description": "Converts a string to integer number. Nothing is returned if a value cannot be converted to integer (e.g '123asd' is invalid).",
+  "description": "Rounds a numeric value to integer or converts a string to integer number. Nothing is returned if the value cannot be converted to integer (e.g '123asd' is invalid).",
   "arguments": [{
     "arg": "string",
-    "description": "string to convert to integer number"
+    "description": "string or numeric value to convert to integer number"
   }],
   "examples": [{
+    "expression": "to_int(123.45)",
+    "returns": "123"
+  }, {
+    "expression": "to_int(123.67)",
+    "returns": "124"
+  }, {
     "expression": "to_int('123')",
     "returns": "123"
   }],
-  "tags": ["converts", "invalid", "converted", "integer"]
+  "tags": ["convert", "integer", "string", "round", "ceil", "floor"]
 }
