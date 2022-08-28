@@ -422,7 +422,8 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   const auto constAllVariables = allVariables;
   for ( const QString &variable : constAllVariables )
   {
-    if ( variable.startsWith( '_' ) )
+    if ( variable.startsWith( '_' ) or
+         variable.compare( QStringLiteral( "frame_timestep_unit" ) ) == 0 )
       continue;
 
     filtered << variable;
