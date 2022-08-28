@@ -442,7 +442,7 @@ void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest req
 {
   requestCache.setFilterRect( mFilterRect );
 
-  if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
+  if ( ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) || !mFilterRect.isNull() ) ||
        ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin ) ||
        ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() ) )
   {
