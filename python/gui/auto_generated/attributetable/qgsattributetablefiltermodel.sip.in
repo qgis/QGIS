@@ -220,6 +220,12 @@ need to be filtered again (like on filter or on main model data change).
 .. versionadded:: 3.10.3
 %End
 
+    QString filterExpression() const;
+%Docstring
+Returns the stored filter expression string.
+
+.. versionadded:: 3.28.0
+%End
   signals:
 
     void sortColumnChanged( int column, Qt::SortOrder order );
