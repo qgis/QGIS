@@ -62,6 +62,10 @@
 #include <QIODevice>
 #include <QTextCodec>
 
+#ifdef _MSC_VER
+#define strcasecmp( a, b ) stricmp( a, b )
+#endif
+
 QgsDxfExport::QgsDxfExport() = default;
 
 QgsDxfExport::~QgsDxfExport()
