@@ -120,6 +120,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   {
     // fetch geometry if requested
     mFetchGeometry = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0
+                     || !mFilterRect.isNull()
                      || mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin;
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression && mRequest.filterExpression()->needsGeometry() )
     {
