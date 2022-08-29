@@ -45,9 +45,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
         break; // not possible
 
       case QColor::Rgb:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
       case QColor::ExtendedRgb:
-#endif
         {
           // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
           spec = QStringLiteral( "rgb" );
@@ -123,12 +121,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
         qreal k = 1;
 #endif
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
         color.getCmykF( &c, &y, &m, &k );
-#else
-        QColor nonconstColor = color;
-        nonconstColor.getCmykF( &c, &y, &m, &k );
-#endif
         colorElement.setAttribute( QStringLiteral( "c" ), qgsDoubleToString( c ) );
         colorElement.setAttribute( QStringLiteral( "m" ), qgsDoubleToString( m ) );
         colorElement.setAttribute( QStringLiteral( "y" ), qgsDoubleToString( y ) );
@@ -211,9 +204,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       break; // not possible
 
     case QColor::Rgb:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
       {
         // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -290,12 +281,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
       color.getCmykF( &c, &y, &m, &k, &alpha );
-#else
-      QColor nonconstColor = color;
-      nonconstColor.getCmykF( &c, &y, &m, &k, &alpha );
-#endif
       return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
              qgsDoubleToString( m ),
              qgsDoubleToString( y ),

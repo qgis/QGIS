@@ -967,7 +967,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   mRootRule->startRender( context, fields, mFilter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
-  QList<int> symbolZLevels = qgis::setToList( symbolZLevelsSet );
+  QList<int> symbolZLevels( symbolZLevelsSet.begin(), symbolZLevelsSet.end() );
   std::sort( symbolZLevels.begin(), symbolZLevels.end() );
 
   // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]

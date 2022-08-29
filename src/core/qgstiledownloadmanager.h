@@ -306,11 +306,8 @@ class CORE_EXPORT QgsTileDownloadManager
     std::vector< QNetworkRequest > mStagedQueueRemovals;
 
     bool mShuttingDown = false;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
+
     QThread *mWorkerThread = nullptr;
     QgsTileDownloadManagerWorker *mWorker = nullptr;
     Stats mStats;

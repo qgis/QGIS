@@ -48,12 +48,7 @@ email                : nyall dot dawson at gmail dot com
 
 ///@cond PRIVATE
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGlobalMutex, ( QMutex::Recursive ) )
-#else
 Q_GLOBAL_STATIC( QRecursiveMutex, sGlobalMutex )
-#endif
-
 
 //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
 typedef QMap< QString, int > OpenedDsCountMap;
@@ -3017,21 +3012,13 @@ void QgsOgrLayer::SetSpatialFilter( OGRGeometryH hGeometry )
   OGR_L_SetSpatialFilter( hLayer, hGeometry );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QMutex *&mutex ) const
-#else
 GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const
-#endif
 {
   mutex = &( ds->mutex );
   return ds->hDS;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-OGRLayerH QgsOgrLayer::getHandleAndMutex( QMutex *&mutex ) const
-#else
 OGRLayerH QgsOgrLayer::getHandleAndMutex( QRecursiveMutex *&mutex ) const
-#endif
 {
   mutex = &( ds->mutex );
   return hLayer;
@@ -3154,11 +3141,7 @@ QString QgsOgrLayer::GetMetadataItem( const QString &key, const QString &domain 
                               domain.toUtf8().constData() );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-QMutex &QgsOgrFeatureDefn::mutex()
-#else
 QRecursiveMutex &QgsOgrFeatureDefn::mutex()
-#endif
 {
   return layer->mutex();
 }

@@ -571,23 +571,14 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
 
   QRectF viewportRect = mPlotItem->plotArea();
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  if ( viewportRect.contains( event->pos() ) )
-#else
   if ( viewportRect.contains( event->position() ) )
-#endif
   {
     //adjust view center
     const double oldCenterX = 0.5 * ( mPlotItem->xMaximum() + mPlotItem->xMinimum() );
     const double oldCenterY = 0.5 * ( mPlotItem->yMaximum() + mPlotItem->yMinimum() );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    const double eventPosX = ( event->pos().x() - viewportRect.left() ) / viewportRect.width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
-    const double eventPosY = ( viewportRect.bottom() - event->pos().y() ) / viewportRect.height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
-#else
     const double eventPosX = ( event->position().x() - viewportRect.left() ) / viewportRect.width() * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) + mPlotItem->xMinimum();
     const double eventPosY = ( viewportRect.bottom() - event->position().y() ) / viewportRect.height() * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) + mPlotItem->yMinimum();
-#endif
 
     const double newCenterX = eventPosX + ( ( oldCenterX - eventPosX ) * scaleFactor );
     const double newCenterY = eventPosY + ( ( oldCenterY - eventPosY ) * scaleFactor );
