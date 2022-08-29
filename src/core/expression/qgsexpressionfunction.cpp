@@ -6826,13 +6826,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     const QVariant minInscribedCircleRadiusValue = node->eval( parent, context );
     ENSURE_NO_EVAL_ERROR
     minInscribedCircleRadius = QgsExpressionUtils::getDoubleValue( minInscribedCircleRadiusValue, parent );
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
-    if ( minInscribedCircleRadiusValue != -1 )
-    {
-      parent->setEvalErrorString( QObject::tr( "'min_inscribed_circle_radius' is only available when QGIS is built with GEOS >= 3.9." ) );
-      return QVariant();
-    }
-#endif
     node = QgsExpressionUtils::getNode( values.at( 7 ), parent );
     // Return measures is only effective when an expression is set
     returnDetails = !testOnly && node->eval( parent, context ).toBool();  //#spellok
@@ -7022,7 +7015,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         }
       }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
       // Check min inscribed circle radius for intersection (if set)
       if ( minInscribedCircleRadius != -1 || requireMeasures )
       {
@@ -7035,7 +7027,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         testResult = radiusValue >= minInscribedCircleRadius;
         radiusValues.append( radiusValues );
       }
-#endif
     } // end for parts
 
     // Get the max values

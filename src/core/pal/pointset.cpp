@@ -110,23 +110,13 @@ void PointSet::createGeosGeom() const
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
   for ( int i = 0; i < nbPoints; ++i )
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
-#else
-    GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
-    GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
-#endif
   }
 
   //close ring if needed
   if ( needClose )
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
-#else
-    GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
-    GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
-#endif
   }
 
   switch ( type )
@@ -268,14 +258,7 @@ bool PointSet::containsPoint( double x, double y ) const
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, x, y ) );
-#else
-    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
-    GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
-    geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
-#endif
     const bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point.get() ) == 1 );
 
     return result;
@@ -861,58 +844,36 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     geos::unique_ptr geosPt( GEOSGeom_createPointFromXY_r( geosctxt, px, py ) );
-#else
-    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
-    geos::unique_ptr geosPt( GEOSGeom_createPoint_r( geosctxt, coord ) );
-#endif
     const int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
     const GEOSPreparedGeometry *preparedExtRing = nullptr;
-#endif
 
     if ( type != GEOS_POLYGON )
     {
       extRing = mGeos;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=9
       preparedExtRing = preparedGeom();
-#endif
     }
     else
     {
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
       if ( ! mGeosPreparedBoundary )
       {
         mGeosPreparedBoundary = GEOSPrepare_r( geosctxt, extRing );
       }
       preparedExtRing = mGeosPreparedBoundary;
-#endif
     }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     const geos::coord_sequence_unique_ptr nearestCoord( GEOSPreparedNearestPoints_r( geosctxt, preparedExtRing, geosPt.get() ) );
-#else
-    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
-#endif
     double nx;
     double ny;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     unsigned int nPoints = 0;
     GEOSCoordSeq_getSize_r( geosctxt, nearestCoord.get(), &nPoints );
     if ( nPoints == 0 )
       return 0;
 
     ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
-#else
-    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
-#endif
 
     if ( rx )
       *rx = nx;
@@ -944,16 +905,11 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     if ( centroidGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
       if ( nPoints == 0 )
         return;
       GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
-#else
-      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-#endif
     }
 
     // check if centroid inside in polygon
@@ -964,17 +920,12 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       if ( pointGeom )
       {
         const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
         unsigned int nPoints = 0;
         GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
         if ( nPoints == 0 )
           return;
 
         GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
-#else
-        GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-        GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-#endif
       }
     }
   }
