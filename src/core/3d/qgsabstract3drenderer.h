@@ -48,6 +48,7 @@ namespace Qt3DCore
  */
 class CORE_EXPORT QgsAbstract3DRenderer : public QObject SIP_ABSTRACT
 {
+    Q_OBJECT
   public:
     virtual ~QgsAbstract3DRenderer() = default;
 
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsAbstract3DRenderer : public QObject SIP_ABSTRACT
     /**
      * Updates the current renderer and returns true in case the 3D scene needs to be refreshed
      * \warning The renderer \a renderer must be of the same type with the current renderer
-     * \sinec QGIS 3.28
+     * \since QGIS 3.28
      */
     virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer )
     {

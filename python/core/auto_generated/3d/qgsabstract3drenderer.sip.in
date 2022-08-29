@@ -67,7 +67,8 @@ Updates the current renderer and returns true in case the 3D scene needs to be r
 .. warning::
 
    The renderer ``renderer`` must be of the same type with the current renderer
-   \sinec QGIS 3.28
+
+.. versionadded:: 3.28
 %End
 
   protected:
