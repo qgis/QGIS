@@ -59,7 +59,7 @@ QgsMacNative::~QgsMacNative()
 
 void QgsMacNative::setIconPath( const QString &iconPath )
 {
-  mQgsUserNotificationCenter->_qgisIcon = [[NSImage alloc] initWithCGImage:QPixmap( iconPath ).toImage().toCGImage()];
+  mQgsUserNotificationCenter->_qgisIcon = [[NSImage alloc] initWithCGImage:QPixmap( iconPath ).toImage().toCGImage() size:NSZeroSize];
 }
 
 const char *QgsMacNative::currentAppLocalizedName()
@@ -104,7 +104,7 @@ QgsNative::NotificationResult QgsMacNative::showDesktopNotification( const QStri
   }
   else
   {
-    image = [[NSImage alloc] initWithCGImage:px.toImage().toCGImage()];
+    image = [[NSImage alloc] initWithCGImage:px.toImage().toCGImage() size:NSZeroSize];
   }
   notification.contentImage = image;
 
