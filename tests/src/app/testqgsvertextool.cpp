@@ -408,7 +408,7 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
 
   // The undo stack gets two entries, one for the vertex move and one for the topological point
   QCOMPARE( mLayerLineZ->undoStack()->index(), 5 );
-  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 5.5 5.5 333, 6 6 1, 7 5 1)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF1 ).geometry().asWkt(), QString( "LineStringZ (5 5 1, 5.5 5.5 5, 6 6 1, 7 5 1)" ) );
   QCOMPARE( mLayerLineZ->getFeature( mFidLineZF3 ).geometry().asWkt(), QString( "LineStringZ (5.5 5.5 5, 7 5.5 10)" ) );
 
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );

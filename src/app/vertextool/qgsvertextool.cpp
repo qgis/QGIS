@@ -2228,37 +2228,53 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
     addExtraSegmentsToEdits( edits, mapPoint, dragLayer, layerPoint );
   }
 
+  VertexEdits beforeEdits;
+  const auto editKeys = edits.keys();
+  for ( QgsVectorLayer *layer : editKeys )
+  {
+    const auto editFid = edits[layer].keys();
+    for ( QgsFeatureId fid : editFid )
+    {
+      const QgsGeometry g = edits[layer][fid];
+      beforeEdits[layer][fid] = layer->getGeometry( fid );
+    }
+  }
+
   applyEditsToLayers( edits );
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
-    // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
-    // this requires that the snapping match is to a segment and the segment layer's CRS
-    // is the same (otherwise we would need to reproject the point and it will not be coincident)
     const auto editKeys = edits.keys();
     for ( QgsVectorLayer *layer : editKeys )
     {
-      const auto editGeom = edits[layer].values();
-      for ( QgsGeometry g : editGeom )
+      const auto editFid = edits[layer].keys();
+
+      for ( QgsFeatureId fid : editFid )
       {
-        QgsGeometry p = QgsGeometry::fromPointXY( QgsPointXY( layerPoint.x(), layerPoint.y() ) );
-        if ( ( ( mapPointMatch->hasEdge() || mapPointMatch->hasMiddleSegment() ) && mapPointMatch->layer() && layer->crs() == mapPointMatch->layer()->crs() )
-             || ( mapPointMatch->hasVertex() && !mapPointMatch->layer() && layer->crs() == mCanvas->mapSettings().destinationCrs() ) ) // also add topological points when snapped on intersection
+        const QgsGeometry newGeometry = edits[layer][fid];
+        const QgsGeometry newPointGeometry = newGeometry.convertToType( QgsWkbTypes::PointGeometry, true );
+        const QgsGeometry oldGeometry = beforeEdits[layer][fid];
+        const QgsGeometry oldPointGeometry = oldGeometry.convertToType( QgsWkbTypes::PointGeometry, true );
+
+        // Retrieves all modified vertices by all edits
+        const QgsGeometry editedPointsGeom = newPointGeometry.difference( oldPointGeometry );
+
+        // Then adds a topological point on those selected
+        for ( QgsAbstractGeometry::vertex_iterator it = newGeometry.vertices_begin() ; it != newGeometry.vertices_end() ; it++ )
         {
-          if ( g.convertToType( QgsWkbTypes::PointGeometry, true ).contains( p ) )
+          QgsPoint pt( *it );
+          QgsPointXY ptXy( *it );
+          if ( editedPointsGeom.contains( &ptXy ) )
           {
-            if ( !layerPoint.is3D() )
-              layerPoint.addZValue( defaultZValue() );
-            layer->addTopologicalPoints( layerPoint );
-            if ( mapPointMatch->layer() )
-              mapPointMatch->layer()->addTopologicalPoints( layerPoint );
-          }
-        }
-        if ( QgsProject::instance()->avoidIntersectionsMode() != Qgis::AvoidIntersectionsMode::AllowIntersections )
-        {
-          for ( QgsAbstractGeometry::vertex_iterator it = g.vertices_begin() ; it != g.vertices_end() ; it++ )
-          {
-            layer->addTopologicalPoints( *it );
+            if ( !pt.is3D() )
+            {
+              pt.addZValue( defaultZValue() );
+            }
+            if ( !pt.isMeasure() )
+            {
+              pt.addMValue( defaultMValue() );
+            }
+            layer->addTopologicalPoints( pt );
           }
         }
       }
