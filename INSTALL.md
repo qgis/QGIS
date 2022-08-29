@@ -101,7 +101,7 @@ Required build dependencies:
 
 * Qt >= 5.14.0
 * Proj >= 6.3.1
-* GEOS >= 3.4
+* GEOS >= 3.9
 * Sqlite3 >= 3.0.0
 * SpatiaLite >= 4.2.0
 * libspatialindex

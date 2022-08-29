@@ -3941,8 +3941,6 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
   }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
-  // much faster code path for GEOS 3.9+
   const bool mustClip = ( !clipGeometry.isNull() &&
                           ( ( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.boundingBox().contains( geom.boundingBox() ) )
                             || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) );
@@ -4008,53 +4006,6 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
     geom = clipGeom;
   }
-#else
-  // fix invalid polygons
-  if ( geom.type() == QgsWkbTypes::PolygonGeometry )
-  {
-    if ( geom.isMultipart() )
-    {
-      // important -- we need to treat ever part in isolation here. We can't test the validity of the whole geometry
-      // at once, because touching parts would result in an invalid geometry, and buffering this "dissolves" the parts.
-      // because the actual label engine treats parts as separate entities, we aren't bound by the usual "touching parts are invalid" rule
-      // see https://github.com/qgis/QGIS/issues/26763
-      QVector< QgsGeometry> parts;
-      parts.reserve( qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() )->numGeometries() );
-      for ( auto it = geom.const_parts_begin(); it != geom.const_parts_end(); ++it )
-      {
-        QgsGeometry partGeom( ( *it )->clone() );
-        if ( !partGeom.isGeosValid() )
-        {
-          partGeom = partGeom.buffer( 0, 0 );
-        }
-        parts.append( partGeom );
-      }
-      geom = QgsGeometry::collectGeometry( parts );
-    }
-    else if ( !geom.isGeosValid() )
-    {
-      QgsGeometry bufferGeom = geom.buffer( 0, 0 );
-      if ( bufferGeom.isNull() )
-      {
-        QgsDebugMsg( QStringLiteral( "Could not repair geometry: %1" ).arg( bufferGeom.lastError() ) );
-        return QgsGeometry();
-      }
-      geom = bufferGeom;
-    }
-  }
-
-  if ( !clipGeometry.isNull() &&
-       ( ( qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.boundingBox().contains( geom.boundingBox() ) )
-         || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) )
-  {
-    QgsGeometry clipGeom = geom.intersection( clipGeometry ); // creates new geometry
-    if ( clipGeom.isEmpty() )
-    {
-      return QgsGeometry();
-    }
-    geom = clipGeom;
-  }
-#endif
 
   return geom;
 }

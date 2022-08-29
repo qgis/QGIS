@@ -27,10 +27,6 @@ email                : morb at ozemail dot com dot au
 
 #include <geos_c.h>
 
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<8 )
-#include "qgsgeometrymakevalid.h"
-#endif
-
 #include "qgsgeometryutils.h"
 #include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
@@ -2863,12 +2859,8 @@ QgsGeometry QgsGeometry::makeValid() const
     return QgsGeometry();
 
   mLastError.clear();
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
   QgsGeos geos( d->geometry.get() );
   std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( &mLastError ) );
-#else
-  std::unique_ptr< QgsAbstractGeometry > g( _qgis_lwgeom_make_valid( d->geometry.get(), mLastError ) );
-#endif
 
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;
