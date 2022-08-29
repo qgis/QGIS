@@ -98,7 +98,7 @@ void QgsExpressionBuilderDialog::reject()
     if ( askToDiscardEditedExpression )
     {
       QMessageBox confirmMessage( QMessageBox::Question,
-                                  tr( "Expression was edited" ),
+                                  tr( "Expression was Edited" ),
                                   tr( "Closing the dialog now will discard the changes to the expression. Proceed?" ),
                                   QMessageBox::Yes | QMessageBox::No,
                                   this );
