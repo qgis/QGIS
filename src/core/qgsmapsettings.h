@@ -13,8 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPSETTINGS_H
-#define QGSMAPSETTINGS_H
+#pragma once
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -943,5 +942,3 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QgsDoubleRange mZRange;
 
 };
-
-#endif // QGSMAPSETTINGS_H

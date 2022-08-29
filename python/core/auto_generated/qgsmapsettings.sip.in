@@ -1004,7 +1004,6 @@ Defaults to -1 if the map is not associated with an animation.
     void updateDerived();
 
 };
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
