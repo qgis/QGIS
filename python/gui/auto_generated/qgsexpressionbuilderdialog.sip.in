@@ -118,6 +118,7 @@ Used to save geometry
 
     virtual void accept();
 
+    virtual void reject();
 
 };
 
