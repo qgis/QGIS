@@ -51,8 +51,10 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      *
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
+     *
+     * \note since QGIS 3.28 the context doesn't take ownership over the passed symbol
      */
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol,
                                   double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
@@ -80,11 +82,11 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      *
      * \see setSymbol()
      */
-    QgsPointCloud3DSymbol *symbol() const { return mSymbol.get(); }
+    QgsPointCloud3DSymbol *symbol() const { return mSymbol; }
 
     /**
      * Sets the \a symbol used for rendering the point cloud
-     * Takes ownership over the passed symbol
+     * \note since QGIS 3.28 the context doesn't take ownership over the passed symbol
      * \see symbol()
      */
     void setSymbol( QgsPointCloud3DSymbol *symbol );
@@ -193,7 +195,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 #endif
     QgsPointCloudAttributeCollection mAttributes;
-    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
+    QgsPointCloud3DSymbol *mSymbol = nullptr;
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
@@ -298,6 +300,18 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
     void setPointRenderingBudget( int budget );
 
     bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
+
+    /**
+     * Checks whether the current renderer supports being updated from \a renderer
+     * \since QGIS 3.28
+     */
+    bool supportsUpdateFrom( QgsAbstract3DRenderer *renderer ) const override;
+
+    /**
+     * Updates the current renderer to reflect the same rendering style as \a renderer
+     * \since QGIS 3.28
+     */
+    bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer ) override;
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from

@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 
 #include <QString>
+#include <QDebug>
 
 class QDomElement;
 class QgsProject;
@@ -63,6 +64,27 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
     //! Resolves references to other objects - second phase of loading - after readXml()
     virtual void resolveReferences( const QgsProject &project );
+
+    /**
+     * Returns whether the current renderer could be updated from \a renderer
+     * \since QGIS 3.28
+     */
+    virtual bool supportsUpdateFrom( QgsAbstract3DRenderer *renderer ) const
+    {
+      Q_UNUSED( renderer );
+      return false;
+    }
+
+    /**
+     * Updates the current renderer and returns true in case the 3D scene needs to be refreshed
+     * \warning The renderer \a renderer must be of the same type with the current renderer
+     * \sinec QGIS 3.28
+     */
+    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer )
+    {
+      Q_UNUSED( renderer );
+      return false;
+    };
 
   protected:
     //! Default constructor

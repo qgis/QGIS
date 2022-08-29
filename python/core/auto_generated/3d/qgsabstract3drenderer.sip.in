@@ -53,6 +53,23 @@ Reads renderer's properties from given XML element
 Resolves references to other objects - second phase of loading - after :py:func:`~QgsAbstract3DRenderer.readXml`
 %End
 
+    virtual bool supportsUpdateFrom( QgsAbstract3DRenderer *renderer ) const;
+%Docstring
+Returns whether the current renderer could be updated from ``renderer``
+
+.. versionadded:: 3.28
+%End
+
+    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer );
+%Docstring
+Updates the current renderer and returns true in case the 3D scene needs to be refreshed
+
+.. warning::
+
+   The renderer ``renderer`` must be of the same type with the current renderer
+   \sinec QGIS 3.28
+%End
+
   protected:
     QgsAbstract3DRenderer();
 %Docstring

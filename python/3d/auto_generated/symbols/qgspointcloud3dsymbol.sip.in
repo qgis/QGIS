@@ -42,7 +42,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
       Classification
     };
 
-    QgsPointCloud3DSymbol();
+    QgsPointCloud3DSymbol( RenderingStyle renderingStyle );
 %Docstring
 Constructor for QgsPointCloud3DSymbol
 %End
@@ -155,6 +155,26 @@ than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSy
     virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 
 
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+%Docstring
+Updates the current point cloud symbol to reflect the rendering settings as ``symbol``
+Returns true if the scene needs to be reloaded to reflect changes from ``symbol``
+
+.. versionadded:: 3.28
+%End
+  signals:
+
+    void pointSizeChanged( float newSize );
+%Docstring
+Emitted when the point size has changed.
+
+.. note::
+
+   This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
     void writeBaseXml( QDomElement &elem, const QgsReadWriteContext &context ) const;
@@ -220,7 +240,20 @@ Sets the color used by the renderer when using SingleColor rendering mode
 
     virtual unsigned int byteStride();
 
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
 
+  signals:
+
+    void singleColorChanged( QColor color );
+%Docstring
+Emitted when the used color has changed.
+
+.. note::
+
+   This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
+
+.. versionadded:: 3.28
+%End
 };
 
 class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
@@ -305,6 +338,9 @@ Sets the minimum and maximum values used when classifying colors in the color ra
 %End
 
     virtual unsigned int byteStride();
+
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+
 
 };
 
@@ -485,6 +521,9 @@ Ownership of ``enhancement`` is transferred.
 .. seealso:: :py:func:`setGreenContrastEnhancement`
 %End
 
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+
+
   private:
     QgsRgbPointCloud3DSymbol( const QgsRgbPointCloud3DSymbol &other );
 };
@@ -557,6 +596,9 @@ Gets the list of categories of the classification that should not be rendered
 %End
 
     virtual unsigned int byteStride();
+
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+
 
 };
 

@@ -105,6 +105,22 @@ Sets the maximum number of points to be rendered in the scene
     virtual bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer );
 
 
+    virtual bool supportsUpdateFrom( QgsAbstract3DRenderer *renderer ) const;
+
+%Docstring
+Checks whether the current renderer supports being updated from ``renderer``
+
+.. versionadded:: 3.28
+%End
+
+    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer );
+
+%Docstring
+Updates the current renderer to reflect the same rendering style as ``renderer``
+
+.. versionadded:: 3.28
+%End
+
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
     QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );

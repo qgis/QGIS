@@ -2099,11 +2099,32 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   if ( renderer == m3DRenderer )
     return;
 
-  delete m3DRenderer;
-  m3DRenderer = renderer;
-  emit renderer3DChanged();
-  emit repaintRequested();
-  trigger3DUpdate();
+  if ( !m3DRenderer )
+  {
+    m3DRenderer = renderer;
+    emit renderer3DChanged();
+    emit repaintRequested();
+    trigger3DUpdate();
+  }
+  else if ( !m3DRenderer->supportsUpdateFrom( renderer ) )
+  {
+    delete m3DRenderer;
+    m3DRenderer = renderer;
+    emit renderer3DChanged();
+    emit repaintRequested();
+    trigger3DUpdate();
+  }
+  else
+  {
+    bool triggerSceneUpdate = m3DRenderer->updateCurrentRenderer( renderer );
+    if ( triggerSceneUpdate )
+    {
+      emit renderer3DChanged();
+      emit repaintRequested();
+      trigger3DUpdate();
+    }
+    delete renderer;
+  }
 }
 
 QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const

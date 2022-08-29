@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 
 #include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QTexture>
 
 #include "qgsabstract3dsymbol.h"
 #include "qgscolorrampshader.h"
@@ -37,6 +38,7 @@
  */
 class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 {
+    Q_OBJECT
   public:
 
     /**
@@ -57,7 +59,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     };
 
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol();
+    QgsPointCloud3DSymbol( RenderingStyle renderingStyle );
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
@@ -83,7 +85,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     //! Returns the byte stride for the geometries used to for the vertex buffer
     virtual unsigned int byteStride() = 0;
     //! Used to fill material object with necessary QParameters (and consequently opengl uniforms)
-    virtual void fillMaterial( Qt3DRender::QMaterial *material ) = 0 SIP_SKIP;
+    virtual void fillMaterial( Qt3DRender::QMaterial *material ) SIP_SKIP;
 
     /**
      * Returns whether points are triangulated to render solid surface
@@ -165,7 +167,23 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
 
     void copyBaseSettings( QgsAbstract3DSymbol *destination ) const override;
 
+    /**
+     * Updates the current point cloud symbol to reflect the rendering settings as \a symbol
+     * Returns true if the scene needs to be reloaded to reflect changes from \a symbol
+     * \since QGIS 3.28
+     */
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+  signals:
+
+    /**
+     * Emitted when the point size has changed.
+     * \note This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
+     * \since QGIS 3.28
+     */
+    void pointSizeChanged( float newSize );
+
   protected:
+    RenderingStyle mRenderingStyle = RenderingStyle::NoRendering;
     float mPointSize = 3.0;
     bool mRenderAsTriangles = false;
     bool mHorizontalTriangleFilter = false;
@@ -199,6 +217,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
  */
 class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
+    Q_OBJECT
   public:
     //! Constructor for QgsSingleColorPointCloud3DSymbol
     QgsSingleColorPointCloud3DSymbol();
@@ -224,7 +243,15 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     unsigned int byteStride() override { return 3 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
 
+    bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol ) override;
+  signals:
 
+    /**
+     * Emitted when the used color has changed.
+     * \note This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
+     * \since QGIS 3.28
+     */
+    void singleColorChanged( QColor color );
   private:
     QColor mSingleColor = QColor( 0, 0, 255 );
 };
@@ -240,6 +267,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
  */
 class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
+    Q_OBJECT
   public:
     //! Constructor for QgsColorRampPointCloud3DSymbol
     QgsColorRampPointCloud3DSymbol();
@@ -295,6 +323,8 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
     unsigned int byteStride() override { return 4 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
 
+    bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol ) override;
+
   private:
     QString mRenderingParameter;
     QgsColorRampShader mColorRampShader;
@@ -313,6 +343,7 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
  */
 class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
+    Q_OBJECT
   public:
     //! Constructor for QgsRGBPointCloud3DSymbol
     QgsRgbPointCloud3DSymbol();
@@ -446,6 +477,8 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
      */
     void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
 
+    bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol ) override;
+
   private:
 
 #ifdef SIP_RUN
@@ -473,6 +506,7 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
  */
 class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSymbol
 {
+    Q_OBJECT
   public:
     //! Constructor for QgsClassificationPointCloud3DSymbol
     QgsClassificationPointCloud3DSymbol();
@@ -515,6 +549,8 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
 
     unsigned int byteStride() override { return 4 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
+
+    bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol ) override;
 
   private:
     QString mRenderingParameter;

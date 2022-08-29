@@ -43,8 +43,9 @@ namespace Qt3DCore { class QEntity; } SIP_SKIP
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsAbstract3DSymbol
+class CORE_EXPORT QgsAbstract3DSymbol : public QObject
 {
+    Q_OBJECT
   public:
     virtual ~QgsAbstract3DSymbol() = default;
 

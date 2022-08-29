@@ -25,8 +25,9 @@
 // QgsPointCloud3DSymbol
 
 
-QgsPointCloud3DSymbol::QgsPointCloud3DSymbol()
+QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle renderingStyle )
   : QgsAbstract3DSymbol()
+  , mRenderingStyle( renderingStyle )
 {
 }
 
@@ -34,7 +35,12 @@ QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {  }
 
 void QgsPointCloud3DSymbol::setPointSize( float size )
 {
+  if ( mPointSize == size )
+  {
+    return;
+  }
   mPointSize = size;
+  emit pointSizeChanged( size );
 }
 
 bool QgsPointCloud3DSymbol::renderAsTriangles() const
@@ -123,10 +129,55 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
   pcDestination->mVerticalTriangleFilter = mVerticalTriangleFilter;
 }
 
+void QgsPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
+{
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", mRenderingStyle );
+  mat->addParameter( renderingStyle );
+  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
+  mat->addParameter( pointSizeParameter );
+  connect( this, &QgsPointCloud3DSymbol::pointSizeChanged, pointSizeParameter, [pointSizeParameter]( float newSize )
+  {
+    pointSizeParameter->setValue( QVariant::fromValue( newSize ) );
+  } );
+}
+
+bool QgsPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+{
+  bool updateScene = false;
+  setPointSize( symbol->pointSize() );
+  if ( renderAsTriangles() != symbol->renderAsTriangles() )
+  {
+    setRenderAsTriangles( symbol->renderAsTriangles() );
+    updateScene = true;
+  }
+  if ( horizontalTriangleFilter() != symbol->horizontalTriangleFilter() )
+  {
+    setHorizontalTriangleFilter( symbol->horizontalTriangleFilter() );
+    updateScene = true;
+  }
+  if ( horizontalFilterThreshold() != symbol->horizontalFilterThreshold() )
+  {
+    setHorizontalFilterThreshold( symbol->horizontalFilterThreshold() );
+    updateScene = true;
+  }
+  if ( verticalTriangleFilter() != symbol->verticalTriangleFilter() )
+  {
+    setVerticalTriangleFilter( symbol->verticalTriangleFilter() );
+    updateScene = true;
+  }
+  if ( verticalFilterThreshold() != symbol->verticalFilterThreshold() )
+  {
+    setVerticalFilterThreshold( symbol->verticalFilterThreshold() );
+    updateScene = true;
+  }
+
+  return updateScene;
+}
+
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::SingleColor )
 {
 
 }
@@ -163,23 +214,37 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
 
 void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
 {
+  if ( color == mSingleColor )
+  {
+    return;
+  }
   mSingleColor = color;
+  emit singleColorChanged( color );
 }
 
 void QgsSingleColorPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::SingleColor );
-  mat->addParameter( renderingStyle );
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
-  mat->addParameter( pointSizeParameter );
+  QgsPointCloud3DSymbol::fillMaterial( mat );
   Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( "u_singleColor", QVector3D( mSingleColor.redF(), mSingleColor.greenF(), mSingleColor.blueF() ) );
   mat->addParameter( singleColorParameter );
+  connect( this, &QgsSingleColorPointCloud3DSymbol::singleColorChanged, singleColorParameter, [singleColorParameter]( QColor newColor )
+  {
+    singleColorParameter->setValue( QVector3D( newColor.redF(), newColor.greenF(), newColor.blueF() ) );
+  } );
+}
+
+bool QgsSingleColorPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+{
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  QgsSingleColorPointCloud3DSymbol *s = dynamic_cast< QgsSingleColorPointCloud3DSymbol * >( symbol );
+  setSingleColor( s->singleColor() );
+  return updateScene;
 }
 
 // QgsColorRampPointCloud3DSymbol
 
 QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::ColorRamp )
 {
 
 }
@@ -252,10 +317,7 @@ void QgsColorRampPointCloud3DSymbol::setColorRampShaderMinMax( double min, doubl
 
 void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::ColorRamp );
-  mat->addParameter( renderingStyle );
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
-  mat->addParameter( pointSizeParameter );
+  QgsPointCloud3DSymbol::fillMaterial( mat );
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
   if ( mColorRampShader.colorRampItemList().count() > 0 )
@@ -276,10 +338,28 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
   mat->addParameter( colorRampTypeParameter );
 }
 
+bool QgsColorRampPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+{
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  QgsColorRampPointCloud3DSymbol *s = dynamic_cast< QgsColorRampPointCloud3DSymbol * >( symbol );
+  if ( attribute() != s->attribute() )
+  {
+    updateScene = true;
+    setAttribute( s->attribute() );
+  }
+  if ( colorRampShaderMin() != s->colorRampShaderMin() || colorRampShaderMax() != s->colorRampShaderMax() || !( colorRampShader() == s->colorRampShader() ) )
+  {
+    updateScene = true;
+    setColorRampShader( s->colorRampShader() );
+    setColorRampShaderMinMax( s->colorRampShaderMin(), s->colorRampShaderMax() );
+  }
+  return updateScene;
+}
+
 // QgsRgbPointCloud3DSymbol
 
 QgsRgbPointCloud3DSymbol::QgsRgbPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RgbRendering )
 {
 
 }
@@ -386,10 +466,7 @@ void QgsRgbPointCloud3DSymbol::readXml( const QDomElement &elem, const QgsReadWr
 
 void QgsRgbPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::RgbRendering );
-  mat->addParameter( renderingStyle );
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
-  mat->addParameter( pointSizeParameter );
+  QgsPointCloud3DSymbol::fillMaterial( mat );
 }
 
 
@@ -453,11 +530,48 @@ void QgsRgbPointCloud3DSymbol::setBlueContrastEnhancement( QgsContrastEnhancemen
   mBlueContrastEnhancement.reset( enhancement );
 }
 
+bool QgsRgbPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+{
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  QgsRgbPointCloud3DSymbol *s = dynamic_cast< QgsRgbPointCloud3DSymbol *>( symbol );
+  if ( redAttribute() != s->redAttribute() )
+  {
+    updateScene = true;
+    setRedAttribute( s->redAttribute() );
+  }
+  if ( greenAttribute() != s->greenAttribute() )
+  {
+    updateScene = true;
+    setGreenAttribute( s->greenAttribute() );
+  }
+  if ( blueAttribute() != s->blueAttribute() )
+  {
+    updateScene = true;
+    setGreenAttribute( s->greenAttribute() );
+  }
+  if ( redContrastEnhancement() != s->redContrastEnhancement() )
+  {
+    updateScene = true;
+    setRedContrastEnhancement( s->redContrastEnhancement() );
+  }
+  if ( greenContrastEnhancement() != s->greenContrastEnhancement() )
+  {
+    updateScene = true;
+    setGreenContrastEnhancement( s->greenContrastEnhancement() );
+  }
+  if ( blueContrastEnhancement() != s->blueContrastEnhancement() )
+  {
+    updateScene = true;
+    setBlueContrastEnhancement( s->blueContrastEnhancement() );
+  }
+  return updateScene;
+}
+
 // QgsClassificationPointCloud3DSymbol
 
 
 QgsClassificationPointCloud3DSymbol::QgsClassificationPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol()
+  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::Classification )
 {
 
 }
@@ -571,11 +685,8 @@ QgsColorRampShader QgsClassificationPointCloud3DSymbol::colorRampShader() const
 
 void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
+  QgsPointCloud3DSymbol::fillMaterial( mat );
   const QgsColorRampShader mColorRampShader = colorRampShader();
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", QgsPointCloud3DSymbol::Classification );
-  mat->addParameter( renderingStyle );
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
-  mat->addParameter( pointSizeParameter );
   // Create the texture to pass the color ramp
   Qt3DRender::QTexture1D *colorRampTexture = nullptr;
   if ( mColorRampShader.colorRampItemList().count() > 0 )
@@ -596,3 +707,19 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *m
   mat->addParameter( colorRampTypeParameter );
 }
 
+bool QgsClassificationPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+{
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  QgsClassificationPointCloud3DSymbol *s = dynamic_cast< QgsClassificationPointCloud3DSymbol * >( symbol );
+  if ( attribute() != s->attribute() )
+  {
+    updateScene = true;
+    setAttribute( s->attribute() );
+  }
+  if ( categoriesList() != s->categoriesList() )
+  {
+    updateScene = true;
+    setCategoriesList( s->categoriesList() );
+  }
+  return updateScene;
+}
