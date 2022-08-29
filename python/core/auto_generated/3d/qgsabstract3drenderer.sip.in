@@ -11,7 +11,7 @@
 
 
 
-class QgsAbstract3DRenderer /Abstract/
+class QgsAbstract3DRenderer : QObject /Abstract/
 {
 %Docstring(signature="appended")
 Base class for all renderers that may to participate in 3D view.

@@ -138,6 +138,11 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
   QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol.get() ), maximumScreenError(), showBoundingBoxes(),
       static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
       static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
+
+  connect( this, &QgsPointCloudLayer3DRenderer::showBoundingBoxesChanged, entity, [entity]( bool enabled )
+  {
+    entity->setShowBoundingBoxes( enabled );
+  } );
   return entity;
 }
 
@@ -214,7 +219,12 @@ bool QgsPointCloudLayer3DRenderer::showBoundingBoxes() const
 
 void QgsPointCloudLayer3DRenderer::setShowBoundingBoxes( bool showBoundingBoxes )
 {
+  if ( mShowBoundingBoxes == showBoundingBoxes )
+  {
+    return;
+  }
   mShowBoundingBoxes = showBoundingBoxes;
+  emit showBoundingBoxesChanged( mShowBoundingBoxes );
 }
 
 void QgsPointCloudLayer3DRenderer::setPointRenderingBudget( int budget )
@@ -263,7 +273,20 @@ bool QgsPointCloudLayer3DRenderer::updateCurrentRenderer( QgsAbstract3DRenderer 
 {
   Q_ASSERT( supportsUpdateFrom( renderer ) );
   QgsPointCloudLayer3DRenderer *r = dynamic_cast<QgsPointCloudLayer3DRenderer *>( renderer );
+  setShowBoundingBoxes( r->showBoundingBoxes() );
+  bool updateScene = false;
+  if ( r->maximumScreenError() != maximumScreenError() )
+  {
+    setMaximumScreenError( r->maximumScreenError() );
+    updateScene = true;
+  }
+  if ( r->pointRenderingBudget() != pointRenderingBudget() )
+  {
+    setPointRenderingBudget( r->pointRenderingBudget() );
+    updateScene = true;
+  }
   // TODO: fix const access
-  return mSymbol->updateCurrentSymbol( const_cast< QgsPointCloud3DSymbol * >( r->symbol() ) );
+  updateScene = updateScene || mSymbol->updateCurrentSymbol( const_cast< QgsPointCloud3DSymbol * >( r->symbol() ) );
+  return updateScene;
 }
 

@@ -231,6 +231,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
  */
 class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRenderer
 {
+    Q_OBJECT
   public:
     //! Takes ownership of the symbol object
     explicit QgsPointCloudLayer3DRenderer();
@@ -312,6 +313,8 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
      * \since QGIS 3.28
      */
     bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer ) override;
+  signals:
+    void showBoundingBoxesChanged( bool enabled );
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from

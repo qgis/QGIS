@@ -46,7 +46,7 @@ namespace Qt3DCore
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
+class CORE_EXPORT QgsAbstract3DRenderer : public QObject SIP_ABSTRACT
 {
   public:
     virtual ~QgsAbstract3DRenderer() = default;

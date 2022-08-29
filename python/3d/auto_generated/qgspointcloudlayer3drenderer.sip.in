@@ -120,6 +120,8 @@ Updates the current renderer to reflect the same rendering style as ``renderer``
 
 .. versionadded:: 3.28
 %End
+  signals:
+    void showBoundingBoxesChanged( bool enabled );
 
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
