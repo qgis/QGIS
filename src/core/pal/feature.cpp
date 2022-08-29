@@ -33,8 +33,6 @@
 #include "geomfunction.h"
 #include "labelposition.h"
 #include "pointset.h"
-#include "util.h"
-#include "costcalculator.h"
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -1408,7 +1406,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   const bool hasAboveBelowLinePlacement = flags & QgsLabeling::LinePlacementFlag::AboveLine || flags & QgsLabeling::LinePlacementFlag::BelowLine;
   const double offsetDistance = mLF->distLabel() + li->characterHeight() / 2;
   std::unique_ptr< PointSet > mapShapeOffsetPositive;
+  bool positiveShapeHasNegativeDistance = false;
   std::unique_ptr< PointSet > mapShapeOffsetNegative;
+  bool negativeShapeHasNegativeDistance = false;
   if ( hasAboveBelowLinePlacement && !qgsDoubleNear( offsetDistance, 0 ) )
   {
     // create offseted map shapes to be used for above and below line placements
@@ -1420,8 +1420,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     {
       if ( mapShapeOffsetPositive )
         mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance );
+      positiveShapeHasNegativeDistance = offsetDistance < 0;
       if ( mapShapeOffsetNegative )
         mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance * -1 );
+      negativeShapeHasNegativeDistance = offsetDistance > 0;
     }
     else
     {
@@ -1440,8 +1442,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       }
       if ( mapShapeOffsetPositive )
         mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance * -1 );
+      positiveShapeHasNegativeDistance = offsetDistance > 0;
       if ( mapShapeOffsetNegative )
         mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance );
+      negativeShapeHasNegativeDistance = offsetDistance < 0;
     }
   }
 
@@ -1542,9 +1546,16 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         continue;
       }
 
+
       bool isBackupPlacementOnly = false;
       if ( flags & QgsLabeling::LinePlacementFlag::MapOrientation )
       {
+        if ( ( currentMapShape == mapShapeOffsetPositive.get() && positiveShapeHasNegativeDistance )
+             || ( currentMapShape == mapShapeOffsetNegative.get() && negativeShapeHasNegativeDistance ) )
+        {
+          labeledLineSegmentIsRightToLeft = !labeledLineSegmentIsRightToLeft;
+        }
+
         if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
         {
           if ( singleCandidateOnly && offset == PositiveOffset )
