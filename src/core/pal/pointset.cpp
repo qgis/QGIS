@@ -29,7 +29,6 @@
 
 #include "pointset.h"
 #include "util.h"
-#include "pal.h"
 #include "geomfunction.h"
 #include "qgsgeos.h"
 #include "qgsmessagelog.h"
@@ -554,23 +553,23 @@ void PointSet::offsetCurveByDistance( double distance )
     return;
 
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  GEOSGeometry *newGeos;
+  geos::unique_ptr newGeos = nullptr;
   try
   {
-    newGeos = GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 );
+    newGeos.reset( GEOSOffsetCurve_r( geosctxt, mGeos, distance, 0, GEOSBUF_JOIN_MITRE, 2 ) );
     if ( !newGeos )
       return;
 
     // happens sometime, if the offset curve self-intersects
-    if ( GEOSGeomTypeId_r( geosctxt, newGeos ) == GEOS_MULTILINESTRING )
+    if ( GEOSGeomTypeId_r( geosctxt, newGeos.get() ) == GEOS_MULTILINESTRING )
     {
       // we keep the longest part
-      const int nParts = GEOSGetNumGeometries_r( geosctxt, newGeos );
+      const int nParts = GEOSGetNumGeometries_r( geosctxt, newGeos.get() );
       double maximumLength = -1;
       const GEOSGeometry *longestPart = nullptr;
       for ( int i = 0; i < nParts; ++i )
       {
-        const GEOSGeometry *part = GEOSGetGeometryN_r( geosctxt, newGeos, i );
+        const GEOSGeometry *part = GEOSGetGeometryN_r( geosctxt, newGeos.get(), i );
         double partLength = -1;
         if ( GEOSLength_r( geosctxt, part, &partLength ) == 1 )
         {
@@ -585,17 +584,25 @@ void PointSet::offsetCurveByDistance( double distance )
       if ( !longestPart )
       {
         // something is really wrong!
-        GEOSGeom_destroy_r( geosctxt, newGeos );
         return;
       }
 
       geos::unique_ptr longestPartClone( GEOSGeom_clone_r( geosctxt, longestPart ) );
-      GEOSGeom_destroy_r( geosctxt, newGeos );
-      newGeos = longestPartClone.release();
+      newGeos = std::move( longestPartClone );
     }
 
-    const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos );
-    const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos );
+    if ( distance < 0 )
+    {
+      // geos reverses the direction of offset curves with negative distances -- we don't want that!
+      geos::unique_ptr reversed( GEOSReverse_r( geosctxt, newGeos.get() ) );
+      if ( !reversed )
+        return;
+
+      newGeos = std::move( reversed );
+    }
+
+    const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos.get() );
+    const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos.get() );
     std::vector< double > newX;
     std::vector< double > newY;
     newX.resize( newNbPoints );
@@ -617,7 +624,7 @@ void PointSet::offsetCurveByDistance( double distance )
   }
 
   invalidateGeos();
-  mGeos = newGeos;
+  mGeos = newGeos.release();
   mOwnsGeom = true;
 }
 
