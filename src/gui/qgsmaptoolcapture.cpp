@@ -468,7 +468,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     if ( !mCurrentShapeMapTool )
     {
-      emit messageEmitted( tr( "Cannot capture a shape without a shape tool defined" ), Qgis::MessageLevel::Warning );
+      emit messageEmitted( tr( "Select an option from the Shape Digitizing Toolbar in order to capture shapes" ), Qgis::MessageLevel::Warning );
     }
     else
     {
@@ -1298,7 +1298,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       if ( !mCurrentShapeMapTool )
       {
-        emit messageEmitted( tr( "Cannot capture a shape without a shape tool defined" ), Qgis::MessageLevel::Warning );
+        emit messageEmitted( tr( "Select an option from the Shape Digitizing Toolbar in order to capture shapes" ), Qgis::MessageLevel::Warning );
         return;
       }
       else
