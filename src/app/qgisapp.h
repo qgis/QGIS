@@ -934,7 +934,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll );
+    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 

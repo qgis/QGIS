@@ -108,7 +108,7 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked, const QString &filterExpression )
   : QDialog( parent, flags )
   , mLayer( layer )
 {
@@ -220,6 +220,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
   {
     r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+  }
+  else if ( !filterExpression.isEmpty() )
+  {
+    r.setFilterExpression( filterExpression );
   }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );
@@ -383,6 +387,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
     case QgsAttributeTableFilterModel::ShowEdited:
       mFeatureFilterWidget->filterEdited();
+      break;
+
+    case QgsAttributeTableFilterModel::ShowFilteredList:
+      mFeatureFilterWidget->setFilterExpression( filterExpression );
       break;
 
     case QgsAttributeTableFilterModel::ShowAll:

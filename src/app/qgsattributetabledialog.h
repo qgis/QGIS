@@ -53,8 +53,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * \param parent parent object
      * \param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window,
-                             bool *initiallyDocked = nullptr );
+    QgsAttributeTableDialog( QgsVectorLayer *layer,
+                             QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll,
+                             QWidget *parent = nullptr,
+                             Qt::WindowFlags flags = Qt::Window,
+                             bool *initiallyDocked = nullptr,
+                             const QString &filterExpression = QString() );
     ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;

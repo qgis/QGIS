@@ -802,7 +802,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         QAction *selectMatching = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelected.svg" ) ), tr( "Select Features" ), menu );
         menu->addAction( selectMatching );
-        menu->addSeparator();
         connect( selectMatching, &QAction::triggered, this, [layerId, ruleKey ]
         {
           if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
@@ -836,6 +835,29 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
           }
         } );
+
+        QAction *showMatchingInAttributeTable = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ), tr( "Show in Attribute Table" ), menu );
+        menu->addAction( showMatchingInAttributeTable );
+        connect( showMatchingInAttributeTable, &QAction::triggered, this, [layerId, ruleKey ]
+        {
+          if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+          {
+            bool ok = false;
+            QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
+            if ( ok )
+            {
+              const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( QgisApp::instance()->mapCanvas(), layer );
+              if ( canvasFilter == QLatin1String( "FALSE" ) )
+                return;
+              else if ( !canvasFilter.isEmpty() )
+                filterExp = QStringLiteral( "(%1) AND (%2)" ).arg( filterExp, canvasFilter );
+
+              QgisApp::instance()->attributeTable( QgsAttributeTableFilterModel::ShowFilteredList, filterExp );
+            }
+          }
+        } );
+
+        menu->addSeparator();
       }
 
       if ( layer && layer->type() == QgsMapLayerType::VectorLayer && symbolNode->symbol() )
