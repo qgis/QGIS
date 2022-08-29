@@ -118,7 +118,7 @@ namespace QgsWms
     QgsRenderer renderer( context );
 
     // retrieve legend settings and model
-    std::unique_ptr<QgsLayerTree> tree( layerTree( context ) );
+    std::unique_ptr<QgsLayerTree> tree( layerTreeWithGroups( context, QgsProject::instance()->layerTreeRoot() ) );
     const std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering
@@ -341,6 +341,40 @@ namespace QgsWms
     for ( QgsVectorLayerFeatureCounter *counter : counters )
     {
       counter->waitForFinished();
+    }
+
+    return tree.release();
+  }
+
+  QgsLayerTree *layerTreeWithGroups( const QgsWmsRenderContext &context, QgsLayerTree *projectRoot )
+  {
+    if ( !projectRoot )
+    {
+      return 0;
+    }
+
+    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
+
+    QgsWmsParameters wmsParams = context.parameters();
+    QStringList layerNicknames = wmsParams.allLayersNickname();
+    for ( int i = 0; i < layerNicknames.size(); ++i )
+    {
+      QString nickname = layerNicknames.at( i );
+
+      //single layer
+      QgsMapLayer *layer = context.layer( nickname );
+      if ( layer )
+      {
+        tree->addLayer( layer );
+      }
+      else //nickname refers to a group
+      {
+        QgsLayerTreeGroup *group = projectRoot->findGroup( nickname );
+        if ( group )
+        {
+          tree->insertChildNode( i, group->clone() );
+        }
+      }
     }
 
     return tree.release();
