@@ -371,7 +371,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.id = currentSatellite.id;
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
-      
       IDfind = 0;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
