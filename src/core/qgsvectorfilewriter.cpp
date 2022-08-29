@@ -3603,7 +3603,7 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
     }
   }
 
-  QStringList extensionList = qgis::setToList( extensions );
+  QStringList extensionList( extensions.constBegin(), extensions.constEnd() );
 
   std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
   {

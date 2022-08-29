@@ -589,12 +589,8 @@ QStringList QgsProcessingParameters::parameterAsEnumStrings( const QgsProcessing
   // check that values are valid enum values. The resulting set will be empty
   // if all values are present in the enumDef->options(), otherwise it will contain
   // values which are invalid
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QSet<QString> subtraction = enumValues.toSet().subtract( enumDef->options().toSet() );
-#else
   const QStringList options = enumDef->options();
   const QSet<QString> subtraction = QSet<QString>( enumValues.begin(), enumValues.end() ).subtract( QSet<QString>( options.begin(), options.end() ) );
-#endif
 
   if ( enumValues.isEmpty() || !subtraction.isEmpty() )
   {

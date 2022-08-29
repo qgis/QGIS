@@ -284,11 +284,7 @@ class QgsGpsData
     static DataMap sDataObjects;
 
     //! Mutex for sDataObjects
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    static QMutex sDataObjectsMutex;
-#else
     static QRecursiveMutex sDataObjectsMutex;
-#endif
 
 };
 

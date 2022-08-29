@@ -165,7 +165,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * Returns the set of distinct string values.
      * \see countDistinct()
      */
-    QSet< QString > distinctValues() const { return qgis::listToSet( mValues.keys() ); }
+    QSet< QString > distinctValues() const;
 
     /**
      * Returns the number of missing (null) string values.

@@ -104,13 +104,8 @@ QgsAuthManager *QgsAuthManager::instance()
 
 QgsAuthManager::QgsAuthManager()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  mMutex.reset( new QMutex( QMutex::Recursive ) );
-  mMasterPasswordMutex.reset( new QMutex( QMutex::Recursive ) );
-#else
   mMutex = std::make_unique<QRecursiveMutex>();
   mMasterPasswordMutex = std::make_unique<QRecursiveMutex>();
-#endif
   connect( this, &QgsAuthManager::messageOut,
            this, &QgsAuthManager::writeToConsole );
 }
@@ -2423,10 +2418,10 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   {
     mIgnoredSslErrorsCache.remove( shahostport );
   }
-  QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
+  const QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
   if ( !errenums.isEmpty() )
   {
-    mIgnoredSslErrorsCache.insert( shahostport, qgis::listToSet( errenums ) );
+    mIgnoredSslErrorsCache.insert( shahostport, QSet<QSslError::SslError>( errenums.begin(), errenums.end() ) );
     QgsDebugMsgLevel( QStringLiteral( "Update of ignored SSL errors cache SUCCEEDED for sha:host:port = %1" ).arg( shahostport ), 2 );
     dumpIgnoredSslErrorsCache_();
     return true;
@@ -2504,10 +2499,10 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
                                  query.value( 1 ).toString().trimmed() ) );
       QgsAuthConfigSslServer config;
       config.loadConfigString( query.value( 2 ).toString() );
-      QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
+      const QList<QSslError::SslError> errenums( config.sslIgnoredErrorEnums() );
       if ( !errenums.isEmpty() )
       {
-        nextcache.insert( shahostport, qgis::listToSet( errenums ) );
+        nextcache.insert( shahostport, QSet<QSslError::SslError>( errenums.begin(), errenums.end() ) );
       }
       if ( prevcache.contains( shahostport ) )
       {
@@ -3126,11 +3121,7 @@ void QgsAuthManager::writeToConsole( const QString &message,
   msg += message;
 
   QTextStream out( stdout, QIODevice::WriteOnly );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  out << msg << endl;
-#else
   out << msg << Qt::endl;
-#endif
 }
 
 void QgsAuthManager::tryToStartDbErase()

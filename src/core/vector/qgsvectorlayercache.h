@@ -232,7 +232,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \see isFidCached()
      * \since QGIS 3.0
      */
-    QgsFeatureIds cachedFeatureIds() const { return qgis::listToSet( mCache.keys() ); }
+    QgsFeatureIds cachedFeatureIds() const;
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features

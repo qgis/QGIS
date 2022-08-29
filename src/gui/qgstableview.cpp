@@ -31,17 +31,10 @@ void QgsTableView::wheelEvent( QWheelEvent *event )
     const QPoint invertedPixelDelta = QPoint( event->pixelDelta().y(), event->pixelDelta().x() );
     const QPoint invertedAngleDelta = QPoint( event->angleDelta().y(), event->angleDelta().x() );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QWheelEvent axisSwappedScrollEvent( event->posF(), event->posF(),
-                                        invertedPixelDelta, invertedAngleDelta,
-                                        event->buttons(), event->modifiers() & ~Qt::ShiftModifier, event->phase(),
-                                        event->inverted(), event->source() );
-#else
     QWheelEvent axisSwappedScrollEvent( event->position(), event->position(),
                                         invertedPixelDelta, invertedAngleDelta,
                                         event->buttons(), event->modifiers() & ~Qt::ShiftModifier, event->phase(),
                                         event->inverted(), event->source() );
-#endif
     QTableView::wheelEvent( &axisSwappedScrollEvent );
   }
   else
