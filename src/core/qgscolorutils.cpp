@@ -46,24 +46,24 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
 
       case QColor::Rgb:
       case QColor::ExtendedRgb:
-        {
-          // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-          spec = QStringLiteral( "rgb" );
+      {
+        // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
+        spec = QStringLiteral( "rgb" );
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-          float red = 1;
-          float green = 1;
-          float blue = 1;
+        float red = 1;
+        float green = 1;
+        float blue = 1;
 #else
-          qreal red = 1;
-          qreal green = 1;
-          qreal blue = 1;
+        qreal red = 1;
+        qreal green = 1;
+        qreal blue = 1;
 #endif
-          color.getRgbF( &red, &green, &blue );
-          colorElement.setAttribute( QStringLiteral( "red" ), qgsDoubleToString( red ) );
-          colorElement.setAttribute( QStringLiteral( "green" ), qgsDoubleToString( green ) );
-          colorElement.setAttribute( QStringLiteral( "blue" ), qgsDoubleToString( blue ) );
-          break;
-        }
+        color.getRgbF( &red, &green, &blue );
+        colorElement.setAttribute( QStringLiteral( "red" ), qgsDoubleToString( red ) );
+        colorElement.setAttribute( QStringLiteral( "green" ), qgsDoubleToString( green ) );
+        colorElement.setAttribute( QStringLiteral( "blue" ), qgsDoubleToString( blue ) );
+        break;
+      }
 
       case QColor::Hsv:
       {
@@ -205,25 +205,25 @@ QString QgsColorUtils::colorToString( const QColor &color )
 
     case QColor::Rgb:
     case QColor::ExtendedRgb:
-      {
-        // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
+    {
+      // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        float red = 1;
-        float green = 1;
-        float blue = 1;
-        float alpha = 1;
+      float red = 1;
+      float green = 1;
+      float blue = 1;
+      float alpha = 1;
 #else
-        qreal red = 1;
-        qreal green = 1;
-        qreal blue = 1;
-        qreal alpha = 1;
+      qreal red = 1;
+      qreal green = 1;
+      qreal blue = 1;
+      qreal alpha = 1;
 #endif
-        color.getRgbF( &red, &green, &blue, &alpha );
-        return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
-               qgsDoubleToString( green ),
-               qgsDoubleToString( blue ),
-               qgsDoubleToString( alpha ) );
-      }
+      color.getRgbF( &red, &green, &blue, &alpha );
+      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
+             qgsDoubleToString( green ),
+             qgsDoubleToString( blue ),
+             qgsDoubleToString( alpha ) );
+    }
 
     case QColor::Hsv:
     {
