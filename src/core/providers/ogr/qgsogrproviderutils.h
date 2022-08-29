@@ -26,11 +26,7 @@ email                : nyall dot dawson at gmail dot com
 #include <QString>
 #include <QStringList>
 #include <QMap>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QMutex>
-#else
 #include <QRecursiveMutex>
-#endif
 
 class QgsOgrLayer;
 class QgsCoordinateReferenceSystem;
@@ -90,20 +86,14 @@ class CORE_EXPORT QgsOgrProviderUtils
     class DatasetWithLayers
     {
       public:
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-        QMutex mutex;
-#else
         QRecursiveMutex mutex;
-#endif
+
         GDALDatasetH    hDS = nullptr;
         QMap<QString, QgsOgrLayer *>  setLayers;
         int            refCount = 0;
         bool           canBeShared = true;
 
         DatasetWithLayers()
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-          : mutex( QMutex::Recursive )
-#endif
         {}
     };
 
@@ -304,11 +294,7 @@ class QgsOgrDataset
 
     static QgsOgrDatasetSharedPtr create( const QgsOgrProviderUtils::DatasetIdentification &ident,
                                           QgsOgrProviderUtils::DatasetWithLayers *ds );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex &mutex() { return mDs->mutex; }
-#else
     QRecursiveMutex &mutex() { return mDs->mutex; }
-#endif
 
     bool executeSQLNoReturn( const QString &sql );
 
@@ -333,11 +319,8 @@ class QgsOgrFeatureDefn
     ~QgsOgrFeatureDefn() = default;
 
     OGRFeatureDefnH get();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex &mutex();
-#else
+
     QRecursiveMutex &mutex();
-#endif
 
   public:
 
@@ -396,11 +379,7 @@ class QgsOgrLayer
       QgsOgrProviderUtils::DatasetWithLayers *ds,
       OGRLayerH hLayer );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex &mutex() { return ds->mutex; }
-#else
     QRecursiveMutex &mutex() { return ds->mutex; }
-#endif
 
   public:
 
@@ -494,20 +473,11 @@ class QgsOgrLayer
     //! Wrapper of OGR_L_GetLayerCount
     void SetSpatialFilter( OGRGeometryH );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    //! Returns native GDALDatasetH object with the mutex to lock when using it
-    GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex ) const;
-
-    //! Returns native OGRLayerH object with the mutex to lock when using it
-    OGRLayerH getHandleAndMutex( QMutex *&mutex ) const;
-#else
     //! Returns native GDALDatasetH object with the mutex to lock when using it
     GDALDatasetH getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const;
 
     //! Returns native OGRLayerH object with the mutex to lock when using it
     OGRLayerH getHandleAndMutex( QRecursiveMutex *&mutex ) const;
-#endif
-
 
     //! Wrapper of GDALDatasetReleaseResultSet( GDALDatasetExecuteSQL( ... ) )
     void ExecuteSQLNoReturn( const QByteArray &sql );

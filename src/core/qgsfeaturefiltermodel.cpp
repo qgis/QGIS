@@ -16,8 +16,6 @@
 #include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"
-#include "qgsconditionalstyle.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsvariantutils.h"
 
@@ -67,7 +65,7 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
 
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
 {
-  return qgis::listToSet( mIdentifierFields );
+  return QSet<QString>( mIdentifierFields.begin(), mIdentifierFields.end() );
 }
 
 QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const

@@ -75,11 +75,7 @@ class QgsMssqlDatabase
     QSqlDatabase mDB;
     bool mTransaction = false;
     //! locking for transactions because with transaction enabled, one connection may be shared among multiple threads
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    std::unique_ptr<QMutex> mTransactionMutex;
-#else
     std::unique_ptr<QRecursiveMutex> mTransactionMutex;
-#endif
 
     friend class QgsMssqlQuery;
 
@@ -95,11 +91,7 @@ class QgsMssqlDatabase
 
     static QMap<QString, std::weak_ptr<QgsMssqlDatabase> > sConnections;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    static QMutex sMutex;
-#else
     static QRecursiveMutex sMutex;
-#endif
 };
 
 

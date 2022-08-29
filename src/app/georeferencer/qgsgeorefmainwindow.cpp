@@ -1679,21 +1679,12 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
   }
 
   QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  stream << qgsDoubleToString( pixelXSize ) << endl
-         << rotationX << endl
-         << rotationY << endl
-         << qgsDoubleToString( -pixelYSize ) << endl
-         << qgsDoubleToString( origin.x() ) << endl
-         << qgsDoubleToString( origin.y() ) << endl;
-#else
   stream << qgsDoubleToString( pixelXSize ) << Qt::endl
          << rotationX << Qt::endl
          << rotationY << Qt::endl
          << qgsDoubleToString( -pixelYSize ) << Qt::endl
          << qgsDoubleToString( origin.x() ) << Qt::endl
          << qgsDoubleToString( origin.y() ) << Qt::endl;
-#endif
   return true;
 }
 

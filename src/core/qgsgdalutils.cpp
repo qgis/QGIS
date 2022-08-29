@@ -627,17 +627,13 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       if ( driverExtensions.isEmpty() )
         continue;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      const QStringList splitExtensions = driverExtensions.split( ' ', QString::SkipEmptyParts );
-#else
       const QStringList splitExtensions = driverExtensions.split( ' ', Qt::SkipEmptyParts );
-#endif
 
       for ( const QString &ext : splitExtensions )
         extensions.insert( ext );
     }
 
-    SUPPORTED_DB_LAYERS_EXTENSIONS = qgis::setToList( extensions );
+    SUPPORTED_DB_LAYERS_EXTENSIONS = QStringList( extensions.constBegin(), extensions.constEnd() );
   } );
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 

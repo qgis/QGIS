@@ -484,11 +484,7 @@ class QgsPostgresConn : public QObject
 
     bool mTransaction;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mLock { QMutex::Recursive };
-#else
     mutable QRecursiveMutex mLock;
-#endif
 };
 
 // clazy:excludeall=qstring-allocations

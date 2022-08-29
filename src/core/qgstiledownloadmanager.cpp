@@ -185,9 +185,6 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
 
 QgsTileDownloadManager::QgsTileDownloadManager()
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  : mMutex( QMutex::Recursive )
-#endif
 {
   mRangesCache.reset( new QgsRangeRequestCache );
 

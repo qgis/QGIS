@@ -406,13 +406,14 @@ int QgsExpressionContext::indexOfScope( const QString &scopeName ) const
 
 QStringList QgsExpressionContext::variableNames() const
 {
-  QStringList names;
-  const auto constMStack = mStack;
-  for ( const QgsExpressionContextScope *scope : constMStack )
+  QSet< QString> names;
+  for ( const QgsExpressionContextScope *scope : mStack )
   {
-    names << scope->variableNames();
+    const QStringList variableNames = scope->variableNames();
+    for ( const QString &name : variableNames )
+      names.insert( name );
   }
-  return qgis::setToList( qgis::listToSet( names ) );
+  return QStringList( names.constBegin(), names.constEnd() );
 }
 
 QStringList QgsExpressionContext::filteredVariableNames() const
@@ -422,7 +423,7 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   const auto constAllVariables = allVariables;
   for ( const QString &variable : constAllVariables )
   {
-    if ( variable.startsWith( '_' ) or
+    if ( variable.startsWith( '_' ) ||
          variable.compare( QStringLiteral( "frame_timestep_unit" ) ) == 0 )
       continue;
 
@@ -463,15 +464,16 @@ bool QgsExpressionContext::hasFunction( const QString &name ) const
 
 QStringList QgsExpressionContext::functionNames() const
 {
-  QStringList result;
-  const auto constMStack = mStack;
-  for ( const QgsExpressionContextScope *scope : constMStack )
+  QSet< QString > result;
+  for ( const QgsExpressionContextScope *scope : mStack )
   {
-    result << scope->functionNames();
+    const QStringList functionNames = scope->functionNames();
+    for ( const QString &name : functionNames )
+      result.insert( name );
   }
-  result = qgis::setToList( qgis::listToSet( result ) );
-  result.sort();
-  return result;
+  QStringList listResult( result.constBegin(), result.constEnd() );
+  listResult.sort();
+  return listResult;
 }
 
 QgsExpressionFunction *QgsExpressionContext::function( const QString &name ) const
