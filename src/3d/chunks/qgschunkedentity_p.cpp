@@ -89,6 +89,8 @@ QgsChunkedEntity::QgsChunkedEntity( float tau, QgsChunkLoaderFactory *loaderFact
   mRootNode = loaderFactory->createRootNode();
   mChunkLoaderQueue = new QgsChunkList;
   mReplacementQueue = new QgsChunkList;
+  mBboxesEntity = new QgsChunkBoundsEntity( this );
+  mBboxesEntity->setEnabled( false );
 }
 
 
@@ -229,18 +231,7 @@ void QgsChunkedEntity::update( const SceneState &state )
 
 void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
 {
-  if ( ( enabled && mBboxesEntity ) || ( !enabled && !mBboxesEntity ) )
-    return;
-
-  if ( enabled )
-  {
-    mBboxesEntity = new QgsChunkBoundsEntity( this );
-  }
-  else
-  {
-    mBboxesEntity->deleteLater();
-    mBboxesEntity = nullptr;
-  }
+  mBboxesEntity->setEnabled( enabled );
 }
 
 void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory )
