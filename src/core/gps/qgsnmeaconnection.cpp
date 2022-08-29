@@ -399,11 +399,11 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 {
   //GSA
-  mLastGPSInformation.satPrn.clear(); 
+  mLastGPSInformation.satPrn.clear();
   //GSV
   mLastGPSInformation.satellitesInView.clear();
-  mLastGPSInformation.satellitesUsed = 0; 
-  
+  mLastGPSInformation.satellitesUsed = 0;
+
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
