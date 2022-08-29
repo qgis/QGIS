@@ -384,7 +384,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         }
       }
       if ( currentSatellite.sig > 0 )
-      {  
+      {
         satelliteInfo.inUse = 1; // check where used ???? (+=1)
       }
       if ( IDfind == 0 && ( currentSatellite.azimuth > 0 && currentSatellite.elv > 0 ) )
