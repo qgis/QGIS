@@ -549,21 +549,30 @@ bool QgsRgbPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbo
     updateScene = true;
     setGreenAttribute( s->greenAttribute() );
   }
-  if ( redContrastEnhancement() != s->redContrastEnhancement() )
+  if ( redContrastEnhancement()->contrastEnhancementAlgorithm() != s->redContrastEnhancement()->contrastEnhancementAlgorithm() ||
+       redContrastEnhancement()->minimumValue() != s->redContrastEnhancement()->minimumValue() ||
+       redContrastEnhancement()->maximumValue() != s->redContrastEnhancement()->maximumValue() )
   {
     updateScene = true;
-    setRedContrastEnhancement( s->redContrastEnhancement() );
+    setRedContrastEnhancement( new QgsContrastEnhancement( *s->redContrastEnhancement() ) );
   }
-  if ( greenContrastEnhancement() != s->greenContrastEnhancement() )
+
+  if ( greenContrastEnhancement()->contrastEnhancementAlgorithm() != s->greenContrastEnhancement()->contrastEnhancementAlgorithm() ||
+       greenContrastEnhancement()->minimumValue() != s->greenContrastEnhancement()->minimumValue() ||
+       greenContrastEnhancement()->maximumValue() != s->greenContrastEnhancement()->maximumValue() )
   {
     updateScene = true;
-    setGreenContrastEnhancement( s->greenContrastEnhancement() );
+    setGreenContrastEnhancement( new QgsContrastEnhancement( *s->greenContrastEnhancement() ) );
   }
-  if ( blueContrastEnhancement() != s->blueContrastEnhancement() )
+
+  if ( blueContrastEnhancement()->contrastEnhancementAlgorithm() != s->blueContrastEnhancement()->contrastEnhancementAlgorithm() ||
+       blueContrastEnhancement()->minimumValue() != s->blueContrastEnhancement()->minimumValue() ||
+       blueContrastEnhancement()->maximumValue() != s->blueContrastEnhancement()->maximumValue() )
   {
     updateScene = true;
-    setBlueContrastEnhancement( s->blueContrastEnhancement() );
+    setBlueContrastEnhancement( new QgsContrastEnhancement( *s->blueContrastEnhancement() ) );
   }
+
   return updateScene;
 }
 
