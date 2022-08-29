@@ -21,6 +21,7 @@
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
+  , mInitialText( startText )
   , mRecentKey( key )
 {
   setupUi( this );
@@ -35,7 +36,6 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->expressionTree()->loadRecent( mRecentKey );
   builder->expressionTree()->loadUserExpressions( );
 
-  mInitialText = startText;
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
