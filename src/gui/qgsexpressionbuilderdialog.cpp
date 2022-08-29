@@ -99,11 +99,12 @@ void QgsExpressionBuilderDialog::reject()
     {
       QMessageBox confirmMessage( QMessageBox::Question,
                                   tr( "Expression was Edited" ),
-                                  tr( "Closing the dialog now will discard the changes to the expression. Proceed?" ),
+                                  tr( "The changes to the expression will be discarded. Would you like to continue?" ),
                                   QMessageBox::Yes | QMessageBox::No,
                                   this );
       confirmMessage.setCheckBox( new QCheckBox( tr( "Don't show this message again" ) ) );
       confirmMessage.checkBox()->setChecked( false );
+      confirmMessage.button( QMessageBox::Yes )->setText( tr( "Discard changes" ) );
 
       int res = confirmMessage.exec();
 
