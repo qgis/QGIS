@@ -301,11 +301,9 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     // When networking is not enabled, proj_create() will check that all grids are
     // present, so proj_coordoperation_is_instantiable() is not necessary.
     if ( !transform
-#if PROJ_VERSION_MAJOR >= 7
          || (
            proj_context_is_network_enabled( context ) &&
            !proj_coordoperation_is_instantiable( context, transform.get() ) )
-#endif
        )
     {
       if ( sMissingGridUsedByContextHandler )
