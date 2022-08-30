@@ -773,13 +773,11 @@ void QgsOgrProvider::loadFields()
                           width, prec, QString(), varSubType
                         );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
     const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
     if ( !alias.isEmpty() )
     {
       newField.setAlias( alias );
     }
-#endif
 
     // check if field is nullable
     bool nullable = OGR_Fld_IsNullable( fldDef );
@@ -3563,14 +3561,12 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     QStringList options( mOpenOptions );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
     // assume trusted data to get more speed
     if ( mGDALDriverName == QLatin1String( "FlatGeobuf" ) &&
          !options.contains( QStringLiteral( "VERIFY_BUFFERS=YES" ) ) )
     {
       options << QStringLiteral( "VERIFY_BUFFERS=NO" );
     }
-#endif
 
     // try to open read-only
     if ( !mLayerName.isNull() )
@@ -3598,13 +3594,9 @@ void QgsOgrProvider::open( OpenMode mode )
     {
       // determine encoding from shapefile cpg or LDID information, if possible
       QString shpEncoding;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) );
       if ( shpEncoding.isEmpty() )
         shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) );
-#else
-      shpEncoding = QgsOgrUtils::readShapefileEncoding( mFilePath );
-#endif
 
       if ( !shpEncoding.isEmpty() )
         setEncoding( shpEncoding );

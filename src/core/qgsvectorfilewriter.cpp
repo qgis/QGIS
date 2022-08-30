@@ -1076,7 +1076,6 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       // FlatGeobuf
       datasetOptions.clear();
       layerOptions.clear();
@@ -1092,7 +1091,6 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
-#endif
 
       // ESRI Shapefile
       datasetOptions.clear();
@@ -2898,22 +2896,6 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
       QgsDebugMsg( QStringLiteral( "Error while committing transaction on OGRLayer." ) );
     }
   }
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
-  if ( mDS )
-  {
-    // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
-    QString drvName = GDALGetDriverShortName( GDALGetDatasetDriver( mDS.get() ) );
-    if ( drvName == QLatin1String( "XLSX" ) ||
-         drvName == QLatin1String( "ODS" ) )
-    {
-      CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
-      mDS.reset();
-      CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
-    }
-  }
-#endif
-
   mDS.reset();
 
   if ( mOgrRef )
