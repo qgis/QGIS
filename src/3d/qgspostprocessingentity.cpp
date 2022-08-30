@@ -177,15 +177,3 @@ void QgsPostprocessingEntity::setAmbientOcclusionEnabled( bool enabled )
 {
   mAmbientOcclusionEnabledParameter->setValue( enabled );
 }
-
-void QgsPostprocessingEntity::setAmbientOcclusionBlurEnabled( bool enabled )
-{
-  if ( enabled )
-  {
-    mAmbientOcclusionTextureParameter->setValue( QVariant::fromValue( mFrameGraph->blurredAmbientOcclusionFactorMap() ) );
-  }
-  else
-  {
-    mAmbientOcclusionTextureParameter->setValue( QVariant::fromValue( mFrameGraph->ambientOcclusionFactorMap() ) );
-  }
-}

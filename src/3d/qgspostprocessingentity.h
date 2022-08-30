@@ -58,12 +58,6 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
      */
     void setAmbientOcclusionEnabled( bool enabled );
 
-    /**
-     * Sets whether Screen Space Ambient Occlusion blurring pass will be enabled
-     * \since QGIS 3.28
-     */
-    void setAmbientOcclusionBlurEnabled( bool enabled );
-
   private:
     QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;

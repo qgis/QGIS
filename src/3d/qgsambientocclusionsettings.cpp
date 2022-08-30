@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgambientocclusionsettings.cpp
+  qgsambientocclusionsettings.cpp
   --------------------------------------
   Date                 : June 2022
   Copyright            : (C) 2022 by Belgacem Nedjima

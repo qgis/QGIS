@@ -26,10 +26,10 @@ class QgsAmbientOcclusionSettingsWidget : public QWidget, private Ui::QgsAmbient
   public:
     explicit QgsAmbientOcclusionSettingsWidget( QWidget *parent = nullptr );
 
-    //! Sets the shadow settings in the current widget UI
+    //! Sets the ambient occlusion settings in the current widget UI
     void setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings );
-    //! Returns the shadow settings from the widget UI
+    //! Returns the ambient occlusion settings from the widget UI
     QgsAmbientOcclusionSettings toAmbientOcclusionSettings();
 };
 
-#endif // QGSSSAOSETTINGSWIDGET_H
+#endif // QGSAMBIENTOCCLUSIONSETTINGSWIDGET_H

@@ -156,7 +156,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mOptionsMenu->addAction( mActionEnableEyeDome );
 
   mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
-  mActionEnableAmbientOcclusion ->setCheckable( true );
+  mActionEnableAmbientOcclusion->setCheckable( true );
   connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [ = ]( bool enabled )
   {
     QgsAmbientOcclusionSettings ambientOcclusionSettings = mCanvas->map()->ambientOcclusionSettings();
