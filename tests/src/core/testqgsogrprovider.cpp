@@ -83,7 +83,7 @@ void TestQgsOgrProvider::setupProxy()
   QgsSettings settings;
   {
     settings.setValue( QStringLiteral( "proxy/proxyEnabled" ), true );
-    settings.setValue( QStringLiteral( "proxy/proxyPort" ), QStringLiteral( "1234" ) );
+    settings.setValue( QStringLiteral( "proxy/proxyPort" ), QStringLiteral( "38124" ) );
     settings.setValue( QStringLiteral( "proxy/proxyHost" ), QStringLiteral( "myproxyhostname.com" ) );
     settings.setValue( QStringLiteral( "proxy/proxyUser" ), QStringLiteral( "username" ) );
     settings.setValue( QStringLiteral( "proxy/proxyPassword" ), QStringLiteral( "password" ) );
@@ -92,7 +92,7 @@ void TestQgsOgrProvider::setupProxy()
     const QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
-    QCOMPARE( proxyConfig, "myproxyhostname.com:1234" );
+    QCOMPARE( proxyConfig, "myproxyhostname.com:38124" );
     const char *proxyCredentials = CPLGetConfigOption( "GDAL_HTTP_PROXYUSERPWD", nullptr );
     QCOMPARE( proxyCredentials, "username:password" );
   }

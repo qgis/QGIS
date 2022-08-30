@@ -492,7 +492,7 @@ void QgsGdalUtils::setupProxy()
       //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
 
       const QString proxyHost( proxy.hostName() );
-      const qint16 proxyPort( proxy.port() );
+      const quint16 proxyPort( proxy.port() );
 
       const QString proxyUser( proxy.user() );
       const QString proxyPassword( proxy.password() );
