@@ -846,12 +846,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
             if ( ok )
             {
-              const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( QgisApp::instance()->mapCanvas(), layer );
-              if ( canvasFilter == QLatin1String( "FALSE" ) )
-                return;
-              else if ( !canvasFilter.isEmpty() )
-                filterExp = QStringLiteral( "(%1) AND (%2)" ).arg( filterExp, canvasFilter );
-
               QgisApp::instance()->attributeTable( QgsAttributeTableFilterModel::ShowFilteredList, filterExp );
             }
           }
