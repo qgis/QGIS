@@ -12,6 +12,7 @@ uniform vec3 ssaoNoise[16];  // 4x4 random noise pattern
 
 uniform float	intensity;  // Amplification of shading
 uniform float	radius;     // Radius of neighborhood sphere (in world units)
+uniform float   threshold;  // At what amount of occlusion to start darkening
 
 noperspective in vec3 vViewRay;   // Ray to far plane
 
@@ -55,7 +56,7 @@ float ssao(vec3 originPos, vec3 noise)
         occlusion += rangeCheck * step(sampleDepth, samplePos.z);
     }
 
-    return 1.0 - (occlusion / float(kernelSize));
+    return min(1.0, (1.0 - (occlusion / float(kernelSize))) / (1.0 - threshold));
 }
 
 

@@ -723,6 +723,12 @@ void QgsShadowRenderingFrameGraph::setAmbientOcclusionRadius( float radius )
   mAmbientOcclusionRenderEntity->setRadius( radius );
 }
 
+void QgsShadowRenderingFrameGraph::setAmbientOcclusionThreshold( float threshold )
+{
+  mAmbientOcclusionThreshold = threshold;
+  mAmbientOcclusionRenderEntity->setThreshold( threshold );
+}
+
 void QgsShadowRenderingFrameGraph::setFrustumCullingEnabled( bool enabled )
 {
   if ( enabled == mFrustumCullingEnabled )

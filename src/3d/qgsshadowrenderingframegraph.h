@@ -174,6 +174,18 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
      */
     float ambientOcclusionRadius() const { return mAmbientOcclusionRadius; }
 
+    /**
+     * Sets the ambient occlusion threshold
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionThreshold( float threshold );
+
+    /**
+     * Returns the ambient occlusion threshold
+     * \since QGIS 3.28
+     */
+    float ambientOcclusionThreshold() const { return mAmbientOcclusionThreshold; }
+
     //! Sets the clear color of the scene (background color)
     void setClearColor( const QColor &clearColor );
     //! Adds an preview entity that shows a texture in real time for debugging purposes
@@ -291,6 +303,7 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
     bool mAmbientOcclusionEnabled = false;
     float mAmbientOcclusionIntensity = 1.0f;
     float mAmbientOcclusionRadius = 10.f;
+    float mAmbientOcclusionThreshold = 0.5f;
 
     QSize mSize = QSize( 1024, 768 );
 

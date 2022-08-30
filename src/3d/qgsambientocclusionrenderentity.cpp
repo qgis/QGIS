@@ -98,6 +98,9 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radius" ), 10.0f );
   mMaterial->addParameter( mRadiusParameter );
 
+  mThresholdParameter = new Qt3DRender::QParameter( QStringLiteral( "threshold" ), 0.5f );
+  mMaterial->addParameter( mThresholdParameter );
+
   const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.vert" );
   const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/ssao_factor_render.frag" );
 
@@ -113,4 +116,9 @@ void QgsAmbientOcclusionRenderEntity::setIntensity( float intensity )
 void QgsAmbientOcclusionRenderEntity::setRadius( float radius )
 {
   mRadiusParameter->setValue( radius );
+}
+
+void QgsAmbientOcclusionRenderEntity::setThreshold( float threshold )
+{
+  mThresholdParameter->setValue( threshold );
 }

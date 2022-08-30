@@ -29,6 +29,7 @@ void QgsAmbientOcclusionSettingsWidget::setAmbientOcclusionSettings( const QgsAm
   mAmbientOcclusionGroupBox->setChecked( settings.isEnabled() );
   mIntensitySpinBox->setValue( settings.intensity() );
   mRadiusSpinBox->setValue( settings.radius() );
+  mThresholdSpinBox->setValue( settings.threshold() * 100 );
 }
 
 QgsAmbientOcclusionSettings QgsAmbientOcclusionSettingsWidget::toAmbientOcclusionSettings()
@@ -37,5 +38,6 @@ QgsAmbientOcclusionSettings QgsAmbientOcclusionSettingsWidget::toAmbientOcclusio
   settings.setEnabled( mAmbientOcclusionGroupBox->isChecked() );
   settings.setIntensity( mIntensitySpinBox->value() );
   settings.setRadius( mRadiusSpinBox->value() );
+  settings.setThreshold( mThresholdSpinBox->value() / 100. );
   return settings;
 }

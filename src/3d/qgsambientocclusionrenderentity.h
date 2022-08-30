@@ -41,6 +41,9 @@ class QgsAmbientOcclusionRenderEntity : public QgsRenderPassQuad
     //! Sets the radius for the ambient occlusion effect
     void setRadius( float radius );
 
+    //! Sets the amount of occlusion when the effects starts to kick in
+    void setThreshold( float threshold );
+
   private:
 
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
@@ -49,6 +52,7 @@ class QgsAmbientOcclusionRenderEntity : public QgsRenderPassQuad
     // user configurable
     Qt3DRender::QParameter *mIntensityParameter = nullptr;
     Qt3DRender::QParameter *mRadiusParameter = nullptr;
+    Qt3DRender::QParameter *mThresholdParameter = nullptr;
 
     // derived from camera parameters
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;

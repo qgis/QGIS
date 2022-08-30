@@ -1112,6 +1112,7 @@ void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
   shadowRenderingFrameGraph->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
   shadowRenderingFrameGraph->setAmbientOcclusionRadius( ambientOcclusionSettings.radius() );
   shadowRenderingFrameGraph->setAmbientOcclusionIntensity( ambientOcclusionSettings.intensity() );
+  shadowRenderingFrameGraph->setAmbientOcclusionThreshold( ambientOcclusionSettings.threshold() );
 }
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()

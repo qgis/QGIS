@@ -65,10 +65,17 @@ class _3D_EXPORT QgsAmbientOcclusionSettings
     //! Returns the radius parameter of the ambient occlusion effect
     float radius() const { return mRadius; }
 
+    //! Sets at what amount of occlusion the effect will kick in
+    void setThreshold( float threshold ) { mThreshold = threshold; }
+
+    //! Returns at what amount of occlusion the effect will kick in
+    float threshold() const { return mThreshold; }
+
   private:
     bool mEnabled = false;
     float mIntensity = 1.0f;
     float mRadius = 10.0f;
+    float mThreshold = 0.5f;
 };
 
 #endif // QGSAMBIENTOCCLUSIONSETTINGS_H
