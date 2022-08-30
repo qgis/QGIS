@@ -67,7 +67,7 @@
          <double>1.000000000000000</double>
         </property>
         <property name="value">
-         <double>10.000000000000000</double>
+         <double>25.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -86,7 +86,7 @@
          <double>0.100000000000000</double>
         </property>
         <property name="value">
-         <double>1.000000000000000</double>
+         <double>0.500000000000000</double>
         </property>
        </widget>
       </item>
@@ -98,7 +98,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="mThresholdSpinBox">
+       <widget class="QgsSpinBox" name="mThresholdSpinBox">
         <property name="suffix">
          <string>%</string>
         </property>
@@ -123,6 +123,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

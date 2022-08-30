@@ -41,8 +41,8 @@ QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientO
 void QgsAmbientOcclusionSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mEnabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
-  mIntensity = element.attribute( QStringLiteral( "intensity" ), QStringLiteral( "1.0" ) ).toFloat();
-  mRadius = element.attribute( QStringLiteral( "radius" ), QStringLiteral( "10" ) ).toFloat();
+  mIntensity = element.attribute( QStringLiteral( "intensity" ), QStringLiteral( "0.5" ) ).toFloat();
+  mRadius = element.attribute( QStringLiteral( "radius" ), QStringLiteral( "25" ) ).toFloat();
   mThreshold = element.attribute( QStringLiteral( "threshold" ), QStringLiteral( "0.5" ) ).toFloat();
 
   Q_UNUSED( context );

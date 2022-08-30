@@ -301,8 +301,8 @@ class QgsShadowRenderingFrameGraph : public Qt3DCore::QEntity
 
     // Ambient occlusion related settings
     bool mAmbientOcclusionEnabled = false;
-    float mAmbientOcclusionIntensity = 1.0f;
-    float mAmbientOcclusionRadius = 10.f;
+    float mAmbientOcclusionIntensity = 0.5f;
+    float mAmbientOcclusionRadius = 25.f;
     float mAmbientOcclusionThreshold = 0.5f;
 
     QSize mSize = QSize( 1024, 768 );

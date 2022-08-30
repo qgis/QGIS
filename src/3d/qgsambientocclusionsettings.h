@@ -73,8 +73,8 @@ class _3D_EXPORT QgsAmbientOcclusionSettings
 
   private:
     bool mEnabled = false;
-    float mIntensity = 1.0f;
-    float mRadius = 10.0f;
+    float mIntensity = 0.5f;
+    float mRadius = 25.0f;
     float mThreshold = 0.5f;
 };
 

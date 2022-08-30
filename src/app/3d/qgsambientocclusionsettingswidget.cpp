@@ -23,6 +23,10 @@ QgsAmbientOcclusionSettingsWidget::QgsAmbientOcclusionSettingsWidget( QWidget *p
   mIntensitySpinBox->setToolTip( tr( "The strength of the shading applied, bigger values means more pronounced and darker colors." ) );
   mRadiusSpinBox->setToolTip( tr( "The radius of the neighborhood: bigger values mean objects further away will add to the occlusion." ) );
   mThresholdSpinBox->setToolTip( tr( "Only apply occlusion effect when at least the specified amount of neighboring points is occluded." ) );
+
+  mIntensitySpinBox->setClearValue( 0.5 );
+  mRadiusSpinBox->setClearValue( 25. );
+  mThresholdSpinBox->setClearValue( 0.5 );
 }
 
 void QgsAmbientOcclusionSettingsWidget::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings )

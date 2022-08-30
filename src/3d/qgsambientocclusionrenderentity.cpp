@@ -92,10 +92,10 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
   Qt3DRender::QParameter *noiseParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoNoise[0]" ), ssaoNoise );
   mMaterial->addParameter( noiseParameter );
 
-  mIntensityParameter = new Qt3DRender::QParameter( QStringLiteral( "intensity" ), 1.0f );
+  mIntensityParameter = new Qt3DRender::QParameter( QStringLiteral( "intensity" ), 0.5f );
   mMaterial->addParameter( mIntensityParameter );
 
-  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radius" ), 10.0f );
+  mRadiusParameter = new Qt3DRender::QParameter( QStringLiteral( "radius" ), 25.0f );
   mMaterial->addParameter( mRadiusParameter );
 
   mThresholdParameter = new Qt3DRender::QParameter( QStringLiteral( "threshold" ), 0.5f );
