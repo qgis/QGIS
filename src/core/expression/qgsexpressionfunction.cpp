@@ -2585,8 +2585,9 @@ static QVariant fcnGeoCollAsArray( const QVariantList &values, const QgsExpressi
 
   QVector<QgsGeometry> multiGeom = geom.asGeometryCollection();
   QVariantList array;
-  for (int i = 0; i < multiGeom.size(); ++i) {
-    array += QVariant::fromValue( multiGeom.at( i )  );
+  for ( int i = 0; i < multiGeom.size(); ++i )
+  {
+    array += QVariant::fromValue( multiGeom.at( i ) );
   }
 
   return array;
