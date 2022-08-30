@@ -1560,9 +1560,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "roundness multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((5 2, 4 9, 5 9, 6 5, 5 2)) )')))" << true << QVariant();
       QTest::newRow( "roundness thin polygon" ) << "roundness(geom_from_wkt('POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0))'))" << false << QVariant( 0.0 );
       QTest::newRow( "roundness circle polygon" ) << "roundness(geom_from_wkt('CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))'))" << false << QVariant( 1.0 );
-      QTest::newRow( "geometries_to_array_collection0" ) << "geom_to_wtk(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),1))" << false << << QVariant( "Polygon (5 8, 4 1, 3 2, 5 8)" );
-      QTest::newRow( "geometries_to_array_collection1" ) << "geom_to_wtk(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),1))" << false << << QVariant( "LineString (3 2, 4 2)" );
-      QTest::newRow( "geometries_to_array_singlePoly" ) << "geom_to_wtk(array_first(geometries_to_array(geom_from_wkt('Polygon ((5 8, 4 1, 3 2, 5 8))'))))" << false << << QVariant( "Polygon ((5 8, 4 1, 3 2, 5 8))" );
+      QTest::newRow( "geometries_to_array_collection0" ) << "geom_to_wtk(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),1))" << false << QVariant( "Polygon (5 8, 4 1, 3 2, 5 8)" );
+      QTest::newRow( "geometries_to_array_collection1" ) << "geom_to_wtk(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),1))" << false << QVariant( "LineString (3 2, 4 2)" );
+      QTest::newRow( "geometries_to_array_singlePoly" ) << "geom_to_wtk(array_first(geometries_to_array(geom_from_wkt('Polygon ((5 8, 4 1, 3 2, 5 8))'))))" << false << QVariant( "Polygon ((5 8, 4 1, 3 2, 5 8))" );
       QTest::newRow( "geometries_to_array_multipoly" ) << "geom_to_wtk(array_get(geometries_to_array(geom_from_wkt('MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))'),1))" << false << QVariant( "Polygon ((5 5, 10 10, 10 0, 5 5))" );
       QTest::newRow( "geometries_to_array_emptygeom" ) << "geometries_to_array(geom_from_wkt('LINESTRING EMPTY'))" << false << QVariant();
       QTest::newRow( "geometries_to_array_nongeom" ) << "geometries_to_array('just a string')" << false << QVariant();
