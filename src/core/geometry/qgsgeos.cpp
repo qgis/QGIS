@@ -353,22 +353,18 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
 
   if ( clipPart1 )
   {
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( gridSize > 0 )
     {
       clipPart1.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), clipPart1.get(), gridSize ) );
     }
-#endif
     subdivideRecursive( clipPart1.get(), maxNodes, depth, parts, halfClipRect1, gridSize );
   }
   if ( clipPart2 )
   {
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( gridSize > 0 )
     {
       clipPart2.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), clipPart2.get(), gridSize ) );
     }
-#endif
     subdivideRecursive( clipPart2.get(), maxNodes, depth, parts, halfClipRect2, gridSize );
   }
 }
@@ -414,7 +410,6 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   try
   {
     geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( gridSize > 0 )
     {
       geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), gridSize ) );
@@ -423,10 +418,6 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
     {
       geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
     }
-#else
-    ( void )gridSize;
-    geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
-#endif
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
@@ -451,7 +442,6 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   {
     geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
 
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( gridSize > 0 )
     {
       geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), gridSize ) );
@@ -460,10 +450,6 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
     {
       geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
     }
-#else
-    ( void )gridSize;
-    geomUnion.reset( GEOSUnaryUnion_r( geosinit()->ctxt, geomCollection.get() ) );
-#endif
 
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
@@ -1668,7 +1654,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
     switch ( op )
     {
       case OverlayIntersection:
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
         if ( gridSize > 0 )
         {
           opGeom.reset( GEOSIntersectionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
@@ -1677,14 +1662,9 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
         {
           opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
-#else
-        ( void )gridSize;
-        opGeom.reset( GEOSIntersection_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
-#endif
         break;
 
       case OverlayDifference:
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
         if ( gridSize > 0 )
         {
           opGeom.reset( GEOSDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
@@ -1693,16 +1673,11 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
         {
           opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
-#else
-        ( void )gridSize;
-        opGeom.reset( GEOSDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
-#endif
         break;
 
       case OverlayUnion:
       {
         geos::unique_ptr unionGeometry;
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
         if ( gridSize > 0 )
         {
           unionGeometry.reset( GEOSUnionPrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
@@ -1711,10 +1686,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
         {
           unionGeometry.reset( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
-#else
-        ( void )gridSize;
-        unionGeometry.reset( GEOSUnion_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
-#endif
 
         if ( unionGeometry && GEOSGeomTypeId_r( geosinit()->ctxt, unionGeometry.get() ) == GEOS_MULTILINESTRING )
         {
@@ -1730,7 +1701,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
       break;
 
       case OverlaySymDifference:
-#if (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
         if ( gridSize > 0 )
         {
           opGeom.reset( GEOSSymDifferencePrec_r( geosinit()->ctxt, mGeos.get(), geosGeom.get(), gridSize ) );
@@ -1739,10 +1709,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
         {
           opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
         }
-#else
-        ( void )gridSize;
-        opGeom.reset( GEOSSymDifference_r( geosinit()->ctxt, mGeos.get(), geosGeom.get() ) );
-#endif
         break;
     }
     return fromGeos( opGeom.get() );
