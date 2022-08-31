@@ -27,6 +27,7 @@
 #include "qgsprovidersublayerdetails.h"
 #include "qgspointcloudlayer.h"
 #include "qgsmaplayerutils.h"
+#include "qgsvectorlayer.h"
 
 QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -50,6 +51,8 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerSaveAsDialog::mCrsSelector_crsChanged );
   connect( mSelectAllAttributes, &QPushButton::clicked, this, &QgsPointCloudLayerSaveAsDialog::mSelectAllAttributes_clicked );
   connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsPointCloudLayerSaveAsDialog::mDeselectAllAttributes_clicked );
+  connect( mFilterGeometryLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged );
+  connect( mFilterGeometryGroupBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled );
 
 #ifdef Q_OS_WIN
   mHelpButtonBox->setVisible( false );
@@ -118,6 +121,9 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mExtentGroupBox->setCheckable( true );
   mExtentGroupBox->setChecked( false );
   mExtentGroupBox->setCollapsed( true );
+
+  // polygon layer filter group box
+  mFilterGeometryLayerComboBox->setFilters( QgsMapLayerProxyModel::PolygonLayer );
 
   // ZRange group box
   mMinimumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
@@ -384,6 +390,19 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( sFormat == QLatin1String( "memory" ) || !mFilename->filePath().isEmpty() );
 }
 
+void QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled( bool checked )
+{
+  if ( checked )
+    mFilterGeometryLayerChanged( mFilterGeometryLayerComboBox->currentLayer() );
+}
+
+void QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged( QgsMapLayer *layer )
+{
+  QgsVectorLayer *vlayer = dynamic_cast< QgsVectorLayer * >( layer );
+  mSelectedFeaturesCheckBox->setChecked( false );
+  mSelectedFeaturesCheckBox->setEnabled( hasFilterLayer() && vlayer && vlayer->selectedFeatureCount() );
+}
+
 void QgsPointCloudLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mSelectedCrs = crs;
@@ -449,6 +468,21 @@ bool QgsPointCloudLayerSaveAsDialog::hasFilterExtent() const
 QgsRectangle QgsPointCloudLayerSaveAsDialog::filterExtent() const
 {
   return mExtentGroupBox->outputExtent();
+}
+
+bool QgsPointCloudLayerSaveAsDialog::hasFilterLayer() const
+{
+  return mFilterGeometryGroupBox->isChecked() && mFilterGeometryLayerComboBox->count() > 0;
+}
+
+QgsMapLayer *QgsPointCloudLayerSaveAsDialog::filterLayer() const
+{
+  return mFilterGeometryLayerComboBox->currentLayer();
+}
+
+bool QgsPointCloudLayerSaveAsDialog::filterLayerSelectedOnly() const
+{
+  return hasFilterLayer() && mSelectedFeaturesCheckBox->isChecked();
 }
 
 bool QgsPointCloudLayerSaveAsDialog::hasAttributes() const

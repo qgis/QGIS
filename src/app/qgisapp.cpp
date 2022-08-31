@@ -8390,6 +8390,9 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     if ( dialog.hasFilterExtent() )
       exp->setFilterExtent( dialog.filterExtent() );
 
+    if ( dialog.hasFilterLayer() )
+      exp->setFilterGeometry( dialog.filterLayer(), dialog.filterLayerSelectedOnly() );
+
     if ( dialog.hasZRange() )
       exp->setZRange( dialog.zRange() );
 

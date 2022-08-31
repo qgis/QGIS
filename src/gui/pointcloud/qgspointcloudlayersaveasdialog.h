@@ -99,6 +99,21 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     QgsRectangle filterExtent() const;
 
     /**
+     * Determines if points will be spatially filtered by a layer's features.
+     */
+    bool hasFilterLayer() const;
+
+    /**
+     * Returns the layer responsible for spatially filtering points.
+     */
+    QgsMapLayer *filterLayer() const;
+
+    /**
+     * Determines if only the selected features from the filterLayer will be used for spatial filtering.
+     */
+    bool filterLayerSelectedOnly() const;
+
+    /**
      * Determines if attributes will be exported as fields.
      * \see attributes()
      */
@@ -139,6 +154,8 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
   private slots:
 
     void mFormatComboBox_currentIndexChanged( int idx );
+    void mFilterGeometryGroupBoxCheckToggled( bool checked );
+    void mFilterGeometryLayerChanged( QgsMapLayer *layer );
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void showHelp();
     void accept() override;

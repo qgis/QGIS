@@ -25,6 +25,7 @@
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsproject.h"
+#include "qgsgeos.h"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/StageFactory.hpp>
@@ -69,6 +70,50 @@ bool QgsPointCloudLayerExporter::setFormat( const QString &format )
     return true;
   }
   return false;
+}
+
+void QgsPointCloudLayerExporter::setFilterGeometry( const QgsAbstractGeometry *geometry )
+{
+  mFilterGeometryEngine.reset( new QgsGeos( geometry ) );
+  mFilterGeometryEngine->prepareGeometry();
+}
+
+void QgsPointCloudLayerExporter::setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly )
+{
+  QgsVectorLayer *vlayer = dynamic_cast< QgsVectorLayer * >( layer );
+  if ( !vlayer )
+    return;
+
+  QVector< QgsGeometry > allGeometries;
+  QgsFeatureIterator fit;
+  const QgsFeatureRequest request = QgsFeatureRequest( mExtent ).setNoAttributes();
+  if ( selectedFeaturesOnly )
+    fit = vlayer->getSelectedFeatures( request );
+  else
+    fit = vlayer->getFeatures( request );
+
+  QgsCoordinateTransform transform( vlayer->crs(), mSourceCrs, mTransformContext );
+
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    if ( f.hasGeometry() )
+    {
+      allGeometries.append( f.geometry() );
+    }
+  }
+  QgsGeometry unaryUnion = QgsGeometry::unaryUnion( allGeometries );
+  try
+  {
+    unaryUnion.transform( transform );
+  }
+  catch ( const QgsCsException &cse )
+  {
+    QgsDebugMsg( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
+    QgsDebugMsg( QStringLiteral( "FilterGeometry will be ignored." ) );
+    return;
+  }
+  setFilterGeometry( unaryUnion.constGet() );
 }
 
 void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList )
@@ -234,6 +279,18 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 
 void QgsPointCloudLayerExporter::ExporterBase::run()
 {
+  QgsRectangle geometryFilterRectangle( -std::numeric_limits<double>::infinity(),
+                                        -std::numeric_limits<double>::infinity(),
+                                        std::numeric_limits<double>::infinity(),
+                                        std::numeric_limits<double>::infinity(),
+                                        false );
+  if ( mParent->mFilterGeometryEngine )
+  {
+    const QgsAbstractGeometry *envelope = mParent->mFilterGeometryEngine->envelope();
+    if ( envelope )
+      geometryFilterRectangle = envelope->boundingBox();
+  }
+
   QVector<IndexedPointCloudNode> nodes;
   qint64 pointCount = 0;
   QQueue<IndexedPointCloudNode> queue;
@@ -242,8 +299,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   {
     IndexedPointCloudNode node = queue.front();
     queue.pop_front();
-    if ( mParent->mExtent.intersects( mParent->mIndex->nodeMapExtent( node ) ) &&
-         mParent->mZRange.overlaps( mParent->mIndex->nodeZRange( node ) ) )
+    const QgsRectangle nodeExtent = mParent->mIndex->nodeMapExtent( node );
+    if ( mParent->mExtent.intersects( nodeExtent ) &&
+         mParent->mZRange.overlaps( mParent->mIndex->nodeZRange( node ) ) &&
+         geometryFilterRectangle.intersects( nodeExtent ) )
     {
       pointCount += mParent->mIndex->nodePointCount( node );
       nodes.push_back( node );
@@ -302,7 +361,8 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
                                            scale, offset,
                                            x, y, z );
       if ( ! mParent->mZRange.contains( z ) ||
-           ! mParent->mExtent.contains( x, y ) )
+           ! mParent->mExtent.contains( x, y ) ||
+           ( mParent->mFilterGeometryEngine && ! mParent->mFilterGeometryEngine->contains( x, y ) ) )
       {
         ++pointsSkipped;
         continue;
