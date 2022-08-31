@@ -97,22 +97,22 @@ class LayerMetadataProviderTestBase():
         self.assertEqual(result.abstract(), 'QGIS Some Data')
         self.assertEqual(result.identifier(), 'MD012345')
         self.assertEqual(result.title(), 'QGIS Test Title')
-        self.assertEqual(result.layerType, layer_type)
-        self.assertEqual(result.crs, layer_authid)
+        self.assertEqual(result.layerType(), layer_type)
+        self.assertEqual(result.authid(), layer_authid)
         # For raster is unknown
         if layer_type != QgsMapLayerType.VectorLayer:
-            self.assertEqual(result.geometryType, QgsWkbTypes.UnknownGeometry)
+            self.assertEqual(result.geometryType(), QgsWkbTypes.UnknownGeometry)
         else:
-            self.assertEqual(result.geometryType, QgsWkbTypes.PointGeometry)
-        self.assertEqual(result.dataProviderName, data_provider_name)
-        self.assertEqual(result.standardUri, 'http://mrcc.com/qgis.dtd')
-        self.assertTrue(compareWkt(result.geographicExtent.asWkt(), extent_as_wkt))
+            self.assertEqual(result.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(result.dataProviderName(), data_provider_name)
+        self.assertEqual(result.standardUri(), 'http://mrcc.com/qgis.dtd')
+        self.assertTrue(compareWkt(result.geographicExtent().asWkt(), extent_as_wkt))
 
         # Check layer load
         if layer_type == QgsMapLayerType.VectorLayer:
-            test_layer = QgsVectorLayer(result.uri, 'PG MD Layer', result.dataProviderName)
+            test_layer = QgsVectorLayer(result.uri(), 'PG MD Layer', result.dataProviderName())
         else:
-            test_layer = QgsRasterLayer(result.uri, 'PG MD Layer', result.dataProviderName)
+            test_layer = QgsRasterLayer(result.uri(), 'PG MD Layer', result.dataProviderName())
 
         self.assertTrue(test_layer.isValid())
 

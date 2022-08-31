@@ -31,38 +31,116 @@ class QgsFeedback;
 /**
  * \ingroup core
  * \brief Result record of layer metadata provider search.
- * The results contains metadata information and all information
- * that is required by QGIS to load the layer.
+ * The result contains QGIS metadata information and all information
+ * that is required by QGIS to load the layer and to filter
+ * the results.
+ *
+ * The class extends QgsLayerMetadata by adding information
+ * taken directly from the provider which is required for
+ * filtering (geographic extent) or because the actual
+ * values may be different by those stored in the metadata
+ * (CRS authid) or totally missing from the metadata
+ * (data provider name and layer type).
  *
  * \since QGIS 3.28
  */
-struct CORE_EXPORT QgsLayerMetadataProviderResult
+class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
 {
-  //! Metadata
-  QgsLayerMetadata metadata;
-  //! Metadata extent in EPSG:4326
-  QgsPolygon geographicExtent;
-  //! Layer geometry type (Point, Polygon, Linestring)
-  QgsWkbTypes::GeometryType geometryType;
-  //! Layer CRS authid
-  QString crs;
-  //! Layer QgsDataSourceUri string
-  QString uri;
-  //! Layer data provider name
-  QString dataProviderName;
-  //! Layer type (vector, raster etc.)
-  QgsMapLayerType layerType;
-  //! Metadata standard uri, QGIS QMD metadata format uses "http://mrcc.com/qgis.dtd"
-  QString standardUri;
 
-  // Convenience accessors to metadata fields:
+  public:
 
-  //! Metadata identifier
-  QString identifier() const;
-  //! Metadata title
-  QString title() const;
-  //! Metadata abstract
-  QString abstract() const;
+    /**
+     * Constructor for QgsLayerMetadataProviderResult.
+     * \param metadata layer metadata.
+     */
+    QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
+
+    /**
+     * Returns the layer extent in EPSG:4326
+     */
+    const QgsPolygon &geographicExtent() const;
+
+    /**
+     * Sets the layer extent in EPSG:4326 to \a newGeographicExtent
+     */
+    void setGeographicExtent( const QgsPolygon &newGeographicExtent );
+
+    /**
+     * Returns the layer geometry type.
+     */
+    const QgsWkbTypes::GeometryType &geometryType() const;
+
+    /**
+     * Sets the layer geometry type to \a newGeometryType.
+     */
+    void setGeometryType( const QgsWkbTypes::GeometryType &newGeometryType );
+
+    /**
+     * Returns the layer CRS authid.
+     */
+    const QString &authid() const;
+
+    /**
+     * Sets the layer \a authid.
+     */
+    void setAuthid( const QString &newAuthid );
+
+    /**
+     * Returns the layer data source URI.
+     */
+    const QString &uri() const;
+
+    /**
+     * Sets the layer data source URI to \a newUri.
+     */
+    void setUri( const QString &newUri );
+
+    /**
+     * Returns the data provider name.
+     */
+    const QString &dataProviderName() const;
+
+    /**
+     * Sets the data provider name to \a newDataProviderName.
+     */
+    void setDataProviderName( const QString &newDataProviderName );
+
+    /**
+     * Returns the layer type.
+     */
+    QgsMapLayerType layerType() const;
+
+    /**
+     * Sets the layer type to \a newLayerType.
+     */
+    void setLayerType( QgsMapLayerType newLayerType );
+
+    /**
+     * Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
+     */
+    const QString &standardUri() const;
+
+    /**
+     * Sets the metadata standard URI to \a newStandardUri.
+     */
+    void setStandardUri( const QString &newStandardUri );
+
+  private:
+
+    //! Layer spatial extent of the layer in EPSG:4326
+    QgsPolygon mGeographicExtent;
+    //! Layer geometry type (Point, Polygon, Linestring)
+    QgsWkbTypes::GeometryType mGeometryType;
+    //! Layer CRS authid
+    QString mAuthid;
+    //! Layer QgsDataSourceUri string
+    QString mUri;
+    //! Layer data provider name
+    QString mDataProviderName;
+    //! Layer type (vector, raster etc.)
+    QgsMapLayerType mLayerType;
+    //! Metadata standard uri, QGIS QMD metadata format uses "http://mrcc.com/qgis.dtd"
+    QString mStandardUri;
 };
 
 /**

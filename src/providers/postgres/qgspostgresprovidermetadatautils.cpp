@@ -101,39 +101,38 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
         break;
       }
 
-      QgsLayerMetadataProviderResult result;
-      result.dataProviderName =  layerType == QgsMapLayerType::RasterLayer ?  QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" );
+      QgsLayerMetadata metadata;
+      QDomDocument doc;
+      doc.setContent( res.PQgetvalue( 0, 11 ) );
+      metadata.readMetadataXml( doc.documentElement() );
+      QgsLayerMetadataProviderResult result { metadata };
+      result.setDataProviderName( layerType == QgsMapLayerType::RasterLayer ?  QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) );
       QgsDataSourceUri uri { dsUri };
       uri.setDatabase( res.PQgetvalue( 0, 0 ) );
       uri.setSchema( res.PQgetvalue( 0, 1 ) );
       uri.setTable( res.PQgetvalue( 0, 2 ) );
       uri.setGeometryColumn( res.PQgetvalue( 0, 3 ) );
-      result.standardUri = QStringLiteral( "http://mrcc.com/qgis.dtd" );
-      result.geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::parseType( res.PQgetvalue( 0, 7 ) ) );
+      result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
+      result.setGeometryType( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( res.PQgetvalue( 0, 7 ) ) ) );
       QgsPolygon geographicExtent;
       geographicExtent.fromWkt( res.PQgetvalue( 0, 8 ) );
-      result.geographicExtent = geographicExtent;
-      result.crs = res.PQgetvalue( 0, 9 );
+      result.setGeographicExtent( geographicExtent );
+      result.setAuthid( res.PQgetvalue( 0, 9 ) );
       const QString layerType { res.PQgetvalue( 0, 10 ) };
       if ( layerType == QStringLiteral( "raster" ) )
       {
-        result.layerType = QgsMapLayerType::RasterLayer;
+        result.setLayerType( QgsMapLayerType::RasterLayer );
       }
       else if ( layerType == QStringLiteral( "vector" ) )
       {
-        result.layerType = QgsMapLayerType::VectorLayer;
+        result.setLayerType( QgsMapLayerType::VectorLayer );
       }
       else
       {
         QgsDebugMsg( QStringLiteral( "Unsupported layer type '%1': skipping metadata record" ).arg( layerType ) );
         continue;
       }
-      result.uri = uri.uri();
-      QgsLayerMetadata metadata;
-      QDomDocument doc;
-      doc.setContent( res.PQgetvalue( 0, 11 ) );
-      metadata.readMetadataXml( doc.documentElement() );
-      result.metadata = metadata;
+      result.setUri( uri.uri() );
       results.append( result );
     }
   }

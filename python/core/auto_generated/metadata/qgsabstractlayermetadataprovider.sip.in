@@ -11,30 +11,106 @@
 
 
 
-struct QgsLayerMetadataProviderResult
+class QgsLayerMetadataProviderResult: QgsLayerMetadata
 {
-  QgsLayerMetadata metadata;
-  QgsPolygon geographicExtent;
-  QgsWkbTypes::GeometryType geometryType;
-  QString crs;
-  QString uri;
-  QString dataProviderName;
-  QgsMapLayerType layerType;
-  QString standardUri;
+%Docstring(signature="appended")
+Result record of layer metadata provider search.
+The result contains QGIS metadata information and all information
+that is required by QGIS to load the layer and to filter
+the results.
 
+The class extends :py:class:`QgsLayerMetadata` by adding information
+taken directly from the provider which is required for
+filtering (geographic extent) or because the actual
+values may be different by those stored in the metadata
+(CRS authid) or totally missing from the metadata
+(data provider name and layer type).
 
-  QString identifier() const;
-%Docstring
-Metadata identifier
+.. versionadded:: 3.28
 %End
-  QString title() const;
-%Docstring
-Metadata title
+
+%TypeHeaderCode
+#include "qgsabstractlayermetadataprovider.h"
 %End
-  QString abstract() const;
+  public:
+
+    QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
 %Docstring
-Metadata abstract
+Constructor for QgsLayerMetadataProviderResult.
+
+:param metadata: layer metadata.
 %End
+
+    const QgsPolygon &geographicExtent() const;
+%Docstring
+Returns the layer extent in EPSG:4326
+%End
+
+    void setGeographicExtent( const QgsPolygon &newGeographicExtent );
+%Docstring
+Sets the layer extent in EPSG:4326 to ``newGeographicExtent``
+%End
+
+    const QgsWkbTypes::GeometryType &geometryType() const;
+%Docstring
+Returns the layer geometry type.
+%End
+
+    void setGeometryType( const QgsWkbTypes::GeometryType &newGeometryType );
+%Docstring
+Sets the layer geometry type to ``newGeometryType``.
+%End
+
+    const QString &authid() const;
+%Docstring
+Returns the layer CRS authid.
+%End
+
+    void setAuthid( const QString &newAuthid );
+%Docstring
+Sets the layer ``authid``.
+%End
+
+    const QString &uri() const;
+%Docstring
+Returns the layer data source URI.
+%End
+
+    void setUri( const QString &newUri );
+%Docstring
+Sets the layer data source URI to ``newUri``.
+%End
+
+    const QString &dataProviderName() const;
+%Docstring
+Returns the data provider name.
+%End
+
+    void setDataProviderName( const QString &newDataProviderName );
+%Docstring
+Sets the data provider name to ``newDataProviderName``.
+%End
+
+    QgsMapLayerType layerType() const;
+%Docstring
+Returns the layer type.
+%End
+
+    void setLayerType( QgsMapLayerType newLayerType );
+%Docstring
+Sets the layer type to ``newLayerType``.
+%End
+
+    const QString &standardUri() const;
+%Docstring
+Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
+%End
+
+    void setStandardUri( const QString &newStandardUri );
+%Docstring
+Sets the metadata standard URI to ``newStandardUri``.
+%End
+
 };
 
 class QgsLayerMetadataSearchResult

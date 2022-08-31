@@ -18,20 +18,6 @@
 #include "qgsproviderregistry.h"
 #include "qgsfeedback.h"
 
-QString QgsLayerMetadataProviderResult::identifier() const
-{
-  return metadata.identifier();
-}
-
-QString QgsLayerMetadataProviderResult::title() const
-{
-  return metadata.title();
-}
-
-QString QgsLayerMetadataProviderResult::abstract() const
-{
-  return metadata.abstract();
-}
 
 const QList<QgsLayerMetadataProviderResult> &QgsLayerMetadataSearchResult::metadata() const
 {
@@ -54,3 +40,79 @@ void QgsLayerMetadataSearchResult::addError( const QString &newError )
   mErrors.push_back( newError );
 }
 
+
+QgsLayerMetadataProviderResult::QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata )
+  : QgsLayerMetadata( metadata )
+{
+
+}
+
+const QgsPolygon &QgsLayerMetadataProviderResult::geographicExtent() const
+{
+  return mGeographicExtent;
+}
+
+void QgsLayerMetadataProviderResult::setGeographicExtent( const QgsPolygon &newGeographicExtent )
+{
+  mGeographicExtent = newGeographicExtent;
+}
+
+const QgsWkbTypes::GeometryType &QgsLayerMetadataProviderResult::geometryType() const
+{
+  return mGeometryType;
+}
+
+void QgsLayerMetadataProviderResult::setGeometryType( const QgsWkbTypes::GeometryType &newGeometryType )
+{
+  mGeometryType = newGeometryType;
+}
+
+const QString &QgsLayerMetadataProviderResult::authid() const
+{
+  return mAuthid;
+}
+
+void QgsLayerMetadataProviderResult::setAuthid( const QString &newAuthid )
+{
+  mAuthid = newAuthid;
+}
+
+const QString &QgsLayerMetadataProviderResult::uri() const
+{
+  return mUri;
+}
+
+void QgsLayerMetadataProviderResult::setUri( const QString &newUri )
+{
+  mUri = newUri;
+}
+
+const QString &QgsLayerMetadataProviderResult::dataProviderName() const
+{
+  return mDataProviderName;
+}
+
+void QgsLayerMetadataProviderResult::setDataProviderName( const QString &newDataProviderName )
+{
+  mDataProviderName = newDataProviderName;
+}
+
+QgsMapLayerType QgsLayerMetadataProviderResult::layerType() const
+{
+  return mLayerType;
+}
+
+void QgsLayerMetadataProviderResult::setLayerType( QgsMapLayerType newLayerType )
+{
+  mLayerType = newLayerType;
+}
+
+const QString &QgsLayerMetadataProviderResult::standardUri() const
+{
+  return mStandardUri;
+}
+
+void QgsLayerMetadataProviderResult::setStandardUri( const QString &newStandardUri )
+{
+  mStandardUri = newStandardUri;
+}

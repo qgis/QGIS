@@ -1090,8 +1090,7 @@ QList<QgsLayerMetadataProviderResult> QgsOgrProviderMetadata::searchLayerMetadat
         QgsLayerMetadata layerMetadata;
         if ( layerMetadata.readMetadataXml( doc.documentElement() ) )
         {
-          QgsLayerMetadataProviderResult result;
-          result.metadata = layerMetadata;
+          QgsLayerMetadataProviderResult result{ layerMetadata };
 
           QgsRectangle extents;
 
@@ -1113,36 +1112,36 @@ QList<QgsLayerMetadataProviderResult> QgsOgrProviderMetadata::searchLayerMetadat
             continue;
           }
 
-          if ( ! result.metadata.title().contains( searchString, Qt::CaseInsensitive ) &&
-               ! result.metadata.identifier().contains( searchString, Qt::CaseInsensitive ) &&
-               ! result.metadata.abstract().contains( searchString, Qt::CaseInsensitive ) )
+          if ( ! result.title().contains( searchString, Qt::CaseInsensitive ) &&
+               ! result.identifier().contains( searchString, Qt::CaseInsensitive ) &&
+               ! result.abstract().contains( searchString, Qt::CaseInsensitive ) )
           {
             continue;
           }
 
-          result.geographicExtent = poly;
-          result.standardUri = QStringLiteral( "http://mrcc.com/qgis.dtd" );
-          result.dataProviderName = QStringLiteral( "ogr" );
-          result.crs = layerMetadata.crs().authid();
-          result.uri = conn->tableUri( QString(), mdRow[0].toString() );
+          result.setGeographicExtent( poly );
+          result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
+          result.setDataProviderName( QStringLiteral( "ogr" ) );
+          result.setAuthid( layerMetadata.crs().authid() );
+          result.setUri( conn->tableUri( QString(), mdRow[0].toString() ) );
           const QString geomType { mdRow[2].toString().toUpper() };
           if ( geomType == QStringLiteral( "POINT" ) )
           {
-            result.geometryType = QgsWkbTypes::GeometryType::PointGeometry;
+            result.setGeometryType( QgsWkbTypes::GeometryType::PointGeometry );
           }
           else if ( geomType == QStringLiteral( "POLYGON" ) )
           {
-            result.geometryType = QgsWkbTypes::GeometryType::PolygonGeometry;
+            result.setGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry );
           }
           else if ( geomType == QStringLiteral( "LINESTRING" ) )
           {
-            result.geometryType = QgsWkbTypes::GeometryType::LineGeometry;
+            result.setGeometryType( QgsWkbTypes::GeometryType::LineGeometry );
           }
           else
           {
-            result.geometryType = QgsWkbTypes::GeometryType::UnknownGeometry;
+            result.setGeometryType( QgsWkbTypes::GeometryType::UnknownGeometry );
           }
-          result.layerType = QgsMapLayerType::VectorLayer;
+          result.setLayerType( QgsMapLayerType::VectorLayer );
 
           results.push_back( result );
         }
