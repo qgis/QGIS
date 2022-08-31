@@ -25,9 +25,8 @@
 // QgsPointCloud3DSymbol
 
 
-QgsPointCloud3DSymbol::QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RenderingStyle renderingStyle )
+QgsPointCloud3DSymbol::QgsPointCloud3DSymbol()
   : QgsAbstract3DSymbol()
-  , mRenderingStyle( renderingStyle )
 {
 }
 
@@ -131,7 +130,7 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
 
 void QgsPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", mRenderingStyle );
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", this->renderingStyle() );
   mat->addParameter( renderingStyle );
   Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
@@ -177,7 +176,7 @@ bool QgsPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
 // QgsSingleColorPointCloud3DSymbol
 
 QgsSingleColorPointCloud3DSymbol::QgsSingleColorPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::SingleColor )
+  : QgsPointCloud3DSymbol()
 {
 
 }
@@ -244,7 +243,7 @@ bool QgsSingleColorPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbo
 // QgsColorRampPointCloud3DSymbol
 
 QgsColorRampPointCloud3DSymbol::QgsColorRampPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::ColorRamp )
+  : QgsPointCloud3DSymbol()
 {
 
 }
@@ -359,7 +358,7 @@ bool QgsColorRampPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol 
 // QgsRgbPointCloud3DSymbol
 
 QgsRgbPointCloud3DSymbol::QgsRgbPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::RgbRendering )
+  : QgsPointCloud3DSymbol()
 {
 
 }
@@ -580,7 +579,7 @@ bool QgsRgbPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbo
 
 
 QgsClassificationPointCloud3DSymbol::QgsClassificationPointCloud3DSymbol()
-  : QgsPointCloud3DSymbol( QgsPointCloud3DSymbol::Classification )
+  : QgsPointCloud3DSymbol()
 {
 
 }

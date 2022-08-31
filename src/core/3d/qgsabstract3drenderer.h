@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 
 #include <QString>
-#include <QDebug>
+#include <QObject>
 
 class QDomElement;
 class QgsProject;
@@ -46,9 +46,8 @@ namespace Qt3DCore
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsAbstract3DRenderer : public QObject SIP_ABSTRACT
+class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
 {
-    Q_OBJECT
   public:
     virtual ~QgsAbstract3DRenderer() = default;
 
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsAbstract3DRenderer : public QObject SIP_ABSTRACT
     virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer )
     {
       Q_UNUSED( renderer );
-      return false;
+      return true;
     };
 
   protected:

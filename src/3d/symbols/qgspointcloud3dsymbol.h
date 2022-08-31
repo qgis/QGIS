@@ -36,7 +36,7 @@
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
+class _3D_EXPORT QgsPointCloud3DSymbol : public QObject, public QgsAbstract3DSymbol SIP_ABSTRACT
 {
     Q_OBJECT
   public:
@@ -59,7 +59,7 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
     };
 
     //! Constructor for QgsPointCloud3DSymbol
-    QgsPointCloud3DSymbol( RenderingStyle renderingStyle );
+    QgsPointCloud3DSymbol();
     //! Destructor for QgsPointCloud3DSymbol
     ~QgsPointCloud3DSymbol() override;
 
@@ -69,6 +69,12 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
      * Returns a unique string identifier of the symbol type.
      */
     virtual QString symbolType() const = 0;
+
+    /**
+     * Returns the rendering style of the symbol
+     * \since QGIS 3.28
+     */
+    virtual RenderingStyle renderingStyle() const = 0;
 
     /**
      * Returns the point size of the point cloud
@@ -180,10 +186,9 @@ class _3D_EXPORT QgsPointCloud3DSymbol : public QgsAbstract3DSymbol SIP_ABSTRACT
      * \note This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
      * \since QGIS 3.28
      */
-    void pointSizeChanged( float newSize );
+    void pointSizeChanged( float newSize ) SIP_SKIP;
 
   protected:
-    RenderingStyle mRenderingStyle = RenderingStyle::NoRendering;
     float mPointSize = 3.0;
     bool mRenderAsTriangles = false;
     bool mHorizontalTriangleFilter = false;
@@ -228,6 +233,8 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
+    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const override { return QgsPointCloud3DSymbol::RenderingStyle::SingleColor; }
+
     /**
     * Returns the color used by the renderer when using SingleColor rendering mode
     * \see setSingleColor( QColor color )
@@ -251,7 +258,7 @@ class _3D_EXPORT QgsSingleColorPointCloud3DSymbol : public QgsPointCloud3DSymbol
      * \note This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
      * \since QGIS 3.28
      */
-    void singleColorChanged( QColor color );
+    void singleColorChanged( QColor color ) SIP_SKIP;
   private:
     QColor mSingleColor = QColor( 0, 0, 255 );
 };
@@ -277,6 +284,8 @@ class _3D_EXPORT QgsColorRampPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const override { return QgsPointCloud3DSymbol::RenderingStyle::ColorRamp; }
 
     /**
     * Returns the attribute used to select the color of the point cloud.
@@ -359,6 +368,8 @@ class _3D_EXPORT QgsRgbPointCloud3DSymbol : public QgsPointCloud3DSymbol
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const override { return QgsPointCloud3DSymbol::RenderingStyle::RgbRendering; }
 
     unsigned int byteStride() override { return 6 * sizeof( float ); }
     void fillMaterial( Qt3DRender::QMaterial *material ) override SIP_SKIP;
@@ -516,6 +527,8 @@ class _3D_EXPORT QgsClassificationPointCloud3DSymbol : public QgsPointCloud3DSym
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const override { return QgsPointCloud3DSymbol::RenderingStyle::Classification; }
 
     /**
     * Returns the attribute used to select the color of the point cloud.

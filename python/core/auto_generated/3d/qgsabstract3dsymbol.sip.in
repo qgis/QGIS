@@ -13,7 +13,7 @@
 
 
 
-class QgsAbstract3DSymbol : QObject
+class QgsAbstract3DSymbol
 {
 %Docstring(signature="appended")
 Abstract base class for 3D symbols that are used by VectorLayer3DRenderer objects.

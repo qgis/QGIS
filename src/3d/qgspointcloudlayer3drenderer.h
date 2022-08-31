@@ -229,7 +229,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
  *
  * \since QGIS 3.18
  */
-class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRenderer
+class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QObject, public QgsAbstractPointCloud3DRenderer
 {
     Q_OBJECT
   public:
@@ -313,8 +313,15 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
      * \since QGIS 3.28
      */
     bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer ) override;
+
   signals:
-    void showBoundingBoxesChanged( bool enabled );
+
+    /**
+     * Emitted when the bounding boxes are enabled or disabled.
+     * \note This signal is only used to manage the enabling of the bounding boxes object without reloading the whole scene
+     * \since QGIS 3.28
+     */
+    void showBoundingBoxesChanged( bool enabled ) SIP_SKIP;
 
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from

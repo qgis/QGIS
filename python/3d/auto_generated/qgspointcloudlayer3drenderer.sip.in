@@ -11,7 +11,7 @@
 
 
 
-class QgsPointCloudLayer3DRenderer : QgsAbstractPointCloud3DRenderer
+class QgsPointCloudLayer3DRenderer : QObject, QgsAbstractPointCloud3DRenderer
 {
 %Docstring(signature="appended")
 3D renderer that renders all points from a point cloud layer
@@ -120,8 +120,9 @@ Updates the current renderer to reflect the same rendering style as ``renderer``
 
 .. versionadded:: 3.28
 %End
+
   signals:
-    void showBoundingBoxesChanged( bool enabled );
+
 
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );

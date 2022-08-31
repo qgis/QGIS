@@ -10,7 +10,7 @@
 
 
 
-class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
+class QgsPointCloud3DSymbol : QObject, QgsAbstract3DSymbol /Abstract/
 {
 %Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects.
@@ -42,7 +42,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
       Classification
     };
 
-    QgsPointCloud3DSymbol( RenderingStyle renderingStyle );
+    QgsPointCloud3DSymbol();
 %Docstring
 Constructor for QgsPointCloud3DSymbol
 %End
@@ -53,6 +53,13 @@ Constructor for QgsPointCloud3DSymbol
     virtual QString symbolType() const = 0;
 %Docstring
 Returns a unique string identifier of the symbol type.
+%End
+
+    virtual RenderingStyle renderingStyle() const = 0;
+%Docstring
+Returns the rendering style of the symbol
+
+.. versionadded:: 3.28
 %End
 
     float pointSize() const;
@@ -164,16 +171,6 @@ Returns true if the scene needs to be reloaded to reflect changes from ``symbol`
 %End
   signals:
 
-    void pointSizeChanged( float newSize );
-%Docstring
-Emitted when the point size has changed.
-
-.. note::
-
-   This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
-
-.. versionadded:: 3.28
-%End
 
   protected:
 
@@ -224,6 +221,8 @@ Constructor for QgsSingleColorPointCloud3DSymbol
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
 
+    virtual QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
+
     QColor singleColor() const;
 %Docstring
 Returns the color used by the renderer when using SingleColor rendering mode
@@ -244,16 +243,6 @@ Sets the color used by the renderer when using SingleColor rendering mode
 
   signals:
 
-    void singleColorChanged( QColor color );
-%Docstring
-Emitted when the used color has changed.
-
-.. note::
-
-   This signal is only used to manage updating internal Qt3D QParameter object without reloading the whole scene
-
-.. versionadded:: 3.28
-%End
 };
 
 class QgsColorRampPointCloud3DSymbol : QgsPointCloud3DSymbol
@@ -287,6 +276,8 @@ Constructor for QgsColorRampPointCloud3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
+
+    virtual QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 
     QString attribute() const;
 %Docstring
@@ -380,6 +371,8 @@ QgsRgbPointCloud3DSymbol cannot be copied - use :py:func:`~QgsRgbPointCloud3DSym
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
+
+    virtual QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 
     virtual unsigned int byteStride();
 
@@ -559,6 +552,8 @@ Constructor for QgsClassificationPointCloud3DSymbol
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
+
+    virtual QgsPointCloud3DSymbol::RenderingStyle renderingStyle() const;
 
     QString attribute() const;
 %Docstring
