@@ -67,7 +67,7 @@ class TestQgsPostgresConn: public QObject
       if ( ! _connection )
       {
         const char *connstring = getenv( "QGIS_PGTEST_DB" );
-        if ( NULL == connstring ) connstring = "service=qgis_test";
+        if ( !connstring ) connstring = "service=qgis_test";
         _connection = QgsPostgresConn::connectDb( connstring, true );
         assert( _connection );
       }
