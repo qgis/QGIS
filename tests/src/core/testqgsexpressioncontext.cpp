@@ -203,6 +203,26 @@ void TestQgsExpressionContext::contextScope()
   QVERIFY( !scope.removeVariable( "missing" ) );
   QVERIFY( scope.removeVariable( "toremove" ) );
   QVERIFY( !scope.hasVariable( "toremove" ) );
+
+  // checks for variables visibility updates
+  QCOMPARE( scope.hiddenVariables().length(), 0 );
+
+  scope.addHiddenVariable( QStringLiteral( "visibilitytest" ) );
+  QCOMPARE( scope.hiddenVariables().length(), 1 );
+  QCOMPARE( scope.hiddenVariables().at( 0 ), QStringLiteral( "visibilitytest" ) );
+
+  scope.removeHiddenVariable( QStringLiteral( "visibilitytest" ) );
+  QCOMPARE( scope.hiddenVariables().length(), 0 );
+
+  QStringList hiddenVariables;
+  hiddenVariables << QStringLiteral( "visibilitytest1" );
+  hiddenVariables << QStringLiteral( "visibilitytest2" );
+  hiddenVariables << QStringLiteral( "visibilitytest3" );
+
+  scope.setHiddenVariables( hiddenVariables );
+
+  QCOMPARE( scope.hiddenVariables().length(), 3 );
+
 }
 
 void TestQgsExpressionContext::contextScopeCopy()
