@@ -448,7 +448,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
   {
-    buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
+    buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
   } );
 
   QVBoxLayout *layout = new QVBoxLayout( dlg );
