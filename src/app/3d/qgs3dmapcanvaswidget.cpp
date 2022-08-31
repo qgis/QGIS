@@ -154,6 +154,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setEyeDomeLightingEnabled( enabled );
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
+
+  mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
+  mActionEnableAmbientOcclusion->setCheckable( true );
+  connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    QgsAmbientOcclusionSettings ambientOcclusionSettings = mCanvas->map()->ambientOcclusionSettings();
+    ambientOcclusionSettings.setEnabled( enabled );
+    mCanvas->map()->setAmbientOcclusionSettings( ambientOcclusionSettings );
+  } );
+  mOptionsMenu->addAction( mActionEnableAmbientOcclusion );
+
   mOptionsMenu->addSeparator();
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
@@ -344,6 +355,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
@@ -452,6 +464,7 @@ void Qgs3DMapCanvasWidget::configure()
 
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );

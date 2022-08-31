@@ -542,6 +542,8 @@ Default value is 96
 
 
 
+
+
     bool isSkyboxEnabled() const;
 %Docstring
 Returns whether the skybox is enabled.
@@ -872,6 +874,14 @@ Emitted when skybox settings are changed
 Emitted when shadow rendering settings are changed
 
 .. versionadded:: 3.16
+%End
+
+
+    void ambientOcclusionSettingsChanged();
+%Docstring
+Emitted when ambient occlusion rendering settings are changed
+
+.. versionadded:: 3.28
 %End
 
     void fpsCounterEnabledChanged( bool fpsCounterEnabled );

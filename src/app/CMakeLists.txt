@@ -358,6 +358,7 @@ if (WITH_3D)
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
+    3d/qgsambientocclusionsettingswidget.cpp
     3d/qgspointcloud3dsymbolwidget.cpp
     3d/qgspointcloudlayer3drendererwidget.cpp
     3d/qgs3dmapcanvaswidget.cpp

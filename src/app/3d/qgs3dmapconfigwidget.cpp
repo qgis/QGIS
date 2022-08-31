@@ -33,6 +33,7 @@
 #include "qgssettings.h"
 #include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsshadowrenderingsettingswidget.h"
+#include "qgsambientocclusionsettingswidget.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3daxis.h"
@@ -245,6 +246,9 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   mDebugDepthMapGroupBox->setChecked( map->debugDepthMapEnabled() );
   mDebugDepthMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugDepthMapCorner() ) );
   mDebugDepthMapSizeSpinBox->setValue( map->debugDepthMapSize() );
+
+  // Ambient occlusion
+  mAmbientOcclusionSettingsWidget->setAmbientOcclusionSettings( map->ambientOcclusionSettings() );
 }
 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
@@ -391,6 +395,8 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setEyeDomeLightingEnabled( edlGroupBox->isChecked() );
   mMap->setEyeDomeLightingStrength( edlStrengthSpinBox->value() );
   mMap->setEyeDomeLightingDistance( edlDistanceSpinBox->value() );
+
+  mMap->setAmbientOcclusionSettings( mAmbientOcclusionSettingsWidget->toAmbientOcclusionSettings() );
 
   Qgis::ViewSyncModeFlags viewSyncMode;
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D, mSync2DTo3DCheckbox->isChecked() );

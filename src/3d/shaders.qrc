@@ -30,5 +30,9 @@
         <file>shaders/goochDataDefined.vert</file>
         <file>shaders/depth_render.frag</file>
         <file>shaders/depth_render.vert</file>
+        <file>shaders/ssao_factor_render.frag</file>
+        <file>shaders/ssao_factor_render.vert</file>
+        <file>shaders/ssao_factor_blur.frag</file>
+        <file>shaders/ssao_factor_blur.vert</file>
     </qresource>
 </RCC>

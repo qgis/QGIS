@@ -43,41 +43,17 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include "qgsshadowrenderingframegraph.h"
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent )
-  : Qt3DCore::QEntity( parent )
+  : QgsRenderPassQuad( parent )
+  , mFrameGraph( frameGraph )
 {
-  Qt3DQGeometry *geom = new Qt3DQGeometry( this );
-  Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( this );
-  const QVector<float> vert = { -1.0f, -1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ -1.0f,  1.0f, 0.0f, /**/ 1.0f, -1.0f, 0.0f, /**/ 1.0f,  1.0f, 0.0f };
-
-  const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
-  Qt3DQBuffer *vertexBuffer = nullptr;
-  vertexBuffer = new Qt3DQBuffer( this );
-  vertexBuffer->setData( vertexArr );
-
-  positionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
-  positionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
-  positionAttribute->setVertexSize( 3 );
-  positionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
-  positionAttribute->setBuffer( vertexBuffer );
-  positionAttribute->setByteOffset( 0 );
-  positionAttribute->setByteStride( 3 * sizeof( float ) );
-  positionAttribute->setCount( 6 );
-
-  geom->addAttribute( positionAttribute );
-
-  Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer( this );
-  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::PrimitiveType::Triangles );
-  renderer->setGeometry( geom );
-
-  addComponent( renderer );
-
-  mMaterial = new Qt3DRender::QMaterial( this );
   mColorTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "colorTexture" ), frameGraph->forwardRenderColorTexture() );
   mDepthTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "depthTexture" ), frameGraph->forwardRenderDepthTexture() );
   mShadowMapParameter = new Qt3DRender::QParameter( QStringLiteral( "shadowTexture" ), frameGraph->shadowMapTexture() );
+  mAmbientOcclusionTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoTexture" ), frameGraph->blurredAmbientOcclusionFactorMap() );
   mMaterial->addParameter( mColorTextureParameter );
   mMaterial->addParameter( mDepthTextureParameter );
   mMaterial->addParameter( mShadowMapParameter );
+  mMaterial->addParameter( mAmbientOcclusionTextureParameter );
 
   mMainCamera = frameGraph->mainCamera();
   mLightCamera = frameGraph->lightCamera();
@@ -143,39 +119,19 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *
   mMaterial->addParameter( mEyeDomeLightingStrengthParameter );
   mMaterial->addParameter( mEyeDomeLightingDistanceParameter );
 
+  mAmbientOcclusionEnabledParameter = new Qt3DRender::QParameter( QStringLiteral( "ssaoEnabled" ), QVariant::fromValue( 0 ) );
+  mMaterial->addParameter( mAmbientOcclusionEnabledParameter );
+
   mLightPosition = new Qt3DRender::QParameter( QStringLiteral( "lightPosition" ), QVariant::fromValue( QVector3D() ) );
   mLightDirection = new Qt3DRender::QParameter( QStringLiteral( "lightDirection" ), QVariant::fromValue( QVector3D() ) );
   mMaterial->addParameter( mLightPosition );
   mMaterial->addParameter( mLightDirection );
 
-  mEffect = new Qt3DRender::QEffect( this );
-  Qt3DRender::QTechnique *technique = new Qt3DRender::QTechnique( this );
-  Qt3DRender::QGraphicsApiFilter *graphicsApiFilter = technique->graphicsApiFilter();
-  graphicsApiFilter->setApi( Qt3DRender::QGraphicsApiFilter::Api::OpenGL );
-  graphicsApiFilter->setProfile( Qt3DRender::QGraphicsApiFilter::OpenGLProfile::CoreProfile );
-  graphicsApiFilter->setMajorVersion( 1 );
-  graphicsApiFilter->setMinorVersion( 5 );
-  Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass( this );
-  Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram( this );
-
   const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/postprocess.vert" );
   const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/postprocess.frag" );
 
-  shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
-  shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
-  renderPass->setShaderProgram( shader );
-
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest( this );
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-
-  renderPass->addRenderState( depthTest );
-
-  technique->addRenderPass( renderPass );
-
-  mEffect->addTechnique( technique );
-  mMaterial->setEffect( mEffect );
-
-  addComponent( mMaterial );
+  mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
+  mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
 }
 
 void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ )
@@ -215,4 +171,9 @@ void QgsPostprocessingEntity::setEyeDomeLightingStrength( double strength )
 void QgsPostprocessingEntity::setEyeDomeLightingDistance( int distance )
 {
   mEyeDomeLightingDistanceParameter->setValue( QVariant::fromValue( distance ) );
+}
+
+void QgsPostprocessingEntity::setAmbientOcclusionEnabled( bool enabled )
+{
+  mAmbientOcclusionEnabledParameter->setValue( enabled );
 }

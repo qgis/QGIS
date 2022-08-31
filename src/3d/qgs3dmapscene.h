@@ -201,6 +201,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onRenderersChanged();
     void onSkyboxSettingsChanged();
     void onShadowSettingsChanged();
+    void onAmbientOcclusionSettingsChanged();
     void onEyeDomeShadingSettingsChanged();
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
