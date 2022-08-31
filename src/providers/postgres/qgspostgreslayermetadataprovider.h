@@ -20,12 +20,10 @@
 
 class QgsPostgresLayerMetadataProvider : public QgsAbstractLayerMetadataProvider
 {
-    // QgsAbstractLayerMetadataProvider interface
   public:
+
     QString id() const override;
 
-    // QgsAbstractLayerMetadataProvider interface
-  public:
     QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback = nullptr ) const override;
 };
 

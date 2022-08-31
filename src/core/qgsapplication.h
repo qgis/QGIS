@@ -1140,8 +1140,8 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsClassificationMethodRegistry *mClassificationMethodRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
       QgsConnectionRegistry *mConnectionRegistry = nullptr;
-      std::unique_ptr<QgsProjectStorageRegistry> mProjectStorageRegistry;
-      std::unique_ptr<QgsLayerMetadataProviderRegistry> mLayerMetadataProviderRegistry;
+      QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
+      QgsLayerMetadataProviderRegistry *mLayerMetadataProviderRegistry = nullptr;
       QgsExternalStorageRegistry *mExternalStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
