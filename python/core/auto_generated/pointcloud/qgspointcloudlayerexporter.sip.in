@@ -69,6 +69,18 @@ Points that fall outside the extent will be skipped.
 Gets the filter extent for points to be exported.
 %End
 
+    void setFilterGeometry( const QgsAbstractGeometry *geometry );
+%Docstring
+Sets a spatial filter for points to be exported based on ``geom`` in the point cloud's CRS.
+Points that do not intersect ``geometry`` will be skipped.
+%End
+
+    void setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly = false );
+%Docstring
+Sets a spatial filter for points to be exported based on the features of ``layer``.
+Points that do not intersect the ``layer``'s features will be skipped.
+%End
+
     void setZRange( const QgsDoubleRange zRange );
 %Docstring
 Sets an inclusive range for Z values to be exported.
@@ -125,7 +137,7 @@ Gets the list of point cloud attributes that will be exported.
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
-Sets the ``crs`` for the exported file, and the transform ``context`` that will be used for
+Sets the ``crs`` for the exported file, and the transform ``context`` that will be used
 for reprojection if different from the point cloud layer's CRS.
 %End
 

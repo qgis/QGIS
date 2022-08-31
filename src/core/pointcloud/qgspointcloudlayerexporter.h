@@ -31,6 +31,7 @@
 #endif
 
 class QgsCoordinateTransform;
+class QgsGeos;
 
 /**
  * \class QgsPointCloudLayerExporter
@@ -86,6 +87,18 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsRectangle filterExtent() const { return mExtent; }
 
     /**
+     * Sets a spatial filter for points to be exported based on \a geom in the point cloud's CRS.
+     * Points that do not intersect \a geometry will be skipped.
+     */
+    void setFilterGeometry( const QgsAbstractGeometry *geometry );
+
+    /**
+     * Sets a spatial filter for points to be exported based on the features of \a layer.
+     * Points that do not intersect the \a layer's features will be skipped.
+     */
+    void setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly = false );
+
+    /**
      * Sets an inclusive range for Z values to be exported.
      * Points with Z values outside the range will be skipped.
      */
@@ -132,7 +145,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QStringList attributes() const { return mRequestedAttributes; }
 
     /**
-     * Sets the \a crs for the exported file, and the transform \a context that will be used for
+     * Sets the \a crs for the exported file, and the transform \a context that will be used
      * for reprojection if different from the point cloud layer's CRS.
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; }
@@ -222,6 +235,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
                                          std::numeric_limits<double>::infinity(),
                                          std::numeric_limits<double>::infinity(),
                                          false );
+    std::unique_ptr< QgsGeos > mFilterGeometryEngine;
     QgsDoubleRange mZRange;
     QgsFeedback *mFeedback = nullptr;
     qint64 mPointsLimit = 0;
