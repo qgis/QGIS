@@ -906,7 +906,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
-     * Returns a SQL query build for the connection, which provides an interface for provider-specific creation of SQL queries.
+     * Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
      *
      * The caller takes ownership of the returned object.
      *
