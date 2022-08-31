@@ -156,23 +156,6 @@ Returns the feedback object used to cancel rendering
 .. versionadded:: 3.20
 %End
 
-    void setElevationMap( QgsElevationMap *elevationMap /Transfer/ );
-%Docstring
-Sets elevation map that will be used to record elevation of rendered points.
-
-.. note::
-
-   Takes ownership of the passed object
-
-.. versionadded:: 3.28
-%End
-
-    QgsElevationMap *elevationMap();
-%Docstring
-Returns elevation map. It may be a null pointer if elevation map is not needed in rendering.
-
-.. versionadded:: 3.28
-%End
 
 
   private:
@@ -466,47 +449,6 @@ Creates a set of legend nodes representing the renderer.
 Returns a list of all rule keys for legend nodes created by the renderer.
 %End
 
-    bool useEyeDomeLighting() const;
-%Docstring
-Sets whether eye dome lighting effect will be used
-
-.. versionadded:: 3.28
-%End
-
-    void setUseEyeDomeLighting( bool useEyeDomeLighting );
-%Docstring
-Returns whether eye dome lighting effect will be used
-
-.. versionadded:: 3.28
-%End
-
-    double eyeDomeLightingStrength() const;
-%Docstring
-Returns the eye dome lighting strength value
-
-.. versionadded:: 3.28
-%End
-
-    void setEyeDomeLightingStrength( double strength );
-%Docstring
-Sets the eye dome lighting strength value
-
-.. versionadded:: 3.28
-%End
-
-    int eyeDomeLightingDistance() const;
-%Docstring
-Returns the eye dome lighting distance value
-
-.. versionadded:: 3.28
-%End
-
-    void setEyeDomeLightingDistance( int distance );
-%Docstring
-Sets the eye dome lighting distance value
-
-.. versionadded:: 3.28
-%End
 
   protected:
 
@@ -525,12 +467,6 @@ Retrieves the z value for the point at index ``i``.
 Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordinates).
 %End
 
-    void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
-%Docstring
-Draws a point at the elevation ``z`` using at the specified ``x`` and ``y`` (in map coordinates) on the elevation map.
-
-.. versionadded:: 3.28
-%End
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
 %Docstring

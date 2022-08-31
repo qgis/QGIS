@@ -74,7 +74,7 @@ bool QgsPointCloudLayerRenderer::render()
 
   // Set up the render configuration options
   QPainter *painter = context.renderContext().painter();
-  bool applyEdl = mRenderer && mRenderer->useEyeDomeLighting();
+  bool applyEdl = mRenderer && mRenderer->eyeDomeLightingEnabled();
 
   if ( QImage *painterImage = dynamic_cast<QImage *>( painter->device() ) )
   {

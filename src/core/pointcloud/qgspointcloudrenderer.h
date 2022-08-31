@@ -174,6 +174,8 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     QgsFeedback *feedback() const { return mFeedback; }
 
+#ifndef SIP_RUN   // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
+
     /**
      * Sets elevation map that will be used to record elevation of rendered points.
      * \note Takes ownership of the passed object
@@ -188,6 +190,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * \since QGIS 3.28
      */
     QgsElevationMap *elevationMap() { return mElevationMap.get(); }
+#endif
 
 #ifndef SIP_RUN
 
@@ -587,17 +590,19 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
-    /**
-     * Sets whether eye dome lighting effect will be used
-     * \since QGIS 3.28
-     */
-    bool useEyeDomeLighting() const { return mUseEyeDomeLighting; }
+#ifndef SIP_RUN   // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
 
     /**
      * Returns whether eye dome lighting effect will be used
      * \since QGIS 3.28
      */
-    void setUseEyeDomeLighting( bool useEyeDomeLighting ) { mUseEyeDomeLighting = useEyeDomeLighting; }
+    bool eyeDomeLightingEnabled() const { return mEyeDomeLightingEnabled; }
+
+    /**
+     * Sets whether eye dome lighting effect will be used
+     * \since QGIS 3.28
+     */
+    void setEyeDomeLightingEnabled( bool enabled ) { mEyeDomeLightingEnabled = enabled; }
 
     /**
      * Returns the eye dome lighting strength value
@@ -612,16 +617,17 @@ class CORE_EXPORT QgsPointCloudRenderer
     void setEyeDomeLightingStrength( double strength ) { mEyeDomeLightingStrength = strength; }
 
     /**
-     * Returns the eye dome lighting distance value
+     * Returns the eye dome lighting distance in pixels
      * \since QGIS 3.28
      */
     int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
     /**
-     * Sets the eye dome lighting distance value
+     * Sets the eye dome lighting distance in pixels
      * \since QGIS 3.28
      */
     void setEyeDomeLightingDistance( int distance ) { mEyeDomeLightingDistance = distance; }
+#endif
 
   protected:
 
@@ -675,11 +681,14 @@ class CORE_EXPORT QgsPointCloudRenderer
       };
     }
 
+#ifndef SIP_RUN   // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
+
     /**
      * Draws a point at the elevation \a z using at the specified \a x and \a y (in map coordinates) on the elevation map.
      * \since QGIS 3.28
      */
     void drawPointToElevationMap( double x, double y, double z, QgsPointCloudRenderContext &context ) const;
+#endif
 
     /**
      * Copies common point cloud properties (such as point size and screen error) to the \a destination renderer.
@@ -723,7 +732,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     int mPainterPenWidth = 1;
     Qgis::PointCloudDrawOrder mDrawOrder2d = Qgis::PointCloudDrawOrder::Default;
 
-    bool mUseEyeDomeLighting = false;
+    bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
     int mEyeDomeLightingDistance = 2;
 };

@@ -245,6 +245,9 @@
             </item>
             <item row="4" column="0" colspan="4">
              <widget class="QGroupBox" name="mEyeDomeLightingGroupBox">
+              <property name="toolTip">
+               <string>A post-processing effect that makes angled surfaces darker and adds silhouettes in case of larger differences of elevations.</string>
+              </property>
               <property name="title">
                <string>Eye Dome Lighting</string>
               </property>
@@ -287,6 +290,9 @@
                </item>
                <item row="1" column="1">
                 <widget class="QgsSpinBox" name="mEdlStrength">
+                 <property name="toolTip">
+                  <string>Adjusts how strong the added shading will be. Greater values mean stronger effect.</string>
+                 </property>
                  <property name="minimum">
                   <number>1</number>
                  </property>
@@ -303,6 +309,12 @@
                </item>
                <item row="3" column="1">
                 <widget class="QgsSpinBox" name="mEdlDistance">
+                 <property name="toolTip">
+                  <string>How many pixels away from the original pixel to sample neighbors.</string>
+                 </property>
+                 <property name="suffix">
+                  <string> pixels</string>
+                 </property>
                  <property name="minimum">
                   <number>1</number>
                  </property>
