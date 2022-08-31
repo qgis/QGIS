@@ -18,14 +18,13 @@
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-#include "qgszipitem.h"
 #include "qgsogrproviderutils.h"
 #include "qgsstyle.h"
-#include "qgsgdalutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsfieldsitem.h"
 #include "qgsfielddomainsitem.h"
+#include "qgsrelationshipsitem.h"
 #include "qgsproviderutils.h"
 #include "qgsmbtiles.h"
 #include "qgsvectortiledataitems.h"
@@ -69,6 +68,29 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
                                              path() + QStringLiteral( "/columns/ " ),
                                              path(),
                                              QStringLiteral( "ogr" ), QString(), name() ) );
+
+      std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
+      if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+      {
+        QString relationError;
+        QList< QgsWeakRelation > relations;
+        try
+        {
+          relations = conn->relationships( QString(), mDetails.name() );
+        }
+        catch ( QgsProviderConnectionException &ex )
+        {
+          relationError = ex.what();
+        }
+
+        if ( !relations.empty() || !relationError.isEmpty() )
+        {
+          std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ), QString(), mDetails.name() );
+          // force this item to appear last by setting a maximum string value for the sort key
+          relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+          children.append( relationsItem.release() );
+        }
+      }
     }
   }
   return children;
@@ -154,6 +176,38 @@ QString QgsProviderSublayerItem::layerName() const
 }
 
 //
+// QgsFileDataCollectionGroupItem
+//
+QgsFileDataCollectionGroupItem::QgsFileDataCollectionGroupItem( QgsDataItem *parent, const QString &groupName, const QString &path )
+  : QgsDataCollectionItem( parent, groupName, path )
+{
+  mCapabilities = Qgis::BrowserItemCapability::RefreshChildrenWhenItemIsRefreshed;
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
+}
+
+void QgsFileDataCollectionGroupItem::appendSublayer( const QgsProviderSublayerDetails &sublayer )
+{
+  mSublayers.append( sublayer );
+}
+
+bool QgsFileDataCollectionGroupItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::UriList QgsFileDataCollectionGroupItem::mimeUris() const
+{
+  QgsMimeDataUtils::UriList res;
+  res.reserve( mSublayers.size() );
+
+  for ( const QgsProviderSublayerDetails &sublayer : mSublayers )
+  {
+    res << sublayer.toMimeUri();
+  }
+  return res;
+}
+
+//
 // QgsFileDataCollectionItem
 //
 
@@ -192,10 +246,49 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
   QVector<QgsDataItem *> children;
   children.reserve( sublayers.size() );
+  QMap< QStringList, QgsFileDataCollectionGroupItem * > groupItems;
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
-    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( this, sublayer.name(), sublayer, QString() );
-    children.append( item );
+    QgsProviderSublayerItem *item = new QgsProviderSublayerItem( nullptr, sublayer.name(), sublayer, QString() );
+
+    if ( !sublayer.path().isEmpty() )
+    {
+      QStringList currentPath;
+      QStringList remainingPaths = sublayer.path();
+      QgsFileDataCollectionGroupItem *groupItem = nullptr;
+
+      while ( !remainingPaths.empty() )
+      {
+        currentPath << remainingPaths.takeAt( 0 );
+
+        auto it = groupItems.constFind( currentPath );
+        if ( it == groupItems.constEnd() )
+        {
+          QgsFileDataCollectionGroupItem *newGroupItem = new QgsFileDataCollectionGroupItem( this, currentPath.constLast(), path() + '/' + currentPath.join( ',' ) );
+          newGroupItem->setState( Qgis::BrowserItemState::Populated );
+          groupItems.insert( currentPath, newGroupItem );
+          if ( groupItem )
+            groupItem->addChildItem( newGroupItem );
+          else
+            children.append( newGroupItem );
+          groupItem = newGroupItem;
+        }
+        else
+        {
+          groupItem = it.value();
+        }
+
+        if ( groupItem )
+          groupItem->appendSublayer( sublayer );
+      }
+
+      if ( groupItem )
+        groupItem->addChildItem( item );
+    }
+    else
+    {
+      children.append( item );
+    }
   }
 
   std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn( databaseConnection() );
@@ -218,6 +311,27 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
+    }
+  }
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+  {
+    QString relationError;
+    QList< QgsWeakRelation > relations;
+    try
+    {
+      relations = conn->relationships();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      relationError = ex.what();
+    }
+
+    if ( !relations.empty() || !relationError.isEmpty() )
+    {
+      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+      children.append( relationsItem.release() );
     }
   }
 

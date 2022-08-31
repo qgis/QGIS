@@ -74,6 +74,7 @@ class QgsAfsSharedData : public QObject
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
+    int mMaximumFetchObjectsCount = 100;
 
     QString mObjectIdFieldName;
     int mObjectIdFieldIdx = -1;

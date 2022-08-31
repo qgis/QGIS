@@ -259,6 +259,13 @@ of its contents was skipped.
 .. seealso:: :py:func:`setSkippedContainerScan`
 %End
 
+    QgsMimeDataUtils::Uri toMimeUri() const;
+%Docstring
+Converts the sublayer details to a :py:class:`QgsMimeDataUtils`.Uri representing the sublayer.
+
+.. versionadded:: 3.28
+%End
+
     bool operator==( const QgsProviderSublayerDetails &other ) const;
     bool operator!=( const QgsProviderSublayerDetails &other ) const;
 

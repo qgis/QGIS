@@ -247,7 +247,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     elapsed = '{0} {1:0.2f} {2}'.format(
                         result, delta_t, str_seconds)
 
-                return(elapsed)
+                return elapsed
 
             if self.iterateParam:
                 # Make sure the Log tab is visible before executing the algorithm

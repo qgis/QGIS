@@ -31,6 +31,7 @@
 
 
 #include "qgsfields.h"
+#include "qgsvariantutils.h"
 
 
 class QgsRectangle;
@@ -108,7 +109,7 @@ class QgsAttributes : public QVector<QVariant>
       // QVariant == comparisons do some weird things, like reporting that a QDateTime(2021, 2, 10, 0, 0) variant is equal
       // to a QString "2021-02-10 00:00" variant!
       while ( i != b )
-        if ( !( ( --i )->isNull() == ( --j )->isNull() && ( i->isNull() || i->type() == j->type() ) && *i == *j ) )
+        if ( !( QgsVariantUtils::isNull( *( --i ) ) == QgsVariantUtils::isNull( *( --j ) ) && ( QgsVariantUtils::isNull( *i ) || i->type() == j->type() ) && *i == *j ) )
           return false;
       return true;
     }
@@ -120,6 +121,19 @@ class QgsAttributes : public QVector<QVariant>
      * \since QGIS 3.0
      */
     CORE_EXPORT QgsAttributeMap toMap() const SIP_SKIP;
+
+    /**
+     * Returns TRUE if the attribute at the specified index is an unset value.
+     *
+     * \see QgsUnsetAttributeValue
+     */
+    bool isUnsetValue( int index ) const
+    {
+      if ( index < 0 || index >= size() )
+        return false;
+
+      return at( index ).userType() == QMetaType::type( "QgsUnsetAttributeValue" );
+    }
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };

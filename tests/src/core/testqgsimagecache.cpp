@@ -25,28 +25,27 @@
 #include <QtConcurrent>
 #include <QElapsedTimer>
 #include "qgsimagecache.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
+#include "qgsrenderchecker.h"
 
 /**
  * \ingroup UnitTests
  * This is a unit test for QgsImageCache.
  */
-class TestQgsImageCache : public QObject
+class TestQgsImageCache : public QgsTest
 {
     Q_OBJECT
 
-  private:
+  public:
+    TestQgsImageCache() : QgsTest( QStringLiteral( "QgsImageCache Tests" ) ) {}
 
-    QString mReport;
+  private:
 
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
     void fillCache();
     void threadSafeImage();
     void broken();
@@ -68,22 +67,11 @@ void TestQgsImageCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mReport += "<h1>QgsImageCache Tests</h1>\n";
 }
 
 void TestQgsImageCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsImageCache::fillCache()
@@ -135,6 +123,10 @@ void TestQgsImageCache::threadSafeImage()
   // This unit test checks that concurrent rendering of paths as QImage from QgsImageCache
   // works without issues across threads
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0) or QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  // test deadlocks on 5.15 - see https://bugreports.qt.io/browse/QTBUG-84857
+  // this is supposed to be fixed in 5.15.1, but I can still reproduce in Fedora on 5.15.5..!
+
   QgsImageCache cache;
   const QString imagePath = TEST_DATA_DIR + QStringLiteral( "/sample_image.png" );
 
@@ -142,6 +134,8 @@ void TestQgsImageCache::threadSafeImage()
   QVector< int > list;
   list.resize( 100 );
   QtConcurrent::blockingMap( list, RenderImageWrapper( cache, imagePath ) );
+#endif
+
 }
 
 void TestQgsImageCache::broken()
@@ -469,7 +463,6 @@ bool TestQgsImageCache::imageCheck( const QString &testName, QImage &image, int 
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

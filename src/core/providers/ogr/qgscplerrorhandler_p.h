@@ -16,7 +16,7 @@
 #ifndef QGSCPLERRORHANDLER_H
 #define QGSCPLERRORHANDLER_H
 
-#include "gdal.h"
+#include "cpl_error.h"
 #include "qgsmessagelog.h"
 
 /**
@@ -27,14 +27,19 @@ class QgsCPLErrorHandler
 {
     static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
     {
-      if ( errNo != OGRERR_NONE )
-        QgsMessageLog::logMessage( QObject::tr( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ), QObject::tr( "OGR" ) );
+      if ( errClass != CE_None )
+      {
+        const QString *sourceName = static_cast< QString * >( CPLGetErrorHandlerUserData() );
+        const QString identifier = sourceName ? *sourceName : QObject::tr( "OGR" );
+        QgsMessageLog::logMessage( QObject::tr( "%1[%2] error %3: %4" ).arg( identifier ).arg( errClass ).arg( errNo ).arg( msg ), identifier );
+      }
     }
 
   public:
-    QgsCPLErrorHandler()
+    QgsCPLErrorHandler( const QString &sourceName = QObject::tr( "OGR" ) )
+      : mSourceName( sourceName )
     {
-      CPLPushErrorHandler( showError );
+      CPLPushErrorHandlerEx( showError, &mSourceName );
     }
 
     ~QgsCPLErrorHandler()
@@ -45,7 +50,64 @@ class QgsCPLErrorHandler
     QgsCPLErrorHandler( const QgsCPLErrorHandler &other ) = delete;
     QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other ) = delete;
 
+  private:
+
+    QString mSourceName;
+
 };
+
+/**
+ * \ingroup core
+ * \class QgsCPLErrorCollectorHandler
+ *
+ * A GDAL error handler which collects errors for later processing.
+ *
+ * \since QGIS 3.28
+ */
+class QgsCPLErrorCollectorHandler
+{
+    static void CPL_STDCALL showError( CPLErr errClass, int, const char *msg )
+    {
+      if ( errClass != CE_None )
+      {
+        QStringList *errors = static_cast< QStringList * >( CPLGetErrorHandlerUserData() );
+        if ( errors )
+        {
+          errors->append( QString( msg ) );
+        }
+      }
+    }
+
+  public:
+    QgsCPLErrorCollectorHandler()
+    {
+      CPLPushErrorHandlerEx( showError, &mErrors );
+    }
+
+    ~QgsCPLErrorCollectorHandler()
+    {
+      CPLPopErrorHandler();
+    }
+
+    /**
+     * Takes all collected errors.
+     */
+    QStringList popErrors()
+    {
+      const QStringList errors = mErrors;
+      mErrors.clear();
+      return errors;
+    }
+
+    QgsCPLErrorCollectorHandler( const QgsCPLErrorCollectorHandler &other ) = delete;
+    QgsCPLErrorCollectorHandler &operator=( const QgsCPLErrorCollectorHandler &other ) = delete;
+
+  private:
+
+    QStringList mErrors;
+
+};
+
 
 
 #endif // QGSCPLERRORHANDLER_H

@@ -56,11 +56,11 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         # Create test layers
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."SOME_DATA" (GEOM) sql=', 'test', 'oracle')
-        assert(cls.vl.isValid())
+        assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."SOME_POLY_DATA" (GEOM) sql=', 'test', 'oracle')
-        assert(cls.poly_vl.isValid())
+        assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
@@ -310,6 +310,9 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.check_geom(multipoints_z, fid, 'MultiPointZ ((1 2 7),(3 4 8))')
 
     def testLayerStyles(self):
+
+        self.execSQLCommand('DROP TABLE "QGIS"."LAYER_STYLES"', True)
+
         # Table without geometry column
         vl_no_geom = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'id\' table="QGIS"."DATE_TIMES" sql=', 'test', 'oracle')

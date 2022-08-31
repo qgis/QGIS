@@ -35,6 +35,8 @@ email                : sherman at mrcc.com
 #include "qgsembeddedsymbolrenderer.h"
 #include "qgszipitem.h"
 #include "qgsprovidersublayerdetails.h"
+#include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 #include "qgsvariantutils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
@@ -661,11 +663,7 @@ void QgsOgrProvider::loadFields()
   }
   else
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
     mOGRGeomType = getOgrGeomType( mGDALDriverName, ogrLayer );
@@ -721,11 +719,7 @@ void QgsOgrProvider::loadFields()
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
   // needed for field domain retrieval on GDAL 3.3+
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *datasetMutex = nullptr;
-#else
   QRecursiveMutex *datasetMutex = nullptr;
-#endif
   GDALDatasetH ds = mOgrLayer->getDatasetHandleAndMutex( datasetMutex );
   QMutexLocker locker( datasetMutex );
 #endif
@@ -779,13 +773,11 @@ void QgsOgrProvider::loadFields()
                           width, prec, QString(), varSubType
                         );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
     const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
     if ( !alias.isEmpty() )
     {
       newField.setAlias( alias );
     }
-#endif
 
     // check if field is nullable
     bool nullable = OGR_Fld_IsNullable( fldDef );
@@ -914,11 +906,7 @@ void QgsOgrProvider::loadMetadata()
 {
   if ( mOgrOrigLayer )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
 
@@ -1038,11 +1026,7 @@ QString QgsOgrProvider::storageType() const
 
 void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes ) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
   OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
   QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid, mSubsetString );
@@ -1239,7 +1223,7 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
   else
   {
     // stricter check
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !QgsVariantUtils::isNull( value );
   }
 }
 
@@ -1388,7 +1372,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
   if ( mFirstFieldIsFid && attributes.count() > 0 )
   {
     QVariant attrFid = attributes.at( 0 );
-    if ( !attrFid.isNull() )
+    if ( !QgsVariantUtils::isNull( attrFid ) )
     {
       bool ok = false;
       qlonglong id = attrFid.toLongLong( &ok );
@@ -1428,7 +1412,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }
-    else if ( attrVal.isNull() || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() && attrVal.type() != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
+    else if ( QgsVariantUtils::isNull( attrVal ) || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() && attrVal.type() != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -1643,11 +1627,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( !( flags & QgsFeatureSink::FastInsert ) &&
        ( mGDALDriverName == QLatin1String( "CSV" ) || mGDALDriverName == QLatin1String( "XLSX" ) || mGDALDriverName == QLatin1String( "ODS" ) ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     {
       QMutexLocker locker( mutex );
@@ -1900,7 +1880,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
     return false;
 
   bool res = true;
-  QList<int> attrsLst = qgis::setToList( attributes );
+  QList<int> attrsLst( attributes.begin(), attributes.end() );
   // sort in descending order
   std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
   const auto constAttrsLst = attrsLst;
@@ -2025,7 +2005,7 @@ bool QgsOgrProvider::rollbackTransaction()
 
 bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities, bool hasExistingRef )
 {
-  QgsCPLErrorHandler handler;
+  QgsCPLErrorHandler handler( QObject::tr( "OGR" ) );
 
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
@@ -2040,11 +2020,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   if ( !theSQL.isEmpty() )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     GDALDatasetH ds = mOgrOrigLayer->getDatasetHandleAndMutex( mutex );
     OGRLayerH subsetLayerH;
@@ -2073,11 +2049,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   {
     mOgrSqlLayer.reset();
     mOgrLayer = mOgrOrigLayer.get();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     {
       QMutexLocker locker( mutex );
@@ -2229,7 +2201,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
 
       OGRFieldType type = OGR_Fld_GetType( fd );
-      if ( it2->isNull() || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->type() != QVariant::StringList && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) || ( it2->type() == QVariant::StringList && it2->toStringList().empty() ) ) ) )
+      if ( QgsVariantUtils::isNull( *it2 ) || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->type() != QVariant::StringList && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) || ( it2->type() == QVariant::StringList && it2->toStringList().empty() ) ) ) )
       {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2548,11 +2520,7 @@ bool QgsOgrProvider::createSpatialIndex()
   else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
             mGDALDriverName == QLatin1String( "SQLite" ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     QByteArray sql = QByteArray( "SELECT CreateSpatialIndex(" + quotedIdentifier( layerName ) + ","
                                  + quotedIdentifier( OGR_L_GetGeometryColumn( layer ) ) + ") " ); // quote the layer name so spaces are handled
@@ -3068,6 +3036,190 @@ Qgis::VectorLayerTypeFlags QgsOgrProvider::vectorLayerTypeFlags() const
   return flags;
 }
 
+QList<QgsRelation> QgsOgrProvider::discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const
+{
+  if ( !mOgrLayer )
+    return {};
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+  QList<QgsRelation> output;
+
+  QRecursiveMutex *mutex = nullptr;
+  GDALDatasetH hDS = mOgrLayer->getDatasetHandleAndMutex( mutex );
+  QMutexLocker locker( mutex );
+
+  char **relationNames = GDALDatasetGetRelationshipNames( hDS, nullptr );
+  if ( !relationNames )
+    return output;
+
+  const QStringList names = QgsOgrUtils::cStringListToQStringList( relationNames );
+  CSLDestroy( relationNames );
+
+  QgsProviderMetadata *ogrProviderMetadata = QgsProviderRegistry::instance()->providerMetadata( TEXT_PROVIDER_KEY );
+  const QVariantMap thisLayerParts = ogrProviderMetadata->decodeUri( target->source() );
+  const QString thisPath = thisLayerParts.value( QStringLiteral( "path" ) ).toString();
+
+  for ( const QString &name : names )
+  {
+    GDALRelationshipH relationship = GDALDatasetGetRelationship( hDS, name.toUtf8().constData() );
+    if ( !relationship )
+      continue;
+
+    const QString leftTableName( GDALRelationshipGetLeftTableName( relationship ) );
+    if ( leftTableName != mLayerName )
+      continue;
+
+    const QString rightTableName( GDALRelationshipGetRightTableName( relationship ) );
+    const QString mappingTableName( GDALRelationshipGetMappingTableName( relationship ) );
+
+    // try to find right and mapping tables in list of provided layers
+    QgsVectorLayer *rightTableLayer = nullptr;
+    QgsVectorLayer *mappingTableLayer = nullptr;
+    for ( QgsVectorLayer *layer : layers )
+    {
+      if ( layer->providerType() != TEXT_PROVIDER_KEY )
+        continue;
+
+      const QVariantMap parts = ogrProviderMetadata->decodeUri( layer->source() );
+      if ( parts.value( QStringLiteral( "path" ) ).toString() != thisPath )
+        continue;
+
+      if ( parts.value( QStringLiteral( "layerName" ) ).toString() == rightTableName )
+        rightTableLayer = layer;
+
+      if ( parts.value( QStringLiteral( "layerName" ) ).toString() == mappingTableName )
+        mappingTableLayer = layer;
+    }
+
+    if ( !rightTableLayer )
+      continue;
+
+    if ( !mappingTableName.isEmpty() && !mappingTableLayer )
+      continue;
+
+    const QString relationshipName( GDALRelationshipGetName( relationship ) );
+
+    char **cslLeftTableFieldNames = GDALRelationshipGetLeftTableFields( relationship );
+    const QStringList leftTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftTableFieldNames );
+    CSLDestroy( cslLeftTableFieldNames );
+
+    char **cslRightTableFieldNames = GDALRelationshipGetRightTableFields( relationship );
+    const QStringList rightTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightTableFieldNames );
+    CSLDestroy( cslRightTableFieldNames );
+
+    char **cslLeftMappingTableFieldNames = GDALRelationshipGetLeftMappingTableFields( relationship );
+    const QStringList leftMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslLeftMappingTableFieldNames );
+    CSLDestroy( cslLeftMappingTableFieldNames );
+
+    char **cslRightMappingTableFieldNames = GDALRelationshipGetRightMappingTableFields( relationship );
+    const QStringList rightMappingTableFieldNames = QgsOgrUtils::cStringListToQStringList( cslRightMappingTableFieldNames );
+    CSLDestroy( cslRightMappingTableFieldNames );
+
+    const GDALRelationshipType relationshipType = GDALRelationshipGetType( relationship );
+    Qgis::RelationshipStrength strength = Qgis::RelationshipStrength::Association;
+    switch ( relationshipType )
+    {
+      case GRT_COMPOSITE:
+        strength = Qgis::RelationshipStrength::Composition;
+        break;
+
+      case GRT_ASSOCIATION:
+        strength = Qgis::RelationshipStrength::Association;
+        break;
+
+      case GRT_AGGREGATION:
+        QgsLogger::warning( "Aggregation relationships are not supported" );
+        continue;
+    }
+
+    const GDALRelationshipCardinality cardinality = GDALRelationshipGetCardinality( relationship );
+    switch ( cardinality )
+    {
+      case GRC_ONE_TO_ONE:
+      case GRC_ONE_TO_MANY:
+      case GRC_MANY_TO_ONE:
+      {
+        QgsRelation relation;
+        relation.setName( relationshipName );
+        relation.setId( relationshipName );
+        relation.setReferencedLayer( target->id() );
+        relation.setReferencingLayer( rightTableLayer->id() );
+        relation.setStrength( strength );
+        for ( int i = 0; i < std::min( leftTableFieldNames.length(), rightTableFieldNames.length() ); ++i )
+        {
+          relation.addFieldPair( rightTableFieldNames.at( i ), leftTableFieldNames.at( i ) );
+        }
+        if ( relation.isValid() )
+        {
+          output.append( relation );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + relationshipName );
+        }
+        break;
+      }
+
+      case GRC_MANY_TO_MANY:
+      {
+        if ( !mappingTableLayer )
+        {
+          QgsLogger::warning( "No mapping table for " + relationshipName );
+          continue;
+        }
+
+        QgsRelation relation;
+        relation.setName( relationshipName );
+        relation.setId( relationshipName + "_forward" );
+        relation.setReferencedLayer( target->id() );
+        relation.setReferencingLayer( mappingTableLayer->id() );
+        relation.setStrength( strength );
+        for ( int i = 0; i < std::min( leftTableFieldNames.length(), leftMappingTableFieldNames.length() ); ++i )
+        {
+          relation.addFieldPair( leftMappingTableFieldNames.at( i ), leftTableFieldNames.at( i ) );
+        }
+        if ( relation.isValid() )
+        {
+          output.append( relation );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + relationshipName );
+          continue;
+        }
+
+        QgsRelation relation2;
+        relation2.setName( relationshipName );
+        relation2.setId( relationshipName + "_backward" );
+        relation2.setReferencedLayer( rightTableLayer->id() );
+        relation2.setReferencingLayer( mappingTableLayer->id() );
+        relation2.setStrength( strength );
+        for ( int i = 0; i < std::min( rightTableFieldNames.length(), rightMappingTableFieldNames.length() ); ++i )
+        {
+          relation2.addFieldPair( rightMappingTableFieldNames.at( i ), rightTableFieldNames.at( i ) );
+        }
+        if ( relation2.isValid() )
+        {
+          output.append( relation2 );
+        }
+        else
+        {
+          QgsLogger::warning( "Invalid relation for " + relationshipName );
+          continue;
+        }
+
+        break;
+      }
+    }
+  }
+  return output;
+#else
+  Q_UNUSED( target )
+  Q_UNUSED( layers )
+  return {};
+#endif
+}
+
 QVariant QgsOgrProvider::minimumValue( int index ) const
 {
   if ( !mValid || index < 0 || index >= mAttributeFields.count() )
@@ -3409,14 +3561,12 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     QStringList options( mOpenOptions );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
     // assume trusted data to get more speed
     if ( mGDALDriverName == QLatin1String( "FlatGeobuf" ) &&
          !options.contains( QStringLiteral( "VERIFY_BUFFERS=YES" ) ) )
     {
       options << QStringLiteral( "VERIFY_BUFFERS=NO" );
     }
-#endif
 
     // try to open read-only
     if ( !mLayerName.isNull() )
@@ -3444,13 +3594,9 @@ void QgsOgrProvider::open( OpenMode mode )
     {
       // determine encoding from shapefile cpg or LDID information, if possible
       QString shpEncoding;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) );
       if ( shpEncoding.isEmpty() )
         shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) );
-#else
-      shpEncoding = QgsOgrUtils::readShapefileEncoding( mFilePath );
-#endif
 
       if ( !shpEncoding.isEmpty() )
         setEncoding( shpEncoding );

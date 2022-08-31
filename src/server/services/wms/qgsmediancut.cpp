@@ -178,7 +178,7 @@ namespace QgsWms
 
 
     void splitColorBox( QgsColorBox &colorBox, QgsColorBoxMap &colorBoxMap,
-                        QMap<int, QgsColorBox>::iterator colorBoxMapIt )
+                        QMultiMap<int, QgsColorBox>::iterator colorBoxMapIt )
     {
 
       if ( colorBox.size() < 2 )
@@ -281,7 +281,7 @@ namespace QgsWms
 
     QgsColorBoxMap colorBoxMap; //QMultiMap< int, ColorBox >
     colorBoxMap.insert( firstBoxPixelSum, firstBox );
-    QMap<int, QgsColorBox>::iterator colorBoxMapIt = colorBoxMap.end();
+    QMultiMap<int, QgsColorBox>::iterator colorBoxMapIt = colorBoxMap.end();
 
     //split boxes until number of boxes == nColors or all the boxes have color count 1
     bool allColorsMapped = false;

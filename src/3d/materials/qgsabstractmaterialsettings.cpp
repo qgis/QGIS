@@ -51,7 +51,11 @@ QByteArray QgsAbstractMaterialSettings::dataDefinedVertexColorsAsByte( const Qgs
   return QByteArray();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 void QgsAbstractMaterialSettings::applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const
+#else
+void QgsAbstractMaterialSettings::applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const
+#endif
 {
   Q_UNUSED( geometry )
   Q_UNUSED( vertexCount )

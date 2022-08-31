@@ -553,7 +553,7 @@ QPointF QgsSymbolLayerUtils::toPoint( const QVariant &value, bool *ok )
   if ( ok )
     *ok = false;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QPoint();
 
   if ( value.type() == QVariant::List )
@@ -617,7 +617,7 @@ QSizeF QgsSymbolLayerUtils::toSize( const QVariant &value, bool *ok )
   if ( ok )
     *ok = false;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QSizeF();
 
   if ( value.type() == QVariant::List )
@@ -3694,34 +3694,17 @@ bool QgsSymbolLayerUtils::saveColorsToGpl( QFile &file, const QString &paletteNa
   }
 
   QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  stream << "GIMP Palette" << endl;
-#else
   stream << "GIMP Palette" << Qt::endl;
-#endif
   if ( paletteName.isEmpty() )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << "Name: QGIS Palette" << endl;
-#else
     stream << "Name: QGIS Palette" << Qt::endl;
-#endif
   }
   else
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << "Name: " << paletteName << endl;
-#else
     stream << "Name: " << paletteName << Qt::endl;
-#endif
   }
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  stream << "Columns: 4" << endl;
-  stream << '#' << endl;
-#else
   stream << "Columns: 4" << Qt::endl;
   stream << '#' << Qt::endl;
-#endif
 
   for ( QgsNamedColorList::ConstIterator colorIt = colors.constBegin(); colorIt != colors.constEnd(); ++colorIt )
   {
@@ -3731,11 +3714,7 @@ bool QgsSymbolLayerUtils::saveColorsToGpl( QFile &file, const QString &paletteNa
       continue;
     }
     stream << QStringLiteral( "%1 %2 %3" ).arg( color.red(), 3 ).arg( color.green(), 3 ).arg( color.blue(), 3 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << "\t" << ( ( *colorIt ).second.isEmpty() ? color.name() : ( *colorIt ).second ) << endl;
-#else
     stream << "\t" << ( ( *colorIt ).second.isEmpty() ? color.name() : ( *colorIt ).second ) << Qt::endl;
-#endif
   }
   file.close();
 

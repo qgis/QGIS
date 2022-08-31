@@ -1450,6 +1450,14 @@ class CORE_EXPORT Qgis
       HalfArc, //!< A line-only half arc (since QGIS 3.20)
       ThirdArc, //!< A line-only one third arc (since QGIS 3.20)
       QuarterArc, //!< A line-only one quarter arc (since QGIS 3.20)
+      ParallelogramRight, //!< Parallelogram that slants right (since QGIS 3.28)
+      ParallelogramLeft, //!< Parallelogram that slants left (since QGIS 3.28)
+      Trapezoid, //!< Trapezoid (since QGIS 3.28)
+      Shield, //!< A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)
+      DiamondStar, //!< A 4-sided star (since QGIS 3.28)
+      Heart, //!< Heart (since QGIS 3.28)
+      Decagon, //!< Decagon (since QGIS 3.28)
+      RoundedSquare, //!< A square with rounded corners (since QGIS 3.28)
     };
     Q_ENUM( MarkerShape )
 
@@ -2073,6 +2081,48 @@ class CORE_EXPORT Qgis
     Q_ENUM( ArcGisRestServiceType )
 
     /**
+     * Relationship types.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsRelation::RelationType.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RelationshipType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRelation, RelationType ) : int
+      {
+      Normal, //!< A normal relation
+      Generated, //!< A generated relation is a child of a polymorphic relation
+    };
+    Q_ENUM( RelationshipType )
+
+    /**
+     * Relationship strength.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsRelation::RelationStrength.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RelationshipStrength SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRelation, RelationStrength ) : int
+      {
+      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
+      Composition, //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
+    };
+    Q_ENUM( RelationshipStrength )
+
+    /**
+     * Relationship cardinality.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RelationshipCardinality : int
+    {
+      OneToOne, //!< One to one relationship
+      OneToMany, //!< One to many relationship
+      ManyToOne, //!< Many to one relationship
+      ManyToMany, //!< Many to many relationship
+    };
+    Q_ENUM( RelationshipCardinality )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */
@@ -2454,36 +2504,15 @@ namespace qgis
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return list.toSet();
-#else
     return QSet<T>( list.begin(), list.end() );
-#endif
   }
 
   template<class T>
   QList<T> setToList( const QSet<T> &set )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return set.toList();
-#else
     return QList<T>( set.begin(), set.end() );
-#endif
   }
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-namespace std
-{
-  template<> struct hash<QString>
-  {
-    std::size_t operator()( const QString &s ) const noexcept
-    {
-      return ( size_t ) qHash( s );
-    }
-  };
-}
-#endif
 
 ///@endcond
 #endif

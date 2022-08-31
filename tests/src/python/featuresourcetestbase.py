@@ -596,6 +596,41 @@ class FeatureSourceTestCase(object):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
         self.assertTrue(all_valid)
 
+    def testGetFeaturesFilterRectTestsNoGeomFlag(self):
+        """
+        A repeat of the tests from testGetFeaturesFilterRectTests but with the NoGeometry flag
+        set. This should not change the set of feature IDs returned.
+        """
+        extent = QgsRectangle(-70, 67, -60, 80)
+        request = QgsFeatureRequest()
+        request.setFilterRect(extent)
+        request.setFlags(QgsFeatureRequest.NoGeometry)
+
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        assert set(features) == set([2, 4]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
+
+        # test that results match QgsFeatureRequest.acceptFeature
+        for f in self.source.getFeatures():
+            self.assertEqual(request.acceptFeature(f), f['pk'] in set([2, 4]))
+
+        # test with an empty rectangle
+        extent = QgsRectangle()
+        request = QgsFeatureRequest().setFilterRect(extent).setFlags(QgsFeatureRequest.NoGeometry)
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
+
+        # ExactIntersection flag set, but no filter rect set. Should be ignored.
+        request = QgsFeatureRequest()
+        request.setFlags(QgsFeatureRequest.ExactIntersect | QgsFeatureRequest.NoGeometry)
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
+
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent)

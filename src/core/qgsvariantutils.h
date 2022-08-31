@@ -39,6 +39,16 @@ class CORE_EXPORT QgsVariantUtils
      */
     static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid );
 
+    /**
+     * Returns TRUE if the specified \a variant should be considered a NULL value.
+     *
+     * This method is more rigorous vs QVariant::isNull(), which will return
+     * FALSE on newer Qt versions for tests like `QVariant( QDateTime() ).isNull()`.
+     *
+     * \since QGIS 3.28
+     */
+    static bool isNull( const QVariant &variant );
+
 };
 
 #endif // QGSVARIANTUTILS_H

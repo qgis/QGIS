@@ -45,8 +45,10 @@ void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
   QString referencingFields, referencedFields;
   for ( int i = 0; i < rel.fieldPairs().count(); i++ )
   {
-    referencingFields.append( QStringLiteral( "%1%2" ).arg( referencingFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencingField() ) );
-    referencedFields.append( QStringLiteral( "%1%2" ).arg( referencedFields.isEmpty() ? "" : ", " ).arg( rel.fieldPairs().at( i ).referencedField() ) );
+    referencingFields.append( QStringLiteral( "%1%2" ).arg( ( referencingFields.isEmpty() ? "" : ", " ),
+                              rel.fieldPairs().at( i ).referencingField() ) );
+    referencedFields.append( QStringLiteral( "%1%2" ).arg( ( referencedFields.isEmpty() ? "" : ", " ),
+                             rel.fieldPairs().at( i ).referencedField() ) );
   }
 
   const int row = mRelationsTable->rowCount();
@@ -56,16 +58,21 @@ void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
   mRelationsTable->setItem( row, 2, new QTableWidgetItem( referencingFields ) );
   mRelationsTable->setItem( row, 3, new QTableWidgetItem( rel.referencedLayer()->name() ) );
   mRelationsTable->setItem( row, 4, new QTableWidgetItem( referencedFields ) );
-  if ( rel.strength() == QgsRelation::RelationStrength::Composition )
+  switch ( rel.strength() )
   {
-    mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
-  }
-  else
-  {
-    mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Association" ) ) );
+    case Qgis::RelationshipStrength::Composition:
+    {
+      mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
+      break;
+    }
+    case Qgis::RelationshipStrength::Association:
+    {
+      mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Association" ) ) );
+      break;
+    }
   }
 
-  mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
+  mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will also be copied and deleted) or Association" ) );
 }
 
 QList<QgsRelation> QgsDiscoverRelationsDialog::relations() const

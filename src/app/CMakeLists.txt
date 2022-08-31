@@ -110,6 +110,8 @@ set(QGIS_APP_SRCS
   annotations/qgsannotationitempropertieswidget.cpp
   annotations/qgsannotationlayerproperties.cpp
 
+  canvas/qgscanvasrefreshblocker.cpp
+
   decorations/qgsdecorationitem.cpp
   decorations/qgsdecorationtitle.cpp
   decorations/qgsdecorationtitledialog.cpp
@@ -199,6 +201,8 @@ set(QGIS_APP_SRCS
   labeling/qgsmaptoolmovelabel.cpp
   labeling/qgsmaptoolrotatelabel.cpp
 
+  layers/qgsapplayerhandling.cpp
+
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutimagedrophandler.cpp
@@ -253,6 +257,7 @@ set(QGIS_APP_SRCS
   options/qgscustomprojectionoptions.cpp
   options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
+  options/qgsgpsoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
   options/qgsrasterrenderingoptions.cpp

@@ -66,6 +66,15 @@ if [[ ${PATCH_QT_3D} == "true" ]]; then
   )
 fi
 
+if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+   "-DQSCINTILLA_INCLUDE_DIR=/usr/include/qt6"
+   "-DQSCINTILLA_LIBRARY=/usr/lib64/libqscintilla2_qt6.so"
+   "-DQWT_INCLUDE_DIR=/usr/local/qwt-6.2.0/include/"
+   "-DQWT_LIBRARY=/usr/local/qwt-6.2.0/lib/libqwt.so.6"
+  )
+fi
+
 if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DGRASS_PREFIX$( grass --config version | cut -b 1 )=$( grass --config path )"
@@ -77,9 +86,9 @@ cmake \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
  -DUSE_CCACHE=OFF \
  -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
- -DWITH_DESKTOP=${WITH_QT5} \
+ -DWITH_DESKTOP=ON \
  -DWITH_ANALYSIS=ON \
- -DWITH_GUI=${WITH_QT5} \
+ -DWITH_GUI=ON \
  -DWITH_QUICK=${WITH_QUICK} \
  -DWITH_3D=${WITH_3D} \
  -DWITH_STAGED_PLUGINS=ON \
@@ -101,7 +110,7 @@ cmake \
  -DWITH_APIDOC=OFF \
  -DWITH_ASTYLE=OFF \
  -DWITH_BINDINGS=${WITH_QT5} \
- -DWITH_SERVER=${WITH_QT5} \
+ -DWITH_SERVER=ON \
  -DWITH_SERVER_LANDINGPAGE_WEBAPP=${WITH_QT5} \
  -DWITH_ORACLE=${WITH_QT5} \
  -DWITH_PDAL=ON \

@@ -630,6 +630,7 @@ set(QGIS_GUI_SRCS
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
+  qgsscreenhelper.cpp
   qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
   qgssubsetstringeditorinterface.cpp
@@ -893,6 +894,7 @@ set(QGIS_GUI_HDRS
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
+  qgsscreenhelper.h
   qgsscrollarea.h
   qgssearchquerybuilder.h
   qgssubsetstringeditorinterface.h

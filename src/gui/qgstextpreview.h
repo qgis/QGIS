@@ -21,6 +21,8 @@
 #include <QLabel>
 #include "qgis_gui.h"
 
+class QgsScreenHelper;
+
 /**
  * \class QgsTextPreview
  * \ingroup gui
@@ -99,6 +101,9 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     QgsUnitTypes::DistanceUnit mapUnits() const { return mMapUnits; }
 
   private:
+
+    QgsScreenHelper *mScreenHelper = nullptr;
+
     QgsTextFormat mFormat;
     QgsRenderContext mContext;
     double mScale = -1;

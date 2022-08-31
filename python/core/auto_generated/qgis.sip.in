@@ -886,6 +886,14 @@ The development version
       HalfArc,
       ThirdArc,
       QuarterArc,
+      ParallelogramRight,
+      ParallelogramLeft,
+      Trapezoid,
+      Shield,
+      DiamondStar,
+      Heart,
+      Decagon,
+      RoundedSquare,
     };
 
     enum class MarkerLinePlacement
@@ -1208,6 +1216,26 @@ The development version
       GPServer,
       GeocodeServer,
       Unknown,
+    };
+
+    enum class RelationshipType
+      {
+      Normal,
+      Generated,
+    };
+
+    enum class RelationshipStrength
+      {
+      Association,
+      Composition,
+    };
+
+    enum class RelationshipCardinality
+    {
+      OneToOne,
+      OneToMany,
+      ManyToOne,
+      ManyToMany,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

@@ -82,7 +82,7 @@ QVariant QgsGeometryValidationModel::data( const QModelIndex &index, int role ) 
         mExpressionContext.setFeature( feature );
         const QVariant featureTitle = mDisplayExpression.evaluate( &mExpressionContext );
 
-        if ( featureTitle.isNull() )
+        if ( QgsVariantUtils::isNull( featureTitle ) )
         {
           return topologyError->description();
         }

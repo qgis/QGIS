@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>288</height>
+    <width>422</width>
+    <height>272</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Toolbar buttons</string>
+      <string>Buttons and Context Menu</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -63,6 +63,36 @@
          <string>Add child feature</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mAllowAddChildFeatureWithNoGeometry">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, it is possible to add a feature without geometry to a spatial layer. Two &amp;quot;Add child feature&amp;quot; buttons are showed: with and without geometry.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Allow add child feature with no geometry (for spatial layer)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QCheckBox" name="mRelationShowDuplicateChildFeatureCheckBox">

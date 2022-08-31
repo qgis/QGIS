@@ -342,11 +342,8 @@ bool QgsOgrProviderMetadata::styleExists( const QString &uri, const QString &sty
   if ( !userLayer )
     return false;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
+
   OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex );
   GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
@@ -385,11 +382,8 @@ bool QgsOgrProviderMetadata::saveStyle(
   if ( !userLayer )
     return false;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
+
   OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex );
   GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
@@ -588,11 +582,7 @@ bool QgsOgrProviderMetadata::deleteStyleById( const QString &uri, const QString 
   if ( !userLayer )
     return false;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
   GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
 
@@ -673,13 +663,9 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
     return QString();
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex1 = nullptr;
-  QMutex *mutex2 = nullptr;
-#else
   QRecursiveMutex *mutex1 = nullptr;
   QRecursiveMutex *mutex2 = nullptr;
-#endif
+
   OGRLayerH hLayer = layerStyles->getHandleAndMutex( mutex1 );
   OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex2 );
   QMutexLocker lock1( mutex1 );
@@ -768,13 +754,8 @@ int QgsOgrProviderMetadata::listStyles(
     return 0;
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex1 = nullptr;
-  QMutex *mutex2 = nullptr;
-#else
   QRecursiveMutex *mutex1 = nullptr;
   QRecursiveMutex *mutex2 = nullptr;
-#endif
 
   OGRLayerH hLayer = layerStyles->getHandleAndMutex( mutex1 );
   QMutexLocker lock1( mutex1 );
@@ -868,11 +849,7 @@ QString QgsOgrProviderMetadata::getStyleById( const QString &uri, const QString 
     return QString();
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex1 = nullptr;
-#else
   QRecursiveMutex *mutex1 = nullptr;
-#endif
 
   OGRLayerH hLayer = layerStyles->getHandleAndMutex( mutex1 );
   QMutexLocker lock1( mutex1 );
@@ -935,11 +912,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
       if ( !userLayer )
         return false;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      QMutex *mutex = nullptr;
-#else
       QRecursiveMutex *mutex = nullptr;
-#endif
       // Returns native OGRLayerH object with the mutex to lock when using it
       OGRLayerH hLayer = userLayer->getHandleAndMutex( mutex );
       QMutexLocker locker( mutex );
@@ -1332,11 +1305,7 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   if ( !firstLayer )
     return {};
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
   GDALDatasetH hDS = firstLayer->getDatasetHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
 

@@ -29,9 +29,6 @@
 #include <QMimeData>
 #include <QWidget>
 #include <QScreen>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QDesktopWidget>
-#endif
 
 QgsTextFormat::QgsTextFormat()
 {
@@ -879,7 +876,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   QString ddFontFamily;
   context.expressionContext().setOriginalValueVariable( d->textFont.family() );
   QVariant exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::Family, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     QString family = exprVal.toString().trimmed();
     family = QgsApplication::fontManager()->processFontFamilyName( family );
@@ -898,7 +895,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   QString ddFontStyle;
   context.expressionContext().setOriginalValueVariable( d->textNamedStyle );
   exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStyle, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     QString fontstyle = exprVal.toString().trimmed();
     ddFontStyle = fontstyle;
@@ -1003,7 +1000,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   }
 
   exprVal = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontSizeUnit, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -1019,7 +1016,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
     const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontOpacity, context.expressionContext(), d->opacity * 100 );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }
@@ -1030,7 +1027,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.stretch() );
     const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontStretchFactor, context.expressionContext(), d->textFont.stretch() );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->textFont.setStretch( val.toInt() );
     }
@@ -1048,7 +1045,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.letterSpacing() );
     const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontLetterSpacing, context.expressionContext(), d->textFont.letterSpacing() );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->textFont.setLetterSpacing( QFont::AbsoluteSpacing, val.toDouble() );
     }
@@ -1058,7 +1055,7 @@ void QgsTextFormat::updateDataDefinedProperties( QgsRenderContext &context )
   {
     context.expressionContext().setOriginalValueVariable( d->textFont.wordSpacing() );
     const QVariant val = d->mDataDefinedProperties.value( QgsPalLayerSettings::FontWordSpacing, context.expressionContext(), d->textFont.wordSpacing() );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->textFont.setWordSpacing( val.toDouble() );
     }
@@ -1124,12 +1121,8 @@ QPixmap QgsTextFormat::textFormatPreviewPixmap( const QgsTextFormat &format, QSi
   newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
   context.setMapToPixel( newCoordXForm );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  const double logicalDpiX = QgsApplication::desktop()->logicalDpiX();
-#else
   QWidget *activeWindow = QApplication::activeWindow();
   const double logicalDpiX = activeWindow && activeWindow->screen() ? activeWindow->screen()->logicalDotsPerInchX() : 96.0;
-#endif
   context.setScaleFactor( logicalDpiX / 25.4 );
 
   context.setUseAdvancedEffects( true );

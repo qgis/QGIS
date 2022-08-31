@@ -47,6 +47,142 @@ class TestQgsSQLStatementCustomFunctions(unittest.TestCase):
         self.assertEqual(column_ref.name(), 'a')
         self.assertEqual(column_ref.tableName(), '')
 
+    def testNominalSimpleQuoted(self):
+        statement = "SELECT a FROM \"t\""
+        self.checkNominal(statement, "SELECT a FROM t")
+        exp = QgsSQLStatement(statement)
+        statement_node = exp.rootNode()
+        self.assertEqual(statement_node.nodeType(), QgsSQLStatement.ntSelect)
+        tables = statement_node.tables()
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertEqual(table.nodeType(), QgsSQLStatement.ntTableDef)
+        self.assertEqual(table.name(), 't')
+        self.assertEqual(table.alias(), '')
+        columns = statement_node.columns()
+        self.assertEqual(len(columns), 1)
+        column = columns[0]
+        self.assertEqual(column.nodeType(), QgsSQLStatement.ntSelectedColumn)
+        column_ref = column.column()
+        self.assertEqual(column.alias(), '')
+        self.assertEqual(column_ref.nodeType(), QgsSQLStatement.ntColumnRef)
+        self.assertEqual(column_ref.name(), 'a')
+        self.assertEqual(column_ref.tableName(), '')
+
+    def testNominalSimpleWithSchema(self):
+        statement = "SELECT a FROM user.mySchema3.tableName"
+        self.checkNominal(statement)
+        exp = QgsSQLStatement(statement)
+        statement_node = exp.rootNode()
+        self.assertEqual(statement_node.nodeType(), QgsSQLStatement.ntSelect)
+        tables = statement_node.tables()
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertEqual(table.nodeType(), QgsSQLStatement.ntTableDef)
+        self.assertEqual(table.name(), 'tableName')
+        self.assertEqual(table.schema(), 'user.mySchema3')
+        self.assertEqual(table.alias(), '')
+        columns = statement_node.columns()
+        self.assertEqual(len(columns), 1)
+        column = columns[0]
+        self.assertEqual(column.nodeType(), QgsSQLStatement.ntSelectedColumn)
+        column_ref = column.column()
+        self.assertEqual(column.alias(), '')
+        self.assertEqual(column_ref.nodeType(), QgsSQLStatement.ntColumnRef)
+        self.assertEqual(column_ref.name(), 'a')
+        self.assertEqual(column_ref.tableName(), '')
+
+    def testNominalSimpleWithSchemaQuoted(self):
+        statement = "SELECT a FROM \"user\".\"mySchema3\".\"tableName\""
+        self.checkNominal(statement, 'SELECT a FROM user.mySchema3.tableName')
+        exp = QgsSQLStatement(statement)
+        statement_node = exp.rootNode()
+        self.assertEqual(statement_node.nodeType(), QgsSQLStatement.ntSelect)
+        tables = statement_node.tables()
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertEqual(table.nodeType(), QgsSQLStatement.ntTableDef)
+        self.assertEqual(table.name(), 'tableName')
+        self.assertEqual(table.schema(), 'user.mySchema3')
+        self.assertEqual(table.alias(), '')
+        columns = statement_node.columns()
+        self.assertEqual(len(columns), 1)
+        column = columns[0]
+        self.assertEqual(column.nodeType(), QgsSQLStatement.ntSelectedColumn)
+        column_ref = column.column()
+        self.assertEqual(column.alias(), '')
+        self.assertEqual(column_ref.nodeType(), QgsSQLStatement.ntColumnRef)
+        self.assertEqual(column_ref.name(), 'a')
+        self.assertEqual(column_ref.tableName(), '')
+
+    def testNominalSimpleWithAlias(self):
+        statement = "SELECT a FROM tableName AS myTable"
+        self.checkNominal(statement)
+        exp = QgsSQLStatement(statement)
+        statement_node = exp.rootNode()
+        self.assertEqual(statement_node.nodeType(), QgsSQLStatement.ntSelect)
+        tables = statement_node.tables()
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertEqual(table.nodeType(), QgsSQLStatement.ntTableDef)
+        self.assertEqual(table.name(), 'tableName')
+        self.assertEqual(table.alias(), 'myTable')
+        columns = statement_node.columns()
+        self.assertEqual(len(columns), 1)
+        column = columns[0]
+        self.assertEqual(column.nodeType(), QgsSQLStatement.ntSelectedColumn)
+        column_ref = column.column()
+        self.assertEqual(column.alias(), '')
+        self.assertEqual(column_ref.nodeType(), QgsSQLStatement.ntColumnRef)
+        self.assertEqual(column_ref.name(), 'a')
+        self.assertEqual(column_ref.tableName(), '')
+
+    def testNominalSimpleWithAliasAndSchema(self):
+        statement = "SELECT a FROM dbo.mySchema.tableName AS myTable"
+        self.checkNominal(statement)
+        exp = QgsSQLStatement(statement)
+        statement_node = exp.rootNode()
+        self.assertEqual(statement_node.nodeType(), QgsSQLStatement.ntSelect)
+        tables = statement_node.tables()
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertEqual(table.nodeType(), QgsSQLStatement.ntTableDef)
+        self.assertEqual(table.name(), 'tableName')
+        self.assertEqual(table.schema(), 'dbo.mySchema')
+        self.assertEqual(table.alias(), 'myTable')
+        columns = statement_node.columns()
+        self.assertEqual(len(columns), 1)
+        column = columns[0]
+        self.assertEqual(column.nodeType(), QgsSQLStatement.ntSelectedColumn)
+        column_ref = column.column()
+        self.assertEqual(column.alias(), '')
+        self.assertEqual(column_ref.nodeType(), QgsSQLStatement.ntColumnRef)
+        self.assertEqual(column_ref.name(), 'a')
+        self.assertEqual(column_ref.tableName(), '')
+
+    def testNominalSimpleWithAliasAndSchemaQuoted(self):
+        statement = "SELECT a FROM \"dbo\".\"mySchema\".\"tableName\" AS myTable"
+        self.checkNominal(statement, 'SELECT a FROM dbo.mySchema.tableName AS myTable')
+        exp = QgsSQLStatement(statement)
+        statement_node = exp.rootNode()
+        self.assertEqual(statement_node.nodeType(), QgsSQLStatement.ntSelect)
+        tables = statement_node.tables()
+        self.assertEqual(len(tables), 1)
+        table = tables[0]
+        self.assertEqual(table.nodeType(), QgsSQLStatement.ntTableDef)
+        self.assertEqual(table.name(), 'tableName')
+        self.assertEqual(table.schema(), 'dbo.mySchema')
+        self.assertEqual(table.alias(), 'myTable')
+        columns = statement_node.columns()
+        self.assertEqual(len(columns), 1)
+        column = columns[0]
+        self.assertEqual(column.nodeType(), QgsSQLStatement.ntSelectedColumn)
+        column_ref = column.column()
+        self.assertEqual(column.alias(), '')
+        self.assertEqual(column_ref.nodeType(), QgsSQLStatement.ntColumnRef)
+        self.assertEqual(column_ref.name(), 'a')
+        self.assertEqual(column_ref.tableName(), '')
+
     def testNominalSelectDistinct(self):
         statement = "SELECT DISTINCT a FROM t"
         self.checkNominal(statement)

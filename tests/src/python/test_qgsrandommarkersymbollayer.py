@@ -35,7 +35,7 @@ from qgis.core import (QgsGeometry,
                        QgsRenderContext,
                        QgsFeature,
                        QgsMapSettings,
-                       QgsRenderChecker,
+                       QgsMultiRenderChecker,
                        QgsReadWriteContext,
                        QgsSymbolLayerUtils,
                        QgsSimpleMarkerSymbolLayer,
@@ -59,13 +59,15 @@ TEST_DATA_DIR = unitTestDataPath()
 
 class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
 
-    def setUp(self):
-        self.report = "<h1>Python QgsRandomMarkerFillSymbolLayer Tests</h1>\n"
+    @classmethod
+    def setUpClass(cls):
+        cls.report = "<h1>Python QgsRandomMarkerFillSymbolLayer Tests</h1>\n"
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         report_file_path = "%s/qgistest.html" % QDir.tempPath()
         with open(report_file_path, 'a') as report_file:
-            report_file.write(self.report)
+            report_file.write(cls.report)
 
     def testSimple(self):
         s = QgsFillSymbol()
@@ -126,7 +128,7 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
         g = QgsGeometry.fromWkt(
             'Polygon((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1),(8 8, 9 8, 9 9, 8 9, 8 8))')
         rendered_image = self.renderGeometry(s3, g)
-        self.assertFalse(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image))
+        self.assertFalse(self.imageCheck('randommarkerfill_seed', 'randommarkerfill_seed', rendered_image, expect_fail=True))
 
         # density-based count
         s3.symbolLayer(0).setSeed(1)
@@ -322,19 +324,19 @@ class TestQgsRandomMarkerSymbolLayer(unittest.TestCase):
 
         return image
 
-    def imageCheck(self, name, reference_image, image):
+    def imageCheck(self, name, reference_image, image, expect_fail=False):
         self.report += "<h2>Render {}</h2>\n".format(name)
         temp_dir = QDir.tempPath() + '/'
         file_name = temp_dir + 'symbol_' + name + ".png"
         image.save(file_name, "PNG")
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlPathPrefix("symbol_randommarkerfill")
         checker.setControlName("expected_" + reference_image)
         checker.setRenderedImage(file_name)
+        checker.setExpectFail(expect_fail)
         checker.setColorTolerance(2)
-        result = checker.compareImages(name, 20)
-        self.report += checker.report()
-        print((self.report))
+        result = checker.runTest(name, 20)
+        TestQgsRandomMarkerSymbolLayer.report += checker.report()
         return result
 
 

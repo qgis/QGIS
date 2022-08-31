@@ -692,7 +692,7 @@ int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *ctxt, int idx )
   }
 
   QVariant v = c->currentAttribute( idx );
-  if ( v.isNull() )
+  if ( QgsVariantUtils::isNull( v ) )
   {
     sqlite3_result_null( ctxt );
   }
@@ -808,7 +808,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     return;
   }
 
-  if ( ret.isNull() )
+  if ( QgsVariantUtils::isNull( ret ) )
   {
     sqlite3_result_null( ctxt );
     return;
@@ -833,14 +833,14 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     }
     case QVariant::UserType:
     {
-      if ( ret.canConvert<QgsGeometry>() )
+      if ( ret.userType() == QMetaType::type( "QgsGeometry" ) )
       {
         char *blob = nullptr;
         int size = 0;
         qgsGeometryToSpatialiteBlob( ret.value<QgsGeometry>(), /*srid*/0, blob, size );
         sqlite3_result_blob( ctxt, blob, size, deleteGeometryBlob );
       }
-      else if ( ret.canConvert<QgsInterval>() )
+      else if ( ret.userType() == QMetaType::type( "QgsInterval" ) )
       {
         sqlite3_result_double( ctxt, ret.value<QgsInterval>().seconds() );
       }

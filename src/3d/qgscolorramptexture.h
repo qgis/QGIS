@@ -29,12 +29,9 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
-#include <Qt3DRender/QBuffer>
 #include <QByteArray>
 
-#include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgstriangularmesh.h"
+#include "qgscolorrampshader.h"
 
 #define SIP_NO_FILE
 
@@ -49,7 +46,10 @@ class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerato
 
     bool operator ==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 
+    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( QgsColorRampTextureGenerator )
+    Q_NOWARN_DEPRECATED_POP
 
   private:
     QgsColorRampShader mColorRampShader;
@@ -59,6 +59,8 @@ class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerato
 
 class QgsColorRampTexture: public Qt3DRender::QAbstractTextureImage
 {
+    Q_OBJECT
+
   public:
     QgsColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale = 1, Qt3DCore::QNode *parent = nullptr );
     // QAbstractTextureImage interface

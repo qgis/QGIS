@@ -487,6 +487,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
   if ( path.isEmpty() )
   {
     mImage = QImage();
+    mSVG.load( QByteArray() );
     return;
   }
 

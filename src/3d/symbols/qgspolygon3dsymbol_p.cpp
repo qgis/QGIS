@@ -38,11 +38,10 @@
 #include "qgsvectorlayer.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgspolygon.h"
 
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
-
-#include "qgsimagetexture.h"
 
 /// @cond PRIVATE
 

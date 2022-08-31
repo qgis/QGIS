@@ -25,14 +25,7 @@
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
 #include "qgsthreadingutils.h"
-#include "qgsgeometrycollection.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsmultisurface.h"
-#include "qgsgeometryfactory.h"
-#include "qgscurvepolygon.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsmultipoint.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgspallabeling.h"
@@ -144,7 +137,7 @@ QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer,
     double val = value.toDouble( &convertOk );
     if ( convertOk )
       values << val;
-    else if ( value.isNull() )
+    else if ( QgsVariantUtils::isNull( value ) )
     {
       if ( nullCount )
         *nullCount += 1;
@@ -432,9 +425,9 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
     if ( !exempt )
     {
-      valid = valid && !value.isNull();
+      valid = valid && !QgsVariantUtils::isNull( value );
 
-      if ( value.isNull() )
+      if ( QgsVariantUtils::isNull( value ) )
       {
         errors << QObject::tr( "value is NULL" );
         notNullConstraintViolated = true;
@@ -548,8 +541,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // 2. client side default expression
       // note - deliberately not using else if!
       QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
-      if ( ( v.isNull() || ( hasUniqueConstraint
-                             && checkUniqueValue( idx, v ) )
+      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
+             && checkUniqueValue( idx, v ) )
              || defaultValueDefinition.applyOnUpdate() )
            && defaultValueDefinition.isValid() )
       {
@@ -561,8 +554,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 3. provider side default value clause
       // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-      if ( ( v.isNull() || ( hasUniqueConstraint
-                             && checkUniqueValue( idx, v ) ) )
+      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
+             && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -576,9 +569,9 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 4. provider side default literal
       // note - deliberately not using else if!
-      if ( ( v.isNull() || ( checkUnique
-                             && hasUniqueConstraint
-                             && checkUniqueValue( idx, v ) ) )
+      if ( ( QgsVariantUtils::isNull( v ) || ( checkUnique
+             && hasUniqueConstraint
+             && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -592,7 +585,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 5. passed attribute value
       // note - deliberately not using else if!
-      if ( v.isNull() && fd.attributes().contains( idx ) )
+      if ( QgsVariantUtils::isNull( v ) && fd.attributes().contains( idx ) )
       {
         v = fd.attributes().value( idx );
       }
@@ -646,7 +639,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
   for ( const QgsRelation &relation : relations )
   {
     //check if composition (and not association)
-    if ( relation.strength() == QgsRelation::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
+    if ( relation.strength() == Qgis::RelationshipStrength::Composition && !referencedLayersBranch.contains( relation.referencedLayer() ) && depth < effectiveMaxDepth )
     {
       depth++;
       referencedLayersBranch << layer;
@@ -1070,37 +1063,44 @@ bool QgsVectorLayerUtils::impactsCascadeFeatures( const QgsVectorLayer *layer, c
   const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
   for ( const QgsRelation &relation : relations )
   {
-    if ( relation.strength() == QgsRelation::Composition )
+    switch ( relation.strength() )
     {
-      QgsFeatureIds childFeatureIds;
-
-      const auto constFids = fids;
-      for ( const QgsFeatureId fid : constFids )
+      case Qgis::RelationshipStrength::Composition:
       {
-        //get features connected over this relation
-        QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( layer->getFeature( fid ) );
-        QgsFeature childFeature;
-        while ( relatedFeaturesIt.nextFeature( childFeature ) )
+        QgsFeatureIds childFeatureIds;
+
+        const auto constFids = fids;
+        for ( const QgsFeatureId fid : constFids )
         {
-          childFeatureIds.insert( childFeature.id() );
+          //get features connected over this relation
+          QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( layer->getFeature( fid ) );
+          QgsFeature childFeature;
+          while ( relatedFeaturesIt.nextFeature( childFeature ) )
+          {
+            childFeatureIds.insert( childFeature.id() );
+          }
         }
+
+        if ( childFeatureIds.count() > 0 )
+        {
+          if ( context.layers().contains( relation.referencingLayer() ) )
+          {
+            QgsFeatureIds handledFeatureIds = context.duplicatedFeatures( relation.referencingLayer() );
+            // add feature ids
+            handledFeatureIds.unite( childFeatureIds );
+            context.setDuplicatedFeatures( relation.referencingLayer(), handledFeatureIds );
+          }
+          else
+          {
+            // add layer and feature id
+            context.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
+          }
+        }
+        break;
       }
 
-      if ( childFeatureIds.count() > 0 )
-      {
-        if ( context.layers().contains( relation.referencingLayer() ) )
-        {
-          QgsFeatureIds handledFeatureIds = context.duplicatedFeatures( relation.referencingLayer() );
-          // add feature ids
-          handledFeatureIds.unite( childFeatureIds );
-          context.setDuplicatedFeatures( relation.referencingLayer(), handledFeatureIds );
-        }
-        else
-        {
-          // add layer and feature id
-          context.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
-        }
-      }
+      case Qgis::RelationshipStrength::Association:
+        break;
     }
   }
 

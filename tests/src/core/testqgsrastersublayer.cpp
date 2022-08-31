@@ -44,12 +44,12 @@
  * \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
-class TestQgsRasterSubLayer : public QObject
+class TestQgsRasterSubLayer : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsRasterSubLayer();
+    TestQgsRasterSubLayer() : QgsTest( QStringLiteral( "Raster Sub Layer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,11 +63,8 @@ class TestQgsRasterSubLayer : public QObject
     QString mTestDataDir;
     QString mFileName;
     QgsRasterLayer *mpRasterLayer = nullptr;
-    QString mReport;
     bool mHasNetCDF =  false ;
 };
-
-TestQgsRasterSubLayer::TestQgsRasterSubLayer() = default;
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()
@@ -77,8 +74,7 @@ void TestQgsRasterSubLayer::initTestCase()
   QgsApplication::initQgis();
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
-  QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace( '\n', QLatin1String( "<br />" ) );
+
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   GDALAllRegister();
@@ -88,16 +84,11 @@ void TestQgsRasterSubLayer::initTestCase()
 
   mFileName = mTestDataDir + "landsat2.nc";
 
-  mReport += QLatin1String( "<h1>Raster Sub Layer Tests</h1>\n" );
-  //mReport += "<p>" + mySettings + "</p>";
-
   if ( mHasNetCDF )
   {
     const QFileInfo myRasterFileInfo( mFileName );
     mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                         myRasterFileInfo.completeBaseName() );
-    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
-    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->htmlMetadata();
   }
   else
   {
@@ -110,20 +101,14 @@ void TestQgsRasterSubLayer::cleanupTestCase()
 {
   delete mpRasterLayer;
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsRasterSubLayer::subLayersList()
 {
   if ( !mHasNetCDF )
     return;
+
+  const QString oldReport = mReport;
 
   mReport += QLatin1String( "<h2>Check Sublayers List</h2>\n" );
   // Layer with sublayers is not valid
@@ -150,14 +135,19 @@ void TestQgsRasterSubLayer::subLayersList()
   qDebug() << "sublayers: " << sublayers.join( QLatin1Char( ',' ) );
   mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QLatin1String( "<br>" ) ) );
   mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QLatin1String( "<br>" ) ) );
+
   QCOMPARE( sublayers, expected );
-  mReport += QLatin1String( "<p>Passed</p>" );
+
+  // don't include reports for passing tests
+  mReport = oldReport;
 }
 
 void TestQgsRasterSubLayer::checkStats()
 {
   if ( !mHasNetCDF )
     return;
+
+  const QString oldReport = mReport;
 
   mReport += QLatin1String( "<h2>Check Stats</h2>\n" );
   QString sublayerUri = mpRasterLayer->subLayers().value( 0 );
@@ -183,6 +173,8 @@ void TestQgsRasterSubLayer::checkStats()
   QGSCOMPARENEAR( myStatistics.maximumValue, max, 4 * std::numeric_limits<double>::epsilon() );
   mReport += QLatin1String( "<p>Passed</p>" );
   delete sublayer;
+  // don't include reports for passing tests
+  mReport = oldReport;
 }
 
 

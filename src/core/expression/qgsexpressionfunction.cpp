@@ -38,6 +38,7 @@
 #include "qgsregularpolygon.h"
 #include "qgsquadrilateral.h"
 #include "qgsmultipolygon.h"
+#include "qgsvariantutils.h"
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
 #include "qgsgeometryengine.h"
@@ -530,7 +531,7 @@ static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *
   double maxVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
-    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    double testVal = QgsVariantUtils::isNull( val ) ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
     if ( std::isnan( maxVal ) )
     {
       maxVal = testVal;
@@ -554,7 +555,7 @@ static QVariant fcnMin( const QVariantList &values, const QgsExpressionContext *
   double minVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
-    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    double testVal = QgsVariantUtils::isNull( val ) ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
     if ( std::isnan( minVal ) )
     {
       minVal = testVal;
@@ -905,7 +906,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
     QgsExpression groupByExp( groupBy );
     QVariant groupByValue = groupByExp.evaluate( context );
     QString groupByClause = QStringLiteral( "%1 %2 %3" ).arg( groupBy,
-                            groupByValue.isNull() ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
+                            QgsVariantUtils::isNull( groupByValue ) ? QStringLiteral( "is" ) : QStringLiteral( "=" ),
                             QgsExpression::quotedValue( groupByValue ) );
     if ( !parameters.filter.isEmpty() )
       parameters.filter = QStringLiteral( "(%1) AND (%2)" ).arg( parameters.filter, groupByClause );
@@ -1103,7 +1104,7 @@ static QVariant fcnMapScale( const QVariantList &, const QgsExpressionContext *c
 
   QVariant scale = context->variable( QStringLiteral( "map_scale" ) );
   bool ok = false;
-  if ( !scale.isValid() || scale.isNull() )
+  if ( QgsVariantUtils::isNull( scale ) )
     return QVariant();
 
   const double v = scale.toDouble( &ok );
@@ -1258,7 +1259,7 @@ static QVariant fcnCoalesce( const QVariantList &values, const QgsExpressionCont
 {
   for ( const QVariant &value : values )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       continue;
     return value;
   }
@@ -1369,7 +1370,7 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // two variants, one for geometry, one for string
-  if ( values.at( 0 ).canConvert<QgsGeometry>() )
+  if ( values.at( 0 ).userType() == QMetaType::type( "QgsGeometry" ) )
   {
     //geometry variant
     QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -1711,7 +1712,7 @@ static QVariant fcnAttribute( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnAttributes( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsFeature feature;
-  if ( values.size() == 0 || values.at( 0 ).isNull() )
+  if ( values.size() == 0 || QgsVariantUtils::isNull( values.at( 0 ) ) )
   {
     feature = context->feature();
   }
@@ -2123,7 +2124,7 @@ static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContex
   QString concat;
   for ( const QVariant &value : values )
   {
-    if ( !value.isNull() )
+    if ( !QgsVariantUtils::isNull( value ) )
       concat += QgsExpressionUtils::getStringValue( value, parent );
   }
   return concat;
@@ -3182,7 +3183,7 @@ static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpre
   parts.reserve( list.size() );
   for ( const QVariant &value : std::as_const( list ) )
   {
-    if ( value.canConvert<QgsGeometry>() )
+    if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
     {
       parts << value.value<QgsGeometry>();
     }
@@ -4108,7 +4109,7 @@ static QVariant fcnIsEmpty( const QVariantList &values, const QgsExpressionConte
 
 static QVariant fcnIsEmptyOrNull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  if ( values.at( 0 ).isNull() )
+  if ( QgsVariantUtils::isNull( values.at( 0 ) ) )
     return QVariant::fromValue( true );
 
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5206,7 +5207,7 @@ QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *,
 {
   QgsGradientColorRamp expRamp;
   const QgsColorRamp *ramp = nullptr;
-  if ( values.at( 0 ).canConvert<QgsGradientColorRamp>() )
+  if ( values.at( 0 ).userType() == QMetaType::type( "QgsGradientColorRamp" ) )
   {
     expRamp = QgsExpressionUtils::getRamp( values.at( 0 ), parent );
     ramp = &expRamp;
@@ -5370,25 +5371,25 @@ static QVariant fncColorPart( const QVariantList &values, const QgsExpressionCon
   else if ( part.compare( QLatin1String( "alpha" ), Qt::CaseInsensitive ) == 0 )
     return color.alpha();
   else if ( part.compare( QLatin1String( "hue" ), Qt::CaseInsensitive ) == 0 )
-    return color.hsvHueF() * 360;
+    return static_cast< double >( color.hsvHueF() * 360 );
   else if ( part.compare( QLatin1String( "saturation" ), Qt::CaseInsensitive ) == 0 )
-    return color.hsvSaturationF() * 100;
+    return static_cast< double >( color.hsvSaturationF() * 100 );
   else if ( part.compare( QLatin1String( "value" ), Qt::CaseInsensitive ) == 0 )
-    return color.valueF() * 100;
+    return static_cast< double >( color.valueF() * 100 );
   else if ( part.compare( QLatin1String( "hsl_hue" ), Qt::CaseInsensitive ) == 0 )
-    return color.hslHueF() * 360;
+    return static_cast< double >( color.hslHueF() * 360 );
   else if ( part.compare( QLatin1String( "hsl_saturation" ), Qt::CaseInsensitive ) == 0 )
-    return color.hslSaturationF() * 100;
+    return static_cast< double >( color.hslSaturationF() * 100 );
   else if ( part.compare( QLatin1String( "lightness" ), Qt::CaseInsensitive ) == 0 )
-    return color.lightnessF() * 100;
+    return static_cast< double >( color.lightnessF() * 100 );
   else if ( part.compare( QLatin1String( "cyan" ), Qt::CaseInsensitive ) == 0 )
-    return color.cyanF() * 100;
+    return static_cast< double >( color.cyanF() * 100 );
   else if ( part.compare( QLatin1String( "magenta" ), Qt::CaseInsensitive ) == 0 )
-    return color.magentaF() * 100;
+    return static_cast< double >( color.magentaF() * 100 );
   else if ( part.compare( QLatin1String( "yellow" ), Qt::CaseInsensitive ) == 0 )
-    return color.yellowF() * 100;
+    return static_cast< double >( color.yellowF() * 100 );
   else if ( part.compare( QLatin1String( "black" ), Qt::CaseInsensitive ) == 0 )
-    return color.blackF() * 100;
+    return static_cast< double >( color.blackF() * 100 );
 
   parent->setEvalErrorString( QObject::tr( "Unknown color component '%1'" ).arg( part ) );
   return QVariant();
@@ -6434,7 +6435,7 @@ static QVariant fcnWriteJson( const QVariantList &values, const QgsExpressionCon
 {
   Q_UNUSED( parent )
   QJsonDocument document = QJsonDocument::fromVariant( values.at( 0 ) );
-  return document.toJson( QJsonDocument::Compact );
+  return QString( document.toJson( QJsonDocument::Compact ) );
 }
 
 static QVariant fcnHstoreToMap( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -6525,7 +6526,10 @@ static QVariant fcnMapAVals( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnEnvVar( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
 {
-  QString envVarName = values.at( 0 ).toString();
+  const QString envVarName = values.at( 0 ).toString();
+  if ( !QProcessEnvironment::systemEnvironment().contains( envVarName ) )
+    return QVariant();
+
   return QProcessEnvironment::systemEnvironment().value( envVarName );
 }
 
@@ -6822,13 +6826,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     const QVariant minInscribedCircleRadiusValue = node->eval( parent, context );
     ENSURE_NO_EVAL_ERROR
     minInscribedCircleRadius = QgsExpressionUtils::getDoubleValue( minInscribedCircleRadiusValue, parent );
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
-    if ( minInscribedCircleRadiusValue != -1 )
-    {
-      parent->setEvalErrorString( QObject::tr( "'min_inscribed_circle_radius' is only available when QGIS is built with GEOS >= 3.9." ) );
-      return QVariant();
-    }
-#endif
     node = QgsExpressionUtils::getNode( values.at( 7 ), parent );
     // Return measures is only effective when an expression is set
     returnDetails = !testOnly && node->eval( parent, context ).toBool();  //#spellok
@@ -7018,7 +7015,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         }
       }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
       // Check min inscribed circle radius for intersection (if set)
       if ( minInscribedCircleRadius != -1 || requireMeasures )
       {
@@ -7031,7 +7027,6 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
         testResult = radiusValue >= minInscribedCircleRadius;
         radiusValues.append( radiusValues );
       }
-#endif
     } // end for parts
 
     // Get the max values
@@ -7319,13 +7314,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
   // crashes in the WFS provider may occur, since it can parse expressions
   // in parallel.
   // The mutex needs to be recursive.
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  static QMutex sFunctionsMutex( QMutex::Recursive );
-  QMutexLocker locker( &sFunctionsMutex );
-#else
   static QRecursiveMutex sFunctionsMutex;
   QMutexLocker locker( &sFunctionsMutex );
-#endif
 
   QList<QgsExpressionFunction *> &functions = *sFunctions();
 

@@ -52,13 +52,25 @@ bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs ) const
 
 void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
+  QString sizeStr = element.attribute( QStringLiteral( "defaultViewportSize" ) );
+  if ( !sizeStr.isEmpty() )
+    mDefaultViewportSize = sizeStr.toInt();
+
+  sizeStr = element.attribute( QStringLiteral( "minViewportRatio" ) );
+  if ( !sizeStr.isEmpty() )
+    mMinViewportRatio = sizeStr.toInt();
+
+  sizeStr = element.attribute( QStringLiteral( "maxViewportRatio" ) );
+  if ( !sizeStr.isEmpty() )
+    mMaxViewportRatio = sizeStr.toInt();
+
   const QString modeStr = element.attribute( QStringLiteral( "mode" ) );
   if ( modeStr == QLatin1String( "Off" ) )
-    mMode = Qgs3DAxis::Mode::Off;
+    mMode = Qgs3DAxisSettings::Mode::Off;
   else if ( modeStr == QLatin1String( "Crs" ) )
-    mMode = Qgs3DAxis::Mode::Crs;
+    mMode = Qgs3DAxisSettings::Mode::Crs;
   else if ( modeStr == QLatin1String( "Cube" ) )
-    mMode = Qgs3DAxis::Mode::Cube;
+    mMode = Qgs3DAxisSettings::Mode::Cube;
 
   const QString horizontalStr = element.attribute( QStringLiteral( "horizontal" ) );
   if ( horizontalStr == QLatin1String( "Left" ) )
@@ -80,16 +92,26 @@ void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteC
 void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
 {
   QString str;
+
+  str = QString::number( mDefaultViewportSize );
+  element.setAttribute( QStringLiteral( "defaultViewportSize" ), str );
+
+  str = QString::number( mMinViewportRatio );
+  element.setAttribute( QStringLiteral( "minViewportRatio" ), str );
+
+  str = QString::number( mMaxViewportRatio );
+  element.setAttribute( QStringLiteral( "maxViewportRatio" ), str );
+
   switch ( mMode )
   {
-    case Qgs3DAxis::Mode::Crs:
+    case Qgs3DAxisSettings::Mode::Crs:
       str = QLatin1String( "Crs" );
       break;
-    case Qgs3DAxis::Mode::Cube:
+    case Qgs3DAxisSettings::Mode::Cube:
       str = QLatin1String( "Cube" );
       break;
 
-    case Qgs3DAxis::Mode::Off:
+    case Qgs3DAxisSettings::Mode::Off:
     default:
       str = QLatin1String( "Off" );
       break;
@@ -126,4 +148,20 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
   }
   element.setAttribute( QStringLiteral( "vertical" ), str );
 
+}
+
+void Qgs3DAxisSettings::setMinViewportRatio( double ratio )
+{
+  if ( ratio < mMaxViewportRatio )
+  {
+    mMinViewportRatio = std::clamp( ratio, 0.0, 1.0 );
+  }
+}
+
+void Qgs3DAxisSettings::setMaxViewportRatio( double ratio )
+{
+  if ( ratio > mMinViewportRatio )
+  {
+    mMaxViewportRatio = std::clamp( ratio, 0.0, 1.0 );
+  }
 }

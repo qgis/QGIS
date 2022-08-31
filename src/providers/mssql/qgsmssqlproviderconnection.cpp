@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsfeedback.h"
+#include "qgsmssqlsqlquerybuilder.h"
 #include <QIcon>
 
 #include <chrono>
@@ -585,4 +586,9 @@ QIcon QgsMssqlProviderConnection::icon() const
 QList<QgsVectorDataProvider::NativeType> QgsMssqlProviderConnection::nativeTypes() const
 {
   return QgsMssqlConnection::nativeTypes();
+}
+
+QgsProviderSqlQueryBuilder *QgsMssqlProviderConnection::queryBuilder() const
+{
+  return new QgsMsSqlSqlQueryBuilder();
 }

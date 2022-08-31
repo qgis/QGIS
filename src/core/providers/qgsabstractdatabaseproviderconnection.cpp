@@ -16,8 +16,9 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
-#include "qgslogger.h"
+#include "qgsweakrelation.h"
 #include "qgsfeedback.h"
+#include "qgsprovidersqlquerybuilder.h"
 
 #include <QVariant>
 #include <QObject>
@@ -1019,6 +1020,11 @@ QList<Qgis::FieldDomainType> QgsAbstractDatabaseProviderConnection::supportedFie
   return {};
 }
 
+QgsProviderSqlQueryBuilder *QgsAbstractDatabaseProviderConnection::queryBuilder() const
+{
+  return new QgsProviderSqlQueryBuilder();
+}
+
 void QgsAbstractDatabaseProviderConnection::createVectorTable( const QString &schema,
     const QString &name,
     const QgsFields &fields,
@@ -1316,6 +1322,12 @@ void QgsAbstractDatabaseProviderConnection::setFieldDomainName( const QString &,
 void QgsAbstractDatabaseProviderConnection::addFieldDomain( const QgsFieldDomain &, const QString & ) const
 {
   checkCapability( Capability::AddFieldDomain );
+}
+
+QList< QgsWeakRelation > QgsAbstractDatabaseProviderConnection::relationships( const QString &, const QString & ) const
+{
+  checkCapability( Capability::RetrieveRelationships );
+  return {};
 }
 
 QString QgsAbstractDatabaseProviderConnection::TableProperty::defaultName() const

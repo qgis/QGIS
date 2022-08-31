@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsmimedatautils.h"
 
 #include <QString>
 #include <QStringList>
@@ -279,6 +280,13 @@ class CORE_EXPORT QgsProviderSublayerDetails
      * \see setSkippedContainerScan();
      */
     bool skippedContainerScan() const { return mSkippedContainerScan; }
+
+    /**
+     * Converts the sublayer details to a QgsMimeDataUtils::Uri representing the sublayer.
+     *
+     * \since QGIS 3.28
+     */
+    QgsMimeDataUtils::Uri toMimeUri() const;
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsProviderSublayerDetails &other ) const;

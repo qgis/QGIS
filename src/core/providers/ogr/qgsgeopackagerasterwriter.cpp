@@ -34,7 +34,7 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
 {
   const char *args[] = { "-of", "gpkg", "-co", QStringLiteral( "RASTER_TABLE=%1" ).arg( mSourceUri.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
   // This sends OGR/GDAL errors to the message log
-  const QgsCPLErrorHandler handler;
+  const QgsCPLErrorHandler handler( QObject::tr( "GDAL" ) );
   GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** )args, nullptr );
 
   GDALTranslateOptionsSetProgress( psOptions, [ ]( double dfComplete, const char *pszMessage,  void *pProgressData ) -> int

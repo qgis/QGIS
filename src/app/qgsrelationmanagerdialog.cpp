@@ -54,12 +54,18 @@ void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layer
   {
     // the generated relations for polymorphic relations should be ignored,
     // they are generated when the polymorphic relation is added to the table
-    if ( rel.type() == QgsRelation::Generated )
-      continue;
+    switch ( rel.type() )
+    {
+      case Qgis::RelationshipType::Generated:
+        continue;
+
+      case Qgis::RelationshipType::Normal:
+        break;
+    }
 
     addRelationPrivate( rel );
   }
-  const QList<QgsPolymorphicRelation> &polymorphicRelations = mRelationManager->polymorphicRelations().values();
+  const QList<QgsPolymorphicRelation> polymorphicRelations = mRelationManager->polymorphicRelations().values();
   for ( const QgsPolymorphicRelation &polymorphicRel : polymorphicRelations )
   {
     addPolymorphicRelation( polymorphicRel );
@@ -110,9 +116,15 @@ int QgsRelationManagerDialog::addPolymorphicRelation( const QgsPolymorphicRelati
   item->setText( 3, QStringLiteral( "as in \"%1\".\"%2\"" ).arg( polyRel.referencingLayer()->name(), polyRel.referencedLayerField() ) );
   item->setText( 4, referencingFields );
   item->setText( 5, polyRel.id() );
-  item->setText( 6, polyRel.strength() == QgsRelation::RelationStrength::Composition
-                 ? QStringLiteral( "Composition" )
-                 : QStringLiteral( "Association" ) );
+  switch ( polyRel.strength() )
+  {
+    case Qgis::RelationshipStrength::Association:
+      item->setText( 6, QStringLiteral( "Association" ) );
+      break;
+    case Qgis::RelationshipStrength::Composition:
+      item->setText( 6, QStringLiteral( "Composition" ) );
+      break;
+  }
 
   const QList<QgsRelation> generatedRelations = polyRel.generateRelations();
   for ( const QgsRelation &generatedRelation : generatedRelations )
@@ -144,11 +156,11 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
 
   switch ( rel.type() )
   {
-    case QgsRelation::Normal:
+    case Qgis::RelationshipType::Normal:
       item->setFlags( item->flags() | Qt::ItemIsEditable );
       mRelationsTree->invisibleRootItem()->addChild( item );
       break;
-    case QgsRelation::Generated:
+    case Qgis::RelationshipType::Generated:
       Q_ASSERT( parentItem );
       item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
       parentItem->addChild( item );
@@ -164,9 +176,15 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
   item->setText( 3, rel.referencingLayer()->name() );
   item->setText( 4, referencingFields );
   item->setText( 5, rel.id() );
-  item->setText( 6, rel.strength() == QgsRelation::RelationStrength::Composition
-                 ? QStringLiteral( "Composition" )
-                 : QStringLiteral( "Association" ) );
+  switch ( rel.strength() )
+  {
+    case Qgis::RelationshipStrength::Association:
+      item->setText( 6, QStringLiteral( "Association" ) );
+      break;
+    case Qgis::RelationshipStrength::Composition:
+      item->setText( 6, QStringLiteral( "Composition" ) );
+      break;
+  }
 
   mRelationsTree->setSortingEnabled( true );
 
@@ -175,7 +193,7 @@ bool QgsRelationManagerDialog::addRelationPrivate( const QgsRelation &rel, QTree
 
 void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 {
-  QgsRelationAddDlg addDlg;
+  QgsCreateRelationDialog addDlg;
 
   if ( addDlg.exec() )
   {

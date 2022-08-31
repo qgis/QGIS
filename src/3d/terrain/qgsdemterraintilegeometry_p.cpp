@@ -15,17 +15,31 @@
 
 #include "qgsdemterraintilegeometry_p.h"
 #include <QMatrix4x4>
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferdatagenerator.h>
+
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QAbstractFunctor>
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QAbstractFunctor Qt3DQAbstractFunctor;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QAbstractFunctor>
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QAbstractFunctor Qt3DQAbstractFunctor;
+#endif
 #include <limits>
 #include <cmath>
 #include "qgsraycastingutils_p.h"
+#include "qgis.h"
 
 ///@cond PRIVATE
 
 using namespace Qt3DRender;
-
 
 static QByteArray createPlaneVertexData( int res, float side, float vertScale, float skirtHeight, const QByteArray &heights )
 {
@@ -142,7 +156,6 @@ inline int ijToHeightMapIndex( int i, int j, int resX, int resZ )
   return j * resX + i;
 }
 
-
 static bool hasNoData( int i, int j, const float *heightMap, int resX, int resZ )
 {
   return std::isnan( heightMap[ ijToHeightMapIndex( i, j, resX, resZ ) ] ) ||
@@ -204,10 +217,11 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
   return indexBytes;
 }
 
-
+// QAbstractFunctor marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+Q_NOWARN_DEPRECATED_PUSH
 
 //! Generates vertex buffer for DEM terrain tiles
-class PlaneVertexBufferFunctor : public QBufferDataGenerator
+class PlaneVertexBufferFunctor : public Qt3DQAbstractFunctor
 {
   public:
     explicit PlaneVertexBufferFunctor( int resolution, float side, float vertScale, float skirtHeight, const QByteArray &heightMap )
@@ -218,12 +232,12 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       , mHeightMap( heightMap )
     {}
 
-    QByteArray operator()() final
+    QByteArray operator()()
     {
       return createPlaneVertexData( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap );
     }
 
-    bool operator ==( const QBufferDataGenerator &other ) const final
+    bool operator ==( const Qt3DQAbstractFunctor &other ) const
     {
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
@@ -247,7 +261,7 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 
 
 //! Generates index buffer for DEM terrain tiles
-class PlaneIndexBufferFunctor : public QBufferDataGenerator
+class PlaneIndexBufferFunctor: public Qt3DQAbstractFunctor
 {
   public:
     explicit PlaneIndexBufferFunctor( int resolution, const QByteArray &heightMap )
@@ -255,12 +269,12 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
       , mHeightMap( heightMap )
     {}
 
-    QByteArray operator()() final
+    QByteArray operator()()
     {
       return createPlaneIndexData( mResolution, mHeightMap );
     }
 
-    bool operator ==( const QBufferDataGenerator &other ) const final
+    bool operator ==( const Qt3DQAbstractFunctor &other ) const
     {
       const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
@@ -275,6 +289,7 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
     QByteArray mHeightMap;
 };
 
+Q_NOWARN_DEPRECATED_POP
 
 // ------------
 
@@ -352,12 +367,12 @@ bool DemTerrainTileGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &r
 
 void DemTerrainTileGeometry::init()
 {
-  mPositionAttribute = new QAttribute( this );
-  mNormalAttribute = new QAttribute( this );
-  mTexCoordAttribute = new QAttribute( this );
-  mIndexAttribute = new QAttribute( this );
-  mVertexBuffer = new Qt3DRender::QBuffer( this );
-  mIndexBuffer = new Qt3DRender::QBuffer( this );
+  mPositionAttribute = new Qt3DQAttribute( this );
+  mNormalAttribute = new Qt3DQAttribute( this );
+  mTexCoordAttribute = new Qt3DQAttribute( this );
+  mIndexAttribute = new Qt3DQAttribute( this );
+  mVertexBuffer = new Qt3DQBuffer( this );
+  mIndexBuffer = new Qt3DQBuffer( this );
 
   int nVertsX = mResolution + 2;
   int nVertsZ = mResolution + 2;
@@ -365,34 +380,34 @@ void DemTerrainTileGeometry::init()
   const int stride = ( 3 + 2 + 3 ) * sizeof( float );
   const int faces = 2 * ( nVertsX - 1 ) * ( nVertsZ - 1 );
 
-  mPositionAttribute->setName( QAttribute::defaultPositionAttributeName() );
-  mPositionAttribute->setVertexBaseType( QAttribute::Float );
+  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setAttributeType( QAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setByteStride( stride );
   mPositionAttribute->setCount( nVerts );
 
-  mTexCoordAttribute->setName( QAttribute::defaultTextureCoordinateAttributeName() );
-  mTexCoordAttribute->setVertexBaseType( QAttribute::Float );
+  mTexCoordAttribute->setName( Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
+  mTexCoordAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   mTexCoordAttribute->setVertexSize( 2 );
-  mTexCoordAttribute->setAttributeType( QAttribute::VertexAttribute );
+  mTexCoordAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   mTexCoordAttribute->setBuffer( mVertexBuffer );
   mTexCoordAttribute->setByteStride( stride );
   mTexCoordAttribute->setByteOffset( 3 * sizeof( float ) );
   mTexCoordAttribute->setCount( nVerts );
 
-  mNormalAttribute->setName( QAttribute::defaultNormalAttributeName() );
-  mNormalAttribute->setVertexBaseType( QAttribute::Float );
+  mNormalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
+  mNormalAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   mNormalAttribute->setVertexSize( 3 );
-  mNormalAttribute->setAttributeType( QAttribute::VertexAttribute );
+  mNormalAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   mNormalAttribute->setBuffer( mVertexBuffer );
   mNormalAttribute->setByteStride( stride );
   mNormalAttribute->setByteOffset( 5 * sizeof( float ) );
   mNormalAttribute->setCount( nVerts );
 
-  mIndexAttribute->setAttributeType( QAttribute::IndexAttribute );
-  mIndexAttribute->setVertexBaseType( QAttribute::UnsignedInt );
+  mIndexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedInt );
   mIndexAttribute->setBuffer( mIndexBuffer );
 
   // Each primitive has 3 vertives
@@ -400,6 +415,7 @@ void DemTerrainTileGeometry::init()
 
   // switched to setting data instead of just setting data generators because we also need the buffers
   // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
+
   mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSide, mVertScale, mSkirtHeight, mHeightMap )() );
   mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
 

@@ -1010,7 +1010,7 @@ void TestQgsPoint::crsTransform()
   QGSCOMPARENEAR( pt.z(), 1.0, 0.001 );
   QCOMPARE( pt.m(), 2.0 );
 
-#if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
+#if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //test with z transform
   pt.transform( tr, Qgis::TransformDirection::Forward, true );
   QGSCOMPARENEAR( pt.z(), -19.249, 0.001 );

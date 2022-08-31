@@ -1407,7 +1407,31 @@ QgsSimpleMarkerSymbolLayerBase.ThirdArc.__doc__ = "A line-only one third arc (si
 QgsSimpleMarkerSymbolLayerBase.QuarterArc = Qgis.MarkerShape.QuarterArc
 QgsSimpleMarkerSymbolLayerBase.QuarterArc.is_monkey_patched = True
 QgsSimpleMarkerSymbolLayerBase.QuarterArc.__doc__ = "A line-only one quarter arc (since QGIS 3.20)"
-Qgis.MarkerShape.__doc__ = 'Marker shapes.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsSimpleMarkerSymbolLayerBase`.Shape\n\n.. versionadded:: 3.24\n\n' + '* ``Square``: ' + Qgis.MarkerShape.Square.__doc__ + '\n' + '* ``Diamond``: ' + Qgis.MarkerShape.Diamond.__doc__ + '\n' + '* ``Pentagon``: ' + Qgis.MarkerShape.Pentagon.__doc__ + '\n' + '* ``Hexagon``: ' + Qgis.MarkerShape.Hexagon.__doc__ + '\n' + '* ``Triangle``: ' + Qgis.MarkerShape.Triangle.__doc__ + '\n' + '* ``EquilateralTriangle``: ' + Qgis.MarkerShape.EquilateralTriangle.__doc__ + '\n' + '* ``Star``: ' + Qgis.MarkerShape.Star.__doc__ + '\n' + '* ``Arrow``: ' + Qgis.MarkerShape.Arrow.__doc__ + '\n' + '* ``Circle``: ' + Qgis.MarkerShape.Circle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.MarkerShape.Cross.__doc__ + '\n' + '* ``CrossFill``: ' + Qgis.MarkerShape.CrossFill.__doc__ + '\n' + '* ``Cross2``: ' + Qgis.MarkerShape.Cross2.__doc__ + '\n' + '* ``Line``: ' + Qgis.MarkerShape.Line.__doc__ + '\n' + '* ``ArrowHead``: ' + Qgis.MarkerShape.ArrowHead.__doc__ + '\n' + '* ``ArrowHeadFilled``: ' + Qgis.MarkerShape.ArrowHeadFilled.__doc__ + '\n' + '* ``SemiCircle``: ' + Qgis.MarkerShape.SemiCircle.__doc__ + '\n' + '* ``ThirdCircle``: ' + Qgis.MarkerShape.ThirdCircle.__doc__ + '\n' + '* ``QuarterCircle``: ' + Qgis.MarkerShape.QuarterCircle.__doc__ + '\n' + '* ``QuarterSquare``: ' + Qgis.MarkerShape.QuarterSquare.__doc__ + '\n' + '* ``HalfSquare``: ' + Qgis.MarkerShape.HalfSquare.__doc__ + '\n' + '* ``DiagonalHalfSquare``: ' + Qgis.MarkerShape.DiagonalHalfSquare.__doc__ + '\n' + '* ``RightHalfTriangle``: ' + Qgis.MarkerShape.RightHalfTriangle.__doc__ + '\n' + '* ``LeftHalfTriangle``: ' + Qgis.MarkerShape.LeftHalfTriangle.__doc__ + '\n' + '* ``Octagon``: ' + Qgis.MarkerShape.Octagon.__doc__ + '\n' + '* ``SquareWithCorners``: ' + Qgis.MarkerShape.SquareWithCorners.__doc__ + '\n' + '* ``AsteriskFill``: ' + Qgis.MarkerShape.AsteriskFill.__doc__ + '\n' + '* ``HalfArc``: ' + Qgis.MarkerShape.HalfArc.__doc__ + '\n' + '* ``ThirdArc``: ' + Qgis.MarkerShape.ThirdArc.__doc__ + '\n' + '* ``QuarterArc``: ' + Qgis.MarkerShape.QuarterArc.__doc__
+QgsSimpleMarkerSymbolLayerBase.ParallelogramRight = Qgis.MarkerShape.ParallelogramRight
+QgsSimpleMarkerSymbolLayerBase.ParallelogramRight.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.ParallelogramRight.__doc__ = "Parallelogram that slants right (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft = Qgis.MarkerShape.ParallelogramLeft
+QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.ParallelogramLeft.__doc__ = "Parallelogram that slants left (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Trapezoid = Qgis.MarkerShape.Trapezoid
+QgsSimpleMarkerSymbolLayerBase.Trapezoid.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Trapezoid.__doc__ = "Trapezoid (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Shield = Qgis.MarkerShape.Shield
+QgsSimpleMarkerSymbolLayerBase.Shield.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Shield.__doc__ = "A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.DiamondStar = Qgis.MarkerShape.DiamondStar
+QgsSimpleMarkerSymbolLayerBase.DiamondStar.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.DiamondStar.__doc__ = "A 4-sided star (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Heart = Qgis.MarkerShape.Heart
+QgsSimpleMarkerSymbolLayerBase.Heart.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Heart.__doc__ = "Heart (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.Decagon = Qgis.MarkerShape.Decagon
+QgsSimpleMarkerSymbolLayerBase.Decagon.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.Decagon.__doc__ = "Decagon (since QGIS 3.28)"
+QgsSimpleMarkerSymbolLayerBase.RoundedSquare = Qgis.MarkerShape.RoundedSquare
+QgsSimpleMarkerSymbolLayerBase.RoundedSquare.is_monkey_patched = True
+QgsSimpleMarkerSymbolLayerBase.RoundedSquare.__doc__ = "A square with rounded corners (since QGIS 3.28)"
+Qgis.MarkerShape.__doc__ = 'Marker shapes.\n\n.. note::\n\n   Prior to QGIS 3.24 this was available as :py:class:`QgsSimpleMarkerSymbolLayerBase`.Shape\n\n.. versionadded:: 3.24\n\n' + '* ``Square``: ' + Qgis.MarkerShape.Square.__doc__ + '\n' + '* ``Diamond``: ' + Qgis.MarkerShape.Diamond.__doc__ + '\n' + '* ``Pentagon``: ' + Qgis.MarkerShape.Pentagon.__doc__ + '\n' + '* ``Hexagon``: ' + Qgis.MarkerShape.Hexagon.__doc__ + '\n' + '* ``Triangle``: ' + Qgis.MarkerShape.Triangle.__doc__ + '\n' + '* ``EquilateralTriangle``: ' + Qgis.MarkerShape.EquilateralTriangle.__doc__ + '\n' + '* ``Star``: ' + Qgis.MarkerShape.Star.__doc__ + '\n' + '* ``Arrow``: ' + Qgis.MarkerShape.Arrow.__doc__ + '\n' + '* ``Circle``: ' + Qgis.MarkerShape.Circle.__doc__ + '\n' + '* ``Cross``: ' + Qgis.MarkerShape.Cross.__doc__ + '\n' + '* ``CrossFill``: ' + Qgis.MarkerShape.CrossFill.__doc__ + '\n' + '* ``Cross2``: ' + Qgis.MarkerShape.Cross2.__doc__ + '\n' + '* ``Line``: ' + Qgis.MarkerShape.Line.__doc__ + '\n' + '* ``ArrowHead``: ' + Qgis.MarkerShape.ArrowHead.__doc__ + '\n' + '* ``ArrowHeadFilled``: ' + Qgis.MarkerShape.ArrowHeadFilled.__doc__ + '\n' + '* ``SemiCircle``: ' + Qgis.MarkerShape.SemiCircle.__doc__ + '\n' + '* ``ThirdCircle``: ' + Qgis.MarkerShape.ThirdCircle.__doc__ + '\n' + '* ``QuarterCircle``: ' + Qgis.MarkerShape.QuarterCircle.__doc__ + '\n' + '* ``QuarterSquare``: ' + Qgis.MarkerShape.QuarterSquare.__doc__ + '\n' + '* ``HalfSquare``: ' + Qgis.MarkerShape.HalfSquare.__doc__ + '\n' + '* ``DiagonalHalfSquare``: ' + Qgis.MarkerShape.DiagonalHalfSquare.__doc__ + '\n' + '* ``RightHalfTriangle``: ' + Qgis.MarkerShape.RightHalfTriangle.__doc__ + '\n' + '* ``LeftHalfTriangle``: ' + Qgis.MarkerShape.LeftHalfTriangle.__doc__ + '\n' + '* ``Octagon``: ' + Qgis.MarkerShape.Octagon.__doc__ + '\n' + '* ``SquareWithCorners``: ' + Qgis.MarkerShape.SquareWithCorners.__doc__ + '\n' + '* ``AsteriskFill``: ' + Qgis.MarkerShape.AsteriskFill.__doc__ + '\n' + '* ``HalfArc``: ' + Qgis.MarkerShape.HalfArc.__doc__ + '\n' + '* ``ThirdArc``: ' + Qgis.MarkerShape.ThirdArc.__doc__ + '\n' + '* ``QuarterArc``: ' + Qgis.MarkerShape.QuarterArc.__doc__ + '\n' + '* ``ParallelogramRight``: ' + Qgis.MarkerShape.ParallelogramRight.__doc__ + '\n' + '* ``ParallelogramLeft``: ' + Qgis.MarkerShape.ParallelogramLeft.__doc__ + '\n' + '* ``Trapezoid``: ' + Qgis.MarkerShape.Trapezoid.__doc__ + '\n' + '* ``Shield``: ' + Qgis.MarkerShape.Shield.__doc__ + '\n' + '* ``DiamondStar``: ' + Qgis.MarkerShape.DiamondStar.__doc__ + '\n' + '* ``Heart``: ' + Qgis.MarkerShape.Heart.__doc__ + '\n' + '* ``Decagon``: ' + Qgis.MarkerShape.Decagon.__doc__ + '\n' + '* ``RoundedSquare``: ' + Qgis.MarkerShape.RoundedSquare.__doc__
 # --
 Qgis.MarkerShape.baseClass = Qgis
 QgsTemplatedLineSymbolLayerBase.Placement = Qgis.MarkerLinePlacement
@@ -1862,3 +1886,33 @@ QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
 Qgis.ArcGisRestServiceType.__doc__ = 'Available ArcGIS REST service types.\n\n.. note::\n\n   Prior to QGIS 3.26 this was available as :py:class:`QgsArcGisPortalUtils`.ItemType.\n\n.. versionadded:: 3.28\n\n' + '* ``FeatureService``: ' + Qgis.ArcGisRestServiceType.FeatureServer.__doc__ + '\n' + '* ``MapService``: ' + Qgis.ArcGisRestServiceType.MapServer.__doc__ + '\n' + '* ``ImageService``: ' + Qgis.ArcGisRestServiceType.ImageServer.__doc__ + '\n' + '* ``GlobeServer``: ' + Qgis.ArcGisRestServiceType.GlobeServer.__doc__ + '\n' + '* ``GPServer``: ' + Qgis.ArcGisRestServiceType.GPServer.__doc__ + '\n' + '* ``GeocodeServer``: ' + Qgis.ArcGisRestServiceType.GeocodeServer.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ArcGisRestServiceType.Unknown.__doc__
 # --
 Qgis.ArcGisRestServiceType.baseClass = Qgis
+QgsRelation.RelationType = Qgis.RelationshipType
+# monkey patching scoped based enum
+QgsRelation.Normal = Qgis.RelationshipType.Normal
+QgsRelation.Normal.is_monkey_patched = True
+QgsRelation.Normal.__doc__ = "A normal relation"
+QgsRelation.Generated = Qgis.RelationshipType.Generated
+QgsRelation.Generated.is_monkey_patched = True
+QgsRelation.Generated.__doc__ = "A generated relation is a child of a polymorphic relation"
+Qgis.RelationshipType.__doc__ = 'Relationship types.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsRelation`.RelationType.\n\n.. versionadded:: 3.28\n\n' + '* ``Normal``: ' + Qgis.RelationshipType.Normal.__doc__ + '\n' + '* ``Generated``: ' + Qgis.RelationshipType.Generated.__doc__
+# --
+Qgis.RelationshipType.baseClass = Qgis
+QgsRelation.RelationStrength = Qgis.RelationshipStrength
+# monkey patching scoped based enum
+QgsRelation.Association = Qgis.RelationshipStrength.Association
+QgsRelation.Association.is_monkey_patched = True
+QgsRelation.Association.__doc__ = "Loose relation, related elements are not part of the parent and a parent copy will not copy any children."
+QgsRelation.Composition = Qgis.RelationshipStrength.Composition
+QgsRelation.Composition.is_monkey_patched = True
+QgsRelation.Composition.__doc__ = "Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children"
+Qgis.RelationshipStrength.__doc__ = 'Relationship strength.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsRelation`.RelationStrength.\n\n.. versionadded:: 3.28\n\n' + '* ``Association``: ' + Qgis.RelationshipStrength.Association.__doc__ + '\n' + '* ``Composition``: ' + Qgis.RelationshipStrength.Composition.__doc__
+# --
+Qgis.RelationshipStrength.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RelationshipCardinality.OneToOne.__doc__ = "One to one relationship"
+Qgis.RelationshipCardinality.OneToMany.__doc__ = "One to many relationship"
+Qgis.RelationshipCardinality.ManyToOne.__doc__ = "Many to one relationship"
+Qgis.RelationshipCardinality.ManyToMany.__doc__ = "Many to many relationship"
+Qgis.RelationshipCardinality.__doc__ = 'Relationship cardinality.\n\n.. versionadded:: 3.28\n\n' + '* ``OneToOne``: ' + Qgis.RelationshipCardinality.OneToOne.__doc__ + '\n' + '* ``OneToMany``: ' + Qgis.RelationshipCardinality.OneToMany.__doc__ + '\n' + '* ``ManyToOne``: ' + Qgis.RelationshipCardinality.ManyToOne.__doc__ + '\n' + '* ``ManyToMany``: ' + Qgis.RelationshipCardinality.ManyToMany.__doc__
+# --
+Qgis.RelationshipCardinality.baseClass = Qgis

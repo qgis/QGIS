@@ -35,15 +35,16 @@
  * \ingroup UnitTests
  * This is a unit test for the ogr provider
  */
-class TestQgsOgrProvider : public QObject
+class TestQgsOgrProvider : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsOgrProvider() : QgsTest( QStringLiteral( "OGR Provider Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
 
     void setupProxy();
     void decodeUri();
@@ -53,7 +54,6 @@ class TestQgsOgrProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
   signals:
 
   public slots:
@@ -69,21 +69,12 @@ void TestQgsOgrProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>OGR Provider Tests</h1>\n" );
 }
 
 //runs after all tests
 void TestQgsOgrProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsOgrProvider::setupProxy()
@@ -92,7 +83,7 @@ void TestQgsOgrProvider::setupProxy()
   QgsSettings settings;
   {
     settings.setValue( QStringLiteral( "proxy/proxyEnabled" ), true );
-    settings.setValue( QStringLiteral( "proxy/proxyPort" ), QStringLiteral( "1234" ) );
+    settings.setValue( QStringLiteral( "proxy/proxyPort" ), QStringLiteral( "38124" ) );
     settings.setValue( QStringLiteral( "proxy/proxyHost" ), QStringLiteral( "myproxyhostname.com" ) );
     settings.setValue( QStringLiteral( "proxy/proxyUser" ), QStringLiteral( "username" ) );
     settings.setValue( QStringLiteral( "proxy/proxyPassword" ), QStringLiteral( "password" ) );
@@ -101,7 +92,7 @@ void TestQgsOgrProvider::setupProxy()
     const QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
-    QCOMPARE( proxyConfig, "myproxyhostname.com:1234" );
+    QCOMPARE( proxyConfig, "myproxyhostname.com:38124" );
     const char *proxyCredentials = CPLGetConfigOption( "GDAL_HTTP_PROXYUSERPWD", nullptr );
     QCOMPARE( proxyCredentials, "username:password" );
   }

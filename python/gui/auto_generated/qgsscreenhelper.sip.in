@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsscreenhelper.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsScreenHelper : QObject
+{
+%Docstring(signature="appended")
+A utility class for dynamic handling of changes to screen properties.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsscreenhelper.h"
+%End
+  public:
+
+    QgsScreenHelper( QWidget *parent /TransferThis/ );
+%Docstring
+Constructor for QgsScreenHelper for the specified parent ``widget``.
+%End
+
+    QScreen *screen();
+%Docstring
+Returns the screen that the parent widget appears on, or ``None``.
+%End
+
+    QWindow *windowHandle();
+%Docstring
+Returns the window handle for the window the parent widget is associated with, or ``None``.
+%End
+
+    double screenDpi() const;
+%Docstring
+Returns the current screen DPI for the screen that the parent widget appears on.
+
+.. seealso:: :py:func:`screenDpiChanged`
+%End
+
+    QRect availableGeometry() const;
+%Docstring
+Returns the current screen available geometry in pixels.
+
+The available geometry is the geometry excluding window manager reserved areas such as task bars and system menus.
+
+.. seealso:: :py:func:`availableGeometryChanged`
+%End
+
+  signals:
+
+    void screenDpiChanged( double dpi );
+%Docstring
+Emitted whenever the screen ``dpi`` associated with the widget is changed.
+
+.. seealso:: :py:func:`screenDpi`
+%End
+
+    void availableGeometryChanged( const QRect &geometry );
+%Docstring
+Emitted whenever the available geometry of the screen associated with the widget is changed.
+
+.. seealso:: :py:func:`availableGeometry`
+%End
+
+  protected:
+    virtual bool eventFilter( QObject *watched, QEvent *event );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsscreenhelper.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

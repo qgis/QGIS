@@ -101,6 +101,10 @@ class TestPyQgsGpxProvider(unittest.TestCase, ProviderTestCase):
         pass
 
     @unittest.skip('Base provider test is not suitable for GPX provider')
+    def testGetFeaturesFilterRectTestsNoGeomFlag(self):
+        pass
+
+    @unittest.skip('Base provider test is not suitable for GPX provider')
     def testGetFeaturesDistanceWithinTests(self):
         pass
 

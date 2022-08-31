@@ -217,11 +217,10 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
   QgsDebugMsgLevel( "path = " + item->path(), 2 );
   QElapsedTimer time;
   time.start();
-  QVector <QgsDataItem *> children = item->createChildren();
+  const QVector <QgsDataItem *> children = item->createChildren();
   QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
-  const auto constChildren = children;
-  for ( QgsDataItem *child : constChildren )
+  for ( QgsDataItem *child : children )
   {
     if ( !child ) // should not happen
       continue;
@@ -265,8 +264,7 @@ void QgsDataItem::populate( const QVector<QgsDataItem *> &children )
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 3 );
 
-  const auto constChildren = children;
-  for ( QgsDataItem *child : constChildren )
+  for ( QgsDataItem *child : children )
   {
     if ( !child ) // should not happen
       continue;
@@ -351,8 +349,7 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
   }
 
   // Add new children
-  const auto constChildren = children;
-  for ( QgsDataItem *child : constChildren )
+  for ( QgsDataItem *child : children )
   {
     if ( !child ) // should not happen
       continue;

@@ -198,7 +198,7 @@ class TcpServerWorker: public QObject
             try
             {
               // Parse protocol and URL GET /path HTTP/1.1
-              const int firstLinePos { incomingData->indexOf( "\r\n" ) };
+              const auto firstLinePos { incomingData->indexOf( "\r\n" ) };
               if ( firstLinePos == -1 )
               {
                 throw HttpException( QStringLiteral( "HTTP error finding protocol header" ) );
@@ -251,7 +251,7 @@ class TcpServerWorker: public QObject
 
               // Headers
               QgsBufferServerRequest::Headers headers;
-              const int endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
+              const auto endHeadersPos { incomingData->indexOf( "\r\n\r\n" ) };
 
               if ( endHeadersPos == -1 )
               {
@@ -262,14 +262,14 @@ class TcpServerWorker: public QObject
 
               for ( const auto &headerLine : httpHeaders )
               {
-                const int headerColonPos { headerLine.indexOf( ':' ) };
+                const auto headerColonPos { headerLine.indexOf( ':' ) };
                 if ( headerColonPos > 0 )
                 {
                   headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
                 }
               }
 
-              const int headersSize { endHeadersPos + 4 };
+              const auto headersSize { endHeadersPos + 4 };
 
               // Check for content length and if we have got all data
               if ( headers.contains( QStringLiteral( "Content-Length" ) ) )

@@ -64,7 +64,7 @@ QVariant QgsFeatureSource::minimumValue( int fieldIndex ) const
   while ( it.nextFeature( f ) )
   {
     const QVariant v = f.attribute( fieldIndex );
-    if ( !v.isNull() && ( qgsVariantLessThan( v, min ) || min.isNull() ) )
+    if ( !QgsVariantUtils::isNull( v ) && ( qgsVariantLessThan( v, min ) || QgsVariantUtils::isNull( min ) ) )
     {
       min = v;
     }
@@ -87,7 +87,7 @@ QVariant QgsFeatureSource::maximumValue( int fieldIndex ) const
   while ( it.nextFeature( f ) )
   {
     const QVariant v = f.attribute( fieldIndex );
-    if ( !v.isNull() && ( qgsVariantGreaterThan( v, max ) || max.isNull() ) )
+    if ( !QgsVariantUtils::isNull( v ) && ( qgsVariantGreaterThan( v, max ) || QgsVariantUtils::isNull( max ) ) )
     {
       max = v;
     }

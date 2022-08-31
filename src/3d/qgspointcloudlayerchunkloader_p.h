@@ -37,8 +37,13 @@
 #include <memory>
 
 #include <QFutureWatcher>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QBuffer>
+#else
+#include <Qt3DCore/QGeometry>
+#include <Qt3DCore/QBuffer>
+#endif
 #include <Qt3DRender/QMaterial>
 #include <QVector3D>
 
@@ -53,6 +58,8 @@
  */
 class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -88,6 +95,8 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
  */
 class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 {
+    Q_OBJECT
+
   public:
 
     /**

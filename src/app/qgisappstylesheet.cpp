@@ -108,18 +108,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   if ( fontSize != defaultSize || fontFamily != defaultFamily )
     ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 12, 2)
-  // Fix for macOS Qt 5.9+, where close boxes do not show on document mode tab bar tabs
-  // See: https://bugreports.qt.io/browse/QTBUG-61092 => fixed in 5.12.2 / 5.14
-  //      https://bugreports.qt.io/browse/QTBUG-61742 => fixed in 5.9.2
-  // Setting any stylesheet makes the default close button disappear.
-  // Specifically setting a custom close button temporarily works around issue.
-  if ( mMacStyle )
-  {
-    ss += QLatin1String( "QTabBar::close-button{ image: url(:/images/themes/default/mIconCloseTab.svg); }" );
-    ss += QLatin1String( "QTabBar::close-button:hover{ image: url(:/images/themes/default/mIconCloseTabHover.svg); }" );
-  }
-#endif
   if ( mMacStyle )
   {
     ss += QLatin1String( "QWidget#QgsTextFormatWidgetBase QTabWidget#mOptionsTab QTabBar::tab," );

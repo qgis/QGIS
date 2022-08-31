@@ -462,7 +462,6 @@ void QgsFeatureFilterWidget::setFilterExpression( const QString &filterString, Q
   }
 
   mMainView->filterFeatures( filterExpression, context );
-
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }
 

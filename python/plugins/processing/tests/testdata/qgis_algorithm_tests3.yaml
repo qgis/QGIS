@@ -16,6 +16,7 @@ tests:
           fields:
             __all__:
               precision: 5
+            fid: skip
 
   - algorithm: native:meancoordinates
     name: Mean coordinates, multiple grouped
@@ -75,6 +76,7 @@ tests:
       OUTPUT:
         name: expected/single_to_multi.gml
         type: vector
+        pk: id
 
   - algorithm: qgis:statisticsbycategories
     name: stats by category
@@ -142,7 +144,7 @@ tests:
             _count:
               precision: 3
             _sum:
-              precision: 3
+              precision: 2
             _mean:
               precision: 3
 
@@ -187,12 +189,25 @@ tests:
       ERROR_OUTPUT:
         name: expected/poly_ring_self_intersection_error.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
+
       INVALID_OUTPUT:
         name: expected/poly_ring_self_intersection_invalid.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
       VALID_OUTPUT:
         name: expected/poly_ring_self_intersection_valid.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+          ignore_crs_check: true
 
   - algorithm: qgis:checkvalidity
     name: Check validity polygon ring self intersection, ignoring self intersections
@@ -206,12 +221,24 @@ tests:
       ERROR_OUTPUT:
         name: expected/poly_ring_self_intersection_error_ignore_self.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          fields:
+            fid: skip
       INVALID_OUTPUT:
         name: expected/poly_ring_self_intersection_invalid_ignore_self.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          fields:
+            fid: skip
       VALID_OUTPUT:
         name: expected/poly_ring_self_intersection_valid_ignore_self.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          fields:
+            fid: skip
 
   - algorithm: native:polygonize
     name: Polygonize
@@ -227,6 +254,8 @@ tests:
         compare:
           geometry:
             topo_equal_check: True
+          fields:
+            fid: skip
 
   - algorithm: qgis:voronoipolygons
     name: Standard voronoi
@@ -239,6 +268,7 @@ tests:
       OUTPUT:
         name: expected/voronoi.gml
         type: vector
+        pk: id
 
   - algorithm: qgis:voronoipolygons
     name: Vornoi with buffer region
@@ -251,6 +281,7 @@ tests:
       OUTPUT:
         name: expected/voronoi_buffer.gml
         type: vector
+        pk: id
 
   - algorithm: qgis:voronoipolygons
     name: Vornoi with vertical and horizontal Voronoi edges
@@ -263,6 +294,7 @@ tests:
       OUTPUT:
         name: expected/pointsvoronoi1diagram.gml
         type: vector
+        pk: id
 
   - algorithm: qgis:voronoipolygons
     name: Vornoi with configuration that may cause numerical issues
@@ -278,6 +310,7 @@ tests:
         compare:
           geometry:
             precision: 2
+        pk: id
 
   - algorithm: native:explodelines
     name: Explode lines
@@ -345,6 +378,9 @@ tests:
       OUTPUT:
         name: expected/polygon_from_extent.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:topologicalcoloring
     name: Topological coloring
@@ -391,6 +427,8 @@ tests:
         compare:
           geometry:
             precision: 5
+          fields:
+            fid: skip
 
   - algorithm: qgis:rectanglesovalsdiamondsvariable
     name: Rectangular buffer shape
@@ -461,6 +499,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:convertgeometrytype
     name: polygon to centroid
@@ -581,6 +620,7 @@ tests:
       OUTPUT:
         name: expected/extract_by_location_touches.gml
         type: vector
+        pk: id
 
   - algorithm: native:addfieldtoattributestable
     name: add float field
@@ -662,7 +702,7 @@ tests:
       NULLS_FIRST: false
     results:
       OUTPUT:
-        name: expected/order_by_expression.gml
+        name: expected/order_by_expression.shp
         type: vector
         compare:
           fields:
@@ -684,7 +724,10 @@ tests:
         name: randompointsinextent.gml
 
   - algorithm: native:randompointsinpolygons
-    name: Random points in polygons, 10 pts, min distance 0.0, 10 tries, seed 1, attributes
+    name: Random points in polygons, 10 pts, min distance 0.0, 10 tries, seed 1, attributes (older qt)
+    condition:
+      qt:
+        less_than: 331008
     params:
       INCLUDE_POLYGON_ATTRIBUTES: true
       INPUT:
@@ -701,7 +744,30 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Random points in polygons, 10 pts, global min distance 2.0, 10 tries, seed 1, attributes
+    name: Rand p in p, 10 pts, min distance 0.0, 10 tries, seed 1, attributes (qt >= 5.13)
+    condition:
+      qt:
+        at_least: 331008
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      MIN_DISTANCE_GLOBAL: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Rand p in p, 10 pts, global min dis 2.0, 10 tries, seed 1, attrs (qt < 5.13)
+    condition:
+      qt:
+        less_than: 331008
     params:
       INCLUDE_POLYGON_ATTRIBUTES: true
       INPUT:
@@ -718,7 +784,30 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes
+    name: Rand p in p, 10 pts, global min dis 2.0, 10 tries, seed 1, attrs (qt >= 5.15)
+    condition:
+      qt:
+        at_least: 331008
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 0.0
+      MIN_DISTANCE_GLOBAL: 2.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons_gmin2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes (qt < 5.13)
+    condition:
+      qt:
+        less_than: 331008
     params:
       INCLUDE_POLYGON_ATTRIBUTES: false
       INPUT:
@@ -735,7 +824,30 @@ tests:
         type: vector
 
   - algorithm: native:randompointsinpolygons
-    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes
+    name: Random points in polygons, 10 pts, min distance 2.0, 10 tries, seed 1, no attributes (qt >= 5.13)
+    condition:
+      qt:
+        at_least: 331008
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 2.0
+      MIN_DISTANCE_GLOBAL: 0.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons_min2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes (QT < 5.13)
+    condition:
+      qt:
+        less_than: 331008
     params:
       INCLUDE_POLYGON_ATTRIBUTES: true
       INPUT:
@@ -749,6 +861,26 @@ tests:
     results:
       OUTPUT:
         name: expected/randompointsinpolygons_min2_gmin2.gml
+        type: vector
+
+  - algorithm: native:randompointsinpolygons
+    name: Random points in polygons, 10 pts, global min distance 2.0, min distance 2.0, 10 tries, seed 1, attributes (QT >= 5.13)
+    condition:
+      qt:
+        at_least: 331008
+    params:
+      INCLUDE_POLYGON_ATTRIBUTES: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 2.0
+      MIN_DISTANCE_GLOBAL: 2.0
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/qt515/randompointsinpolygons_min2_gmin2.gml
         type: vector
 
   - algorithm: native:randompointsonlines
@@ -767,6 +899,9 @@ tests:
       OUTPUT:
         name: expected/randompointsonlines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:randompointsonlines
     name: Random points on lines, global min distance 2, seed 1, attributes, multilines - one empty geom
@@ -801,6 +936,9 @@ tests:
       OUTPUT:
         name: expected/randompointsonlines_min2.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:randompointsonlines
     name: Random points on lines, min distance 2, global min distance 2, seed 1, attributes, multilines - one empty geom
@@ -946,6 +1084,7 @@ tests:
           fields:
             __all__:
               precision: 2
+            fid: skip
 
   - algorithm: qgis:pointsdisplacement
     name: Point displacement
@@ -960,6 +1099,7 @@ tests:
       OUTPUT:
         name: expected/displaced_points.gml
         type: vector
+        pk: id
 
   - algorithm: native:generatepointspixelcentroidsinsidepolygons
     name: Pixel centroids inside polygon
@@ -974,6 +1114,9 @@ tests:
       OUTPUT:
         name: expected/pixel_centroids_polygon.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:generatepointspixelcentroidsalongline
     name: Pixel centroids along line
@@ -988,6 +1131,9 @@ tests:
       OUTPUT:
         name: expected/pixel_centroids_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:fieldcalculator
     name: Test field calculator points
@@ -1050,6 +1196,9 @@ tests:
       OUTPUT:
         name: expected/raster_extent.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:minimumenclosingcircle
     name: Minimal enclosing circle each features
@@ -1062,6 +1211,7 @@ tests:
       OUTPUT:
         name: expected/enclosing_circles_each.gml
         type: vector
+        pk: intval
         compare:
           geometry:
             precision: 7
@@ -1228,6 +1378,7 @@ tests:
       OUTPUT:
         name: expected/convex_hull_by_feature.gml
         type: vector
+        pk: intval
 
   - algorithm: native:promotetomulti
     name: Promote to multipart lines
@@ -1274,7 +1425,7 @@ tests:
         type: vector
 
   - algorithm: native:collect
-    name: Test (native:collect)
+    name: Collect (native:collect)
     params:
       INPUT:
         name: dissolve_polys.gml
@@ -1285,7 +1436,10 @@ tests:
         type: vector
 
   - algorithm: native:collect
-    name: Test (native:collect)
+    name: Collect (one field) (GEOS < 3.9)
+    condition:
+      geos:
+        less_than: 30900
     params:
       FIELD:
       - name
@@ -1298,7 +1452,32 @@ tests:
         type: vector
 
   - algorithm: native:collect
-    name: Test (native:collect)
+    name: Collect (one field) (GEOS >= 3.9)
+    condition:
+      geos:
+        at_least: 30900
+    params:
+      FIELD:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/geos39/collect_one_field.gml
+        type: vector
+        pk:
+        - name
+        - intval
+        compare:
+          fields:
+            gml_id: skip
+
+  - algorithm: native:collect
+    name: Collect (two fields) (GEOS < 3.9)
+    condition:
+      geos:
+        less_than: 30900
     params:
       FIELD:
       - intval
@@ -1311,6 +1490,28 @@ tests:
         name: expected/collect_two_fields.gml
         type: vector
 
+  - algorithm: native:collect
+    name: Collect (two fields) (GEOS >= 3.9)
+    condition:
+      geos:
+        at_least: 30900
+    params:
+      FIELD:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/geos39/collect_two_fields.gml
+        type: vector
+        pk:
+        - name
+        - intval
+        compare:
+          fields:
+            gml_id: skip
 
   - algorithm: qgis:statisticsbycategories
     name: Stats by cat (float field)
@@ -2201,6 +2402,7 @@ tests:
           fields:
             __all__:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:distancematrix
     name: Summary distance matrix (mean, std. dev., min, max)
@@ -2223,6 +2425,7 @@ tests:
           fields:
             __all__:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:distancematrix
     name: Summary matrix different layers
@@ -2245,6 +2448,7 @@ tests:
           fields:
             __all__:
               precision: 7
+            fid: skip
 
   - algorithm: qgis:buildvirtualvector
     name: Build virtual vector

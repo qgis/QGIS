@@ -9,6 +9,7 @@
 
 
 
+
 class QgsAbstractDatabaseProviderConnection : QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
@@ -354,6 +355,7 @@ This information is calculated from the geometry columns types.
       SetFieldDomain,
       AddFieldDomain,
       RenameField,
+      RetrieveRelationships,
     };
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
 
@@ -363,7 +365,10 @@ This information is calculated from the geometry columns types.
       Z,
       M,
       SinglePart,
-      Curves
+      Curves,
+      SinglePoint,
+      SingleLineString,
+      SinglePolygon,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::GeometryColumnCapability> GeometryColumnCapabilities;
@@ -776,6 +781,29 @@ Adds a new field ``domain`` to the database.
 :raises QgsProviderConnectionException: if any errors are encountered.
 
 .. versionadded:: 3.26
+%End
+
+    virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns a list of relationships detected in the database.
+
+This is supported on providers with the Capability.RetrieveRelationships capability only.
+
+If a ``schema`` and/or ``tableName`` are specified, then only relationships where the specified table
+forms the left (or "parent" / "referenced") side of the relationship are retrieved.
+
+:raises QgsProviderConnectionException: if any errors are encountered.
+
+.. versionadded:: 3.28
+%End
+
+    virtual QgsProviderSqlQueryBuilder *queryBuilder() const /Factory/;
+%Docstring
+Returns a SQL query build for the connection, which provides an interface for provider-specific creation of SQL queries.
+
+The caller takes ownership of the returned object.
+
+.. versionadded:: 3.28
 %End
 
   protected:

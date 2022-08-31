@@ -16,10 +16,8 @@
 #include "qgsfeatureexpressionvaluesgatherer.h"
 
 #include "qgsvectorlayer.h"
-#include "qgsconditionalstyle.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
-
+#include "qgsvariantutils.h"
 
 bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 {
@@ -67,7 +65,7 @@ void QgsFeatureFilterModel::requestToReloadCurrentFeature( QgsFeatureRequest &re
 
 QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
 {
-  return qgis::listToSet( mIdentifierFields );
+  return QSet<QString>( mIdentifierFields.begin(), mIdentifierFields.end() );
 }
 
 QVariant QgsFeatureFilterModel::entryIdentifier( const QgsFeatureExpressionValuesGatherer::Entry &entry ) const
@@ -96,7 +94,7 @@ bool QgsFeatureFilterModel::identifierIsNull( const QVariant &identifier ) const
   const QVariantList values = identifier.toList();
   for ( const QVariant &value : values )
   {
-    if ( !value.isNull() )
+    if ( !QgsVariantUtils::isNull( value ) )
     {
       return false;
     }

@@ -18,7 +18,6 @@
 #define QGSSPATIALITESOURCESELECT_H
 
 #include "qgsguiutils.h"
-#include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdbsourceselect.h"
 
@@ -30,7 +29,6 @@
 #include <QFileDialog>
 
 class QgsSpatiaLiteTableModel;
-class QStringList;
 class QTableWidgetItem;
 class QPushButton;
 

@@ -15,7 +15,6 @@
 
 #include "qgsrelationreferenceconfigdlg.h"
 
-#include "qgseditorwidgetfactory.h"
 #include "qgsfields.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
@@ -45,7 +44,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl
 
     QStandardItemModel *model = qobject_cast<QStandardItemModel *>( mComboRelation->model() );
     QStandardItem *item = model->item( model->rowCount() - 1 );
-    item->setFlags( relation.type() == QgsRelation::Generated
+    item->setFlags( relation.type() == Qgis::RelationshipType::Generated
                     ? item->flags() & ~Qt::ItemIsEnabled
                     : item->flags() | Qt::ItemIsEnabled );
 

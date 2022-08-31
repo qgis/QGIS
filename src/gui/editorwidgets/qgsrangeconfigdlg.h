@@ -39,6 +39,12 @@ class GUI_EXPORT QgsRangeConfigDlg : public QgsEditorConfigWidget, private Ui::Q
 
   protected slots:
     void rangeWidgetChanged( int index );
+
+    /**
+     * Sets the precision of minimum value, maximum value, step size UI elements
+     * \param precision the precision
+     */
+    void setPrecision( int precision );
 };
 
 #endif // QGSRANGECONFIGDLG_H

@@ -15,22 +15,13 @@
 #include "qgsgeopackagedataitems.h"
 ///@cond PRIVATE
 
-#include "qgssqliteutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsprojectitem.h"
 #include "qgsfieldsitem.h"
 #include "qgsogrdbconnection.h"
 #include "qgslogger.h"
-#include "qgssettings.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgsogrprovider.h"
 #include "qgsapplication.h"
-#include "qgsmessageoutput.h"
-#include "qgsvectorlayerexporter.h"
-#include "qgsgeopackagerasterwritertask.h"
-#include "qgstaskmanager.h"
 #include "qgsproviderregistry.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsprojectstorageregistry.h"
@@ -39,6 +30,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsfielddomainsitem.h"
+#include "qgsrelationshipsitem.h"
+#include "qgsogrproviderutils.h"
 
 QString QgsGeoPackageDataItemProvider::name()
 {
@@ -195,6 +188,27 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
+    }
+  }
+  if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+  {
+    QString relationError;
+    QList< QgsWeakRelation > relations;
+    try
+    {
+      relations = conn->relationships();
+    }
+    catch ( QgsProviderConnectionException &ex )
+    {
+      relationError = ex.what();
+    }
+
+    if ( !relations.empty() || !relationError.isEmpty() )
+    {
+      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      // force this item to appear last by setting a maximum string value for the sort key
+      relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
+      children.append( relationsItem.release() );
     }
   }
 

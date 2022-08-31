@@ -26,11 +26,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsactionmanager.h"
 #include "qgsapplication.h"
-#include "qgsclipper.h"
 #include "qgsconditionalstyle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
-#include "qgsexception.h"
 #include "qgscurve.h"
 #include "qgsdatasourceuri.h"
 #include "qgsexpressionfieldbuffer.h"
@@ -39,12 +36,10 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsmaplayerfactory.h"
-#include "qgsmaplayerutils.h"
 #include "qgsgeometry.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
 #include "qgspainting.h"
@@ -65,17 +60,13 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerrenderer.h"
-#include "qgsvectorlayerundocommand.h"
 #include "qgsvectorlayerfeaturecounter.h"
 #include "qgspoint.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsdiagramrenderer.h"
-#include "qgsstyle.h"
 #include "qgspallabeling.h"
 #include "qgsrulebasedlabeling.h"
-#include "qgssimplifymethod.h"
 #include "qgsstoredexpressionmanager.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeedback.h"
@@ -91,8 +82,7 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsvectorlayerprofilegenerator.h"
 #include "qgsprofilerequest.h"
-
-#include "diagram/qgsdiagram.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDir>
 #include <QFile>
@@ -2727,12 +2717,16 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     QDomElement referencedLayersElement = doc.createElement( QStringLiteral( "referencedLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
-    for ( const auto &rel : constReferencingRelations )
+    const QList<QgsRelation> referencingRelations { QgsProject::instance()->relationManager()->referencingRelations( this ) };
+    for ( const QgsRelation &rel : referencingRelations )
     {
-      if ( rel.type() == QgsRelation::Normal )
+      switch ( rel.type() )
       {
-        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+        case Qgis::RelationshipType::Normal:
+          QgsWeakRelation::writeXml( this, QgsWeakRelation::Referencing, rel, referencedLayersElement, doc );
+          break;
+        case Qgis::RelationshipType::Generated:
+          break;
       }
     }
 
@@ -2740,15 +2734,18 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     QDomElement referencingLayersElement = doc.createElement( QStringLiteral( "referencingLayers" ) );
     node.appendChild( referencedLayersElement );
 
-    const auto constReferencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
-    for ( const auto &rel : constReferencedRelations )
+    const QList<QgsRelation> referencedRelations { QgsProject::instance()->relationManager()->referencedRelations( this ) };
+    for ( const QgsRelation &rel : referencedRelations )
     {
-      if ( rel.type() == QgsRelation::Normal )
+      switch ( rel.type() )
       {
-        QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+        case Qgis::RelationshipType::Normal:
+          QgsWeakRelation::writeXml( this, QgsWeakRelation::Referenced, rel, referencingLayersElement, doc );
+          break;
+        case Qgis::RelationshipType::Generated:
+          break;
       }
     }
-
   }
 
   // write field configurations
@@ -3374,21 +3371,28 @@ bool QgsVectorLayer::deleteFeatureCascade( QgsFeatureId fid, QgsVectorLayer::Del
       for ( const QgsRelation &relation : relations )
       {
         //check if composition (and not association)
-        if ( relation.strength() == QgsRelation::Composition )
+        switch ( relation.strength() )
         {
-          //get features connected over this relation
-          QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
-          QgsFeatureIds childFeatureIds;
-          QgsFeature childFeature;
-          while ( relatedFeaturesIt.nextFeature( childFeature ) )
+          case Qgis::RelationshipStrength::Composition:
           {
-            childFeatureIds.insert( childFeature.id() );
+            //get features connected over this relation
+            QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( getFeature( fid ) );
+            QgsFeatureIds childFeatureIds;
+            QgsFeature childFeature;
+            while ( relatedFeaturesIt.nextFeature( childFeature ) )
+            {
+              childFeatureIds.insert( childFeature.id() );
+            }
+            if ( childFeatureIds.count() > 0 )
+            {
+              relation.referencingLayer()->startEditing();
+              relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
+            }
+            break;
           }
-          if ( childFeatureIds.count() > 0 )
-          {
-            relation.referencingLayer()->startEditing();
-            relation.referencingLayer()->deleteFeatures( childFeatureIds, context );
-          }
+
+          case Qgis::RelationshipStrength::Association:
+            break;
         }
       }
     }
@@ -3629,25 +3633,11 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   features.reserve( mSelectedFeatureIds.count() );
   QgsFeature f;
 
-  if ( mSelectedFeatureIds.count() <= 8 )
-  {
-    // for small amount of selected features, fetch them directly
-    // because request with FilterFids would go iterate over the whole layer
-    const auto constMSelectedFeatureIds = mSelectedFeatureIds;
-    for ( QgsFeatureId fid : constMSelectedFeatureIds )
-    {
-      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
-      features << f;
-    }
-  }
-  else
-  {
-    QgsFeatureIterator it = getSelectedFeatures();
+  QgsFeatureIterator it = getSelectedFeatures();
 
-    while ( it.nextFeature( f ) )
-    {
-      features.push_back( f );
-    }
+  while ( it.nextFeature( f ) )
+  {
+    features.push_back( f );
   }
 
   return features;
@@ -4488,7 +4478,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
       while ( fit.nextFeature( f ) )
       {
         const QVariant currentValue = f.attribute( index );
-        if ( currentValue.isNull() )
+        if ( QgsVariantUtils::isNull( currentValue ) )
           continue;
 
         if ( firstValue )
@@ -5428,6 +5418,11 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 QList<QgsWeakRelation> QgsVectorLayer::weakRelations() const
 {
   return mWeakRelations;
+}
+
+void QgsVectorLayer::setWeakRelations( const QList<QgsWeakRelation> &relations )
+{
+  mWeakRelations = relations;
 }
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )

@@ -260,6 +260,7 @@ set(QGIS_CORE_SRCS
   providers/qgsdataprovider.cpp
   providers/qgsprovidermetadata.cpp
   providers/qgsproviderregistry.cpp
+  providers/qgsprovidersqlquerybuilder.cpp
   providers/qgsprovidersublayerdetails.cpp
   providers/qgsprovidersublayermodel.cpp
   providers/qgsprovidersublayertask.cpp
@@ -528,6 +529,7 @@ set(QGIS_CORE_SRCS
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
   qgsvirtuallayerdefinitionutils.cpp
+  qgsunsetattributevalue.cpp
   qgsmapthemecollection.cpp
   qgsxmlutils.cpp
   qgsarchive.cpp
@@ -549,6 +551,7 @@ set(QGIS_CORE_SRCS
   browser/qgsfilebaseddataitemprovider.cpp
   browser/qgslayeritem.cpp
   browser/qgsprojectitem.cpp
+  browser/qgsrelationshipsitem.cpp
   browser/qgszipitem.cpp
 
   dxf/qgsdxfexport.cpp
@@ -794,7 +797,6 @@ set(QGIS_CORE_SRCS
   geometry/qgsgeometrycollection.cpp
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
-  geometry/qgsgeometrymakevalid.cpp
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
@@ -1201,6 +1203,7 @@ set(QGIS_CORE_HDRS
   qgstransactiongroup.h
   qgstranslationcontext.h
   qgsunittypes.h
+  qgsunsetattributevalue.h
   qgsuserprofile.h
   qgsuserprofilemanager.h
   qgsvariantutils.h
@@ -1265,6 +1268,7 @@ set(QGIS_CORE_HDRS
   browser/qgsfilebaseddataitemprovider.h
   browser/qgslayeritem.h
   browser/qgsprojectitem.h
+  browser/qgsrelationshipsitem.h
   browser/qgszipitem.h
 
   callouts/qgscallout.h
@@ -1671,6 +1675,7 @@ set(QGIS_CORE_HDRS
   providers/qgsdataprovider.h
   providers/qgsprovidermetadata.h
   providers/qgsproviderregistry.h
+  providers/qgsprovidersqlquerybuilder.h
   providers/qgsprovidersublayerdetails.h
   providers/qgsprovidersublayermodel.h
   providers/qgsprovidersublayertask.h

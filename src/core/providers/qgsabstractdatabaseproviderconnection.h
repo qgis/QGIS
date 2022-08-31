@@ -20,13 +20,15 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgis_core.h"
 #include "qgsfields.h"
-#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 
 #include <QObject>
 
 class QgsFeedback;
 class QgsFieldDomain;
+class QgsWeakRelation;
+class QgsProviderSqlQueryBuilder;
+
 
 /**
  * \brief The QgsAbstractDatabaseProviderConnection class provides common functionality
@@ -504,6 +506,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       SetFieldDomain = 1 << 24,                       //!< Can set the domain for an existing field via setFieldDomainName() (since QGIS 3.26)
       AddFieldDomain = 1 << 25,                       //!< Can add new field domains to the database via addFieldDomain() (since QGIS 3.26)
       RenameField = 1 << 26,                          //!< Can rename existing fields via renameField() (since QGIS 3.28)
+      RetrieveRelationships = 1 << 27,                //!< Can retrieve relationships from the database (since QGIS 3.28)
     };
     Q_ENUM( Capability )
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -518,9 +521,13 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
     {
       Z = 1 << 1,                    //!< Supports Z dimension
       M = 1 << 2,                    //!< Supports M dimension
-      SinglePart = 1 << 3,           //!< Multi and single part types are distinct types
-      Curves = 1 << 4                //!< Supports curves
+      SinglePart = 1 << 3,           //!< Multi and single part types are distinct types. Deprecated since QGIS 3.28 -- use the granular SinglePoint/SingleLineString/SinglePolygon capabilities instead.
+      Curves = 1 << 4,                //!< Supports curves
+      SinglePoint = 1 << 5,            //!< Supports single point types (as distinct from multi point types) (since QGIS 3.28)
+      SingleLineString = 1 << 6,       //!< Supports single linestring types (as distinct from multi line types) (since QGIS 3.28)
+      SinglePolygon = 1 << 7,          //!< Supports single polygon types (as distinct from multi polygon types) (since QGIS 3.28)
     };
+    // TODO QGIS 4.0 -- remove SinglePart
 
     Q_ENUM( GeometryColumnCapability )
     Q_DECLARE_FLAGS( GeometryColumnCapabilities, GeometryColumnCapability )
@@ -883,6 +890,29 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.26
      */
     virtual void addFieldDomain( const QgsFieldDomain &domain, const QString &schema ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a list of relationships detected in the database.
+     *
+     * This is supported on providers with the Capability::RetrieveRelationships capability only.
+     *
+     * If a \a schema and/or \a tableName are specified, then only relationships where the specified table
+     * forms the left (or "parent" / "referenced") side of the relationship are retrieved.
+     *
+     * \throws QgsProviderConnectionException if any errors are encountered.
+     *
+     * \since QGIS 3.28
+     */
+    virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a SQL query build for the connection, which provides an interface for provider-specific creation of SQL queries.
+     *
+     * The caller takes ownership of the returned object.
+     *
+     * \since QGIS 3.28
+     */
+    virtual QgsProviderSqlQueryBuilder *queryBuilder() const SIP_FACTORY;
 
   protected:
 

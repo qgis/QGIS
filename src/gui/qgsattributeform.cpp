@@ -442,9 +442,9 @@ bool QgsAttributeForm::saveEdits( QString *error )
 
           QgsDebugMsgLevel( QStringLiteral( "Updating field %1" ).arg( i ), 2 );
           QgsDebugMsgLevel( QStringLiteral( "dst:'%1' (type:%2, isNull:%3, isValid:%4)" )
-                            .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( dst.at( i ).isNull() ).arg( dst.at( i ).isValid() ), 2 );
+                            .arg( dst.at( i ).toString(), dst.at( i ).typeName() ).arg( QgsVariantUtils::isNull( dst.at( i ) ) ).arg( dst.at( i ).isValid() ), 2 );
           QgsDebugMsgLevel( QStringLiteral( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
-                            .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ), 2 );
+                            .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( QgsVariantUtils::isNull( src.at( i ) ) ).arg( src.at( i ).isValid() ), 2 );
 
           newValues[i] = dst.at( i );
           oldValues[i] = src.at( i );
@@ -1211,7 +1211,7 @@ bool QgsAttributeForm::currentFormValuesFeature( QgsFeature &feature )
       {
         // need to check dstVar.isNull() != srcVar.isNull()
         // otherwise if dstVar=NULL and scrVar=0, then dstVar = srcVar
-        if ( ( !qgsVariantEqual( dstVars[i], srcVars[i] ) || dstVars[i].isNull() != srcVars[i].isNull() ) && srcVars[i].isValid() )
+        if ( ( !qgsVariantEqual( dstVars[i], srcVars[i] ) || QgsVariantUtils::isNull( dstVars[i] ) != QgsVariantUtils::isNull( srcVars[i] ) ) && srcVars[i].isValid() )
         {
           dst[fieldIndexes[i]] = srcVars[i];
         }

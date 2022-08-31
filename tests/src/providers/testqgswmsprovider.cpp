@@ -34,9 +34,14 @@
  * \ingroup UnitTests
  * This is a unit test for the WMS provider.
  */
-class TestQgsWmsProvider: public QObject
+class TestQgsWmsProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsWmsProvider() : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
+
   private slots:
 
     void initTestCase()
@@ -53,22 +58,11 @@ class TestQgsWmsProvider: public QObject
 
       mCapabilities = new QgsWmsCapabilities();
       QVERIFY( mCapabilities->parseResponse( content, config ) );
-
-      mReport += QLatin1String( "<h1>WMS Provider Tests</h1>\n" );
     }
 
     //runs after all tests
     void cleanupTestCase()
     {
-      QString myReportFile = QDir::tempPath() + "/qgistest.html";
-      QFile myFile( myReportFile );
-      if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-      {
-        QTextStream myQTextStream( &myFile );
-        myQTextStream << mReport;
-        myFile.close();
-      }
-
       delete mCapabilities;
       QgsApplication::exitQgis();
     }
@@ -365,7 +359,6 @@ class TestQgsWmsProvider: public QObject
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 
-    QString mReport;
 };
 
 QGSTEST_MAIN( TestQgsWmsProvider )

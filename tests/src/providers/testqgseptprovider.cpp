@@ -47,9 +47,12 @@
  * \ingroup UnitTests
  * This is a unit test for the EPT provider
  */
-class TestQgsEptProvider : public QObject
+class TestQgsEptProvider : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsEptProvider() : QgsTest( QStringLiteral( "EPT Provider Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -80,7 +83,6 @@ class TestQgsEptProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
 };
 
 //runs before all tests
@@ -91,21 +93,12 @@ void TestQgsEptProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>EPT Provider Tests</h1>\n" );
 }
 
 //runs after all tests
 void TestQgsEptProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsEptProvider::filters()

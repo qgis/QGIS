@@ -31,7 +31,7 @@
  * \deprecated since QGIS 3.24
  * \since QGIS 3.0 QSortFilterProxyModel with native recursive filtering can be used instead
 */
-class CORE_EXPORT Q_DECL_DEPRECATED QgsDatabaseFilterProxyModel : public QSortFilterProxyModel SIP_DEPRECATED
+class CORE_DEPRECATED_EXPORT QgsDatabaseFilterProxyModel : public QSortFilterProxyModel SIP_DEPRECATED
 {
     Q_OBJECT
 

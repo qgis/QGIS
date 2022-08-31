@@ -17,6 +17,8 @@
 
 #include "qgswfsparameters.h"
 #include "qgsmessagelog.h"
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 namespace QgsWfs
 {
@@ -80,18 +82,23 @@ namespace QgsWfs
       theList << val;
     else
     {
-      QRegExp rx( exp );
-      if ( rx.indexIn( val, 0 ) == -1 )
+      const QRegularExpression rx( exp );
+      QRegularExpressionMatchIterator matchIt = rx.globalMatch( val );
+      if ( !matchIt.hasNext() )
       {
         theList << val;
       }
       else
       {
-        int pos = 0;
-        while ( ( pos = rx.indexIn( val, pos ) ) != -1 )
+        while ( matchIt.hasNext() )
         {
-          theList << rx.cap( 1 );
-          pos += rx.matchedLength();
+          const QRegularExpressionMatch match = matchIt.next();
+          if ( match.hasMatch() )
+          {
+            QStringList matches = match.capturedTexts();
+            matches.pop_front(); // remove whole match
+            theList.append( matches );
+          }
         }
       }
     }

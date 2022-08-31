@@ -16,6 +16,7 @@
 
 #include "qgssqlstatement.h"
 #include "qgis.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -243,7 +244,7 @@ void QgsSQLStatementCollectTableNames::visit( const QgsSQLStatement::NodeColumnR
 
 void QgsSQLStatementCollectTableNames::visit( const QgsSQLStatement::NodeTableDef &n )
 {
-  tableNamesDeclared.insert( n.alias().isEmpty() ? n.name() : n.alias() );
+  tableNamesDeclared.insert( n.alias().isEmpty() ? ( n.schema().isEmpty() ? n.name() : n.schema() + '.' + n.name() ) : n.alias() );
   QgsSQLStatement::RecursiveVisitor::visit( n );
 }
 
@@ -479,7 +480,7 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeFunction::clone() const
 
 QString QgsSQLStatement::NodeLiteral::dump() const
 {
-  if ( mValue.isNull() )
+  if ( QgsVariantUtils::isNull( mValue ) )
     return QStringLiteral( "NULL" );
 
   switch ( mValue.type() )
@@ -562,7 +563,10 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeSelectedColumn::clone() const
 QString QgsSQLStatement::NodeTableDef::dump() const
 {
   QString ret;
-  ret = quotedIdentifierIfNeeded( mName );
+  if ( !mSchema.isEmpty() )
+    ret += mSchema + '.';
+
+  ret += quotedIdentifierIfNeeded( mName );
   if ( !mAlias.isEmpty() )
   {
     ret += QLatin1String( " AS " );
@@ -573,7 +577,7 @@ QString QgsSQLStatement::NodeTableDef::dump() const
 
 QgsSQLStatement::NodeTableDef *QgsSQLStatement::NodeTableDef::cloneThis() const
 {
-  return new NodeTableDef( mName, mAlias );
+  return new NodeTableDef( mSchema, mName, mAlias );
 }
 
 QgsSQLStatement::Node *QgsSQLStatement::NodeTableDef::clone() const

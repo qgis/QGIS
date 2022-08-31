@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
@@ -332,7 +333,7 @@ void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTot
     if ( mReply->error() == QNetworkReply::NoError )
     {
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-      if ( !redirect.isNull() )
+      if ( !QgsVariantUtils::isNull( redirect ) )
       {
         // We don't want to emit downloadProgress() for a redirect
         return;
@@ -351,7 +352,7 @@ void QgsBaseNetworkRequest::replyFinished()
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 4 );
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-      if ( !redirect.isNull() )
+      if ( !QgsVariantUtils::isNull( redirect ) )
       {
         QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 4 );
 

@@ -62,7 +62,10 @@ void QgsDevToolsPanelWidget::removeToolFactory( QgsDevToolWidgetFactory *factory
   {
     const int currentRow = mStackedWidget->currentIndex();
     const int row = mFactoryPages.value( factory );
-    mStackedWidget->removeWidget( mStackedWidget->widget( row ) );
+    if ( QWidget *widget = mStackedWidget->widget( row ) )
+    {
+      mStackedWidget->removeWidget( widget );
+    }
     mOptionsListWidget->removeItemWidget( mOptionsListWidget->item( row ) );
     mFactoryPages.remove( factory );
     if ( currentRow == row )

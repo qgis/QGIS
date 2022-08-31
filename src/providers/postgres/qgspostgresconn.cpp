@@ -660,6 +660,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   result = LoggedPQexec( "QgsPostgresConn", query );
   // NOTE: we intentionally continue if the query fails
   //       (for example because PostGIS is not installed)
+
+  if ( ! result.result() )
+  {
+    return false;
+  }
+
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     QString tableName = result.PQgetvalue( idx, 0 );
@@ -1099,17 +1105,10 @@ QString QgsPostgresConn::postgisVersion() const
 
   QgsDebugMsgLevel( "PostGIS version info: " + mPostgisVersionInfo, 2 );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QStringList postgisParts = mPostgisVersionInfo.split( ' ', QString::SkipEmptyParts );
-
-  // Get major and minor version
-  QStringList postgisVersionParts = postgisParts[0].split( '.', QString::SkipEmptyParts );
-#else
   QStringList postgisParts = mPostgisVersionInfo.split( ' ', Qt::SkipEmptyParts );
 
   // Get major and minor version
   QStringList postgisVersionParts = postgisParts[0].split( '.', Qt::SkipEmptyParts );
-#endif
   if ( postgisVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( mPostgisVersionInfo ), tr( "PostGIS" ) );
@@ -1283,7 +1282,7 @@ static QString quotedList( const QVariantList &list )
 
 QString QgsPostgresConn::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )
@@ -1314,7 +1313,7 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
 
 QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
-  if ( value.isNull() || !value.isValid() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "null" );
   // where json is a string literal just construct it from that rather than dump
   if ( value.type() == QVariant::String )

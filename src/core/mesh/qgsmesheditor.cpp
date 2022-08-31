@@ -608,7 +608,10 @@ QgsMeshEditingError QgsMeshEditor::removeVerticesWithoutFillHoles( const QList<i
 
   QSet<int> concernedNativeFaces;
   for ( const int vi : std::as_const( verticesIndexes ) )
-    concernedNativeFaces.unite( qgis::listToSet( mTopologicalMesh.facesAroundVertex( vi ) ) );
+  {
+    const QList<int> faces = mTopologicalMesh.facesAroundVertex( vi );
+    concernedNativeFaces.unite( QSet< int >( faces.begin(), faces.end() ) );
+  }
 
   error = mTopologicalMesh.facesCanBeRemoved( concernedNativeFaces.values() );
 

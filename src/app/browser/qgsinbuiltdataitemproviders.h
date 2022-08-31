@@ -20,6 +20,7 @@
 
 #include "qgis_app.h"
 #include "qgsdataitemguiprovider.h"
+#include "qgsweakrelation.h"
 #include <QObject>
 
 class QgsDirectoryItem;
@@ -229,6 +230,48 @@ class QgsFieldDomainItemGuiProvider : public QObject, public QgsDataItemGuiProvi
                               const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
     QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
 };
+
+
+
+
+class QgsRelationshipDetailsWidget : public QWidget, private Ui_QgsBrowserItemMetadataWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRelationshipDetailsWidget( QWidget *parent, const QgsWeakRelation &relation );
+    ~QgsRelationshipDetailsWidget() override;
+
+    static QString htmlMetadata( const QgsWeakRelation &relation, const QString &title );
+
+  private:
+
+    QgsWeakRelation mRelation;
+};
+
+class QgsRelationshipsDetailsWidget : public QWidget, private Ui_QgsBrowserItemMetadataWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRelationshipsDetailsWidget( QWidget *parent, const QString &providerKey, const QString &uri, const QString &schema, const QString &tableName );
+};
+
+
+class QgsRelationshipItemGuiProvider : public QObject, public QgsDataItemGuiProvider
+{
+    Q_OBJECT
+
+  public:
+
+    QgsRelationshipItemGuiProvider() = default;
+
+    QString name() override;
+    QWidget *createParamWidget( QgsDataItem *item, QgsDataItemGuiContext context ) override;
+};
+
 
 
 class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider

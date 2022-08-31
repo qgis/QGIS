@@ -301,6 +301,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     bool mTileBorderRendering = false;
 
     QVariantMap mArcgisLayerConfiguration;
+    QVariantMap mArcgisStyleConfiguration;
 
     QgsCoordinateTransformContext mTransformContext;
 

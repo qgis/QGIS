@@ -243,7 +243,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             queryResultWidget->setWidgetMode( QgsQueryResultWidget::QueryWidgetMode::QueryLayerUpdateMode );
             queryResultWidget->setSqlVectorLayerOptions( options );
             queryResultWidget->executeQuery();
-            queryResultWidget->layout()->setMargin( 0 );
+            queryResultWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
             dialog.layout()->addWidget( queryResultWidget );
 
             connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer, this ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
@@ -791,7 +791,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         QAction *selectMatching = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelected.svg" ) ), tr( "Select Features" ), menu );
         menu->addAction( selectMatching );
-        menu->addSeparator();
         connect( selectMatching, &QAction::triggered, this, [layerId, ruleKey ]
         {
           if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
@@ -825,6 +824,23 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
           }
         } );
+
+        QAction *showMatchingInAttributeTable = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ), tr( "Show in Attribute Table" ), menu );
+        menu->addAction( showMatchingInAttributeTable );
+        connect( showMatchingInAttributeTable, &QAction::triggered, this, [layerId, ruleKey ]
+        {
+          if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+          {
+            bool ok = false;
+            QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
+            if ( ok )
+            {
+              QgisApp::instance()->attributeTable( QgsAttributeTableFilterModel::ShowFilteredList, filterExp );
+            }
+          }
+        } );
+
+        menu->addSeparator();
       }
 
       if ( layer && layer->type() == QgsMapLayerType::VectorLayer && symbolNode->symbol() )

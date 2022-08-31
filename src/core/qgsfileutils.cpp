@@ -57,7 +57,7 @@ QString QgsFileUtils::representFileSize( qint64 bytes )
 
 QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
 {
-  const QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]+)" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]+)" ) );
   QStringList extensions;
   QRegularExpressionMatchIterator matches = rx.globalMatch( filter );
 
@@ -76,7 +76,7 @@ QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
 
 QString QgsFileUtils::wildcardsFromFilter( const QString &filter )
 {
-  const QRegularExpression globPatternsRx( QStringLiteral( ".*\\((.*?)\\)$" ) );
+  const thread_local QRegularExpression globPatternsRx( QStringLiteral( ".*\\((.*?)\\)$" ) );
   const QRegularExpressionMatch matches = globPatternsRx.match( filter );
   if ( matches.hasMatch() )
     return matches.captured( 1 );
@@ -143,7 +143,7 @@ QString QgsFileUtils::addExtensionFromFilter( const QString &fileName, const QSt
 
 QString QgsFileUtils::stringToSafeFilename( const QString &string )
 {
-  QRegularExpression rx( QStringLiteral( "[/\\\\\\?%\\*\\:\\|\"<>]" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "[/\\\\\\?%\\*\\:\\|\"<>]" ) );
   QString s = string;
   s.replace( rx, QStringLiteral( "_" ) );
   return s;
@@ -500,4 +500,32 @@ bool QgsFileUtils::isCloseToLimitOfOpenedFiles( int filesToBeOpened )
   // We need some margin as Qt will crash if it cannot create some file descriptors
   constexpr int SOME_MARGIN = 20;
   return nFileCount > 0 && nFileLimit > 0 && nFileCount + filesToBeOpened > nFileLimit - SOME_MARGIN;
+}
+
+QStringList QgsFileUtils::splitPathToComponents( const QString &input )
+{
+  QStringList result;
+  QString path = QDir::cleanPath( input );
+  if ( path.isEmpty() )
+    return result;
+
+  const QString fileName = QFileInfo( path ).fileName();
+  if ( !fileName.isEmpty() )
+    result << fileName;
+  else if ( QFileInfo( path ).path() == path )
+    result << path;
+
+  QString prevPath = path;
+  while ( ( path = QFileInfo( path ).path() ).length() < prevPath.length() )
+  {
+    const QString dirName = QDir( path ).dirName();
+    if ( dirName == QLatin1String( "." ) )
+      break;
+
+    result << ( !dirName.isEmpty() ? dirName : path );
+    prevPath = path;
+  }
+
+  std::reverse( result.begin(), result.end() );
+  return result;
 }

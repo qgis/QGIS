@@ -2087,7 +2087,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionBinaryOperatorToOgcFilter( const 
     if ( node->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
     {
       const QgsExpressionNodeLiteral *rightLit = static_cast<const QgsExpressionNodeLiteral *>( node->opRight() );
-      if ( rightLit->value().isNull() )
+      if ( QgsVariantUtils::isNull( rightLit->value() ) )
       {
 
         QDomElement elem = mDoc.createElement( mFilterPrefix + ":PropertyIsNull" );
@@ -2538,7 +2538,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
     if ( node->opRight()->nodeType() == QgsSQLStatement::ntLiteral )
     {
       const QgsSQLStatement::NodeLiteral *rightLit = static_cast<const QgsSQLStatement::NodeLiteral *>( node->opRight() );
-      if ( rightLit->value().isNull() )
+      if ( QgsVariantUtils::isNull( rightLit->value() ) )
       {
 
         QDomElement elem = mDoc.createElement( mFilterPrefix + ":PropertyIsNull" );
@@ -3046,7 +3046,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
       return QDomElement();
     }
     const QgsSQLStatement::NodeLiteral *lit = static_cast<const QgsSQLStatement::NodeLiteral *>( distanceNode );
-    if ( lit->value().isNull() )
+    if ( QgsVariantUtils::isNull( lit->value() ) )
     {
       mErrorMessage = QObject::tr( "Function %1 3rd argument should be a numeric value or a string made of a numeric value followed by a string" ).arg( node->name() );
       return QDomElement();

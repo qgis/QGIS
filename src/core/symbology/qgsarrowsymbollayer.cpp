@@ -639,7 +639,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyArrowWidth ) )
   {
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowWidth, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const double w = exprVal.toDouble( &ok );
       if ( ok )
@@ -652,7 +652,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( arrowStartWidth() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowStartWidth, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const double w = exprVal.toDouble( &ok );
       if ( ok )
@@ -665,7 +665,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( headLength() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadLength, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const double w = exprVal.toDouble( &ok );
       if ( ok )
@@ -678,7 +678,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( headThickness() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadThickness, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const double w = exprVal.toDouble( &ok );
       if ( ok )
@@ -702,7 +702,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( headType() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadType, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const HeadType h = QgsSymbolLayerUtils::decodeArrowHeadType( exprVal, &ok );
       if ( ok )
@@ -716,7 +716,7 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( arrowType() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowType, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const ArrowType h = QgsSymbolLayerUtils::decodeArrowType( exprVal, &ok );
       if ( ok )

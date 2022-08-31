@@ -29,6 +29,7 @@ class QgsModelUndoCommand;
 class QUndoView;
 class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
+class QgsScreenHelper;
 
 ///@cond NOT_STABLE
 
@@ -192,6 +193,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     };
 
     std::unique_ptr< QgsProcessingModelAlgorithm > mModel;
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;

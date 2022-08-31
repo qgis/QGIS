@@ -125,6 +125,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
                                        QgsFeedback *feedback = nullptr ) const override;
     QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
     QString name() const override;
     static QString providerKey();
