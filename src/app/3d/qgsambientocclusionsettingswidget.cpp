@@ -26,7 +26,7 @@ QgsAmbientOcclusionSettingsWidget::QgsAmbientOcclusionSettingsWidget( QWidget *p
 
   mIntensitySpinBox->setClearValue( 0.5 );
   mRadiusSpinBox->setClearValue( 25. );
-  mThresholdSpinBox->setClearValue( 0.5 );
+  mThresholdSpinBox->setClearValue( 50 );
 }
 
 void QgsAmbientOcclusionSettingsWidget::setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &settings )
