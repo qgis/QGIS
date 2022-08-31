@@ -200,7 +200,7 @@ void QgsPointCloudLayerSaveAsDialog::accept()
                        layername() );
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
-    msgBox.setWindowTitle( tr( "Save Vector Layer As" ) );
+    msgBox.setWindowTitle( tr( "Save Point Cloud Layer As" ) );
     QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite File" ), QMessageBox::ActionRole );
     QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite Layer" ), QMessageBox::ActionRole );
     QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to Layer" ), QMessageBox::ActionRole );
@@ -259,7 +259,7 @@ void QgsPointCloudLayerSaveAsDialog::accept()
       {
         // should not reach here, layer does not exist and cannot add new layer
         if ( QMessageBox::question( this,
-                                    tr( "Save Vector Layer As" ),
+                                    tr( "Save Point Cloud Layer As" ),
                                     tr( "The file already exists. Do you want to overwrite it?" ) ) == QMessageBox::NoButton )
         {
           return;

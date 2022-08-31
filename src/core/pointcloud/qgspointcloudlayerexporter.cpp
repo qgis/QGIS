@@ -166,7 +166,7 @@ void QgsPointCloudLayerExporter::doExport()
     if ( !mMemoryLayer )
       prepareExport();
 
-    ExporterMemory exp = ExporterMemory( this );
+    ExporterMemory exp( this );
     exp.run();
   }
 #ifdef HAVE_PDAL_QGIS
@@ -176,7 +176,7 @@ void QgsPointCloudLayerExporter::doExport()
     // PDAL may throw exceptions
     try
     {
-      ExporterPdal exp = ExporterPdal( this );
+      ExporterPdal exp( this );
       exp.run();
     }
     catch ( std::runtime_error &e )
@@ -197,12 +197,12 @@ void QgsPointCloudLayerExporter::doExport()
     saveOptions.actionOnExistingFile = mActionOnExistingFile;
     saveOptions.feedback = mFeedback;
     mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
-    ExporterVector exp = ExporterVector( this );
+    ExporterVector exp( this );
     exp.run();
   }
 }
 
-QgsMapLayer *QgsPointCloudLayerExporter::getExportedLayer()
+QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 {
   if ( mFormat == QLatin1String( "memory" ) && mMemoryLayer )
   {
@@ -242,8 +242,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   {
     IndexedPointCloudNode node = queue.front();
     queue.pop_front();
-    if ( !nodes.contains( node ) &&
-         mParent->mExtent.intersects( mParent->mIndex->nodeMapExtent( node ) ) &&
+    if ( mParent->mExtent.intersects( mParent->mIndex->nodeMapExtent( node ) ) &&
          mParent->mZRange.overlaps( mParent->mIndex->nodeZRange( node ) ) )
     {
       pointCount += mParent->mIndex->nodePointCount( node );
@@ -258,7 +257,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
 
   int pointsSkipped = 0;
-  const qint64 pointsToExport = std::max< qint64 >( std::min( mParent->mPointsLimit, pointCount ), 1 );
+  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? mParent->mPointsLimit : pointCount;
   QgsPointCloudRequest request;
   request.setAttributes( mParent->requestedAttributeCollection() );
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
@@ -281,7 +280,8 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     for ( int i = 0; i < count; ++i )
     {
 
-      if ( mParent->mFeedback )
+      if ( mParent->mFeedback &&
+           i % 1000 == 0 )
       {
         mParent->mFeedback->setProgress( 100 * static_cast< float >( pointsExported ) / pointsToExport );
         if ( mParent->mFeedback->isCanceled() )
@@ -291,7 +291,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
         }
       }
 
-      if ( pointsExported >= mParent->mPointsLimit )
+      if ( pointsExported >= pointsToExport )
         break;
 
       double x, y, z;
@@ -551,7 +551,7 @@ void QgsPointCloudLayerExporter::ExporterPdal::handleAll()
 //
 
 QgsPointCloudLayerExporterTask::QgsPointCloudLayerExporterTask( QgsPointCloudLayerExporter *exporter )
-  : QgsTask( tr( "Exporting Pointcloud" ), QgsTask::CanCancel )
+  : QgsTask( tr( "Exporting point cloud" ), QgsTask::CanCancel )
   , mExp( exporter )
   , mOwnedFeedback( new QgsFeedback() )
 {

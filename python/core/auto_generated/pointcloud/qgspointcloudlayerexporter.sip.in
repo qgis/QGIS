@@ -40,18 +40,22 @@ Constructor for QgsPointCloudLayerExporter, associated with the specified ``laye
 %Docstring
 Sets the ``filename`` for the new layer.
 %End
+
     QString fileName() const;
 %Docstring
 Gets the filename for the new layer.
 %End
+
     void setLayerName( const QString &name );
 %Docstring
 Sets the ``name`` for the new layer.
 %End
+
     QString layerName() const;
 %Docstring
 Gets the name for the new layer.
 %End
+
     void setFilterExtent( const QgsRectangle extent );
 %Docstring
 Sets a filter extent for points to be exported in the target CRS
@@ -59,19 +63,23 @@ Points that fall outside the extent will be skipped.
 
 .. seealso:: :py:func:`setCrs`
 %End
+
     QgsRectangle filterExtent() const;
 %Docstring
 Gets the filter extent for points to be exported.
 %End
+
     void setZRange( const QgsDoubleRange zRange );
 %Docstring
 Sets an inclusive range for Z values to be exported.
 Points with Z values outside the range will be skipped.
 %End
+
     QgsDoubleRange zRange() const;
 %Docstring
 Gets the inclusive range for Z values to be exported.
 %End
+
     void setFeedback( QgsFeedback *feedback );
 %Docstring
 Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting.
@@ -80,10 +88,12 @@ Sets a :py:class:`QgsFeedback` object to allow cancellation / progress reporting
 
    The ``feedback`` object must exist for the lifetime of the exporter.
 %End
+
     QgsFeedback *feedback() const;
 %Docstring
 Gets a pointer to the :py:class:`QgsFeedback` object used for cancellation / progress reporting, or None if not set.
 %End
+
     void setAttributes( const QStringList &attributes );
 %Docstring
 Sets the list of point cloud ``attributes`` that will be exported.
@@ -102,6 +112,7 @@ Sets that no attributes will be exported.
 
    This has no effect when exporting to LAZ format.
 %End
+
     void setAllAttributes();
 %Docstring
 Sets that all attributes will be exported.
@@ -111,15 +122,18 @@ Sets that all attributes will be exported.
 %Docstring
 Gets the list of point cloud attributes that will be exported.
 %End
+
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
 Sets the ``crs`` for the exported file, and the transform ``context`` that will be used for
 for reprojection if different from the point cloud layer's CRS.
 %End
+
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Gets the ``crs`` for the exported file.
 %End
+
     bool setFormat( const QString &format );
 %Docstring
 Sets the ``format`` for the exported file.
@@ -133,20 +147,28 @@ Sets the ``format`` for the exported file.
 %Docstring
 Returns the format for the exported file or layer.
 %End
+
     QStringList supportedFormats() const;
 %Docstring
 Gets a list of the supported export formats.
 
 .. seealso:: :py:func:`setFormat`
 %End
+
     void setPointsLimit( qint64 limit );
 %Docstring
-Sets the maximum number of points to be exported.
+Sets the maximum number of points to be exported. Default value is 0.
+
+.. note::
+
+   Any ``limit`` value <= 0 means no limit.
 %End
+
     qint64 pointsLimit();
 %Docstring
-Gets the maximum number of points to be exported.
+Gets the maximum number of points to be exported. 0 means no limit.
 %End
+
     void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action );
 %Docstring
 Sets whether an existing output vector file should be overwritten on appended to.
@@ -155,6 +177,7 @@ Sets whether an existing output vector file should be overwritten on appended to
 
    Only applies to vector formats
 %End
+
     void prepareExport();
 %Docstring
 Creates the :py:class:`QgsVectorLayer` for exporting to a memory layer, if necessary.
@@ -167,7 +190,7 @@ will be implicitly called by :py:func:`~QgsPointCloudLayerExporter.doExport`.
 Performs the actual exporting operation.
 %End
 
-    QgsMapLayer *getExportedLayer() /Factory/;
+    QgsMapLayer *takeExportedLayer() /Factory/;
 %Docstring
 Gets a pointer to the exported layer.
 Caller takes ownership of the returned object.
@@ -178,6 +201,7 @@ Caller takes ownership of the returned object.
 Gets the last error that occurred during the exporting operation.
 If no error occurred an empty string is returned.
 %End
+
       public:
       protected:
       public:

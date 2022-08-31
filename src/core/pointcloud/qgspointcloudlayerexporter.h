@@ -56,57 +56,57 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Sets the \a filename for the new layer.
      */
-    void setFileName( const QString &filename ) { mFilename = filename; };
+    void setFileName( const QString &filename ) { mFilename = filename; }
 
     /**
      * Gets the filename for the new layer.
      */
-    QString fileName() const { return mFilename; };
+    QString fileName() const { return mFilename; }
 
     /**
      * Sets the \a name for the new layer.
      */
-    void setLayerName( const QString &name ) { mName = name; };
+    void setLayerName( const QString &name ) { mName = name; }
 
     /**
      * Gets the name for the new layer.
      */
-    QString layerName() const { return mFilename; };
+    QString layerName() const { return mName; }
 
     /**
      * Sets a filter extent for points to be exported in the target CRS
      * Points that fall outside the extent will be skipped.
      * \see setCrs()
      */
-    void setFilterExtent( const QgsRectangle extent ) { mExtent = extent; };
+    void setFilterExtent( const QgsRectangle extent ) { mExtent = extent; }
 
     /**
      * Gets the filter extent for points to be exported.
      */
-    QgsRectangle filterExtent() const { return mExtent; };
+    QgsRectangle filterExtent() const { return mExtent; }
 
     /**
      * Sets an inclusive range for Z values to be exported.
      * Points with Z values outside the range will be skipped.
      */
-    void setZRange( const QgsDoubleRange zRange ) { mZRange = zRange; };
+    void setZRange( const QgsDoubleRange zRange ) { mZRange = zRange; }
 
     /**
      * Gets the inclusive range for Z values to be exported.
      */
-    QgsDoubleRange zRange() const { return mZRange; };
+    QgsDoubleRange zRange() const { return mZRange; }
 
     /**
      * Sets a QgsFeedback object to allow cancellation / progress reporting.
      *
      * \note The \a feedback object must exist for the lifetime of the exporter.
      */
-    void setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; };
+    void setFeedback( QgsFeedback *feedback ) { mFeedback = feedback; }
 
     /**
      * Gets a pointer to the QgsFeedback object used for cancellation / progress reporting, or nullptr if not set.
      */
-    QgsFeedback *feedback() const { return mFeedback; };
+    QgsFeedback *feedback() const { return mFeedback; }
 
     /**
      * Sets the list of point cloud \a attributes that will be exported.
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Sets that no attributes will be exported.
      * \note This has no effect when exporting to LAZ format.
      */
-    void setNoAttributes() { mRequestedAttributes.clear(); };
+    void setNoAttributes() { mRequestedAttributes.clear(); }
 
     /**
      * Sets that all attributes will be exported.
@@ -129,18 +129,18 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Gets the list of point cloud attributes that will be exported.
      */
-    QStringList attributes() const { return mRequestedAttributes; };
+    QStringList attributes() const { return mRequestedAttributes; }
 
     /**
      * Sets the \a crs for the exported file, and the transform \a context that will be used for
      * for reprojection if different from the point cloud layer's CRS.
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; };
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; }
 
     /**
      * Gets the \a crs for the exported file.
      */
-    QgsCoordinateReferenceSystem crs() const { return mTargetCrs; };
+    QgsCoordinateReferenceSystem crs() const { return mTargetCrs; }
 
     /**
      * Sets the \a format for the exported file.
@@ -152,30 +152,31 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Returns the format for the exported file or layer.
      */
-    QString format() const { return mFormat; };
+    QString format() const { return mFormat; }
 
     /**
      * Gets a list of the supported export formats.
      *
      * \see setFormat()
      */
-    QStringList supportedFormats() const { return mSupportedFormats; };
+    QStringList supportedFormats() const { return mSupportedFormats; }
 
     /**
-     * Sets the maximum number of points to be exported.
+     * Sets the maximum number of points to be exported. Default value is 0.
+     * \note Any \a limit value <= 0 means no limit.
      */
-    void setPointsLimit( qint64 limit ) { mPointsLimit = std::max< qint64 >( limit, 0 ); };
+    void setPointsLimit( qint64 limit ) { mPointsLimit = std::max< qint64 >( limit, 0 ); }
 
     /**
-     * Gets the maximum number of points to be exported.
+     * Gets the maximum number of points to be exported. 0 means no limit.
      */
-    qint64 pointsLimit() { return mPointsLimit; };
+    qint64 pointsLimit() { return mPointsLimit; }
 
     /**
      * Sets whether an existing output vector file should be overwritten on appended to.
      * \note Only applies to vector formats
      */
-    void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action ) { mActionOnExistingFile = action; };
+    void setActionOnExistingFile( const QgsVectorFileWriter::ActionOnExistingFile action ) { mActionOnExistingFile = action; }
 
     /**
      * Creates the QgsVectorLayer for exporting to a memory layer, if necessary.
@@ -193,13 +194,13 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Gets a pointer to the exported layer.
      * Caller takes ownership of the returned object.
      */
-    QgsMapLayer *getExportedLayer() SIP_FACTORY;
+    QgsMapLayer *takeExportedLayer() SIP_FACTORY;
 
     /**
      * Gets the last error that occurred during the exporting operation.
      * If no error occurred an empty string is returned.
      */
-    QString lastError() const { return mLastError; };
+    QString lastError() const { return mLastError; }
 
   private:
 
@@ -207,7 +208,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     QgsFields outputFields();
     const QgsPointCloudAttributeCollection requestedAttributeCollection();
-    void setLastError( QString error ) { mLastError = error; };
+    void setLastError( QString error ) { mLastError = error; }
 
     const QgsPointCloudAttributeCollection mLayerAttributeCollection;
 
@@ -223,7 +224,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
                                          false );
     QgsDoubleRange mZRange;
     QgsFeedback *mFeedback = nullptr;
-    qint64 mPointsLimit = std::numeric_limits<qint64>::max();
+    qint64 mPointsLimit = 0;
     QStringList mRequestedAttributes;
     QStringList mSupportedFormats;
     QgsCoordinateReferenceSystem mSourceCrs;

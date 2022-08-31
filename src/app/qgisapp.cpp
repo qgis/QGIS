@@ -8359,7 +8359,7 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
 
 QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
 {
-  QgsPointCloudLayerSaveAsDialog dialog = QgsPointCloudLayerSaveAsDialog( pclayer, this );
+  QgsPointCloudLayerSaveAsDialog dialog( pclayer, this );
 
   dialog.setMapCanvas( mMapCanvas );
 
@@ -8378,7 +8378,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     exp->setCrs( destCRS, pclayer->transformContext() );
     exp->setFormat( dialog.format() );
 
-    // LAZ format epxorts all attributes
+    // LAZ format exports all attributes
     if ( dialog.format() != QLatin1String( "LAZ" ) )
     {
       if ( dialog.hasAttributes() )
@@ -8418,7 +8418,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       if ( exp->feedback() && exp->feedback()->isCanceled() )
         return;
 
-      QgsMapLayer *ml = exp->getExportedLayer();
+      QgsMapLayer *ml = exp->takeExportedLayer();
       if ( ! ml->isValid() )
       {
         visibleMessageBar()->pushMessage( tr( "Export failed" ),
