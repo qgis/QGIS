@@ -22,7 +22,7 @@ email                : nyall dot dawson at gmail dot com
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-struct QgsLayerMetadataProviderResult;
+class QgsLayerMetadataProviderResult;
 
 /**
  * Entry point for registration of the OGR data provider
