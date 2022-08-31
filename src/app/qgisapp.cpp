@@ -424,6 +424,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "pointcloud/qgspointcloudelevationpropertieswidget.h"
 #include "pointcloud/qgspointcloudlayerstylewidget.h"
+#include "pointcloud/qgspointcloudlayersaveasdialog.h"
+#include "pointcloud/qgspointcloudlayerexporter.h"
 #include "project/qgsprojectelevationsettingswidget.h"
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
@@ -7946,11 +7948,13 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
     case QgsMapLayerType::VectorLayer:
       return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
 
+    case QgsMapLayerType::PointCloudLayer:
+      return saveAsPointCloudLayer( qobject_cast<QgsPointCloudLayer *>( layer ) );
+
     case QgsMapLayerType::MeshLayer:
     case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
     case QgsMapLayerType::AnnotationLayer:
-    case QgsMapLayerType::PointCloudLayer:
     case QgsMapLayerType::GroupLayer:
       return QString();
   }
@@ -8350,6 +8354,84 @@ QString QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbology
   }
 
   delete dialog;
+  return vectorFilename;
+}
+
+QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
+{
+  QgsPointCloudLayerSaveAsDialog dialog( pclayer, this );
+
+  dialog.setMapCanvas( mMapCanvas );
+
+  dialog.setAddToCanvas( true );
+
+  QString vectorFilename;
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsPointCloudLayerExporter *exp = new QgsPointCloudLayerExporter( pclayer );
+
+    QgsCoordinateReferenceSystem destCRS  = dialog.crsObject();
+    if ( destCRS.isValid() )
+    {
+      QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
+    }
+    exp->setCrs( destCRS, pclayer->transformContext() );
+    exp->setFormat( dialog.format() );
+
+    // LAZ format exports all attributes
+    if ( dialog.format() != QLatin1String( "LAZ" ) )
+    {
+      if ( dialog.hasAttributes() )
+        exp->setAttributes( dialog.attributes() );
+      else
+        exp->setNoAttributes();
+    }
+
+    if ( dialog.hasFilterExtent() )
+      exp->setFilterExtent( dialog.filterExtent() );
+
+    if ( dialog.hasZRange() )
+      exp->setZRange( dialog.zRange() );
+
+    if ( dialog.hasPointsLimit() )
+      exp->setPointsLimit( dialog.pointsLimit() );
+
+    if ( ! dialog.layername().isEmpty() )
+      exp->setLayerName( dialog.layername() );
+
+
+    vectorFilename = dialog.filename();
+    exp->setFileName( vectorFilename );
+
+    exp->setActionOnExistingFile( dialog.creationActionOnExistingFile() );
+
+    const bool addToCanvas = dialog.addToCanvas();
+
+    exp->prepareExport();
+
+    QgsPointCloudLayerExporterTask *task = new QgsPointCloudLayerExporterTask( exp );
+    QgsApplication::taskManager()->addTask( task );
+
+    // when writer is successful:
+    connect( task, &QgsPointCloudLayerExporterTask::exportComplete, this, [ this, addToCanvas, exp ]()
+    {
+      if ( exp->feedback() && exp->feedback()->isCanceled() )
+        return;
+
+      QgsMapLayer *ml = exp->takeExportedLayer();
+      if ( ! ml->isValid() )
+      {
+        visibleMessageBar()->pushMessage( tr( "Export failed" ),
+                                          tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
+                                          Qgis::MessageLevel::Warning );
+      }
+
+      if ( addToCanvas )
+        QgsProject::instance()->addMapLayer( ml );
+      else
+        delete ml;
+    } );
+  }
   return vectorFilename;
 }
 
