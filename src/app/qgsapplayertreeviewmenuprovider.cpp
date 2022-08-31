@@ -321,31 +321,33 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      if ( vlayer )
+      if ( vlayer || meshLayer )
       {
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
         QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
-        QgsSettings settings;
-        const QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
-        const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
-        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open &Attribute Table" ),
-                                        QgisApp::instance(), lambdaOpenAttributeTable );
-        attributeTableAction->setEnabled( vlayer->isValid() );
+        if ( vlayer )
+        {
+          QgsSettings settings;
+          const QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
+          const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
+          QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open &Attribute Table" ),
+                                          QgisApp::instance(), lambdaOpenAttributeTable );
+          attributeTableAction->setEnabled( vlayer->isValid() );
+        }
 
         // allow editing
-        const QgsVectorDataProvider *provider = vlayer->dataProvider();
-        if ( vlayer->supportsEditing() )
+        if ( layer->supportsEditing() )
         {
           if ( toggleEditingAction )
           {
             menu->addAction( toggleEditingAction );
-            toggleEditingAction->setChecked( vlayer->isEditable() );
-            toggleEditingAction->setEnabled( vlayer->isValid() );
+            toggleEditingAction->setChecked( layer->isEditable() );
+            toggleEditingAction->setEnabled( layer->isValid() );
           }
-          if ( saveLayerEditsAction && vlayer->isModified() )
+          if ( saveLayerEditsAction && layer->isModified() )
           {
             menu->addAction( saveLayerEditsAction );
           }
@@ -354,7 +356,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        if ( provider && provider->supportsSubsetString() )
+        if ( vlayer && vlayer->dataProvider() && vlayer->dataProvider()->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
