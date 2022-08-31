@@ -7,10 +7,10 @@
     "arg": "geometry",
     "description": "a geometry"
   }, {
-    "arg": "targetPercent",
+    "arg": "target_percent",
     "description": "the percentage of area of the convex hull the solution tries to approach. A target_percent of 1 gives the same result as the convex hull. A target_percent between 0 and 0.99 produces a result that should have a smaller area than the convex hull."
   }, {
-    "arg": "allowHoles",
+    "arg": "allow_holes",
     "optional": true,
     "default": false,
     "description": "optional argument specifying whether to allow holes within the output geometry. Defaults to FALSE, set to TRUE to avoid including holes in the output geometry."
