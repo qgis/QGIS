@@ -22,6 +22,10 @@
 #include <cmath>
 
 
+static const int ELEVATION_OFFSET = 8000;
+static const int ELEVATION_SCALE = 1000;
+
+
 QgsElevationMap::QgsElevationMap( const QSize &size )
   : mElevationImage( size, QImage::Format_ARGB32 )
 {
@@ -32,7 +36,7 @@ QgsElevationMap::QgsElevationMap( const QSize &size )
 
 QRgb QgsElevationMap::encodeElevation( float z )
 {
-  double zScaled = ( z + 8000 ) * 1000;
+  double zScaled = ( z + ELEVATION_OFFSET ) * ELEVATION_SCALE;
   unsigned int zInt = static_cast<unsigned int>( std::clamp( zScaled, 0., 16777215. ) );   // make sure to fit into 3 bytes
   return QRgb( zInt | ( 0xff << 24 ) );
 }
@@ -40,7 +44,7 @@ QRgb QgsElevationMap::encodeElevation( float z )
 float QgsElevationMap::decodeElevation( QRgb colorRaw )
 {
   unsigned int zScaled = colorRaw & 0xffffff;
-  return ( ( double ) zScaled ) / 1000 - 8000;
+  return ( ( double ) zScaled ) / ELEVATION_SCALE - ELEVATION_OFFSET;
 }
 
 std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBlock *block )
@@ -63,28 +67,30 @@ std::unique_ptr<QgsElevationMap> QgsElevationMap::fromRasterBlock( QgsRasterBloc
 
 void QgsElevationMap::applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale )
 {
-  int imgWidth = img.width();
+  const int imgWidth = img.width(), imgHeight = img.height();
   QRgb *imgPtr = reinterpret_cast<QRgb *>( img.bits() );
   const QRgb *elevPtr = reinterpret_cast<const QRgb *>( mElevationImage.constBits() );
 
   const int neighbours[] = { -1, 0, 1, 0, 0, -1, 0, 1 };
-  for ( int i = distance; i < img.width() - distance; ++i )
+  for ( int i = distance; i < imgWidth - distance; ++i )
   {
-    for ( int j = distance; j < img.height() - distance; ++j )
+    for ( int j = distance; j < imgHeight - distance; ++j )
     {
+      qgssize index = j * static_cast<qgssize>( imgWidth ) + i;
       float factor = 0.0f;
-      float centerDepth = decodeElevation( elevPtr[ j * imgWidth + i ] );
+      float centerDepth = decodeElevation( elevPtr[ index ] );
       for ( int k = 0; k < 4; ++k )
       {
         int iNeighbour = i + distance * neighbours[2 * k];
         int jNeighbour = j + distance * neighbours[2 * k + 1];
-        float neighbourDepth = decodeElevation( elevPtr[ jNeighbour * imgWidth + iNeighbour ] );
+        qgssize neighbourIndex = jNeighbour * static_cast<qgssize>( imgWidth ) + iNeighbour;
+        float neighbourDepth = decodeElevation( elevPtr[ neighbourIndex ] );
         factor += std::max<float>( 0, -( centerDepth - neighbourDepth ) );
       }
       float shade = exp( -factor * strength / rendererScale );
 
-      QRgb c = imgPtr[ j * imgWidth + i ];
-      imgPtr[ j * imgWidth + i ] = qRgba( qRed( c ) * shade, qGreen( c ) * shade, qBlue( c ) * shade, qAlpha( c ) );
+      QRgb c = imgPtr[ index ];
+      imgPtr[ index ] = qRgba( qRed( c ) * shade, qGreen( c ) * shade, qBlue( c ) * shade, qAlpha( c ) );
     }
   }
 }
