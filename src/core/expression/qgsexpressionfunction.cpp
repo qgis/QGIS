@@ -8012,7 +8012,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "convex_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnConvexHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "convexHull" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "concave_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "target_percent" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "allow_holes" ), true, false ), fcnConcaveHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "concaveHull" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "allow_holes" ), true, false ), fcnConcaveHull, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "oriented_bbox" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnOrientedBBox, QStringLiteral( "GeometryGroup" ) )
