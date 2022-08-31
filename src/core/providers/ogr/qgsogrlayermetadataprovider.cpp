@@ -17,17 +17,18 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsfeedback.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 
 
-QString QgsOgrLayerMetadataProvider::type() const
+QString QgsOgrLayerMetadataProvider::id() const
 {
   return QStringLiteral( "ogr" );
 }
 
-QgsLayerMetadataSearchResult QgsOgrLayerMetadataProvider::search( const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QgsLayerMetadataSearchResult QgsOgrLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   QgsLayerMetadataSearchResult results;
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( type( ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( id( ) ) };
 
   if ( md && ( ! feedback || ! feedback->isCanceled( ) ) )
   {
@@ -40,17 +41,20 @@ QgsLayerMetadataSearchResult QgsOgrLayerMetadataProvider::search( const QString 
         break;
       }
 
-      try
+      if ( const QgsAbstractDatabaseProviderConnection *dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
       {
-        const QList<QgsLayerMetadataProviderResult> res { md->searchLayerMetadata( conn->uri(), searchString, geographicExtent, feedback ) };
-        for ( const QgsLayerMetadataProviderResult &result : std::as_const( res ) )
+        try
         {
-          results.addMetadata( result );
+          const QList<QgsLayerMetadataProviderResult> res { dbConn->searchLayerMetadata( searchContext, searchString, geographicExtent, feedback ) };
+          for ( const QgsLayerMetadataProviderResult &result : std::as_const( res ) )
+          {
+            results.addMetadata( result );
+          }
         }
-      }
-      catch ( const QgsProviderConnectionException &ex )
-      {
-        results.addError( QObject::tr( "An error occurred while searching for metadata in connection %1: %2" ).arg( conn->uri(), ex.what() ) );
+        catch ( const QgsProviderConnectionException &ex )
+        {
+          results.addError( QObject::tr( "An error occurred while searching for metadata in connection %1: %2" ).arg( conn->uri(), ex.what() ) );
+        }
       }
     }
   }

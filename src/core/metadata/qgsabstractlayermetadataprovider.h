@@ -24,9 +24,21 @@
 #include "qgslayermetadata.h"
 #include "qgsrectangle.h"
 #include "qgspolygon.h"
+#include "qgscoordinatetransformcontext.h"
 
 
 class QgsFeedback;
+
+/**
+ * \ingroup core
+ * \brief Metadata search context
+ * \since QGIS 3.28
+ */
+struct CORE_EXPORT QgsMetadataSearchContext
+{
+  //! Coordinate transform context
+  QgsCoordinateTransformContext transformContext;
+};
 
 /**
  * \ingroup core
@@ -61,9 +73,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     const QgsPolygon &geographicExtent() const;
 
     /**
-     * Sets the layer extent in EPSG:4326 to \a newGeographicExtent
+     * Sets the layer extent in EPSG:4326 to \a geographicExtent
      */
-    void setGeographicExtent( const QgsPolygon &newGeographicExtent );
+    void setGeographicExtent( const QgsPolygon &geographicExtent );
 
     /**
      * Returns the layer geometry type.
@@ -71,9 +83,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     const QgsWkbTypes::GeometryType &geometryType() const;
 
     /**
-     * Sets the layer geometry type to \a newGeometryType.
+     * Sets the layer geometry type to \a geometryType.
      */
-    void setGeometryType( const QgsWkbTypes::GeometryType &newGeometryType );
+    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
 
     /**
      * Returns the layer CRS authid.
@@ -83,7 +95,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     /**
      * Sets the layer \a authid.
      */
-    void setAuthid( const QString &newAuthid );
+    void setAuthid( const QString &authid );
 
     /**
      * Returns the layer data source URI.
@@ -91,9 +103,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     const QString &uri() const;
 
     /**
-     * Sets the layer data source URI to \a newUri.
+     * Sets the layer data source URI to \a Uri.
      */
-    void setUri( const QString &newUri );
+    void setUri( const QString &Uri );
 
     /**
      * Returns the data provider name.
@@ -101,9 +113,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     const QString &dataProviderName() const;
 
     /**
-     * Sets the data provider name to \a newDataProviderName.
+     * Sets the data provider name to \a dataProviderName.
      */
-    void setDataProviderName( const QString &newDataProviderName );
+    void setDataProviderName( const QString &dataProviderName );
 
     /**
      * Returns the layer type.
@@ -111,9 +123,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     QgsMapLayerType layerType() const;
 
     /**
-     * Sets the layer type to \a newLayerType.
+     * Sets the layer type to \a layerType.
      */
-    void setLayerType( QgsMapLayerType newLayerType );
+    void setLayerType( QgsMapLayerType layerType );
 
     /**
      * Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
@@ -121,9 +133,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     const QString &standardUri() const;
 
     /**
-     * Sets the metadata standard URI to \a newStandardUri.
+     * Sets the metadata standard URI to \a standardUri.
      */
-    void setStandardUri( const QString &newStandardUri );
+    void setStandardUri( const QString &standardUri );
 
   private:
 
@@ -161,22 +173,22 @@ class CORE_EXPORT QgsLayerMetadataSearchResult
     /**
      * Returns the list of metadata results.
      */
-    const QList<QgsLayerMetadataProviderResult> &metadata() const;
+    QList<QgsLayerMetadataProviderResult> metadata() const;
 
     /**
-     * Adds a \a newMetadata record to the list of results.
+     * Adds a \a Metadata record to the list of results.
      */
-    void addMetadata( const QgsLayerMetadataProviderResult &newMetadata );
+    void addMetadata( const QgsLayerMetadataProviderResult &metadata );
 
     /**
      * Returns the list of errors occurred during a metadata search.
      */
-    const QStringList &errors() const;
+    QStringList errors() const;
 
     /**
-     * Adds a \a newError to the list of errors.
+     * Adds a \a error to the list of errors.
      */
-    void addError( const QString &newError );
+    void addError( const QString &error );
 
   private:
 
@@ -188,7 +200,7 @@ class CORE_EXPORT QgsLayerMetadataSearchResult
 
 /**
  * \ingroup core
- * \brief Layer metadata provider backends interface.
+ * \brief Layer metadata provider backend interface.
  *
  * \since QGIS 3.28
  */
@@ -198,19 +210,20 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
   public:
 
     /**
-     * Returns the name of the layer metadata provider implementation, usually the name of the data provider
-     * but if can be another unique identifier.
+     * Returns the id of the layer metadata provider implementation, usually the name of the data provider
+     * but it may be another unique identifier.
      */
-    virtual QString type() const = 0;
+    virtual QString id() const = 0;
 
     /**
      * Searches for metadata optionally filtering by search string and geographic extent.
+     * \param searchContext context for the metadata search.
      * \param searchString defines a filter to limit the results to the records where the search string appears in the "identifier", "title" or "abstract" metadata fields, a case-insensitive comparison is used for the match.
      * \param geographicExtent defines a filter where the spatial extent matches the given extent in EPSG:4326
      * \param feedback can be used to monitor and control the search process.
      * \returns a QgsLayerMetadataSearchResult object with a list of metadata and errors
      */
-    virtual QgsLayerMetadataSearchResult search( const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
 
     virtual ~QgsAbstractLayerMetadataProvider() = default;
 

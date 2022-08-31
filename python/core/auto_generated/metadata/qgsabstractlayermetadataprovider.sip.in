@@ -11,6 +11,11 @@
 
 
 
+struct QgsMetadataSearchContext
+{
+  QgsCoordinateTransformContext transformContext;
+};
+
 class QgsLayerMetadataProviderResult: QgsLayerMetadata
 {
 %Docstring(signature="appended")
@@ -46,9 +51,9 @@ Constructor for QgsLayerMetadataProviderResult.
 Returns the layer extent in EPSG:4326
 %End
 
-    void setGeographicExtent( const QgsPolygon &newGeographicExtent );
+    void setGeographicExtent( const QgsPolygon &geographicExtent );
 %Docstring
-Sets the layer extent in EPSG:4326 to ``newGeographicExtent``
+Sets the layer extent in EPSG:4326 to ``geographicExtent``
 %End
 
     const QgsWkbTypes::GeometryType &geometryType() const;
@@ -56,9 +61,9 @@ Sets the layer extent in EPSG:4326 to ``newGeographicExtent``
 Returns the layer geometry type.
 %End
 
-    void setGeometryType( const QgsWkbTypes::GeometryType &newGeometryType );
+    void setGeometryType( const QgsWkbTypes::GeometryType &geometryType );
 %Docstring
-Sets the layer geometry type to ``newGeometryType``.
+Sets the layer geometry type to ``geometryType``.
 %End
 
     const QString &authid() const;
@@ -66,7 +71,7 @@ Sets the layer geometry type to ``newGeometryType``.
 Returns the layer CRS authid.
 %End
 
-    void setAuthid( const QString &newAuthid );
+    void setAuthid( const QString &authid );
 %Docstring
 Sets the layer ``authid``.
 %End
@@ -76,9 +81,9 @@ Sets the layer ``authid``.
 Returns the layer data source URI.
 %End
 
-    void setUri( const QString &newUri );
+    void setUri( const QString &Uri );
 %Docstring
-Sets the layer data source URI to ``newUri``.
+Sets the layer data source URI to ``Uri``.
 %End
 
     const QString &dataProviderName() const;
@@ -86,9 +91,9 @@ Sets the layer data source URI to ``newUri``.
 Returns the data provider name.
 %End
 
-    void setDataProviderName( const QString &newDataProviderName );
+    void setDataProviderName( const QString &dataProviderName );
 %Docstring
-Sets the data provider name to ``newDataProviderName``.
+Sets the data provider name to ``dataProviderName``.
 %End
 
     QgsMapLayerType layerType() const;
@@ -96,9 +101,9 @@ Sets the data provider name to ``newDataProviderName``.
 Returns the layer type.
 %End
 
-    void setLayerType( QgsMapLayerType newLayerType );
+    void setLayerType( QgsMapLayerType layerType );
 %Docstring
-Sets the layer type to ``newLayerType``.
+Sets the layer type to ``layerType``.
 %End
 
     const QString &standardUri() const;
@@ -106,9 +111,9 @@ Sets the layer type to ``newLayerType``.
 Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
 %End
 
-    void setStandardUri( const QString &newStandardUri );
+    void setStandardUri( const QString &standardUri );
 %Docstring
-Sets the metadata standard URI to ``newStandardUri``.
+Sets the metadata standard URI to ``standardUri``.
 %End
 
 };
@@ -130,24 +135,24 @@ searching for metadata.
 %End
   public:
 
-    const QList<QgsLayerMetadataProviderResult> &metadata() const;
+    QList<QgsLayerMetadataProviderResult> metadata() const;
 %Docstring
 Returns the list of metadata results.
 %End
 
-    void addMetadata( const QgsLayerMetadataProviderResult &newMetadata );
+    void addMetadata( const QgsLayerMetadataProviderResult &metadata );
 %Docstring
-Adds a ``newMetadata`` record to the list of results.
+Adds a ``Metadata`` record to the list of results.
 %End
 
-    const QStringList &errors() const;
+    QStringList errors() const;
 %Docstring
 Returns the list of errors occurred during a metadata search.
 %End
 
-    void addError( const QString &newError );
+    void addError( const QString &error );
 %Docstring
-Adds a ``newError`` to the list of errors.
+Adds a ``error`` to the list of errors.
 %End
 
 };
@@ -155,7 +160,7 @@ Adds a ``newError`` to the list of errors.
 class QgsAbstractLayerMetadataProvider
 {
 %Docstring(signature="appended")
-Layer metadata provider backends interface.
+Layer metadata provider backend interface.
 
 .. versionadded:: 3.28
 %End
@@ -165,16 +170,17 @@ Layer metadata provider backends interface.
 %End
   public:
 
-    virtual QString type() const = 0;
+    virtual QString id() const = 0;
 %Docstring
-Returns the name of the layer metadata provider implementation, usually the name of the data provider
-but if can be another unique identifier.
+Returns the id of the layer metadata provider implementation, usually the name of the data provider
+but it may be another unique identifier.
 %End
 
-    virtual QgsLayerMetadataSearchResult search( const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const = 0;
+    virtual QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const = 0;
 %Docstring
 Searches for metadata optionally filtering by search string and geographic extent.
 
+:param searchContext: context for the metadata search.
 :param searchString: defines a filter to limit the results to the records where the search string appears in the "identifier", "title" or "abstract" metadata fields, a case-insensitive comparison is used for the match.
 :param geographicExtent: defines a filter where the spatial extent matches the given extent in EPSG:4326
 :param feedback: can be used to monitor and control the search process.

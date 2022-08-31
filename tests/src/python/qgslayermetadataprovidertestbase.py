@@ -24,6 +24,7 @@ from qgis.core import (
     QgsProviderMetadata,
     QgsBox3d,
     QgsRectangle,
+    QgsMetadataSearchContext,
 )
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -39,7 +40,7 @@ class LayerMetadataProviderTestBase():
 
     Provider tests must implement:
     - getLayer() -> return a QgsVectorLayer or a QgsRasterLayer
-    - getProviderName() -> str returns the name of the data provider to be tested ('ogr', 'postgres' ...)
+    - getMetadataProviderId() -> str returns the id of the metadata provider to be tested ('ogr', 'postgres' ...)
     """
 
     @classmethod
@@ -63,6 +64,8 @@ class LayerMetadataProviderTestBase():
         m.setAbstract('QGIS Some Data')
         m.setIdentifier('MD012345')
         m.setTitle('QGIS Test Title')
+        m.setKeywords({'dtd1': ['Kw1', 'Kw2']})
+        m.setCategories(['Cat1', 'Cat2'])
         ext = QgsLayerMetadata.Extent()
         spatial_ext = QgsLayerMetadata.SpatialExtent()
         spatial_ext.bounds = QgsBox3d(self.test_layer.extent())
@@ -88,8 +91,8 @@ class LayerMetadataProviderTestBase():
         del self.test_layer
 
         reg = QGIS_APP.layerMetadataProviderRegistry()
-        md_provider = reg.layerMetadataProviderFromType(self.getProviderName())
-        results = md_provider.search('QGIS Some Data')
+        md_provider = reg.layerMetadataProviderFromId(self.getMetadataProviderId())
+        results = md_provider.search(QgsMetadataSearchContext(), 'QgIs SoMe DaTa')
         self.assertEqual(len(results.metadata()), 1)
 
         result = results.metadata()[0]
@@ -117,11 +120,22 @@ class LayerMetadataProviderTestBase():
         self.assertTrue(test_layer.isValid())
 
         # Test search filters
-        results = md_provider.search('', QgsRectangle(0, 0, 1, 1))
+        results = md_provider.search(QgsMetadataSearchContext(), '', QgsRectangle(0, 0, 1, 1))
         self.assertEqual(len(results.metadata()), 0)
-        results = md_provider.search('', test_layer.extent())
+        results = md_provider.search(QgsMetadataSearchContext(), '', test_layer.extent())
         self.assertEqual(len(results.metadata()), 1)
-        results = md_provider.search('NOT HERE!', test_layer.extent())
+        results = md_provider.search(QgsMetadataSearchContext(), 'NOT HERE!', test_layer.extent())
         self.assertEqual(len(results.metadata()), 0)
-        results = md_provider.search('QGIS', test_layer.extent())
+        results = md_provider.search(QgsMetadataSearchContext(), 'QGIS', test_layer.extent())
+        self.assertEqual(len(results.metadata()), 1)
+
+        # Test keywords
+        results = md_provider.search(QgsMetadataSearchContext(), 'kw')
+        self.assertEqual(len(results.metadata()), 1)
+        results = md_provider.search(QgsMetadataSearchContext(), 'kw2')
+        self.assertEqual(len(results.metadata()), 1)
+        # Test categories
+        results = md_provider.search(QgsMetadataSearchContext(), 'cat')
+        self.assertEqual(len(results.metadata()), 1)
+        results = md_provider.search(QgsMetadataSearchContext(), 'cat2')
         self.assertEqual(len(results.metadata()), 1)

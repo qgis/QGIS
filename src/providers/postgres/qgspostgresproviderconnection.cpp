@@ -16,6 +16,7 @@
 #include "qgspostgresproviderconnection.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
+#include "qgspostgresprovidermetadatautils.h"
 #include "qgssettings.h"
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
@@ -805,6 +806,11 @@ QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsPostgresProvider
   const QString trimmedTable { tUri.table().trimmed() };
   options.sql = trimmedTable.startsWith( '(' ) ? trimmedTable.mid( 1 ).chopped( 1 ) : QStringLiteral( "SELECT * FROM %1" ).arg( tUri.quotedTablename() );
   return options;
+}
+
+QList<QgsLayerMetadataProviderResult> QgsPostgresProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+{
+  return QgsPostgresProviderMetadataUtils::searchLayerMetadata( searchContext, uri(), searchString, geographicExtent, feedback );
 }
 
 QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVectorLayerOptions &options ) const

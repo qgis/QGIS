@@ -16,24 +16,24 @@
 #include "qgspostgreslayermetadataprovider.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
-#include "qgsabstractproviderconnection.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfeedback.h"
 
 
-QString QgsPostgresLayerMetadataProvider::type() const
+QString QgsPostgresLayerMetadataProvider::id() const
 {
   return QStringLiteral( "postgres" );
 }
 
-QgsLayerMetadataSearchResult QgsPostgresLayerMetadataProvider::search( const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QgsLayerMetadataSearchResult QgsPostgresLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   QgsLayerMetadataSearchResult results;
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) };
 
   if ( md && ( ! feedback || ! feedback->isCanceled() ) )
   {
-    const QMap<QString, QgsAbstractProviderConnection *> cConnections { md->connections( ) };
-    for ( const QgsAbstractProviderConnection *conn : std::as_const( cConnections ) )
+    const QMap<QString, QgsAbstractProviderConnection *> constConnections { md->connections( ) };
+    for ( const QgsAbstractProviderConnection *conn : std::as_const( constConnections ) )
     {
 
       if ( feedback && feedback->isCanceled() )
@@ -43,17 +43,20 @@ QgsLayerMetadataSearchResult QgsPostgresLayerMetadataProvider::search( const QSt
 
       if ( conn->configuration().value( QStringLiteral( "metadataInDatabase" ), false ).toBool() )
       {
-        try
+        if ( const QgsAbstractDatabaseProviderConnection *dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
         {
-          const QList<QgsLayerMetadataProviderResult> res { md->searchLayerMetadata( conn->uri(), searchString, geographicExtent, feedback ) };
-          for ( const QgsLayerMetadataProviderResult &result : std::as_const( res ) )
+          try
           {
-            results.addMetadata( result );
+            const QList<QgsLayerMetadataProviderResult> res { dbConn->searchLayerMetadata( searchContext, searchString, geographicExtent, feedback ) };
+            for ( const QgsLayerMetadataProviderResult &result : std::as_const( res ) )
+            {
+              results.addMetadata( result );
+            }
           }
-        }
-        catch ( const QgsProviderConnectionException &ex )
-        {
-          results.addError( QObject::tr( "An error occurred while searching for metadata in connection %1: %2" ).arg( conn->uri(), ex.what() ) );
+          catch ( const QgsProviderConnectionException &ex )
+          {
+            results.addError( QObject::tr( "An error occurred while searching for metadata in connection %1: %2" ).arg( conn->uri(), ex.what() ) );
+          }
         }
       }
     }

@@ -25,13 +25,13 @@ from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProviderTestBase):
 
-    def getProviderName(self) -> str:
+    def getMetadataProviderId(self) -> str:
 
         return 'postgres'
 
     def getLayer(self):
 
-        return QgsVectorLayer('{} type=Point table="qgis_test"."someData" (geom) sql='.format(self.getConnectionUri()), "someData", self.getProviderName())
+        return QgsVectorLayer('{} type=Point table="qgis_test"."someData" (geom) sql='.format(self.getConnectionUri()), "someData", 'postgres')
 
     def getConnectionUri(self) -> str:
 

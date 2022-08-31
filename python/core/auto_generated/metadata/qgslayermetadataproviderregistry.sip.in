@@ -51,12 +51,12 @@ Unregisters a layer metadata provider ``metadataProvider`` and destroys its inst
 Returns the list of all registered layer metadata providers.
 %End
 
-    QgsAbstractLayerMetadataProvider *layerMetadataProviderFromType( const QString &type );
+    QgsAbstractLayerMetadataProvider *layerMetadataProviderFromId( const QString &id );
 %Docstring
-Returns metadata provider implementation if the ``type`` matches one. Returns ``None`` otherwise.
+Returns metadata provider implementation if the ``id`` matches one. Returns ``None`` otherwise.
 %End
 
-    QgsLayerMetadataSearchResult search( const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 );
+    const QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 );
 %Docstring
 Search for layers in all the registered layer metadata providers, optionally filtering by ``searchString``
 and ``geographicExtent``, an optional ``feedback`` can be used to monitor and control the search process.

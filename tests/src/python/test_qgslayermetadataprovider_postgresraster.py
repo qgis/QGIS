@@ -26,13 +26,13 @@ from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProviderTestBase):
 
-    def getProviderName(self) -> str:
+    def getMetadataProviderId(self):
 
-        return 'postgresraster'
+        return 'postgres'
 
     def getLayer(self):
 
-        return QgsRasterLayer('{} table="qgis_test"."Raster1" (Rast)'.format(self.getConnectionUri()), "someData", self.getProviderName())
+        return QgsRasterLayer('{} table="qgis_test"."Raster1" (Rast)'.format(self.getConnectionUri()), "someData", 'postgresraster')
 
     def getConnectionUri(self) -> str:
 

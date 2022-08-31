@@ -242,7 +242,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
       QDomDocument doc;
       doc.setContent( res.PQgetvalue( 0, 0 ) );
       mLayerMetadata.readMetadataXml( doc.documentElement() );
-      QgsMessageLog::logMessage( tr( "PostgreSQL layer metadata loaded from the database." ), tr( "PostGIS" ) );
     }
   }
 
@@ -6123,10 +6122,6 @@ bool QgsPostgresProviderMetadata::saveLayerMetadata( const QString &uri, const Q
   return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::VectorLayer, uri, metadata, errorMessage );
 }
 
-QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadata::searchLayerMetadata( const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
-{
-  return QgsPostgresProviderMetadataUtils::searchLayerMetadata( QgsMapLayerType::VectorLayer, uri, searchString, geographicExtent, feedback );
-}
 
 QgsProviderMetadata::ProviderCapabilities QgsPostgresProviderMetadata::providerCapabilities() const
 {

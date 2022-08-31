@@ -22,9 +22,8 @@
 #include "qgis.h"
 
 #include "qgslayermetadata.h"
+#include "qgsabstractlayermetadataprovider.h"
 
-class QgsAbstractLayerMetadataProvider;
-class QgsLayerMetadataSearchResult;
 class QgsFeedback;
 
 #ifdef SIP_RUN
@@ -60,14 +59,14 @@ class CORE_EXPORT QgsLayerMetadataProviderRegistry : public QObject
     //! Returns the list of all registered layer metadata providers.
     QList<QgsAbstractLayerMetadataProvider *> layerMetadataProviders() const;
 
-    //! Returns metadata provider implementation if the \a type matches one. Returns NULLPTR otherwise.
-    QgsAbstractLayerMetadataProvider *layerMetadataProviderFromType( const QString &type );
+    //! Returns metadata provider implementation if the \a id matches one. Returns NULLPTR otherwise.
+    QgsAbstractLayerMetadataProvider *layerMetadataProviderFromId( const QString &id );
 
     /**
      * Search for layers in all the registered layer metadata providers, optionally filtering by \a searchString
      * and \a geographicExtent, an optional \a feedback can be used to monitor and control the search process.
      */
-    QgsLayerMetadataSearchResult search( const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr );
+    const QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr );
 
   private:
 

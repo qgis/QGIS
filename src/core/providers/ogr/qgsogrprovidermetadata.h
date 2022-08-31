@@ -71,8 +71,6 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) final;
 
-    QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback = nullptr ) override;
-
     // -----
     QgsTransaction *createTransaction( const QString &connString ) override;
 

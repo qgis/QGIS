@@ -631,7 +631,6 @@ class QgsPostgresProviderMetadata final: public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QList< QgsMapLayerType > supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
-    QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QString &uri, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 };
 

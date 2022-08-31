@@ -17,19 +17,20 @@
 #include "qgsabstractlayermetadataprovider.h"
 #include "qgsfeedback.h"
 
-QgsLayerMetadataProviderRegistry::QgsLayerMetadataProviderRegistry( QObject *parent ) : QObject( parent )
+QgsLayerMetadataProviderRegistry::QgsLayerMetadataProviderRegistry( QObject *parent )
+  : QObject( parent )
 {
 
 }
 
 void QgsLayerMetadataProviderRegistry::registerLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider )
 {
-  mMetadataProviders.insert( metadataProvider->type(), metadataProvider );
+  mMetadataProviders.insert( metadataProvider->id(), metadataProvider );
 }
 
 void QgsLayerMetadataProviderRegistry::unregisterLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider )
 {
-  delete mMetadataProviders.take( metadataProvider->type() );
+  delete mMetadataProviders.take( metadataProvider->id() );
 }
 
 QList<QgsAbstractLayerMetadataProvider *> QgsLayerMetadataProviderRegistry::layerMetadataProviders() const
@@ -37,12 +38,12 @@ QList<QgsAbstractLayerMetadataProvider *> QgsLayerMetadataProviderRegistry::laye
   return mMetadataProviders.values();
 }
 
-QgsAbstractLayerMetadataProvider *QgsLayerMetadataProviderRegistry::layerMetadataProviderFromType( const QString &type )
+QgsAbstractLayerMetadataProvider *QgsLayerMetadataProviderRegistry::layerMetadataProviderFromId( const QString &type )
 {
   return mMetadataProviders.value( type, nullptr );
 }
 
-QgsLayerMetadataSearchResult QgsLayerMetadataProviderRegistry::search( const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
+const QgsLayerMetadataSearchResult QgsLayerMetadataProviderRegistry::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
 {
   QgsLayerMetadataSearchResult results;
   for ( auto it = mMetadataProviders.cbegin(); it != mMetadataProviders.cend(); ++it )
@@ -53,14 +54,14 @@ QgsLayerMetadataSearchResult QgsLayerMetadataProviderRegistry::search( const QSt
       break;
     }
 
-    const QgsLayerMetadataSearchResult providerResults { it.value()->search( searchString, geographicExtent ) };
-    const QList<QgsLayerMetadataProviderResult> cMetadata { providerResults.metadata() };
-    for ( const QgsLayerMetadataProviderResult &metadata : std::as_const( cMetadata ) )
+    const QgsLayerMetadataSearchResult providerResults { it.value()->search( searchContext, searchString, geographicExtent ) };
+    const QList<QgsLayerMetadataProviderResult> constMetadata { providerResults.metadata() };
+    for ( const QgsLayerMetadataProviderResult &metadata : std::as_const( constMetadata ) )
     {
       results.addMetadata( metadata );
     }
-    const QList<QString> cErrors { providerResults.errors() };
-    for ( const QString &error : std::as_const( cErrors ) )
+    const QList<QString> constErrors { providerResults.errors() };
+    for ( const QString &error : std::as_const( constErrors ) )
     {
       results.addError( error );
     }

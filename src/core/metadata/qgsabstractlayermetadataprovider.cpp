@@ -19,25 +19,25 @@
 #include "qgsfeedback.h"
 
 
-const QList<QgsLayerMetadataProviderResult> &QgsLayerMetadataSearchResult::metadata() const
+QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResult::metadata() const
 {
   return mMetadata;
 }
 
-void QgsLayerMetadataSearchResult::addMetadata( const QgsLayerMetadataProviderResult &newMetadata )
+void QgsLayerMetadataSearchResult::addMetadata( const QgsLayerMetadataProviderResult &metadata )
 {
-  mMetadata.push_back( newMetadata );
+  mMetadata.push_back( metadata );
 }
 
 
-const QStringList &QgsLayerMetadataSearchResult::errors() const
+QStringList QgsLayerMetadataSearchResult::errors() const
 {
   return mErrors;
 }
 
-void QgsLayerMetadataSearchResult::addError( const QString &newError )
+void QgsLayerMetadataSearchResult::addError( const QString &error )
 {
-  mErrors.push_back( newError );
+  mErrors.push_back( error );
 }
 
 
@@ -52,9 +52,9 @@ const QgsPolygon &QgsLayerMetadataProviderResult::geographicExtent() const
   return mGeographicExtent;
 }
 
-void QgsLayerMetadataProviderResult::setGeographicExtent( const QgsPolygon &newGeographicExtent )
+void QgsLayerMetadataProviderResult::setGeographicExtent( const QgsPolygon &geographicExtent )
 {
-  mGeographicExtent = newGeographicExtent;
+  mGeographicExtent = geographicExtent;
 }
 
 const QgsWkbTypes::GeometryType &QgsLayerMetadataProviderResult::geometryType() const
@@ -62,9 +62,9 @@ const QgsWkbTypes::GeometryType &QgsLayerMetadataProviderResult::geometryType() 
   return mGeometryType;
 }
 
-void QgsLayerMetadataProviderResult::setGeometryType( const QgsWkbTypes::GeometryType &newGeometryType )
+void QgsLayerMetadataProviderResult::setGeometryType( const QgsWkbTypes::GeometryType &geometryType )
 {
-  mGeometryType = newGeometryType;
+  mGeometryType = geometryType;
 }
 
 const QString &QgsLayerMetadataProviderResult::authid() const
@@ -72,9 +72,9 @@ const QString &QgsLayerMetadataProviderResult::authid() const
   return mAuthid;
 }
 
-void QgsLayerMetadataProviderResult::setAuthid( const QString &newAuthid )
+void QgsLayerMetadataProviderResult::setAuthid( const QString &authid )
 {
-  mAuthid = newAuthid;
+  mAuthid = authid;
 }
 
 const QString &QgsLayerMetadataProviderResult::uri() const
@@ -92,9 +92,9 @@ const QString &QgsLayerMetadataProviderResult::dataProviderName() const
   return mDataProviderName;
 }
 
-void QgsLayerMetadataProviderResult::setDataProviderName( const QString &newDataProviderName )
+void QgsLayerMetadataProviderResult::setDataProviderName( const QString &dataProviderName )
 {
-  mDataProviderName = newDataProviderName;
+  mDataProviderName = dataProviderName;
 }
 
 QgsMapLayerType QgsLayerMetadataProviderResult::layerType() const
@@ -102,9 +102,9 @@ QgsMapLayerType QgsLayerMetadataProviderResult::layerType() const
   return mLayerType;
 }
 
-void QgsLayerMetadataProviderResult::setLayerType( QgsMapLayerType newLayerType )
+void QgsLayerMetadataProviderResult::setLayerType( QgsMapLayerType layerType )
 {
-  mLayerType = newLayerType;
+  mLayerType = layerType;
 }
 
 const QString &QgsLayerMetadataProviderResult::standardUri() const
@@ -112,7 +112,7 @@ const QString &QgsLayerMetadataProviderResult::standardUri() const
   return mStandardUri;
 }
 
-void QgsLayerMetadataProviderResult::setStandardUri( const QString &newStandardUri )
+void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri )
 {
-  mStandardUri = newStandardUri;
+  mStandardUri = standardUri;
 }

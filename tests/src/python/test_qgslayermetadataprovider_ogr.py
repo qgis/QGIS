@@ -27,13 +27,13 @@ from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase, TEST
 
 class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProviderTestBase):
 
-    def getProviderName(self) -> str:
+    def getMetadataProviderId(self) -> str:
 
         return 'ogr'
 
     def getLayer(self) -> QgsVectorLayer:
 
-        return QgsVectorLayer('{}|layername=geopackage'.format(self.getConnectionUri()), "someData", self.getProviderName())
+        return QgsVectorLayer('{}|layername=geopackage'.format(self.getConnectionUri()), "someData", 'ogr')
 
     def getConnectionUri(self) -> str:
 

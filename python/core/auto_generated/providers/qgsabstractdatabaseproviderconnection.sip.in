@@ -806,6 +806,25 @@ The caller takes ownership of the returned object.
 .. versionadded:: 3.28
 %End
 
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException );
+%Docstring
+Search the stored layer metadata in the connection,
+optionally limiting the search to the metadata identifier, title and abstract matching
+``searchContext`` context for the search
+``searchString`` or to metadata having an extent intersecting ``geographicExtent``,
+an optional ``feedback`` can be used to monitor and control the search process.
+
+The default implementation raises a :py:class:`QgsProviderConnectionException`, data providers may implement
+the search functionality.
+
+:return: a (possibly empty) list of :py:class:`QgsLayerMetadataProviderResult`, throws a :py:class:`QgsProviderConnectionException`
+         if any error occurred during the search.
+
+:raises QgsProviderConnectionException: 
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
 

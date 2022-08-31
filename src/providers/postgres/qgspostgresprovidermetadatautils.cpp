@@ -16,28 +16,12 @@
 
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgspostgresproviderconnection.h"
-#include "qgsproject.h"
 #include "qgscoordinatetransform.h"
 
 
-QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLayerMetadata( const QgsMapLayerType &layerType, const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
+QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
 {
-
-  QString layerTypeString;
-
-  if ( layerType == QgsMapLayerType::VectorLayer )
-  {
-    layerTypeString = QStringLiteral( "vector" );
-  }
-  else if ( layerType == QgsMapLayerType::RasterLayer )
-  {
-    layerTypeString = QStringLiteral( "raster" );
-  }
-  else
-  {
-    throw QgsProviderConnectionException( QStringLiteral( "Unsupported layer type in PostGIS searchLayerMetadata arguments." ) );
-  }
-
+  Q_UNUSED( searchContext );
   QList<QgsLayerMetadataProviderResult> results;
   QgsDataSourceUri dsUri( uri );
 
@@ -54,11 +38,14 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
     }
 
     QStringList where;
-    where.push_back( QStringLiteral( "layer_type = %1" ).arg( QgsPostgresConn::quotedValue( layerTypeString ) ) );
 
     if ( ! searchString.isEmpty() )
     {
-      where.push_back( QStringLiteral( "( abstract ILIKE %1 OR identifier ILIKE %1 )" ).arg( QgsPostgresConn::quotedValue( QString( searchString ).prepend( QChar( '%' ) ).append( QChar( '%' ) ) ) ) );
+      where.push_back( QStringLiteral( R"SQL((
+      abstract ILIKE %1 OR
+      identifier ILIKE %1 OR
+      REGEXP_REPLACE(UPPER(array_to_string((xpath('//keyword', qmd))::varchar[], '')),'</?KEYWORD>', '', 'g') ILIKE %1
+      ))SQL" ).arg( QgsPostgresConn::quotedValue( QString( searchString ).prepend( QChar( '%' ) ).append( QChar( '%' ) ) ) ) );
     }
 
     if ( ! geographicExtent.isEmpty() )
@@ -105,8 +92,8 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       QDomDocument doc;
       doc.setContent( res.PQgetvalue( 0, 11 ) );
       metadata.readMetadataXml( doc.documentElement() );
+
       QgsLayerMetadataProviderResult result { metadata };
-      result.setDataProviderName( layerType == QgsMapLayerType::RasterLayer ?  QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) );
       QgsDataSourceUri uri { dsUri };
       uri.setDatabase( res.PQgetvalue( 0, 0 ) );
       uri.setSchema( res.PQgetvalue( 0, 1 ) );
@@ -121,10 +108,12 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       const QString layerType { res.PQgetvalue( 0, 10 ) };
       if ( layerType == QStringLiteral( "raster" ) )
       {
+        result.setDataProviderName( QStringLiteral( "postgresraster" ) );
         result.setLayerType( QgsMapLayerType::RasterLayer );
       }
       else if ( layerType == QStringLiteral( "vector" ) )
       {
+        result.setDataProviderName( QStringLiteral( "postgres" ) );
         result.setLayerType( QgsMapLayerType::VectorLayer );
       }
       else
@@ -225,7 +214,7 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const QgsMapLayerType 
   for ( const auto &ext : std::as_const( cExtents ) )
   {
     QgsRectangle bbox {  ext.bounds.toRectangle()  };
-    QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance()->transformContext() };
+    QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateTransformContext() };
     ct.transform( bbox );
     extents.combineExtentWith( bbox );
   }

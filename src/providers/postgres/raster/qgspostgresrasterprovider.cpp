@@ -18,7 +18,6 @@
 #include "qgspostgresrasterprovider.h"
 #include "qgspostgresprovidermetadatautils.h"
 #include "qgslayermetadataproviderregistry.h"
-#include "qgspostgresrasterlayermetadataprovider.h"
 #include "qgspostgrestransaction.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
@@ -724,11 +723,6 @@ QList<QgsMapLayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() 
   return { QgsMapLayerType::RasterLayer };
 }
 
-QList<QgsLayerMetadataProviderResult> QgsPostgresRasterProviderMetadata::searchLayerMetadata( const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
-{
-  return QgsPostgresProviderMetadataUtils::searchLayerMetadata( QgsMapLayerType::RasterLayer, uri, searchString, geographicExtent, feedback );
-}
-
 bool QgsPostgresRasterProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
 {
   return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::RasterLayer, uri, metadata, errorMessage );
@@ -737,22 +731,6 @@ bool QgsPostgresRasterProviderMetadata::saveLayerMetadata( const QString &uri, c
 QgsProviderMetadata::ProviderCapabilities QgsPostgresRasterProviderMetadata::providerCapabilities() const
 {
   return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata;
-}
-
-QgsPostgresRasterLayerMetadataProvider *gPgRasterLayerMetadataProvider = nullptr;   // when not null it is owned by QgsApplication::layerMetadataProviderRegistry()
-
-void QgsPostgresRasterProviderMetadata::initProvider()
-{
-  Q_ASSERT( !gPgRasterLayerMetadataProvider );
-  gPgRasterLayerMetadataProvider = new QgsPostgresRasterLayerMetadataProvider();
-  QgsApplication::layerMetadataProviderRegistry()->registerLayerMetadataProvider( gPgRasterLayerMetadataProvider );  // takes ownership
-
-}
-
-void QgsPostgresRasterProviderMetadata::cleanupProvider()
-{
-  QgsApplication::layerMetadataProviderRegistry()->unregisterLayerMetadataProvider( gPgRasterLayerMetadataProvider );
-  gPgRasterLayerMetadataProvider = nullptr;
 }
 
 QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )

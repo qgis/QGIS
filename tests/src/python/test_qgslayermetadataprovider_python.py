@@ -23,6 +23,8 @@ from qgis.core import (
     QgsAbstractLayerMetadataProvider,
     QgsLayerMetadataSearchResult,
     QgsLayerMetadataProviderResult,
+    QgsMetadataSearchContext,
+    QgsLayerMetadata,
 )
 
 from qgis.PyQt.QtCore import QTemporaryDir
@@ -44,22 +46,10 @@ class PythonLayerMetadataProvider(QgsAbstractLayerMetadataProvider):
     def __init__(self):
         super().__init__()
 
-    def type(self):
+    def id(self):
         return 'python'
 
     def search(self, searchString='', geographicExtent=QgsRectangle(), feedback=None):
-
-        result = QgsLayerMetadataProviderResult()
-        result.standardUri = 'http://mrcc.com/qgis.dtd'
-        result.layerType = QgsMapLayerType.VectorLayer
-        result.uri = os.path.join(temp_path, 'geopackage.gpkg')
-        result.crs = 'EPSG:4326'
-        result.dataProviderName = 'ogr'
-        result.geometryType = QgsWkbTypes.GeometryType.PointGeometry
-
-        poly = QgsPolygon()
-        poly.fromWkt(QgsRectangle(0, 0, 1, 1).asWktPolygon())
-        result.geographicExtent = poly
 
         xml_md = """
         <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
@@ -95,7 +85,20 @@ class PythonLayerMetadataProvider(QgsAbstractLayerMetadataProvider):
         doc = QDomDocument()
         assert doc.setContent(xml_md)[0]
 
-        assert result.metadata.readMetadataXml(doc.documentElement())
+        metadata = QgsLayerMetadata()
+        assert metadata.readMetadataXml(doc.documentElement())
+
+        result = QgsLayerMetadataProviderResult(metadata)
+        result.setStandardUri('http://mrcc.com/qgis.dtd')
+        result.setLayerType(QgsMapLayerType.VectorLayer)
+        result.setUri(os.path.join(temp_path, 'geopackage.gpkg'))
+        result.setAuthid('EPSG:4326')
+        result.setDataProviderName('ogr')
+        result.setGeometryType(QgsWkbTypes.GeometryType.PointGeometry)
+
+        poly = QgsPolygon()
+        poly.fromWkt(QgsRectangle(0, 0, 1, 1).asWktPolygon())
+        result.setGeographicExtent(poly)
 
         assert result.identifier() == 'MD012345'
 
@@ -114,12 +117,12 @@ class TestPythonLayerMetadataProvider(unittest.TestCase):
     def test_metadataRegistryApi(self):
 
         reg = QGIS_APP.layerMetadataProviderRegistry()
-        self.assertIsNone(reg.layerMetadataProviderFromType('python'))
+        self.assertIsNone(reg.layerMetadataProviderFromId('python'))
         reg.registerLayerMetadataProvider(PythonLayerMetadataProvider())
-        self.assertIsNotNone(reg.layerMetadataProviderFromType('python'))
+        self.assertIsNotNone(reg.layerMetadataProviderFromId('python'))
 
-        md_provider = reg.layerMetadataProviderFromType('python')
-        results = md_provider.search()
+        md_provider = reg.layerMetadataProviderFromId('python')
+        results = md_provider.search(QgsMetadataSearchContext())
 
         self.assertEqual(len(results.metadata()), 1)
         self.assertEqual(len(results.errors()), 1)
@@ -129,14 +132,14 @@ class TestPythonLayerMetadataProvider(unittest.TestCase):
         self.assertEqual(result.abstract(), 'QGIS Some Data')
         self.assertEqual(result.identifier(), 'MD012345')
         self.assertEqual(result.title(), 'QGIS Test Title')
-        self.assertEqual(result.layerType, QgsMapLayerType.VectorLayer)
-        self.assertEqual(result.crs, 'EPSG:4326')
-        self.assertEqual(result.geometryType, QgsWkbTypes.PointGeometry)
-        self.assertEqual(result.dataProviderName, 'ogr')
-        self.assertEqual(result.standardUri, 'http://mrcc.com/qgis.dtd')
+        self.assertEqual(result.layerType(), QgsMapLayerType.VectorLayer)
+        self.assertEqual(result.authid(), 'EPSG:4326')
+        self.assertEqual(result.geometryType(), QgsWkbTypes.PointGeometry)
+        self.assertEqual(result.dataProviderName(), 'ogr')
+        self.assertEqual(result.standardUri(), 'http://mrcc.com/qgis.dtd')
 
         reg.unregisterLayerMetadataProvider(md_provider)
-        self.assertIsNone(reg.layerMetadataProviderFromType('python'))
+        self.assertIsNone(reg.layerMetadataProviderFromId('python'))
 
     def setUp(self):
 

@@ -607,22 +607,6 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
                             QStringList &descriptions, QString &errCause );
 
     /**
-     * Search the stored layer metadata in the connection defined by \a uri,
-     * optionally limiting the search to the metadata identifier, title and abstract matching
-     * \a searchString or to metadata having an extent intersecting \a geographicExtent,
-     * an optional \a feedback can be used to monitor and control the search process.
-     *
-     * The default implementation returns an empty list, data providers may implement
-     * the search functionality.
-     *
-     * \returns a (possibly empty) list of QgsLayerMetadataProviderResult, throws a QgsProviderConnectionException
-     * if any error occurred during the search.
-     * \throws QgsProviderConnectionException
-     * \since QGIS 3.28
-     */
-    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QString &uri, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) SIP_THROW( QgsProviderConnectionException );
-
-    /**
      * Returns TRUE if a layer style with the specified \a styleId exists in the provider defined by \a uri.
      *
      * \param uri provider URI
