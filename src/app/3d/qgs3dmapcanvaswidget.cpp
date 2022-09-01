@@ -437,7 +437,6 @@ void Qgs3DMapCanvasWidget::configure()
                                 || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
-  connect( buttons, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, dlg, &QDialog::reject );
   connect( buttons, &QDialogButtonBox::clicked, dlg, [ = ]( QAbstractButton * button )
   {
@@ -454,11 +453,6 @@ void Qgs3DMapCanvasWidget::configure()
   QVBoxLayout *layout = new QVBoxLayout( dlg );
   layout->addWidget( w, 1 );
   layout->addWidget( buttons );
-
-  connect( dlg, &QDialog::accepted, this, [ = ]()
-  {
-    applyConfig();
-  } );
 
   dlg->show();
 
