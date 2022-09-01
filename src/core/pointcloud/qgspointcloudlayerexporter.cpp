@@ -47,6 +47,7 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
   mSupportedFormats << QStringLiteral( "memory" )
 #ifdef HAVE_PDAL_QGIS
                     << QStringLiteral( "LAZ" )
+                    << QStringLiteral( "LAS" )
 #endif
                     << QStringLiteral( "GPKG" )
                     << QStringLiteral( "ESRI Shapefile" )
@@ -215,7 +216,8 @@ void QgsPointCloudLayerExporter::doExport()
     exp.run();
   }
 #ifdef HAVE_PDAL_QGIS
-  else if ( mFormat == QLatin1String( "LAZ" ) )
+  else if ( mFormat == QLatin1String( "LAZ" ) ||
+            mFormat == QLatin1String( "LAS" ) )
   {
     setAllAttributes();
     // PDAL may throw exceptions
@@ -258,7 +260,8 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 
   const QFileInfo fileInfo( mFilename );
 
-  if ( mFormat == QLatin1String( "LAZ" ) )
+  if ( mFormat == QLatin1String( "LAZ" ) ||
+       mFormat == QLatin1String( "LAS" ) )
   {
     return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
   }
