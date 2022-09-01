@@ -1761,6 +1761,23 @@ Emitted when the project ``ellipsoid`` is changed.
 .. versionadded:: 3.0
 %End
 
+    void distanceUnitsChanged();
+%Docstring
+Emitted when the default distance units changes.
+
+.. seealso:: :py:func:`setDistanceUnits`
+
+.. versionadded:: 3.28
+%End
+
+    void areaUnitsChanged();
+%Docstring
+Emitted when the default area units changes.
+
+.. seealso:: :py:func:`setAreaUnits`
+
+.. versionadded:: 3.28
+%End
 
     void transformContextChanged();
 %Docstring
