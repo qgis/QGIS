@@ -324,6 +324,8 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   }
 }
 
+QgsSymbolLegendNode::~QgsSymbolLegendNode() = default;
+
 Qt::ItemFlags QgsSymbolLegendNode::flags() const
 {
   if ( mItem.isCheckable() )
