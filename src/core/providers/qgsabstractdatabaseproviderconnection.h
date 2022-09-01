@@ -917,9 +917,10 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
 
     /**
      * Search the stored layer metadata in the connection,
-     * optionally limiting the search to the metadata identifier, title and abstract matching
+     * optionally limiting the search to the metadata identifier, title,
+     * abstract, keywords and categories.
      * \a searchContext context for the search
-     * \a searchString or to metadata having an extent intersecting \a geographicExtent,
+     * \a searchString limit the search to metadata having an extent intersecting \a geographicExtent,
      * an optional \a feedback can be used to monitor and control the search process.
      *
      * The default implementation raises a QgsProviderConnectionException, data providers may implement

@@ -43,9 +43,9 @@ QgsAbstractLayerMetadataProvider *QgsLayerMetadataProviderRegistry::layerMetadat
   return mMetadataProviders.value( type, nullptr );
 }
 
-const QgsLayerMetadataSearchResult QgsLayerMetadataProviderRegistry::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
+const QgsLayerMetadataSearchResults QgsLayerMetadataProviderRegistry::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
 {
-  QgsLayerMetadataSearchResult results;
+  QgsLayerMetadataSearchResults results;
   for ( auto it = mMetadataProviders.cbegin(); it != mMetadataProviders.cend(); ++it )
   {
 
@@ -54,7 +54,7 @@ const QgsLayerMetadataSearchResult QgsLayerMetadataProviderRegistry::search( con
       break;
     }
 
-    const QgsLayerMetadataSearchResult providerResults { it.value()->search( searchContext, searchString, geographicExtent ) };
+    const QgsLayerMetadataSearchResults providerResults { it.value()->search( searchContext, searchString, geographicExtent ) };
     const QList<QgsLayerMetadataProviderResult> constMetadata { providerResults.metadata() };
     for ( const QgsLayerMetadataProviderResult &metadata : std::as_const( constMetadata ) )
     {

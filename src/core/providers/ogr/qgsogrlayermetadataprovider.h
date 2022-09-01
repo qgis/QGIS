@@ -23,7 +23,7 @@ class QgsOgrLayerMetadataProvider : public QgsAbstractLayerMetadataProvider
 {
   public:
     QString id() const override;
-    QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback = nullptr ) const override;
+    QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback = nullptr ) const override;
 };
 
 #endif // QGSOGRLAYERMETADATAPROVIDER_H

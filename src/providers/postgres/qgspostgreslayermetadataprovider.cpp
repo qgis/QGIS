@@ -25,9 +25,9 @@ QString QgsPostgresLayerMetadataProvider::id() const
   return QStringLiteral( "postgres" );
 }
 
-QgsLayerMetadataSearchResult QgsPostgresLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
-  QgsLayerMetadataSearchResult results;
+  QgsLayerMetadataSearchResults results;
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) };
 
   if ( md && ( ! feedback || ! feedback->isCanceled() ) )

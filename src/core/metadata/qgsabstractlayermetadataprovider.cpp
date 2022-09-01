@@ -19,23 +19,23 @@
 #include "qgsfeedback.h"
 
 
-QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResult::metadata() const
+QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResults::metadata() const
 {
   return mMetadata;
 }
 
-void QgsLayerMetadataSearchResult::addMetadata( const QgsLayerMetadataProviderResult &metadata )
+void QgsLayerMetadataSearchResults::addMetadata( const QgsLayerMetadataProviderResult &metadata )
 {
   mMetadata.push_back( metadata );
 }
 
 
-QStringList QgsLayerMetadataSearchResult::errors() const
+QStringList QgsLayerMetadataSearchResults::errors() const
 {
   return mErrors;
 }
 
-void QgsLayerMetadataSearchResult::addError( const QString &error )
+void QgsLayerMetadataSearchResults::addError( const QString &error )
 {
   mErrors.push_back( error );
 }

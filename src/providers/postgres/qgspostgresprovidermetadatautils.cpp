@@ -214,6 +214,9 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const QgsMapLayerType 
   for ( const auto &ext : std::as_const( cExtents ) )
   {
     QgsRectangle bbox {  ext.bounds.toRectangle()  };
+    // Note: a default transform context is used here because we don't need high accuracy
+
+
     QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateTransformContext() };
     ct.transform( bbox );
     extents.combineExtentWith( bbox );

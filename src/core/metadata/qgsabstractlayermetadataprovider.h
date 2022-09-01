@@ -165,7 +165,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
  *
  * \since QGIS 3.28
  */
-class CORE_EXPORT QgsLayerMetadataSearchResult
+class CORE_EXPORT QgsLayerMetadataSearchResults
 {
 
   public:
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
      * \param feedback can be used to monitor and control the search process.
      * \returns a QgsLayerMetadataSearchResult object with a list of metadata and errors
      */
-    virtual QgsLayerMetadataSearchResult search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
+    virtual QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
 
     virtual ~QgsAbstractLayerMetadataProvider() = default;
 

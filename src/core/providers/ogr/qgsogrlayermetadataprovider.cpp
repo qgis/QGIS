@@ -25,9 +25,9 @@ QString QgsOgrLayerMetadataProvider::id() const
   return QStringLiteral( "ogr" );
 }
 
-QgsLayerMetadataSearchResult QgsOgrLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+QgsLayerMetadataSearchResults QgsOgrLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
-  QgsLayerMetadataSearchResult results;
+  QgsLayerMetadataSearchResults results;
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( id( ) ) };
 
   if ( md && ( ! feedback || ! feedback->isCanceled( ) ) )
