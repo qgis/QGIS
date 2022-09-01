@@ -264,27 +264,10 @@
                <property name="rightMargin">
                 <number>3</number>
                </property>
-               <item row="0" column="0" colspan="2">
-                <widget class="QLabel" name="mEdlWarningLabel">
-                 <property name="text">
-                  <string>Note: with default draw order, the shading may be incorrect.</string>
-                 </property>
-                 <property name="wordWrap">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_3">
                  <property name="text">
                   <string>Strength</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>Distance</string>
                  </property>
                 </widget>
                </item>
@@ -307,22 +290,39 @@
                  </property>
                 </widget>
                </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>Distance</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QgsUnitSelectionWidget" name="mEdlDistanceUnit" native="true"/>
+               </item>
                <item row="3" column="1">
-                <widget class="QgsSpinBox" name="mEdlDistance">
+                <widget class="QgsDoubleSpinBox" name="mEdlDistance">
                  <property name="toolTip">
                   <string>How many pixels away from the original pixel to sample neighbors.</string>
                  </property>
-                 <property name="suffix">
-                  <string> pixels</string>
-                 </property>
-                 <property name="minimum">
-                  <number>1</number>
+                 <property name="decimals">
+                  <number>6</number>
                  </property>
                  <property name="maximum">
-                  <number>10</number>
+                  <double>99999999999.000000000000000</double>
                  </property>
                  <property name="value">
-                  <number>2</number>
+                  <double>0.500000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" colspan="3">
+                <widget class="QLabel" name="mEdlWarningLabel">
+                 <property name="text">
+                  <string>Note: with default draw order, the shading may be incorrect.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>

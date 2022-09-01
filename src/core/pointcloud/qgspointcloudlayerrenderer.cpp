@@ -241,7 +241,9 @@ bool QgsPointCloudLayerRenderer::render()
     if ( QImage *drawnImage = dynamic_cast<QImage *>( painter->device() ) )
     {
       double strength = mRenderer->eyeDomeLightingStrength();
-      int distance = mRenderer->eyeDomeLightingDistance();
+      double distanceDouble = context.renderContext().convertToPainterUnits(
+                                mRenderer->eyeDomeLightingDistance(), mRenderer->eyeDomeLightingDistanceUnit() );
+      int distance = static_cast<int>( std::round( distanceDouble ) );
       context.elevationMap()->applyEyeDomeLighting( *drawnImage, distance, strength, context.renderContext().rendererScale() );
     }
   }
