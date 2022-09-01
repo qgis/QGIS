@@ -37,15 +37,15 @@ class QgsRectangle;
 namespace QgsWms
 {
   //! Supported image output format
-  enum ImageOutputFormat
+  enum class ImageOutputFormat
   {
-    UNKN,
-    PNG,
-    PNG8,
-    PNG16,
-    PNG1,
-    JPEG,
-    WEBP
+    Unknown, //!< Unknown/invalid format
+    PNG, //!< PNG format
+    PNG8, //!< PNG8 format
+    PNG16, //!< PNG16 format
+    PNG1, //!< PNG1 format
+    JPEG, //!< JPEG format
+    WEBP, //!< WEBP format
   };
 
   /**

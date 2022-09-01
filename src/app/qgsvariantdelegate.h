@@ -42,7 +42,7 @@
 #define QGSVARIANTDELEGATE_H
 
 #include <QItemDelegate>
-#include <QRegExp>
+#include <QRegularExpression>
 
 class QgsVariantDelegate : public QItemDelegate
 {
@@ -65,19 +65,19 @@ class QgsVariantDelegate : public QItemDelegate
     static QVariant::Type type( const QVariant &value );
 
   private:
-    QRegExp mBoolExp;
-    QRegExp mByteArrayExp;
-    QRegExp mCharExp;
-    QRegExp mColorExp;
-    QRegExp mDateExp;
-    QRegExp mDateTimeExp;
-    QRegExp mDoubleExp;
-    QRegExp mPointExp;
-    QRegExp mRectExp;
-    QRegExp mSignedIntegerExp;
-    QRegExp mSizeExp;
-    QRegExp mTimeExp;
-    QRegExp mUnsignedIntegerExp;
+    QRegularExpression mBoolExp;
+    QRegularExpression mByteArrayExp;
+    QRegularExpression mCharExp;
+    QRegularExpression mColorExp;
+    QRegularExpression mDateExp;
+    QRegularExpression mDateTimeExp;
+    QRegularExpression mDoubleExp;
+    QRegularExpression mPointExp;
+    QRegularExpression mRectExp;
+    QRegularExpression mSignedIntegerExp;
+    QRegularExpression mSizeExp;
+    QRegularExpression mTimeExp;
+    QRegularExpression mUnsignedIntegerExp;
 };
 
 #endif

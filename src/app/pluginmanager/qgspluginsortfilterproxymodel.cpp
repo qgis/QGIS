@@ -88,13 +88,16 @@ bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
   {
     case PLUGIN_TAGS_ROLE:
       // search in tags only
-      return sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegExp() );
+      return sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegularExpression() );
     case 0:
+    {
+      const QRegularExpression regEx = filterRegularExpression();
       // full search: name + description + tags + author
-      return sourceModel()->data( index, PLUGIN_DESCRIPTION_ROLE ).toString().contains( filterRegExp() )
-             || sourceModel()->data( index, PLUGIN_AUTHOR_ROLE ).toString().contains( filterRegExp() )
-             || sourceModel()->data( index, Qt::DisplayRole ).toString().contains( filterRegExp() )
-             || sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( filterRegExp() );
+      return sourceModel()->data( index, PLUGIN_DESCRIPTION_ROLE ).toString().contains( regEx )
+             || sourceModel()->data( index, PLUGIN_AUTHOR_ROLE ).toString().contains( regEx )
+             || sourceModel()->data( index, Qt::DisplayRole ).toString().contains( regEx )
+             || sourceModel()->data( index, PLUGIN_TAGS_ROLE ).toString().contains( regEx );
+    }
     default:
       // unknown filter mode, return nothing
       return false;

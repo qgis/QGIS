@@ -37,12 +37,13 @@
  * \ingroup UnitTests
  * This is a unit test for layer blend modes
  */
-class TestQgsBlendModes : public QObject
+class TestQgsBlendModes : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsBlendModes() = default;
+    TestQgsBlendModes() : QgsTest( QStringLiteral( "Blending modes" ) ) {}
+
     ~TestQgsBlendModes() override
     {
       delete mMapSettings;
@@ -68,7 +69,6 @@ class TestQgsBlendModes : public QObject
     QgsRasterLayer *mRasterLayer2 = nullptr;
     QString mTestDataDir;
     QgsRectangle mExtent;
-    QString mReport;
 };
 
 
@@ -125,15 +125,6 @@ void TestQgsBlendModes::initTestCase()
 }
 void TestQgsBlendModes::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPointsLayer;
   delete mpPolysLayer;
   delete mpLinesLayer;

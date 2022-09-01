@@ -27,10 +27,6 @@ email                : morb at ozemail dot com dot au
 
 #include <geos_c.h>
 
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR<8 )
-#include "qgsgeometrymakevalid.h"
-#endif
-
 #include "qgsgeometryutils.h"
 #include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
@@ -2403,6 +2399,24 @@ QgsGeometry QgsGeometry::convexHull() const
   return QgsGeometry( std::move( cHull ) );
 }
 
+QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+  QgsGeos geos( d->geometry.get() );
+  mLastError.clear();
+  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError ) );
+  if ( !concaveHull )
+  {
+    QgsGeometry geom;
+    geom.mLastError = mLastError;
+    return geom;
+  }
+  return QgsGeometry( std::move( concaveHull ) );
+}
+
 QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry &extent, double tolerance, bool edgesOnly ) const
 {
   if ( !d->geometry )
@@ -2863,12 +2877,8 @@ QgsGeometry QgsGeometry::makeValid() const
     return QgsGeometry();
 
   mLastError.clear();
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
   QgsGeos geos( d->geometry.get() );
   std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( &mLastError ) );
-#else
-  std::unique_ptr< QgsAbstractGeometry > g( _qgis_lwgeom_make_valid( d->geometry.get(), mLastError ) );
-#endif
 
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;

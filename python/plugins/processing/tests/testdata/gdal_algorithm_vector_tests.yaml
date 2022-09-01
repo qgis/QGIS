@@ -15,6 +15,12 @@ tests:
       OUTPUT:
         name: expected/gdal/buffer_lines.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            explode_collections: true
+            normalize: true
+            precision: 4
 
   - algorithm: gdal:buffervectors
     name: Buffer lines with dissolve
@@ -48,6 +54,12 @@ tests:
       OUTPUT:
         name: expected/gdal/buffer_polys.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            explode_collections: true
+            normalize: true
+            precision: 4
 
   - algorithm: gdal:buffervectors
     name: Buffer polygons with dissolve
@@ -107,6 +119,9 @@ tests:
       OUTPUT:
         name: expected/gdal/clip_polygons.gml
         type: vector
+        compare:
+          geometry:
+            normalize: true
 
 # Fail on Travis with
 # ERROR 1: TopologyException: Input geom 1 is invalid: Self-intersection at or near point 2 -1 at 2 -1
@@ -182,6 +197,10 @@ tests:
       OUTPUT:
         name: expected/gdal/offset_lines.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            explode_collections: true
 
   - algorithm: gdal:ogrinfo
     name: ogrinfo
@@ -215,6 +234,13 @@ tests:
       OUTPUT:
         name: expected/gdal/one_side_buffer.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            explode_collections: true
+            normalize: true
+            precision: 1
+            snap_to_grid: .1
 
   - algorithm: gdal:pointsalonglines
     name: Points along lines
@@ -229,6 +255,10 @@ tests:
       OUTPUT:
         name: expected/gdal/points_along_lines.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            explode_collections: true
 
   - algorithm: gdal:dissolve
     name: Dissolve points (multipoint output)
@@ -248,6 +278,9 @@ tests:
       OUTPUT:
         name: expected/gdal/dissolved_points.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: gdal:convertformat
     name: Convert only one layer from GPKG to GML (gdal:convertformat)
@@ -261,6 +294,9 @@ tests:
       OUTPUT:
         name: expected/results_convert_only_one_layer_points.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: gdal:convertformat
     name: Convert all layers from GPKG to GML (gdal:convertformat)
@@ -274,3 +310,7 @@ tests:
       OUTPUT:
         name: expected/results_convert_all_layers_points_lines.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+

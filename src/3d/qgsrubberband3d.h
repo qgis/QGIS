@@ -40,14 +40,22 @@ class Qgs3DMapSettings;
 namespace Qt3DCore
 {
   class QEntity;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  class QBuffer;
+  class QGeometry;
+  class QAttribute;
+#endif
 }
+
 namespace Qt3DRender
 {
-  class QGeometry;
-  class QGeometryRenderer;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   class QBuffer;
-  class QMaterial;
+  class QGeometry;
   class QAttribute;
+#endif
+  class QGeometryRenderer;
+  class QMaterial;
 }
 
 /**
@@ -91,9 +99,15 @@ class _3D_EXPORT QgsRubberBand3D
 
     // all these are owned by mEntity
     Qt3DRender::QGeometryRenderer *mGeomRenderer = nullptr;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QGeometry *mGeometry = nullptr;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
+#else
+    Qt3DCore::QGeometry *mGeometry = nullptr;
+    Qt3DCore::QAttribute *mPositionAttribute = nullptr;
+    Qt3DCore::QAttribute *mIndexAttribute = nullptr;
+#endif
     QgsLineMaterial *mLineMaterial = nullptr;
 
     // Disable copying as we have pointer members.

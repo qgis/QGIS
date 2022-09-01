@@ -204,10 +204,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     * \note not available in Python bindings
     * \since QGIS 3.0
     */
-    void setMinimumEditDateTime()
-    {
-      setDateTimeRange( QDateTime( QDate( 1, 1, 1 ), QTime( 0, 0, 0 ) ), maximumDateTime() );
-    }
+    void setMinimumEditDateTime();
 
     friend class TestQgsDateTimeEdit;
 };

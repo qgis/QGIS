@@ -16,6 +16,7 @@
 #include "qgis_gui.h"
 
 class QgsVertexMarker;
+class QgsMapToolPan;
 
 /**
  * \class QgsCoordinateBoundsPreviewMapWidget
@@ -62,6 +63,7 @@ class GUI_EXPORT QgsCoordinateBoundsPreviewMapWidget : public QgsMapCanvas
     QgsRubberBand *mPreviewBand = nullptr;
     QgsRubberBand *mCanvasPreviewBand = nullptr;
     QgsVertexMarker *mCanvasCenterMarker = nullptr;
+    QgsMapToolPan *mPanTool = nullptr;
 
     QList<QgsMapLayer *> mLayers;
 

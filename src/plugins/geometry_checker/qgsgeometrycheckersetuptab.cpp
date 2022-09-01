@@ -71,7 +71,11 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   connect( ui.pushButtonSelectAllLayers, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectAllLayers );
   connect( ui.pushButtonDeselectAllLayers, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::deselectAllLayers );
   connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.frameOutput, &QWidget::setEnabled );
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
   connect( ui.buttonGroupOutput, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerSetupTab::validateInput );
+#else
+  connect( ui.buttonGroupOutput, &QButtonGroup::idClicked, this, &QgsGeometryCheckerSetupTab::validateInput );
+#endif
   connect( ui.pushButtonOutputDirectory, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectOutputDirectory );
   connect( ui.lineEditOutputDirectory, &QLineEdit::textChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( ui.checkBoxSliverPolygons, &QAbstractButton::toggled, ui.widgetSliverThreshold, &QWidget::setEnabled );

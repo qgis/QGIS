@@ -27,12 +27,15 @@
 #include <qgspoint.h>
 #include "qgsreferencedgeometry.h"
 
-class TestQgsPointXY: public QObject
+class TestQgsPointXY: public QgsTest
 {
     Q_OBJECT
+  public:
+
+    TestQgsPointXY() : QgsTest( QStringLiteral( "QgsPointXY Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void equality();
@@ -56,7 +59,6 @@ class TestQgsPointXY: public QObject
     QgsPointXY mPoint2;
     QgsPointXY mPoint3;
     QgsPointXY mPoint4;
-    QString mReport;
 };
 
 void TestQgsPointXY::init()
@@ -164,34 +166,10 @@ void TestQgsPointXY::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
-  mReport += QLatin1String( "<h1>Point Tests</h1>\n" );
-}
-
-
-void TestQgsPointXY::cleanupTestCase()
-{
-  //
-  // Runs once after all tests are run
-  //
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-
 }
 
 void TestQgsPointXY::toString()
 {
-  mReport += QLatin1String( "<p>Testing toString()</p>" );
-  mReport += "<p>" + mPoint1.toString( 2 )  +  "</p>";
-  mReport += "<p>" + mPoint2.toString( 2 )  +  "</p>";
-  mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
-  mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
   QCOMPARE( mPoint1.toString( 2 ), QString( "20.00,-20.00" ) );
   QCOMPARE( QgsPointXY().toString( 2 ), QString( "0.00,0.00" ) );
 }
@@ -347,8 +325,7 @@ void TestQgsPointXY::asVariant()
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( p1 );
   QVERIFY( var.isValid() );
-  QVERIFY( var.canConvert< QgsPointXY >() );
-  QVERIFY( !var.canConvert< QgsReferencedPointXY >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsPointXY" ) );
 
   const QgsPointXY p2 = qvariant_cast<QgsPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );
@@ -369,7 +346,7 @@ void TestQgsPointXY::referenced()
   // not great - we'd ideally like this to pass, but it doesn't:
   // QVERIFY( !var.canConvert< QgsPointXY >() );
 
-  QVERIFY( var.canConvert< QgsReferencedPointXY >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedPointXY" ) );
 
   const QgsReferencedPointXY p2 = qvariant_cast<QgsReferencedPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );

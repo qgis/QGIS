@@ -252,6 +252,9 @@ tests:
       OUTPUT:
         name: expected/multi_polys_non_null_non_empty.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:removenullgeometries
     name: Remove null geometries, 2 outputs (do not remove empty, but there is empty data)
@@ -629,6 +632,9 @@ tests:
       OUTPUT:
         name: expected/snap_geometries.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:snapgeometries
     name: Snap lines to lines (against itself; ordering check)
@@ -911,6 +917,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (rectangles)
@@ -936,6 +943,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (diamond)
@@ -961,6 +969,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (hexagon)
@@ -986,6 +995,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (lines with overlay)
@@ -1011,6 +1021,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (rectangle with overlay)
@@ -1038,6 +1049,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (diamond with overlay)
@@ -1065,6 +1077,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:creategrid
     name: Create grid (hexagon with overlay)
@@ -1092,6 +1105,7 @@ tests:
               precision: 7
             bottom:
               precision: 7
+            fid: skip
 
   - algorithm: native:deleteholes
     name: Delete holes (no min)
@@ -1104,6 +1118,7 @@ tests:
       OUTPUT:
         name: expected/removed_holes.gml
         type: vector
+        pk: intval
 
   - algorithm: native:deleteholes
     name: Delete holes (with min)
@@ -1116,6 +1131,7 @@ tests:
       OUTPUT:
         name: expected/removed_holes_min_area.gml
         type: vector
+        pk: intval
 
   - algorithm: qgis:basicstatisticsforfields
     name: Basic stats datetime
@@ -1214,6 +1230,7 @@ tests:
       OUTPUT:
         name: expected/oriented_bounds.gml
         type: vector
+        pk: intval
         compare:
           geometry:
             precision: 7
@@ -1278,6 +1295,9 @@ tests:
       OUTPUT:
         name: expected/refactorfields.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:refactorfields
     name: Refactor fields, empty expression
@@ -1577,6 +1597,9 @@ tests:
       OUTPUT:
         name: expected/hub_lines_field_subset.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:hublines
     name: Hub lines geodesic
@@ -1600,7 +1623,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 6
+            precision: 2
 
   - algorithm: native:hublines
     name: Hub lines, geodesic, split
@@ -1624,7 +1647,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 6
+            precision: 2
 
   - algorithm: qgis:pointstopath
     name: Points to path (non grouped)
@@ -1637,6 +1660,9 @@ tests:
       OUTPUT:
         name: expected/points_to_path.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:pointstopath
     name: Points to path (grouped)
@@ -1668,6 +1694,9 @@ tests:
       OUTPUT:
         name: expected/points_to_path_close_path.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:joinattributestable
     name: join the attribute table by common field (one-to-one)
@@ -1804,6 +1833,7 @@ tests:
               precision: 2
             start: skip
             end: skip
+            fid: skip
 
   - algorithm: native:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
@@ -1834,6 +1864,7 @@ tests:
               precision: 2
             start: skip
             end: skip
+            fid: skip
 
   - algorithm: native:shortestpathlayertopoint
     name: Shortest path layer to point
@@ -1924,6 +1955,7 @@ tests:
               precision: 2
             start: skip
             end: skip
+            fid: skip
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, nodes, bounds)
@@ -1948,6 +1980,8 @@ tests:
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (shortest, lines)
@@ -1978,6 +2012,7 @@ tests:
               precision: 2
             start: skip
             end: skip
+            fid: skip
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (fastest, old parameter)
@@ -2002,12 +2037,16 @@ tests:
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
       OUTPUT_LINES:
         name: expected/service_area_fastests_lines.gml
         type: vector
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
 
   - algorithm: native:serviceareafrompoint
     name: Service area from point (fastest, new parameter)
@@ -2032,12 +2071,16 @@ tests:
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
       OUTPUT_LINES:
         name: expected/service_area_fastests_lines.gml
         type: vector
         compare:
           geometry:
             precision: 3
+          fields:
+            fid: skip
 
   - algorithm: native:serviceareafromlayer
     name: Service area from layer (shortest, nodes)

@@ -353,6 +353,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! The translated name of the map tool
     QString mToolName;
 
+    friend class QgsMapCanvas;
     friend class TestQgsMapToolEdit;
 
 };

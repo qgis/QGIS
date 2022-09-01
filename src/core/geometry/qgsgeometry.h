@@ -1627,6 +1627,21 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convexHull() const;
 
     /**
+     * Returns a possibly concave polygon that contains all the points in the geometry.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError() on the returned geometry.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     *
+     *
+     * \since QGIS 3.28
+     */
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
      *
      * Returns the Voronoi polygons for the nodes contained within the geometry.

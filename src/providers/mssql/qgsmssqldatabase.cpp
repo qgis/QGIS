@@ -24,11 +24,7 @@
 #include <QThread>
 
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-QMutex QgsMssqlDatabase::sMutex { QMutex::Recursive };
-#else
 QRecursiveMutex QgsMssqlDatabase::sMutex;
-#endif
 
 QMap<QString, std::weak_ptr<QgsMssqlDatabase> > QgsMssqlDatabase::sConnections;
 
@@ -97,11 +93,7 @@ QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, bool transaction )
 
   if ( mTransaction )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mTransactionMutex.reset( new QMutex { QMutex::Recursive } );
-#else
     mTransactionMutex.reset( new QRecursiveMutex );
-#endif
   }
 
   if ( !mDB.isOpen() )

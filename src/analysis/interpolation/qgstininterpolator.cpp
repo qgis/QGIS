@@ -25,7 +25,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgswkbptr.h"
+#include "qgsvariantutils.h"
 #include "qgsfeedback.h"
 #include "qgscurve.h"
 #include "qgsmulticurve.h"
@@ -184,7 +184,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
     case ValueAttribute:
     {
       QVariant attributeVariant = f.attribute( attr );
-      if ( !attributeVariant.isValid() || attributeVariant.isNull() ) //attribute not found, something must be wrong (e.g. NULL value)
+      if ( QgsVariantUtils::isNull( attributeVariant ) ) //attribute not found, something must be wrong (e.g. NULL value)
       {
         return 3;
       }

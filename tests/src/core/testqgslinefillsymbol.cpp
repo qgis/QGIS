@@ -43,12 +43,12 @@
  * \ingroup UnitTests
  * This is a unit test for line fill symbol types.
  */
-class TestQgsLineFillSymbol : public QObject
+class TestQgsLineFillSymbol : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLineFillSymbol() = default;
+    TestQgsLineFillSymbol() : QgsTest( QStringLiteral( "Line Fill Symbol Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -83,7 +83,6 @@ class TestQgsLineFillSymbol : public QObject
     QgsFillSymbol *mFillSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -123,20 +122,10 @@ void TestQgsLineFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Line Fill Symbol Tests</h1>\n" );
 
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPolysLayer;
 
   QgsApplication::exitQgis();
@@ -144,8 +133,6 @@ void TestQgsLineFillSymbol::cleanupTestCase()
 
 void TestQgsLineFillSymbol::lineFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
@@ -179,8 +166,6 @@ void TestQgsLineFillSymbol::lineFillSymbolVector()
 
 void TestQgsLineFillSymbol::viewportLineFillSymbol()
 {
-  mReport += QLatin1String( "<h2>Viewport coordinate reference line fill symbol renderer test</h2>\n" );
-
   std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
@@ -228,8 +213,6 @@ void TestQgsLineFillSymbol::viewportLineFillSymbolVector()
 
 void TestQgsLineFillSymbol::lineFillSymbolOffset()
 {
-  mReport += QLatin1String( "<h2>Line fill symbol renderer test</h2>\n" );
-
   mLineFill->setOffset( 0.5 );
   QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_posoffset" ) ) );
 
@@ -492,8 +475,6 @@ void TestQgsLineFillSymbol::lineFillDataDefinedClip()
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 {
-  mReport += QLatin1String( "<h2>Line fill symbol data defined sub symbol test</h2>\n" );
-
   QVariantMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
   properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );

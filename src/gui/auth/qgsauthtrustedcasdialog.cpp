@@ -26,7 +26,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-
+#include "qgsvariantutils.h"
 
 QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
     const QList<QSslCertificate> &trustedCAs )
@@ -61,7 +61,7 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
 
     btnGroupByOrg->setChecked( false );
     const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "trustedcasortby" ), QVariant( false ) );
-    if ( !sortbyval.isNull() )
+    if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
     populateCaCertsView();

@@ -295,7 +295,7 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResultFromAction( const QgsLoca
           bool fetched = layer->getFeatures( request ).nextFeature( f );
           if ( !fetched )
             return;
-          QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QString(), -1, QgisApp::instance() );
+          QgsFeatureAction action( tr( "Attributes changed" ), f, layer, QUuid(), -1, QgisApp::instance() );
           if ( layer->isEditable() )
           {
             action.editFeature( false );

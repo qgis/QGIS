@@ -52,9 +52,13 @@
  * \ingroup UnitTests
  * This is a unit test for the COPC provider
  */
-class TestQgsCopcProvider : public QObject
+class TestQgsCopcProvider : public QgsTest
 {
     Q_OBJECT
+
+  public:
+
+    TestQgsCopcProvider() : QgsTest( QStringLiteral( "COPC Provider Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -87,7 +91,6 @@ class TestQgsCopcProvider : public QObject
 
   private:
     QString mTestDataDir;
-    QString mReport;
 };
 
 //runs before all tests
@@ -98,21 +101,12 @@ void TestQgsCopcProvider::initTestCase()
   QgsApplication::initQgis();
 
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
-  mReport = QStringLiteral( "<h1>COPC Provider Tests</h1>\n" );
 }
 
 //runs after all tests
 void TestQgsCopcProvider::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsCopcProvider::filters()

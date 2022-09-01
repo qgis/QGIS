@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatetimestatisticalsummary.h"
+#include "qgsvariantutils.h"
 #include <QString>
 #include <QDateTime>
 #include <QStringList>
@@ -61,20 +62,20 @@ void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
 
   if ( value.type() == QVariant::DateTime )
   {
-    testDateTime( value.toDateTime(), value.isNull() );
+    testDateTime( value.toDateTime(), QgsVariantUtils::isNull( value ) );
   }
   else if ( value.type() == QVariant::Date )
   {
     const QDate date = value.toDate();
     testDateTime( date.isValid() ? QDateTime( date, QTime( 0, 0, 0 ) )
-                  : QDateTime(), value.isNull() );
+                  : QDateTime(), QgsVariantUtils::isNull( value ) );
   }
   else if ( value.type() == QVariant::Time )
   {
     mIsTimes = true;
     const QTime time = value.toTime();
     testDateTime( time.isValid() ? QDateTime( QDate::fromJulianDay( 0 ), time )
-                  : QDateTime(), value.isNull() );
+                  : QDateTime(), QgsVariantUtils::isNull( value ) );
   }
   else //not a date
   {

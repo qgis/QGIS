@@ -30,10 +30,10 @@
 #include <QStringList>
 #include <QStyle>
 #include <QStyleFactory>
-#include <QDesktopWidget>
 #include <QImageReader>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QScreen>
 
 #include <cstdio>
 #include <cstdlib>
@@ -551,8 +551,10 @@ int main( int argc, char *argv[] )
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
-  // initialize random number seed
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  // initialize random number seed - not required for Qt 6
   qsrand( time( nullptr ) );
+#endif
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behavior' flag setup
@@ -914,15 +916,25 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
+
+  // this is implicit in Qt 6 now
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
+#endif
 
   // Set up an OpenGL Context to be shared between threads beforehand
   // for plugins that depend on Qt WebEngine module.
   // As suggested by Qt documentation at:
   //   - https://doc.qt.io/qt-5/qtwebengine.html
   //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
+#if 0
+  // this is disabled, because it breaks Qt 3D. See
+  // https://interest.qt-project.narkive.com/GYwuMDac/qwebengineview-qsurfaceformat-errors-in-console
+  // https://bugreports.qt.io/browse/QTBUG-60614
+  // https://bugreports.qt.io/browse/QTBUG-60605
 #if !defined(QT_NO_OPENGL)
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
+#endif
 #endif
 
   // Set up the QgsSettings Global Settings:
@@ -1375,10 +1387,24 @@ int main( int argc, char *argv[] )
   QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QStringLiteral( "splash.png" ) );
 
-  int w = 600 * qApp->desktop()->logicalDpiX() / 96;
-  int h = 300 * qApp->desktop()->logicalDpiY() / 96;
+  double screenDpi = 96;
+  if ( QScreen *screen = QGuiApplication::primaryScreen() )
+  {
+    screenDpi = screen->physicalDotsPerInch();
+  }
+
+  int w = 600 * screenDpi / 96;
+  int h = 300 * screenDpi / 96;
 
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap.scaled( w, h, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+
+  // Force splash screen to start on primary screen
+  if ( QScreen *screen = QGuiApplication::primaryScreen() )
+  {
+    const QPoint currentDesktopsCenter = screen->availableGeometry().center();
+    mypSplash->move( currentDesktopsCenter - mypSplash->rect().center() );
+  }
+
   if ( !takeScreenShots && !myHideSplash && !settings.value( QStringLiteral( "qgis/hideSplash" ) ).toBool() )
   {
     //for win and linux we can just automask and png transparency areas will be used
@@ -1445,7 +1471,8 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      QgsAppLayerHandling::openLayer( layerName );
+      bool ok = false;
+      QgsAppLayerHandling::openLayer( layerName, ok );
     }
   }
 

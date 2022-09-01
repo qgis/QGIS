@@ -178,6 +178,17 @@ QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::St
   return 0;
 }
 
+QSet<QString> QgsStringStatisticalSummary::distinctValues() const
+{
+  QSet< QString > res;
+  res.reserve( mValues.size() );
+  for ( auto it = mValues.begin(); it != mValues.end(); ++it )
+  {
+    res.insert( it.key() );
+  }
+  return res;
+}
+
 QString QgsStringStatisticalSummary::displayName( QgsStringStatisticalSummary::Statistic statistic )
 {
   switch ( statistic )

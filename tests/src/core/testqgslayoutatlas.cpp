@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapoverview.h"
@@ -34,12 +33,12 @@
 #include "qgstest.h"
 #include "qgsfillsymbol.h"
 
-class TestQgsLayoutAtlas : public QObject
+class TestQgsLayoutAtlas : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutAtlas() = default;
+    TestQgsLayoutAtlas() : QgsTest( QStringLiteral( "Layout Atlas Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -79,7 +78,6 @@ class TestQgsLayoutAtlas : public QObject
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsVectorLayer *mVectorLayer2 = nullptr;
     QgsLayoutAtlas *mAtlas = nullptr;
-    QString mReport;
 };
 
 void TestQgsLayoutAtlas::initTestCase()
@@ -99,8 +97,6 @@ void TestQgsLayoutAtlas::initTestCase()
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   mVectorLayer->setSimplifyMethod( simplifyMethod );
-
-  mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
 
 void TestQgsLayoutAtlas::cleanupTestCase()
@@ -108,15 +104,6 @@ void TestQgsLayoutAtlas::cleanupTestCase()
   delete mLayout;
   delete mVectorLayer;
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
 }
 
 void TestQgsLayoutAtlas::init()

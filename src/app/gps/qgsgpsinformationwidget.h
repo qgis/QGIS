@@ -27,6 +27,7 @@
 #include "qgspanelwidget.h"
 #include "qgsmapcanvasinteractionblocker.h"
 #include "qgsdistancearea.h"
+#include "qgssettingsentryimpl.h"
 
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
@@ -57,6 +58,9 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 {
     Q_OBJECT
   public:
+
+    static const inline QgsSettingsEntryString settingLastLogFolder = QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
+
     QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
 
@@ -94,7 +98,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void mBtnCloseFeature_clicked();
     void mBtnResetFeature_clicked();
 // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
-    void mBtnLogFile_clicked();
 
     void connected( QgsGpsConnection * );
     void timedout();

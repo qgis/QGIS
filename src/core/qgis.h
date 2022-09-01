@@ -1450,6 +1450,14 @@ class CORE_EXPORT Qgis
       HalfArc, //!< A line-only half arc (since QGIS 3.20)
       ThirdArc, //!< A line-only one third arc (since QGIS 3.20)
       QuarterArc, //!< A line-only one quarter arc (since QGIS 3.20)
+      ParallelogramRight, //!< Parallelogram that slants right (since QGIS 3.28)
+      ParallelogramLeft, //!< Parallelogram that slants left (since QGIS 3.28)
+      Trapezoid, //!< Trapezoid (since QGIS 3.28)
+      Shield, //!< A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)
+      DiamondStar, //!< A 4-sided star (since QGIS 3.28)
+      Heart, //!< Heart (since QGIS 3.28)
+      Decagon, //!< Decagon (since QGIS 3.28)
+      RoundedSquare, //!< A square with rounded corners (since QGIS 3.28)
     };
     Q_ENUM( MarkerShape )
 
@@ -2496,36 +2504,15 @@ namespace qgis
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return list.toSet();
-#else
     return QSet<T>( list.begin(), list.end() );
-#endif
   }
 
   template<class T>
   QList<T> setToList( const QSet<T> &set )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return set.toList();
-#else
     return QList<T>( set.begin(), set.end() );
-#endif
   }
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-namespace std
-{
-  template<> struct hash<QString>
-  {
-    std::size_t operator()( const QString &s ) const noexcept
-    {
-      return ( size_t ) qHash( s );
-    }
-  };
-}
-#endif
 
 ///@endcond
 #endif

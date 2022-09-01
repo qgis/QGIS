@@ -1149,6 +1149,40 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Nicolas Godet",
+        "Committer": "No",
+        "First Commit Message": "Fix QgsCellStatisticsAlgorithm::name() should not return a translatable string",
+        "First Commit Date": "03-03-2021",
+        "GIT Nickname": "nicogodet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.660340,
+          43.387951
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Arnaud Morvan",
+        "Committer": "No",
+        "First Commit Message": "Apply default selection color alpha channel to mapsettings on newfile.",
+        "First Commit Date": "03-10-2014",
+        "GIT Nickname": "arnaud-morvan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+           5.92159791264892554,
+           45.56177551668844927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Tomas Johansson",
         "Committer": "No",
         "First Commit Message": "Bugfixed 'Delete holes' (removeInteriorRings) when the area argument is used. Github issue #49578",

@@ -105,7 +105,6 @@ void TestQgsProjUtils::gridsUsed()
   // ensure local user-writable path is present in Proj search paths
   QList< QgsDatumTransform::GridDetails > grids = QgsProjUtils::gridsUsed( QStringLiteral( "+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +inv +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1" ) );
   QCOMPARE( grids.count(), 1 );
-#if PROJ_VERSION_MAJOR>=7
   QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "GDA94_GDA2020_conformal_and_distortion.gsb" ) );
   QVERIFY( grids.at( 0 ).directDownload );
   QVERIFY( !grids.at( 0 ).url.isEmpty() );
@@ -115,11 +114,6 @@ void TestQgsProjUtils::gridsUsed()
   QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "au_icsm_GDA94_GDA2020_conformal_and_distortion.tif" ) );
   QVERIFY( grids.at( 0 ).directDownload );
   QVERIFY( !grids.at( 0 ).url.isEmpty() );
-#else
-  QCOMPARE( grids.at( 0 ).shortName, QStringLiteral( "GDA94_GDA2020_conformal_and_distortion.gsb" ) );
-  QCOMPARE( grids.at( 0 ).packageName, QStringLiteral( "proj-datumgrid-oceania" ) );
-  QVERIFY( grids.at( 0 ).directDownload );
-#endif
 }
 
 QGSTEST_MAIN( TestQgsProjUtils )

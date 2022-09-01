@@ -127,6 +127,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
     if ( mapCanvas )
     {
+      map->setMapRotation( mapCanvas->rotation() );
       map->zoomToExtent( mapCanvas->mapSettings().visibleExtent() );
     }
 

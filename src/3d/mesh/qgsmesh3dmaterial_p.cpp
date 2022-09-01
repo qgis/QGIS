@@ -26,7 +26,12 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
+#else
+#include <Qt3DCore/QBuffer>
+#endif
+
 #include <QByteArray>
 
 #include "qgsmeshlayer.h"
@@ -95,29 +100,12 @@ class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
     const bool mFixedSize;
     const double mMaxVectorLength;
 
+    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
+    Q_NOWARN_DEPRECATED_PUSH
     QT3D_FUNCTOR( ArrowsTextureGenerator )
+    Q_NOWARN_DEPRECATED_POP
 };
 
-
-class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
-{
-  public:
-    ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength ):
-      mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
-    {}
-
-  protected:
-    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
-    {
-      return Qt3DRender::QTextureImageDataGeneratorPtr( new ArrowsTextureGenerator( mVectors, mSize, mFixedSize, mMaxVectorLength ) );
-    }
-
-  private:
-    const QVector<QgsVector> mVectors;
-    const QSize mSize;
-    const bool mFixedSize;
-    const double mMaxVectorLength;
-};
 
 
 QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
@@ -279,4 +267,16 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeR
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowTexture", arrowTexture ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsGridTexture", arrowsGridTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsMinCorner", QVector2D( minCorner.x() - mOrigin.x(), -minCorner.y() + mOrigin.y() ) ) ) ;
+}
+
+ArrowsGridTexture::ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength )
+  : mVectors( vectors )
+  , mSize( size )
+  , mFixedSize( fixedSize )
+  , mMaxVectorLength( maxVectorLength )
+{}
+
+Qt3DRender::QTextureImageDataGeneratorPtr ArrowsGridTexture::dataGenerator() const
+{
+  return Qt3DRender::QTextureImageDataGeneratorPtr( new ArrowsTextureGenerator( mVectors, mSize, mFixedSize, mMaxVectorLength ) );
 }

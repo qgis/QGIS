@@ -394,7 +394,7 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
     for ( const QString &v : list )
       res.append( linkSourcesForParameterValue( model, v, childId, context ) );
   }
-  else if ( value.canConvert< QgsProcessingModelChildParameterSource >() )
+  else if ( value.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
   {
     const QgsProcessingModelChildParameterSource source = value.value< QgsProcessingModelChildParameterSource >();
     switch ( source.source() )

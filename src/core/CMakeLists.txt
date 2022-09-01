@@ -260,6 +260,7 @@ set(QGIS_CORE_SRCS
   providers/qgsdataprovider.cpp
   providers/qgsprovidermetadata.cpp
   providers/qgsproviderregistry.cpp
+  providers/qgsprovidersqlquerybuilder.cpp
   providers/qgsprovidersublayerdetails.cpp
   providers/qgsprovidersublayermodel.cpp
   providers/qgsprovidersublayertask.cpp
@@ -758,6 +759,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrenderer.cpp
   pointcloud/qgspointcloudrendererregistry.cpp
   pointcloud/qgspointcloudrgbrenderer.cpp
+  pointcloud/qgspointcloudlayerexporter.cpp
 
   pointcloud/expression/qgspointcloudexpression.cpp
   pointcloud/expression/qgspointcloudexpressionnode.cpp
@@ -795,7 +797,6 @@ set(QGIS_CORE_SRCS
   geometry/qgsgeometrycollection.cpp
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
-  geometry/qgsgeometrymakevalid.cpp
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
@@ -1567,6 +1568,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
+  pointcloud/qgspointcloudlayerexporter.h
 
   pointcloud/expression/qgspointcloudexpression.h
   pointcloud/expression/qgspointcloudexpressionnode.h
@@ -1673,6 +1675,7 @@ set(QGIS_CORE_HDRS
   providers/qgsdataprovider.h
   providers/qgsprovidermetadata.h
   providers/qgsproviderregistry.h
+  providers/qgsprovidersqlquerybuilder.h
   providers/qgsprovidersublayerdetails.h
   providers/qgsprovidersublayermodel.h
   providers/qgsprovidersublayertask.h

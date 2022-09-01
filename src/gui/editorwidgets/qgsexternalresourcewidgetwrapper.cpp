@@ -236,7 +236,7 @@ void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, cons
 {
   if ( mLineEdit )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
     {
       mLineEdit->setText( QgsApplication::nullRepresentation() );
     }
@@ -257,7 +257,7 @@ void QgsExternalResourceWidgetWrapper::updateValues( const QVariant &value, cons
 
   if ( mQgsWidget )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
     {
       mQgsWidget->setDocumentPath( QgsApplication::nullRepresentation() );
     }

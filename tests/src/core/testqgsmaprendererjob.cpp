@@ -59,12 +59,12 @@
  * It will do some performance testing too
  *
  */
-class TestQgsMapRendererJob : public QObject
+class TestQgsMapRendererJob : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsMapRendererJob() = default;
+    TestQgsMapRendererJob() : QgsTest( QStringLiteral( "Map Renderer Job Tests" ) ) {}
 
     ~TestQgsMapRendererJob() override
     {
@@ -74,8 +74,6 @@ class TestQgsMapRendererJob : public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     //! This method tests render performance
     void performanceTest();
@@ -109,7 +107,6 @@ class TestQgsMapRendererJob : public QObject
     QgsFields mFields;
     QgsMapSettings *mMapSettings = nullptr;
     QgsMapLayer *mpPolysLayer = nullptr;
-    QString mReport;
 };
 
 
@@ -208,22 +205,11 @@ void TestQgsMapRendererJob::initTestCase()
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );
 }
 
 void TestQgsMapRendererJob::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsMapRendererJob::performanceTest()
@@ -1091,7 +1077,6 @@ void TestQgsMapRendererJob::customNullPainterJob()
 
 bool TestQgsMapRendererJob::imageCheck( const QString &testName, const QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

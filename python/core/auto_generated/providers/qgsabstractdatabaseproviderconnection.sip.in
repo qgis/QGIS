@@ -797,6 +797,15 @@ forms the left (or "parent" / "referenced") side of the relationship are retriev
 .. versionadded:: 3.28
 %End
 
+    virtual QgsProviderSqlQueryBuilder *queryBuilder() const /Factory/;
+%Docstring
+Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
+
+The caller takes ownership of the returned object.
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
 

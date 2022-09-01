@@ -27,6 +27,7 @@
 class QgsFeedback;
 class QgsFieldDomain;
 class QgsWeakRelation;
+class QgsProviderSqlQueryBuilder;
 
 
 /**
@@ -903,6 +904,15 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.28
      */
     virtual QList< QgsWeakRelation > relationships( const QString &schema = QString(), const QString &tableName = QString() ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
+     *
+     * The caller takes ownership of the returned object.
+     *
+     * \since QGIS 3.28
+     */
+    virtual QgsProviderSqlQueryBuilder *queryBuilder() const SIP_FACTORY;
 
   protected:
 

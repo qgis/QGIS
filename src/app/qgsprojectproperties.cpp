@@ -20,7 +20,6 @@
 
 //qgis includes
 #include "qgsapplication.h"
-#include "qgsdistancearea.h"
 #include "qgisapp.h"
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
@@ -34,18 +33,13 @@
 #include "qgsprojectstylesettings.h"
 #include "qgsnative.h"
 #include "qgsprojectlayergroupdialog.h"
-#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsscaleutils.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
 #include "qgscolorramp.h"
-#include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgsdoublevalidator.h"
@@ -53,23 +47,19 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
-#include "qgsmapoverviewcanvas.h"
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgsunittypes.h"
-#include "qgstablewidgetitem.h"
 #include "qgstreewidgetitem.h"
 #include "qgslayertree.h"
 #include "qgsprintlayout.h"
 #include "qgsmetadatawidget.h"
-#include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprojectservervalidator.h"
 #include "qgsprojectstorage.h"
-#include "qgsprojectstorageregistry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
@@ -88,6 +78,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
+#include <QRegularExpression>
 #include <QRegularExpressionValidator>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
@@ -110,11 +101,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  // not supported on Qt < 5.13
-  mGroupBoxStyleDatabases->hide();
-#endif
 
   connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
@@ -1404,7 +1390,7 @@ void QgsProjectProperties::apply()
   QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
   if ( !keywordStringList.isEmpty() )
   {
-    keywordStringList.replaceInStrings( QRegExp( "^\\s+" ), QString() ).replaceInStrings( QRegExp( "\\s+$" ), QString() );
+    keywordStringList.replaceInStrings( QRegularExpression( QStringLiteral( "^\\s+" ) ), QString() ).replaceInStrings( QRegularExpression( "\\s+$" ), QString() );
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), keywordStringList );
   }
   else
@@ -2597,12 +2583,12 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegExp regExp( "1:0*[1-9]\\d*" );
-  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  const thread_local QRegularExpression sRegExp( "^1:0*[1-9]\\d*$" );
+  if ( sRegExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator
-    regExp.setPattern( QStringLiteral( "1:0*" ) );
-    changedScaleItem->setText( changedScaleItem->text().replace( regExp, QStringLiteral( "1:" ) ) );
+    const thread_local QRegularExpression sNoLeadingZeroRegExp( "1:0*" );
+    changedScaleItem->setText( changedScaleItem->text().replace( sNoLeadingZeroRegExp, QStringLiteral( "1:" ) ) );
   }
   else
   {

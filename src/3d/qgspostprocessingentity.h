@@ -16,11 +16,7 @@
 #ifndef QGSPOSTPROCESSINGENTITY_H
 #define QGSPOSTPROCESSINGENTITY_H
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QCamera>
+#include "qgsrenderpassquad.h"
 
 class QgsShadowRenderingFrameGraph;
 
@@ -30,14 +26,14 @@ class QgsShadowRenderingFrameGraph;
  * \ingroup 3d
  * \brief An entity that is responsible for applying post processing effect.
  *
- * Now it is used to make shadows.
- *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.16
  */
-class QgsPostprocessingEntity : public Qt3DCore::QEntity
+class QgsPostprocessingEntity : public QgsRenderPassQuad
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsPostprocessingEntity( QgsShadowRenderingFrameGraph *frameGraph, QNode *parent = nullptr );
@@ -55,13 +51,21 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     void setEyeDomeLightingStrength( double strength );
     //! Sets the eye dome lighting distance (contributes to the contrast of the image)
     void setEyeDomeLightingDistance( int distance );
+
+    /**
+     * Sets whether screen space ambient occlusion is enabled
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionEnabled( bool enabled );
+
   private:
-    Qt3DRender::QMaterial *mMaterial = nullptr;
-    Qt3DRender::QEffect *mEffect = nullptr;
+    QgsShadowRenderingFrameGraph *mFrameGraph = nullptr;
+    Qt3DRender::QCamera *mMainCamera = nullptr;
+
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
     Qt3DRender::QParameter *mShadowMapParameter = nullptr;
-    Qt3DRender::QCamera *mMainCamera = nullptr;
+    Qt3DRender::QParameter *mAmbientOcclusionTextureParameter = nullptr;
     Qt3DRender::QParameter *mFarPlaneParameter = nullptr;
     Qt3DRender::QParameter *mNearPlaneParameter = nullptr;
     Qt3DRender::QParameter *mMainCameraInvViewMatrixParameter = nullptr;
@@ -84,6 +88,8 @@ class QgsPostprocessingEntity : public Qt3DCore::QEntity
     Qt3DRender::QParameter *mEyeDomeLightingEnabledParameter = nullptr;
     Qt3DRender::QParameter *mEyeDomeLightingStrengthParameter = nullptr;
     Qt3DRender::QParameter *mEyeDomeLightingDistanceParameter = nullptr;
+
+    Qt3DRender::QParameter *mAmbientOcclusionEnabledParameter = nullptr;
 };
 
 #endif // QGSPOSTPROCESSINGENTITY_H

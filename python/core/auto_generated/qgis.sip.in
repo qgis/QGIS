@@ -886,6 +886,14 @@ The development version
       HalfArc,
       ThirdArc,
       QuarterArc,
+      ParallelogramRight,
+      ParallelogramLeft,
+      Trapezoid,
+      Shield,
+      DiamondStar,
+      Heart,
+      Decagon,
+      RoundedSquare,
     };
 
     enum class MarkerLinePlacement

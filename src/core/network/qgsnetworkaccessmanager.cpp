@@ -35,11 +35,7 @@
 #include <QTimer>
 #include <QBuffer>
 #include <QNetworkReply>
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-#include <QMutex>
-#else
 #include <QRecursiveMutex>
-#endif
 #include <QThreadStorage>
 #include <QAuthenticator>
 #include <QStandardPaths>
@@ -133,9 +129,6 @@ class QgsNetworkCookieJar : public QNetworkCookieJar
     QgsNetworkCookieJar( QgsNetworkAccessManager *parent )
       : QNetworkCookieJar( parent )
       , mNam( parent )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      , mMutex( QMutex::Recursive )
-#endif
     {}
 
     bool deleteCookie( const QNetworkCookie &cookie ) override
@@ -187,11 +180,7 @@ class QgsNetworkCookieJar : public QNetworkCookieJar
     }
 
     QgsNetworkAccessManager *mNam = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
 };
 ///@endcond
 

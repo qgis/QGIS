@@ -479,6 +479,7 @@
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip
 %Include auto_generated/pointcloud/qgspointcloudrgbrenderer.sip
+%Include auto_generated/pointcloud/qgspointcloudlayerexporter.sip
 %Include auto_generated/pointcloud/qgspointcloudstatistics.sip
 %Include auto_generated/proj/qgscelestialbody.sip
 %Include auto_generated/proj/qgscoordinatereferencesystem.sip
@@ -567,6 +568,7 @@
 %Include auto_generated/providers/qgsdataprovider.sip
 %Include auto_generated/providers/qgsprovidermetadata.sip
 %Include auto_generated/providers/qgsproviderregistry.sip
+%Include auto_generated/providers/qgsprovidersqlquerybuilder.sip
 %Include auto_generated/providers/qgsprovidersublayerdetails.sip
 %Include auto_generated/providers/qgsprovidersublayermodel.sip
 %Include auto_generated/providers/qgsprovidersublayertask.sip
@@ -635,9 +637,7 @@
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
 %Include auto_generated/symbology/qgscategorizedsymbolrenderer.sip
 %Include auto_generated/symbology/qgscolorbrewerpalette.sip
-%If ( CONCATENATED_TABLES_MODEL )
 %Include auto_generated/symbology/qgscombinedstylemodel.sip
-%End
 %Include auto_generated/symbology/qgscptcityarchive.sip
 %Include auto_generated/symbology/qgsellipsesymbollayer.sip
 %Include auto_generated/symbology/qgsembeddedsymbolrenderer.sip

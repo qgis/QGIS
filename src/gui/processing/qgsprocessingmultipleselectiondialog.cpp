@@ -41,7 +41,7 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
   : QgsPanelWidget( parent )
   , mValueFormatter( []( const QVariant & v )->QString
 {
-  if ( v.canConvert< QgsProcessingModelChildParameterSource >() )
+  if ( v.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
     return v.value< QgsProcessingModelChildParameterSource >().staticValue().toString();
   else
     return v.toString();
@@ -105,7 +105,7 @@ QVariantList QgsProcessingMultipleSelectionPanelWidget::selectedOptions() const
     {
       const QVariant option = item->data( Qt::UserRole );
 
-      if ( option.canConvert< QgsProcessingModelChildParameterSource >() )
+      if ( option.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
         hasModelSources = true;
 
       options << option;
@@ -119,7 +119,7 @@ QVariantList QgsProcessingMultipleSelectionPanelWidget::selectedOptions() const
     options.clear();
     for ( const QVariant &option : originalOptions )
     {
-      if ( option.canConvert< QgsProcessingModelChildParameterSource >() )
+      if ( option.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) )
         options << option;
       else
         options << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( option ) );
@@ -203,8 +203,8 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
     if ( mModel->item( i )->data( Qt::UserRole ) == value ||
-         ( mModel->item( i )->data( Qt::UserRole ).canConvert< QgsProcessingModelChildParameterSource >() &&
-           value.canConvert< QgsProcessingModelChildParameterSource >() &&
+         ( mModel->item( i )->data( Qt::UserRole ).userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) &&
+           value.userType() == QMetaType::type( "QgsProcessingModelChildParameterSource" ) &&
            mModel->item( i )->data( Qt::UserRole ).value< QgsProcessingModelChildParameterSource >() ==
            value.value< QgsProcessingModelChildParameterSource >() )
        )

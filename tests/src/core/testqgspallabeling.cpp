@@ -26,49 +26,25 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsrenderchecker.h"
 
-class TestQgsPalLabeling: public QObject
+class TestQgsPalLabeling: public QgsTest
 {
     Q_OBJECT
 
+  public:
+
+    TestQgsPalLabeling() : QgsTest( QStringLiteral( "PAL labeling Tests" ) ) {}
+
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void wrapChar();//test wrapping text lines
     void graphemes(); //test splitting strings to graphemes
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
     void testGeometryGenerator();
-
-  private:
-    QString mReport;
 };
-
-void TestQgsPalLabeling::initTestCase()
-{
-}
 
 void TestQgsPalLabeling::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-}
-
-void TestQgsPalLabeling::init()
-{
-
-}
-
-void TestQgsPalLabeling::cleanup()
-{
-
 }
 
 void TestQgsPalLabeling::wrapChar()
@@ -207,7 +183,6 @@ bool TestQgsPalLabeling::imageCheck( const QString &testName, QImage &image, int
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

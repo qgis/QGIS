@@ -341,6 +341,8 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
       mRubberBand->hide();
     if ( mToleranceRubberBand )
       mToleranceRubberBand->hide();
+    if ( mMapPointRubberBand )
+      mMapPointRubberBand->hide();
   } );
   connect( mCaptureCurveMapTool.get(), &QgsMapToolProfileCurve::captureCanceled, this, [ = ]
   {
@@ -348,6 +350,8 @@ void QgsElevationProfileWidget::setMainCanvas( QgsMapCanvas *canvas )
       mRubberBand->show();
     if ( mToleranceRubberBand )
       mToleranceRubberBand->show();
+    if ( mMapPointRubberBand )
+      mMapPointRubberBand->show();
   } );
 
   mCaptureCurveFromFeatureMapTool = std::make_unique< QgsMapToolProfileCurveFromFeature >( canvas );

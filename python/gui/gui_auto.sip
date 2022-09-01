@@ -196,6 +196,7 @@
 %Include auto_generated/qgsscalerangewidget.sip
 %Include auto_generated/qgsscalevisibilitydialog.sip
 %Include auto_generated/qgsscalewidget.sip
+%Include auto_generated/qgsscreenhelper.sip
 %Include auto_generated/qgsscrollarea.sip
 %Include auto_generated/qgssearchquerybuilder.sip
 %Include auto_generated/qgssubsetstringeditorinterface.sip

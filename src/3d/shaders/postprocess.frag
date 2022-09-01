@@ -4,6 +4,7 @@ uniform sampler2D colorTexture;
 uniform sampler2D depthTexture;
 //uniform sampler2DShadow shadowTexture;
 uniform sampler2D shadowTexture;
+uniform sampler2D ssaoTexture;
 
 // light camera uniforms
 uniform mat4 viewMatrix;
@@ -31,6 +32,8 @@ uniform float shadowBias;
 uniform int edlEnabled;
 uniform float edlStrength;
 uniform int edlDistance;
+
+uniform int ssaoEnabled;
 
 in vec2 texCoord;
 
@@ -130,5 +133,9 @@ void main()
   {
     float shade = exp(-edlFactor(texCoord) * edlStrength);
     fragColor = vec4(fragColor.rgb * shade, fragColor.a);
+  }
+  if ( ssaoEnabled != 0 )
+  {
+    fragColor = vec4( fragColor.rgb * texture( ssaoTexture, texCoord ).r, fragColor.a );
   }
 }

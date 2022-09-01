@@ -57,6 +57,8 @@ namespace Qt3DCore
  */
 class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 {
+    Q_OBJECT
+
   public:
     //! Constructs the factory
     QgsVectorLayerChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsAbstract3DSymbol *symbol, int leafLevel, double zMin, double zMax );
@@ -81,6 +83,8 @@ class QgsVectorLayerChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
  */
 class QgsVectorLayerChunkLoader : public QgsChunkLoader
 {
+    Q_OBJECT
+
   public:
     //! Constructs the loader
     QgsVectorLayerChunkLoader( const QgsVectorLayerChunkLoaderFactory *factory, QgsChunkNode *node );

@@ -624,7 +624,7 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
             if ( field.name() == info.joinFieldName() )
               continue;
 
-            if ( !joinFeature.attribute( field.name() ).isNull() )
+            if ( !QgsVariantUtils::isNull( joinFeature.attribute( field.name() ) ) )
             {
               notNullFields = true;
               break;

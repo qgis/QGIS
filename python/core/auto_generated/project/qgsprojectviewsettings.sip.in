@@ -157,6 +157,42 @@ while working with this project.
 .. seealso:: :py:func:`mapScales`
 %End
 
+    double defaultRotation() const;
+%Docstring
+Returns the default map rotation (in clockwise degrees) for maps in the project.
+
+.. warning::
+
+   When a project is opened in the QGIS desktop application and saved, individual
+   map canvases will store their own previous map rotations as custom project properties. Reloading
+   this saved version of the project will trigger the canvases to restore their individual rotations.
+   Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+   view used when the project is opened for the very first time (or when new map canvases are opened in
+   that project.)
+
+.. seealso:: :py:func:`setDefaultRotation`
+
+.. versionadded:: 3.28
+%End
+
+    void setDefaultRotation( double rotation );
+%Docstring
+Set the default ``rotation`` of maps in the project, in clockwise degrees.
+
+.. warning::
+
+   When a project is opened in the QGIS desktop application and saved, individual
+   map canvases will store their own previous map rotations as custom project properties. Reloading
+   this saved version of the project will trigger the canvases to restore their individual rotations.
+   Accordingly, in the QGIS desktop application, this setting only forms a default, initial
+   view used when the project is opened for the very first time (or when new map canvases are opened in
+   that project.)
+
+.. seealso:: :py:func:`defaultRotation`
+
+.. versionadded:: 3.28
+%End
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the settings's state from a DOM element.

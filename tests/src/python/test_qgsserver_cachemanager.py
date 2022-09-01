@@ -26,7 +26,7 @@ from utilities import unitTestDataPath
 from qgis.server import QgsServer, QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, \
     QgsBufferServerResponse
 from qgis.core import QgsApplication, QgsFontUtils, QgsProject
-from qgis.PyQt.QtCore import QIODevice, QFile, QByteArray, QBuffer
+from qgis.PyQt.QtCore import QIODevice, QFile, QByteArray, QBuffer, QSize
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -334,13 +334,13 @@ class TestQgsServerCacheManager(QgsServerTestBase):
         self.assertEqual(
             h.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic", max_size_diff=QSize(1, 1))
         # with cache
         r, h = self._result(self._execute_request(qs))
         self.assertEqual(
             h.get("Content-Type"), "image/png",
             "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic")
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_Basic", max_size_diff=QSize(1, 1))
 
         filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
         self.assertEqual(len(filelist), 1, 'Not enough image in cache')

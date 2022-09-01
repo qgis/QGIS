@@ -637,10 +637,9 @@ void QgsConfigureShortcutsDialog::saveShortcutsPdf()
 
   QPrinter printer( QPrinter::ScreenResolution );
   printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setPaperSize( QPrinter::A4 );
-  printer.setPageOrientation( QPageLayout::Portrait );
-  printer.setPageMargins( QMarginsF( 20, 10, 10, 10 ), QPageLayout::Millimeter );
+  printer.setPageLayout( QPageLayout( QPageSize( QPageSize::A4 ), QPageLayout::Portrait, QMarginsF( 20, 10, 10, 10 ) ) );
   printer.setOutputFileName( fileName );
-  document->setPageSize( QSizeF( printer.pageRect().size() ) );
+  document->setPageSize( QSizeF( printer.pageRect( QPrinter::DevicePixel ).size() ) );
+
   document->print( &printer );
 }

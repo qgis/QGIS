@@ -281,6 +281,9 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
      */
     QgsProviderSublayerModelGroup( const QString &title );
 
+    QgsProviderSublayerModelGroup( QgsProviderSublayerModelGroup &&other ) = default;
+    QgsProviderSublayerModelGroup &operator=( QgsProviderSublayerModelGroup && ) = default;
+
     /**
      * Returns the group's name
      */

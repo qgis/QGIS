@@ -890,17 +890,17 @@ QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameter
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.canConvert<QgsProcessingFeatureSourceDefinition>() )
+    if ( var.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
     {
       QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
       var = fromVar.source;
     }
-    else if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+    else if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
       var = fromVar.sink;
     }
-    if ( var.canConvert<QgsProperty>() )
+    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == QgsProperty::StaticProperty )
@@ -922,7 +922,7 @@ QString QgsProcessingAlgorithm::invalidRasterError( const QVariantMap &parameter
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.canConvert<QgsProperty>() )
+    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == QgsProperty::StaticProperty )
@@ -944,12 +944,12 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
   else
   {
     QVariant var = parameters.value( name );
-    if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+    if ( var.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
       var = fromVar.sink;
     }
-    if ( var.canConvert<QgsProperty>() )
+    if ( var.userType() == QMetaType::type( "QgsProperty" ) )
     {
       QgsProperty p = var.value< QgsProperty >();
       if ( p.propertyType() == QgsProperty::StaticProperty )

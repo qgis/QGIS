@@ -30,7 +30,8 @@ void QgsTableView::wheelEvent( QWheelEvent *event )
     // a wheel event with the shift modifier switches a vertical scroll to a horizontal scroll (or vice versa)
     const QPoint invertedPixelDelta = QPoint( event->pixelDelta().y(), event->pixelDelta().x() );
     const QPoint invertedAngleDelta = QPoint( event->angleDelta().y(), event->angleDelta().x() );
-    QWheelEvent axisSwappedScrollEvent( event->posF(), event->globalPosF(),
+
+    QWheelEvent axisSwappedScrollEvent( event->position(), event->position(),
                                         invertedPixelDelta, invertedAngleDelta,
                                         event->buttons(), event->modifiers() & ~Qt::ShiftModifier, event->phase(),
                                         event->inverted(), event->source() );

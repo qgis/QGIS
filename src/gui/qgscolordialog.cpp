@@ -15,12 +15,9 @@
  ***************************************************************************/
 
 #include "qgscolordialog.h"
-#include "qgscolorscheme.h"
-#include "qgscolorschemeregistry.h"
-#include "qgssymbollayerutils.h"
-#include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QPushButton>
 #include <QMenu>

@@ -516,7 +516,8 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
   if ( !context.zRange().isInfinite() && !context.zRange().overlaps( adjustedNodeZRange ) )
     return nodes;
 
-  nodes.append( n );
+  if ( pc->nodePointCount( n ) > 0 )
+    nodes.append( n );
 
   double childrenErrorPixels = nodeErrorPixels / 2.0;
   if ( childrenErrorPixels < maxErrorPixels )

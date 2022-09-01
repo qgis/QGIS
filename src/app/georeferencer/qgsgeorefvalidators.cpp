@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include <QStringList>
+#include <QRegularExpression>
 
 #include "qgsgeorefvalidators.h"
 
@@ -26,8 +27,8 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 {
   Q_UNUSED( pos )
 
-  QRegExp rx( "-?\\d*" );
-  if ( rx.exactMatch( input ) )
+  const thread_local QRegularExpression rx( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d*" ) ) );
+  if ( rx.match( input ).hasMatch() )
   {
     return Acceptable;
   }
@@ -45,19 +46,19 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
 
   if ( !input.contains( ' ' ) )
   {
-    rx.setPattern( QStringLiteral( "-?\\d*(\\.|,)(\\d+)?" ) );
-    if ( rx.exactMatch( input ) )
+    const thread_local QRegularExpression rx2( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d*(\\.|,)(\\d+)?" ) ) );
+    if ( rx2.match( input ).hasMatch() )
       return Acceptable;
   }
   else
   {
-    rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" ) );
-    if ( rx.exactMatch( input ) )
+    const thread_local QRegularExpression rx3( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d{1,3}\\s(\\d{1,2}(\\s(\\d{1,2}((\\.|,)(\\d{1,3})?)?)?)?)?" ) ) );
+    if ( rx3.match( input ).hasMatch() )
     {
-      rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s60" ) );
-      if ( rx.exactMatch( input ) )
+      const thread_local QRegularExpression rx4( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d{1,3}\\s60" ) ) );
+      if ( rx4.match( input ).hasMatch() )
       {
-        const int in = input.leftRef( input.indexOf( ' ' ) ).toInt();
+        const int in = input.left( input.indexOf( ' ' ) ).toInt();
         const int grad = input.startsWith( '-' ) ? in - 1 : in + 1;
         if ( grad <= 180 )
           input = QString::number( grad );
@@ -65,8 +66,8 @@ QValidator::State QgsDMSAndDDValidator::validate( QString &input, int &pos ) con
         return Acceptable;
       }
 
-      rx.setPattern( QStringLiteral( "-?\\d{1,3}\\s\\d{1,2}\\s60" ) );
-      if ( rx.exactMatch( input ) )
+      const thread_local QRegularExpression rx5( QRegularExpression::anchoredPattern( QStringLiteral( "-?\\d{1,3}\\s\\d{1,2}\\s60" ) ) );
+      if ( rx5.match( input ).hasMatch() )
       {
         const int min = input.split( ' ' ).at( 1 ).toInt() + 1;
         if ( min <= 60 )

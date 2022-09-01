@@ -28,6 +28,7 @@
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
 #include "qgslogger.h"
+#include "qgsvariantutils.h"
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )
@@ -66,7 +67,7 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
 
     btnGroupByOrg->setChecked( false );
     const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
-    if ( !sortbyval.isNull() )
+    if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
     populateSslConfigsView();

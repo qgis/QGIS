@@ -385,7 +385,7 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
 
   // data defined shadow under type?
   QVariant exprVal = properties.value( QgsPalLayerSettings::ShadowUnder, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString str = exprVal.toString().trimmed();
     if ( !str.isEmpty() )
@@ -406,7 +406,7 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShadowOffsetUnits, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -425,7 +425,7 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
   }
 
   exprVal = properties.value( QgsPalLayerSettings::ShadowRadiusUnits, context.expressionContext() );
-  if ( !exprVal.isNull() )
+  if ( !QgsVariantUtils::isNull( exprVal ) )
   {
     const QString units = exprVal.toString();
     if ( !units.isEmpty() )
@@ -441,7 +441,7 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
     const QVariant val = properties.value( QgsPalLayerSettings::ShadowOpacity, context.expressionContext(), d->opacity * 100 );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }

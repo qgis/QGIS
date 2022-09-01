@@ -86,7 +86,6 @@ set(TESTS
  testqgslayoutcontext.cpp
  testqgslayoutexporter.cpp
  testqgslayoutgeopdfexport.cpp
- testqgslayouthtml.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
  testqgslayoutlabel.cpp
@@ -139,6 +138,7 @@ set(TESTS
  testqgspallabeling.cpp
  testqgspointcloudattribute.cpp
  testqgspointcloudexpression.cpp
+ testqgspointcloudlayerexporter.cpp
  testqgspointcloudrendererregistry.cpp
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
@@ -211,7 +211,9 @@ set(TESTS
 )
 
 if(WITH_QTWEBKIT)
-  set(TESTS ${TESTS})
+  set(TESTS ${TESTS}
+    testqgslayouthtml.cpp
+  )
 endif()
 
 if(HAVE_OPENCL)
