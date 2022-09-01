@@ -1858,6 +1858,24 @@ Emitted whenever the project's selection color has been changed.
 .. versionadded:: 3.10
 %End
 
+    void distanceUnitsChanged();
+%Docstring
+Emitted whenever the project's default distance units has been changed.
+
+.. seealso:: :py:func:`setDistanceUnits`
+
+.. versionadded:: 3.28
+%End
+
+    void areaUnitsChanged();
+%Docstring
+Emitted whenever the project's default area units has been changed.
+
+.. seealso:: :py:func:`setAreaUnits`
+
+.. versionadded:: 3.28
+%End
+
 
     void layersWillBeRemoved( const QStringList &layerIds );
 %Docstring

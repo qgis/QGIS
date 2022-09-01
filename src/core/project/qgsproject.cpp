@@ -3385,7 +3385,12 @@ QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
 
 void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
 {
+  if ( distanceUnits() == unit )
+    return;
+
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QgsUnitTypes::encodeUnit( unit ) );
+
+  emit distanceUnitsChanged();
 }
 
 QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
@@ -3402,7 +3407,12 @@ QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
 
 void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 {
+  if ( areaUnits() == unit )
+    return;
+
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QgsUnitTypes::encodeUnit( unit ) );
+
+  emit areaUnitsChanged();
 }
 
 QString QgsProject::homePath() const

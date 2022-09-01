@@ -118,6 +118,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
     Q_PROPERTY( bool topologicalEditing READ topologicalEditing WRITE setTopologicalEditing NOTIFY topologicalEditingChanged )
+    Q_PROPERTY( QgsUnitTypes::DistanceUnit distanceUnits READ distanceUnits WRITE setDistanceUnits NOTIFY distanceUnitsChanged )
+    Q_PROPERTY( QgsUnitTypes::AreaUnit distanceUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
 
   public:
 
@@ -1850,6 +1852,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10
      */
     void selectionColorChanged();
+
+    /**
+     * Emitted whenever the project's default distance units has been changed.
+
+     * \see setDistanceUnits()
+     * \since QGIS 3.28
+     */
+    void distanceUnitsChanged();
+
+    /**
+     * Emitted whenever the project's default area units has been changed.
+
+     * \see setAreaUnits()
+     * \since QGIS 3.28
+     */
+    void areaUnitsChanged();
 
     //
     // signals from QgsMapLayerRegistry
