@@ -2123,6 +2123,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( RelationshipCardinality )
 
     /**
+     * Formats for displaying coordinates
+     *
+     * \since QGIS 3.28
+     */
+    enum class CoordinateDisplayType : int
+    {
+      Geographic, //!< Geographic
+      MapUnits, //!< Map units
+    };
+    Q_ENUM( CoordinateDisplayType )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

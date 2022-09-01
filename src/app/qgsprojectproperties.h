@@ -206,13 +206,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
       */
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
-    //! Formats for displaying coordinates
-    enum CoordinateFormat
-    {
-      Geographic, //!< Geographic
-      MapUnits, //!< Show coordinates in map units
-    };
-
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;

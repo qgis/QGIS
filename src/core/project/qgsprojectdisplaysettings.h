@@ -17,6 +17,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
+#include "qgsunittypes.h"
+
 #include <QObject>
 #include <QVector>
 #include <memory>
@@ -39,6 +42,8 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     Q_OBJECT
 
   public:
+
+    Q_PROPERTY( Qgis::CoordinateDisplayType coordinateType READ coordinateType WRITE setCoordinateType NOTIFY coordinateTypeChanged )
 
     /**
      * Constructor for QgsProjectDisplaySettings with the specified \a parent object.
@@ -91,6 +96,20 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     const QgsGeographicCoordinateNumericFormat *geographicCoordinateFormat() const;
 
     /**
+     * Returns default coordinate type for the project.
+     * \see setCoordinateType()
+     * \since QGIS 3.28
+     */
+    Qgis::CoordinateDisplayType coordinateType() const { return mCoordinateType; }
+
+    /**
+     * Sets the default coordinate \a type for the project.
+     * \see coordinateType()
+     * \since QGIS 3.28
+     */
+    void setCoordinateType( Qgis::CoordinateDisplayType type );
+
+    /**
      * Reads the settings's state from a DOM element.
      * \see writeXml()
      */
@@ -120,9 +139,20 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void geographicCoordinateFormatChanged();
 
+    /**
+     * Emitted when the default coordinate format changes.
+     *
+     * \see setCoordinateType()
+     * \see coordinateType()
+     * \since QGIS 3.28
+     */
+    void coordinateTypeChanged();
+
   private:
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
     std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
+
+    Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapUnits;
 
 };
 

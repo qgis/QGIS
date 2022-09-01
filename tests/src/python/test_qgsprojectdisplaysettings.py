@@ -17,7 +17,9 @@ from qgis.core import (QgsProjectDisplaySettings,
                        QgsBearingNumericFormat,
                        QgsGeographicCoordinateNumericFormat,
                        QgsSettings,
-                       QgsLocalDefaultSettings)
+                       QgsLocalDefaultSettings,
+                       QgsUnitTypes,
+                       Qgis)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -84,6 +86,14 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 3)
         self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
 
+    def testCoordinateType(self):
+        p = QgsProjectDisplaySettings()
+
+        spy = QSignalSpy(p.coordinateTypeChanged)
+        p.setCoordinateType(Qgis.CoordinateDisplayType.Geographic)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.Geographic)
+
     def testReset(self):
         """
         Test that resetting inherits local default settings
@@ -117,9 +127,11 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
 
         spy = QSignalSpy(p.bearingFormatChanged)
         spy2 = QSignalSpy(p.geographicCoordinateFormatChanged)
+        spy3 = QSignalSpy(p.coordinateTypeChanged)
         p.reset()
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
+        self.assertEqual(len(spy3), 1)
         # project should default to local default format
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
         self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)

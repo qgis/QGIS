@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 
 #include <QDomElement>
 
@@ -40,8 +41,11 @@ void QgsProjectDisplaySettings::reset()
   mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
   mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
 
+  mCoordinateType = Qgis::CoordinateDisplayType::MapUnits;
+
   emit bearingFormatChanged();
   emit geographicCoordinateFormatChanged();
+  emit coordinateTypeChanged();
 }
 
 void QgsProjectDisplaySettings::setBearingFormat( QgsBearingNumericFormat *format )
@@ -66,6 +70,16 @@ const QgsGeographicCoordinateNumericFormat *QgsProjectDisplaySettings::geographi
   return mGeographicCoordinateFormat.get();
 }
 
+void QgsProjectDisplaySettings::setCoordinateType( Qgis::CoordinateDisplayType type )
+{
+  if ( mCoordinateType == type )
+    return;
+
+  mCoordinateType = type;
+
+  emit coordinateTypeChanged();
+}
+
 bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   {
@@ -74,13 +88,15 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
     emit bearingFormatChanged();
   }
 
+  QgsProject *project = qobject_cast< QgsProject * >( parent() );
+
   {
     const QDomElement geographicElement = element.firstChildElement( QStringLiteral( "GeographicCoordinateFormat" ) );
     if ( !geographicElement.isNull() )
     {
       mGeographicCoordinateFormat.reset( static_cast< QgsGeographicCoordinateNumericFormat * >( QgsApplication::numericFormatRegistry()->createFromXml( geographicElement, context ) ) );
     }
-    else if ( QgsProject *project = qobject_cast< QgsProject * >( parent() ) )
+    else if ( project )
     {
       // upgrade old project setting
       bool ok = false;
@@ -108,6 +124,22 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
     emit geographicCoordinateFormatChanged();
   }
 
+  {
+    if ( element.hasAttribute( QStringLiteral( "CoordinateType" ) ) )
+    {
+      mCoordinateType = static_cast<Qgis::CoordinateDisplayType>( element.attribute( QStringLiteral( "CoordinateType" ) ).toInt() );
+    }
+    else if ( project )
+    {
+      const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString() );
+      if ( !format.isEmpty() )
+      {
+        mCoordinateType = format == QStringLiteral( "MU" ) ? Qgis::CoordinateDisplayType::MapUnits : Qgis::CoordinateDisplayType::Geographic;
+      }
+    }
+    emit coordinateTypeChanged();
+  }
+
   return true;
 }
 
@@ -126,6 +158,8 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
     mGeographicCoordinateFormat->writeXml( geographicElement, doc, context );
     element.appendChild( geographicElement );
   }
+
+  element.setAttribute( QStringLiteral( "CoordinateType" ), static_cast<int>( mCoordinateType ) );
 
   return element;
 }

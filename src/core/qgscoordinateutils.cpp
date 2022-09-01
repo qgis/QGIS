@@ -42,9 +42,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
   if ( automatic )
   {
-    const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
-    // only MU or D is used now, but older projects may have DM/DMS
-    const bool formatGeographic = format == QLatin1String( "D" ) || format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" );
+    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::Geographic;
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
@@ -112,11 +110,8 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   if ( !project )
     return QString();
 
-  const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
   const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
-
-  // only MU or D is used now, but older projects may have DM/DMS
-  const bool formatGeographic = format == QLatin1String( "D" ) || format == QLatin1String( "DM" ) || format == QLatin1String( "DMS" );
+  const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::Geographic;
 
   QgsPointXY geo = point;
   if ( formatGeographic )

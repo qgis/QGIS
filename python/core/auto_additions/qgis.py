@@ -1916,3 +1916,9 @@ Qgis.RelationshipCardinality.ManyToMany.__doc__ = "Many to many relationship"
 Qgis.RelationshipCardinality.__doc__ = 'Relationship cardinality.\n\n.. versionadded:: 3.28\n\n' + '* ``OneToOne``: ' + Qgis.RelationshipCardinality.OneToOne.__doc__ + '\n' + '* ``OneToMany``: ' + Qgis.RelationshipCardinality.OneToMany.__doc__ + '\n' + '* ``ManyToOne``: ' + Qgis.RelationshipCardinality.ManyToOne.__doc__ + '\n' + '* ``ManyToMany``: ' + Qgis.RelationshipCardinality.ManyToMany.__doc__
 # --
 Qgis.RelationshipCardinality.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoordinateDisplayType.Geographic.__doc__ = "Geographic"
+Qgis.CoordinateDisplayType.MapUnits.__doc__ = "Map units"
+Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. versionadded:: 3.28\n\n' + '* ``Geographic``: ' + Qgis.CoordinateDisplayType.Geographic.__doc__ + '\n' + '* ``MapUnits``: ' + Qgis.CoordinateDisplayType.MapUnits.__doc__
+# --
+Qgis.CoordinateDisplayType.baseClass = Qgis
