@@ -1080,6 +1080,16 @@ bool QgsAbstractDatabaseProviderConnection::tableExists( const QString &schema, 
   return false;
 }
 
+
+QList<QgsLayerMetadataProviderResult> QgsAbstractDatabaseProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+{
+  Q_UNUSED( feedback );
+  Q_UNUSED( searchContext );
+  Q_UNUSED( searchString );
+  Q_UNUSED( geographicExtent );
+  throw QgsNotSupportedException( QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey(), QStringLiteral( "searchLayerMetadata" ) ) );
+}
+
 void QgsAbstractDatabaseProviderConnection::dropRasterTable( const QString &, const QString & ) const
 {
   checkCapability( Capability::DropRasterTable );

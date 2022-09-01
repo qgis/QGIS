@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
+#include "qgsabstractlayermetadataprovider.h"
 
 #include <QObject>
 
@@ -913,6 +914,28 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \since QGIS 3.28
      */
     virtual QgsProviderSqlQueryBuilder *queryBuilder() const SIP_FACTORY;
+
+    /**
+     * Search the stored layer metadata in the connection,
+     * optionally limiting the search to the metadata identifier, title,
+     * abstract, keywords and categories.
+     * \a searchContext context for the search
+     * \a searchString limit the search to metadata having an extent intersecting \a geographicExtent,
+     * an optional \a feedback can be used to monitor and control the search process.
+     *
+     * The default implementation raises a QgsNotSupportedException, data providers may implement
+     * the search functionality.
+     *
+     * A QgsProviderConnectionException is raised in case of errors happening during the search for
+     * providers that implement the search functionality.
+     *
+     * \returns a (possibly empty) list of QgsLayerMetadataProviderResult, throws a QgsProviderConnectionException
+     * if any error occurred during the search.
+     * \throws QgsProviderConnectionException
+     * \throws QgsNotSupportedException
+     * \since QGIS 3.28
+     */
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException, QgsNotSupportedException );
 
   protected:
 

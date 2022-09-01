@@ -20,6 +20,8 @@ email                : nyall dot dawson at gmail dot com
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgsogrtransaction.h"
+#include "qgsogrlayermetadataprovider.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgsgeopackageprojectstorage.h"
 #include "qgsapplication.h"
 #include "qgsogrconnpool.h"
@@ -32,6 +34,8 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgdalutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <gdal.h>
 #include <QFileInfo>
@@ -1044,6 +1048,7 @@ bool QgsOgrProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLay
   throw QgsNotSupportedException( QObject::tr( "Storing metadata for the specified uri is not supported" ) );
 }
 
+
 QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connString )
 {
   auto ds = QgsOgrProviderUtils::getAlreadyOpenedDataset( connString );
@@ -1058,12 +1063,16 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
 }
 
 QgsGeoPackageProjectStorage *gGeoPackageProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+QgsOgrLayerMetadataProvider *gOgrLayerMetadataProvider = nullptr;   // when not null it is owned by QgsApplication::layerMetadataProviderRegistry()
 
 void QgsOgrProviderMetadata::initProvider()
 {
   Q_ASSERT( !gGeoPackageProjectStorage );
   gGeoPackageProjectStorage = new QgsGeoPackageProjectStorage;
   QgsApplication::projectStorageRegistry()->registerProjectStorage( gGeoPackageProjectStorage );  // takes ownership
+  Q_ASSERT( !gOgrLayerMetadataProvider );
+  gOgrLayerMetadataProvider = new QgsOgrLayerMetadataProvider();
+  QgsApplication::layerMetadataProviderRegistry()->registerLayerMetadataProvider( gOgrLayerMetadataProvider );  // takes ownership
 }
 
 
@@ -1071,6 +1080,8 @@ void QgsOgrProviderMetadata::cleanupProvider()
 {
   QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gGeoPackageProjectStorage );  // destroys the object
   gGeoPackageProjectStorage = nullptr;
+  QgsApplication::layerMetadataProviderRegistry()->unregisterLayerMetadataProvider( gOgrLayerMetadataProvider );
+  gOgrLayerMetadataProvider = nullptr;
   QgsOgrConnPool::cleanupInstance();
   // NOTE: QgsApplication takes care of
   // calling OGRCleanupAll();

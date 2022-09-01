@@ -20,6 +20,7 @@
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsannotationitemregistry.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslogger.h"
@@ -2478,6 +2479,11 @@ QgsConnectionRegistry *QgsApplication::connectionRegistry()
   return members()->mConnectionRegistry;
 }
 
+QgsLayerMetadataProviderRegistry *QgsApplication::layerMetadataProviderRegistry()
+{
+  return members()->mLayerMetadataProviderRegistry;
+}
+
 QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
 {
   return members()->mPageSizeRegistry;
@@ -2515,7 +2521,7 @@ QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
 
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
-  return members()->mProjectStorageRegistry.get();
+  return members()->mProjectStorageRegistry;
 }
 
 QgsExternalStorageRegistry *QgsApplication::externalStorageRegistry()
@@ -2550,6 +2556,16 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   {
     profiler->start( tr( "Create connection registry" ) );
     mConnectionRegistry = new QgsConnectionRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Create project storage registry" ) );
+    mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Create metadata provider registry" ) );
+    mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
     profiler->end();
   }
   {
@@ -2682,7 +2698,12 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   }
   {
     profiler->start( tr( "Setup project storage registry" ) );
-    mProjectStorageRegistry.reset( new QgsProjectStorageRegistry() );
+    mProjectStorageRegistry = new QgsProjectStorageRegistry();
+    profiler->end();
+  }
+  {
+    profiler->start( tr( "Setup layer metadata provider registry" ) );
+    mLayerMetadataProviderRegistry = new QgsLayerMetadataProviderRegistry();
     profiler->end();
   }
   {
@@ -2759,6 +2780,8 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
   delete mConnectionRegistry;
+  delete mProjectStorageRegistry;
+  delete mLayerMetadataProviderRegistry;
   delete mFontManager;
   delete mLocalizedDataPathRegistry;
   delete mCrsRegistry;
