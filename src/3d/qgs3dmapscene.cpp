@@ -263,19 +263,29 @@ void Qgs3DMapScene::setViewFrom2DExtent( const QgsRectangle &extent )
   QgsVector3D p1 = mMap.mapToWorldCoordinates( QVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   QgsVector3D p2 = mMap.mapToWorldCoordinates( QVector3D( extent.xMaximum(), extent.yMaximum(), 0 ) );
 
+  QgsVector3D centerPoint;
+  if ( mTerrain )
+  {
+    centerPoint.set( centerWorld.x(), mTerrain->terrainElevationOffset(), centerWorld.z() );
+  }
+  else
+  {
+    centerPoint.set( centerWorld.x(), 0.0f, centerWorld.z() );
+  }
+
   float xSide = std::abs( p1.x() - p2.x() );
   float ySide = std::abs( p1.z() - p2.z() );
   if ( xSide < ySide )
   {
     float fov = 2 * std::atan( std::tan( qDegreesToRadians( cameraController()->camera()->fieldOfView() ) / 2 ) * cameraController()->camera()->aspectRatio() );
     float r = xSide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
+    mCameraController->setLookingAtPoint( centerPoint, r, mCameraController->pitch(), mCameraController->yaw() );
   }
   else
   {
     float fov = qDegreesToRadians( cameraController()->camera()->fieldOfView() );
     float r = ySide / 2.0f / std::tan( fov / 2.0f );
-    mCameraController->setViewFromTop( centerWorld.x(), centerWorld.z(), r );
+    mCameraController->setLookingAtPoint( centerPoint, r, mCameraController->pitch(), mCameraController->yaw() );
   }
 }
 
