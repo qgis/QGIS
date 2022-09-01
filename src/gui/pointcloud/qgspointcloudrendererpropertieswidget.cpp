@@ -110,7 +110,10 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
   mEdlStrength->setClearValue( 1000 );
-  mEdlDistance->setClearValue( 2 );
+  mEdlDistance->setClearValue( 0.5 );
+
+  mEdlDistanceUnit->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
 
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
@@ -123,7 +126,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   } );
   connect( mEyeDomeLightingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mEdlStrength, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mEdlDistance, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceUnit, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   syncToLayer( layer );
 }
 
@@ -170,6 +174,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mEyeDomeLightingGroupBox->setChecked( mLayer->renderer()->eyeDomeLightingEnabled() );
     mEdlStrength->setValue( mLayer->renderer()->eyeDomeLightingStrength() );
     mEdlDistance->setValue( mLayer->renderer()->eyeDomeLightingDistance() );
+    mEdlDistanceUnit->setUnit( mLayer->renderer()->eyeDomeLightingDistanceUnit() );
     mEdlWarningLabel->setVisible( mLayer->renderer()->drawOrder2d() == Qgis::PointCloudDrawOrder::Default );
   }
 
@@ -208,6 +213,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setEyeDomeLightingEnabled( mEyeDomeLightingGroupBox->isChecked() );
   mLayer->renderer()->setEyeDomeLightingStrength( mEdlStrength->value() );
   mLayer->renderer()->setEyeDomeLightingDistance( mEdlDistance->value() );
+  mLayer->renderer()->setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

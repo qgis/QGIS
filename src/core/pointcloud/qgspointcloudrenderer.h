@@ -618,16 +618,28 @@ class CORE_EXPORT QgsPointCloudRenderer
     void setEyeDomeLightingStrength( double strength ) { mEyeDomeLightingStrength = strength; }
 
     /**
-     * Returns the eye dome lighting distance in pixels
+     * Returns the eye dome lighting distance
      * \since QGIS 3.28
      */
-    int eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
+    double eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
     /**
-     * Sets the eye dome lighting distance in pixels
+     * Sets the eye dome lighting distance
      * \since QGIS 3.28
      */
-    void setEyeDomeLightingDistance( int distance ) { mEyeDomeLightingDistance = distance; }
+    void setEyeDomeLightingDistance( double distance ) { mEyeDomeLightingDistance = distance; }
+
+    /**
+     * Returns unit for the eye dome lighting distance
+     * \since QGIS 3.28
+     */
+    QgsUnitTypes::RenderUnit eyeDomeLightingDistanceUnit() const { return mEyeDomeLightingDistanceUnit; }
+
+    /**
+     * Sets unit for the eye dome lighting distance
+     * \since QGIS 3.28
+     */
+    void setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mEyeDomeLightingDistanceUnit = unit; }
 #endif
 
   protected:
@@ -735,7 +747,8 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;
-    int mEyeDomeLightingDistance = 2;
+    double mEyeDomeLightingDistance = 0.5;
+    QgsUnitTypes::RenderUnit mEyeDomeLightingDistanceUnit = QgsUnitTypes::RenderMillimeters;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H
