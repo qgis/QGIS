@@ -32,6 +32,7 @@ class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsAbstractDataSourceWidget;
+class QgsLayerMetadataSearchWidget;
 class QgsBrowserGuiModel;
 class QgsMessageBar;
 
@@ -171,6 +172,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
     Ui::QgsDataSourceManagerDialog *ui = nullptr;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
+    QgsLayerMetadataSearchWidget *mLayerMetadataSearchWidget = nullptr;
     int mPreviousRow;
     QStringList mPageNames;
     // Map canvas

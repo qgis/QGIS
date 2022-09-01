@@ -528,6 +528,8 @@ set(QGIS_GUI_SRCS
   qgsimagedroptextedit.cpp
   qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
+  qgslayermetadatasearchwidget.cpp
+  qgslayermetadataresultsmodel.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendpatchshapebutton.cpp
@@ -789,6 +791,8 @@ set(QGIS_GUI_HDRS
   qgsimagedroptextedit.h
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
+  qgslayermetadatasearchwidget.h
+  qgslayermetadataresultsmodel.h
   qgslegendfilterbutton.h
   qgslegendpatchshapebutton.h
   qgslegendpatchshapewidget.h
