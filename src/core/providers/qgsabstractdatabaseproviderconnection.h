@@ -923,15 +923,19 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      * \a searchString limit the search to metadata having an extent intersecting \a geographicExtent,
      * an optional \a feedback can be used to monitor and control the search process.
      *
-     * The default implementation raises a QgsProviderConnectionException, data providers may implement
+     * The default implementation raises a QgsNotSupportedException, data providers may implement
      * the search functionality.
+     *
+     * A QgsProviderConnectionException is raised in case of errors happening during the search for
+     * providers that implement the search functionality.
      *
      * \returns a (possibly empty) list of QgsLayerMetadataProviderResult, throws a QgsProviderConnectionException
      * if any error occurred during the search.
      * \throws QgsProviderConnectionException
+     * \throws QgsNotSupportedException
      * \since QGIS 3.28
      */
-    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException );
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const SIP_THROW( QgsProviderConnectionException, QgsNotSupportedException );
 
   protected:
 

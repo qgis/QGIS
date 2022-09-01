@@ -1087,7 +1087,7 @@ QList<QgsLayerMetadataProviderResult> QgsAbstractDatabaseProviderConnection::sea
   Q_UNUSED( searchContext );
   Q_UNUSED( searchString );
   Q_UNUSED( geographicExtent );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey(), QStringLiteral( "searchLayerMetadata" ) ) );
+  throw QgsNotSupportedException( QObject::tr( "Provider %1 has no %2 method" ).arg( providerKey(), QStringLiteral( "searchLayerMetadata" ) ) );
 }
 
 void QgsAbstractDatabaseProviderConnection::dropRasterTable( const QString &, const QString & ) const

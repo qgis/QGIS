@@ -516,13 +516,13 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "Error reading XML metdadata from connection %1" ).arg( uri() ) );
+          throw QgsProviderConnectionException( QStringLiteral( "Error reading XML metdadata from connection %1" ).arg( uri() ) );
         }
       }
     }
     catch ( const QgsProviderConnectionException &ex )
     {
-      QgsDebugMsg( QStringLiteral( "Error fetching metdadata from connection %1: %2" ).arg( uri(), ex.what() ) );
+      throw QgsProviderConnectionException( QStringLiteral( "Error fetching metdadata from connection %1: %2" ).arg( uri(), ex.what() ) );
     }
   }
   return results;

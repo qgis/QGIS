@@ -13,6 +13,8 @@ __copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 import shutil
+from functools import partial
+from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWUSR
 
 from qgis.core import (
     QgsPolygon,
@@ -21,10 +23,12 @@ from qgis.core import (
     QgsMapLayerType,
     QgsProviderRegistry,
     QgsAbstractLayerMetadataProvider,
-    QgsLayerMetadataSearchResult,
+    QgsLayerMetadataSearchResults,
     QgsLayerMetadataProviderResult,
     QgsMetadataSearchContext,
     QgsLayerMetadata,
+    QgsNotSupportedException,
+    QgsProviderConnectionException,
 )
 
 from qgis.PyQt.QtCore import QTemporaryDir
@@ -102,7 +106,7 @@ class PythonLayerMetadataProvider(QgsAbstractLayerMetadataProvider):
 
         assert result.identifier() == 'MD012345'
 
-        results = QgsLayerMetadataSearchResult()
+        results = QgsLayerMetadataSearchResults()
         results.addMetadata(result)
         results.addError('Bad news from PythonLayerMetadataProvider :(')
 
@@ -113,6 +117,16 @@ QGIS_APP = start_app()
 
 
 class TestPythonLayerMetadataProvider(unittest.TestCase):
+
+    def setUp(self):
+
+        super().setUp()
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), temp_path)
+        self.conn = os.path.join(temp_path, 'geopackage.gpkg')
+
+        shutil.copy(os.path.join(srcpath, 'spatialite.db'), temp_path)
+        self.conn_sl = os.path.join(temp_path, 'spatialite.db')
 
     def test_metadataRegistryApi(self):
 
@@ -141,13 +155,26 @@ class TestPythonLayerMetadataProvider(unittest.TestCase):
         reg.unregisterLayerMetadataProvider(md_provider)
         self.assertIsNone(reg.layerMetadataProviderFromId('python'))
 
-    def setUp(self):
+    def testExceptions(self):
 
-        super().setUp()
-        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
-        shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), temp_path)
-        self.conn = os.path.join(temp_path, 'geopackage.gpkg')
-        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        def _spatialite(path):
+
+            md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+            conn = md.createConnection(path, {})
+            conn.searchLayerMetadata(QgsMetadataSearchContext())
+
+        def _ogr(path):
+
+            md = QgsProviderRegistry.instance().providerMetadata('ogr')
+            conn = md.createConnection(path, {})
+            os.chmod(path, S_IREAD | S_IRGRP | S_IROTH)
+            conn.searchLayerMetadata(QgsMetadataSearchContext())
+
+        self.assertRaises(QgsNotSupportedException, partial(_spatialite, self.conn_sl))
+        self.assertRaises(QgsProviderConnectionException, partial(_ogr, self.conn))
+        self.assertRaises(QgsNotSupportedException, partial(_ogr, self.conn_sl))
+        os.chmod(self.conn, S_IWUSR | S_IREAD)
+        os.chmod(self.conn_sl, S_IWUSR | S_IREAD)
 
 
 if __name__ == '__main__':
