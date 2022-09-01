@@ -67,6 +67,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mFormatComboBox->blockSignals( true );
   mFormatComboBox->addItem( tr( "Temporary Scratch Layer" ), QStringLiteral( "memory" ) );
   mFormatComboBox->addItem( tr( "LAZ point cloud" ), QStringLiteral( "LAZ" ) );
+  mFormatComboBox->addItem( tr( "LAS point cloud" ), QStringLiteral( "LAS" ) );
   mFormatComboBox->addItem( tr( "GeoPackage" ), QStringLiteral( "GPKG" ) );
   mFormatComboBox->addItem( tr( "ESRI Shapefile" ), QStringLiteral( "ESRI Shapefile" ) );
   mFormatComboBox->addItem( tr( "AutoCAD DXF" ), QStringLiteral( "DXF" ) );
@@ -307,6 +308,8 @@ QString QgsPointCloudLayerSaveAsDialog::filterForDriver( const QString &driverNa
 {
   if ( driverName == QLatin1String( "LAZ" ) )
     return QStringLiteral( "LAZ pointcloud (*.laz *.LAZ)" );
+  if ( driverName == QLatin1String( "LAS" ) )
+    return QStringLiteral( "LAS pointcloud (*.las *.LAS)" );
   if ( driverName == QLatin1String( "GPKG" ) )
     return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
@@ -322,7 +325,8 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
 
   const QString sFormat( format() );
   mAttributesSelection->setEnabled( sFormat != QLatin1String( "DXF" ) &&
-                                    sFormat != QLatin1String( "LAZ" ) );
+                                    sFormat != QLatin1String( "LAZ" ) &&
+                                    sFormat != QLatin1String( "LAS" ) );
 
 
   if ( sFormat == QLatin1String( "memory" ) )

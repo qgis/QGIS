@@ -8379,7 +8379,8 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
     exp->setFormat( dialog.format() );
 
     // LAZ format exports all attributes
-    if ( dialog.format() != QLatin1String( "LAZ" ) )
+    if ( dialog.format() != QLatin1String( "LAZ" ) &&
+         dialog.format() != QLatin1String( "LAS" ) )
     {
       if ( dialog.hasAttributes() )
         exp->setAttributes( dialog.attributes() );

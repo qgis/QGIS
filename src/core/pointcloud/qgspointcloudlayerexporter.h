@@ -124,13 +124,13 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Sets the list of point cloud \a attributes that will be exported.
      * If never called, all attributes will be exported.
-     * \note This has no effect when exporting to LAZ format.
+     * \note This has no effect when exporting to LAS/LAZ format.
      */
     void setAttributes( const QStringList &attributes );
 
     /**
      * Sets that no attributes will be exported.
-     * \note This has no effect when exporting to LAZ format.
+     * \note This has no effect when exporting to LAS/LAZ format.
      */
     void setNoAttributes() { mRequestedAttributes.clear(); }
 
