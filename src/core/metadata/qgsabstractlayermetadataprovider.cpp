@@ -116,3 +116,4 @@ void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri 
 {
   mStandardUri = standardUri;
 }
+

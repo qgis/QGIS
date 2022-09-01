@@ -36,6 +36,7 @@
 #include "qgsprojectitem.h"
 #include "qgslayeritem.h"
 #include "qgsfavoritesitem.h"
+#include "qgslayermetadata.h"
 
 #define PROJECT_HOME_PREFIX "project:"
 #define HOME_PREFIX "home:"
@@ -322,6 +323,15 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     {
       QgsLayerItem *lyrItem = qobject_cast<QgsLayerItem *>( item );
       return lyrItem->comments();
+    }
+    return QVariant();
+  }
+  else if ( role == QgsBrowserModel::LayerMetadataRole )
+  {
+    if ( item->type() == Qgis::BrowserItemType::Layer )
+    {
+      QgsLayerItem *lyrItem = qobject_cast<QgsLayerItem *>( item );
+      return QVariant::fromValue( lyrItem->layerMetadata() );
     }
     return QVariant();
   }

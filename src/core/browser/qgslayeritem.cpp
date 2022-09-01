@@ -75,6 +75,16 @@ QgsAbstractDatabaseProviderConnection *QgsLayerItem::databaseConnection() const
   return nullptr;
 }
 
+const QgsLayerMetadata &QgsLayerItem::layerMetadata() const
+{
+  return mLayerMetadata;
+}
+
+void QgsLayerItem::setLayerMetadata( const QgsLayerMetadata &metadata )
+{
+  mLayerMetadata = metadata;
+}
+
 QIcon QgsLayerItem::iconDefault()
 {
   return QgsIconUtils::iconDefaultLayer();

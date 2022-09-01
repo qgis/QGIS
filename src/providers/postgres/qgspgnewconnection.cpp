@@ -84,6 +84,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
     cb_projectsInDatabase->setChecked( settings.value( key + "/projectsInDatabase", false ).toBool() );
+    cb_metadataInDatabase->setChecked( settings.value( key + "/metadataInDatabase", false ).toBool() );
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer ) ) );
 
@@ -173,6 +174,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
   settings.setValue( baseKey + "/projectsInDatabase", cb_projectsInDatabase->isChecked() );
+  settings.setValue( baseKey + "/metadataInDatabase", cb_metadataInDatabase->isChecked() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );
@@ -187,6 +189,8 @@ void QgsPgNewConnection::accept()
   configuration.insert( "savePassword", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? "true" : "false" );
   configuration.insert( "estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
   configuration.insert( "projectsInDatabase", cb_projectsInDatabase->isChecked() );
+  configuration.insert( "metadataInDatabase", cb_metadataInDatabase->isChecked() );
+
 
   QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   std::unique_ptr< QgsPostgresProviderConnection > providerConnection( qgis::down_cast<QgsPostgresProviderConnection *>( providerMetadata->createConnection( txtName->text() ) ) );
@@ -241,11 +245,16 @@ void QgsPgNewConnection::testConnection()
       cb_projectsInDatabase->setEnabled( false );
       cb_projectsInDatabase->setChecked( false );
       cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
+      cb_metadataInDatabase->setEnabled( false );
+      cb_metadataInDatabase->setChecked( false );
+      cb_metadataInDatabase->setToolTip( tr( "Saving metadata in databases not available for PostgreSQL databases earlier than 9.5" ) );
     }
     else
     {
       cb_projectsInDatabase->setEnabled( true );
       cb_projectsInDatabase->setToolTip( QString() );
+      cb_metadataInDatabase->setEnabled( true );
+      cb_metadataInDatabase->setToolTip( QString() );
     }
 
     // Database successfully opened; we can now issue SQL commands.

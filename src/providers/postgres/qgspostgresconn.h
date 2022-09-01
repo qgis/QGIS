@@ -407,6 +407,7 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( const QString &connName );
     static bool allowProjectsInDatabase( const QString &connName );
     static void deleteConnection( const QString &connName );
+    static bool allowMetadataInDatabase( const QString &connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }

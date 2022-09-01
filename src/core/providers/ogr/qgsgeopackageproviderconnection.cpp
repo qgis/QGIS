@@ -457,35 +457,9 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
             continue;
           }
 
-          if ( ! searchString.isEmpty() && (
-                 ! result.title().contains( searchString, Qt::CaseInsensitive ) &&
-                 ! result.identifier().contains( searchString, Qt::CaseInsensitive ) &&
-                 ! result.abstract().contains( searchString, Qt::CaseInsensitive ) ) )
+          if ( ! result.contains( searchString ) )
           {
-            bool found { false };
-            const QList<QStringList> keyVals { result.keywords().values() };
-            for ( const QStringList &kws : std::as_const( keyVals ) )
-            {
-              const QStringList constKws { kws };
-              for ( const QString &kw : std::as_const( kws ) )
-              {
-                if ( kw.contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) )
-                {
-                  found = true;
-                  break;
-                }
-              }
-              if ( found )
-                break;
-            }
-
-            if ( ! found )
-            {
-              found = result.categories().contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) ;
-            }
-
-            if ( ! found )
-              continue;
+            continue;
           }
 
           result.setGeographicExtent( poly );

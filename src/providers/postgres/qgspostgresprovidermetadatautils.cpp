@@ -44,7 +44,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       where.push_back( QStringLiteral( R"SQL((
       abstract ILIKE %1 OR
       identifier ILIKE %1 OR
-      REGEXP_REPLACE(UPPER(array_to_string((xpath('//keyword', qmd))::varchar[], '')),'</?KEYWORD>', '', 'g') ILIKE %1
+      REGEXP_REPLACE(UPPER(array_to_string((xpath('//keyword', qmd))::varchar[], ' ')),'</?KEYWORD>', '', 'g') ILIKE %1
       ))SQL" ).arg( QgsPostgresConn::quotedValue( QString( searchString ).prepend( QChar( '%' ) ).append( QChar( '%' ) ) ) ) );
     }
 
@@ -71,7 +71,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
               ,update_time
            FROM %1.qgis_layer_metadata
              %2
-           )SQL" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ), QStringLiteral( " WHERE %1 " ).arg( where.join( QStringLiteral( " AND " ) ) ) );
+           )SQL" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ), where.isEmpty() ? QString() : ( QStringLiteral( " WHERE %1 " ).arg( where.join( QStringLiteral( " AND " ) ) ) ) );
 
     res = conn->LoggedPQexec( "QgsPostgresProviderMetadata", listQuery );
 
