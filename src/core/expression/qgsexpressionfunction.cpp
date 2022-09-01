@@ -4510,6 +4510,24 @@ static QVariant fcnConvexHull( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
+static QVariant fcnConcaveHull( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  try
+  {
+    QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+    const double targetPercent = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+    const bool allowHoles = values.value( 2 ).toBool();
+    QgsGeometry geom = fGeom.concaveHull( targetPercent, allowHoles );
+    QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
+    return result;
+  }
+  catch ( QgsCsException &cse )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error caught in concave_hull() function: %1" ).arg( cse.what() ) );
+    return QVariant();
+  }
+}
+
 
 static QVariant fcnMinimalCircle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -7992,6 +8010,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "is_empty" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnIsEmpty, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "is_empty_or_null" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnIsEmptyOrNull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList(), true )
         << new QgsStaticExpressionFunction( QStringLiteral( "convex_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnConvexHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "convexHull" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "concave_hull" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "target_percent" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "allow_holes" ), true, false ), fcnConcaveHull, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "oriented_bbox" ), QgsExpressionFunction::ParameterList()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnOrientedBBox, QStringLiteral( "GeometryGroup" ) )
