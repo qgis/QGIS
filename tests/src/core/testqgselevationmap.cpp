@@ -17,37 +17,20 @@ Email                : wonder dot sk at gmail dot com
 #include "qgsapplication.h"
 #include "qgselevationmap.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderchecker.h"
 
 
-static QString _fileNameForTest( const QString &testName )
-{
-  return QDir::tempPath() + '/' + testName + ".png";
-}
-
-static bool _verifyImage( const QString &testName, QString &report )
-{
-  QgsRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "elevation_map" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( _fileNameForTest( testName ) );
-  checker.setSizeTolerance( 3, 3 );
-  const bool equal = checker.compareImages( testName, 500 );
-  report += checker.report();
-  return equal;
-}
-
-
-class TestQgsElevationMap : public QObject
+class TestQgsElevationMap : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsElevationMap() : QgsTest( QStringLiteral( "Elevation Map Tests" ), QStringLiteral( "elevation_map" ) ) {}
+
   private slots:
     void initTestCase();
     void cleanupTestCase();
     void testRasterDemEdl();
 
-  private:
-    QString mReport;
 };
 
 
@@ -60,20 +43,10 @@ void TestQgsElevationMap::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mReport += QLatin1String( "<h1>Elevation Map Tests</h1>\n" );
 }
 
 void TestQgsElevationMap::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -98,8 +71,7 @@ void TestQgsElevationMap::testRasterDemEdl()
   std::unique_ptr<QgsElevationMap> elevationMap( QgsElevationMap::fromRasterBlock( block.get() ) );
   elevationMap->applyEyeDomeLighting( img, 2, 100, 10000 );
 
-  img.save( _fileNameForTest( QStringLiteral( "dem_edl" ) ) );
-  QVERIFY( _verifyImage( "dem_edl", mReport ) );
+  QVERIFY( imageCheck( "dem_edl", "dem_edl", img ) );
 }
 
 

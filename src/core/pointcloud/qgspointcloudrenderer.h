@@ -24,6 +24,7 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgselevationmap.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
