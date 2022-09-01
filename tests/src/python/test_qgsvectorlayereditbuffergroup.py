@@ -82,10 +82,11 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertTrue(layer_c.editBuffer())
         self.assertEqual(len(editBufferGroup.modifiedLayers()), 0)
 
-        commitErrors = []
-        self.assertTrue(editBufferGroup.commitChanges(commitErrors, False))
+        success, commitErrors = editBufferGroup.commitChanges(False)
+        self.assertTrue(success)
         self.assertTrue(editBufferGroup.isEditing())
-        self.assertTrue(editBufferGroup.commitChanges(commitErrors, True))
+        success, commitErrors = editBufferGroup.commitChanges(True)
+        self.assertTrue(success)
         self.assertFalse(editBufferGroup.isEditing())
 
         self.assertTrue(editBufferGroup.startEditing())
@@ -102,8 +103,8 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        rollbackErrors = []
-        self.assertTrue(editBufferGroup.rollBack(rollbackErrors, False))
+        success, rollbackErrors = editBufferGroup.rollBack(False)
+        self.assertTrue(success)
         self.assertTrue(editBufferGroup.isEditing())
         self.assertEqual(layer_a.featureCount(), 0)
 
@@ -111,7 +112,8 @@ class TestQgsVectorLayerEditBufferGroup(unittest.TestCase):
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 0)
 
-        self.assertTrue(editBufferGroup.commitChanges(commitErrors, True))
+        success, commitErrors = editBufferGroup.commitChanges(True)
+        self.assertTrue(success)
         self.assertFalse(editBufferGroup.isEditing())
         self.assertEqual(layer_a.featureCount(), 1)
         self.assertEqual(layer_a.dataProvider().featureCount(), 1)

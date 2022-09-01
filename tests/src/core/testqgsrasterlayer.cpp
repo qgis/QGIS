@@ -120,6 +120,7 @@ class TestQgsRasterLayer : public QgsTest
     QgsRasterLayer *mTemporalRasterLayer = nullptr;
 
     QgsMapSettings *mMapSettings = nullptr;
+    QTemporaryDir mTempDir;
 };
 
 //runs before all tests
@@ -132,13 +133,15 @@ void TestQgsRasterLayer::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  // disable any PAM stuff to make sure stats are consistent
-  CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
   const QString myFileName = mTestDataDir + "tenbytenraster.asc";
-  const QString myLandsatFileName = mTestDataDir + "landsat.tif";
+
+  // these tests modify the raster, so work on a copy
+  QFile::copy( mTestDataDir + "landsat.tif", mTempDir.filePath( QStringLiteral( "landsat.tif" ) ) );
+  const QString myLandsatFileName = mTempDir.filePath( QStringLiteral( "landsat.tif" ) );
+
   const QString myFloat32FileName = mTestDataDir + "/raster/band1_float32_noct_epsg4326.tif";
   const QString pngRasterFileName = mTestDataDir + "rgb256x256.png";
   const QString geoJp2RasterFileName = mTestDataDir + "rgbwcmyk01_YeGeo.jp2";
@@ -747,7 +750,11 @@ void TestQgsRasterLayer::palettedRendererNoDataColor()
 
 void TestQgsRasterLayer::singleBandGrayRendererNoData()
 {
-  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  // this test modifies the raster, so work on a copy
+  QTemporaryDir tmpDir;
+  QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
+  const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
+
   std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( rasterFileName,
                                         QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
@@ -763,7 +770,11 @@ void TestQgsRasterLayer::singleBandGrayRendererNoData()
 
 void TestQgsRasterLayer::singleBandGrayRendererNoDataColor()
 {
-  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  // this test modifies the raster, so work on a copy
+  QTemporaryDir tmpDir;
+  QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
+  const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
+
   std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( rasterFileName,
                                         QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
@@ -780,7 +791,11 @@ void TestQgsRasterLayer::singleBandGrayRendererNoDataColor()
 
 void TestQgsRasterLayer::singleBandPseudoRendererNoData()
 {
-  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  // this test modifies the raster, so work on a copy
+  QTemporaryDir tmpDir;
+  QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
+  const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
+
   std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( rasterFileName,
                                         QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
@@ -822,7 +837,11 @@ void TestQgsRasterLayer::singleBandPseudoRendererNoData()
 
 void TestQgsRasterLayer::singleBandPseudoRendererNoDataColor()
 {
-  const QString rasterFileName = mTestDataDir + "landsat.tif";
+  // this test modifies the raster, so work on a copy
+  QTemporaryDir tmpDir;
+  QFile::copy( mTestDataDir + "landsat.tif", tmpDir.filePath( QStringLiteral( "landsat.tif" ) ) );
+  const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat.tif" ) );
+
   std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( rasterFileName,
                                         QStringLiteral( "rl" ) );
   QVERIFY( rl->isValid() );
@@ -954,7 +973,11 @@ void TestQgsRasterLayer::sample()
   QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 10, &ok ) ) );
   QVERIFY( !ok );
 
-  fileName = mTestDataDir + "landsat_4326.tif";
+  // this test modifies the raster, so work on a copy
+  QTemporaryDir tmpDir;
+  QFile::copy( mTestDataDir + "landsat_4326.tif", tmpDir.filePath( QStringLiteral( "landsat_4326.tif" ) ) );
+  fileName = tmpDir.filePath( QStringLiteral( "landsat_4326.tif" ) );
+
   rasterFileInfo = QFileInfo( fileName );
   rl = std::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
        rasterFileInfo.completeBaseName() );

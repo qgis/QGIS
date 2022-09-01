@@ -260,6 +260,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
 
     Buttons mButtonsVisibility = Button::AllButtons;
     bool mShowFirstFeature = true;
+    bool mAllowAddChildFeatureWithNoGeometry = true;
 
     QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
     QgsFeatureIds mMultiEdit1NJustAddedIds;

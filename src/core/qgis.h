@@ -2504,36 +2504,15 @@ namespace qgis
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return list.toSet();
-#else
     return QSet<T>( list.begin(), list.end() );
-#endif
   }
 
   template<class T>
   QList<T> setToList( const QSet<T> &set )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return set.toList();
-#else
     return QList<T>( set.begin(), set.end() );
-#endif
   }
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-namespace std
-{
-  template<> struct hash<QString>
-  {
-    std::size_t operator()( const QString &s ) const noexcept
-    {
-      return ( size_t ) qHash( s );
-    }
-  };
-}
-#endif
 
 ///@endcond
 #endif

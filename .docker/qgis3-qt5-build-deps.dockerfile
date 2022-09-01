@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=20.04
+ARG DISTRO_VERSION=22.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -29,7 +29,7 @@ RUN  apt-get update \
     libaio1 \
     libexiv2-27 \
     libfcgi0ldbl \
-    'libgsl23|libgsl23' \
+    libgsl27 \
     'libprotobuf-lite17|libprotobuf-lite23' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \

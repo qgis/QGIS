@@ -18,14 +18,14 @@
 #ifndef QGSMESH3DMATERIAL_H
 #define QGSMESH3DMATERIAL_H
 
-#include <Qt3DRender/QBuffer>
+
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QAbstractTextureImage>
 
-#include "qgs3dmapsettings.h"
 #include "qgsmesh3dsymbol.h"
-#include "qgscolorrampshader.h"
+#include "qgsvector3d.h"
 
 ///@cond PRIVATE
 

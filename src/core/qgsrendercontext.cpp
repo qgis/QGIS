@@ -157,11 +157,8 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
     context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   if ( painter && painter->renderHints() & QPainter::SmoothPixmapTransform )
     context.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms, true );
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( painter && painter->renderHints() & QPainter::LosslessImageRendering )
     context.setFlag( Qgis::RenderContextFlag::LosslessImageRendering, true );
-#endif
 
   return context;
 }
@@ -175,9 +172,7 @@ void QgsRenderContext::setPainterFlagsUsingContext( QPainter *painter ) const
     return;
 
   painter->setRenderHint( QPainter::Antialiasing, mFlags & Qgis::RenderContextFlag::Antialiasing );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   painter->setRenderHint( QPainter::LosslessImageRendering, mFlags & Qgis::RenderContextFlag::LosslessImageRendering );
-#endif
   painter->setRenderHint( QPainter::SmoothPixmapTransform, mFlags & Qgis::RenderContextFlag::HighQualityImageTransforms );
 }
 

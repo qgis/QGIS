@@ -57,20 +57,10 @@ void QgsPointCloudLayerProfileResults::finalize( QgsFeedback *feedback )
     if ( feedback->isCanceled() )
       break;
 
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     geos::unique_ptr geosPoint( GEOSGeom_createPointFromXY_r( geosctxt, pointData->distanceAlongCurve, pointData->z ) );
-#else
-    GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, seq, 0, point.distanceAlongCurve );
-    GEOSCoordSeq_setY_r( geosctxt, seq, 0, point.z );
-    geos::unique_ptr geosPoint( GEOSGeom_createPoint_r( geosctxt, seq ) );
-#endif
 
     GEOSSTRtree_insert_r( geosctxt, mPointIndex, geosPoint.get(), pointData );
     // only required for GEOS < 3.9
-#if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
-    mSTRTreeItems.emplace_back( std::move( geosPoint ) );
-#endif
   }
 }
 
@@ -200,15 +190,8 @@ QgsProfileSnapResult QgsPointCloudLayerProfileResults::snapPoint( const QgsProfi
   const double maxElevation = point.elevation() + context.maximumPointElevationDelta;
 
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 2, 2 );
-#if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
   GEOSCoordSeq_setXY_r( geosctxt, coord, 0, minDistance, minElevation );
   GEOSCoordSeq_setXY_r( geosctxt, coord, 1, maxDistance, maxElevation );
-#else
-  GEOSCoordSeq_setX_r( geosctxt, coord, 0, minDistance );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 0, minElevation );
-  GEOSCoordSeq_setX_r( geosctxt, coord, 1, maxDistance );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 1, maxElevation );
-#endif
   geos::unique_ptr searchDiagonal( GEOSGeom_createLineString_r( geosctxt, coord ) );
 
   QList<const PointResult *> items;

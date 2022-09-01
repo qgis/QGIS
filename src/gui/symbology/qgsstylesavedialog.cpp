@@ -77,10 +77,6 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
       break;
   }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  mLabelDestination->hide();
-  mComboBoxDestination->hide();
-#else
   QgsProjectStyleDatabaseModel *projectStyleModel = new QgsProjectStyleDatabaseModel( QgsProject::instance()->styleSettings(), this );
   QgsProjectStyleDatabaseProxyModel *styleProxyModel = new QgsProjectStyleDatabaseProxyModel( projectStyleModel, this );
   styleProxyModel->setFilters( QgsProjectStyleDatabaseProxyModel::Filter::FilterHideReadOnly );
@@ -95,7 +91,6 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
     projectStyleModel->setShowDefaultStyle( true );
     mComboBoxDestination->setModel( styleProxyModel );
   }
-#endif
 
   if ( possibleEntities.size() < 2 )
   {
@@ -171,9 +166,6 @@ QgsStyle::StyleEntity QgsStyleSaveDialog::selectedType() const
 
 QgsStyle *QgsStyleSaveDialog::destinationStyle()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  return QgsStyle::defaultStyle();
-#else
   if ( QgsStyle *style = qobject_cast< QgsStyle * >( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), QgsProjectStyleDatabaseModel::StyleRole ).value< QObject * >() ) )
   {
     return style;
@@ -182,5 +174,4 @@ QgsStyle *QgsStyleSaveDialog::destinationStyle()
   {
     return QgsStyle::defaultStyle();
   }
-#endif
 }

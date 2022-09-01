@@ -361,7 +361,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
-                                    tr( "The file is not a MSSQL connections exchange file." ) );
+                                    tr( "The file is not a MS SQL Server connections exchange file." ) );
           return false;
         }
         break;
@@ -1105,7 +1105,7 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   {
     QMessageBox::information( this,
                               tr( "Loading Connections" ),
-                              tr( "The file is not a MSSQL connections exchange file." ) );
+                              tr( "The file is not a MS SQL Server connections exchange file." ) );
     return;
   }
 

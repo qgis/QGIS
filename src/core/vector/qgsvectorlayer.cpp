@@ -3633,25 +3633,11 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   features.reserve( mSelectedFeatureIds.count() );
   QgsFeature f;
 
-  if ( mSelectedFeatureIds.count() <= 8 )
-  {
-    // for small amount of selected features, fetch them directly
-    // because request with FilterFids would go iterate over the whole layer
-    const auto constMSelectedFeatureIds = mSelectedFeatureIds;
-    for ( QgsFeatureId fid : constMSelectedFeatureIds )
-    {
-      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
-      features << f;
-    }
-  }
-  else
-  {
-    QgsFeatureIterator it = getSelectedFeatures();
+  QgsFeatureIterator it = getSelectedFeatures();
 
-    while ( it.nextFeature( f ) )
-    {
-      features.push_back( f );
-    }
+  while ( it.nextFeature( f ) )
+  {
+    features.push_back( f );
   }
 
   return features;
@@ -4492,7 +4478,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
       while ( fit.nextFeature( f ) )
       {
         const QVariant currentValue = f.attribute( index );
-        if ( currentValue.isNull() )
+        if ( QgsVariantUtils::isNull( currentValue ) )
           continue;
 
         if ( firstValue )
@@ -5432,6 +5418,11 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 QList<QgsWeakRelation> QgsVectorLayer::weakRelations() const
 {
   return mWeakRelations;
+}
+
+void QgsVectorLayer::setWeakRelations( const QList<QgsWeakRelation> &relations )
+{
+  mWeakRelations = relations;
 }
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )

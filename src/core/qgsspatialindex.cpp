@@ -329,11 +329,7 @@ class QgsSpatialIndexData : public QSharedData
     //! R-tree containing spatial index
     SpatialIndex::ISpatialIndex *mRTree = nullptr;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
 
 };
 

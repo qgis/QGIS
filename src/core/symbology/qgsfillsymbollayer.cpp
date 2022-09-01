@@ -120,7 +120,7 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeBrushStyle( mBrushStyle ) );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyFillStyle, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
       brush.setStyle( QgsSymbolLayerUtils::decodeBrushStyle( exprVal.toString() ) );
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeColor ) )
@@ -134,7 +134,7 @@ void QgsSimpleFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   {
     context.setOriginalValueVariable( mStrokeWidth );
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       double width = exprVal.toDouble( &ok );
       if ( ok )

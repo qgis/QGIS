@@ -325,8 +325,7 @@ void TestQgsPointXY::asVariant()
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( p1 );
   QVERIFY( var.isValid() );
-  QVERIFY( var.canConvert< QgsPointXY >() );
-  QVERIFY( !var.canConvert< QgsReferencedPointXY >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsPointXY" ) );
 
   const QgsPointXY p2 = qvariant_cast<QgsPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );
@@ -347,7 +346,7 @@ void TestQgsPointXY::referenced()
   // not great - we'd ideally like this to pass, but it doesn't:
   // QVERIFY( !var.canConvert< QgsPointXY >() );
 
-  QVERIFY( var.canConvert< QgsReferencedPointXY >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedPointXY" ) );
 
   const QgsReferencedPointXY p2 = qvariant_cast<QgsReferencedPointXY>( var );
   QCOMPARE( p2.x(), p1.x() );

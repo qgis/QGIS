@@ -15,9 +15,23 @@
 
 #include "qgslinevertexdata_p.h"
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
+
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+#endif
 
 #include "qgslogger.h"
 #include "qgs3dutils.h"
@@ -68,33 +82,33 @@ QByteArray QgsLineVertexData::createIndexBuffer()
   return indexBufferData;
 }
 
-Qt3DRender::QGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent )
+Qt3DQGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent )
 {
-  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( parent );
+  Qt3DQBuffer *vertexBuffer = new Qt3DQBuffer( parent );
   vertexBuffer->setData( createVertexBuffer() );
 
-  Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( parent );
+  Qt3DQBuffer *indexBuffer = new Qt3DQBuffer( parent );
   indexBuffer->setData( createIndexBuffer() );
 
   QgsDebugMsgLevel( QString( "vertex buffer %1 MB  index buffer %2 MB " ).arg( vertexBuffer->data().count() / 1024. / 1024. ).arg( indexBuffer->data().count() / 1024. / 1024. ), 2 );
 
-  Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute( parent );
-  positionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  Qt3DQAttribute *positionAttribute = new Qt3DQAttribute( parent );
+  positionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   positionAttribute->setBuffer( vertexBuffer );
-  positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  positionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   positionAttribute->setVertexSize( 3 );
   positionAttribute->setByteStride( 3 * sizeof( float ) );
   positionAttribute->setByteOffset( 0 );
-  positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
+  positionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
 
-  Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute( parent );
-  indexAttribute->setAttributeType( Qt3DRender::QAttribute::IndexAttribute );
+  Qt3DQAttribute *indexAttribute = new Qt3DQAttribute( parent );
+  indexAttribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
   indexAttribute->setBuffer( indexBuffer );
   indexAttribute->setByteOffset( 0 );
   indexAttribute->setByteStride( sizeof( uint ) );
-  indexAttribute->setVertexBaseType( Qt3DRender::QAttribute::UnsignedInt );
+  indexAttribute->setVertexBaseType( Qt3DQAttribute::UnsignedInt );
 
-  Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
+  Qt3DQGeometry *geom = new Qt3DQGeometry;
   geom->addAttribute( positionAttribute );
   geom->addAttribute( indexAttribute );
 

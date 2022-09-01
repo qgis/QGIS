@@ -31,7 +31,6 @@
 #include <QMenu>
 #include <QDate>
 #include <QDomDocument>
-#include <QMatrix>
 #include <QFile>
 
 //non qt includes

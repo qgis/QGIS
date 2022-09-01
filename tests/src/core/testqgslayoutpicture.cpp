@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsproperty.h"
 #include "qgslayout.h"
+#include "qgsfontutils.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -86,6 +87,8 @@ void TestQgsLayoutPicture::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
+  QgsFontUtils::loadStandardTestFonts( {QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
+
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
   mSvgParamsImage = QStringLiteral( TEST_DATA_DIR ) + "/svg_params.svg";
@@ -98,6 +101,7 @@ void TestQgsLayoutPicture::initTestCase()
   mPicture->setPicturePath( mPngImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   mPicture->setFrameEnabled( true );
+
 }
 
 void TestQgsLayoutPicture::cleanupTestCase()

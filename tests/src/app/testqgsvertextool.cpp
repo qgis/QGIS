@@ -1136,14 +1136,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   mouseClick( 5, 15, Qt::LeftButton );
   mouseClick( 12.5, 15, Qt::LeftButton );
 
-  if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
-  {
-    QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry().asWkt( 1 ), "Polygon ((0 10, 0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10))" );
-  }
-  else
-  {
-    QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry().asWkt( 1 ), "Polygon ((0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10, 0 20))" );
-  }
+  QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry().asWkt( 1 ), "Polygon ((0 20, 10.7 15.7, 10 15, 10.7 14.3, 0 10, 0 20))" );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry().asWkt( 1 ), "Polygon ((10 15, 10.7 14.3, 15 10, 15 20, 10.7 15.7, 10 15))" );
 
   mLayerPolygon->undoStack()->undo(); // undo topological points

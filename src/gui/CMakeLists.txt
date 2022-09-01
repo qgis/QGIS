@@ -328,6 +328,7 @@ set(QGIS_GUI_SRCS
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
   pointcloud/qgspointcloudextentrendererwidget.cpp
+  pointcloud/qgspointcloudlayersaveasdialog.cpp
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
   pointcloud/qgspointcloudrgbrendererwidget.cpp
@@ -629,6 +630,7 @@ set(QGIS_GUI_SRCS
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
+  qgsscreenhelper.cpp
   qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
   qgssubsetstringeditorinterface.cpp
@@ -892,6 +894,7 @@ set(QGIS_GUI_HDRS
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
+  qgsscreenhelper.h
   qgsscrollarea.h
   qgssearchquerybuilder.h
   qgssubsetstringeditorinterface.h
@@ -1187,6 +1190,7 @@ set(QGIS_GUI_HDRS
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
   pointcloud/qgspointcloudextentrendererwidget.h
+  pointcloud/qgspointcloudlayersaveasdialog.h
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
   pointcloud/qgspointcloudrgbrendererwidget.h

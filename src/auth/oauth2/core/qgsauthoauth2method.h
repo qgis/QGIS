@@ -117,11 +117,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     QgsO2 *authO2( const QString &authcfg );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex mNetworkRequestMutex { QMutex::Recursive };
-#else
     QRecursiveMutex mNetworkRequestMutex;
-#endif
 };
 
 

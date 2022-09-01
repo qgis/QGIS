@@ -4264,7 +4264,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             // use auto-generated value if user hasn't specified a unique value
             ++ia;
           }
-          else if ( v.isNull() )
+          else if ( QgsVariantUtils::isNull( v ) )
           {
             // binding a NULL value
             sqlite3_bind_null( stmt, ++ia );
@@ -4656,7 +4656,7 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
 
         QVariant::Type type = fld.type();
 
-        if ( val.isNull() || !val.isValid() )
+        if ( QgsVariantUtils::isNull( val ) )
         {
           // binding a NULL value
           sql += QStringLiteral( "%1=NULL" ).arg( QgsSqliteUtils::quotedIdentifier( fld.name() ) );

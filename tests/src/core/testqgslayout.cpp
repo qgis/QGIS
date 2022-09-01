@@ -60,7 +60,9 @@ class TestQgsLayout: public QgsTest
     void layoutItemById();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
+#ifdef WITH_QTWEBKIT
     void shouldExportPage();
+#endif
     void pageIsEmpty();
     void clear();
     void georeference();
@@ -655,6 +657,7 @@ void TestQgsLayout::itemsOnPage()
   QCOMPARE( labels.length(), 0 );
 }
 
+#ifdef WITH_QTWEBKIT
 void TestQgsLayout::shouldExportPage()
 {
   QgsProject proj;
@@ -726,6 +729,7 @@ void TestQgsLayout::shouldExportPage()
   QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
   QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 }
+#endif
 
 void TestQgsLayout::pageIsEmpty()
 {

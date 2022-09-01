@@ -14,6 +14,8 @@ set(PG_SRCS
   qgspostgresexpressioncompiler.cpp
   qgspostgreslistener.cpp
   qgspostgresproviderconnection.cpp
+  qgspostgreslayermetadataprovider.cpp
+  qgspostgresprovidermetadatautils.cpp
 )
 
 if (WITH_GUI)
@@ -93,6 +95,7 @@ set(PGRASTER_SRCS
   raster/qgspostgresrasterutils.cpp
   qgspostgresconn.cpp
   qgspostgresconnpool.cpp
+  qgspostgresprovidermetadatautils.cpp
 )
 
 # static library

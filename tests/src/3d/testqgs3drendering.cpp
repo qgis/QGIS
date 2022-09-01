@@ -58,7 +58,6 @@
 
 #include <QFileInfo>
 #include <QDir>
-#include <QDesktopWidget>
 
 class TestQgs3DRendering : public QgsTest
 {

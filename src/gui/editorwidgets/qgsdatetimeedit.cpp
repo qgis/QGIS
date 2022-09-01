@@ -24,8 +24,7 @@
 #include "qgsdatetimeedit.h"
 
 #include "qgsapplication.h"
-#include "qgslogger.h"
-
+#include "qgsvariantutils.h"
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
@@ -83,7 +82,7 @@ void QgsDateTimeEdit::clear()
     // Check if it's really changed or crash, see GH #29937
     if ( ! dateTime().isNull() )
     {
-      changed( QDateTime() );
+      changed( QVariant() );
     }
 
     // emit signal of QDateTime::dateTimeChanged with an invalid date
@@ -218,7 +217,7 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
 void QgsDateTimeEdit::changed( const QVariant &dateTime )
 {
   mIsEmpty = false;
-  const bool isNull = dateTime.isNull();
+  const bool isNull = QgsVariantUtils::isNull( dateTime );
   if ( isNull != mIsNull )
   {
     mIsNull = isNull;
@@ -238,7 +237,7 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
   if ( !mBlockChangedSignal )
-    emitValueChanged( dateTime );
+    emitValueChanged( isNull ? QVariant() : dateTime );
 }
 ///@endcond
 
@@ -313,6 +312,13 @@ void QgsDateTimeEdit::resetBeforeChange( int delta )
     dt = maximumDateTime();
   }
   QDateTimeEdit::setDateTime( dt );
+}
+
+void QgsDateTimeEdit::setMinimumEditDateTime()
+{
+  setDateRange( QDate( 1, 1, 1 ), maximumDate() );
+  setMinimumTime( QTime( 0, 0, 0 ) );
+  setMaximumTime( QTime( 23, 59, 59, 999 ) );
 }
 
 void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )

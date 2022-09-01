@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
-#include "qgslogger.h"
 
 #include <QOffscreenSurface>
 #include <QSurfaceFormat>
@@ -68,7 +67,13 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 
   // Set up the engine and the aspects that we want to use.
   mAspectEngine = new Qt3DCore::QAspectEngine();
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mRenderAspect = new Qt3DRender::QRenderAspect( Qt3DRender::QRenderAspect::Threaded ); // Only threaded mode seems to work right now.
+#else
+  mRenderAspect = new Qt3DRender::QRenderAspect();
+#endif
+
   mLogicAspect = new Qt3DLogic::QLogicAspect();
 
   mAspectEngine->registerAspect( mRenderAspect );

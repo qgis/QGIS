@@ -59,6 +59,7 @@
 #include "qgsvectorlayerexporter.h"
 #include "qgsmessageoutput.h"
 #include "qgsrelationshipsitem.h"
+#include "qgsprovidersqlquerybuilder.h"
 
 #include <QFileInfo>
 #include <QMenu>
@@ -1727,22 +1728,16 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
             tableName = item->name();
           }
 
-          if ( conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) )
-          {
-            // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1.%2 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( item->parent()->name() ), QgsSqliteUtils::quotedIdentifier( tableName ) );
-          }
-          else
-          {
-            // Ok, this is gross: we lack a connection API for quoting properly...
-            sql = QStringLiteral( "SELECT * FROM %1 LIMIT 10" ).arg( QgsSqliteUtils::quotedIdentifier( tableName ) );
-          }
+          std::unique_ptr< QgsProviderSqlQueryBuilder > queryBuilder( conn2->queryBuilder() );
+          sql = queryBuilder->createLimitQueryForTable(
+                  conn2->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) ? item->parent()->name() : QString(),
+                  tableName, 10 );
         }
 
         QgsGui::enableAutoGeometryRestore( &dialog );
         QgsQueryResultWidget *widget { new QgsQueryResultWidget( &dialog, conn2.release() ) };
         widget->setQuery( sql );
-        widget->layout()->setMargin( 0 );
+        widget->layout()->setContentsMargins( 0, 0, 0, 0 );
         dialog.layout()->addWidget( widget );
 
         connect( widget, &QgsQueryResultWidget::createSqlVectorLayer, widget, [ item, context ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
@@ -2344,8 +2339,8 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
                       relation.referencingLayerName(),
                       relation.referencingLayerFields().at( i ) );
     }
-    metadata += fieldMetadata.join( QStringLiteral( "<br>" ) );
-    metadata += QStringLiteral( "</td></tr>\n" );
+    metadata += fieldMetadata.join( QLatin1String( "<br>" ) );
+    metadata += QLatin1String( "</td></tr>\n" );
   }
   else
   {
@@ -2373,8 +2368,8 @@ QString QgsRelationshipDetailsWidget::htmlMetadata( const QgsWeakRelation &relat
                       relation.referencingLayerFields().at( i )
                     );
     }
-    metadata += fieldMetadata.join( QStringLiteral( "<br>" ) );
-    metadata += QStringLiteral( "</td></tr>\n" );
+    metadata += fieldMetadata.join( QLatin1String( "<br>" ) );
+    metadata += QLatin1String( "</td></tr>\n" );
   }
 
   metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Cardinality" ) + QStringLiteral( "</td><td>" ) + QgsRelation::cardinalityToDisplayString( relation.cardinality() ) + QStringLiteral( "</td></tr>\n" );

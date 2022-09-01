@@ -340,6 +340,7 @@ void TestQgsTemporalNavigationObject::expressionContext()
   QCOMPARE( scope->variable( QStringLiteral( "frame_duration" ) ).value< QgsInterval >().seconds(), 3600.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_timestep" ) ).value< double >(), 1.0 );
   QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_unit" ) ).value< QgsUnitTypes::TemporalUnit >(), QgsUnitTypes::TemporalUnit::TemporalHours );
+  QCOMPARE( scope->variable( QStringLiteral( "frame_timestep_units" ) ).toString(), QStringLiteral( "hours" ) );
   QCOMPARE( scope->variable( QStringLiteral( "frame_number" ) ).toInt(), 1 );
   QCOMPARE( scope->variable( QStringLiteral( "animation_start_time" ) ).toDateTime(), range.begin() );
   QCOMPARE( scope->variable( QStringLiteral( "animation_end_time" ) ).toDateTime(), range.end() );

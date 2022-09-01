@@ -21,6 +21,7 @@
 #include <QDir>
 
 #include "qgssettings.h"
+#include "qgsvariantutils.h"
 #include "qgslogger.h"
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
@@ -161,7 +162,7 @@ QString QgsSettings::globalSettingsPath()
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
   const QString pKey = prefixedKey( key, section );
-  if ( !mUserSettings->value( pKey ).isNull() )
+  if ( !QgsVariantUtils::isNull( mUserSettings->value( pKey ) ) )
   {
     return mUserSettings->value( pKey );
   }

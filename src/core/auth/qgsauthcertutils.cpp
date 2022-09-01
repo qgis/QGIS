@@ -233,11 +233,9 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
           case QSsl::KeyAlgorithm::Opaque:
             *algtype = QStringLiteral( "opaque" );
             break;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
           case QSsl::KeyAlgorithm::Dh:
             *algtype = QStringLiteral( "dh" );
             break;
-#endif
         }
       }
       return clientkey;

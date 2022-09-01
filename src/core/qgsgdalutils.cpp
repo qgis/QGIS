@@ -328,148 +328,6 @@ QString QgsGdalUtils::validateCreationOptionsFormat( const QStringList &createOp
   return QString();
 }
 
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,2,0)
-
-GDALDatasetH GDALAutoCreateWarpedVRTEx( GDALDatasetH hSrcDS, const char *pszSrcWKT, const char *pszDstWKT, GDALResampleAlg eResampleAlg,
-                                        double dfMaxError, const GDALWarpOptions *psOptionsIn, char **papszTransformerOptions )
-{
-  VALIDATE_POINTER1( hSrcDS, "GDALAutoCreateWarpedVRT", nullptr );
-
-  /* -------------------------------------------------------------------- */
-  /*      Populate the warp options.                                      */
-  /* -------------------------------------------------------------------- */
-  GDALWarpOptions *psWO = nullptr;
-  if ( psOptionsIn != nullptr )
-    psWO = GDALCloneWarpOptions( psOptionsIn );
-  else
-    psWO = GDALCreateWarpOptions();
-
-  psWO->eResampleAlg = eResampleAlg;
-
-  psWO->hSrcDS = hSrcDS;
-
-  GDALWarpInitDefaultBandMapping( psWO, GDALGetRasterCount( hSrcDS ) );
-
-  /* -------------------------------------------------------------------- */
-  /*      Setup no data values                                            */
-  /* -------------------------------------------------------------------- */
-  for ( int i = 0; i < psWO->nBandCount; i++ )
-  {
-    GDALRasterBandH rasterBand = GDALGetRasterBand( psWO->hSrcDS, psWO->panSrcBands[i] );
-
-    int hasNoDataValue;
-    double noDataValue = GDALGetRasterNoDataValue( rasterBand, &hasNoDataValue );
-
-    if ( hasNoDataValue )
-    {
-      // Check if the nodata value is out of range
-      int bClamped = FALSE;
-      int bRounded = FALSE;
-      CPL_IGNORE_RET_VAL(
-        GDALAdjustValueToDataType( GDALGetRasterDataType( rasterBand ),
-                                   noDataValue, &bClamped, &bRounded ) );
-      if ( !bClamped )
-      {
-        GDALWarpInitNoDataReal( psWO, -1e10 );
-
-        psWO->padfSrcNoDataReal[i] = noDataValue;
-        psWO->padfDstNoDataReal[i] = noDataValue;
-      }
-    }
-  }
-
-  if ( psWO->padfDstNoDataReal != nullptr )
-  {
-    if ( CSLFetchNameValue( psWO->papszWarpOptions, "INIT_DEST" ) == nullptr )
-    {
-      psWO->papszWarpOptions =
-        CSLSetNameValue( psWO->papszWarpOptions, "INIT_DEST", "NO_DATA" );
-    }
-  }
-
-  /* -------------------------------------------------------------------- */
-  /*      Create the transformer.                                         */
-  /* -------------------------------------------------------------------- */
-  psWO->pfnTransformer = GDALGenImgProjTransform;
-
-  char **papszOptions = nullptr;
-  if ( pszSrcWKT != nullptr )
-    papszOptions = CSLSetNameValue( papszOptions, "SRC_SRS", pszSrcWKT );
-  if ( pszDstWKT != nullptr )
-    papszOptions = CSLSetNameValue( papszOptions, "DST_SRS", pszDstWKT );
-  papszOptions = CSLMerge( papszOptions, papszTransformerOptions );
-  psWO->pTransformerArg =
-    GDALCreateGenImgProjTransformer2( psWO->hSrcDS, nullptr,
-                                      papszOptions );
-  CSLDestroy( papszOptions );
-
-  if ( psWO->pTransformerArg == nullptr )
-  {
-    GDALDestroyWarpOptions( psWO );
-    return nullptr;
-  }
-
-  /* -------------------------------------------------------------------- */
-  /*      Figure out the desired output bounds and resolution.            */
-  /* -------------------------------------------------------------------- */
-  double adfDstGeoTransform[6] = { 0.0 };
-  int nDstPixels = 0;
-  int nDstLines = 0;
-  CPLErr eErr =
-    GDALSuggestedWarpOutput( hSrcDS, psWO->pfnTransformer,
-                             psWO->pTransformerArg,
-                             adfDstGeoTransform, &nDstPixels, &nDstLines );
-  if ( eErr != CE_None )
-  {
-    GDALDestroyTransformer( psWO->pTransformerArg );
-    GDALDestroyWarpOptions( psWO );
-    return nullptr;
-  }
-
-  /* -------------------------------------------------------------------- */
-  /*      Update the transformer to include an output geotransform        */
-  /*      back to pixel/line coordinates.                                 */
-  /*                                                                      */
-  /* -------------------------------------------------------------------- */
-  GDALSetGenImgProjTransformerDstGeoTransform(
-    psWO->pTransformerArg, adfDstGeoTransform );
-
-  /* -------------------------------------------------------------------- */
-  /*      Do we want to apply an approximating transformation?            */
-  /* -------------------------------------------------------------------- */
-  if ( dfMaxError > 0.0 )
-  {
-    psWO->pTransformerArg =
-      GDALCreateApproxTransformer( psWO->pfnTransformer,
-                                   psWO->pTransformerArg,
-                                   dfMaxError );
-    psWO->pfnTransformer = GDALApproxTransform;
-    GDALApproxTransformerOwnsSubtransformer( psWO->pTransformerArg, TRUE );
-  }
-
-  /* -------------------------------------------------------------------- */
-  /*      Create the VRT file.                                            */
-  /* -------------------------------------------------------------------- */
-  GDALDatasetH hDstDS
-    = GDALCreateWarpedVRT( hSrcDS, nDstPixels, nDstLines,
-                           adfDstGeoTransform, psWO );
-
-  GDALDestroyWarpOptions( psWO );
-
-  if ( pszDstWKT != nullptr )
-    GDALSetProjection( hDstDS, pszDstWKT );
-  else if ( pszSrcWKT != nullptr )
-    GDALSetProjection( hDstDS, pszSrcWKT );
-  else if ( GDALGetGCPCount( hSrcDS ) > 0 )
-    GDALSetProjection( hDstDS, GDALGetGCPProjection( hSrcDS ) );
-  else
-    GDALSetProjection( hDstDS, GDALGetProjectionRef( hSrcDS ) );
-
-  return hDstDS;
-}
-#endif
-
-
 GDALDatasetH QgsGdalUtils::rpcAwareAutoCreateWarpedVrt(
   GDALDatasetH hSrcDS,
   const char *pszSrcWKT,
@@ -527,7 +385,7 @@ void QgsGdalUtils::setupProxy()
       //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toStringList();
 
       const QString proxyHost( proxy.hostName() );
-      const qint16 proxyPort( proxy.port() );
+      const quint16 proxyPort( proxy.port() );
 
       const QString proxyUser( proxy.user() );
       const QString proxyPassword( proxy.password() );
@@ -627,17 +485,13 @@ QStringList QgsGdalUtils::multiLayerFileExtensions()
       if ( driverExtensions.isEmpty() )
         continue;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      const QStringList splitExtensions = driverExtensions.split( ' ', QString::SkipEmptyParts );
-#else
       const QStringList splitExtensions = driverExtensions.split( ' ', Qt::SkipEmptyParts );
-#endif
 
       for ( const QString &ext : splitExtensions )
         extensions.insert( ext );
     }
 
-    SUPPORTED_DB_LAYERS_EXTENSIONS = qgis::setToList( extensions );
+    SUPPORTED_DB_LAYERS_EXTENSIONS = QStringList( extensions.constBegin(), extensions.constEnd() );
   } );
   return SUPPORTED_DB_LAYERS_EXTENSIONS;
 

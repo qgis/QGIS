@@ -74,7 +74,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     // we may want to consider exposing the admin url as an option for users to set
     if ( adminUrl.contains( QStringLiteral( "/rest/services/" ) ) )
     {
-      adminUrl.replace( QStringLiteral( "/rest/services/" ), QStringLiteral( "/rest/admin/services/" ) );
+      adminUrl.replace( QLatin1String( "/rest/services/" ), QLatin1String( "/rest/admin/services/" ) );
       const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
                                     authcfg, errorTitle, errorMessage, mRequestHeaders );
       if ( !adminData.isEmpty() )
@@ -195,6 +195,17 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       QVariantMap editorConfig;
       editorConfig.insert( QStringLiteral( "map" ), valueConfig );
       field.setEditorWidgetSetup( QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), editorConfig ) );
+    }
+
+    if ( fieldDataMap.contains( QStringLiteral( "editable" ) ) && !fieldDataMap.value( QStringLiteral( "editable" ) ).toBool() )
+    {
+      field.setReadOnly( true );
+    }
+    if ( !field.isReadOnly() && fieldDataMap.contains( QStringLiteral( "nullable" ) ) && !fieldDataMap.value( QStringLiteral( "nullable" ) ).toBool() )
+    {
+      QgsFieldConstraints constraints;
+      constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+      field.setConstraints( constraints );
     }
 
     mSharedData->mFields.append( field );
@@ -767,7 +778,7 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
   QgsDataSourceUri dsUri;
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
 
-  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).canConvert< QgsRectangle >() )
+  if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == QMetaType::type( "QgsRectangle" ) )
   {
     const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
     dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );

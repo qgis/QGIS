@@ -61,7 +61,7 @@ Start editing
 :return: ``True`` on success
 %End
 
-    bool commitChanges( QStringList &commitErrors, bool stopEditing = true );
+    bool commitChanges( QStringList &commitErrors /Out/, bool stopEditing = true );
 %Docstring
 Attempts to commit any changes to disk.  Returns the result of the attempt.
 If a commit fails, the in-memory changes are left alone.
@@ -77,14 +77,22 @@ so if a stage fails, it's difficult to roll back cleanly.
 Therefore any error message also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
 
-:return: ``True`` on success
+:param stopEditing: if set to ``False``, the layer will stay in editing mode.
+                    Otherwise the layer editing mode will be disabled if the commit is successful.
+
+:return: - ``True`` on success
+         - commitErrors: will be set to a list of descriptive errors if the commit fails.
 %End
 
-    bool rollBack( QStringList &rollbackErrors, bool stopEditing = true );
+    bool rollBack( QStringList &rollbackErrors /Out/, bool stopEditing = true );
 %Docstring
 Stop editing and discard the edits
 
-:return: ``False`` if errors occurred during rollback
+:param stopEditing: if set to ``False``, the layer will stay in editing mode.
+                    Otherwise the layer editing mode will be disabled if the rollback is successful.
+
+:return: - ``False`` if errors occurred during rollback
+         - rollbackErrors: will be set to a list of descriptive errors if the rollback fails.
 %End
 
     bool isEditing() const;

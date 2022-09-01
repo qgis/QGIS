@@ -257,6 +257,7 @@ set(QGIS_APP_SRCS
   options/qgscustomprojectionoptions.cpp
   options/qgsfontoptions.cpp
   options/qgsgpsdeviceoptions.cpp
+  options/qgsgpsoptions.cpp
   options/qgsoptions.cpp
   options/qgsoptionsutils.cpp
   options/qgsrasterrenderingoptions.cpp
@@ -357,6 +358,7 @@ if (WITH_3D)
     layout/qgslayout3dmapwidget.cpp
     3d/qgsskyboxrenderingsettingswidget.cpp
     3d/qgsshadowrenderingsettingswidget.cpp
+    3d/qgsambientocclusionsettingswidget.cpp
     3d/qgspointcloud3dsymbolwidget.cpp
     3d/qgspointcloudlayer3drendererwidget.cpp
     3d/qgs3dmapcanvaswidget.cpp

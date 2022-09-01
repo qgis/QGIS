@@ -169,7 +169,7 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
 
     case QVariant::Char:
       element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
-      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
+      element.setAttribute( QStringLiteral( "value" ), QgsVariantUtils::isNull( value ) ? QString() : QString( value.toChar() ) );
       break;
 
     case QVariant::Color:
@@ -194,42 +194,42 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
 
     case QVariant::UserType:
     {
-      if ( value.canConvert< QgsProperty >() )
+      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProperty" ) );
         const QDomElement propertyElem = QgsXmlUtils::writeVariant( value.value< QgsProperty >().toVariant(), doc );
         element.appendChild( propertyElem );
         break;
       }
-      else if ( value.canConvert< QgsCoordinateReferenceSystem >() )
+      else if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsCoordinateReferenceSystem" ) );
         const QgsCoordinateReferenceSystem crs = value.value< QgsCoordinateReferenceSystem >();
         crs.writeXml( element, doc );
         break;
       }
-      else if ( value.canConvert< QgsGeometry >() )
+      else if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
       {
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsGeometry" ) );
         const QgsGeometry geom = value.value< QgsGeometry >();
         element.setAttribute( QStringLiteral( "value" ), geom.asWkt() );
         break;
       }
-      else if ( value.canConvert< QgsProcessingOutputLayerDefinition >() )
+      else if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsProcessingOutputLayerDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
         break;
       }
-      else if ( value.canConvert< QgsProcessingFeatureSourceDefinition >() )
+      else if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
         element.appendChild( valueElement );
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
         break;
       }
-      else if ( value.canConvert< QgsRemappingSinkDefinition >() )
+      else if ( value.userType() == QMetaType::type( "QgsRemappingSinkDefinition" ) )
       {
         const QDomElement valueElement = writeVariant( value.value< QgsRemappingSinkDefinition >().toVariant(), doc );
         element.appendChild( valueElement );

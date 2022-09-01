@@ -32,7 +32,6 @@ class QRect;
 class QgsSettings;
 class QSpinBox;
 class QSplashScreen;
-class QStringList;
 class QToolButton;
 class QTcpSocket;
 class QValidator;
@@ -153,6 +152,7 @@ class QgsNetworkLoggerWidgetFactory;
 class QgsAppQueryLogger;
 class QgsMapToolCapture;
 class QgsElevationProfileWidget;
+class QgsScreenHelper;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -625,6 +625,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionHelpContents() { return mActionHelpContents; }
     QAction *actionHelpAPI() { return mActionHelpAPI; }
+    QAction *actionHelpPyQgisAPI() { return mActionHelpPyQgisAPI; }
     QAction *actionReportaBug() { return mActionReportaBug; }
     QAction *actionQgisHomePage() { return mActionQgisHomePage; }
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
@@ -739,7 +740,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
     //! \since QGIS 2.1
-    static QString normalizedMenuName( const QString &name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
+    static QString normalizedMenuName( const QString &name );
 
     void parseVersionInfo( QNetworkReply *reply, int &latestVersion, QStringList &versionInfo );
 
@@ -933,7 +934,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll );
+    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 
@@ -1687,10 +1688,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open the help contents in a browser
     void helpContents();
-    //! Open the API documentation in a browser
+    //! Open the C++ API documentation in a browser
     void apiDocumentation();
+    //! Open the PyQGIS API documentation in a browser
+    void pyQgisApiDocumentation();
     //! Open the Bugtracker page in a browser
     void reportaBug();
+    //! Open the donation page in a browser
+    void donate();
+    //! Open the get involved page in a browser
+    void getInvolved();
     //! Open the QGIS support page
     void supportProviders();
     //! Open the QGIS homepage in users browser
@@ -1871,14 +1878,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void modifyAnnotation();
     void reprojectAnnotations();
 
-    //! Alerts user when labeling font for layer has not been found on system
-    void labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontfamily );
-
     //! Alerts user when commit errors occurred
     void commitError( QgsVectorLayer *vlayer, const QStringList &commitErrorsList = QStringList() );
-
-    //! Opens the labeling dialog for a layer when called from labelingFontNotFound alert
-    void labelingDialogFontNotFound( QAction *act );
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
@@ -2174,6 +2175,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                      QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
                                      const QString &dialogTitle = QString() );
 
+    QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
+
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
 
@@ -2358,6 +2361,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns a list of all capture map tools.
      */
     QList< QgsMapToolCapture * > captureTools();
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 

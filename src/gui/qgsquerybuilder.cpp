@@ -28,7 +28,6 @@
 #include <QInputDialog>
 #include <QListView>
 #include <QMessageBox>
-#include <QRegExp>
 #include <QPushButton>
 #include <QTextStream>
 
@@ -168,7 +167,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   for ( const QVariant &var : constValues )
   {
     QString value;
-    if ( var.isNull() )
+    if ( QgsVariantUtils::isNull( var ) )
       value = nullValue;
     else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
       value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
@@ -179,7 +178,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
       {
         if ( !value.isEmpty() )
           value.append( ", " );
-        value.append( val.isNull() ? nullValue : val.toString() );
+        value.append( QgsVariantUtils::isNull( val ) ? nullValue : val.toString() );
       }
     }
     else
@@ -189,7 +188,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
     myItem->setEditable( false );
     myItem->setData( var, Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
-    QgsDebugMsg( QStringLiteral( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
+    QgsDebugMsg( QStringLiteral( "Value is null: %1\nvalue: %2" ).arg( QgsVariantUtils::isNull( var ) ).arg( QgsVariantUtils::isNull( var ) ? nullValue : var.toString() ) );
   }
 }
 
@@ -388,7 +387,7 @@ void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
   const QVariant value = index.data( Qt::UserRole + 1 );
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     mTxtSql->insertText( QStringLiteral( "NULL" ) );
   else if ( value.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
     mTxtSql->insertText( '\'' + value.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) ) + '\'' );

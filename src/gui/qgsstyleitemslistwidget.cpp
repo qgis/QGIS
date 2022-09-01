@@ -43,13 +43,11 @@ QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent )
 
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 QgsReadOnlyStyleModel::QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent )
   : QgsStyleProxyModel( style, parent )
 {
 
 }
-#endif
 
 Qt::ItemFlags QgsReadOnlyStyleModel::flags( const QModelIndex &index ) const
 {
@@ -249,13 +247,8 @@ void QgsStyleItemsListWidget::setStyle( QgsStyle *style )
 {
   mStyle = style;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsProject::instance()->styleSettings()->combinedStyleModel(), this )
            : new QgsReadOnlyStyleModel( mStyle, this );
-#else
-  mModel = mStyle == QgsStyle::defaultStyle() ? new QgsReadOnlyStyleModel( QgsApplication::defaultStyleModel(), this )
-           : new QgsReadOnlyStyleModel( mStyle, this );
-#endif
 
   mModel->addDesiredIconSize( viewSymbols->iconSize() );
   mModel->addDesiredIconSize( mSymbolTreeView->iconSize() );

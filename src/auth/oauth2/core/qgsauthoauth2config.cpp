@@ -21,7 +21,7 @@
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
-
+#include "qgsvariantutils.h"
 
 QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   : QObject( parent )
@@ -480,7 +480,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
         return vmap;
       }
 
-      if ( var.isNull() )
+      if ( QgsVariantUtils::isNull( var ) )
       {
         QgsDebugMsg( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( "invalid or null" ) );
         if ( ok )

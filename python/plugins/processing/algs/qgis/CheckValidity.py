@@ -74,7 +74,7 @@ class CheckValidity(QgisAlgorithm):
         return 'vectorgeometry'
 
     def tags(self):
-        return self.tr('valid,invalid,detect').split(',')
+        return self.tr('valid,invalid,detect,error').split(',')
 
     def __init__(self):
         super().__init__()

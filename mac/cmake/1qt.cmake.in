@@ -16,8 +16,8 @@ SET (QT_FWVER "5")
 # build list of Qt frameworks to bundle
 
 # core list, includes dependencies and used by extra plugins
-SET (QTLISTQG QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtConcurrent QtPrintSupport QtSerialPort QtPositioning QtTest QtSql QtMacExtras QtDBus)
-SET (PYQTLIST Qt QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtPrintSupport QtPositioning QtSerialPort QtTest QtSql QtMacExtras QtDBus)
+SET (QTLISTQG QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtConcurrent QtPrintSupport QtSerialPort QtPositioning QtTest QtSql QtDBus)
+SET (PYQTLIST Qt QtCore QtGui QtWidgets QtNetwork QtXml QtSvg QtPrintSupport QtPositioning QtSerialPort QtTest QtSql QtDBus)
 
 # QtQuickWidgets appears to be implied direct dep, it needs Quick and Qml,
 # whether or not WITH_QUICK specified

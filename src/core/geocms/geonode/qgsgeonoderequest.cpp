@@ -18,6 +18,7 @@
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 #include "qgsgeonoderequest.h"
+#include "qgsvariantutils.h"
 
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
@@ -175,7 +176,7 @@ void QgsGeoNodeRequest::replyFinished()
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
       QVariant redirect = mGeoNodeReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-      if ( !redirect.isNull() )
+      if ( !QgsVariantUtils::isNull( redirect ) )
       {
 
         emit statusChanged( QStringLiteral( "GeoNode request redirected." ) );

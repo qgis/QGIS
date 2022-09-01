@@ -17,16 +17,12 @@
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgssettings.h"
-#include "qgsoffscreen3dengine.h"
-#include "qgs3danimationsettings.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dmapscene.h"
-#include "qgs3dutils.h"
-#include "qgscameracontroller.h"
 #include "qgsspinbox.h"
 #include "qgshelp.h"
 
 #include <QtGlobal>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
 {
@@ -40,8 +36,8 @@ Qgs3DAnimationExportDialog::Qgs3DAnimationExportDialog(): QDialog( nullptr )
                                QStringLiteral( "%1####.jpg" ).arg( QgsProject::instance()->baseName() )
                                , QgsSettings::App ).toString();
   mTemplateLineEdit->setText( templateText );
-  const QRegExp rx( QStringLiteral( "\\w+#+\\.{1}\\w+" ) ); //e.g. anyprefix#####.png
-  QValidator *validator = new QRegExpValidator( rx, this );
+  const thread_local QRegularExpression rx( QStringLiteral( "^\\w+#+\\.{1}\\w+$" ) ); //e.g. anyprefix#####.png
+  QValidator *validator = new QRegularExpressionValidator( rx, this );
   mTemplateLineEdit->setValidator( validator );
 
   connect( mTemplateLineEdit, &QLineEdit::textChanged, this, [ = ]

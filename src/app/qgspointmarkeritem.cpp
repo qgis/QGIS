@@ -99,7 +99,7 @@ void QgsMapCanvasSymbolItem::setSymbol( std::unique_ptr< QgsSymbol > symbol )
   mSymbol = std::move( symbol );
 }
 
-const QgsSymbol *QgsMapCanvasSymbolItem::symbol() const
+QgsSymbol *QgsMapCanvasSymbolItem::symbol()
 {
   return mSymbol.get();
 }
@@ -132,25 +132,34 @@ QgsMapCanvasMarkerSymbolItem::QgsMapCanvasMarkerSymbolItem( QgsMapCanvas *canvas
 
 void QgsMapCanvasMarkerSymbolItem::setPointLocation( const QgsPointXY &p )
 {
-  mLocation = toCanvasCoordinates( p );
+  prepareGeometryChange();
+  mMapLocation = p;
 }
 
 void QgsMapCanvasMarkerSymbolItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   markerSymbol()->startRender( rc, mFeature.fields() );
-  const QRectF bounds = markerSymbol()->bounds( mLocation, rc, mFeature );
+  setPos( toCanvasCoordinates( mMapLocation ) );
+  prepareGeometryChange();
+  mCanvasBounds = markerSymbol()->bounds( QPointF( 0, 0 ), rc, mFeature );
   markerSymbol()->stopRender( rc );
-  const QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() ),
-                        static_cast<int>( bounds.y() ) ),
-                        mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( bounds.x() + bounds.width() * 2 ),
-                            static_cast<int>( bounds.y() + bounds.height() * 2 ) ) );
-  setRect( r );
+  update();
 }
 
 void QgsMapCanvasMarkerSymbolItem::renderSymbol( QgsRenderContext &context, const QgsFeature &feature )
 {
-  markerSymbol()->renderPoint( mLocation - pos(), &feature, context );
+  markerSymbol()->renderPoint( QPointF( 0, 0 ), &feature, context );
+}
+
+QRectF QgsMapCanvasMarkerSymbolItem::boundingRect() const
+{
+  return mCanvasBounds;
+}
+
+void QgsMapCanvasMarkerSymbolItem::updatePosition()
+{
+  updateSize();
 }
 
 QgsMarkerSymbol *QgsMapCanvasMarkerSymbolItem::markerSymbol()

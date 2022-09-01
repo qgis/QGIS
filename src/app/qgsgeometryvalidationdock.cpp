@@ -278,7 +278,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
     }
   }
 
-  const bool hasContextRectangle = !current.data( QgsGeometryValidationModel::FeatureExtentRole ).isNull();
+  const bool hasContextRectangle = !QgsVariantUtils::isNull( current.data( QgsGeometryValidationModel::FeatureExtentRole ) );
   mZoomToFeatureButton->setEnabled( hasContextRectangle );
 }
 

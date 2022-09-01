@@ -87,7 +87,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
 
   const QgsDxfExport::SymbologyExport symbologyMode = static_cast< QgsDxfExport::SymbologyExport >( parameterAsInt( parameters, QStringLiteral( "SYMBOLOGY_MODE" ), context ) );
   const double symbologyScale = parameterAsDouble( parameters, QStringLiteral( "SYMBOLOGY_SCALE" ), context );
-  const QString encoding = QgsDxfExport::encodings().at( parameterAsInt( parameters, QStringLiteral( "ENCODING" ), context ) );
+  const QString encoding = parameterAsEnumString( parameters, QStringLiteral( "ENCODING" ), context );
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
   const bool useLayerTitle = parameterAsBool( parameters, QStringLiteral( "USE_LAYER_TITLE" ), context );
   const bool useMText = parameterAsBool( parameters, QStringLiteral( "MTEXT" ), context );
