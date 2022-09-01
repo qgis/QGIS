@@ -574,7 +574,15 @@ void Qgs3DMapCanvasWidget::onMainMapCanvasExtentChanged()
 {
   if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) )
   {
-    mCanvas->setViewFrom2DExtent( mMainCanvas->extent() );
+    if ( mCanvas->map()->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) )
+    {
+      whileBlocking( mCanvas )->setViewFrom2DExtent( mMainCanvas->extent() );
+    }
+    else
+    {
+      mCanvas->setViewFrom2DExtent( mMainCanvas->extent() );
+    }
+
   }
 }
 
