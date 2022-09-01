@@ -62,9 +62,13 @@ void QgsCameraPose::setPitchAngle( float pitch )
   // prevent going over the head
   // prevent bug in QgsCameraPose::updateCamera when updating camera rotation.
   // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
-  // will return bad rotation angle.
+  // will return bad rotation angle in Qt5.
   // See https://bugreports.qt.io/browse/QTBUG-72103
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mPitchAngle = std::clamp( pitch, 0.2f, 179.8f );
+#else
+  mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
+#endif
 }
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
