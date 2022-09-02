@@ -2293,7 +2293,7 @@ Modifies geometry to avoid intersections with the layers specified in project pr
 .. versionadded:: 1.5
 %End
 
-    QgsGeometry makeValid() const;
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const throw( QgsNotSupportedException );
 %Docstring
 Attempts to make an invalid geometry valid without losing vertices.
 
@@ -2306,13 +2306,12 @@ It preserves Z values, but M values will be dropped.
 If an error was encountered during the process, more information can be retrieved
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
+The ``method`` and ``keepCollapsed`` arguments are available since QGIS 3.28.
+They require builds based on GEOS 3.10 or later.
+
 :return: new valid QgsGeometry or null geometry on error
 
-.. note::
-
-   For QGIS builds using GEOS library versions older than 3.8 this method calls
-   an internal fork of PostGIS' ST_MakeValid() function. For builds based on GEOS 3.8 or
-   later this method calls the GEOS MakeValid method directly.
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.9 or earlier when the ``method`` is not Qgis.MakeValidMethod.Linework or the ``keepCollapsed`` option is set.
 
 
 .. versionadded:: 3.0

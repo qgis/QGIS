@@ -119,9 +119,13 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /**
      * Repairs the geometry using GEOS make valid routine.
+     *
+     * The \a method and \a keepCollapsed arguments require builds based on GEOS 3.10 or later.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
      * \since QGIS 3.20
      */
-    std::unique_ptr< QgsAbstractGeometry > makeValid( QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = nullptr ) const;
 
     /**
      * Adds a new island polygon to a multipolygon feature

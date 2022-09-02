@@ -160,19 +160,60 @@ QgsGeometry QgsGeos::geometryFromGeos( const geos::unique_ptr &geos )
   return g;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
     return nullptr;
   }
 
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+  if ( method != Qgis::MakeValidMethod::Linework )
+    throw QgsNotSupportedException( QStringLiteral( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
+
+  if ( keepCollapsed )
+    throw QgsNotSupportedException( QStringLiteral( "The keep collapsed option for making geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
   geos::unique_ptr geos;
   try
   {
     geos.reset( GEOSMakeValid_r( geosinit()->ctxt, mGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
+#else
+
+  GEOSMakeValidParams *params = GEOSMakeValidParams_create_r( geosinit()->ctxt );
+  switch ( method )
+  {
+    case Qgis::MakeValidMethod::Linework:
+      GEOSMakeValidParams_setMethod_r( geosinit()->ctxt, params, GEOS_MAKE_VALID_LINEWORK );
+      break;
+
+    case Qgis::MakeValidMethod::Structure:
+      GEOSMakeValidParams_setMethod_r( geosinit()->ctxt, params, GEOS_MAKE_VALID_STRUCTURE );
+      break;
+  }
+
+  GEOSMakeValidParams_setKeepCollapsed_r( geosinit()->ctxt,
+                                          params,
+                                          keepCollapsed ? 1 : 0 );
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSMakeValidWithParams_r( geosinit()->ctxt, mGeos.get(), params ) );
+    GEOSMakeValidParams_destroy_r( geosinit()->ctxt, params );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    GEOSMakeValidParams_destroy_r( geosinit()->ctxt, params );
+    return nullptr;
+  }
+#endif
+
   return fromGeos( geos.get() );
 }
 

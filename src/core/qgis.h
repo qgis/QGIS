@@ -1018,6 +1018,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Algorithms to use when repairing invalid geometries.
+     *
+     * \since QGIS 3.28
+     */
+    enum class MakeValidMethod : int
+    {
+      Linework = 0, //!< Combines all rings into a set of noded lines and then extracts valid polygons from that linework.
+      Structure = 1, //!< Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+.
+    };
+    Q_ENUM( MakeValidMethod )
+
+    /**
      * Feature request spatial filter types.
      *
      * \since QGIS 3.22

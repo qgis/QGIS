@@ -2369,15 +2369,16 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered during the process, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * The \a method and \a keepCollapsed arguments are available since QGIS 3.28.
+     * They require builds based on GEOS 3.10 or later.
+     *
      * \returns new valid QgsGeometry or null geometry on error
      *
-     * \note For QGIS builds using GEOS library versions older than 3.8 this method calls
-     * an internal fork of PostGIS' ST_MakeValid() function. For builds based on GEOS 3.8 or
-     * later this method calls the GEOS MakeValid method directly.
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
      *
      * \since QGIS 3.0
      */
-    QgsGeometry makeValid() const;
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Forces geometries to respect the Right-Hand-Rule, in which the area that is bounded by a polygon
