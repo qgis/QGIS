@@ -591,56 +591,61 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
-#ifndef SIP_RUN   // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
-
     /**
      * Returns whether eye dome lighting effect will be used
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     bool eyeDomeLightingEnabled() const { return mEyeDomeLightingEnabled; }
 
     /**
      * Sets whether eye dome lighting effect will be used
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     void setEyeDomeLightingEnabled( bool enabled ) { mEyeDomeLightingEnabled = enabled; }
 
     /**
      * Returns the eye dome lighting strength value
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     double eyeDomeLightingStrength() const { return mEyeDomeLightingStrength; }
 
     /**
      * Sets the eye dome lighting strength value
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     void setEyeDomeLightingStrength( double strength ) { mEyeDomeLightingStrength = strength; }
 
     /**
      * Returns the eye dome lighting distance
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     double eyeDomeLightingDistance() const { return mEyeDomeLightingDistance; }
 
     /**
      * Sets the eye dome lighting distance
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     void setEyeDomeLightingDistance( double distance ) { mEyeDomeLightingDistance = distance; }
 
     /**
      * Returns unit for the eye dome lighting distance
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     QgsUnitTypes::RenderUnit eyeDomeLightingDistanceUnit() const { return mEyeDomeLightingDistanceUnit; }
 
     /**
      * Sets unit for the eye dome lighting distance
+     * \note This is not a part of stable API - this function may be removed in a future release
      * \since QGIS 3.28
      */
     void setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit unit ) { mEyeDomeLightingDistanceUnit = unit; }
-#endif
 
   protected:
 
