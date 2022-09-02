@@ -35,20 +35,6 @@ Handles exporting point cloud layers to memory layers, OGR supported files and P
     };
 
 
-    static QString getTranslatedName( ExportFormat format );
-%Docstring
-Gets the translated name for the specified ``format``
-%End
-
-    static QString getFilter( ExportFormat format );
-%Docstring
-Gets the extensions filter for the specified ``format``
-%End
-
-    static QString getOgrDriverName( ExportFormat format );
-%Docstring
-Gets the OGR driver name for the specified ``format``
-%End
 
     QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
 %Docstring
