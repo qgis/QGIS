@@ -110,8 +110,18 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void setCoordinateType( Qgis::CoordinateDisplayType type );
 
+    /**
+     * Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+     * \see setCoordinateCustomCrs()
+     * \since QGIS 3.28
+     */
     QgsCoordinateReferenceSystem coordinateCustomCrs() const { return mCoordinateCustomCrs; }
 
+    /**
+     * Sets the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+     * \see setCoordinateCustomCrs()
+     * \since QGIS 3.28
+     */
     void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
@@ -153,6 +163,13 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void coordinateTypeChanged();
 
+    /**
+     * Emitted when the coordinate custom CRS changes.
+     *
+     * \see setCoordinateCustomCrs()
+     * \see coordinateCustomCrs()
+     * \since QGIS 3.28
+     */
     void coordinateCustomCrsChanged();
 
   private:

@@ -97,8 +97,22 @@ Sets the default coordinate ``type`` for the project.
 %End
 
     QgsCoordinateReferenceSystem coordinateCustomCrs() const;
+%Docstring
+Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
 
     void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
@@ -146,6 +160,15 @@ Emitted when the default coordinate format changes.
 %End
 
     void coordinateCustomCrsChanged();
+%Docstring
+Emitted when the coordinate custom CRS changes.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. seealso:: :py:func:`coordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
 
 };
 
