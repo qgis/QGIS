@@ -617,6 +617,12 @@ The development version
       Bevel,
     };
 
+    enum class MakeValidMethod
+    {
+      Linework,
+      Structure,
+    };
+
     enum class SpatialFilterType
     {
       NoFilter,
