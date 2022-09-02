@@ -41,11 +41,13 @@ void QgsProjectDisplaySettings::reset()
   mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
   mGeographicCoordinateFormat.reset( QgsLocalDefaultSettings::geographicCoordinateFormat() );
 
-  mCoordinateType = Qgis::CoordinateDisplayType::MapUnits;
+  mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
+  mCoordinateCustomCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
 
   emit bearingFormatChanged();
   emit geographicCoordinateFormatChanged();
   emit coordinateTypeChanged();
+  emit coordinateCustomCrsChanged();
 }
 
 void QgsProjectDisplaySettings::setBearingFormat( QgsBearingNumericFormat *format )
@@ -78,6 +80,16 @@ void QgsProjectDisplaySettings::setCoordinateType( Qgis::CoordinateDisplayType t
   mCoordinateType = type;
 
   emit coordinateTypeChanged();
+}
+
+void QgsProjectDisplaySettings::setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  if ( mCoordinateCustomCrs == crs )
+    return;
+
+  mCoordinateCustomCrs = crs;
+
+  emit coordinateCustomCrsChanged();
 }
 
 bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -134,10 +146,25 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString() );
       if ( !format.isEmpty() )
       {
-        mCoordinateType = format == QStringLiteral( "MU" ) ? Qgis::CoordinateDisplayType::MapUnits : Qgis::CoordinateDisplayType::Geographic;
+        if ( format != QStringLiteral( "MU" ) && !project->crs().isGeographic() )
+        {
+          mCoordinateType = Qgis::CoordinateDisplayType::CustomCrs;
+        }
+        else
+        {
+          mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
+        }
       }
     }
     emit coordinateTypeChanged();
+
+    QDomNodeList crsNodeList = element.elementsByTagName( QStringLiteral( "CoordinateCustomCrs" ) );
+    if ( !crsNodeList.isEmpty() )
+    {
+      QDomElement crsElem = crsNodeList.at( 0 ).toElement();
+      mCoordinateCustomCrs.readXml( crsElem );
+    }
+    emit coordinateCustomCrsChanged();
   }
 
   return true;
@@ -160,6 +187,12 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
   }
 
   element.setAttribute( QStringLiteral( "CoordinateType" ), static_cast<int>( mCoordinateType ) );
+  if ( mCoordinateCustomCrs.isValid() )
+  {
+    QDomElement crsElem = doc.createElement( QStringLiteral( "CoordinateCustomCrs" ) );
+    mCoordinateCustomCrs.writeXml( crsElem, doc );
+    element.appendChild( crsElem );
+  }
 
   return element;
 }

@@ -19,6 +19,7 @@ from qgis.core import (QgsProjectDisplaySettings,
                        QgsSettings,
                        QgsLocalDefaultSettings,
                        QgsUnitTypes,
+                       QgsCoordinateReferenceSystem,
                        Qgis)
 
 from qgis.PyQt.QtCore import QCoreApplication
@@ -86,13 +87,25 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 3)
         self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
 
-    def testCoordinateType(self):
+    def testCoordinateTypeGeographic(self):
         p = QgsProjectDisplaySettings()
 
         spy = QSignalSpy(p.coordinateTypeChanged)
-        p.setCoordinateType(Qgis.CoordinateDisplayType.Geographic)
+        p.setCoordinateType(Qgis.CoordinateDisplayType.MapGeographic)
         self.assertEqual(len(spy), 1)
-        self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.Geographic)
+        self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.MapGeographic)
+
+    def testCoordinateTypeCustomCrs(self):
+        p = QgsProjectDisplaySettings()
+
+        spy = QSignalSpy(p.coordinateTypeChanged)
+        p.setCoordinateType(Qgis.CoordinateDisplayType.CustomCrs)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.CustomCrs)
+        spy = QSignalSpy(p.coordinateCustomCrsChanged)
+        p.setCoordinateCustomCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.coordinateCustomCrs().authid(), 'EPSG:3148')
 
     def testReset(self):
         """
@@ -125,19 +138,27 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
         s.setGeographicCoordinateFormat(format)
 
+        p.setCoordinateType(Qgis.CoordinateDisplayType.MapGeographic)
+        p.setCoordinateCustomCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
+
         spy = QSignalSpy(p.bearingFormatChanged)
         spy2 = QSignalSpy(p.geographicCoordinateFormatChanged)
         spy3 = QSignalSpy(p.coordinateTypeChanged)
+        spy4 = QSignalSpy(p.coordinateCustomCrsChanged)
         p.reset()
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
         self.assertEqual(len(spy3), 1)
+        self.assertEqual(len(spy4), 1)
         # project should default to local default format
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
         self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
 
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 5)
         self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
+
+        self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.MapCrs)
+        self.assertEqual(p.coordinateCustomCrs().authid(), 'EPSG:4326')
 
     def testReadWrite(self):
         p = QgsProjectDisplaySettings()

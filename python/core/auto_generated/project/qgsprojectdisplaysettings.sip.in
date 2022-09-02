@@ -96,6 +96,10 @@ Sets the default coordinate ``type`` for the project.
 .. versionadded:: 3.28
 %End
 
+    QgsCoordinateReferenceSystem coordinateCustomCrs() const;
+
+    void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the settings's state from a DOM element.
@@ -140,6 +144,8 @@ Emitted when the default coordinate format changes.
 
 .. versionadded:: 3.28
 %End
+
+    void coordinateCustomCrsChanged();
 
 };
 
