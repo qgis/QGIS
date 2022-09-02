@@ -25,6 +25,31 @@ Handles exporting point cloud layers to memory layers, OGR supported files and P
 %End
   public:
 
+    enum class ExportFormat
+    {
+      Memory,
+      Las,
+      Gpkg,
+      Shp,
+      Dxf,
+    };
+
+
+    static QString getTranslatedName( ExportFormat format );
+%Docstring
+Gets the translated name for the specified ``format``
+%End
+
+    static QString getFilter( ExportFormat format );
+%Docstring
+Gets the extensions filter for the specified ``format``
+%End
+
+    static QString getOgrDriverName( ExportFormat format );
+%Docstring
+Gets the OGR driver name for the specified ``format``
+%End
+
     QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
 %Docstring
 Constructor for QgsPointCloudLayerExporter, associated with the specified ``layer``.
@@ -146,25 +171,18 @@ for reprojection if different from the point cloud layer's CRS.
 Gets the ``crs`` for the exported file.
 %End
 
-    bool setFormat( const QString &format );
+    bool setFormat( const ExportFormat format );
 %Docstring
 Sets the ``format`` for the exported file.
 
 :return: true if the ``format`` is supported, false otherwise.
 
-.. seealso:: :py:func:`supportedFormats`
+.. seealso:: ExportFormat
 %End
 
-    QString format() const;
+    ExportFormat format() const;
 %Docstring
 Returns the format for the exported file or layer.
-%End
-
-    QStringList supportedFormats() const;
-%Docstring
-Gets a list of the supported export formats.
-
-.. seealso:: :py:func:`setFormat`
 %End
 
     void setPointsLimit( qint64 limit );

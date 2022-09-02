@@ -46,6 +46,51 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
   public:
 
     /**
+     * Supported export formats for point clouds
+     */
+    enum class ExportFormat : int
+    {
+      Memory = 0, //!< Memory layer
+      Las = 1, //!< LAS/LAZ point cloud
+      Gpkg = 2, //!< Geopackage
+      Shp = 3, //!< ESRI ShapeFile
+      Dxf = 4, //!< AutoCAD dxf
+    };
+
+    /**
+     * Gets a list of the supported export formats.
+     *
+     * \see setFormat()
+     */
+    static QList< ExportFormat > supportedFormats() SIP_SKIP
+    {
+      QList< ExportFormat > formats;
+      formats << ExportFormat::Memory;
+#ifdef HAVE_PDAL_QGIS
+      formats << ExportFormat::Las;
+#endif
+      formats << ExportFormat::Gpkg;
+      formats << ExportFormat::Shp;
+      formats << ExportFormat::Dxf;
+      return formats;
+    }
+
+    /**
+     * Gets the translated name for the specified \a format
+     */
+    static QString getTranslatedName( ExportFormat format );
+
+    /**
+     * Gets the extensions filter for the specified \a format
+     */
+    static QString getFilter( ExportFormat format );
+
+    /**
+     * Gets the OGR driver name for the specified \a format
+     */
+    static QString getOgrDriverName( ExportFormat format );
+
+    /**
      * Constructor for QgsPointCloudLayerExporter, associated with the specified \a layer.
      *
      * \note The \a layer is safe to be deleted once it's used in the constructor.
@@ -158,21 +203,14 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Sets the \a format for the exported file.
      * \returns true if the \a format is supported, false otherwise.
-     * \see supportedFormats()
+     * \see ExportFormat
      */
-    bool setFormat( const QString &format );
+    bool setFormat( const ExportFormat format );
 
     /**
      * Returns the format for the exported file or layer.
      */
-    QString format() const { return mFormat; }
-
-    /**
-     * Gets a list of the supported export formats.
-     *
-     * \see setFormat()
-     */
-    QStringList supportedFormats() const { return mSupportedFormats; }
+    ExportFormat format() const { return mFormat; }
 
     /**
      * Sets the maximum number of points to be exported. Default value is 0.
@@ -227,7 +265,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     QgsPointCloudIndex *mIndex = nullptr;
     QString mName = QObject::tr( "Exported" );
-    QString mFormat;
+    ExportFormat mFormat;
     QString mFilename;
     QString mLastError;
     QgsRectangle mExtent = QgsRectangle( -std::numeric_limits<double>::infinity(),
@@ -240,7 +278,6 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsFeedback *mFeedback = nullptr;
     qint64 mPointsLimit = 0;
     QStringList mRequestedAttributes;
-    QStringList mSupportedFormats;
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;

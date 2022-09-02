@@ -33,6 +33,59 @@
 #include <pdal/Dimension.hpp>
 #endif
 
+QString QgsPointCloudLayerExporter::getFilter( ExportFormat format )
+{
+  switch ( format )
+  {
+    case QgsPointCloudLayerExporter::ExportFormat::Las:
+      return QStringLiteral( "LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      break;
+  }
+  return QString();
+}
+
+QString QgsPointCloudLayerExporter::getTranslatedName( ExportFormat format )
+{
+  switch ( format )
+  {
+    case ExportFormat::Memory:
+      return QObject::tr( "Temporary Scratch Layer" );
+    case ExportFormat::Gpkg:
+      return QObject::tr( "GeoPackage" );
+    case ExportFormat::Dxf:
+      return QObject::tr( "AutoCAD DXF" );
+    case ExportFormat::Shp:
+      return QObject::tr( "ESRI Shapefile" );
+    case ExportFormat::Las:
+      return QObject::tr( "LAS/LAZ point cloud" );
+  }
+  return QString();
+}
+
+QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
+{
+  switch ( format )
+  {
+    case ExportFormat::Gpkg:
+      return QStringLiteral( "GPKG" );
+    case ExportFormat::Dxf:
+      return QStringLiteral( "DXF" );
+    case ExportFormat::Shp:
+      return QStringLiteral( "ESRI Shapefile" );
+    case ExportFormat::Memory:
+    case ExportFormat::Las:
+      break;
+  }
+  return QString();
+}
+
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
   , mIndex( layer->dataProvider()->index()->clone().release() )
@@ -44,15 +97,6 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
   if ( !ok )
     mPointRecordFormat = 3;
 
-  mSupportedFormats << QStringLiteral( "memory" )
-#ifdef HAVE_PDAL_QGIS
-                    << QStringLiteral( "LAZ" )
-                    << QStringLiteral( "LAS" )
-#endif
-                    << QStringLiteral( "GPKG" )
-                    << QStringLiteral( "ESRI Shapefile" )
-                    << QStringLiteral( "DXF" );
-
   setAllAttributes();
 }
 
@@ -63,9 +107,9 @@ QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
   delete mTransform;
 }
 
-bool QgsPointCloudLayerExporter::setFormat( const QString &format )
+bool QgsPointCloudLayerExporter::setFormat( const ExportFormat format )
 {
-  if ( mSupportedFormats.contains( format, Qt::CaseInsensitive ) )
+  if ( supportedFormats().contains( format ) )
   {
     mFormat = format;
     return true;
@@ -183,7 +227,7 @@ void QgsPointCloudLayerExporter::prepareExport()
   delete mMemoryLayer;
   mMemoryLayer = nullptr;
 
-  if ( mFormat == QLatin1String( "memory" ) )
+  if ( mFormat == ExportFormat::Memory )
   {
     if ( QApplication::instance()->thread() != QThread::currentThread() )
       QgsDebugMsgLevel( QStringLiteral( "prepareExport() should better be called from the main thread!" ), 2 );
@@ -207,73 +251,89 @@ void QgsPointCloudLayerExporter::doExport()
     }
   }
 
-  if ( mFormat == QLatin1String( "memory" ) )
+  switch ( mFormat )
   {
-    if ( !mMemoryLayer )
-      prepareExport();
+    case ExportFormat::Memory:
+    {
+      if ( !mMemoryLayer )
+        prepareExport();
 
-    ExporterMemory exp( this );
-    exp.run();
-  }
-#ifdef HAVE_PDAL_QGIS
-  else if ( mFormat == QLatin1String( "LAZ" ) ||
-            mFormat == QLatin1String( "LAS" ) )
-  {
-    setAllAttributes();
-    // PDAL may throw exceptions
-    try
-    {
-      ExporterPdal exp( this );
+      ExporterMemory exp( this );
       exp.run();
+      break;
     }
-    catch ( std::runtime_error &e )
+
+    case ExportFormat::Las:
     {
-      setLastError( QString::fromLatin1( e.what() ) );
-      QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
-    }
-  }
+#ifdef HAVE_PDAL_QGIS
+      setAllAttributes();
+      // PDAL may throw exceptions
+      try
+      {
+        ExporterPdal exp( this );
+        exp.run();
+      }
+      catch ( std::runtime_error &e )
+      {
+        setLastError( QString::fromLatin1( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
+      }
 #endif
-  else
-  {
-    QgsVectorFileWriter::SaveVectorOptions saveOptions;
-    saveOptions.layerName = mName;
-    saveOptions.driverName = mFormat;
-    saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( mFormat );
-    saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( mFormat );
-    saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-    saveOptions.actionOnExistingFile = mActionOnExistingFile;
-    saveOptions.feedback = mFeedback;
-    mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
-    ExporterVector exp( this );
-    exp.run();
+      break;
+    }
+
+    case ExportFormat::Gpkg:
+    case ExportFormat::Dxf:
+    case ExportFormat::Shp:
+    {
+      const QString ogrDriver = getOgrDriverName( mFormat );
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.layerName = mName;
+      saveOptions.driverName = ogrDriver;
+      saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( ogrDriver );
+      saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( ogrDriver );
+      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.actionOnExistingFile = mActionOnExistingFile;
+      saveOptions.feedback = mFeedback;
+      mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
+      ExporterVector exp( this );
+      exp.run();
+      return;
+    }
   }
 }
 
 QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 {
-  if ( mFormat == QLatin1String( "memory" ) && mMemoryLayer )
+  switch ( mFormat )
   {
-    QgsMapLayer *retVal = mMemoryLayer;
-    mMemoryLayer = nullptr;
-    return retVal;
+    case ExportFormat::Memory:
+    {
+      QgsMapLayer *retVal = mMemoryLayer;
+      mMemoryLayer = nullptr;
+      return retVal;
+    }
+
+    case ExportFormat::Las:
+    {
+      const QFileInfo fileInfo( mFilename );
+      return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
+    }
+
+    case ExportFormat::Gpkg:
+    {
+      QString uri( mFilename );
+      uri += "|layername=" + mName;
+      return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
+    }
+
+    case ExportFormat::Dxf:
+    case ExportFormat::Shp:
+    {
+      const QFileInfo fileInfo( mFilename );
+      return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+    }
   }
-
-  const QFileInfo fileInfo( mFilename );
-
-  if ( mFormat == QLatin1String( "LAZ" ) ||
-       mFormat == QLatin1String( "LAS" ) )
-  {
-    return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
-  }
-
-  if ( mFormat == QLatin1String( "GPKG" ) )
-  {
-    QString uri( mFilename );
-    uri += "|layername=" + mName;
-    return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
-  }
-
-  return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 }
 
 //
