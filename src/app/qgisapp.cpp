@@ -9565,6 +9565,44 @@ void QgisApp::mergeSelectedFeatures()
     }
   }
 
+  // Prepare the merge information settings for all features
+  int operation_type = 2; // Merge == 2
+  QDateTime datetime = QDateTime::currentDateTimeUtc();
+  QProcessEnvironment env;
+  QProcessEnvironment sysenv = env.systemEnvironment();
+
+  // Merge metadata
+  QString id_field = "";
+  QString type_field = "";
+  QString date_field = "";
+  QStringList split_layers_list = QStringList();
+  QStringList id_string_list = QStringList();
+  int i = 0;
+
+  // Check the environment variables and set the field and layer names
+  if (sysenv.contains("QGIS_SM_SAVE_INFO_LAYERS")) {split_layers_list = sysenv.value("QGIS_SM_SAVE_INFO_LAYERS").split(",");}
+  if (sysenv.contains("QGIS_SM_PREDECESSORS_FIELD")) {id_field = sysenv.value("QGIS_SM_PREDECESSORS_FIELD");}
+  if (sysenv.contains("QGIS_SM_OPERATION_TYPE_FIELD")){type_field = sysenv.value("QGIS_SM_OPERATION_TYPE_FIELD");}
+  if (sysenv.contains("QGIS_SM_DATETIME_FIELD")){ date_field = sysenv.value("QGIS_SM_DATETIME_FIELD");}
+
+  // Check if the feature id of the original features is negative, hence yet not generated. This must be avoided in case
+  // the metadata of the merge operation should be stored in the layer.
+  if (split_layers_list.contains(activeMapLayer->name()))
+  {
+    for (i = 0; i < featureIds.size(); ++i)
+    {
+      if (featureIds.values()[i] < 0)
+      {
+        visibleMessageBar()->pushMessage(
+          tr( "No feature merge done" ),
+          tr( "The layer must be saved first to add merge metadata to the resulting feature." ),
+          Qgis::MessageLevel::Warning );
+        return;
+      }
+      id_string_list << QString::number(featureIds.values()[i]);
+    }
+  }
+
   QgsAttributes attrs = d.mergedAttributes();
   QgsAttributeMap newAttributes;
   QString errorMessage;
@@ -9591,6 +9629,16 @@ void QgisApp::mergeSelectedFeatures()
         Qgis::MessageLevel::Warning );
     }
     newAttributes[ i ] = val;
+  }
+
+  // Add merge metadata information to the attribute map, so that the resulting feature stores the ids
+  // of its predecessors, the datetime and operation that was performed.
+  // The current layer must be in the layer list that was configured for split/merge information
+  if (split_layers_list.contains(activeMapLayer->name()))
+  {
+    if (id_field != "" && featureList[0].fieldNameIndex(id_field) != -1) { newAttributes[featureList[0].fieldNameIndex(id_field)] = id_string_list.join(","); }
+    if (type_field != "" && featureList[0].fieldNameIndex(type_field) != -1) { newAttributes[featureList[0].fieldNameIndex(type_field)] = operation_type; }
+    if (date_field != "" && featureList[0].fieldNameIndex(date_field) != -1) { newAttributes[featureList[0].fieldNameIndex(date_field)] = datetime; }
   }
 
   vl->beginEditCommand( tr( "Merged features" ) );

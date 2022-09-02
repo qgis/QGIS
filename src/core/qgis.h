@@ -951,6 +951,7 @@ class CORE_EXPORT Qgis
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
       /* Split features */
       SplitCannotSplitPoint, //!< Cannot split points
+      UnableToStoreMetadataForSplitting, // !< Split-operation specific metadata cannot be stored in the features, for example the predecessor id is invalid (negative)
     };
     Q_ENUM( GeometryOperationResult )
 

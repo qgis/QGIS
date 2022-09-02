@@ -195,6 +195,29 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /**
      * Splits features cut by the given line
+     * 
+     * Meta-Information about the split operation can be stored in the affected (existing and new) features.
+     * The following environmental variables must be set to enable the metadata storage:
+     * 
+     * To enable split metadata for specific layers the following variable must be set with comma separated layer names:
+     * QGIS_SM_SAVE_INFO_LAYERS="layer_1,layer_2,layer_3"
+     * The name of the layers that should store the split information must be in this list.
+     * 
+     * The name of the field that should store the feature ids of the predecessors must be set with:
+     * QGIS_SM_PREDECESSORS_FIELD="predecessors"
+     * The type of the field must be set to text, since the ids will be stored as comma seperated values in a single string
+     * 
+     * The type of the field that stored the type of the opration (split==1 or merge==2) must be set with:
+     * QGIS_SM_OPERATION_TYPE_FIELD="sm_type"
+     * The type of this field must be set to integer.
+     * 
+     * To store the exact datetime of the operation, the name of this field must be set with:
+     * QGIS_SM_DATETIME_FIELD="sm_datetime"
+     * The type of this field must be datetime.
+     * 
+     * The fields will only be filled with data, if the individuell environmentl variables are set and the layer on which the split operation is performed is
+     * in the list of QGIS_SM_SAVE_INFO_LAYERS.
+     * 
      * \param splitLine line that splits the layer features
      * \param topologicalEditing TRUE if topological editing is enabled
      * \returns QgsGeometry::OperationResult

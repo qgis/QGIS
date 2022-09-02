@@ -1743,7 +1743,31 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void deleteRing();
     //! deletes part of polygon
     void deletePart();
-    //! merges the selected features together
+    /**
+     * Merge selected features together
+     * 
+     * Meta-Information about the merge operation can be stored in the affected (existing and new) features.
+     * The following environmental variables must be set to enable the metadata storage:
+     * 
+     * To enable merge metadata for specific layers the following variable must be set with comma separated layer names:
+     * QGIS_SM_SAVE_INFO_LAYERS="layer_1,layer_2,layer_3"
+     * The name of the layers that should store the merge information must be in this list.
+     * 
+     * The name of the field that should store the feature ids of the predecessors must be set with:
+     * QGIS_SM_PREDECESSORS_FIELD="predecessors"
+     * The type of the field must be set to text, since the ids will be stored as comma seperated values in a single string.
+     * 
+     * The type of the field that stores the type of the opration (split==1 or merge==2) must be set with:
+     * QGIS_SM_OPERATION_TYPE_FIELD="sm_type"
+     * The type of this field must be set to integer.
+     * 
+     * To store the exact datetime of the operation, the name of this field must be set with:
+     * QGIS_SM_DATETIME_FIELD="sm_datetime"
+     * The type of this field must be datetime.
+     * 
+     * The fields will only be filled with data, if the individuell environmentl variables are set and the layer on which the merge operation is performed is
+     * in the list of QGIS_SM_SAVE_INFO_LAYERS.
+     */
     void mergeSelectedFeatures();
     //! merges the attributes of selected features
     void mergeAttributesOfSelectedFeatures();
