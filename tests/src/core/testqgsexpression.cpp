@@ -1304,6 +1304,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "make_rectangle_3points (distance default)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5)))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
       QTest::newRow( "make_rectangle_3points (distance)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5), 0))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
       QTest::newRow( "make_rectangle_3points (projected)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
+      QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))" );
+      QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
+      QTest::newRow( "make_valid_wrongInput" ) << "make_valid('not a geometry')" << true << QVariant();
       QTest::newRow( "x point" ) << "x(make_point(2.2,4.4))" << false << QVariant( 2.2 );
       QTest::newRow( "y point" ) << "y(make_point(2.2,4.4))" << false << QVariant( 4.4 );
       QTest::newRow( "z point" ) << "z(make_point(2.2,4.4,6.6))" << false << QVariant( 6.6 );
@@ -1548,6 +1551,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "roundness multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((5 2, 4 9, 5 9, 6 5, 5 2)) )')))" << true << QVariant();
       QTest::newRow( "roundness thin polygon" ) << "roundness(geom_from_wkt('POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0))'))" << false << QVariant( 0.0 );
       QTest::newRow( "roundness circle polygon" ) << "roundness(geom_from_wkt('CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))'))" << false << QVariant( 1.0 );
+      QTest::newRow( "geometries_to_array_collection0" ) << "geom_to_wkt(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),0))" << false << QVariant( "Polygon ((5 8, 4 1, 3 2, 5 8))" );
+      QTest::newRow( "geometries_to_array_collection1" ) << "geom_to_wkt(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),1))" << false << QVariant( "LineString (3 2, 4 2)" );
+      QTest::newRow( "geometries_to_array_singlePoly" ) << "geom_to_wkt(array_first(geometries_to_array(geom_from_wkt('Polygon ((5 8, 4 1, 3 2, 5 8))'))))" << false << QVariant( "Polygon ((5 8, 4 1, 3 2, 5 8))" );
+      QTest::newRow( "geometries_to_array_multipoly" ) << "geom_to_wkt(array_get(geometries_to_array(geom_from_wkt('MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))')),1))" << false << QVariant( "Polygon ((5 5, 10 10, 10 0, 5 5))" );
+      QTest::newRow( "geometries_to_array_emptygeom" ) << "array_length(geometries_to_array(geom_from_wkt('LINESTRING EMPTY')))" << false << QVariant( 1 );
+      QTest::newRow( "geometries_to_array_nongeom" ) << "geometries_to_array('just a string')" << true << QVariant();
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=11 )
       QTest::newRow( "concavehull not geom" ) << "concavehull('r', 1)" << true << QVariant();
       QTest::newRow( "concavehull null" ) << "concavehull(NULL, 1)" << false << QVariant();
