@@ -53,6 +53,8 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsPointCloudLayerSaveAsDialog::mDeselectAllAttributes_clicked );
   connect( mFilterGeometryLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged );
   connect( mFilterGeometryGroupBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled );
+  connect( mMinimumZSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudLayerSaveAsDialog::mMinimumZSpinBoxValueChanged );
+  connect( mMaximumZSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudLayerSaveAsDialog::mMaximumZSpinBoxValueChanged );
 
 #ifdef Q_OS_WIN
   mHelpButtonBox->setVisible( false );
@@ -415,6 +417,16 @@ void QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged( QgsMapLayer *l
   QgsVectorLayer *vlayer = dynamic_cast< QgsVectorLayer * >( layer );
   mSelectedFeaturesCheckBox->setChecked( false );
   mSelectedFeaturesCheckBox->setEnabled( hasFilterLayer() && vlayer && vlayer->selectedFeatureCount() );
+}
+
+void QgsPointCloudLayerSaveAsDialog::mMinimumZSpinBoxValueChanged( const double value )
+{
+  mMaximumZSpinBox->setMinimum( value );
+}
+
+void QgsPointCloudLayerSaveAsDialog::mMaximumZSpinBoxValueChanged( const double value )
+{
+  mMinimumZSpinBox->setMaximum( value );
 }
 
 void QgsPointCloudLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
