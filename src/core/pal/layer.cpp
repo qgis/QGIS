@@ -29,7 +29,6 @@
 
 #include "pal.h"
 #include "layer.h"
-#include "palexception.h"
 #include "internalexception.h"
 #include "feature.h"
 #include "geomfunction.h"
