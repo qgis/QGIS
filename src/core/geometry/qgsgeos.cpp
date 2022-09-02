@@ -1458,8 +1458,10 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
+
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+
   QVector< double > xOut( nPoints );
   QVector< double > yOut( nPoints );
   QVector< double > zOut;
@@ -1468,10 +1470,15 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
   QVector< double > mOut;
   if ( hasM )
     mOut.resize( nPoints );
+
   double *x = xOut.data();
   double *y = yOut.data();
   double *z = zOut.data();
   double *m = mOut.data();
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  GEOSCoordSeq_copyToArrays_r( geosinit()->ctxt, cs, x, y, hasZ ? z : nullptr, hasM ? m : nullptr );
+#else
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
     if ( hasZ )
@@ -1483,6 +1490,7 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
       GEOSCoordSeq_getOrdinate_r( geosinit()->ctxt, cs, i, 3, m++ );
     }
   }
+#endif
   std::unique_ptr< QgsLineString > line( new QgsLineString( xOut, yOut, zOut, mOut ) );
   return line;
 }
@@ -2045,6 +2053,27 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   {
     return nullptr;
   }
+  GEOSCoordSequence *coordSeq = nullptr;
+
+  const int numPoints = line->numPoints();
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+
+  if ( !forceClose || ( line->pointN( 0 ) == line->pointN( numPoints - 1 ) ) )
+  {
+    // use optimised method if we don't have to force close an open ring
+    try
+    {
+      coordSeq = GEOSCoordSeq_copyFromArrays_r( geosinit()->ctxt, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
+      if ( !coordSeq )
+      {
+        QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
+        return nullptr;
+      }
+    }
+    CATCH_GEOS( nullptr )
+  }
+#endif
 
   bool hasZ = line->is3D();
   bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
@@ -2058,15 +2087,12 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     ++coordDims;
   }
 
-  int numPoints = line->numPoints();
-
   int numOutPoints = numPoints;
   if ( forceClose && ( line->pointN( 0 ) != line->pointN( numPoints - 1 ) ) )
   {
     ++numOutPoints;
   }
 
-  GEOSCoordSequence *coordSeq = nullptr;
   try
   {
     coordSeq = GEOSCoordSeq_create_r( geosinit()->ctxt, numOutPoints, coordDims );
