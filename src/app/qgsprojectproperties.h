@@ -260,6 +260,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits();
+    void updateGuiForCoordinateType();
+    void updateGuiForCoordinateCrs();
+
     void addStyleDatabasePrivate( bool createNew );
 
     void showHelp();

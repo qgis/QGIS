@@ -2129,8 +2129,9 @@ class CORE_EXPORT Qgis
      */
     enum class CoordinateDisplayType : int
     {
-      Geographic, //!< Geographic
-      MapUnits, //!< Map units
+      MapCrs, //!< Map CRS
+      MapGeographic, //!< Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)
+      CustomCrs, //!< Custom CRS
     };
     Q_ENUM( CoordinateDisplayType )
 

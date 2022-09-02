@@ -19,6 +19,7 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QObject>
 #include <QVector>
@@ -109,6 +110,10 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void setCoordinateType( Qgis::CoordinateDisplayType type );
 
+    QgsCoordinateReferenceSystem coordinateCustomCrs() const { return mCoordinateCustomCrs; }
+
+    void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
+
     /**
      * Reads the settings's state from a DOM element.
      * \see writeXml()
@@ -148,11 +153,14 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void coordinateTypeChanged();
 
+    void coordinateCustomCrsChanged();
+
   private:
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
     std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
 
-    Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapUnits;
+    Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
+    QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 
 };
 

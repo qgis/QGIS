@@ -1917,8 +1917,9 @@ Qgis.RelationshipCardinality.__doc__ = 'Relationship cardinality.\n\n.. versiona
 # --
 Qgis.RelationshipCardinality.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.CoordinateDisplayType.Geographic.__doc__ = "Geographic"
-Qgis.CoordinateDisplayType.MapUnits.__doc__ = "Map units"
-Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. versionadded:: 3.28\n\n' + '* ``Geographic``: ' + Qgis.CoordinateDisplayType.Geographic.__doc__ + '\n' + '* ``MapUnits``: ' + Qgis.CoordinateDisplayType.MapUnits.__doc__
+Qgis.CoordinateDisplayType.MapCrs.__doc__ = "Map CRS"
+Qgis.CoordinateDisplayType.MapGeographic.__doc__ = "Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)"
+Qgis.CoordinateDisplayType.CustomCrs.__doc__ = "Custom CRS"
+Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. versionadded:: 3.28\n\n' + '* ``MapCrs``: ' + Qgis.CoordinateDisplayType.MapCrs.__doc__ + '\n' + '* ``MapGeographic``: ' + Qgis.CoordinateDisplayType.MapGeographic.__doc__ + '\n' + '* ``CustomCrs``: ' + Qgis.CoordinateDisplayType.CustomCrs.__doc__
 # --
 Qgis.CoordinateDisplayType.baseClass = Qgis

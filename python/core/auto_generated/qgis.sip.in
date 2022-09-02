@@ -1240,8 +1240,9 @@ The development version
 
     enum class CoordinateDisplayType
     {
-      Geographic,
-      MapUnits,
+      MapCrs,
+      MapGeographic,
+      CustomCrs,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

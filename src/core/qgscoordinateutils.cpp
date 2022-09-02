@@ -42,7 +42,9 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
   if ( automatic )
   {
-    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::Geographic;
+    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic ||
+                                  ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs &&
+                                    project->displaySettings()->coordinateCustomCrs().isGeographic() );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
@@ -111,39 +113,58 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     return QString();
 
   const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
-  const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::Geographic;
 
-  QgsPointXY geo = point;
-  if ( formatGeographic )
+  QgsCoordinateReferenceSystem crs = destCrs;
+  QgsPointXY p = point;
+  bool isGeographic = false;
+  if ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic )
   {
-    // degrees
-    QgsCoordinateReferenceSystem geographicCrs = destCrs;
+    isGeographic = true;
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
-      // default to EPSG:4326 if the project CRS isn't already geographic
-      geographicCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
-      // need to transform to geographic coordinates
-      const QgsCoordinateTransform ct( destCrs, geographicCrs, project );
+      // use the associated geographic projection to the destination CRS.
+      crs = destCrs.toGeographicCrs();
+      const QgsCoordinateTransform ct( destCrs, crs, project );
       try
       {
-        geo = ct.transform( point );
+        p = ct.transform( point );
       }
       catch ( QgsCsException & )
       {
         return QString();
       }
     }
+  }
+  else if ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs )
+  {
+    crs = project->displaySettings()->coordinateCustomCrs();
+    if ( destCrs != crs )
+    {
+      isGeographic = crs.isGeographic();
+      const QgsCoordinateTransform ct( destCrs, crs, project );
+      try
+      {
+        p = ct.transform( point );
+      }
+      catch ( QgsCsException & )
+      {
+        return QString();
+      }
+    }
+  }
 
-    const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( geographicCrs ) : axisOrder;
+  if ( isGeographic )
+  {
+    const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( crs ) : axisOrder;
 
     std::unique_ptr< QgsGeographicCoordinateNumericFormat > format( project->displaySettings()->geographicCoordinateFormat()->clone() );
     format->setNumberDecimalPlaces( precision );
 
     QgsNumericFormatContext context;
     context.setInterpretation( QgsNumericFormatContext::Interpretation::Longitude );
-    const QString formattedX = format->formatDouble( geo.x(), context );
+    const QString formattedX = format->formatDouble( p.x(), context );
     context.setInterpretation( QgsNumericFormatContext::Interpretation::Latitude );
-    const QString formattedY = format->formatDouble( geo.y(), context );
+    const QString formattedY = format->formatDouble( p.y(), context );
 
     switch ( order )
     {
@@ -159,8 +180,8 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   else
   {
     // coordinates in map units
-    const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( destCrs ) : axisOrder;
-    return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision, order );
+    const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( crs ) : axisOrder;
+    return QgsCoordinateFormatter::asPair( p.x(), p.y(), precision, order );
   }
 }
 
