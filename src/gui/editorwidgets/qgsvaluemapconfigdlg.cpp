@@ -122,7 +122,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
   {
     QTableWidgetItem *ki = tableWidget->item( row, 0 );
     if ( ki )
-        validateKey( ki );
+      validateKey( ki );
   }
   if ( row == tableWidget->rowCount() - 1 )
   {
