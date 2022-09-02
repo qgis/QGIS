@@ -156,6 +156,8 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
 
     void mFormatComboBox_currentIndexChanged( int idx );
     void mFilterGeometryGroupBoxCheckToggled( bool checked );
+    void mMinimumZSpinBoxValueChanged( const double value );
+    void mMaximumZSpinBoxValueChanged( const double value );
     void mFilterGeometryLayerChanged( QgsMapLayer *layer );
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void showHelp();
