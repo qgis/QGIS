@@ -95,7 +95,7 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
      *
      * \since QGIS 3.28
      */
-    bool validateKey( std::unique_ptr< QTableWidgetItem > &key ) const;
+    bool validateKey( QTableWidgetItem *key ) const;
 
   private:
     void setRow( int row, const QString &value, const QString &description );
