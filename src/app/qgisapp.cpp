@@ -8376,16 +8376,25 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
     }
     exp->setCrs( destCRS, pclayer->transformContext() );
-    exp->setFormat( dialog.format() );
+
+    const QgsPointCloudLayerExporter::ExportFormat format = dialog.exportFormat();
+    exp->setFormat( format );
 
     // LAZ format exports all attributes
-    if ( dialog.format() != QLatin1String( "LAZ" ) &&
-         dialog.format() != QLatin1String( "LAS" ) )
+    switch ( format )
     {
-      if ( dialog.hasAttributes() )
-        exp->setAttributes( dialog.attributes() );
-      else
-        exp->setNoAttributes();
+      case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+        if ( dialog.hasAttributes() )
+          exp->setAttributes( dialog.attributes() );
+        else
+          exp->setNoAttributes();
+        break;
+
+      case QgsPointCloudLayerExporter::ExportFormat::Las:
+        break;
     }
 
     if ( dialog.hasFilterExtent() )

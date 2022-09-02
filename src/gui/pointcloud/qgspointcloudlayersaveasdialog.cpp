@@ -65,15 +65,12 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsPointCloudLayerSaveAsDialog::reject );
 
   mFormatComboBox->blockSignals( true );
-  mFormatComboBox->addItem( tr( "Temporary Scratch Layer" ), QStringLiteral( "memory" ) );
-  mFormatComboBox->addItem( tr( "LAZ point cloud" ), QStringLiteral( "LAZ" ) );
-  mFormatComboBox->addItem( tr( "LAS point cloud" ), QStringLiteral( "LAS" ) );
-  mFormatComboBox->addItem( tr( "GeoPackage" ), QStringLiteral( "GPKG" ) );
-  mFormatComboBox->addItem( tr( "ESRI Shapefile" ), QStringLiteral( "ESRI Shapefile" ) );
-  mFormatComboBox->addItem( tr( "AutoCAD DXF" ), QStringLiteral( "DXF" ) );
+  const QList< QgsPointCloudLayerExporter::ExportFormat > supportedFormats = QgsPointCloudLayerExporter::supportedFormats();
+  for ( const auto &format : supportedFormats )
+    mFormatComboBox->addItem( QgsPointCloudLayerExporter::getTranslatedName( format ), static_cast< int >( format ) );
 
   QgsSettings settings;
-  const QString defaultFormat = settings.value( QStringLiteral( "UI/lastPointCloudFormat" ), "memory" ).toString();
+  const int defaultFormat = settings.value( QStringLiteral( "UI/lastPointCloudFormat" ), 0 ).toInt();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( defaultFormat ) );
   mFormatComboBox->blockSignals( false );
   mFormatComboBox_currentIndexChanged( 0 );
@@ -183,7 +180,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mCrsSelector->setShowAccuracyWarnings( true );
 
-  mAddToCanvas->setEnabled( format() != QLatin1String( "memory" ) );
+  mAddToCanvas->setEnabled( exportFormat() != QgsPointCloudLayerExporter::ExportFormat::Memory );
 
   if ( mLayer )
   {
@@ -194,7 +191,8 @@ void QgsPointCloudLayerSaveAsDialog::setup()
       leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
   }
 
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( format() == QLatin1String( "memory" ) || !mFilename->filePath().isEmpty() );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( exportFormat() == QgsPointCloudLayerExporter::ExportFormat::Memory ||
+      !mFilename->filePath().isEmpty() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::accept()
@@ -300,56 +298,70 @@ void QgsPointCloudLayerSaveAsDialog::accept()
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
-  settings.setValue( QStringLiteral( "UI/lastPointCloudFormat" ), format() );
+  settings.setValue( QStringLiteral( "UI/lastPointCloudFormat" ), static_cast< int >( exportFormat() ) );
   QDialog::accept();
-}
-
-QString QgsPointCloudLayerSaveAsDialog::filterForDriver( const QString &driverName ) const
-{
-  if ( driverName == QLatin1String( "LAZ" ) )
-    return QStringLiteral( "LAZ pointcloud (*.laz *.LAZ)" );
-  if ( driverName == QLatin1String( "LAS" ) )
-    return QStringLiteral( "LAS pointcloud (*.las *.LAS)" );
-  if ( driverName == QLatin1String( "GPKG" ) )
-    return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
-  if ( driverName == QLatin1String( "ESRI Shapefile" ) )
-    return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
-  if ( driverName == QLatin1String( "DXF" ) )
-    return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
-  return QString();
 }
 
 void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 {
   Q_UNUSED( idx )
 
-  const QString sFormat( format() );
-  mAttributesSelection->setEnabled( sFormat != QLatin1String( "DXF" ) &&
-                                    sFormat != QLatin1String( "LAZ" ) &&
-                                    sFormat != QLatin1String( "LAS" ) );
+  const QgsPointCloudLayerExporter::ExportFormat format = exportFormat();
 
-
-  if ( sFormat == QLatin1String( "memory" ) )
+  switch ( format )
   {
-    mWasAddToCanvasForced = !mAddToCanvas->isChecked();
-    mAddToCanvas->setEnabled( false );
-    mAddToCanvas->setChecked( true );
-    mFilename->setEnabled( false );
+    case QgsPointCloudLayerExporter::ExportFormat::Memory:
+    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+    case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      mAttributesSelection->setEnabled( true );
+      break;
+
+    case QgsPointCloudLayerExporter::ExportFormat::Las:
+    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      mAttributesSelection->setEnabled( false );
+      break;
   }
-  else
+
+  switch ( format )
   {
-    mAddToCanvas->setEnabled( true );
-    if ( mWasAddToCanvasForced )
-    {
-      mAddToCanvas->setChecked( !mAddToCanvas->isChecked() );
-      mWasAddToCanvasForced = false;
-    }
-    mFilename->setEnabled( true );
+    case QgsPointCloudLayerExporter::ExportFormat::Memory:
+    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      leLayername->setEnabled( true );
+      break;
+      \
+    case QgsPointCloudLayerExporter::ExportFormat::Shp:
+    case QgsPointCloudLayerExporter::ExportFormat::Las:
+    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      leLayername->setEnabled( false );
+      break;
+  }
+
+  switch ( format )
+  {
+    case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      mWasAddToCanvasForced = !mAddToCanvas->isChecked();
+      mAddToCanvas->setEnabled( false );
+      mAddToCanvas->setChecked( true );
+      mFilename->setEnabled( false );
+      break;
+
+    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+    case QgsPointCloudLayerExporter::ExportFormat::Shp:
+    case QgsPointCloudLayerExporter::ExportFormat::Las:
+    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      mAddToCanvas->setEnabled( true );
+      if ( mWasAddToCanvasForced )
+      {
+        mAddToCanvas->setChecked( !mAddToCanvas->isChecked() );
+        mWasAddToCanvasForced = false;
+      }
+      mFilename->setEnabled( true );
+      break;
   }
 
   if ( mFilename->isEnabled() )
   {
-    mFilename->setFilter( filterForDriver( format() ) );
+    mFilename->setFilter( QgsPointCloudLayerExporter::getFilter( format ) );
 
     // if output filename already defined we need to replace old suffix
     // to avoid double extensions like .gpkg.shp
@@ -357,7 +369,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     {
       QRegularExpression rx( "\\.(.*?)[\\s]" );
       QString ext;
-      ext = rx.match( filterForDriver( format() ) ).captured( 1 );
+      ext = rx.match( QgsPointCloudLayerExporter::getFilter( format ) ).captured( 1 );
       if ( !ext.isEmpty() )
       {
         QFileInfo fi( mLastUsedFilename );
@@ -365,9 +377,6 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
       }
     }
   }
-
-  leLayername->setEnabled( sFormat == QLatin1String( "memory" ) ||
-                           sFormat == QLatin1String( "GPKG" ) );
 
   if ( !mFilename->isEnabled() )
     mFilename->setFilePath( QString() );
@@ -391,7 +400,8 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     leLayername->setText( layerName );
   }
 
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( sFormat == QLatin1String( "memory" ) || !mFilename->filePath().isEmpty() );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( format == QgsPointCloudLayerExporter::ExportFormat::Memory ||
+      !mFilename->filePath().isEmpty() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled( bool checked )
@@ -423,9 +433,9 @@ QString QgsPointCloudLayerSaveAsDialog::layername() const
   return leLayername->text();
 }
 
-QString QgsPointCloudLayerSaveAsDialog::format() const
+QgsPointCloudLayerExporter::ExportFormat QgsPointCloudLayerSaveAsDialog::exportFormat() const
 {
-  return mFormatComboBox->currentData().toString();
+  return static_cast< QgsPointCloudLayerExporter::ExportFormat >( mFormatComboBox->currentData().toInt() );
 }
 
 QgsCoordinateReferenceSystem QgsPointCloudLayerSaveAsDialog::crsObject() const
