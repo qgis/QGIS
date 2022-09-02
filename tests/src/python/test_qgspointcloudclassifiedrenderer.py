@@ -350,7 +350,7 @@ class TestQgsPointCloudClassifiedRenderer(unittest.TestCase):
         layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderMillimeters)
         layer.renderer().setDrawOrder2d(QgsPointCloudRenderer.DrawOrder.BottomToTop)
 
-        layer.renderer().setUseEyeDomeLighting(True)
+        layer.renderer().setEyeDomeLightingEnabled(True)
 
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
