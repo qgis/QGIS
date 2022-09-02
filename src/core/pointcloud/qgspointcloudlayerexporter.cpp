@@ -33,42 +33,6 @@
 #include <pdal/Dimension.hpp>
 #endif
 
-QString QgsPointCloudLayerExporter::getFilter( ExportFormat format )
-{
-  switch ( format )
-  {
-    case QgsPointCloudLayerExporter::ExportFormat::Las:
-      return QStringLiteral( "LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)" );
-    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
-      return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
-    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
-      return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
-    case QgsPointCloudLayerExporter::ExportFormat::Shp:
-      return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
-    case QgsPointCloudLayerExporter::ExportFormat::Memory:
-      break;
-  }
-  return QString();
-}
-
-QString QgsPointCloudLayerExporter::getTranslatedName( ExportFormat format )
-{
-  switch ( format )
-  {
-    case ExportFormat::Memory:
-      return QObject::tr( "Temporary Scratch Layer" );
-    case ExportFormat::Gpkg:
-      return QObject::tr( "GeoPackage" );
-    case ExportFormat::Dxf:
-      return QObject::tr( "AutoCAD DXF" );
-    case ExportFormat::Shp:
-      return QObject::tr( "ESRI Shapefile" );
-    case ExportFormat::Las:
-      return QObject::tr( "LAS/LAZ point cloud" );
-  }
-  return QString();
-}
-
 QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
 {
   switch ( format )

@@ -169,6 +169,16 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
 
     void setup();
 
+    /**
+     * Gets the translated name for the specified \a format
+     */
+    static QString getTranslatedNameForFormat( QgsPointCloudLayerExporter::ExportFormat format );
+
+    /**
+     * Gets the extensions filter for the specified \a format
+     */
+    static QString getFilterForFormat( QgsPointCloudLayerExporter::ExportFormat format );
+
     QgsCoordinateReferenceSystem mSelectedCrs;
 
     QgsRectangle mLayerExtent;

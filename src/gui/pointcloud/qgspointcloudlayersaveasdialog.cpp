@@ -69,7 +69,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mFormatComboBox->blockSignals( true );
   const QList< QgsPointCloudLayerExporter::ExportFormat > supportedFormats = QgsPointCloudLayerExporter::supportedFormats();
   for ( const auto &format : supportedFormats )
-    mFormatComboBox->addItem( QgsPointCloudLayerExporter::getTranslatedName( format ), static_cast< int >( format ) );
+    mFormatComboBox->addItem( getTranslatedNameForFormat( format ), static_cast< int >( format ) );
 
   QgsSettings settings;
   const int defaultFormat = settings.value( QStringLiteral( "UI/lastPointCloudFormat" ), 0 ).toInt();
@@ -363,7 +363,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
 
   if ( mFilename->isEnabled() )
   {
-    mFilename->setFilter( QgsPointCloudLayerExporter::getFilter( format ) );
+    mFilename->setFilter( getFilterForFormat( format ) );
 
     // if output filename already defined we need to replace old suffix
     // to avoid double extensions like .gpkg.shp
@@ -371,7 +371,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     {
       QRegularExpression rx( "\\.(.*?)[\\s]" );
       QString ext;
-      ext = rx.match( QgsPointCloudLayerExporter::getFilter( format ) ).captured( 1 );
+      ext = rx.match( getFilterForFormat( format ) ).captured( 1 );
       if ( !ext.isEmpty() )
       {
         QFileInfo fi( mLastUsedFilename );
@@ -562,4 +562,40 @@ void QgsPointCloudLayerSaveAsDialog::mDeselectAllAttributes_clicked()
 void QgsPointCloudLayerSaveAsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+}
+
+QString QgsPointCloudLayerSaveAsDialog::getFilterForFormat( QgsPointCloudLayerExporter::ExportFormat format )
+{
+  switch ( format )
+  {
+    case QgsPointCloudLayerExporter::ExportFormat::Las:
+      return QStringLiteral( "LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      break;
+  }
+  return QString();
+}
+
+QString QgsPointCloudLayerSaveAsDialog::getTranslatedNameForFormat( QgsPointCloudLayerExporter::ExportFormat format )
+{
+  switch ( format )
+  {
+    case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      return tr( "Temporary Scratch Layer" );
+    case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      return tr( "GeoPackage" );
+    case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      return tr( "AutoCAD DXF" );
+    case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      return tr( "ESRI Shapefile" );
+    case QgsPointCloudLayerExporter::ExportFormat::Las:
+      return tr( "LAS/LAZ point cloud" );
+  }
+  return QString();
 }

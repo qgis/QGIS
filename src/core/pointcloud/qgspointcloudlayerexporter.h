@@ -76,19 +76,10 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     }
 
     /**
-     * Gets the translated name for the specified \a format
-     */
-    static QString getTranslatedName( ExportFormat format );
-
-    /**
-     * Gets the extensions filter for the specified \a format
-     */
-    static QString getFilter( ExportFormat format );
-
-    /**
      * Gets the OGR driver name for the specified \a format
+     * \note Not available in python bindings
      */
-    static QString getOgrDriverName( ExportFormat format );
+    static QString getOgrDriverName( ExportFormat format ) SIP_SKIP;
 
     /**
      * Constructor for QgsPointCloudLayerExporter, associated with the specified \a layer.
@@ -265,7 +256,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     QgsPointCloudIndex *mIndex = nullptr;
     QString mName = QObject::tr( "Exported" );
-    ExportFormat mFormat;
+    ExportFormat mFormat = ExportFormat::Memory;
     QString mFilename;
     QString mLastError;
     QgsRectangle mExtent = QgsRectangle( -std::numeric_limits<double>::infinity(),
