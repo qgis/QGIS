@@ -46,6 +46,8 @@ Constructor for QgsLayerMetadataProviderResult.
 :param metadata: layer metadata.
 %End
 
+    QgsLayerMetadataProviderResult( );
+
     const QgsPolygon &geographicExtent() const;
 %Docstring
 Returns the layer extent in EPSG:4326
@@ -118,6 +120,7 @@ Sets the metadata standard URI to ``standardUri``.
 
 };
 
+
 class QgsLayerMetadataSearchResults
 {
 %Docstring(signature="appended")
@@ -156,6 +159,7 @@ Adds a ``error`` to the list of errors.
 %End
 
 };
+
 
 class QgsAbstractLayerMetadataProvider
 {

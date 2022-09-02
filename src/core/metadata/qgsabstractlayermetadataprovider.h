@@ -67,6 +67,8 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
      */
     QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
 
+    QgsLayerMetadataProviderResult( ) = default;
+
     /**
      * Returns the layer extent in EPSG:4326
      */
@@ -155,6 +157,8 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     QString mStandardUri;
 };
 
+Q_DECLARE_METATYPE( QgsLayerMetadataProviderResult )
+
 /**
  * \ingroup core
  * \brief Container of result records from a layer metadata search.
@@ -197,6 +201,8 @@ class CORE_EXPORT QgsLayerMetadataSearchResults
     //! List of errors occurred while searching
     QStringList mErrors;
 };
+
+Q_DECLARE_METATYPE( QgsLayerMetadataSearchResults )
 
 /**
  * \ingroup core

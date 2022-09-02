@@ -68,7 +68,8 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
   // METADATA Add the metadata search widget as the second stacked widget
-  mLayerMetadataSearchWidget = new QgsLayerMetadataSearchWidget( this );
+  mLayerMetadataSearchWidget = new QgsLayerMetadataSearchWidget( mMapCanvas, this );
+  connect( mLayerMetadataSearchWidget, &QgsLayerMetadataSearchWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
   ui->mOptionsStackedWidget->addWidget( mLayerMetadataSearchWidget );
   mPageNames.append( QStringLiteral( "metadata" ) );
 

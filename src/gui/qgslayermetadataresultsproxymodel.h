@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgslayermetadatasearchwidget.h - QgsLayerMetadataSearchWidget
+  qgslayermetadataresultsproxymodel.h - QgsLayerMetadataResultsProxyModel
 
  ---------------------
  begin                : 1.9.2022
@@ -13,37 +13,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLAYERMETADATASEARCHWIDGET_H
-#define QGSLAYERMETADATASEARCHWIDGET_H
+#ifndef QGSLAYERMETADATARESULTSPROXYMODEL_H
+#define QGSLAYERMETADATARESULTSPROXYMODEL_H
 
+#include <QSortFilterProxyModel>
+#include <QObject>
 #include "qgis_gui.h"
-#include <QWidget>
-#include "ui_qgslayermetadatasearchwidget.h"
-#include "qgsfeedback.h"
+#include "qgsrectangle.h"
 
-class QgsMapCanvas;
-class QgsLayerMetadataResultsProxyModel;
-
-class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsLayerMetadataSearchWidget
+class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+
   public:
-    explicit QgsLayerMetadataSearchWidget( const QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
-
-  signals:
-
-    void rejected();
+    explicit QgsLayerMetadataResultsProxyModel( QObject *parent = nullptr );
 
   public slots:
 
-    void updateExtentFilter( int index );
+    void setFilterExtent( const QgsRectangle &extent );
+    void setFilterString( const QString &filterString );
+
+    // QSortFilterProxyModel interface
+  protected:
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
 
-    const QgsMapCanvas *mMapCanvas = nullptr;
-    QgsLayerMetadataResultsProxyModel *mProxyModel = nullptr;
-
-
+    QgsRectangle mFilterExtent;
+    QString mFilterString;
 };
 
-#endif // QGSLAYERMETADATASEARCHWIDGET_H
+#endif // QGSLAYERMETADATARESULTSPROXYMODEL_H
