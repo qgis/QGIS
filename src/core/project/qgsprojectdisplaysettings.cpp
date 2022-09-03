@@ -30,7 +30,10 @@ QgsProjectDisplaySettings::QgsProjectDisplaySettings( QObject *parent )
   , mBearingFormat( std::make_unique< QgsBearingNumericFormat >() )
   , mGeographicCoordinateFormat( std::make_unique< QgsGeographicCoordinateNumericFormat >() )
 {
-
+  if ( QgsProject *project = qobject_cast< QgsProject * >( parent ) )
+  {
+    connect( project, &QgsProject::crsChanged, this, &QgsProjectDisplaySettings::updateCoordinateCrs );
+  }
 }
 
 QgsProjectDisplaySettings::~QgsProjectDisplaySettings() = default;
@@ -43,6 +46,9 @@ void QgsProjectDisplaySettings::reset()
 
   mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
   mCoordinateCustomCrs = QgsCoordinateReferenceSystem( "EPSG:4326" );
+
+  mCoordinateCrs = QgsCoordinateReferenceSystem();
+  updateCoordinateCrs();
 
   emit bearingFormatChanged();
   emit geographicCoordinateFormatChanged();
@@ -78,6 +84,7 @@ void QgsProjectDisplaySettings::setCoordinateType( Qgis::CoordinateDisplayType t
     return;
 
   mCoordinateType = type;
+  updateCoordinateCrs();
 
   emit coordinateTypeChanged();
 }
@@ -89,7 +96,39 @@ void QgsProjectDisplaySettings::setCoordinateCustomCrs( const QgsCoordinateRefer
 
   mCoordinateCustomCrs = crs;
 
+  if ( mCoordinateType == Qgis::CoordinateDisplayType::CustomCrs )
+    updateCoordinateCrs();
+
   emit coordinateCustomCrsChanged();
+}
+
+void QgsProjectDisplaySettings::updateCoordinateCrs()
+{
+  if ( QgsProject *project = qobject_cast< QgsProject * >( parent() ) )
+  {
+    const QgsCoordinateReferenceSystem projectCrs = project->crs();
+    QgsCoordinateReferenceSystem crs;
+    switch ( mCoordinateType )
+    {
+      case Qgis::CoordinateDisplayType::MapCrs:
+        crs = projectCrs;
+        break;
+
+      case Qgis::CoordinateDisplayType::MapGeographic:
+        crs = !projectCrs.isGeographic() ? projectCrs.toGeographicCrs() : projectCrs;
+        break;
+
+      case Qgis::CoordinateDisplayType::CustomCrs:
+        crs = mCoordinateCustomCrs;
+        break;
+    }
+
+    if ( mCoordinateCrs != crs )
+    {
+      mCoordinateCrs = crs;
+      emit coordinateCrsChanged();
+    }
+  }
 }
 
 bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -139,7 +178,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   {
     if ( element.hasAttribute( QStringLiteral( "CoordinateType" ) ) )
     {
-      mCoordinateType = static_cast<Qgis::CoordinateDisplayType>( element.attribute( QStringLiteral( "CoordinateType" ) ).toInt() );
+      setCoordinateType( qgsEnumKeyToValue( element.attribute( QStringLiteral( "CoordinateType" ), qgsEnumValueToKey( Qgis::CoordinateDisplayType::MapCrs ) ), Qgis::CoordinateDisplayType::MapCrs ) );
     }
     else if ( project )
     {
@@ -148,15 +187,14 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       {
         if ( format != QStringLiteral( "MU" ) && !project->crs().isGeographic() )
         {
-          mCoordinateType = Qgis::CoordinateDisplayType::CustomCrs;
+          setCoordinateType( Qgis::CoordinateDisplayType::CustomCrs );
         }
         else
         {
-          mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
+          setCoordinateType( Qgis::CoordinateDisplayType::MapCrs );
         }
       }
     }
-    emit coordinateTypeChanged();
 
     QDomNodeList crsNodeList = element.elementsByTagName( QStringLiteral( "CoordinateCustomCrs" ) );
     if ( !crsNodeList.isEmpty() )
@@ -186,7 +224,7 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
     element.appendChild( geographicElement );
   }
 
-  element.setAttribute( QStringLiteral( "CoordinateType" ), static_cast<int>( mCoordinateType ) );
+  element.setAttribute( QStringLiteral( "CoordinateType" ), qgsEnumValueToKey( mCoordinateType ) );
   if ( mCoordinateCustomCrs.isValid() )
   {
     QDomElement crsElem = doc.createElement( QStringLiteral( "CoordinateCustomCrs" ) );
