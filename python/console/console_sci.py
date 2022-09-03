@@ -53,7 +53,7 @@ _init_statements = [
     "from qgis.core import *",
     "from qgis.gui import *",
     "from qgis.analysis import *",
-    ## 3D might not be compiled in
+    # # 3D might not be compiled in
     """
 try:
     from qgis._3d import *
