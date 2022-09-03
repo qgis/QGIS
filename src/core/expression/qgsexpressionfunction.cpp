@@ -2926,6 +2926,24 @@ static QVariant fcnLineMerge( const QVariantList &values, const QgsExpressionCon
   return QVariant::fromValue( merged );
 }
 
+static QVariant fcnSharedPaths( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  const QgsGeometry geom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  if ( geom2.isNull() )
+    return QVariant();
+
+  const QgsGeometry sharedPaths = geom.sharedPaths( geom2 );
+  if ( sharedPaths.isNull() )
+    return QVariant();
+
+  return QVariant::fromValue( sharedPaths );
+}
+
+
 static QVariant fcnSimplify( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -7984,6 +8002,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnGeometryN, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "boundary" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnBoundary, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "line_merge" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnLineMerge, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "shared_paths" ), QgsExpressionFunction::ParameterList
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) )
+    }, fcnSharedPaths, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "bounds" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnBounds, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "simplify" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnSimplify, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "simplify_vw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnSimplifyVW, QStringLiteral( "GeometryGroup" ) )
