@@ -2573,7 +2573,29 @@ static QVariant fcnGeomMakeValid( const QVariantList &values, const QgsExpressio
   if ( geom.isNull() )
     return QVariant();
 
-  QgsGeometry valid = geom.makeValid();
+  const QString methodString = QgsExpressionUtils::getStringValue( values.at( 1 ), parent ).trimmed();
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+  Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework;
+#else
+  Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Structure;
+#endif
+  if ( methodString.compare( QLatin1String( "linework" ), Qt::CaseInsensitive ) == 0 )
+    method = Qgis::MakeValidMethod::Linework;
+  else if ( methodString.compare( QLatin1String( "structure" ), Qt::CaseInsensitive ) == 0 )
+    method = Qgis::MakeValidMethod::Structure;
+
+  const bool keepCollapsed = values.value( 2 ).toBool();
+
+  QgsGeometry valid;
+  try
+  {
+    valid = geom.makeValid( method, keepCollapsed );
+  }
+  catch ( QgsNotSupportedException & )
+  {
+    parent->setEvalErrorString( QObject::tr( "The make_valid parameters require a newer GEOS library version" ) );
+    return QVariant();
+  }
 
   return QVariant::fromValue( valid );
 }
@@ -7830,7 +7852,16 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "point3" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "option" ), true, 0 ),
                                             fcnMakeRectangleFrom3Points, QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "make_valid" ),  QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) );
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_valid" ),  QgsExpressionFunction::ParameterList
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+      QgsExpressionFunction::Parameter( QStringLiteral( "method" ), true, QStringLiteral( "linework" ) ),
+#else
+      QgsExpressionFunction::Parameter( QStringLiteral( "method" ), true, QStringLiteral( "structure" ) ),
+#endif
+      QgsExpressionFunction::Parameter( QStringLiteral( "keep_collapsed" ), true, false )
+    }, fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) );
     QgsStaticExpressionFunction *xAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$x_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "i" ) ), fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
     xAtFunc->setIsStatic( false );
     functions << xAtFunc;
