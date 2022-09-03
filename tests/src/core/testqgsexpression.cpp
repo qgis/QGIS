@@ -1304,8 +1304,17 @@ class TestQgsExpression: public QObject
       QTest::newRow( "make_rectangle_3points (distance default)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5)))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
       QTest::newRow( "make_rectangle_3points (distance)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5), 0))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
       QTest::newRow( "make_rectangle_3points (projected)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
       QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))" );
+#else
+      QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
+#endif
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
       QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
+#else
+      QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
+      QTest::newRow( "make_valid_missingEnd linework" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))'), method:='linework'))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
+#endif
       QTest::newRow( "make_valid_wrongInput" ) << "make_valid('not a geometry')" << true << QVariant();
       QTest::newRow( "x point" ) << "x(make_point(2.2,4.4))" << false << QVariant( 2.2 );
       QTest::newRow( "y point" ) << "y(make_point(2.2,4.4))" << false << QVariant( 4.4 );
