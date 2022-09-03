@@ -40,13 +40,36 @@ from qgis.gui import QgsCodeEditor
 
 from .ui_console_history_dlg import Ui_HistoryDialogPythonConsole
 
-_init_commands = ["import sys", "import os", "from pathlib import Path", "import re", "import math", "from qgis.core import *",
-                  "from qgis.gui import *", "from qgis.analysis import *", "from qgis._3d import *",
-                  "import processing", "import qgis.utils",
-                  "from qgis.utils import iface", "from qgis.PyQt.QtCore import *", "from qgis.PyQt.QtGui import *",
-                  "from qgis.PyQt.QtWidgets import *",
-                  "from qgis.PyQt.QtNetwork import *", "from qgis.PyQt.QtXml import *"]
 _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt")
+
+_init_statements = [
+    # Python
+    "import sys",
+    "import os",
+    "from pathlib import Path",
+    "import re",
+    "import math",
+    # QGIS
+    "from qgis.core import *",
+    "from qgis.gui import *",
+    "from qgis.analysis import *",
+    ## 3D might not be compiled in
+    """
+try:
+    from qgis._3d import *
+except ModuleNotFoundError:
+    pass
+""",
+    "import processing",
+    "import qgis.utils",
+    "from qgis.utils import iface",
+    # Qt
+    "from qgis.PyQt.QtCore import *",
+    "from qgis.PyQt.QtGui import *",
+    "from qgis.PyQt.QtWidgets import *",
+    "from qgis.PyQt.QtNetwork import *",
+    "from qgis.PyQt.QtXml import *",
+]
 
 
 class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
@@ -69,9 +92,9 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
         self.displayPrompt(self.continuationLine)
 
-        for line in _init_commands:
+        for statement in _init_statements:
             try:
-                self.runsource(line)
+                self.runsource(statement)
             except ModuleNotFoundError:
                 pass
 
