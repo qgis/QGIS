@@ -860,7 +860,7 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
     Q_ASSERT( context );
     context->setFeature( f );
     const QVariant v = expression->evaluate( context );
-    if ( v.canConvert<QgsGeometry>() )
+    if ( v.userType() == QMetaType::type( "QgsGeometry" ) )
     {
       geometries << v.value<QgsGeometry>();
     }

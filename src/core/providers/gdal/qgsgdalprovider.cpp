@@ -68,11 +68,7 @@
 #define PROVIDER_DESCRIPTION QStringLiteral( "GDAL data provider" )
 
 // To avoid potential races when destroying related instances ("main" and clones)
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGdalProviderMutex, ( QMutex::Recursive ) )
-#else
 Q_GLOBAL_STATIC( QRecursiveMutex, sGdalProviderMutex )
-#endif
 
 QHash< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
 
@@ -147,11 +143,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &options, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri, options )
   , mpRefCounter( new QAtomicInt( 1 ) )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  , mpMutex( new QMutex( QMutex::Recursive ) )
-#else
   , mpMutex( new QRecursiveMutex() )
-#endif
   , mpParent( new QgsGdalProvider * ( this ) )
   , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( update )
@@ -233,11 +225,7 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
 
     mpRefCounter = new QAtomicInt( 1 );
     mpLightRefCounter = other.mpLightRefCounter;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mpMutex = new QMutex( QMutex::Recursive );
-#else
     mpMutex = new QRecursiveMutex();
-#endif
 
     mpParent = other.mpParent;
 
@@ -2579,11 +2567,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     // the next driver
     if ( !( myGdalDriverExtensions.isEmpty() || myGdalDriverLongName.isEmpty() ) )
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', QString::SkipEmptyParts );
-#else
       const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', Qt::SkipEmptyParts );
-#endif
 
       // XXX add check for SDTS; in that case we want (*CATD.DDF)
       QString glob;
@@ -3478,7 +3462,7 @@ bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
   {
     const QStringList errors = handler.popErrors();
     if ( !errors.empty() )
-      QgsDebugMsg( QStringLiteral( "Cannot set no data value: %1" ).arg( errors.join( QStringLiteral( ", " ) ) ) );
+      QgsDebugMsg( QStringLiteral( "Cannot set no data value: %1" ).arg( errors.join( QLatin1String( ", " ) ) ) );
     else
       QgsDebugMsg( QStringLiteral( "Cannot set no data value" ) );
     return false;

@@ -927,8 +927,14 @@ int main( int argc, char *argv[] )
   // As suggested by Qt documentation at:
   //   - https://doc.qt.io/qt-5/qtwebengine.html
   //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
+#if 0
+  // this is disabled, because it breaks Qt 3D. See
+  // https://interest.qt-project.narkive.com/GYwuMDac/qwebengineview-qsurfaceformat-errors-in-console
+  // https://bugreports.qt.io/browse/QTBUG-60614
+  // https://bugreports.qt.io/browse/QTBUG-60605
 #if !defined(QT_NO_OPENGL)
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
+#endif
 #endif
 
   // Set up the QgsSettings Global Settings:

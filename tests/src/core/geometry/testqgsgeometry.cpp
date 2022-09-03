@@ -393,7 +393,7 @@ void TestQgsGeometry::asVariant()
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
-  QVERIFY( !var.canConvert< QgsReferencedGeometry >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsGeometry" ) );
 
   QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
   QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
@@ -425,7 +425,7 @@ void TestQgsGeometry::referenced()
   QVariant var = QVariant::fromValue( geom1 );
   QVERIFY( var.isValid() );
 
-  QVERIFY( var.canConvert< QgsReferencedGeometry >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
 
   QgsReferencedGeometry geom2 = qvariant_cast<QgsReferencedGeometry>( var );
   QCOMPARE( geom2.asWkt(), geom1.asWkt() );
@@ -2241,16 +2241,8 @@ void TestQgsGeometry::splitGeometry()
   QgsPointSequence testPoints;
   qDebug() << GEOSversion() << "\n";
   QgsGeometry g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))" ) );
-  if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
-  {
-    QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                                newGeoms, false, testPoints ), Qgis::GeometryOperationResult::NothingHappened );
-  }
-  else
-  {
-    QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                                newGeoms, false, testPoints ), Qgis::GeometryOperationResult::InvalidBaseGeometry );
-  }
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
+                              newGeoms, false, testPoints ), Qgis::GeometryOperationResult::InvalidBaseGeometry );
   QVERIFY( newGeoms.isEmpty() );
 
   // Bug https://github.com/qgis/QGIS/issues/33489

@@ -43,16 +43,16 @@ class QgsExpressionSorter
         ++i;
 
         // Both NULL: don't care
-        if ( v1.isNull() && v2.isNull() )
+        if ( QgsVariantUtils::isNull( v1 ) && QgsVariantUtils::isNull( v2 ) )
           continue;
 
         // Check for NULLs first
-        if ( v1.isNull() != v2.isNull() )
+        if ( QgsVariantUtils::isNull( v1 ) != QgsVariantUtils::isNull( v2 ) )
         {
           if ( orderBy.nullsFirst() )
-            return v1.isNull();
+            return QgsVariantUtils::isNull( v1 );
           else
-            return !v1.isNull();
+            return !QgsVariantUtils::isNull( v1 );
         }
 
         // Both values are not NULL

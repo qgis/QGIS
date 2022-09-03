@@ -50,21 +50,40 @@ void QgsTileDownloadManagerWorker::queueUpdated()
 
   if ( mManager->mShuttingDown )
   {
+    // here we HAVE to build up a list of replies from the queue before do anything
+    // with them. Otherwise we can hit the situation where aborting the replies
+    // triggers immediately their removal from the queue, and we'll be modifying
+    // mQueue elsewhere while still trying to iterate over it here => crash
+    // WARNING: there may be event loops/processEvents in play here, because in some circumstances
+    // (authentication handling, ssl errors) QgsNetworkAccessManager will trigger these.
+    std::vector< QNetworkReply * > replies;
+    replies.reserve( mManager->mQueue.size() );
     for ( auto it = mManager->mQueue.begin(); it != mManager->mQueue.end(); ++it )
     {
-      it->networkReply->abort();
+      replies.emplace_back( it->networkReply );
+    }
+    // now abort all replies
+    for ( QNetworkReply *reply : replies )
+    {
+      reply->abort();
     }
 
     quitThread();
     return;
   }
 
-  if ( mIdleTimer.isActive() && !mManager->mQueue.isEmpty() )
+  if ( mIdleTimer.isActive() && !mManager->mQueue.empty() )
   {
     // if timer to kill thread is running: stop the timer, we have work to do
     mIdleTimer.stop();
   }
 
+  // There's a potential race here -- if a reply finishes while we're still in the middle of iterating over the queue,
+  // then the associated queue entry would get removed while we're iterating over the queue here.
+  // So instead defer the actual queue removal until we've finished iterating over the queue.
+  // WARNING: there may be event loops/processEvents in play here, because in some circumstances
+  // (authentication handling, ssl errors) QgsNetworkAccessManager will trigger these.
+  mManager->mStageQueueRemovals = true;
   for ( auto it = mManager->mQueue.begin(); it != mManager->mQueue.end(); ++it )
   {
     if ( !it->networkReply )
@@ -78,6 +97,8 @@ void QgsTileDownloadManagerWorker::queueUpdated()
       ++mManager->mStats.networkRequestsStarted;
     }
   }
+  mManager->mStageQueueRemovals = false;
+  mManager->processStagedEntryRemovals();
 }
 
 void QgsTileDownloadManagerWorker::quitThread()
@@ -96,7 +117,7 @@ void QgsTileDownloadManagerWorker::quitThread()
 void QgsTileDownloadManagerWorker::idleTimerTimeout()
 {
   const QMutexLocker locker( &mManager->mMutex );
-  Q_ASSERT( mManager->mQueue.isEmpty() );
+  Q_ASSERT( mManager->mQueue.empty() );
   quitThread();
 }
 
@@ -151,7 +172,7 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
   mManager->removeEntry( mRequest );
 
-  if ( mManager->mQueue.isEmpty() )
+  if ( mManager->mQueue.empty() )
   {
     // if this was the last thing in the queue, start a timer to kill thread after X seconds
     mManager->mWorker->startIdleTimer();
@@ -164,9 +185,6 @@ void QgsTileDownloadManagerReplyWorkerObject::replyFinished()
 
 
 QgsTileDownloadManager::QgsTileDownloadManager()
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  : mMutex( QMutex::Recursive )
-#endif
 {
   mRangesCache.reset( new QgsRangeRequestCache );
 
@@ -247,10 +265,10 @@ bool QgsTileDownloadManager::hasPendingRequests() const
 {
   const QMutexLocker locker( &mMutex );
 
-  return !mQueue.isEmpty();
+  return !mQueue.empty();
 }
 
-bool QgsTileDownloadManager::waitForPendingRequests( int msec )
+bool QgsTileDownloadManager::waitForPendingRequests( int msec ) const
 {
   QElapsedTimer t;
   t.start();
@@ -259,7 +277,7 @@ bool QgsTileDownloadManager::waitForPendingRequests( int msec )
   {
     {
       const QMutexLocker locker( &mMutex );
-      if ( mQueue.isEmpty() )
+      if ( mQueue.empty() )
         return true;
     }
     QThread::usleep( 1000 );
@@ -306,7 +324,7 @@ void QgsTileDownloadManager::resetStatistics()
 
 QgsTileDownloadManager::QueueEntry QgsTileDownloadManager::findEntryForRequest( const QNetworkRequest &request )
 {
-  for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it )
+  for ( auto it = mQueue.begin(); it != mQueue.end(); ++it )
   {
     if ( it->request.url() == request.url() && it->request.rawHeader( "Range" ) == request.rawHeader( "Range" ) )
       return *it;
@@ -316,12 +334,12 @@ QgsTileDownloadManager::QueueEntry QgsTileDownloadManager::findEntryForRequest( 
 
 void QgsTileDownloadManager::addEntry( const QgsTileDownloadManager::QueueEntry &entry )
 {
-  for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it )
+  for ( auto it = mQueue.begin(); it != mQueue.end(); ++it )
   {
     Q_ASSERT( entry.request.url() != it->request.url() || entry.request.rawHeader( "Range" ) != it->request.rawHeader( "Range" ) );
   }
 
-  mQueue.append( entry );
+  mQueue.emplace_back( entry );
 }
 
 void QgsTileDownloadManager::updateEntry( const QgsTileDownloadManager::QueueEntry &entry )
@@ -339,16 +357,32 @@ void QgsTileDownloadManager::updateEntry( const QgsTileDownloadManager::QueueEnt
 
 void QgsTileDownloadManager::removeEntry( const QNetworkRequest &request )
 {
-  int i = 0;
-  for ( auto it = mQueue.constBegin(); it != mQueue.constEnd(); ++it, ++i )
+  if ( mStageQueueRemovals )
   {
-    if ( it->request.url() == request.url() && it->request.rawHeader( "Range" ) == request.rawHeader( "Range" ) )
-    {
-      mQueue.removeAt( i );
-      return;
-    }
+    mStagedQueueRemovals.emplace_back( request );
   }
-  Q_ASSERT( false );
+  else
+  {
+    for ( auto it = mQueue.begin(); it != mQueue.end(); ++it )
+    {
+      if ( it->request.url() == request.url() && it->request.rawHeader( "Range" ) == request.rawHeader( "Range" ) )
+      {
+        mQueue.erase( it );
+        return;
+      }
+    }
+    Q_ASSERT( false );
+  }
+}
+
+void QgsTileDownloadManager::processStagedEntryRemovals()
+{
+  Q_ASSERT( !mStageQueueRemovals );
+  for ( const QNetworkRequest &request : mStagedQueueRemovals )
+  {
+    removeEntry( request );
+  }
+  mStagedQueueRemovals.clear();
 }
 
 void QgsTileDownloadManager::signalQueueModified()

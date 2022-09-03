@@ -259,11 +259,7 @@ void QgsDecorationGrid::render( const QgsMapSettings &mapSettings, QgsRenderCont
         hIt = horizontalLines.constBegin();
         for ( ; hIt != horizontalLines.constEnd(); ++hIt )
         {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-          if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-#else
           if ( hIt->second.intersects( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
-#endif
           {
             mMarkerSymbol->renderPoint( intersectionPoint, nullptr, context );
           }
@@ -388,11 +384,7 @@ static bool clipByRect( QLineF &line, const QPolygonF &rect )
   for ( ; it != borderLines.constEnd(); ++it )
   {
     QPointF intersectionPoint;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    if ( it->intersect( line, &intersectionPoint ) == QLineF::BoundedIntersection )
-#else
     if ( it->intersects( line, &intersectionPoint ) == QLineF::BoundedIntersection )
-#endif
     {
       intersectionList.push_back( intersectionPoint );
       if ( intersectionList.size() >= 2 )

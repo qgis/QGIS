@@ -162,7 +162,7 @@ QVariantMap QgsFractionNumericFormat::configuration( const QgsReadWriteContext &
   QVariantMap res;
   res.insert( QStringLiteral( "show_thousand_separator" ), mShowThousandsSeparator );
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
-  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator );
+  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
   res.insert( QStringLiteral( "use_dedicated_unicode" ), mUseDedicatedUnicode );
   res.insert( QStringLiteral( "use_unicode_supersubscript" ), mUseUnicodeSuperSubscript );
   return res;

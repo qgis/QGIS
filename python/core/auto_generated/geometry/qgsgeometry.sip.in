@@ -1646,6 +1646,20 @@ If an error was encountered while creating the result, more information can be r
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const throw( QgsNotSupportedException );
+%Docstring
+Returns a possibly concave polygon that contains all the points in the geometry.
+
+If the input is a NULL geometry, the output will also be a NULL geometry.
+
+If an error was encountered while creating the result, more information can be retrieved
+by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or earlier.
+
+.. versionadded:: 3.28
+%End
+
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
 %Docstring
 Creates a Voronoi diagram for the nodes contained within the geometry.

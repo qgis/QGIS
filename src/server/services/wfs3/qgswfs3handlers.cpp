@@ -1477,7 +1477,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           const QgsFields fields = mapLayer->fields();
           for ( const auto &field : fields )
           {
-            if ( ! properties.value( field.name() ).isNull() )
+            if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) )
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
@@ -1487,7 +1487,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
               {
                 QVariant value = properties.value( field.name() );
                 // Convert blobs
-                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }
@@ -1745,7 +1745,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            if ( ! properties.value( field.name() ).isNull() )
+            if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) )
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
@@ -1755,7 +1755,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
               {
                 QVariant value = properties.value( field.name() );
                 // Convert blobs
-                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }
@@ -1865,7 +1865,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            if ( ! properties.value( field.name() ).isNull() )
+            if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) )
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
@@ -1875,7 +1875,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
               {
                 QVariant value = properties.value( field.name() );
                 // Convert blobs
-                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }

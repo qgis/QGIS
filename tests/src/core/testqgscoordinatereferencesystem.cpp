@@ -1425,7 +1425,6 @@ void TestQgsCoordinateReferenceSystem::mapUnits()
 
 void TestQgsCoordinateReferenceSystem::isDynamic()
 {
-#if (PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR==7 && PROJ_VERSION_MINOR >= 2 ) )
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:7665" ) );
   QVERIFY( crs.isDynamic() );
 
@@ -1454,7 +1453,6 @@ void TestQgsCoordinateReferenceSystem::isDynamic()
       AUTHORITY["EPSG","4326"]])""" ) ) );
   QVERIFY( crs.isValid() );
   QVERIFY( crs.isDynamic() );
-#endif
 }
 
 void TestQgsCoordinateReferenceSystem::celestialBody()

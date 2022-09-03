@@ -28,6 +28,7 @@
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include "qgsfielddomain.h"
+#include "qgscoordinatetransform.h"
 
 #include <QTextCodec>
 #include <QRegularExpression>
@@ -395,6 +396,138 @@ QString QgsGeoPackageProviderConnection::primaryKeyColumnName( const QString &ta
 
   return pkName;
 }
+
+QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
+{
+
+  QList<QgsLayerMetadataProviderResult> results;
+  if ( ! feedback || ! feedback->isCanceled() )
+  {
+    try
+    {
+      const QString searchQuery { QStringLiteral( R"SQL(
+      SELECT
+        ref.table_name, md.metadata, gc.geometry_type_name
+      FROM
+        gpkg_metadata_reference AS ref
+      JOIN
+        gpkg_metadata AS md ON md.id = ref.md_file_id
+      JOIN
+        gpkg_geometry_columns AS gc ON gc.table_name = ref.table_name
+      WHERE
+        md.md_standard_uri = 'http://mrcc.com/qgis.dtd'
+        AND ref.reference_scope = 'table'
+        AND md.md_scope = 'dataset'
+      )SQL" ) };
+
+      const QList<QVariantList> constMetadataResults { executeSql( searchQuery, feedback ) };
+      for ( const QVariantList &mdRow : std::as_const( constMetadataResults ) )
+      {
+
+        if ( feedback && feedback->isCanceled() )
+        {
+          break;
+        }
+
+        // Read MD from the XML
+        QDomDocument doc;
+        doc.setContent( mdRow[1].toString() );
+        QgsLayerMetadata layerMetadata;
+        if ( layerMetadata.readMetadataXml( doc.documentElement() ) )
+        {
+          QgsLayerMetadataProviderResult result{ layerMetadata };
+
+          QgsRectangle extents;
+
+          const auto cExtents { layerMetadata.extent().spatialExtents() };
+          for ( const auto &ext : std::as_const( cExtents ) )
+          {
+            QgsRectangle bbox {  ext.bounds.toRectangle()  };
+            QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), searchContext.transformContext };
+            ct.transform( bbox );
+            extents.combineExtentWith( bbox );
+          }
+
+          QgsPolygon poly;
+          poly.fromWkt( extents.asWktPolygon() );
+
+          // Filters
+          if ( ! geographicExtent.isEmpty() && ( poly.isEmpty() || ! geographicExtent.intersects( extents ) ) )
+          {
+            continue;
+          }
+
+          if ( ! searchString.isEmpty() && (
+                 ! result.title().contains( searchString, Qt::CaseInsensitive ) &&
+                 ! result.identifier().contains( searchString, Qt::CaseInsensitive ) &&
+                 ! result.abstract().contains( searchString, Qt::CaseInsensitive ) ) )
+          {
+            bool found { false };
+            const QList<QStringList> keyVals { result.keywords().values() };
+            for ( const QStringList &kws : std::as_const( keyVals ) )
+            {
+              const QStringList constKws { kws };
+              for ( const QString &kw : std::as_const( kws ) )
+              {
+                if ( kw.contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) )
+                {
+                  found = true;
+                  break;
+                }
+              }
+              if ( found )
+                break;
+            }
+
+            if ( ! found )
+            {
+              found = result.categories().contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) ;
+            }
+
+            if ( ! found )
+              continue;
+          }
+
+          result.setGeographicExtent( poly );
+          result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
+          result.setDataProviderName( QStringLiteral( "ogr" ) );
+          result.setAuthid( layerMetadata.crs().authid() );
+          result.setUri( tableUri( QString(), mdRow[0].toString() ) );
+          const QString geomType { mdRow[2].toString().toUpper() };
+          if ( geomType == QStringLiteral( "POINT" ) )
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::PointGeometry );
+          }
+          else if ( geomType == QStringLiteral( "POLYGON" ) )
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry );
+          }
+          else if ( geomType == QStringLiteral( "LINESTRING" ) )
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::LineGeometry );
+          }
+          else
+          {
+            result.setGeometryType( QgsWkbTypes::GeometryType::UnknownGeometry );
+          }
+          result.setLayerType( QgsMapLayerType::VectorLayer );
+
+          results.push_back( result );
+        }
+        else
+        {
+          throw QgsProviderConnectionException( QStringLiteral( "Error reading XML metdadata from connection %1" ).arg( uri() ) );
+        }
+      }
+    }
+    catch ( const QgsProviderConnectionException &ex )
+    {
+      throw QgsProviderConnectionException( QStringLiteral( "Error fetching metdadata from connection %1: %2" ).arg( uri(), ex.what() ) );
+    }
+  }
+  return results;
+}
+
 
 QgsFields QgsGeoPackageProviderConnection::fields( const QString &schema, const QString &table ) const
 {

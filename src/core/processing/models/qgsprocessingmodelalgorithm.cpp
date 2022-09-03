@@ -202,7 +202,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
           if ( foundParam )
           {
-            if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+            if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
             {
               // make sure layer output name is correctly set
               QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
@@ -1074,11 +1074,11 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
 
     }
 
-    if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+    if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
-      if ( value.canConvert<QgsProperty>() )
+      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
       {
         value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
       }
@@ -1134,16 +1134,16 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     }
 
     QgsFeatureSource *featureSource = nullptr;
-    if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+    if ( value.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
     {
       QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
       value = fromVar.source;
     }
-    else if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+    else if ( value.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
     {
       QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
       value = fromVar.sink;
-      if ( value.canConvert<QgsProperty>() )
+      if ( value.userType() == QMetaType::type( "QgsProperty" ) )
       {
         value = value.value< QgsProperty >().valueAsString( context.expressionContext() );
       }
@@ -1828,7 +1828,7 @@ void QgsProcessingModelAlgorithm::changeParameterName( const QString &oldName, c
 
           case QgsProcessingModelChildParameterSource::StaticValue:
           {
-            if ( valueIt->staticValue().canConvert< QgsProperty >() )
+            if ( valueIt->staticValue().userType() == QMetaType::type( "QgsProperty" ) )
             {
               QgsProperty property = valueIt->staticValue().value< QgsProperty >();
               if ( property.propertyType() == QgsProperty::ExpressionBasedProperty )

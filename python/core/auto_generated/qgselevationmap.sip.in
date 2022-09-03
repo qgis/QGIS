@@ -1,0 +1,86 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgselevationmap.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsElevationMap
+{
+%Docstring(signature="appended")
+Stores digital elevation model in a raster image which may get updated
+as a part of map layer rendering process. Afterwards the elevations can
+be used for post-processing effects of the rendered color map image.
+
+Elevations are encoded as colors in QImage, thanks to this it is not
+only possible to set elevation for each pixel, but also to use QPainter
+for more complex updates of elevations. We encode elevations to 24 bits
+in range of [-8000, 8777] with precision of three decimal digits, which
+should give millimiter precision and enough range for elevation values
+in meters.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgselevationmap.h"
+%End
+  public:
+    explicit QgsElevationMap( const QSize &size );
+%Docstring
+Constructs an elevation map with the given width and height
+%End
+
+    void applyEyeDomeLighting( QImage &img, int distance, float strength, float rendererScale );
+%Docstring
+Applies eye dome lighting effect to the given image. The effect makes
+angled surfaces darker and adds silhouettes in case of larger differences
+of elevations between neighboring pixels.
+
+The distance parameter tells how many pixels away from the original pixel
+to sample neighboring pixels. Normally distance of 2 pixels gives good results.
+
+The strength parameter adjusts how strong the added shading will be.
+Good default for this value seems to be 1000.
+
+The zScale parameter adjusts scale of elevation values. It is recommended
+to set this to the map's scale denominator to get similarly looking results
+at different map scales.
+%End
+
+    QImage rawElevationImage() const;
+%Docstring
+Returns raw elevation image with elevations encoded as color values
+%End
+
+    QPainter *painter() const;
+%Docstring
+Returns painter to the underlying QImage with elevations
+%End
+
+    static QRgb encodeElevation( float z );
+%Docstring
+Converts elevation value to an actual color
+%End
+    static float decodeElevation( QRgb colorRaw );
+%Docstring
+Converts a color back to elevation value
+%End
+
+
+  private:
+    QgsElevationMap( const QgsElevationMap & );
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgselevationmap.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

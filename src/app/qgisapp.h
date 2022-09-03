@@ -934,7 +934,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll );
+    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 
@@ -1694,6 +1694,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void pyQgisApiDocumentation();
     //! Open the Bugtracker page in a browser
     void reportaBug();
+    //! Open the donation page in a browser
+    void donate();
+    //! Open the get involved page in a browser
+    void getInvolved();
     //! Open the QGIS support page
     void supportProviders();
     //! Open the QGIS homepage in users browser
@@ -2170,6 +2174,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                          const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
                                      QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
                                      const QString &dialogTitle = QString() );
+
+    QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
 
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );

@@ -433,7 +433,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
       {
         // this is gross - TODO - find a way to get access to messageBar from data items
-        QMessageBox::information( nullptr, tr( "Import to MSSQL database" ), tr( "Import was successful." ) );
+        QMessageBox::information( nullptr, tr( "Import to MS SQL Server database" ), tr( "Import was successful." ) );
         if ( state() == Qgis::BrowserItemState::Populated )
           refresh();
         else
@@ -446,7 +446,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
         if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-          output->setTitle( tr( "Import to MSSQL database" ) );
+          output->setTitle( tr( "Import to MS SQL Server database" ) );
           output->setMessage( tr( "Failed to import some layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
           output->showMessage();
         }
@@ -468,7 +468,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
   if ( hasError )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( tr( "Import to MSSQL database" ) );
+    output->setTitle( tr( "Import to MS SQL Server database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }

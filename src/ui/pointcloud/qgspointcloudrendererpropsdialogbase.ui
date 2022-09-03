@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>389</width>
-    <height>501</height>
+    <width>569</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,6 +108,23 @@
             <property name="rightMargin">
              <number>3</number>
             </property>
+            <item row="0" column="1" colspan="2">
+             <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
+              <property name="decimals">
+               <number>6</number>
+              </property>
+              <property name="maximum">
+               <double>99999999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Style</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="3">
              <widget class="QgsUnitSelectionWidget" name="mPointSizeUnitWidget" native="true">
               <property name="minimumSize">
@@ -121,15 +138,8 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1" colspan="2">
-             <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
-              <property name="decimals">
-               <number>6</number>
-              </property>
-              <property name="maximum">
-               <double>99999999999.000000000000000</double>
-              </property>
-             </widget>
+            <item row="1" column="1" colspan="3">
+             <widget class="QComboBox" name="mPointStyleComboBox"/>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="lblTransparency_4">
@@ -137,16 +147,6 @@
                <string>Point size</string>
               </property>
              </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Style</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="3">
-             <widget class="QComboBox" name="mPointStyleComboBox"/>
             </item>
            </layout>
           </widget>
@@ -169,10 +169,20 @@
             <property name="rightMargin">
              <number>3</number>
             </property>
-            <item row="1" column="0">
-             <widget class="QLabel" name="lblTransparency_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblDrawOrder">
               <property name="text">
-               <string>Maximum error</string>
+               <string>Draw order</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" colspan="3">
+             <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>4</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
              </widget>
             </item>
@@ -189,24 +199,10 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="1" colspan="3">
-             <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="lblTransparency">
+            <item row="1" column="0">
+             <widget class="QLabel" name="lblTransparency_2">
               <property name="text">
-               <string>Opacity</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="lblBlend">
-              <property name="text">
-               <string>Blending mode</string>
+               <string>Maximum error</string>
               </property>
              </widget>
             </item>
@@ -223,23 +219,6 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1" colspan="3">
-             <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                <horstretch>4</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="lblDrawOrder">
-              <property name="text">
-               <string>Draw order</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1" colspan="3">
              <widget class="QComboBox" name="mDrawOrderComboBox">
               <property name="sizePolicy">
@@ -247,6 +226,113 @@
                 <horstretch>4</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="3">
+             <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="lblBlend">
+              <property name="text">
+               <string>Blending mode</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0" colspan="4">
+             <widget class="QGroupBox" name="mEyeDomeLightingGroupBox">
+              <property name="toolTip">
+               <string>A post-processing effect that makes angled surfaces darker and adds silhouettes in case of larger differences of elevations.</string>
+              </property>
+              <property name="title">
+               <string>Eye Dome Lighting</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_3">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>3</number>
+               </property>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Strength</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QgsSpinBox" name="mEdlStrength">
+                 <property name="toolTip">
+                  <string>Adjusts how strong the added shading will be. Greater values mean stronger effect.</string>
+                 </property>
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>100000</number>
+                 </property>
+                 <property name="singleStep">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>1000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>Distance</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QgsUnitSelectionWidget" name="mEdlDistanceUnit" native="true"/>
+               </item>
+               <item row="3" column="1">
+                <widget class="QgsDoubleSpinBox" name="mEdlDistance">
+                 <property name="toolTip">
+                  <string>How many pixels away from the original pixel to sample neighbors.</string>
+                 </property>
+                 <property name="decimals">
+                  <number>6</number>
+                 </property>
+                 <property name="maximum">
+                  <double>99999999999.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>0.500000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0" colspan="3">
+                <widget class="QLabel" name="mEdlWarningLabel">
+                 <property name="text">
+                  <string>Note: with default draw order, the shading may be incorrect.</string>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="lblTransparency">
+              <property name="text">
+               <string>Opacity</string>
               </property>
              </widget>
             </item>
@@ -290,16 +376,25 @@
    <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
   <tabstop>mPointSizeSpinBox</tabstop>
   <tabstop>mPointSizeUnitWidget</tabstop>
   <tabstop>mPointStyleComboBox</tabstop>
+  <tabstop>mDrawOrderComboBox</tabstop>
   <tabstop>mMaxErrorSpinBox</tabstop>
   <tabstop>mMaxErrorUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mEyeDomeLightingGroupBox</tabstop>
+  <tabstop>mEdlStrength</tabstop>
+  <tabstop>mEdlDistance</tabstop>
  </tabstops>
  <resources/>
  <connections/>

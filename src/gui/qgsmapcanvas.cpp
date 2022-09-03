@@ -253,8 +253,20 @@ QgsMapCanvas::~QgsMapCanvas()
   if ( mMapTool )
   {
     mMapTool->deactivate();
+    disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool = nullptr;
   }
+
+  // we also clear the canvas pointer for all child map tools. We're now in a partially destroyed state and it's
+  // no longer safe for map tools to try to cleanup things in the canvas during their destruction (such as removing
+  // associated canvas items)
+  // NOTE -- it may be better to just delete the map tool children here upfront?
+  const QList< QgsMapTool * > tools = findChildren< QgsMapTool *>();
+  for ( QgsMapTool *tool : tools )
+  {
+    tool->mCanvas = nullptr;
+  }
+
   mLastNonZoomMapTool = nullptr;
 
   cancelJobs();
@@ -1445,9 +1457,9 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
     mLastExtent.removeAt( i );
   }
 
-  if ( !mLastExtent.isEmpty() && mLastExtent.last() != extent() )
+  if ( !mLastExtent.isEmpty() && mLastExtent.last() != mSettings.extent() )
   {
-    mLastExtent.append( extent() );
+    mLastExtent.append( mSettings.extent() );
   }
 
   // adjust history to no more than 100
@@ -1593,7 +1605,7 @@ void QgsMapCanvas::zoomToNextExtent()
 void QgsMapCanvas::clearExtentHistory()
 {
   mLastExtent.clear(); // clear the zoom history list
-  mLastExtent.append( extent() ) ; // set the current extent in the list
+  mLastExtent.append( mSettings.extent() ) ; // set the current extent in the list
   mLastExtentIndex = mLastExtent.size() - 1;
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
@@ -2575,11 +2587,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   // zoom map to mouse cursor by scaling
   QgsPointXY oldCenter = center();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() ) );
-#else
   QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->position().x(), e->position().y() ) );
-#endif
   QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 

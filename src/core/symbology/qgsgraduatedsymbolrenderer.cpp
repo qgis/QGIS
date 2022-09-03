@@ -152,7 +152,7 @@ QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( const QgsFeatur
   QVariant value = valueForFeature( feature, context );
 
   // Null values should not be categorized
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return nullptr;
 
   // find the right category
@@ -791,7 +791,7 @@ QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( const QgsFeatu
   QVariant value = valueForFeature( feature, context );
 
   // Null values should not be categorized
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QSet< QString >();
 
   // find the right category

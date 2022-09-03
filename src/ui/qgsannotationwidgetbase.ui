@@ -14,37 +14,7 @@
    <string notr="true">Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="1">
-    <widget class="QgsSymbolButton" name="mFrameStyleButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mMapMarkerLabel_3">
-     <property name="text">
-      <string>Frame style</string>
-     </property>
-     <property name="buddy">
-      <cstring>mMapMarkerButton</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QCheckBox" name="mMapPositionFixedCheckBox">
-     <property name="text">
-      <string>Fixed map position</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QgsCollapsibleGroupBox" name="mMarginsGroupBox">
      <property name="title">
       <string>Contents Margins</string>
@@ -181,38 +151,15 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
-     <property name="toolTip">
-      <string>Allows the annotation to be associated with a map layer. If set, the annotation will only be visible when the layer is visible.</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mMapMarkerLabel">
+   <item row="0" column="0" colspan="2">
+    <widget class="QCheckBox" name="mMapPositionFixedCheckBox">
      <property name="text">
-      <string>Map marker</string>
-     </property>
-     <property name="buddy">
-      <cstring>mMapMarkerButton</cstring>
+      <string>Fixed map position</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QgsSymbolButton" name="mMapMarkerButton">
+   <item row="4" column="1">
+    <widget class="QgsSymbolButton" name="mFrameStyleButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -234,18 +181,91 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mMapMarkerLabel_3">
+     <property name="text">
+      <string>Frame style</string>
+     </property>
+     <property name="buddy">
+      <cstring>mMapMarkerButton</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
+     <property name="toolTip">
+      <string>Allows the annotation to be associated with a map layer. If set, the annotation will only be visible when the layer is visible.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QgsSymbolButton" name="mMapMarkerButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mMapMarkerLabel">
+     <property name="text">
+      <string>Map marker</string>
+     </property>
+     <property name="buddy">
+      <cstring>mMapMarkerButton</cstring>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -254,15 +274,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mMapPositionFixedCheckBox</tabstop>
   <tabstop>mLayerComboBox</tabstop>
   <tabstop>mMapMarkerButton</tabstop>
+  <tabstop>mFrameStyleButton</tabstop>
+  <tabstop>mSpinTopMargin</tabstop>
+  <tabstop>mSpinLeftMargin</tabstop>
+  <tabstop>mSpinRightMargin</tabstop>
+  <tabstop>mSpinBottomMargin</tabstop>
  </tabstops>
  <resources/>
  <connections/>

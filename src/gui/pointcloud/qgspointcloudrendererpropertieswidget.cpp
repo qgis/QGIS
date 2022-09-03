@@ -109,11 +109,25 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mMaxErrorSpinBox->setClearValue( 0.3 );
 
+  mEdlStrength->setClearValue( 1000 );
+  mEdlDistance->setClearValue( 0.5 );
+
+  mEdlDistanceUnit->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                              << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
   connect( mMaxErrorSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mMaxErrorUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   connect( mPointStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mDrawOrderComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    mEdlWarningLabel->setVisible( mDrawOrderComboBox->currentIndex() == 0 );  // visible on default draw order
+  } );
+  connect( mEyeDomeLightingGroupBox, &QGroupBox::toggled, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlStrength, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistance, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mEdlDistanceUnit, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   syncToLayer( layer );
 }
 
@@ -156,6 +170,12 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
+
+    mEyeDomeLightingGroupBox->setChecked( mLayer->renderer()->eyeDomeLightingEnabled() );
+    mEdlStrength->setValue( mLayer->renderer()->eyeDomeLightingStrength() );
+    mEdlDistance->setValue( mLayer->renderer()->eyeDomeLightingDistance() );
+    mEdlDistanceUnit->setUnit( mLayer->renderer()->eyeDomeLightingDistanceUnit() );
+    mEdlWarningLabel->setVisible( mLayer->renderer()->drawOrder2d() == Qgis::PointCloudDrawOrder::Default );
   }
 
   mBlockChangedSignal = false;
@@ -190,6 +210,10 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );
   mLayer->renderer()->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
   mLayer->renderer()->setDrawOrder2d( static_cast< Qgis::PointCloudDrawOrder >( mDrawOrderComboBox->currentData().toInt() ) );
+  mLayer->renderer()->setEyeDomeLightingEnabled( mEyeDomeLightingGroupBox->isChecked() );
+  mLayer->renderer()->setEyeDomeLightingStrength( mEdlStrength->value() );
+  mLayer->renderer()->setEyeDomeLightingDistance( mEdlDistance->value() );
+  mLayer->renderer()->setEyeDomeLightingDistanceUnit( mEdlDistanceUnit->unit() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

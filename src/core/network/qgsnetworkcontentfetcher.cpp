@@ -21,6 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsvariantutils.h"
 #include <QNetworkReply>
 #include <QTextCodec>
 
@@ -191,11 +192,11 @@ void QgsNetworkContentFetcher::contentLoaded( bool ok )
   }
 
   const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-  if ( redirect.isNull() )
+  if ( QgsVariantUtils::isNull( redirect ) )
   {
     //no error or redirect, got target
     const QVariant status = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-    if ( !status.isNull() && status.toInt() >= 400 )
+    if ( !QgsVariantUtils::isNull( status ) && status.toInt() >= 400 )
     {
       QgsMessageLog::logMessage( tr( "HTTP fetch %1 failed with error %2" ).arg( mReply->url().toString(), status.toString() ) );
     }

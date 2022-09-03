@@ -160,7 +160,6 @@ QgsGeometry QgsGeos::geometryFromGeos( const geos::unique_ptr &geos )
   return g;
 }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=8 )
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( QString *errorMsg ) const
 {
   if ( !mGeos )
@@ -176,7 +175,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( QString *errorMsg ) con
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
 }
-#endif
 
 geos::unique_ptr QgsGeos::asGeos( const QgsGeometry &geometry, double precision )
 {
@@ -457,7 +455,6 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
 
   try
   {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( mGeosPrepared )
     {
       GEOSPreparedDistance_r( geosinit()->ctxt, mGeosPrepared.get(), otherGeosGeom.get(), &distance );
@@ -466,9 +463,6 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
     {
       GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
     }
-#else
-    GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
-#endif
   }
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
@@ -489,7 +483,6 @@ double QgsGeos::distance( double x, double y, QString *errorMsg ) const
 
   try
   {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( mGeosPrepared )
     {
       GEOSPreparedDistance_r( geosinit()->ctxt, mGeosPrepared.get(), point.get(), &distance );
@@ -498,9 +491,6 @@ double QgsGeos::distance( double x, double y, QString *errorMsg ) const
     {
       GEOSDistance_r( geosinit()->ctxt, mGeos.get(), point.get(), &distance );
     }
-#else
-    GEOSDistance_r( geosinit()->ctxt, mGeos.get(), point.get(), &distance );
-#endif
   }
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
@@ -528,7 +518,6 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
 
   try
   {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     if ( mGeosPrepared )
     {
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
@@ -545,9 +534,6 @@ bool QgsGeos::distanceWithin( const QgsAbstractGeometry *geom, double maxdist, Q
       GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
 #endif
     }
-#else // GEOS < 3.3.9
-    GEOSDistance_r( geosinit()->ctxt, mGeos.get(), otherGeosGeom.get(), &distance );
-#endif
   }
   CATCH_GEOS_WITH_ERRMSG( false )
 
@@ -631,11 +617,6 @@ double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, doubl
 
 double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
-  ( void )geom;
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistance requires a QGIS build based on GEOS 3.7 or later" ) );
-#else
   double distance = -1.0;
   if ( !mGeos )
   {
@@ -655,17 +636,10 @@ double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *error
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
   return distance;
-#endif
 }
 
 double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
-  ( void )geom;
-  ( void )densifyFraction;
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistanceDensify requires a QGIS build based on GEOS 3.7 or later" ) );
-#else
   double distance = -1.0;
   if ( !mGeos )
   {
@@ -685,7 +659,6 @@ double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double 
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
   return distance;
-#endif
 }
 
 bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -1485,8 +1458,10 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
+
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+
   QVector< double > xOut( nPoints );
   QVector< double > yOut( nPoints );
   QVector< double > zOut;
@@ -1495,30 +1470,27 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
   QVector< double > mOut;
   if ( hasM )
     mOut.resize( nPoints );
+
   double *x = xOut.data();
   double *y = yOut.data();
   double *z = zOut.data();
   double *m = mOut.data();
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  GEOSCoordSeq_copyToArrays_r( geosinit()->ctxt, cs, x, y, hasZ ? z : nullptr, hasM ? m : nullptr );
+#else
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     if ( hasZ )
       GEOSCoordSeq_getXYZ_r( geosinit()->ctxt, cs, i, x++, y++, z++ );
     else
       GEOSCoordSeq_getXY_r( geosinit()->ctxt, cs, i, x++, y++ );
-#else
-    GEOSCoordSeq_getX_r( geosinit()->ctxt, cs, i, x++ );
-    GEOSCoordSeq_getY_r( geosinit()->ctxt, cs, i, y++ );
-    if ( hasZ )
-    {
-      GEOSCoordSeq_getZ_r( geosinit()->ctxt, cs, i, z++ );
-    }
-#endif
     if ( hasM )
     {
       GEOSCoordSeq_getOrdinate_r( geosinit()->ctxt, cs, i, 3, m++ );
     }
   }
+#endif
   std::unique_ptr< QgsLineString > line( new QgsLineString( xOut, yOut, zOut, mOut ) );
   return line;
 }
@@ -1547,19 +1519,10 @@ QgsPoint QgsGeos::coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, 
   double x, y;
   double z = 0;
   double m = 0;
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
   if ( hasZ )
     GEOSCoordSeq_getXYZ_r( geosinit()->ctxt, cs, i, &x, &y, &z );
   else
     GEOSCoordSeq_getXY_r( geosinit()->ctxt, cs, i, &x, &y );
-#else
-  GEOSCoordSeq_getX_r( geosinit()->ctxt, cs, i, &x );
-  GEOSCoordSeq_getY_r( geosinit()->ctxt, cs, i, &y );
-  if ( hasZ )
-  {
-    GEOSCoordSeq_getZ_r( geosinit()->ctxt, cs, i, &z );
-  }
-#endif
   if ( hasM )
   {
     GEOSCoordSeq_getOrdinate_r( geosinit()->ctxt, cs, i, 3, &m );
@@ -1946,6 +1909,29 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
+QgsAbstractGeometry *QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
+{
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+  ( void )allowHoles;
+  ( void )targetPercent;
+  ( void )errorMsg;
+  throw QgsNotSupportedException( QStringLiteral( "Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later" ) );
+#else
+  if ( !mGeos )
+  {
+    return nullptr;
+  }
+
+  try
+  {
+    geos::unique_ptr concaveHull( GEOSConcaveHull_r( geosinit()->ctxt, mGeos.get(), targetPercent, allowHoles ) );
+    std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
+    return concaveHullGeom.release();
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+#endif
+}
+
 bool QgsGeos::isValid( QString *errorMsg, const bool allowSelfTouchingHoles, QgsGeometry *errorLoc ) const
 {
   if ( !mGeos )
@@ -2067,6 +2053,27 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   {
     return nullptr;
   }
+  GEOSCoordSequence *coordSeq = nullptr;
+
+  const int numPoints = line->numPoints();
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+
+  if ( !forceClose || ( line->pointN( 0 ) == line->pointN( numPoints - 1 ) ) )
+  {
+    // use optimised method if we don't have to force close an open ring
+    try
+    {
+      coordSeq = GEOSCoordSeq_copyFromArrays_r( geosinit()->ctxt, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
+      if ( !coordSeq )
+      {
+        QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
+        return nullptr;
+      }
+    }
+    CATCH_GEOS( nullptr )
+  }
+#endif
 
   bool hasZ = line->is3D();
   bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
@@ -2080,15 +2087,12 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     ++coordDims;
   }
 
-  int numPoints = line->numPoints();
-
   int numOutPoints = numPoints;
   if ( forceClose && ( line->pointN( 0 ) != line->pointN( numPoints - 1 ) ) )
   {
     ++numOutPoints;
   }
 
-  GEOSCoordSequence *coordSeq = nullptr;
   try
   {
     coordSeq = GEOSCoordSeq_create_r( geosinit()->ctxt, numOutPoints, coordDims );
@@ -2115,7 +2119,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
           zData = hasZ ? line->zData() : nullptr;
           mData = hasM ? line->mData() : nullptr;
         }
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
         if ( hasZ )
         {
           GEOSCoordSeq_setXYZ_r( geosinit()->ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision, std::round( *zData++ / precision ) * precision );
@@ -2124,14 +2127,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         {
           GEOSCoordSeq_setXY_r( geosinit()->ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision );
         }
-#else
-        GEOSCoordSeq_setX_r( geosinit()->ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision );
-        GEOSCoordSeq_setY_r( geosinit()->ctxt, coordSeq, i, std::round( *yData++ / precision ) * precision );
-        if ( hasZ )
-        {
-          GEOSCoordSeq_setOrdinate_r( geosinit()->ctxt, coordSeq, i, 2, std::round( *zData++ / precision ) * precision );
-        }
-#endif
         if ( hasM )
         {
           GEOSCoordSeq_setOrdinate_r( geosinit()->ctxt, coordSeq, i, 3, line->mAt( *mData++ ) );
@@ -2150,7 +2145,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
           zData = hasZ ? line->zData() : nullptr;
           mData = hasM ? line->mData() : nullptr;
         }
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
         if ( hasZ )
         {
           GEOSCoordSeq_setXYZ_r( geosinit()->ctxt, coordSeq, i, *xData++, *yData++, *zData++ );
@@ -2159,14 +2153,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         {
           GEOSCoordSeq_setXY_r( geosinit()->ctxt, coordSeq, i, *xData++, *yData++ );
         }
-#else
-        GEOSCoordSeq_setX_r( geosinit()->ctxt, coordSeq, i, *xData++ );
-        GEOSCoordSeq_setY_r( geosinit()->ctxt, coordSeq, i, *yData++ );
-        if ( hasZ )
-        {
-          GEOSCoordSeq_setOrdinate_r( geosinit()->ctxt, coordSeq, i, 2, *zData++ );
-        }
-#endif
         if ( hasM )
         {
           GEOSCoordSeq_setOrdinate_r( geosinit()->ctxt, coordSeq, i, 3, *mData++ );
@@ -2196,7 +2182,6 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
   geos::unique_ptr geosPoint;
   try
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     if ( coordDims == 2 )
     {
       // optimised constructor
@@ -2206,7 +2191,6 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
         geosPoint.reset( GEOSGeom_createPointFromXY_r( geosinit()->ctxt, x, y ) );
       return geosPoint;
     }
-#endif
 
     GEOSCoordSequence *coordSeq = GEOSCoordSeq_create_r( geosinit()->ctxt, 1, coordDims );
     if ( !coordSeq )
@@ -2343,11 +2327,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tolerance, QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
-  ( void )tolerance;
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating maximumInscribedCircle requires a QGIS build based on GEOS 3.9 or later" ) );
-#else
   if ( !mGeos )
   {
     return nullptr;
@@ -2360,17 +2339,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tol
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
-#endif
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary, QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
-  ( void )tolerance;
-  ( void )boundary;
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating largestEmptyCircle requires a QGIS build based on GEOS 3.9 or later" ) );
-#else
   if ( !mGeos )
   {
     return nullptr;
@@ -2387,15 +2359,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double toleran
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
-#endif
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumWidth requires a QGIS build based on GEOS 3.6 or later" ) );
-#else
   if ( !mGeos )
   {
     return nullptr;
@@ -2408,15 +2375,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg ) 
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
-#endif
 }
 
 double QgsGeos::minimumClearance( QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumClearance requires a QGIS build based on GEOS 3.6 or later" ) );
-#else
   if ( !mGeos )
   {
     return std::numeric_limits< double >::quiet_NaN();
@@ -2431,15 +2393,10 @@ double QgsGeos::minimumClearance( QString *errorMsg ) const
   }
   CATCH_GEOS_WITH_ERRMSG( std::numeric_limits< double >::quiet_NaN() )
   return res;
-#endif
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *errorMsg ) const
 {
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
-  ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumClearanceLine requires a QGIS build based on GEOS 3.6 or later" ) );
-#else
   if ( !mGeos )
   {
     return nullptr;
@@ -2452,7 +2409,6 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *err
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
   return fromGeos( geos.get() );
-#endif
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::node( QString *errorMsg ) const
@@ -2643,7 +2599,6 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
   double ny = 0.0;
   try
   {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     geos::coord_sequence_unique_ptr nearestCoord;
     if ( mGeosPrepared ) // use faster version with prepared geometry
     {
@@ -2653,9 +2608,6 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
     {
       nearestCoord.reset( GEOSNearestPoints_r( geosinit()->ctxt, mGeos.get(), otherGeom.get() ) );
     }
-#else
-    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosinit()->ctxt, mGeos.get(), otherGeom.get() ) );
-#endif
 
     ( void )GEOSCoordSeq_getX_r( geosinit()->ctxt, nearestCoord.get(), 0, &nx );
     ( void )GEOSCoordSeq_getY_r( geosinit()->ctxt, nearestCoord.get(), 0, &ny );

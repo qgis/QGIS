@@ -273,7 +273,7 @@ QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QStr
 void QgsOWSSourceSelect::mNewButton_clicked()
 {
   const QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, mService.toUpper() );
 
   if ( nc->exec() )
   {
@@ -287,7 +287,7 @@ void QgsOWSSourceSelect::mNewButton_clicked()
 void QgsOWSSourceSelect::mEditButton_clicked()
 {
   const QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, mService.toUpper(), mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {

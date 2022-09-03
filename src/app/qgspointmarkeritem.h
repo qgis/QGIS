@@ -52,7 +52,7 @@ class APP_EXPORT QgsMapCanvasSymbolItem: public QgsMapCanvasItem
      * Returns the symbol used for rendering the item.
      * \see setSymbol()
      */
-    const QgsSymbol *symbol() const;
+    QgsSymbol *symbol();
 
     /**
      * Sets the feature used for rendering the symbol. The feature's attributes
@@ -122,10 +122,14 @@ class APP_EXPORT QgsMapCanvasMarkerSymbolItem: public QgsMapCanvasSymbolItem
     void updateSize();
 
     void renderSymbol( QgsRenderContext &context, const QgsFeature &feature ) override;
+    QRectF boundingRect() const override;
+    void updatePosition() override;
 
   private:
 
+    QgsPointXY mMapLocation;
     QPointF mLocation;
+    QRectF mCanvasBounds;
 
     QgsMarkerSymbol *markerSymbol();
 };

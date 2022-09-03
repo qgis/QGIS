@@ -963,20 +963,20 @@ void TestQgsTableEditor::properties()
   QCOMPARE( w.tableContents().size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).size(), 4 );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).content().canConvert< QgsProperty >() );
-  QVERIFY( w.tableContents().at( 0 ).at( 1 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 0 ).content().userType() != QMetaType::type( "QgsProperty" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().userType(), QMetaType::type( "QgsProperty" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "1+2" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 2 ).content().userType() != QMetaType::type( "QgsProperty" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 3 ).content().userType() != QMetaType::type( "QgsProperty" ) );
 
   w.selectionModel()->clearSelection();
   w.setSelectionCellProperty( QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
   QCOMPARE( spy.count(), 1 );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
-  QVERIFY( !w.tableContents().at( 0 ).at( 0 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 0 ).content().userType() != QMetaType::type( "QgsProperty" ) );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionCellProperty().isActive() );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
@@ -988,14 +988,14 @@ void TestQgsTableEditor::properties()
   QCOMPARE( spy.count(), 2 );
   QVERIFY( w.selectionCellProperty().isActive() );
   QCOMPARE( w.selectionCellProperty().asExpression(), QStringLiteral( "3+4" ) );
-  QVERIFY( w.tableContents().at( 0 ).at( 0 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().userType(), QMetaType::type( "QgsProperty" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "3+4" ) );
-  QVERIFY( w.tableContents().at( 0 ).at( 1 ).content().canConvert< QgsProperty >() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().userType(), QMetaType::type( "QgsProperty" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "3+4" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 2 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 2 ).content().userType() != QMetaType::type( "QgsProperty" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
-  QVERIFY( !w.tableContents().at( 0 ).at( 3 ).content().canConvert< QgsProperty >() );
+  QVERIFY( w.tableContents().at( 0 ).at( 3 ).content().userType() != QMetaType::type( "QgsProperty" ) );
   w.selectionModel()->select( w.model()->index( 0, 3 ), QItemSelectionModel::Select );
   QVERIFY( !w.selectionCellProperty().isActive() );
 }

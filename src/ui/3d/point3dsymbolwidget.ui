@@ -224,6 +224,156 @@
      <property name="verticalSpacing">
       <number>6</number>
      </property>
+     <item row="5" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinSize">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>10.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QgsSymbolButton" name="btnChangeSymbol">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="labelAltClamping">
+       <property name="text">
+        <string>Altitude clamping</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="labelRadius">
+       <property name="text">
+        <string>Radius</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinBottomRadius">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>10.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="Qgs3DModelSourceLineEdit" name="lineEditModel" native="true"/>
+       </item>
+      </layout>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="labelBillboardSymbol">
+       <property name="text">
+        <string>Billboard symbol</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="labelBillboardHeight">
+       <property name="text">
+        <string>Billboard Height</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinLength">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>10.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cboShape"/>
+     </item>
+     <item row="8" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinBillboardHeight">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="labelBottomRadius">
+       <property name="text">
+        <string>Bottom radius</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsDoubleSpinBox" name="spinMinorRadius">
+       <property name="maximum">
+        <double>99999.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>5.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="labelModel">
+       <property name="text">
+        <string>Model</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="labelLength">
+       <property name="text">
+        <string>Length</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelMinorRadius">
+       <property name="text">
+        <string>Minor radius</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="labelTopRadius">
+       <property name="text">
+        <string>Top radius</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QgsDoubleSpinBox" name="spinRadius">
        <property name="maximum">
@@ -253,79 +403,10 @@
        </item>
       </widget>
      </item>
-     <item row="7" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="Qgs3DModelSourceLineEdit" name="lineEditModel" native="true"/>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="labelRadius">
-       <property name="text">
-        <string>Radius</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="labelBottomRadius">
-       <property name="text">
-        <string>Bottom radius</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinSize">
-       <property name="maximum">
-        <double>99999.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>10.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="labelModel">
-       <property name="text">
-        <string>Model</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <widget class="QgsDoubleSpinBox" name="spinTopRadius">
        <property name="maximum">
         <double>99999.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinBillboardHeight">
-       <property name="maximum">
-        <double>99999.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="labelBillboardSymbol">
-       <property name="text">
-        <string>Billboard symbol</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinMinorRadius">
-       <property name="maximum">
-        <double>99999.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>5.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="labelBillboardHeight">
-       <property name="text">
-        <string>Billboard Height</string>
        </property>
       </widget>
      </item>
@@ -336,74 +417,10 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
-      <widget class="QgsSymbolButton" name="btnChangeSymbol">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="labelMinorRadius">
-       <property name="text">
-        <string>Minor radius</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="cboShape"/>
-     </item>
-     <item row="4" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinBottomRadius">
-       <property name="maximum">
-        <double>99999.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>10.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="labelTopRadius">
-       <property name="text">
-        <string>Top radius</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Shape</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinLength">
-       <property name="maximum">
-        <double>99999.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>10.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="labelAltClamping">
-       <property name="text">
-        <string>Altitude clamping</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="labelLength">
-       <property name="text">
-        <string>Length</string>
        </property>
       </widget>
      </item>
@@ -449,7 +466,6 @@
   <tabstop>spinBottomRadius</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>spinLength</tabstop>
-  <tabstop>lineEditModel</tabstop>
   <tabstop>spinBillboardHeight</tabstop>
   <tabstop>btnChangeSymbol</tabstop>
   <tabstop>cboAltClamping</tabstop>

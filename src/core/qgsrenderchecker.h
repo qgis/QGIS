@@ -241,8 +241,10 @@ class CORE_EXPORT QgsRenderChecker
      * diff matches one of these anomalies we will still consider it to be
      * acceptable.
      * \returns a bool indicating if the diff matched one of the anomaly files
+     *
+     * \deprecated Use the test mask system instead.
      */
-    bool isKnownAnomaly( const QString &diffImageFile );
+    Q_DECL_DEPRECATED bool isKnownAnomaly( const QString &diffImageFile ) SIP_DEPRECATED;
 
     /**
      * Draws a checkboard pattern for image backgrounds, so that opacity is visible

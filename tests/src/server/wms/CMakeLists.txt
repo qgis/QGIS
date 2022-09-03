@@ -33,7 +33,11 @@ set(MODULE_WMS_HDRS
   ${CMAKE_SOURCE_DIR}/src/server/services/wms/qgswmsserviceexception.h
 )
 
-QT5_WRAP_CPP(MODULE_WMS_MOC_SRCS ${MODULE_WMS_HDRS})
+if (BUILD_WITH_QT6)
+  QT6_WRAP_CPP(MODULE_WMS_MOC_SRCS ${MODULE_WMS_HDRS})
+else()
+  QT5_WRAP_CPP(MODULE_WMS_MOC_SRCS ${MODULE_WMS_HDRS})
+endif()
 
 #############################################################
 # Tests:

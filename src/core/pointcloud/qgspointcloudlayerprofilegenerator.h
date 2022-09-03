@@ -112,11 +112,6 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     double mZScale = 1.0;
     double mMaxErrorInLayerCoordinates = 0;
 
-    // only required for GEOS < 3.9
-#if GEOS_VERSION_MAJOR<4 && GEOS_VERSION_MINOR<9
-    std::vector< geos::unique_ptr > mSTRTreeItems;
-#endif
-
     friend class QgsPointCloudLayerProfileGenerator;
 };
 

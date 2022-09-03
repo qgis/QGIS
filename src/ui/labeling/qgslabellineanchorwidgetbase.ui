@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>271</width>
-    <height>315</height>
+    <width>280</width>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,24 +26,36 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="0" column="0" colspan="2">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Label Anchoring</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
-      <item row="2" column="1">
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="3" column="1">
        <widget class="QComboBox" name="mClippingComboBox"/>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="3" column="0">
+       <widget class="QLabel" name="clippinglabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Clipping</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
+      <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>&lt;b&gt;Controls the position along the line which labels will be placed close to.&lt;/b&gt;</string>
         </property>
@@ -52,44 +64,55 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="3" column="2">
        <widget class="QgsPropertyOverrideButton" name="mLineClippingDDBtn">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>…</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="3">
-       <layout class="QGridLayout" name="gridLayout_2">
-        <property name="topMargin">
-         <number>10</number>
+      <item row="1" column="2">
+       <widget class="QgsPropertyOverrideButton" name="mLinePlacementDDBtn">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <item row="0" column="2">
-         <widget class="QgsPropertyOverrideButton" name="mLinePlacementDDBtn">
-          <property name="text">
-           <string>…</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QgsDoubleSpinBox" name="mCustomPlacementSpinBox">
-          <property name="suffix">
-           <string> %</string>
-          </property>
-          <property name="maximum">
-           <double>100.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" colspan="2">
-         <widget class="QComboBox" name="mPercentPlacementComboBox"/>
-        </item>
-       </layout>
+        <property name="text">
+         <string>…</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="QgsDoubleSpinBox" name="mCustomPlacementSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="suffix">
+         <string> %</string>
+        </property>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QComboBox" name="mPercentPlacementComboBox"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Text Anchor</string>
@@ -118,7 +141,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Placement Behavior</string>
@@ -147,7 +170,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -184,7 +207,12 @@
   <tabstop>mPercentPlacementComboBox</tabstop>
   <tabstop>mLinePlacementDDBtn</tabstop>
   <tabstop>mCustomPlacementSpinBox</tabstop>
+  <tabstop>mClippingComboBox</tabstop>
+  <tabstop>mLineClippingDDBtn</tabstop>
+  <tabstop>mAnchorTextPointComboBox</tabstop>
+  <tabstop>mAnchorTextPointDDBtn</tabstop>
   <tabstop>mAnchorTypeComboBox</tabstop>
+  <tabstop>mAnchorTypeDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

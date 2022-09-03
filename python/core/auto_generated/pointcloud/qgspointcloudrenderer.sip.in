@@ -157,6 +157,7 @@ Returns the feedback object used to cancel rendering
 %End
 
 
+
   private:
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 };
@@ -448,6 +449,94 @@ Creates a set of legend nodes representing the renderer.
 Returns a list of all rule keys for legend nodes created by the renderer.
 %End
 
+    bool eyeDomeLightingEnabled() const;
+%Docstring
+Returns whether eye dome lighting effect will be used
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    void setEyeDomeLightingEnabled( bool enabled );
+%Docstring
+Sets whether eye dome lighting effect will be used
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    double eyeDomeLightingStrength() const;
+%Docstring
+Returns the eye dome lighting strength value
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    void setEyeDomeLightingStrength( double strength );
+%Docstring
+Sets the eye dome lighting strength value
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    double eyeDomeLightingDistance() const;
+%Docstring
+Returns the eye dome lighting distance
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    void setEyeDomeLightingDistance( double distance );
+%Docstring
+Sets the eye dome lighting distance
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    QgsUnitTypes::RenderUnit eyeDomeLightingDistanceUnit() const;
+%Docstring
+Returns unit for the eye dome lighting distance
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
+    void setEyeDomeLightingDistanceUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets unit for the eye dome lighting distance
+
+.. note::
+
+   This is not a part of stable API - this function may be removed in a future release
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
@@ -464,6 +553,7 @@ Retrieves the z value for the point at index ``i``.
 %Docstring
 Draws a point using a ``color`` at the specified ``x`` and ``y`` (in map coordinates).
 %End
+
 
     void copyCommonProperties( QgsPointCloudRenderer *destination ) const;
 %Docstring

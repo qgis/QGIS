@@ -29,7 +29,6 @@
 
 #include "pal.h"
 #include "layer.h"
-#include "palexception.h"
 #include "internalexception.h"
 #include "feature.h"
 #include "geomfunction.h"
@@ -423,12 +422,7 @@ void Layer::chopFeaturesAtRepeatDistance()
       std::vector<Point> points( n );
       for ( unsigned int i = 0; i < n; ++i )
       {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
         GEOSCoordSeq_getXY_r( geosctxt, cs, i, &points[i].x, &points[i].y );
-#else
-        GEOSCoordSeq_getX_r( geosctxt, cs, i, &points[i].x );
-        GEOSCoordSeq_getY_r( geosctxt, cs, i, &points[i].y );
-#endif
       }
 
       // Cumulative length vector
@@ -461,12 +455,7 @@ void Layer::chopFeaturesAtRepeatDistance()
           GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
           for ( unsigned int i = 0; i < part.size(); ++i )
           {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
             GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
-#else
-            GEOSCoordSeq_setX_r( geosctxt, cooSeq, i, part[i].x );
-            GEOSCoordSeq_setY_r( geosctxt, cooSeq, i, part[i].y );
-#endif
           }
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
           std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
@@ -482,12 +471,7 @@ void Layer::chopFeaturesAtRepeatDistance()
         GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
         for ( std::size_t i = 0; i < part.size(); ++i )
         {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
           GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
-#else
-          GEOSCoordSeq_setX_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].x );
-          GEOSCoordSeq_setY_r( geosctxt, cooSeq, static_cast< unsigned int >( i ), part[i].y );
-#endif
         }
 
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );

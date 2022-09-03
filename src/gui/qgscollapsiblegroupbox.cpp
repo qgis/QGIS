@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsvariantutils.h"
 
 #include <QToolButton>
 #include <QMouseEvent>
@@ -601,13 +602,13 @@ void QgsCollapsibleGroupBox::loadState()
   if ( mSaveCheckedState )
   {
     const QVariant val = mSettings->value( key + "/checked" );
-    if ( ! val.isNull() )
+    if ( ! QgsVariantUtils::isNull( val ) )
       setChecked( val.toBool() );
   }
   if ( mSaveCollapsedState )
   {
     const QVariant val = mSettings->value( key + "/collapsed" );
-    if ( ! val.isNull() )
+    if ( ! QgsVariantUtils::isNull( val ) )
       setCollapsed( val.toBool() );
   }
 

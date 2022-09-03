@@ -771,7 +771,7 @@ QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QM
 {
   QVariant indexData;
   indexData = index.data( Qt::DisplayRole );
-  if ( indexData.isNull() )
+  if ( QgsVariantUtils::isNull( indexData ) )
   {
     return QSize();
   }
