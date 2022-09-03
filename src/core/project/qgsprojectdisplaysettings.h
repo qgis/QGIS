@@ -45,6 +45,8 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
   public:
 
     Q_PROPERTY( Qgis::CoordinateDisplayType coordinateType READ coordinateType WRITE setCoordinateType NOTIFY coordinateTypeChanged )
+    Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCustomCrs READ coordinateCustomCrs WRITE setCoordinateCustomCrs NOTIFY coordinateCustomCrsChanged )
+    Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCrs READ coordinateCrs NOTIFY coordinateCrsChanged )
 
     /**
      * Constructor for QgsProjectDisplaySettings with the specified \a parent object.
@@ -125,6 +127,14 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
+     * Returns the coordinate display CRS used derived from the coordinate type.
+     * \see coordinateType()
+     * \note if not parented to a project object, an invalid CRS will be returned.
+     * \since QGIS 3.28
+     */
+    QgsCoordinateReferenceSystem coordinateCrs() const { return mCoordinateCrs; }
+
+    /**
      * Reads the settings's state from a DOM element.
      * \see writeXml()
      */
@@ -172,12 +182,24 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
      */
     void coordinateCustomCrsChanged();
 
+    /**
+     * Emitted when the coordinate CRS changes.
+     *
+     * \see coordinateCrs()
+     * \see coordinateType()
+     * \since QGIS 3.28
+     */
+    void coordinateCrsChanged();
+
   private:
+    void updateCoordinateCrs();
+
     std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
     std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
 
     Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
     QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    QgsCoordinateReferenceSystem mCoordinateCrs;
 
 };
 

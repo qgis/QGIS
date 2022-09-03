@@ -114,42 +114,28 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
 
   const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
 
-  QgsCoordinateReferenceSystem crs = destCrs;
-  QgsPointXY p = point;
-  bool isGeographic = false;
-  if ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic )
+  QgsCoordinateReferenceSystem crs = project->displaySettings()->coordinateCrs();
+  if ( !crs.isValid() && !destCrs.isValid() )
   {
-    isGeographic = true;
-    if ( destCrs.isValid() && !destCrs.isGeographic() )
-    {
-      // use the associated geographic projection to the destination CRS.
-      crs = destCrs.toGeographicCrs();
-      const QgsCoordinateTransform ct( destCrs, crs, project );
-      try
-      {
-        p = ct.transform( point );
-      }
-      catch ( QgsCsException & )
-      {
-        return QString();
-      }
-    }
+    return QString();
   }
-  else if ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs )
+  else if ( !crs.isValid() )
   {
-    crs = project->displaySettings()->coordinateCustomCrs();
-    if ( destCrs != crs )
+    crs = destCrs;
+  }
+
+  QgsPointXY p = point;
+  const bool isGeographic = crs.isGeographic();
+  if ( destCrs  != crs )
+  {
+    const QgsCoordinateTransform ct( destCrs, crs, project );
+    try
     {
-      isGeographic = crs.isGeographic();
-      const QgsCoordinateTransform ct( destCrs, crs, project );
-      try
-      {
-        p = ct.transform( point );
-      }
-      catch ( QgsCsException & )
-      {
-        return QString();
-      }
+      p = ct.transform( point );
+    }
+    catch ( QgsCsException & )
+    {
+      return QString();
     }
   }
 
