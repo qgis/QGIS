@@ -1,6 +1,10 @@
 ########################################################
 # Files
 
+if(MSVC)
+  add_definitions(-DWIN32_LEAN_AND_MEAN)
+endif(MSVC)
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
