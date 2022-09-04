@@ -393,7 +393,8 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      *
-     * Sets the list of variables intended to be hidden.
+     * Sets the list of variables intended to be hidden in the
+     * expression builder dialog and widget.
      *
      * \see hiddenVariables()
      * \see addHiddenVariable()
@@ -405,7 +406,8 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      *
-     * Adds the passed variable to a list of hidden variables.
+     * Adds the passed variable to a list of hidden variables that
+     * won't be visible in the expression builder dialog and widget.
      *
      * \see hiddenVariables()
      * \see setHiddenVariables()

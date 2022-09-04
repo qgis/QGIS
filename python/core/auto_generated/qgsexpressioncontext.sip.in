@@ -421,7 +421,8 @@ Returns the list of variables hidden within the scope.
     void setHiddenVariables( const QStringList &hiddenVariables );
 %Docstring
 
-Sets the list of variables intended to be hidden.
+Sets the list of variables intended to be hidden in the
+expression builder dialog and widget.
 
 .. seealso:: :py:func:`hiddenVariables`
 
@@ -436,7 +437,8 @@ Sets the list of variables intended to be hidden.
     void addHiddenVariable( const QString &hiddenVariable );
 %Docstring
 
-Adds the passed variable to a list of hidden variables.
+Adds the passed variable to a list of hidden variables that
+won't be visible in the expression builder dialog and widget.
 
 .. seealso:: :py:func:`hiddenVariables`
 
