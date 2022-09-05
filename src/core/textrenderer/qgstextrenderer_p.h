@@ -278,6 +278,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , opacity( other.opacity )
       , blendMode( other.blendMode )
       , multilineHeight( other.multilineHeight )
+      , multilineHeightUnits( other.multilineHeightUnits )
       , orientation( other.orientation )
       , previewBackgroundColor( other.previewBackgroundColor )
       , allowHtmlFormatting( other.allowHtmlFormatting )
@@ -298,7 +299,8 @@ class QgsTextSettingsPrivate : public QSharedData
     QColor textColor;
     double opacity = 1.0;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
-    double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
+    double multilineHeight = 1.0;
+    QgsUnitTypes::RenderUnit multilineHeightUnits = QgsUnitTypes::RenderPercentage;
     QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
     QColor previewBackgroundColor = Qt::white;
     bool allowHtmlFormatting = false;
@@ -310,10 +312,6 @@ class QgsTextSettingsPrivate : public QSharedData
   private:
     QgsTextSettingsPrivate &operator=( const QgsTextSettingsPrivate & ) = delete;
 };
-
-
-
-
 
 /// @endcond
 
