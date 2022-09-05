@@ -25,14 +25,27 @@
 class QgsMapCanvas;
 class QgsLayerMetadataResultsProxyModel;
 
+/**
+ * \ingroup gui
+ * The QgsLayerMetadataSearchWidget class offers layer metadata search and filtering.
+ * It is designed to be embedded in the data source manager dialog.
+ * \since QGIS 3.28
+ */
 class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsLayerMetadataSearchWidget
 {
     Q_OBJECT
   public:
+
+    /**
+     * Created a new QgsLayerMetadataSearchWidget.
+     * \param mapCanvas optional map canvas
+     * \param parent optional parent
+     */
     explicit QgsLayerMetadataSearchWidget( const QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
 
   signals:
 
+    //! Emitted when the close button is clicked.
     void rejected();
 
     //! Emitted when layers have been selected for addition
@@ -40,6 +53,7 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsL
 
   public slots:
 
+    //! Updates the extent filter based on the combo box current item \a index.
     void updateExtentFilter( int index );
 
   private:

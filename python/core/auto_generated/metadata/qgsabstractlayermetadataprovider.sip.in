@@ -47,6 +47,9 @@ Constructor for QgsLayerMetadataProviderResult.
 %End
 
     QgsLayerMetadataProviderResult( );
+%Docstring
+Default constructor.
+%End
 
     const QgsPolygon &geographicExtent() const;
 %Docstring

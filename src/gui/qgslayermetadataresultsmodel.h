@@ -110,15 +110,15 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
      */
     enum Sections
     {
-      //<! Metadata identifier
+      //! Metadata identifier
       Identifier,
-      //<! Metadata title
+      //! Metadata title
       Title,
-      //<! Metadata abstract
+      //! Metadata abstract
       Abstract,
-      //<! Layer data provider name
+      //! Layer data provider name
       DataProviderName,
-      //<! Layer geometry type
+      //! Layer geometry type
       GeometryType,
     };
 
@@ -138,7 +138,6 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
 
     /**
      * Emitted when the progress changed to \a progress.
-     * @param progress
      */
     void progressChanged( int progress );
 

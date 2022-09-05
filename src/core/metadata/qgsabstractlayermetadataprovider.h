@@ -67,6 +67,9 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
      */
     QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
 
+    /**
+     * Default constructor.
+     */
     QgsLayerMetadataProviderResult( ) = default;
 
     /**

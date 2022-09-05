@@ -144,7 +144,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
     /**
-     * Return layer's metadata, it may be a default constructed metadata
+     * Returns layer's metadata, it may be a default constructed metadata
      * if metadata are not explictly set.
      * \since QGIS 3.28
      */

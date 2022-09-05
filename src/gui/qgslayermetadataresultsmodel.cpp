@@ -18,8 +18,6 @@
 #include "qgsapplication.h"
 #include "qgslayermetadataproviderregistry.h"
 #include "qgslayermetadataformatter.h"
-#include <QFutureSynchronizer>
-#include <QtConcurrent>
 #include <QIcon>
 
 QgsLayerMetadataResultsModel::QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent )
