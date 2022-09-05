@@ -78,10 +78,7 @@ void QgsMeshDatasetGroupStore::setPersistentProvider( QgsMeshDataProvider *provi
 
 QgsMeshDatasetGroupStore::DatasetGroup QgsMeshDatasetGroupStore::datasetGroup( int index ) const
 {
-  if ( mRegistery.contains( index ) )
-    return mRegistery[index];
-  else
-    return DatasetGroup{nullptr, -1};
+  return mRegistery.value( index, DatasetGroup{nullptr, -1} );
 }
 
 bool QgsMeshDatasetGroupStore::addPersistentDatasets( const QString &path )
@@ -117,6 +114,10 @@ bool QgsMeshDatasetGroupStore::addDatasetGroup( QgsMeshDatasetGroup *group )
 
   int nativeIndex = mExtraDatasets->addDatasetGroup( group );
   int groupIndex = registerDatasetGroup( DatasetGroup{mExtraDatasets.get(), nativeIndex} );
+
+  if ( groupIndex == -1 )
+    return false;
+
   QList<int> groupIndexes;
   groupIndexes.append( groupIndex );
   createDatasetGroupTreeItems( groupIndexes );
@@ -315,6 +316,15 @@ QDomElement QgsMeshDatasetGroupStore::writeXml( QDomDocument &doc, const QgsRead
     ++it;
   }
 
+  for ( auto it = mGroupNameToGlobalIndex.constBegin(); it != mGroupNameToGlobalIndex.constEnd(); ++it )
+  {
+    QDomElement elemNameToIndex = doc.createElement( QStringLiteral( "name-to-global-index" ) );
+    elemNameToIndex.setAttribute( QStringLiteral( "name" ), it.key() );
+    elemNameToIndex.setAttribute( QStringLiteral( "global-index" ), it.value() );
+
+    storeElement.appendChild( elemNameToIndex );
+  }
+
   return storeElement;
 }
 
@@ -327,18 +337,15 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
   while ( !datasetElem.isNull() )
   {
     int globalIndex = datasetElem.attribute( QStringLiteral( "global-index" ) ).toInt();
-    int sourceIndex = -1;
-    QgsMeshDatasetSourceInterface *source = nullptr;
+
     const QString sourceType = datasetElem.attribute( QStringLiteral( "source-type" ) );
     if ( sourceType == QLatin1String( "persitent-provider" ) )
     {
-      source = mPersistentProvider;
-      sourceIndex = datasetElem.attribute( QStringLiteral( "source-index" ) ).toInt();
       mPersistentExtraDatasetGroupIndexes.append( globalIndex );
     }
     else if ( sourceType == QLatin1String( "virtual" ) )
     {
-      source = mExtraDatasets.get();
+      QgsMeshDatasetSourceInterface *source = mExtraDatasets.get();
       QString name = datasetElem.attribute( QStringLiteral( "name" ) );
       QString formula = datasetElem.attribute( QStringLiteral( "formula" ) );
       qint64 startTime = datasetElem.attribute( QStringLiteral( "start-time" ) ).toLongLong();
@@ -346,18 +353,28 @@ void QgsMeshDatasetGroupStore::readXml( const QDomElement &storeElem, const QgsR
 
       QgsMeshDatasetGroup *dsg = new QgsMeshVirtualDatasetGroup( name, formula, mLayer, startTime, endTime );
       extraDatasetGroups[globalIndex] = dsg;
-      sourceIndex = mExtraDatasets->addDatasetGroup( dsg );
+      int sourceIndex = mExtraDatasets->addDatasetGroup( dsg );
+
+      mRegistery[globalIndex] = DatasetGroup{source, sourceIndex};
     }
     else
     {
       QgsDebugMsg( QStringLiteral( "Unhandled source-type: %1." ).arg( sourceType ) );
     }
-    if ( source )
-    {
-      mRegistery[globalIndex] = DatasetGroup{source, sourceIndex};
-    }
 
     datasetElem = datasetElem.nextSiblingElement( QStringLiteral( "mesh-dataset" ) );
+  }
+
+  QDomElement nameToIndexElem = storeElem.firstChildElement( "name-to-global-index" );
+  mGroupNameToGlobalIndex.clear();
+  while ( !nameToIndexElem.isNull() )
+  {
+    QString name = nameToIndexElem.attribute( QStringLiteral( "name" ) );
+    int globalIndex = nameToIndexElem.attribute( QStringLiteral( "global-index" ) ).toInt();
+
+    mGroupNameToGlobalIndex.insert( name, globalIndex );
+
+    nameToIndexElem = nameToIndexElem.nextSiblingElement( QStringLiteral( "name-to-global-index" ) );
   }
 
   QDomElement rootTreeItemElem = storeElem.firstChildElement( QStringLiteral( "mesh-dataset-group-tree-item" ) );
@@ -414,10 +431,23 @@ void QgsMeshDatasetGroupStore::onPersistentDatasetAdded( int count )
   QList<int> newGroupIndexes;
   for ( int i = providerBeginIndex; i < providerTotalCount; ++i )
   {
-    if ( i < mPersistentExtraDatasetGroupIndexes.count() )
+    const QString groupName = mPersistentProvider->datasetGroupMetadata( i ).name();
+    if ( mGroupNameToGlobalIndex.empty() && i < mPersistentExtraDatasetGroupIndexes.count() )
+    {
+      // This happens with QGIS project saved with version < 3.28
       mRegistery[mPersistentExtraDatasetGroupIndexes.at( i )] = DatasetGroup( mPersistentProvider, i );
+    }
+    else if ( mGroupNameToGlobalIndex.contains( groupName ) )
+    {
+      // The dataset group name is associated with an index, so it is not a new dataset group
+      registerDatasetGroup( DatasetGroup{mPersistentProvider, i} );
+    }
     else
-      newGroupIndexes.append( registerDatasetGroup( DatasetGroup{mPersistentProvider, i} ) );
+    {
+      int newGroupIndex = registerDatasetGroup( DatasetGroup{mPersistentProvider, i} );
+      if ( newGroupIndex != -1 )
+        newGroupIndexes.append( newGroupIndex );
+    }
   }
 
   if ( !newGroupIndexes.isEmpty() )
@@ -453,21 +483,39 @@ void QgsMeshDatasetGroupStore::removePersistentProvider()
 
 int QgsMeshDatasetGroupStore::newIndex()
 {
+  QSet usedIndex = qgis::listToSet( mRegistery.keys() );
+  usedIndex.unite( qgis::listToSet( mGroupNameToGlobalIndex.values() ) );
   int index = 0;
-  QMap < int, DatasetGroup>::iterator it = mRegistery.begin();
-  while ( it != mRegistery.end() )
-  {
-    if ( index <= it.key() )
-      index = it.key() + 1;
-    ++it;
-  }
+
+  while ( usedIndex.contains( index ) )
+    ++index;
+
   return index;
 }
 
 int QgsMeshDatasetGroupStore::registerDatasetGroup( const QgsMeshDatasetGroupStore::DatasetGroup &group )
 {
-  int groupIndex = newIndex();
-  mRegistery[newIndex()] = group;
+  const QString &name = group.first->datasetGroupMetadata( group.second ).name();
+  auto it = mGroupNameToGlobalIndex.find( name );
+
+  int groupIndex;
+  if ( it != mGroupNameToGlobalIndex.end() )
+  {
+    groupIndex = it.value();
+
+    if ( mRegistery.contains( groupIndex ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Dupplicate group name for %1." ).arg( name ) );
+      return -1; // The registery has already a group with this index, we can't have two groups with the same name
+    }
+  }
+  else
+  {
+    groupIndex = newIndex();
+    mGroupNameToGlobalIndex.insert( name, groupIndex );
+  }
+
+  mRegistery[groupIndex] = group;
   return groupIndex;
 }
 
@@ -494,30 +542,25 @@ void QgsMeshDatasetGroupStore::eraseExtraDataset( int indexInExtraStore )
   }
 }
 
-int QgsMeshDatasetGroupStore::nativeIndexToGroupIndex( QgsMeshDatasetSourceInterface *source, int nativeIndex )
-{
-  QMap < int, DatasetGroup>::const_iterator it = mRegistery.constBegin();
-  while ( it != mRegistery.constEnd() )
-  {
-    if ( it.value() == DatasetGroup{source, nativeIndex} )
-      return it.key();
-    ++it;
-  }
-  return -1;
-}
-
 void QgsMeshDatasetGroupStore::checkDatasetConsistency( QgsMeshDatasetSourceInterface *source )
 {
   // check if datasets of source are present, if not, add them
   QList<int> indexes;
   for ( int i = 0; i < source->datasetGroupCount(); ++i )
-    if ( nativeIndexToGroupIndex( source, i ) == -1 )
-      indexes.append( registerDatasetGroup( DatasetGroup{source, i} ) );
+  {
+    int globalIndex =  globalDatasetGroupIndexInSource( source, i );
+    if ( globalIndex == -1 )
+      globalIndex = registerDatasetGroup( DatasetGroup{source, i} );
+
+    if ( globalIndex != - 1 )
+      indexes.append( globalIndex );
+  }
 
   if ( !indexes.isEmpty() )
     createDatasetGroupTreeItems( indexes );
 
-  for ( int globalIndex : mRegistery.keys() )
+  const QList<int> globalIndexes = mRegistery.keys();
+  for ( int globalIndex :  globalIndexes )
   {
     if ( mRegistery.value( globalIndex ).first == source )
       syncItemToDatasetGroup( globalIndex );
@@ -577,11 +620,11 @@ void QgsMeshDatasetGroupStore::syncItemToDatasetGroup( int groupIndex )
 {
   if ( !mDatasetGroupTreeRootItem )
     return;
-  DatasetGroup group = datasetGroup( groupIndex );
+  const DatasetGroup group = datasetGroup( groupIndex );
   QgsMeshDatasetGroupTreeItem *item = mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( groupIndex );
   if ( group.first == mPersistentProvider && mPersistentProvider )
   {
-    QgsMeshDatasetGroupMetadata meta = mPersistentProvider->datasetGroupMetadata( group.second );
+    const QgsMeshDatasetGroupMetadata meta = mPersistentProvider->datasetGroupMetadata( group.second );
     if ( item )
       item->setPersistentDatasetGroup( meta.uri() );
   }
@@ -599,6 +642,8 @@ void QgsMeshDatasetGroupStore::createDatasetGroupTreeItems( const QList<int> &in
   for ( int i = 0; i < indexes.count(); ++i )
   {
     int groupIndex = indexes.at( i );
+    if ( mDatasetGroupTreeRootItem->childFromDatasetGroupIndex( groupIndex ) )
+      continue; //item already exists
     const QgsMeshDatasetGroupMetadata meta = datasetGroupMetadata( groupIndex );
     const QString name = meta.name();
     const QStringList subdatasets = name.split( '/' );

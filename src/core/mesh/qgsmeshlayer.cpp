@@ -999,7 +999,11 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
   // All dataset group are removed and replace by a unique virtual dataset group that provide vertices elevation value.
   mExtraDatasetUri.clear();
   mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
-  mDatasetGroupStore->addDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
+
+  std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
+  if ( mDatasetGroupStore->addDatasetGroup( zValueDatasetGroup.get() ) )
+    zValueDatasetGroup.release();
+
   resetDatasetGroupTreeItem();
 
   connect( mMeshEditor, &QgsMeshEditor::meshEdited, this, &QgsMeshLayer::onMeshEdited );
@@ -1415,6 +1419,23 @@ QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProf
   return new QgsMeshLayerProfileGenerator( this, request );
 }
 
+void QgsMeshLayer::checkSymbologyConsistency()
+{
+  const QList<int> groupIndexes = mDatasetGroupStore->datasetGroupIndexes();
+  if ( !groupIndexes.contains( mRendererSettings.activeScalarDatasetGroup() ) )
+  {
+    if ( !groupIndexes.empty() )
+      mRendererSettings.setActiveScalarDatasetGroup( groupIndexes.first() );
+    else
+      mRendererSettings.setActiveScalarDatasetGroup( -1 );
+  }
+
+  if ( !groupIndexes.contains( mRendererSettings.activeVectorDatasetGroup() ) )
+  {
+    mRendererSettings.setActiveVectorDatasetGroup( -1 );
+  }
+}
+
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
                                   QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
@@ -1428,6 +1449,8 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   const QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings, context );
+
+  checkSymbologyConsistency();
 
   const QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
   if ( !elemSimplifySettings.isNull() )
@@ -1655,6 +1678,7 @@ void QgsMeshLayer::reload()
   if ( !mMeshEditor && mDataProvider && mDataProvider->isValid() )
   {
     mDataProvider->reloadData();
+    mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() ); //extra dataset are already loaded
 
     //reload the mesh structure
     if ( !mNativeMesh )
@@ -1670,6 +1694,10 @@ void QgsMeshLayer::reload()
 
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
+
+    checkSymbologyConsistency();
+
+    emit reloaded();
   }
 }
 
