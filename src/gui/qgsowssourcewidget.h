@@ -60,14 +60,16 @@ class GUI_EXPORT QgsOWSSourceWidget : public QgsProviderSourceWidget, private Ui
     QgsRectangle extent() const;
 
     /**
-     * Sets time instant.
+     * Sets the current layer time instant value on
+     * the source widget time combo box.
      *
      * \since QGIS 3.28
      */
     void setTime( const QString &time );
 
     /**
-     * Retuns widget time instant.
+     * Returns the time value from the
+     * time combo box on the source widget.
      *
      * \since QGIS 3.28
      */
