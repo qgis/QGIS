@@ -1969,7 +1969,7 @@ void TestQgsMeshLayer::testSetDataSourceRetainStyle()
 void TestQgsMeshLayer::keepDatasetIndexConsistency()
 {
   const QString uri_1( mDataDir + QStringLiteral( "/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water Level", "Depth" and "Velocity"
-  const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) ); //exacly the same mesh except without "Velocity"
+  const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) ); //exactly the same mesh except without "Velocity"
 
   QTemporaryDir tempDir;
   const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );

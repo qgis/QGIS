@@ -247,7 +247,7 @@ class QgsMeshDatasetGroupStore: public QObject
 
     DatasetGroup datasetGroup( int index ) const;
 
-    //! Returns a index that is not alredy used
+    //! Returns a index that is not already used
     int newIndex();
 
     int registerDatasetGroup( const DatasetGroup &group );
