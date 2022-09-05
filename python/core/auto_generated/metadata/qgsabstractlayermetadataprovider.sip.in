@@ -118,6 +118,11 @@ Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
 Sets the metadata standard URI to ``standardUri``.
 %End
 
+    QIcon layerTypeIcon() const;
+%Docstring
+Returs the icon for the layer type.
+%End
+
 };
 
 

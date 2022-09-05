@@ -139,6 +139,11 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
      */
     void setStandardUri( const QString &standardUri );
 
+    /**
+     * Returs the icon for the layer type.
+     */
+    QIcon layerTypeIcon() const;
+
   private:
 
     //! Layer spatial extent of the layer in EPSG:4326

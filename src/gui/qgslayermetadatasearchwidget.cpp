@@ -34,6 +34,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( const QgsMapCanvas *
   mProxyModel->setSourceModel( sourceModel );
   mMetadataTableView->setModel( mProxyModel );
   mMetadataTableView->setSortingEnabled( true );
+  mMetadataTableView->sortByColumn( 0, Qt::SortOrder::AscendingOrder );
   mMetadataTableView->horizontalHeader()->setSectionResizeMode( QgsLayerMetadataResultsModel::Sections::Identifier, QHeaderView::ResizeMode::Stretch );
   mMetadataTableView->horizontalHeader()->setSectionResizeMode( QgsLayerMetadataResultsModel::Sections::Title, QHeaderView::ResizeMode::Stretch );
   mMetadataTableView->horizontalHeader()->setSectionResizeMode( QgsLayerMetadataResultsModel::Sections::Abstract, QHeaderView::ResizeMode::Stretch );

@@ -17,7 +17,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsfeedback.h"
-
+#include "qgsiconutils.h"
+#include <QIcon>
 
 QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResults::metadata() const
 {
@@ -115,5 +116,26 @@ const QString &QgsLayerMetadataProviderResult::standardUri() const
 void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri )
 {
   mStandardUri = standardUri;
+}
+
+QIcon QgsLayerMetadataProviderResult::layerTypeIcon() const
+{
+  if ( layerType() == QgsMapLayerType::VectorLayer )
+  {
+    switch ( geometryType() )
+    {
+      case QgsWkbTypes::NullGeometry:
+        return QgsIconUtils::iconTable();
+      case QgsWkbTypes::PointGeometry:
+        return QgsIconUtils::iconPoint();
+      case QgsWkbTypes::LineGeometry:
+        return QgsIconUtils::iconLine();
+      case QgsWkbTypes::PolygonGeometry:
+        return QgsIconUtils::iconPolygon();
+      default:
+        return QgsIconUtils::iconDefaultLayer();
+    }
+  }
+  return QgsIconUtils::iconForLayerType( layerType() );
 }
 
