@@ -146,7 +146,7 @@ Returns icon for point cloud layer
     const QgsLayerMetadata &layerMetadata() const;
 %Docstring
 Returns layer's metadata, it may be a default constructed metadata
-if metadata are not explictly set.
+if metadata are not explicitly set.
 
 .. versionadded:: 3.28
 %End

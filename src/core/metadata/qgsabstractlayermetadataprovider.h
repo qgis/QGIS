@@ -143,7 +143,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     void setStandardUri( const QString &standardUri );
 
     /**
-     * Returs the icon for the layer type.
+     * Returns the icon for the layer type.
      */
     QIcon layerTypeIcon() const;
 

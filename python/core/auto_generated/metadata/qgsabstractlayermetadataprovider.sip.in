@@ -123,7 +123,7 @@ Sets the metadata standard URI to ``standardUri``.
 
     QIcon layerTypeIcon() const;
 %Docstring
-Returs the icon for the layer type.
+Returns the icon for the layer type.
 %End
 
 };
