@@ -24,6 +24,7 @@
 #include "qgspallabeling.h"
 #include "qgsconfig.h"
 #include "qgsfontmanager.h"
+#include "qgsapplication.h"
 
 #include <QFontDatabase>
 #include <QMimeData>
@@ -360,12 +361,12 @@ void QgsTextFormat::setLineHeightUnit( QgsUnitTypes::RenderUnit unit )
   d->multilineHeightUnits = unit;
 }
 
-QgsTextFormat::TextOrientation QgsTextFormat::orientation() const
+Qgis::TextOrientation QgsTextFormat::orientation() const
 {
   return d->orientation;
 }
 
-void QgsTextFormat::setOrientation( TextOrientation orientation )
+void QgsTextFormat::setOrientation( Qgis::TextOrientation orientation )
 {
   d->isValid = true;
   d->orientation = orientation;

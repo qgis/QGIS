@@ -1400,6 +1400,21 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextRenderFormat )
 
     /**
+     * Text orientations.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextFormat::TextOrientation
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextOrientation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextFormat, TextOrientation ) : int
+      {
+      Horizontal SIP_MONKEYPATCH_COMPAT_NAME( HorizontalOrientation ), //!< Horizontally oriented text
+      Vertical SIP_MONKEYPATCH_COMPAT_NAME( VerticalOrientation ), //!< Vertically oriented text
+      RotationBased SIP_MONKEYPATCH_COMPAT_NAME( RotationBasedOrientation ), //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
+    };
+    Q_ENUM( TextOrientation )
+
+    /**
      * Rendering subcomponent properties.
      *
      * \since QGIS 3.22

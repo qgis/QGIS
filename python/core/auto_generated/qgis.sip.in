@@ -847,6 +847,13 @@ The development version
       AlwaysText,
     };
 
+    enum class TextOrientation
+      {
+      Horizontal,
+      Vertical,
+      RotationBased,
+    };
+
     enum class RenderSubcomponentProperty
     {
       Generic,

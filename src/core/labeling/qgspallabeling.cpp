@@ -535,7 +535,7 @@ void QgsPalLayerSettings::startRender( QgsRenderContext &context )
   if ( placement == Qgis::LabelPlacement::Curved )
   {
     // force horizontal orientation, other orientation modes aren't unsupported for curved placement
-    mFormat.setOrientation( QgsTextFormat::HorizontalOrientation );
+    mFormat.setOrientation( Qgis::TextOrientation::Horizontal );
     mDataDefinedProperties.property( QgsPalLayerSettings::TextOrientation ).setActive( false );
   }
 
@@ -1481,7 +1481,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
   double multilineH = mFormat.lineHeight();
-  QgsTextFormat::TextOrientation orientation = mFormat.orientation();
+  Qgis::TextOrientation orientation = mFormat.orientation();
 
   bool addDirSymb = mLineSettings.addDirectionSymbol();
   QString leftDirSymb = mLineSettings.leftDirectionSymbol();
@@ -1637,7 +1637,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
   switch ( orientation )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
       h += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
 
@@ -1648,7 +1648,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       break;
     }
 
-    case QgsTextFormat::VerticalOrientation:
+    case Qgis::TextOrientation::Vertical:
     {
       double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
       double labelWidth = fm->maxWidth();
@@ -1663,7 +1663,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       break;
     }
 
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::RotationBased:
     {
       double widthHorizontal = 0.0;
       for ( const QString &line : std::as_const( multiLineSplit ) )

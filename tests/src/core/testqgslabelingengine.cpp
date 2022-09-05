@@ -4614,7 +4614,7 @@ void TestQgsLabelingEngine::testVerticalOrientation()
   settings.fieldName = QStringLiteral( "Class" );
   setDefaultLabelParams( settings );
   QgsTextFormat format = settings.format();
-  format.setOrientation( QgsTextFormat::VerticalOrientation );
+  format.setOrientation( Qgis::TextOrientation::Vertical );
   settings.setFormat( format );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -4660,7 +4660,7 @@ void TestQgsLabelingEngine::testVerticalOrientationLetterLineSpacing()
   settings.isExpression = true;
   setDefaultLabelParams( settings );
   QgsTextFormat format = settings.format();
-  format.setOrientation( QgsTextFormat::VerticalOrientation );
+  format.setOrientation( Qgis::TextOrientation::Vertical );
   format.setLineHeight( 1.5 );
   QFont font = format.font();
   font.setLetterSpacing( QFont::AbsoluteSpacing, 3.75 );
@@ -4710,7 +4710,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPoint()
   setDefaultLabelParams( settings );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromExpression( QStringLiteral( "\"Heading\"" ) ) );
   QgsTextFormat format = settings.format();
-  format.setOrientation( QgsTextFormat::RotationBasedOrientation );
+  format.setOrientation( Qgis::TextOrientation::RotationBased );
   settings.setFormat( format );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -4763,7 +4763,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
   settings.placement = Qgis::LabelPlacement::Line;
   settings.lineSettings().setPlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine );
   QgsTextFormat format = settings.format();
-  format.setOrientation( QgsTextFormat::RotationBasedOrientation );
+  format.setOrientation( Qgis::TextOrientation::RotationBased );
   settings.setFormat( format );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!

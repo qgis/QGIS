@@ -1305,6 +1305,20 @@ QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text obje
 Qgis.TextRenderFormat.__doc__ = 'Options for rendering text.\n\n.. versionadded:: 3.22\n\n' + '* ``TextFormatAlwaysOutlines``: ' + Qgis.TextRenderFormat.AlwaysOutlines.__doc__ + '\n' + '* ``TextFormatAlwaysText``: ' + Qgis.TextRenderFormat.AlwaysText.__doc__
 # --
 Qgis.TextRenderFormat.baseClass = Qgis
+QgsTextFormat.TextOrientation = Qgis.TextOrientation
+# monkey patching scoped based enum
+QgsTextFormat.HorizontalOrientation = Qgis.TextOrientation.Horizontal
+QgsTextFormat.HorizontalOrientation.is_monkey_patched = True
+QgsTextFormat.HorizontalOrientation.__doc__ = "Horizontally oriented text"
+QgsTextFormat.VerticalOrientation = Qgis.TextOrientation.Vertical
+QgsTextFormat.VerticalOrientation.is_monkey_patched = True
+QgsTextFormat.VerticalOrientation.__doc__ = "Vertically oriented text"
+QgsTextFormat.RotationBasedOrientation = Qgis.TextOrientation.RotationBased
+QgsTextFormat.RotationBasedOrientation.is_monkey_patched = True
+QgsTextFormat.RotationBasedOrientation.__doc__ = "Horizontally or vertically oriented text based on rotation (only available for map labeling)"
+Qgis.TextOrientation.__doc__ = 'Text orientations.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextFormat`.TextOrientation\n\n.. versionadded:: 3.28\n\n' + '* ``HorizontalOrientation``: ' + Qgis.TextOrientation.Horizontal.__doc__ + '\n' + '* ``VerticalOrientation``: ' + Qgis.TextOrientation.Vertical.__doc__ + '\n' + '* ``RotationBasedOrientation``: ' + Qgis.TextOrientation.RotationBased.__doc__
+# --
+Qgis.TextOrientation.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RenderSubcomponentProperty.Generic.__doc__ = "Generic subcomponent property"
 Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ = "Shadow offset"

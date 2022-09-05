@@ -19,12 +19,16 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgstextblock.h"
-#include "qgstextformat.h"
+#include "qgsunittypes.h"
+#include "qgsmapunitscale.h"
 
 #include <QPicture>
 
 class QgsTextDocument;
+class QgsTextFormat;
 class QgsRenderContext;
+
+class QFontMetricsF;
 
 /**
  * \class QgsTextRenderer
@@ -372,7 +376,7 @@ class CORE_EXPORT QgsTextRenderer
                                   VAlignment vAlignment,
                                   DrawMode mode = Rect );
 
-    static QgsTextFormat::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
+    static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
 
     static void calculateExtraSpacingForLineJustification( double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace );
     static void applyExtraSpacingForLineJustification( QFont &font, double extraWordSpace, double extraLetterSpace );

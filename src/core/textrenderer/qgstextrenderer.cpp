@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstextrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgstextformat.h"
 #include "qgstextdocument.h"
 #include "qgstextfragment.h"
@@ -287,20 +286,20 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
 {
   QPainter *p = context.painter();
 
-  QgsTextFormat::TextOrientation orientation = format.orientation();
-  if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+  Qgis::TextOrientation orientation = format.orientation();
+  if ( format.orientation() == Qgis::TextOrientation::RotationBased )
   {
     if ( component.rotation >= -315 && component.rotation < -90 )
     {
-      orientation = QgsTextFormat::VerticalOrientation;
+      orientation = Qgis::TextOrientation::Vertical;
     }
     else if ( component.rotation >= -90 && component.rotation < -45 )
     {
-      orientation = QgsTextFormat::VerticalOrientation;
+      orientation = Qgis::TextOrientation::Vertical;
     }
     else
     {
-      orientation = QgsTextFormat::HorizontalOrientation;
+      orientation = Qgis::TextOrientation::Horizontal;
     }
   }
 
@@ -332,7 +331,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   double advance = 0;
   switch ( orientation )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
       double xOffset = 0;
       for ( const QgsTextFragment &fragment : component.block )
@@ -351,8 +350,8 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
       break;
     }
 
-    case QgsTextFormat::VerticalOrientation:
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::Vertical:
+    case Qgis::TextOrientation::RotationBased:
     {
       double letterSpacing = font.letterSpacing();
       double partYOffset = component.offset.y() * scaleFactor;
@@ -427,7 +426,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
     bufferComponent.picture = buffPict;
     bufferComponent.pictureBuffer = penSize / 2.0;
 
-    if ( format.orientation() == QgsTextFormat::VerticalOrientation || format.orientation() == QgsTextFormat::RotationBasedOrientation )
+    if ( format.orientation() == Qgis::TextOrientation::Vertical || format.orientation() == Qgis::TextOrientation::RotationBased )
     {
       bufferComponent.offset.setY( bufferComponent.offset.y() - bufferComponent.size.height() );
     }
@@ -570,7 +569,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   double width = 0;
   switch ( format.orientation() )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
       double maxLineWidth = 0;
       for ( const QgsTextBlock &block : document )
@@ -586,7 +585,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
       break;
     }
 
-    case QgsTextFormat::VerticalOrientation:
+    case Qgis::TextOrientation::Vertical:
     {
       double totalLineWidth = 0;
       int blockIndex = 0;
@@ -608,7 +607,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
       break;
     }
 
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::RotationBased:
     {
       // label mode only
       break;
@@ -778,7 +777,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
 
   switch ( format.orientation() )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
       int blockIndex = 0;
       double totalHeight = 0;
@@ -830,7 +829,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
       return ( totalHeight - lastLineLeading ) / scaleFactor;
     }
 
-    case QgsTextFormat::VerticalOrientation:
+    case Qgis::TextOrientation::Vertical:
     {
       double maxBlockHeight = 0;
       for ( const QgsTextBlock &block : document )
@@ -856,7 +855,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
       return maxBlockHeight / scaleFactor;
     }
 
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::RotationBased:
     {
       // label mode only
       break;
@@ -1454,17 +1453,17 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   }
 
   double rotation = 0;
-  const QgsTextFormat::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotation );
+  const Qgis::TextOrientation orientation = calculateRotationAndOrientationForComponent( format, component, rotation );
   switch ( orientation )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
     {
       drawTextInternalHorizontal( context, format, drawType, mode, component, document, fontScale, fontMetrics, alignment, vAlignment, rotation );
       break;
     }
 
-    case QgsTextFormat::VerticalOrientation:
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::Vertical:
+    case Qgis::TextOrientation::RotationBased:
     {
       drawTextInternalVertical( context, format, drawType, mode, component, document, fontScale, fontMetrics, alignment, vAlignment, rotation );
       break;
@@ -1472,34 +1471,34 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
   }
 }
 
-QgsTextFormat::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotation )
+Qgis::TextOrientation QgsTextRenderer::calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const QgsTextRenderer::Component &component, double &rotation )
 {
   rotation = -component.rotation * 180 / M_PI;
 
   switch ( format.orientation() )
   {
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::RotationBased:
     {
       // Between 45 to 135 and 235 to 315 degrees, rely on vertical orientation
       if ( rotation >= -315 && rotation < -90 )
       {
         rotation -= 90;
-        return QgsTextFormat::VerticalOrientation;
+        return Qgis::TextOrientation::Vertical;
       }
       else if ( rotation >= -90 && rotation < -45 )
       {
         rotation += 90;
-        return QgsTextFormat::VerticalOrientation;
+        return Qgis::TextOrientation::Vertical;
       }
 
-      return QgsTextFormat::HorizontalOrientation;
+      return Qgis::TextOrientation::Horizontal;
     }
 
-    case QgsTextFormat::HorizontalOrientation:
-    case QgsTextFormat::VerticalOrientation:
+    case Qgis::TextOrientation::Horizontal:
+    case Qgis::TextOrientation::Vertical:
       return format.orientation();
   }
-  return QgsTextFormat::HorizontalOrientation;
+  return Qgis::TextOrientation::Horizontal;
 }
 
 void QgsTextRenderer::calculateExtraSpacingForLineJustification( const double spaceToDistribute, const QgsTextBlock &block, double &extraWordSpace, double &extraLetterSpace )
@@ -1945,7 +1944,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     switch ( mode )
     {
       case Label:
-        if ( format.orientation() == QgsTextFormat::RotationBasedOrientation )
+        if ( format.orientation() == Qgis::TextOrientation::RotationBased )
         {
           if ( rotation >= -405 && rotation < -180 )
           {
