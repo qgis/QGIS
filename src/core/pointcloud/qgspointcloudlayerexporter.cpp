@@ -353,7 +353,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
 
   int pointsSkipped = 0;
-  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? mParent->mPointsLimit : pointCount;
+  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? std::min( mParent->mPointsLimit, pointCount ) : pointCount;
   QgsPointCloudRequest request;
   request.setAttributes( mParent->requestedAttributeCollection() );
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
