@@ -21,16 +21,34 @@
 #include "qgis_gui.h"
 #include "qgsrectangle.h"
 
+/**
+ * The QgsLayerMetadataResultsProxyModel class is a proxy model for QgsLayerMetadataResultsModel,
+ * it handles text and extent filtering.
+ * \ingroup gui
+ * \since QGIS 3.28
+ */
 class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructs a QgsLayerMetadataResultsProxyModel with an optional parent.
+     * @param parent
+     */
     explicit QgsLayerMetadataResultsProxyModel( QObject *parent = nullptr );
 
   public slots:
 
+    /**
+     * Sett the extent filter to \a extent.
+     */
     void setFilterExtent( const QgsRectangle &extent );
+
+    /**
+     * Sets the text filter to \a filterString.
+     */
     void setFilterString( const QString &filterString );
 
     // QSortFilterProxyModel interface

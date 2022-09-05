@@ -61,11 +61,23 @@ class QgsMetadataResultsFetcher: public QObject
 
 ///@endcond private
 
+/**
+ * The QgsLayerMetadataResultsModel class handles the metadata fetching from
+ * the registered layer metadata providers.
+ *
+ * \ingroup gui
+ * \since QGIS 3.28
+ */
 class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructs a QgsLayerMetadataResultsModel from a \a searchContext and
+     * an optional \a parent.
+     */
     explicit QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent = nullptr );
 
     ~QgsLayerMetadataResultsModel();
@@ -78,30 +90,42 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
-    //! Load/Reload model data
+    //! Load/Reload model data synchronously.
     void reload( );
 
-    //! Load/Reload model data
+    //! Load/Reload model data asynchronously using threads.
     void reloadAsync( );
 
+    /**
+     * The Roles enum represents the user roles for the model.
+     */
     enum Roles
     {
-      Metadata = Qt::ItemDataRole::UserRole,
+      //! Layer metadata role
+      Metadata = Qt::ItemDataRole::UserRole
     };
 
+    /**
+     * The Sections enum represents the data columns.
+     */
     enum Sections
     {
+      //<! Metadata identifier
       Identifier,
+      //<! Metadata title
       Title,
+      //<! Metadata abstract
       Abstract,
+      //<! Layer data provider name
       DataProviderName,
+      //<! Layer geometry type
       GeometryType,
     };
 
   public slots:
 
     /**
-     * Triggered when \a results have been fetched and can be added to the model.
+     * Triggered when metadata \a results have been fetched and can be added to the model.
      */
     void resultsReady( const QgsLayerMetadataSearchResults &results );
 
@@ -112,6 +136,10 @@ class GUI_EXPORT QgsLayerMetadataResultsModel : public QAbstractTableModel
 
   signals:
 
+    /**
+     * Emitted when the progress changed to \a progress.
+     * @param progress
+     */
     void progressChanged( int progress );
 
   private:
