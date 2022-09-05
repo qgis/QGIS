@@ -42,6 +42,8 @@ QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
       return QStringLiteral( "DXF" );
     case ExportFormat::Shp:
       return QStringLiteral( "ESRI Shapefile" );
+    case ExportFormat::Csv:
+      return QStringLiteral( "CSV" );
     case ExportFormat::Memory:
     case ExportFormat::Las:
       break;
@@ -214,6 +216,8 @@ void QgsPointCloudLayerExporter::doExport()
     }
   }
 
+  QStringList layerCreationOptions;
+
   switch ( mFormat )
   {
     case ExportFormat::Memory:
@@ -245,6 +249,10 @@ void QgsPointCloudLayerExporter::doExport()
       break;
     }
 
+    case ExportFormat::Csv:
+      layerCreationOptions << QStringLiteral( "GEOMETRY=AS_XYZ" )
+                           << QStringLiteral( "SEPARATOR=COMMA" ); // just in case ogr changes the default lco
+    // Intentional Fallthrough
     case ExportFormat::Gpkg:
     case ExportFormat::Dxf:
     case ExportFormat::Shp:
@@ -255,6 +263,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.driverName = ogrDriver;
       saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( ogrDriver );
       saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( ogrDriver );
+      saveOptions.layerOptions << layerCreationOptions;
       saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
@@ -292,6 +301,7 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 
     case ExportFormat::Dxf:
     case ExportFormat::Shp:
+    case ExportFormat::Csv:
     {
       const QFileInfo fileInfo( mFilename );
       return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );

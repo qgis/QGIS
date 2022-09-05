@@ -315,6 +315,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     case QgsPointCloudLayerExporter::ExportFormat::Memory:
     case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
+    case QgsPointCloudLayerExporter::ExportFormat::Csv:
       mAttributesSelection->setEnabled( true );
       break;
 
@@ -334,6 +335,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
     case QgsPointCloudLayerExporter::ExportFormat::Las:
     case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+    case QgsPointCloudLayerExporter::ExportFormat::Csv:
       leLayername->setEnabled( false );
       break;
   }
@@ -351,6 +353,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
     case QgsPointCloudLayerExporter::ExportFormat::Las:
     case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+    case QgsPointCloudLayerExporter::ExportFormat::Csv:
       mAddToCanvas->setEnabled( true );
       if ( mWasAddToCanvasForced )
       {
@@ -576,6 +579,8 @@ QString QgsPointCloudLayerSaveAsDialog::getFilterForFormat( QgsPointCloudLayerEx
       return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
       return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
+    case QgsPointCloudLayerExporter::ExportFormat::Csv:
+      return QStringLiteral( "Comma separated values (*.csv *.CSV)" );
     case QgsPointCloudLayerExporter::ExportFormat::Memory:
       break;
   }
@@ -596,6 +601,8 @@ QString QgsPointCloudLayerSaveAsDialog::getTranslatedNameForFormat( QgsPointClou
       return tr( "ESRI Shapefile" );
     case QgsPointCloudLayerExporter::ExportFormat::Las:
       return tr( "LAS/LAZ point cloud" );
+    case QgsPointCloudLayerExporter::ExportFormat::Csv:
+      return tr( "Comma separated values" );
   }
   return QString();
 }

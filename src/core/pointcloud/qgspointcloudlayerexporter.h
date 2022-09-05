@@ -55,6 +55,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
       Gpkg = 2, //!< Geopackage
       Shp = 3, //!< ESRI ShapeFile
       Dxf = 4, //!< AutoCAD dxf
+      Csv = 5, //!< Comma separated values
     };
 
     /**
@@ -65,13 +66,14 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     static QList< ExportFormat > supportedFormats() SIP_SKIP
     {
       QList< ExportFormat > formats;
-      formats << ExportFormat::Memory;
+      formats << ExportFormat::Memory
 #ifdef HAVE_PDAL_QGIS
-      formats << ExportFormat::Las;
+              << ExportFormat::Las
 #endif
-      formats << ExportFormat::Gpkg;
-      formats << ExportFormat::Shp;
-      formats << ExportFormat::Dxf;
+              << ExportFormat::Gpkg
+              << ExportFormat::Shp
+              << ExportFormat::Dxf
+              << ExportFormat::Csv;
       return formats;
     }
 
