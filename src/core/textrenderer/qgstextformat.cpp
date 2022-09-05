@@ -76,6 +76,7 @@ bool QgsTextFormat::operator==( const QgsTextFormat &other ) const
        || d->opacity != other.opacity()
        || d->blendMode != other.blendMode()
        || d->multilineHeight != other.lineHeight()
+       || d->multilineHeightUnits != other.lineHeightUnit()
        || d->orientation != other.orientation()
        || d->previewBackgroundColor != other.previewBackgroundColor()
        || d->allowHtmlFormatting != other.allowHtmlFormatting()
@@ -348,6 +349,17 @@ void QgsTextFormat::setLineHeight( double height )
   d->multilineHeight = height;
 }
 
+QgsUnitTypes::RenderUnit QgsTextFormat::lineHeightUnit() const
+{
+  return d->multilineHeightUnits;
+}
+
+void QgsTextFormat::setLineHeightUnit( QgsUnitTypes::RenderUnit unit )
+{
+  d->isValid = true;
+  d->multilineHeightUnits = unit;
+}
+
 QgsTextFormat::TextOrientation QgsTextFormat::orientation() const
 {
   return d->orientation;
@@ -617,6 +629,8 @@ void QgsTextFormat::readXml( const QDomElement &elem, const QgsReadWriteContext 
   {
     d->multilineHeight = textStyleElem.attribute( QStringLiteral( "multilineHeight" ), QStringLiteral( "1" ) ).toDouble();
   }
+  bool ok = false;
+  d->multilineHeightUnits = QgsUnitTypes::decodeRenderUnit( textStyleElem.attribute( QStringLiteral( "multilineHeightUnit" ), QStringLiteral( "percent" ) ), &ok );
 
   if ( textStyleElem.hasAttribute( QStringLiteral( "capitalization" ) ) )
     d->capitalization = static_cast< Qgis::Capitalization >( textStyleElem.attribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( Qgis::Capitalization::MixedCase ) ) ).toInt() );
@@ -715,6 +729,8 @@ QDomElement QgsTextFormat::writeXml( QDomDocument &doc, const QgsReadWriteContex
   textStyleElem.setAttribute( QStringLiteral( "textOrientation" ), QgsTextRendererUtils::encodeTextOrientation( d->orientation ) );
   textStyleElem.setAttribute( QStringLiteral( "blendMode" ), QgsPainting::getBlendModeEnum( d->blendMode ) );
   textStyleElem.setAttribute( QStringLiteral( "multilineHeight" ), d->multilineHeight );
+  textStyleElem.setAttribute( QStringLiteral( "multilineHeightUnit" ), QgsUnitTypes::encodeUnit( d->multilineHeightUnits ) );
+
   textStyleElem.setAttribute( QStringLiteral( "allowHtml" ), d->allowHtmlFormatting ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   textStyleElem.setAttribute( QStringLiteral( "capitalization" ), QString::number( static_cast< int >( d->capitalization ) ) );
 

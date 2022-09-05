@@ -590,6 +590,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
     {
       double totalLineWidth = 0;
       int blockIndex = 0;
+      const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
       for ( const QgsTextBlock &block : document )
       {
         double blockWidth = 0;
@@ -600,7 +601,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
           blockWidth = std::max( QFontMetricsF( fragmentFont ).maxWidth(), blockWidth );
         }
 
-        totalLineWidth += blockIndex == 0 ? blockWidth : blockWidth * format.lineHeight();
+        totalLineWidth += blockIndex == 0 ? blockWidth : ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( blockWidth * format.lineHeight() ) : lineHeightPainterUnits );
         blockIndex++;
       }
       width = totalLineWidth;
@@ -782,6 +783,8 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
       int blockIndex = 0;
       double totalHeight = 0;
       double lastLineLeading = 0;
+      const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
+
       for ( const QgsTextBlock &block : document )
       {
         double maxBlockHeight = 0;
@@ -809,13 +812,13 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
             // rendering labels needs special handling - in this case text should be
             // drawn with the bottom left corner coinciding with origin, vs top left
             // for standard text rendering. Line height is also slightly different.
-            totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockHeight * format.lineHeight();
+            totalHeight += blockIndex == 0 ? maxBlockHeight : ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( maxBlockHeight * format.lineHeight() ) : lineHeightPainterUnits );
             break;
 
           case Rect:
           case Point:
             // standard rendering - designed to exactly replicate QPainter's drawText method
-            totalHeight += blockIndex == 0 ? maxBlockHeight : maxBlockLineSpacing * format.lineHeight();
+            totalHeight += blockIndex == 0 ? maxBlockHeight : ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( maxBlockLineSpacing * format.lineHeight() ) : lineHeightPainterUnits );
             if ( blockIndex > 0 )
               lastLineLeading = maxBlockLeading;
             break;
@@ -1601,6 +1604,8 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     referenceScaleOverride.reset();
   }
 
+  const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
+
   for ( const QString &line : std::as_const( textLines ) )
   {
     const QgsTextBlock block = document.at( i );
@@ -1688,17 +1693,17 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
         // rendering labels needs special handling - in this case text should be
         // drawn with the bottom left corner coinciding with origin, vs top left
         // for standard text rendering. Line height is also slightly different.
-        yMultiLineOffset = - ascentOffset - ( textLines.size() - 1 - i ) * labelHeight * format.lineHeight();
+        yMultiLineOffset = - ascentOffset - ( textLines.size() - 1 - i ) * ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * format.lineHeight() ) : lineHeightPainterUnits );
         break;
 
       case Rect:
         // standard rendering - designed to exactly replicate QPainter's drawText method
-        yMultiLineOffset = - ascentOffset + labelHeight - 1 /*baseline*/ + format.lineHeight() * fontMetrics->lineSpacing() * i / fontScale;
+        yMultiLineOffset = - ascentOffset + labelHeight - 1 /*baseline*/ + i * ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * fontMetrics->lineSpacing() / fontScale ) : lineHeightPainterUnits );
         break;
 
       case Point:
         // standard rendering - designed to exactly replicate QPainter's drawText rect method
-        yMultiLineOffset = 0 - ( textLines.size() - 1 - i ) * fontMetrics->lineSpacing() * format.lineHeight() / fontScale;
+        yMultiLineOffset = 0 - ( textLines.size() - 1 - i ) * ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( fontMetrics->lineSpacing() * format.lineHeight() / fontScale ) : lineHeightPainterUnits );
         break;
 
     }
@@ -1857,8 +1862,10 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
 
   double letterSpacing = font.letterSpacing() / fontScale;
 
+  const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
+
   double labelWidth = fontMetrics->maxWidth() / fontScale; // label width represents the width of one line of a multi-line label
-  double actualLabelWidest = labelWidth + ( textLines.size() - 1 ) * labelWidth * format.lineHeight();
+  double actualLabelWidest = labelWidth + ( textLines.size() - 1 ) * ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * format.lineHeight() ) : lineHeightPainterUnits );
   double labelWidest = 0.0;
   switch ( mode )
   {
@@ -1903,7 +1910,7 @@ void QgsTextRenderer::drawTextInternalVertical( QgsRenderContext &context, const
     }
 
     // figure x offset of multiple lines
-    double xOffset = actualLabelWidest - labelWidth - ( i * labelWidth * format.lineHeight() );
+    double xOffset = actualLabelWidest - labelWidth - i * ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * format.lineHeight() ) : lineHeightPainterUnits );
     if ( adjustForAlignment )
     {
       double labelWidthDiff = 0;

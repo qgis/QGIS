@@ -143,6 +143,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.setOrientation(QgsTextFormat.VerticalOrientation)
         self.assertTrue(t.isValid())
 
@@ -716,6 +720,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setOpacity(0.5)
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
+        s.setLineHeightUnit(QgsUnitTypes.RenderInches)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setAllowHtmlFormatting(True)
@@ -802,6 +807,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
+        s.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
         s.setPreviewBackgroundColor(QColor(100, 250, 200))
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
@@ -858,6 +867,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
+        self.assertEqual(s.lineHeightUnit(), QgsUnitTypes.RenderInches)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
         self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
         self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
@@ -2300,6 +2310,24 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setSizeUnit(QgsUnitTypes.RenderPoints)
         format.setLineHeight(1.5)
         assert self.checkRender(format, 'text_line_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawLineHeightAbsolute(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(20)
+        format.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_line_absolute_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawLineHeightAbsolute(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(20)
+        format.setLineHeightUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_line_absolute_mm_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
     def testDrawBufferSizeMM(self):
         format = QgsTextFormat()

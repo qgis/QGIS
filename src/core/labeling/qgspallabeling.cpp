@@ -1632,15 +1632,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
   }
 
-  int lines = multiLineSplit.size();
+  const int lines = multiLineSplit.size();
+  const double lineHeightPainterUnits = rc->convertToPainterUnits( mFormat.lineHeight(), mFormat.lineHeightUnit() );
 
   switch ( orientation )
   {
     case QgsTextFormat::HorizontalOrientation:
     {
-      h += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
+      h += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
 
-      for ( const auto &line : multiLineSplit )
+      for ( const QString &line : std::as_const( multiLineSplit ) )
       {
         w = std::max( w, fm->horizontalAdvance( line ) );
       }
@@ -1651,10 +1652,10 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     {
       double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
       double labelWidth = fm->maxWidth();
-      w = labelWidth + ( lines - 1 ) * labelWidth * multilineH;
+      w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
       int maxLineLength = 0;
-      for ( const auto &line : multiLineSplit )
+      for ( const QString &line : std::as_const( multiLineSplit ) )
       {
         maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
       }
@@ -1665,7 +1666,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     case QgsTextFormat::RotationBasedOrientation:
     {
       double widthHorizontal = 0.0;
-      for ( const auto &line : multiLineSplit )
+      for ( const QString &line : std::as_const( multiLineSplit ) )
       {
         widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
       }
@@ -1673,14 +1674,14 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       double widthVertical = 0.0;
       double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
       double labelWidth = fm->maxWidth();
-      widthVertical = labelWidth + ( lines - 1 ) * labelWidth * multilineH;
+      widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
       double heightHorizontal = 0.0;
-      heightHorizontal += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
+      heightHorizontal += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
 
       double heightVertical = 0.0;
       int maxLineLength = 0;
-      for ( const auto &line : multiLineSplit )
+      for ( const QString &line : std::as_const( multiLineSplit ) )
       {
         maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
       }
