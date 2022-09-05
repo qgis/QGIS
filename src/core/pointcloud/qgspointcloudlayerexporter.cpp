@@ -24,7 +24,6 @@
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsproject.h"
 #include "qgsgeos.h"
 
 #ifdef HAVE_PDAL_QGIS
@@ -298,6 +297,7 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
       return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
     }
   }
+  BUILTIN_UNREACHABLE
 }
 
 //
