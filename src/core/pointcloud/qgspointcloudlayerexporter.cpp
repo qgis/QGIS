@@ -252,7 +252,7 @@ void QgsPointCloudLayerExporter::doExport()
     case ExportFormat::Csv:
       layerCreationOptions << QStringLiteral( "GEOMETRY=AS_XYZ" )
                            << QStringLiteral( "SEPARATOR=COMMA" ); // just in case ogr changes the default lco
-    // Intentional Fallthrough
+      FALLTHROUGH
     case ExportFormat::Gpkg:
     case ExportFormat::Dxf:
     case ExportFormat::Shp:
