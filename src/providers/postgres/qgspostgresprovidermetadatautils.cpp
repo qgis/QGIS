@@ -279,18 +279,13 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const QgsMapLayerType 
 
   QString checkQuery = QStringLiteral( R"SQL(
             SELECT
-               f_table_catalog
-              ,f_table_schema
-              ,f_table_name
-              ,f_geometry_column
-              ,identifier
+              id
            FROM %1.qgis_layer_metadata
              WHERE
                 f_table_catalog=%2
                 AND f_table_schema=%3
                 AND f_table_name=%4
                 AND f_geometry_column %5
-                AND identifier = %6
                 AND layer_type = %7
            )SQL" )
                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
@@ -300,7 +295,6 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const QgsMapLayerType 
                        .arg( dsUri.geometryColumn().isEmpty() ?
                              QStringLiteral( "IS NULL" ) :
                              QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
-                       .arg( QgsPostgresConn::quotedValue( metadata.identifier() ) )
                        .arg( QgsPostgresConn::quotedValue( layerTypeString ) );
 
   res = conn->LoggedPQexec( "QgsPostgresProviderMetadataUtils", checkQuery );

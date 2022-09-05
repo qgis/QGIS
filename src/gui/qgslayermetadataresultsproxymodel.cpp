@@ -18,7 +18,6 @@
 
 QgsLayerMetadataResultsProxyModel::QgsLayerMetadataResultsProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
 {
-  qRegisterMetaType< QgsLayerMetadataSearchResults>( "QgsLayerMetadataProviderResult" );
 }
 
 void QgsLayerMetadataResultsProxyModel::setFilterExtent( const QgsRectangle &extent )

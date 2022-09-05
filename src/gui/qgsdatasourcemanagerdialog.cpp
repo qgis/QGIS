@@ -73,6 +73,30 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   ui->mOptionsStackedWidget->addWidget( mLayerMetadataSearchWidget );
   mPageNames.append( QStringLiteral( "metadata" ) );
 
+  connect( mLayerMetadataSearchWidget, &QgsLayerMetadataSearchWidget::addLayers, this, [ = ]( const QList< QgsLayerMetadataProviderResult > &metadataResults )
+  {
+    for ( const QgsLayerMetadataProviderResult &metadata : std::as_const( metadataResults ) )
+    {
+      switch ( metadata.layerType() )
+      {
+        case QgsMapLayerType::VectorLayer:
+        {
+          emit addVectorLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
+          break;
+        };
+        case QgsMapLayerType::RasterLayer:
+        {
+          emit addRasterLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
+          break;
+        }
+        default: // Unsupported!
+        {
+          // Ignore
+        }
+      }
+    }
+  } );
+
   // Add provider dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
   for ( QgsSourceSelectProvider *provider : sourceSelectProviders )

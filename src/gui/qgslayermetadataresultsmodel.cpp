@@ -27,7 +27,6 @@ QgsLayerMetadataResultsModel::QgsLayerMetadataResultsModel( const QgsMetadataSea
 {
   qRegisterMetaType< QgsLayerMetadataSearchResults>( "QgsLayerMetadataSearchResults" );
   qRegisterMetaType< QgsLayerMetadataProviderResult>( "QgsLayerMetadataProviderResult" );
-  reloadAsync();
 }
 
 QgsLayerMetadataResultsModel::~QgsLayerMetadataResultsModel()
@@ -70,26 +69,41 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
     else if ( role == Qt::ItemDataRole::ToolTipRole )
     {
       const QgsLayerMetadataFormatter formatter { mResult.metadata().at( index.row() ) };
+
+      /**
+       * Long version (too long?)
+      *      return tr( R"HTML(
+      *        <html>
+      *        <body>
+      *          <!-- metadata headers --->
+      *          <h3>Identification</h3>%1
+      *          <h3>Contacts</h3>%2
+      *          <h3>Extent</h3>%3
+      *          <h3>History</h3>%4
+      *          <h3>Access</h3>%5
+      *          <h3>Links</h3>%6
+      *        </body>
+      *        </html>
+      *      )HTML" )
+      *          .arg(
+      *            formatter.identificationSectionHtml(),
+      *            formatter.contactsSectionHtml(),
+      *            formatter.extentSectionHtml(),
+      *            formatter.historySectionHtml(),
+      *            formatter.accessSectionHtml(),
+      *            formatter.linksSectionHtml() );
+            */
+      // Shorter version
       return tr( R"HTML(
         <html>
         <body>
           <!-- metadata headers --->
           <h3>Identification</h3>%1
-          <h3>Contacts</h3>%2
-          <h3>Extent</h3>%3
-          <h3>History</h3>%4
-          <h3>Access</h3>%5
-          <h3>Links</h3>%6
         </body>
         </html>
 )HTML" )
           .arg(
-            formatter.identificationSectionHtml(),
-            formatter.contactsSectionHtml(),
-            formatter.extentSectionHtml(),
-            formatter.historySectionHtml(),
-            formatter.accessSectionHtml(),
-            formatter.linksSectionHtml() );
+            formatter.identificationSectionHtml());
     }
     else if ( role == Roles::Metadata )
     {
@@ -144,7 +158,7 @@ void QgsLayerMetadataResultsModel::reload()
 
 void QgsLayerMetadataResultsModel::reloadAsync()
 {
-  cancel();
+  cancel();  
   beginResetModel();
   // Load results from layer metadata providers
   mResult = QgsLayerMetadataSearchResults();
@@ -182,8 +196,10 @@ void QgsLayerMetadataResultsModel::resultsReady(const QgsLayerMetadataSearchResu
 
 void QgsLayerMetadataResultsModel::cancel()
 {
-  if ( mFeedback )   
+  if ( mFeedback )
+  {
     mFeedback->cancel();
+  }
 
   for(const auto &workerThread: std::as_const( mWorkerThreads ) )
   {
@@ -198,13 +214,14 @@ void QgsLayerMetadataResultsModel::cancel()
   connect(mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsLayerMetadataResultsModel::progressChanged );
 }
 
+
 ///@cond private
 
 QgsMetadataResultsFetcher::QgsMetadataResultsFetcher(const QgsAbstractLayerMetadataProvider *metadataProvider, const QgsMetadataSearchContext &searchContext, QgsFeedback *feedback)
   : mLayerMetadataProvider ( metadataProvider)
   , mSearchContext( searchContext )
   , mFeedback( feedback )
-{
+{  
 }
 
 void QgsMetadataResultsFetcher::fetchMetadata()

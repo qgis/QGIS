@@ -27,6 +27,16 @@
       <widget class="QLineEdit" name="mSearchFilterLineEdit"/>
      </item>
      <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>limit extent to</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mExtentFilterComboBox"/>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -39,23 +49,6 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>limit to</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="mExtentFilterComboBox"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QTableView" name="mMetadataTableView"/>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QProgressBar" name="mProgressBar">
        <property name="value">
@@ -71,6 +64,12 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QTableView" name="mMetadataTableView"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="mButtonBox">

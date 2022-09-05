@@ -50,7 +50,6 @@ class QgsMetadataResultsFetcher: public QObject
     //! Emitted when \a results have been fetched
     void resultsReady( const QgsLayerMetadataSearchResults &results );
 
-
   private:
 
     const QgsAbstractLayerMetadataProvider *mLayerMetadataProvider = nullptr;

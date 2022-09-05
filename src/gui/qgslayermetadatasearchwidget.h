@@ -20,6 +20,7 @@
 #include <QWidget>
 #include "ui_qgslayermetadatasearchwidget.h"
 #include "qgsfeedback.h"
+#include "qgsabstractlayermetadataprovider.h"
 
 class QgsMapCanvas;
 class QgsLayerMetadataResultsProxyModel;
@@ -34,6 +35,9 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsL
 
     void rejected();
 
+    //! Emitted when layers have been selected for addition
+    void addLayers( const QList< QgsLayerMetadataProviderResult > &metadataResults );
+
   public slots:
 
     void updateExtentFilter( int index );
@@ -42,6 +46,8 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsL
 
     const QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayerMetadataResultsProxyModel *mProxyModel = nullptr;
+    bool mIsLoading = false;
+    QPushButton *mAddButton = nullptr;
 
 
 };
