@@ -89,9 +89,15 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
           emit addRasterLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
           break;
         }
+        case QgsMapLayerType::MeshLayer:
+        {
+          emit addMeshLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
+          break;
+        }
         default: // Unsupported!
         {
           // Ignore
+          break;
         }
       }
     }

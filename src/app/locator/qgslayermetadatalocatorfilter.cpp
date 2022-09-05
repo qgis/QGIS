@@ -17,6 +17,7 @@
 #include "qgslayermetadataproviderregistry.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 
 QgsLayerMetadataLocatorFilter::QgsLayerMetadataLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -52,5 +53,28 @@ void QgsLayerMetadataLocatorFilter::fetchResults( const QString &string, const Q
 
 void QgsLayerMetadataLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
+  QgsLayerMetadataProviderResult metadataResult { result.userData.value<QgsLayerMetadataProviderResult>() };
+  switch ( metadataResult.layerType() )
+  {
+    case QgsMapLayerType::RasterLayer:
+    {
+      QgisApp::instance()->addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+      break;
+    }
+    case QgsMapLayerType::VectorLayer:
+    {
+      QgisApp::instance()->addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+      break;
+    }
+    case QgsMapLayerType::MeshLayer:
+    {
+      QgisApp::instance()->addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+    }
+    default:  // unsupported
+    {
+      // Ignore
+      break;
+    }
+  }
 
 }
