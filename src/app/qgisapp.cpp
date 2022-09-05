@@ -8387,6 +8387,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
       case QgsPointCloudLayerExporter::ExportFormat::Shp:
       case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      case QgsPointCloudLayerExporter::ExportFormat::Csv:
         if ( dialog.hasAttributes() )
           exp->setAttributes( dialog.attributes() );
         else

@@ -32,6 +32,7 @@ Handles exporting point cloud layers to memory layers, OGR supported files and P
       Gpkg,
       Shp,
       Dxf,
+      Csv,
     };
 
 
