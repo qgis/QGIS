@@ -27,13 +27,6 @@ Container for all settings relating to text rendering.
 %End
   public:
 
-    enum TextOrientation
-    {
-      HorizontalOrientation,
-      VerticalOrientation,
-      RotationBasedOrientation,
-    };
-
     QgsTextFormat();
 %Docstring
 Default constructor for QgsTextFormat. Creates a text format initially
@@ -506,7 +499,7 @@ Sets the ``unit`` for the line height for text.
 .. versionadded:: 3.28
 %End
 
-    TextOrientation orientation() const;
+    Qgis::TextOrientation orientation() const;
 %Docstring
 Returns the orientation of the text.
 
@@ -515,7 +508,7 @@ Returns the orientation of the text.
 .. versionadded:: 3.10
 %End
 
-    void setOrientation( TextOrientation orientation );
+    void setOrientation( Qgis::TextOrientation orientation );
 %Docstring
 Sets the ``orientation`` for the text.
 

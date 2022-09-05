@@ -22,6 +22,7 @@
 #include "qgspainting.h"
 #include "qgstextrendererutils.h"
 #include "qgspainteffectregistry.h"
+#include "qgsapplication.h"
 
 QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 {

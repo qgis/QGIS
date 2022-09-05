@@ -41,14 +41,6 @@ class CORE_EXPORT QgsTextFormat
 {
   public:
 
-    //! Text orientation
-    enum TextOrientation
-    {
-      HorizontalOrientation, //!< Vertically oriented text
-      VerticalOrientation, //!< Horizontally oriented text
-      RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
-    };
-
     /**
      * Default constructor for QgsTextFormat. Creates a text format initially
      * set to an invalid state (see isValid()).
@@ -466,14 +458,14 @@ class CORE_EXPORT QgsTextFormat
      * \see setOrientation()
      * \since QGIS 3.10
      */
-    TextOrientation orientation() const;
+    Qgis::TextOrientation orientation() const;
 
     /**
      * Sets the \a orientation for the text.
      * \see orientation()
      * \since QGIS 3.10
      */
-    void setOrientation( TextOrientation orientation );
+    void setOrientation( Qgis::TextOrientation orientation );
 
     /**
      * Returns the text capitalization style.

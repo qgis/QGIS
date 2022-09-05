@@ -22,10 +22,8 @@
 #include "qgis_core.h"
 #include "qgstextshadowsettings.h"
 #include "qgstextbackgroundsettings.h"
-#include "qgstextformat.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
-#include "qgsapplication.h"
 #include "qgspainteffect.h"
 #include "qgssymbollayerreference.h"
 #include "qgsstringutils.h"
@@ -301,7 +299,7 @@ class QgsTextSettingsPrivate : public QSharedData
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
     double multilineHeight = 1.0;
     QgsUnitTypes::RenderUnit multilineHeightUnits = QgsUnitTypes::RenderPercentage;
-    QgsTextFormat::TextOrientation orientation = QgsTextFormat::HorizontalOrientation;
+    Qgis::TextOrientation orientation = Qgis::TextOrientation::Horizontal;
     QColor previewBackgroundColor = Qt::white;
     bool allowHtmlFormatting = false;
     Qgis::Capitalization capitalization = Qgis::Capitalization::MixedCase;

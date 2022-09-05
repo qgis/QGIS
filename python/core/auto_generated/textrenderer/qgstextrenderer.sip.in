@@ -10,6 +10,7 @@
 
 
 
+
 class QgsTextRenderer
 {
 %Docstring(signature="appended")

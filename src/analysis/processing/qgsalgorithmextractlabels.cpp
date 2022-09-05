@@ -28,7 +28,6 @@
 #include "qgsprocessingfeedback.h"
 
 #include "pal/feature.h"
-#include "pal/pointset.h"
 #include "pal/labelposition.h"
 
 #include <QPainter>

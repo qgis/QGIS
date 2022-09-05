@@ -237,8 +237,8 @@ void QgsTextFormatWidget::initWidget()
   connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
   connect( chkLineOn, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
 
-  mTextOrientationComboBox->addItem( tr( "Horizontal" ), QgsTextFormat::HorizontalOrientation );
-  mTextOrientationComboBox->addItem( tr( "Vertical" ), QgsTextFormat::VerticalOrientation );
+  mTextOrientationComboBox->addItem( tr( "Horizontal" ), static_cast< int >( Qgis::TextOrientation::Horizontal ) );
+  mTextOrientationComboBox->addItem( tr( "Vertical" ), static_cast< int >( Qgis::TextOrientation::Vertical ) );
 
   populateFontCapitalsComboBox();
 
@@ -545,7 +545,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
     case Labeling:
       toggleDDButtons( true );
       mTextFormatsListWidget->setEntityTypes( QList< QgsStyle::StyleEntity >() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
-      mTextOrientationComboBox->addItem( tr( "Rotation-based" ), QgsTextFormat::RotationBasedOrientation );
+      mTextOrientationComboBox->addItem( tr( "Rotation-based" ), static_cast< int >( Qgis::TextOrientation::RotationBased ) );
       break;
 
     case Text:
@@ -604,7 +604,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mFontMultiLineAlignComboBox->hide();
       mFontMultiLineAlignDDBtn->hide();
 
-      mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( QgsTextFormat::RotationBasedOrientation ) );
+      mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( static_cast< int >( Qgis::TextOrientation::RotationBased ) ) );
       break;
     }
   }
@@ -933,7 +933,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   whileBlocking( mSpinStretch )->setValue( format.stretchFactor() );
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
-  mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
+  mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( static_cast< int >( format.orientation() ) ) );
   mHtmlFormattingCheckBox->setChecked( format.allowHtmlFormatting() );
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
@@ -1077,7 +1077,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setLineHeight( mLineHeightUnitWidget->unit() == QgsUnitTypes::RenderPercentage ? ( mFontLineHeightSpinBox->value() / 100 ) : mFontLineHeightSpinBox->value() );
   format.setLineHeightUnit( mLineHeightUnitWidget->unit() );
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
-  format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
+  format.setOrientation( static_cast< Qgis::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
   format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
   format.setCapitalization( static_cast< Qgis::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
 
