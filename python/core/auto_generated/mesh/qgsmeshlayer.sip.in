@@ -887,11 +887,18 @@ Emitted when active vector group dataset is changed
 .. versionadded:: 3.14
 %End
 
-    void timeSettingsChanged( );
+    void timeSettingsChanged();
 %Docstring
 Emitted when time format is changed
 
 .. versionadded:: 3.8
+%End
+
+    void reloaded();
+%Docstring
+Emitted when the mesh layer is reloaded, see :py:func:`~QgsMeshLayer.reload`
+
+.. versionadded:: 3.28
 %End
 
   private: // Private methods
