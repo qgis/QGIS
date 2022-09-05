@@ -160,6 +160,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[-g, --globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
       << QStringLiteral( "\t[-a, --authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[-f, --code path]\trun the given python file on load\n" )
+      << QStringLiteral( "\t[-F, --code-args arguments]\targuments for the python file specified by --code. All arguments till '--' are passed to the python file and ignored by QGIS\n" )
       << QStringLiteral( "\t[-d, --defaultui]\tstart by resetting user ui settings to default\n" )
       << QStringLiteral( "\t[--hide-browser]\thide the browser widget\n" )
       << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
@@ -616,6 +617,7 @@ int main( int argc, char *argv[] )
   QString authdbdirectory;
 
   QString pythonfile;
+  QStringList pythonfileArgs;
 
   QString customizationfile;
   QString globalsettingsfile;
@@ -735,6 +737,19 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == QLatin1String( "--code" ) || arg == QLatin1String( "-f" ) ) )
         {
           pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--code-args" ) || arg == QLatin1String( "-F" ) ) )
+        {
+          // Handle all parameters till '--' as code args
+          for ( i++; i < args.size(); ++i )
+          {
+            if ( args[i] == QLatin1String( "--" ) )
+            {
+              i--;
+              break;
+            }
+            pythonfileArgs << args[i];
+          }
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--customizationfile" ) || arg == QLatin1String( "-z" ) ) )
         {
@@ -1538,7 +1553,10 @@ int main( int argc, char *argv[] )
     //replace backslashes with forward slashes
     pythonfile.replace( '\\', '/' );
 #endif
-    QgsPythonRunner::run( QStringLiteral( "with open('%1','r') as f: exec(f.read())" ).arg( pythonfile ) );
+    pythonfileArgs.prepend( pythonfile );
+    QgsPythonRunner::run( QStringLiteral( "sys.argv = ['%1']\n"
+                                          "with open('%2','r') as f: exec(f.read())\n"
+                                          "sys.argv = []" ).arg( pythonfileArgs.join( "','" ), pythonfile ) );
   }
 
   /////////////////////////////////`////////////////////////////////////
