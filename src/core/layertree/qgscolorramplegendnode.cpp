@@ -228,7 +228,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
   {
     case Qt::Vertical:
       // vertical bar, min height is the text height of the min and max labels
-      minHeightMm = QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel << maxLabel, QgsTextRenderer::Rect ) / context->scaleFactor();
+      minHeightMm = QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel << maxLabel, Qgis::TextLayoutMode::Rectangle ) / context->scaleFactor();
       rampHeight = ctx && ctx->patchSize.height() > 0 ? std::max( minHeightMm / 2, ctx->patchSize.height() ) : std::max( minHeightMm, settings.symbolSize().height() );
       rampWidth = patchWidth;
       break;
@@ -361,12 +361,12 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       }
 
       const QRectF textRect( labelXMin * dotsPerMM, labelYMin * dotsPerMM, ( labelXMax - labelXMin ) * dotsPerMM, labelHeight * dotsPerMM );
-      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft,
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Left,
                                  QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? minLabel : maxLabel ),
-                                 *context, format, true, QgsTextRenderer::AlignTop );
-      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignRight,
+                                 *context, format, true, Qgis::TextVerticalAlignment::Top );
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Right,
                                  QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? maxLabel : minLabel ),
-                                 *context, format, true, QgsTextRenderer::AlignBottom );
+                                 *context, format, true, Qgis::TextVerticalAlignment::Bottom );
     }
     else
     {
@@ -465,10 +465,10 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     const QRectF textRect( labelXMin * dotsPerMM, currentYCoord * dotsPerMM, ( labelXMax - labelXMin ) * dotsPerMM, rampHeight * dotsPerMM );
     QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( QgsLegendStyle::SymbolLabel ).alignment() ),
                                QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? maxLabel : minLabel ),
-                               *context, format, true, QgsTextRenderer::AlignTop );
+                               *context, format, true, Qgis::TextVerticalAlignment::Top );
     QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( QgsLegendStyle::SymbolLabel ).alignment() ),
                                QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? minLabel : maxLabel ),
-                               *context, format, true, QgsTextRenderer::AlignBottom );
+                               *context, format, true, Qgis::TextVerticalAlignment::Bottom );
   }
   else
   {

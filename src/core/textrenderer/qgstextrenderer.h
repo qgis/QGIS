@@ -21,6 +21,7 @@
 #include "qgstextblock.h"
 #include "qgsunittypes.h"
 #include "qgsmapunitscale.h"
+#include "qgis.h"
 
 #include <QPicture>
 
@@ -41,58 +42,21 @@ class CORE_EXPORT QgsTextRenderer
 {
   public:
 
-    //! Draw mode to calculate width and height
-    enum DrawMode
-    {
-      Rect = 0, //!< Text within rectangle draw mode
-      Point, //!< Text at point of origin draw mode
-      Label, //!< Label-specific draw mode
-    };
-
-    //! Components of text
-    enum TextPart
-    {
-      Text = 0, //!< Text component
-      Buffer, //!< Buffer component
-      Background, //!< Background shape
-      Shadow, //!< Drop shadow
-    };
-
-    //! Horizontal alignment
-    enum HAlignment
-    {
-      AlignLeft = 0, //!< Left align
-      AlignCenter, //!< Center align
-      AlignRight, //!< Right align
-      AlignJustify, //!< Justify align
-    };
-
     /**
-     * Converts a Qt horizontal \a alignment flag to a QgsTextRenderer::HAlignment value.
+     * Converts a Qt horizontal \a alignment flag to a Qgis::TextHorizontalAlignment value.
      *
      * \see convertQtVAlignment()
      * \since QGIS 3.16
      */
-    static HAlignment convertQtHAlignment( Qt::Alignment alignment );
+    static Qgis::TextHorizontalAlignment convertQtHAlignment( Qt::Alignment alignment );
 
     /**
-     * Vertical alignment
-     * \since QGIS 3.16
-     */
-    enum VAlignment
-    {
-      AlignTop = 0, //!< Align to top
-      AlignVCenter, //!< Center align
-      AlignBottom, //!< Align to bottom
-    };
-
-    /**
-     * Converts a Qt vertical \a alignment flag to a QgsTextRenderer::VAlignment value.
+     * Converts a Qt vertical \a alignment flag to a Qgis::TextVerticalAlignment value.
      *
      * \see convertQtHAlignment()
      * \since QGIS 3.16
      */
-    static VAlignment convertQtVAlignment( Qt::Alignment alignment );
+    static Qgis::TextVerticalAlignment convertQtVAlignment( Qt::Alignment alignment );
 
     /**
      * Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
@@ -121,9 +85,9 @@ class CORE_EXPORT QgsTextRenderer
      * \param vAlignment vertical alignment (since QGIS 3.16)
      * \param flags text rendering flags (since QGIS 3.24)
      */
-    static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop,
+                          bool drawAsOutlines = true, Qgis::TextVerticalAlignment vAlignment = Qgis::TextVerticalAlignment::Top,
                           Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
 
     /**
@@ -139,7 +103,7 @@ class CORE_EXPORT QgsTextRenderer
      * rendering and may result in side effects like misaligned text buffers. This setting is deprecated and has no effect
      * as of QGIS 3.4.3 and the text format should be set using QgsRenderContext::setTextRenderFormat() instead.
      */
-    static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 
@@ -161,9 +125,9 @@ class CORE_EXPORT QgsTextRenderer
      *
      * \deprecated Private API only, will be removed in 4.0
      */
-    Q_DECL_DEPRECATED static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+    Q_DECL_DEPRECATED static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            TextPart part, bool drawAsOutlines = true ) SIP_DEPRECATED;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) SIP_DEPRECATED;
 
     /**
      * Draws a single component of rendered text using the specified settings.
@@ -183,9 +147,9 @@ class CORE_EXPORT QgsTextRenderer
      *
      * \deprecated Private API only, will be removed in 4.0
      */
-    Q_DECL_DEPRECATED static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
+    Q_DECL_DEPRECATED static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            TextPart part, bool drawAsOutlines = true ) SIP_DEPRECATED;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) SIP_DEPRECATED;
 
     /**
      * Returns the font metrics for the given text \a format, when rendered
@@ -221,7 +185,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param flags text renderer flags (since QGIS 3.24)
      * \param maxLineWidth maximum line width, in painter units. Used when the Qgis::TextRendererFlag::WrapLines flag is used (since QGIS 3.24)
      */
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point,
                               QFontMetricsF *fontMetrics = nullptr, Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(), double maxLineWidth = 0 );
 
     /**
@@ -294,7 +258,7 @@ class CORE_EXPORT QgsTextRenderer
       //! A ratio of native painter dpi and that of rendering context's painter
       double dpiRatio = 1.0;
       //! Horizontal alignment
-      HAlignment hAlign = AlignLeft;
+      Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
 
       //! Any additional word spacing to apply while rendering component
       double extraWordSpacing = 0;
@@ -303,7 +267,7 @@ class CORE_EXPORT QgsTextRenderer
     };
 
     static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, DrawMode mode = Point );
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point );
 
     /**
      * Draws a single component of rendered text using the specified settings.
@@ -320,9 +284,9 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, VAlignment vAlignment, const QgsTextDocument &document,
+    static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part );
+                          Qgis::TextComponent part );
 
     /**
      * Draws a single component of rendered text using the specified settings.
@@ -338,20 +302,20 @@ class CORE_EXPORT QgsTextRenderer
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
-    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QgsTextDocument &document,
+    static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          TextPart part );
+                          Qgis::TextComponent part );
 
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
                               const QgsTextFormat &format,
-                              DrawMode mode );
+                              Qgis::TextLayoutMode mode );
 
     static void drawBackground( QgsRenderContext &context,
                                 Component component,
                                 const QgsTextFormat &format,
                                 const QgsTextDocument &document,
-                                DrawMode mode = Rect );
+                                Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
 
     static void drawShadow( QgsRenderContext &context,
                             const Component &component,
@@ -360,21 +324,21 @@ class CORE_EXPORT QgsTextRenderer
     static void drawMask( QgsRenderContext &context,
                           const Component &component,
                           const QgsTextFormat &format,
-                          DrawMode mode );
+                          Qgis::TextLayoutMode mode );
 
     static void drawText( QgsRenderContext &context,
                           const Component &component,
                           const QgsTextFormat &format );
 
-    static void drawTextInternal( TextPart drawType,
+    static void drawTextInternal( Qgis::TextComponent drawType,
                                   QgsRenderContext &context,
                                   const QgsTextFormat &format,
                                   const Component &component,
                                   const QgsTextDocument &document,
                                   const QFontMetricsF *fontMetrics,
-                                  HAlignment alignment,
-                                  VAlignment vAlignment,
-                                  DrawMode mode = Rect );
+                                  Qgis::TextHorizontalAlignment alignment,
+                                  Qgis::TextVerticalAlignment vAlignment,
+                                  Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
 
     static Qgis::TextOrientation calculateRotationAndOrientationForComponent( const QgsTextFormat &format, const Component &component, double &rotation );
 
@@ -383,26 +347,26 @@ class CORE_EXPORT QgsTextRenderer
 
     static void drawTextInternalHorizontal( QgsRenderContext &context,
                                             const QgsTextFormat &format,
-                                            TextPart drawType,
-                                            DrawMode mode,
+                                            Qgis::TextComponent drawType,
+                                            Qgis::TextLayoutMode mode,
                                             const Component &component,
                                             const QgsTextDocument &document,
                                             double fontScale,
                                             const QFontMetricsF *fontMetrics,
-                                            HAlignment hAlignment,
-                                            VAlignment vAlignment,
+                                            Qgis::TextHorizontalAlignment hAlignment,
+                                            Qgis::TextVerticalAlignment vAlignment,
                                             double rotation );
 
     static void drawTextInternalVertical( QgsRenderContext &context,
                                           const QgsTextFormat &format,
-                                          TextPart drawType,
-                                          DrawMode mode,
+                                          Qgis::TextComponent drawType,
+                                          Qgis::TextLayoutMode mode,
                                           const Component &component,
                                           const QgsTextDocument &document,
                                           double fontScale,
                                           const QFontMetricsF *fontMetrics,
-                                          HAlignment hAlignment,
-                                          VAlignment vAlignment,
+                                          Qgis::TextHorizontalAlignment hAlignment,
+                                          Qgis::TextVerticalAlignment vAlignment,
                                           double rotation );
 
     static double calculateScaleFactorForFormat( const QgsRenderContext &context, const QgsTextFormat &format );

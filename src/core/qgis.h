@@ -1415,6 +1415,68 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextOrientation )
 
     /**
+     * Text layout modes.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::DrawMode
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextLayoutMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, DrawMode ) : int
+      {
+      Rectangle SIP_MONKEYPATCH_COMPAT_NAME( Rect ), //!< Text within rectangle layout mode
+      Point, //!< Text at point of origin layout mode
+      Labeling SIP_MONKEYPATCH_COMPAT_NAME( Label ), //!< Labeling-specific layout mode
+    };
+    Q_ENUM( TextLayoutMode )
+
+    /**
+     * Text components.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::TextPart
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int
+      {
+      Text, //!< Text component
+      Buffer, //!< Buffer component
+      Background, //!< Background shape
+      Shadow, //!< Drop shadow
+    };
+    Q_ENUM( TextComponent )
+
+    /**
+     * Text horizontal alignment.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::HAlignment
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextHorizontalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, HAlignment ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ), //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( AlignCenter ), //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right align
+      Justify SIP_MONKEYPATCH_COMPAT_NAME( AlignJustify ), //!< Justify align
+    };
+    Q_ENUM( TextHorizontalAlignment )
+
+    /**
+     * Text vertical alignment.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::VAlignment
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextVerticalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, VAlignment ) : int
+      {
+      Top SIP_MONKEYPATCH_COMPAT_NAME( AlignTop ), //!< Align to top
+      VerticalCenter SIP_MONKEYPATCH_COMPAT_NAME( AlignVCenter ), //!< Center align
+      Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ), //!< Align to bottom
+    };
+    Q_ENUM( TextVerticalAlignment )
+
+    /**
      * Rendering subcomponent properties.
      *
      * \since QGIS 3.22

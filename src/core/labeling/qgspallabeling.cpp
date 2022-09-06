@@ -21,6 +21,7 @@
 #include "qgsexception.h"
 #include "qgsapplication.h"
 #include "qgsstyle.h"
+#include "qgstextrenderer.h"
 
 #include <list>
 
@@ -1390,7 +1391,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
   const QStringList text = QStringList() << ( previewText.isEmpty() ? settings.legendString() : previewText );
-  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
+  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, Qgis::TextLayoutMode::Rectangle );
   QRectF textRect = rect;
   textRect.setLeft( xtrans + padding );
   textRect.setWidth( rect.width() - xtrans - 2 * padding );
@@ -1416,7 +1417,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     callout->stopRender( context );
   }
 
-  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
+  QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Center, text, context, tempFormat );
 
   if ( size.width() > 30 )
   {

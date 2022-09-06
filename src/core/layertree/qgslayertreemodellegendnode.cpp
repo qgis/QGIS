@@ -19,7 +19,6 @@
 #include "qgslayertreemodellegendnode.h"
 
 #include "qgsdatadefinedsizelegend.h"
-#include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsrasterlayer.h"
@@ -31,15 +30,13 @@
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsfeatureid.h"
-#include "qgslayoutitem.h"
-#include "qgsvectorlayerfeaturecounter.h"
 #include "qgsexpression.h"
 #include "qgstextrenderer.h"
 #include "qgssettings.h"
 #include "qgsfileutils.h"
 #include "qgsmarkersymbol.h"
 #include "qgsvariantutils.h"
+#include "qgslayertreelayer.h"
 
 #include <QBuffer>
 
@@ -373,7 +370,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   if ( !mTextOnSymbolLabel.isEmpty() && context )
   {
     const double w = QgsTextRenderer::textWidth( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel );
-    const double h = QgsTextRenderer::textHeight( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel, QgsTextRenderer::Point );
+    const double h = QgsTextRenderer::textHeight( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel, Qgis::TextLayoutMode::Point );
     int wInt = ceil( w ), hInt = ceil( h );
     if ( wInt > minSz.width() ) minSz.setWidth( wInt );
     if ( hInt > minSz.height() ) minSz.setHeight( hInt );
@@ -537,7 +534,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
           if ( !isNullSize )
           {
             const qreal yBaselineVCenter = ( mIconSize.height() + fm.ascent() - fm.descent() ) / 2;
-            QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+            QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, Qgis::TextHorizontalAlignment::Center,
                                        QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
           }
         }
@@ -744,7 +741,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       if ( !isNullSize )
       {
         const qreal yBaselineVCenter = ( height * dotsPerMM + fm.ascent() - fm.descent() ) / 2;
-        QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+        QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, Qgis::TextHorizontalAlignment::Center,
                                    QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
       }
     }
@@ -1529,7 +1526,7 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
   const QPointF textPos( renderContext.scaleFactor() * ( xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0 ), renderContext.scaleFactor() * ( yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0 ) );
 
   const QgsScopedRenderContextScaleToPixels scopedScaleToPixels( ctx );
-  QgsTextRenderer::drawText( textPos, 0.0, QgsTextRenderer::AlignLeft, textLines, ctx, textFormat );
+  QgsTextRenderer::drawText( textPos, 0.0, Qgis::TextHorizontalAlignment::Left, textLines, ctx, textFormat );
 
   const double symbolWidth = std::max( textWidth, settings.symbolSize().width() );
   const double symbolHeight = std::max( textHeight, settings.symbolSize().height() );

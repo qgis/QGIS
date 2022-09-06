@@ -25,48 +25,18 @@ and background shapes.
 %End
   public:
 
-    enum DrawMode
-    {
-      Rect,
-      Point,
-      Label,
-    };
-
-    enum TextPart
-    {
-      Text,
-      Buffer,
-      Background,
-      Shadow,
-    };
-
-    enum HAlignment
-    {
-      AlignLeft,
-      AlignCenter,
-      AlignRight,
-      AlignJustify,
-    };
-
-    static HAlignment convertQtHAlignment( Qt::Alignment alignment );
+    static Qgis::TextHorizontalAlignment convertQtHAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt horizontal ``alignment`` flag to a QgsTextRenderer.HAlignment value.
+Converts a Qt horizontal ``alignment`` flag to a Qgis.TextHorizontalAlignment value.
 
 .. seealso:: :py:func:`convertQtVAlignment`
 
 .. versionadded:: 3.16
 %End
 
-    enum VAlignment
-    {
-      AlignTop,
-      AlignVCenter,
-      AlignBottom,
-    };
-
-    static VAlignment convertQtVAlignment( Qt::Alignment alignment );
+    static Qgis::TextVerticalAlignment convertQtVAlignment( Qt::Alignment alignment );
 %Docstring
-Converts a Qt vertical ``alignment`` flag to a QgsTextRenderer.VAlignment value.
+Converts a Qt vertical ``alignment`` flag to a Qgis.TextVerticalAlignment value.
 
 .. seealso:: :py:func:`convertQtHAlignment`
 
@@ -86,9 +56,9 @@ Calculates pixel size (considering output size should be in pixel or map units, 
 %End
 
 
-    static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          bool drawAsOutlines = true, VAlignment vAlignment = AlignTop,
+                          bool drawAsOutlines = true, Qgis::TextVerticalAlignment vAlignment = Qgis::TextVerticalAlignment::Top,
                           Qgis::TextRendererFlags flags = Qgis::TextRendererFlags() );
 %Docstring
 Draws text within a rectangle using the specified settings.
@@ -107,7 +77,7 @@ Draws text within a rectangle using the specified settings.
 :param flags: text rendering flags (since QGIS 3.24)
 %End
 
-    static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 %Docstring
@@ -125,9 +95,9 @@ Draws text at a point origin using the specified settings.
                        as of QGIS 3.4.3 and the text format should be set using :py:func:`QgsRenderContext.setTextRenderFormat()` instead.
 %End
 
- static void drawPart( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
+ static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            TextPart part, bool drawAsOutlines = true ) /Deprecated/;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -149,9 +119,9 @@ Draws a single component of rendered text using the specified settings.
    Private API only, will be removed in 4.0
 %End
 
- static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
+ static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            TextPart part, bool drawAsOutlines = true ) /Deprecated/;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -198,7 +168,7 @@ Returns the width of a text based on a given format.
 :param fontMetrics: font metrics
 %End
 
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode = Point,
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point,
                               QFontMetricsF *fontMetrics = 0, Qgis::TextRendererFlags flags = Qgis::TextRendererFlags(), double maxLineWidth = 0 );
 %Docstring
 Returns the height of a text based on a given format.

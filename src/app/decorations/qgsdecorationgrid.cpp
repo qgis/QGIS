@@ -304,7 +304,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
   const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
   const double textDescent = textMetrics.descent();
   const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, annotationStringList );
-  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, annotationStringList, QgsTextRenderer::Point );
+  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, annotationStringList, Qgis::TextLayoutMode::Point );
 
   double xpos = pos.x();
   double ypos = pos.y();
@@ -368,7 +368,7 @@ void QgsDecorationGrid::drawCoordinateAnnotation( QgsRenderContext &context, QPo
       }
   }
 
-  QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, QgsTextRenderer::AlignLeft, annotationStringList, context, mTextFormat );
+  QgsTextRenderer::drawText( QPointF( xpos, ypos ), rotation, Qgis::TextHorizontalAlignment::Left, annotationStringList, context, mTextFormat );
 }
 
 static bool clipByRect( QLineF &line, const QPolygonF &rect )

@@ -15,10 +15,8 @@
 
 #include "qgstextlabelfeature.h"
 
-#include "qgsgeometry.h"
 #include "qgspallabeling.h"
 #include "qgsmaptopixel.h"
-#include "pal/feature.h"
 #include "qgstextcharacterformat.h"
 #include "qgstextfragment.h"
 #include "qgstextblock.h"
