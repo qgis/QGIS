@@ -104,6 +104,7 @@ class TestQgsMeshLayer : public QObject
     void testSelectByExpression();
 
     void testSetDataSourceRetainStyle();
+    void updateTimePropertiesWhenReloading();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -2039,6 +2040,71 @@ void TestQgsMeshLayer::test_temporal()
   time_2 = time_1.addSecs( 300 );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
   QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+}
+
+
+void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
+{
+  const QString uri_1( mDataDir + QStringLiteral( "/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water Level", "Depth" and "Velocity"
+  const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) ); //exactly the same mesh except without "Velocity" and reference time / time extent are different
+
+  QTemporaryDir tempDir;
+  const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );
+
+  QFile::copy( uri_1, uri );
+  // start with a layer with valid path
+  std::unique_ptr< QgsMeshLayer > layer = std::make_unique< QgsMeshLayer >( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsMeshLayerTemporalProperties *temporalProperties = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() );
+
+  QDateTime referenceTime1 = temporalProperties->referenceTime();
+  QgsDateTimeRange timeExtent1 = temporalProperties->timeExtent();
+  temporalProperties->setIsAutoReloadFromProvider( true );
+
+  QgsReadWriteContext readWriteContext;
+  QDomDocument doc( QStringLiteral( "doc" ) );
+  QDomElement meshLayerElement = doc.createElement( QStringLiteral( "maplayer" ) );
+  layer->writeLayerXml( meshLayerElement, doc, readWriteContext );
+  layer.reset();
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_2, uri ) );
+
+  // create a new mesh layer from XML
+  layer.reset( new QgsMeshLayer() );
+  layer->readLayerXml( meshLayerElement, readWriteContext );
+  QVERIFY( layer->isValid() );
+  QDateTime referenceTime2 = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime();
+  QgsDateTimeRange timeExtent2 = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent();
+
+  QVERIFY( referenceTime1 != referenceTime2 );
+  QVERIFY( timeExtent1 != timeExtent2 );
+
+  layer.reset();
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_1, uri ) );
+  layer.reset( new QgsMeshLayer() );
+  layer->readLayerXml( meshLayerElement, readWriteContext );
+  QVERIFY( layer->isValid() );
+
+  QCOMPARE( referenceTime1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
+  QCOMPARE( timeExtent1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
+
+  // Same test but with layer reloading from QgsMeshLayer::reload();
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_2, uri ) );
+  layer->reload();
+
+  QCOMPARE( referenceTime2, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
+  QCOMPARE( timeExtent2, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_1, uri ) );
+  layer->reload();
+  QCOMPARE( referenceTime1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
+  QCOMPARE( timeExtent1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )
