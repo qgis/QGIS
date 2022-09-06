@@ -30,6 +30,11 @@
 
 namespace QgsWms
 {
+  QString implementationVersion()
+  {
+    return QStringLiteral( "1.3.0" );
+  }
+
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
     QUrl href;
