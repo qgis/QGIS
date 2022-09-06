@@ -115,13 +115,6 @@ Constructor for Constraint.
 Constructor for QgsLayerMetadata.
 %End
 
-    QgsLayerMetadata( const QgsLayerMetadata &other );
-%Docstring
-Copy constructor for :py:class:`QgsLayerMetadataProviderResult` from ``other``.
-
-.. versionadded:: 3.28
-%End
-
 
     virtual QgsLayerMetadata *clone() const /Factory/;
 

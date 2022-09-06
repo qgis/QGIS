@@ -172,12 +172,6 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      */
     QgsLayerMetadata() = default;
 
-    /**
-     * Copy constructor for QgsLayerMetadataProviderResult from \a other.
-     * \since QGIS 3.28
-     */
-    QgsLayerMetadata( const QgsLayerMetadata &other ) = default;
-
 
     QgsLayerMetadata *clone() const override SIP_FACTORY;
 
