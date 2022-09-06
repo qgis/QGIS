@@ -236,6 +236,7 @@ void QgsMeshLayerProperties::syncToLayer()
     mTemporalProviderTimeUnitComboBox->setCurrentIndex(
       mTemporalProviderTimeUnitComboBox->findData( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) );
   }
+  mAutoReloadTemporalCheckBox->setChecked( temporalProperties->isAutoReloadFromProvider() );
   mComboBoxTemporalDatasetMatchingMethod->setCurrentIndex(
     mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() ) );
 
@@ -397,6 +398,8 @@ void QgsMeshLayerProperties::apply()
   mMeshLayer->temporalProperties()->setIsActive( !mStaticDatasetGroupBox->isChecked() );
   mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
       mComboBoxTemporalDatasetMatchingMethod->currentData().toInt() ) );
+  static_cast<QgsMeshLayerTemporalProperties *>(
+    mMeshLayer->temporalProperties() )->setIsAutoReloadFromProvider( mAutoReloadTemporalCheckBox->isChecked() );
 
   mMetadataWidget->acceptMetadata();
 

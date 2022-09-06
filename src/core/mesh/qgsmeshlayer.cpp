@@ -1585,7 +1585,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
 
-  if ( !mTemporalProperties->timeExtent().begin().isValid() )
+  if ( !mTemporalProperties->timeExtent().begin().isValid() || mTemporalProperties->isAutoReloadFromProvider() )
     temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
 
   // read static dataset
@@ -1661,6 +1661,9 @@ void QgsMeshLayer::reload()
       mNativeMesh.reset( new QgsMesh );
 
     dataProvider()->populateMesh( mNativeMesh.get() );
+
+    if ( mTemporalProperties->isAutoReloadFromProvider() )
+      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
 
     //clear the TriangularMeshes
     mTriangularMeshes.clear();

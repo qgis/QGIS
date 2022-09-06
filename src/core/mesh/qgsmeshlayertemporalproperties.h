@@ -116,12 +116,29 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
      */
     void setIsValid( bool isValid );
 
+    /**
+     * Returns whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
+     *
+     * \since QGIS 3.28
+     */
+    bool isAutoReloadFromProvider() const;
+
+    /**
+     * Sets whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
+     *
+     * \param autoReloadFromProvider whether the time proporties is automaticaly reloaded
+     *
+     * \since QGIS 3.28
+     */
+    void setIsAutoReloadFromProvider( bool autoReloadFromProvider );
+
   private:
     QDateTime mReferenceTime;
     QgsDateTimeRange mTimeExtent;
     QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod mMatchingMethod =
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime;
     bool mIsValid = false;
+    bool mIsAutoReloadFromProvider = false;
 };
 
 #endif // QGSMESHLAYERTEMPORALPROPERTIES_H
