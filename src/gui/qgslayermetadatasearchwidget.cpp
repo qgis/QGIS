@@ -173,6 +173,7 @@ void QgsLayerMetadataSearchWidget::addButtonClicked()
         case QgsMapLayerType::MeshLayer:
         {
           emit addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          break;
         }
         default:  // unsupported
         {
