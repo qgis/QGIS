@@ -126,7 +126,7 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     /**
      * Sets whether the time proporties are automatically reloaded from provider when project is opened or layer is reloaded
      *
-     * \param autoReloadFromProvider whether the time proporties is automaticaly reloaded
+     * \param autoReloadFromProvider whether the time proporties is automatically reloaded
      *
      * \since QGIS 3.28
      */
