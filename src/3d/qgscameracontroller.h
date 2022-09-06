@@ -282,6 +282,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
+    /**
+     * Copies the orientation and position of camera \a from to camera \a to
+     */
+    void copyCameraSettings( Qt3DRender::QCamera *from, Qt3DRender::QCamera *to );
+
   private:
     //! Camera that is being controlled
     Qt3DRender::QCamera *mCamera = nullptr;
@@ -303,6 +308,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
 
+    // Rotation related
     QPoint mMiddleButtonClickPos;
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
@@ -311,12 +317,14 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     double mRotationYaw = 0;
     std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeRotation;
 
+    // Drag related
     QPoint mDragButtonClickPos;
     std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeDrag;
     bool mDragPointCalculated = false;
     QVector3D mDragPoint;
     double mDragDepth;
 
+    // Zoom related
     bool mIsInZoomInState = false;
     std::unique_ptr< Qt3DRender::QCamera > mCameraBeforeZoom;
     bool mZoomPointCalculated = false;
