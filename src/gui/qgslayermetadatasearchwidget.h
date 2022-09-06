@@ -39,9 +39,7 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
   public:
 
     /**
-     * Created a new QgsLayerMetadataSearchWidget.
-     * \param mapCanvas optional map canvas
-     * \param parent optional parent
+     * Creates a new QgsLayerMetadataSearchWidget.
      */
     explicit QgsLayerMetadataSearchWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
