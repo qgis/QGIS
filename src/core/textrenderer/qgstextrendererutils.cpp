@@ -261,6 +261,9 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
   double angle = std::atan2( -dy, dx );
 
+  const double maxCharacterDescent = metrics.maximumCharacterDescent();
+  const double maxCharacterHeight = metrics.maximumCharacterHeight();
+
   for ( int i = 0; i < characterCount; i++ )
   {
     const double lastCharacterAngle = angle;
@@ -272,6 +275,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       continue;
 
     const double characterHeight = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterHeight( i ) : metrics.characterHeight( characterCount - i - 1 );
+    const double characterDescent = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterDescent( i ) : metrics.characterDescent( characterCount - i - 1 );
 
     double characterStartX = 0;
     double characterStartY = 0;
@@ -306,7 +310,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
-    double dist = 0.9 * characterHeight / 2;
+    double dist = 0.9 * maxCharacterHeight / 2 - ( maxCharacterDescent - characterDescent );
     if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       dist = -dist;

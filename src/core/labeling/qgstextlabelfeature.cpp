@@ -77,6 +77,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
 
   QVector< double > characterWidths( graphemes.count() );
   QVector< double > characterHeights( graphemes.count() );
+  QVector< double > characterDescents( graphemes.count() );
   for ( int i = 0; i < graphemes.count(); i++ )
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
@@ -85,6 +86,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     double graphemeFirstCharHorizontalAdvanceWithLetterSpacing = 0;
     double graphemeFirstCharHorizontalAdvance = 0;
     double graphemeHorizontalAdvance = 0;
+    double characterDescent = 0;
     double characterHeight = 0;
     if ( const QgsTextCharacterFormat *graphemeFormat = !graphemeFormats.empty() ? &graphemeFormats[i] : nullptr )
     {
@@ -94,6 +96,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
       graphemeFirstCharHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) );
       graphemeFirstCharHorizontalAdvanceWithLetterSpacing = graphemeFontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing;
       graphemeHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i] ) );
+      characterDescent = graphemeFontMetrics.descent();
       characterHeight = graphemeFontMetrics.height();
     }
     else
@@ -101,6 +104,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
       graphemeFirstCharHorizontalAdvance = fontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) );
       graphemeFirstCharHorizontalAdvanceWithLetterSpacing = fontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing;
       graphemeHorizontalAdvance = fontMetrics.horizontalAdvance( QString( graphemes[i] ) );
+      characterDescent = fontMetrics.descent();
       characterHeight = fontMetrics.height();
     }
 
@@ -124,9 +128,10 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     const double charWidth = graphemeHorizontalAdvance + wordSpaceFix;
     characterWidths[i] = mapScale * charWidth;
     characterHeights[i] = mapScale * characterHeight;
+    characterDescents[i] = mapScale * characterDescent;
   }
 
-  QgsPrecalculatedTextMetrics res( graphemes, std::move( characterWidths ), std::move( characterHeights ) );
+  QgsPrecalculatedTextMetrics res( graphemes, std::move( characterWidths ), std::move( characterHeights ), std::move( characterDescents ) );
   res.setGraphemeFormats( graphemeFormats );
   return res;
 }
