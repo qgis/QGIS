@@ -367,12 +367,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     int recordSize = attributesCollection.pointRecordSize();
     const QgsVector3D scale = block->scale();
     const QgsVector3D offset = block->offset();
-    int xOffset;
-    int yOffset;
-    int zOffset;
-    attributesCollection.find( QStringLiteral( "X" ), xOffset );
-    attributesCollection.find( QStringLiteral( "Y" ), yOffset );
-    attributesCollection.find( QStringLiteral( "Z" ), zOffset );
+    int xOffset = 0, yOffset = 0, zOffset = 0;
+    const QgsPointCloudAttribute::DataType xType = attributesCollection.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = attributesCollection.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = attributesCollection.find( QStringLiteral( "Z" ), zOffset )->type();
     for ( int i = 0; i < count; ++i )
     {
 
@@ -392,9 +390,9 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
       double x, y, z;
       QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize,
-                                           xOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           yOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           zOffset, QgsPointCloudAttribute::DataType::Int32,
+                                           xOffset, xType,
+                                           yOffset, yType,
+                                           zOffset, zType,
                                            scale, offset,
                                            x, y, z );
       if ( ! mParent->mZRange.contains( z ) ||
