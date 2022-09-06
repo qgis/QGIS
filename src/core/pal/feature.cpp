@@ -1414,7 +1414,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( flags == 0 )
     flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
   const bool hasAboveBelowLinePlacement = flags & QgsLabeling::LinePlacementFlag::AboveLine || flags & QgsLabeling::LinePlacementFlag::BelowLine;
-  const double offsetDistance = mLF->distLabel() + li->characterHeight() / 2;
+  const double offsetDistance = mLF->distLabel() + li->characterHeight( 0 ) / 2;
   std::unique_ptr< PointSet > mapShapeOffsetPositive;
   bool positiveShapeHasNegativeDistance = false;
   std::unique_ptr< PointSet > mapShapeOffsetNegative;
@@ -1505,7 +1505,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       return 0;
 
     const std::size_t candidateTargetCount = maximumLineCandidates();
-    double delta = std::max( li->characterHeight() / 6, totalDistance / candidateTargetCount );
+    double delta = std::max( li->characterHeight( 0 ) / 6, totalDistance / candidateTargetCount );
 
     // generate curved labels
     double distanceAlongLineToStartCandidate = 0;
