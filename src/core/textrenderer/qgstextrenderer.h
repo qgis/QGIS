@@ -277,6 +277,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param alignment horizontal alignment
      * \param vAlignment vertical alignment
      * \param document text document to draw
+     * \param metrics document metrics
      * \param context render context
      * \param format text format
      * \param part component of text to draw. Note that Shadow parts cannot be drawn

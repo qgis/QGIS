@@ -2696,7 +2696,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
-      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, *labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, format().allowHtmlFormatting() ? &doc : nullptr ) );
+      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, labelFont, *labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, format().allowHtmlFormatting() ? &doc : nullptr, format().allowHtmlFormatting() ? &documentMetrics : nullptr ) );
       break;
   }
 

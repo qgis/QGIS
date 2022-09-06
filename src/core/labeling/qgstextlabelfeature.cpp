@@ -47,11 +47,10 @@ bool QgsTextLabelFeature::hasCharacterFormat( int partId ) const
   return mTextMetrics.has_value() && partId < mTextMetrics->graphemeFormatCount();
 }
 
-QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QString &text, QgsTextDocument *document )
+QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing, double wordSpacing, const QString &text, QgsTextDocument *document, QgsTextDocumentMetrics * )
 {
   // create label info!
   const double mapScale = xform->mapUnitsPerPixel();
-  const double characterHeight = mapScale * fontMetrics.height();
   QStringList graphemes;
   QVector< QgsTextCharacterFormat > graphemeFormats;
 
@@ -61,9 +60,6 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     {
       for ( const QgsTextFragment &fragment : block )
       {
-
-        // fragment.horizontalAdvance( ..., false,  .... );
-
         const QStringList fragmentGraphemes = QgsPalLabeling::splitToGraphemes( fragment.text() );
         for ( const QString &grapheme : fragmentGraphemes )
         {
@@ -80,10 +76,33 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
   }
 
   QVector< double > characterWidths( graphemes.count() );
+  QVector< double > characterHeights( graphemes.count() );
   for ( int i = 0; i < graphemes.count(); i++ )
   {
     // reconstruct how Qt creates word spacing, then adjust per individual stored character
     // this will allow PAL to create each candidate width = character width + correct spacing
+
+    double graphemeFirstCharHorizontalAdvanceWithLetterSpacing = 0;
+    double graphemeFirstCharHorizontalAdvance = 0;
+    double graphemeHorizontalAdvance = 0;
+    double characterHeight = 0;
+    if ( const QgsTextCharacterFormat *graphemeFormat = !graphemeFormats.empty() ? &graphemeFormats[i] : nullptr )
+    {
+      QFont graphemeFont = baseFont;
+      graphemeFormat->updateFontForFormat( graphemeFont, context, 1 );
+      const QFontMetricsF graphemeFontMetrics( graphemeFont );
+      graphemeFirstCharHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) );
+      graphemeFirstCharHorizontalAdvanceWithLetterSpacing = graphemeFontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing;
+      graphemeHorizontalAdvance = graphemeFontMetrics.horizontalAdvance( QString( graphemes[i] ) );
+      characterHeight = graphemeFontMetrics.height();
+    }
+    else
+    {
+      graphemeFirstCharHorizontalAdvance = fontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) );
+      graphemeFirstCharHorizontalAdvanceWithLetterSpacing = fontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing;
+      graphemeHorizontalAdvance = fontMetrics.horizontalAdvance( QString( graphemes[i] ) );
+      characterHeight = fontMetrics.height();
+    }
 
     qreal wordSpaceFix = qreal( 0.0 );
     if ( graphemes[i] == QLatin1String( " " ) )
@@ -92,20 +111,22 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
       int nxt = i + 1;
       wordSpaceFix = ( nxt < graphemes.count() && graphemes[nxt] != QLatin1String( " " ) ) ? wordSpacing : qreal( 0.0 );
     }
+
     // this workaround only works for clusters with a single character. Not sure how it should be handled
     // with multi-character clusters.
     if ( graphemes[i].length() == 1 &&
-         !qgsDoubleNear( fontMetrics.horizontalAdvance( QString( graphemes[i].at( 0 ) ) ), fontMetrics.horizontalAdvance( graphemes[i].at( 0 ) ) + letterSpacing ) )
+         !qgsDoubleNear( graphemeFirstCharHorizontalAdvance, graphemeFirstCharHorizontalAdvanceWithLetterSpacing ) )
     {
       // word spacing applied when it shouldn't be
       wordSpaceFix -= wordSpacing;
     }
 
-    const double charWidth = fontMetrics.horizontalAdvance( QString( graphemes[i] ) ) + wordSpaceFix;
+    const double charWidth = graphemeHorizontalAdvance + wordSpaceFix;
     characterWidths[i] = mapScale * charWidth;
+    characterHeights[i] = mapScale * characterHeight;
   }
 
-  QgsPrecalculatedTextMetrics res( graphemes, characterHeight, std::move( characterWidths ) );
+  QgsPrecalculatedTextMetrics res( graphemes, std::move( characterWidths ), std::move( characterHeights ) );
   res.setGraphemeFormats( graphemeFormats );
   return res;
 }

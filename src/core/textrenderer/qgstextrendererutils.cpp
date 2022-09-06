@@ -202,8 +202,6 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     return output.release();
   }
 
-  const double characterHeight = metrics.characterHeight();
-
   const double segmentLength = pathDistances[index];
   if ( qgsDoubleNear( segmentLength, 0.0 ) )
   {
@@ -273,6 +271,8 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
       // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
       continue;
 
+    const double characterHeight = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterHeight( i ) : metrics.characterHeight( characterCount - i - 1 );
+
     double characterStartX = 0;
     double characterStartY = 0;
     double characterEndX = 0;
@@ -306,7 +306,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
-    double dist = 0.9 * metrics.characterHeight() / 2;
+    double dist = 0.9 * characterHeight / 2;
     if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       dist = -dist;

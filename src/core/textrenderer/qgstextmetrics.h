@@ -38,20 +38,15 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Constructor for QgsPrecalculatedTextMetrics
      * \param graphemes list of graphemes contained in the text
-     * \param characterHeight height of characters
      * \param characterWidths vector of character widths
+     * \param characterHeights height of characters
      */
-    QgsPrecalculatedTextMetrics( const QStringList &graphemes, double characterHeight, const QVector< double > &characterWidths )
+    QgsPrecalculatedTextMetrics( const QStringList &graphemes, const QVector< double > &characterWidths, const QVector< double > &characterHeights )
       : mGraphemes( graphemes )
-      , mCharacterHeight( characterHeight )
+      , mCharacterHeights( characterHeights )
       , mCharacterWidths( characterWidths )
     {
     }
-
-    /**
-     * Character height (actually font metrics height, not individual character height).
-     */
-    double characterHeight() const { return mCharacterHeight; }
 
     /**
      * Returns the total number of characters.
@@ -62,6 +57,11 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
      * Returns the width of the character at the specified position.
      */
     double characterWidth( int position ) const { return mCharacterWidths[position]; }
+
+    /**
+     * Returns the character height of the character at the specified position (actually font metrics height, not individual character height).
+     */
+    double characterHeight( int position ) const { return mCharacterHeights[position]; }
 
     /**
      * Returns the list of graphemes contained in the text.
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
 
     QStringList mGraphemes;
     QVector< QgsTextCharacterFormat > mGraphemeFormats;
-    double mCharacterHeight = 0;
+    QVector< double > mCharacterHeights;
     QVector< double > mCharacterWidths;
 
 };
