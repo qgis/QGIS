@@ -95,8 +95,37 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
 {
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
-  if ( mFontWeight != -1 )
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  if ( mFontWeight != - 1 )
+  {
     font.setWeight( mFontWeight );
+  }
+#else
+  if ( mFontWeight == - 1 )
+  {
+    // nothing
+  }
+  else if ( mFontWeight <= 150 )
+    font.setWeight( QFont::Thin );
+  else if ( mFontWeight <= 250 )
+    font.setWeight( QFont::ExtraLight );
+  else if ( mFontWeight <= 350 )
+    font.setWeight( QFont::Light );
+  else if ( mFontWeight <= 450 )
+    font.setWeight( QFont::Normal );
+  else if ( mFontWeight <= 550 )
+    font.setWeight( QFont::Medium );
+  else if ( mFontWeight <= 650 )
+    font.setWeight( QFont::DemiBold );
+  else if ( mFontWeight <= 750 )
+    font.setWeight( QFont::Bold );
+  else if ( mFontWeight <= 850 )
+    font.setWeight( QFont::ExtraBold );
+  else
+    font.setWeight( QFont::Black );
+#endif
+
   if ( !mFontFamily.isEmpty() )
     font.setFamily( mFontFamily );
   if ( mFontPointSize != -1 )
