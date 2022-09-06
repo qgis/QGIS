@@ -385,7 +385,7 @@ void QgsMeshRendererVectorArrowSettings::readXml( const QDomElement &elem )
 // ---------------------------------------------------------------------
 
 QgsMeshRendererSettings::QgsMeshRendererSettings()
-  : mAveragingMethod( new QgsMeshMultiLevelsAveragingMethod() )
+  : mAveragingMethod( new QgsMeshSigmaAveragingMethod() )
 {
 }
 
