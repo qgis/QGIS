@@ -18,12 +18,8 @@
 #include "qgsmessagelog.h"
 #include "qgslayoutitemmapgrid.h"
 #include "qgslayoututils.h"
-#include "qgsclipper.h"
 #include "qgsgeometry.h"
 #include "qgslayoutitemmap.h"
-#include "qgslayout.h"
-#include "qgsmapsettings.h"
-#include "qgspathresolver.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerutils.h"
@@ -39,6 +35,7 @@
 #include "qgstextrenderer.h"
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
+#include "qgslayout.h"
 
 #include <QVector2D>
 #include <math.h>
@@ -1384,7 +1381,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   context.painter()->rotate( rotation );
   context.painter()->translate( -anchor );
   const QgsScopedRenderContextScaleToPixels scale( context );
-  QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, QgsTextRenderer::AlignLeft, QStringList() << annotationString, context, mAnnotationFormat );
+  QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, Qgis::TextHorizontalAlignment::Left, QStringList() << annotationString, context, mAnnotationFormat );
 }
 
 QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const

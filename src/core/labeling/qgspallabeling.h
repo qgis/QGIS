@@ -32,7 +32,6 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
-#include "qgslabelingenginesettings.h"
 #include "qgspointxy.h"
 #include "qgsmapunitscale.h"
 #include "qgsstringutils.h"
@@ -43,7 +42,6 @@
 #include "qgslabelthinningsettings.h"
 #include "qgslabellinesettings.h"
 #include "qgslabeling.h"
-#include "qgslabelposition.h"
 #include "qgscoordinatetransform.h"
 
 class QgsTextDocument;

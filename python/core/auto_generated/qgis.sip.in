@@ -854,6 +854,36 @@ The development version
       RotationBased,
     };
 
+    enum class TextLayoutMode
+      {
+      Rectangle,
+      Point,
+      Labeling,
+    };
+
+    enum class TextComponent
+      {
+      Text,
+      Buffer,
+      Background,
+      Shadow,
+    };
+
+    enum class TextHorizontalAlignment
+      {
+      Left,
+      Center,
+      Right,
+      Justify,
+    };
+
+    enum class TextVerticalAlignment
+      {
+      Top,
+      VerticalCenter,
+      Bottom,
+    };
+
     enum class RenderSubcomponentProperty
     {
       Generic,

@@ -17,25 +17,22 @@
 
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemregistry.h"
-#include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgslayoutmodel.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
 #include "qgstextformat.h"
 #include "qgstextrenderer.h"
 #include "qgsexpressioncontext.h"
-#include "qgsmapsettings.h"
 #include "qgslayoutitemmap.h"
 #include "qgssettings.h"
+#include "qgslayout.h"
 
-#include "qgswebview.h"
-#include "qgswebframe.h"
 #include "qgswebpage.h"
+#include "qgswebframe.h"
 
 #include <QCoreApplication>
 #include <QDate>

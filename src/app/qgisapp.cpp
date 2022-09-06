@@ -203,6 +203,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
+#include "qgsauxiliarystorage.h"
 #include "qgsappscreenshots.h"
 #include "qgsapplicationexitblockerinterface.h"
 #include "qgsbookmarks.h"
