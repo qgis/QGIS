@@ -5446,23 +5446,23 @@ font-style: italic;</string>
                            <item>
                             <widget class="QComboBox" name="mCoordRotationUnitComboBox"/>
                            </item>
-                           <item>
-                            <widget class="QCheckBox" name="chkPreserveRotation">
-                             <property name="toolTip">
-                              <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">margin-left: 12px; margin-top: 3px;</string>
-                             </property>
-                             <property name="text">
-                              <string>Preserve data rotation values</string>
-                             </property>
-                             <property name="checked">
-                              <bool>true</bool>
-                             </property>
-                            </widget>
-                           </item>
                           </layout>
+                         </item>
+                         <item row="4" column="1">
+                          <widget class="QCheckBox" name="chkPreserveRotation">
+                            <property name="toolTip">
+                            <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
+                            </property>
+                            <property name="styleSheet">
+                            <string notr="true">margin-left: 12px; margin-top: 3px;</string>
+                            </property>
+                            <property name="text">
+                            <string>Preserve data rotation values</string>
+                            </property>
+                            <property name="checked">
+                            <bool>true</bool>
+                            </property>
+                          </widget>
                          </item>
                          <item row="0" column="1">
                           <layout class="QHBoxLayout" name="horizontalLayout_22">
