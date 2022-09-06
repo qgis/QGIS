@@ -18,6 +18,9 @@
 #include "qgsapplication.h"
 #include "qgslayermetadataproviderregistry.h"
 #include "qgslayermetadataformatter.h"
+#include "qgsiconutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 #include <QIcon>
 
 QgsLayerMetadataResultsModel::QgsLayerMetadataResultsModel( const QgsMetadataSearchContext &searchContext, QObject *parent )
@@ -60,7 +63,11 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
           case Sections::Abstract:
             return mResult.metadata().at( index.row() ).abstract();
           case Sections::DataProviderName:
-            return mResult.metadata().at( index.row() ).dataProviderName();
+          {
+            const QString providerName { mResult.metadata().at( index.row() ).dataProviderName() };
+            QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
+            return md ? md->description() : providerName;
+          }
           case Sections::GeometryType:
             return QgsWkbTypes::geometryDisplayString( mResult.metadata().at( index.row() ).geometryType() );
           default:
@@ -80,7 +87,7 @@ QVariant QgsLayerMetadataResultsModel::data( const QModelIndex &index, int role 
       {
         if ( index.column() == 0 )
         {
-          return  mResult.metadata().at( index.row() ).layerTypeIcon();
+          return QgsIconUtils::iconForGeometryType( mResult.metadata().at( index.row() ).geometryType() );
         }
         break;
       }

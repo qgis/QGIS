@@ -145,7 +145,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     /**
      * Returns layer's metadata, it may be a default constructed metadata
-     * if metadata are not explicitly set.
+     * if metadata is not explicitly set.
      * \since QGIS 3.28
      */
     const QgsLayerMetadata &layerMetadata() const;

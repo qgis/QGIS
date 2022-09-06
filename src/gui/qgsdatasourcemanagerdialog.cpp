@@ -67,43 +67,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
-  // METADATA Add the metadata search widget as the second stacked widget
-  mLayerMetadataSearchWidget = new QgsLayerMetadataSearchWidget( mMapCanvas, this );
-  connect( mLayerMetadataSearchWidget, &QgsLayerMetadataSearchWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
-  ui->mOptionsStackedWidget->addWidget( mLayerMetadataSearchWidget );
-  mPageNames.append( QStringLiteral( "metadata" ) );
-
-  connect( mLayerMetadataSearchWidget, &QgsLayerMetadataSearchWidget::addLayers, this, [ = ]( const QList< QgsLayerMetadataProviderResult > &metadataResults )
-  {
-    for ( const QgsLayerMetadataProviderResult &metadata : std::as_const( metadataResults ) )
-    {
-      switch ( metadata.layerType() )
-      {
-        case QgsMapLayerType::VectorLayer:
-        {
-          emit addVectorLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
-          break;
-        };
-        case QgsMapLayerType::RasterLayer:
-        {
-          emit addRasterLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
-          break;
-        }
-        case QgsMapLayerType::MeshLayer:
-        {
-          emit addMeshLayer( metadata.uri(), metadata.identifier(), metadata.dataProviderName() );
-          break;
-        }
-        default: // Unsupported!
-        {
-          // Ignore
-          break;
-        }
-      }
-    }
-  } );
-
-  // Add provider dialogs
+  // Add registered source select dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
   for ( QgsSourceSelectProvider *provider : sourceSelectProviders )
   {

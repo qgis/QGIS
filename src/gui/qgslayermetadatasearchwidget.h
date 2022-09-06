@@ -21,9 +21,11 @@
 #include "ui_qgslayermetadatasearchwidget.h"
 #include "qgsfeedback.h"
 #include "qgsabstractlayermetadataprovider.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QgsMapCanvas;
 class QgsLayerMetadataResultsProxyModel;
+class QgsLayerMetadataResultsModel;
 
 /**
  * \ingroup gui
@@ -31,7 +33,7 @@ class QgsLayerMetadataResultsProxyModel;
  * It is designed to be embedded in the data source manager dialog.
  * \since QGIS 3.28
  */
-class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsLayerMetadataSearchWidget
+class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidget, private Ui::QgsLayerMetadataSearchWidget
 {
     Q_OBJECT
   public:
@@ -41,28 +43,24 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QWidget, private Ui::QgsL
      * \param mapCanvas optional map canvas
      * \param parent optional parent
      */
-    explicit QgsLayerMetadataSearchWidget( const QgsMapCanvas *mapCanvas = nullptr, QWidget *parent = nullptr );
+    explicit QgsLayerMetadataSearchWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-  signals:
-
-    //! Emitted when the close button is clicked.
-    void rejected();
-
-    //! Emitted when layers have been selected for addition
-    void addLayers( const QList< QgsLayerMetadataProviderResult > &metadataResults );
+    void setMapCanvas( QgsMapCanvas *mapCanvas ) override;
 
   public slots:
 
     //! Updates the extent filter based on the combo box current item \a index.
     void updateExtentFilter( int index );
 
+    void refresh() override;
+    void addButtonClicked() override;
+    void reset() override;
+
   private:
 
-    const QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayerMetadataResultsProxyModel *mProxyModel = nullptr;
     bool mIsLoading = false;
-    QPushButton *mAddButton = nullptr;
-
+    QgsLayerMetadataResultsModel *mSourceModel = nullptr;
 
 };
 

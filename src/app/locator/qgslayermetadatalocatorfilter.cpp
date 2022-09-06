@@ -18,6 +18,8 @@
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
+#include "qgsiconutils.h"
+#include <QIcon>
 
 QgsLayerMetadataLocatorFilter::QgsLayerMetadataLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -44,7 +46,7 @@ void QgsLayerMetadataLocatorFilter::fetchResults( const QString &string, const Q
       QgsLocatorResult result;
       result.displayString = metadata.identifier();
       result.description = metadata.title();
-      result.icon = metadata.layerTypeIcon();
+      result.icon = QgsIconUtils::iconForGeometryType( metadata.geometryType() );
       result.userData = QVariant::fromValue( metadata );
       emit resultFetched( result );
     }
@@ -69,6 +71,7 @@ void QgsLayerMetadataLocatorFilter::triggerResult( const QgsLocatorResult &resul
     case QgsMapLayerType::MeshLayer:
     {
       QgisApp::instance()->addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+      break;
     }
     default:  // unsupported
     {

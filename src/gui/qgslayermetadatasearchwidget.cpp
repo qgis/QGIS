@@ -20,18 +20,20 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectviewsettings.h"
 
-QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( const QgsMapCanvas *mapCanvas, QWidget *parent )
-  : QWidget( parent )
-  , mMapCanvas( mapCanvas )
+
+QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
+
   setupUi( this );
+  setupButtons( mButtonBox );
 
   QgsMetadataSearchContext searchContext;
   searchContext.transformContext = QgsProject::instance()->transformContext();
 
-  QgsLayerMetadataResultsModel *sourceModel = new QgsLayerMetadataResultsModel( searchContext, this );
+  mSourceModel = new QgsLayerMetadataResultsModel( searchContext, this );
   mProxyModel = new QgsLayerMetadataResultsProxyModel( this );
-  mProxyModel->setSourceModel( sourceModel );
+  mProxyModel->setSourceModel( mSourceModel );
   mMetadataTableView->setModel( mProxyModel );
   mMetadataTableView->setSortingEnabled( true );
   mMetadataTableView->sortByColumn( 0, Qt::SortOrder::AscendingOrder );
@@ -61,8 +63,8 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( const QgsMapCanvas *
     }
   };
 
-  connect( sourceModel, &QgsLayerMetadataResultsModel::progressChanged, mProgressBar, &QProgressBar::setValue );
-  connect( sourceModel, &QgsLayerMetadataResultsModel::progressChanged, this,  [ = ]( int progress )
+  connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, mProgressBar, &QProgressBar::setValue );
+  connect( mSourceModel, &QgsLayerMetadataResultsModel::progressChanged, this,  [ = ]( int progress )
   {
     if ( progress == 100 )
     {
@@ -71,65 +73,28 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( const QgsMapCanvas *
     }
   } );
 
-  connect( mAbortPushButton, &QPushButton::clicked, sourceModel, [ = ]( bool )
+  connect( mAbortPushButton, &QPushButton::clicked, mSourceModel, [ = ]( bool )
   {
     if ( ! mIsLoading )
     {
       mIsLoading = true;
-      sourceModel->reloadAsync( );
+      mSourceModel->reloadAsync( );
     }
     else
     {
-      sourceModel->cancel();
+      mSourceModel->cancel();
       mIsLoading = false;
     }
     updateLoadBtn();
   } );
 
-
-  // Setup buttons
-  mButtonBox->setStandardButtons( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help );
-#ifdef Q_OS_MACX
-  mButtonBox->setStyleSheet( "* { button-layout: 2 }" );
-#endif
-  mAddButton = mButtonBox->button( QDialogButtonBox::Apply );
-  mAddButton->setText( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
-  connect( mAddButton, &QPushButton::clicked, this, [ = ]( bool )
-  {
-    const QModelIndexList &selectedIndexes { mMetadataTableView->selectionModel()->selectedRows() };
-    if ( ! selectedIndexes.isEmpty() )
-    {
-      QList< QgsLayerMetadataProviderResult > layersToAdd;
-      for ( const auto &selectedIndex : std::as_const( selectedIndexes ) )
-      {
-        layersToAdd.push_back( sourceModel->data( mProxyModel->mapToSource( selectedIndex ), QgsLayerMetadataResultsModel::Roles::Metadata ).value<QgsLayerMetadataProviderResult>() );
-      }
-      emit addLayers( layersToAdd );
-    }
-
-  } );
-
   connect( mMetadataTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]( const QItemSelection &, const QItemSelection & )
   {
-    mAddButton->setEnabled( mMetadataTableView->selectionModel()->hasSelection() );
+    emit enableButtons( mMetadataTableView->selectionModel()->hasSelection() );
   } );
-
-  QPushButton *closeButton = mButtonBox->button( QDialogButtonBox::Close );
-  closeButton->setToolTip( tr( "Close this dialog without adding any layer" ) );
-  connect( closeButton, &QPushButton::clicked, this, &QgsLayerMetadataSearchWidget::rejected );
 
   connect( mSearchFilterLineEdit, &QLineEdit::textEdited, mProxyModel, &QgsLayerMetadataResultsProxyModel::setFilterString );
   connect( mExtentFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayerMetadataSearchWidget::updateExtentFilter );
-
-  if ( mMapCanvas )
-  {
-    connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]
-    {
-      updateExtentFilter( mExtentFilterComboBox->currentIndex() );
-    } );
-  }
 
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, [ = ]( const QList<QgsMapLayer *> & )
   {
@@ -142,18 +107,30 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( const QgsMapCanvas *
   } );
 
   // Start loading metadata in the model
-  sourceModel->reloadAsync();
+  mSourceModel->reloadAsync();
   mIsLoading = true;
 
 }
 
+void QgsLayerMetadataSearchWidget::setMapCanvas( QgsMapCanvas *newMapCanvas )
+{
+  if ( newMapCanvas && mapCanvas() != newMapCanvas )
+  {
+    connect( newMapCanvas, &QgsMapCanvas::extentsChanged, this, [ = ]
+    {
+      updateExtentFilter( mExtentFilterComboBox->currentIndex() );
+    } );
+  }
+  QgsAbstractDataSourceWidget::setMapCanvas( newMapCanvas );
+}
+
 void QgsLayerMetadataSearchWidget::updateExtentFilter( int index )
 {
-  if ( index == 1 && mMapCanvas )
+  if ( index == 1 && mapCanvas() )
   {
-    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance()->transformContext() );
+    QgsCoordinateTransform ct( mapCanvas()->mapSettings().destinationCrs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance()->transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
-    mProxyModel->setFilterExtent( ct.transformBoundingBox( mMapCanvas->extent() ) );
+    mProxyModel->setFilterExtent( ct.transformBoundingBox( mapCanvas()->extent() ) );
   }
   else if ( index == 2 )
   {
@@ -166,4 +143,49 @@ void QgsLayerMetadataSearchWidget::updateExtentFilter( int index )
   {
     mProxyModel->setFilterExtent( QgsRectangle( ) );
   }
+}
+
+void QgsLayerMetadataSearchWidget::refresh()
+{
+  mSourceModel->reloadAsync();
+}
+
+void QgsLayerMetadataSearchWidget::addButtonClicked()
+{
+  const QModelIndexList &selectedIndexes { mMetadataTableView->selectionModel()->selectedRows() };
+  if ( ! selectedIndexes.isEmpty() )
+  {
+    for ( const auto &selectedIndex : std::as_const( selectedIndexes ) )
+    {
+      const QgsLayerMetadataProviderResult metadataResult { mSourceModel->data( mProxyModel->mapToSource( selectedIndex ), QgsLayerMetadataResultsModel::Roles::Metadata ).value<QgsLayerMetadataProviderResult>() };
+      switch ( metadataResult.layerType() )
+      {
+        case QgsMapLayerType::RasterLayer:
+        {
+          emit addRasterLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          break;
+        }
+        case QgsMapLayerType::VectorLayer:
+        {
+          emit addVectorLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+          break;
+        }
+        case QgsMapLayerType::MeshLayer:
+        {
+          emit addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
+        }
+        default:  // unsupported
+        {
+          // Ignore
+          break;
+        }
+      }
+    }
+  }
+}
+
+void QgsLayerMetadataSearchWidget::reset()
+{
+  mSearchFilterLineEdit->clear();
+  mExtentFilterComboBox->setCurrentIndex( 0 );
 }

@@ -121,10 +121,6 @@ Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
 Sets the metadata standard URI to ``standardUri``.
 %End
 
-    QIcon layerTypeIcon() const;
-%Docstring
-Returns the icon for the layer type.
-%End
 
 };
 
@@ -182,6 +178,8 @@ Layer metadata provider backend interface.
 %End
   public:
 
+    virtual ~QgsAbstractLayerMetadataProvider();
+
     virtual QString id() const = 0;
 %Docstring
 Returns the id of the layer metadata provider implementation, usually the name of the data provider
@@ -199,8 +197,6 @@ Searches for metadata optionally filtering by search string and geographic exten
 
 :return: a :py:class:`QgsLayerMetadataSearchResult` object with a list of metadata and errors
 %End
-
-    virtual ~QgsAbstractLayerMetadataProvider();
 
 };
 

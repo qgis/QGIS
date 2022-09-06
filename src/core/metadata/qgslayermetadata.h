@@ -173,11 +173,6 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
     QgsLayerMetadata() = default;
 
     /**
-     * Destructor.
-     */
-    ~QgsLayerMetadata( ) = default;
-
-    /**
      * Copy constructor for QgsLayerMetadataProviderResult from \a other.
      * \since QGIS 3.28
      */

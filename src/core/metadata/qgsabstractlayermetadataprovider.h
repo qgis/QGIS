@@ -142,10 +142,6 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
      */
     void setStandardUri( const QString &standardUri );
 
-    /**
-     * Returns the icon for the layer type.
-     */
-    QIcon layerTypeIcon() const;
 
   private:
 
@@ -223,6 +219,8 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
 
   public:
 
+    virtual ~QgsAbstractLayerMetadataProvider() = default;
+
     /**
      * Returns the id of the layer metadata provider implementation, usually the name of the data provider
      * but it may be another unique identifier.
@@ -238,8 +236,6 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
      * \returns a QgsLayerMetadataSearchResult object with a list of metadata and errors
      */
     virtual QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
-
-    virtual ~QgsAbstractLayerMetadataProvider() = default;
 
 };
 

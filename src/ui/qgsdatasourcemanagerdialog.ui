@@ -116,15 +116,6 @@
             <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
           </property>
          </item>
-         <item>
-          <property name="text">
-           <string>Metadata</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>
