@@ -2,7 +2,7 @@
 <g transform="translate(-1.438 30.744)">
 <path d="m32-9.453l28.938 73.826-29-29-29 29z" fill="param(fill)" stroke="param(outline)" stroke-width="3"/>
 <path d="m32-9.453l29 73.45-29-29-29 29z" fill="none" stroke="param(outline)" stroke-linecap="square"/>
-<text fill="param(fill)" font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="22.71" y="-10.854">
+<text fill="param(outline)" font-family="OPEN SANS" font-size="40" letter-spacing="0" line-height="125%" word-spacing="0" x="22.71" y="-10.854">
 <tspan font-family="Adobe Heiti Std R" font-size="26" x="22.71" y="-10.854">N</tspan>
 </text>
 </g>
