@@ -73,21 +73,29 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
 
     /**
      * Returns the character height of the character at the specified position (actually font metrics height, not individual character height).
+     *
+     * \since QGIS 3.28
      */
     double characterHeight( int position ) const { return mCharacterHeights[position]; }
 
     /**
      * Returns the descent of the character at the specified position.
+     *
+     * \since QGIS 3.28
      */
     double characterDescent( int position ) const { return mCharacterDescents[position]; }
 
     /**
      * Returns the maximum height of any character found in the text.
+     *
+     * \since QGIS 3.28
      */
     double maximumCharacterHeight() const { return mMaximumCharacterHeight; }
 
     /**
      * Returns the maximum descent of any character found in the text.
+     *
+     * \since QGIS 3.28
      */
     double maximumCharacterDescent() const { return mMaximumCharacterDescent; }
 
