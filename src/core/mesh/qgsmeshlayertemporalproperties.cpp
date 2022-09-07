@@ -34,7 +34,7 @@ QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDom
   temporalElement.setAttribute( QStringLiteral( "start-time-extent" ), mTimeExtent.begin().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
   temporalElement.setAttribute( QStringLiteral( "end-time-extent" ), mTimeExtent.end().toTimeSpec( Qt::UTC ).toString( Qt::ISODate ) );
   temporalElement.setAttribute( QStringLiteral( "matching-method" ), mMatchingMethod );
-  temporalElement.setAttribute( QStringLiteral( "auto-reload-from-provider" ), mIsAutoReloadFromProvider ? 1 : 0 );
+  temporalElement.setAttribute( QStringLiteral( "always-load-reference-time-from-source" ), mAlwaysLoadReferenceTimeFromSource ? 1 : 0 );
   element.appendChild( temporalElement );
 
   return element;
@@ -48,7 +48,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
   const bool active = temporalElement.attribute( QStringLiteral( "temporal-active" ) ).toInt();
   setIsActive( active );
 
-  mIsAutoReloadFromProvider = temporalElement.attribute( QStringLiteral( "auto-reload-from-provider" ) ).toInt();
+  mAlwaysLoadReferenceTimeFromSource = temporalElement.attribute( QStringLiteral( "always-load-reference-time-from-source" ) ).toInt();
 
   mReferenceTime = QDateTime::fromString( temporalElement.attribute( QStringLiteral( "reference-time" ) ), Qt::ISODate );
 
@@ -128,12 +128,12 @@ void QgsMeshLayerTemporalProperties::setIsValid( bool isValid )
   mIsValid = isValid;
 }
 
-bool QgsMeshLayerTemporalProperties::isAutoReloadFromProvider() const
+bool QgsMeshLayerTemporalProperties::alwaysLoadReferenceTimeFromSource() const
 {
-  return mIsAutoReloadFromProvider;
+  return mAlwaysLoadReferenceTimeFromSource;
 }
 
-void QgsMeshLayerTemporalProperties::setIsAutoReloadFromProvider( bool autoReloadFromProvider )
+void QgsMeshLayerTemporalProperties::setAlwaysLoadReferenceTimeFromSource( bool autoReloadFromProvider )
 {
-  mIsAutoReloadFromProvider = autoReloadFromProvider;
+  mAlwaysLoadReferenceTimeFromSource = autoReloadFromProvider;
 }

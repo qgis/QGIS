@@ -2060,7 +2060,7 @@ void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
 
   QDateTime referenceTime1 = temporalProperties->referenceTime();
   QgsDateTimeRange timeExtent1 = temporalProperties->timeExtent();
-  temporalProperties->setIsAutoReloadFromProvider( true );
+  temporalProperties->setAlwaysLoadReferenceTimeFromSource( true );
 
   QgsReadWriteContext readWriteContext;
   QDomDocument doc( QStringLiteral( "doc" ) );
