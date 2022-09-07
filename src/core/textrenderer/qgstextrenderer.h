@@ -283,12 +283,13 @@ class CORE_EXPORT QgsTextRenderer
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
+     * \param mode layout mode
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
     static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          Qgis::TextComponent part );
+                          Qgis::TextComponent part, Qgis::TextLayoutMode mode );
 
     /**
      * Draws a single component of rendered text using the specified settings.
@@ -308,7 +309,8 @@ class CORE_EXPORT QgsTextRenderer
     static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document,
                           const QgsTextDocumentMetrics &metrics,
                           QgsRenderContext &context, const QgsTextFormat &format,
-                          Qgis::TextComponent part );
+                          Qgis::TextComponent part,
+                          Qgis::TextLayoutMode mode );
 
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,

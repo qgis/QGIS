@@ -106,15 +106,15 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, Qgis::TextH
 
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background );
+    drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, Qgis::TextLayoutMode::Rectangle );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Buffer );
+    drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Buffer, Qgis::TextLayoutMode::Rectangle );
   }
 
-  drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text );
+  drawPart( rect, rotation, alignment, vAlignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Rectangle );
 }
 
 void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool )
@@ -131,15 +131,15 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizo
 
   if ( tmpFormat.background().enabled() )
   {
-    drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background );
+    drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Background, Qgis::TextLayoutMode::Point );
   }
 
   if ( tmpFormat.buffer().enabled() )
   {
-    drawPart( point, rotation, alignment, document, metrics,  context, tmpFormat, Qgis::TextComponent::Buffer );
+    drawPart( point, rotation, alignment, document, metrics,  context, tmpFormat, Qgis::TextComponent::Buffer, Qgis::TextLayoutMode::Point );
   }
 
-  drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text );
+  drawPart( point, rotation, alignment, document, metrics, context, tmpFormat, Qgis::TextComponent::Text, Qgis::TextLayoutMode::Point );
 }
 
 QgsTextFormat QgsTextRenderer::updateShadowPosition( const QgsTextFormat &format )
@@ -170,10 +170,10 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextH
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
-  drawPart( rect, rotation, alignment, Qgis::TextVerticalAlignment::Top, document, metrics, context, format, part );
+  drawPart( rect, rotation, alignment, Qgis::TextVerticalAlignment::Top, document, metrics, context, format, part, Qgis::TextLayoutMode::Rectangle );
 }
 
-void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part )
+void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, Qgis::TextVerticalAlignment vAlignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, Qgis::TextLayoutMode mode )
 {
   if ( !context.painter() )
   {
@@ -212,6 +212,18 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, Qgis::TextH
         component.center = rect.center();
       }
 
+      switch ( vAlignment )
+      {
+        case Qgis::TextVerticalAlignment::Top:
+          break;
+        case Qgis::TextVerticalAlignment::VerticalCenter:
+          component.origin.ry() += ( rect.height() - metrics.documentSize( mode ).height() ) / 2;
+          break;
+        case Qgis::TextVerticalAlignment::Bottom:
+          component.origin.ry() += ( rect.height() - metrics.documentSize( mode ).height() );
+          break;
+      }
+
       QgsTextRenderer::drawBackground( context, component, format, metrics, Qgis::TextLayoutMode::Rectangle );
 
       break;
@@ -240,10 +252,10 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHoriz
   const double fontScale = calculateScaleFactorForFormat( context, format );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, format, context, fontScale );
 
-  drawPart( origin, rotation, alignment, document, metrics, context, format, part );
+  drawPart( origin, rotation, alignment, document, metrics, context, format, part, Qgis::TextLayoutMode::Point );
 }
 
-void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponent part, Qgis::TextLayoutMode mode )
 {
   if ( !context.painter() )
   {
@@ -263,7 +275,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHoriz
       if ( !format.background().enabled() )
         return;
 
-      QgsTextRenderer::drawBackground( context, component, format, metrics, Qgis::TextLayoutMode::Point );
+      QgsTextRenderer::drawBackground( context, component, format, metrics, mode );
       break;
     }
 
@@ -280,7 +292,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, Qgis::TextHoriz
                         document,
                         metrics,
                         alignment, Qgis::TextVerticalAlignment::Top,
-                        Qgis::TextLayoutMode::Point );
+                        mode );
       break;
     }
   }
