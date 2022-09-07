@@ -111,23 +111,23 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
     font.setWeight( mFontWeight );
 #else
     if ( mFontWeight <= 150 )
-      newFont.setWeight( QFont::Thin );
+      font.setWeight( QFont::Thin );
     else if ( mFontWeight <= 250 )
-      newFont.setWeight( QFont::ExtraLight );
+      font.setWeight( QFont::ExtraLight );
     else if ( mFontWeight <= 350 )
-      newFont.setWeight( QFont::Light );
+      font.setWeight( QFont::Light );
     else if ( mFontWeight <= 450 )
-      newFont.setWeight( QFont::Normal );
+      font.setWeight( QFont::Normal );
     else if ( mFontWeight <= 550 )
-      newFont.setWeight( QFont::Medium );
+      font.setWeight( QFont::Medium );
     else if ( mFontWeight <= 650 )
-      newFont.setWeight( QFont::DemiBold );
+      font.setWeight( QFont::DemiBold );
     else if ( mFontWeight <= 750 )
-      newFont.setWeight( QFont::Bold );
+      font.setWeight( QFont::Bold );
     else if ( mFontWeight <= 850 )
-      newFont.setWeight( QFont::ExtraBold );
+      font.setWeight( QFont::ExtraBold );
     else
-      newFont.setWeight( QFont::Black );
+      font.setWeight( QFont::Black );
 #endif
 
     // depending on the font, platform, and the phase of the moon, we need to both set the font weight AND the style name
