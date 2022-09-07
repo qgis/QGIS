@@ -15,12 +15,14 @@
 
 #include "qgstextcharacterformat.h"
 #include "qgsrendercontext.h"
+#include "qgsfontutils.h"
 
 #include <QTextCharFormat>
 
 QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   : mTextColor( format.hasProperty( QTextFormat::ForegroundBrush ) ? format.foreground().color() : QColor() )
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
+  , mStyleName( format.font().styleName() )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
   , mFontFamily( format.hasProperty( QTextFormat::FontFamily ) ? format.fontFamily() : QString() )
@@ -93,43 +95,46 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
 
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderContext &context, const double scaleFactor ) const
 {
+  // important -- MUST set family first
+  if ( !mFontFamily.isEmpty() )
+    font.setFamily( mFontFamily );
+
+  if ( mFontPointSize != -1 )
+    font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, QgsUnitTypes::RenderPoints ) );
+
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   if ( mFontWeight != - 1 )
   {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     font.setWeight( mFontWeight );
-  }
 #else
-  if ( mFontWeight == - 1 )
-  {
-    // nothing
-  }
-  else if ( mFontWeight <= 150 )
-    font.setWeight( QFont::Thin );
-  else if ( mFontWeight <= 250 )
-    font.setWeight( QFont::ExtraLight );
-  else if ( mFontWeight <= 350 )
-    font.setWeight( QFont::Light );
-  else if ( mFontWeight <= 450 )
-    font.setWeight( QFont::Normal );
-  else if ( mFontWeight <= 550 )
-    font.setWeight( QFont::Medium );
-  else if ( mFontWeight <= 650 )
-    font.setWeight( QFont::DemiBold );
-  else if ( mFontWeight <= 750 )
-    font.setWeight( QFont::Bold );
-  else if ( mFontWeight <= 850 )
-    font.setWeight( QFont::ExtraBold );
-  else
-    font.setWeight( QFont::Black );
+    if ( mFontWeight <= 150 )
+      newFont.setWeight( QFont::Thin );
+    else if ( mFontWeight <= 250 )
+      newFont.setWeight( QFont::ExtraLight );
+    else if ( mFontWeight <= 350 )
+      newFont.setWeight( QFont::Light );
+    else if ( mFontWeight <= 450 )
+      newFont.setWeight( QFont::Normal );
+    else if ( mFontWeight <= 550 )
+      newFont.setWeight( QFont::Medium );
+    else if ( mFontWeight <= 650 )
+      newFont.setWeight( QFont::DemiBold );
+    else if ( mFontWeight <= 750 )
+      newFont.setWeight( QFont::Bold );
+    else if ( mFontWeight <= 850 )
+      newFont.setWeight( QFont::ExtraBold );
+    else
+      newFont.setWeight( QFont::Black );
 #endif
 
-  if ( !mFontFamily.isEmpty() )
-    font.setFamily( mFontFamily );
-  if ( mFontPointSize != -1 )
-    font.setPixelSize( scaleFactor * context.convertToPainterUnits( mFontPointSize, QgsUnitTypes::RenderPoints ) );
+    // depending on the font, platform, and the phase of the moon, we need to both set the font weight AND the style name
+    // in order to get correct rendering!
+    font.setStyleName( mStyleName );
+  }
+
   if ( mUnderline != BooleanValue::NotSet )
     font.setUnderline( mUnderline == QgsTextCharacterFormat::BooleanValue::SetTrue );
   if ( mOverline != BooleanValue::NotSet )

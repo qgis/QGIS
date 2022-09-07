@@ -209,6 +209,7 @@ class CORE_EXPORT QgsTextCharacterFormat
 
     QColor mTextColor;
     int mFontWeight = -1;
+    QString mStyleName;
     BooleanValue mItalic = BooleanValue::NotSet;
     double mFontPointSize = -1;
     QString mFontFamily;
