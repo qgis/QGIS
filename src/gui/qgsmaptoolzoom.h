@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     bool mDragging;
 
     //! Flag to indicate the user has canceled the current zoom operation
-    bool mCanceled;
+    bool mCanceled = false;
 
     QgsRubberBand *mRubberBand = nullptr;
 
