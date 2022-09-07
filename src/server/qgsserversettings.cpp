@@ -359,7 +359,7 @@ void QgsServerSettings::initSettings()
 
   const Setting sAllowedExtraSqlTokens = { QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
                                            QgsServerSettingsEnv::DEFAULT_VALUE,
-                                           QStringLiteral( "List of comma separated SQL tokens to be added to the list of allowed tokens that the services accespt when filtering features" ),
+                                           QStringLiteral( "List of comma separated SQL tokens to be added to the list of allowed tokens that the services accepts when filtering features" ),
                                            QStringLiteral( "/qgis/server_allowed_extra_sql_tokens" ),
                                            QVariant::String,
                                            QVariant( "" ),

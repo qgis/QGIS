@@ -323,7 +323,7 @@ Possible values are:
     QStringList allowedExtraSqlTokens() const;
 %Docstring
 Returns the list of strings that represent the allowed extra SQL tokens
-accepted as componenst of a feature filter.
+accepted as components of a feature filter.
 The default value is an empty string, the value can be changed by setting the environment
 variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
 
