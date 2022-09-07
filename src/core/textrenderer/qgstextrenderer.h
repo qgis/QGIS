@@ -234,6 +234,10 @@ class CORE_EXPORT QgsTextRenderer
     {
       //! Block to render
       QgsTextBlock block;
+
+      //! Index of block
+      int blockIndex = 0;
+
       //! Current origin point for painting (generally current painter rotation point)
       QPointF origin;
       //! Whether to translate the painter to supplied origin
@@ -315,6 +319,7 @@ class CORE_EXPORT QgsTextRenderer
     static double drawBuffer( QgsRenderContext &context,
                               const Component &component,
                               const QgsTextFormat &format,
+                              const QgsTextDocumentMetrics &metrics,
                               Qgis::TextLayoutMode mode );
 
     static void drawBackground( QgsRenderContext &context,
@@ -369,8 +374,8 @@ class CORE_EXPORT QgsTextRenderer
                                           Qgis::TextLayoutMode mode,
                                           const Component &component,
                                           const QgsTextDocument &document,
+                                          const QgsTextDocumentMetrics &metrics,
                                           double fontScale,
-                                          const QFont &baseFont,
                                           Qgis::TextHorizontalAlignment hAlignment,
                                           Qgis::TextVerticalAlignment vAlignment,
                                           double rotation );
