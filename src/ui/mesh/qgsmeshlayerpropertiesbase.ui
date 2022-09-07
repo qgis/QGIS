@@ -615,41 +615,34 @@
               <string>Layer Temporal Settings</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="2">
-               <widget class="QPushButton" name="mTemporalReloadButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>Reload from provider</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../../images/images.qrc">
-                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="label_6">
                 <property name="text">
                  <string>Start time</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Dataset matching method</string>
+              <item row="0" column="1">
+               <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
+                <property name="toolTip">
+                 <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1" colspan="2">
+              <item row="6" column="1" colspan="2">
+               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
+                <property name="toolTip">
+                 <string>Method for selection of temporal mesh dataset from a range time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1" colspan="2">
                <widget class="QDateTimeEdit" name="mTemporalDateTimeEnd">
                 <property name="enabled">
                  <bool>false</bool>
@@ -677,6 +670,13 @@
                 </property>
                </widget>
               </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Dataset matching method</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_3">
                 <property name="text">
@@ -684,34 +684,14 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="4" column="0">
                <widget class="QLabel" name="label_4">
                 <property name="text">
                  <string>End time</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="1" colspan="2">
-               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
-                <property name="toolTip">
-                 <string>Method for selection of temporal mesh dataset from a range time</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
-                <property name="toolTip">
-                 <string>Reference time used to render mesh dataset when using temporal range or temporal animation</string>
-                </property>
-                <property name="calendarPopup">
-                 <bool>true</bool>
-                </property>
-                <property name="timeSpec">
-                 <enum>Qt::UTC</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" colspan="2">
+              <item row="3" column="1" colspan="2">
                <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
                 <property name="enabled">
                  <bool>false</bool>
@@ -724,10 +704,30 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QCheckBox" name="mAutoReloadTemporalCheckBox">
+              <item row="0" column="2">
+               <widget class="QPushButton" name="mTemporalReloadButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Reload from provider</string>
+                </property>
                 <property name="text">
-                 <string>Automatic reload from provider</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QCheckBox" name="mAlwaysTimeFromSourceCheckBox">
+                <property name="text">
+                 <string>Always take reference time from data source</string>
                 </property>
                </widget>
               </item>
