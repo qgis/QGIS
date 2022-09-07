@@ -119,6 +119,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
 
     /**
      * Sets the \a document and document \a metrics for the label.
+     *
      * \see document()
      * \since QGIS 3.14
      */

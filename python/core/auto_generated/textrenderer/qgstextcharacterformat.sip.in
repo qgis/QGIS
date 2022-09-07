@@ -193,7 +193,7 @@ Sets whether the format has overline ``enabled``.
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying character formatting options which
-are applicable on a font level.
+are applicable on a font level when rendered in the given ``context``.
 
 The optional ``scaleFactor`` parameter can specify a font size scaling factor. It is recommended to set this to
 :py:class:`QgsTextRenderer`.FONT_WORKAROUND_SCALE and then manually calculations

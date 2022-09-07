@@ -35,8 +35,6 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   // for absolute line heights
   const double lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
 
-  // TODO orientation handling
-
   double width = 0;
   double heightLabelMode = 0;
   double heightPointRectMode = 0;
