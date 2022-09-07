@@ -2172,7 +2172,8 @@ namespace QgsWms
            || tokenIt->compare( QLatin1String( "LIKE" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "ILIKE" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "DMETAPHONE" ), Qt::CaseInsensitive ) == 0
-           || tokenIt->compare( QLatin1String( "SOUNDEX" ), Qt::CaseInsensitive ) == 0 )
+           || tokenIt->compare( QLatin1String( "SOUNDEX" ), Qt::CaseInsensitive ) == 0
+           || mContext.settings().allowedExtraSqlTokens().contains( *tokenIt, Qt::CaseSensitivity::CaseInsensitive ) )
       {
         continue;
       }
@@ -3127,6 +3128,13 @@ namespace QgsWms
 
   void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
+
+    // quick exit if no filters are set
+    if ( filters.isEmpty() )
+    {
+      return;
+    }
+
     if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -3161,9 +3169,11 @@ namespace QgsWms
                                         " Note: Text strings have to be enclosed in single or double quotes."
                                         " A space between each word / special character is mandatory."
                                         " Allowed Keywords and special characters are "
-                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
                                         " Not allowed are semicolons in the filter expression." ).arg(
-                                          filter.mFilter ) );
+                                          filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ?
+                                          QString() :
+                                          mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' ) ) );
           }
 
           QString newSubsetString = filter.mFilter;

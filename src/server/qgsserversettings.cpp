@@ -357,6 +357,16 @@ void QgsServerSettings::initSettings()
                                         };
   mSettings[ sProjectCacheStrategy.envVar ] = sProjectCacheStrategy;
 
+  const Setting sAllowedExtraSqlTokens = { QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
+                                           QgsServerSettingsEnv::DEFAULT_VALUE,
+                                           QStringLiteral( "List of comma separated SQL tokens to be added to the list of allowed tokens that the services accespt when filtering features" ),
+                                           QStringLiteral( "/qgis/server_allowed_extra_sql_tokens" ),
+                                           QVariant::String,
+                                           QVariant( "" ),
+                                           QVariant()
+                                         };
+  mSettings[ sAllowedExtraSqlTokens.envVar ] = sAllowedExtraSqlTokens;
+
 }
 
 void QgsServerSettings::load()
@@ -656,5 +666,10 @@ QString QgsServerSettings::projectCacheStrategy() const
     result = QStringLiteral( "filesystem" );
   }
   return result;
+}
+
+QStringList QgsServerSettings::allowedExtraSqlTokens() const
+{
+  return value( QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS ).toString().split( ',' );
 }
 

@@ -136,6 +136,13 @@ Returns the service registry
 %End
 
 
+    virtual void reloadSettings() = 0;
+%Docstring
+Reloads the server settings re-reading the configuration.
+
+.. versionadded:: 3.28
+%End
+
   private:
     QgsServerInterface();
 };
