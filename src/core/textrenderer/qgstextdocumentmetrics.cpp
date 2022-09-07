@@ -149,13 +149,15 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   res.mDocumentSizePointRectMode = QSizeF( width, heightPointRectMode );
 
   // adjust baselines
-
-  const double labelModeBaselineAdjust = res.mBaselineOffsetsLabelMode.constLast() + res.mLastLineAscentOffset;
-  const double pointModeBaselineAdjust = res.mBaselineOffsetsPointMode.constLast();
-  for ( int i = 0; i < blockSize; ++i )
+  if ( !res.mBaselineOffsetsLabelMode.isEmpty() )
   {
-    res.mBaselineOffsetsLabelMode[i] -= labelModeBaselineAdjust;
-    res.mBaselineOffsetsPointMode[i] -= pointModeBaselineAdjust;
+    const double labelModeBaselineAdjust = res.mBaselineOffsetsLabelMode.constLast() + res.mLastLineAscentOffset;
+    const double pointModeBaselineAdjust = res.mBaselineOffsetsPointMode.constLast();
+    for ( int i = 0; i < blockSize; ++i )
+    {
+      res.mBaselineOffsetsLabelMode[i] -= labelModeBaselineAdjust;
+      res.mBaselineOffsetsPointMode[i] -= pointModeBaselineAdjust;
+    }
   }
 
   return res;
