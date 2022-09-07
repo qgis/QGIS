@@ -2018,7 +2018,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   QgsTextDocument doc;
   QgsTextDocumentMetrics documentMetrics;
-  if ( format().allowHtmlFormatting() )
+  if ( format().allowHtmlFormatting() && !labelText.isEmpty() )
   {
     doc = QgsTextDocument::fromHtml( QStringList() << labelText );
     // also applies the line split to doc and calculates document metrics!
