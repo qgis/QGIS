@@ -3129,12 +3129,6 @@ namespace QgsWms
   void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
 
-    // quick exit if no filters are set
-    if ( filters.isEmpty() )
-    {
-      return;
-    }
-
     if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
