@@ -24,6 +24,9 @@
     "expression": "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))",
     "returns": "'Polygon ((3 2, 5 8, 4 1, 3 2))'"
   }, {
+    "expression": "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))'), 'linework'))",
+    "returns": "'GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))'"
+  }, {
     "expression": "make_valid(geom_from_wkt('LINESTRING(0 0)'))",
     "returns": " &lt;empty geometry&gt;"
   }],
