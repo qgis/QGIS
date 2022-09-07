@@ -307,6 +307,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param part component of text to draw. Note that Shadow parts cannot be drawn
      * individually and instead are drawn with their associated part (e.g., drawn together
      * with the text or background parts)
+     * \param mode layout mode
      * \note Not available in Python bindings
      * \since QGIS 3.14
      */
