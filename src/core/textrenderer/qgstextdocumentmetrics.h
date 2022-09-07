@@ -55,7 +55,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
     /**
      * Returns the overall size of the document.
      */
-    QSizeF documentSize( Qgis::TextLayoutMode mode ) const;
+    QSizeF documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const;
 
     /**
      * Returns the width of the block at the specified index.
@@ -73,6 +73,21 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
+     * Returns the vertical orientation x offset for the specified block.
+     */
+    double verticalOrientationXOffset( int blockIndex ) const;
+
+    /**
+     * Returns the maximum character width for the specified block.
+     */
+    double blockMaximumCharacterWidth( int blockIndex ) const;
+
+    /**
+     * Returns the maximum descent encountered in the specified block.
+     */
+    double blockMaximumDescent( int blockIndex ) const;
+
+    /**
      * Returns the calculated font for the fragment at the specified block and fragment indices.
      */
     QFont fragmentFont( int blockIndex, int fragmentIndex ) const;
@@ -86,6 +101,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
     QSizeF mDocumentSizeLabelMode;
     QSizeF mDocumentSizePointRectMode;
+    QSizeF mDocumentSizeVerticalOrientation;
 
     QList < QList< QFont > > mFragmentFonts;
     QList< double > mBlockWidths;
@@ -93,6 +109,9 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< double > mBaselineOffsetsLabelMode;
     QList< double > mBaselineOffsetsPointMode;
     QList< double > mBaselineOffsetsRectMode;
+    QList< double > mVerticalOrientationXOffsets;
+    QList< double > mBlockMaxDescent;
+    QList< double > mBlockMaxCharacterWidth;
     double mFirstLineAscentOffset = 0;
     double mLastLineAscentOffset = 0;
 

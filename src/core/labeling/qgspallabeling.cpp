@@ -1628,7 +1628,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
     document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
 
     *documentMetrics = QgsTextDocumentMetrics::calculateMetrics( *document, mFormat, *rc );
-    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling );
+    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation );
     w = size.width();
     h = size.height();
   }

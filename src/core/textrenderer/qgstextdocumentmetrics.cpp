@@ -40,13 +40,16 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   double width = 0;
   double heightLabelMode = 0;
   double heightPointRectMode = 0;
-  int i = 0;
   const int blockSize = document.size();
   res.mFragmentFonts.reserve( blockSize );
   double currentLabelBaseline = 0;
   double currentPointBaseline = 0;
   double currentRectBaseline = 0;
   double lastLineLeading = 0;
+
+  double heightVerticalOrientation = 0;
+
+  QVector < double > blockVerticalLineSpacing;
 
   for ( int blockIndex = 0; blockIndex < blockSize; blockIndex++ )
   {
@@ -55,12 +58,14 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     double blockWidth = 0;
     double blockHeightUsingAscentDescent = 0;
     double blockHeightUsingLineSpacing = 0;
+    double blockHeightVerticalOrientation = 0;
     const int fragmentSize = block.size();
 
     double maxBlockAscent = 0;
     double maxBlockDescent = 0;
     double maxLineSpacing = 0;
     double maxBlockLeading = 0;
+    double maxBlockMaxWidth = 0;
 
     QList< QFont > fragmentFonts;
     fragmentFonts.reserve( fragmentSize );
@@ -81,6 +86,7 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       blockHeightUsingLineSpacing = std::max( blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
       maxBlockAscent = std::max( maxBlockAscent, fm.ascent() / scaleFactor );
       maxBlockDescent = std::max( maxBlockDescent, fm.descent() / scaleFactor );
+      maxBlockMaxWidth = std::max( maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
 
       if ( ( fm.lineSpacing() / scaleFactor ) > maxLineSpacing )
       {
@@ -89,6 +95,10 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
       }
 
       fragmentFonts << updatedFont;
+
+      const double verticalOrientationFragmentHeight = fragmentIndex == 0 ? ( fm.ascent() / scaleFactor * fragment.text().size() + ( fragment.text().size() - 1 ) * updatedFont.letterSpacing() / scaleFactor )
+          : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
+      blockHeightVerticalOrientation += verticalOrientationFragmentHeight;
     }
 
     if ( blockIndex == 0 )
@@ -128,15 +138,19 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
         res.mLastLineAscentOffset = 0.25 * maxBlockAscent;
     }
 
+    blockVerticalLineSpacing << ( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( maxBlockMaxWidth * format.lineHeight() ) : lineHeightPainterUnits );
+
     res.mBlockHeights << blockHeightUsingLineSpacing;
 
     width = std::max( width, blockWidth );
+    heightVerticalOrientation = std::max( heightVerticalOrientation, blockHeightVerticalOrientation );
     res.mBlockWidths << blockWidth;
     res.mFragmentFonts << fragmentFonts;
     res.mBaselineOffsetsLabelMode << currentLabelBaseline;
     res.mBaselineOffsetsPointMode << currentPointBaseline;
     res.mBaselineOffsetsRectMode << currentRectBaseline;
-    i++;
+    res.mBlockMaxDescent << maxBlockDescent;
+    res.mBlockMaxCharacterWidth << maxBlockMaxWidth;
 
     if ( blockIndex > 0 )
       lastLineLeading = maxBlockLeading;
@@ -160,20 +174,57 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     }
   }
 
+  if ( !res.mBlockMaxCharacterWidth.isEmpty() )
+  {
+    QList< double > adjustedRightToLeftXOffsets;
+    double currentOffset = 0;
+    const int size = res.mBlockMaxCharacterWidth.size();
+
+    double widthVerticalOrientation = 0;
+    for ( int i = 0; i < size; ++i )
+    {
+      const double rightToLeftBlockMaxCharacterWidth = res.mBlockMaxCharacterWidth[size - 1 - i ];
+      const double rightToLeftLineSpacing = blockVerticalLineSpacing[ size - 1 - i ];
+
+      adjustedRightToLeftXOffsets << currentOffset;
+      currentOffset += rightToLeftLineSpacing;
+
+      if ( i == size - 1 )
+        widthVerticalOrientation += rightToLeftBlockMaxCharacterWidth;
+      else
+        widthVerticalOrientation += rightToLeftLineSpacing;
+    }
+    std::reverse( adjustedRightToLeftXOffsets.begin(), adjustedRightToLeftXOffsets.end() );
+    res.mVerticalOrientationXOffsets = adjustedRightToLeftXOffsets;
+
+    res.mDocumentSizeVerticalOrientation = QSizeF( widthVerticalOrientation, heightVerticalOrientation );
+  }
+
   return res;
 }
 
-QSizeF QgsTextDocumentMetrics::documentSize( Qgis::TextLayoutMode mode ) const
+QSizeF QgsTextDocumentMetrics::documentSize( Qgis::TextLayoutMode mode, Qgis::TextOrientation orientation ) const
 {
-  switch ( mode )
+  switch ( orientation )
   {
-    case Qgis::TextLayoutMode::Rectangle:
-    case Qgis::TextLayoutMode::Point:
-      return mDocumentSizePointRectMode;
+    case Qgis::TextOrientation::Horizontal:
+      switch ( mode )
+      {
+        case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::Point:
+          return mDocumentSizePointRectMode;
 
-    case Qgis::TextLayoutMode::Labeling:
-      return mDocumentSizeLabelMode;
+        case Qgis::TextLayoutMode::Labeling:
+          return mDocumentSizeLabelMode;
+      };
+      BUILTIN_UNREACHABLE
+
+    case Qgis::TextOrientation::Vertical:
+      return mDocumentSizeVerticalOrientation;
+    case Qgis::TextOrientation::RotationBased:
+      return QSizeF(); // label mode only
   }
+
   BUILTIN_UNREACHABLE
 }
 
@@ -199,6 +250,21 @@ double QgsTextDocumentMetrics::baselineOffset( int blockIndex, Qgis::TextLayoutM
       return mBaselineOffsetsLabelMode.value( blockIndex );
   }
   BUILTIN_UNREACHABLE
+}
+
+double QgsTextDocumentMetrics::verticalOrientationXOffset( int blockIndex ) const
+{
+  return mVerticalOrientationXOffsets.value( blockIndex );
+}
+
+double QgsTextDocumentMetrics::blockMaximumCharacterWidth( int blockIndex ) const
+{
+  return mBlockMaxCharacterWidth.value( blockIndex );
+}
+
+double QgsTextDocumentMetrics::blockMaximumDescent( int blockIndex ) const
+{
+  return mBlockMaxDescent.value( blockIndex );
 }
 
 QFont QgsTextDocumentMetrics::fragmentFont( int blockIndex, int fragmentIndex ) const
