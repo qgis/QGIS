@@ -807,6 +807,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "like 4" ) << "'hello' like '%LO'" << false << QVariant( 0 );
       QTest::newRow( "like 5" ) << "'QGIS' like '%G%'" << false << QVariant( 1 );
       QTest::newRow( "like 6" ) << "'[testing]' like '[testing%'" << false << QVariant( 1 );
+      QTest::newRow( "like 7" ) << "'hello\nworld' like '%world%'" << false << QVariant( 1 );
       QTest::newRow( "ilike" ) << "'hello' ilike '%LO'" << false << QVariant( 1 );
       QTest::newRow( "ilike with dot" ) << "'QGIS .123' ilike 'qgis .123'" << false << QVariant( 1 );
       // the \\\\ is like \\ in the interface
