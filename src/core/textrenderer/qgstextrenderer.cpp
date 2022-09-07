@@ -755,7 +755,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   const double scaleFactor = calculateScaleFactorForFormat( context, format );
 
   bool isNullSize = false;
-  const QFont baseFont = format.scaledFont( context, scaleFactor, &isNullSize );
+  format.scaledFont( context, scaleFactor, &isNullSize );
   if ( isNullSize )
     return 0;
 
@@ -1338,7 +1338,7 @@ void QgsTextRenderer::drawTextInternal( Qgis::TextComponent drawType,
   }
 
   bool isNullSize = false;
-  const QFont baseFont = format.scaledFont( context, fontScale, &isNullSize );
+  format.scaledFont( context, fontScale, &isNullSize );
   if ( isNullSize )
     return;
 
