@@ -105,7 +105,6 @@
 %Include auto_generated/qgslayermetadatasearchwidget.sip
 %Include auto_generated/qgslayermetadataresultsmodel.sip
 %Include auto_generated/qgslayermetadataresultsproxymodel.sip
-%Include auto_generated/qgslayermetadatasourceselectprovider.sip
 %Include auto_generated/qgslegendfilterbutton.sip
 %Include auto_generated/qgslegendpatchshapebutton.sip
 %Include auto_generated/qgslegendpatchshapewidget.sip

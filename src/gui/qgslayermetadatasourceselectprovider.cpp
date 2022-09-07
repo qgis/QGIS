@@ -31,7 +31,7 @@ QString QgsLayerMetadataSourceSelectProvider::providerKey() const
 
 QString QgsLayerMetadataSourceSelectProvider::text() const
 {
-  return QObject::tr( "Layer Metadata" );
+  return QObject::tr( "Metadata Search" );
 }
 
 QIcon QgsLayerMetadataSourceSelectProvider::icon() const

@@ -19,10 +19,14 @@
 #include "qgssourceselectprovider.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
+
 /**
  * \ingroup gui
  * \brief Source select provider for layer metadata.
  *
+ * \note Not available in Python bindings
  * \since QGIS 3.28
  */
 class GUI_EXPORT QgsLayerMetadataSourceSelectProvider : public QgsSourceSelectProvider
