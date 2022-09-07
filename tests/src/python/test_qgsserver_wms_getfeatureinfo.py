@@ -44,7 +44,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
     def tearDown(self):
         super().tearDown()
-        os.environ.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', '')
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', '')
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
@@ -919,7 +919,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
 
         self.assertEqual(res.statusCode(), 403)
 
-        os.environ.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE')
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE')
         self.server.serverInterface().reloadSettings()
 
         req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
@@ -928,7 +928,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         j_body = json.loads(bytes(res.body()).decode())
         self.assertEqual(len(j_body['features']), 2)
 
-        os.environ.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', '')
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', '')
         self.server.serverInterface().reloadSettings()
 
         req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
@@ -939,7 +939,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
         self.assertEqual(res.statusCode(), 403)
 
         # Multiple filters
-        os.environ.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE,LowEr')
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE,LowEr')
         self.server.serverInterface().reloadSettings()
         req_params['FILTER'] = 'layer4:LOWER ( REPLACE ( "utf8nameè" , \'three\' , \'THREE\' ) ) = \'three èé↓\''
 
