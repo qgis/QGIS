@@ -219,6 +219,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * - links_filter( links, key, value ): returns filtered links from a link list
      * - content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
      * - nl2br( text ): returns the input text with all newlines replaced by "<br>" tags
+     * - starts_with( string, prefix ): returns true if a string begins with the provided string prefix, false otherwise
      *
      * \note not available in Python bindings
      */
@@ -307,6 +308,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * - links_filter( links, key, value ): returns filtered links from a link list
      * - content_type_name( content_type ): returns a short name from a content type for example "text/html" will return "HTML"
      * - nl2br( text ): returns the input text with all newlines replaced by "<br>" tags
+     * - starts_with( string, prefix ): returns true if a string begins with the provided string prefix, false otherwise
      *
      */
     void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const SIP_THROW( QgsServerApiBadRequestException );
