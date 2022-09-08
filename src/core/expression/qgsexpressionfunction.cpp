@@ -286,8 +286,28 @@ static QVariant fcnGetVariable( const QVariantList &values, const QgsExpressionC
   if ( !context )
     return QVariant();
 
-  QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  return context->variable( name );
+  const QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  if ( name == QLatin1String( "feature" ) )
+  {
+    return context->hasFeature() ? QVariant::fromValue( context->feature() ) : QVariant();
+  }
+  else if ( name == QLatin1String( "id" ) )
+  {
+    return context->hasFeature() ? QVariant::fromValue( context->feature().id() ) : QVariant();
+  }
+  else if ( name == QLatin1String( "geometry" ) )
+  {
+    if ( !context->hasFeature() )
+      return QVariant();
+
+    const QgsFeature feature = context->feature();
+    return feature.hasGeometry() ? QVariant::fromValue( feature.geometry() ) : QVariant();
+  }
+  else
+  {
+    return context->variable( name );
+  }
 }
 
 static QVariant fcnEvalTemplate( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -8383,7 +8403,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         if ( !argNode->isStatic( parent, context ) )
           return false;
 
-        QString varName = argNode->eval( parent, context ).toString();
+        const QString varName = argNode->eval( parent, context ).toString();
+        if ( varName == QLatin1String( "feature" ) || varName == QLatin1String( "id" ) || varName == QLatin1String( "geometry" ) )
+          return false;
 
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         return scope ? scope->isStatic( varName ) : false;

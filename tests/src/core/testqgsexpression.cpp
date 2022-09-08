@@ -2298,20 +2298,56 @@ class TestQgsExpression: public QObject
     void eval_feature_id()
     {
       QgsFeature f( 100 );
+      // older form
       QgsExpression exp( QStringLiteral( "$id * 2" ) );
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
       QVariant v = exp.evaluate( &context );
+      QCOMPARE( v.toInt(), 200 );
+
+      // newer form
+      QgsExpression exp2( QStringLiteral( "@id * 2" ) );
+      v = exp.evaluate( &context );
       QCOMPARE( v.toInt(), 200 );
     }
 
     void eval_current_feature()
     {
       QgsFeature f( 100 );
+      // older form
       QgsExpression exp( QStringLiteral( "$currentfeature" ) );
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, QgsFields() );
       QVariant v = exp.evaluate( &context );
       QgsFeature evalFeature = v.value<QgsFeature>();
       QCOMPARE( evalFeature.id(), f.id() );
+
+      // newer form
+      QgsExpression exp2( QStringLiteral( "@feature" ) );
+      v = exp2.evaluate( &context );
+      evalFeature = v.value<QgsFeature>();
+      QCOMPARE( evalFeature.id(), f.id() );
+    }
+
+    void eval_current_geometry()
+    {
+      QgsFeature featureWithGeometry( 100 );
+      featureWithGeometry.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 1, 2 ) ) );
+      QgsFeature featureWithNoGeometry( 100 );
+
+      // older form
+      QgsExpression exp( QStringLiteral( "geom_to_wkt($geometry)" ) );
+      QgsExpressionContext contextWithGeometry = QgsExpressionContextUtils::createFeatureBasedContext( featureWithGeometry, QgsFields() );
+      QgsExpressionContext contextWithNoGeometry = QgsExpressionContextUtils::createFeatureBasedContext( featureWithNoGeometry, QgsFields() );
+      QVariant v = exp.evaluate( &contextWithGeometry );
+      QCOMPARE( v.toString(), QStringLiteral( "Point (1 2)" ) );
+      v = exp.evaluate( &contextWithNoGeometry );
+      QVERIFY( v.isNull() );
+
+      // newer form
+      QgsExpression exp2( QStringLiteral( "geom_to_wkt(@geometry)" ) );
+      v = exp2.evaluate( &contextWithGeometry );
+      QCOMPARE( v.toString(), QStringLiteral( "Point (1 2)" ) );
+      v = exp2.evaluate( &contextWithNoGeometry );
+      QVERIFY( v.isNull() );
     }
 
     void eval_feature_attribute()

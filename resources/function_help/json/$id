@@ -2,7 +2,7 @@
   "name": "$id",
   "type": "function",
   "groups": ["Record and Attributes"],
-  "description": "Returns the feature id of the current row.",
+  "description": "Returns the feature id of the current row. <b>WARNING: This function is deprecated. It is recommended to use the replacement @id variable instead.</b>",
   "examples": [{
     "expression": "$id",
     "returns": "42"

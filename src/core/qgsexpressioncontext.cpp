@@ -119,6 +119,14 @@ QVariant QgsExpressionContextScope::variable( const QString &name ) const
 QStringList QgsExpressionContextScope::variableNames() const
 {
   QStringList names = mVariables.keys();
+
+  if ( hasFeature() )
+  {
+    names.append( QStringLiteral( "feature" ) );
+    names.append( QStringLiteral( "id" ) );
+    names.append( QStringLiteral( "geometry" ) );
+  }
+
   return names;
 }
 
