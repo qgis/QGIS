@@ -27,6 +27,10 @@ class TestQgsDataSourceUri: public QObject
   private slots:
     void checkparser();
     void checkparser_data();
+    void checkSetConnection();
+    void checkSetConnection_data();
+    void checkSetConnectionService();
+    void checkSetConnectionService_data();
     void checkAuthParams();
     void checkParameterKeys();
 };
@@ -237,6 +241,113 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.sslMode(), sslmode );
   QCOMPARE( ds.sql(), sql );
   QCOMPARE( ds.param( "myparam" ), myparam );
+}
+
+void TestQgsDataSourceUri::checkSetConnection_data()
+{
+  QTest::addColumn<QString>( "host" );
+  QTest::addColumn<QString>( "port" );
+  QTest::addColumn<QString>( "dbname" );
+  QTest::addColumn<QString>( "user" );
+  QTest::addColumn<QString>( "password" );
+  QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
+  QTest::addColumn<QString>( "authcfg" );
+
+  QTest::newRow( "simple" )
+      << "myhost" // host
+      << "5432" // port
+      << "mydb" // dbname
+      << "myname" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // authcfg
+      ;
+
+  QTest::newRow( "authcfg" )
+      << "myhost" // host
+      << "5432" // port
+      << "" // dbname
+      << "" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "myauthcfg" // authcfg
+      ;
+}
+
+void TestQgsDataSourceUri::checkSetConnection()
+{
+  QFETCH( QString, host );
+  QFETCH( QString, port );
+  QFETCH( QString, dbname );
+  QFETCH( QString, user );
+  QFETCH( QString, password );
+  QFETCH( QgsDataSourceUri::SslMode, sslmode );
+  QFETCH( QString, authcfg );
+
+  QgsDataSourceUri uri;
+  if ( authcfg.isEmpty() )
+    uri.setConnection( host, port, dbname, user, password, sslmode );
+  else
+    uri.setConnection( host, port, dbname, user, password, sslmode, authcfg );
+
+  QCOMPARE( uri.host(), host );
+  QCOMPARE( uri.port(), port );
+  QCOMPARE( uri.database(), dbname );
+  QCOMPARE( uri.username(), user );
+  QCOMPARE( uri.password(), password );
+  QCOMPARE( uri.sslMode(), sslmode );
+  QCOMPARE( uri.authConfigId(), authcfg );
+}
+
+void TestQgsDataSourceUri::checkSetConnectionService_data()
+{
+  QTest::addColumn<QString>( "service" );
+  QTest::addColumn<QString>( "dbname" );
+  QTest::addColumn<QString>( "user" );
+  QTest::addColumn<QString>( "password" );
+  QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
+  QTest::addColumn<QString>( "authcfg" );
+
+  QTest::newRow( "simple" )
+      << "myservice" // service
+      << "mydb" // dbname
+      << "myname" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // authcfg
+      ;
+
+  QTest::newRow( "authcfg" )
+      << "myservice" // service
+      << "" // dbname
+      << "" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "myauthcfg" // authcfg
+      ;
+}
+
+void TestQgsDataSourceUri::checkSetConnectionService()
+{
+  QFETCH( QString, service );
+  QFETCH( QString, dbname );
+  QFETCH( QString, user );
+  QFETCH( QString, password );
+  QFETCH( QgsDataSourceUri::SslMode, sslmode );
+  QFETCH( QString, authcfg );
+
+  QgsDataSourceUri uri;
+  if ( authcfg.isEmpty() )
+    uri.setConnection( service, dbname, user, password, sslmode );
+  else
+    uri.setConnection( service, dbname, user, password, sslmode, authcfg );
+
+  QCOMPARE( uri.service(), service );
+  QCOMPARE( uri.database(), dbname );
+  QCOMPARE( uri.username(), user );
+  QCOMPARE( uri.password(), password );
+  QCOMPARE( uri.sslMode(), sslmode );
+  QCOMPARE( uri.authConfigId(), authcfg );
 }
 
 void TestQgsDataSourceUri::checkAuthParams()
