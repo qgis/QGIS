@@ -19,7 +19,6 @@
 
 #include "qgsexpressiontreeview.h"
 #include "qgis.h"
-#include "qgsfieldformatterregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgssettings.h"
@@ -463,9 +462,30 @@ void QgsExpressionTreeView::loadFieldNames()
   {
     QgsExpressionItem *node = mExpressionGroups.value( QStringLiteral( "Fields and Values" ) );
     node->removeRows( 0, node->rowCount() );
-    // Re-add NULL
-    // use -1 as sort order here -- NULL should always show before the field list
+    // Re-add NULL and feature variables
+    // use -1 as sort order here -- NULL and feature variables should always show before the field list
     registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ), QString(), QgsExpressionItem::ExpressionNode, false, -1 );
+  }
+
+  if ( mLayer )
+  {
+    // Add feature variables to record and attributes group (and highlighted items)
+
+    const QString currentFeatureHelp = formatVariableHelp( QStringLiteral( "feature" ), QgsExpression::variableHelpText( QStringLiteral( "feature" ) ), false, QVariant() );
+    const QString currentFeatureIdHelp = formatVariableHelp( QStringLiteral( "id" ), QgsExpression::variableHelpText( QStringLiteral( "id" ) ), false, QVariant() );
+    const QString currentGeometryHelp = formatVariableHelp( QStringLiteral( "geometry" ), QgsExpression::variableHelpText( QStringLiteral( "geometry" ) ), false, QVariant() );
+
+    registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode, false, -1 );
+    registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode, false, -1 );
+    registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, false, -1 );
+
+    registerItem( tr( "Variables" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode );
+    registerItem( tr( "Variables" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode );
+    registerItem( tr( "Variables" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, false );
+
+    registerItem( tr( "Record and Attributes" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode, true, -1 );
+    registerItem( tr( "Record and Attributes" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode, true, -1 );
+    registerItem( tr( "Record and Attributes" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, true, -1 );
   }
 
   // this can happen if fields are manually set
