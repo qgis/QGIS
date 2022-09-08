@@ -64,7 +64,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
 
     /**
      * Constructs the factory
-     * \note since QGIS 3.28 the context doesn't take ownership over the passed symbol \a symbol
+     * The factory takes ownership over the passed \a symbol
      */
     QgsPointCloudLayerChunkLoaderFactory( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex *pc, QgsPointCloud3DSymbol *symbol,
                                           double zValueScale, double zValueOffset, int pointBudget );
@@ -77,7 +77,7 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     const Qgs3DMapSettings &mMap;
     QgsCoordinateTransform mCoordinateTransform;
     QgsPointCloudIndex *mPointCloudIndex;
-    QgsPointCloud3DSymbol *mSymbol = nullptr;
+    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
     int mPointBudget = 1000000;
@@ -101,9 +101,9 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
 
     /**
      * Constructs the loader
-     * \note since QGIS 3.28 the context doesn't take ownership over the passed symbol \a symbol
+     * QgsPointCloudLayerChunkLoader takes ownership over symbol
      */
-    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, QgsPointCloud3DSymbol *symbol,
+    QgsPointCloudLayerChunkLoader( const QgsPointCloudLayerChunkLoaderFactory *factory, QgsChunkNode *node, std::unique_ptr<QgsPointCloud3DSymbol> symbol,
                                    const QgsCoordinateTransform &coordinateTransform, double zValueScale, double zValueOffset );
     ~QgsPointCloudLayerChunkLoader() override;
 

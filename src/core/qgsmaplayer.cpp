@@ -2116,12 +2116,17 @@ void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
   }
   else
   {
-    bool triggerSceneUpdate = m3DRenderer->updateCurrentRenderer( renderer );
+    QMap<QString, QVariant> changedAttributes;
+    bool triggerSceneUpdate = m3DRenderer->updateCurrentRenderer( renderer, changedAttributes );
     if ( triggerSceneUpdate )
     {
       emit renderer3DChanged();
       emit repaintRequested();
       trigger3DUpdate();
+    }
+    else
+    {
+      emit renderer3DUpdated( changedAttributes );
     }
     delete renderer;
   }

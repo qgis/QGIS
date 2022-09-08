@@ -113,7 +113,7 @@ Checks whether the current renderer supports being updated from ``renderer``
 .. versionadded:: 3.28
 %End
 
-    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer );
+    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer, QMap<QString, QVariant> &updatedAttributes );
 
 %Docstring
 Updates the current renderer to reflect the same rendering style as ``renderer``

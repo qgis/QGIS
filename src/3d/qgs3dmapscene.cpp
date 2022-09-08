@@ -716,6 +716,16 @@ void Qgs3DMapScene::onLayerRenderer3DChanged()
   addLayerEntity( layer );
 }
 
+void Qgs3DMapScene::onLayerRenderer3DUpdated( QMap<QString, QVariant> updatedParameters )
+{
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
+  Q_ASSERT( layer );
+
+  Qt3DCore::QEntity *entity = mLayerEntities.value( layer, nullptr );
+
+  updateLayerEntity( entity, updatedParameters );
+}
+
 void Qgs3DMapScene::onLayersChanged()
 {
   QSet<QgsMapLayer *> layersBefore = qgis::listToSet( mLayerEntities.keys() );
@@ -862,6 +872,7 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     connect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     connect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+    connect( pclayer, &QgsPointCloudLayer::renderer3DUpdated, this, &Qgs3DMapScene::onLayerRenderer3DUpdated );
   }
 }
 
@@ -897,6 +908,28 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
     disconnect( pclayer, &QgsPointCloudLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
     disconnect( pclayer, &QgsPointCloudLayer::subsetStringChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+}
+
+void Qgs3DMapScene::updateLayerEntity( Qt3DCore::QEntity *layerEntity, QMap<QString, QVariant> &updatedParameters )
+{
+  for ( Qt3DRender::QMaterial *mat : layerEntity->componentsOfType<Qt3DRender::QMaterial>() )
+  {
+    for ( Qt3DRender::QParameter *param : mat->parameters() )
+    {
+      QVariant value = updatedParameters.value( param->name(), QVariant() );
+      if ( value.isValid() )
+      {
+        param->setValue( value );
+      }
+    }
+  }
+  for ( Qt3DCore::QNode *node : layerEntity->childNodes() )
+  {
+    if ( Qt3DCore::QEntity *entity = dynamic_cast<Qt3DCore::QEntity *>( node ) )
+    {
+      updateLayerEntity( entity, updatedParameters );
+    }
   }
 }
 

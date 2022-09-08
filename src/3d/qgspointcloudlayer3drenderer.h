@@ -51,10 +51,8 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      *
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
-     *
-     * \note since QGIS 3.28 the context doesn't take ownership over the passed symbol
      */
-    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol,
+    QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
                                   double zValueScale, double zValueFixedOffset );
 
     //! QgsPointCloudRenderContext cannot be copied.
@@ -82,11 +80,11 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      *
      * \see setSymbol()
      */
-    QgsPointCloud3DSymbol *symbol() const { return mSymbol; }
+    QgsPointCloud3DSymbol *symbol() const { return mSymbol.get(); }
 
     /**
      * Sets the \a symbol used for rendering the point cloud
-     * \note since QGIS 3.28 the context doesn't take ownership over the passed symbol
+     * Takes ownership over the passed symbol
      * \see symbol()
      */
     void setSymbol( QgsPointCloud3DSymbol *symbol );
@@ -195,7 +193,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
     QgsPointCloudRenderContext( const QgsPointCloudRenderContext &rh );
 #endif
     QgsPointCloudAttributeCollection mAttributes;
-    QgsPointCloud3DSymbol *mSymbol = nullptr;
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol = nullptr;
     QgsPointCloudCategoryList mFilteredOutCategories;
     double mZValueScale = 1.0;
     double mZValueFixedOffset = 0;
@@ -312,7 +310,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QObject, public QgsAbstra
      * Updates the current renderer to reflect the same rendering style as \a renderer
      * \since QGIS 3.28
      */
-    bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer ) override;
+    bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer, QMap<QString, QVariant> &updatedAttributes ) override;
 
   signals:
 

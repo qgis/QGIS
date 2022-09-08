@@ -10,7 +10,7 @@
 
 
 
-class QgsPointCloud3DSymbol : QObject, QgsAbstract3DSymbol /Abstract/
+class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 {
 %Docstring(signature="appended")
 3D symbol that draws point cloud geometries as 3D objects.
@@ -162,15 +162,13 @@ than this threshold value will not be rendered, see :py:func:`~QgsPointCloud3DSy
     virtual void copyBaseSettings( QgsAbstract3DSymbol *destination ) const;
 
 
-    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes );
 %Docstring
 Updates the current point cloud symbol to reflect the rendering settings as ``symbol``
 Returns true if the scene needs to be reloaded to reflect changes from ``symbol``
 
 .. versionadded:: 3.28
 %End
-  signals:
-
 
   protected:
 
@@ -239,9 +237,8 @@ Sets the color used by the renderer when using SingleColor rendering mode
 
     virtual unsigned int byteStride();
 
-    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes );
 
-  signals:
 
 };
 
@@ -330,7 +327,7 @@ Sets the minimum and maximum values used when classifying colors in the color ra
 
     virtual unsigned int byteStride();
 
-    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes );
 
 
 };
@@ -514,7 +511,7 @@ Ownership of ``enhancement`` is transferred.
 .. seealso:: :py:func:`setGreenContrastEnhancement`
 %End
 
-    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes );
 
 
   private:
@@ -592,7 +589,7 @@ Gets the list of categories of the classification that should not be rendered
 
     virtual unsigned int byteStride();
 
-    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol );
+    virtual bool updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes );
 
 
 };

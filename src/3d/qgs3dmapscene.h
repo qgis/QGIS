@@ -192,6 +192,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void onFrameTriggered( float dt );
     void createTerrain();
     void onLayerRenderer3DChanged();
+    void onLayerRenderer3DUpdated( QMap<QString, QVariant> updatedParameters );
     void onLayersChanged();
     void createTerrainDeferred();
     void onBackgroundColorChanged();
@@ -215,6 +216,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
+    void updateLayerEntity( Qt3DCore::QEntity *layerEntity, QMap<QString, QVariant> &updatedParameters );
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
     void addCameraRotationCenterEntity( QgsCameraController *controller );
     void setSceneState( SceneState state );

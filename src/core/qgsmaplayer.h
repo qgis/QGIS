@@ -1710,6 +1710,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void renderer3DChanged();
 
     /**
+     * Signal emitted when 3D renderer associated with the layer has been updated.
+     * \since QGIS 3.0
+     */
+    void renderer3DUpdated( QMap<QString, QVariant> updatedParameters );
+
+    /**
      * Signal emitted when a layer requires an update in any 3D maps.
      *
      * \since QGIS 3.18

@@ -1736,6 +1736,13 @@ Signal emitted when 3D renderer associated with the layer has changed.
 .. versionadded:: 3.0
 %End
 
+    void renderer3DUpdated( QMap<QString, QVariant> updatedParameters );
+%Docstring
+Signal emitted when 3D renderer associated with the layer has been updated.
+
+.. versionadded:: 3.0
+%End
+
     void request3DUpdate();
 %Docstring
 Signal emitted when a layer requires an update in any 3D maps.

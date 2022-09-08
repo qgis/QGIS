@@ -34,12 +34,7 @@ QgsPointCloud3DSymbol::~QgsPointCloud3DSymbol() {  }
 
 void QgsPointCloud3DSymbol::setPointSize( float size )
 {
-  if ( mPointSize == size )
-  {
-    return;
-  }
   mPointSize = size;
-  emit pointSizeChanged( size );
 }
 
 bool QgsPointCloud3DSymbol::renderAsTriangles() const
@@ -130,20 +125,21 @@ void QgsPointCloud3DSymbol::copyBaseSettings( QgsAbstract3DSymbol *destination )
 
 void QgsPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
-  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( "u_renderingStyle", this->renderingStyle() );
+  Qt3DRender::QParameter *renderingStyle = new Qt3DRender::QParameter( QStringLiteral( "u_renderingStyle" ), this->renderingStyle() );
   mat->addParameter( renderingStyle );
-  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( "u_pointSize", QVariant::fromValue( mPointSize ) );
+  Qt3DRender::QParameter *pointSizeParameter = new Qt3DRender::QParameter( QStringLiteral( "u_pointSize" ), QVariant::fromValue( mPointSize ) );
   mat->addParameter( pointSizeParameter );
-  connect( this, &QgsPointCloud3DSymbol::pointSizeChanged, pointSizeParameter, [pointSizeParameter]( float newSize )
-  {
-    pointSizeParameter->setValue( QVariant::fromValue( newSize ) );
-  } );
 }
 
-bool QgsPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+
+bool QgsPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes )
 {
   bool updateScene = false;
-  setPointSize( symbol->pointSize() );
+  if ( symbol->pointSize() != pointSize() )
+  {
+    setPointSize( symbol->pointSize() );
+    updatedAttributes[ QStringLiteral( "u_pointSize" ) ] = QVariant::fromValue( symbol->pointSize() );
+  }
   if ( renderAsTriangles() != symbol->renderAsTriangles() )
   {
     setRenderAsTriangles( symbol->renderAsTriangles() );
@@ -213,30 +209,25 @@ void QgsSingleColorPointCloud3DSymbol::readXml( const QDomElement &elem, const Q
 
 void QgsSingleColorPointCloud3DSymbol::setSingleColor( QColor color )
 {
-  if ( color == mSingleColor )
-  {
-    return;
-  }
   mSingleColor = color;
-  emit singleColorChanged( color );
 }
 
 void QgsSingleColorPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
 {
   QgsPointCloud3DSymbol::fillMaterial( mat );
-  Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( "u_singleColor", QVector3D( mSingleColor.redF(), mSingleColor.greenF(), mSingleColor.blueF() ) );
+  Qt3DRender::QParameter *singleColorParameter = new Qt3DRender::QParameter( QStringLiteral( "u_singleColor" ), QVector3D( mSingleColor.redF(), mSingleColor.greenF(), mSingleColor.blueF() ) );
   mat->addParameter( singleColorParameter );
-  connect( this, &QgsSingleColorPointCloud3DSymbol::singleColorChanged, singleColorParameter, [singleColorParameter]( QColor newColor )
-  {
-    singleColorParameter->setValue( QVector3D( newColor.redF(), newColor.greenF(), newColor.blueF() ) );
-  } );
 }
 
-bool QgsSingleColorPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+bool QgsSingleColorPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes )
 {
-  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol, updatedAttributes );
   QgsSingleColorPointCloud3DSymbol *s = dynamic_cast< QgsSingleColorPointCloud3DSymbol * >( symbol );
-  setSingleColor( s->singleColor() );
+  if ( s->singleColor() != singleColor() )
+  {
+    setSingleColor( s->singleColor() );
+    updatedAttributes[ QStringLiteral( "u_singleColor" ) ] = QVariant::fromValue( QVector3D( mSingleColor.redF(), mSingleColor.greenF(), mSingleColor.blueF() ) );
+  }
   return updateScene;
 }
 
@@ -282,7 +273,7 @@ void QgsColorRampPointCloud3DSymbol::readXml( const QDomElement &elem, const Qgs
   Q_UNUSED( context )
 
   readBaseXml( elem, context );
-  mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
+  mRenderingParameter = elem.attribute( QStringLiteral( "rendering-parameter" ), QString() );
   mColorRampShaderMin = elem.attribute( QStringLiteral( "color-ramp-shader-min" ), QStringLiteral( "0.0" ) ).toDouble();
   mColorRampShaderMax = elem.attribute( QStringLiteral( "color-ramp-shader-max" ), QStringLiteral( "1.0" ) ).toDouble();
   mColorRampShader.readXml( elem );
@@ -328,18 +319,18 @@ void QgsColorRampPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *mat )
   }
 
   // Parameters
-  Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( "u_colorRampTexture", colorRampTexture );
+  Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "u_colorRampTexture" ), colorRampTexture );
   mat->addParameter( colorRampTextureParameter );
-  Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
+  Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( QStringLiteral( "u_colorRampCount" ), mColorRampShader.colorRampItemList().count() );
   mat->addParameter( colorRampCountParameter );
   const int colorRampType = mColorRampShader.colorRampType();
-  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
+  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( QStringLiteral( "u_colorRampType" ), colorRampType );
   mat->addParameter( colorRampTypeParameter );
 }
 
-bool QgsColorRampPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+bool QgsColorRampPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes )
 {
-  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol, updatedAttributes );
   QgsColorRampPointCloud3DSymbol *s = dynamic_cast< QgsColorRampPointCloud3DSymbol * >( symbol );
   if ( attribute() != s->attribute() )
   {
@@ -529,9 +520,9 @@ void QgsRgbPointCloud3DSymbol::setBlueContrastEnhancement( QgsContrastEnhancemen
   mBlueContrastEnhancement.reset( enhancement );
 }
 
-bool QgsRgbPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+bool QgsRgbPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes )
 {
-  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol, updatedAttributes );
   QgsRgbPointCloud3DSymbol *s = dynamic_cast< QgsRgbPointCloud3DSymbol *>( symbol );
   if ( redAttribute() != s->redAttribute() )
   {
@@ -626,7 +617,7 @@ void QgsClassificationPointCloud3DSymbol::readXml( const QDomElement &elem, cons
   Q_UNUSED( context )
 
   readBaseXml( elem, context );
-  mRenderingParameter = elem.attribute( "rendering-parameter", QString() );
+  mRenderingParameter = elem.attribute( QStringLiteral( "rendering-parameter" ), QString() );
 
   const QDomElement catsElem = elem.firstChildElement( QStringLiteral( "categories" ) );
   if ( !catsElem.isNull() )
@@ -706,18 +697,19 @@ void QgsClassificationPointCloud3DSymbol::fillMaterial( Qt3DRender::QMaterial *m
   }
 
   // Parameters
-  Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( "u_colorRampTexture", colorRampTexture );
+  Qt3DRender::QParameter *colorRampTextureParameter = new Qt3DRender::QParameter( QStringLiteral( "u_colorRampTexture" ), colorRampTexture );
   mat->addParameter( colorRampTextureParameter );
-  Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( "u_colorRampCount", mColorRampShader.colorRampItemList().count() );
+  Qt3DRender::QParameter *colorRampCountParameter = new Qt3DRender::QParameter( QStringLiteral( "u_colorRampCount" ), mColorRampShader.colorRampItemList().count() );
   mat->addParameter( colorRampCountParameter );
   const int colorRampType = mColorRampShader.colorRampType();
-  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( "u_colorRampType", colorRampType );
+  Qt3DRender::QParameter *colorRampTypeParameter = new Qt3DRender::QParameter( QStringLiteral( "u_colorRampType" ), colorRampType );
   mat->addParameter( colorRampTypeParameter );
 }
 
-bool QgsClassificationPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol )
+
+bool QgsClassificationPointCloud3DSymbol::updateCurrentSymbol( QgsPointCloud3DSymbol *symbol, QMap<QString, QVariant> &updatedAttributes )
 {
-  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol );
+  bool updateScene = QgsPointCloud3DSymbol::updateCurrentSymbol( symbol, updatedAttributes );
   QgsClassificationPointCloud3DSymbol *s = dynamic_cast< QgsClassificationPointCloud3DSymbol * >( symbol );
   if ( attribute() != s->attribute() )
   {

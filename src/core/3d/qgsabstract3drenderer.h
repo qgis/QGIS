@@ -76,13 +76,14 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
     }
 
     /**
-     * Updates the current renderer and returns true in case the 3D scene needs to be refreshed
+     * Updates the current renderer and returns true in case the 3D scene needs to be refreshed and the updated attributes in \a updatedAttributes map
      * \warning The renderer \a renderer must be of the same type with the current renderer
      * \since QGIS 3.28
      */
-    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer )
+    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer, QMap<QString, QVariant> &updatedAttributes )
     {
       Q_UNUSED( renderer );
+      Q_UNUSED( updatedAttributes );
       return true;
     };
 

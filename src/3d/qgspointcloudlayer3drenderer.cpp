@@ -27,9 +27,9 @@
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayerelevationproperties.h"
 
-QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueFixedOffset )
+QgsPointCloud3DRenderContext::QgsPointCloud3DRenderContext( const Qgs3DMapSettings &map, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset )
   : Qgs3DRenderContext( map )
-  , mSymbol( symbol )
+  , mSymbol( std::move( symbol ) )
   , mZValueScale( zValueScale )
   , mZValueFixedOffset( zValueFixedOffset )
   , mCoordinateTransform( coordinateTransform )
@@ -44,7 +44,7 @@ void QgsPointCloud3DRenderContext::setAttributes( const QgsPointCloudAttributeCo
 
 void QgsPointCloud3DRenderContext::setSymbol( QgsPointCloud3DSymbol *symbol )
 {
-  mSymbol = symbol;
+  mSymbol.reset( symbol );
 }
 
 void QgsPointCloud3DRenderContext::setFilteredOutCategories( const QgsPointCloudCategoryList &categories )
@@ -135,7 +135,7 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( const Qgs3DMapSet
 
   const QgsCoordinateTransform coordinateTransform( pcl->crs(), map.crs(), map.transformContext() );
 
-  QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol.get() ), maximumScreenError(), showBoundingBoxes(),
+  QgsPointCloudLayerChunkedEntity *entity = new QgsPointCloudLayerChunkedEntity( pcl->dataProvider()->index(), map, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), maximumScreenError(), showBoundingBoxes(),
       static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
       static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
 
@@ -269,7 +269,7 @@ bool QgsPointCloudLayer3DRenderer::supportsUpdateFrom( QgsAbstract3DRenderer *re
   return true;
 }
 
-bool QgsPointCloudLayer3DRenderer::updateCurrentRenderer( QgsAbstract3DRenderer *renderer )
+bool QgsPointCloudLayer3DRenderer::updateCurrentRenderer( QgsAbstract3DRenderer *renderer, QMap<QString, QVariant> &updatedAttributes )
 {
   Q_ASSERT( supportsUpdateFrom( renderer ) );
   QgsPointCloudLayer3DRenderer *r = dynamic_cast<QgsPointCloudLayer3DRenderer *>( renderer );
@@ -286,7 +286,7 @@ bool QgsPointCloudLayer3DRenderer::updateCurrentRenderer( QgsAbstract3DRenderer 
     updateScene = true;
   }
   // TODO: fix const access
-  updateScene = updateScene || mSymbol->updateCurrentSymbol( const_cast< QgsPointCloud3DSymbol * >( r->symbol() ) );
+  updateScene = updateScene || mSymbol->updateCurrentSymbol( const_cast< QgsPointCloud3DSymbol * >( r->symbol() ), updatedAttributes );
   return updateScene;
 }
 

@@ -60,9 +60,9 @@ Returns whether the current renderer could be updated from ``renderer``
 .. versionadded:: 3.28
 %End
 
-    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer );
+    virtual bool updateCurrentRenderer( QgsAbstract3DRenderer *renderer, QMap<QString, QVariant> &updatedAttributes );
 %Docstring
-Updates the current renderer and returns true in case the 3D scene needs to be refreshed
+Updates the current renderer and returns true in case the 3D scene needs to be refreshed and the updated attributes in ``updatedAttributes`` map
 
 .. warning::
 
