@@ -69,6 +69,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     if ( progress == 100 )
     {
       mIsLoading = false;
+      mProgressBar->hide();
       updateLoadBtn();
     }
   } );
@@ -78,10 +79,12 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     if ( ! mIsLoading )
     {
       mIsLoading = true;
+      mProgressBar->show();
       mSourceModel->reloadAsync( );
     }
     else
     {
+      mProgressBar->hide();
       mSourceModel->cancel();
       mIsLoading = false;
     }
