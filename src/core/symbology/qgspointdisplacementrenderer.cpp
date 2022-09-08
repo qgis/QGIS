@@ -41,8 +41,8 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::clone() const
     r->setEmbeddedRenderer( mRenderer->clone() );
   r->setCircleWidth( mCircleWidth );
   r->setCircleColor( mCircleColor );
-  r->setLabelFont( mLabelFont );
-  r->setLabelColor( mLabelColor );
+  r->setLabelFormat( mLabelFormat );
+  r->setLabelColor( mLabelFormat.color() );
   r->setPlacement( mPlacement );
   r->setCircleRadiusAddition( mCircleRadiusAddition );
   r->setLabelDistanceFactor( mLabelDistanceFactor );
@@ -156,12 +156,49 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
 {
   QgsPointDisplacementRenderer *r = new QgsPointDisplacementRenderer();
   r->setLabelAttributeName( symbologyElem.attribute( QStringLiteral( "labelAttributeName" ) ) );
-  QFont labelFont;
-  if ( !QgsFontUtils::setFromXmlChildNode( labelFont, symbologyElem, QStringLiteral( "labelFontProperties" ) ) )
+  QgsTextFormat labelFormat;
+  QDomNodeList textFormatNodeList = symbologyElem.elementsByTagName( QStringLiteral( "text-style" ) );
+  if ( !textFormatNodeList.isEmpty() )
   {
-    labelFont.fromString( symbologyElem.attribute( QStringLiteral( "labelFont" ), QString() ) );
+    QDomElement textFormatElem = textFormatNodeList.at( 0 ).toElement();
+    labelFormat.readXml( textFormatElem, context );
   }
-  r->setLabelFont( labelFont );
+  else
+  {
+    QFont f;
+    if ( !QgsFontUtils::setFromXmlChildNode( f, symbologyElem, QStringLiteral( "LabelFont" ) ) )
+    {
+      f.fromString( symbologyElem.attribute( QStringLiteral( "font" ), QString() ) );
+    }
+    labelFormat.setFont( f );
+    if ( f.pointSizeF() > 0 )
+    {
+      labelFormat.setSize( f.pointSizeF() );
+      labelFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+    }
+    else if ( f.pixelSize() > 0 )
+    {
+      labelFormat.setSize( f.pixelSize() );
+      labelFormat.setSizeUnit( QgsUnitTypes::RenderPixels );
+    }
+
+    //font color
+    const QDomNodeList fontColorList = symbologyElem.elementsByTagName( QStringLiteral( "FontColor" ) );
+    if ( !fontColorList.isEmpty() )
+    {
+      const QDomElement fontColorElem = fontColorList.at( 0 ).toElement();
+      const int red = fontColorElem.attribute( QStringLiteral( "red" ), QStringLiteral( "0" ) ).toInt();
+      const int green = fontColorElem.attribute( QStringLiteral( "green" ), QStringLiteral( "0" ) ).toInt();
+      const int blue = fontColorElem.attribute( QStringLiteral( "blue" ), QStringLiteral( "0" ) ).toInt();
+      const int alpha = fontColorElem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "255" ) ).toInt();
+      labelFormat.setColor( QColor( red, green, blue, alpha ) );
+    }
+    else if ( textFormatNodeList.isEmpty() )
+    {
+      labelFormat.setColor( QColor( 0, 0, 0 ) );
+    }
+  }
+  r->setLabelFormat( labelFormat );
   r->setPlacement( static_cast< Placement >( symbologyElem.attribute( QStringLiteral( "placement" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setCircleWidth( symbologyElem.attribute( QStringLiteral( "circleWidth" ), QStringLiteral( "0.4" ) ).toDouble() );
   r->setCircleColor( QgsSymbolLayerUtils::decodeColor( symbologyElem.attribute( QStringLiteral( "circleColor" ), QString() ) ) );
@@ -199,10 +236,10 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsRead
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
   rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointDisplacement" ) );
   rendererElement.setAttribute( QStringLiteral( "labelAttributeName" ), mLabelAttributeName );
-  rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFontProperties" ) ) );
+  QDomElement textElem = mLabelFormat.writeXml( doc, context );
+  rendererElement.appendChild( textElem );
   rendererElement.setAttribute( QStringLiteral( "circleWidth" ), QString::number( mCircleWidth ) );
   rendererElement.setAttribute( QStringLiteral( "circleColor" ), QgsSymbolLayerUtils::encodeColor( mCircleColor ) );
-  rendererElement.setAttribute( QStringLiteral( "labelColor" ), QgsSymbolLayerUtils::encodeColor( mLabelColor ) );
   rendererElement.setAttribute( QStringLiteral( "circleRadiusAddition" ), QString::number( mCircleRadiusAddition ) );
   rendererElement.setAttribute( QStringLiteral( "labelDistanceFactor" ), QString::number( mLabelDistanceFactor ) );
   rendererElement.setAttribute( QStringLiteral( "placement" ), static_cast< int >( mPlacement ) );

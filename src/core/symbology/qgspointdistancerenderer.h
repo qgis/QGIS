@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsrenderer.h"
 #include "qgsmapunitscale.h"
+#include "qgstextformat.h"
 #include <QFont>
 
 class QgsSpatialIndex;
@@ -134,7 +135,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see setLabelAttributeName()
      * \see setLabelColor()
      */
-    void setLabelFont( const QFont &font ) { mLabelFont = font; }
+    void setLabelFont( const QFont &font ) { mLabelFormat.setFont( font ); }
 
     /**
      * Returns the font used for labeling points.
@@ -142,7 +143,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see labelAttributeName()
      * \see labelColor()
      */
-    QFont labelFont() const { return mLabelFont;}
+    QFont labelFont() const { return mLabelFormat.font(); }
 
     /**
      * Sets the minimum map \a scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
@@ -167,7 +168,7 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see setLabelAttributeName()
      * \see setLabelFont()
      */
-    void setLabelColor( const QColor &color ) { mLabelColor = color;}
+    void setLabelColor( const QColor &color ) { mLabelFormat.setColor( color ); }
 
     /**
      * Returns the color used for for labeling points.
@@ -175,7 +176,21 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      * \see labelAttributeName()
      * \see labelFont()
      */
-    QColor labelColor() const { return mLabelColor; }
+    QColor labelColor() const { return mLabelFormat.color(); }
+
+    /**
+     * Returns the text format used for drawing text in the label.
+     * \see setLabelFormat()
+     * \since QGIS 3.28
+     */
+    QgsTextFormat labelFormat() const;
+
+    /**
+     * Sets the text \a format used for drawing text in the label.
+     * \see labelFormat()
+     * \since QGIS 3.28
+     */
+    void setLabelFormat( const QgsTextFormat &format );
 
     /**
      * Sets the tolerance distance for grouping points. Units are specified using
@@ -246,10 +261,9 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
     //! Map unit scale for distance tolerance.
     QgsMapUnitScale mToleranceMapUnitScale;
 
-    //! Label font.
-    QFont mLabelFont;
-    //! Label text color.
-    QColor mLabelColor;
+    //! Label format.
+    QgsTextFormat mLabelFormat;
+
     //! Whether labels should be drawn for points. This is set internally from startRender() depending on scale denominator.
     bool mDrawLabels;
     //! Maximum scale denominator for label display. A zero value indicates no scale limitation.

@@ -55,16 +55,16 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   connect( mCircleColorButton, &QgsColorButton::colorChanged, this, &QgsPointDisplacementRendererWidget::mCircleColorButton_colorChanged );
   connect( mDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mDistanceSpinBox_valueChanged );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointDisplacementRendererWidget::mDistanceUnitWidget_changed );
-  connect( mLabelColorButton, &QgsColorButton::colorChanged, this, &QgsPointDisplacementRendererWidget::mLabelColorButton_colorChanged );
   connect( mCircleModificationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mCircleModificationSpinBox_valueChanged );
   connect( mLabelDistanceFactorSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mLabelDistanceFactorSpinBox_valueChanged );
   connect( mScaleDependentLabelsCheckBox, &QCheckBox::stateChanged, this, &QgsPointDisplacementRendererWidget::mScaleDependentLabelsCheckBox_stateChanged );
   connect( mRendererSettingsButton, &QPushButton::clicked, this, &QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
-
-  mLabelFontButton->setMode( QgsFontButton::ModeQFont );
+  mLabelFontButton->setMode( QgsFontButton::ModeTextRenderer );
+  mLabelFontButton->setDialogTitle( tr( "Label Font" ) );
+  mLabelFontButton->registerExpressionContextGenerator( this );
   mDistanceUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                   Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
+                                   Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches}  );
   mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
   if ( renderer )
@@ -122,14 +122,13 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleColorButton->setAllowOpacity( true );
   mCircleColorButton->setShowNoColor( true );
   mCircleColorButton->setNoColorString( tr( "Transparent Stroke" ) );
-  mLabelColorButton->setContext( QStringLiteral( "symbology" ) );
-  mLabelColorButton->setColorDialogTitle( tr( "Select Color" ) );
-  mLabelColorButton->setAllowOpacity( true );
+
 
   mCircleWidthSpinBox->setValue( mRenderer->circleWidth() );
   mCircleColorButton->setColor( mRenderer->circleColor() );
-  mLabelColorButton->setColor( mRenderer->labelColor() );
-  mLabelFontButton->setCurrentFont( mRenderer->labelFont() );
+  mLabelFontButton->setTextFormat( mRenderer->labelFormat() );
+  mLabelFontButton->setDialogTitle( tr( "Label Font" ) );
+  mLabelFontButton->registerExpressionContextGenerator( this );
   mCircleModificationSpinBox->setClearValue( 0.0 );
   mCircleModificationSpinBox->setValue( mRenderer->circleRadiusAddition() );
   mLabelDistanceFactorSpinBox->setClearValue( 0.5 );
@@ -169,8 +168,9 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   connect( mMinLabelScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsPointDisplacementRendererWidget::minLabelScaleChanged );
-  connect( mLabelFontButton, &QgsFontButton::changed, this, &QgsPointDisplacementRendererWidget::labelFontChanged );
+  connect( mLabelFontButton, &QgsFontButton::changed, this, &QgsPointDisplacementRendererWidget::labelFormatChanged );
   connect( mCenterSymbolToolButton, &QgsSymbolButton::changed, this, &QgsPointDisplacementRendererWidget::centerSymbolChanged );
+  mLabelFontButton->setLayer( mLayer );
   mCenterSymbolToolButton->setDialogTitle( tr( "Center symbol" ) );
   mCenterSymbolToolButton->setLayer( mLayer );
   mCenterSymbolToolButton->registerExpressionContextGenerator( this );
@@ -287,14 +287,14 @@ void QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked()
   }
 }
 
-void QgsPointDisplacementRendererWidget::labelFontChanged()
+void QgsPointDisplacementRendererWidget::labelFormatChanged()
 {
   if ( !mRenderer )
   {
     return;
   }
 
-  mRenderer->setLabelFont( mLabelFontButton->currentFont() );
+  mRenderer->setLabelFormat( mLabelFontButton->textFormat() );
   emit widgetChanged();
 }
 
@@ -315,17 +315,6 @@ void QgsPointDisplacementRendererWidget::mCircleColorButton_colorChanged( const 
   }
 
   mRenderer->setCircleColor( newColor );
-  emit widgetChanged();
-}
-
-void QgsPointDisplacementRendererWidget::mLabelColorButton_colorChanged( const QColor &newColor )
-{
-  if ( !mRenderer )
-  {
-    return;
-  }
-
-  mRenderer->setLabelColor( newColor );
   emit widgetChanged();
 }
 
@@ -401,7 +390,6 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
   mCircleWidthSpinBox->blockSignals( block );
   mCircleColorButton->blockSignals( block );
   mRendererComboBox->blockSignals( block );
-  mLabelColorButton->blockSignals( block );
   mCircleModificationSpinBox->blockSignals( block );
   mLabelDistanceFactorSpinBox->blockSignals( block );
   mScaleDependentLabelsCheckBox->blockSignals( block );

@@ -47,8 +47,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::clone() const
   QgsPointClusterRenderer *r = new QgsPointClusterRenderer();
   if ( mRenderer )
     r->setEmbeddedRenderer( mRenderer->clone() );
-  r->setLabelFont( mLabelFont );
-  r->setLabelColor( mLabelColor );
+  r->setLabelFormat( mLabelFormat );
   r->setMinimumLabelScale( mMinLabelScale );
   r->setTolerance( mTolerance );
   r->setToleranceUnit( mToleranceUnit );

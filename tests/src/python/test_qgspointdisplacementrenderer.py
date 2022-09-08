@@ -50,6 +50,10 @@ from qgis.core import (
     QgsSingleSymbolRenderer,
     QgsSymbol,
     QgsSymbolLayer,
+    QgsTextFormat,
+    QgsTextBufferSettings,
+    QgsTextBackgroundSettings,
+    QgsTextShadowSettings,
     QgsUnitTypes,
     QgsVectorLayer
 )
@@ -496,6 +500,49 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         renderer.setEmbeddedRenderer(sub_renderer)
 
         self.assertEqual(renderer.legendKeys(), {'0', '1'})
+
+    def testClusterRingLabelsDifferentSizesComplexFormat(self):
+        layer, renderer, mapsettings = self._setUp()
+        renderer.setEmbeddedRenderer(self._create_categorized_renderer())
+        layer.renderer().setTolerance(10)
+        layer.renderer().setLabelAttributeName('Class')
+        layer.renderer().setLabelDistanceFactor(0.35)
+        format = QgsTextFormat.fromQFont(QgsFontUtils.getStandardTestFont('Bold', 14))
+        back = QgsTextBackgroundSettings()
+        back.setEnabled(True)
+        back.setType(QgsTextBackgroundSettings.ShapeEllipse)
+        back.setSizeType(QgsTextBackgroundSettings.SizeFixed)
+        back.setSize(QSizeF(1, 2))
+        back.setSizeUnit(QgsUnitTypes.RenderPixels)
+        back.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
+        format.setBackground(back)
+        buff = QgsTextBufferSettings()
+        buff.setEnabled(True)
+        buff.setSize(5)
+        buff.setSizeUnit(QgsUnitTypes.RenderPixels)
+        buff.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
+        buff.setColor(QColor(155, 100, 125))
+        buff.setFillBufferInterior(True)
+        format.setBuffer(buff)
+        shad = QgsTextShadowSettings()
+        shad.setEnabled(True)
+        shad.setShadowPlacement(QgsTextShadowSettings.ShadowBuffer)
+        shad.setOffsetAngle(45)
+        shad.setOffsetDistance(75)
+        shad.setOffsetUnit(QgsUnitTypes.RenderMapUnits)
+        shad.setOffsetMapUnitScale(QgsMapUnitScale(5, 6))
+        shad.setOffsetGlobal(True)
+        shad.setBlurRadius(11)
+        format.setShadow(shad)
+        layer.renderer().setLabelFormat(format)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_cluster_ring_labels_formatted')
+        res = renderchecker.runTest('expected_displacement_cluster_ring_labels_formatted')
+        self.report += renderchecker.report()
+        self.assertTrue(res)
+        self._tearDown(layer)
 
     def test_legend_key_to_expression(self):
         sym1 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
