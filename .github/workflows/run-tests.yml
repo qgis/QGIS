@@ -48,6 +48,7 @@ jobs:
             patch-qt-3d: false
             with-grass7: OFF
             with-grass8: OFF
+            with-compile-commands: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
 
@@ -63,6 +64,7 @@ jobs:
             patch-qt-3d: false
             with-grass7: OFF
             with-grass8: OFF
+            with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
 
@@ -167,6 +169,7 @@ jobs:
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
+                     --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 
@@ -405,3 +408,68 @@ jobs:
           name: test-results
           path: qgis_test_report
 
+  clang-tidy:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      matrix:
+        include:
+          - distro-version: '22.04'
+            qt-version: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Build Docker Container with Testing Environment
+        id: docker-build
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          image_name: qgis3-qt${{ matrix.qt-version }}-build-deps-bin-only
+          dockerfile: .docker/qgis3-qt${{ matrix.qt-version }}-build-deps.dockerfile
+          build_extra_args: "--build-arg=DISTRO_VERSION=${{ matrix.distro-version }}"
+          push_git_tag: true
+          push_image_and_stages: on:push
+          pull_image_and_stages: ${{ github.event_name != 'workflow_dispatch' }}
+
+      - name: Tag image
+        run: |
+          docker tag ${DOCKER_IMAGE} qgis3-build-deps
+        env:
+          DOCKER_IMAGE: ${{ steps.docker-build.outputs.FULL_IMAGE_NAME }}
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-${{ matrix.distro-version }}-qt${{ matrix.qt-version }}.tgz
+          path: .
+
+      - name: Extract build artifact
+        run: |
+          tar xvzf build.tgz
+          rm -Rf build.tgz
+
+      - name: Run Clang-Tidy
+        run: |
+          docker run -t --name qgis_container \
+          -v $(pwd):/root/QGIS \
+          -v /home/runner/QGIS/.ccache:/root/.ccache \
+          --env-file .docker/docker-variables.env \
+          --env PUSH_TO_CDASH=false \
+          --env WITH_QT5=TRUE \
+          --env BUILD_WITH_QT6=OFF \
+          --env WITH_QUICK=ON \
+          --env WITH_3D=TRUE \
+          --env PATCH_QT_3D=FALSE \
+          --env WITH_GRASS7=OFF \
+          --env WITH_GRASS8=OFF \
+          --env WITH_CLAZY=OFF \
+          qgis3-build-deps \
+          /root/QGIS/.docker/docker-qgis-clangtidy.sh
