@@ -2487,14 +2487,9 @@ void QgisApp::dataSourceManager( const QString &pageName )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), true ).toBool() )
-  {
-    mDataSourceManagerDialog->show();
-  }
-  else
-  {
-    mDataSourceManagerDialog->exec();
-  }
+
+  mDataSourceManagerDialog->show();
+  mDataSourceManagerDialog->activate();
 }
 
 QgsBrowserGuiModel *QgisApp::browserModel()

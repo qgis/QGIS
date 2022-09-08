@@ -102,6 +102,13 @@ QgsMessageBar *QgsDataSourceManagerDialog::messageBar() const
   return mMessageBar;
 }
 
+void QgsDataSourceManagerDialog::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
+}
+
 void QgsDataSourceManagerDialog::setCurrentPage( int index )
 {
   mPreviousRow = ui->mOptionsStackedWidget->currentIndex();

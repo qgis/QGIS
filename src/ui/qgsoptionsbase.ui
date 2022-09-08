@@ -489,36 +489,6 @@
                     <property name="topMargin">
                      <number>0</number>
                     </property>
-                    <item row="0" column="0">
-                     <widget class="QCheckBox" name="cbxHideSplash">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Hide splash screen at startup</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="0">
-                     <widget class="QCheckBox" name="mDataSourceManagerNonModal">
-                      <property name="toolTip">
-                       <string>A modeless dialog allows you to interact with QGIS main window and dialogs.</string>
-                      </property>
-                      <property name="text">
-                       <string>Modeless data source manager dialog</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="0">
-                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
-                      <property name="text">
-                       <string>Use native color chooser dialogs</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="3" column="1">
                      <spacer name="horizontalSpacer_2">
                       <property name="orientation">
@@ -531,6 +501,26 @@
                        </size>
                       </property>
                      </spacer>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QCheckBox" name="cbxCheckVersion">
+                      <property name="text">
+                       <string>Check QGIS version at startup</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cbxHideSplash">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Hide splash screen at startup</string>
+                      </property>
+                     </widget>
                     </item>
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="cbxShowNews">
@@ -545,10 +535,10 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="2" column="0">
-                     <widget class="QCheckBox" name="cbxCheckVersion">
+                    <item row="3" column="0">
+                     <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
                       <property name="text">
-                       <string>Check QGIS version at startup</string>
+                       <string>Use native color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
@@ -5335,7 +5325,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cbxShowNews</tabstop>
   <tabstop>cbxCheckVersion</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
-  <tabstop>mDataSourceManagerNonModal</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
