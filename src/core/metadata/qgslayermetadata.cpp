@@ -428,6 +428,12 @@ bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other )  const
 
 bool QgsLayerMetadata::contains( const QString &searchString ) const
 {
+
+  if ( searchString.trimmed().isEmpty() )
+  {
+    return false;
+  }
+
   if ( title().contains( searchString, Qt::CaseInsensitive ) ||
        identifier().contains( searchString, Qt::CaseInsensitive ) ||
        abstract().contains( searchString, Qt::CaseInsensitive ) )

@@ -286,7 +286,7 @@ Reads the metadata state from a ``layer``'s custom properties (see :py:func:`Qgs
 Returns ``True`` if the metadata identifier, title, abstract, keywords or categories
 contain ``searchString`` using case-insensitive search.
 
-If ``searchString`` is empty this method returns ``True``.
+If ``searchString`` is empty this method returns ``False``.
 
 .. versionadded:: 3.28
 %End

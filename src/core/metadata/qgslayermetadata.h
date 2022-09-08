@@ -327,7 +327,7 @@ class CORE_EXPORT QgsLayerMetadata : public QgsAbstractMetadataBase
      * Returns TRUE if the metadata identifier, title, abstract, keywords or categories
      * contain \a searchString using case-insensitive search.
      *
-     * If \a searchString is empty this method returns TRUE.
+     * If \a searchString is empty this method returns FALSE.
      *
      * \since QGIS 3.28
      */

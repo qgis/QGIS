@@ -702,6 +702,9 @@ class TestQgsLayerMetadata(unittest.TestCase):
         relist = [QRegularExpression('my ro'), QRegularExpression('XXXX')]
         self.assertTrue(m.matches(relist))
 
+        self.assertFalse(m.contains(''))
+        self.assertFalse(m.contains(' '))
+
 
 if __name__ == '__main__':
     unittest.main()

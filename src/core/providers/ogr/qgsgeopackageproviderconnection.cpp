@@ -457,7 +457,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
             continue;
           }
 
-          if ( ! result.contains( searchString ) )
+          if ( ! searchString.trimmed().isEmpty() && ! result.contains( searchString ) )
           {
             continue;
           }
