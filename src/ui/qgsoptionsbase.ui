@@ -505,10 +505,10 @@
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="mDataSourceManagerNonModal">
                       <property name="toolTip">
-                       <string>A modeless dialog allows you to interact with QGIS main window and dialogs.</string>
+                       <string>A non-modal data source manager dialog allows you to interact with QGIS main window and dialogs.</string>
                       </property>
                       <property name="text">
-                       <string>Modeless data source manager dialog</string>
+                       <string>Non-blocking data source manager dialog</string>
                       </property>
                      </widget>
                     </item>
