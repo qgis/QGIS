@@ -59,6 +59,7 @@
 #include "qgsmaptoolshaperegistry.h"
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
+#include "qgslayermetadatasourceselectprovider.h"
 
 #include <QPushButton>
 #include <QToolButton>
@@ -293,6 +294,7 @@ QgsGui::QgsGui()
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mSourceSelectProviderRegistry->addProvider( new QgsLayerMetadataSourceSelectProvider() );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 

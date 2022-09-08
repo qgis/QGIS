@@ -2687,6 +2687,12 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key );
 }
 
+bool QgsPostgresConn::allowMetadataInDatabase( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/metadataInDatabase", false ).toBool();
+}
+
 bool QgsPostgresConn::cancel()
 {
   QMutexLocker locker( &mLock );

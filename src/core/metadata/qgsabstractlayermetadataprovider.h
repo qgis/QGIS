@@ -68,6 +68,11 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     QgsLayerMetadataProviderResult( const QgsLayerMetadata &metadata );
 
     /**
+     * Default constructor.
+     */
+    QgsLayerMetadataProviderResult( ) = default;
+
+    /**
      * Returns the layer extent in EPSG:4326
      */
     const QgsPolygon &geographicExtent() const;
@@ -137,6 +142,7 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
      */
     void setStandardUri( const QString &standardUri );
 
+
   private:
 
     //! Layer spatial extent of the layer in EPSG:4326
@@ -154,6 +160,8 @@ class CORE_EXPORT QgsLayerMetadataProviderResult: public QgsLayerMetadata
     //! Metadata standard uri, QGIS QMD metadata format uses "http://mrcc.com/qgis.dtd"
     QString mStandardUri;
 };
+
+Q_DECLARE_METATYPE( QgsLayerMetadataProviderResult )
 
 /**
  * \ingroup core
@@ -198,6 +206,8 @@ class CORE_EXPORT QgsLayerMetadataSearchResults
     QStringList mErrors;
 };
 
+Q_DECLARE_METATYPE( QgsLayerMetadataSearchResults )
+
 /**
  * \ingroup core
  * \brief Layer metadata provider backend interface.
@@ -208,6 +218,8 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
 {
 
   public:
+
+    virtual ~QgsAbstractLayerMetadataProvider() = default;
 
     /**
      * Returns the id of the layer metadata provider implementation, usually the name of the data provider
@@ -224,8 +236,6 @@ class CORE_EXPORT QgsAbstractLayerMetadataProvider
      * \returns a QgsLayerMetadataSearchResult object with a list of metadata and errors
      */
     virtual QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr ) const = 0;
-
-    virtual ~QgsAbstractLayerMetadataProvider() = default;
 
 };
 

@@ -457,35 +457,9 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
             continue;
           }
 
-          if ( ! searchString.isEmpty() && (
-                 ! result.title().contains( searchString, Qt::CaseInsensitive ) &&
-                 ! result.identifier().contains( searchString, Qt::CaseInsensitive ) &&
-                 ! result.abstract().contains( searchString, Qt::CaseInsensitive ) ) )
+          if ( ! searchString.trimmed().isEmpty() && ! result.contains( searchString ) )
           {
-            bool found { false };
-            const QList<QStringList> keyVals { result.keywords().values() };
-            for ( const QStringList &kws : std::as_const( keyVals ) )
-            {
-              const QStringList constKws { kws };
-              for ( const QString &kw : std::as_const( kws ) )
-              {
-                if ( kw.contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) )
-                {
-                  found = true;
-                  break;
-                }
-              }
-              if ( found )
-                break;
-            }
-
-            if ( ! found )
-            {
-              found = result.categories().contains( searchString, Qt::CaseSensitivity::CaseInsensitive ) ;
-            }
-
-            if ( ! found )
-              continue;
+            continue;
           }
 
           result.setGeographicExtent( poly );
@@ -494,15 +468,15 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
           result.setAuthid( layerMetadata.crs().authid() );
           result.setUri( tableUri( QString(), mdRow[0].toString() ) );
           const QString geomType { mdRow[2].toString().toUpper() };
-          if ( geomType == QStringLiteral( "POINT" ) )
+          if ( geomType.contains( QStringLiteral( "POINT" ), Qt::CaseSensitivity::CaseInsensitive ) )
           {
             result.setGeometryType( QgsWkbTypes::GeometryType::PointGeometry );
           }
-          else if ( geomType == QStringLiteral( "POLYGON" ) )
+          else if ( geomType.contains( QStringLiteral( "POLYGON" ), Qt::CaseSensitivity::CaseInsensitive ) )
           {
             result.setGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry );
           }
-          else if ( geomType == QStringLiteral( "LINESTRING" ) )
+          else if ( geomType.contains( QStringLiteral( "LINESTRING" ), Qt::CaseSensitivity::CaseInsensitive ) )
           {
             result.setGeometryType( QgsWkbTypes::GeometryType::LineGeometry );
           }

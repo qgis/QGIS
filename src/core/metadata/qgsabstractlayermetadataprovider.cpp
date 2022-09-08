@@ -18,7 +18,6 @@
 #include "qgsproviderregistry.h"
 #include "qgsfeedback.h"
 
-
 QList<QgsLayerMetadataProviderResult> QgsLayerMetadataSearchResults::metadata() const
 {
   return mMetadata;
@@ -116,3 +115,5 @@ void QgsLayerMetadataProviderResult::setStandardUri( const QString &standardUri 
 {
   mStandardUri = standardUri;
 }
+
+

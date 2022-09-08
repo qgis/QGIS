@@ -25,7 +25,12 @@
 QIcon QgsIconUtils::iconForWkbType( QgsWkbTypes::Type type )
 {
   const QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( QgsWkbTypes::Type( type ) );
-  switch ( geomType )
+  return iconForGeometryType( geomType );
+}
+
+QIcon QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType typeGroup )
+{
+  switch ( typeGroup )
   {
     case QgsWkbTypes::NullGeometry:
       return iconTable();

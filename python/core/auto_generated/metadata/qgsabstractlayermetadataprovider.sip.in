@@ -46,6 +46,11 @@ Constructor for QgsLayerMetadataProviderResult.
 :param metadata: layer metadata.
 %End
 
+    QgsLayerMetadataProviderResult( );
+%Docstring
+Default constructor.
+%End
+
     const QgsPolygon &geographicExtent() const;
 %Docstring
 Returns the layer extent in EPSG:4326
@@ -116,7 +121,9 @@ Returns the metadata standard URI (usually "http://mrcc.com/qgis.dtd")
 Sets the metadata standard URI to ``standardUri``.
 %End
 
+
 };
+
 
 class QgsLayerMetadataSearchResults
 {
@@ -157,6 +164,7 @@ Adds a ``error`` to the list of errors.
 
 };
 
+
 class QgsAbstractLayerMetadataProvider
 {
 %Docstring(signature="appended")
@@ -169,6 +177,8 @@ Layer metadata provider backend interface.
 #include "qgsabstractlayermetadataprovider.h"
 %End
   public:
+
+    virtual ~QgsAbstractLayerMetadataProvider();
 
     virtual QString id() const = 0;
 %Docstring
@@ -187,8 +197,6 @@ Searches for metadata optionally filtering by search string and geographic exten
 
 :return: a :py:class:`QgsLayerMetadataSearchResult` object with a list of metadata and errors
 %End
-
-    virtual ~QgsAbstractLayerMetadataProvider();
 
 };
 
