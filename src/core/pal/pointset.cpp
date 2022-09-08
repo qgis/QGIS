@@ -106,16 +106,31 @@ void PointSet::createGeosGeom() const
     needClose = true;
   }
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
-  for ( int i = 0; i < nbPoints; ++i )
+  GEOSCoordSequence *coord = nullptr;
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  if ( !needClose )
   {
-    GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
+    // use optimised method if we don't have to force close an open ring
+    coord = GEOSCoordSeq_copyFromArrays_r( geosctxt, x.data(), y.data(), nullptr, nullptr, nbPoints );
   }
-
-  //close ring if needed
-  if ( needClose )
+#else
+  if ( false )
   {
-    GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
+  }
+#endif
+  else
+  {
+    coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
+    for ( int i = 0; i < nbPoints; ++i )
+    {
+      GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
+    }
+
+    //close ring if needed
+    if ( needClose )
+    {
+      GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
+    }
   }
 
   switch ( type )

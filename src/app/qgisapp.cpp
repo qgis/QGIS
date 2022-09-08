@@ -93,6 +93,7 @@
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsauxiliarystorage.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -203,6 +204,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
+#include "qgsauxiliarystorage.h"
 #include "qgsappscreenshots.h"
 #include "qgsapplicationexitblockerinterface.h"
 #include "qgsbookmarks.h"
@@ -8376,19 +8378,33 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
     }
     exp->setCrs( destCRS, pclayer->transformContext() );
-    exp->setFormat( dialog.format() );
+
+    const QgsPointCloudLayerExporter::ExportFormat format = dialog.exportFormat();
+    exp->setFormat( format );
 
     // LAZ format exports all attributes
-    if ( dialog.format() != QLatin1String( "LAZ" ) )
+    switch ( format )
     {
-      if ( dialog.hasAttributes() )
-        exp->setAttributes( dialog.attributes() );
-      else
-        exp->setNoAttributes();
+      case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      case QgsPointCloudLayerExporter::ExportFormat::Csv:
+        if ( dialog.hasAttributes() )
+          exp->setAttributes( dialog.attributes() );
+        else
+          exp->setNoAttributes();
+        break;
+
+      case QgsPointCloudLayerExporter::ExportFormat::Las:
+        break;
     }
 
     if ( dialog.hasFilterExtent() )
       exp->setFilterExtent( dialog.filterExtent() );
+
+    if ( dialog.hasFilterLayer() )
+      exp->setFilterGeometry( dialog.filterLayer(), dialog.filterLayerSelectedOnly() );
 
     if ( dialog.hasZRange() )
       exp->setZRange( dialog.zRange() );

@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QTime>
 #include <QElapsedTimer>
+#include <QPicture>
 
 #include "qgsrendercontext.h"
 #include "qgslabelsink.h"

@@ -42,13 +42,17 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString shortHelpString() const override;
     QgsFixGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
     QgsProcessingFeatureSource::Flag sourceFlags() const override;
     QString outputName() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type type ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+  private:
 
+    Qgis::MakeValidMethod mMethod = Qgis::MakeValidMethod::Linework;
 };
 
 ///@endcond PRIVATE

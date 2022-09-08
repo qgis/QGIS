@@ -30,27 +30,21 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometryutils.h"
 #include "qgsinternalgeometryengine.h"
 #include "qgsgeos.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgsmaptopixel.h"
-#include "qgsmessagelog.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 
 #include "qgsvectorlayer.h"
 #include "qgsgeometryvalidator.h"
 
-#include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgsmultisurface.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgscircle.h"
 #include "qgscurve.h"
-#include "qgsreadwritelocker.h"
 
 struct QgsGeometryPrivate
 {
@@ -2871,14 +2865,14 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
 }
 
 
-QgsGeometry QgsGeometry::makeValid() const
+QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed ) const
 {
   if ( !d->geometry )
     return QgsGeometry();
 
   mLastError.clear();
   QgsGeos geos( d->geometry.get() );
-  std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( method, keepCollapsed, &mLastError ) );
 
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;

@@ -617,6 +617,12 @@ The development version
       Bevel,
     };
 
+    enum class MakeValidMethod
+    {
+      Linework,
+      Structure,
+    };
+
     enum class SpatialFilterType
     {
       NoFilter,
@@ -839,6 +845,43 @@ The development version
       {
       AlwaysOutlines,
       AlwaysText,
+    };
+
+    enum class TextOrientation
+      {
+      Horizontal,
+      Vertical,
+      RotationBased,
+    };
+
+    enum class TextLayoutMode
+      {
+      Rectangle,
+      Point,
+      Labeling,
+    };
+
+    enum class TextComponent
+      {
+      Text,
+      Buffer,
+      Background,
+      Shadow,
+    };
+
+    enum class TextHorizontalAlignment
+      {
+      Left,
+      Center,
+      Right,
+      Justify,
+    };
+
+    enum class TextVerticalAlignment
+      {
+      Top,
+      VerticalCenter,
+      Bottom,
     };
 
     enum class RenderSubcomponentProperty
@@ -1236,6 +1279,13 @@ The development version
       OneToMany,
       ManyToOne,
       ManyToMany,
+    };
+
+    enum class CoordinateDisplayType
+    {
+      MapCrs,
+      MapGeographic,
+      CustomCrs,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

@@ -282,10 +282,13 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
      */
     double sampleDepthBuffer( const QImage &buffer, int px, int py );
 
+
     /**
      * Copies the orientation and position of camera \a from to camera \a to
      */
     void copyCameraSettings( Qt3DRender::QCamera *from, Qt3DRender::QCamera *to );
+
+    bool screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition );
 
   private:
     //! Camera that is being controlled

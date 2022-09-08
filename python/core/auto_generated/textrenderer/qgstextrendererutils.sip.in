@@ -41,7 +41,7 @@ Decodes a string representation of a background rotation type to a type.
 Decodes a string representation of a shadow placement type to a type.
 %End
 
-    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+    static QString encodeTextOrientation( Qgis::TextOrientation orientation );
 %Docstring
 Encodes a text ``orientation``.
 
@@ -50,7 +50,7 @@ Encodes a text ``orientation``.
 .. seealso:: :py:func:`decodeTextOrientation`
 %End
 
-    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = 0 );
+    static Qgis::TextOrientation decodeTextOrientation( const QString &name, bool *ok = 0 );
 %Docstring
 Attempts to decode a string representation of a text orientation.
 

@@ -18,6 +18,7 @@
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffectregistry.h"
+#include "qgsapplication.h"
 
 QgsTextMaskSettings::QgsTextMaskSettings()
 {

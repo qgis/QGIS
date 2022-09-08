@@ -18,13 +18,11 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgslayouttable.h"
-#include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgslayouttablecolumn.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutframe.h"
 #include "qgsfontutils.h"
-#include "qgssettings.h"
 #include "qgslayoutpagecollection.h"
 #include "qgstextrenderer.h"
 
@@ -446,20 +444,20 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
       cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellHeaderHeight );
 
       //calculate alignment of header
-      QgsTextRenderer::HAlignment headerAlign = QgsTextRenderer::AlignLeft;
+      Qgis::TextHorizontalAlignment headerAlign = Qgis::TextHorizontalAlignment::Left;
       switch ( mHeaderHAlignment )
       {
         case FollowColumn:
           headerAlign = QgsTextRenderer::convertQtHAlignment( column.hAlignment() );
           break;
         case HeaderLeft:
-          headerAlign = QgsTextRenderer::AlignLeft;
+          headerAlign = Qgis::TextHorizontalAlignment::Left;
           break;
         case HeaderCenter:
-          headerAlign = QgsTextRenderer::AlignCenter;
+          headerAlign = Qgis::TextHorizontalAlignment::Center;
           break;
         case HeaderRight:
-          headerAlign = QgsTextRenderer::AlignRight;
+          headerAlign = Qgis::TextHorizontalAlignment::Right;
           break;
       }
 
@@ -474,7 +472,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
                                            textCell.top() * context.renderContext().scaleFactor(),
                                            textCell.width() * context.renderContext().scaleFactor(),
                                            textCell.height() * context.renderContext().scaleFactor() ), 0,
-                                   headerAlign, str, context.renderContext(), headerFormat, true, QgsTextRenderer::AlignVCenter,
+                                   headerAlign, str, context.renderContext(), headerFormat, true, Qgis::TextVerticalAlignment::VerticalCenter,
                                    mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags()
                                  );
       }
@@ -630,7 +628,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
                                          cell.top() * context.renderContext().scaleFactor(),
                                          cell.width() * context.renderContext().scaleFactor(),
                                          cell.height() * context.renderContext().scaleFactor() ), 0,
-                                 QgsTextRenderer::AlignCenter, QStringList() << mEmptyTableMessage, context.renderContext(), mContentTextFormat, true, QgsTextRenderer::AlignVCenter );
+                                 Qgis::TextHorizontalAlignment::Center, QStringList() << mEmptyTableMessage, context.renderContext(), mContentTextFormat, true, Qgis::TextVerticalAlignment::VerticalCenter );
     }
   }
 
@@ -1179,7 +1177,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
     {
       heights[i] = QgsTextRenderer::textHeight( context,
                    cellFormat,
-                   QStringList() << col.heading(), QgsTextRenderer::Rect,
+                   QStringList() << col.heading(), Qgis::TextLayoutMode::Rectangle,
                    nullptr,
                    mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags(),
                    context.convertToPainterUnits( mColumns.at( i ).width(), QgsUnitTypes::RenderMillimeters )
@@ -1208,7 +1206,7 @@ bool QgsLayoutTable::calculateMaxRowHeights()
       heights[ row * cols + i ] = QgsTextRenderer::textHeight( context,
                                   cellFormat,
                                   QStringList() << localizedString.split( '\n' ),
-                                  QgsTextRenderer::Rect,
+                                  Qgis::TextLayoutMode::Rectangle,
                                   nullptr,
                                   mWrapBehavior == WrapText ? Qgis::TextRendererFlag::WrapLines : Qgis::TextRendererFlags(),
                                   context.convertToPainterUnits( mColumns.at( i ).width(), QgsUnitTypes::RenderMillimeters )

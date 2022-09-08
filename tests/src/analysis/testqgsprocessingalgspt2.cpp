@@ -806,10 +806,10 @@ void TestQgsProcessingAlgsPt2::exportMeshOnGrid()
     featIt.nextFeature( feat );
   QCOMPARE( QStringLiteral( "Point (25 50)" ), feat.geometry().asWkt() );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 0 ).toDouble(), -5.025, 2 ) );
-  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 1 ).toDouble(), 1.424, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 1 ).toDouble(), 1.463, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 2 ).toDouble(), 5.00, 2 ) );
-  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 1.32e-36, 2 ) );
-  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 0.02776, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 1.4809e-36, 2 ) );
+  QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 0.0305, 2 ) );
 
 }
 

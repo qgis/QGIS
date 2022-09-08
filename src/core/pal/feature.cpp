@@ -134,6 +134,15 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
   x.resize( nbPoints );
   y.resize( nbPoints );
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  GEOSCoordSeq_copyToArrays_r( geosctxt, coordSeq, x.data(), y.data(), nullptr, nullptr );
+  auto xminmax = std::minmax_element( x.begin(), x.end() );
+  xmin = *xminmax.first;
+  xmax = *xminmax.second;
+  auto yminmax = std::minmax_element( y.begin(), y.end() );
+  ymin = *yminmax.first;
+  ymax = *yminmax.second;
+#else
   for ( int i = 0; i < nbPoints; ++i )
   {
     GEOSCoordSeq_getXY_r( geosctxt, coordSeq, i, &x[i], &y[i] );
@@ -144,6 +153,7 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
     ymax = y[i] > ymax ? y[i] : ymax;
     ymin = y[i] < ymin ? y[i] : ymin;
   }
+#endif
 }
 
 Layer *FeaturePart::layer()
@@ -1404,7 +1414,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( flags == 0 )
     flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
   const bool hasAboveBelowLinePlacement = flags & QgsLabeling::LinePlacementFlag::AboveLine || flags & QgsLabeling::LinePlacementFlag::BelowLine;
-  const double offsetDistance = mLF->distLabel() + li->characterHeight() / 2;
+  const double offsetDistance = mLF->distLabel() + li->characterHeight( 0 ) / 2;
   std::unique_ptr< PointSet > mapShapeOffsetPositive;
   bool positiveShapeHasNegativeDistance = false;
   std::unique_ptr< PointSet > mapShapeOffsetNegative;
@@ -1495,7 +1505,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       return 0;
 
     const std::size_t candidateTargetCount = maximumLineCandidates();
-    double delta = std::max( li->characterHeight() / 6, totalDistance / candidateTargetCount );
+    double delta = std::max( li->characterHeight( 0 ) / 6, totalDistance / candidateTargetCount );
 
     // generate curved labels
     double distanceAlongLineToStartCandidate = 0;

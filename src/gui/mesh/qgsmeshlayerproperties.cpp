@@ -91,6 +91,13 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
   connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
 
+  connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this]
+  {
+    mTemporalDateTimeReference->setEnabled( !mAlwaysTimeFromSourceCheckBox->isChecked() );
+    if ( mAlwaysTimeFromSourceCheckBox->isChecked() )
+      reloadTemporalProperties();
+  } );
+
   mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ),
       QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
   mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ),
@@ -236,6 +243,7 @@ void QgsMeshLayerProperties::syncToLayer()
     mTemporalProviderTimeUnitComboBox->setCurrentIndex(
       mTemporalProviderTimeUnitComboBox->findData( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) );
   }
+  mAlwaysTimeFromSourceCheckBox->setChecked( temporalProperties->alwaysLoadReferenceTimeFromSource() );
   mComboBoxTemporalDatasetMatchingMethod->setCurrentIndex(
     mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() ) );
 
@@ -397,6 +405,8 @@ void QgsMeshLayerProperties::apply()
   mMeshLayer->temporalProperties()->setIsActive( !mStaticDatasetGroupBox->isChecked() );
   mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
       mComboBoxTemporalDatasetMatchingMethod->currentData().toInt() ) );
+  static_cast<QgsMeshLayerTemporalProperties *>(
+    mMeshLayer->temporalProperties() )->setAlwaysLoadReferenceTimeFromSource( mAlwaysTimeFromSourceCheckBox->isChecked() );
 
   mMetadataWidget->acceptMetadata();
 

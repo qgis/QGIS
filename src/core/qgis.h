@@ -1018,6 +1018,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Algorithms to use when repairing invalid geometries.
+     *
+     * \since QGIS 3.28
+     */
+    enum class MakeValidMethod : int
+    {
+      Linework = 0, //!< Combines all rings into a set of noded lines and then extracts valid polygons from that linework.
+      Structure = 1, //!< Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+.
+    };
+    Q_ENUM( MakeValidMethod )
+
+    /**
      * Feature request spatial filter types.
      *
      * \since QGIS 3.22
@@ -1386,6 +1398,83 @@ class CORE_EXPORT Qgis
       AlwaysText SIP_MONKEYPATCH_COMPAT_NAME( TextFormatAlwaysText ), //!< Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
     };
     Q_ENUM( TextRenderFormat )
+
+    /**
+     * Text orientations.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextFormat::TextOrientation
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextOrientation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextFormat, TextOrientation ) : int
+      {
+      Horizontal SIP_MONKEYPATCH_COMPAT_NAME( HorizontalOrientation ), //!< Horizontally oriented text
+      Vertical SIP_MONKEYPATCH_COMPAT_NAME( VerticalOrientation ), //!< Vertically oriented text
+      RotationBased SIP_MONKEYPATCH_COMPAT_NAME( RotationBasedOrientation ), //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
+    };
+    Q_ENUM( TextOrientation )
+
+    /**
+     * Text layout modes.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::DrawMode
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextLayoutMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, DrawMode ) : int
+      {
+      Rectangle SIP_MONKEYPATCH_COMPAT_NAME( Rect ), //!< Text within rectangle layout mode
+      Point, //!< Text at point of origin layout mode
+      Labeling SIP_MONKEYPATCH_COMPAT_NAME( Label ), //!< Labeling-specific layout mode
+    };
+    Q_ENUM( TextLayoutMode )
+
+    /**
+     * Text components.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::TextPart
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int
+      {
+      Text, //!< Text component
+      Buffer, //!< Buffer component
+      Background, //!< Background shape
+      Shadow, //!< Drop shadow
+    };
+    Q_ENUM( TextComponent )
+
+    /**
+     * Text horizontal alignment.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::HAlignment
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextHorizontalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, HAlignment ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ), //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( AlignCenter ), //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right align
+      Justify SIP_MONKEYPATCH_COMPAT_NAME( AlignJustify ), //!< Justify align
+    };
+    Q_ENUM( TextHorizontalAlignment )
+
+    /**
+     * Text vertical alignment.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::VAlignment
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextVerticalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, VAlignment ) : int
+      {
+      Top SIP_MONKEYPATCH_COMPAT_NAME( AlignTop ), //!< Align to top
+      VerticalCenter SIP_MONKEYPATCH_COMPAT_NAME( AlignVCenter ), //!< Center align
+      Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ), //!< Align to bottom
+    };
+    Q_ENUM( TextVerticalAlignment )
 
     /**
      * Rendering subcomponent properties.
@@ -2121,6 +2210,19 @@ class CORE_EXPORT Qgis
       ManyToMany, //!< Many to many relationship
     };
     Q_ENUM( RelationshipCardinality )
+
+    /**
+     * Formats for displaying coordinates
+     *
+     * \since QGIS 3.28
+     */
+    enum class CoordinateDisplayType : int
+    {
+      MapCrs, //!< Map CRS
+      MapGeographic, //!< Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)
+      CustomCrs, //!< Custom CRS
+    };
+    Q_ENUM( CoordinateDisplayType )
 
     /**
      * Identify search radius in mm

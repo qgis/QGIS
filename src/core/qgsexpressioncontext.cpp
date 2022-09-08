@@ -47,6 +47,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   , mFeature( other.mFeature )
   , mHasGeometry( other.mHasGeometry )
   , mGeometry( other.mGeometry )
+  , mHiddenVariables( other.mHiddenVariables )
 {
   QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
@@ -63,6 +64,7 @@ QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpres
   mFeature = other.mFeature;
   mHasGeometry = other.mHasGeometry;
   mGeometry = other.mGeometry;
+  mHiddenVariables = other.mHiddenVariables;
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
@@ -119,6 +121,29 @@ QStringList QgsExpressionContextScope::variableNames() const
   QStringList names = mVariables.keys();
   return names;
 }
+
+QStringList QgsExpressionContextScope::hiddenVariables() const
+{
+  return mHiddenVariables;
+}
+
+void QgsExpressionContextScope::setHiddenVariables( const QStringList &hiddenVariables )
+{
+  mHiddenVariables = hiddenVariables;
+}
+
+void QgsExpressionContextScope::addHiddenVariable( const QString &hiddenVariable )
+{
+  if ( !mHiddenVariables.contains( hiddenVariable ) )
+    mHiddenVariables << hiddenVariable;
+}
+
+void QgsExpressionContextScope::removeHiddenVariable( const QString &hiddenVariable )
+{
+  if ( mHiddenVariables.contains( hiddenVariable ) )
+    mHiddenVariables.removeAt( mHiddenVariables.indexOf( hiddenVariable ) );
+}
+
 
 /// @cond PRIVATE
 class QgsExpressionContextVariableCompare
@@ -208,8 +233,14 @@ void QgsExpressionContextScope::readXml( const QDomElement &element, const QgsRe
   {
     const QDomElement variableElement = variablesNodeList.at( i ).toElement();
     const QString key = variableElement.attribute( QStringLiteral( "name" ) );
-    const QVariant value = QgsXmlUtils::readVariant( variableElement.firstChildElement( QStringLiteral( "Option" ) ) );
-    setVariable( key, value );
+    if ( variableElement.tagName() == QStringLiteral( "Variable" ) )
+    {
+      const QVariant value = QgsXmlUtils::readVariant( variableElement.firstChildElement( QStringLiteral( "Option" ) ) );
+      setVariable( key, value );
+    }
+    else
+      addHiddenVariable( key );
+
   }
 }
 
@@ -221,6 +252,13 @@ bool QgsExpressionContextScope::writeXml( QDomElement &element, QDomDocument &do
     varElem.setAttribute( QStringLiteral( "name" ), it.key() );
     QDomElement valueElem = QgsXmlUtils::writeVariant( it.value().value, document );
     varElem.appendChild( valueElem );
+    element.appendChild( varElem );
+  }
+
+  for ( QString hiddenVariable : mHiddenVariables )
+  {
+    QDomElement varElem = document.createElement( QStringLiteral( "HiddenVariable" ) );
+    varElem.setAttribute( QStringLiteral( "name" ), hiddenVariable );
     element.appendChild( varElem );
   }
   return true;
@@ -421,10 +459,20 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   QStringList allVariables = variableNames();
   QStringList filtered;
   const auto constAllVariables = allVariables;
+
+  QStringList hiddenVariables;
+
+  for ( const QgsExpressionContextScope *scope : mStack )
+  {
+    const QStringList scopeHiddenVariables = scope->hiddenVariables();
+    for ( const QString &name : scopeHiddenVariables )
+      hiddenVariables << name ;
+  }
+
   for ( const QString &variable : constAllVariables )
   {
     if ( variable.startsWith( '_' ) ||
-         variable.compare( QStringLiteral( "frame_timestep_unit" ) ) == 0 )
+         hiddenVariables.contains( variable ) )
       continue;
 
     filtered << variable;

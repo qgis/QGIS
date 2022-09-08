@@ -61,17 +61,17 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
 
   const double margin = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   //map scalebar alignment to Qt::AlignmentFlag type
-  QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
+  Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
   switch ( settings.alignment() )
   {
     case QgsScaleBarSettings::AlignLeft:
-      hAlign = QgsTextRenderer::AlignLeft;
+      hAlign = Qgis::TextHorizontalAlignment::Left;
       break;
     case QgsScaleBarSettings::AlignMiddle:
-      hAlign = QgsTextRenderer::AlignCenter;
+      hAlign = Qgis::TextHorizontalAlignment::Center;
       break;
     case QgsScaleBarSettings::AlignRight:
-      hAlign = QgsTextRenderer::AlignRight;
+      hAlign = Qgis::TextHorizontalAlignment::Right;
       break;
   }
 

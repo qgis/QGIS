@@ -313,6 +313,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextbuffersettings.cpp
   textrenderer/qgstextcharacterformat.cpp
   textrenderer/qgstextdocument.cpp
+  textrenderer/qgstextdocumentmetrics.cpp
   textrenderer/qgstextformat.cpp
   textrenderer/qgstextfragment.cpp
   textrenderer/qgstextmasksettings.cpp
@@ -368,6 +369,7 @@ set(QGIS_CORE_SRCS
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
+  qgselevationmap.cpp
   qgselevationutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -1032,6 +1034,7 @@ set(QGIS_CORE_HDRS
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditorwidgetsetup.h
+  qgselevationmap.h
   qgselevationutils.h
   qgserror.h
   qgseventtracing.h
@@ -1823,6 +1826,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextbuffersettings.h
   textrenderer/qgstextcharacterformat.h
   textrenderer/qgstextdocument.h
+  textrenderer/qgstextdocumentmetrics.h
   textrenderer/qgstextformat.h
   textrenderer/qgstextfragment.h
   textrenderer/qgstextmasksettings.h
@@ -1969,6 +1973,9 @@ if (WITH_PDAL)
   include_directories(SYSTEM
     ${PDAL_INCLUDE_DIR}
   )
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 if (HAVE_OPENCL)

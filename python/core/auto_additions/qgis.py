@@ -957,6 +957,12 @@ Qgis.JoinStyle.__doc__ = 'Join styles for buffers.\n\n.. versionadded:: 3.22\n\n
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MakeValidMethod.Linework.__doc__ = "Combines all rings into a set of noded lines and then extracts valid polygons from that linework."
+Qgis.MakeValidMethod.Structure.__doc__ = "Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+."
+Qgis.MakeValidMethod.__doc__ = 'Algorithms to use when repairing invalid geometries.\n\n.. versionadded:: 3.28\n\n' + '* ``Linework``: ' + Qgis.MakeValidMethod.Linework.__doc__ + '\n' + '* ``Structure``: ' + Qgis.MakeValidMethod.Structure.__doc__
+# --
+Qgis.MakeValidMethod.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.SpatialFilterType.NoFilter.__doc__ = "No spatial filtering of features"
 Qgis.SpatialFilterType.BoundingBox.__doc__ = "Filter using a bounding box"
 Qgis.SpatialFilterType.DistanceWithin.__doc__ = "Filter by distance to reference geometry"
@@ -1299,6 +1305,82 @@ QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text obje
 Qgis.TextRenderFormat.__doc__ = 'Options for rendering text.\n\n.. versionadded:: 3.22\n\n' + '* ``TextFormatAlwaysOutlines``: ' + Qgis.TextRenderFormat.AlwaysOutlines.__doc__ + '\n' + '* ``TextFormatAlwaysText``: ' + Qgis.TextRenderFormat.AlwaysText.__doc__
 # --
 Qgis.TextRenderFormat.baseClass = Qgis
+QgsTextFormat.TextOrientation = Qgis.TextOrientation
+# monkey patching scoped based enum
+QgsTextFormat.HorizontalOrientation = Qgis.TextOrientation.Horizontal
+QgsTextFormat.HorizontalOrientation.is_monkey_patched = True
+QgsTextFormat.HorizontalOrientation.__doc__ = "Horizontally oriented text"
+QgsTextFormat.VerticalOrientation = Qgis.TextOrientation.Vertical
+QgsTextFormat.VerticalOrientation.is_monkey_patched = True
+QgsTextFormat.VerticalOrientation.__doc__ = "Vertically oriented text"
+QgsTextFormat.RotationBasedOrientation = Qgis.TextOrientation.RotationBased
+QgsTextFormat.RotationBasedOrientation.is_monkey_patched = True
+QgsTextFormat.RotationBasedOrientation.__doc__ = "Horizontally or vertically oriented text based on rotation (only available for map labeling)"
+Qgis.TextOrientation.__doc__ = 'Text orientations.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextFormat`.TextOrientation\n\n.. versionadded:: 3.28\n\n' + '* ``HorizontalOrientation``: ' + Qgis.TextOrientation.Horizontal.__doc__ + '\n' + '* ``VerticalOrientation``: ' + Qgis.TextOrientation.Vertical.__doc__ + '\n' + '* ``RotationBasedOrientation``: ' + Qgis.TextOrientation.RotationBased.__doc__
+# --
+Qgis.TextOrientation.baseClass = Qgis
+QgsTextRenderer.DrawMode = Qgis.TextLayoutMode
+# monkey patching scoped based enum
+QgsTextRenderer.Rect = Qgis.TextLayoutMode.Rectangle
+QgsTextRenderer.Rect.is_monkey_patched = True
+QgsTextRenderer.Rect.__doc__ = "Text within rectangle layout mode"
+QgsTextRenderer.Point = Qgis.TextLayoutMode.Point
+QgsTextRenderer.Point.is_monkey_patched = True
+QgsTextRenderer.Point.__doc__ = "Text at point of origin layout mode"
+QgsTextRenderer.Label = Qgis.TextLayoutMode.Labeling
+QgsTextRenderer.Label.is_monkey_patched = True
+QgsTextRenderer.Label.__doc__ = "Labeling-specific layout mode"
+Qgis.TextLayoutMode.__doc__ = 'Text layout modes.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.DrawMode\n\n.. versionadded:: 3.28\n\n' + '* ``Rect``: ' + Qgis.TextLayoutMode.Rectangle.__doc__ + '\n' + '* ``Point``: ' + Qgis.TextLayoutMode.Point.__doc__ + '\n' + '* ``Label``: ' + Qgis.TextLayoutMode.Labeling.__doc__
+# --
+Qgis.TextLayoutMode.baseClass = Qgis
+QgsTextRenderer.TextPart = Qgis.TextComponent
+# monkey patching scoped based enum
+QgsTextRenderer.Text = Qgis.TextComponent.Text
+QgsTextRenderer.Text.is_monkey_patched = True
+QgsTextRenderer.Text.__doc__ = "Text component"
+QgsTextRenderer.Buffer = Qgis.TextComponent.Buffer
+QgsTextRenderer.Buffer.is_monkey_patched = True
+QgsTextRenderer.Buffer.__doc__ = "Buffer component"
+QgsTextRenderer.Background = Qgis.TextComponent.Background
+QgsTextRenderer.Background.is_monkey_patched = True
+QgsTextRenderer.Background.__doc__ = "Background shape"
+QgsTextRenderer.Shadow = Qgis.TextComponent.Shadow
+QgsTextRenderer.Shadow.is_monkey_patched = True
+QgsTextRenderer.Shadow.__doc__ = "Drop shadow"
+Qgis.TextComponent.__doc__ = 'Text components.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.TextPart\n\n.. versionadded:: 3.28\n\n' + '* ``Text``: ' + Qgis.TextComponent.Text.__doc__ + '\n' + '* ``Buffer``: ' + Qgis.TextComponent.Buffer.__doc__ + '\n' + '* ``Background``: ' + Qgis.TextComponent.Background.__doc__ + '\n' + '* ``Shadow``: ' + Qgis.TextComponent.Shadow.__doc__
+# --
+Qgis.TextComponent.baseClass = Qgis
+QgsTextRenderer.HAlignment = Qgis.TextHorizontalAlignment
+# monkey patching scoped based enum
+QgsTextRenderer.AlignLeft = Qgis.TextHorizontalAlignment.Left
+QgsTextRenderer.AlignLeft.is_monkey_patched = True
+QgsTextRenderer.AlignLeft.__doc__ = "Left align"
+QgsTextRenderer.AlignCenter = Qgis.TextHorizontalAlignment.Center
+QgsTextRenderer.AlignCenter.is_monkey_patched = True
+QgsTextRenderer.AlignCenter.__doc__ = "Center align"
+QgsTextRenderer.AlignRight = Qgis.TextHorizontalAlignment.Right
+QgsTextRenderer.AlignRight.is_monkey_patched = True
+QgsTextRenderer.AlignRight.__doc__ = "Right align"
+QgsTextRenderer.AlignJustify = Qgis.TextHorizontalAlignment.Justify
+QgsTextRenderer.AlignJustify.is_monkey_patched = True
+QgsTextRenderer.AlignJustify.__doc__ = "Justify align"
+Qgis.TextHorizontalAlignment.__doc__ = 'Text horizontal alignment.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.HAlignment\n\n.. versionadded:: 3.28\n\n' + '* ``AlignLeft``: ' + Qgis.TextHorizontalAlignment.Left.__doc__ + '\n' + '* ``AlignCenter``: ' + Qgis.TextHorizontalAlignment.Center.__doc__ + '\n' + '* ``AlignRight``: ' + Qgis.TextHorizontalAlignment.Right.__doc__ + '\n' + '* ``AlignJustify``: ' + Qgis.TextHorizontalAlignment.Justify.__doc__
+# --
+Qgis.TextHorizontalAlignment.baseClass = Qgis
+QgsTextRenderer.VAlignment = Qgis.TextVerticalAlignment
+# monkey patching scoped based enum
+QgsTextRenderer.AlignTop = Qgis.TextVerticalAlignment.Top
+QgsTextRenderer.AlignTop.is_monkey_patched = True
+QgsTextRenderer.AlignTop.__doc__ = "Align to top"
+QgsTextRenderer.AlignVCenter = Qgis.TextVerticalAlignment.VerticalCenter
+QgsTextRenderer.AlignVCenter.is_monkey_patched = True
+QgsTextRenderer.AlignVCenter.__doc__ = "Center align"
+QgsTextRenderer.AlignBottom = Qgis.TextVerticalAlignment.Bottom
+QgsTextRenderer.AlignBottom.is_monkey_patched = True
+QgsTextRenderer.AlignBottom.__doc__ = "Align to bottom"
+Qgis.TextVerticalAlignment.__doc__ = 'Text vertical alignment.\n\n.. note::\n\n   Prior to QGIS 3.28 this was available as :py:class:`QgsTextRenderer`.VAlignment\n\n.. versionadded:: 3.28\n\n' + '* ``AlignTop``: ' + Qgis.TextVerticalAlignment.Top.__doc__ + '\n' + '* ``AlignVCenter``: ' + Qgis.TextVerticalAlignment.VerticalCenter.__doc__ + '\n' + '* ``AlignBottom``: ' + Qgis.TextVerticalAlignment.Bottom.__doc__
+# --
+Qgis.TextVerticalAlignment.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RenderSubcomponentProperty.Generic.__doc__ = "Generic subcomponent property"
 Qgis.RenderSubcomponentProperty.ShadowOffset.__doc__ = "Shadow offset"
@@ -1916,3 +1998,10 @@ Qgis.RelationshipCardinality.ManyToMany.__doc__ = "Many to many relationship"
 Qgis.RelationshipCardinality.__doc__ = 'Relationship cardinality.\n\n.. versionadded:: 3.28\n\n' + '* ``OneToOne``: ' + Qgis.RelationshipCardinality.OneToOne.__doc__ + '\n' + '* ``OneToMany``: ' + Qgis.RelationshipCardinality.OneToMany.__doc__ + '\n' + '* ``ManyToOne``: ' + Qgis.RelationshipCardinality.ManyToOne.__doc__ + '\n' + '* ``ManyToMany``: ' + Qgis.RelationshipCardinality.ManyToMany.__doc__
 # --
 Qgis.RelationshipCardinality.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CoordinateDisplayType.MapCrs.__doc__ = "Map CRS"
+Qgis.CoordinateDisplayType.MapGeographic.__doc__ = "Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)"
+Qgis.CoordinateDisplayType.CustomCrs.__doc__ = "Custom CRS"
+Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. versionadded:: 3.28\n\n' + '* ``MapCrs``: ' + Qgis.CoordinateDisplayType.MapCrs.__doc__ + '\n' + '* ``MapGeographic``: ' + Qgis.CoordinateDisplayType.MapGeographic.__doc__ + '\n' + '* ``CustomCrs``: ' + Qgis.CoordinateDisplayType.CustomCrs.__doc__
+# --
+Qgis.CoordinateDisplayType.baseClass = Qgis

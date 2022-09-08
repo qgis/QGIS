@@ -882,6 +882,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "like 4" ) << "'hello' like '%LO'" << false << QVariant( 0 );
       QTest::newRow( "like 5" ) << "'QGIS' like '%G%'" << false << QVariant( 1 );
       QTest::newRow( "like 6" ) << "'[testing]' like '[testing%'" << false << QVariant( 1 );
+      QTest::newRow( "like 7" ) << "'hello\nworld' like '%world%'" << false << QVariant( 1 );
       QTest::newRow( "ilike" ) << "'hello' ilike '%LO'" << false << QVariant( 1 );
       QTest::newRow( "ilike with dot" ) << "'QGIS .123' ilike 'qgis .123'" << false << QVariant( 1 );
       // the \\\\ is like \\ in the interface
@@ -1138,6 +1139,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "line_merge point" ) << "line_merge(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "line_merge line" ) << "geom_to_wkt(line_merge(geometry:=geom_from_wkt('LineString(0 0, 10 10)')))" << false << QVariant( "LineString (0 0, 10 10)" );
       QTest::newRow( "line_merge multiline" ) << "geom_to_wkt(line_merge(geom_from_wkt('MultiLineString((0 0, 10 10),(10 10, 20 20))')))" << false << QVariant( "LineString (0 0, 10 10, 20 20)" );
+      QTest::newRow( "shared_paths not geom 1" ) << "shared_paths('g', geom_from_wkt('LineString(0 0, 10 10)'))" << true << QVariant();
+      QTest::newRow( "shared_paths not geom 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), 'g')" << true << QVariant();
+      QTest::newRow( "shared_paths null 1" ) << "shared_paths(NULL, geom_from_wkt('LineString(0 0, 10 10)'))" << false << QVariant();
+      QTest::newRow( "shared_paths null 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), NULL)" << false << QVariant();
+      QTest::newRow( "shared_paths point 1" ) << "shared_paths(make_point(1,2), geom_from_wkt('LineString(0 0, 10 10)'))" << false << QVariant();
+      QTest::newRow( "shared_paths point 2" ) << "shared_paths(geom_from_wkt('LineString(0 0, 10 10)'), make_point(1,2))" << false << QVariant();
+      QTest::newRow( "shared_paths lines 1" ) << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), geometry2:=geom_from_wkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')))" << false << QVariant( "GeometryCollection (MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)),MultiLineString EMPTY)" );
+      QTest::newRow( "shared_paths lines 2" ) << "geom_to_wkt(shared_paths(geometry1:=geom_from_wkt('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),(51 150,101 150,76 175,51 150))'), geometry2:=reverse(geom_from_wkt('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)'))))" << false << QVariant( "GeometryCollection (MultiLineString EMPTY,MultiLineString ((126 156.25, 126 125),(101 150, 90 161),(90 161, 76 175)))" );
       QTest::newRow( "offset_curve not geom" ) << "offset_curve('g', 5)" << true << QVariant();
       QTest::newRow( "offset_curve null" ) << "offset_curve(NULL, 5)" << false << QVariant();
       QTest::newRow( "offset_curve point" ) << "offset_curve(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
@@ -1304,6 +1313,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "make_rectangle_3points (distance default)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5)))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
       QTest::newRow( "make_rectangle_3points (distance)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 5), 0))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
       QTest::newRow( "make_rectangle_3points (projected)" ) << "geom_to_wkt(make_rectangle_3points(make_point(0, 0), make_point(0,5), make_point(5, 3), 1))" << false << QVariant( "Polygon ((0 0, 0 5, 5 5, 5 0, 0 0))" );
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+      QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))" );
+#else
+      QTest::newRow( "make_valid_extravert" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8, 3 2, 4 2))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
+#endif
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+      QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
+#else
+      QTest::newRow( "make_valid_missingEnd" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))')))" << false << QVariant( "Polygon ((3 2, 5 8, 4 1, 3 2))" );
+      QTest::newRow( "make_valid_missingEnd linework" ) << "geom_to_wkt(make_valid(geom_from_wkt('POLYGON((3 2, 4 1, 5 8))'), method:='linework'))" << false << QVariant( "Polygon ((3 2, 4 1, 5 8, 3 2))" );
+#endif
+      QTest::newRow( "make_valid_wrongInput" ) << "make_valid('not a geometry')" << true << QVariant();
       QTest::newRow( "x point" ) << "x(make_point(2.2,4.4))" << false << QVariant( 2.2 );
       QTest::newRow( "y point" ) << "y(make_point(2.2,4.4))" << false << QVariant( 4.4 );
       QTest::newRow( "z point" ) << "z(make_point(2.2,4.4,6.6))" << false << QVariant( 6.6 );
@@ -1548,6 +1569,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "roundness multi polygon" ) << "round(roundness(geom_from_wkt('MULTIPOLYGON( ((0 0, 0 1, 1 1, 1 0, 0 0)), ((5 2, 4 9, 5 9, 6 5, 5 2)) )')))" << true << QVariant();
       QTest::newRow( "roundness thin polygon" ) << "roundness(geom_from_wkt('POLYGON(( 0 0, 0.5 0, 1 0, 0.6 0, 0 0))'))" << false << QVariant( 0.0 );
       QTest::newRow( "roundness circle polygon" ) << "roundness(geom_from_wkt('CurvePolygon (CompoundCurve (CircularString (0 0, 0 1, 1 1, 1 0, 0 0)))'))" << false << QVariant( 1.0 );
+      QTest::newRow( "geometries_to_array_collection0" ) << "geom_to_wkt(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),0))" << false << QVariant( "Polygon ((5 8, 4 1, 3 2, 5 8))" );
+      QTest::newRow( "geometries_to_array_collection1" ) << "geom_to_wkt(array_get(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))')),1))" << false << QVariant( "LineString (3 2, 4 2)" );
+      QTest::newRow( "geometries_to_array_singlePoly" ) << "geom_to_wkt(array_first(geometries_to_array(geom_from_wkt('Polygon ((5 8, 4 1, 3 2, 5 8))'))))" << false << QVariant( "Polygon ((5 8, 4 1, 3 2, 5 8))" );
+      QTest::newRow( "geometries_to_array_multipoly" ) << "geom_to_wkt(array_get(geometries_to_array(geom_from_wkt('MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5)))')),1))" << false << QVariant( "Polygon ((5 5, 10 10, 10 0, 5 5))" );
+      QTest::newRow( "geometries_to_array_emptygeom" ) << "array_length(geometries_to_array(geom_from_wkt('LINESTRING EMPTY')))" << false << QVariant( 1 );
+      QTest::newRow( "geometries_to_array_nongeom" ) << "geometries_to_array('just a string')" << true << QVariant();
 #if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=11 )
       QTest::newRow( "concavehull not geom" ) << "concavehull('r', 1)" << true << QVariant();
       QTest::newRow( "concavehull null" ) << "concavehull(NULL, 1)" << false << QVariant();

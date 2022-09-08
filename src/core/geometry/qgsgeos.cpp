@@ -160,19 +160,60 @@ QgsGeometry QgsGeos::geometryFromGeos( const geos::unique_ptr &geos )
   return g;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod method, bool keepCollapsed, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
     return nullptr;
   }
 
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+  if ( method != Qgis::MakeValidMethod::Linework )
+    throw QgsNotSupportedException( QStringLiteral( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
+
+  if ( keepCollapsed )
+    throw QgsNotSupportedException( QStringLiteral( "The keep collapsed option for making geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
   geos::unique_ptr geos;
   try
   {
     geos.reset( GEOSMakeValid_r( geosinit()->ctxt, mGeos.get() ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
+#else
+
+  GEOSMakeValidParams *params = GEOSMakeValidParams_create_r( geosinit()->ctxt );
+  switch ( method )
+  {
+    case Qgis::MakeValidMethod::Linework:
+      GEOSMakeValidParams_setMethod_r( geosinit()->ctxt, params, GEOS_MAKE_VALID_LINEWORK );
+      break;
+
+    case Qgis::MakeValidMethod::Structure:
+      GEOSMakeValidParams_setMethod_r( geosinit()->ctxt, params, GEOS_MAKE_VALID_STRUCTURE );
+      break;
+  }
+
+  GEOSMakeValidParams_setKeepCollapsed_r( geosinit()->ctxt,
+                                          params,
+                                          keepCollapsed ? 1 : 0 );
+
+  geos::unique_ptr geos;
+  try
+  {
+    geos.reset( GEOSMakeValidWithParams_r( geosinit()->ctxt, mGeos.get(), params ) );
+    GEOSMakeValidParams_destroy_r( geosinit()->ctxt, params );
+  }
+  catch ( GEOSException &e )
+  {
+    if ( errorMsg )
+    {
+      *errorMsg = e.what();
+    }
+    GEOSMakeValidParams_destroy_r( geosinit()->ctxt, params );
+    return nullptr;
+  }
+#endif
+
   return fromGeos( geos.get() );
 }
 
@@ -1458,8 +1499,10 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM )
 {
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit()->ctxt, geos );
+
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit()->ctxt, cs, &nPoints );
+
   QVector< double > xOut( nPoints );
   QVector< double > yOut( nPoints );
   QVector< double > zOut;
@@ -1468,10 +1511,15 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
   QVector< double > mOut;
   if ( hasM )
     mOut.resize( nPoints );
+
   double *x = xOut.data();
   double *y = yOut.data();
   double *z = zOut.data();
   double *m = mOut.data();
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  GEOSCoordSeq_copyToArrays_r( geosinit()->ctxt, cs, x, y, hasZ ? z : nullptr, hasM ? m : nullptr );
+#else
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
     if ( hasZ )
@@ -1483,6 +1531,7 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
       GEOSCoordSeq_getOrdinate_r( geosinit()->ctxt, cs, i, 3, m++ );
     }
   }
+#endif
   std::unique_ptr< QgsLineString > line( new QgsLineString( xOut, yOut, zOut, mOut ) );
   return line;
 }
@@ -2045,6 +2094,27 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   {
     return nullptr;
   }
+  GEOSCoordSequence *coordSeq = nullptr;
+
+  const int numPoints = line->numPoints();
+
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+
+  if ( !forceClose || ( line->pointN( 0 ) == line->pointN( numPoints - 1 ) ) )
+  {
+    // use optimised method if we don't have to force close an open ring
+    try
+    {
+      coordSeq = GEOSCoordSeq_copyFromArrays_r( geosinit()->ctxt, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
+      if ( !coordSeq )
+      {
+        QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
+        return nullptr;
+      }
+    }
+    CATCH_GEOS( nullptr )
+  }
+#endif
 
   bool hasZ = line->is3D();
   bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
@@ -2058,15 +2128,12 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     ++coordDims;
   }
 
-  int numPoints = line->numPoints();
-
   int numOutPoints = numPoints;
   if ( forceClose && ( line->pointN( 0 ) != line->pointN( numPoints - 1 ) ) )
   {
     ++numOutPoints;
   }
 
-  GEOSCoordSequence *coordSeq = nullptr;
   try
   {
     coordSeq = GEOSCoordSeq_create_r( geosinit()->ctxt, numOutPoints, coordDims );

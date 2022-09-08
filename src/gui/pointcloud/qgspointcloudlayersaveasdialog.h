@@ -24,6 +24,7 @@
 #include "qgsfields.h"
 #include "qgsvectorfilewriter.h"
 #include "qgis_gui.h"
+#include "qgspointcloudlayerexporter.h"
 
 #define SIP_NO_FILE
 
@@ -50,7 +51,7 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
      * The format in which the export should be written.
      * \see QgsVectorFileWriter::filterForDriver()
      */
-    QString format() const;
+    QgsPointCloudLayerExporter::ExportFormat exportFormat() const;
 
     /**
      * Returns the target filename.
@@ -99,6 +100,21 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     QgsRectangle filterExtent() const;
 
     /**
+     * Determines if points will be spatially filtered by a layer's features.
+     */
+    bool hasFilterLayer() const;
+
+    /**
+     * Returns the layer responsible for spatially filtering points.
+     */
+    QgsMapLayer *filterLayer() const;
+
+    /**
+     * Determines if only the selected features from the filterLayer will be used for spatial filtering.
+     */
+    bool filterLayerSelectedOnly() const;
+
+    /**
      * Determines if attributes will be exported as fields.
      * \see attributes()
      */
@@ -139,6 +155,10 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
   private slots:
 
     void mFormatComboBox_currentIndexChanged( int idx );
+    void mFilterGeometryGroupBoxCheckToggled( bool checked );
+    void mMinimumZSpinBoxValueChanged( const double value );
+    void mMaximumZSpinBoxValueChanged( const double value );
+    void mFilterGeometryLayerChanged( QgsMapLayer *layer );
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void showHelp();
     void accept() override;
@@ -148,7 +168,16 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
   private:
 
     void setup();
-    QString filterForDriver( const QString &driverName ) const;
+
+    /**
+     * Gets the translated name for the specified \a format
+     */
+    static QString getTranslatedNameForFormat( QgsPointCloudLayerExporter::ExportFormat format );
+
+    /**
+     * Gets the extensions filter for the specified \a format
+     */
+    static QString getFilterForFormat( QgsPointCloudLayerExporter::ExportFormat format );
 
     QgsCoordinateReferenceSystem mSelectedCrs;
 

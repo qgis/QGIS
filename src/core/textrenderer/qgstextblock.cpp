@@ -16,6 +16,8 @@
 #include "qgstextblock.h"
 #include "qgstextfragment.h"
 
+#include <QSizeF>
+
 QgsTextBlock::QgsTextBlock( const QgsTextFragment &fragment )
 {
   mFragments.append( fragment );
