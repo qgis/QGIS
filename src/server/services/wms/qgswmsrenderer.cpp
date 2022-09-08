@@ -3162,7 +3162,7 @@ namespace QgsWms
                                         " has been rejected because of security reasons."
                                         " Note: Text strings have to be enclosed in single or double quotes."
                                         " A space between each word / special character is mandatory."
-                                        " Allowed Keywords and special characters are "
+                                        " Allowed Keywords and special characters are"
                                         " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
                                         " Not allowed are semicolons in the filter expression." ).arg(
                                           filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ?

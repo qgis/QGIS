@@ -670,6 +670,11 @@ QString QgsServerSettings::projectCacheStrategy() const
 
 QStringList QgsServerSettings::allowedExtraSqlTokens() const
 {
-  return value( QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS ).toString().split( ',' );
+  const QString strVal { value( QgsServerSettingsEnv::QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS ).toString().trimmed() };
+  if ( strVal.isEmpty() )
+  {
+    return QStringList();
+  }
+  return strVal.split( ',' );
 }
 
