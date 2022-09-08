@@ -26,9 +26,20 @@
 import os
 import json
 import zipfile
+from functools import partial
 
+from qgis.PyQt import sip
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
-from qgis.PyQt.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFrame, QMessageBox, QLabel, QVBoxLayout
+from qgis.PyQt.QtWidgets import (
+    QApplication,
+    QDialog,
+    QDialogButtonBox,
+    QFrame,
+    QMessageBox,
+    QLabel,
+    QVBoxLayout,
+    QPushButton
+)
 from qgis.PyQt.QtNetwork import QNetworkRequest
 
 import qgis
@@ -61,8 +72,6 @@ class QgsPluginInstaller(QObject):
 
     """ The main class for managing the plugin installer stuff"""
 
-    statusLabel = None
-
     # ----------------------------------------- #
     def __init__(self):
         """ Initialize data objects, starts fetching if appropriate, and warn about/removes obsolete plugins """
@@ -71,11 +80,10 @@ class QgsPluginInstaller(QObject):
         repositories.load()
         plugins.getAllInstalled()
 
+        self.message_bar_widget = None
+
         if repositories.checkingOnStart() and repositories.timeForChecking() and repositories.allEnabled():
             # start fetching repositories
-            self.statusLabel = QLabel(iface.mainWindow().statusBar())
-            iface.mainWindow().statusBar().addPermanentWidget(self.statusLabel)
-            self.statusLabel.linkActivated.connect(self.showPluginManagerWhenReady)
             repositories.checkingDone.connect(self.checkingDone)
             for key in repositories.allEnabled():
                 repositories.requestFetching(key)
@@ -143,29 +151,35 @@ class QgsPluginInstaller(QObject):
     # ----------------------------------------- #
     def checkingDone(self):
         """ Remove the "Looking for new plugins..." label and display a notification instead if any updates available """
-        if not self.statusLabel:
-            # only proceed if the label is present
-            return
+
         # rebuild plugins cache
         plugins.rebuild()
         # look for news in the repositories
         plugins.markNews()
-        status = ""
-        icon = ""
+        status = None
         # then check for updates (and eventually overwrite status)
-        for key in plugins.all():
-            if plugins.all()[key]["status"] == "upgradeable":
-                status = self.tr("There is a plugin update available")
-                icon = "pluginUpgrade.svg"
-                tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
+        updatable_count = 0
+        updatable_plugin_name = None
+        for _, properties in plugins.all().items():
+            if properties["status"] == "upgradeable":
+                updatable_count += 1
+                updatable_plugin_name = properties["name"]
+
+        if updatable_count:
+            if updatable_count > 1:
+                status = self.tr("Multiple plugin updates are available")
+            else:
+                status = self.tr("An update to the {} plugin is available").format(updatable_plugin_name)
+            tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
 
         # finally set the notify label
         if status:
-            self.statusLabel.setText(u'<a href="%d"><img src=":/images/themes/default/%s"></a>' % (tabIndex, icon))
-            self.statusLabel.setToolTip(status)
-        else:
-            iface.mainWindow().statusBar().removeWidget(self.statusLabel)
-            self.statusLabel = None
+            bar = iface.messageBar()
+            self.message_bar_widget = bar.createMessage('', status)
+            update_button = QPushButton("Install Updates…")
+            update_button.pressed.connect(partial(self.showPluginManagerWhenReady, tabIndex))
+            self.message_bar_widget.layout().addWidget(update_button)
+            bar.pushWidget(self.message_bar_widget, Qgis.Info)
 
     # ----------------------------------------- #
     def exportRepositoriesToManager(self):
@@ -253,9 +267,10 @@ class QgsPluginInstaller(QObject):
     def showPluginManagerWhenReady(self, * params):
         """ Open the plugin manager window. If fetching is still in progress, it shows the progress window first """
         """ Optionally pass the index of tab to be opened in params """
-        if self.statusLabel:
-            iface.mainWindow().statusBar().removeWidget(self.statusLabel)
-            self.statusLabel = None
+        if self.message_bar_widget:
+            if not sip.isdeleted(self.message_bar_widget):
+                iface.messageBar().popWidget(self.message_bar_widget)
+            self.message_bar_widget = None
 
         self.fetchAvailablePlugins(reloadMode=False)
         self.exportRepositoriesToManager()
