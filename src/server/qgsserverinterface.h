@@ -170,6 +170,13 @@ class SERVER_EXPORT QgsServerInterface
      */
     virtual QgsServerSettings *serverSettings() = 0 SIP_SKIP;
 
+    /**
+     * Reloads the server settings re-reading the configuration.
+     *
+     * \since QGIS 3.28
+     */
+    virtual void reloadSettings() = 0;
+
   private:
 #ifdef SIP_RUN
     QgsServerInterface();

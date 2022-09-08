@@ -79,6 +79,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_LANDING_PAGE_PREFIX, //! Prefix of the path component of the landing page base URL, default is empty (since QGIS 3.20).
       QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL, //! Set the interval for cache invalidation strategy 'interval', default to 0 which select the legacy File system watcher  (since QGIS 3.26).
       QGIS_SERVER_PROJECT_CACHE_STRATEGY, //! Set the project cache strategy. Possible values are 'filesystem', 'periodic' or 'off' (since QGIS 3.26).
+      QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS, //! Adds these tokens to the list of allowed tokens that the services accept when filtering features (since QGIS 3.28).
     };
     Q_ENUM( EnvVar )
 };
@@ -316,6 +317,16 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.26
      */
     QString projectCacheStrategy() const;
+
+    /**
+     * Returns the list of strings that represent the allowed extra SQL tokens
+     * accepted as components of a feature filter.
+     * The default value is an empty string, the value can be changed by setting the environment
+     * variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
+     *
+     * \since QGIS 3.28
+     */
+    QStringList allowedExtraSqlTokens() const;
 
     /**
      * Returns the string representation of a setting.
