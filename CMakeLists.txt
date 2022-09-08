@@ -1020,26 +1020,6 @@ if (WITH_CORE)
 endif()
 
 ####################################################
-# clang-tidy
-set (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
-mark_as_advanced(WITH_CLANG_TIDY)
-if (WITH_CORE)
-  if(WITH_CLANG_TIDY)
-    find_program(
-      CLANG_TIDY_EXE
-      NAMES "clang-tidy"
-      DOC "Path to clang-tidy executable"
-      )
-    if(NOT CLANG_TIDY_EXE)
-      message(STATUS "clang-tidy not found.")
-    else()
-      message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-      set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
-    endif()
-  endif()
-endif()
-
-####################################################
 # asan
 set (WITH_ASAN FALSE CACHE BOOL "Use AddressSanitizer")
 mark_as_advanced(WITH_ASAN)

@@ -75,6 +75,12 @@ if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
   )
 fi
 
+if [[ "${WITH_COMPILE_COMMANDS}" == "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+  )
+fi
+
 if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
     "-DGRASS_PREFIX$( grass --config version | cut -b 1 )=$( grass --config path )"
