@@ -44,6 +44,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "service" );
   QTest::addColumn<QString>( "user" );
   QTest::addColumn<QString>( "password" );
+  QTest::addColumn<QString>( "authcfg" );
   QTest::addColumn<QString>( "dbname" );
   QTest::addColumn<QString>( "host" );
   QTest::addColumn<QString>( "port" );
@@ -66,6 +67,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
       << "" // dbname
       << "myhost" // host
       << "1234" // port
@@ -88,6 +90,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "" // password
+      << "" // authcfg
       << "qgis_tests" // dbname
       << "localhost" // host
       << "5432" // port
@@ -110,6 +113,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
@@ -132,6 +136,30 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
+      << "mydb" // dbname
+      << "myhost" // host
+      << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "pg_notable_authcfg" )
+      << "PG: dbname=mydb host=myhost authcfg=myauthcfg port=5432 mode=2 schema=myschema "
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "myauthcfg" // authcfg
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
@@ -156,6 +184,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
@@ -180,6 +209,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, service );
   QFETCH( QString, user );
   QFETCH( QString, password );
+  QFETCH( QString, authcfg );
   QFETCH( QString, dbname );
   QFETCH( QString, host );
   QFETCH( QString, port );
@@ -199,6 +229,7 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.service(), service );
   QCOMPARE( ds.username(), user );
   QCOMPARE( ds.password(), password );
+  QCOMPARE( ds.authConfigId(), authcfg );
   QCOMPARE( ds.database(), dbname );
   QCOMPARE( ds.host(), host );
   QCOMPARE( ds.port(), port );
