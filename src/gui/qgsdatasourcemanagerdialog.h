@@ -57,7 +57,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
       * \param canvas a pointer to the map canvas
       * \param fl window flags
       */
-    explicit QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    explicit QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = Qt::Window );
     ~QgsDataSourceManagerDialog() override;
 
     /**
@@ -71,6 +71,13 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     QgsMessageBar *messageBar() const;
 
   public slots:
+
+    /**
+     * Raise, unminimize and activate this window.
+     *
+     * \since QGIS 3.28
+     */
+    void activate();
 
     //! Sync current page with the leftbar list
     void setCurrentPage( int index );
