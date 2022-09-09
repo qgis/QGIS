@@ -103,6 +103,45 @@ struct QgsGeometryPrivate;
 
 /**
  * \ingroup core
+ * \brief Encapsulates parameters under which a geometry operation is performed.
+ *
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsGeometryParameters
+{
+  public:
+
+    /**
+     * Returns the grid size which will be used to snap vertices of a geometry.
+     *
+     * This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+     * geometry result vertices will be computed on that same precision grid.
+     *
+     * A value of -1 indicates that no precision reduction will be applied.
+     *
+     * \see setGridSize()
+     */
+    double gridSize() const { return mGridSize; }
+
+    /**
+     * Sets the grid \a size which will be used to snap vertices of a geometry.
+     *
+     * This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+     * geometry result vertices will be computed on that same precision grid.
+     *
+     * A value of -1 indicates that no precision reduction will be applied.
+     *
+     * \see gridSize()
+     */
+    void setGridSize( double size ) { mGridSize = size; }
+
+  private:
+
+    double mGridSize = -1;
+};
+
+/**
+ * \ingroup core
  * \brief A geometry is the spatial representation of a feature.
  *
  * QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
@@ -1714,12 +1753,12 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
-     * \param maxNodes Maximum nodes used
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the subdivision results.
      *
      * \since QGIS 3.0
      */
-    QgsGeometry subdivide( int maxNodes = 256, double gridSize = -1 ) const;
+    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns an interpolated point on the geometry at the specified \a distance.
@@ -1770,11 +1809,10 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
-     * \param geometry geometry to perform the operation
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
-     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the intersection results.
      */
-    QgsGeometry intersection( const QgsGeometry &geometry, double gridSize = -1 ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Clips the geometry using the specified \a rectangle.
@@ -1796,11 +1834,10 @@ class CORE_EXPORT QgsGeometry
      *
      * \note this operation is not called union since its a reserved word in C++.
      *
-     * \param geometry geometry to perform the operation
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
-     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the union results.
      */
-    QgsGeometry combine( const QgsGeometry &geometry, double gridSize = -1 ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -1820,11 +1857,10 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
-     * \param geometry geometry to perform the operation
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
-     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the difference results.
      */
-    QgsGeometry difference( const QgsGeometry &geometry, double gridSize = -1 ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -1834,11 +1870,10 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
-     * \param geometry geometry to perform the operation
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
-     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the difference results.
      */
-    QgsGeometry symDifference( const QgsGeometry &geometry, double gridSize = -1 ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
@@ -2514,11 +2549,10 @@ class CORE_EXPORT QgsGeometry
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
      *
-     * \param geometries list of geometries to perform the operation
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
-     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the union results.
      */
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, double gridSize = -1 );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent

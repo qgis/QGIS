@@ -110,66 +110,69 @@ class CORE_EXPORT QgsGeometryEngine
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by GEOS
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * \param parameters can be used to specify parameters which control the intersection results (since QGIS 3.28)
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the difference of this and \a geom.
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by GEOS
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * \param parameters can be used to specify parameters which control the difference results (since QGIS 3.28)
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geom.
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by GEOS
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * \param parameters can be used to specify parameters which control the union results (since QGIS 3.28)
+     *
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geometries.
      *
      * \param geomList list of geometries to perform the operation
      * \param errorMsg Error message returned by GEOS
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * \param parameters can be used to specify parameters which control the combination results (since QGIS 3.28)
+     *
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, double gridSize = -1 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the combination of this and \a geometries.
      *
      * \param geometries list of geometries to perform the operation
      * \param errorMsg Error message returned by GEOS
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * \param parameters can be used to specify parameters which control the combination results (since QGIS 3.28)
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
      *
      * \param geom geometry to perform the operation
      * \param errorMsg Error message returned by GEOS
-     * \param gridSize If this optional argument is provided, the inputs are snapped to a grid of the given size, and the result vertices are computed on that same grid. (Requires GEOS-3.9.0 or higher) /since 3.28
+     * \param parameters can be used to specify parameters which control the difference results (since QGIS 3.28)
+     *
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, double gridSize = -1 ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const = 0 SIP_FACTORY;
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**

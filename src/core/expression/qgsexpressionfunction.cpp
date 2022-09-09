@@ -37,7 +37,6 @@
 #include "qgscurve.h"
 #include "qgsregularpolygon.h"
 #include "qgsquadrilateral.h"
-#include "qgsmultipolygon.h"
 #include "qgsvariantutils.h"
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
