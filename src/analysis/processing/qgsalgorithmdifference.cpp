@@ -113,7 +113,9 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
   long count = 0;
   const long total = sourceA->featureCount();
   const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, gridSize );
+  QgsGeometryParameters geometryParameters;
+  geometryParameters.setGridSize( gridSize );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters );
 
   return outputs;
 }

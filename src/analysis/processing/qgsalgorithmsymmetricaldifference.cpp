@@ -105,11 +105,14 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   const long total = sourceA->featureCount() + sourceB->featureCount();
   const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
 
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB, gridSize );
+  QgsGeometryParameters geometryParameters;
+  geometryParameters.setGridSize( gridSize );
+
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB, geometryParameters );
   if ( feedback->isCanceled() )
     return outputs;
 
-  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA, gridSize );
+  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA, geometryParameters );
 
   return outputs;
 }
