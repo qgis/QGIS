@@ -794,9 +794,12 @@ QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
   {
     return QColor();
   }
+
+  const int x = point.x() - screen->geometry().left();
+  const int y = point.y() - screen->geometry().top();
   const QPixmap snappedPixmap = screen->grabWindow( 0,
-                                point.x() - sampleRadius,
-                                point.y() - sampleRadius,
+                                x - sampleRadius,
+                                y - sampleRadius,
                                 1 + sampleRadius * 2,
                                 1 + sampleRadius * 2 );
   const QImage snappedImage = snappedPixmap.toImage();
