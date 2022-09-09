@@ -277,14 +277,14 @@ void QgsGeos::cacheGeos() const
   mGeos = asGeos( mGeometry, mPrecision );
 }
 
-QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
+QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
-  return overlay( geom, OverlayIntersection, errorMsg, gridSize ).release();
+  return overlay( geom, OverlayIntersection, errorMsg, parameters ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
+QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
-  return overlay( geom, OverlayDifference, errorMsg, gridSize ).release();
+  return overlay( geom, OverlayDifference, errorMsg, parameters ).release();
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg ) const
@@ -410,7 +410,7 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
   }
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *errorMsg, double gridSize ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   if ( !mGeos )
   {
@@ -423,19 +423,19 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
   std::unique_ptr< QgsGeometryCollection > parts = QgsGeometryFactory::createCollectionOfType( mGeometry->wkbType() );
   try
   {
-    subdivideRecursive( mGeos.get(), maxNodes, 0, parts.get(), mGeometry->boundingBox(), gridSize );
+    subdivideRecursive( mGeos.get(), maxNodes, 0, parts.get(), mGeometry->boundingBox(), parameters.gridSize() );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
   return std::move( parts );
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
+QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
-  return overlay( geom, OverlayUnion, errorMsg, gridSize ).release();
+  return overlay( geom, OverlayUnion, errorMsg, parameters ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, double gridSize ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -451,9 +451,9 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   try
   {
     geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
-    if ( gridSize > 0 )
+    if ( parameters.gridSize() > 0 )
     {
-      geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), gridSize ) );
+      geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), parameters.gridSize() ) );
     }
     else
     {
@@ -466,7 +466,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geo
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg, double gridSize ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -483,9 +483,9 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   {
     geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
 
-    if ( gridSize > 0 )
+    if ( parameters.gridSize() > 0 )
     {
-      geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), gridSize ) );
+      geomUnion.reset( GEOSUnaryUnionPrec_r( geosinit()->ctxt, geomCollection.get(), parameters.gridSize() ) );
     }
     else
     {
@@ -499,9 +499,9 @@ QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QSt
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg, double gridSize ) const
+QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
-  return overlay( geom, OverlaySymDifference, errorMsg, gridSize ).release();
+  return overlay( geom, OverlaySymDifference, errorMsg, parameters ).release();
 }
 
 double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -1684,7 +1684,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
   return nullptr;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg, double gridSize ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg, const QgsGeometryParameters &parameters ) const
 {
   if ( !mGeos || !geom )
   {
@@ -1696,6 +1696,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
   {
     return nullptr;
   }
+
+  const double gridSize = parameters.gridSize();
 
   try
   {

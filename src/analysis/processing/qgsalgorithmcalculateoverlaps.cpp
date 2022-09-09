@@ -136,6 +136,8 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
   da.setEllipsoid( context.ellipsoid() );
 
   const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
+  QgsGeometryParameters geometryParameters;
+  geometryParameters.setGridSize( gridSize );
 
   // loop through input
   const double step = mInputCount > 0 ? 100.0 / mInputCount : 0;
@@ -183,12 +185,12 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
           break;
 
         // dissolve intersecting features, calculate total area of them within our buffer
-        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms, gridSize );
+        const QgsGeometry overlayDissolved = QgsGeometry::unaryUnion( intersectingGeoms, geometryParameters );
 
         if ( feedback->isCanceled() )
           break;
 
-        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, gridSize );
+        const QgsGeometry overlayIntersection = inputGeom.intersection( overlayDissolved, geometryParameters );
 
         const double overlayArea = da.measureArea( overlayIntersection );
         outAttributes.append( overlayArea );
