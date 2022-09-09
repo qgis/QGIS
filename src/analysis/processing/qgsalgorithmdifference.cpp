@@ -83,8 +83,9 @@ void QgsDifferenceAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Difference" ) ) );
-  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRIDSIZE" ),
-      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant( - 1 ), true );
+
+  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
+      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( gridSize.release() );
 }
@@ -112,9 +113,13 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   long count = 0;
   const long total = sourceA->featureCount();
-  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
+
   QgsGeometryParameters geometryParameters;
-  geometryParameters.setGridSize( gridSize );
+  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  {
+    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+  }
+
   QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters );
 
   return outputs;
