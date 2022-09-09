@@ -42,7 +42,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   const QString authcfg = mSharedData->mDataSource.authConfigId();
 
   // Set CRS
-  mSharedData->mSourceCRS.createFromString( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
+  if ( !mSharedData->mDataSource.param( QStringLiteral( "crs" ) ).isEmpty() )
+    mSharedData->mSourceCRS.createFromString( mSharedData->mDataSource.param( QStringLiteral( "crs" ) ) );
 
   // Get layer info
   QString errorTitle, errorMessage;
@@ -121,6 +122,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
     return;
   }
+
+  if ( !mSharedData->mSourceCRS.isValid() )
+    mSharedData->mSourceCRS = extentCrs;
 
   if ( xminOk && yminOk && xmaxOk && ymaxOk )
   {
