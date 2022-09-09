@@ -139,11 +139,11 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfile_lines = self.doTestStartup(
             testFile=testfilepath,
             timeOut=10,
-            additionalArguments=["--code", testmod, "--py-args", "--specialScriptArguments", "a text arg", "--"])
+            additionalArguments=["--code", testmod, "--py-args", "--specialScriptArgument's", 'a "Quoted" text arg', "--"])
 
         self.assertEqual(testfile_lines, [testmod + '\n',
-                                          '--specialScriptArguments\n',
-                                          'a text arg\n'])
+                                          "--specialScriptArgument's\n",
+                                          'a "Quoted" text arg\n'])
 
 
 if __name__ == '__main__':
