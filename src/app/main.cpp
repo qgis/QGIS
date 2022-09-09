@@ -1557,7 +1557,8 @@ int main( int argc, char *argv[] )
 #endif
       pythonArgs.prepend( pythonfile );
     }
-    QgsPythonRunner::run( QStringLiteral( "sys.argv = ['%1']" ).arg( pythonArgs.join( "','" ) ) );
+
+    QgsPythonRunner::run( QStringLiteral( "sys.argv = [r'%1']" ).arg( pythonArgs.join( "',r'" ) ) );
   }
 
   if ( !pythonfile.isEmpty() )
