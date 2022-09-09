@@ -74,11 +74,10 @@ void QgsIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersection" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRIDSIZE" ),
-      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant( - 1 ), true );
+  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
+      QObject::tr( "Grid size" ), QgsProcessingParameterNumber::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( gridSize.release() );
-
 }
 
 
@@ -116,9 +115,12 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
 
   long count = 0;
   const long total = sourceA->featureCount();
-  const double gridSize = parameterAsDouble( parameters, QStringLiteral( "GRIDSIZE" ), context );
+
   QgsGeometryParameters geometryParameters;
-  geometryParameters.setGridSize( gridSize );
+  if ( parameters.value( QStringLiteral( "GRID_SIZE" ) ).isValid() )
+  {
+    geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
+  }
 
   QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
 
