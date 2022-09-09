@@ -49,9 +49,6 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   {
     // create an empty definition which corresponds to the initial state of the dialog
     mDefinitions << Definition();
-    QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
-    newItem->setText( QgisCrsNameColumn, QString() );
-    newItem->setText( QgisCrsParametersColumn, QString() );
   }
   whileBlocking( leName )->setText( mDefinitions[0].name );
 
