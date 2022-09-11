@@ -268,9 +268,6 @@ bool QgsSpatiaLiteFeatureIterator::fetchFeature( QgsFeature &feature )
       return false;
     }
 
-    if ( !feature.hasGeometry() && !mRequest.filterRect().isNull() )
-      continue;
-
     foundMatchingFeature = true;
     feature.setValid( true );
     geometryToDestinationCrs( feature, mTransform );
