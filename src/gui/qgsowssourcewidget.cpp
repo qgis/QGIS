@@ -125,7 +125,7 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
       mTimeBox->addItem( part );
   }
 
-  setTime(time);
+  setTime( time );
 
 }
 
@@ -147,6 +147,11 @@ QString QgsOWSSourceWidget::sourceUri() const
 
     parts.insert( QStringLiteral( "bbox" ), bbox );
   }
+
+  QString time = mTimeBox->currentText();
+
+  if ( !time.isEmpty() )
+      parts.insert( QStringLiteral( "time" ), time );
 
 
   return QgsProviderRegistry::instance()->encodeUri( mProviderKey, parts );

@@ -141,6 +141,11 @@ void QgsWCSSourceSelect::addButtonClicked()
     uri.setParam( QStringLiteral( "time" ), selectedTime() );
   }
 
+  if ( !selectedLayersTimes().isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "timeExtent" ), selectedLayersTimes().join( "," ) );
+  }
+
   if ( mSpatialExtentBox->isChecked() )
   {
     const QgsRectangle spatialExtent = mSpatialExtentBox->outputExtent();
