@@ -90,7 +90,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), true );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true );
   if ( !mConnectionRO )
   {
     return;
@@ -865,7 +865,7 @@ QgsPostgresConn *QgsPostgresRasterProvider::connectionRW()
 {
   if ( !mConnectionRW )
   {
-    mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
+    mConnectionRW = QgsPostgresConn::connectDb( mUri, false );
   }
   return mConnectionRW;
 }

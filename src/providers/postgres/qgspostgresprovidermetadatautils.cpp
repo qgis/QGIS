@@ -25,7 +25,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
   QList<QgsLayerMetadataProviderResult> results;
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( conn && ( ! feedback || ! feedback->isCanceled() ) )
   {
 
@@ -152,7 +152,7 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const QgsMapLayerType 
     return false;
   }
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errorMessage = QObject::tr( "Connection to database failed" );
@@ -347,4 +347,3 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const QgsMapLayerType 
 
   return saved;
 }
-

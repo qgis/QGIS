@@ -177,7 +177,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), true );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true );
   if ( !mConnectionRO )
   {
     return;
@@ -373,7 +373,7 @@ QgsPostgresConn *QgsPostgresProvider::connectionRW()
   }
   else if ( !mConnectionRW )
   {
-    mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
+    mConnectionRW = QgsPostgresConn::connectDb( mUri, false );
   }
   return mConnectionRW;
 }
@@ -392,6 +392,26 @@ void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
 {
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsPostgresTransaction *>( transaction );
+
+  const QString sessionRoleKey = QStringLiteral( "session_role" );
+  if ( mUri.hasParam( sessionRoleKey ) )
+  {
+    const QString sessionRole = mUri.param( sessionRoleKey );
+    if ( !sessionRole.isEmpty() )
+    {
+      if ( !mTransaction->connection()->setSessionRole( sessionRole ) )
+      {
+        QgsDebugMsgLevel(
+          QStringLiteral(
+            "Set session role failed for ROLE %1"
+          )
+          .arg( quotedValue( sessionRole ) )
+          ,
+          2
+        );
+      }
+    }
+  }
 }
 
 QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPostgresConn *conn )
@@ -4554,7 +4574,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( tableName ), 2 );
 
   // create the table
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     if ( errorMessage )
@@ -5369,7 +5389,7 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
   errorCause.clear();
 
   QgsDataSourceUri dsUri( uri );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errorCause = QObject::tr( "Connection to database failed" );
@@ -5433,7 +5453,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   QString sldStyle { sldStyleIn };
   QgsPostgresUtils::replaceInvalidXmlChars( sldStyle );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -5600,7 +5620,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
   QgsDataSourceUri dsUri( uri );
   QString selectQmlQuery;
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -5680,7 +5700,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -5769,7 +5789,7 @@ bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, const QSt
   QgsDataSourceUri dsUri( uri );
   bool deleted;
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -5802,7 +5822,7 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QSt
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );

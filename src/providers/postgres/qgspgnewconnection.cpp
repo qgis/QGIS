@@ -75,6 +75,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     }
     txtPort->setText( port );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
+    txtSessionRole->setText( settings.value( key + "/session_role" ).toString() );
     cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
     cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
@@ -162,6 +163,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
+  settings.setValue( baseKey + "/session_role", txtSessionRole->text() );
   settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username() : QString() );
   settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password() : QString() );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
@@ -236,7 +238,12 @@ void QgsPgNewConnection::testConnection()
                        mAuthSettings->configId() );
   }
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), true );
+  if ( !txtSessionRole->text().isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "session_role" ), txtSessionRole->text() );
+  }
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri, true );
 
   if ( conn )
   {
