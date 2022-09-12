@@ -43,4 +43,4 @@ echo -e "\e[1;34m - launch cmake with option -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 echo -e "\e[1;34m - update build by calling Ninja"
 echo -e "\e[1;34m - launch command ./scripts/clang-tidy.sh -p <your_build_dir> <source_file>"
 
-exit $(grep "warning:" clang-tidy.log | wc -l)
+exit $(grep -c "warning:" clang-tidy.log)
