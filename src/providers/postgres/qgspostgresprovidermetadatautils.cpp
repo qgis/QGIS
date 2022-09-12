@@ -71,7 +71,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
               ,update_time
            FROM %1.qgis_layer_metadata
              %2
-           )SQL" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ), where.isEmpty() ? QString() : ( QStringLiteral( " WHERE %1 " ).arg( where.join( QStringLiteral( " AND " ) ) ) ) );
+           )SQL" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ), where.isEmpty() ? QString() : ( QStringLiteral( " WHERE %1 " ).arg( where.join( QLatin1String( " AND " ) ) ) ) );
 
     res = conn->LoggedPQexec( "QgsPostgresProviderMetadata", listQuery );
 
@@ -106,12 +106,12 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       result.setGeographicExtent( geographicExtent );
       result.setAuthid( res.PQgetvalue( row, 9 ) );
       const QString layerType { res.PQgetvalue( row, 10 ) };
-      if ( layerType == QStringLiteral( "raster" ) )
+      if ( layerType == QLatin1String( "raster" ) )
       {
         result.setDataProviderName( QStringLiteral( "postgresraster" ) );
         result.setLayerType( QgsMapLayerType::RasterLayer );
       }
-      else if ( layerType == QStringLiteral( "vector" ) )
+      else if ( layerType == QLatin1String( "vector" ) )
       {
         result.setDataProviderName( QStringLiteral( "postgres" ) );
         result.setLayerType( QgsMapLayerType::VectorLayer );

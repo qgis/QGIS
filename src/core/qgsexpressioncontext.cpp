@@ -241,7 +241,7 @@ void QgsExpressionContextScope::readXml( const QDomElement &element, const QgsRe
   {
     const QDomElement variableElement = variablesNodeList.at( i ).toElement();
     const QString key = variableElement.attribute( QStringLiteral( "name" ) );
-    if ( variableElement.tagName() == QStringLiteral( "Variable" ) )
+    if ( variableElement.tagName() == QLatin1String( "Variable" ) )
     {
       const QVariant value = QgsXmlUtils::readVariant( variableElement.firstChildElement( QStringLiteral( "Option" ) ) );
       setVariable( key, value );

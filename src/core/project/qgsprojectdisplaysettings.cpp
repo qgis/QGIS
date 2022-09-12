@@ -185,7 +185,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString() );
       if ( !format.isEmpty() )
       {
-        if ( format != QStringLiteral( "MU" ) && !project->crs().isGeographic() )
+        if ( format != QLatin1String( "MU" ) && !project->crs().isGeographic() )
         {
           setCoordinateType( Qgis::CoordinateDisplayType::CustomCrs );
         }
