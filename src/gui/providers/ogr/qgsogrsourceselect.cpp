@@ -170,7 +170,7 @@ bool QgsOgrSourceSelect::isProtocolCloudType()
 
 void QgsOgrSourceSelect::addNewConnection()
 {
-  QgsNewOgrConnection *nc = new QgsNewOgrConnection( this );
+  QgsNewOgrConnection *nc = new QgsNewOgrConnection( this, cmbDatabaseTypes->currentText() );
   nc->exec();
   delete nc;
 
