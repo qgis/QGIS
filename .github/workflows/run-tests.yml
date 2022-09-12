@@ -462,14 +462,5 @@ jobs:
           -v $(pwd):/root/QGIS \
           -v /home/runner/QGIS/.ccache:/root/.ccache \
           --env-file .docker/docker-variables.env \
-          --env PUSH_TO_CDASH=false \
-          --env WITH_QT5=TRUE \
-          --env BUILD_WITH_QT6=OFF \
-          --env WITH_QUICK=ON \
-          --env WITH_3D=TRUE \
-          --env PATCH_QT_3D=FALSE \
-          --env WITH_GRASS7=OFF \
-          --env WITH_GRASS8=OFF \
-          --env WITH_CLAZY=OFF \
           qgis3-build-deps \
           /root/QGIS/.docker/docker-qgis-clangtidy.sh
