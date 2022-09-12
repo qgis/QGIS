@@ -72,7 +72,6 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   cmbEncodings->setCurrentIndex( 0 );
 
   //add database drivers
-  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   QgsDebugMsgLevel( "Database drivers :" + QgsProviderRegistry::instance()->databaseDrivers(), 2 );
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ';' );
 
@@ -108,6 +107,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QLatin1String( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
 
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
+  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   mFileWidget->setFilter( mVectorFileFilter );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
