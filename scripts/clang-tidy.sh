@@ -34,13 +34,13 @@ while getopts "p:am:" o; do
           BUILD_DIR=${OPTARG}
           ;;
       a)
-          if [[ ! -z "$FILE_OPT" ]]; then
+          if [[ -n "$FILE_OPT" ]]; then
             usage
           fi
           FILE_OPT="ALL"
           ;;
         m)
-          if [[ ! -z "$FILE_OPT" ]]; then
+          if [[ -n "$FILE_OPT" ]]; then
             usage
           fi
           FILE_OPT=${OPTARG}
