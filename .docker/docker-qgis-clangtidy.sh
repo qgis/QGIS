@@ -23,7 +23,7 @@ cd ${SRCDIR}
 # https://github.com/qgis/QGIS/runs/6733585841?check_suite_focus=true#step:13:89
 git config --global --add safe.directory ${SRCDIR}
 
-echo "::group::Install cland tidy"
+echo "::group::Install clang tidy"
 apt install -y \
     clang-tidy
 echo "::endgroup::"
