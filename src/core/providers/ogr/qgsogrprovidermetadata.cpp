@@ -674,6 +674,12 @@ bool LoadDataSourceLayerStylesAndLayer( const QString &uri,
 
 QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  QString name;
+  return loadStyle( uri, name, errCause );
+}
+
+QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &name, QString &errCause )
+{
   QgsOgrLayerUniquePtr layerStyles;
   QgsOgrLayerUniquePtr userLayer;
   if ( !LoadDataSourceLayerStylesAndLayer( uri, layerStyles, userLayer, errCause ) )
@@ -710,6 +716,8 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
     {
       styleQML = QString::fromUtf8(
                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
+      name = QString::fromUtf8(
+               OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
       break;
     }
 
@@ -723,7 +731,8 @@ QString QgsOgrProviderMetadata::loadStyle( const QString &uri, QString &errCause
       moreRecentTimestamp = ts;
       styleQML = QString::fromUtf8(
                    OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
-
+      name = QString::fromUtf8(
+               OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) );
     }
   }
   OGR_L_ResetReading( hLayer );

@@ -276,9 +276,18 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Loads a layer style defined by \a uri
+     * \returns the style QML (XML)
      * \since QGIS 3.10
      */
-    QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
+    QString loadStyle( const QString &providerKey, const QString &uri, QString &errCause );
+
+    /**
+     * Loads a layer style defined by \a uri.
+     * \param name the name of the style if available, empty otherwise.
+     * \returns the style QML (XML)
+     * \since QGIS 3.28
+     */
+    QString loadStyle( const QString &providerKey, const QString &uri, QString &name, QString &errCause );
 
     /**
      * Saves \a metadata to the layer corresponding to the specified \a uri.

@@ -36,6 +36,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsfields.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsgeometry.h"
 #include "qgslayermetadataformatter.h"
 #include "qgslogger.h"
@@ -5559,9 +5560,10 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   QgsDataSourceUri dsUri( theURI );
   QString returnMessage;
   QString qml, errorMsg;
+  QString styleName;
   if ( !loadFromLocalDB && mDataProvider && mDataProvider->isSaveAndLoadStyleToDatabaseSupported() )
   {
-    qml = QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, errorMsg );
+    qml = QgsProviderRegistry::instance()->loadStyle( mProviderKey, mDataSource, styleName, errorMsg );
   }
   if ( !qml.isEmpty() )
   {
@@ -5573,6 +5575,11 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag,
   else
   {
     returnMessage = QgsMapLayer::loadNamedStyle( theURI, resultFlag, categories );
+  }
+
+  if ( ! styleName.isEmpty() )
+  {
+    styleManager()->renameStyle( styleManager()->currentStyle(), styleName );
   }
 
   if ( resultFlag )

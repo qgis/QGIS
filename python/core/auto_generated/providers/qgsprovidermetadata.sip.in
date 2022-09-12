@@ -611,6 +611,17 @@ Loads a layer style defined by ``uri``
 .. versionadded:: 3.10
 %End
 
+    virtual QString loadStyle( const QString &uri, QString &name, QString &errCause );
+%Docstring
+Loads a layer style defined by ``uri``.
+
+:param name: the name of the style if available, empty otherwise.
+
+:return: the style QML (XML)
+
+.. versionadded:: 3.28
+%End
+
     virtual bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
 %Docstring
 Saves ``metadata`` to the layer corresponding to the specified ``uri``.

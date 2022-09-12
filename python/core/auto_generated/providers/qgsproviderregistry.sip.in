@@ -244,11 +244,24 @@ Saves a layer style to provider
 .. versionadded:: 3.10
 %End
 
-    QString loadStyle( const QString &providerKey,  const QString &uri, QString &errCause );
+    QString loadStyle( const QString &providerKey, const QString &uri, QString &errCause );
 %Docstring
 Loads a layer style defined by ``uri``
 
+:return: the style QML (XML)
+
 .. versionadded:: 3.10
+%End
+
+    QString loadStyle( const QString &providerKey, const QString &uri, QString &name, QString &errCause );
+%Docstring
+Loads a layer style defined by ``uri``.
+
+:param name: the name of the style if available, empty otherwise.
+
+:return: the style QML (XML)
+
+.. versionadded:: 3.28
 %End
 
     bool saveLayerMetadata( const QString &providerKey, const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage /Out/ ) throw( QgsNotSupportedException );
