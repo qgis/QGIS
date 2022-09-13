@@ -24,7 +24,8 @@ from qgis.core import (QgsLayerMetadata,
                        QgsDateTimeRange)
 from qgis.PyQt.QtCore import (QDate,
                               QTime,
-                              QDateTime)
+                              QDateTime,
+                              QRegularExpression,)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -676,6 +677,33 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m2.extent().setTemporalExtents([s])
         m1.combine(m2)
         self.assertEqual(m1.extent().temporalExtents()[0], s)
+
+    def testContainsAndMatches(self):
+        """Test case-insensitive contains"""
+
+        m = self.createTestMetadata()
+
+        self.assertFalse(m.contains('XXXX'))
+        self.assertTrue(m.contains('23'))
+        relist = [QRegularExpression('XXXX')]
+        self.assertFalse(m.matches(relist))
+        relist = [QRegularExpression('23')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertTrue(m.contains('W1'))
+        relist = [QRegularExpression('w1'), QRegularExpression('XXXX')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertTrue(m.contains('uRal'))
+        relist = [QRegularExpression('ural'), QRegularExpression('XXXX')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertTrue(m.contains('My Ro'))
+        relist = [QRegularExpression('my ro'), QRegularExpression('XXXX')]
+        self.assertTrue(m.matches(relist))
+
+        self.assertFalse(m.contains(''))
+        self.assertFalse(m.contains(' '))
 
 
 if __name__ == '__main__':

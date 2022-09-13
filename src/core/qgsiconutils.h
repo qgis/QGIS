@@ -41,6 +41,12 @@ class CORE_EXPORT QgsIconUtils
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
     /**
+     * Returns the icon for a vector layer whose geometry \a typeGroup is provided.
+     * 1since QGIS 3.28
+     */
+    static QIcon iconForGeometryType( QgsWkbTypes::GeometryType typeGroup );
+
+    /**
      * Returns an icon representing point geometries.
      */
     static QIcon iconPoint();

@@ -215,6 +215,7 @@ set(QGIS_APP_SRCS
 
   locator/qgsactionlocatorfilter.cpp
   locator/qgsactivelayerfeatureslocatorfilter.cpp
+  locator/qgslayermetadatalocatorfilter.cpp
   locator/qgsalllayersfeatureslocatorfilter.cpp
   locator/qgsbookmarklocatorfilter.cpp
   locator/qgsexpressioncalculatorlocatorfilter.cpp

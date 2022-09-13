@@ -2,7 +2,7 @@
   "name": "$geometry",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns the geometry of the current feature. Can be used for processing with other functions.",
+  "description": "Returns the geometry of the current feature. Can be used for processing with other functions. <b>WARNING: This function is deprecated. It is recommended to use the replacement @geometry variable instead.</b>",
   "examples": [{
     "expression": "geom_to_wkt( $geometry )",
     "returns": "'POINT(6 50)'"

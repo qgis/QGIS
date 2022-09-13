@@ -79,7 +79,7 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
     textRect.setWidth( 2000 );
 
   mContext.setPainter( &p );
-  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
+  QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << text(),
                              mContext, mFormat );
 }
 

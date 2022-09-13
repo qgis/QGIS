@@ -15,7 +15,6 @@
 
 #include "qgstextrendererutils.h"
 #include "qgsvectorlayer.h"
-#include "qgslinestring.h"
 
 QgsTextBackgroundSettings::ShapeType QgsTextRendererUtils::decodeShapeType( const QString &string )
 {
@@ -96,21 +95,21 @@ QgsTextShadowSettings::ShadowPlacement QgsTextRendererUtils::decodeShadowPlaceme
   return shdwtype;
 }
 
-QString QgsTextRendererUtils::encodeTextOrientation( QgsTextFormat::TextOrientation orientation )
+QString QgsTextRendererUtils::encodeTextOrientation( Qgis::TextOrientation orientation )
 {
   switch ( orientation )
   {
-    case QgsTextFormat::HorizontalOrientation:
+    case Qgis::TextOrientation::Horizontal:
       return QStringLiteral( "horizontal" );
-    case QgsTextFormat::VerticalOrientation:
+    case Qgis::TextOrientation::Vertical:
       return QStringLiteral( "vertical" );
-    case QgsTextFormat::RotationBasedOrientation:
+    case Qgis::TextOrientation::RotationBased:
       return QStringLiteral( "rotation-based" );
   }
   return QString();
 }
 
-QgsTextFormat::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString &name, bool *ok )
+Qgis::TextOrientation QgsTextRendererUtils::decodeTextOrientation( const QString &name, bool *ok )
 {
   if ( ok )
     *ok = true;
@@ -118,15 +117,15 @@ QgsTextFormat::TextOrientation QgsTextRendererUtils::decodeTextOrientation( cons
   const QString cleaned = name.toLower().trimmed();
 
   if ( cleaned == QLatin1String( "horizontal" ) )
-    return QgsTextFormat::HorizontalOrientation;
+    return Qgis::TextOrientation::Horizontal;
   else if ( cleaned == QLatin1String( "vertical" ) )
-    return QgsTextFormat::VerticalOrientation;
+    return Qgis::TextOrientation::Vertical;
   else if ( cleaned == QLatin1String( "rotation-based" ) )
-    return QgsTextFormat::RotationBasedOrientation;
+    return Qgis::TextOrientation::RotationBased;
 
   if ( ok )
     *ok = false;
-  return QgsTextFormat::HorizontalOrientation;
+  return Qgis::TextOrientation::Horizontal;
 }
 
 QgsUnitTypes::RenderUnit QgsTextRendererUtils::convertFromOldLabelUnit( int val )
@@ -203,8 +202,6 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     return output.release();
   }
 
-  const double characterHeight = metrics.characterHeight();
-
   const double segmentLength = pathDistances[index];
   if ( qgsDoubleNear( segmentLength, 0.0 ) )
   {
@@ -264,6 +261,9 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
   double angle = std::atan2( -dy, dx );
 
+  const double maxCharacterDescent = metrics.maximumCharacterDescent();
+  const double maxCharacterHeight = metrics.maximumCharacterHeight();
+
   for ( int i = 0; i < characterCount; i++ )
   {
     const double lastCharacterAngle = angle;
@@ -273,6 +273,9 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
     if ( qgsDoubleNear( characterWidth, 0.0 ) )
       // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
       continue;
+
+    const double characterHeight = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterHeight( i ) : metrics.characterHeight( characterCount - i - 1 );
+    const double characterDescent = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterDescent( i ) : metrics.characterDescent( characterCount - i - 1 );
 
     double characterStartX = 0;
     double characterStartY = 0;
@@ -307,7 +310,7 @@ QgsTextRendererUtils::CurvePlacementProperties *QgsTextRendererUtils::generateCu
 
     // Shift the character downwards since the draw position is specified at the baseline
     // and we're calculating the mean line here
-    double dist = 0.9 * metrics.characterHeight() / 2;
+    double dist = 0.9 * maxCharacterHeight / 2 - ( maxCharacterDescent - characterDescent );
     if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       dist = -dist;

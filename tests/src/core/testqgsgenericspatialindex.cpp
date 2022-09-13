@@ -22,8 +22,8 @@
 #include <memory>
 
 #include "qgsgenericspatialindex.h"
-#include "qgspallabeling.h"
 #include "qgstest.h"
+#include "qgslabelposition.h"
 
 class TestQgsGenericSpatialIndex: public QObject
 {

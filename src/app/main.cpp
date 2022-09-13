@@ -90,21 +90,17 @@ typedef SInt32 SRefCon;
 #include "qgscustomization.h"
 #include "qgssettings.h"
 #include "qgsfontutils.h"
-#include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
 #include "qgspythonrunner.h"
 #include "qgslocalec.h"
 #include "qgisapp.h"
-#include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include "qgsconfig.h"
 #include "qgsversion.h"
-#include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsdxfexport.h"
-#include "qgsmapthemes.h"
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
 #ifdef HAVE_CRASH_HANDLER
@@ -160,6 +156,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[-g, --globalsettingsfile path]\tuse the given ini file as Global Settings (defaults)\n" )
       << QStringLiteral( "\t[-a, --authdbdirectory path] use the given directory for authentication database\n" )
       << QStringLiteral( "\t[-f, --code path]\trun the given python file on load\n" )
+      << QStringLiteral( "\t[-F, --py-args arguments]\targuments for python. This arguments will be available for each python execution via 'sys.argv' included the file specified by '--code'. All arguments till '--' are passed to python and ignored by QGIS\n" )
       << QStringLiteral( "\t[-d, --defaultui]\tstart by resetting user ui settings to default\n" )
       << QStringLiteral( "\t[--hide-browser]\thide the browser widget\n" )
       << QStringLiteral( "\t[--dxf-export filename.dxf]\temit dxf output of loaded datasets to given file\n" )
@@ -616,6 +613,7 @@ int main( int argc, char *argv[] )
   QString authdbdirectory;
 
   QString pythonfile;
+  QStringList pythonArgs;
 
   QString customizationfile;
   QString globalsettingsfile;
@@ -735,6 +733,19 @@ int main( int argc, char *argv[] )
         else if ( i + 1 < argc && ( arg == QLatin1String( "--code" ) || arg == QLatin1String( "-f" ) ) )
         {
           pythonfile = QDir::toNativeSeparators( QFileInfo( args[++i] ).absoluteFilePath() );
+        }
+        else if ( i + 1 < argc && ( arg == QLatin1String( "--py-args" ) || arg == QLatin1String( "-F" ) ) )
+        {
+          // Handle all parameters till '--' as code args
+          for ( i++; i < args.size(); ++i )
+          {
+            if ( args[i] == QLatin1String( "--" ) )
+            {
+              i--;
+              break;
+            }
+            pythonArgs << args[i];
+          }
         }
         else if ( i + 1 < argc && ( arg == QLatin1String( "--customizationfile" ) || arg == QLatin1String( "-z" ) ) )
         {
@@ -1530,6 +1541,20 @@ int main( int argc, char *argv[] )
       QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qgis->setExtent( rect );
     }
+  }
+
+  if ( !pythonArgs.isEmpty() )
+  {
+    if ( !pythonfile.isEmpty() )
+    {
+#ifdef Q_OS_WIN
+      //replace backslashes with forward slashes
+      pythonfile.replace( '\\', '/' );
+#endif
+      pythonArgs.prepend( pythonfile );
+    }
+
+    QgsPythonRunner::run( QStringLiteral( "sys.argv = ['%1']" ).arg( pythonArgs.replaceInStrings( QChar( '\'' ), QStringLiteral( "\\'" ) ).join( "','" ) ) );
   }
 
   if ( !pythonfile.isEmpty() )

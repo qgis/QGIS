@@ -119,7 +119,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
         pos.setX( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset );
       }
       pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
-      QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignCenter, QStringList() << currentNumericLabel, context, format );
+      QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << currentNumericLabel, context, format );
     }
 
     if ( segmentCounter >= nSegmentsLeft )
@@ -142,13 +142,13 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
     {
       pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + ( scaleContext.segmentWidth / 2 ), QgsUnitTypes::RenderMillimeters ) + xOffset );
-      QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignCenter, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
+      QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }
     else
     {
       pos.setX( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
                 - fontMetrics.horizontalAdvance( currentNumericLabel ) / 2.0 );
-      QgsTextRenderer::drawText( pos, 0, QgsTextRenderer::AlignLeft, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
+      QgsTextRenderer::drawText( pos, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
     }
   }
 

@@ -602,11 +602,15 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
   {
     return 1;
   }
-  else
+
+  if ( match.isValid() && sourceLayer )
   {
-    if ( match.isValid() && ( match.hasVertex() || match.hasLineEndpoint() || ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) ) ) && sourceLayer &&
-         ( sourceLayer->crs() == vlayer->crs() ) )
+    if ( ( match.hasVertex() || match.hasLineEndpoint() ) )
     {
+      if ( sourceLayer->crs() != vlayer->crs() )
+      {
+        return 1;
+      }
       QgsFeature f;
       QgsFeatureRequest request;
       request.setFilterFid( match.featureId() );
@@ -615,26 +619,14 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       {
         QgsVertexId vId;
         if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
+        {
           return 2;
-
-        const QgsGeometry geom( f.geometry() );
-        if ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) )
-        {
-          QgsVertexId vId2;
-          if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex() + 1, vId2 ) )
-            return 2;
-          const QgsLineString line( geom.constGet()->vertexAt( vId ), geom.constGet()->vertexAt( vId2 ) );
-
-          layerPoint = QgsGeometryUtils::closestPoint( line,  QgsPoint( match.point() ) );
         }
-        else
-        {
-          layerPoint = geom.constGet()->vertexAt( vId );
-          if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
-            layerPoint.addZValue( defaultZValue() );
-          if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
-            layerPoint.addMValue( defaultMValue() );
-        }
+        layerPoint = f.geometry().constGet()->vertexAt( vId );
+        if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
+          layerPoint.addZValue( defaultZValue() );
+        if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
+          layerPoint.addMValue( defaultMValue() );
 
         // ZM support depends on the target layer
         if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )
@@ -649,16 +641,15 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
 
         return 0;
       }
-      else
-      {
-        return 2;
-      }
+      return 2;
     }
-    else
+    else if ( QgsProject::instance()->topologicalEditing() && ( match.hasEdge() || match.hasMiddleSegment() ) )
     {
-      return 1;
+      layerPoint = toLayerCoordinates( vlayer, match.interpolatedPoint( mCanvas->mapSettings().destinationCrs() ) );
+      return 0;
     }
   }
+  return 2;
 }
 
 int QgsMapToolCapture::addVertex( const QgsPointXY &point )

@@ -18,7 +18,7 @@
 
 #include <QList>
 #include "qgswkbtypes.h"
-
+#include "qgsgeometry.h"
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -28,7 +28,6 @@ class QgsFeatureSink;
 class QgsFields;
 class QgsProcessingContext;
 class QgsProcessingFeedback;
-class QgsGeometry;
 
 namespace QgsOverlayUtils
 {
@@ -41,9 +40,9 @@ namespace QgsOverlayUtils
     OutputBA,  //!< Write attributes of both layers, inverted (first attributes of B, then attributes of A)
   };
 
-  void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, DifferenceOutput outputAttrs );
+  void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, DifferenceOutput outputAttrs, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 
-  void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
+  void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 
   //! Makes sure that what came out from intersection of two geometries is good to be used in the output
   bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType );
@@ -58,7 +57,7 @@ namespace QgsOverlayUtils
    *
    * As a result, for all pairs of features in the output, a pair either has no common interior or their interior is the same.
    */
-  void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback );
+  void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 }
 
 ///@endcond PRIVATE

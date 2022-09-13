@@ -24,7 +24,6 @@
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsproject.h"
 #include "qgsgeos.h"
 
 #ifdef HAVE_PDAL_QGIS
@@ -43,6 +42,8 @@ QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
       return QStringLiteral( "DXF" );
     case ExportFormat::Shp:
       return QStringLiteral( "ESRI Shapefile" );
+    case ExportFormat::Csv:
+      return QStringLiteral( "CSV" );
     case ExportFormat::Memory:
     case ExportFormat::Las:
       break;
@@ -215,6 +216,8 @@ void QgsPointCloudLayerExporter::doExport()
     }
   }
 
+  QStringList layerCreationOptions;
+
   switch ( mFormat )
   {
     case ExportFormat::Memory:
@@ -246,6 +249,10 @@ void QgsPointCloudLayerExporter::doExport()
       break;
     }
 
+    case ExportFormat::Csv:
+      layerCreationOptions << QStringLiteral( "GEOMETRY=AS_XYZ" )
+                           << QStringLiteral( "SEPARATOR=COMMA" ); // just in case ogr changes the default lco
+      FALLTHROUGH
     case ExportFormat::Gpkg:
     case ExportFormat::Dxf:
     case ExportFormat::Shp:
@@ -256,6 +263,7 @@ void QgsPointCloudLayerExporter::doExport()
       saveOptions.driverName = ogrDriver;
       saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( ogrDriver );
       saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( ogrDriver );
+      saveOptions.layerOptions << layerCreationOptions;
       saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
       saveOptions.actionOnExistingFile = mActionOnExistingFile;
       saveOptions.feedback = mFeedback;
@@ -293,11 +301,13 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 
     case ExportFormat::Dxf:
     case ExportFormat::Shp:
+    case ExportFormat::Csv:
     {
       const QFileInfo fileInfo( mFilename );
       return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
     }
   }
+  BUILTIN_UNREACHABLE
 }
 
 //
@@ -343,7 +353,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
 
   int pointsSkipped = 0;
-  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? mParent->mPointsLimit : pointCount;
+  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? std::min( mParent->mPointsLimit, pointCount ) : pointCount;
   QgsPointCloudRequest request;
   request.setAttributes( mParent->requestedAttributeCollection() );
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
@@ -357,12 +367,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     int recordSize = attributesCollection.pointRecordSize();
     const QgsVector3D scale = block->scale();
     const QgsVector3D offset = block->offset();
-    int xOffset;
-    int yOffset;
-    int zOffset;
-    attributesCollection.find( QStringLiteral( "X" ), xOffset );
-    attributesCollection.find( QStringLiteral( "Y" ), yOffset );
-    attributesCollection.find( QStringLiteral( "Z" ), zOffset );
+    int xOffset = 0, yOffset = 0, zOffset = 0;
+    const QgsPointCloudAttribute::DataType xType = attributesCollection.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = attributesCollection.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = attributesCollection.find( QStringLiteral( "Z" ), zOffset )->type();
     for ( int i = 0; i < count; ++i )
     {
 
@@ -382,9 +390,9 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
       double x, y, z;
       QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize,
-                                           xOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           yOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           zOffset, QgsPointCloudAttribute::DataType::Int32,
+                                           xOffset, xType,
+                                           yOffset, yType,
+                                           zOffset, zType,
                                            scale, offset,
                                            x, y, z );
       if ( ! mParent->mZRange.contains( z ) ||

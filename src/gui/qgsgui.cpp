@@ -59,6 +59,7 @@
 #include "qgsmaptoolshaperegistry.h"
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
+#include "qgslayermetadatasourceselectprovider.h"
 
 #include <QPushButton>
 #include <QToolButton>
@@ -238,7 +239,10 @@ QColor QgsGui::sampleColor( QPoint point )
   {
     return QColor();
   }
-  const QPixmap snappedPixmap = screen->grabWindow( 0, point.x(), point.y(), 1, 1 );
+
+  const int x = point.x() - screen->geometry().left();
+  const int y = point.y() - screen->geometry().top();
+  const QPixmap snappedPixmap = screen->grabWindow( 0, x, y, 1, 1 );
   const QImage snappedImage = snappedPixmap.toImage();
   return snappedImage.pixel( 0, 0 );
 }
@@ -293,6 +297,7 @@ QgsGui::QgsGui()
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mSourceSelectProviderRegistry->addProvider( new QgsLayerMetadataSourceSelectProvider() );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 

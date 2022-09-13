@@ -380,6 +380,53 @@ class CORE_EXPORT QgsExpressionContextScope
      */
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+
+    /**
+     * Returns the list of variables hidden within the scope.
+     *
+     * \see setHiddenVariables()
+     * \see addHiddenVariable()
+     * \see removeHiddenVariable()
+     * \since QGIS 3.28
+     */
+    QStringList hiddenVariables() const;
+
+    /**
+     *
+     * Sets the list of variables intended to be hidden in the
+     * expression builder dialog and widget.
+     *
+     * \see hiddenVariables()
+     * \see addHiddenVariable()
+     * \see removeHiddenVariable()
+     * \since QGIS 3.28
+     */
+    void setHiddenVariables( const QStringList &hiddenVariables );
+
+
+    /**
+     *
+     * Adds the passed variable to a list of hidden variables that
+     * won't be visible in the expression builder dialog and widget.
+     *
+     * \see hiddenVariables()
+     * \see setHiddenVariables()
+     * \see removeHiddenVariable()
+     * \since QGIS 3.28
+     */
+    void addHiddenVariable( const QString &hiddenVariable );
+
+    /**
+     *
+     * Removes the passed variable from a list of hidden variables.
+     *
+     * \see hiddenVariables()
+     * \see setHiddenVariables()
+     * \see addHiddenVariable()
+     * \since QGIS 3.28
+     */
+    void removeHiddenVariable( const QString &hiddenVariable );
+
   private:
     QString mName;
     QHash<QString, StaticVariable> mVariables;
@@ -388,6 +435,7 @@ class CORE_EXPORT QgsExpressionContextScope
     QgsFeature mFeature;
     bool mHasGeometry = false;
     QgsGeometry mGeometry;
+    QStringList mHiddenVariables;
 };
 
 /**

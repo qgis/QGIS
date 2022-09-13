@@ -20,7 +20,6 @@
 #include "qgis_core.h"
 #include "qgstextbackgroundsettings.h"
 #include "qgstextshadowsettings.h"
-#include "qgstextformat.h"
 #include "qgstextmetrics.h"
 
 /**
@@ -58,7 +57,7 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns encoded string
      * \see decodeTextOrientation()
      */
-    static QString encodeTextOrientation( QgsTextFormat::TextOrientation orientation );
+    static QString encodeTextOrientation( Qgis::TextOrientation orientation );
 
     /**
      * Attempts to decode a string representation of a text orientation.
@@ -67,7 +66,7 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns decoded text orientation
      * \see encodeTextOrientation()
      */
-    static QgsTextFormat::TextOrientation decodeTextOrientation( const QString &name, bool *ok = nullptr );
+    static Qgis::TextOrientation decodeTextOrientation( const QString &name, bool *ok = nullptr );
 
     /**
      * Converts a unit from an old (pre 3.0) label unit.

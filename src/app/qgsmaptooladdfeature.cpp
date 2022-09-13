@@ -101,9 +101,27 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
       const QList<QgsPointLocator::Match> sm = snappingMatches();
       for ( int i = 0; i < sm.size() ; ++i )
       {
-        if ( sm.at( i ).layer() )
+        if ( sm.at( i ).layer() && sm.at( i ).layer()->isEditable() && sm.at( i ).layer() != vlayer )
         {
-          sm.at( i ).layer()->addTopologicalPoints( feature.geometry().vertexAt( i ) );
+          QgsPoint topologicalPoint{ feature.geometry().vertexAt( i ) };
+          if ( sm.at( i ).layer()->crs() != vlayer->crs() )
+          {
+            // transform digitized geometry from vlayer crs to snapping layer crs and add topological point
+            try
+            {
+              topologicalPoint.transform( QgsCoordinateTransform( vlayer->crs(), sm.at( i ).layer()->crs(), sm.at( i ).layer()->transformContext() ) );
+              sm.at( i ).layer()->addTopologicalPoints( topologicalPoint );
+            }
+            catch ( QgsCsException &cse )
+            {
+              Q_UNUSED( cse )
+              QgsDebugMsg( QStringLiteral( "transformation to layer coordinate failed" ) );
+            }
+          }
+          else
+          {
+            sm.at( i ).layer()->addTopologicalPoints( topologicalPoint );
+          }
         }
       }
       vlayer->addTopologicalPoints( feature.geometry() );

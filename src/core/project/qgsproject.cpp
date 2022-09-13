@@ -60,7 +60,6 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
 #include "qgsvectortilelayer.h"
 #include "qgsruntimeprofiler.h"
@@ -957,6 +956,14 @@ void QgsProject::clear()
   context.readSettings();
   setTransformContext( context );
 
+  //fallback to QGIS default measurement unit
+  bool ok = false;
+  const QgsUnitTypes::DistanceUnit distanceUnit = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
+  setDistanceUnits( ok ? distanceUnit : QgsUnitTypes::DistanceMeters );
+  ok = false;
+  const QgsUnitTypes::AreaUnit areaUnits = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
+  setAreaUnits( ok ? areaUnits : QgsUnitTypes::AreaSquareMeters );
+
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mAnnotationManager->clear();
@@ -998,10 +1005,6 @@ void QgsProject::clear()
 
   const bool defaultRelativePaths = mSettings.value( QStringLiteral( "/qgis/defaultProjectPathsRelative" ), true ).toBool();
   setFilePathStorage( defaultRelativePaths ? Qgis::FilePathType::Relative : Qgis::FilePathType::Absolute );
-
-  //copy default units to project
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
   int red = mSettings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
   int green = mSettings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
@@ -1377,6 +1380,9 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   // Propagate trust layer metadata flag
   if ( ( mFlags & Qgis::ProjectFlag::TrustStoredLayerStatistics ) || ( flags & Qgis::ProjectReadFlag::TrustLayerMetadata ) )
     layerFlags |= QgsMapLayer::FlagTrustLayerMetadata;
+  // Propagate open layers in read-only mode
+  if ( ( flags & Qgis::ProjectReadFlag::ForceReadOnlyLayers ) )
+    layerFlags |= QgsMapLayer::FlagForceReadOnly;
 
   profile.switchTask( tr( "Load layer source" ) );
   const bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
@@ -1645,6 +1651,15 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
                                readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 255 ),
                                readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 ) );
   setSelectionColor( selectionColor );
+
+
+  const QString distanceUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QString() );
+  if ( !distanceUnitString.isEmpty() )
+    setDistanceUnits( QgsUnitTypes::decodeDistanceUnit( distanceUnitString ) );
+
+  const QString areaUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QString() );
+  if ( !areaUnitString.isEmpty() )
+    setAreaUnits( QgsUnitTypes::decodeAreaUnit( areaUnitString ) );
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
@@ -2724,6 +2739,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), mSelectionColor.blue() );
   writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), mSelectionColor.alpha() );
 
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QgsUnitTypes::encodeUnit( mDistanceUnits ) );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QgsUnitTypes::encodeUnit( mAreaUnits ) );
+
   // now add the optional extra properties
 #if 0
   dump_( mProperties );
@@ -3371,38 +3389,24 @@ bool QgsProject::topologicalEditing() const
   return readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/TopologicalEditing" ), 0 );
 }
 
-QgsUnitTypes::DistanceUnit QgsProject::distanceUnits() const
-{
-  const QString distanceUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QString() );
-  if ( !distanceUnitString.isEmpty() )
-    return QgsUnitTypes::decodeDistanceUnit( distanceUnitString );
-
-  //fallback to QGIS default measurement unit
-  bool ok = false;
-  const QgsUnitTypes::DistanceUnit type = QgsUnitTypes::decodeDistanceUnit( mSettings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString(), &ok );
-  return ok ? type : QgsUnitTypes::DistanceMeters;
-}
-
 void QgsProject::setDistanceUnits( QgsUnitTypes::DistanceUnit unit )
 {
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), QgsUnitTypes::encodeUnit( unit ) );
-}
+  if ( mDistanceUnits == unit )
+    return;
 
-QgsUnitTypes::AreaUnit QgsProject::areaUnits() const
-{
-  const QString areaUnitString = readEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QString() );
-  if ( !areaUnitString.isEmpty() )
-    return QgsUnitTypes::decodeAreaUnit( areaUnitString );
+  mDistanceUnits = unit;
 
-  //fallback to QGIS default area unit
-  bool ok = false;
-  const QgsUnitTypes::AreaUnit type = QgsUnitTypes::decodeAreaUnit( mSettings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString(), &ok );
-  return ok ? type : QgsUnitTypes::AreaSquareMeters;
+  emit distanceUnitsChanged();
 }
 
 void QgsProject::setAreaUnits( QgsUnitTypes::AreaUnit unit )
 {
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), QgsUnitTypes::encodeUnit( unit ) );
+  if ( mAreaUnits == unit )
+    return;
+
+  mAreaUnits = unit;
+
+  emit areaUnitsChanged();
 }
 
 QString QgsProject::homePath() const

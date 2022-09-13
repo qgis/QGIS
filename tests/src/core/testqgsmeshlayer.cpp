@@ -104,6 +104,9 @@ class TestQgsMeshLayer : public QObject
     void testSelectByExpression();
 
     void testSetDataSourceRetainStyle();
+
+    void keepDatasetIndexConsistency();
+    void updateTimePropertiesWhenReloading();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -1146,12 +1149,17 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   //copy the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
 
-  //add the data set from temporary file and test
+  //add the dataset from temporary file and test
   QVERIFY( layer.addDatasets( testFileDataSet.fileName() ) );
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
   QCOMPARE( layer.datasetGroupCount(), 2 );
   QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
+
+  QMap<int, QString> indexToName;
+  QList<int> indexes = layer.datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    indexToName.insert( index, layer.datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
 
   //copy the qad_and_triangle_vertex_scalar_incompatible_mesh.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_2, testFileDataSet );
@@ -1161,19 +1169,27 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   //test if dataset presence
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 ); //uri still present
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 ); //dataset not loaded in the provider
-  QCOMPARE( layer.datasetGroupCount(), 2 ); //dataset group still registered in the layer
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 ); //dataset group tree item still have all dataset group
+  QCOMPARE( layer.datasetGroupCount(), 1 ); //dataset not registered anymore in the mesh layer
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 1 ); //dataset group tree item hasn't anymore the item
+
+  indexes = layer.datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer.datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
 
   layer.reload();
 
-  //add the data set from temporary tesFile and test
+  //add the data set from temporary test File and test
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 2 );
   QCOMPARE( layer.datasetGroupCount(), 2 );
   QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
+
+  indexes = layer.datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer.datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
 
   //copy a invalid file to the temporary testFile
   QVERIFY( testFileDataSet.open() );
@@ -1186,8 +1202,12 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   //test dataset presence
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 1 );
-  QCOMPARE( layer.datasetGroupCount(), 2 ); //dataset group still registered in the layer
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 ); //dataset group tree item still have all dataset groups
+  QCOMPARE( layer.datasetGroupCount(), 1 ); //dataset not registered anymore in the mesh layer
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 1 ); //dataset group tree item hasn't anymore the item
+
+  indexes = layer.datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer.datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
 
   //copy again the qad_and_triangle_vertex_scalar.dat to the temporary testFile
   copyToTemporaryFile( dataSetFile_1, testFileDataSet );
@@ -1203,14 +1223,12 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QVERIFY( layer.addDatasets( testFileDataSet.fileName() ) ); //dataset added
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 ); //uri not dupplicated
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 ); //dataset added
-  QCOMPARE( layer.datasetGroupCount(), 3 );
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
+  QCOMPARE( layer.datasetGroupCount(), 2 ); // meshLayer do not allow dataset group with same name
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
 
-  //test dataset presence
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
-  QCOMPARE( layer.datasetGroupCount(), 3 );
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
+  indexes = layer.datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer.datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
 
   //add another dataset
   QTemporaryFile testFileDataSet_3;
@@ -1219,11 +1237,11 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QVERIFY( layer.addDatasets( testFileDataSet_3.fileName() ) );
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
   QCOMPARE( layer.dataProvider()->datasetGroupCount(), 4 );
-  QCOMPARE( layer.datasetGroupCount(), 4 );
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 4 );
+  QCOMPARE( layer.datasetGroupCount(), 3 );
+  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
 
   //Test dataSet
-  const QgsMeshDatasetIndex ds( 3, 0 );
+  const QgsMeshDatasetIndex ds( 2, 0 );
   QCOMPARE( QgsMeshDatasetValue( 1, 1 ), layer.datasetValue( ds, 0 ) );
   QCOMPARE( QgsMeshDatasetValue( 2, 1 ), layer.datasetValue( ds, 1 ) );
   QCOMPARE( QgsMeshDatasetValue( 3, 2 ), layer.datasetValue( ds, 2 ) );
@@ -1253,7 +1271,7 @@ void TestQgsMeshLayer::test_mesh_simplification()
   QCOMPARE( simplifiedMeshes.at( 4 )->triangles().count(), 5 );
 
   // Delete simplified meshes
-  for ( QgsTriangularMesh *m : simplifiedMeshes )
+  for ( QgsTriangularMesh *m : std::as_const( simplifiedMeshes ) )
     delete m;
 }
 
@@ -1553,6 +1571,7 @@ void TestQgsMeshLayer::test_memory_dataset_group_1d()
 
   std::unique_ptr<QgsMeshMemoryDatasetGroup> goodDatasetGroupEdges( new QgsMeshMemoryDatasetGroup );
   std::unique_ptr<QgsMeshMemoryDatasetGroup>  badDatasetGroupEdges( new QgsMeshMemoryDatasetGroup );
+  goodDatasetGroupEdges->setName( QStringLiteral( "dataset on edges" ) );
   goodDatasetGroupEdges->setDataType( QgsMeshDatasetGroupMetadata::DataOnEdges );
   badDatasetGroupEdges->setDataType( QgsMeshDatasetGroupMetadata::DataOnEdges );
   for ( int i = 1; i < 10; i++ )
@@ -1947,6 +1966,103 @@ void TestQgsMeshLayer::testSetDataSourceRetainStyle()
   QCOMPARE( layer->rendererSettings().nativeMeshSettings().color().name(), QStringLiteral( "#ff0000" ) );
 }
 
+void TestQgsMeshLayer::keepDatasetIndexConsistency()
+{
+  const QString uri_1( mDataDir + QStringLiteral( "/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water Level", "Depth" and "Velocity"
+  const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) ); //exactly the same mesh except without "Velocity"
+
+  QTemporaryDir tempDir;
+  const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );
+
+  QFile::copy( uri_1, uri );
+  // start with a layer with valid path
+  std::unique_ptr< QgsMeshLayer > layer = std::make_unique< QgsMeshLayer >( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->datasetGroupCount(), 4 );
+
+  QList<int> indexes = layer->datasetGroupsIndexes();
+  QMap<int, QString> indexToName;
+
+  int vectorIndex = -1;
+  for ( int index : std::as_const( indexes ) )
+  {
+    QgsMeshDatasetGroupMetadata meta = layer->datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) );
+    indexToName.insert( index, layer->datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
+    if ( meta.isVector() )
+      vectorIndex = index;
+  }
+  QgsMeshRendererSettings settings = layer->rendererSettings();
+  settings.setActiveVectorDatasetGroup( vectorIndex );
+  settings.setActiveScalarDatasetGroup( vectorIndex );
+  layer->setRendererSettings( settings );
+  QCOMPARE( layer->rendererSettings().activeScalarDatasetGroup(), vectorIndex );
+  QCOMPARE( layer->rendererSettings().activeVectorDatasetGroup(), vectorIndex );
+
+  QgsReadWriteContext readWriteContext;
+  QDomDocument doc( QStringLiteral( "doc" ) );
+  QDomElement meshLayerElement = doc.createElement( QStringLiteral( "maplayer" ) );
+  layer->writeLayerXml( meshLayerElement, doc, readWriteContext );
+  layer.reset();
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_2, uri ) );
+
+  // create a new mesh layer from XML
+  layer.reset( new QgsMeshLayer() );
+  layer->readLayerXml( meshLayerElement, readWriteContext );
+  QVERIFY( layer->isValid() );
+
+  // test if "Velocity" dataset group is gone and indexes are consistent with dataset group name
+  QCOMPARE( layer->datasetGroupCount(), 3 );
+  indexes = layer->datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer->datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
+  QVERIFY( !indexes.contains( vectorIndex ) );
+  QVERIFY( layer->rendererSettings().activeScalarDatasetGroup() != vectorIndex );
+  QVERIFY( layer->rendererSettings().activeVectorDatasetGroup() != vectorIndex );
+
+  layer.reset();
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_1, uri ) );
+  layer.reset( new QgsMeshLayer() );
+  layer->readLayerXml( meshLayerElement, readWriteContext );
+  QVERIFY( layer->isValid() );
+
+  // test if "Velocity" dataset group is come back indexes are consistent with dataset group name
+  QCOMPARE( layer->datasetGroupCount(), 4 );
+  indexes = layer->datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer->datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
+  QVERIFY( indexes.contains( vectorIndex ) );
+  QCOMPARE( layer->rendererSettings().activeScalarDatasetGroup(), vectorIndex );
+  QCOMPARE( layer->rendererSettings().activeVectorDatasetGroup(), vectorIndex );
+
+  // Same test but with layer reloading from QgsMeshLayer::reload();
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_2, uri ) );
+  layer->reload();
+  QCOMPARE( layer->datasetGroupCount(), 3 );
+  indexes = layer->datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer->datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
+  QVERIFY( !indexes.contains( vectorIndex ) );
+  QVERIFY( layer->rendererSettings().activeScalarDatasetGroup() != vectorIndex );
+  QVERIFY( layer->rendererSettings().activeVectorDatasetGroup() != vectorIndex );
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_1, uri ) );
+  layer->reload();
+  QCOMPARE( layer->datasetGroupCount(), 4 );
+  indexes = layer->datasetGroupsIndexes();
+  for ( int index : std::as_const( indexes ) )
+    QCOMPARE( indexToName.value( index ), layer->datasetGroupMetadata( QgsMeshDatasetIndex( index, 0 ) ).name() );
+  QVERIFY( indexes.contains( vectorIndex ) );
+  QVERIFY( layer->rendererSettings().activeScalarDatasetGroup() != vectorIndex );
+  QVERIFY( layer->rendererSettings().activeVectorDatasetGroup() != vectorIndex );
+
+}
+
 void TestQgsMeshLayer::test_temporal()
 {
   const qint64 relativeTime_0 = -1000;
@@ -2039,6 +2155,71 @@ void TestQgsMeshLayer::test_temporal()
   time_2 = time_1.addSecs( 300 );
   QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
   QCOMPARE( mMdal3DLayer->datasetIndexAtRelativeTime( QgsInterval( 3, QgsUnitTypes::TemporalHours ), 1 ), QgsMeshDatasetIndex( 1, 18 ) );
+}
+
+
+void TestQgsMeshLayer::updateTimePropertiesWhenReloading()
+{
+  const QString uri_1( mDataDir + QStringLiteral( "/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water Level", "Depth" and "Velocity"
+  const QString uri_2( mDataDir + QStringLiteral( "/mesh_z_ws_d.nc" ) ); //exactly the same mesh except without "Velocity" and reference time / time extent are different
+
+  QTemporaryDir tempDir;
+  const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );
+
+  QFile::copy( uri_1, uri );
+  // start with a layer with valid path
+  std::unique_ptr< QgsMeshLayer > layer = std::make_unique< QgsMeshLayer >( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsMeshLayerTemporalProperties *temporalProperties = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() );
+
+  QDateTime referenceTime1 = temporalProperties->referenceTime();
+  QgsDateTimeRange timeExtent1 = temporalProperties->timeExtent();
+  temporalProperties->setAlwaysLoadReferenceTimeFromSource( true );
+
+  QgsReadWriteContext readWriteContext;
+  QDomDocument doc( QStringLiteral( "doc" ) );
+  QDomElement meshLayerElement = doc.createElement( QStringLiteral( "maplayer" ) );
+  layer->writeLayerXml( meshLayerElement, doc, readWriteContext );
+  layer.reset();
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_2, uri ) );
+
+  // create a new mesh layer from XML
+  layer.reset( new QgsMeshLayer() );
+  layer->readLayerXml( meshLayerElement, readWriteContext );
+  QVERIFY( layer->isValid() );
+  QDateTime referenceTime2 = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime();
+  QgsDateTimeRange timeExtent2 = static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent();
+
+  QVERIFY( referenceTime1 != referenceTime2 );
+  QVERIFY( timeExtent1 != timeExtent2 );
+
+  layer.reset();
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_1, uri ) );
+  layer.reset( new QgsMeshLayer() );
+  layer->readLayerXml( meshLayerElement, readWriteContext );
+  QVERIFY( layer->isValid() );
+
+  QCOMPARE( referenceTime1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
+  QCOMPARE( timeExtent1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
+
+  // Same test but with layer reloading from QgsMeshLayer::reload();
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_2, uri ) );
+  layer->reload();
+
+  QCOMPARE( referenceTime2, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
+  QCOMPARE( timeExtent2, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
+
+  QFile::remove( uri );
+  QVERIFY( QFile::copy( uri_1, uri ) );
+  layer->reload();
+  QCOMPARE( referenceTime1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->referenceTime() );
+  QCOMPARE( timeExtent1, static_cast<QgsMeshLayerTemporalProperties *>( layer->temporalProperties() )->timeExtent() );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

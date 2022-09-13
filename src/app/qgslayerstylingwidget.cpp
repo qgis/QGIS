@@ -636,6 +636,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mMeshStyleWidget->setDockMode( true );
             connect( mMeshStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             mWidgetStack->setMainPanel( mMeshStyleWidget );
+
+            connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] {mMeshStyleWidget->syncToLayer( mCurrentLayer );} );
             break;
           }
 #ifdef HAVE_3D
@@ -649,6 +651,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             }
             mMesh3DWidget->syncToLayer( meshLayer );
             mWidgetStack->setMainPanel( mMesh3DWidget );
+
+            connect( meshLayer, &QgsMeshLayer::reloaded, this, [this] {mMesh3DWidget->syncToLayer( mCurrentLayer );} );
             break;
           }
 #endif

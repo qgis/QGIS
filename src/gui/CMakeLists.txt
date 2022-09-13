@@ -528,6 +528,10 @@ set(QGIS_GUI_SRCS
   qgsimagedroptextedit.cpp
   qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
+  qgslayermetadatasearchwidget.cpp
+  qgslayermetadataresultsmodel.cpp
+  qgslayermetadatasourceselectprovider.cpp
+  qgslayermetadataresultsproxymodel.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendpatchshapebutton.cpp
@@ -789,6 +793,10 @@ set(QGIS_GUI_HDRS
   qgsimagedroptextedit.h
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
+  qgslayermetadatasearchwidget.h
+  qgslayermetadataresultsmodel.h
+  qgslayermetadataresultsproxymodel.h
+  qgslayermetadatasourceselectprovider.h
   qgslegendfilterbutton.h
   qgslegendpatchshapebutton.h
   qgslegendpatchshapewidget.h
@@ -1513,6 +1521,13 @@ if (BUILD_WITH_QT6)
   target_include_directories(qgis_gui SYSTEM PRIVATE
     ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
   )
+endif()
+
+if (WITH_PDAL)
+  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 target_include_directories(qgis_gui PUBLIC

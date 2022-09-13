@@ -93,6 +93,7 @@
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsauxiliarystorage.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -203,6 +204,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
+#include "qgsauxiliarystorage.h"
 #include "qgsappscreenshots.h"
 #include "qgsapplicationexitblockerinterface.h"
 #include "qgsbookmarks.h"
@@ -283,6 +285,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsactionlocatorfilter.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
 #include "qgsalllayersfeatureslocatorfilter.h"
+#include "qgslayermetadatalocatorfilter.h"
 #include "qgsbookmarklocatorfilter.h"
 #include "qgsexpressioncalculatorlocatorfilter.h"
 #include "qgsgotolocatorfilter.h"
@@ -2484,14 +2487,9 @@ void QgisApp::dataSourceManager( const QString &pageName )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), true ).toBool() )
-  {
-    mDataSourceManagerDialog->show();
-  }
-  else
-  {
-    mDataSourceManagerDialog->exec();
-  }
+
+  mDataSourceManagerDialog->show();
+  mDataSourceManagerDialog->activate();
 }
 
 QgsBrowserGuiModel *QgisApp::browserModel()
@@ -3892,6 +3890,7 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsGotoLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsLayerMetadataLocatorFilter() );
 
   mNominatimGeocoder = std::make_unique< QgsNominatimGeocoder>();
   mLocatorWidget->locator()->registerFilter( new QgsNominatimLocatorFilter( mNominatimGeocoder.get(), mMapCanvas ) );
@@ -8387,6 +8386,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
       case QgsPointCloudLayerExporter::ExportFormat::Shp:
       case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      case QgsPointCloudLayerExporter::ExportFormat::Csv:
         if ( dialog.hasAttributes() )
           exp->setAttributes( dialog.attributes() );
         else
