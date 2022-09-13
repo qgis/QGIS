@@ -228,7 +228,7 @@ class Repositories(QObject):
     def checkingOnStart(self) -> bool:
         """ return true if checking for news and updates is enabled """
         settings = QgsSettings()
-        return settings.value(settingsGroup + "/checkOnStart", False, type=bool)
+        return settings.value(settingsGroup + "/checkOnStart", True, type=bool)
 
     def setCheckingOnStart(self, state: bool):
         """ set state of checking for news and updates """
@@ -240,12 +240,12 @@ class Repositories(QObject):
         settings = QgsSettings()
         try:
             # QgsSettings may contain non-int value...
-            i = settings.value(settingsGroup + "/checkOnStartInterval", 1, type=int)
+            i = settings.value(settingsGroup + "/checkOnStartInterval", 3, type=int)
         except:
-            # fallback do 1 day by default
-            i = 1
+            # fallback to 3 days by default
+            i = 3
         if i < 0:
-            i = 1
+            i = 3
         # allowed values: 0,1,3,7,14,30 days
         interval = 0
         for j in [1, 3, 7, 14, 30]:
