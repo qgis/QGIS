@@ -89,7 +89,7 @@ class CORE_EXPORT QgsSatelliteInfo
      */
     int signal = -1;
   
-    QChar satType = "";
+    QChar satType;
 
     bool operator==( const QgsSatelliteInfo &other ) const
     {
