@@ -134,8 +134,6 @@ set(QGIS_APP_SRCS
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
-  vectortile/qgsvectortilelayerproperties.cpp
-
   vertextool/qgslockedfeature.cpp
   vertextool/qgsvertexeditor.cpp
   vertextool/qgsvertextool.cpp

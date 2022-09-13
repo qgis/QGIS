@@ -415,6 +415,7 @@ set(QGIS_GUI_SRCS
   vectortile/qgsvectortiledataitemguiprovider.cpp
   vectortile/qgsvectortileproviderguimetadata.cpp
   vectortile/qgsvectortilesourceselect.cpp
+  vectortile/qgsvectortilelayerproperties.cpp
 
   qgisinterface.cpp
   qgs3dsymbolwidget.cpp
@@ -1356,6 +1357,7 @@ set(QGIS_GUI_HDRS
   vectortile/qgsvectortiledataitemguiprovider.h
   vectortile/qgsvectortileproviderguimetadata.h
   vectortile/qgsvectortilesourceselect.h
+  vectortile/qgsvectortilelayerproperties.h
 
   qgsbrowserdockwidget_p.h
 )
@@ -1451,6 +1453,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectortilelayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayertreeembeddedconfigwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
