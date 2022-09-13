@@ -1540,10 +1540,12 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
+    bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
     bool inRecovery = false;
     // Check if the database is still in recovery after a database crash
-    // or you are connected to a (read-only) standby server
-    if ( connectionRO()->pgVersion() >= 90000 )
+    // or if you are connected to a (read-only) standby server
+    // only if the provider has not been force to be in read-only mode
+    if ( !forceReadOnly && connectionRO()->pgVersion() >= 90000 )
     {
       testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider",  QStringLiteral( "SELECT pg_is_in_recovery()" ) );
       if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK || testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
@@ -1562,7 +1564,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
     // Do not check the editable capabilities if the provider has been forced to be
     // in read-only mode or if the database is still in recovery
-    if ( !inRecovery || !( mReadFlags & QgsDataProvider::ForceReadOnly ) )
+    if ( !forceReadOnly && !inRecovery )
     {
       if ( connectionRO()->pgVersion() >= 80400 )
       {
