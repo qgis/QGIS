@@ -31,10 +31,17 @@ class QgsVectorTileLayer;
 class QgsMetadataWidget;
 
 
-class QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorTileLayerPropertiesBase
+/**
+ * \ingroup gui
+ * \class QgsVectorTileLayerProperties
+ * \brief Vectortile layer properties dialog
+ * \since QGIS 3.28
+ */
+class GUI_EXPORT QgsVectorTileLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorTileLayerPropertiesBase
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   private slots:
