@@ -370,6 +370,13 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.id = currentSatellite.id;
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
+      satelliteInfo.satType = result.type;
+      // Check if SBAS
+      if ( satelliteInfo.id > 32 && satelliteInfo.satType == "G" )
+      {
+        satelliteInfo.satType = "S";
+        satelliteInfo.id = currentSatellite.id + 87;
+      }
       IDfind = 0;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
@@ -384,7 +391,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       }
       if ( currentSatellite.sig > 0 )
       {
-        satelliteInfo.inUse = 1; // check where used ???? (+=1)
+        satelliteInfo.inUse = 1; // true
       }
       if ( IDfind == 0 && ( currentSatellite.azimuth > 0 && currentSatellite.elv > 0 ) )
       {
