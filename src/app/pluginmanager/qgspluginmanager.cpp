@@ -243,7 +243,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
 
   // Initialize the "Settings" tab widgets
-  if ( settings.value( settingsGroup + "/checkOnStart", false ).toBool() )
+  if ( settings.value( settingsGroup + "/checkOnStart", true ).toBool() )
   {
     ckbCheckUpdates->setChecked( true );
   }
@@ -258,7 +258,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
     ckbDeprecated->setChecked( true );
   }
 
-  const int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
+  const int interval = settings.value( settingsGroup + "/checkOnStartInterval", "3" ).toInt();
   const int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
   comboInterval->setCurrentIndex( indx );
 }
