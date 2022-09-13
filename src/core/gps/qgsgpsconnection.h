@@ -88,6 +88,8 @@ class CORE_EXPORT QgsSatelliteInfo
      * Signal strength (0-99dB), or -1 if not available.
      */
     int signal = -1;
+  
+    QChar satType;
 
     bool operator==( const QgsSatelliteInfo &other ) const
     {
