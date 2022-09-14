@@ -140,6 +140,7 @@ class CORE_EXPORT QgsMesh3dAveragingMethod SIP_ABSTRACT
     virtual void volumeRangeForFace(
       double &startVerticalLevel,
       double &endVerticalLevel,
+      int &singleVerticalLevel,
       const QVector<double> &verticalLevels ) const = 0;
 
     Method mMethod;
@@ -218,6 +219,7 @@ class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3dAveragingMe
     bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
+                             int &singleVerticalIndex,
                              const QVector<double> &verticalLevels ) const override;
     void setLevels( int startVerticalLevel, int endVerticalLevel );
     int mStartVerticalLevel = 1;
@@ -274,6 +276,7 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3dAveragingMethod
     bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
+                             int &singleVerticalIndex,
                              const QVector<double> &verticalLevels ) const override;
 
     double mStartFraction = 0;
@@ -341,6 +344,7 @@ class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3dAveragin
     bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
+                             int &singleVerticalIndex,
                              const QVector<double> &verticalLevels ) const override;
     double mStartHeight = 0;
     double mEndHeight = 0;
@@ -392,6 +396,7 @@ class CORE_EXPORT QgsMeshElevationAveragingMethod: public QgsMesh3dAveragingMeth
     bool hasValidInputs() const override;
     void volumeRangeForFace( double &startVerticalLevel,
                              double &endVerticalLevel,
+                             int &singleVerticalIndex,
                              const QVector<double> &verticalLevels ) const override;
     double mStartElevation = 0;
     double mEndElevation = 0;
