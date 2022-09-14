@@ -329,7 +329,8 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVertica
     const int startIndex = mStartVerticalLevel - 1;
     if ( mStartVerticalLevel == mEndVerticalLevel )
     {
-      singleVerticalIndex = std::clamp( startIndex, 0, verticalLevels.size() - 2 );
+      if ( startIndex >= 0 && startIndex < verticalLevels.size() - 1 )
+        singleVerticalIndex = startIndex;
     }
     else
     {
@@ -354,7 +355,8 @@ void QgsMeshMultiLevelsAveragingMethod::volumeRangeForFace( double &startVertica
     const int startIndex = volumesBelowFaceCount - mEndVerticalLevel;
     if ( mStartVerticalLevel == mEndVerticalLevel )
     {
-      singleVerticalIndex = std::clamp( startIndex, 0, verticalLevels.size() - 2 );
+      if ( startIndex >= 0 && startIndex < verticalLevels.size() - 1 )
+        singleVerticalIndex = startIndex;
     }
     else
     {
