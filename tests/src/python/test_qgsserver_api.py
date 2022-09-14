@@ -1141,7 +1141,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(bytes(response.body()).decode('utf8'),
-                         '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'name\', \'utf8nameè\'"}]')
+                         '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'utf8nameè\', \'name\'"}]')
 
         # Valid request
         response = QgsBufferServerResponse()
@@ -1204,6 +1204,62 @@ class QgsServerAPITest(QgsServerAPITestBase):
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
         self.assertEqual(bytes(response.body()).decode('utf-8'), '[{"code":"Internal server error","description":"Invalid feature ID [xYz@]"}]')
+
+    def test_wfs3_field_alias(self):
+
+        project = QgsProject()
+        project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(list(j_response['features'][0]['properties'].keys()), ['alias_id', 'alias_name', 'utf8nameè'])
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?properties=alias_name')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(list(j_response['features'][0]['properties'].keys()), ['alias_name'])
+
+        # Also accepts real name
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?properties=name')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual(list(j_response['features'][0]['properties'].keys()), ['alias_name'])
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?sortby=alias_name&sortdesc=1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['1', '2', '0'])
+
+        # Also accepts real name
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?sortby=name&sortdesc=1')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['1', '2', '0'])
+
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?alias_name=th*')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['2'])
+
+        # Also accepts real name
+        request = QgsBufferServerRequest(
+            'http://server.qgis.org/wfs3/collections/fields_alias/items.geojson?name=th*')
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        j_response = json.loads(bytes(response.body()).decode('utf8'))
+        self.assertEqual([f['id'] for f in j_response['features']], ['2'])
 
     def test_wfs3_time_filters_ranges(self):
         """Test datetime filters"""

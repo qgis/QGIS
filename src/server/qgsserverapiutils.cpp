@@ -582,6 +582,23 @@ const QVector<QgsVectorLayer *> QgsServerApiUtils::publishedWfsLayers( const Qgs
   return publishedWfsLayers< QgsVectorLayer * >( context );
 }
 
+QString QgsServerApiUtils::fieldName( const QString &name, const QgsVectorLayer *layer )
+{
+  if ( layer->fields().names().contains( name ) )
+  {
+    return name;
+  }
+  const QgsFields fields { layer->fields() };
+  for ( const QgsField &field : std::as_const( fields ) )
+  {
+    if ( field.displayName() == name )
+    {
+      return field.name();
+    }
+  }
+  throw QgsServerApiBadRequestException{ QStringLiteral( "Field '%1' is not a valid field name for layer: %2" ).arg( name, layer->name() ) };
+}
+
 QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
 {
   QString result { QUrl( value ).toString() };
