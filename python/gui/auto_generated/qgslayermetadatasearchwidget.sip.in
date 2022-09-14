@@ -44,6 +44,9 @@ Updates the extent filter based on the combo box current item ``index``.
     virtual void reset();
 
 
+  protected:
+    virtual void showEvent( QShowEvent *event );
+
 };
 
 /************************************************************************

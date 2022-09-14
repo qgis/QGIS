@@ -61,6 +61,9 @@ class GUI_EXPORT QgsLayerMetadataSearchWidget : public QgsAbstractDataSourceWidg
     QgsLayerMetadataResultsModel *mSourceModel = nullptr;
     unsigned long int mRowCount = 0;
 
+    // QWidget interface
+  protected:
+    void showEvent( QShowEvent *event ) override;
 };
 
 #endif // QGSLAYERMETADATASEARCHWIDGET_H

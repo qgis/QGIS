@@ -34,10 +34,14 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
   public:
 
     /**
-     * Constructs a QgsLayerMetadataResultsProxyModel with an optional parent.
-     * @param parent
+     * Constructs a QgsLayerMetadataResultsProxyModel with an optional \a parent.
      */
     explicit QgsLayerMetadataResultsProxyModel( QObject *parent = nullptr );
+
+    /**
+     * Returns the filter string.
+     */
+    const QString filterString() const;
 
   public slots:
 

@@ -46,3 +46,8 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
   }
   return result;
 }
+
+const QString QgsLayerMetadataResultsProxyModel::filterString() const
+{
+  return mFilterString;
+}

@@ -23,8 +23,12 @@ it handles text and extent filtering.
 
     explicit QgsLayerMetadataResultsProxyModel( QObject *parent = 0 );
 %Docstring
-Constructs a QgsLayerMetadataResultsProxyModel with an optional parent.
-@param parent
+Constructs a QgsLayerMetadataResultsProxyModel with an optional ``parent``.
+%End
+
+    const QString filterString() const;
+%Docstring
+Returns the filter string.
 %End
 
   public slots:
