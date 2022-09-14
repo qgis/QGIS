@@ -88,6 +88,18 @@ class CORE_EXPORT QgsSatelliteInfo
      * Signal strength (0-99dB), or -1 if not available.
      */
     int signal = -1;
+  
+    /**
+     * satType value from NMEA message $GxGSV, where x:
+     * P = GPS
+     * S = SBAS (GPSid> 32 -> SBasid = GPSid + 87)
+     * N = generic satellite
+     * L = GLONASS
+     * A = GALILEO
+     * B = BEIDOU
+     * Q = QZSS
+     */
+    QChar satType;
 
     bool operator==( const QgsSatelliteInfo &other ) const
     {
@@ -95,7 +107,8 @@ class CORE_EXPORT QgsSatelliteInfo
              inUse == other.inUse &&
              elevation == other.elevation &&
              azimuth == other.azimuth &&
-             signal == other.signal;
+             signal == other.signal &&
+             satType == other.satType;
     }
 
     bool operator!=( const QgsSatelliteInfo &other ) const
