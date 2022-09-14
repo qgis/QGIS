@@ -814,17 +814,18 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
       }
 
       const QgsFields published { publishedFields( mapLayer, context ) };
-      QStringList publishedFieldNames;
+      QSet<QString> publishedFieldNames;
       for ( const auto &f : published )
       {
-        publishedFieldNames.push_back( f.name() );
+        publishedFieldNames.insert( f.name() );
+        publishedFieldNames.insert( f.displayName() );
       }
 
       // Properties (CSV list of properties to return)
       QgsServerQueryStringParameter properties { QStringLiteral( "properties" ), false,
           QgsServerQueryStringParameter::Type::List,
           QStringLiteral( "Comma separated list of feature property names to be added to the result. Valid values: %1" )
-          .arg( publishedFieldNames.join( QLatin1String( "', '" ) )
+          .arg( publishedFieldNames.values().join( QLatin1String( "', '" ) )
                 .append( '\'' )
                 .prepend( '\'' ) ) };
 
@@ -1079,7 +1080,7 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
     const QgsFields constFields { publishedFields( mapLayer, context ) };
     for ( const auto &f : constFields )
     {
-      const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
+      const QString fName { f.displayName() };
       QgsServerQueryStringParameter::Type t;
       switch ( f.type() )
       {
@@ -1096,9 +1097,14 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
           break;
       }
       const QgsServerQueryStringParameter fieldParam { fName, false,
-          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( fName )
-          .arg( QgsServerQueryStringParameter::typeName( t ) ) };
+          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( fName, QgsServerQueryStringParameter::typeName( t ) ) };
       params.push_back( fieldParam );
+      if ( fName != f.name() )
+      {
+        const QgsServerQueryStringParameter fieldParam { f.name(), false,
+            t, QStringLiteral( "Retrieve features filtered by field: %1 (%2), aliased by %3" ).arg( f.name(), QgsServerQueryStringParameter::typeName( t ), f.alias() ) };
+        params.push_back( fieldParam );
+      }
     }
   }
   return params;
@@ -1165,16 +1171,20 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       const QgsFields constPublishedFields { publishedFields( mapLayer, context ) };
       for ( const QgsField &f : constPublishedFields )
       {
-        const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
-        const QString val = params.value( fName ).toString() ;
+        QString val = params.value( f.name() ).toString();
+        // Try alias
+        if ( val.isEmpty() && ! f.alias().isEmpty() )
+        {
+          val = params.value( f.alias() ).toString();
+        }
         if ( ! val.isEmpty() )
         {
           const QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
           if ( sanitized.isEmpty() )
           {
-            throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
+            throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name(), val ) );
           }
-          attrFilters[fName] = sanitized;
+          attrFilters[f.name()] = sanitized;
         }
       }
 
@@ -1204,7 +1214,14 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       // Properties (subset attributes)
-      const QStringList requestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
+      const QStringList inputRequestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
+
+      // Cleanup (may throw)
+      QStringList requestedProperties;
+      for ( const QString &property : std::as_const( inputRequestedProperties ) )
+      {
+        requestedProperties.push_back( QgsServerApiUtils::fieldName( QgsServerApiUtils::sanitizedFieldValue( property ), mapLayer ) );
+      }
 
       // Sorting
       const QString sortBy { params.value( QStringLiteral( "sortby" ) ).toString( ) };
@@ -1212,12 +1229,19 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       if ( !sortBy.isEmpty() )
       {
-        if ( ! constPublishedFields.names().contains( QgsServerApiUtils::sanitizedFieldValue( sortBy ) ) )
+        // fieldName may throw a different message ...
+        try
+        {
+          if ( ! constPublishedFields.names().contains( QgsServerApiUtils::fieldName( QgsServerApiUtils::sanitizedFieldValue( sortBy ), mapLayer ) ) )
+          {
+            throw QgsServerApiBadRequestException( QString() );
+          }
+        }
+        catch ( const QgsServerApiBadRequestException & )
         {
           throw QgsServerApiBadRequestException( QStringLiteral( "Invalid sortBy field '%1'" ).arg( QgsServerApiUtils::sanitizedFieldValue( sortBy ) ) );
         }
       }
-
 
       // ////////////////////////////////////////////////////////////////////////////////////////////////////
       // End of input control: inputs are valid, process the request
