@@ -184,6 +184,10 @@ void QgsDualView::initAttributeForm( const QgsFeature &feature )
     mAttributeEditor->layout()->addWidget( mAttributeForm );
   }
 
+  // This is an arbitrary yet small value to fix issue GH #50181
+  // the default value is 0.
+  mAttributeForm->setMinimumWidth( 200 );
+
   setAttributeTableConfig( mLayer->attributeTableConfig() );
 
   connect( mAttributeForm, &QgsAttributeForm::widgetValueChanged, this, &QgsDualView::featureFormAttributeChanged );
