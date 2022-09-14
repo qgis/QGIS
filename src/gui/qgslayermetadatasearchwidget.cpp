@@ -97,6 +97,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   } );
 
   connect( mSearchFilterLineEdit, &QLineEdit::textEdited, mProxyModel, &QgsLayerMetadataResultsProxyModel::setFilterString );
+  connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [ = ] { mProxyModel->setFilterString( QString() ); } );
   connect( mExtentFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayerMetadataSearchWidget::updateExtentFilter );
 
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, [ = ]( const QList<QgsMapLayer *> & )
@@ -192,4 +193,10 @@ void QgsLayerMetadataSearchWidget::reset()
 {
   mSearchFilterLineEdit->clear();
   mExtentFilterComboBox->setCurrentIndex( 0 );
+}
+
+void QgsLayerMetadataSearchWidget::showEvent( QShowEvent *event )
+{
+  QgsAbstractDataSourceWidget::showEvent( event );
+  mSearchFilterLineEdit->setText( mProxyModel->filterString( ) );
 }
