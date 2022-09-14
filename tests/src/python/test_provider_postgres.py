@@ -1734,6 +1734,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.fieldConstraints(
             0) & QgsFieldConstraints.ConstraintUnique)
 
+    def testReadOnly(self):
+        # Check default edition capabilities
+        vl = QgsVectorLayer('%s sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=' %
+                            (self.dbconn), "someData", "postgres")
+        self.assertFalse(vl.readOnly())
+        caps = vl.dataProvider().capabilities()
+        self.assertTrue(caps & QgsVectorDataProvider.AddFeatures)
+        self.assertTrue(caps & QgsVectorDataProvider.DeleteFeatures)
+        self.assertTrue(caps & QgsVectorDataProvider.ChangeAttributeValues)
+        self.assertTrue(caps & QgsVectorDataProvider.AddAttributes)
+        self.assertTrue(caps & QgsVectorDataProvider.DeleteAttributes)
+        self.assertTrue(caps & QgsVectorDataProvider.RenameAttributes)
+        self.assertTrue(caps & QgsVectorDataProvider.ChangeGeometries)
+        self.assertTrue(caps & QgsVectorDataProvider.SelectAtId)
+
+        # Check forceReadOnly
+        options = QgsVectorLayer.LayerOptions()
+        options.forceReadOnly = True
+        vl = QgsVectorLayer('%s sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=' %
+                            (self.dbconn), "someData", "postgres", options)
+        self.assertTrue(vl.readOnly())
+        caps = vl.dataProvider().capabilities()
+        self.assertFalse(caps & QgsVectorDataProvider.AddFeatures)
+        self.assertFalse(caps & QgsVectorDataProvider.DeleteFeatures)
+        self.assertFalse(caps & QgsVectorDataProvider.ChangeAttributeValues)
+        self.assertFalse(caps & QgsVectorDataProvider.AddAttributes)
+        self.assertFalse(caps & QgsVectorDataProvider.DeleteAttributes)
+        self.assertFalse(caps & QgsVectorDataProvider.RenameAttributes)
+        self.assertFalse(caps & QgsVectorDataProvider.ChangeGeometries)
+        self.assertTrue(caps & QgsVectorDataProvider.SelectAtId)
+
     def testVectorLayerUtilsUniqueWithProviderDefault(self):
         vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' %
                             (self.dbconn), "someData", "postgres")
