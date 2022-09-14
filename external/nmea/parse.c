@@ -373,7 +373,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d,"
                      "%d,%d,%d,%d*",
-                     &( type ),
+                     &( pack->pack_type ),
                      &( pack->pack_count ), &( pack->pack_index ), &( pack->sat_count ),
                      &( pack->sat_data[0].id ), &( pack->sat_data[0].elv ), &( pack->sat_data[0].azimuth ), &( pack->sat_data[0].sig ),
                      &( pack->sat_data[1].id ), &( pack->sat_data[1].elv ), &( pack->sat_data[1].azimuth ), &( pack->sat_data[1].sig ),
@@ -383,6 +383,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nsat = ( pack->pack_index - 1 ) * NMEA_SATINPACK;
   nsat = ( nsat + NMEA_SATINPACK > pack->sat_count ) ? pack->sat_count - nsat : NMEA_SATINPACK;
   nsat = nsat * 4 + 3 /* first three sentence`s */;
+  type = pack->pack_type;
 
   if ( nsen - 1 < nsat || nsen - 1 > ( NMEA_SATINPACK * 4 + 3 ) )
   {
