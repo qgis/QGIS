@@ -26,6 +26,7 @@
 #include <limits>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgspoint.h"
 #include "qgsdataprovider.h"
 #include "qgsprovidermetadata.h"
@@ -34,6 +35,7 @@
 
 
 class QgsRectangle;
+
 
 //! xyz coords of vertex
 typedef QgsPoint QgsMeshVertex;
@@ -47,6 +49,17 @@ typedef QVector<int> QgsMeshFace;
  * \since QGIS 3.14
  */
 typedef QPair<int, int> QgsMeshEdge;
+
+// To avoid too many conversion in python/core/conversions.sip use specific typedef for python bindings
+#ifndef SIP_RUN
+typedef QVector<QgsMeshVertex> QgsMeshVertices;
+typedef QVector<QgsMeshFace> QgsMeshFaces;
+typedef QVector<QgsMeshEdge> QgsMeshEdges;
+#else
+typedef QVector<QgsPoint> QgsMeshVertices;
+typedef QVector<QVector<int>> QgsMeshFaces;
+typedef QVector<QPair<int, int>> QgsMeshEdges;
+#endif
 
 /**
  * \ingroup core
@@ -109,9 +122,29 @@ struct CORE_EXPORT QgsMesh
    */
   static bool compareFaces( const QgsMeshFace &face1, const QgsMeshFace &face2 );
 
-  QVector<QgsMeshVertex> vertices SIP_SKIP;
-  QVector<QgsMeshEdge> edges SIP_SKIP;
-  QVector<QgsMeshFace> faces SIP_SKIP;
+  /**
+   * Define mesh vertices
+    * \since QGIS 3.16
+   */
+  void setVertices(const QgsMeshVertices& vertices);
+  
+  /**
+   * Define mesh faces
+    * \since QGIS 3.16
+   */
+  void setFaces(const  QgsMeshFaces & faces);
+
+  /**
+   * Define mesh edges
+    * \since QGIS 3.16
+   */
+  void setEdges(const  QgsMeshEdges & edges);
+
+
+  QgsMeshVertices vertices; SIP_SKIP
+  QgsMeshEdges edges; SIP_SKIP
+  QgsMeshFaces faces; SIP_SKIP
+
 };
 
 /**

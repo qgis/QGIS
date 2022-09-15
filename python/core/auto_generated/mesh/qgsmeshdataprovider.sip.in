@@ -13,11 +13,16 @@
 
 
 
+
 typedef QgsPoint QgsMeshVertex;
 
 typedef QVector<int> QgsMeshFace;
 
 typedef QPair<int, int> QgsMeshEdge;
+
+typedef QVector<QgsPoint> QgsMeshVertices;
+typedef QVector<QVector<int>> QgsMeshFaces;
+typedef QVector<QPair<int, int>> QgsMeshEdges;
 
 struct QgsMesh
 {
@@ -81,6 +86,28 @@ Compare two faces, return ``True`` if they are equivalent : same indexes and sam
 
 .. versionadded:: 3.16
 %End
+
+  void setVertices(const QgsMeshVertices& vertices);
+%Docstring
+Define mesh vertices
+
+.. versionadded:: 3.16
+%End
+  
+  void setFaces(const  QgsMeshFaces & faces);
+%Docstring
+Define mesh faces
+
+.. versionadded:: 3.16
+%End
+
+  void setEdges(const  QgsMeshEdges & edges);
+%Docstring
+Define mesh edges
+
+.. versionadded:: 3.16
+%End
+
 
 };
 

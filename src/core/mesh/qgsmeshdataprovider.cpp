@@ -212,6 +212,21 @@ int QgsMesh::edgeCount() const
   return edges.size();
 }
 
+void QgsMesh::setVertices(const QgsMeshVertices& _vertices)
+{
+  vertices=_vertices;
+}
+
+void QgsMesh::setFaces(const  QgsMeshFaces & _faces)
+{
+  faces=_faces;
+}
+
+void QgsMesh::setEdges(const  QgsMeshEdges & _edges)
+{
+  edges=_edges;
+}
+
 bool QgsMeshDataSourceInterface::contains( const QgsMesh::ElementType &type ) const
 {
   switch ( type )
