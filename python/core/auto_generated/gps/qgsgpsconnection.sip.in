@@ -38,6 +38,8 @@ Encapsulates information relating to a GPS satellite.
 
     int signal;
 
+    QChar satType;
+
     bool operator==( const QgsSatelliteInfo &other ) const;
 
     bool operator!=( const QgsSatelliteInfo &other ) const;
