@@ -4998,9 +4998,11 @@ double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *rendere
 
 QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )
 {
+  height = width = -1;
+
   if ( !s || !context )
   {
-    return 0;
+    return nullptr;
   }
 
   double size;
@@ -5008,6 +5010,16 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
   if ( markerSymbol )
   {
+    const QgsSymbolLayerList sls = s->symbolLayers();
+    for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
+    {
+      // geometry generators involved, there is no way to get a restricted size symbol
+      if ( sl->type() != Qgis::SymbolType::Marker )
+      {
+        return nullptr;
+      }
+    }
+
     size = markerSymbol->size( *context );
   }
   else if ( lineSymbol )
@@ -5016,7 +5028,7 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
-    return 0; //not size restriction implemented for other symbol types
+    return nullptr; //not size restriction implemented for other symbol types
   }
 
   size /= context->scaleFactor();
@@ -5031,7 +5043,9 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
-    return 0;
+    // no need to restricted size symbol
+    height = width = 0;
+    return nullptr;
   }
 
   if ( markerSymbol )
@@ -5051,7 +5065,8 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
     height = size;
     return ls;
   }
-  return 0;
+
+  return nullptr;
 }
 
 QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context )
@@ -5064,4 +5079,3 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
   }
   return properties;
 }
-

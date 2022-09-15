@@ -347,24 +347,16 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   if ( mItem.symbol() && ( mItem.symbol()->type() == Qgis::SymbolType::Marker
                            || mItem.symbol()->type() == Qgis::SymbolType::Line ) )
   {
-
-    bool hasRestrictedSizeSymbol = true;
-    for ( QgsSymbolLayer *sl : mItem.symbol()->symbolLayers() )
-      if ( dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( sl ) )
-        hasRestrictedSizeSymbol = false;
-
     int maxSize = largeIconSize;
-    std::unique_ptr<QgsSymbol> symbol;
-    if ( hasRestrictedSizeSymbol )
+
+    // unusued width, height variables
+    double width = 0.0;
+    double height = 0.0;
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
+
+    if ( width == -1 && height == -1 && context )
     {
-      // unusued width, height variables
-      double width = 0.0;
-      double height = 0.0;
-      symbol.reset( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
-    }
-    else if ( context )
-    {
-      // when it's not possible to get a restricted size symbol, we restrict
+      // Tt's not possible to get a restricted size symbol, so we restrict
       // pixmap target size to be sure it would fit MAXIMUM_SIZE
       maxSize = static_cast<int>( std::round( MAXIMUM_SIZE * context->scaleFactor() ) );
     }
