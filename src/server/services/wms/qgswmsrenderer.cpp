@@ -29,6 +29,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapserviceexception.h"
 #include "qgslayertree.h"
+#include "qgslayoututils.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
@@ -503,6 +504,8 @@ namespace QgsWms
         if ( ok )
           exportSettings.dpi = dpi;
       }
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       if ( atlas )
@@ -536,6 +539,8 @@ namespace QgsWms
           dpi = _dpi;
       }
       exportSettings.dpi = dpi;
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Destination image size in px
@@ -607,6 +612,8 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
 
       // Export all pages
       if ( atlas )
