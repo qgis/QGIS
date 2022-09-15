@@ -365,8 +365,6 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
 
   nmea_trace_buff( buff, buff_sz );
 
-  char type;
-
   nsen = nmea_scanf( buff, buff_sz,
                      "$G%CGSV,%d,%d,%d,"
                      "%d,%d,%d,%d,"
@@ -383,7 +381,6 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
   nsat = ( pack->pack_index - 1 ) * NMEA_SATINPACK;
   nsat = ( nsat + NMEA_SATINPACK > pack->sat_count ) ? pack->sat_count - nsat : NMEA_SATINPACK;
   nsat = nsat * 4 + 3 /* first three sentence`s */;
-  type = pack->pack_type;
 
   if ( nsen - 1 < nsat || nsen - 1 > ( NMEA_SATINPACK * 4 + 3 ) )
   {
@@ -391,7 +388,7 @@ int nmea_parse_GPGSV( const char *buff, int buff_sz, nmeaGPGSV *pack )
     return 0;
   }
 
-  if ( type != 'P' && type != 'N' && type != 'L' && type != 'A' && type != 'B' && type != 'Q' )
+  if ( pack->pack_type != 'P' && pack->pack_type != 'N' && pack->pack_type != 'L' && pack->pack_type != 'A' && pack->pack_type != 'B' && pack->pack_type != 'Q' )
   {
     nmea_error( "G?GSV invalid type " );
     return 0;
