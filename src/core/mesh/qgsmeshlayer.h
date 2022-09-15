@@ -236,9 +236,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     /**
      * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
-     * \note Not available in Python bindings
      */
-    QgsMesh *nativeMesh() SIP_SKIP;
+    QgsMesh *nativeMesh();
 
     /**
      * Returns native mesh (NULLPTR before rendering or calling to updateMesh)

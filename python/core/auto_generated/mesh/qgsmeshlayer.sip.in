@@ -211,6 +211,10 @@ Saves datasets group on file with the specified ``driver``
 .. versionadded:: 3.16
 %End
 
+    QgsMesh *nativeMesh();
+%Docstring
+Returns native mesh (``None`` before rendering or calling to updateMesh)
+%End
 
 
 
