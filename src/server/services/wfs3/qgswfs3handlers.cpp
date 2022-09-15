@@ -813,19 +813,24 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
         params.push_back( p );
       }
 
+      // We want to accept both displayName and name.
       const QgsFields published { publishedFields( mapLayer, context ) };
-      QSet<QString> publishedFieldNames;
+      QStringList publishedFieldNames;
+      QStringList publishedFieldDisplayNames;
       for ( const auto &f : published )
       {
-        publishedFieldNames.insert( f.name() );
-        publishedFieldNames.insert( f.displayName() );
+        publishedFieldDisplayNames.push_back( f.displayName() );
+        if ( f.name() != f.displayName() )
+        {
+          publishedFieldNames.push_back( f.name() );
+        }
       }
 
       // Properties (CSV list of properties to return)
       QgsServerQueryStringParameter properties { QStringLiteral( "properties" ), false,
           QgsServerQueryStringParameter::Type::List,
           QStringLiteral( "Comma separated list of feature property names to be added to the result. Valid values: %1" )
-          .arg( publishedFieldNames.values().join( QLatin1String( "', '" ) )
+          .arg( publishedFieldDisplayNames.join( QLatin1String( "', '" ) )
                 .append( '\'' )
                 .prepend( '\'' ) ) };
 
@@ -834,7 +839,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
         const QStringList properties { value.toStringList() };
         for ( const auto &p : properties )
         {
-          if ( ! publishedFieldNames.contains( p ) )
+          if ( ! publishedFieldNames.contains( p ) && ! publishedFieldDisplayNames.contains( p ) )
           {
             return false;
           }
@@ -992,7 +997,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     const QList<QgsServerQueryStringParameter> requestParameters { parameters( layerContext ) };
     for ( const auto &p : requestParameters )
     {
-      if ( ! componentNames.contains( p.name() ) )
+      if ( ! p.hidden() && ! componentNames.contains( p.name() ) )
         componentParameters.push_back( p.data() );
     }
 
@@ -1099,10 +1104,13 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
       const QgsServerQueryStringParameter fieldParam { fName, false,
           t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( fName, QgsServerQueryStringParameter::typeName( t ) ) };
       params.push_back( fieldParam );
+
+      // Add real field name if alias was used but set it as hidden
       if ( fName != f.name() )
       {
-        const QgsServerQueryStringParameter fieldParam { f.name(), false,
+        QgsServerQueryStringParameter fieldParam { f.name(), false,
             t, QStringLiteral( "Retrieve features filtered by field: %1 (%2), aliased by %3" ).arg( f.name(), QgsServerQueryStringParameter::typeName( t ), f.alias() ) };
+        fieldParam.setHidden( true );
         params.push_back( fieldParam );
       }
     }
