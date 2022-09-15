@@ -115,6 +115,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'with_maptip=true',
                                  'wms_getfeatureinfo-text-html-maptip')
 
+        # Test getfeatureinfo response html with maptip in text mode
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=text%2Fplain&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_maptip=true',
+                                 'wms_getfeatureinfo-text-html-maptip-plain')
+
         # Test getfeatureinfo response text
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
