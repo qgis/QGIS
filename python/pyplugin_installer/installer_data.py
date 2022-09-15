@@ -172,6 +172,8 @@ class Repositories(QObject):
     STATE_UNAVAILABLE = 3
     STATE_REJECTED = 4
 
+    CHECK_ON_START_INTERVAL = 3
+
     anythingChanged = pyqtSignal(str, int, int)
     repositoryFetched = pyqtSignal(str)
     checkingDone = pyqtSignal()
@@ -235,29 +237,6 @@ class Repositories(QObject):
         settings = QgsSettings()
         settings.setValue(settingsGroup + "/checkOnStart", state)
 
-    def checkingOnStartInterval(self) -> int:
-        """ return checking for news and updates interval (in days)"""
-        settings = QgsSettings()
-        try:
-            # QgsSettings may contain non-int value...
-            i = settings.value(settingsGroup + "/checkOnStartInterval", 3, type=int)
-        except:
-            # fallback to 3 days by default
-            i = 3
-        if i < 0:
-            i = 3
-        # allowed values: 0,1,3,7,14,30 days
-        interval = 0
-        for j in [1, 3, 7, 14, 30]:
-            if i >= j:
-                interval = j
-        return interval
-
-    def setCheckingOnStartInterval(self, interval: int):
-        """ set checking for news and updates interval (in days)"""
-        settings = QgsSettings()
-        settings.setValue(settingsGroup + "/checkOnStartInterval", interval)
-
     def saveCheckingOnStartLastDate(self):
         """ set today's date as the day of last checking  """
         settings = QgsSettings()
@@ -265,15 +244,13 @@ class Repositories(QObject):
 
     def timeForChecking(self) -> bool:
         """ determine whether it's the time for checking for news and updates now """
-        if self.checkingOnStartInterval() == 0:
-            return True
         settings = QgsSettings()
         try:
             # QgsSettings may contain ivalid value...
             interval = settings.value(settingsGroup + "/checkOnStartLastDate", type=QDate).daysTo(QDate.currentDate())
         except:
             interval = 0
-        if interval >= self.checkingOnStartInterval():
+        if interval >= Repositories.CHECK_ON_START_INTERVAL:
             return True
         else:
             return False
