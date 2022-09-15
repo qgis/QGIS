@@ -1,0 +1,12 @@
+*****
+Content-Type: text/plain; charset=utf-8
+
+GetFeatureInfo results
+
+Layer 'testlayer èé'
+Feature 2
+id = '3'
+name = 'three'
+utf8nameè = 'three èé↓'
+maptip = 'Name: three'
+
