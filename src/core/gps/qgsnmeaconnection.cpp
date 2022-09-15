@@ -370,6 +370,13 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       satelliteInfo.id = currentSatellite.id;
       satelliteInfo.inUse = 0;
       satelliteInfo.signal = currentSatellite.sig;
+      satelliteInfo.satType = result.pack_type;
+      if ( satelliteInfo.satType == 'P' && satelliteInfo.id > 32 )
+      {
+        satelliteInfo.satType = 'S';
+        satelliteInfo.id = currentSatellite.id + 87;
+      }
+
       IDfind = 0;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
