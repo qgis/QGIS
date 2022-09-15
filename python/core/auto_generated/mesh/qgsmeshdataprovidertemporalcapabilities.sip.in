@@ -56,8 +56,34 @@ Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the tim
    for non temporal dataset group, ``timeSinceGlobalReference`` is not used and the unique dataset is returned
 %End
 
+    void addGroupReferenceDateTime( int group, const QDateTime &reference );
+%Docstring
+Adds a ``reference`` date/time from a dataset ``group``
 
+.. note::
 
+   must be used only by the mesh data provider
+%End
+
+    void addDatasetTimeInMilliseconds( int group, qint64 time );
+%Docstring
+Adds a ``time`` (in milliseconds) from a dataset contained in ``group``
+
+.. note::
+
+   must be used only by the mesh data provider,
+   all dataset need to be added one after one
+%End
+
+    void addDatasetTime( int group, double  time );
+%Docstring
+Adds a ``time`` (in provider unit) from a dataset contained in ``group``
+
+.. note::
+
+   must be used only by the mesh data provider,
+   all dataset need to be added one after one
+%End
 
     bool hasReferenceTime() const;
 %Docstring
