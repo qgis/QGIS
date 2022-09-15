@@ -1828,7 +1828,9 @@ namespace QgsWms
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
-          maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &renderContext.expressionContext() ) );
+          QgsExpressionContext context { renderContext.expressionContext() };
+          context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+          maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &context ) );
           featureElement.appendChild( maptipElem );
         }
 
