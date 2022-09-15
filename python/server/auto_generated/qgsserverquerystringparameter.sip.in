@@ -112,7 +112,7 @@ parameters that can be accepted without being advertised.
 
     void setHidden( bool hidden );
 %Docstring
-Set the parameter's ``hidden`` status, parametes are not hidden by default.
+Set the parameter's ``hidden`` status, parameters are not hidden by default.
 
 .. versionadded:: 3.28
 %End

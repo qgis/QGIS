@@ -151,7 +151,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     bool hidden() const;
 
     /**
-     * Set the parameter's \a hidden status, parametes are not hidden by default.
+     * Set the parameter's \a hidden status, parameters are not hidden by default.
      *
      * \since QGIS 3.28
      */
