@@ -48,6 +48,8 @@
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgssettingsregistrygui.h"
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
 #endif
@@ -239,7 +241,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
   // Initialize the "Settings" tab widgets
-  if ( settings.value( settingsGroup + "/checkOnStart", true ).toBool() )
+  if ( QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates.value() )
   {
     ckbCheckUpdates->setChecked( true );
   }
@@ -1286,8 +1288,7 @@ void QgsPluginManager::reject()
     // get the QgsSettings group from the installer
     QString settingsGroup;
     QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-    QgsSettings settings;
-    settings.setValue( settingsGroup + "/checkOnStart", QVariant( ckbCheckUpdates->isChecked() ) );
+    QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates.setValue( ckbCheckUpdates->isChecked() );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().onManagerClose()" ) );
   }
 #endif

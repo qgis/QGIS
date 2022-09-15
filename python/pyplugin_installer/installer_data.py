@@ -41,6 +41,7 @@ import re
 import configparser
 import qgis.utils
 from qgis.core import QgsNetworkAccessManager, QgsApplication
+from qgis.gui import QgsGui
 from qgis.utils import iface, plugin_paths
 from .version_compare import pyQgisVersion, compareVersions, normalizeVersion, isCompatible
 
@@ -229,13 +230,11 @@ class Repositories(QObject):
 
     def checkingOnStart(self) -> bool:
         """ return true if checking for news and updates is enabled """
-        settings = QgsSettings()
-        return settings.value(settingsGroup + "/checkOnStart", True, type=bool)
+        return QgsGui.settingsRegistryGui().settingsEntry('plugins/automatically-check-for-updates').value()
 
     def setCheckingOnStart(self, state: bool):
         """ set state of checking for news and updates """
-        settings = QgsSettings()
-        settings.setValue(settingsGroup + "/checkOnStart", state)
+        QgsGui.settingsRegistryGui().settingsEntry('plugins/automatically-check-for-updates').setValue(state)
 
     def saveCheckingOnStartLastDate(self):
         """ set today's date as the day of last checking  """

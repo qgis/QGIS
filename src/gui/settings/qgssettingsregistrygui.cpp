@@ -23,6 +23,7 @@ QgsSettingsRegistryGui::QgsSettingsRegistryGui()
   : QgsSettingsRegistry()
 {
   addSettingsEntry( &settingsRespectScreenDPI );
+  addSettingsEntry( &settingsAutomaticallyCheckForPluginUpdates );
   addSettingsEntry( &QgsStyleManagerDialog::settingLastStyleDatabaseFolder );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
