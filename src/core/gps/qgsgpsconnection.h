@@ -90,13 +90,7 @@ class CORE_EXPORT QgsSatelliteInfo
     int signal = -1;
     /**
      * satType value from NMEA message $GxGSV, where x:
-     * P = GPS
-     * S = SBAS (GPSid> 32 -> SBasid = GPSid + 87)
-     * N = generic satellite
-     * L = GLONASS
-     * A = GALILEO
-     * B = BEIDOU
-     * Q = QZSS
+     * P = GPS; S = SBAS (GPSid> 32 then SBasid = GPSid + 87); N = generic satellite; L = GLONASS; A = GALILEO; B = BEIDOU; Q = QZSS;
      */
     QChar satType;
 
