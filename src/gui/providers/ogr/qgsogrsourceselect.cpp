@@ -78,7 +78,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   for ( int i = 0; i < dbDrivers.count(); i++ )
   {
     QString dbDriver = dbDrivers.at( i );
-    if ( ( !dbDriver.isEmpty() ) && ( !dbDriver.isNull() ) )
+    if ( !dbDriver.isEmpty() )
       cmbDatabaseTypes->addItem( dbDriver.split( ',' ).at( 0 ) );
   }
 
@@ -87,7 +87,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   for ( int i = 0; i < dirDrivers.count(); i++ )
   {
     QString dirDriver = dirDrivers.at( i );
-    if ( ( !dirDriver.isEmpty() ) && ( !dirDriver.isNull() ) )
+    if ( !dirDriver.isEmpty() )
       cmbDirectoryTypes->addItem( dirDriver.split( ',' ).at( 0 ) );
   }
 
@@ -98,7 +98,7 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   for ( int i = 0; i < protocolTypes.count(); i++ )
   {
     QString protocolType = protocolTypes.at( i );
-    if ( ( !protocolType.isEmpty() ) && ( !protocolType.isNull() ) )
+    if ( !protocolType.isEmpty() )
       cmbProtocolTypes->addItem( protocolType.split( ',' ).at( 0 ) );
   }
   cmbDatabaseTypes->blockSignals( false );
