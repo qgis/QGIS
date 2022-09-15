@@ -5,6 +5,8 @@ which are not wrapped by PyQt:
 - QVector< QVector< QVector<TYPE> > >
 - QList< QList<TYPE> >
 - QList<qint64>
+- QVector<QVector<int>>
+- QVector<QPair<int, int>>
 - QSet<int>
 - QSet<qint64>
 - QSet<TYPE>
@@ -348,6 +350,124 @@ template <TYPE>
   }
 
   *sipCppPtr = ql;
+  return sipGetState(sipTransferObj);
+%End
+};
+
+
+%MappedType QVector<QPair<int, int>>
+{
+%TypeHeaderCode
+#include <QVector>
+#include <QPair>
+%End
+
+%ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ((l = PyList_New(sipCpp->size())) == NULL)
+    return NULL;
+
+  // Set the list elements.
+  for (int i = 0; i < sipCpp->size(); ++i)
+  {
+    PyObject *tobj;
+    if ( ( tobj = PyTuple_New( 2 ) ) == NULL )
+    {
+      return NULL;
+    }
+
+    // build key
+    PyObject *t1obj = PyLong_FromLong(sipCpp->at(i).first);
+    PyTuple_SetItem( tobj, 0, t1obj );
+    PyObject *t2obj = PyLong_FromLong(sipCpp->at(i).second);
+    PyTuple_SetItem( tobj, 1, t2obj );
+
+    PyList_SET_ITEM(l, i, tobj);
+  }
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+    return PyList_Check(sipPy);
+
+  QVector<QPair<int,int>> * qvector = new QVector<QPair<int,int>>;
+
+  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  {
+    PyObject *t1obj        = PyList_GET_ITEM(sipPy, i);
+    PyObject *sipKeyFirst  = PyTuple_GetItem( t1obj, 0 );
+    PyObject *sipKeySecond = PyTuple_GetItem( t1obj, 1 );
+
+    *qvector << QPair<int,int>(PyLong_AsLong(sipKeyFirst), PyLong_AsLong(sipKeySecond));
+  }
+
+  *sipCppPtr = qvector;
+  return sipGetState(sipTransferObj);
+%End
+};
+
+
+%MappedType QVector<QVector<int>>
+{
+%TypeHeaderCode
+#include <QVector>
+%End
+
+%ConvertFromTypeCode
+  // Create the list.
+  PyObject *l;
+
+  if ((l = PyList_New(sipCpp->size())) == NULL)
+    return NULL;
+
+  // Set the list elements.
+  for (int i = 0; i < sipCpp->size(); ++i)
+  {
+    // Create the list.
+    PyObject *l2;
+    if ((l2 = PyList_New(sipCpp->at(i).size())) == NULL)
+      return NULL;
+
+      for (int j =0; j < sipCpp->at(i).size(); ++j)
+      {
+        PyObject *tobj;
+
+        if ((tobj = PyLong_FromLong(sipCpp->at(i).at(j))) == NULL)
+        {
+          Py_DECREF(l);
+          return NULL;
+        }
+        PyList_SET_ITEM(l2, j, tobj);
+      }
+    PyList_SET_ITEM(l, i, l2);
+  }
+
+  return l;
+%End
+
+%ConvertToTypeCode
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+    return PyList_Check(sipPy);
+
+  QVector<QVector<int>> * qvector = new QVector<QVector<int>>;
+
+  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  {
+    QVector<int> l2 = QVector<int>();
+    for (int j = 0; j < PyList_GET_SIZE(PyList_GET_ITEM(sipPy, i)); j++)
+    {
+      l2 << PyLong_AsLong(PyList_GET_ITEM(PyList_GET_ITEM(sipPy, i), j));
+    }
+    *qvector << l2;
+  }
+
+  *sipCppPtr = qvector;
   return sipGetState(sipTransferObj);
 %End
 };
