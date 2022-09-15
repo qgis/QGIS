@@ -60,7 +60,7 @@
        <property name="spacing">
         <number>0</number>
        </property>
-       <property name="margin">
+       <property name="margin" stdset="0">
         <number>0</number>
        </property>
        <item>
@@ -236,7 +236,7 @@
        <property name="spacing">
         <number>6</number>
        </property>
-       <property name="margin">
+       <property name="margin" stdset="0">
         <number>0</number>
        </property>
        <item>
@@ -355,7 +355,7 @@
                   <enum>QFrame::Sunken</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_12">
-                  <property name="margin">
+                  <property name="margin" stdset="0">
                    <number>0</number>
                   </property>
                   <item>
@@ -368,7 +368,7 @@
                     </property>
                     <property name="url" stdset="0">
                      <url>
-                      <string notr="true">about:blank</string>
+                      <string>about:blank</string>
                      </url>
                     </property>
                    </widget>
@@ -811,7 +811,7 @@
               <property name="spacing">
                <number>6</number>
               </property>
-              <property name="margin">
+              <property name="margin" stdset="0">
                <number>0</number>
               </property>
               <item>
@@ -834,11 +834,11 @@
                    <x>0</x>
                    <y>0</y>
                    <width>720</width>
-                   <height>612</height>
+                   <height>609</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
-                  <property name="margin">
+                  <property name="margin" stdset="0">
                    <number>0</number>
                   </property>
                   <item>
@@ -865,46 +865,6 @@
                      <property name="leftMargin">
                       <number>9</number>
                      </property>
-                     <item>
-                      <widget class="QComboBox" name="comboInterval">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <item>
-                        <property name="text">
-                         <string>Every Time QGIS Starts</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Once a Day</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Every 3 Days</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Every Week</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Every 2 Weeks</string>
-                        </property>
-                       </item>
-                       <item>
-                        <property name="text">
-                         <string>Every Month</string>
-                        </property>
-                       </item>
-                      </widget>
-                     </item>
                      <item>
                       <widget class="QLabel" name="lblCheckUpdates">
                        <property name="sizePolicy">
@@ -1271,6 +1231,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

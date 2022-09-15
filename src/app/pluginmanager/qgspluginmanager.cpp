@@ -32,13 +32,12 @@
 #include <QDesktopServices>
 #include <QRegularExpression>
 #include <QUrl>
+#include <QCheckBox>
 
 #include "qgsmessagelog.h"
 
 #include "qgis.h"
-#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsconfig.h"
 #include "qgsmessagebar.h"
 #include "qgsproviderregistry.h"
 #include "qgspluginregistry.h"
@@ -239,9 +238,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( mZipFileWidget, &QgsFileWidget::fileChanged, this, &QgsPluginManager::mZipFileWidget_fileChanged );
   connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
-  // Initialize list of allowed checking intervals
-  mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
-
   // Initialize the "Settings" tab widgets
   if ( settings.value( settingsGroup + "/checkOnStart", true ).toBool() )
   {
@@ -257,13 +253,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   {
     ckbDeprecated->setChecked( true );
   }
-
-  const int interval = settings.value( settingsGroup + "/checkOnStartInterval", "3" ).toInt();
-  const int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
-  comboInterval->setCurrentIndex( indx );
 }
-
-
 
 void QgsPluginManager::loadPlugin( const QString &id )
 {
@@ -1298,7 +1288,6 @@ void QgsPluginManager::reject()
     QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
     QgsSettings settings;
     settings.setValue( settingsGroup + "/checkOnStart", QVariant( ckbCheckUpdates->isChecked() ) );
-    settings.setValue( settingsGroup + "/checkOnStartInterval", QVariant( mCheckingOnStartIntervals.value( comboInterval->currentIndex() ) ) );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().onManagerClose()" ) );
   }
 #endif
