@@ -55,10 +55,15 @@ void QgsLayoutItemUndoCommand::saveState( QDomDocument &stateDoc ) const
   QDomElement documentElement = stateDoc.createElement( QStringLiteral( "ItemState" ) );
 
   QgsLayoutItem *item = mLayout->itemByUuid( mItemUuid );
-  Q_ASSERT_X( item, "QgsLayoutItemUndoCommand::saveState", "could not retrieve item for saving state" );
-
-  item->writeXml( documentElement, stateDoc, QgsReadWriteContext() );
-  stateDoc.appendChild( documentElement );
+  if ( item )
+  {
+    item->writeXml( documentElement, stateDoc, QgsReadWriteContext() );
+    stateDoc.appendChild( documentElement );
+  }
+  else
+  {
+    QgsDebugMsg( QStringLiteral( "QgsLayoutItemUndoCommand::saveState: could not retrieve item %1 for saving state" ).arg( mItemUuid ) );
+  }
 }
 
 void QgsLayoutItemUndoCommand::restoreState( QDomDocument &stateDoc )
