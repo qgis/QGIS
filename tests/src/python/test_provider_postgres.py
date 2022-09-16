@@ -2567,7 +2567,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature.setGeometry(geom)
         self.assertTrue(vl.dataProvider().addFeature(feature))
 
-        self.assertEqual(vl.dataProvider().defaultValueClause(0), "nextval('b29560_gid_seq'::regclass)")
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), "nextval('qgis_test.b29560_gid_seq'::regclass)")
 
         del (vl)
 
@@ -2579,6 +2579,24 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         feature = next(vl.getFeatures())
         self.assertIsNotNone(feature.id())
+
+    def testEvalDefaultOnProviderSide(self):
+        """Test issue GH #50168"""
+
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."gh_50168" CASCADE')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."gh_50168" ( id integer generated always as identity primary key, test_string VARCHAR(128) )')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' srid=4326 table="qgis_test"."gh_50168" () sql=', 'gh_50168', 'postgres')
+        self.assertTrue(vl.isValid())
+        vl.dataProvider().setProviderProperty(QgsVectorDataProvider.EvaluateDefaultValues, True)
+
+        f = QgsFeature(vl.fields())
+        f.setAttribute('test_string', 'QGIS Rocks')
+
+        dp = vl.dataProvider()
+        self.assertNotEqual(dp.defaultValue(0), QVariant())
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):
