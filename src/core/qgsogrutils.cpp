@@ -628,7 +628,7 @@ std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
 
 std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
 {
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  QgsWkbTypes::Type wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_G_GetGeometryType( geom ) );
 
   int count = OGR_G_GetPointCount( geom );
   QVector< double > x( count );
