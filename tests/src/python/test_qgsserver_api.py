@@ -1140,8 +1140,9 @@ class QgsServerAPITest(QgsServerAPITestBase):
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?properties')
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        self.assertEqual(bytes(response.body()).decode('utf8'),
-                         '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'utf8nameè\', \'name\'"}]')
+        self.assertIn(bytes(response.body()).decode('utf8'), (
+            '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'utf8nameè\', \'name\'"}]',
+            '[{"code":"Bad request error","description":"Argument \'properties\' is not valid. Comma separated list of feature property names to be added to the result. Valid values: \'id\', \'name\', \'utf8nameè\'"}]'))
 
         # Valid request
         response = QgsBufferServerResponse()
