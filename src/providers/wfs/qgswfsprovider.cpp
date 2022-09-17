@@ -124,6 +124,13 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = std::make_unique<QgsFeatureDownloader>();
+
+    // include a large BBOX filter to get features with a non-null geometry
+    if ( mShared->mSourceCrs.isGeographic() )
+      mShared->setCurrentRect( QgsRectangle( -180, -90, 180, 90 ) );
+    else
+      mShared->setCurrentRect( QgsRectangle( -1e8, -1e8, 1e8, 1e8 ) );
+
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
              qOverload < QVector<QgsFeatureUniqueIdPair> >( &QgsFeatureDownloader::featureReceived ),
@@ -139,6 +146,8 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     }
     downloader->run( false, /* serialize features */
                      1 /* maxfeatures */ );
+
+    mShared->setCurrentRect( QgsRectangle() );
   };
 
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
