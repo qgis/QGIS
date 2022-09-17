@@ -617,5 +617,6 @@ class TestQgsProviderSublayerModel(unittest.TestCase):
         self.assertEqual(proxy.data(proxy.index(2, 0), Qt.DisplayRole), 'layer 1')
         self.assertEqual(proxy.data(proxy.index(3, 0), Qt.DisplayRole), 'system table')
 
+
 if __name__ == '__main__':
     unittest.main()
