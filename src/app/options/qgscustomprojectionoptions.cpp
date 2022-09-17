@@ -45,30 +45,6 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   }
 
   populateList();
-  if ( mDefinitions.empty() )
-  {
-    // create an empty definition which corresponds to the initial state of the dialog
-    mDefinitions << Definition();
-  }
-  whileBlocking( leName )->setText( mDefinitions[0].name );
-
-  mBlockUpdates++;
-
-  QgsCoordinateReferenceSystem crs;
-  Qgis::CrsDefinitionFormat format;
-  if ( mDefinitions.at( 0 ).wkt.isEmpty() )
-  {
-    crs.createFromProj( mDefinitions[0].proj );
-    format = Qgis::CrsDefinitionFormat::Proj;
-  }
-  else
-  {
-    crs.createFromWkt( mDefinitions[0].wkt );
-    format = Qgis::CrsDefinitionFormat::Wkt;
-  }
-  mCrsDefinitionWidget->setCrs( crs, format );
-
-  mBlockUpdates--;
 
   leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
 
