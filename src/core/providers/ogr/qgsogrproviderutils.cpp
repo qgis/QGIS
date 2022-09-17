@@ -2566,11 +2566,16 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         break;
     }
     layer->ResetReading();
-    // it may happen that there are no features in the layer, in that case add unknown type
-    // to show to user that the layer exists but it is empty
     if ( fCount.isEmpty() )
     {
-      fCount[wkbUnknown] = 0;
+      if ( layerFeatureCount > 0 )
+        fCount[wkbNone] = 0;
+      else
+      {
+        // it may happen that there are no features in the layer, in that case add unknown type
+        // to show to user that the layer exists but it is empty
+        fCount[wkbUnknown] = 0;
+      }
     }
 
     // List TIN and PolyhedralSurface as Polygon
