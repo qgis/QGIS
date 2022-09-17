@@ -2548,8 +2548,10 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
     layer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
+    long long layerFeatureCount = 0;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
+      ++layerFeatureCount;
       OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
       if ( gType != wkbNone )
       {
@@ -2647,6 +2649,7 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
                       ogrWkbGeometryTypeName( eOGRGeomType ) );
         if ( fCount.size() == 1 )
         {
+          details.setFeatureCount( layerFeatureCount );
           parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
         }
       }
