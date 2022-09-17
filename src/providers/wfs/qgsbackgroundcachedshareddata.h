@@ -124,6 +124,9 @@ class QgsBackgroundCachedSharedData
     //! Return current BBOX used by the downloader
     const QgsRectangle &currentRect() const { return mRect; }
 
+    //! Set current BBOX used by the downloader.
+    void setCurrentRect( const QgsRectangle &rect ) { mRect = rect; }
+
     //! Returns a unique identifier made from feature content
     static QString getMD5( const QgsFeature &f );
 
