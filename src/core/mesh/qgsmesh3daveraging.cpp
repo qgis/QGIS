@@ -104,7 +104,20 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
                         singleVerticalIndex,
                         verticalLevelsForFace );
 
-    if ( !std::isnan( methodLevelTop ) && !std::isnan( methodLevelBottom ) )
+    if ( singleVerticalIndex != -1 )
+    {
+      int volumeIndex = singleVerticalIndex + startVolumeIndex;
+      if ( isVector )
+      {
+        valuesFaces[2 * faceIndex] = volumeValues.at( 2 * volumeIndex );
+        valuesFaces[2 * faceIndex + 1 ] = volumeValues.at( 2 * volumeIndex + 1 );
+      }
+      else
+      {
+        valuesFaces[faceIndex] = volumeValues.at( volumeIndex );
+      }
+    }
+    else if ( !std::isnan( methodLevelTop ) && !std::isnan( methodLevelBottom ) )
     {
       // the level is value below surface, so top level (-0.1m) is usually higher number than bottom level (e.g. -1.2m)
       if ( methodLevelTop < methodLevelBottom )
@@ -126,19 +139,6 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
           volumeValues,
           valuesFaces
         );
-      }
-    }
-    else if ( singleVerticalIndex != -1 )
-    {
-      int volumeIndex = singleVerticalIndex + startVolumeIndex;
-      if ( isVector )
-      {
-        valuesFaces[2 * faceIndex] = volumeValues.at( 2 * volumeIndex );
-        valuesFaces[2 * faceIndex + 1 ] = volumeValues.at( 2 * volumeIndex + 1 );
-      }
-      else
-      {
-        valuesFaces[faceIndex] = volumeValues.at( volumeIndex );
       }
     }
 
