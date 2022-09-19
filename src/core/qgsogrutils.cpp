@@ -537,7 +537,7 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &featur
 
 std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
 {
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  QgsWkbTypes::Type wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_G_GetGeometryType( geom ) );
 
   double x, y, z, m;
   OGR_G_GetPointZM( geom, 0, &x, &y, &z, &m );

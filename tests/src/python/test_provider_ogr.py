@@ -2490,7 +2490,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(point_layer.featureCount(), 11)
         feature = next(point_layer.getFeatures())
         self.assertTrue(feature.isValid())
-        self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Point25D)
+        self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(feature.geometry().asWkt(),
                          'PointZ (635660.10747100005391985 1768912.79759799991734326 3.36980799999999991)')
 
