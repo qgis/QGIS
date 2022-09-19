@@ -3470,6 +3470,46 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         values = [f['intfield'] for f in vl.getFeatures(request)]
         self.assertEqual(values, [1])
 
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='my:typename' version='2.0.0' restrictToRequestBBOX=1", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        # Test that properties in subset strings are prefixed and the namespace URI
+        # is included in the filter
+        vl.setSubsetString('intfield = 2')
+        with open(sanitize(endpoint,
+                           """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::32631&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:my="http://my">
+ <fes:And>
+  <fes:BBOX>
+   <fes:ValueReference>my:geometryProperty</fes:ValueReference>
+   <gml:Envelope srsName="urn:ogc:def:crs:EPSG::32631">
+    <gml:lowerCorner>400000 5400000</gml:lowerCorner>
+    <gml:upperCorner>450000 5500000</gml:upperCorner>
+   </gml:Envelope>
+  </fes:BBOX>
+  <fes:PropertyIsEqualTo xmlns:fes="http://www.opengis.net/fes/2.0">
+   <fes:ValueReference>my:intfield</fes:ValueReference>
+   <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">2</fes:Literal>
+  </fes:PropertyIsEqualTo>
+ </fes:And>
+</fes:Filter>
+&NAMESPACES=xmlns(my,http://my)&NAMESPACE=xmlns(my,http://my)"""),
+                  'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <gml:featureMember>
+    <my:typename fid="typename.0">
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::32631" gml:id="typename.geom.0"><gml:pos>426858 5427937</gml:pos></gml:Point></my:geometryProperty>
+      <my:intfield>2</my:intfield>
+    </my:typename>
+  </gml:featureMember>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        values = [f['intfield'] for f in vl.getFeatures(request)]
+        self.assertEqual(values, [2])
+        vl.setSubsetString(None)
+
     def testGetFeatureWithServerExpression(self):
         ''' test binary spatial operation expression on server '''
 
@@ -3615,7 +3655,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
    </gml:Polygon>
   </fes:Intersects>
   <fes:PropertyIsEqualTo xmlns:fes="http://www.opengis.net/fes/2.0">
-   <fes:ValueReference>my:intfield</fes:ValueReference>
+   <fes:ValueReference>intfield</fes:ValueReference>
    <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">1</fes:Literal>
   </fes:PropertyIsEqualTo>
  </fes:And>
@@ -3671,14 +3711,14 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
    </gml:Polygon>
   </fes:Intersects>
   <fes:BBOX>
-   <fes:ValueReference>my:geometryProperty</fes:ValueReference>
+   <fes:ValueReference>geometryProperty</fes:ValueReference>
    <gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
     <gml:lowerCorner>-70 -80</gml:lowerCorner>
     <gml:upperCorner>50 60</gml:upperCorner>
    </gml:Envelope>
   </fes:BBOX>
   <fes:PropertyIsEqualTo xmlns:fes="http://www.opengis.net/fes/2.0">
-   <fes:ValueReference>my:intfield</fes:ValueReference>
+   <fes:ValueReference>intfield</fes:ValueReference>
    <fes:Literal xmlns:fes="http://www.opengis.net/fes/2.0">1</fes:Literal>
   </fes:PropertyIsEqualTo>
  </fes:And>
