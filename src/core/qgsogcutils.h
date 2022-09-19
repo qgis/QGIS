@@ -203,6 +203,8 @@ class CORE_EXPORT QgsOgcUtils
         QDomDocument &doc,
         QgsOgcUtils::GMLVersion gmlVersion,
         FilterVersion filterVersion,
+        const QString &namespacePrefix,
+        const QString &namespaceURI,
         const QString &geometryName,
         const QString &srsName,
         bool honourAxisOrientation,
@@ -370,6 +372,8 @@ class QgsOgcUtilsExprToFilter
     QgsOgcUtilsExprToFilter( QDomDocument &doc,
                              QgsOgcUtils::GMLVersion gmlVersion,
                              QgsOgcUtils::FilterVersion filterVersion,
+                             const QString &namespacePrefix,
+                             const QString &namespaceURI,
                              const QString &geometryName,
                              const QString &srsName,
                              bool honourAxisOrientation,
@@ -389,6 +393,8 @@ class QgsOgcUtilsExprToFilter
     bool mGMLUsed;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
+    const QString &mNamespacePrefix;
+    const QString &mNamespaceURI;
     const QString &mGeometryName;
     const QString &mSrsName;
     bool mInvertAxisOrientation;

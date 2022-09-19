@@ -211,10 +211,12 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     QString geometryAttribute( mShared->mGeometryAttribute );
     if ( mShared->mLayerPropertiesList.size() > 1 )
       geometryAttribute = mShared->mURI.typeName() + "/" + geometryAttribute;
-    else if ( mShared->mLayerPropertiesList.size() == 1 && !mShared->mLayerPropertiesList[0].mNamespacePrefix.isEmpty() )
-      geometryAttribute = mShared->mLayerPropertiesList[0].mNamespacePrefix + QStringLiteral( ":" ) + geometryAttribute;
+
     QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, doc,
-                           gmlVersion, filterVersion, geometryAttribute, mShared->srsName(),
+                           gmlVersion, filterVersion,
+                           mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(),
+                           mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(),
+                           geometryAttribute, mShared->srsName(),
                            honourAxisOrientation, mShared->mURI.invertAxisOrientation() );
     doc.appendChild( bboxElem );
     QDomNode bboxNode = bboxElem.firstChildElement();
@@ -230,16 +232,25 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     andElem.appendChild( filterNode );
     doc.firstChildElement().appendChild( andElem );
 
-    QSet<QString> setNamespaceURI;
-    for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
+    if ( mShared->mLayerPropertiesList.size() == 1 &&
+         doc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mShared->mLayerPropertiesList[0].mNamespacePrefix ) )
     {
-      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
-           !setNamespaceURI.contains( props.mNamespaceURI ) )
+      // nothing to do
+    }
+    else
+    {
+      // add xmls:PREFIX=URI attributes to top element
+      QSet<QString> setNamespaceURI;
+      for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mShared->mLayerPropertiesList ) )
       {
-        setNamespaceURI.insert( props.mNamespaceURI );
-        QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
-        attr.setValue( props.mNamespaceURI );
-        doc.firstChildElement().setAttributeNode( attr );
+        if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
+             !setNamespaceURI.contains( props.mNamespaceURI ) )
+        {
+          setNamespaceURI.insert( props.mNamespaceURI );
+          QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
+          attr.setValue( props.mNamespaceURI );
+          doc.firstChildElement().setAttributeNode( attr );
+        }
       }
     }
 
