@@ -372,9 +372,9 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
       for ( int k = 0; k < mLastGPSInformation.satPrn.size(); ++k )
       {
         if ( mLastGPSInformation.satPrn.at( k ) == currentSatellite.id )
-          {
-            satelliteInfo.inUse = true;
-          }
+        {
+          satelliteInfo.inUse = true;
+        }
       }
       satelliteInfo.signal = currentSatellite.sig;
       satelliteInfo.satType = result.pack_type;
