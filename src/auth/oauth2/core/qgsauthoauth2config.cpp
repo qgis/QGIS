@@ -308,12 +308,12 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
 {
   const bool oldvalid = mValid;
 
-  if ( mGrantFlow == AuthCode || mGrantFlow == Implicit )
+  if ( mGrantFlow == AuthCode || mGrantFlow == Implicit ||  mGrantFlow == Pkce )
   {
     mValid = ( !requestUrl().isEmpty()
                && !tokenUrl().isEmpty()
                && !clientId().isEmpty()
-               && ( mGrantFlow == AuthCode ? !clientSecret().isEmpty() : true )
+               && ( ( mGrantFlow == AuthCode || mGrantFlow == Pkce ) ? !clientSecret().isEmpty() : true )
                && redirectPort() > 0
                && ( needsId ? !id().isEmpty() : true ) );
   }
@@ -790,6 +790,8 @@ QString QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow flo
       return tr( "Authorization Code" );
     case QgsAuthOAuth2Config::Implicit:
       return tr( "Implicit" );
+    case QgsAuthOAuth2Config::Pkce:
+      return tr( "Authorization Code PKCE" );
     case QgsAuthOAuth2Config::ResourceOwner:
     default:
       return tr( "Resource Owner" );

@@ -24,6 +24,7 @@ public:
         GrantFlowAuthorizationCode, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.1
         GrantFlowImplicit, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.2
         GrantFlowResourceOwnerPasswordCredentials,
+        GrantFlowPkce, ///< @see https://www.rfc-editor.org/rfc/rfc7636
     };
 
     /// Authorization flow.

@@ -500,6 +500,8 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
                            static_cast<int>( QgsAuthOAuth2Config::Implicit ) );
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::ResourceOwner ),
                            static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::Pkce ),
+                           static_cast<int>( QgsAuthOAuth2Config::Pkce ) );
 }
 
 
