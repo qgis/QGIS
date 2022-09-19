@@ -142,16 +142,19 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     return;
   }
 
-  const auto GetGeometryTypeFromOneFeature = [&]()
+  const auto GetGeometryTypeFromOneFeature = [&]( bool includeBbox )
   {
     const bool requestMadeFromMainThread = QThread::currentThread() == QApplication::instance()->thread();
     auto downloader = std::make_unique<QgsFeatureDownloader>();
 
-    // include a large BBOX filter to get features with a non-null geometry
-    if ( mShared->mSourceCrs.isGeographic() )
-      mShared->setCurrentRect( QgsRectangle( -180, -90, 180, 90 ) );
-    else
-      mShared->setCurrentRect( QgsRectangle( -1e8, -1e8, 1e8, 1e8 ) );
+    if ( includeBbox )
+    {
+      // include a large BBOX filter to get features with a non-null geometry
+      if ( mShared->mSourceCrs.isGeographic() )
+        mShared->setCurrentRect( QgsRectangle( -180, -90, 180, 90 ) );
+      else
+        mShared->setCurrentRect( QgsRectangle( -1e8, -1e8, 1e8, 1e8 ) );
+    }
 
     downloader->setImpl( std::make_unique<QgsWFSFeatureDownloaderImpl>( mShared.get(), downloader.get(), requestMadeFromMainThread ) );
     connect( downloader.get(),
@@ -175,7 +178,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
   //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
   if ( mShared->mWKBType == QgsWkbTypes::Unknown )
   {
-    GetGeometryTypeFromOneFeature();
+    GetGeometryTypeFromOneFeature( true );
 
     // If we still didn't get the geometry type, and have a filter, temporarily
     // disable the filter.
@@ -183,9 +186,13 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     if ( mShared->mWKBType == QgsWkbTypes::Unknown && !mSubsetString.isEmpty() )
     {
       const QString oldFilter = mShared->setWFSFilter( QString() );
-      GetGeometryTypeFromOneFeature();
+      GetGeometryTypeFromOneFeature( true );
+      if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+        GetGeometryTypeFromOneFeature( false );
       mShared->setWFSFilter( oldFilter );
     }
+    else if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+      GetGeometryTypeFromOneFeature( false );
   }
 }
 
@@ -718,7 +725,11 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
-    if ( !geometry.isNull() )
+    if ( geometry.isNull() )
+    {
+      mShared->mWKBType = QgsWkbTypes::NoGeometry;
+    }
+    else
     {
       mShared->mWKBType = geometry.wkbType();
 
