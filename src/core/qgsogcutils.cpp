@@ -48,6 +48,8 @@
 QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     QgsOgcUtils::GMLVersion gmlVersion,
     QgsOgcUtils::FilterVersion filterVersion,
+    const QString &namespacePrefix,
+    const QString &namespaceURI,
     const QString &geometryName,
     const QString &srsName,
     bool honourAxisOrientation,
@@ -56,6 +58,8 @@ QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
   , mGMLUsed( false )
   , mGMLVersion( gmlVersion )
   , mFilterVersion( filterVersion )
+  , mNamespacePrefix( namespacePrefix )
+  , mNamespaceURI( namespaceURI )
   , mGeometryName( geometryName )
   , mSrsName( srsName )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -1874,7 +1878,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodePropertyIsNullFromOgcFilter( Q
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage )
 {
-  return expressionToOgcFilter( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
+  return expressionToOgcFilter( exp, doc, GML_2_1_2, FILTER_OGC_1_0, QString(), QString(),
                                 QStringLiteral( "geometry" ), QString(), false, false, errorMessage );
 }
 
@@ -1889,6 +1893,8 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
     QDomDocument &doc,
     GMLVersion gmlVersion,
     FilterVersion filterVersion,
+    const QString &namespacePrefix,
+    const QString &namespaceURI,
     const QString &geometryName,
     const QString &srsName,
     bool honourAxisOrientation,
@@ -1902,7 +1908,7 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope();
-  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
+  QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, namespacePrefix, namespaceURI, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
   const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( exp.rootNode(), &exp, &context );
   if ( errorMessage )
     *errorMessage = utils.errorMessage();
@@ -1910,6 +1916,14 @@ QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression &expression,
     return QDomElement();
 
   QDomElement filterElem = filterElement( doc, gmlVersion, filterVersion, utils.GMLNamespaceUsed() );
+
+  if ( !namespacePrefix.isEmpty() && !namespaceURI.isEmpty() )
+  {
+    QDomAttr attr = doc.createAttribute( QStringLiteral( "xmlns:" ) + namespacePrefix );
+    attr.setValue( namespaceURI );
+    filterElem.setAttributeNode( attr );
+  }
+
   filterElem.appendChild( exprRootElem );
   return filterElem;
 }
@@ -1940,7 +1954,7 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     case QgsExpressionNode::ntLiteral:
     case QgsExpressionNode::ntColumnRef:
     {
-      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
+      QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation );
       const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );
 
       if ( errorMessage )
@@ -2184,7 +2198,10 @@ QDomElement QgsOgcUtilsExprToFilter::expressionColumnRefToOgcFilter( const QgsEx
   Q_UNUSED( expression )
   Q_UNUSED( context )
   QDomElement propElem = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
-  propElem.appendChild( mDoc.createTextNode( node->name() ) );
+  QString columnRef( node->name() );
+  if ( !mNamespacePrefix.isEmpty() && !mNamespaceURI.isEmpty() )
+    columnRef =  mNamespacePrefix + QStringLiteral( ":" ) + columnRef;
+  propElem.appendChild( mDoc.createTextNode( columnRef ) );
   return propElem;
 }
 
@@ -2296,11 +2313,19 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
                                   QgsOgcUtils::rectangleToGMLBox( &rect, mDoc, mSrsName, mInvertAxisOrientation ) :
                                   QgsOgcUtils::rectangleToGMLEnvelope( &rect, mDoc, mSrsName, mInvertAxisOrientation );
 
-      QDomElement geomProperty = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
-      geomProperty.appendChild( mDoc.createTextNode( mGeometryName ) );
-
       QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":BBOX" );
-      funcElem.appendChild( geomProperty );
+
+      if ( !mGeometryName.isEmpty() )
+      {
+        // Geometry column is optional for a BBOX filter.
+        QDomElement geomProperty = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
+        QString columnRef( mGeometryName );
+        if ( !mNamespacePrefix.isEmpty() && !mNamespaceURI.isEmpty() )
+          columnRef =  mNamespacePrefix + QStringLiteral( ":" ) + columnRef;
+        geomProperty.appendChild( mDoc.createTextNode( columnRef ) );
+
+        funcElem.appendChild( geomProperty );
+      }
       funcElem.appendChild( elemBox );
       return funcElem;
     }
@@ -2399,7 +2424,10 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
 
     QDomElement funcElem = mDoc.createElement( mFilterPrefix + ":" + tagNameForSpatialOperator( fd->name() ) );
     QDomElement geomProperty = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
-    geomProperty.appendChild( mDoc.createTextNode( mGeometryName ) );
+    QString columnRef( mGeometryName );
+    if ( !mNamespacePrefix.isEmpty() && !mNamespaceURI.isEmpty() )
+      columnRef =  mNamespacePrefix + QStringLiteral( ":" ) + columnRef;
+    geomProperty.appendChild( mDoc.createTextNode( columnRef ) );
     funcElem.appendChild( geomProperty );
     funcElem.appendChild( otherGeomElem );
     return funcElem;
@@ -2650,7 +2678,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   QDomElement propElem = mDoc.createElement( mFilterPrefix + ":" + mPropertyName );
   if ( node->tableName().isEmpty() || mLayerProperties.size() == 1 )
   {
-    if ( mLayerProperties.size() == 1 && !mLayerProperties[0].mNamespacePrefix.isEmpty() )
+    if ( mLayerProperties.size() == 1 && !mLayerProperties[0].mNamespacePrefix.isEmpty() && !mLayerProperties[0].mNamespaceURI.isEmpty() )
       propElem.appendChild( mDoc.createTextNode(
                               mLayerProperties[0].mNamespacePrefix + QStringLiteral( ":" ) + node->name() ) );
     else

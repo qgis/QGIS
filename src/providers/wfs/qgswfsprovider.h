@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsogcutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsfeatureiterator.h"
@@ -150,6 +151,12 @@ class QgsWFSProvider final: public QgsVectorDataProvider
      * Create the geometry element
      */
     QDomElement geometryElement( const QgsGeometry &geometry, QDomDocument &transactionDoc );
+
+    //! Set mShared->mLayerPropertiesList from describeFeatureDocument
+    bool setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QStringList &typenameList, QString &errorMsg );
+
+    //! backup of mShared->mLayerPropertiesList on the feature type when there is no sql request
+    QList< QgsOgcUtils::LayerProperties > mLayerPropertiesListWhenNoSqlRequest;
 
   protected:
 

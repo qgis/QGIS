@@ -188,7 +188,10 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
         const QgsExpression filterExpression( filter );
 
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
-                                         filterExpression, filterDoc, gmlVersion, filterVersion, mGeometryAttribute,
+                                         filterExpression, filterDoc, gmlVersion, filterVersion,
+                                         mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespacePrefix : QString(),
+                                         mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespaceURI : QString(),
+                                         mGeometryAttribute,
                                          srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
                                          &errorMsg );
 
@@ -223,7 +226,7 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser() const
     axisOrientationLogic = QgsGmlStreamingParser::Ignore_EPSG;
   }
 
-  if ( !mLayerPropertiesList.isEmpty() )
+  if ( mLayerPropertiesList.size() > 1 )
   {
     QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
     const auto constMLayerPropertiesList = mLayerPropertiesList;
