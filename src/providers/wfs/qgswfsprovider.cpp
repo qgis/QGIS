@@ -111,6 +111,7 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
       return;
     }
     mThisTypenameFields = mShared->mFields;
+    mLayerPropertiesListWhenNoSqlRequest = mShared->mLayerPropertiesList;
   }
 
   if ( !mShared->computeFilter( mProcessSQLErrorMsg ) )
@@ -488,7 +489,6 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     return false;
   }
 
-  mShared->mLayerPropertiesList.clear();
   QMap < QString, QgsFields > mapTypenameToFields;
   QMap < QString, QString > mapTypenameToGeometryAttribute;
   for ( const QString &typeName : std::as_const( typenameList ) )
@@ -507,27 +507,16 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
 
     mapTypenameToFields[typeName] = fields;
     mapTypenameToGeometryAttribute[typeName] = geometryAttribute;
+
     if ( typeName == mShared->mURI.typeName() )
     {
       mShared->mGeometryAttribute = geometryAttribute;
       mShared->mWKBType = geomType;
       mThisTypenameFields = fields;
     }
-
-    QgsOgcUtils::LayerProperties layerProperties;
-    layerProperties.mName = typeName;
-    layerProperties.mGeometryAttribute = geometryAttribute;
-    if ( typeName == mShared->mURI.typeName() )
-      layerProperties.mSRSName = mShared->srsName();
-
-    if ( typeName.contains( ':' ) )
-    {
-      layerProperties.mNamespaceURI = mShared->mCaps.getNamespaceForTypename( typeName );
-      layerProperties.mNamespacePrefix = QgsWFSUtils::nameSpacePrefix( typeName );
-    }
-
-    mShared->mLayerPropertiesList << layerProperties;
   }
+
+  setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, typenameList, errorMsg );
 
   const QString &defaultTypeName = mShared->mURI.typeName();
   QgsWFSProviderSQLColumnRefValidator oColumnValidator(
@@ -692,6 +681,40 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   return true;
 }
 
+bool QgsWFSProvider::setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QStringList &typenameList, QString &errorMsg )
+{
+  mShared->mLayerPropertiesList.clear();
+  for ( const QString &typeName : typenameList )
+  {
+    QString geometryAttribute;
+    QgsFields fields;
+    QgsWkbTypes::Type geomType;
+    if ( !readAttributesFromSchema( describeFeatureDocument,
+                                    typeName,
+                                    geometryAttribute, fields, geomType, errorMsg ) )
+    {
+      errorMsg = tr( "Analysis of DescribeFeatureType response failed for url %1, typeName %2: %3" ).
+                 arg( dataSourceUri(), typeName, errorMsg );
+      return false;
+    }
+
+    QgsOgcUtils::LayerProperties layerProperties;
+    layerProperties.mName = typeName;
+    layerProperties.mGeometryAttribute = geometryAttribute;
+    if ( typeName == mShared->mURI.typeName() )
+      layerProperties.mSRSName = mShared->srsName();
+
+    if ( typeName.contains( ':' ) )
+    {
+      layerProperties.mNamespaceURI = mShared->mCaps.getNamespaceForTypename( typeName );
+      layerProperties.mNamespacePrefix = QgsWFSUtils::nameSpacePrefix( typeName );
+    }
+
+    mShared->mLayerPropertiesList << layerProperties;
+  }
+  return true;
+}
+
 void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
 {
   pushError( errorMsg );
@@ -802,6 +825,7 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   }
   else
   {
+    mShared->mLayerPropertiesList = mLayerPropertiesListWhenNoSqlRequest;
     mShared->mURI.setSql( QString() );
     mShared->mURI.setFilter( theSQL );
   }
@@ -1371,6 +1395,8 @@ bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields 
                                arg( dataSourceUri(), errorMsg ), tr( "WFS" ) );
     return false;
   }
+
+  setLayerPropertiesListFromDescribeFeature( describeFeatureDocument, {mShared->mURI.typeName()}, errorMsg );
 
   return true;
 }
