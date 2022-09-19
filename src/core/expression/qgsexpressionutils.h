@@ -234,7 +234,7 @@ class CORE_EXPORT QgsExpressionUtils
       bool ok;
       if ( value.userType() == QVariant::String )
       {
-        const float floatValue = value.toFloat( &ok );
+        const float floatValue = QLocale().toDouble( value, &ok );
         if ( ok )
         {
           return qRound64( floatValue );
