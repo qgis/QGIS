@@ -220,7 +220,7 @@ class CORE_EXPORT QgsExpressionUtils
     static double getDoubleValue( const QVariant &value, QgsExpression *parent )
     {
       bool ok;
-      const double x = value.toDouble( &ok );
+      const double x = QLocale().toDouble( value, &ok );
       if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
