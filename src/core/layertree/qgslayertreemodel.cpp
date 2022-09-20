@@ -180,11 +180,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
         const bool estimatedCount = QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        const qlonglong count = vlayer ? vlayer->featureCount() : -1;
 
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1%2]" ).arg(
-                    estimatedCount ? QStringLiteral( "~" ) : QString(),
-                    QLocale().toString( vlayer->featureCount() ) );
+        // if you modify this line, please update QgsSymbolLegendNode::updateLabel
+        name += QStringLiteral( " [%1%2]" ).arg(
+                  estimatedCount ? QStringLiteral( "≈" ) : QString(),
+                  count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
       }
       return name;
     }
@@ -324,7 +325,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         const bool estimatedCount = QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
         if ( showFeatureCount && estimatedCount )
         {
-          parts << "<b>Feature Count is estimated</b> : Please consider keeping database statistics up to date";
+          parts << QStringLiteral( "<b>%1</b> %2" ).arg(
+                  tr( "Feature Count is estimated" ), tr( ": the feature count is determined by the database statistics" ) );
         }
 
         return parts.join( QLatin1String( "<br/>" ) );
