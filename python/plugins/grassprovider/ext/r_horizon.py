@@ -47,8 +47,8 @@ def processOutputs(alg, parameters, context, feedback):
 
     def doubleToBaseName(number, nDecimals):
         """
-        Format filename, according to GRASS implementation, 
-        based on provided filename and number of decimals
+        Format filename, according to GRASS implementation,
+        based on provided number and number of decimals
         """
         if nDecimals == 0:
             return f'{int(number):03}'
