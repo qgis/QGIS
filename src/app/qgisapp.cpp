@@ -12213,7 +12213,6 @@ QMap<QString, QString> QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Coordinate Transforms" ), QStringLiteral( "mOptionsPageTransformations" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) );
