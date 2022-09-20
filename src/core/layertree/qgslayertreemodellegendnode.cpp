@@ -840,8 +840,12 @@ void QgsSymbolLegendNode::updateLabel()
 
   if ( showFeatureCount && vl )
   {
+    const bool estimatedCount = QgsDataSourceUri( vl->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+
     const qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ;
-    mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+    mLabel += QStringLiteral( " [%1%2]" ).arg(
+                estimatedCount ? QStringLiteral( "~" ) : QString(),
+                count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
   }
 
   emit dataChanged();
