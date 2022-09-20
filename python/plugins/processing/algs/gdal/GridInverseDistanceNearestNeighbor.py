@@ -164,7 +164,7 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
 
         params = 'invdistnn'
         params += ':power={}'.format(self.parameterAsDouble(parameters, self.POWER, context))
-        params += ':smothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
+        params += ':smoothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
         params += ':radius={}'.format(self.parameterAsDouble(parameters, self.RADIUS, context))
         params += ':max_points={}'.format(self.parameterAsInt(parameters, self.MAX_POINTS, context))
         params += ':min_points={}'.format(self.parameterAsInt(parameters, self.MIN_POINTS, context))
