@@ -38,14 +38,38 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 
 
 def processOutputs(alg, parameters, context, feedback):
+    # Inspired from GRASS implementation
+    def getNumberDecimals(number):
+        """ Return the number of decimals of a number (int or float) """
+        if int(number) == number:
+            return 0
+        return len(str(number).split(".")[-1])
+
+    def doubleToBaseName(number, nDecimals):
+        """
+        Format filename, according to GRASS implementation, 
+        based on provided filename and number of decimals
+        """
+        if nDecimals == 0:
+            return f'{int(number):03}'
+        return f'{int(number):03}_{str(number).split(".")[-1].ljust(nDecimals, "0")}'
+
     # There will be as many outputs as the difference between start and end divided by steps
     start = alg.parameterAsDouble(parameters, 'start', context)
     end = alg.parameterAsDouble(parameters, 'end', context)
     step = alg.parameterAsDouble(parameters, 'step', context)
-    num = start
+    direction = alg.parameterAsDouble(parameters, 'direction', context)
+
+    num = start + direction
+    nDecimals = getNumberDecimals(step)
+
     directory = alg.parameterAsString(parameters, 'output', context)
-    while num < end:
-        grassName = '{}_{}'.format('output{}'.format(alg.uniqueSuffix), int(num))
-        fileName = '{}.tif'.format(os.path.join(directory, '{0:0>3}'.format(int(num))))
+    # Needed if output to a temporary directory
+    os.makedirs(directory, exist_ok=True)
+    while num < end + direction:
+        baseName = doubleToBaseName(num, nDecimals)
+        grassName = f'output{alg.uniqueSuffix}_{baseName}'
+        fileName = f'{os.path.join(directory, baseName)}.tif'
         alg.exportRasterLayer(grassName, fileName)
-        num += step
+        # Weird issue was generating weird num like 0.12000000000000001 or 0.27999999999999997 for step = 0.2
+        num = round(num + step, nDecimals)
