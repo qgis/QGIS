@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>645</width>
+    <width>718</width>
     <height>399</height>
    </rect>
   </property>
@@ -34,7 +34,31 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mExtentFilterComboBox"/>
+      <widget class="QComboBox" name="mExtentFilterComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>geometry type</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mGeometryTypeComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -69,9 +93,6 @@
     <widget class="QTableView" name="mMetadataTableView"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout"/>
-   </item>
-   <item>
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Help</set>
@@ -87,6 +108,13 @@
    <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSearchFilterLineEdit</tabstop>
+  <tabstop>mExtentFilterComboBox</tabstop>
+  <tabstop>mGeometryTypeComboBox</tabstop>
+  <tabstop>mAbortPushButton</tabstop>
+  <tabstop>mMetadataTableView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

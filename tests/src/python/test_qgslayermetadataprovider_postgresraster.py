@@ -43,6 +43,11 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
 
         return dbconn
 
+    def clearMetadataTable(self):
+
+        self.conn.execSql('DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata')
+        self.conn.execSql('DROP TABLE IF EXISTS public.qgis_layer_metadata')
+
     def setUp(self):
 
         super().setUp()
@@ -57,6 +62,8 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
         conn.execSql('DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata')
         conn.setConfiguration({'metadataInDatabase': True})
         conn.store('PG Metadata Enabled Connection')
+        self.conn = conn
+        self.clearMetadataTable()
 
 
 if __name__ == '__main__':

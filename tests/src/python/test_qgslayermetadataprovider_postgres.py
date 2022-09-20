@@ -45,6 +45,7 @@ class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProvider
     def clearMetadataTable(self):
 
         self.conn.execSql('DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata')
+        self.conn.execSql('DROP TABLE IF EXISTS public.qgis_layer_metadata')
 
     def setUp(self):
 
