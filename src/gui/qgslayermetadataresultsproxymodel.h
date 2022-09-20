@@ -43,12 +43,22 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
      */
     const QString filterString() const;
 
+    /**
+     * Returns the geometry type name filter string.
+     */
+    const QString filterGeometryTypeName() const;
+
   public slots:
 
     /**
-     * Sett the extent filter to \a extent.
+     * Sets the extent filter to \a extent.
      */
     void setFilterExtent( const QgsRectangle &extent );
+
+    /**
+     * Sets the geometry type filter to \a geometryTypeName.
+     */
+    void setFilterGeometryTypeName( const QString &geometryTypeName );
 
     /**
      * Sets the text filter to \a filterString.
@@ -63,6 +73,7 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
 
     QgsRectangle mFilterExtent;
     QString mFilterString;
+    QString mFilterGeometryTypeName;
 };
 
 #endif // QGSLAYERMETADATARESULTSPROXYMODEL_H

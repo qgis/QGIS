@@ -48,6 +48,19 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mExtentFilterComboBox->addItem( QStringLiteral( "Map Canvas Extent" ) );
   mExtentFilterComboBox->addItem( QStringLiteral( "Current Project Extent" ) );
   mExtentFilterComboBox->setCurrentIndex( 0 );
+  mExtentFilterComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
+  mExtentFilterComboBox->adjustSize();
+
+  mGeometryTypeComboBox->addItem( QString( ), QVariant() );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::PointGeometry ) );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::LineGeometry ) );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::PolygonGeometry ) );
+  mGeometryTypeComboBox->addItem( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::NullGeometry ) );
+  // Note: unknown geometry is mapped to null and missing from the combo
+  mGeometryTypeComboBox->addItem( tr( "Raster" ) );
+  mGeometryTypeComboBox->setCurrentIndex( 0 );
+  mGeometryTypeComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
+  mGeometryTypeComboBox->adjustSize();
 
   auto updateLoadBtn = [ = ]
   {
@@ -99,6 +112,11 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   connect( mSearchFilterLineEdit, &QLineEdit::textEdited, mProxyModel, &QgsLayerMetadataResultsProxyModel::setFilterString );
   connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [ = ] { mProxyModel->setFilterString( QString() ); } );
   connect( mExtentFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayerMetadataSearchWidget::updateExtentFilter );
+
+  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
+    mProxyModel->setFilterGeometryTypeName( mGeometryTypeComboBox->currentText() );
+  } );
 
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, [ = ]( const QList<QgsMapLayer *> & )
   {

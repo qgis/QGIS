@@ -26,6 +26,12 @@ void QgsLayerMetadataResultsProxyModel::setFilterExtent( const QgsRectangle &ext
   invalidateFilter();
 }
 
+void QgsLayerMetadataResultsProxyModel::setFilterGeometryTypeName( const QString &geometryTypeName )
+{
+  mFilterGeometryTypeName = geometryTypeName;
+  invalidateFilter();
+}
+
 void QgsLayerMetadataResultsProxyModel::setFilterString( const QString &filterString )
 {
   mFilterString = filterString;
@@ -44,10 +50,29 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
   {
     result = result && mFilterExtent.intersects( sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ).geographicExtent().boundingBox() );
   }
+  if ( result && ! mFilterGeometryTypeName.isEmpty() )
+  {
+    const QgsLayerMetadataProviderResult &md { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
+    if ( mFilterGeometryTypeName == tr( "Raster" ) )
+    {
+      result = result && ( md.layerType() == QgsMapLayerType::RasterLayer );
+    }
+    else
+    {
+      // Note: unknown geometry is mapped to null geometry
+      const QString geometryTypeName { QgsWkbTypes::geometryDisplayString( md.geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry ? QgsWkbTypes::GeometryType::NullGeometry : md.geometryType() ) };
+      result = result && ( md.layerType() != QgsMapLayerType::RasterLayer && geometryTypeName == mFilterGeometryTypeName );
+    }
+  }
   return result;
 }
 
 const QString QgsLayerMetadataResultsProxyModel::filterString() const
 {
   return mFilterString;
+}
+
+const QString QgsLayerMetadataResultsProxyModel::filterGeometryTypeName() const
+{
+  return mFilterGeometryTypeName;
 }
