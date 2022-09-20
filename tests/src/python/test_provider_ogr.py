@@ -181,7 +181,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.LineString25D)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.LineStringZ)
         self.assertEqual(f.geometry().constGet().pointN(0).z(), 1)
         self.assertEqual(f.geometry().constGet().pointN(1).z(), 2)
         self.assertEqual(f.geometry().constGet().pointN(2).z(), 3)
@@ -2490,7 +2490,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(point_layer.featureCount(), 11)
         feature = next(point_layer.getFeatures())
         self.assertTrue(feature.isValid())
-        self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Point25D)
+        self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(feature.geometry().asWkt(),
                          'PointZ (635660.10747100005391985 1768912.79759799991734326 3.36980799999999991)')
 
@@ -2498,7 +2498,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(polyline_layer.featureCount(), 2)
         feature = next(polyline_layer.getFeatures())
         self.assertTrue(feature.isValid())
-        self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.LineString25D)
+        self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.LineStringZ)
         self.assertEqual(feature.geometry().vertexAt(1).asWkt(),
                          'PointZ (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
 
