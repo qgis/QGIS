@@ -179,8 +179,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+        const bool estimatedCount = QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+
         if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+          name += QStringLiteral( " [%1%2]" ).arg(
+                    estimatedCount ? QStringLiteral( "~" ) : QString(),
+                    QLocale().toString( vlayer->featureCount() ) );
       }
       return name;
     }
@@ -314,6 +318,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         }
 
         parts << "<i>" + source.toHtmlEscaped() + "</i>";
+
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        const bool showFeatureCount = nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+        const bool estimatedCount = QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        if ( showFeatureCount && estimatedCount )
+        {
+          parts << "<b>Feature Count is estimated</b> : Please consider keeping database statistics up to date";
+        }
 
         return parts.join( QLatin1String( "<br/>" ) );
       }
