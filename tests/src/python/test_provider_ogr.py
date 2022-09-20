@@ -1746,7 +1746,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "multipatch")
         self.assertEqual(res[0].description(), '')
-        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp|geometrytype=Polygon25D")
+        self.assertEqual(res[0].uri(), TEST_DATA_DIR + "/multipatch.shp|geometrytype=Polygon25D|uniqueGeometryType=yes")
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].wkbType(), QgsWkbTypes.PolygonZ)
@@ -1969,7 +1969,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(res[0].layerNumber(), 0)
         self.assertEqual(res[0].name(), "fill_styles")
         self.assertEqual(res[0].description(), "")
-        self.assertEqual(res[0].uri(), "{}/mapinfo/fill_styles.TAB|geometrytype=Polygon".format(TEST_DATA_DIR))
+        self.assertEqual(res[0].uri(), "{}/mapinfo/fill_styles.TAB|geometrytype=Polygon|uniqueGeometryType=yes".format(TEST_DATA_DIR))
         self.assertEqual(res[0].providerKey(), "ogr")
         self.assertEqual(res[0].type(), QgsMapLayerType.VectorLayer)
         self.assertEqual(res[0].featureCount(), 49)
@@ -2812,6 +2812,50 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         relationships = conn.relationships('', 'table2')
         self.assertFalse(relationships)
+
+    def testUniqueGeometryType(self):
+        """
+        Test accessing a layer of type wkbUnknown that contains a single geometry type but also null geometries
+        """
+
+        datasource = os.path.join(self.basetestpath, 'testUniqueGeometryType.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,"POINT(1 2)"\n')
+            f.write('2,\n')
+
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        res = metadata.querySublayers(datasource, Qgis.SublayerQueryFlag.ResolveGeometryType)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].uri(), datasource + "|geometrytype=Point|uniqueGeometryType=yes")
+
+        vl = QgsVectorLayer(res[0].uri(), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(vl.featureCount(), 2)
+        self.assertEqual(len([x for x in vl.getFeatures()]), 2)
+
+    def testUnknownButNoGeometry(self):
+        """
+        Test accessing a layer of type wkbUnknown that contains only null geometries
+        """
+
+        datasource = os.path.join(self.basetestpath, 'testUnknownButNoGeometry.csv')
+        with open(datasource, 'wt') as f:
+            f.write('id,WKT\n')
+            f.write('1,""\n')
+            f.write('2,\n')
+
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        res = metadata.querySublayers(datasource, Qgis.SublayerQueryFlag.ResolveGeometryType)
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0].uri(), datasource + "|geometrytype=None|uniqueGeometryType=yes")
+
+        vl = QgsVectorLayer(res[0].uri(), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.NoGeometry)
+        self.assertEqual(vl.featureCount(), 2)
+        self.assertEqual(len([x for x in vl.getFeatures()]), 2)
 
 
 if __name__ == '__main__':
