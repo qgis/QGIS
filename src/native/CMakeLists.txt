@@ -63,7 +63,7 @@ if(APPLE)
   )
 endif()
 
-if(MSVC)
+if(MSVC AND NOT BUILD_WITH_QT6)
   set(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
     ../../external/wintoast/src/wintoastlib.cpp
     win/qgswinnative.cpp
@@ -96,7 +96,7 @@ target_include_directories(qgis_native PUBLIC
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if(MSVC)
+if(MSVC AND NOT BUILD_WITH_QT6)
   target_include_directories(qgis_native SYSTEM PUBLIC
       ../../external/wintoast/src
   )
@@ -144,12 +144,13 @@ if (UNIX AND NOT APPLE AND NOT ANDROID)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
 endif()
 
-if (MSVC)
+if (MSVC AND NOT BUILD_WITH_QT6)
   find_package(${QT_VERSION_BASE}WinExtras)
 
   target_link_libraries(qgis_native shell32)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::Widgets ${QT_QTMAIN_LIBRARY})
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::WinExtras)
+
 endif()
 # install
 
