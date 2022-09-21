@@ -325,8 +325,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         const bool estimatedCount = QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
         if ( showFeatureCount && estimatedCount )
         {
-          parts << QStringLiteral( "<b>%1</b> %2" ).arg(
-                  tr( "Feature Count is estimated" ), tr( ": the feature count is determined by the database statistics" ) );
+          parts << tr( "<b>Feature count is estimated</b> : the feature count is determined by the database statistics" );
         }
 
         return parts.join( QLatin1String( "<br/>" ) );
