@@ -176,11 +176,11 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->name();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      if ( vlayer && nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
         const bool estimatedCount = QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
-        const qlonglong count = vlayer ? vlayer->featureCount() : -1;
+        const qlonglong count = vlayer->featureCount();
 
         // if you modify this line, please update QgsSymbolLegendNode::updateLabel
         name += QStringLiteral( " [%1%2]" ).arg(
