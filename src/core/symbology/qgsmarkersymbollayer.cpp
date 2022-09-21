@@ -2706,31 +2706,50 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
   // Extract parameters from URL
-  const QUrl svgUrl { path };
-  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( svgUrl.path(), size );
+  QString realPath { path };
+  QUrl svgUrl { path };
 
-  const QUrlQuery queryString { svgUrl.query( ) };
+  // Because color definition can start with '#', the url parsing won't recognize the query string entirely
+  QUrlQuery queryString;
+
+  if ( svgUrl.hasQuery() && svgUrl.hasFragment() )
+  {
+    const QString queryPart { path.mid( path.indexOf( '?' ) + 1 ) };
+    queryString.setQuery( queryPart );
+  }
+
+  // Remove query for simple file paths
+  if ( svgUrl.scheme().isEmpty() || svgUrl.isLocalFile() )
+  {
+    svgUrl.setQuery( QString() );
+    realPath = svgUrl.path();
+  }
+
+  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( realPath, size );
+
+  QMap<QString, QgsProperty> params;
+
+  bool ok;
 
   if ( queryString.hasQueryItem( QStringLiteral( "fill" ) ) )
   {
-    m->setFillColor( { queryString.queryItemValue( QStringLiteral( "fill" ) ) } );
+    const QColor fillColor { queryString.queryItemValue( QStringLiteral( "fill" ) ) };
+    m->setFillColor( fillColor );
   }
 
-  bool ok;
   if ( queryString.hasQueryItem( QStringLiteral( "fill-opacity" ) ) )
   {
     const double alpha { queryString.queryItemValue( QStringLiteral( "fill-opacity" ) ).toDouble( &ok ) };
     if ( ok )
     {
-      QColor c { m->color() };
-      c.setAlpha( alpha );
-      m->setFillColor( c );
+      params.insert( QStringLiteral( "fill-opacity" ), QgsProperty::fromValue( alpha ) );
     }
   }
 
   if ( queryString.hasQueryItem( QStringLiteral( "outline" ) ) )
   {
-    m->setStrokeColor( { queryString.queryItemValue( QStringLiteral( "outline" ) ) } );
+    const QColor strokeColor { queryString.queryItemValue( QStringLiteral( "outline" ) ) };
+    m->setStrokeColor( strokeColor );
   }
 
   if ( queryString.hasQueryItem( QStringLiteral( "outline-opacity" ) ) )
@@ -2738,9 +2757,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
     const double alpha { queryString.queryItemValue( QStringLiteral( "outline-opacity" ) ).toDouble( &ok ) };
     if ( ok )
     {
-      QColor c { m->strokeColor() };
-      c.setAlpha( alpha );
-      m->setStrokeColor( c );
+      params.insert( QStringLiteral( "outline-opacity" ), QgsProperty::fromValue( alpha ) );
     }
   }
 
@@ -2751,6 +2768,11 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
     {
       m->setStrokeWidth( width );
     }
+  }
+
+  if ( ! params.isEmpty() )
+  {
+    m->setParameters( params );
   }
 
   m->setOutputUnit( sldUnitSize );
