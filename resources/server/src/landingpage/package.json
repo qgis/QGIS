@@ -14,7 +14,7 @@
     "vue": "^2.6.14",
     "vue-router": "^3.5.3",
     "vue2-leaflet": "^2.7.1",
-    "vuetify": "^2.6.2",
+    "vuetify": "^2.6.10",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
