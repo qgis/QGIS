@@ -249,6 +249,12 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
      */
     void setDevicePixelRatio( const qreal &devicePixelRatio );
 
+    /**
+     * Helper function to convert QPointF to QgsPoint without any transformations.
+     * Useful for converting these values in QML.
+     */
+    Q_INVOKABLE static QgsPoint toQgsPoint( const QPointF &point );
+
   signals:
     //! \copydoc QgsQuickMapSettings::project
     void projectChanged();

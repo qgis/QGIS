@@ -103,6 +103,31 @@ Item {
     mapCanvasWrapper.refresh()
   }
 
+  /**
+   * Animates movement of map canvas from oldPos to newPos.
+   * oldPos and newPos need to be in device pixels.
+   */
+  function jump( oldPos, newPos )
+  {
+    freeze('jump')
+
+    let newPosMapCRS = mapCanvasWrapper.mapSettings.screenToCoordinate( newPos )
+    let oldPosMapCRS = mapCanvasWrapper.mapSettings.screenToCoordinate( oldPos )
+
+    // Disable animation until initial position is set
+    jumpAnimator.enabled = false
+
+    jumpAnimator.px = oldPosMapCRS.x
+    jumpAnimator.py = oldPosMapCRS.y
+
+    jumpAnimator.enabled = true
+
+    jumpAnimator.px = newPosMapCRS.x
+    jumpAnimator.py = newPosMapCRS.y
+
+    unfreeze('jump')
+  }
+
   QgsQuick.MapCanvasMap {
     id: mapCanvasWrapper
 
@@ -112,6 +137,32 @@ Item {
     property var __freezecount: ({})
 
     freeze: false
+  }
+
+  Item {
+    id: jumpAnimator
+
+    property double px: 0
+    property double py: 0
+
+    Behavior on py {
+      SmoothedAnimation {
+        duration: 200
+        reversingMode: SmoothedAnimation.Immediate
+      }
+      enabled: jumpAnimator.enabled
+    }
+
+    Behavior on px {
+      SmoothedAnimation {
+        duration: 200
+        reversingMode: SmoothedAnimation.Immediate
+      }
+      enabled: jumpAnimator.enabled
+    }
+
+    onPxChanged: mapCanvasWrapper.mapSettings.setCenter( mapCanvasWrapper.mapSettings.toQgsPoint( Qt.point( px, py ) ) )
+    onPyChanged: mapCanvasWrapper.mapSettings.setCenter( mapCanvasWrapper.mapSettings.toQgsPoint( Qt.point( px, py ) ) )
   }
 
   // Mouse, stylus and other pointer devices handler

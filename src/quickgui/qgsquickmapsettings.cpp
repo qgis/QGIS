@@ -297,3 +297,8 @@ void QgsQuickMapSettings::setDevicePixelRatio( const qreal &devicePixelRatio )
   mDevicePixelRatio = devicePixelRatio;
   emit devicePixelRatioChanged();
 }
+
+QgsPoint QgsQuickMapSettings::toQgsPoint( const QPointF &point )
+{
+  return QgsPoint( point );
+}
