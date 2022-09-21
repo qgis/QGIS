@@ -899,7 +899,11 @@ QString QgsApplication::resolvePkgPath()
       QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( sBuildSourcePath()->toUtf8().constData() ), 4 );
       QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( sBuildOutputPath()->toUtf8().constData() ), 4 );
 #if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
       *sCfgIntDir() = prefix.split( '/', QString::SkipEmptyParts ).last();
+#else
+      *sCfgIntDir() = prefix.split( '/', Qt::SkipEmptyParts ).last();
+#endif
       qDebug( "- cfg: %s", sCfgIntDir()->toUtf8().constData() );
 #endif
     }
@@ -1236,8 +1240,13 @@ QString QgsApplication::userLoginName()
 
   if ( GetUserName( ( TCHAR * )name, &size ) )
   {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     *sUserName() = QString::fromLocal8Bit( name );
+#else
+    *sUserName() = QString::fromWCharArray( name );
+#endif
   }
+
 
 #elif QT_CONFIG(process)
   QProcess process;
@@ -1272,7 +1281,11 @@ QString QgsApplication::userFullName()
   //note - this only works for accounts connected to domain
   if ( GetUserNameEx( NameDisplay, ( TCHAR * )name, &size ) )
   {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     *sUserFullName() = QString::fromLocal8Bit( name );
+#else
+    *sUserFullName() = QString::fromWCharArray( name );
+#endif
   }
 
   //fall back to login name
