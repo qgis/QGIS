@@ -40,6 +40,7 @@
 #include "qgssettings.h"
 #include "qgsogrutils.h"
 #include "qgsdatums.h"
+#include "qgsogcutils.h"
 #include "qgsprojectionfactors.h"
 #include "qgsprojoperation.h"
 
@@ -400,32 +401,26 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
 
   QString wmsCrs = crs;
 
-  thread_local const QRegularExpression re_uri( QRegularExpression::anchoredPattern( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ) ), QRegularExpression::CaseInsensitiveOption );
-  QRegularExpressionMatch match = re_uri.match( wmsCrs );
-  if ( match.hasMatch() )
+  QString authority;
+  QString code;
+  const QgsOgcCrsUtils::CRSFlavor crsFlavor = QgsOgcCrsUtils::parseCrsName( crs, authority, code );
+  const QString authorityLower = authority.toLower();
+  if ( crsFlavor == QgsOgcCrsUtils::CRSFlavor::AUTH_CODE &&
+       ( authorityLower == QLatin1String( "user" ) ||
+         authorityLower == QLatin1String( "custom" ) ||
+         authorityLower == QLatin1String( "qgis" ) ) )
   {
-    wmsCrs = match.captured( 1 ) + ':' + match.captured( 2 );
+    if ( createFromSrsId( code.toInt() ) )
+    {
+      locker.changeMode( QgsReadWriteLocker::Write );
+      if ( !sDisableOgcCache )
+        sOgcCache()->insert( crs, *this );
+      return d->mIsValid;
+    }
   }
-  else
+  else if ( crsFlavor != QgsOgcCrsUtils::CRSFlavor::UNKNOWN )
   {
-    thread_local const QRegularExpression re_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+(?<=:)([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
-    match = re_urn.match( wmsCrs );
-    if ( match.hasMatch() )
-    {
-      wmsCrs = match.captured( 1 ) + ':' + match.captured( 2 );
-    }
-    else
-    {
-      thread_local const QRegularExpression re_urn_custom( QRegularExpression::anchoredPattern( QStringLiteral( "(user|custom|qgis):(\\d+)" ) ), QRegularExpression::CaseInsensitiveOption );
-      match = re_urn_custom.match( wmsCrs );
-      if ( match.hasMatch() && createFromSrsId( match.captured( 2 ).toInt() ) )
-      {
-        locker.changeMode( QgsReadWriteLocker::Write );
-        if ( !sDisableOgcCache )
-          sOgcCache()->insert( crs, *this );
-        return d->mIsValid;
-      }
-    }
+    wmsCrs = authority + ':' + code;
   }
 
   // first chance for proj 6 - scan through legacy systems and try to use authid directly
