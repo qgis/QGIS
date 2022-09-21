@@ -55,68 +55,76 @@ void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   emit messageDiscarded();
 
-  getCheckLayer();
-
   QgsMapToolCapture::cadCanvasReleaseEvent( e );
 }
 
 
 void QgsMapToolAddRing::polygonCaptured( const QgsCurvePolygon *polygon )
 {
-  QgsVectorLayer *vlayer = getCheckLayer();
-  if ( !vlayer )
-    return;
+  for ( const auto layer : mCanvas->layers() )
+  {
+    QgsVectorLayer *vlayer = getCheckLayer( layer );
+    if ( !vlayer )
+    {
+      return;
+    }
 
-  vlayer->beginEditCommand( tr( "Ring added" ) );
-  const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( polygon->exteriorRing()->clone() );
-  QString errorMessage;
-  switch ( addRingReturnCode )
-  {
-    case Qgis::GeometryOperationResult::Success:
-      break;
-    case Qgis::GeometryOperationResult::InvalidInputGeometryType:
-      errorMessage = tr( "a problem with geometry type occurred" );
-      break;
-    case Qgis::GeometryOperationResult::AddRingNotClosed:
-      errorMessage = tr( "the inserted ring is not closed" );
-      break;
-    case Qgis::GeometryOperationResult::AddRingNotValid:
-      errorMessage = tr( "the inserted ring is not a valid geometry" );
-      break;
-    case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
-      errorMessage = tr( "the inserted ring crosses existing rings" );
-      break;
-    case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
-      errorMessage = tr( "the inserted ring is not contained in a feature" );
-      break;
-    case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
-    case Qgis::GeometryOperationResult::InvalidBaseGeometry:
-    case Qgis::GeometryOperationResult::NothingHappened:
-    case Qgis::GeometryOperationResult::SelectionIsEmpty:
-    case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
-    case Qgis::GeometryOperationResult::GeometryEngineError:
-    case Qgis::GeometryOperationResult::LayerNotEditable:
-    case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
-    case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
-      errorMessage = tr( "an unknown error occurred (%1)" ).arg( qgsEnumValueToKey( addRingReturnCode ) );
-      break;
-  }
+    vlayer->beginEditCommand( tr( "Ring added" ) );
+    const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( polygon->exteriorRing()->clone() );
+    QString errorMessage;
+    switch ( addRingReturnCode )
+    {
+      case Qgis::GeometryOperationResult::Success:
+        break;
+      case Qgis::GeometryOperationResult::InvalidInputGeometryType:
+        errorMessage = tr( "a problem with geometry type occurred" );
+        break;
+      case Qgis::GeometryOperationResult::AddRingNotClosed:
+        errorMessage = tr( "the inserted ring is not closed" );
+        break;
+      case Qgis::GeometryOperationResult::AddRingNotValid:
+        errorMessage = tr( "the inserted ring is not a valid geometry" );
+        break;
+      case Qgis::GeometryOperationResult::AddRingCrossesExistingRings:
+        errorMessage = tr( "the inserted ring crosses existing rings" );
+        break;
+      case Qgis::GeometryOperationResult::AddRingNotInExistingFeature:
+        errorMessage = tr( "the inserted ring is not contained in a feature" );
+        break;
+      case Qgis::GeometryOperationResult::SplitCannotSplitPoint:
+      case Qgis::GeometryOperationResult::InvalidBaseGeometry:
+      case Qgis::GeometryOperationResult::NothingHappened:
+      case Qgis::GeometryOperationResult::SelectionIsEmpty:
+      case Qgis::GeometryOperationResult::SelectionIsGreaterThanOne:
+      case Qgis::GeometryOperationResult::GeometryEngineError:
+      case Qgis::GeometryOperationResult::LayerNotEditable:
+      case Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound:
+      case Qgis::GeometryOperationResult::AddPartNotMultiGeometry:
+        errorMessage = tr( "an unknown error occurred (%1)" ).arg( qgsEnumValueToKey( addRingReturnCode ) );
+        break;
+    }
 
-  if ( addRingReturnCode != Qgis::GeometryOperationResult::Success )
-  {
-    emit messageEmitted( tr( "Could not add ring: %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
-    vlayer->destroyEditCommand();
-  }
-  else
-  {
-    vlayer->endEditCommand();
+    if ( addRingReturnCode != Qgis::GeometryOperationResult::Success )
+    {
+      emit messageEmitted( tr( "Could not add ring: %1." ).arg( errorMessage ), Qgis::MessageLevel::Critical );
+      vlayer->destroyEditCommand();
+    }
+    else
+    {
+      vlayer->endEditCommand();
+    }
   }
 }
 
-QgsVectorLayer *QgsMapToolAddRing::getCheckLayer()
+QgsVectorLayer *QgsMapToolAddRing::getCheckLayer( QgsMapLayer *vlayer )
 {
+  if ( !vlayer )
+  {
+    return nullptr;
+  }
+
   //check if we operate on a vector layer
-  QgsVectorLayer *layer = currentVectorLayer();
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( vlayer );
   if ( !layer )
   {
     notifyNotVectorLayer();

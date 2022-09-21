@@ -28,6 +28,6 @@ class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
 
     // QgsMapToolCapture interface
   private:
-    QgsVectorLayer *getCheckLayer();
+    QgsVectorLayer *getCheckLayer( QgsMapLayer *layer );
     void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 };
