@@ -1141,6 +1141,11 @@ class TestQgsSymbolLayer(unittest.TestCase):
         mMessage = 'Expected "%s" got "%s"' % (mExpectedValue, mValue)
         assert mExpectedValue == mValue, mMessage
 
+        # Check values set from the query string in OnlineResource
+        self.assertEqual(mSymbolLayer.strokeWidth(), 2.0)
+        self.assertEqual(mSymbolLayer.strokeColor().name(), '#ff0000')
+        self.assertEqual(mSymbolLayer.fillColor().name(), '#00ff00')
+
         ctx = QgsRenderContext()
         self.assertCountEqual(mSymbolLayer.usedAttributes(ctx), {})
 
