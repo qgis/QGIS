@@ -492,20 +492,78 @@ void TestQgsLayoutPicture::valid()
   picture->setPicturePath( mPngImage );
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mPngImage );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
 
   picture->setPicturePath( QStringLiteral( "bad" ) );
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
 
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
   picture->refreshPicture();
   QVERIFY( !picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), mSvgImage );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatSVG );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
 
   picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'bad'" ) ) );
   picture->refreshPicture();
   QVERIFY( picture->isMissingImage() );
   QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+
+  // same tests with a given format
+
+  picture->dataDefinedProperties().clear();
+
+  picture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatRaster );
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mPngImage );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatRaster );
+
+  picture->setPicturePath( mPngImage, QgsLayoutItemPicture::FormatUnknown );
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mPngImage );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+
+  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatUnknown );
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
+
+  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatRaster );
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatRaster ); // cross image for missing image
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatRaster );
+
+  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatSVG );
+  picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mSvgImage ) ) );
+  picture->refreshPicture();
+  QVERIFY( !picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), mSvgImage );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatSVG );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatSVG );
+
+  picture->dataDefinedProperties().setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( QStringLiteral( "'bad'" ) ) );
+  picture->refreshPicture();
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatSVG ); // cross image for missing picture
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatSVG );
+
+  picture->setPicturePath( QStringLiteral( "bad" ), QgsLayoutItemPicture::FormatUnknown );
+  picture->refreshPicture();
+  QVERIFY( picture->isMissingImage() );
+  QCOMPARE( picture->evaluatedPath(), QStringLiteral( "bad" ) );
+  QCOMPARE( picture->mode(), QgsLayoutItemPicture::FormatUnknown );
+  QCOMPARE( picture->originalMode(), QgsLayoutItemPicture::FormatUnknown );
 }
 
 QGSTEST_MAIN( TestQgsLayoutPicture )
