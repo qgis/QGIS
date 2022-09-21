@@ -3634,3 +3634,48 @@ QString QgsOgcUtilsExpressionFromFilter::errorMessage() const
 {
   return mErrorMessage;
 }
+
+QgsOgcCrsUtils::CRSFlavor QgsOgcCrsUtils::parseCrsName( const QString &crsName, QString &authority, QString &code )
+{
+  const thread_local QRegularExpression re_url( QRegularExpression::anchoredPattern( QStringLiteral( "http://www\\.opengis\\.net/gml/srs/epsg\\.xml#(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_url.match( crsName ); match.hasMatch() )
+  {
+    authority = QStringLiteral( "EPSG" );
+    code = match.captured( 1 );
+    return CRSFlavor::HTTP_EPSG_DOT_XML;
+  }
+
+  const thread_local QRegularExpression re_ogc_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:ogc:def:crs:([^:]+).+(?<=:)([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_ogc_urn.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::OGC_URN;
+  }
+
+  const thread_local QRegularExpression re_x_ogc_urn( QRegularExpression::anchoredPattern( QStringLiteral( "urn:x-ogc:def:crs:([^:]+).+(?<=:)([^:]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_x_ogc_urn.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::X_OGC_URN;
+  }
+
+  const thread_local QRegularExpression re_http_uri( QRegularExpression::anchoredPattern( QStringLiteral( "http://www\\.opengis\\.net/def/crs/([^/]+).+/([^/]+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_http_uri.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::OGC_HTTP_URI;
+  }
+
+  const thread_local QRegularExpression re_auth_code( QRegularExpression::anchoredPattern( QStringLiteral( "([^:]+):(.+)" ) ), QRegularExpression::CaseInsensitiveOption );
+  if ( const QRegularExpressionMatch match = re_auth_code.match( crsName ); match.hasMatch() )
+  {
+    authority = match.captured( 1 );
+    code = match.captured( 2 );
+    return CRSFlavor::AUTH_CODE;
+  }
+
+  return CRSFlavor::UNKNOWN;
+}

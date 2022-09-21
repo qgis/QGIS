@@ -552,6 +552,42 @@ class QgsOgcUtilsSQLStatementToFilter
                          QString &srsName,
                          bool &axisInversion );
 };
+
+/**
+ * \ingroup core
+ * \brief Utilities related to OGC CRS encodings.
+ * \note not available in Python bindings
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsOgcCrsUtils
+{
+  public:
+
+    //! CRS flavor
+    enum class CRSFlavor
+    {
+      UNKNOWN, //! unknown/unhandled flavor
+      AUTH_CODE, //! e.g EPSG:4326
+      HTTP_EPSG_DOT_XML, //! e.g. http://www.opengis.net/gml/srs/epsg.xml#4326 (called "OGC HTTP URL" in GeoServer WFS configuration panel)
+      OGC_URN, //! e.g. urn:ogc:def:crs:EPSG::4326
+      X_OGC_URN, //! e.g. urn:x-ogc:def:crs:EPSG::4326
+      OGC_HTTP_URI, //! e.g. http://www.opengis.net/def/crs/EPSG/0/4326
+    };
+
+    /**
+     * Parse a CRS name in one of the flavors of OGC services, and decompose it
+     * as authority and code.
+     *
+     * \param crsName CRS name, like "EPSG:4326", "http://www.opengis.net/gml/srs/epsg.xml#4326", "urn:ogc:def:crs:EPSG::4326", etc.
+     * \param[out] authority CRS authority.
+     * \param[out] code CRS code.
+     * \return CRS flavor (UNKNOWN if crsName could not been parsed.
+     */
+    static CRSFlavor parseCrsName( const QString &crsName, QString &authority, QString &code );
+};
+
+Q_DECLARE_METATYPE( QgsOgcCrsUtils::CRSFlavor )
+
 #endif // #ifndef SIP_RUN
 
 #endif // QGSOGCUTILS_H

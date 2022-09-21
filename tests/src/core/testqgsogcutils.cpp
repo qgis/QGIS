@@ -75,6 +75,9 @@ class TestQgsOgcUtils : public QObject
 
     void testSQLStatementToOgcFilter();
     void testSQLStatementToOgcFilter_data();
+
+    void testParseCrsName();
+    void testParseCrsName_data();
 };
 
 
@@ -1212,6 +1215,41 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter_data()
                                  "</fes:PropertyIsEqualTo>"
                                  "</fes:Filter>" );
 }
+
+
+void TestQgsOgcUtils::testParseCrsName()
+{
+  QFETCH( QString, crsName );
+  QFETCH( QgsOgcCrsUtils::CRSFlavor, expectedFlavor );
+  QFETCH( QString, expectedAuthority );
+  QFETCH( QString, expectedCode );
+
+  QString authority;
+  QString code;
+  const QgsOgcCrsUtils::CRSFlavor crsFlavor = QgsOgcCrsUtils::parseCrsName( crsName, authority, code );
+  QCOMPARE( expectedFlavor, crsFlavor );
+  QCOMPARE( expectedAuthority, authority );
+  QCOMPARE( expectedCode, code );
+}
+
+void TestQgsOgcUtils::testParseCrsName_data()
+{
+  QTest::addColumn<QString>( "crsName" );
+  QTest::addColumn<QgsOgcCrsUtils::CRSFlavor>( "expectedFlavor" );
+  QTest::addColumn<QString>( "expectedAuthority" );
+  QTest::addColumn<QString>( "expectedCode" );
+
+  QTest::newRow( "unknown" ) << QStringLiteral( "foo" ) << QgsOgcCrsUtils::CRSFlavor::UNKNOWN << QString() << QString();
+  QTest::newRow( "unknown2" ) << QStringLiteral( "EPSG:" ) << QgsOgcCrsUtils::CRSFlavor::UNKNOWN << QString() << QString();
+  QTest::newRow( "AUTH_CODE" ) << QStringLiteral( "EPSG:1234" ) << QgsOgcCrsUtils::CRSFlavor::AUTH_CODE << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+  QTest::newRow( "HTTP_EPSG_DOT_XML" ) << QStringLiteral( "http://www.opengis.net/gml/srs/epsg.xml#1234" ) << QgsOgcCrsUtils::CRSFlavor::HTTP_EPSG_DOT_XML << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+  QTest::newRow( "OGC_URN" ) << QStringLiteral( "urn:ogc:def:crs:EPSG::1234" ) << QgsOgcCrsUtils::CRSFlavor::OGC_URN << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+  QTest::newRow( "OGC_URN missing col" ) << QStringLiteral( "urn:ogc:def:crs:EPSG:1234" ) << QgsOgcCrsUtils::CRSFlavor::OGC_URN << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+  QTest::newRow( "X_OGC_URN" ) << QStringLiteral( "urn:x-ogc:def:crs:EPSG::1234" ) << QgsOgcCrsUtils::CRSFlavor::X_OGC_URN << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+  QTest::newRow( "X_OGC_URN missing col" ) << QStringLiteral( "urn:x-ogc:def:crs:EPSG:1234" ) << QgsOgcCrsUtils::CRSFlavor::X_OGC_URN << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+  QTest::newRow( "OGC_HTTP_URI" ) << QStringLiteral( "http://www.opengis.net/def/crs/EPSG/0/1234" ) << QgsOgcCrsUtils::CRSFlavor::OGC_HTTP_URI << QStringLiteral( "EPSG" ) << QStringLiteral( "1234" );
+}
+
 
 QGSTEST_MAIN( TestQgsOgcUtils )
 #include "testqgsogcutils.moc"
