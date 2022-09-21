@@ -352,11 +352,12 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
     // unusued width, height variables
     double width = 0.0;
     double height = 0.0;
-    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
+    bool ok;
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height, &ok ) );
 
-    if ( width == -1 && height == -1 && context )
+    if ( !ok && context )
     {
-      // Tt's not possible to get a restricted size symbol, so we restrict
+      // It's not possible to get a restricted size symbol, so we restrict
       // pixmap target size to be sure it would fit MAXIMUM_SIZE
       maxSize = static_cast<int>( std::round( MAXIMUM_SIZE * context->scaleFactor() ) );
     }

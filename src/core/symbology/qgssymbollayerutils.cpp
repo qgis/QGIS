@@ -4996,14 +4996,15 @@ double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *rendere
   return visitor.refreshRate;
 }
 
-QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )
+QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
 {
-  height = width = -1;
-
   if ( !s || !context )
   {
     return nullptr;
   }
+
+  if ( ok )
+    *ok = true;
 
   double size;
   const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
@@ -5016,6 +5017,9 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
       // geometry generators involved, there is no way to get a restricted size symbol
       if ( sl->type() != Qgis::SymbolType::Marker )
       {
+        if ( ok )
+          *ok = false;
+
         return nullptr;
       }
     }
@@ -5028,6 +5032,9 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
+    if ( ok )
+      *ok = false;
+
     return nullptr; //not size restriction implemented for other symbol types
   }
 
@@ -5044,7 +5051,6 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   else
   {
     // no need to restricted size symbol
-    height = width = 0;
     return nullptr;
   }
 

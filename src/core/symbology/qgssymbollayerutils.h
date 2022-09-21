@@ -880,15 +880,15 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param minSize the minimum size in mm
      * \param maxSize the maximum size in mm
      * \param context the render context
-     * \param width expected width
-     * \param height expected height, can be changed by this function
-     * \a width and \a height are changed to 0 if no restricted size symbol is needed, -1 if it's not possible to
-     * compute a restricted size symbol (geometry generator is involved for instance).
+     * \param width expected width, can be changed by the function
+     * \param height expected height, can be changed by the function
+     * \param ok if not nullptr, ok is set to false if it's not possible to compute a restricted symbol (if geometry generators
+     * are involved for instance)
      * \return nullptr if size is within minSize/maxSize range or if it's not possible to compute a
      * restricted size symbol. New symbol if size was out of min/max range.
      * Caller takes ownership
      */
-    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = nullptr );
 
     /**
      * Evaluates a map of properties using the given \a context and returns a variant map with evaluated expressions from the properties.
