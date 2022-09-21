@@ -21,6 +21,8 @@
 #include "qgsexpressioncontext.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QUrl>
 #include <QFileInfo>
@@ -113,66 +115,11 @@ QUrl QgsHelp::helpUrl( const QString &key )
 bool QgsHelp::urlExists( const QString &url )
 {
   const QUrl helpUrl( url );
-  QTcpSocket socket;
 
-  const QgsSettings settings;
-  const bool proxyEnabled = settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool();
-  if ( proxyEnabled )
-  {
-    QNetworkProxy proxy;
-    const QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), QString() ).toString();
-    const int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), QString() ).toString().toInt();
-    const QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), QString() ).toString();
-    const QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), QString() ).toString();
+  QgsBlockingNetworkRequest request;
+  QNetworkRequest req( helpUrl );
+  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHelp" ) );
 
-    const QString proxyTypeString = settings.value( QStringLiteral( "proxy/proxyType" ), QString() ).toString();
-
-    if ( proxyTypeString == QLatin1String( "DefaultProxy" ) )
-    {
-      QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery();
-      if ( !proxies.isEmpty() )
-      {
-        proxy = proxies.first();
-      }
-    }
-    else
-    {
-      QNetworkProxy::ProxyType proxyType = QNetworkProxy::DefaultProxy;
-      if ( proxyTypeString == QLatin1String( "Socks5Proxy" ) )
-      {
-        proxyType = QNetworkProxy::Socks5Proxy;
-      }
-      else if ( proxyTypeString == QLatin1String( "HttpProxy" ) )
-      {
-        proxyType = QNetworkProxy::HttpProxy;
-      }
-      else if ( proxyTypeString == QLatin1String( "HttpCachingProxy" ) )
-      {
-        proxyType = QNetworkProxy::HttpCachingProxy;
-      }
-      else if ( proxyTypeString == QLatin1String( "FtpCachingProxy" ) )
-      {
-        proxyType = QNetworkProxy::FtpCachingProxy;
-      }
-      proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
-    }
-    socket.setProxy( proxy );
-  }
-
-  socket.connectToHost( helpUrl.host(), 80 );
-  if ( socket.waitForConnected() )
-  {
-    socket.write( "HEAD " + helpUrl.path().toUtf8() + " HTTP/1.1\r\n"
-                  "Host: " + helpUrl.host().toUtf8() + "\r\n\r\n" );
-    if ( socket.waitForReadyRead() )
-    {
-      const QByteArray bytes = socket.readAll();
-      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) ||  bytes.contains( "301 Moved" ) )
-      {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  QgsBlockingNetworkRequest::ErrorCode errCode = request.head( req );
+  return errCode == QgsBlockingNetworkRequest::NoError;
 }
