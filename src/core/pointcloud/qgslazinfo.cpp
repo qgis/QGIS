@@ -355,17 +355,7 @@ bool QgsLazInfo::supportsRangeQueries( QUrl &url )
   QgsBlockingNetworkRequest req;
   QgsBlockingNetworkRequest::ErrorCode errCode = req.head( nr );
   QgsNetworkReplyContent reply = req.reply();
-  const QList<QgsNetworkReplyContent::RawHeaderPair> pairs = reply.rawHeaderPairs();
-  bool acceptsRanges = false;
-  for ( const auto &pair : pairs )
-  {
-    if ( QString::fromLocal8Bit( pair.first ).compare( QStringLiteral( "Accept-Ranges" ), Qt::CaseInsensitive ) == 0 &&
-         QString::fromLocal8Bit( pair.second ).compare( QStringLiteral( "bytes" ), Qt::CaseInsensitive ) == 0 )
-    {
-      acceptsRanges = true;
-      break;
-    }
-  }
 
-  return errCode == QgsBlockingNetworkRequest::NoError && acceptsRanges;
+  QString acceptRangesHeader = reply.rawHeader( QStringLiteral( "Accept-Ranges" ).toLocal8Bit() );
+  return errCode == QgsBlockingNetworkRequest::NoError && acceptRangesHeader.compare( QStringLiteral( "bytes" ), Qt::CaseSensitivity::CaseInsensitive ) == 0;
 }
