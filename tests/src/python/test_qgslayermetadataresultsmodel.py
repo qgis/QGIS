@@ -19,11 +19,17 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProviderRegistry,
     QgsWkbTypes,
+    QgsMapLayerType,
     QgsLayerMetadata,
     QgsProviderMetadata,
     QgsBox3d,
     QgsRectangle,
     QgsMetadataSearchContext,
+    QgsFields,
+    QgsField,
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsGeometry,
 )
 
 from qgis.gui import (
@@ -84,6 +90,28 @@ class TestQgsLayerMetadataResultModels(TestCase):
 
         ds = None
 
+        fields = QgsFields()
+        fields.append(QgsField('name', QVariant.String))
+        self.conn.createVectorTable('', 'aspatial', fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem(), False, {})
+        self.conn.createVectorTable('', 'linestring', fields, QgsWkbTypes.LineString, QgsCoordinateReferenceSystem(), False, {})
+        vl = QgsVectorLayer(self.conn.tableUri('', 'linestring'))
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setAttribute('name', 'one')
+        f.setGeometry(QgsGeometry.fromWkt('LINESTRING(0 0, 1 1, 2 2)'))
+        vl.addFeatures([f])
+        self.assertTrue(vl.commitChanges())
+        self.conn.createVectorTable('', 'polygon', fields, QgsWkbTypes.Polygon, QgsCoordinateReferenceSystem(), False, {})
+        vl = QgsVectorLayer(self.conn.tableUri('', 'polygon'))
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        f.setAttribute('name', 'one')
+        f.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 1 1, 0 2, 0 0))'))
+        vl.addFeatures([f])
+        self.assertTrue(vl.commitChanges())
+
         for t in self.conn.tables():
             layer_uri = self.conn.tableUri('', t.tableName())
             vl = QgsVectorLayer(layer_uri, t.tableName(), 'ogr')
@@ -113,17 +141,26 @@ class TestQgsLayerMetadataResultModels(TestCase):
         metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
         self.assertEqual(metadata.identifier(), 'layer_11')
         proxy_model.setFilterString('')
-        self.assertEqual(proxy_model.rowCount(), 20)
+        self.assertEqual(proxy_model.rowCount(), len(self.conn.tables()))
         proxy_model.setFilterExtent(QgsRectangle(0, 0, 2, 2.001))
-        self.assertEqual(proxy_model.rowCount(), 2)
+        self.assertEqual(set([proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())]), set(('layer_0', 'layer_1', 'linestring', 'polygon')))
+
+        self.assertEqual(proxy_model.rowCount(), 4)
         model.reload()
-        self.assertEqual(proxy_model.rowCount(), 2)
+
+        self.assertEqual(proxy_model.rowCount(), 4)
         proxy_model.setFilterExtent(QgsRectangle())
         metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
         self.assertEqual(metadata.identifier(), 'layer_0')
         proxy_model.sort(0, Qt.DescendingOrder)
         metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
-        self.assertEqual(metadata.identifier(), 'layer_9')
+        self.assertEqual(metadata.identifier(), 'polygon')
+
+        proxy_model.setFilterGeometryType(QgsWkbTypes.PolygonGeometry)
+        proxy_model.setFilterGeometryTypeEnabled(True)
+        self.assertEqual(set([proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())]), set(('polygon',)))
+        proxy_model.setFilterGeometryTypeEnabled(False)
+        self.assertEqual(proxy_model.rowCount(), len(self.conn.tables()))
 
 
 if __name__ == '__main__':

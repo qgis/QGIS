@@ -412,7 +412,7 @@ QList<QgsLayerMetadataProviderResult> QgsGeoPackageProviderConnection::searchLay
         gpkg_metadata_reference AS ref
       JOIN
         gpkg_metadata AS md ON md.id = ref.md_file_id
-      JOIN
+      LEFT JOIN
         gpkg_geometry_columns AS gc ON gc.table_name = ref.table_name
       WHERE
         md.md_standard_uri = 'http://mrcc.com/qgis.dtd'
