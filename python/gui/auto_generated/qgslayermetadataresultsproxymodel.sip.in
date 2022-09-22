@@ -31,9 +31,14 @@ Constructs a QgsLayerMetadataResultsProxyModel with an optional ``parent``.
 Returns the filter string.
 %End
 
-    const QString filterGeometryTypeName() const;
+    void setFilterGeometryTypeEnabled( bool enabled );
 %Docstring
-Returns the geometry type name filter string.
+Sets the geometry type filter status to ``enabled``.
+%End
+
+    void setFilterMapLayerTypeEnabled( bool enabled );
+%Docstring
+Sets the map layer type filter status to ``enabled``.
 %End
 
   public slots:
@@ -43,9 +48,9 @@ Returns the geometry type name filter string.
 Sets the extent filter to ``extent``.
 %End
 
-    void setFilterGeometryTypeName( const QString &geometryTypeName );
+    void setFilterGeometryType( const QgsWkbTypes::GeometryType geometryType );
 %Docstring
-Sets the geometry type filter to ``geometryTypeName``.
+Sets the geometry type filter to ``geometryType``.
 %End
 
     void setFilterString( const QString &filterString );
@@ -53,8 +58,14 @@ Sets the geometry type filter to ``geometryTypeName``.
 Sets the text filter to ``filterString``.
 %End
 
+    void setFilterMapLayerType( const QgsMapLayerType mapLayerType );
+%Docstring
+Sets the map layer type filter to ``mapLayerType``.
+%End
+
   protected:
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
 
 
 };
