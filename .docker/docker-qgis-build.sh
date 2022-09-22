@@ -57,14 +57,6 @@ if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
 fi
 
 CMAKE_EXTRA_ARGS=()
-if [[ ${PATCH_QT_3D} == "true" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-    "-DQT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"
-    "-DQT5_3DEXTRA_INCLUDE_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers"
-    "-DCMAKE_PREFIX_PATH=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake"
-    "-DQt53DExtras_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake/Qt53DExtras"
-  )
-fi
 
 if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
