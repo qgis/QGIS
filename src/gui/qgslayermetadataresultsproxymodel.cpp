@@ -53,10 +53,11 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
   {
     const QgsLayerMetadataProviderResult &metadataResult { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
 
-    if ( result && ! mFilterString.isEmpty() )
+    if ( mFilterString.isEmpty() )
     {
       result = result && metadataResult.contains( mFilterString );
     }
+
     if ( result && ! mFilterExtent.isEmpty() )
     {
       result = result && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
