@@ -10,7 +10,7 @@
           <se:PointSymbolizer>
             <se:Graphic>
               <se:ExternalGraphic>
-                <OnlineResource xlink:type="simple" xlink:href="file:///gpsicons/skull.svg"/>
+                <OnlineResource xlink:type="simple" xlink:href="file:///gpsicons/skull.svg?fill=%2300ff00&amp;fill-opacity=0.9&amp;outline=%23ff0000&amp;outline-opacity=0.8&amp;outline-width=2"/>
                 <Format>image/svg+xml</Format>
               </se:ExternalGraphic>
               <se:Size>12</se:Size>
