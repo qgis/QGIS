@@ -864,6 +864,11 @@ QgsRuleBasedRenderer::Rule *QgsRuleBasedRenderer::Rule::createFromSld( QDomEleme
         delete filter;
       }
     }
+    else if ( childElem.localName() == QLatin1String( "ElseFilter" ) )
+    {
+      filterExp = QLatin1String( "ELSE" );
+
+    }
     else if ( childElem.localName() == QLatin1String( "MinScaleDenominator" ) )
     {
       bool ok;

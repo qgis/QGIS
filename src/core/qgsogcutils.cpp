@@ -44,6 +44,7 @@
 #define GML32_NAMESPACE QStringLiteral( "http://www.opengis.net/gml/3.2" )
 #define OGC_NAMESPACE QStringLiteral( "http://www.opengis.net/ogc" )
 #define FES_NAMESPACE QStringLiteral( "http://www.opengis.net/fes/2.0" )
+#define SE_NAMESPACE QStringLiteral( "http://www.opengis.net/se" )
 
 QgsOgcUtilsExprToFilter::QgsOgcUtilsExprToFilter( QDomDocument &doc,
     QgsOgcUtils::GMLVersion gmlVersion,
@@ -1886,6 +1887,11 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp, QD
 {
   return expressionToOgcExpression( exp, doc, GML_2_1_2, FILTER_OGC_1_0,
                                     QStringLiteral( "geometry" ), QString(), false, false, errorMessage, requiresFilterElement );
+}
+
+QDomElement QgsOgcUtils::elseFilterExpression( QDomDocument &doc )
+{
+  return doc.createElementNS( SE_NAMESPACE, QStringLiteral( "se:ElseFilter" ) );
 }
 
 
