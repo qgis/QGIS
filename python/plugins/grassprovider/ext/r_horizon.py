@@ -22,6 +22,7 @@ __date__ = 'September 2017'
 __copyright__ = '(C) 2017, Médéric Ribreux'
 
 import os
+import math
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
@@ -50,9 +51,12 @@ def processOutputs(alg, parameters, context, feedback):
         Format filename, according to GRASS implementation,
         based on provided number and number of decimals
         """
+        number += 0.0001
         if nDecimals == 0:
             return f'{int(number):03}'
-        return f'{int(number):03}_{str(number).split(".")[-1].ljust(nDecimals, "0")}'
+        int_part = int(number)
+        dec_part = int((number - int_part) * pow(10, nDecimals))
+        return f'{int_part:03}_{str(dec_part).rjust(nDecimals, "0")}'
 
     # There will be as many outputs as the difference between start and end divided by steps
     start = alg.parameterAsDouble(parameters, 'start', context)
@@ -60,16 +64,17 @@ def processOutputs(alg, parameters, context, feedback):
     step = alg.parameterAsDouble(parameters, 'step', context)
     direction = alg.parameterAsDouble(parameters, 'direction', context)
 
-    num = start + direction
+    first_rad = math.radians(start + direction)
     nDecimals = getNumberDecimals(step)
+    dfr_rad = math.radians(step)
+    arrayNumInt = int((end - start) / abs(step))
 
     directory = alg.parameterAsString(parameters, 'output', context)
     # Needed if output to a temporary directory
     os.makedirs(directory, exist_ok=True)
-    while num < end + direction:
-        baseName = doubleToBaseName(num, nDecimals)
+    for k in range(arrayNumInt):
+        angle_deg = math.degrees(first_rad + dfr_rad * k)
+        baseName = doubleToBaseName(angle_deg, nDecimals)
         grassName = f'output{alg.uniqueSuffix}_{baseName}'
         fileName = f'{os.path.join(directory, baseName)}.tif'
         alg.exportRasterLayer(grassName, fileName)
-        # Weird issue was generating weird num like 0.12000000000000001 or 0.27999999999999997 for step = 0.2
-        num = round(num + step, nDecimals)
