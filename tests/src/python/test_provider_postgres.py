@@ -2133,8 +2133,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(errorMsg, "")
 
         qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertTrue('v="\u001E"' in qml)
         self.assertEqual(errmsg, "")
+        self.assertTrue('v="\u001E"' in qml, f"record separator character (\u001E) not found in qml: {qml}")
 
         # Test loadStyle from metadata
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
