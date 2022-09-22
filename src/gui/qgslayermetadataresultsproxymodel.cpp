@@ -53,14 +53,15 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
   {
     const QgsLayerMetadataProviderResult &metadataResult { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
 
-    if ( mFilterString.isEmpty() )
+    if ( ! mFilterString.isEmpty() )
     {
       result = result && metadataResult.contains( mFilterString );
     }
 
     if ( result && ! mFilterExtent.isEmpty() )
     {
-      result = result && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
+      // Exclude aspatial from extent filter
+      result = result && ( metadataResult.geometryType() != QgsWkbTypes::UnknownGeometry && metadataResult.geometryType() != QgsWkbTypes::NullGeometry ) && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
     }
 
     if ( result && mFilterMapLayerTypeEnabled )
