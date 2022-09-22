@@ -31,7 +31,11 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
 
   connect( mWidget, &QgsExtentWidget::toggleDialogVisibility, this, [ = ]( bool visible )
   {
-    window()->setVisible( visible );
+    QWidget *w = window();
+    // Don't hide the main window or we'll get locked outside!
+    if ( w->objectName() == QLatin1String( "QgisApp" ) )
+      return;
+    w->setVisible( visible );
   } );
 }
 
