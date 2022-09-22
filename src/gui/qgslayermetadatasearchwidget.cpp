@@ -123,7 +123,7 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
     }
     else
     {
-      const QVariant geomTypeFilterValue { mGeometryTypeComboBox->currentData() };
+      const QVariant geomTypeFilterValue( mGeometryTypeComboBox->currentData() );
       if ( geomTypeFilterValue.isValid() )  // Vector layers
       {
         mProxyModel->setFilterGeometryTypeEnabled( true );
