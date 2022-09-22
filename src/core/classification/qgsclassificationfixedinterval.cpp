@@ -54,7 +54,17 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
 {
   const QgsProcessingContext context;
   const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "INTERVAL" ) );
-  const double interval = QgsProcessingParameters::parameterAsDouble( def, parameterValues(), context );
+  double interval = QgsProcessingParameters::parameterAsDouble( def, parameterValues(), context );
+
+  // Limit the interval so we do not get more than 999 classes
+  const double minInterval = ( maximum - minimum ) / 999;
+  if ( minInterval > interval )
+  {
+    interval = minInterval;
+    auto parameters = parameterValues();
+    parameters["INTERVAL"] = interval;
+    setParameterValues( parameters );
+  }
 
   QList<double> breaks;
   if ( qgsDoubleNear( interval, 0 ) || interval < 0 )
