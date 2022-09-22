@@ -26,9 +26,9 @@ void QgsLayerMetadataResultsProxyModel::setFilterExtent( const QgsRectangle &ext
   invalidateFilter();
 }
 
-void QgsLayerMetadataResultsProxyModel::setFilterGeometryTypeName( const QString &geometryTypeName )
+void QgsLayerMetadataResultsProxyModel::setFilterGeometryType( const QgsWkbTypes::GeometryType geometryType )
 {
-  mFilterGeometryTypeName = geometryTypeName;
+  mFilterGeometryType = geometryType;
   invalidateFilter();
 }
 
@@ -38,33 +38,61 @@ void QgsLayerMetadataResultsProxyModel::setFilterString( const QString &filterSt
   invalidateFilter();
 }
 
+void QgsLayerMetadataResultsProxyModel::setFilterMapLayerType( const QgsMapLayerType mapLayerType )
+{
+  mFilterMapLayerType = mapLayerType;
+  invalidateFilter();
+}
+
 bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QModelIndex index0 = sourceModel()->index( sourceRow, 0, sourceParent );
   bool result { QSortFilterProxyModel::filterAcceptsRow( sourceRow, sourceParent ) };
-  if ( result && ! mFilterString.isEmpty() )
+
+  if ( result )
   {
-    result = result && sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ).contains( mFilterString );
-  }
-  if ( result && ! mFilterExtent.isEmpty() )
-  {
-    result = result && mFilterExtent.intersects( sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ).geographicExtent().boundingBox() );
-  }
-  if ( result && ! mFilterGeometryTypeName.isEmpty() )
-  {
-    const QgsLayerMetadataProviderResult &md { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
-    if ( mFilterGeometryTypeName == tr( "Raster" ) )
+    const QgsLayerMetadataProviderResult &metadataResult { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
+
+    if ( result && ! mFilterString.isEmpty() )
     {
-      result = result && ( md.layerType() == QgsMapLayerType::RasterLayer );
+      result = result && metadataResult.contains( mFilterString );
     }
-    else
+    if ( result && ! mFilterExtent.isEmpty() )
     {
-      // Note: unknown geometry is mapped to null geometry
-      const QString geometryTypeName { QgsWkbTypes::geometryDisplayString( md.geometryType() == QgsWkbTypes::GeometryType::UnknownGeometry ? QgsWkbTypes::GeometryType::NullGeometry : md.geometryType() ) };
-      result = result && ( md.layerType() != QgsMapLayerType::RasterLayer && geometryTypeName == mFilterGeometryTypeName );
+      result = result && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
+    }
+
+    if ( result && mFilterMapLayerTypeEnabled )
+    {
+      result = result && metadataResult.layerType() == mFilterMapLayerType;
+    }
+
+    if ( result && mFilterGeometryTypeEnabled )
+    {
+      if ( mFilterGeometryType == QgsWkbTypes::UnknownGeometry || mFilterGeometryType == QgsWkbTypes::NullGeometry )
+      {
+        result = result && ( metadataResult.geometryType() == QgsWkbTypes::UnknownGeometry || metadataResult.geometryType() == QgsWkbTypes::NullGeometry );
+      }
+      else
+      {
+        result = result &&  metadataResult.geometryType() == mFilterGeometryType;
+      }
     }
   }
+
   return result;
+}
+
+void QgsLayerMetadataResultsProxyModel::setFilterMapLayerTypeEnabled( bool enabled )
+{
+  mFilterMapLayerTypeEnabled = enabled;
+  invalidateFilter();
+}
+
+void QgsLayerMetadataResultsProxyModel::setFilterGeometryTypeEnabled( bool enabled )
+{
+  mFilterGeometryTypeEnabled = enabled;
+  invalidateFilter();
 }
 
 const QString QgsLayerMetadataResultsProxyModel::filterString() const
@@ -72,7 +100,3 @@ const QString QgsLayerMetadataResultsProxyModel::filterString() const
   return mFilterString;
 }
 
-const QString QgsLayerMetadataResultsProxyModel::filterGeometryTypeName() const
-{
-  return mFilterGeometryTypeName;
-}

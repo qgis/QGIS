@@ -129,7 +129,7 @@ QVariant QgsLayerMetadataResultsModel::headerData( int section, Qt::Orientation 
         case Sections::DataProviderName:
           return tr( "Provider" );
         case Sections::GeometryType:
-          return tr( "Geometry Type" );
+          return tr( "Layer Type" );
       }
     }
     // other roles here ...
