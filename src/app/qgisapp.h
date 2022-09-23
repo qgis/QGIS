@@ -2738,6 +2738,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
         bool mReleased = false;
     };
+
+    //! True if the autoSelectAddedLayer() slot should not be doing anything (performance optimization when adding a lot of layers)
+    bool mBlockAutoSelectAddedLayer = false;
+
     int mFreezeCount = 0;
     friend class QgsCanvasRefreshBlocker;
 
