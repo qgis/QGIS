@@ -110,7 +110,9 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 
   const QgsCoordinateTransform transform;
-  meshLayerQuadFlower->startFrameEditing( transform );
+  QgsMeshEditingError error;
+  meshLayerQuadFlower->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
   const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
@@ -138,7 +140,9 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QVERIFY( !meshLayerQuadFlower->meshEditor() );
 
-  meshLayerQuadFlower->startFrameEditing( transform );
+  QgsMeshEditingError error;
+  meshLayerQuadFlower->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
 
   QVERIFY( meshLayerQuadFlower->meshEditor() );
 

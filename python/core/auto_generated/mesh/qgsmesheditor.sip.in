@@ -70,7 +70,23 @@ The caller takes ownership.
 
     QgsMeshEditingError initialize();
 %Docstring
-Initialize the mesh editor and return errors if the internal native mesh have topologic errors
+Initializes the mesh editor and returns first error if the internal native mesh have topologic errors
+%End
+
+    QgsMeshEditingError initializeWithErrorsFix();
+%Docstring
+Initializes the mesh editor, if topological errors occur,tries to fix this errors
+and returns error if there is one that couldn't be fixed
+
+.. versionadded:: 3.28
+%End
+
+
+    bool fixError( const QgsMeshEditingError &error );
+%Docstring
+Tries to fix the topological ``error`` ``in`` the mesh. Returns false if the fix fails
+
+.. versionadded:: 3.28
 %End
 
     bool faceCanBeAdded( const QgsMeshFace &face );

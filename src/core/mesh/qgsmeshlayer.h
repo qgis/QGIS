@@ -40,6 +40,7 @@ class QgsMesh3dAveragingMethod;
 class QgsMeshLayerTemporalProperties;
 class QgsMeshDatasetGroupStore;
 class QgsMeshEditor;
+class QgsMeshEditingError;
 class QgsMeshLayerElevationProperties;
 
 /**
@@ -774,15 +775,29 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     qint64 datasetRelativeTimeInMilliseconds( const QgsMeshDatasetIndex &index );
 
     /**
-    * Starts edition of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
-    * This operation will disconnect the mesh layer from the data provider anf removes all existing dataset group
+    * Starts editing of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
+    * This operation will disconnect the mesh layer from the data provider and removes all existing dataset group
     *
     * \since QGIS 3.22
+    * \deprecated since QGIS 3.28, use the version with QgsMeshEditingError instead
     */
-    bool startFrameEditing( const QgsCoordinateTransform &transform );
+    Q_DECL_DEPRECATED bool startFrameEditing( const QgsCoordinateTransform &transform );
 
     /**
-    * Commits edition of the mesh frame,
+    * Starts editing of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
+    * This operation will disconnect the mesh layer from the data provider and removes all existing dataset group.
+    * Returns FALSE if starting fails and the error that is the the reason (No error, if the mesh is not editable or already in edit mode).
+    *
+    * If fixErrors is set to TRUE, errors will be attempted to be fixed.
+    * In that case returns FALSE if there is an error that could not be fixed and the remaining error.
+    *
+    * \since QGIS 3.28
+    */
+    bool startFrameEditing( const QgsCoordinateTransform &transform, QgsMeshEditingError &error SIP_OUT, bool fixErrors );
+
+
+    /**
+    * Commits editing of the mesh frame,
     * Rebuilds the triangular mesh and its spatial index with \a transform,
     * Continue editing with the same mesh editor if \a continueEditing is True
     *
@@ -792,7 +807,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool commitFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 
     /**
-    * Rolls Back edition of the mesh frame.
+    * Rolls Back editing of the mesh frame.
     * Reload mesh from file, rebuilds the triangular mesh and its spatial index with \a transform,
     * Continue editing with the same mesh editor if \a continueEditing is TRUE
     *
@@ -802,7 +817,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool rollBackFrameEditing( const QgsCoordinateTransform &transform, bool continueEditing = true );
 
     /**
-    * Stops edition of the mesh, re-indexes the faces and vertices,
+    * Stops editing of the mesh, re-indexes the faces and vertices,
     * rebuilds the triangular mesh and its spatial index with \a transform,
     * clean the undostack
     *

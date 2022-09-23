@@ -10750,15 +10750,37 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
       }
     }
 
-    res = mlayer->startFrameEditing( transform );
-    mActionToggleEditing->setChecked( res );
+    QgsMeshEditingError error;
+    {
+      QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+      res = mlayer->startFrameEditing( transform, error, false );
+    }
 
     if ( !res )
     {
-      visibleMessageBar()->pushWarning(
-        tr( "Mesh editing" ),
-        tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+      if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
+      {
+        if ( QMessageBox::question( this, tr( "Mesh Editing" ),
+                                    tr( "At least one topological error in the mesh prevents starting editing,\n"
+                                        "Some errors can be fixed by removing invalid elements.\n\n"
+                                        "Do you want to try to fix errors before starting editing?" ),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes ) == QMessageBox::Yes )
+        {
+          QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
+          res = mlayer->startFrameEditing( transform, error, true );
+        }
+      }
+
+      if ( !res )
+      {
+        visibleMessageBar()->pushWarning(
+          tr( "Mesh editing" ),
+          tr( "Unable to start mesh editing for layer \"%1\"" ).arg( mlayer->name() ) );
+      }
+
     }
+
+    mActionToggleEditing->setChecked( res );
   }
   else if ( mlayer->isModified() )
   {
