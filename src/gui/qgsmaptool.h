@@ -93,7 +93,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEdit;
     else
-      sipType = NULL;
+      sipType = sipType_QgsMapTool;
     SIP_END
 #endif
 

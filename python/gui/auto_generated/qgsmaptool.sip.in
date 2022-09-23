@@ -61,7 +61,7 @@ implemented as map tools.
     else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEdit;
     else
-      sipType = NULL;
+      sipType = sipType_QgsMapTool;
 %End
   public:
 
