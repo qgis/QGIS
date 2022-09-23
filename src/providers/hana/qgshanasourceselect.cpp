@@ -316,8 +316,7 @@ void QgsHanaSourceSelect::cmbConnections_activated( int )
   QgsHanaSettings::setSelectedConnection( cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
-  QgsHanaSettings settings( cmbConnections->currentText() );
-  settings.load();
+  QgsHanaSettings settings( cmbConnections->currentText(), true );
   cbxAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
   cbxAllowGeometrylessTables->blockSignals( false );
 }

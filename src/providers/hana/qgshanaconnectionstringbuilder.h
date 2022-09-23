@@ -25,6 +25,9 @@ class QgsHanaConnectionStringBuilder
     QgsHanaConnectionStringBuilder() = default;
     explicit QgsHanaConnectionStringBuilder( const QgsDataSourceUri &uri );
 
+    QString dsn() const { return mDsn; }
+    void setDsn( const QString &dsn ) { mDsn = dsn; }
+
     QString driver() const { return mDriver; }
     void setDriver( const QString &driver ) { mDriver = driver; }
 
@@ -67,6 +70,7 @@ class QgsHanaConnectionStringBuilder
     QString toString() const;
 
   private:
+    QString mDsn;
     QString mDriver;
     QString mHost;
     QString mPort;

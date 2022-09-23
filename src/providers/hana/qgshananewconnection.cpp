@@ -44,10 +44,13 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   , mOriginalConnName( connName )
 {
   setupUi( this );
+
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
+  cmbConnectionType_changed( cmbConnectionType->currentIndex() );
   cmbIdentifierType_changed( cmbIdentifierType->currentIndex() );
 
+  connect( cmbConnectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsHanaNewConnection::cmbConnectionType_changed );
   connect( cmbIdentifierType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsHanaNewConnection::cmbIdentifierType_changed );
   connect( rbtnSingleContainer, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnSingleContainer_clicked );
   connect( rbtnMultipleContainers, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnMultipleContainers_clicked );
@@ -76,6 +79,8 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   cbxCryptoProvider->addItem( QStringLiteral( "sapcrypto" ), QStringLiteral( "sapcrypto" ) );
   cbxCryptoProvider->addItem( QStringLiteral( "mscrypto" ), QStringLiteral( "mscrypto" ) );
 
+  cmbDsn->addItems( QgsHanaDriver::instance()->dataSources() );
+
   mAuthSettings->setDataprovider( QStringLiteral( "hana" ) );
   mAuthSettings->showStoreCheckboxes( true );
 
@@ -103,28 +108,42 @@ void QgsHanaNewConnection::accept()
     return;
   }
 
-  if ( isStringEmpty( txtDriver->text() ) )
+  switch ( getCurrentConnectionType() )
   {
-    QMessageBox::warning( this,
-                          tr( "Save Connection" ), tr( "Driver field cannot be empty." ), QMessageBox::Ok );
-    return;
-  }
+    case QgsHanaConnectionType::HOST_PORT:
+      if ( isStringEmpty( txtDriver->text() ) )
+      {
+        QMessageBox::warning( this,
+                              tr( "Save Connection" ), tr( "Driver field cannot be empty." ), QMessageBox::Ok );
+        return;
+      }
 
-  if ( isStringEmpty( txtHost->text() ) )
-  {
-    QMessageBox::warning( this,
-                          tr( "Save Connection" ), tr( "Host field cannot be empty." ), QMessageBox::Ok );
-    return;
-  }
+      if ( isStringEmpty( txtHost->text() ) )
+      {
+        QMessageBox::warning( this,
+                              tr( "Save Connection" ), tr( "Host field cannot be empty." ), QMessageBox::Ok );
+        return;
+      }
 
-  if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() )
-  {
-    if ( isStringEmpty( txtTenantDatabaseName->text() ) )
-    {
-      QMessageBox::warning( this,
-                            tr( "Save Connection" ), tr( "Tenant database name cannot be empty." ), QMessageBox::Ok );
-      return;
-    }
+      if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() )
+      {
+        if ( isStringEmpty( txtTenantDatabaseName->text() ) )
+        {
+          QMessageBox::warning( this,
+                                tr( "Save Connection" ), tr( "Tenant database name cannot be empty." ), QMessageBox::Ok );
+          return;
+        }
+      }
+      break;
+    case QgsHanaConnectionType::DSN:
+      if ( cmbDsn->count() == 0 )
+      {
+        QMessageBox::warning( this,
+                              tr( "Save Connection" ), tr( "DSN field cannot be empty." ), QMessageBox::Ok );
+        return;
+      }
+
+      break;
   }
 
   const QString connName = txtName->text();
@@ -173,6 +192,12 @@ void QgsHanaNewConnection::accept()
 void QgsHanaNewConnection::btnConnect_clicked()
 {
   testConnection();
+}
+
+void QgsHanaNewConnection::cmbConnectionType_changed( int index )
+{
+  swConnectionControls->setCurrentIndex( index );
+  resizeEvent( nullptr );
 }
 
 void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
@@ -234,12 +259,22 @@ void QgsHanaNewConnection::chkValidateCertificate_clicked()
 
 void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
 {
-  settings.setDriver( txtDriver->text() );
-  settings.setHost( txtHost->text() );
-  settings.setIdentifierType( static_cast<uint>( cmbIdentifierType->currentIndex() ) );
-  settings.setIdentifier( txtIdentifier->text() );
-  settings.setDatabase( getDatabaseName() );
-  settings.setMultitenant( rbtnMultipleContainers->isChecked() );
+  QgsHanaConnectionType connType = getCurrentConnectionType();
+  settings.setConnectionType( connType );
+  switch ( connType )
+  {
+    case QgsHanaConnectionType::DSN:
+      settings.setDsn( cmbDsn->count() > 0 ? cmbDsn->currentText() : "" );
+      break;
+    case QgsHanaConnectionType::HOST_PORT:
+      settings.setDriver( txtDriver->text() );
+      settings.setHost( txtHost->text() );
+      settings.setIdentifierType( static_cast<uint>( cmbIdentifierType->currentIndex() ) );
+      settings.setIdentifier( txtIdentifier->text() );
+      settings.setDatabase( getDatabaseName() );
+      settings.setMultitenant( rbtnMultipleContainers->isChecked() );
+      break;
+  }
   settings.setSchema( txtSchema->text() );
   settings.setAuthCfg( mAuthSettings->configId() );
   settings.setUserName( mAuthSettings->username() );
@@ -258,23 +293,39 @@ void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
 
 void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &settings )
 {
-  txtDriver->setText( settings.driver() );
-  txtHost->setText( settings.host() );
-  cmbIdentifierType->setCurrentIndex( QgsHanaIdentifierType::INSTANCE_NUMBER );
-  cmbIdentifierType->setCurrentIndex( static_cast<int>( settings.identifierType() ) );
-  txtIdentifier->setText( settings.identifier() );
-  if ( !settings.multitenant() )
+  txtName->setText( settings.name() );
+
+  switch ( settings.connectionType() )
   {
-    rbtnSingleContainer->setChecked( true );
-    frmMultitenantSettings->setEnabled( false );
-  }
-  else
-  {
-    rbtnMultipleContainers->setChecked( true );
-    if ( settings.database() == QLatin1String( "SYSTEMDB" ) )
-      rbtnSystemDatabase->setChecked( true );
-    else
-      txtTenantDatabaseName->setText( settings.database() );
+    case QgsHanaConnectionType::DSN:
+    {
+      cmbConnectionType->setCurrentIndex( 1 );
+      int index = cmbDsn->findText( settings.dsn() );
+      if ( index >= 0 )
+        cmbDsn->setCurrentIndex( index );
+      break;
+    }
+    case QgsHanaConnectionType::HOST_PORT:
+      cmbConnectionType->setCurrentIndex( 0 );
+      txtDriver->setText( settings.driver() );
+      txtHost->setText( settings.host() );
+      cmbIdentifierType->setCurrentIndex( QgsHanaIdentifierType::INSTANCE_NUMBER );
+      cmbIdentifierType->setCurrentIndex( static_cast<int>( settings.identifierType() ) );
+      txtIdentifier->setText( settings.identifier() );
+      if ( !settings.multitenant() )
+      {
+        rbtnSingleContainer->setChecked( true );
+        frmMultitenantSettings->setEnabled( false );
+      }
+      else
+      {
+        rbtnMultipleContainers->setChecked( true );
+        if ( settings.database() == QLatin1String( "SYSTEMDB" ) )
+          rbtnSystemDatabase->setChecked( true );
+        else
+          txtTenantDatabaseName->setText( settings.database() );
+      }
+      break;
   }
   txtSchema->setText( settings.schema() );
   chkUserTablesOnly->setChecked( settings.userTablesOnly() );
@@ -303,47 +354,74 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   }
 
   mAuthSettings->setConfigId( settings.authCfg() );
+}
 
-  txtName->setText( settings.name() );
+QgsHanaConnectionType QgsHanaNewConnection::getCurrentConnectionType() const
+{
+  return static_cast<QgsHanaConnectionType>( swConnectionControls->currentIndex() );
+}
+
+void QgsHanaNewConnection::resizeEvent( QResizeEvent * )
+{
+  auto resizeLayout = []( QLayout * layout )
+  {
+    QWidget *widget = layout->parentWidget();
+    widget->resize( widget->parentWidget()->width(), widget->height() );
+  };
+
+  // We need to manually resize layouts located inside the StackedWidget.
+  resizeLayout( grdConnectionSettings );
+  resizeLayout( frmDsn );
 }
 
 void QgsHanaNewConnection::testConnection()
 {
   QString warningMsg;
-  if ( txtHost->text().isEmpty() )
-    warningMsg = tr( "Host name has not been specified." );
-  else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
-            txtTenantDatabaseName->text().isEmpty() )
-    warningMsg = tr( "Database has not been specified." );
-  else if ( mAuthSettings->username().isEmpty() )
+
+  switch ( getCurrentConnectionType() )
+  {
+    case QgsHanaConnectionType::DSN:
+      if ( cmbDsn->count() == 0 )
+        warningMsg = tr( "DSN has not been specified." );
+      break;
+    case QgsHanaConnectionType::HOST_PORT:
+      if ( txtHost->text().isEmpty() )
+        warningMsg = tr( "Host name has not been specified." );
+      else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
+                txtTenantDatabaseName->text().isEmpty() )
+        warningMsg = tr( "Database has not been specified." );
+      else if ( txtIdentifier->text().isEmpty() )
+        warningMsg = tr( "Identifier has not been specified." );
+      else
+      {
+        const QString driver = txtDriver->text();
+        if ( driver.isEmpty() )
+          warningMsg = tr( "Driver name/path has not been specified." );
+        else
+        {
+          if ( !QgsHanaDriver::isInstalled( driver ) )
+          {
+#if defined(Q_OS_WIN)
+            warningMsg = tr( "Driver with name '%1' is not installed." ).arg( driver );
+#else
+            if ( !QgsHanaDriver::isValidPath( driver ) )
+            {
+              if ( QFileInfo::exists( driver ) )
+                warningMsg = tr( "Specified driver '%1' cannot be used to connect to SAP HANA." ).arg( driver );
+              else
+                warningMsg = tr( "Driver with name/path '%1' was not found." ).arg( driver );
+            }
+#endif
+          }
+        }
+      }
+      break;
+  }
+
+  if ( mAuthSettings->username().isEmpty() )
     warningMsg = tr( "User name has not been specified." );
   else if ( mAuthSettings->password().isEmpty() )
     warningMsg = tr( "Password has not been specified." );
-  else if ( txtIdentifier->text().isEmpty() )
-    warningMsg = tr( "Identifier has not been specified." );
-  else
-  {
-    const QString driver = txtDriver->text();
-    if ( driver.isEmpty() )
-      warningMsg = tr( "Driver name/path has not been specified." );
-    else
-    {
-      if ( !QgsHanaDriver::isInstalled( driver ) )
-      {
-#if defined(Q_OS_WIN)
-        warningMsg = tr( "Driver with name '%1' is not installed." ).arg( driver );
-#else
-        if ( !QgsHanaDriver::isValidPath( driver ) )
-        {
-          if ( QFileInfo::exists( driver ) )
-            warningMsg = tr( "Specified driver '%1' cannot be used to connect to SAP HANA." ).arg( driver );
-          else
-            warningMsg = tr( "Driver with name/path '%1' was not found." ).arg( driver );
-        }
-#endif
-      }
-    }
-  }
 
   if ( !warningMsg.isEmpty() )
   {

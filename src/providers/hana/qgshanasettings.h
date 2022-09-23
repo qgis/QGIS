@@ -32,6 +32,12 @@ struct QgsHanaIdentifierType
   static Value fromInt( uint );
 };
 
+enum class QgsHanaConnectionType : uint
+{
+  HOST_PORT = 0,
+  DSN = 1
+};
+
 class QgsHanaSettings
 {
   public:
@@ -41,6 +47,18 @@ class QgsHanaSettings
      * The connection name.
      */
     const QString &name() const { return mName; }
+
+    /**
+     * The connection type of the driver.
+     */
+    QgsHanaConnectionType connectionType() const { return mConnectionType; }
+    void setConnectionType( QgsHanaConnectionType connType ) { mConnectionType = connType; }
+
+    /**
+     * The Data Source Name.
+     */
+    const QString &dsn() const { return mDsn; }
+    void setDsn( const QString &dsn ) { mDsn = dsn; }
 
     /**
      * The name/path of/to the driver. For example,
@@ -223,6 +241,8 @@ class QgsHanaSettings
 
   private:
     QString mName;
+    QgsHanaConnectionType mConnectionType = QgsHanaConnectionType::HOST_PORT;
+    QString mDsn;
     QString mDriver;
     QString mHost;
     uint mIdentifierType;

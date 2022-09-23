@@ -1870,6 +1870,20 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri ) const
   const QgsDataSourceUri dsUri { uri };
   QVariantMap uriParts;
 
+  if ( dsUri.hasParam( QStringLiteral( "connectionType" ) ) )
+  {
+    QString value = dsUri.param( QStringLiteral( "connectionType" ) );
+    if ( ! value.isEmpty() )
+      uriParts[ QStringLiteral( "connectionType" ) ]  = value;
+  }
+
+  if ( dsUri.hasParam( QStringLiteral( "dsn" ) ) )
+  {
+    QString value = dsUri.param( QStringLiteral( "dsn" ) );
+    if ( ! value.isEmpty() )
+      uriParts[ QStringLiteral( "dsn" ) ]  = value;
+  }
+
   if ( ! dsUri.driver().isEmpty() )
     uriParts[ QStringLiteral( "driver" ) ] = dsUri.driver();
   if ( ! dsUri.database().isEmpty() )
@@ -1946,6 +1960,10 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri ) const
 QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   QgsDataSourceUri dsUri;
+  if ( parts.contains( QStringLiteral( "connectionType" ) ) )
+    dsUri.setParam( QStringLiteral( "connectionType" ), parts.value( QStringLiteral( "connectionType" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "dsn" ) ) )
+    dsUri.setParam( QStringLiteral( "dsn" ), parts.value( QStringLiteral( "dsn" ) ).toString() );
   if ( parts.contains( QStringLiteral( "driver" ) ) )
     dsUri.setDriver( parts.value( QStringLiteral( "driver" ) ).toString() );
   if ( parts.contains( QStringLiteral( "dbname" ) ) )
