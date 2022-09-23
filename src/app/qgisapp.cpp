@@ -2022,12 +2022,22 @@ void QgisApp::dropEvent( QDropEvent *event )
 
       if ( !handled )
         openFile( file );
+
+      // Prevent autoSelectAddedLayer() to do any work during the iteration on
+      // files, as calling setCurrentIndex() has a huge performance hit.
+      // cf https://github.com/qgis/QGIS/issues/49439
+      // Do it after having added on file, so that autoSelectAddedLayer()
+      // has run at least once.
+      mBlockAutoSelectAddedLayer = true;
     }
 
     if ( !lst.isEmpty() )
     {
       handleDropUriList( lst );
     }
+
+    // Re-enable autoSelectAddedLayer()
+    mBlockAutoSelectAddedLayer = false;
 
     timer->deleteLater();
   } );
@@ -5034,6 +5044,9 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )
 {
+  if ( mBlockAutoSelectAddedLayer )
+    return;
+
   if ( !layers.isEmpty() )
   {
     QgsLayerTreeLayer *nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
