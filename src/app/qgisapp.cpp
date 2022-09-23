@@ -2107,6 +2107,11 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
+    // Prevent autoSelectAddedLayer() to do any work during the iteration on
+    // files, as calling setCurrentIndex() has a huge performance hit.
+    // cf https://github.com/qgis/QGIS/issues/49439
+    mBlockAutoSelectAddedLayer = true;
+
     QList< QgsMapLayer * > addedLayers;
     for ( const QString &file : std::as_const( files ) )
     {
@@ -2133,6 +2138,10 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       addedLayers.append( handleDropUriList( lst, true ) );
     }
+
+    // Manually run autoSelectAddedLayer()
+    mBlockAutoSelectAddedLayer = false;
+    autoSelectAddedLayer( addedLayers );
 
     if ( !addedLayers.isEmpty() )
       QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
@@ -4827,6 +4836,9 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )
 {
+  if ( mBlockAutoSelectAddedLayer )
+    return;
+
   if ( !layers.isEmpty() )
   {
     QgsLayerTreeLayer *nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
