@@ -24,6 +24,9 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   , mUserName( uri.username() )
   , mPassword( uri.password() )
 {
+  if ( uri.hasParam( QStringLiteral( "dsn" ) ) )
+    mDsn = uri.param( QStringLiteral( "dsn" ) );
+
   if ( !uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
     return;
 
@@ -41,7 +44,10 @@ QString QgsHanaConnectionStringBuilder::toString() const
   // For more details on how to escape special characters in passwords,
   // see https://stackoverflow.com/questions/55150362/maybe-illegal-character-in-odbc-sql-server-connection-string-pwd
   const QString pwd = QString( mPassword ).replace( '}', QLatin1String( "}}" ) );
-  QString ret = QStringLiteral( "DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID=%5;PWD={%6};CHAR_AS_UTF8=1" ).arg(
+  QString ret = !mDsn.isEmpty()
+                ? QStringLiteral( "DSN=%1;UID={%2};PWD={%3};CHAR_AS_UTF8=1" ).arg(
+                  mDsn, mUserName, pwd )
+                : QStringLiteral( "DRIVER={%1};SERVERNODE=%2:%3;DATABASENAME=%4;UID={%5};PWD={%6};CHAR_AS_UTF8=1" ).arg(
                   mDriver, mHost, mPort, mDatabase, mUserName, pwd );
   if ( !mSchema.isEmpty() )
     ret += QStringLiteral( ";CURRENTSCHEMA=" ) + mSchema;

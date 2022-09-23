@@ -539,12 +539,15 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         """Test HANA encode/decode URI"""
         md = QgsProviderRegistry.instance().providerMetadata('hana')
         self.assertEqual(md.decodeUri(
+            "connectionType=0 dsn='HANADB1' "
             "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
             "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
             "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
             "sslTrustStore='server_root.crt' "),
             {
+                'connectionType': '0',
+                'dsn': 'HANADB1',
                 'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                 'dbname': 'qgis_tests',
                 'host': 'localhost',
@@ -565,7 +568,9 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'sslTrustStore': 'server_root.crt',
                 'selectatid': False})
 
-        self.assertEqual(md.encodeUri({'driver': '/usr/sap/hdbclient/libodbcHDB.so',
+        self.assertEqual(md.encodeUri({'connectionType': '0',
+                                       'dsn': 'HANADB1',
+                                       'driver': '/usr/sap/hdbclient/libodbcHDB.so',
                                        'dbname': 'qgis_tests',
                                        'host': 'localhost',
                                        'port': '30015',
@@ -584,6 +589,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'sslKeyStore': 'mykey.pem',
                                        'sslTrustStore': 'server_root.crt',
                                        'selectatid': False}),
+                         "connectionType='0' dsn='HANADB1' "
                          "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
                          "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
                          "sslCryptoProvider='commoncrypto' sslEnabled='true' "

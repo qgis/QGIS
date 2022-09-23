@@ -64,12 +64,23 @@ void QgsHanaSettings::setKeyColumns( const QString &schemaName, const QString &o
 
 void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 {
-  mDriver = uri.driver();
-  mHost = uri.host();
-  mIdentifierType = QgsHanaIdentifierType::PORT_NUMBER;
-  mIdentifier = uri.port();
+  if ( uri.hasParam( QStringLiteral( "connectionType" ) ) )
+    mConnectionType = static_cast<QgsHanaConnectionType>( uri.param( QStringLiteral( "connectionType" ) ).toUInt() );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::DSN:
+      mDsn = uri.param( QStringLiteral( "dsn" ) );
+      break;
+    case QgsHanaConnectionType::HOST_PORT:
+      mDriver = uri.driver();
+      mHost = uri.host();
+      mIdentifierType = QgsHanaIdentifierType::PORT_NUMBER;
+      mIdentifier = uri.port();
+      mDatabase = uri.database();
+      break;
+  }
+
   mSchema = uri.schema();
-  mDatabase = uri.database();
   mUserName = uri.username();
   mPassword = uri.password();
 
@@ -113,8 +124,20 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
 QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
 {
   QgsDataSourceUri uri;
-  uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
-  uri.setDriver( mDriver );
+  uri.setParam( "connectionType", QString::number( static_cast<uint>( mConnectionType ) ) );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::DSN:
+      uri.setParam( "dsn", mDsn );
+      uri.setUsername( mUserName );
+      uri.setPassword( mPassword );
+      break;
+    case QgsHanaConnectionType::HOST_PORT:
+      uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
+      uri.setDriver( mDriver );
+      break;
+  }
+
   uri.setSchema( mSchema );
 
   if ( mSslEnabled )
@@ -138,12 +161,23 @@ void QgsHanaSettings::load()
 {
   QgsSettings settings;
   const QString key = path();
-  mDriver = settings.value( key + "/driver" ).toString();
-  mHost = settings.value( key + "/host" ).toString();
-  mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
-  mIdentifier = settings.value( key + "/identifier" ).toString();
-  mMultitenant = settings.value( key + "/multitenant" ).toBool();
-  mDatabase = settings.value( key + "/database" ).toString();
+  mConnectionType = QgsHanaConnectionType::HOST_PORT;
+  if ( settings.contains( key + "/connectionType" ) )
+    mConnectionType = static_cast<QgsHanaConnectionType>( settings.value( key + "/connectionType" ).toUInt() );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::DSN:
+      mDsn = settings.value( key + "/dsn" ).toString();
+      break;
+    case QgsHanaConnectionType::HOST_PORT:
+      mDriver = settings.value( key + "/driver" ).toString();
+      mHost = settings.value( key + "/host" ).toString();
+      mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
+      mIdentifier = settings.value( key + "/identifier" ).toString();
+      mMultitenant = settings.value( key + "/multitenant" ).toBool();
+      mDatabase = settings.value( key + "/database" ).toString();
+      break;
+  }
   mSchema = settings.value( key + "/schema" ).toString();
   mAuthcfg = settings.value( key + "/authcfg" ).toString();
   mSaveUserName = settings.value( key + "/saveUsername", false ).toBool();
@@ -188,12 +222,23 @@ void QgsHanaSettings::save()
 {
   const QString key( path() );
   QgsSettings settings;
-  settings.setValue( key + "/driver", mDriver );
-  settings.setValue( key + "/host", mHost );
-  settings.setValue( key + "/identifierType", mIdentifierType );
-  settings.setValue( key + "/identifier", mIdentifier );
-  settings.setValue( key + "/multitenant", mMultitenant );
-  settings.setValue( key + "/database", mDatabase );
+
+  settings.setValue( key + "/connectionType", static_cast<uint>( mConnectionType ) );
+  switch ( mConnectionType )
+  {
+    case QgsHanaConnectionType::DSN:
+      settings.setValue( key + "/dsn", mDsn );
+      break;
+    case QgsHanaConnectionType::HOST_PORT:
+      settings.setValue( key + "/driver", mDriver );
+      settings.setValue( key + "/host", mHost );
+      settings.setValue( key + "/identifierType", mIdentifierType );
+      settings.setValue( key + "/identifier", mIdentifier );
+      settings.setValue( key + "/multitenant", mMultitenant );
+      settings.setValue( key + "/database", mDatabase );
+      break;
+  }
+
   settings.setValue( key + "/schema", mSchema );
   settings.setValue( key + "/authcfg", mAuthcfg );
   settings.setValue( key + "/saveUsername", mSaveUserName );
@@ -235,6 +280,8 @@ void QgsHanaSettings::removeConnection( const QString &name )
 {
   const QString key( getBaseKey() + name );
   QgsSettings settings;
+  settings.remove( key + "/connectionType" );
+  settings.remove( key + "/dsn" );
   settings.remove( key + "/driver" );
   settings.remove( key + "/host" );
   settings.remove( key + "/identifierType" );
