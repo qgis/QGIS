@@ -13279,6 +13279,10 @@ void QgisApp::closeProject()
   // Avoid unnecessary layer changed handling for each layer removed - instead,
   // defer the handling until we've removed all layers
   mBlockActiveLayerChanged = true;
+  // Explicitly unset the selection in the layer tree view, otherwise we get
+  // bad performance when the project has a big number of layers, which causes
+  // the current index to be changed many times.
+  mLayerTreeView->setCurrentIndex( QModelIndex() );
   QgsProject::instance()->clear();
   mBlockActiveLayerChanged = false;
 
