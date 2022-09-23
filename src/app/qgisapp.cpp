@@ -10761,7 +10761,7 @@ bool QgisApp::toggleEditingMeshLayer( QgsMeshLayer *mlayer, bool allowCancel )
       if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
       {
         if ( QMessageBox::question( this, tr( "Mesh Editing" ),
-                                    tr( "At least one topological error in the mesh prevents starting editing,\n"
+                                    tr( "At least one topological error in the mesh prevents starting editing.\n"
                                         "Some errors can be fixed by removing invalid elements.\n\n"
                                         "Do you want to try to fix errors before starting editing?" ),
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes ) == QMessageBox::Yes )
