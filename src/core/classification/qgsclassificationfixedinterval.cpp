@@ -58,12 +58,14 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
 
   // Limit the interval so we do not get more than 999 classes
   const double minInterval = ( maximum - minimum ) / 999;
+  bool maxClassesReached = false;
   if ( minInterval > interval )
   {
     interval = minInterval;
     auto parameters = parameterValues();
     parameters["INTERVAL"] = interval;
     setParameterValues( parameters );
+    maxClassesReached = true;
   }
 
   QList<double> breaks;
@@ -74,10 +76,13 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
   }
 
   double value = minimum;
-  while ( value < maximum )
+  while ( true )
   {
     value += interval;
     breaks << value;
+    if ( value > maximum ||
+         ( maxClassesReached && qgsDoubleNear( value, maximum, 1e-12 ) ) )
+      break;
   }
 
   return breaks;
