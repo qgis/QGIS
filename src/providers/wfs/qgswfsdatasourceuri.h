@@ -137,6 +137,9 @@ class QgsWFSDataSourceURI
     //! Return set of unknown parameter keys in the URI.
     QSet<QString> unknownParamKeys() const;
 
+    //! Whether the initial GetFeature request, used to determine if gml:description/name/identifiers are used, should be skipped
+    bool skipInitialGetFeature() const;
+
   private:
     QgsDataSourceUri    mURI;
     QgsAuthorizationSettings mAuth;

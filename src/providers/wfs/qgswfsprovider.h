@@ -139,6 +139,15 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     //! Mutable data shared between provider and feature sources
     std::shared_ptr<QgsWFSSharedData> mShared;
 
+    //! Field set by featureReceivedAnalyzeOneFeature() if a "description" field is set in the sample feature
+    bool mSampleFeatureHasDescription = false;
+
+    //! Field set by featureReceivedAnalyzeOneFeature() if a "identifier" field is set in the sample feature
+    bool mSampleFeatureHasIdentifier = false;
+
+    //! Field set by featureReceivedAnalyzeOneFeature() if a "name" field is set in the sample feature
+    bool mSampleFeatureHasName = false;
+
     /**
      * Invalidates cache of shared object
     */
