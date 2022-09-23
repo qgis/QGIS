@@ -296,7 +296,6 @@ bool QgsPdalProvider::load( const QString &uri )
     appendError( errorString );
     return false;
   }
-
 }
 
 QString QgsPdalProviderMetadata::sFilterString;
