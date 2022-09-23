@@ -749,10 +749,15 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
 
       case QgsMapLayerType::PointCloudLayer:
       {
-        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) )
+        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), true ) )
         {
           ok = true;
           openedLayers << layer;
+        }
+        else
+        {
+          // The layer could not be loaded and the reason has been reported by the provider, we can exit now
+          return {};
         }
         break;
       }
