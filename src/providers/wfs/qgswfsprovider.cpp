@@ -175,10 +175,31 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     mShared->setCurrentRect( QgsRectangle() );
   };
 
-  //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
-  if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+  // For WFS >= 1.1, by default, issue a GetFeature on one feature to check
+  // if gml:description, gml:identifier, gml:name attributes are
+  // present (unless mShared->mURI.skipInitialGetFeature() returns false)
+  // Another reason to issue it if we do not known the exact geometry type
+  // from describeFeatureType()
+  if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
+       !mShared->mURI.skipInitialGetFeature() )
   {
-    GetGeometryTypeFromOneFeature( true );
+    // Try to see if gml:description, gml:identifier, gml:name attributes are
+    // present. So insert them temporarily in mShared->mFields so that the
+    // GML parser can detect them.
+    const auto addGMLFields = [ = ]( bool forceAdd )
+    {
+      if ( mShared->mFields.indexOf( QStringLiteral( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
+        mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+      if ( mShared->mFields.indexOf( QStringLiteral( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
+        mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+      if ( mShared->mFields.indexOf( QStringLiteral( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
+        mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
+    };
+
+    const QgsFields fieldsBackup = mShared->mFields;
+    addGMLFields( true );
+
+    GetGeometryTypeFromOneFeature( mShared->mWKBType == QgsWkbTypes::Unknown );
 
     // If we still didn't get the geometry type, and have a filter, temporarily
     // disable the filter.
@@ -193,6 +214,13 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     }
     else if ( mShared->mWKBType == QgsWkbTypes::Unknown )
       GetGeometryTypeFromOneFeature( false );
+
+    // Edit the final mFields to add the description, identifier, name fields
+    // if they were actually found.
+    mShared->mFields.clear();
+    addGMLFields( false );
+    for ( const QgsField &field : fieldsBackup )
+      mShared->mFields.append( field );
   }
 }
 
@@ -721,7 +749,7 @@ void QgsWFSProvider::pushErrorSlot( const QString &errorMsg )
 
 void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueIdPair> list )
 {
-  if ( list.size() != 0 )
+  if ( list.size() != 0 && mShared->mWKBType == QgsWkbTypes::Unknown )
   {
     QgsFeature feat = list[0].first;
     QgsGeometry geometry = feat.geometry();
@@ -779,6 +807,14 @@ void QgsWFSProvider::featureReceivedAnalyzeOneFeature( QVector<QgsFeatureUniqueI
         }
       }
     }
+  }
+  if ( list.size() != 0 )
+  {
+    QgsFeature feat = list[0].first;
+    feat.padAttributes( mShared->mFields.count() );
+    mSampleFeatureHasDescription = !feat.attribute( "description" ).isNull();
+    mSampleFeatureHasIdentifier = !feat.attribute( "identifier" ).isNull();
+    mSampleFeatureHasName = !feat.attribute( "name" ).isNull();
   }
 }
 
