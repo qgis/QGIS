@@ -8434,12 +8434,17 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       QgsMapLayer *ml = exp->takeExportedLayer();
       if ( ! ml->isValid() )
       {
-        visibleMessageBar()->pushMessage( tr( "Export failed" ),
-                                          tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
-                                          Qgis::MessageLevel::Warning );
+        if ( ! exp->lastError().isEmpty() )
+          visibleMessageBar()->pushMessage( tr( "Export failed" ),
+                                            tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
+                                            Qgis::MessageLevel::Warning );
+        else
+          visibleMessageBar()->pushMessage( tr( "Cannot open file" ),
+                                            tr( "Cannot open exported file: %1" ).arg( ml->error().summary() ),
+                                            Qgis::MessageLevel::Warning );
       }
 
-      if ( addToCanvas )
+      if ( addToCanvas && ml->isValid() )
         QgsProject::instance()->addMapLayer( ml );
       else
         delete ml;
