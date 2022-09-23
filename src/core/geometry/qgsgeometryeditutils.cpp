@@ -348,5 +348,12 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     return nullptr;
   }
 
+  if ( QgsWkbTypes::isMultiType( geomTypeBeforeModification ) && QgsWkbTypes::isSingleType( diffGeom->wkbType() ) )
+  {
+    QgsGeometry geom( std::move( diffGeom ) );
+    geom.convertToMultiType();
+    diffGeom.reset( geom.constGet()->clone() );
+  }
+
   return diffGeom;
 }

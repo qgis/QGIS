@@ -75,6 +75,7 @@ class TestQgsVertexTool : public QObject
     void testAddVertexDoubleClick();
     void testAddVertexDoubleClickWithShift();
     void testAvoidIntersections();
+    void testAvoidIntersectionsWithMultiPolygons();
     void testDeleteVertex();
     void testConvertVertex();
     void testMoveMultipleVertices();
@@ -1195,6 +1196,48 @@ void TestQgsVertexTool::testAvoidIntersections()
   QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
 
   QgsProject::instance()->setTopologicalEditing( false );
+  QgsProject::instance()->setAvoidIntersectionsMode( mode );
+}
+
+void TestQgsVertexTool::testAvoidIntersectionsWithMultiPolygons()
+{
+  QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
+
+  const Qgis::AvoidIntersectionsMode mode( QgsProject::instance()->avoidIntersectionsMode() );
+  QgsProject::instance()->setAvoidIntersectionsMode( Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer );
+
+  QCOMPARE( mLayerMultiPolygon->featureCount(), 1L );
+
+  QgsFeature multiPolygonF2;
+  multiPolygonF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiPolygon (((5 7, 5 6, 6 6, 6 7, 5 7))))" ) ) );
+  mLayerMultiPolygon->addFeature( multiPolygonF2 );
+
+  QCOMPARE( mLayerMultiPolygon->featureCount(), 2L );
+
+  // check wkbType of all geometries
+  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );
+  QCOMPARE( mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry().wkbType(), QgsWkbTypes::Type::MultiPolygon );
+
+  // select 2 vertices
+  mousePress( 4.5, 5.5, Qt::LeftButton );
+  mouseMove( 5.5, 7.5 );
+  mouseRelease( 5.5, 7.5, Qt::LeftButton );
+
+  // move them over the older geom
+  mouseClick( 5, 7, Qt::LeftButton );
+  mouseClick( 3.8, 7, Qt::LeftButton );
+
+  // The 2 polygons should keep the same wkbType
+  QCOMPARE( mLayerMultiPolygon->getFeature( mFidMultiPolygonF1 ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((1 5, 2 5, 2 6.5, 2 8, 1 8, 1 6.5, 1 5),(1.25 5.5, 1.25 6, 1.75 6, 1.75 5.5, 1.25 5.5),(1.25 7, 1.75 7, 1.75 7.5, 1.25 7.5, 1.25 7)),((3 5, 3 6.5, 3 8, 4 8, 4 6.5, 4 5, 3 5),(3.25 5.5, 3.75 5.5, 3.75 6, 3.25 6, 3.25 5.5),(3.25 7, 3.75 7, 3.75 7.5, 3.25 7.5, 3.25 7)))" ) );
+  QCOMPARE( mLayerMultiPolygon->getFeature( multiPolygonF2.id() ).geometry().asWkt(), QStringLiteral( "MultiPolygon (((6 7, 6 6, 4 6, 4 6.5, 4 7, 6 7)))" ) );
+  QCOMPARE( mLayerMultiPolygon->wkbType(), QgsWkbTypes::Type::MultiPolygon );
+
+  QCOMPARE( mLayerMultiPolygon->featureCount(), 2L );
+
+  mLayerMultiPolygon->undoStack()->undo();
+  mLayerMultiPolygon->undoStack()->undo();
+  QCOMPARE( mLayerMultiPolygon->undoStack()->index(), 1 );
+
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
 }
 
