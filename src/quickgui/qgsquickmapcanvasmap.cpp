@@ -380,8 +380,15 @@ QSGNode *QgsQuickMapCanvasMap::updatePaintNode( QSGNode *oldNode, QQuickItem::Up
   return node;
 }
 
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 void QgsQuickMapCanvasMap::geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry )
 {
+  QQuickItem::geometryChanged( newGeometry, oldGeometry );
+#else
+void QgsQuickMapCanvasMap::geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry )
+{
+  QQuickItem::geometryChange( newGeometry, oldGeometry );
+#endif
   QQuickItem::geometryChanged( newGeometry, oldGeometry );
   if ( newGeometry.size() != oldGeometry.size() )
   {
