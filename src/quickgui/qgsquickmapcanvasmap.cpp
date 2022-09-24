@@ -144,10 +144,6 @@ void QgsQuickMapCanvasMap::refreshMap()
   {
     emit renderStarting();
   }
-  else
-  {
-    mSilentRefresh = false;
-  }
 }
 
 void QgsQuickMapCanvasMap::renderJobUpdated()
@@ -165,7 +161,6 @@ void QgsQuickMapCanvasMap::renderJobUpdated()
   mFreeze = freeze;
 
   update();
-  emit mapCanvasRefreshed();
 }
 
 void QgsQuickMapCanvasMap::renderJobFinished()
@@ -201,7 +196,14 @@ void QgsQuickMapCanvasMap::renderJobFinished()
   mFreeze = freeze;
 
   update();
-  emit mapCanvasRefreshed();
+  if ( !mSilentRefresh )
+  {
+    emit mapCanvasRefreshed();
+  }
+  else
+  {
+    mSilentRefresh = false;
+  }
 
   if ( mDeferredRefreshPending )
   {
