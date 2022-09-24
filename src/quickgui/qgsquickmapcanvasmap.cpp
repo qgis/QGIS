@@ -19,6 +19,7 @@
 
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmessagelog.h"
@@ -43,6 +44,7 @@ QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
 
   connect( mMapSettings.get(), &QgsQuickMapSettings::extentChanged, this, &QgsQuickMapCanvasMap::onExtentChanged );
   connect( mMapSettings.get(), &QgsQuickMapSettings::layersChanged, this, &QgsQuickMapCanvasMap::onLayersChanged );
+  connect( mMapSettings.get(), &QgsQuickMapSettings::temporalStateChanged, this, &QgsQuickMapCanvasMap::onTemporalStateChanged );
 
   connect( this, &QgsQuickMapCanvasMap::renderStarting, this, &QgsQuickMapCanvasMap::isRenderingChanged );
   connect( this, &QgsQuickMapCanvasMap::mapCanvasRefreshed, this, &QgsQuickMapCanvasMap::isRenderingChanged );
@@ -274,6 +276,14 @@ void QgsQuickMapCanvasMap::onExtentChanged()
   refresh();
 }
 
+void QgsQuickMapCanvasMap::onTemporalStateChanged()
+{
+  clearTemporalCache();
+
+  // And trigger a new rendering job
+  refresh();
+}
+
 void QgsQuickMapCanvasMap::updateTransform()
 {
   QgsRectangle imageExtent = mImageMapSettings.visibleExtent();
@@ -470,3 +480,35 @@ void QgsQuickMapCanvasMap::clearCache()
   if ( mCache )
     mCache->clear();
 }
+
+void QgsQuickMapCanvasMap::clearTemporalCache()
+{
+  if ( mCache )
+  {
+    bool invalidateLabels = false;
+    const QList<QgsMapLayer *> layerList = mMapSettings->mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+      {
+        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        {
+          if ( vl->labelsEnabled() || vl->diagramsEnabled() )
+            invalidateLabels = true;
+        }
+
+        if ( layer->temporalProperties()->flags() & QgsTemporalProperty::FlagDontInvalidateCachedRendersWhenRangeChanges )
+          continue;
+
+        mCache->invalidateCacheForLayer( layer );
+      }
+    }
+
+    if ( invalidateLabels )
+    {
+      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
+      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+    }
+  }
+}
+
