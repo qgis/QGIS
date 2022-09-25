@@ -4,6 +4,9 @@
   "groups": ["Operators"],
   "description": "Returns TRUE if value is not within the specified range. The range is considered inclusive of the bounds.",
   "arguments": [{
+    "arg": "value",
+    "description": "the value to compare with a range. It can be a string, a number or a date."
+  }, {
     "arg": "lower_bound AND higher_bound",
     "description": "range bounds"
   }],
@@ -23,5 +26,6 @@
     "expression": "lower('B') NOT BETWEEN 'a' AND 'b'",
     "returns": "FALSE"
   }],
+  "notes": "<i>value NOT BETWEEN lower_bound AND higher_bound</i> is the same as \"<i>value &lt; lower_bound OR value &gt; higher_bound</i>\".",
   "tags": ["bound", "contained", "exclude", "found", "range"]
 }
