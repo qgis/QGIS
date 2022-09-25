@@ -19,7 +19,6 @@
 #include <typeinfo>
 
 #include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
 #include "qgsfileutils.h"
 #include "qgshelp.h"
 #include "qgslogger.h"
@@ -30,12 +29,9 @@
 #include "qgsmeshlayerproperties.h"
 #include "qgsmeshstaticdatasetwidget.h"
 #include "qgsproject.h"
-#include "qgsprojectionselectiondialog.h"
 #include "qgsrenderermeshpropertieswidget.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
-#include "qgsprojecttimesettings.h"
-#include "qgsproviderregistry.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsgui.h"
@@ -90,6 +86,10 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mTemporalDateTimeReference, &QDateTimeEdit::dateTimeChanged, this, &QgsMeshLayerProperties::onTimeReferenceChange );
   connect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setScalarDatasetGroup );
   connect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mStaticDatasetWidget, &QgsMeshStaticDatasetWidget::setVectorDatasetGroup );
+
+  mScaleRangeWidget->setMapCanvas( mCanvas );
+  chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
   connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this]
   {
@@ -389,6 +389,10 @@ void QgsMeshLayerProperties::apply()
                             ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
 
   mMeshLayer->setMeshSimplificationSettings( simplifySettings );
+
+  mMeshLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mMeshLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mMeshLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
   QgsDebugMsgLevel( QStringLiteral( "processing temporal tab" ), 4 );
   /*
