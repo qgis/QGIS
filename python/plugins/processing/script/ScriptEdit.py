@@ -55,3 +55,55 @@ class ScriptEdit(QgsCodeEditorPython):
                                                            + Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
+
+
+    def toggleComment(self):
+
+        self.beginUndoAction()
+        if self.hasSelectedText():
+            start_line, start_pos, end_line, end_pos = self.getSelection()
+        else:
+            start_line, start_pos = self.getCursorPosition()
+            end_line, end_pos = start_line, start_pos
+
+        # Special case, only empty lines
+        if not any(self.text(line).strip() for line in range(start_line, end_line + 1)):
+            return
+
+        all_commented = all(
+            self.text(line).strip().startswith("#")
+            for line in range(start_line, end_line + 1)
+            if self.text(line).strip()
+        )
+        min_indentation = min(
+            self.indentation(line)
+            for line in range(start_line, end_line + 1)
+            if self.text(line).strip()
+        )
+
+        for line in range(start_line, end_line + 1):
+            # Empty line
+            if not self.text(line).strip():
+                continue
+
+            delta = 0
+
+            if not all_commented:
+                self.insertAt("# ", line, min_indentation)
+                delta = -2
+            else:
+                if not self.text(line).strip().startswith("#"):
+                    continue
+                if self.text(line).strip().startswith("# "):
+                    delta = 2
+                else:
+                    delta = 1
+
+                self.setSelection(
+                    line, self.indentation(line), line, self.indentation(line) + delta,
+                )
+                self.removeSelectedText()
+
+        self.endUndoAction()
+
+        self.setSelection(start_line, start_pos - delta, end_line, end_pos - delta)
