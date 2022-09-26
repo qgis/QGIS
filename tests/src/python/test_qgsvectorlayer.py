@@ -18,6 +18,7 @@ import qgis  # NOQA
 import os
 import tempfile
 import shutil
+import glob
 
 from qgis.PyQt.QtCore import (
     QDate,
@@ -27,7 +28,8 @@ from qgis.PyQt.QtCore import (
     QDateTime,
     QDate,
     QTime,
-    QTimer
+    QTimer,
+    QTemporaryDir,
 )
 from qgis.PyQt.QtGui import QPainter, QColor
 from qgis.PyQt.QtXml import QDomDocument
@@ -80,6 +82,7 @@ from qgis.core import (Qgis,
                        QgsMarkerSymbol,
                        QgsSingleSymbolRenderer,
                        QgsEmbeddedSymbolRenderer,
+                       QgsNullSymbolRenderer,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -1794,8 +1797,19 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         new_value = 33.0
 
         # read project and get layers
+        tmp_dir = QTemporaryDir()
+        tmp_path = tmp_dir.path()
+
         myPath = os.path.join(unitTestDataPath(), 'joins.qgs')
-        rc = QgsProject.instance().read(myPath)
+        shutil.copy2(myPath, tmp_path)
+
+        for file in glob.glob(os.path.join(unitTestDataPath(), 'polys_overlapping_with_id.*')):
+            shutil.copy(file, tmp_path)
+
+        for file in glob.glob(os.path.join(unitTestDataPath(), 'polys_with_id.*')):
+            shutil.copy(file, tmp_path)
+
+        rc = QgsProject.instance().read(os.path.join(tmp_path, 'joins.qgs'))
 
         layer = QgsProject.instance().mapLayersByName("polys_with_id")[0]
         join_layer = QgsProject.instance().mapLayersByName("polys_overlapping_with_id")[0]
@@ -3943,6 +3957,25 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
 
             # should return to a default embedded renderer from provider
             self.assertIsInstance(layer.renderer(), QgsEmbeddedSymbolRenderer)
+
+    def testSldTextSymbolizerExport(self):
+        """Test issue GH #35561"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326&field=name:string(0)', 'test', 'memory')
+
+        text_format = QgsTextFormat()
+        text_format.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
+        text_format.setSize(10)
+        settings = QgsPalLayerSettings()
+        settings.setFormat(text_format)
+        settings.fieldName = "'name'"
+        labeling = QgsVectorLayerSimpleLabeling(settings)
+        vl.setLabeling(labeling)
+        vl.setLabelsEnabled(True)
+        vl.setRenderer(QgsNullSymbolRenderer())
+        doc = QDomDocument()
+        vl.exportSldStyle(doc, None)
+        self.assertIn('name="font-size">13', doc.toString())
 
     def testLayerWithoutProvider(self):
         """Test that we don't crash when invoking methods on a layer with a broken provider"""
