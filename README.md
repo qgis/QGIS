@@ -32,14 +32,15 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 
 ### 1. Flexible and powerful spatial data management
 
-- Supports raster, vector, mesh, and point cloud data in a range of industry-standard formats
+- Support for raster, vector, mesh, and point cloud data in a range of industry-standard formats
     - *Raster formats include*: GeoPackage, GeoTIFF, GRASS, ArcInfo binary and ASCII grids, ERDAS Imagine SDTS, WMS, WCS, PostgreSQL/PostGIS, and [other GDAL supported formats](https://gdal.org/drivers/raster/index.html).
     - *Vector formats include*: GeoPackage, ESRI shapefiles, GRASS, SpatiaLite, PostgreSQL/PostGIS, MSSQL, Oracle, WFS, Vector Tiles and [other OGR supported formats](http://www.gdal.org/ogr_formats.html). 
     - *Mesh formats include*: NetCDF, GRIB, 2DM, and [other MDAL supported formats](https://github.com/lutraconsulting/MDAL#supported-formats).
     - *Point-cloud format*: LAS/LAZ and EPT datasets.
-- Access and display local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), web services (WMS, WCS, WFS, ArcGIS REST services), tile services, etc. <!-- removed DB2 due to https://github.com/qgis/QGIS/pull/41178 -->
-- Visual and numerical digitizing and editing
+- Data abstraction framework, with local files, spatial databases (PostGIS, SpatiaLite, SQL Server, Oracle, SAP HANA), and web services (WMS, WCS, WFS, ArcGIS REST) all accessed through a unified data model and browser interface, and as flexible layers in user-created projects 
+- Spatial data creation via visual and numerical digitizing and editing, as well as georeferencing of raster and vector data
 - On-the-fly reprojection between coordinate reference systems (CRS)
+- Nominatim (OpenStreetMap) geocoder access
 - Temporal support
 
 *Example: Temporal animation*
@@ -53,11 +54,13 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
 ### 2. Beautiful cartography
 - Large variety of rendering options in 2D and 3D
 - Fine control over symbology, labeling, legends and additional graphical elements for beautifully rendered maps
-- Near-complete replication (and significant extension) of symbology options that are available in proprietary software by ESRI
+- Respect for embedded styling in many spatial data sources (e.g. KML and TAB files, Mapbox-GL styled vector tiles)
+- In particular, near-complete replication (and significant extension) of symbology options that are available in proprietary software by ESRI
 - Advanced styling using data-defined overrides, blending modes, and draw effects
 - 500+ built-in color ramps (cpt-city, ColorBrewer, etc.) 
 - Create and update maps with specified scale, extent, style, and decorations via saved layouts
 - Generate multiple maps (and reports) automatically using QGIS Atlas and QGIS Reports
+- Display and export elevation profile plots with flexible symbology
 - Flexible output direct to printer, or as image (raster), PDF, or SVG for further customization 
 - On-the-fly rendering enhancements using geometry generators (e.g. create and style new geometries from existing features)
 - Preview modes for inclusive map making (e.g. monochrome, color blindness)
@@ -103,7 +106,7 @@ in-the-field data capture, conversion of ESRI style files, etc.
 
 ![Example: Plugins](images/README-md/plugins_1.png "Plugins")
 
-<!-- Kill this one for now, since it's Python2 not 3
+<!-- Kill this one for now, since the example provided is Python2 not 3
 Example: Python console
 
 ![Example: Python console](https://docs.qgis.org/latest/en/_images/python_console_editor.png "Python console")
