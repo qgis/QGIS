@@ -60,7 +60,10 @@ implemented as map tools.
       sipType = sipType_QgsMapToolAdvancedDigitizing;
     else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEdit;
-    else
+    else if ( sipCpp->inherits( "QgsMapTool" ) ) // e.g. map tools from QGIS app library, which aren't exposed to SIP
+      sipType = sipType_QgsMapTool;
+     else
+       sipType = nullptr;
       sipType = sipType_QgsMapTool;
 %End
   public:
