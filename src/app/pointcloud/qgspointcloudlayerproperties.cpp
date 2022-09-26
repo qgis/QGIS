@@ -54,6 +54,10 @@ QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsPointCloudLayerProperties::crsChanged );
 
+  mScaleRangeWidget->setMapCanvas( mMapCanvas );
+  chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
+  mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -159,6 +163,11 @@ void QgsPointCloudLayerProperties::apply()
   mMetadataWidget->acceptMetadata();
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
+
+  mLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
+  mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
+
   mBackupCrs = mLayer->crs();
 
   for ( QgsMapLayerConfigWidget *w : mConfigWidgets )
