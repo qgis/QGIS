@@ -332,9 +332,7 @@ class Editor(QgsCodeEditorPython):
         else:
             self.openFindWidget()
 
-
     def toggleComment(self):
-
         self.beginUndoAction()
         if self.hasSelectedText():
             start_line, start_pos, end_line, end_pos = self.getSelection()

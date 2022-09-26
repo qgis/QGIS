@@ -56,9 +56,7 @@ class ScriptEdit(QgsCodeEditorPython):
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
-
     def toggleComment(self):
-
         self.beginUndoAction()
         if self.hasSelectedText():
             start_line, start_pos, end_line, end_pos = self.getSelection()
