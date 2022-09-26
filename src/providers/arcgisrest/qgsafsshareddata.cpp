@@ -119,6 +119,7 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     }
   }
   const QVariantList objectIds = objectIdData.value( QStringLiteral( "objectIds" ) ).toList();
+  mObjectIds.reserve( mObjectIds.size() + objectIds.size() );
   for ( const QVariant &objectId : objectIds )
   {
     mObjectIds.append( objectId.toInt() );
