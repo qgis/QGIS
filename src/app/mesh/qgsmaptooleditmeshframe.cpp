@@ -245,6 +245,13 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
   mActionSplitFaces = new QAction( tr( "Split Current Face" ), this );
 
+  mActionActivateZValueWidget = new QAction( tr( "Show Z Value Editor" ), this );
+  mActionActivateZValueWidget->setCheckable( true );
+  QgsSettings settings;
+  mIsZValueWidgetActivated = settings.value( QStringLiteral( "UI/Mesh/showZValueEditor" ), true ).toBool();
+  mActionActivateZValueWidget->setChecked( mIsZValueWidgetActivated );
+  connect( mActionActivateZValueWidget, &QAction::triggered, this, &QgsMapToolEditMeshFrame::activateZValueWidget );
+
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
   connect( mActionRemoveVerticesWithoutFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( false );} );
   connect( mActionRemoveFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::removeFacesFromMesh );
@@ -335,6 +342,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
       deleteZValueWidget();
     else if ( !mZValueWidget )
       createZValueWidget();
+
+    mActionActivateZValueWidget->setEnabled( !enable );
   } );
 
   setAutoSnapEnabled( true );
@@ -379,7 +388,7 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 }
 
 
-QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
+const QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
 {
   return  QList<QAction *>()
           << mActionDigitizing
@@ -392,7 +401,7 @@ QAction *QgsMapToolEditMeshFrame::meshElementToolAction() const
   return  mActionDigitizing;
 }
 
-QList<QAction *> QgsMapToolEditMeshFrame::selectActions() const
+const QList<QAction *> QgsMapToolEditMeshFrame::selectActions() const
 {
   return  mSelectActions;
 }
@@ -414,7 +423,7 @@ QAction *QgsMapToolEditMeshFrame::transformAction() const
   return mActionTransformCoordinates;
 }
 
-QList<QAction *> QgsMapToolEditMeshFrame::forceByLinesActions() const
+const QList<QAction *> QgsMapToolEditMeshFrame::forceByLinesActions() const
 {
   return  QList<QAction *>()
           << mActionForceByLines;
@@ -699,6 +708,25 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
   }
 
   return QgsMapTool::Flags();
+}
+
+void QgsMapToolEditMeshFrame::activateZValueWidget( bool activate )
+{
+  mIsZValueWidgetActivated = activate;
+  if ( activate )
+  {
+    if ( mZValueWidget )
+      mZValueWidget->setVisible( true );
+    else
+      createZValueWidget();
+  }
+  else
+  {
+    deleteZValueWidget();
+  }
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "UI/Mesh/showZValueEditor" ), activate );
 }
 
 void QgsMapToolEditMeshFrame::forceByLineBySelectedFeature( QgsMapMouseEvent *e )
@@ -2263,6 +2291,11 @@ void QgsMapToolEditMeshFrame::forceByLine( const QgsGeometry &lineGeometry )
   mCurrentEditor->advancedEdit( &forceByPolyline );
 }
 
+QAction *QgsMapToolEditMeshFrame::actionActivateZValueWidget() const
+{
+  return mActionActivateZValueWidget;
+}
+
 
 void QgsMapToolEditMeshFrame::highlightCurrentHoveredFace( const QgsPointXY &mapPoint )
 {
@@ -2495,6 +2528,9 @@ void QgsMapToolEditMeshFrame::createZValueWidget()
     return;
 
   deleteZValueWidget();
+
+  if ( !mIsZValueWidgetActivated )
+    return;
 
   mZValueWidget = new QgsZValueWidget( tr( "Vertex Z value:" ) );
   mZValueWidget->setDefaultValue( defaultZValue() );

@@ -3658,6 +3658,7 @@ void QgisApp::createToolBars()
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
   if ( editMeshMapTool )
   {
+    editMeshMapTool->actionActivateZValueWidget()->setProperty( "no_default_action", true );
     QToolButton *meshSelectToolButton = new QToolButton();
     meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
     QList<QAction *> selectActions = editMeshMapTool->selectActions();
@@ -3679,7 +3680,6 @@ void QgisApp::createToolBars()
     meshForceByLinesToolButton->setPopupMode( QToolButton::MenuButtonPopup );
     QMenu *meshForceByLineMenu = new QMenu( meshForceByLinesToolButton );
 
-    //meshForceByLineMenu->addActions( editMeshMapTool->forceByLinesActions() );
     meshForceByLinesToolButton->setDefaultAction( editMeshMapTool->defaultForceAction() );
     meshForceByLineMenu->addSeparator();
     meshForceByLineMenu->addAction( editMeshMapTool->forceByLineWidgetActionSettings() );
@@ -15066,6 +15066,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         for ( QAction *action : currentActions )
           mVertexToolButton->removeAction( action );
         mVertexToolButton->addAction( editMeshMapTool->meshElementToolAction() );
+        mVertexToolButton->addAction( editMeshMapTool->actionActivateZValueWidget() );
         mVertexToolButton->setDefaultAction( editMeshMapTool->meshElementToolAction() );
       }
 

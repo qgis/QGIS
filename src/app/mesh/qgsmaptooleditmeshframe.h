@@ -120,12 +120,13 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
     ~QgsMapToolEditMeshFrame();
 
-    QList<QAction *> mapToolActions();
+    const QList<QAction *> mapToolActions();
     QAction *meshElementToolAction() const;
-    QList<QAction *> selectActions() const;
+    QAction *actionActivateZValueWidget() const;
+    const QList<QAction *> selectActions() const;
     QAction *defaultSelectActions() const;
     QAction *transformAction() const;
-    QList<QAction *> forceByLinesActions() const;
+    const QList<QAction *> forceByLinesActions() const;
     QAction *defaultForceAction() const;
     QWidgetAction *forceByLineWidgetActionSettings() const;
     QAction *reindexAction() const;
@@ -165,6 +166,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void selectByExpression( const QString &textExpression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
     void onZoomToSelected();
     void reindexMesh();
+
+    void activateZValueWidget(bool activate);
 
   private:
 
@@ -324,6 +327,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     // assiociated widget
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
+    bool mIsZValueWidgetActivated = true;
+    QAction *mActionActivateZValueWidget = nullptr;
 
     QgsMeshTransformCoordinatesDockWidget *mTransformDockWidget = nullptr; //own by the application
 
