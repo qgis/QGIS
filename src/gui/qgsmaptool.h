@@ -94,9 +94,8 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolEdit;
     else if ( sipCpp->inherits( "QgsMapTool" ) ) // e.g. map tools from QGIS app library, which aren't exposed to SIP
       sipType = sipType_QgsMapTool;
-     else
-       sipType = nullptr;
-      sipType = sipType_QgsMapTool;
+    else
+      sipType = nullptr;
     SIP_END
 #endif
 
