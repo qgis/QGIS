@@ -2134,7 +2134,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         qml, errmsg = vl.getStyleFromDatabase("1")
         self.assertEqual(errmsg, "")
-        
+
         found = False
         for line in qml.split('\n'):
             found = 'value="\u001E"' in qml and 'name="chr"' in qml
