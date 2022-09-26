@@ -49,6 +49,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsogrutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsruntimeprofiler.h"
@@ -2363,7 +2364,9 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  if ( mSettings.mXyz )
+  QgsSettings s;
+  bool enablePrefetch = QgsSettingsRegistryCore::settingsEnableWMSTilePrefetching.value();
+  if ( mSettings.mXyz || enablePrefetch )
   {
     capability |= Capability::Prefetch;
   }
