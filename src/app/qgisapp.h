@@ -2411,6 +2411,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMapTool *mNonEditMapTool = nullptr;
 
+    QToolButton *mVertexToolButton = nullptr;
+    QAction *mShowVertexEditorAction = nullptr;
     QgsTaskManagerStatusBarWidget *mTaskManagerWidget = nullptr;
 
     QgsStatusBarScaleWidget *mScaleWidget = nullptr;

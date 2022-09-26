@@ -121,7 +121,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     ~QgsMapToolEditMeshFrame();
 
     QList<QAction *> mapToolActions();
-    QAction *digitizeAction() const;
+    QAction *meshElementToolAction() const;
     QList<QAction *> selectActions() const;
     QAction *defaultSelectActions() const;
     QAction *transformAction() const;
@@ -237,6 +237,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void updateSelectecVerticesMarker();
     void moveSelection( const QgsPointXY &destinationPoint );
     void clearSelection();
+    void updateSelectionRelatedActions();
 
     void setMovingRubberBandValidity( bool valid );
     bool isSelectionGrapped( QgsPointXY &grappedPoint ) const;

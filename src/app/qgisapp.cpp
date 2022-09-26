@@ -3609,10 +3609,10 @@ void QgisApp::createToolBars()
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // vertex tool button
-  QToolButton *vertexToolButton = new QToolButton( mDigitizeToolBar );
-  vertexToolButton->setPopupMode( QToolButton::MenuButtonPopup );
-  vertexToolButton->addAction( mActionVertexTool );
-  vertexToolButton->addAction( mActionVertexToolActiveLayer );
+  mVertexToolButton = new QToolButton( mDigitizeToolBar );
+  mVertexToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mVertexToolButton->addAction( mActionVertexTool );
+  mVertexToolButton->addAction( mActionVertexToolActiveLayer );
   QAction *defActionVertexTool = mActionVertexTool;
   switch ( settings.enumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::ActiveLayer ) )
   {
@@ -3624,16 +3624,16 @@ void QgisApp::createToolBars()
       break;
   }
 
-  QAction *showVertexEditorAction = new QAction( tr( "Show Vertex Editor" ), this );
-  showVertexEditorAction->setCheckable( true );
-  showVertexEditorAction->setProperty( "no_default_action", true );
-  vertexToolButton->addAction( showVertexEditorAction );
-  mVertexEditorDock->setToggleVisibilityAction( showVertexEditorAction );
+  mShowVertexEditorAction = new QAction( tr( "Show Vertex Editor" ), this );
+  mShowVertexEditorAction->setCheckable( true );
+  mShowVertexEditorAction->setProperty( "no_default_action", true );
+  mVertexToolButton->addAction( mShowVertexEditorAction );
+  mVertexEditorDock->setToggleVisibilityAction( mShowVertexEditorAction );
 
-  vertexToolButton->setDefaultAction( defActionVertexTool );
-  QAction *actionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, vertexToolButton );
+  mVertexToolButton->setDefaultAction( defActionVertexTool );
+  QAction *actionVertexTool = mDigitizeToolBar->insertWidget( mActionMultiEditAttributes, mVertexToolButton );
   actionVertexTool->setObjectName( QStringLiteral( "ActionVertexTool" ) );
-  connect( vertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
+  connect( mVertexToolButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
@@ -3658,8 +3658,6 @@ void QgisApp::createToolBars()
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
   if ( editMeshMapTool )
   {
-    mMeshToolBar->addAction( editMeshMapTool->digitizeAction() );
-
     QToolButton *meshSelectToolButton = new QToolButton();
     meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
     QList<QAction *> selectActions = editMeshMapTool->selectActions();
@@ -10972,7 +10970,6 @@ void QgisApp::enableMeshEditingTools( bool enable )
   if ( !mMapTools )
     return;
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
-
   editMeshMapTool->setActionsEnable( enable );
 }
 
@@ -14854,6 +14851,27 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionRedo->setEnabled( false );
         mActionLayerSubsetString->setEnabled( false );
       }
+
+      const QList<QAction *> vertexToolActions = mVertexToolButton->actions();
+      for ( QAction *act : vertexToolActions )
+        mVertexToolButton->removeAction( act );
+
+      mVertexToolButton->addAction( mActionVertexTool );
+      mVertexToolButton->addAction( mActionVertexToolActiveLayer );
+      QAction *defActionVertexTool = mActionVertexTool;
+      QgsSettings settings;
+      switch ( settings.enumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::ActiveLayer ) )
+      {
+        case QgsVertexTool::AllLayers:
+          defActionVertexTool = mActionVertexTool;
+          break;
+        case QgsVertexTool::ActiveLayer:
+          defActionVertexTool = mActionVertexToolActiveLayer;
+          break;
+      }
+
+      mVertexToolButton->addAction( mShowVertexEditorAction );
+      mVertexToolButton->setDefaultAction( defActionVertexTool );
       break;
     }
 
@@ -15040,6 +15058,16 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionDiagramProperties->setEnabled( false );
       mActionIdentify->setEnabled( true );
       mDigitizingTechniqueManager->enableDigitizingTechniqueActions( false );
+
+      QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
+      if ( editMeshMapTool )
+      {
+        const QList<QAction *> currentActions = mVertexToolButton->actions();
+        for ( QAction *action : currentActions )
+          mVertexToolButton->removeAction( action );
+        mVertexToolButton->addAction( editMeshMapTool->meshElementToolAction() );
+        mVertexToolButton->setDefaultAction( editMeshMapTool->meshElementToolAction() );
+      }
 
       bool canSupportEditing = mlayer->supportsEditing();
       bool isEditable = mlayer->isEditable();

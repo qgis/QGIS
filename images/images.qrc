@@ -930,7 +930,7 @@
         <file>themes/default/mIconFolderLinkParams.svg</file>
         <file>themes/default/mIconFolderHomeParams.svg</file>
         <file>themes/default/mActionMeasureBearing.svg</file>
-        <file>themes/default/mActionMeshDigitizing.svg</file>
+        <file>themes/default/mActionMeshElementTool.svg</file>
         <file>themes/default/mActionMeshSelectPolygon.svg</file>
         <file>themes/default/mActionMeshSelectExpression.svg</file>
         <file>themes/default/mActionNewMeshLayer.svg</file>

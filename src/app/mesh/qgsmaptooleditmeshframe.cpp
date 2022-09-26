@@ -212,7 +212,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mActionDigitizing = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshDigitizing.svg" ) ), tr( "Digitize Mesh Elements" ), this );
+  mActionDigitizing = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshElementTool.svg" ) ), tr( "Digitize Mesh Elements" ), this );
   mActionDigitizing->setCheckable( true );
 
   mActionSelectByPolygon = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select Mesh Elements by Polygon" ), this );
@@ -238,10 +238,11 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex Faces and Vertices" ), this );
 
   mActionRemoveVerticesFillingHole = new QAction( this );
-  mActionDelaunayTriangulation = new QAction( tr( "Delaunay Triangulation with Selected Vertices" ), this );
-  mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
   mActionRemoveVerticesWithoutFillingHole = new QAction( this );
   mActionRemoveFaces = new QAction( tr( "Remove Current Face" ), this );
+
+  mActionDelaunayTriangulation = new QAction( tr( "Delaunay Triangulation with Selected Vertices" ), this );
+  mActionFacesRefinement = new QAction( tr( "Refine Current Face" ), this );
   mActionSplitFaces = new QAction( tr( "Split Current Face" ), this );
 
   connect( mActionRemoveVerticesFillingHole, &QAction::triggered, this, [this] {removeSelectedVerticesFromMesh( true );} );
@@ -337,6 +338,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   } );
 
   setAutoSnapEnabled( true );
+  updateSelectionRelatedActions();
 }
 
 void QgsMapToolEditMeshFrame::activateWithState( State state )
@@ -385,7 +387,7 @@ QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
           << mActionForceByLines;
 }
 
-QAction *QgsMapToolEditMeshFrame::digitizeAction() const
+QAction *QgsMapToolEditMeshFrame::meshElementToolAction() const
 {
   return  mActionDigitizing;
 }
@@ -1662,7 +1664,6 @@ void QgsMapToolEditMeshFrame::removeSelectedVerticesFromMesh( bool fillHole )
 {
   if ( fillHole )
   {
-
     const QList<int> remainingVertex = mCurrentEditor->removeVerticesFillHoles( mSelectedVertices.keys() );
 
     if ( !remainingVertex.isEmpty() )
@@ -2112,46 +2113,7 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   else
     mSelectedFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
 
-  if ( mSelectedVertices.count() == 1 )
-  {
-    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertex and Fill Hole" ) );
-    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertex without Filling Hole" ) );
-  }
-  else if ( mSelectedVertices.count() > 1 )
-  {
-    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertices and Fill Hole(s)" ) );
-    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertices without Filling Hole(s)" ) );
-  }
-
-  if ( mSelectedFaces.count() == 1 )
-  {
-    mActionRemoveFaces->setText( tr( "Remove Selected Face" ) );
-    mActionFacesRefinement->setText( tr( "Refine Selected Face" ) );
-  }
-  else if ( mSelectedFaces.count() > 1 )
-  {
-    mActionRemoveFaces->setText( tr( "Remove %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
-    mActionFacesRefinement->setText( tr( "Refine %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
-  }
-  else
-  {
-    mActionRemoveFaces->setText( tr( "Remove Current Face" ) );
-    mActionFacesRefinement->setText( tr( "Refine Current Face" ) );
-  }
-
-  mSplittableFaceCount = 0;
-  for ( const int faceIndex : std::as_const( mSelectedFaces ) )
-  {
-    if ( mCurrentEditor->faceCanBeSplit( faceIndex ) )
-      mSplittableFaceCount++;
-  }
-
-  if ( mSplittableFaceCount == 1 )
-    mActionSplitFaces->setText( tr( "Split Selected Face" ) );
-  else if ( mSplittableFaceCount > 1 )
-    mActionSplitFaces->setText( tr( "Split %n Selected Face(s)", nullptr, mSplittableFaceCount ) );
-  else
-    mActionSplitFaces->setText( tr( "Split Current Face" ) );
+  updateSelectionRelatedActions();
 
   emit selectionChange( mCurrentLayer, mSelectedVertices.keys() );
 }
@@ -2560,6 +2522,54 @@ void QgsMapToolEditMeshFrame::clearSelection()
   qDeleteAll( mSelectedVerticesMarker );
   mSelectedVerticesMarker.clear();
   prepareSelection();
+}
+
+void QgsMapToolEditMeshFrame::updateSelectionRelatedActions()
+{
+  mActionRemoveVerticesFillingHole->setEnabled( !mSelectedVertices.isEmpty() );
+  mActionRemoveVerticesWithoutFillingHole->setEnabled( !mSelectedVertices.isEmpty() );
+  if ( mSelectedVertices.count() == 1 )
+  {
+    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertex and Fill Hole" ) );
+    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertex without Filling Hole" ) );
+  }
+  else if ( mSelectedVertices.count() > 1 )
+  {
+    mActionRemoveVerticesFillingHole->setText( tr( "Remove Selected Vertices and Fill Hole(s)" ) );
+    mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertices without Filling Hole(s)" ) );
+  }
+
+  mActionRemoveFaces->setEnabled( !mSelectedFaces.isEmpty() );
+  mActionFacesRefinement->setEnabled( !mSelectedFaces.isEmpty() );
+  if ( mSelectedFaces.count() == 1 )
+  {
+    mActionRemoveFaces->setText( tr( "Remove Selected Face" ) );
+    mActionFacesRefinement->setText( tr( "Refine Selected Face" ) );
+  }
+  else if ( mSelectedFaces.count() > 1 )
+  {
+    mActionRemoveFaces->setText( tr( "Remove %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
+    mActionFacesRefinement->setText( tr( "Refine %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
+  }
+  else
+  {
+    mActionRemoveFaces->setText( tr( "Remove Current Face" ) );
+    mActionFacesRefinement->setText( tr( "Refine Current Face" ) );
+  }
+
+  mSplittableFaceCount = 0;
+  for ( const int faceIndex : std::as_const( mSelectedFaces ) )
+  {
+    if ( mCurrentEditor->faceCanBeSplit( faceIndex ) )
+      mSplittableFaceCount++;
+  }
+
+  if ( mSplittableFaceCount == 1 )
+    mActionSplitFaces->setText( tr( "Split Selected Face" ) );
+  else if ( mSplittableFaceCount > 1 )
+    mActionSplitFaces->setText( tr( "Split %n Selected Face(s)", nullptr, mSplittableFaceCount ) );
+  else
+    mActionSplitFaces->setText( tr( "Split Current Face" ) );
 }
 
 void QgsMapToolEditMeshFrame::clearCanvasHelpers()
