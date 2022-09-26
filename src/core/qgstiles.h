@@ -243,6 +243,20 @@ class CORE_EXPORT QgsTileMatrixSet
     QgsTileMatrix tileMatrix( int zoom ) const;
 
     /**
+     * Returns the root tile matrix (usually corresponding to zoom level 0).
+     *
+     * \since QGIS 3.28
+     */
+    QgsTileMatrix rootMatrix() const;
+
+    /**
+     * Sets the root tile \a matrix (usually corresponding to zoom level 0).
+     *
+     * \since QGIS 3.28
+     */
+    void setRootMatrix( const QgsTileMatrix &matrix );
+
+    /**
      * Adds a \a matrix to the set.
      *
      * Any existing matrix with the same QgsTileMatrix::zoomLevel() will be replaced.
@@ -338,6 +352,8 @@ class CORE_EXPORT QgsTileMatrixSet
 
   private:
 
+    // Usually corresponds to zoom level 0, even if that zoom level is NOT present in the actual tile matrices for this set
+    QgsTileMatrix mRootMatrix;
     QMap< int, QgsTileMatrix > mTileMatrices;
     Qgis::ScaleToTileZoomLevelMethod mScaleToTileZoomMethod = Qgis::ScaleToTileZoomLevelMethod::MapBox;
 };
