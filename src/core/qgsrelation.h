@@ -339,8 +339,20 @@ class CORE_EXPORT QgsRelation
      * A relation is considered valid if both referenced and referencig layers are valid.
      *
      * \returns TRUE if the relation is valid
+     *
+     * \see validationError()
      */
     bool isValid() const;
+
+    /**
+     * Returns a user-friendly explanation for why the relationship is invalid.
+     *
+     * Returns an empty string if the relationship isValid().
+     *
+     * \see isValid()
+     * \since QGIS 3.28
+     */
+    QString validationError() const;
 
     /**
      * Compares the two QgsRelation, ignoring the name and the ID.

@@ -360,6 +360,23 @@ bool QgsRelation::isValid() const
   return d->mValid && !d->mReferencingLayer.isNull() && !d->mReferencedLayer.isNull() && d->mReferencingLayer.data()->isValid() && d->mReferencedLayer.data()->isValid();
 }
 
+QString QgsRelation::validationError() const
+{
+  if ( isValid() )
+    return QString();
+
+  if ( d->mReferencingLayer.isNull() )
+    return QObject::tr( "Referencing layer %1 does not exist" ).arg( d->mReferencingLayerId );
+  else if ( !d->mReferencingLayer.data()->isValid() )
+    return QObject::tr( "Referencing layer %1 is not valid" ).arg( d->mReferencingLayerId );
+  else if ( d->mReferencedLayer.isNull() )
+    return QObject::tr( "Referenced layer %1 does not exist" ).arg( d->mReferencedLayerId );
+  else if ( !d->mReferencedLayer.data()->isValid() )
+    return QObject::tr( "Referenced layer %1 is not valid" ).arg( d->mReferencedLayerId );
+  else
+    return d->mValidationError;
+}
+
 bool QgsRelation::hasEqualDefinition( const QgsRelation &other ) const
 {
   return d->mReferencedLayerId == other.d->mReferencedLayerId && d->mReferencingLayerId == other.d->mReferencingLayerId && d->mFieldPairs == other.d->mFieldPairs;
@@ -397,6 +414,7 @@ void QgsRelation::updateRelationStatus()
   if ( d->mRelationId.isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "Invalid relation: no ID" ) );
+    d->mValidationError = QObject::tr( "Relationship has no ID" );
     d->mValid = false;
   }
   else
@@ -404,11 +422,13 @@ void QgsRelation::updateRelationStatus()
     if ( !d->mReferencedLayer )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid relation: referenced layer does not exist. ID: %1" ).arg( d->mReferencedLayerId ), 4 );
+      d->mValidationError = QObject::tr( "Referenced layer %1 does not exist" ).arg( d->mReferencedLayerId );
       d->mValid = false;
     }
     else if ( !d->mReferencingLayer )
     {
       QgsDebugMsgLevel( QStringLiteral( "Invalid relation: referencing layer does not exist. ID: %2" ).arg( d->mReferencingLayerId ), 4 );
+      d->mValidationError = QObject::tr( "Referencing layer %1 does not exist" ).arg( d->mReferencingLayerId );
       d->mValid = false;
     }
     else
@@ -416,6 +436,7 @@ void QgsRelation::updateRelationStatus()
       if ( d->mFieldPairs.count() < 1 )
       {
         QgsDebugMsgLevel( QStringLiteral( "Invalid relation: no pair of field is specified." ), 4 );
+        d->mValidationError = QObject::tr( "No fields specified for relationship" );
         d->mValid = false;
       }
 
@@ -424,12 +445,14 @@ void QgsRelation::updateRelationStatus()
         if ( -1 == d->mReferencingLayer->fields().lookupField( pair.first ) )
         {
           QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() ) );
+          d->mValidationError = QObject::tr( "Field %1 does not exist in referencing layer %2" ).arg( pair.first, d->mReferencingLayer->name() );
           d->mValid = false;
           break;
         }
         else if ( -1 == d->mReferencedLayer->fields().lookupField( pair.second ) )
         {
           QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayer->name() ) );
+          d->mValidationError = QObject::tr( "Field %1 does not exist in referenced layer %2" ).arg( pair.second, d->mReferencedLayer->name() );
           d->mValid = false;
           break;
         }
