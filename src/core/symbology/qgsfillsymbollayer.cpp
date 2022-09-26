@@ -404,7 +404,19 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     // <Fill>
     QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
     symbolizerElem.appendChild( fillElem );
-    QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, mColor );
+    // Apply alpha from symbol
+    bool ok;
+    const double alpha { props.value( QStringLiteral( "alpha" ), 0.0 ).toDouble( &ok ) };
+    if ( ok )
+    {
+      QColor color { mColor };
+      color.setAlphaF( color.alphaF() * alpha );
+      QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
+    }
+    else
+    {
+      QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, mColor );
+    }
   }
 
   if ( mStrokeStyle != Qt::NoPen )
@@ -413,7 +425,15 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
     symbolizerElem.appendChild( strokeElem );
     double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
-    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, mStrokeColor, strokeWidth, &mPenJoinStyle );
+    // Apply alpha from symbol
+    bool ok;
+    const double alpha { props.value( QStringLiteral( "alpha" ), 0.0 ).toDouble( &ok ) };
+    QColor strokeColor { mStrokeColor };
+    if ( ok )
+    {
+      strokeColor.setAlphaF( strokeColor.alphaF() * alpha );
+    }
+    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, strokeColor, strokeWidth, &mPenJoinStyle );
   }
 
   // <se:Displacement>
