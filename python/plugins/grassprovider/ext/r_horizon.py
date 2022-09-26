@@ -52,6 +52,7 @@ def processOutputs(alg, parameters, context, feedback):
         based on provided number and number of decimals
         """
         number += 0.0001
+        # adapted from GRASS https://github.com/OSGeo/grass/blob/6253da1bd6ce48d23419e99e8b503edf46178490/lib/gis/basename.c#L97-L101
         if nDecimals == 0:
             return f'{int(number):03}'
         int_part = int(number)
