@@ -64,7 +64,8 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public Qg
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private slots:
-    void mHtmlCheckBox_stateChanged( int i );
+    void mHtmlCheckBox_stateChanged( int state );
+    void mUseHtmlSubset_stateChanged( int state );
     void mTextEdit_textChanged();
     void mInsertExpressionButton_clicked();
     void mMarginXDoubleSpinBox_valueChanged( double d );

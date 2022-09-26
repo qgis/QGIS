@@ -147,10 +147,21 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 
       if ( mWebPage )
       {
-        painter->scale( 1.0 / mHtmlUnitsToLayoutUnits / 10.0, 1.0 / mHtmlUnitsToLayoutUnits / 10.0 );
-        mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
-        mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
-        mWebPage->mainFrame()->render( painter );
+        if ( mUseHtmlSubset )
+        {
+          QTextDocument document;
+          document.setPageSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
+          document.setDefaultStyleSheet( createStylesheet() );
+          document.setHtml( currentText() );
+          document.drawContents( painter );
+        }
+        else
+        {
+          painter->scale( 1.0 / mHtmlUnitsToLayoutUnits / 10.0, 1.0 / mHtmlUnitsToLayoutUnits / 10.0 );
+          mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
+          mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
+          mWebPage->mainFrame()->render( painter );
+        }
       }
       break;
     }
@@ -273,6 +284,21 @@ void QgsLayoutItemLabel::setMode( Mode mode )
   }
 }
 
+void QgsLayoutItemLabel::setUseHtmlSubset( bool enabled )
+{
+  if ( enabled == mUseHtmlSubset )
+    return;
+
+  mUseHtmlSubset = enabled;
+  contentChanged();
+
+  if ( mLayout && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mLayout->itemsModel()->updateItemDisplayName( this );
+  }
+}
+
 void QgsLayoutItemLabel::refreshExpressionContext()
 {
   if ( !mLayout )
@@ -330,6 +356,39 @@ void QgsLayoutItemLabel::replaceDateText( QString &text ) const
       text.replace( QLatin1String( "$CURRENT_DATE" ), QDate::currentDate().toString() );
     }
   }
+}
+
+QString QgsLayoutItemLabel::createStylesheet() const
+{
+  QString stylesheet;
+  stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToLayoutUnits, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToLayoutUnits, 0.0 ) );
+  QFont f = mFormat.font();
+  switch ( mFormat.sizeUnit() )
+  {
+    case QgsUnitTypes::RenderMillimeters:
+      f.setPointSizeF( mFormat.size() / 0.352778 );
+      break;
+    case QgsUnitTypes::RenderPixels:
+      f.setPixelSize( mFormat.size() );
+      break;
+    case QgsUnitTypes::RenderPoints:
+      f.setPointSizeF( mFormat.size() );
+      break;
+    case QgsUnitTypes::RenderInches:
+      f.setPointSizeF( mFormat.size() * 72 );
+      break;
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderMapUnits:
+      break;
+  }
+
+  stylesheet += QgsFontUtils::asCSS( f, 0.352778 * mHtmlUnitsToLayoutUnits );
+  stylesheet += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( mFormat.color().red() ).arg( mFormat.color().green() ).arg( mFormat.color().blue() ).arg( QString::number( mFormat.color().alphaF(), 'f', 4 ) );
+  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
+
+  return stylesheet;
 }
 
 void QgsLayoutItemLabel::setFont( const QFont &f )
@@ -663,36 +722,8 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
 
 QUrl QgsLayoutItemLabel::createStylesheetUrl() const
 {
-  QString stylesheet;
-  stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToLayoutUnits, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToLayoutUnits, 0.0 ) );
-  QFont f = mFormat.font();
-  switch ( mFormat.sizeUnit() )
-  {
-    case QgsUnitTypes::RenderMillimeters:
-      f.setPointSizeF( mFormat.size() / 0.352778 );
-      break;
-    case QgsUnitTypes::RenderPixels:
-      f.setPixelSize( mFormat.size() );
-      break;
-    case QgsUnitTypes::RenderPoints:
-      f.setPointSizeF( mFormat.size() );
-      break;
-    case QgsUnitTypes::RenderInches:
-      f.setPointSizeF( mFormat.size() * 72 );
-      break;
-    case QgsUnitTypes::RenderUnknownUnit:
-    case QgsUnitTypes::RenderPercentage:
-    case QgsUnitTypes::RenderMetersInMapUnits:
-    case QgsUnitTypes::RenderMapUnits:
-      break;
-  }
-
-  stylesheet += QgsFontUtils::asCSS( f, 0.352778 * mHtmlUnitsToLayoutUnits );
-  stylesheet += QStringLiteral( "color: rgba(%1,%2,%3,%4);" ).arg( mFormat.color().red() ).arg( mFormat.color().green() ).arg( mFormat.color().blue() ).arg( QString::number( mFormat.color().alphaF(), 'f', 4 ) );
-  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
-
   QByteArray ba;
-  ba.append( stylesheet.toUtf8() );
+  ba.append( createStylesheet().toUtf8() );
   QUrl cssFileURL = QUrl( QString( "data:text/css;charset=utf-8;base64," + ba.toBase64() ) );
 
   return cssFileURL;

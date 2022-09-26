@@ -38,6 +38,7 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
 
   setupUi( this );
   connect( mHtmlCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutLabelWidget::mHtmlCheckBox_stateChanged );
+  connect( mUseHtmlSubset, &QCheckBox::stateChanged, this, &QgsLayoutLabelWidget::mUseHtmlSubset_stateChanged );
   connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsLayoutLabelWidget::mTextEdit_textChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLabelWidget::mInsertExpressionButton_clicked );
   connect( mMarginXDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginXDoubleSpinBox_valueChanged );
@@ -279,6 +280,16 @@ void QgsLayoutLabelWidget::mHtmlCheckBox_stateChanged( int state )
   }
 }
 
+void QgsLayoutLabelWidget::mUseHtmlSubset_stateChanged( int state )
+{
+  Q_UNUSED( state )
+
+  if ( label )
+  {
+    mLabel->setUseHtmlSubset( mUseHtmlSubset->isChecked() );
+  }
+}
+
 void QgsLayoutLabelWidget::mTextEdit_textChanged()
 {
   if ( mLabel )
@@ -445,6 +456,7 @@ void QgsLayoutLabelWidget::setGuiElementValues()
   mMarginXDoubleSpinBox->setValue( mLabel->marginX() );
   mMarginYDoubleSpinBox->setValue( mLabel->marginY() );
   mHtmlCheckBox->setChecked( mLabel->mode() == QgsLayoutItemLabel::ModeHtml );
+  mUseHtmlSubset->setChecked( mLabel->useHtmlSubset() );
   mTopRadioButton->setChecked( mLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mLabel->vAlign() == Qt::AlignVCenter );
   mBottomRadioButton->setChecked( mLabel->vAlign() == Qt::AlignBottom );
@@ -465,6 +477,7 @@ void QgsLayoutLabelWidget::blockAllSignals( bool block )
 {
   mTextEdit->blockSignals( block );
   mHtmlCheckBox->blockSignals( block );
+  mUseHtmlSubset->blockSignals( block );
   mMarginXDoubleSpinBox->blockSignals( block );
   mMarginYDoubleSpinBox->blockSignals( block );
   mTopRadioButton->blockSignals( block );

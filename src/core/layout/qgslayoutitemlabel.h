@@ -102,11 +102,24 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     Mode mode() const { return mMode; }
 
     /**
+     * Returns true if the HTML subset mode is enabled
+     * \see setUseHtmlSubset()
+     */
+    bool useHtmlSubset() const { return mUseHtmlSubset; }
+
+    /**
      * Sets the label's current \a mode, allowing the label
      * to switch between font based and HTML based rendering.
      * \see mode()
      */
     void setMode( Mode mode );
+
+    /**
+     * If enabled the label will be rendered using the HTML subset provided
+     * by QTextDocument.
+     * \see useHtmlSubset()
+     */
+    void setUseHtmlSubset( bool enabled );
 
     /**
      * Returns the label's current font.
@@ -265,6 +278,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     QString mText;
 
     Mode mMode = ModeFont;
+    bool mUseHtmlSubset;
     double mHtmlUnitsToLayoutUnits = 1.0;
     double htmlUnitsToLayoutUnits(); //calculate scale factor
     bool mHtmlLoaded = false;
@@ -290,6 +304,9 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
     void replaceDateText( QString &text ) const;
+
+    //! Creates stylesheet content using the current font and label appearance settings
+    QString createStylesheet() const;
 
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;

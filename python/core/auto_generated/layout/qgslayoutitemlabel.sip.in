@@ -92,12 +92,27 @@ Returns the label's current mode.
 .. seealso:: :py:func:`setMode`
 %End
 
+    bool useHtmlSubset() const;
+%Docstring
+Returns true if the HTML subset mode is enabled
+
+.. seealso:: :py:func:`setUseHtmlSubset`
+%End
+
     void setMode( Mode mode );
 %Docstring
 Sets the label's current ``mode``, allowing the label
 to switch between font based and HTML based rendering.
 
 .. seealso:: :py:func:`mode`
+%End
+
+    void setUseHtmlSubset( bool enabled );
+%Docstring
+If enabled the label will be rendered using the HTML subset provided
+by QTextDocument.
+
+.. seealso:: :py:func:`useHtmlSubset`
 %End
 
  QFont font() const /Deprecated/;
