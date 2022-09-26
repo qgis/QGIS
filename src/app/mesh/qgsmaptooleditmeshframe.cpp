@@ -363,7 +363,7 @@ void QgsMapToolEditMeshFrame::activateWithState( State state )
 
 void QgsMapToolEditMeshFrame::backToDigitizing()
 {
-  activateWithState( Digitizing );
+  activateWithState( Editing );
   mActionDigitizing->setChecked( true );
 }
 
@@ -633,8 +633,8 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
 
   switch ( mCurrentState )
   {
-    case Digitizing:
-    case SelectingByPolygon:
+    case Editing:
+    case AdvanceSelecting:
     {
       QList<QAction * >  newActions;
       QList<QAction * >  lastActions;
@@ -648,7 +648,7 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
       }
 
       if ( !mSelectedFaces.isEmpty() ||
-           ( mCurrentFaceIndex != -1 && mCurrentState == Digitizing ) )
+           ( mCurrentFaceIndex != -1 && mCurrentState == Editing ) )
       {
         newActions << mActionRemoveFaces;
         lastActions << mActionFacesRefinement;
@@ -695,14 +695,14 @@ QgsMapTool::Flags QgsMapToolEditMeshFrame::flags() const
 {
   switch ( mCurrentState )
   {
-    case Digitizing:
+    case Editing:
       if ( !mCadDockWidget->cadEnabled() || !mSelectedVertices.isEmpty() || mCurrentFaceIndex != -1 )
         return QgsMapTool::Flags() | QgsMapTool::ShowContextMenu;
       FALLTHROUGH
     case AddingNewFace:
-    case Selecting:
+    case DraggingForSelection:
     case MovingSelection:
-    case SelectingByPolygon:
+    case AdvanceSelecting:
     case ForceByLines:
       return QgsMapTool::Flags();
   }
@@ -771,23 +771,23 @@ void QgsMapToolEditMeshFrame::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
   switch ( mCurrentState )
   {
-    case Digitizing:
+    case Editing:
       if ( e->button() == Qt::LeftButton )
         mStartSelectionPos = e->pos();
       break;
     case AddingNewFace:
-    case Selecting:
+    case DraggingForSelection:
     case MovingSelection:
     case ForceByLines:
       if ( e->button() == Qt::LeftButton )
         mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
       break;
-    case SelectingByPolygon:
+    case AdvanceSelecting:
       if ( mSelectionHandler )
       {
         if ( e->button() == Qt::RightButton )
         {
-          // here, quite tricky because 3 possibilities:
+          // here,if the selection mode is by polygon, it is quite tricky because 3 possibilities:
           // - a polygon has started to be digitized for selection -> right click validate the selection
           // - right click on an existing vector layer feature -> a menu is executed to choose a feature
           // - other case -> context menu of mesh editing to apply an edit on selected element
@@ -830,14 +830,14 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  if ( mLeftButtonPressed && mCurrentState == Digitizing )
+  if ( mLeftButtonPressed && mCurrentState == Editing )
   {
-    mCurrentState = Selecting;
+    mCurrentState = DraggingForSelection;
   }
 
   switch ( mCurrentState )
   {
-    case Digitizing:
+    case Editing:
       highLight( mapPoint );
       break;
     case AddingNewFace:
@@ -848,7 +848,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       else
         mNewFaceBand->setColor( mInvalidFaceColor );
       break;
-    case Selecting:
+    case DraggingForSelection:
     {
       const QRect &rect = QRect( e->pos(), mStartSelectionPos );
       mSelectionBand->setToCanvasRectangle( rect );
@@ -859,7 +859,7 @@ void QgsMapToolEditMeshFrame::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       moveSelection( mapPoint );
     }
     break;
-    case SelectingByPolygon:
+    case AdvanceSelecting:
       if ( mSelectionHandler )
         mSelectionHandler->canvasMoveEvent( e );
       break;
@@ -915,7 +915,7 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   switch ( mCurrentState )
   {
-    case Digitizing:
+    case Editing:
       if ( e->button() == Qt::LeftButton )
       {
         if ( mDoubleClicks )  //double clicks --> add a vertex
@@ -991,16 +991,16 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mCurrentEditor->addFace( mNewFaceCandidate.toVector() );
           mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
           mNewFaceCandidate.clear();
-          mCurrentState = Digitizing;
+          mCurrentState = Editing;
         }
       }
       break;
-    case Selecting:
+    case DraggingForSelection:
     {
       const QgsGeometry selectionGeom = mSelectionBand->asGeometry();
       selectByGeometry( selectionGeom, e->modifiers() );
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
-      mCurrentState = Digitizing;
+      mCurrentState = Editing;
     }
     break;
     case MovingSelection:
@@ -1051,9 +1051,9 @@ void QgsMapToolEditMeshFrame::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mMovingFacesRubberband->reset();
       mMovingFreeVertexRubberband->reset();
       mCadDockWidget->setEnabledZ( mCadDockWidget->cadEnabled() );
-      mCurrentState = Digitizing;
+      mCurrentState = Editing;
       break;
-    case SelectingByPolygon:
+    case AdvanceSelecting:
       if ( mSelectionHandler )
         mSelectionHandler->canvasReleaseEvent( e );
       break;
@@ -1200,7 +1200,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
   bool consumned = false;
   switch ( mCurrentState )
   {
-    case Digitizing:
+    case Editing:
     {
       if ( e->key() == Qt::Key_Delete && ( e->modifiers() & Qt::ControlModifier ) )
       {
@@ -1234,7 +1234,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         if ( !mNewFaceCandidate.isEmpty() )
           mNewFaceCandidate.removeLast();
         if ( mNewFaceCandidate.isEmpty() )
-          mCurrentState = Digitizing;
+          mCurrentState = Editing;
         consumned = true;
       }
 
@@ -1242,7 +1242,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
       {
         mNewFaceBand->reset( QgsWkbTypes::PolygonGeometry );
         mNewFaceCandidate.clear();
-        mCurrentState = Digitizing;
+        mCurrentState = Editing;
         consumned = true;
       }
     }
@@ -1250,7 +1250,7 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
     case MovingSelection:
       if ( e->key() == Qt::Key_Escape )
       {
-        mCurrentState = Digitizing;
+        mCurrentState = Editing;
         mMovingEdgesRubberband->reset( QgsWkbTypes::LineGeometry );
         mMovingFacesRubberband->reset( QgsWkbTypes::PolygonGeometry );
         mMovingFreeVertexRubberband->reset( QgsWkbTypes::PointGeometry );
@@ -1270,8 +1270,8 @@ void QgsMapToolEditMeshFrame::keyPressEvent( QKeyEvent *e )
         mForcingLineZValue.clear();
       }
       break;
-    case Selecting:
-    case SelectingByPolygon:
+    case DraggingForSelection:
+    case AdvanceSelecting:
       if ( e->key() == Qt::Key_Escape )
       {
         clearSelection();
@@ -1296,17 +1296,17 @@ void QgsMapToolEditMeshFrame::keyReleaseEvent( QKeyEvent *e )
   bool consumned = false;
   switch ( mCurrentState )
   {
-    case Digitizing:
+    case Editing:
       break;
     case AddingNewFace:
       if ( e->key() == Qt::Key_Backspace )
         consumned = true; //to avoid removing the value of the ZvalueWidget
       break;
-    case SelectingByPolygon:
+    case AdvanceSelecting:
       if ( mSelectionHandler )
         mSelectionHandler->keyReleaseEvent( e );
       break;
-    case Selecting:
+    case DraggingForSelection:
     case MovingSelection:
     case ForceByLines:
       break;
@@ -2015,7 +2015,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     if ( !mZValueWidget )
       createZValueWidget();
 
-    mZValueWidget->setZValue( vertexZValue );
+    if ( mZValueWidget )
+      mZValueWidget->setZValue( vertexZValue );
   }
   else
   {
@@ -2338,7 +2339,7 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
   if ( !mCurrentEditor )
     return;
 
-  if ( mCurrentState == Digitizing && mNewFaceMarker->isVisible() )
+  if ( mCurrentState == Editing && mNewFaceMarker->isVisible() )
   {
     double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
     if ( mapPoint.distance( mNewFaceMarker->center() ) < tol )
@@ -2377,7 +2378,7 @@ void QgsMapToolEditMeshFrame::highlightCloseVertex( const QgsPointXY &mapPoint )
     {
       mCurrentVertexIndex = closeVert;
       mVertexBand->addPoint( mapVertexXY( closeVert ) );
-      if ( mCurrentState == Digitizing )
+      if ( mCurrentState == Editing )
       {
         if ( isBoundary || isFree )
         {
@@ -2436,7 +2437,7 @@ void QgsMapToolEditMeshFrame::highlightCloseEdge( const QgsPointXY &mapPoint )
   mFlipEdgeMarker->setVisible( false );
   mMergeFaceMarker->setVisible( false );
   mSelectEdgeMarker->setVisible( false );
-  if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 &&  mCurrentState == Digitizing )
+  if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 &&  mCurrentState == Editing )
   {
     const QVector<QgsPointXY> &edgeGeom = edgeGeometry( mCurrentEdge );
     mEdgeBand->addPoint( edgeGeom.at( 0 ) );

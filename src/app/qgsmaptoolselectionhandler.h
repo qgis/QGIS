@@ -108,9 +108,10 @@ class QgsMapToolSelectionHandler : public QObject
     //! Returns most recently selected geometry (may be a point or a polygon)
     QgsGeometry selectedGeometry() const;
 
-    //! Sets the current selection mode
-    SelectionMode selectionMode() const;
     //! Returns the current selection mode
+    SelectionMode selectionMode() const;
+
+    //! Sets the current selection mode
     void setSelectionMode( SelectionMode mode );
 
     //! Deactivates handler (when map tool gets deactivated)

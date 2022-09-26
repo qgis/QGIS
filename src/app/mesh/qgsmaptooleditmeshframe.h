@@ -173,11 +173,11 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     enum State
     {
-      Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
+      Editing, //!< Editing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
       AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
-      Selecting, //!< Selection is in process
+      DraggingForSelection, //!< Selection by dragging from the editing tool is in process
       MovingSelection, //!< Moving vertex or vertices is processing
-      SelectingByPolygon, //!< Selection elements by polygon is in progress
+      AdvanceSelecting, //!< Advanced selection elements is in progress
       ForceByLines, //!< Force by a lines drawn or selected by users
     };
 
@@ -258,7 +258,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     };
 
     bool mIsInitialized = false;
-    State mCurrentState = Digitizing;
+    State mCurrentState = Editing;
     bool mLeftButtonPressed = false;
     bool mKeepSelectionOnEdit = false;
 
