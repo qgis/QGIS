@@ -124,6 +124,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Rendering</string>
+          </property>
+          <property name="toolTip">
+           <string>Rendering</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Metadata</string>
           </property>
           <property name="toolTip">
@@ -188,7 +200,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -350,6 +362,78 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_Rendering">
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
+             <property name="title">
+              <string>Scale Dependent Visibility</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string notr="true">rastergeneral</string>
+             </property>
+             <layout class="QGridLayout" name="_5">
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
+               <number>11</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>6</number>
+              </property>
+              <item row="0" column="0" colspan="2">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="whatsThis">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_Metadata">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="leftMargin">
@@ -480,21 +564,34 @@
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCodeEditorSQL</class>
-   <extends>QWidget</extends>
-   <header>qgscodeeditorsql.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorSQL</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorsql.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>mInformationTextBrowser</tabstop>
+  <tabstop>mLayerOrigNameLineEdit</tabstop>
+  <tabstop>mCrsGroupBox</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
+  <tabstop>mStatisticsTableView</tabstop>
+  <tabstop>mClassificationStatisticsTableView</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
