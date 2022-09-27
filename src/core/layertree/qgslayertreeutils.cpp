@@ -538,6 +538,7 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
   int pointCloudIndex = 0;
   int meshIndex = 0;
   int rasterIndex = 0;
+  int basemapIndex = 0;
 
   const QList<QgsLayerTreeNode *> children = group->children();
   int nodeIdx = 0;
@@ -564,6 +565,8 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
               meshIndex = nodeIdx;
             if ( rasterIndex < nodeIdx )
               rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
           }
           else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
           {
@@ -575,6 +578,8 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
               meshIndex = nodeIdx;
             if ( rasterIndex < nodeIdx )
               rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
           }
           else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
           {
@@ -584,6 +589,8 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
               meshIndex = nodeIdx;
             if ( rasterIndex < nodeIdx )
               rasterIndex = nodeIdx;
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
           }
           break;
         }
@@ -594,6 +601,8 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
             meshIndex = nodeIdx;
           if ( rasterIndex < nodeIdx )
             rasterIndex = nodeIdx;
+          if ( basemapIndex < nodeIdx )
+            basemapIndex = nodeIdx;
           break;
         }
 
@@ -601,10 +610,24 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
         {
           if ( rasterIndex < nodeIdx )
             rasterIndex = nodeIdx;
+          if ( basemapIndex < nodeIdx )
+            basemapIndex = nodeIdx;
           break;
         }
 
         case QgsMapLayerType::RasterLayer:
+        {
+          if ( layer->dataProvider() && layer->dataProvider()->name() == QStringLiteral( "gdal" ) )
+          {
+            // Assume non-gdal raster layers are most likely to be base maps (e.g. XYZ raster)
+            // Admittedly a gross assumption, but better than nothing
+            if ( basemapIndex < nodeIdx )
+              basemapIndex = nodeIdx;
+          }
+          break;
+        }
+
+        case QgsMapLayerType::VectorTileLayer:
         case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::GroupLayer:
         case QgsMapLayerType::PluginLayer:
@@ -649,9 +672,23 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
 
     case QgsMapLayerType::RasterLayer:
     {
-      index = rasterIndex;
+      if ( layer->dataProvider() && layer->dataProvider()->name() == QStringLiteral( "gdal" ) )
+      {
+        index = rasterIndex;
+      }
+      else
+      {
+        index = basemapIndex;
+      }
       break;
     }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      index = basemapIndex;
+      break;
+    }
+
     case QgsMapLayerType::AnnotationLayer:
     case QgsMapLayerType::GroupLayer:
     case QgsMapLayerType::PluginLayer:
