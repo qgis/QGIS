@@ -206,7 +206,7 @@ void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
   }
 }
 
-QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses )
+QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString *error )
 {
   if ( expression.isEmpty() )
     return QList<QgsClassificationRange>();
@@ -242,7 +242,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   }
 
   // get the breaks, minimum and maximum might be updated by implementation
-  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
+  QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses, error );
   breaks.insert( 0, minimum );
   // create classes
   return breaksToClasses( breaks );

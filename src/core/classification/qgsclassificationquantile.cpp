@@ -46,10 +46,11 @@ QIcon QgsClassificationQuantile::icon() const
 
 
 QList<double> QgsClassificationQuantile::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses )
+    const QList<double> &values, int nclasses, QString *error )
 {
   Q_UNUSED( minimum )
   Q_UNUSED( maximum )
+  Q_UNUSED( error )
 
   // q-th quantile of a data set:
   // value where q fraction of data is below and (1-q) fraction is above this value

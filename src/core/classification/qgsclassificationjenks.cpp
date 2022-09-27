@@ -51,8 +51,9 @@ QIcon QgsClassificationJenks::icon() const
 
 
 QList<double> QgsClassificationJenks::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses )
+    const QList<double> &values, int nclasses, QString *error )
 {
+  Q_UNUSED( error )
   // Jenks Optimal (Natural Breaks) algorithm
   // Based on the Jenks algorithm from the 'classInt' package available for
   // the R statistical prgramming language, and from Python code from here:

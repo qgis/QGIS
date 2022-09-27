@@ -238,7 +238,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param vl  The layer being rendered (from which data values are calculated)
      * \param nclasses the number of classes
      */
-    void updateClasses( const QgsVectorLayer *vl, int nclasses );
+    void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error = nullptr );
 
     Q_NOWARN_DEPRECATED_PUSH;
 

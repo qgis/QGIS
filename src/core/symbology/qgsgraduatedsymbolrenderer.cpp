@@ -436,12 +436,13 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   updateClasses( vlayer, nclasses );
 }
 
-void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nclasses )
+void QgsGraduatedSymbolRenderer::updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error )
 {
+  Q_UNUSED( error )
   if ( mClassificationMethod->id() == QgsClassificationCustom::METHOD_ID )
     return;
 
-  QList<QgsClassificationRange> classes = mClassificationMethod->classes( vl, mAttrName, nclasses );
+  QList<QgsClassificationRange> classes = mClassificationMethod->classes( vl, mAttrName, nclasses, error );
 
   deleteAllClasses();
 

@@ -1095,7 +1095,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     mRenderer->setSourceColorRamp( nullptr );
   }
 
-  mRenderer->updateClasses( mLayer, nclasses );
+  QString error;
+  mRenderer->updateClasses( mLayer, nclasses, &error );
+
+  if ( ! error.isEmpty() )
+    QMessageBox::critical( this, tr( "Apply Classification" ), error );
 
   if ( methodComboBox->currentData() == SizeMode )
     mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );

@@ -276,7 +276,7 @@ Recalculate classes for a layer
 .. deprecated:: QGIS 3.10
 %End
 
-    void updateClasses( const QgsVectorLayer *vl, int nclasses );
+    void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error = 0 );
 %Docstring
 Recalculate classes for a layer
 

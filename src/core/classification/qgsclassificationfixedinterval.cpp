@@ -50,23 +50,11 @@ QIcon QgsClassificationFixedInterval::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "classification_methods/mClassificationFixedInterval.svg" ) );
 }
 
-QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, double &maximum, const QList<double> &, int )
+QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, double &maximum, const QList<double> &, int, QString *error )
 {
   const QgsProcessingContext context;
   const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "INTERVAL" ) );
-  double interval = QgsProcessingParameters::parameterAsDouble( def, parameterValues(), context );
-
-  // Limit the interval so we do not get more than 999 classes
-  const double minInterval = ( maximum - minimum ) / 999;
-  bool maxClassesReached = false;
-  if ( minInterval > interval )
-  {
-    interval = minInterval;
-    auto parameters = parameterValues();
-    parameters["INTERVAL"] = interval;
-    setParameterValues( parameters );
-    maxClassesReached = true;
-  }
+  const double interval = QgsProcessingParameters::parameterAsDouble( def, parameterValues(), context );
 
   QList<double> breaks;
   if ( qgsDoubleNear( interval, 0 ) || interval < 0 )
@@ -76,13 +64,17 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
   }
 
   double value = minimum;
-  while ( true )
+  while ( value < maximum )
   {
     value += interval;
     breaks << value;
-    if ( value > maximum ||
-         ( maxClassesReached && qgsDoubleNear( value, maximum, 1e-12 ) ) )
+    // Limit number of classes to 999 to avoid overwhelming the gui
+    if ( breaks.length() >= 999 )
+    {
+      error->clear();
+      error->append( QObject::tr( "The specified interval would generate too many classes.\nOnly the first 999 classes are actually added." ) );
       break;
+    }
   }
 
   return breaks;
