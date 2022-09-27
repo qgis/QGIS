@@ -167,7 +167,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void onZoomToSelected();
     void reindexMesh();
 
-    void activateZValueWidget(bool activate);
+    void activateZValueWidget( bool activate );
 
   private:
 
