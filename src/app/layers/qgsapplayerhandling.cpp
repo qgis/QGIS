@@ -683,36 +683,43 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   if ( !groupName.isEmpty() )
   {
     int index { 0 };
-    QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
-    if ( currentNode && currentNode->parent() )
+    if ( QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod() == Qgis::LayerTreeInsertionMethod::TopOfTree )
     {
-      if ( QgsLayerTree::isGroup( currentNode ) )
+      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+    }
+    else
+    {
+      QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
+      if ( currentNode && currentNode->parent() )
       {
-        group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
-      }
-      else if ( QgsLayerTree::isLayer( currentNode ) )
-      {
-        const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
-        int nodeIdx { 0 };
-        for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+        if ( QgsLayerTree::isGroup( currentNode ) )
         {
-          nodeIdx++;
-          if ( child == currentNode )
-          {
-            index = nodeIdx;
-            break;
-          }
+          group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
         }
-        group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+        else if ( QgsLayerTree::isLayer( currentNode ) )
+        {
+          const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+          int nodeIdx { 0 };
+          for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+          {
+            nodeIdx++;
+            if ( child == currentNode )
+            {
+              index = nodeIdx;
+              break;
+            }
+          }
+          group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+        }
+        else
+        {
+          group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+        }
       }
       else
       {
         group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
       }
-    }
-    else
-    {
-      group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
     }
   }
 
@@ -768,7 +775,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
 
       QgsProject::instance()->addMapLayer( layer.release(), false );
       group->addLayer( ml );
-      qDebug() << ml->customPropertyKeys();
     }
     else
     {

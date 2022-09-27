@@ -2103,7 +2103,6 @@ void QgisApp::dropEvent( QDropEvent *event )
     lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
   }
 
-  qDebug() << files;
   connect( timer, &QTimer::timeout, this, [this, timer, files, lst]
   {
     QgsCanvasRefreshBlocker refreshBlocker;
@@ -2146,7 +2145,6 @@ void QgisApp::dropEvent( QDropEvent *event )
 
     if ( !addedLayers.isEmpty() )
     {
-      qDebug() << addedLayers.size();
       QgsAppLayerHandling::addSortedLayersToLegend( addedLayers );
       QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
     }
