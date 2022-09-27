@@ -1936,11 +1936,19 @@ QgsPoint QgsLineString::centroid() const
 
 void QgsLineString::sumUpArea( double &sum ) const
 {
-  int maxIndex = numPoints() - 1;
+  const int maxIndex = mX.size();
+  if ( maxIndex == 0 )
+    return;
 
-  for ( int i = 0; i < maxIndex; ++i )
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  double prevX = *x++;
+  double prevY = *y++;
+  for ( int i = 1; i < maxIndex; ++i )
   {
-    sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
+    sum += 0.5 * ( prevX * ( *y ) - prevY * ( *x ) );
+    prevX = *x++;
+    prevY = *y++;
   }
 }
 
