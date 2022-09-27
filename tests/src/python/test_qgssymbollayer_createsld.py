@@ -274,7 +274,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         # print ("Simple fill mm: \n" + dom.toString())
 
-        self.assertStrokeWidth(root, 2, 18)
+        self.assertStrokeWidth(root, 4, 18)
         self.assertStaticDisplacement(root, 18, 36)
 
     def testSimpleFillPixels(self):
@@ -286,7 +286,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         dom, root = self.symbolToSld(symbol)
         # print ( "Simple fill px: \n" + dom.toString())
 
-        self.assertStrokeWidth(root, 2, 5)
+        self.assertStrokeWidth(root, 4, 5)
         self.assertStaticDisplacement(root, 5, 10)
 
     def testSvgFillDefault(self):
