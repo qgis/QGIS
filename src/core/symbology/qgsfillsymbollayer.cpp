@@ -404,19 +404,17 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     // <Fill>
     QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
     symbolizerElem.appendChild( fillElem );
+
+    QColor color { mColor };
+
     // Apply alpha from symbol
     bool ok;
-    const double alpha { props.value( QStringLiteral( "alpha" ), 0.0 ).toDouble( &ok ) };
+    const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
     if ( ok )
     {
-      QColor color { mColor };
       color.setAlphaF( color.alphaF() * alpha );
-      QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
     }
-    else
-    {
-      QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, mColor );
-    }
+    QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
   }
 
   if ( mStrokeStyle != Qt::NoPen )
