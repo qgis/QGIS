@@ -1327,6 +1327,7 @@ The development version
       CustomCrs,
     };
 
+<<<<<<< HEAD
     enum class ScriptLanguage
     {
       Css,
@@ -1338,6 +1339,13 @@ The development version
       R,
       Sql,
       Unknown,
+=======
+    enum class LayerTreeInsertionMethod
+    {
+      AboveInsertionPoint,
+      TopOfTree,
+      OptimalInInsertionGroup,
+>>>>>>> 4a95e2b0a8 (Add UI to select which insertion method should be used when adding new layers)
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

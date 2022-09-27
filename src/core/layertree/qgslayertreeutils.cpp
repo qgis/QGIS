@@ -623,26 +623,14 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
       if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
         index = 0;
-        vectorLineIndex++;
-        vectorPolygonIndex++;
-        pointCloudIndex++;
-        meshIndex++;
-        rasterIndex++;
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
         index = vectorLineIndex;
-        vectorPolygonIndex++;
-        pointCloudIndex++;
-        meshIndex++;
-        rasterIndex++;
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
         index = vectorPolygonIndex;
-        pointCloudIndex++;
-        meshIndex++;
-        rasterIndex++;
       }
       break;
     }
@@ -650,15 +638,12 @@ QgsLayerTreeLayer *QgsLayerTreeUtils::insertLayerAtOptimalPlacement( QgsLayerTre
     case QgsMapLayerType::PointCloudLayer:
     {
       index = pointCloudIndex;
-      meshIndex++;
-      rasterIndex++;
       break;
     }
 
     case QgsMapLayerType::MeshLayer:
     {
       index = meshIndex;
-      rasterIndex++;
       break;
     }
 

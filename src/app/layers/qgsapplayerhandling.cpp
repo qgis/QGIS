@@ -214,7 +214,18 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
 
   for ( QgsMapLayer *layer : layers )
   {
-    parent->insertLayer( currentIndex, layer );
+    switch ( QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod() )
+    {
+      case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
+        parent->insertLayer( currentIndex, layer );
+        break;
+      case Qgis::LayerTreeInsertionMethod::TopOfTree:
+        QgsProject::instance()->layerTreeRoot()->insertLayer( 0, layer );
+        break;
+      case Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup:
+        QgsLayerTreeUtils::insertLayerAtOptimalPlacement( parent, layer );
+        break;
+    }
   }
   QgisApp::instance()->layerTreeView()->setCurrentLayer( layers.at( 0 ) );
 }

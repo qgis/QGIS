@@ -2305,6 +2305,19 @@ class CORE_EXPORT Qgis
     Q_ENUM( ScriptLanguage )
 
     /**
+     * Layer tree insertion methods
+     *
+     * \since QGIS 3.30
+     */
+    enum class LayerTreeInsertionMethod : int
+    {
+      AboveInsertionPoint, //!< Layers are added in the tree above the insertion point
+      TopOfTree, //!< Layers are added at the top of the layer tree
+      OptimalInInsertionGroup, //!< Layers are added at optimal locations across the insertion point's group
+    };
+    Q_ENUM( LayerTreeInsertionMethod )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

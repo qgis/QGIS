@@ -5577,6 +5577,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   QgsProject *prj = QgsProject::instance();
   prj->layerTreeRegistryBridge()->setNewLayersVisible( settings.value( QStringLiteral( "qgis/new_layers_visible" ), true ).toBool() );
+  prj->layerTreeRegistryBridge()->setLayerInsertionMethod( settings.enumValue( QStringLiteral( "qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
 
   //set the canvas to the default project background color
   mOverviewCanvas->setBackgroundColor( prj->backgroundColor() );
@@ -12333,6 +12334,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
   if ( optionsDialog->exec() )
   {
     QgsProject::instance()->layerTreeRegistryBridge()->setNewLayersVisible( mySettings.value( QStringLiteral( "qgis/new_layers_visible" ), true ).toBool() );
+    QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( mySettings.enumValue( QStringLiteral( "qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
 
     setupLayerTreeViewFromSettings();
 

@@ -711,6 +711,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   cmbLegendDoubleClickAction->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/legendDoubleClickAction" ), 0 ).toInt() );
 
+  mLayerTreeInsertionMethod->addItem( tr( "Above currently currently selected layer" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) );
+  mLayerTreeInsertionMethod->addItem( tr( "Always on top of the layer tree" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::TopOfTree ) );
+  mLayerTreeInsertionMethod->addItem( tr( "Optimal index within current layer tree group" ), QVariant::fromValue( Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup ) );
+  mLayerTreeInsertionMethod->setCurrentIndex( mLayerTreeInsertionMethod->findData( QVariant::fromValue( mSettings->enumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), Qgis::LayerTreeInsertionMethod::AboveInsertionPoint ) ) ) );
+
   // Legend symbol minimum / maximum values
   mLegendSymbolMinimumSizeSpinBox->setClearValue( 0.0, tr( "none" ) );
   mLegendSymbolMaximumSizeSpinBox->setClearValue( 0.0, tr( "none" ) );
@@ -1586,6 +1591,7 @@ void QgsOptions::saveOptions()
   QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/legendDoubleClickAction" ), cmbLegendDoubleClickAction->currentIndex() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/layerTreeInsertionMethod" ), mLayerTreeInsertionMethod->currentData().value<Qgis::LayerTreeInsertionMethod>() );
 
   // project
   mSettings->setValue( QStringLiteral( "/qgis/projOpenAtLaunch" ), mProjectOnLaunchCmbBx->currentIndex() );
