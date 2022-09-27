@@ -237,6 +237,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * Recalculate classes for a layer
      * \param vl  The layer being rendered (from which data values are calculated)
      * \param nclasses the number of classes
+     * \param error Optional parameter for error reporting
      */
     void updateClasses( const QgsVectorLayer *vl, int nclasses, QString *error = nullptr );
 
