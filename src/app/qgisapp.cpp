@@ -14858,7 +14858,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
 
       mVertexToolButton->addAction( mActionVertexTool );
       mVertexToolButton->addAction( mActionVertexToolActiveLayer );
-      QAction *defActionVertexTool = mActionVertexTool;
+      QAction *defActionVertexTool = nullptr;
       QgsSettings settings;
       switch ( settings.enumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::ActiveLayer ) )
       {
