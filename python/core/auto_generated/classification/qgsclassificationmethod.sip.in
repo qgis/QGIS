@@ -247,6 +247,7 @@ This will calculate the classes for a given layer to define the classes.
 :param layer: The vector layer
 :param expression: The name of the field on which the classes are calculated
 :param nclasses: The number of classes to be returned
+:param error: Optional parameter for error reporting
 %End
 
     QList<QgsClassificationRange> classes( const QList<double> &values, int nclasses );
