@@ -214,6 +214,12 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
 
   for ( QgsMapLayer *layer : layers )
   {
+    if ( layer->customProperty( QStringLiteral( "_legend_added" ), false ).toBool() )
+    {
+      layer->removeCustomProperty( QStringLiteral( "_legend_added" ) );
+      continue;
+    }
+
     switch ( QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod() )
     {
       case Qgis::LayerTreeInsertionMethod::AboveInsertionPoint:
@@ -674,7 +680,7 @@ QgsAppLayerHandling::SublayerHandling QgsAppLayerHandling::shouldAskUserForSubla
 QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName, bool addToLegend )
 {
   QgsLayerTreeGroup *group = nullptr;
-  if ( !groupName.isEmpty() && addToLegend )
+  if ( !groupName.isEmpty() )
   {
     int index { 0 };
     QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
@@ -759,11 +765,10 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
         layer->setName( layerName );
       else if ( !baseName.isEmpty() )
         layer->setName( baseName );
-      QgsProject::instance()->addMapLayer( layer.release(), addToLegend );
-      if ( group )
-      {
-        group->addLayer( ml );
-      }
+
+      QgsProject::instance()->addMapLayer( layer.release(), false );
+      group->addLayer( ml );
+      qDebug() << ml->customPropertyKeys();
     }
     else
     {
@@ -810,6 +815,11 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   for ( QgsMapLayer *ml : std::as_const( result ) )
   {
     QgsAppLayerHandling::postProcessAddedLayer( ml );
+    if ( group && !addToLegend )
+    {
+      // Take note of the fact that the group name took over the intent to defer legend addition
+      ml->setCustomProperty( QStringLiteral( "_legend_added" ), true );
+    }
   }
 
   return result;
