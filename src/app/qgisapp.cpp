@@ -8443,7 +8443,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       if ( exp->feedback() && exp->feedback()->isCanceled() )
         return;
 
-      QgsMapLayer *ml = exp->takeExportedLayer();
+      std::unique_ptr<QgsMapLayer> ml( exp->takeExportedLayer() );
       if ( ! ml->isValid() )
       {
         if ( ! exp->lastError().isEmpty() )
@@ -8457,9 +8457,7 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       }
 
       if ( addToCanvas && ml->isValid() )
-        QgsProject::instance()->addMapLayer( ml );
-      else
-        delete ml;
+        QgsProject::instance()->addMapLayer( ml.release() );
     } );
   }
   return vectorFilename;
