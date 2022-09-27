@@ -36,6 +36,7 @@
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
+#include "qgslayertreemodel.h"
 #include "qgsgui.h"
 #include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
@@ -134,6 +135,87 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       break;
     }
   }
+}
+
+void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers )
+{
+  if ( layers.size() > 1 )
+  {
+    std::sort( layers.begin(), layers.end(), []( QgsMapLayer * a, QgsMapLayer * b )
+    {
+      const static QMap<QgsMapLayerType, int> layerTypeOrdering =
+      {
+        { QgsMapLayerType::AnnotationLayer, -1 },
+        { QgsMapLayerType::VectorLayer, 0 },
+        { QgsMapLayerType::PointCloudLayer, 1 },
+        { QgsMapLayerType::MeshLayer, 2 },
+        { QgsMapLayerType::VectorTileLayer, 3 },
+        { QgsMapLayerType::RasterLayer, 4 },
+        { QgsMapLayerType::GroupLayer, 5 },
+        { QgsMapLayerType::PluginLayer, 6 },
+      };
+
+      if ( a->type() == QgsMapLayerType::VectorLayer && b->type() == QgsMapLayerType::VectorLayer )
+      {
+        QgsVectorLayer *av = qobject_cast<QgsVectorLayer *>( a );
+        QgsVectorLayer *bv = qobject_cast<QgsVectorLayer *>( b );
+        if ( av->geometryType() == QgsWkbTypes::PointGeometry && bv->geometryType() != QgsWkbTypes::PointGeometry )
+        {
+          return false;
+        }
+        else if ( av->geometryType() == QgsWkbTypes::LineGeometry && bv->geometryType() == QgsWkbTypes::PolygonGeometry )
+        {
+          return false;
+        }
+        else
+        {
+          return true;
+        }
+      }
+
+      return layerTypeOrdering.value( a->type() ) > layerTypeOrdering.value( b->type() );
+    } );
+  }
+
+  QgsLayerTreeGroup *parent = nullptr;
+  QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
+  int index = 0;
+  if ( currentNode && currentNode->parent() )
+  {
+    if ( QgsLayerTree::isGroup( currentNode ) )
+    {
+      parent = qobject_cast<QgsLayerTreeGroup *>( currentNode );
+    }
+    else if ( QgsLayerTree::isLayer( currentNode ) )
+    {
+      const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+      int nodeIdx = 0;
+      for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+      {
+        nodeIdx++;
+        if ( child == currentNode )
+        {
+          index = nodeIdx;
+          break;
+        }
+      }
+      parent = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() );
+    }
+    else
+    {
+      parent = qobject_cast<QgsLayerTreeGroup *>( QgsProject::instance()->layerTreeRoot() );
+    }
+  }
+  else
+  {
+    parent = qobject_cast<QgsLayerTreeGroup *>( QgsProject::instance()->layerTreeRoot() );
+  }
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    parent->insertLayer( index, layer );
+  }
+  QgisApp::instance()->layerTreeView()->setCurrentLayer( layers.at( 0 ) );
 }
 
 void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &layers )
@@ -370,7 +452,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringLis
   return addedLayers;
 }
 
-QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &provider, bool showWarningOnInvalid )
+QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &provider, bool showWarningOnInvalid, bool addToLegend )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -402,13 +484,13 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
   QgsAppLayerHandling::postProcessAddedLayer( layer.get() );
 
 
-  QgsProject::instance()->addMapLayer( layer.get() );
+  QgsProject::instance()->addMapLayer( layer.get(), addToLegend );
   QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
 
   return layer.release();
 }
 
-QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &provider )
+QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
   QgsPluginLayer *layer = QgsApplication::pluginLayerRegistry()->createLayer( provider, uri );
   if ( !layer )
@@ -416,12 +498,12 @@ QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const Q
 
   layer->setName( baseName );
 
-  QgsProject::instance()->addMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer, addToLegend );
 
   return layer;
 }
 
-QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid )
+QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid, bool addToLegend )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -453,7 +535,7 @@ QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri,
 
   QgsAppLayerHandling::postProcessAddedLayer( layer.get() );
 
-  QgsProject::instance()->addMapLayer( layer.get() );
+  QgsProject::instance()->addMapLayer( layer.get(), addToLegend );
   QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
 
   return layer.release();
@@ -577,10 +659,10 @@ QgsAppLayerHandling::SublayerHandling QgsAppLayerHandling::shouldAskUserForSubla
   return SublayerHandling::AskUser;
 }
 
-QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName )
+QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName, bool addToLegend )
 {
   QgsLayerTreeGroup *group = nullptr;
-  if ( !groupName.isEmpty() )
+  if ( !groupName.isEmpty() && addToLegend )
   {
     int index { 0 };
     QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
@@ -659,14 +741,17 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
     // filename in the layer's name, because the group is already titled with the filename.
     // But otherwise, we DO include the file name so that users can differentiate the source
     // when multiple layers are loaded from a GPX file or similar (refs https://github.com/qgis/QGIS/issues/37551)
-    if ( group )
+    if ( !groupName.isEmpty() )
     {
       if ( !layerName.isEmpty() )
         layer->setName( layerName );
       else if ( !baseName.isEmpty() )
         layer->setName( baseName );
-      QgsProject::instance()->addMapLayer( layer.release(), false );
-      group->addLayer( ml );
+      QgsProject::instance()->addMapLayer( layer.release(), addToLegend );
+      if ( group )
+      {
+        group->addLayer( ml );
+      }
     }
     else
     {
@@ -676,7 +761,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
         layer->setName( layerName );
       else if ( !baseName.isEmpty() )
         layer->setName( baseName );
-      QgsProject::instance()->addMapLayer( layer.release() );
+      QgsProject::instance()->addMapLayer( layer.release(), addToLegend );
     }
 
     // Some of the logic relating to matching a new project's CRS to the first layer added CRS is deferred to happen when the event loop
@@ -718,7 +803,7 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
   return result;
 }
 
-QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, bool &ok, bool allowInteractive, bool suppressBulkLayerPostProcessing )
+QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, bool &ok, bool allowInteractive, bool suppressBulkLayerPostProcessing, bool addToLegend )
 {
   QList< QgsMapLayer * > openedLayers;
   auto postProcessAddedLayers = [suppressBulkLayerPostProcessing, &openedLayers]
@@ -749,7 +834,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
 
       case QgsMapLayerType::PointCloudLayer:
       {
-        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), true ) )
+        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), true, addToLegend ) )
         {
           ok = true;
           openedLayers << layer;
@@ -800,7 +885,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
         if ( vtLayer->isValid() )
         {
           openedLayers << vtLayer.get();
-          QgsProject::instance()->addMapLayer( vtLayer.release() );
+          QgsProject::instance()->addMapLayer( vtLayer.release(), addToLegend );
           postProcessAddedLayers();
           ok = true;
           return openedLayers;
@@ -812,7 +897,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( fileName ).toString() );
-        if ( QgsRasterLayer *rasterLayer = addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
+        if ( QgsRasterLayer *rasterLayer = addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ), addToLegend ) )
         {
           openedLayers << rasterLayer;
           postProcessAddedLayers();
@@ -834,7 +919,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
     {
       openedLayers << vtLayer.get();
       QgsAppLayerHandling::postProcessAddedLayer( vtLayer.get() );
-      QgsProject::instance()->addMapLayer( vtLayer.release() );
+      QgsProject::instance()->addMapLayer( vtLayer.release(), addToLegend );
       postProcessAddedLayers();
       ok = true;
       return openedLayers;
@@ -925,7 +1010,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
         base = QgsMapLayer::formatLayerName( base );
       }
 
-      openedLayers.append( addSublayers( sublayers, base, groupName ) );
+      openedLayers.append( addSublayers( sublayers, base, groupName, addToLegend ) );
       QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
     }
     else if ( !nonLayerItems.empty() )
@@ -978,19 +1063,19 @@ QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, 
   return openedLayers;
 }
 
-QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &uri, const QString &baseName, const QString &provider )
+QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
-  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "ogr" ), true );
+  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "ogr" ), true, addToLegend );
 }
 
-QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &provider )
+QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "gdal" ), true );
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "gdal" ), true, addToLegend );
 }
 
-QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &uri, const QString &baseName, const QString &provider )
+QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend )
 {
-  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, uri, baseName, provider, true );
+  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, uri, baseName, provider, true, addToLegend );
 }
 
 QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid )
@@ -1088,16 +1173,14 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList
   return res;
 }
 
-void QgsAppLayerHandling::addMapLayer( QgsMapLayer *mapLayer )
+void QgsAppLayerHandling::addMapLayer( QgsMapLayer *mapLayer, bool addToLegend )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
 
   if ( mapLayer->isValid() )
   {
     // Register this layer with the layers registry
-    QList<QgsMapLayer *> myList;
-    myList << mapLayer;
-    QgsProject::instance()->addMapLayers( myList );
+    QgsProject::instance()->addMapLayer( mapLayer, addToLegend );
 
     QgisApp::instance()->askUserForDatumTransform( mapLayer->crs(), QgsProject::instance()->crs(), mapLayer );
   }
@@ -1247,7 +1330,7 @@ QList< QgsMapLayer * > QgsAppLayerHandling::addDatabaseLayers( const QStringList
 }
 
 template<typename T>
-T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings )
+T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &name, const QString &providerKey, bool guiWarnings, bool addToLegend )
 {
   QgsSettings settings;
 
@@ -1317,14 +1400,14 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
             const QList< QgsProviderSublayerDetails > selectedLayers = dlg.selectedLayers();
             if ( !selectedLayers.isEmpty() )
             {
-              result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName() ).value( 0 ) );
+              result = qobject_cast< T * >( addSublayers( selectedLayers, baseName, dlg.groupName(), addToLegend ).value( 0 ) );
             }
           }
           break;
         }
         case SublayerHandling::LoadAll:
         {
-          result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString() ).value( 0 ) );
+          result = qobject_cast< T * >( addSublayers( sublayers, baseName, QString(), addToLegend ).value( 0 ) );
           break;
         }
         case SublayerHandling::AbortLoading:
@@ -1333,7 +1416,7 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
     }
     else
     {
-      result = qobject_cast< T * >( addSublayers( sublayers, name, QString() ).value( 0 ) );
+      result = qobject_cast< T * >( addSublayers( sublayers, name, QString(), addToLegend ).value( 0 ) );
 
       if ( result )
       {
@@ -1359,7 +1442,7 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
         base = QgsMapLayer::formatLayerName( base );
       }
       result->setName( base );
-      QgsProject::instance()->addMapLayer( result );
+      QgsProject::instance()->addMapLayer( result, addToLegend );
 
       QgisApp::instance()->askUserForDatumTransform( result->crs(), QgsProject::instance()->crs(), result );
       QgsAppLayerHandling::postProcessAddedLayer( result );

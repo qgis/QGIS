@@ -2103,6 +2103,7 @@ void QgisApp::dropEvent( QDropEvent *event )
     lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
   }
 
+  qDebug() << files;
   connect( timer, &QTimer::timeout, this, [this, timer, files, lst]
   {
     QgsCanvasRefreshBlocker refreshBlocker;
@@ -2130,13 +2131,13 @@ void QgisApp::dropEvent( QDropEvent *event )
 
       if ( !handled )
       {
-        addedLayers.append( openFile( file, QString(), true ) );
+        addedLayers.append( openFile( file, QString(), true, false ) );
       }
     }
 
     if ( !lst.isEmpty() )
     {
-      addedLayers.append( handleDropUriList( lst, true ) );
+      addedLayers.append( handleDropUriList( lst, true, false ) );
     }
 
     // Manually run autoSelectAddedLayer()
@@ -2144,7 +2145,11 @@ void QgisApp::dropEvent( QDropEvent *event )
     autoSelectAddedLayer( addedLayers );
 
     if ( !addedLayers.isEmpty() )
+    {
+      qDebug() << addedLayers.size();
+      QgsAppLayerHandling::addSortedLayersToLegend( addedLayers );
       QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
+    }
 
     timer->deleteLater();
   } );
@@ -2219,7 +2224,7 @@ QVector<QPointer<QgsLayoutCustomDropHandler> > QgisApp::customLayoutDropHandlers
   return mCustomLayoutDropHandlers;
 }
 
-QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing )
+QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing, bool addToLegend )
 {
   // avoid unnecessary work when adding lots of layers at once - defer emitting the active layer changed signal until we've
   // added all layers, and only emit the signal once for the final layer added
@@ -2257,31 +2262,31 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     if ( u.layerType == QLatin1String( "collection" ) )
     {
       bool ok = false;
-      const QList< QgsMapLayer * > collectionLayers = QgsAppLayerHandling::openLayer( uri, ok, true, true );
+      const QList< QgsMapLayer * > collectionLayers = QgsAppLayerHandling::openLayer( uri, ok, true, true, addToLegend );
       if ( ok )
         addedLayers.append( collectionLayers );
     }
     else if ( u.layerType == QLatin1String( "vector" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey, addToLegend );
       if ( layer )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "raster" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey, addToLegend );
       if ( layer )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey, addToLegend );
       if ( layer )
         addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey, addToLegend );
       if ( layer )
         addedLayers << layer;
     }
@@ -2317,7 +2322,7 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
 
       if ( subLayers.empty() )
       {
-        QgsAppLayerHandling::addMapLayer( layer );
+        QgsAppLayerHandling::addMapLayer( layer, addToLegend );
         addedLayers << layer;
       }
       else
@@ -2325,37 +2330,40 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
         // if there's any sublayers, we add them all to a group to keep things together
         const QString groupName = layer->name();
         QgsLayerTreeGroup *group = nullptr;
-        int index { 0 };
-        QgsLayerTreeNode *currentNode { mLayerTreeView->currentNode() };
-        if ( currentNode && currentNode->parent() )
+        if ( addToLegend )
         {
-          if ( QgsLayerTree::isGroup( currentNode ) )
+          int index { 0 };
+          QgsLayerTreeNode *currentNode { mLayerTreeView->currentNode() };
+          if ( currentNode && currentNode->parent() )
           {
-            group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
-          }
-          else if ( QgsLayerTree::isLayer( currentNode ) )
-          {
-            const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
-            int nodeIdx { 0 };
-            for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+            if ( QgsLayerTree::isGroup( currentNode ) )
             {
-              nodeIdx++;
-              if ( child == currentNode )
-              {
-                index = nodeIdx;
-                break;
-              }
+              group = qobject_cast<QgsLayerTreeGroup *>( currentNode )->insertGroup( 0, groupName );
             }
-            group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+            else if ( QgsLayerTree::isLayer( currentNode ) )
+            {
+              const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+              int nodeIdx { 0 };
+              for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
+              {
+                nodeIdx++;
+                if ( child == currentNode )
+                {
+                  index = nodeIdx;
+                  break;
+                }
+              }
+              group = qobject_cast<QgsLayerTreeGroup *>( currentNode->parent() )->insertGroup( index, groupName );
+            }
+            else
+            {
+              group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
+            }
           }
           else
           {
             group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
           }
-        }
-        else
-        {
-          group = QgsProject::instance()->layerTreeRoot()->insertGroup( 0, groupName );
         }
 
         // sublayers get added first, because we want them to render on top of the vector tile layer (for now, maybe in future we can add support
@@ -2363,17 +2371,23 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
         for ( QgsMapLayer *subLayer : std::as_const( subLayers ) )
         {
           QgsProject::instance()->addMapLayer( subLayer, false );
-          group->addLayer( subLayer );
+          if ( group )
+          {
+            group->addLayer( subLayer );
+          }
           addedLayers <<  subLayer;
         }
         QgsProject::instance()->addMapLayer( layer, false );
-        group->addLayer( layer );
+        if ( group )
+        {
+          group->addLayer( layer );
+        }
         addedLayers << layer;
       }
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
-      QgsMapLayer *layer = QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey, addToLegend );
       if ( layer )
         addedLayers << layer;
     }
@@ -6721,7 +6735,7 @@ void QgisApp::openProject( const QString &fileName )
 }
 
 // Open a file specified by a commandline argument, Drop or FileOpen event.
-QList< QgsMapLayer * > QgisApp::openFile( const QString &fileName, const QString &fileTypeHint, bool suppressBulkLayerPostProcessing )
+QList< QgsMapLayer * > QgisApp::openFile( const QString &fileName, const QString &fileTypeHint, bool suppressBulkLayerPostProcessing, bool addToLegend )
 {
   QList< QgsMapLayer * > res;
 
@@ -6748,7 +6762,7 @@ QList< QgsMapLayer * > QgisApp::openFile( const QString &fileName, const QString
   {
     QgsDebugMsgLevel( "Adding " + fileName + " to the map canvas", 2 );
     bool ok = false;
-    res = QgsAppLayerHandling::openLayer( fileName, ok, true, suppressBulkLayerPostProcessing );
+    res = QgsAppLayerHandling::openLayer( fileName, ok, true, suppressBulkLayerPostProcessing, addToLegend );
   }
 
   return res;
