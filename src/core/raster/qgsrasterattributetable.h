@@ -20,22 +20,26 @@
 #include "qgsfeature.h"
 #include "qgis_core.h"
 #include "gdal.h"
+#include "qgis_sip.h"
 
 #include <QObject>
 
+/**
+ * \brief The QgsRasterAttributeTable class represents a raster attribute table (RAT).
+ *
+ * This class is modeled after the GDAL RAT implementation, it adds some convenience
+ * methods to handle data from QGIS and to import/export a RAT from/to a DBF VAT file.
+ *
+ * \since QGIS 3.30
+ */
 class CORE_EXPORT QgsRasterAttributeTable
 {
 
   public:
 
-    enum class Origin : int
-    {
-      Provider,
-      File
-    };
-
-    QgsRasterAttributeTable( QgsRasterAttributeTable::Origin origin = QgsRasterAttributeTable::Origin::Provider );
-
+    /**
+     * \brief The FieldUsage enum represents the usage of a RAT field.
+     */
     enum class FieldUsage : int
     {
       Generic = GFU_Generic, //!< Field usage Generic
@@ -59,50 +63,129 @@ class CORE_EXPORT QgsRasterAttributeTable
       MaxCount = GFU_MaxCount //!< Field usage MaxCount
     };
 
+    /**
+     * \brief The RatType enum represents the type of RAT.
+     */
     enum class RatType : int
     {
       Thematic = GRTT_THEMATIC,
       Athematic = GRTT_ATHEMATIC
     };
 
+    /**
+     * \brief The Field struct represents a RAT field, including its name, usage and type.
+     */
     struct Field
     {
+
+      /**
+       * Creates a new Field with \a name, \a type and \a usage.
+       */
       Field( const QString &name, const FieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
       QString name;
       FieldUsage usage;
       QVariant::Type type;
     };
 
+    /**
+     * Returns the RAT type.
+     */
     const RatType &type() const;
+
+    /**
+     * Sets the RAT \a type
+     */
     void setType( const RatType &newType );
+
+    /**
+     * Returns TRUE if the RAT has RGB information.
+     */
     bool hasColor();
+
+    /**
+     * Returns the RAT fields.
+     */
     QList<QgsRasterAttributeTable::Field> fields() const;
 
+    /**
+     * Return the RAT fields as QgsFields.
+     */
     QgsFields qgisFields() const;
+
+    /**
+     * Returns the RAT rows as a list of QgsFeature.
+     */
     QgsFeatureList qgisFeatures( ) const;
 
+    /**
+     * Returns TRUE if the RAT was modified from its last reading from the storage.
+     */
     bool isDirty() const;
-    void setIsDirty( bool newIsDirty );
 
+    /**
+     * Sets the RAT dirty state to \a isDirty;
+     */
+    void setIsDirty( bool isDirty );
+
+    /**
+     * Returs TRUE if the RAT is valid.
+     */
     bool isValid() const;
 
-    bool insertField( const QgsRasterAttributeTable::Field field, int position = 0 );
+    /**
+     * Insert a new \a field at \a position and returns TRUE on success.
+     */
+    bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0 );
+
+    /**
+     * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, returns TRUE on success.
+     */
     bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
 
+    /**
+     * Creates a new field from \a name, \a usage and \a type and appends it to the fields, returns TRUE on success.
+     */
     bool appendField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type );
+
+    /**
+     * Appends a new \a field and returns TRUE on success.
+     */
     bool appendField( const QgsRasterAttributeTable::Field &field );
 
+    /**
+     * Removes the field with \a name, returns TRUE on success.
+     */
     bool removeField( const QString &name );
 
+    /**
+     * Inserts a row of \a data in the RAT at \a position, returns TRUE on success.
+     */
     bool insertRow( const QVariantList data, int position = 0 );
+
+    /**
+     * Appends a row of \a data to the RAT, returns TRUE on success.
+     */
     bool appendRow( const QVariantList data );
 
-    bool saveToFile( const QString &path, int bandNoInt = 1 );
-    bool loadFromFile( const QString &path );
+    /**
+     * Writes the RAT to a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    bool writeToFile( const QString &path, QString *errorMessage SIP_OUT = nullptr );
 
-    QgsRasterAttributeTable::Origin origin() const;
+    /**
+     * Reads the RAT from a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    bool readFromFile( const QString &path, QString *errorMessage SIP_OUT = nullptr );
 
+    /**
+     * Returs the RAT rows.
+     */
     const QList<QList<QVariant>> &data() const;
+
+    /**
+     * Try to determine the field usage from its \a name and \a type.
+     */
+    static FieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 
   private:
 
@@ -110,7 +193,6 @@ class CORE_EXPORT QgsRasterAttributeTable
     QList<Field> mFields;
     QList<QVariantList> mData;
     bool mIsDirty;
-    Origin mOrigin;
 
 };
 
