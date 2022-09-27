@@ -129,6 +129,8 @@ class CORE_EXPORT QgsLayerTreeUtils
      * \since QGIS 3.8
      */
     static QgsLayerTreeGroup *firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property );
+
+    static QgsLayerTreeLayer *insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer );
 };
 
 #endif // QGSLAYERTREEUTILS_H

@@ -37,6 +37,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeutils.h"
 #include "qgsgui.h"
 #include "qgsmbtiles.h"
 #include "qgsmessagelog.h"
@@ -179,7 +180,7 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
 
   QgsLayerTreeGroup *parent = nullptr;
   QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
-  int index = 0;
+  int currentIndex = 0;
   if ( currentNode && currentNode->parent() )
   {
     if ( QgsLayerTree::isGroup( currentNode ) )
@@ -188,14 +189,14 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
     }
     else if ( QgsLayerTree::isLayer( currentNode ) )
     {
-      const QList<QgsLayerTreeNode *> currentNodeSiblings { currentNode->parent()->children() };
+      const QList<QgsLayerTreeNode *> currentNodeSiblings = currentNode->parent()->children();
       int nodeIdx = 0;
       for ( const QgsLayerTreeNode *child : std::as_const( currentNodeSiblings ) )
       {
         nodeIdx++;
         if ( child == currentNode )
         {
-          index = nodeIdx;
+          currentIndex = nodeIdx;
           break;
         }
       }
@@ -213,7 +214,7 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
 
   for ( QgsMapLayer *layer : layers )
   {
-    parent->insertLayer( index, layer );
+    parent->insertLayer( currentIndex, layer );
   }
   QgisApp::instance()->layerTreeView()->setCurrentLayer( layers.at( 0 ) );
 }

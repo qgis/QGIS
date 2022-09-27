@@ -142,6 +142,8 @@ or the group itself if it doesn't hold the property
 
 .. versionadded:: 3.8
 %End
+
+    static QgsLayerTreeLayer *insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer );
 };
 
 /************************************************************************
