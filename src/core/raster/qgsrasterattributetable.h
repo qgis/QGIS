@@ -25,6 +25,7 @@
 #include <QObject>
 
 /**
+ * \ingroup core
  * \brief The QgsRasterAttributeTable class represents a raster attribute table (RAT).
  *
  * This class is modeled after the GDAL RAT implementation, it adds some convenience
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     QList<QgsRasterAttributeTable::Field> fields() const;
 
     /**
-     * Return the RAT fields as QgsFields.
+     * Returns the RAT fields as QgsFields.
      */
     QgsFields qgisFields() const;
 
@@ -128,12 +129,12 @@ class CORE_EXPORT QgsRasterAttributeTable
     void setIsDirty( bool isDirty );
 
     /**
-     * Returs TRUE if the RAT is valid.
+     * Returns TRUE if the RAT is valid.
      */
     bool isValid() const;
 
     /**
-     * Insert a new \a field at \a position and returns TRUE on success.
+     * Inserts a new \a field at \a position and returns TRUE on success.
      */
     bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0 );
 
@@ -178,7 +179,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool readFromFile( const QString &path, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Returs the RAT rows.
+     * Returns the RAT rows.
      */
     const QList<QList<QVariant>> &data() const;
 
