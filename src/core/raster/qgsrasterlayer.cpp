@@ -743,11 +743,11 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
 
   QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
-  if ( mDataProvider->bandCount() == 1 && mDataProvider->attributeTable( 1 ) )
-  {
-    setRendererForDrawingStyle( QgsRaster::AttributeTable );
-  }
-  else if ( mRasterType == ColorLayer )
+
+  // TODO: automatic load RAT if set for single band
+  // if ( mDataProvider->bandCount() == 1 && mDataProvider->attributeTable( 1 ) )
+  // ....
+  if ( mRasterType == ColorLayer )
   {
     QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );
     setRendererForDrawingStyle( QgsRaster::SingleBandColorDataStyle );

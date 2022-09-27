@@ -14,11 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetable.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
-QgsRasterAttributeTable::QgsRasterAttributeTable( Origin origin )
-  : mOrigin( origin )
+
+///@cond private
+inline uint qHash( const QgsRasterAttributeTable::FieldUsage &key, uint seed )
 {
+  return ::qHash( static_cast<uint>( key ), seed );
 }
+///@endcond
+
 
 const QgsRasterAttributeTable::RatType &QgsRasterAttributeTable::type() const
 {
@@ -32,7 +38,12 @@ void QgsRasterAttributeTable::setType( const QgsRasterAttributeTable::RatType &n
 
 bool QgsRasterAttributeTable::hasColor()
 {
-  return true;
+  QSet<FieldUsage> usages;
+  for ( const auto &field : std::as_const( mFields ) )
+  {
+    usages.insert( field.usage );
+  }
+  return usages.contains( { FieldUsage::Red, FieldUsage::Green, FieldUsage::Blue } ) || usages.contains( { FieldUsage::RedMin, FieldUsage::GreenMin, FieldUsage::BlueMin, FieldUsage::RedMax, FieldUsage::GreenMax, FieldUsage::BlueMax } );
 }
 
 QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fields() const
@@ -75,12 +86,12 @@ bool QgsRasterAttributeTable::isDirty() const
   return mIsDirty;
 }
 
-void QgsRasterAttributeTable::setIsDirty( bool newIsDirty )
+void QgsRasterAttributeTable::setIsDirty( bool isDirty )
 {
-  mIsDirty = newIsDirty;
+  mIsDirty = isDirty;
 }
 
-bool QgsRasterAttributeTable::insertField( const Field field, int position )
+bool QgsRasterAttributeTable::insertField( const Field &field, int position )
 {
   if ( position < 0 )
   {
@@ -167,15 +178,125 @@ bool QgsRasterAttributeTable::appendRow( const QVariantList data )
   return insertRow( data, mData.count() );
 }
 
-bool QgsRasterAttributeTable::saveToFile( const QString &path, int bandNoInt )
+bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMessage )
 {
-  return false;
+  QgsVectorFileWriter::SaveVectorOptions options;
+  options.actionOnExistingFile =  QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile;
+  options.driverName = QStringLiteral( "ESRI Shapefile" );
+  options.fileEncoding = QStringLiteral( "UTF-8" );
+  std::unique_ptr<QgsVectorFileWriter> writer;
+
+  // Strip .dbf from path because OGR adds it back
+  QString cleanedPath { path };
+  if ( path.endsWith( QStringLiteral( ".dbf" ), Qt::CaseSensitivity::CaseInsensitive ) )
+  {
+    cleanedPath.chop( 4 );
+  }
+
+  writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
+
+  const QgsVectorFileWriter::WriterError error { writer->hasError() };
+  if ( error != QgsVectorFileWriter::WriterError::NoError )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = QObject::tr( "Error creating RAT table: %1." ).arg( writer->errorMessage() );
+    }
+    return false;
+  }
+  auto features { qgisFeatures() };
+  bool result { writer->addFeatures( features ) };
+
+  if ( ! result )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = QObject::tr( "Error creating RAT table: could not add rows." );
+    }
+    return false;
+  }
+
+  result = writer->flushBuffer();
+
+  if ( result )
+  {
+    setIsDirty( false );
+  }
+
+  return result;
 }
 
-bool QgsRasterAttributeTable::loadFromFile( const QString &path )
+bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorMessage )
 {
-  return false;
+  QgsVectorLayer rat { path, QStringLiteral( "rat_temp" ), QStringLiteral( "ogr" ) };
+  if ( ! rat.isValid() )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = QObject::tr( "Error reading RAT table from file: invalid layer." );
+    }
+    return false;
+  }
+
+  QList<Field> oldFields = mFields;
+  QList<QVariantList> oldData = mData;
+
+  mFields.clear();
+  mData.clear();
+
+  bool hasValueField { false };
+  for ( const QgsField &field : rat.fields() )
+  {
+    const FieldUsage usage { guessFieldUsage( field.name(), field.type() ) };
+    QVariant::Type type { field.type() };
+    // DBF sets all int fields to long but for RGBA it doesn't make sense
+    if ( type == QVariant::Type::LongLong &&
+         ( usage == FieldUsage::Red || usage == FieldUsage::RedMax || usage == FieldUsage::RedMin ||
+           usage == FieldUsage::Green || usage == FieldUsage::GreenMax || usage == FieldUsage::GreenMin ||
+           usage == FieldUsage::Blue || usage == FieldUsage::BlueMax || usage == FieldUsage::BlueMin ||
+           usage == FieldUsage::Alpha || usage == FieldUsage::AlphaMax || usage == FieldUsage::AlphaMin ) )
+    {
+      type = QVariant::Int;
+    }
+
+    if ( usage == FieldUsage::MinMax || usage == FieldUsage::Min || usage == FieldUsage::Max )
+    {
+      hasValueField = true;
+    }
+
+    QgsRasterAttributeTable::Field ratField { field.name(), usage, type };
+    appendField( ratField );
+  }
+
+  // Do we have a value field? If not, try to guess one
+  if ( ! hasValueField && mFields.count() > 1 && ( mFields.at( 0 ).type == QVariant::Int || mFields.at( 0 ).type == QVariant::Char || mFields.at( 0 ).type == QVariant::UInt || mFields.at( 0 ).type == QVariant::LongLong || mFields.at( 0 ).type == QVariant::ULongLong ) )
+  {
+    mFields[0].usage = FieldUsage::MinMax;
+  }
+
+  const int fieldCount { fields().count( ) };
+  QgsFeature f;
+  QgsFeatureIterator fit { rat.getFeatures( ) };
+  while ( fit.nextFeature( f ) )
+  {
+    if ( f.attributeCount() != fieldCount )
+    {
+      if ( errorMessage )
+      {
+        *errorMessage = QObject::tr( "Error reading RAT table from file: number of fields and number of attributes do not match." );
+      }
+      mFields = oldFields;
+      mData = oldData;
+      return false;
+    }
+    appendRow( f.attributes().toList() );
+  }
+
+  setIsDirty( false );
+
+  return true;
 }
+
 
 bool QgsRasterAttributeTable::isValid() const
 {
@@ -183,12 +304,117 @@ bool QgsRasterAttributeTable::isValid() const
   return mFields.count() > 0 && mData.count( ) > 0;
 }
 
-QgsRasterAttributeTable::Origin QgsRasterAttributeTable::origin() const
-{
-  return mOrigin;
-}
-
 const QList<QList<QVariant> > &QgsRasterAttributeTable::data() const
 {
   return mData;
+}
+
+QgsRasterAttributeTable::FieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )
+{
+  static const QStringList minValueNames { {
+      QStringLiteral( "min" ),
+      QStringLiteral( "min_value" ),
+      QStringLiteral( "min value" ),
+      QStringLiteral( "value min" ),
+      QStringLiteral( "value_min" ),
+    } };
+
+  static const QStringList maxValueNames { {
+      QStringLiteral( "max" ),
+      QStringLiteral( "max_value" ),
+      QStringLiteral( "max value" ),
+      QStringLiteral( "value max" ),
+      QStringLiteral( "value_max" ),
+    } };
+
+  const QString fieldLower { name.toLower() };
+
+  if ( type == QVariant::Double || type == QVariant::Int || type == QVariant::UInt || type == QVariant::LongLong || type == QVariant::ULongLong )
+  {
+    if ( minValueNames.contains( fieldLower ) )
+    {
+      return FieldUsage::Min;
+    }
+    else if ( maxValueNames.contains( fieldLower ) )
+    {
+      return FieldUsage::Max;
+    }
+    else if ( fieldLower.contains( "red" ) || fieldLower == QStringLiteral( "r" ) )
+    {
+      if ( fieldLower.contains( "min" ) )
+      {
+        return FieldUsage::RedMin;
+      }
+      else if ( fieldLower.contains( "max" ) )
+      {
+        return FieldUsage::RedMax;
+      }
+      else
+      {
+        return FieldUsage::Red;
+      }
+    }
+    else if ( fieldLower.contains( "green" ) || fieldLower == QStringLiteral( "g" ) )
+    {
+      if ( fieldLower.contains( "min" ) )
+      {
+        return FieldUsage::GreenMin;
+      }
+      else if ( fieldLower.contains( "max" ) )
+      {
+        return FieldUsage::GreenMax;
+      }
+      else
+      {
+        return FieldUsage::Green;
+      }
+    }
+    else if ( fieldLower.contains( "blue" ) || fieldLower == QStringLiteral( "b" ) )
+    {
+      if ( fieldLower.contains( "min" ) )
+      {
+        return FieldUsage::BlueMin;
+      }
+      else if ( fieldLower.contains( "max" ) )
+      {
+        return FieldUsage::BlueMax;
+      }
+      else
+      {
+        return FieldUsage::Blue;
+      }
+    }
+    else if ( fieldLower.contains( "alpha" ) || fieldLower == QStringLiteral( "a" ) )
+    {
+      if ( fieldLower.contains( "min" ) )
+      {
+        return FieldUsage::AlphaMin;
+      }
+      else if ( fieldLower.contains( "max" ) )
+      {
+        return FieldUsage::AlphaMax;
+      }
+      else
+      {
+        return FieldUsage::Alpha;
+      }
+    }
+    else if ( fieldLower == QStringLiteral( "value" ) )
+    {
+      return FieldUsage::MinMax;
+    }
+    else if ( fieldLower == QStringLiteral( "count" ) )
+    {
+      // This could really be max count but it's more likely pixel count
+      return FieldUsage::PixelCount;
+    }
+  }
+  else if ( type == QVariant::String )  // default to name for strings
+  {
+    return FieldUsage::Name;
+  }
+
+  // default to generic for not strings
+  return FieldUsage::Generic;
+
 }

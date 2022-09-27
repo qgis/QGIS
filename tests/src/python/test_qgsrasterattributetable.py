@@ -131,7 +131,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
         rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
         rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
@@ -181,7 +181,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
         rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
         rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
         rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
@@ -211,7 +211,8 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
             [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
 
         rat = d.attributeTable(2)
-        rat.isValid()
+        self.assertTrue(rat.isValid())
+        self.assertTrue(rat.hasColor())
         rat.fields()
         self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue'])
         self.assertEqual(rat.data(), [
@@ -230,10 +231,52 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertFalse(d.readNativeAttributeTable())
         self.assertTrue(d.readFileBasedAttributeTable(1, self.uri_2x2_2_BANDS_INT16 + '.vat.dbf'))
         rat = d.attributeTable(1)
-        rat.isValid()
-        rat.fields()
+        self.assertTrue(rat.isValid())
         self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
         self.assertEqual([f.type for f in rat.fields()], [QVariant.Int, QVariant.Int, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
+        self.assertEqual(rat.data(), [
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
+
+    def testWriteRead(self):
+
+        # Create RAT
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('Value', QgsRasterAttributeTable.FieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Double', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.Double))
+
+        data_rows = [
+            [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
+            [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
+            [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456],
+        ]
+
+        usages = [f.usage for f in rat.fields()]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        rat_path = os.path.join(self.temp_path, 'test_rat1.vat.dbf')
+        self.assertTrue(rat.isDirty())
+        self.assertTrue(rat.writeToFile(rat_path)[0])
+        self.assertTrue(os.path.exists(rat_path))
+        self.assertFalse(rat.isDirty())
+
+        # Read it back
+        self.assertTrue(rat.readFromFile(rat_path)[0])
+        self.assertTrue(rat.isValid())
+        self.assertTrue(rat.hasColor())
+        self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
+        self.assertEqual([f.usage for f in rat.fields()], usages)
+        self.assertEqual([f.type for f in rat.fields()], [QVariant.LongLong, QVariant.LongLong, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
         self.assertEqual(rat.data(), [
             [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
             [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
