@@ -39,6 +39,7 @@ QString QgsClassificationPrettyBreaks::id() const
 QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString *error )
 {
   Q_UNUSED( values );
+  Q_UNUSED( error );
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
 
   if ( symmetricModeEnabled() )
