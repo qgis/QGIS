@@ -751,7 +751,7 @@
     <string>Mesh Digitizing Toolbar</string>
    </property>
    <property name="toolTip">
-    <string>Mesh Digitizing Toolbar</string>
+    <string>Advanced Mesh Editing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -3374,6 +3374,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
   </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

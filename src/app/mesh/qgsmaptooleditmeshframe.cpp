@@ -212,8 +212,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mActionDigitizing = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshElementTool.svg" ) ), tr( "Digitize Mesh Elements" ), this );
-  mActionDigitizing->setCheckable( true );
+  mActionMeshElementTool = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshElementTool.svg" ) ), tr( "Mesh Elements Tool" ), this );
+  mActionMeshElementTool->setCheckable( true );
 
   mActionSelectByPolygon = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshSelectPolygon.svg" ) ), tr( "Select Mesh Elements by Polygon" ), this );
   mActionSelectByPolygon->setCheckable( true );
@@ -257,10 +257,10 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   connect( mActionRemoveFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::removeFacesFromMesh );
   connect( mActionSplitFaces, &QAction::triggered, this, &QgsMapToolEditMeshFrame::splitSelectedFaces );
 
-  connect( mActionDigitizing, &QAction::toggled, this, [this]( bool checked )
+  connect( mActionMeshElementTool, &QAction::toggled, this, [this]( bool checked )
   {
     if ( checked )
-      activateWithState( Digitizing );
+      activateWithState( Editing );
   } );
 
   for ( int i = 0; i < mSelectActions.count(); ++i )
@@ -276,7 +276,7 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
   {
     if ( mActionSelectByPolygon->isChecked() )
     {
-      activateWithState( SelectingByPolygon );
+      activateWithState( AdvanceSelecting );
     }
     else
       mSelectionBand->reset( QgsWkbTypes::PolygonGeometry );
@@ -364,7 +364,7 @@ void QgsMapToolEditMeshFrame::activateWithState( State state )
 void QgsMapToolEditMeshFrame::backToDigitizing()
 {
   activateWithState( Editing );
-  mActionDigitizing->setChecked( true );
+  mActionMeshElementTool->setChecked( true );
 }
 
 QgsMapToolEditMeshFrame::~QgsMapToolEditMeshFrame()
@@ -376,7 +376,7 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 {
   QList<QAction *> actions;
   actions
-      << mActionDigitizing
+      << mActionMeshElementTool
       << mActionSelectByPolygon
       << mActionSelectByExpression
       << mActionTransformCoordinates
@@ -391,14 +391,14 @@ void QgsMapToolEditMeshFrame::setActionsEnable( bool enable )
 const QList<QAction *> QgsMapToolEditMeshFrame::mapToolActions()
 {
   return  QList<QAction *>()
-          << mActionDigitizing
+          << mActionMeshElementTool
           << mActionSelectByPolygon
           << mActionForceByLines;
 }
 
 QAction *QgsMapToolEditMeshFrame::meshElementToolAction() const
 {
-  return  mActionDigitizing;
+  return  mActionMeshElementTool;
 }
 
 const QList<QAction *> QgsMapToolEditMeshFrame::selectActions() const
@@ -682,7 +682,7 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
       return false;
     }
     case AddingNewFace:
-    case Selecting:
+    case DraggingForSelection:
     case MovingSelection:
     case ForceByLines:
       return false;

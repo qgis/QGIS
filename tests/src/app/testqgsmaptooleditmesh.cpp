@@ -78,7 +78,7 @@ void TestQgsMapToolEditMesh::editMesh()
 
   TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
   mCanvas->setCurrentLayer( meshLayerQuadFlower.get() );
-  mEditMeshMapTool->mActionDigitizing->trigger();
+  mEditMeshMapTool->mActionMeshElementTool->trigger();
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 5 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 8 );

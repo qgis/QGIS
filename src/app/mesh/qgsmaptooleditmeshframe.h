@@ -340,7 +340,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionDelaunayTriangulation = nullptr;
     QAction *mActionFacesRefinement = nullptr;
 
-    QAction *mActionDigitizing = nullptr;
+    QAction *mActionMeshElementTool = nullptr;
 
     QAction *mActionSelectByPolygon = nullptr;
     std::unique_ptr<QgsMapToolSelectionHandler> mSelectionHandler;
