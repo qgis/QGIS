@@ -785,7 +785,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    virtual bool writeNativeAttributeTable( ) const;
+    virtual bool writeNativeAttributeTable( ) const;  //#spellok
 
     /**
      * Reads the native attribute table.

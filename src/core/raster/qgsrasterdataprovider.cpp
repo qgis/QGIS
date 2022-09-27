@@ -864,7 +864,7 @@ bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const Q
   return false;
 }
 
-bool QgsRasterDataProvider::writeNativeAttributeTable() const
+bool QgsRasterDataProvider::writeNativeAttributeTable() const  //#spellok
 {
   return false;
 }

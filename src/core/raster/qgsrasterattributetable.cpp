@@ -17,15 +17,6 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 
-
-///@cond private
-inline uint qHash( const QgsRasterAttributeTable::FieldUsage &key, uint seed )
-{
-  return ::qHash( static_cast<uint>( key ), seed );
-}
-///@endcond
-
-
 const QgsRasterAttributeTable::RatType &QgsRasterAttributeTable::type() const
 {
   return mType;
@@ -38,12 +29,13 @@ void QgsRasterAttributeTable::setType( const QgsRasterAttributeTable::RatType &n
 
 bool QgsRasterAttributeTable::hasColor()
 {
-  QSet<FieldUsage> usages;
-  for ( const auto &field : std::as_const( mFields ) )
+  QList<FieldUsage> usages;
+  for ( const QgsRasterAttributeTable::Field &field : std::as_const( mFields ) )
   {
-    usages.insert( field.usage );
+    usages.push_back( field.usage );
   }
-  return usages.contains( { FieldUsage::Red, FieldUsage::Green, FieldUsage::Blue } ) || usages.contains( { FieldUsage::RedMin, FieldUsage::GreenMin, FieldUsage::BlueMin, FieldUsage::RedMax, FieldUsage::GreenMax, FieldUsage::BlueMax } );
+  return ( usages.contains( FieldUsage::Red ) && usages.contains( FieldUsage::Green ) && usages.contains( FieldUsage::Blue ) ) ||
+         ( usages.contains( FieldUsage::RedMin ) && usages.contains( FieldUsage::GreenMin ) && usages.contains( FieldUsage::BlueMin ) && usages.contains( FieldUsage::RedMax ) && usages.contains( FieldUsage::GreenMax ) && usages.contains( FieldUsage::BlueMax ) );
 }
 
 QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fields() const
@@ -55,8 +47,7 @@ QgsFields QgsRasterAttributeTable::qgisFields() const
 {
   QgsFields qFields;
 
-  const auto cFields { fields() };
-  for ( const auto &field : std::as_const( cFields ) )
+  for ( const QgsRasterAttributeTable::Field &field : std::as_const( mFields ) )
   {
     qFields.append( QgsField( field.name, field.type ) );
   }
@@ -66,8 +57,8 @@ QgsFields QgsRasterAttributeTable::qgisFields() const
 QgsFeatureList QgsRasterAttributeTable::qgisFeatures() const
 {
   QgsFeatureList features;
-  const auto cData { data( ) };
-  for ( const auto &row : std::as_const( cData ) )
+  const auto ratData { data( ) };
+  for ( const QVariantList &row : std::as_const( ratData ) )
   {
     QgsAttributes attributes;
     for ( const auto &cell : std::as_const( row ) )
@@ -98,7 +89,7 @@ bool QgsRasterAttributeTable::insertField( const Field &field, int position )
     return false;
   }
 
-  int realPos { std::min( mFields.count(), position ) };
+  int realPos { std::min( static_cast<int>( mFields.count() ), position ) };
 
   mFields.insert( realPos, field );
 
@@ -135,7 +126,7 @@ bool QgsRasterAttributeTable::removeField( const QString &name )
 
   if ( toRemove != mFields.end() )
   {
-    const auto idx { std::distance( mFields.begin(), toRemove ) };
+    const long long idx { std::distance( mFields.begin(), toRemove ) };
     mFields.erase( toRemove, mFields.end() );
     for ( auto it = mData.begin(); it != mData.end(); ++it )
     {
@@ -274,7 +265,7 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
     mFields[0].usage = FieldUsage::MinMax;
   }
 
-  const int fieldCount { fields().count( ) };
+  const int fieldCount { static_cast<int>( fields().count( ) ) };
   QgsFeature f;
   QgsFeatureIterator fit { rat.getFeatures( ) };
   while ( fit.nextFeature( f ) )

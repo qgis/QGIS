@@ -87,7 +87,7 @@ Returns the RAT fields.
 
     QgsFields qgisFields() const;
 %Docstring
-Return the RAT fields as :py:class:`QgsFields`.
+Returns the RAT fields as :py:class:`QgsFields`.
 %End
 
     QgsFeatureList qgisFeatures( ) const;
@@ -107,12 +107,12 @@ Sets the RAT dirty state to ``isDirty``;
 
     bool isValid() const;
 %Docstring
-Returs ``True`` if the RAT is valid.
+Returns ``True`` if the RAT is valid.
 %End
 
     bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0 );
 %Docstring
-Insert a new ``field`` at ``position`` and returns ``True`` on success.
+Inserts a new ``field`` at ``position`` and returns ``True`` on success.
 %End
 
     bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
@@ -157,7 +157,7 @@ Reads the RAT from a DBF file specified by ``path``, optionally reporting any er
 
     const QList<QList<QVariant>> &data() const;
 %Docstring
-Returs the RAT rows.
+Returns the RAT rows.
 %End
 
     static FieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );

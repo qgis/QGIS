@@ -150,7 +150,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(raster.isValid())
         raster.dataProvider().setAttributeTable(1, rat)
         d = raster.dataProvider()
-        self.assertTrue(d.writeNativeAttributeTable())
+        self.assertTrue(d.writeNativeAttributeTable())  # spellok
 
         # Check written data
         raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
@@ -193,7 +193,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(raster.isValid())
         raster.dataProvider().setAttributeTable(2, rat)
         d = raster.dataProvider()
-        self.assertTrue(d.writeNativeAttributeTable())
+        self.assertTrue(d.writeNativeAttributeTable())  # spellok
 
         # Check written data
         raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)

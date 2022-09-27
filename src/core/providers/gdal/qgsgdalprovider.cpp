@@ -3220,7 +3220,7 @@ bool QgsGdalProvider::readNativeAttributeTable()
   return hasAtLeastOneValidRat;
 }
 
-bool QgsGdalProvider::writeNativeAttributeTable() const
+bool QgsGdalProvider::writeNativeAttributeTable() const  //#spellok
 {
   bool success { false };
   for ( int band = 1; band <= bandCount(); band++ )
