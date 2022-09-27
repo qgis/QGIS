@@ -42,7 +42,7 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum,
-                                   const QList<double> &values, int nclasses ) override;
+                                   const QList<double> &values, int nclasses, QString *error = nullptr ) override;
 
     QString valueToLabel( double value ) const override;
 

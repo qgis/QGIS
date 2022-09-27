@@ -240,7 +240,7 @@ Defines if the trailing 0 are trimmed in the label
 Transforms a list of classes to a list of breaks
 %End
 
-    QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses );
+    QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString *error = 0 );
 %Docstring
 This will calculate the classes for a given layer to define the classes.
 

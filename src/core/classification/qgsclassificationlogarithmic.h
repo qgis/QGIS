@@ -49,7 +49,7 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
     bool valuesRequired() const override;
 
   private:
-    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses ) override;
+    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString *error = nullptr ) override;
     QString valueToLabel( double value ) const override;
 
 

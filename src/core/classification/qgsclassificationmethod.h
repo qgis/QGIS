@@ -236,7 +236,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * \param expression The name of the field on which the classes are calculated
      * \param nclasses The number of classes to be returned
      */
-    QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses );
+    QList<QgsClassificationRange> classes( const QgsVectorLayer *layer, const QString &expression, int nclasses, QString *error = nullptr );
 
     /**
      * This will calculate the classes for a list of values.
@@ -335,7 +335,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * The maximum value is expected to be added at the end of the list, but not the minimum
      */
     virtual QList<double> calculateBreaks( double &minimum, double &maximum,
-                                           const QList<double> &values, int nclasses ) = 0;
+                                           const QList<double> &values, int nclasses, QString *error = nullptr ) = 0;
 
     //! This is called after calculating the breaks or restoring from XML, so it can rely on private variables
     virtual QString valueToLabel( double value ) const {return formatNumber( value );}

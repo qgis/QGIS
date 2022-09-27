@@ -53,8 +53,9 @@ QIcon QgsClassificationStandardDeviation::icon() const
 
 
 QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses )
+    const QList<double> &values, int nclasses, QString *error )
 {
+  Q_UNUSED( error )
   // C++ implementation of the standard deviation class interval algorithm
   // as implemented in the 'classInt' package available for the R statistical
   // prgramming language.

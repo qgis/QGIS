@@ -37,7 +37,7 @@ class CORE_EXPORT QgsClassificationFixedInterval : public QgsClassificationMetho
     bool valuesRequired() const override;
 
   private:
-    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses ) override;
+    QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString *error = nullptr ) override;
 
 
 };

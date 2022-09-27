@@ -38,7 +38,7 @@ class CORE_EXPORT QgsClassificationQuantile : public QgsClassificationMethod
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum,
-                                   const QList<double> &values, int nclasses ) override;
+                                   const QList<double> &values, int nclasses, QString *error = nullptr ) override;
 };
 
 #endif // QGSCLASSIFICATIONQUANTILE_H
