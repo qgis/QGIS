@@ -759,7 +759,6 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret == SQLITE_OK )
   {
-    int realFieldIndex = 0;
     for ( int i = 1; i <= rows; i++ )
     {
       QString name = QString::fromUtf8( results[( i * columns ) + 1] );
@@ -767,7 +766,12 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       if ( name.compare( mGeometryColumn, Qt::CaseInsensitive ) == 0 )
         continue;
 
-      insertDefaultValue( realFieldIndex, QString::fromUtf8( results[( i * columns ) + 4] ) );
+      const QString defaultValue = QString::fromUtf8( results[( i * columns ) + 4] );
+      const int realFieldIndex = mAttributeFields.lookupField( name );
+      if ( realFieldIndex >= 0 )
+      {
+        insertDefaultValue( realFieldIndex, defaultValue );
+      }
 
       QString pk = results[( i * columns ) + 5];
       QString type = results[( i * columns ) + 2];
@@ -798,7 +802,6 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
       else
         mPrimaryKey.clear();
       mPrimaryKeyAttrs << i - 1;
-      realFieldIndex += 1;
     }
   }
 
