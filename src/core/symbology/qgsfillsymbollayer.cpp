@@ -4068,6 +4068,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
+  const double prevOpacity = mMarkerSymbol->opacity();
+  mMarkerSymbol->setOpacity( mMarkerSymbol->opacity() * context.opacity() );
+
   bool alternateColumn = false;
   int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
   for ( double currentX = left; currentX <= right; currentX += width, alternateColumn = !alternateColumn )
@@ -4150,6 +4153,8 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
       mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext() );
     }
   }
+
+  mMarkerSymbol->setOpacity( prevOpacity );
 
   p->restore();
 
