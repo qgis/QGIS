@@ -764,18 +764,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void removeAttributeTable( int bandNumber );
 
     /**
-     * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path.
+     * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, any error message is set to \a errorMessage.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    bool writeFileBasedAttributeTable( int bandNumber, const QString &path ) const;
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = nullptr ) const;
 
     /**
-     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path.
+     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, any error message is set to \a errorMessage..
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    bool readFileBasedAttributeTable( int bandNumber, const QString &path );
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = nullptr );
 
     /**
      * Writes the native attribute table.
