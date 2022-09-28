@@ -27,16 +27,27 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
   if ( uri.hasParam( QStringLiteral( "dsn" ) ) )
     mDsn = uri.param( QStringLiteral( "dsn" ) );
 
-  if ( !uri.hasParam( QStringLiteral( "sslEnabled" ) ) )
-    return;
-
+  // SSL parameters
   mSslEnabled = ( uri.param( QStringLiteral( "sslEnabled" ) ) == QLatin1String( "true" ) );
-  mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
-  mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QLatin1String( "true" );
-  if ( mSslValidateCertificate )
-    mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
-  mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );
-  mSslTrustStore = uri.param( QStringLiteral( "sslTrustStore" ) );
+  if ( mSslEnabled )
+  {
+    mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
+    mSslValidateCertificate = uri.param( QStringLiteral( "sslValidateCertificate" ) ) == QLatin1String( "true" );
+    if ( mSslValidateCertificate )
+      mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
+    mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );
+    mSslTrustStore = uri.param( QStringLiteral( "sslTrustStore" ) );
+  }
+  // Proxy parameters
+  mProxyEnabled = ( uri.param( QStringLiteral( "proxyEnabled" ) ) == QLatin1String( "true" ) );
+  if ( mProxyEnabled )
+  {
+    mProxyHttp = ( uri.param( QStringLiteral( "proxyHttp" ) ) == QLatin1String( "true" ) );
+    mProxyHost = uri.param( QStringLiteral( "proxyHost" ) );
+    mProxyPort = QVariant( uri.param( QStringLiteral( "proxyPort" ) ) ).toUInt();
+    mProxyUsername = uri.param( QStringLiteral( "proxyUsername" ) );
+    mProxyPassword = uri.param( QStringLiteral( "proxyPassword" ) );
+  }
 }
 
 QString QgsHanaConnectionStringBuilder::toString() const
@@ -64,5 +75,19 @@ QString QgsHanaConnectionStringBuilder::toString() const
     if ( !mSslKeyStore.isEmpty() )
       ret += QStringLiteral( ";sslTrustStore=" ) + mSslTrustStore;
   }
+
+  if ( mProxyEnabled )
+  {
+    if ( mProxyHttp )
+      ret += QStringLiteral( ";proxyHttp=TRUE" );
+    ret += QStringLiteral( ";proxyHostname=" ) + mProxyHost;
+    ret += QStringLiteral( ";proxyPort=" ) + QString::number( mProxyPort );
+    if ( !mProxyUsername.isEmpty() )
+    {
+      ret += QStringLiteral( ";proxyUserName=" ) + mProxyUsername;
+      ret += QStringLiteral( ";proxyPassword=" ) + mProxyPassword;
+    }
+  }
+
   return ret;
 }

@@ -58,6 +58,7 @@ class QgsHanaNewConnection : public QDialog, private Ui::QgsHanaNewConnectionBas
     void rbtnTenantDatabase_clicked();
     void rbtnSystemDatabase_clicked();
     void chkEnableSSL_clicked();
+    void chkEnableProxy_clicked();
     void chkValidateCertificate_clicked();
     void readSettingsFromControls( QgsHanaSettings &settings );
     void updateControlsFromSettings( const QgsHanaSettings &settings );

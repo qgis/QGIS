@@ -196,6 +196,66 @@ class QgsHanaSettings
     }
 
     /**
+     * Enables proxy.
+     */
+    bool enableProxy() const { return mProxyEnabled; }
+    void setEnableProxy( bool value ) { mProxyEnabled = value; }
+
+    /**
+     * Enables HTTP proxy authentication.
+     */
+    bool enableProxyHttp() const { return mProxyHttp; }
+    void setEnableProxyHttp( bool value ) { mProxyHttp = value; }
+
+    /**
+     * Specifies the host name of the proxy server.
+     */
+    const QString &proxyHost() const
+    {
+      return mProxyHost;
+    }
+    void setProxyHost( const QString &value )
+    {
+      mProxyHost = value;
+    }
+
+    /**
+     * Specifies the port of the proxy server.
+     */
+    uint proxyPort() const
+    {
+      return mProxyPort;
+    }
+    void setProxyPort( uint value )
+    {
+      mProxyPort = value;
+    }
+
+    /**
+     * Specifies the user name for Basic HTTP Authentication or METHOD 02 SOCKS authentication.
+     */
+    const QString &proxyUsername() const
+    {
+      return mProxyUsername;
+    }
+    void setProxyUsername( const QString &value )
+    {
+      mProxyUsername = value;
+    }
+
+    /**
+     * Specifies the password for Basic HTTP Authentication or METHOD 02 SOCKS authentication.
+     */
+    const QString &proxyPassword() const
+    {
+      return mProxyPassword;
+    }
+    void setProxyPassword( const QString &value )
+    {
+      mProxyPassword = value;
+    }
+
+    /**
      * Gets the server port.
      */
     QString port() const;
@@ -257,14 +317,21 @@ class QgsHanaSettings
     bool mSavePassword = false;
     bool mUserTablesOnly = true;
     bool mAllowGeometrylessTables = false;
-    // Ssl parameters
+    QMap<QString, QMap<QString, QStringList>> mKeyColumns;
+    // SSL parameters
     bool mSslEnabled = false;
     QString mSslCryptoProvider;
     QString mSslKeyStore;
     QString mSslTrustStore;
     bool mSslValidateCertificate = false;
     QString mSslHostNameInCertificate;
-    QMap<QString, QMap<QString, QStringList>> mKeyColumns;
+    // Proxy parameters
+    bool mProxyEnabled = false;
+    bool mProxyHttp = false;
+    QString mProxyHost;
+    uint mProxyPort = 1080;
+    QString mProxyUsername;
+    QString mProxyPassword;
 };
 
 #endif // QGSHANAPSETTINGS_H
