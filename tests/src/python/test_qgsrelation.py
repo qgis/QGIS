@@ -86,21 +86,35 @@ class TestQgsRelation(unittest.TestCase):
     def test_isValid(self):
         rel = QgsRelation()
         self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'Referencing layer not set')
 
         rel.setId('rel1')
         self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'Referencing layer not set')
 
         rel.setName('Relation Number One')
         self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'Referencing layer not set')
+
+        rel.setReferencingLayer('xxx')
+        self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'Referencing layer xxx does not exist')
 
         rel.setReferencingLayer(self.referencingLayer.id())
         self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'Referenced layer not set')
+
+        rel.setReferencedLayer('yyy')
+        self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'Referenced layer yyy does not exist')
 
         rel.setReferencedLayer(self.referencedLayer.id())
         self.assertFalse(rel.isValid())
+        self.assertEqual(rel.validationError(), 'No fields specified for relationship')
 
         rel.addFieldPair('foreignkey', 'y')
         self.assertTrue(rel.isValid())
+        self.assertEqual(rel.validationError(), '')
 
     def test_getRelatedFeatures(self):
         rel = QgsRelation()

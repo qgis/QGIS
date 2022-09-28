@@ -366,11 +366,21 @@ QString QgsRelation::validationError() const
     return QString();
 
   if ( d->mReferencingLayer.isNull() )
-    return QObject::tr( "Referencing layer %1 does not exist" ).arg( d->mReferencingLayerId );
+  {
+    if ( d->mReferencingLayerId.isEmpty() )
+      return QObject::tr( "Referencing layer not set" );
+    else
+      return QObject::tr( "Referencing layer %1 does not exist" ).arg( d->mReferencingLayerId );
+  }
   else if ( !d->mReferencingLayer.data()->isValid() )
     return QObject::tr( "Referencing layer %1 is not valid" ).arg( d->mReferencingLayerId );
   else if ( d->mReferencedLayer.isNull() )
-    return QObject::tr( "Referenced layer %1 does not exist" ).arg( d->mReferencedLayerId );
+  {
+    if ( d->mReferencedLayerId.isEmpty() )
+      return QObject::tr( "Referenced layer not set" );
+    else
+      return QObject::tr( "Referenced layer %1 does not exist" ).arg( d->mReferencedLayerId );
+  }
   else if ( !d->mReferencedLayer.data()->isValid() )
     return QObject::tr( "Referenced layer %1 is not valid" ).arg( d->mReferencedLayerId );
   else
