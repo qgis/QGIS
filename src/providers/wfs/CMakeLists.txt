@@ -71,8 +71,8 @@ if (WITH_GUI)
   add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
 
   target_include_directories(provider_wfs_gui_a PUBLIC
-    ${CMAKE_BINARY_DIR}/src/providers/wfs
-    ${CMAKE_BINARY_DIR}/src/providers/wfs/oapif
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
   )
 
   target_link_libraries(provider_wfs_a
