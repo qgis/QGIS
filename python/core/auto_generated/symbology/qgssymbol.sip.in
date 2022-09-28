@@ -73,7 +73,7 @@ Returns the symbol's type.
 %End
 
 
-    QgsSymbolLayerList symbolLayers();
+    QgsSymbolLayerList symbolLayers() const;
 %Docstring
 Returns the list of symbol layers contained in the symbol.
 
@@ -707,7 +707,6 @@ Render editing vertex marker at specified point
   private:
     QgsSymbol( const QgsSymbol & );
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
