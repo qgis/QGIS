@@ -370,6 +370,7 @@ Constructor for LayerOptions.
 
       bool skipCrsValidation;
 
+      bool forceReadOnly;
     };
 
     struct DeleteContext
@@ -1841,7 +1842,9 @@ If you need only the count of committed features call this method on this layer'
 %Docstring
 Makes layer read-only (editing disabled) or not
 
-:return: ``False`` if the layer is in editing yet
+:return: ``False`` if the layer is in editing yet or if the data source is in read-only mode
+
+.. seealso:: :py:func:`readOnlyChanged`
 %End
 
     virtual bool supportsEditing() const;
@@ -3013,6 +3016,8 @@ Will be emitted whenever the edit form configuration of this layer changes.
 %Docstring
 Emitted when the read only state of this layer is changed.
 Only applies to manually set readonly state, not to the edit mode.
+
+.. seealso:: :py:func:`setReadOnly`
 
 .. versionadded:: 3.0
 %End

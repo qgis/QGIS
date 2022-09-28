@@ -135,6 +135,11 @@ geometry and a list of field/values attributes.
       sipCpp->deleteAttribute( fieldIdx );
 %End
 
+    long __hash__() const;
+%MethodCode
+    sipRes = qHash( *sipCpp );
+%End
+
     QgsFeature( qint64 id = FID_NULL );
 %Docstring
 Constructor for QgsFeature

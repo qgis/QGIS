@@ -1382,7 +1382,7 @@ namespace QgsWms
       QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
 
 
-      QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
+      QMultiMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
   };

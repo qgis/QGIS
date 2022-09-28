@@ -35,6 +35,7 @@ class Qgs2DPlot;
 class QgsProfileSnapContext;
 class QgsProfileIdentifyContext;
 class QgsProfileIdentifyResults;
+class QgsScreenHelper;
 
 /**
  * \ingroup gui
@@ -272,6 +273,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsProfileIdentifyContext identifyContext() const;
 
     void setupLayerConnections( QgsMapLayer *layer, bool isDisconnect );
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;

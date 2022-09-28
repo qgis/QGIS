@@ -242,7 +242,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
-     * \returns 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
+     * If topological editing is activated, the points are projected to the
+     * current layer CRS.
+     * \returns
+     *  0 in case of success
+     *  1 if not applicable (CRS mismatch / invalid layer)
+     *  2 in case of failure
      * \since QGIS 2.14
      */
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );

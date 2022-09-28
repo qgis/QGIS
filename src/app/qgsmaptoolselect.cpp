@@ -150,6 +150,8 @@ bool QgsMapToolSelect::populateContextMenuWithEvent( QMenu *menu, QgsMapMouseEve
     return false;
 
   QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
+  if ( !vlayer->isSpatial() )
+    return false;
 
   menu->addSeparator();
 

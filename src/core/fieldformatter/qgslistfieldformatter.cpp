@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgslistfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 #include <QSettings>
 
 QString QgsListFieldFormatter::id() const
@@ -29,7 +30,7 @@ QString QgsListFieldFormatter::representValue( QgsVectorLayer *layer, int fieldI
   Q_UNUSED( config )
   Q_UNUSED( cache )
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     return QgsApplication::nullRepresentation();
   }

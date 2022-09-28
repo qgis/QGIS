@@ -48,6 +48,7 @@ class QgsGeorefToolMovePoint;
 class QgsGCPCanvasItem;
 class QgsGcpPoint;
 class QgsMapLayer;
+class QgsScreenHelper;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -225,6 +226,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
 
     //! Docks / undocks this window
     void dockThisWindow( bool dock );
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QGridLayout *mCentralLayout = nullptr;
 

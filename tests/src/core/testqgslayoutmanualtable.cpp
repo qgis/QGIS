@@ -30,18 +30,16 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutManualTable : public QObject
+class TestQgsLayoutManualTable : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutManualTable() = default;
+    TestQgsLayoutManualTable() : QgsTest( QStringLiteral( "Layout Manual Table Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
 
     void setContents();
     void scopeForCell();
@@ -55,7 +53,6 @@ class TestQgsLayoutManualTable : public QObject
     void cellTextAlignment();
 
   private:
-    QString mReport;
 
     //compares rows in table to expected rows
     void compareTable( QgsLayoutItemManualTable *table, const QVector<QStringList> &expectedRows );
@@ -66,30 +63,12 @@ void TestQgsLayoutManualTable::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mReport = QStringLiteral( "<h1>Layout Manual Table Tests</h1>\n" );
-
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
 void TestQgsLayoutManualTable::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutManualTable::init()
-{
-}
-
-void TestQgsLayoutManualTable::cleanup()
-{
 }
 
 void TestQgsLayoutManualTable::compareTable( QgsLayoutItemManualTable *table, const QVector<QStringList> &expectedRows )

@@ -32,7 +32,6 @@ class QRect;
 class QgsSettings;
 class QSpinBox;
 class QSplashScreen;
-class QStringList;
 class QToolButton;
 class QTcpSocket;
 class QValidator;
@@ -153,6 +152,7 @@ class QgsNetworkLoggerWidgetFactory;
 class QgsAppQueryLogger;
 class QgsMapToolCapture;
 class QgsElevationProfileWidget;
+class QgsScreenHelper;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -625,6 +625,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionHelpContents() { return mActionHelpContents; }
     QAction *actionHelpAPI() { return mActionHelpAPI; }
+    QAction *actionHelpPyQgisAPI() { return mActionHelpPyQgisAPI; }
     QAction *actionReportaBug() { return mActionReportaBug; }
     QAction *actionQgisHomePage() { return mActionQgisHomePage; }
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
@@ -739,7 +740,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addDecorationItem( QgsDecorationItem *item ) { mDecorationItems.append( item ); }
 
     //! \since QGIS 2.1
-    static QString normalizedMenuName( const QString &name ) { return name.normalized( QString::NormalizationForm_KD ).remove( QRegExp( "[^a-zA-Z]" ) ); }
+    static QString normalizedMenuName( const QString &name );
 
     void parseVersionInfo( QNetworkReply *reply, int &latestVersion, QStringList &versionInfo );
 
@@ -898,10 +899,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveAsLayerDefinition();
     //! save current raster layer
     QString saveAsRasterFile( QgsRasterLayer *layer = nullptr, bool defaultAddToCanvas = true );
-    //! Process the list of URIs that have been dropped in QGIS
-    void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
-    //! Convenience function to open either a project or a layer file.
-    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
+
+    /**
+     * Process the list of URIs that have been dropped in QGIS.
+     *
+     * Returns a list of layers loaded as a result of opening the URIs.
+     */
+    QList< QgsMapLayer * > handleDropUriList( const QgsMimeDataUtils::UriList &lst, bool suppressBulkLayerPostProcessing = false );
+
+    /**
+     * Convenience function to open either a project or a layer file.
+     *
+     * Returns a list of layers loaded as a result of opening the file.
+     */
+    QList< QgsMapLayer * > openFile( const QString &fileName, const QString &fileTypeHint = QString(), bool suppressBulkLayerPostProcessing = false );
     void layerTreeViewDoubleClicked( const QModelIndex &index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view
     void updateNewLayerInsertionPoint();
@@ -923,7 +934,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll );
+    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll, const QString &filterExpression = QString() );
 
     void fieldCalculator();
 
@@ -1185,16 +1196,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.18
      */
     QgsPointCloudLayer *addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey );
-
-    /**
-     * \brief overloaded version of the private addLayer method that takes a list of
-     * file names instead of prompting user with a dialog.
-     * \param enc encoding type for the layer
-     * \param dataSourceType type of ogr datasource
-     * \returns TRUE if successfully added layer
-     */
-    bool addVectorLayers( const QStringList &layerQStringList, const QString &enc, const QString &dataSourceType );
-
 
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
@@ -1687,10 +1688,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open the help contents in a browser
     void helpContents();
-    //! Open the API documentation in a browser
+    //! Open the C++ API documentation in a browser
     void apiDocumentation();
+    //! Open the PyQGIS API documentation in a browser
+    void pyQgisApiDocumentation();
     //! Open the Bugtracker page in a browser
     void reportaBug();
+    //! Open the donation page in a browser
+    void donate();
+    //! Open the get involved page in a browser
+    void getInvolved();
     //! Open the QGIS support page
     void supportProviders();
     //! Open the QGIS homepage in users browser
@@ -1871,14 +1878,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void modifyAnnotation();
     void reprojectAnnotations();
 
-    //! Alerts user when labeling font for layer has not been found on system
-    void labelingFontNotFound( QgsVectorLayer *vlayer, const QString &fontfamily );
-
     //! Alerts user when commit errors occurred
     void commitError( QgsVectorLayer *vlayer, const QStringList &commitErrorsList = QStringList() );
-
-    //! Opens the labeling dialog for a layer when called from labelingFontNotFound alert
-    void labelingDialogFontNotFound( QAction *act );
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
@@ -2174,6 +2175,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                      QgsVectorLayerSaveAsDialog::Options dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
                                      const QString &dialogTitle = QString() );
 
+    QString saveAsPointCloudLayer( QgsPointCloudLayer *pclayer );
+
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
 
@@ -2358,6 +2361,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns a list of all capture map tools.
      */
     QList< QgsMapToolCapture * > captureTools();
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
@@ -2666,6 +2671,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #ifdef HAVE_3D
     QSet<Qgs3DMapCanvasWidget *> mOpen3DMapViews;
 #endif
+
+    //! True if the autoSelectAddedLayer() slot should not be doing anything (performance optimization when adding a lot of layers)
+    bool mBlockAutoSelectAddedLayer = false;
 
     int mFreezeCount = 0;
     friend class QgsCanvasRefreshBlocker;

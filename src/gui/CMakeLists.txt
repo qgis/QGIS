@@ -328,6 +328,7 @@ set(QGIS_GUI_SRCS
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
   pointcloud/qgspointcloudextentrendererwidget.cpp
+  pointcloud/qgspointcloudlayersaveasdialog.cpp
   pointcloud/qgspointcloudrendererwidget.cpp
   pointcloud/qgspointcloudrendererpropertieswidget.cpp
   pointcloud/qgspointcloudrgbrendererwidget.cpp
@@ -414,6 +415,7 @@ set(QGIS_GUI_SRCS
   vectortile/qgsvectortiledataitemguiprovider.cpp
   vectortile/qgsvectortileproviderguimetadata.cpp
   vectortile/qgsvectortilesourceselect.cpp
+  vectortile/qgsvectortilelayerproperties.cpp
 
   qgisinterface.cpp
   qgs3dsymbolwidget.cpp
@@ -527,6 +529,10 @@ set(QGIS_GUI_SRCS
   qgsimagedroptextedit.cpp
   qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
+  qgslayermetadatasearchwidget.cpp
+  qgslayermetadataresultsmodel.cpp
+  qgslayermetadatasourceselectprovider.cpp
+  qgslayermetadataresultsproxymodel.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslegendpatchshapebutton.cpp
@@ -629,6 +635,7 @@ set(QGIS_GUI_SRCS
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
+  qgsscreenhelper.cpp
   qgsscrollarea.cpp
   qgssearchquerybuilder.cpp
   qgssubsetstringeditorinterface.cpp
@@ -787,6 +794,10 @@ set(QGIS_GUI_HDRS
   qgsimagedroptextedit.h
   qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
+  qgslayermetadatasearchwidget.h
+  qgslayermetadataresultsmodel.h
+  qgslayermetadataresultsproxymodel.h
+  qgslayermetadatasourceselectprovider.h
   qgslegendfilterbutton.h
   qgslegendpatchshapebutton.h
   qgslegendpatchshapewidget.h
@@ -892,6 +903,7 @@ set(QGIS_GUI_HDRS
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
+  qgsscreenhelper.h
   qgsscrollarea.h
   qgssearchquerybuilder.h
   qgssubsetstringeditorinterface.h
@@ -1187,6 +1199,7 @@ set(QGIS_GUI_HDRS
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
   pointcloud/qgspointcloudextentrendererwidget.h
+  pointcloud/qgspointcloudlayersaveasdialog.h
   pointcloud/qgspointcloudrendererwidget.h
   pointcloud/qgspointcloudrendererpropertieswidget.h
   pointcloud/qgspointcloudrgbrendererwidget.h
@@ -1344,6 +1357,7 @@ set(QGIS_GUI_HDRS
   vectortile/qgsvectortiledataitemguiprovider.h
   vectortile/qgsvectortileproviderguimetadata.h
   vectortile/qgsvectortilesourceselect.h
+  vectortile/qgsvectortilelayerproperties.h
 
   qgsbrowserdockwidget_p.h
 )
@@ -1439,6 +1453,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectortilelayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayertreeembeddedconfigwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmeshdatasetgrouptreewidgetbase.h
@@ -1509,6 +1524,13 @@ if (BUILD_WITH_QT6)
   target_include_directories(qgis_gui SYSTEM PRIVATE
     ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
   )
+endif()
+
+if (WITH_PDAL)
+  include_directories(SYSTEM ${PDAL_INCLUDE_DIR})
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 target_include_directories(qgis_gui PUBLIC

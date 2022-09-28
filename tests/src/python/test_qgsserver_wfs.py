@@ -96,6 +96,9 @@ class TestQgsServerWFS(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
+        # depending on flex/bison versions, these strings will be interchangeable
+        response = response.replace(b'end of file', b'$end')
+
         self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s" % (
             query_string, request))
         return header, body

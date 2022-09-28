@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QClipboard>
 #include <QFileDialog>
@@ -30,6 +29,7 @@
 #include <QStringList>
 #include <QList>
 #include <QUrl>
+#include <QActionGroup>
 
 #include "qgssettings.h"
 #include "qgisinterface.h"
@@ -37,7 +37,6 @@
 #include "qgsgui.h"
 #include "qgisapp.h"
 
-#include "qgslayout.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemtexttable.h"
@@ -52,7 +51,6 @@
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "../../gui/raster/qgsrasterlayerproperties.h"
 #include "qgsproviderregistry.h"
 
 #include "qgsgeorefdatapoint.h"
@@ -70,6 +68,7 @@
 #include "qgsgeorefmainwindow.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorwarper.h"
+#include "qgsscreenhelper.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )
@@ -83,6 +82,8 @@ QgsGeoreferencerMainWindow::QgsGeoreferencerMainWindow( QWidget *parent, Qt::Win
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
   setAcceptDrops( true );
+
+  mScreenHelper = new QgsScreenHelper( this );
 
   QWidget *centralWidget = this->centralWidget();
   mCentralLayout = new QGridLayout( centralWidget );
@@ -274,6 +275,23 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   else
   {
     mFileName = fileName;
+    uri = mFileName;
+    switch ( layerType )
+    {
+      case QgsMapLayerType::RasterLayer:
+        provider = QStringLiteral( "gdal" );
+        break;
+      case QgsMapLayerType::VectorLayer:
+        provider = QStringLiteral( "ogr" );
+        break;
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
   }
   mModifiedFileName.clear();
   mCreateWorldFileOnly = false;
@@ -1332,7 +1350,7 @@ void QgsGeoreferencerMainWindow::loadSource( QgsMapLayerType layerType, const QS
 void QgsGeoreferencerMainWindow::readSettings()
 {
   QgsSettings s;
-  QRect georefRect = QApplication::desktop()->screenGeometry( QgisApp::instance() );
+  const QRect georefRect = mScreenHelper->availableGeometry();
   resize( s.value( QStringLiteral( "/Plugin-GeoReferencer/size" ), QSize( georefRect.width() / 2 + georefRect.width() / 5,
                    QgisApp::instance()->height() ) ).toSize() );
   move( s.value( QStringLiteral( "/Plugin-GeoReferencer/pos" ), QPoint( parentWidget()->width() / 2 - width() / 2, 0 ) ).toPoint() );
@@ -1678,12 +1696,12 @@ bool QgsGeoreferencerMainWindow::writeWorldFile( const QgsPointXY &origin, doubl
   }
 
   QTextStream stream( &file );
-  stream << qgsDoubleToString( pixelXSize ) << endl
-         << rotationX << endl
-         << rotationY << endl
-         << qgsDoubleToString( -pixelYSize ) << endl
-         << qgsDoubleToString( origin.x() ) << endl
-         << qgsDoubleToString( origin.y() ) << endl;
+  stream << qgsDoubleToString( pixelXSize ) << Qt::endl
+         << rotationX << Qt::endl
+         << rotationY << Qt::endl
+         << qgsDoubleToString( -pixelYSize ) << Qt::endl
+         << qgsDoubleToString( origin.x() ) << Qt::endl
+         << qgsDoubleToString( origin.y() ) << Qt::endl;
   return true;
 }
 

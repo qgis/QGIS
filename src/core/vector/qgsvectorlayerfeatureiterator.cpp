@@ -1126,7 +1126,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
 
-  if ( joinValue.isNull() )
+  if ( QgsVariantUtils::isNull( joinValue ) )
   {
     subsetString += QLatin1String( " IS NULL" );
   }

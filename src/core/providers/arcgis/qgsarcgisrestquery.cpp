@@ -21,7 +21,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgsauthmanager.h"
-#include "qgscoordinatetransform.h"
+#include "qgsvariantutils.h"
 
 #include <QUrl>
 #include <QUrlQuery>
@@ -532,7 +532,7 @@ void QgsArcGisAsyncQuery::handleReply()
 
   // Handle HTTP redirects
   const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-  if ( !redirect.isNull() )
+  if ( !QgsVariantUtils::isNull( redirect ) )
   {
     QNetworkRequest request = mReply->request();
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsArcGisAsyncQuery" ) );
@@ -604,7 +604,7 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     mErrors.append( reply->errorString() );
     --mPendingRequests;
   }
-  else if ( !redirect.isNull() )
+  else if ( !QgsVariantUtils::isNull( redirect ) )
   {
     // Handle HTTP redirects
     QNetworkRequest request = reply->request();

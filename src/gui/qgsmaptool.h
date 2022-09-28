@@ -92,8 +92,10 @@ class GUI_EXPORT QgsMapTool : public QObject
       sipType = sipType_QgsMapToolAdvancedDigitizing;
     else if ( dynamic_cast<QgsMapToolEdit *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolEdit;
+    else if ( sipCpp->inherits( "QgsMapTool" ) ) // e.g. map tools from QGIS app library, which aren't exposed to SIP
+      sipType = sipType_QgsMapTool;
     else
-      sipType = NULL;
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -353,6 +355,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! The translated name of the map tool
     QString mToolName;
 
+    friend class QgsMapCanvas;
     friend class TestQgsMapToolEdit;
 
 };

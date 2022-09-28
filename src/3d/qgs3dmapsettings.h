@@ -36,6 +36,7 @@
 #include "qgsshadowsettings.h"
 #include "qgscameracontroller.h"
 #include "qgstemporalrangeobject.h"
+#include "qgsambientocclusionsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -531,6 +532,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsShadowSettings shadowSettings() const SIP_SKIP { return mShadowSettings; }
 
     /**
+     * Returns the current configuration of screen space ambient occlusion
+     * \since QGIS 3.28
+     */
+    QgsAmbientOcclusionSettings ambientOcclusionSettings() const SIP_SKIP { return mAmbientOcclusionSettings; }
+
+    /**
      * Sets the current configuration of the skybox
      * \since QGIS 3.16
      */
@@ -541,6 +548,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * \since QGIS 3.16
      */
     void setShadowSettings( const QgsShadowSettings &shadowSettings ) SIP_SKIP;
+
+    /**
+     * Sets the current configuration of screen space ambient occlusion
+     * \since QGIS 3.28
+     */
+    void setAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &ambientOcclusionSettings ) SIP_SKIP;
 
     /**
      * Returns whether the skybox is enabled.
@@ -824,6 +837,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void shadowSettingsChanged();
 
+
+    /**
+     * Emitted when ambient occlusion rendering settings are changed
+     * \since QGIS 3.28
+     */
+    void ambientOcclusionSettingsChanged();
+
     /**
      * Emitted when the FPS counter is enabled or disabled
      * \since QGIS 3.18
@@ -896,6 +916,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
     QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
     QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
+    QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
 
     bool mEyeDomeLightingEnabled = false;
     double mEyeDomeLightingStrength = 1000.0;

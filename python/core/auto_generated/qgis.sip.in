@@ -617,6 +617,12 @@ The development version
       Bevel,
     };
 
+    enum class MakeValidMethod
+    {
+      Linework,
+      Structure,
+    };
+
     enum class SpatialFilterType
     {
       NoFilter,
@@ -841,6 +847,43 @@ The development version
       AlwaysText,
     };
 
+    enum class TextOrientation
+      {
+      Horizontal,
+      Vertical,
+      RotationBased,
+    };
+
+    enum class TextLayoutMode
+      {
+      Rectangle,
+      Point,
+      Labeling,
+    };
+
+    enum class TextComponent
+      {
+      Text,
+      Buffer,
+      Background,
+      Shadow,
+    };
+
+    enum class TextHorizontalAlignment
+      {
+      Left,
+      Center,
+      Right,
+      Justify,
+    };
+
+    enum class TextVerticalAlignment
+      {
+      Top,
+      VerticalCenter,
+      Bottom,
+    };
+
     enum class RenderSubcomponentProperty
     {
       Generic,
@@ -886,6 +929,14 @@ The development version
       HalfArc,
       ThirdArc,
       QuarterArc,
+      ParallelogramRight,
+      ParallelogramLeft,
+      Trapezoid,
+      Shield,
+      DiamondStar,
+      Heart,
+      Decagon,
+      RoundedSquare,
     };
 
     enum class MarkerLinePlacement
@@ -1175,6 +1226,7 @@ The development version
       DontStoreOriginalStyles,
       DontLoad3DViews,
       DontLoadProjectStyles,
+      ForceReadOnlyLayers,
     };
 
     typedef QFlags<Qgis::ProjectReadFlag> ProjectReadFlags;
@@ -1228,6 +1280,13 @@ The development version
       OneToMany,
       ManyToOne,
       ManyToMany,
+    };
+
+    enum class CoordinateDisplayType
+    {
+      MapCrs,
+      MapGeographic,
+      CustomCrs,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

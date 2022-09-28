@@ -48,6 +48,11 @@ class TestAlignRaster : public QObject
       QgsApplication::init(); // needed for CRS database
     }
 
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
+
     void testRasterInfo()
     {
       const QgsAlignRaster::RasterInfo out( SRC_FILE );

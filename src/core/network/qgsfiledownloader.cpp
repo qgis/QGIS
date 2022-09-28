@@ -17,6 +17,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
+#include "qgsvariantutils.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -187,7 +188,7 @@ void QgsFileDownloader::onFinished()
       mFile.remove();
       error( tr( "Download failed: %1" ).arg( mReply->errorString() ) );
     }
-    else if ( !redirectionTarget.isNull() )
+    else if ( !QgsVariantUtils::isNull( redirectionTarget ) )
     {
       const QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
       mUrl = newUrl;

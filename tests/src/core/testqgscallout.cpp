@@ -24,17 +24,13 @@
 #include "qgscallout.h"
 #include "qgscalloutsregistry.h"
 #include "qgsmaprenderersequentialjob.h"
-#include "qgssymbollayerutils.h"
 #include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgslayout.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
@@ -108,12 +104,12 @@ class TestSimpleCalloutUnder : public QgsSimpleLineCallout
 };
 
 
-class TestQgsCallout: public QObject
+class TestQgsCallout: public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsCallout();
+    TestQgsCallout() : QgsTest( QStringLiteral( "Callout Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -184,21 +180,15 @@ class TestQgsCallout: public QObject
   private:
     bool imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount = 0 );
 
-    QString mReport;
     QString mTestDataDir;
     QgsVectorLayer *vl = nullptr;
 
 };
 
-
-TestQgsCallout::TestQgsCallout() = default;
-
 void TestQgsCallout::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
-  mReport += QLatin1String( "<h1>Callout Tests</h1>\n" );
 
   QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
   registry->addCalloutType( new QgsCalloutMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), QIcon(), DummyCallout::create ) );
@@ -209,14 +199,6 @@ void TestQgsCallout::initTestCase()
 
 void TestQgsCallout::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 
@@ -268,18 +250,18 @@ void TestQgsCallout::saveRestore()
   QCOMPARE( calloutElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
-  QgsCallout *restoredCallout = QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() );
+  std::unique_ptr< QgsCallout > restoredCallout( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading bad node
   const QDomElement badCalloutElem = doc.createElement( QStringLiteral( "parent" ) );
-  restoredCallout = QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), badCalloutElem, QgsReadWriteContext() );
+  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), badCalloutElem, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading node
-  restoredCallout = QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), calloutElem, QgsReadWriteContext() );
+  restoredCallout.reset( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), calloutElem, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
-  DummyCallout *restoredDummyCallout = dynamic_cast<DummyCallout *>( restoredCallout );
+  DummyCallout *restoredDummyCallout = dynamic_cast<DummyCallout *>( restoredCallout.get() );
   QVERIFY( restoredDummyCallout );
 
   //test properties
@@ -287,7 +269,6 @@ void TestQgsCallout::saveRestore()
   QCOMPARE( restoredDummyCallout->prop2(), callout->prop2() );
 
   delete callout;
-  delete restoredCallout;
 }
 
 void TestQgsCallout::calloutsInLabeling()
@@ -4169,7 +4150,7 @@ void TestQgsCallout::balloonCalloutCornerRadius()
 
 void TestQgsCallout::blendMode()
 {
-  QgsManhattanLineCallout *callout = new QgsManhattanLineCallout();
+  std::unique_ptr< QgsManhattanLineCallout > callout = std::make_unique< QgsManhattanLineCallout >();
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
   callout->setBlendMode( QPainter::CompositionMode_Multiply );
@@ -4196,7 +4177,6 @@ bool TestQgsCallout::imageCheck( const QString &testName, QImage &image, unsigne
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

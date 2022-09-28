@@ -35,7 +35,6 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsmapthemecollection.h"
-#include "qgstemporalcontroller.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -44,8 +43,6 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dutils.h"
 
-#include "qgs3dsceneexporter.h"
-#include "qgsabstract3drenderer.h"
 #include "qgsmap3dexportwidget.h"
 #include "qgs3dmapexportsettings.h"
 
@@ -53,6 +50,7 @@
 #include "qgsrubberband.h"
 
 #include <QWidget>
+#include <QActionGroup>
 
 Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   : QWidget( nullptr )
@@ -156,6 +154,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
     mCanvas->map()->setEyeDomeLightingEnabled( enabled );
   } );
   mOptionsMenu->addAction( mActionEnableEyeDome );
+
+  mActionEnableAmbientOcclusion = new QAction( tr( "Show Ambient Occlusion" ), this );
+  mActionEnableAmbientOcclusion->setCheckable( true );
+  connect( mActionEnableAmbientOcclusion, &QAction::triggered, this, [ = ]( bool enabled )
+  {
+    QgsAmbientOcclusionSettings ambientOcclusionSettings = mCanvas->map()->ambientOcclusionSettings();
+    ambientOcclusionSettings.setEnabled( enabled );
+    mCanvas->map()->setAmbientOcclusionSettings( ambientOcclusionSettings );
+  } );
+  mOptionsMenu->addAction( mActionEnableAmbientOcclusion );
+
   mOptionsMenu->addSeparator();
 
   mActionSync2DNavTo3D = new QAction( tr( "2D Map View Follows 3D Camera" ), this );
@@ -346,6 +355,7 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
@@ -387,15 +397,22 @@ void Qgs3DMapCanvasWidget::resetView()
 
 void Qgs3DMapCanvasWidget::configure()
 {
-  QDialog dlg( this );
-  dlg.setWindowTitle( tr( "3D Configuration" ) );
-  dlg.setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
-  dlg.setMinimumSize( 600, 460 );
-  QgsGui::enableAutoGeometryRestore( &dlg );
+  if ( mConfigureDialog )
+  {
+    mConfigureDialog->raise();
+    return;
+  }
+
+  mConfigureDialog = new QDialog( this );
+  mConfigureDialog->setAttribute( Qt::WA_DeleteOnClose );
+  mConfigureDialog->setWindowTitle( tr( "3D Configuration" ) );
+  mConfigureDialog->setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  mConfigureDialog->setMinimumSize( 600, 460 );
+  QgsGui::enableAutoGeometryRestore( mConfigureDialog );
 
   Qgs3DMapSettings *map = mCanvas->map();
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, &dlg );
-  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Cancel | QDialogButtonBox::Help, &dlg );
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, mCanvas, mConfigureDialog );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help, mConfigureDialog );
 
   auto applyConfig = [ = ]()
   {
@@ -426,9 +443,8 @@ void Qgs3DMapCanvasWidget::configure()
                                 || map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
   };
 
-  connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-  connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-  connect( buttons, &QDialogButtonBox::clicked, &dlg, [ = ]( QAbstractButton * button )
+  connect( buttons, &QDialogButtonBox::rejected, mConfigureDialog, &QDialog::reject );
+  connect( buttons, &QDialogButtonBox::clicked, mConfigureDialog, [ = ]( QAbstractButton * button )
   {
     if ( buttons->buttonRole( button ) == QDialogButtonBox::ApplyRole )
       applyConfig();
@@ -437,19 +453,18 @@ void Qgs3DMapCanvasWidget::configure()
 
   connect( w, &Qgs3DMapConfigWidget::isValidChanged, this, [ = ]( bool valid )
   {
-    buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
+    buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
   } );
 
-  QVBoxLayout *layout = new QVBoxLayout( &dlg );
+  QVBoxLayout *layout = new QVBoxLayout( mConfigureDialog );
   layout->addWidget( w, 1 );
   layout->addWidget( buttons );
 
-  if ( !dlg.exec() )
-    return;
-  applyConfig();
+  mConfigureDialog->show();
 
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
   whileBlocking( mActionEnableEyeDome )->setChecked( map->eyeDomeLightingEnabled() );
+  whileBlocking( mActionEnableAmbientOcclusion )->setChecked( map->ambientOcclusionSettings().isEnabled() );
   whileBlocking( mActionSync2DNavTo3D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync2DTo3D ) );
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );

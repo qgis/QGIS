@@ -16,32 +16,24 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsattributetabledialog.h"
-#include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsidentifycontext.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
-#include "qgsmessageviewer.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsrasterlayer.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsrenderer.h"
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
-#include "qgsactionscoperegistry.h"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
-#include "qgspointcloudlayer.h"
 #include "qgslayertreeview.h"
 
 #include <QCursor>
@@ -98,13 +90,13 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   if ( !vl || !vl->dataProvider() )
     return;
 
-  QString filter = QStringLiteral( "$id IN (" );
-  const auto constFeatureList = featureList;
-  for ( const QgsFeature &feature : constFeatureList )
+  QStringList idList;
+  idList.reserve( featureList.size() );
+  for ( const QgsFeature &feature : featureList )
   {
-    filter.append( QStringLiteral( "%1," ).arg( feature.id() ) );
+    idList.append( FID_TO_STRING( feature.id() ) );
   }
-  filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
+  const QString filter = QStringLiteral( "$id IN (%1)" ).arg( idList.join( ',' ) );
 
   QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
   tableDialog->setFilterExpression( filter );

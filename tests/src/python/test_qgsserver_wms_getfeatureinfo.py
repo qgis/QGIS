@@ -34,12 +34,17 @@ import osgeo.gdal  # NOQA
 
 from test_qgsserver_wms import TestQgsServerWMSTestBase
 from qgis.core import QgsProject
+from qgis.server import QgsBufferServerRequest, QgsBufferServerResponse
 
 
 class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
     """QGIS Server WMS Tests for GetFeatureInfo request"""
 
     # regenerate_reference = True
+
+    def tearDown(self):
+        super().tearDown()
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', '')
 
     def testGetFeatureInfo(self):
         # Test getfeatureinfo response xml
@@ -114,6 +119,16 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
                                  'with_maptip=true',
                                  'wms_getfeatureinfo-text-html-maptip')
+
+        # Test getfeatureinfo response html with maptip in text mode
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'info_format=text%2Fplain&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'with_maptip=true',
+                                 'wms_getfeatureinfo-text-html-maptip-plain')
 
         # Test getfeatureinfo response text
         self.wms_request_compare('GetFeatureInfo',
@@ -860,6 +875,89 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             urllib.parse.quote(':"XXXXXXXXXNAMEXXXXXXX" = \'two\''))
 
         self.assertEqual(response_body.decode('utf8'), '<ServiceExceptionReport xmlns="http://www.opengis.net/ogc" version="1.3.0">\n <ServiceException code="InvalidParameterValue">Filter not valid for layer testlayer èé: check the filter syntax and the field names.</ServiceException>\n</ServiceExceptionReport>\n')
+
+    def testGetFeatureInfoFilterAllowedExtraTokens(self):
+        """Test GetFeatureInfo with forbidden and extra tokens
+        set by QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS
+        """
+        project_path = self.testdata_path + "test_project_values.qgz"
+        project = QgsProject()
+        self.assertTrue(project.read(project_path))
+
+        req_params = {
+            'SERVICE': 'WMS',
+            'REQUEST': 'GetFeatureInfo',
+            'VERSION': '1.3.0',
+            'LAYERS': 'layer4',
+            'STYLES': '',
+            'INFO_FORMAT': r'application%2Fjson',
+            'WIDTH': '926',
+            'HEIGHT': '787',
+            'SRS': r'EPSG%3A4326',
+            'BBOX': '912217,5605059,914099,5606652',
+            'CRS': 'EPSG:3857',
+            'FEATURE_COUNT': '10',
+            'QUERY_LAYERS': 'layer4',
+            'FILTER': 'layer4:"utf8nameè" != \'\'',
+        }
+
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+        j_body = json.loads(bytes(res.body()).decode())
+        self.assertEqual(len(j_body['features']), 3)
+
+        req_params['FILTER'] = 'layer4:"utf8nameè" = \'three èé↓\''
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+        j_body = json.loads(bytes(res.body()).decode())
+        self.assertEqual(len(j_body['features']), 1)
+
+        req_params['FILTER'] = 'layer4:"utf8nameè" != \'three èé↓\''
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+        j_body = json.loads(bytes(res.body()).decode())
+        self.assertEqual(len(j_body['features']), 2)
+
+        # REPLACE filter
+        req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+
+        self.assertEqual(res.statusCode(), 403)
+
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE')
+        self.server.serverInterface().reloadSettings()
+
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+        j_body = json.loads(bytes(res.body()).decode())
+        self.assertEqual(len(j_body['features']), 2)
+
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', '')
+        self.server.serverInterface().reloadSettings()
+
+        req_params['FILTER'] = 'layer4:REPLACE ( "utf8nameè" , \'three\' , \'____\' ) != \'____ èé↓\''
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+
+        self.assertEqual(res.statusCode(), 403)
+
+        # Multiple filters
+        os.putenv('QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS', 'RePlAcE,LowEr')
+        self.server.serverInterface().reloadSettings()
+        req_params['FILTER'] = 'layer4:LOWER ( REPLACE ( "utf8nameè" , \'three\' , \'THREE\' ) ) = \'three èé↓\''
+
+        req = QgsBufferServerRequest('?' + '&'.join(["%s=%s" % (k, v) for k, v in req_params.items()]))
+        res = QgsBufferServerResponse()
+        self.server.handleRequest(req, res, project)
+        j_body = json.loads(bytes(res.body()).decode())
+        self.assertEqual(len(j_body['features']), 1)
 
     def testGetFeatureInfoSortedByDesignerWithJoinLayer(self):
         """Test GetFeatureInfo resolves DRAG&DROP Designer order when use attribute form settings for GetFeatureInfo

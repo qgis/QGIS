@@ -813,18 +813,24 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
         params.push_back( p );
       }
 
+      // We want to accept both displayName and name.
       const QgsFields published { publishedFields( mapLayer, context ) };
       QStringList publishedFieldNames;
+      QStringList publishedFieldDisplayNames;
       for ( const auto &f : published )
       {
-        publishedFieldNames.push_back( f.name() );
+        publishedFieldDisplayNames.push_back( f.displayName() );
+        if ( f.name() != f.displayName() )
+        {
+          publishedFieldNames.push_back( f.name() );
+        }
       }
 
       // Properties (CSV list of properties to return)
       QgsServerQueryStringParameter properties { QStringLiteral( "properties" ), false,
           QgsServerQueryStringParameter::Type::List,
           QStringLiteral( "Comma separated list of feature property names to be added to the result. Valid values: %1" )
-          .arg( publishedFieldNames.join( QLatin1String( "', '" ) )
+          .arg( publishedFieldDisplayNames.join( QLatin1String( "', '" ) )
                 .append( '\'' )
                 .prepend( '\'' ) ) };
 
@@ -833,7 +839,7 @@ QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::parameters(
         const QStringList properties { value.toStringList() };
         for ( const auto &p : properties )
         {
-          if ( ! publishedFieldNames.contains( p ) )
+          if ( ! publishedFieldNames.contains( p ) && ! publishedFieldDisplayNames.contains( p ) )
           {
             return false;
           }
@@ -991,7 +997,7 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
     const QList<QgsServerQueryStringParameter> requestParameters { parameters( layerContext ) };
     for ( const auto &p : requestParameters )
     {
-      if ( ! componentNames.contains( p.name() ) )
+      if ( ! p.hidden() && ! componentNames.contains( p.name() ) )
         componentParameters.push_back( p.data() );
     }
 
@@ -1079,7 +1085,7 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
     const QgsFields constFields { publishedFields( mapLayer, context ) };
     for ( const auto &f : constFields )
     {
-      const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
+      const QString fName { f.displayName() };
       QgsServerQueryStringParameter::Type t;
       switch ( f.type() )
       {
@@ -1096,9 +1102,17 @@ const QList<QgsServerQueryStringParameter> QgsWfs3CollectionsItemsHandler::field
           break;
       }
       const QgsServerQueryStringParameter fieldParam { fName, false,
-          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( fName )
-          .arg( QgsServerQueryStringParameter::typeName( t ) ) };
+          t, QStringLiteral( "Retrieve features filtered by: %1 (%2)" ).arg( fName, QgsServerQueryStringParameter::typeName( t ) ) };
       params.push_back( fieldParam );
+
+      // Add real field name if alias was used but set it as hidden
+      if ( fName != f.name() )
+      {
+        QgsServerQueryStringParameter fieldParam { f.name(), false,
+            t, QStringLiteral( "Retrieve features filtered by field: %1 (%2), aliased by %3" ).arg( f.name(), QgsServerQueryStringParameter::typeName( t ), f.alias() ) };
+        fieldParam.setHidden( true );
+        params.push_back( fieldParam );
+      }
     }
   }
   return params;
@@ -1165,16 +1179,20 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       const QgsFields constPublishedFields { publishedFields( mapLayer, context ) };
       for ( const QgsField &f : constPublishedFields )
       {
-        const QString fName { f.alias().isEmpty() ? f.name() : f.alias() };
-        const QString val = params.value( fName ).toString() ;
+        QString val = params.value( f.name() ).toString();
+        // Try alias
+        if ( val.isEmpty() && ! f.alias().isEmpty() )
+        {
+          val = params.value( f.alias() ).toString();
+        }
         if ( ! val.isEmpty() )
         {
           const QString sanitized { QgsServerApiUtils::sanitizedFieldValue( val ) };
           if ( sanitized.isEmpty() )
           {
-            throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name() ).arg( val ) );
+            throw QgsServerApiBadRequestException( QStringLiteral( "Invalid filter field value [%1=%2]" ).arg( f.name(), val ) );
           }
-          attrFilters[fName] = sanitized;
+          attrFilters[f.name()] = sanitized;
         }
       }
 
@@ -1204,7 +1222,14 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
       }
 
       // Properties (subset attributes)
-      const QStringList requestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
+      const QStringList inputRequestedProperties { params.value( QStringLiteral( "properties" ) ).toStringList( ) };
+
+      // Cleanup (may throw)
+      QStringList requestedProperties;
+      for ( const QString &property : std::as_const( inputRequestedProperties ) )
+      {
+        requestedProperties.push_back( QgsServerApiUtils::fieldName( QgsServerApiUtils::sanitizedFieldValue( property ), mapLayer ) );
+      }
 
       // Sorting
       const QString sortBy { params.value( QStringLiteral( "sortby" ) ).toString( ) };
@@ -1212,12 +1237,19 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       if ( !sortBy.isEmpty() )
       {
-        if ( ! constPublishedFields.names().contains( QgsServerApiUtils::sanitizedFieldValue( sortBy ) ) )
+        // fieldName may throw a different message ...
+        try
+        {
+          if ( ! constPublishedFields.names().contains( QgsServerApiUtils::fieldName( QgsServerApiUtils::sanitizedFieldValue( sortBy ), mapLayer ) ) )
+          {
+            throw QgsServerApiBadRequestException( QString() );
+          }
+        }
+        catch ( const QgsServerApiBadRequestException & )
         {
           throw QgsServerApiBadRequestException( QStringLiteral( "Invalid sortBy field '%1'" ).arg( QgsServerApiUtils::sanitizedFieldValue( sortBy ) ) );
         }
       }
-
 
       // ////////////////////////////////////////////////////////////////////////////////////////////////////
       // End of input control: inputs are valid, process the request
@@ -1477,7 +1509,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
           const QgsFields fields = mapLayer->fields();
           for ( const auto &field : fields )
           {
-            if ( ! properties.value( field.name() ).isNull() )
+            if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) )
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
@@ -1487,7 +1519,7 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
               {
                 QVariant value = properties.value( field.name() );
                 // Convert blobs
-                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( !QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }
@@ -1745,7 +1777,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            if ( ! properties.value( field.name() ).isNull() )
+            if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) )
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
@@ -1755,7 +1787,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
               {
                 QVariant value = properties.value( field.name() );
                 // Convert blobs
-                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }
@@ -1865,7 +1897,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
           int fieldIndex = 0;
           for ( const auto &field : fields )
           {
-            if ( ! properties.value( field.name() ).isNull() )
+            if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) )
             {
               if ( ! authorizedFieldNames.contains( field.name() ) )
               {
@@ -1875,7 +1907,7 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
               {
                 QVariant value = properties.value( field.name() );
                 // Convert blobs
-                if ( ! properties.value( field.name() ).isNull() && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
+                if ( ! QgsVariantUtils::isNull( properties.value( field.name() ) ) && static_cast<QMetaType::Type>( field.type() ) == QMetaType::QByteArray )
                 {
                   value = QByteArray::fromBase64( value.toByteArray() );
                 }

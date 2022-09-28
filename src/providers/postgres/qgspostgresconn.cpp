@@ -258,6 +258,42 @@ QgsPostgresConn *QgsPostgresConn::connectDb( const QString &conninfo, bool reado
   return conn;
 }
 
+QgsPostgresConn *QgsPostgresConn::connectDb( const QgsDataSourceUri &uri, bool readonly, bool shared, bool transaction )
+{
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo( false ), readonly, shared, transaction );
+  if ( !conn )
+  {
+    return conn;
+  }
+
+  const QString sessionRoleKey = QStringLiteral( "session_role" );
+  if ( uri.hasParam( sessionRoleKey ) )
+  {
+    const QString sessionRole = uri.param( sessionRoleKey );
+    if ( !sessionRole.isEmpty() )
+    {
+      if ( !conn->setSessionRole( sessionRole ) )
+      {
+        QgsDebugMsgLevel(
+          QStringLiteral(
+            "Set session role failed for ROLE %1"
+          )
+          .arg( quotedValue( sessionRole ) )
+          ,
+          2
+        );
+        conn->unref();
+        return nullptr;
+      }
+    }
+  }
+  else
+  {
+    conn->resetSessionRole();
+  }
+  return conn;
+}
+
 static void noticeProcessor( void *arg, const char *message )
 {
   Q_UNUSED( arg )
@@ -660,6 +696,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   result = LoggedPQexec( "QgsPostgresConn", query );
   // NOTE: we intentionally continue if the query fails
   //       (for example because PostGIS is not installed)
+
+  if ( ! result.result() )
+  {
+    return false;
+  }
+
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     QString tableName = result.PQgetvalue( idx, 0 );
@@ -1099,17 +1141,10 @@ QString QgsPostgresConn::postgisVersion() const
 
   QgsDebugMsgLevel( "PostGIS version info: " + mPostgisVersionInfo, 2 );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QStringList postgisParts = mPostgisVersionInfo.split( ' ', QString::SkipEmptyParts );
-
-  // Get major and minor version
-  QStringList postgisVersionParts = postgisParts[0].split( '.', QString::SkipEmptyParts );
-#else
   QStringList postgisParts = mPostgisVersionInfo.split( ' ', Qt::SkipEmptyParts );
 
   // Get major and minor version
   QStringList postgisVersionParts = postgisParts[0].split( '.', Qt::SkipEmptyParts );
-#endif
   if ( postgisVersionParts.size() < 2 )
   {
     QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( mPostgisVersionInfo ), tr( "PostGIS" ) );
@@ -1220,6 +1255,19 @@ QString QgsPostgresConn::postgisVersion() const
   return mPostgisVersionInfo;
 }
 
+/* Functions for determining available features in postGIS */
+bool QgsPostgresConn::setSessionRole( const QString &sessionRole )
+{
+  if ( !sessionRole.isEmpty() )
+    return LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "SET ROLE %1" ).arg( quotedValue( sessionRole ) ) );
+  else
+    return resetSessionRole();
+}
+bool QgsPostgresConn::resetSessionRole()
+{
+  return LoggedPQexecNR( "QgsPostgresConn", QStringLiteral( "RESET ROLE" ) );
+}
+
 QString QgsPostgresConn::quotedIdentifier( const QString &ident )
 {
   QString result = ident;
@@ -1283,7 +1331,7 @@ static QString quotedList( const QVariantList &list )
 
 QString QgsPostgresConn::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )
@@ -1314,7 +1362,7 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
 
 QString QgsPostgresConn::quotedJsonValue( const QVariant &value )
 {
-  if ( value.isNull() || !value.isValid() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "null" );
   // where json is a string literal just construct it from that rather than dump
   if ( value.type() == QVariant::String )
@@ -2686,6 +2734,12 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/authcfg" );
   settings.remove( key + "/keys" );
   settings.remove( key );
+}
+
+bool QgsPostgresConn::allowMetadataInDatabase( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/metadataInDatabase", false ).toBool();
 }
 
 bool QgsPostgresConn::cancel()

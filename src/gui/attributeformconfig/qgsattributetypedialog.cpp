@@ -321,13 +321,7 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
       << QgsExpressionContextUtils::globalScope()
       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
       << QgsExpressionContextUtils::layerScope( mLayer )
-      << QgsExpressionContextUtils::formScope( QgsFeature( mLayer->fields() ) )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
-
-  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
-                                   << QStringLiteral( "current_feature" )
-                                   << QStringLiteral( "form_mode" ) );
 
   return context;
 }

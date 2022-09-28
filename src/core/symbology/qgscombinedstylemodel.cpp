@@ -19,9 +19,6 @@
 #include "qgssingleitemmodel.h"
 #include "qgsapplication.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-
-
 QgsCombinedStyleModel::QgsCombinedStyleModel( QObject *parent )
   : QConcatenateTablesProxyModel( parent )
 {
@@ -156,5 +153,3 @@ void QgsCombinedStyleModel::addDesiredIconSize( QSize size )
     QgsApplication::defaultStyleModel()->addDesiredIconSize( size );
   }
 }
-
-#endif

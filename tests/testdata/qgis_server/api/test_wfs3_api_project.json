@@ -1098,7 +1098,7 @@ Content-Type: application/vnd.oai.openapi+json;version=3.0
             "style": "form"
           },
           {
-            "description": "Comma separated list of feature property names to be added to the result. Valid values: 'id', 'name', 'utf8nameè'",
+            "description": "Comma separated list of feature property names to be added to the result. Valid values: 'alias_id', 'alias_name', 'utf8nameè'",
             "explode": false,
             "in": "query",
             "name": "properties",

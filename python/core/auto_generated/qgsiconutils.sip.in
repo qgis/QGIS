@@ -27,6 +27,12 @@ Contains utility functions for working with icons.
 Returns the icon for a vector layer whose geometry ``type`` is provided.
 %End
 
+    static QIcon iconForGeometryType( QgsWkbTypes::GeometryType typeGroup );
+%Docstring
+Returns the icon for a vector layer whose geometry ``typeGroup`` is provided.
+1since QGIS 3.28
+%End
+
     static QIcon iconPoint();
 %Docstring
 Returns an icon representing point geometries.

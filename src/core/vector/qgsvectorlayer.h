@@ -486,6 +486,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
        */
       bool skipCrsValidation = false;
 
+      /**
+       * Controls whether the layer is forced to be load as Read Only
+       *
+       * If TRUE, then the layer's provider will only check read capabilities.
+       * Write capabilities will be skipped.
+       *
+       * If FALSE (the default), the layer's provider will check the
+       * edition capabilities based on user rights or file rights or
+       * others.
+       * \since QGIS 3.28
+       */
+      bool forceReadOnly = false;
     };
 
     /**
@@ -1725,7 +1737,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Makes layer read-only (editing disabled) or not
-     * \returns FALSE if the layer is in editing yet
+     * \returns FALSE if the layer is in editing yet or if the data source is in read-only mode
+     *
+     * \see readOnlyChanged()
      */
     bool setReadOnly( bool readonly = true );
 
@@ -2005,10 +2019,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns the layer's weak relations as specified in the layer's style.
      * \returns A list of weak relations
      * \note not available in Python bindings
+     *
+     * \see setWeakRelations()
+     *
      * \since QGIS 3.12
      */
-    QList<QgsWeakRelation> weakRelations( ) const SIP_SKIP;
+    QList<QgsWeakRelation> weakRelations() const SIP_SKIP;
 
+    /**
+     * Sets the layer's weak \a relations.
+     *
+     * \note Not available in Python bindings.
+     * \see weakRelations()
+     *
+     * \since QGIS 3.28
+     */
+    void setWeakRelations( const QList< QgsWeakRelation > &relations ) SIP_SKIP;
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     Q_INVOKABLE QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
@@ -2780,6 +2806,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Emitted when the read only state of this layer is changed.
      * Only applies to manually set readonly state, not to the edit mode.
      *
+     * \see setReadOnly()
+     *
      * \since QGIS 3.0
      */
     void readOnlyChanged();
@@ -2818,7 +2846,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
 
     /**
-     * Returns TRUE if the provider is in read-only mode
+     * Returns TRUE if the layer is in read-only mode
+     *
+     * \note the layer can be in read-only mode by construction or by action
+     * \see QgsVectorLayer::LayerOptions.forceReadOnly
+     * \see QgsMapLayer::FlagForceReadOnly
+     * \see setReadOnly()
+     * \see readOnlyChanged()
      */
     bool isReadOnly() const FINAL;
 
@@ -2881,7 +2915,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! The user-defined actions that are accessed from the Identify Results dialog box
     QgsActionManager *mActions = nullptr;
 
-    //! Flag indicating whether the layer is in read-only mode (editing disabled) or not
+    //! Flag indicating whether the layer has been created in read-only mode (editing disabled) or not
+    bool mDataSourceReadOnly = false;
+
+    /**
+     * Flag indicating whether the layer has been converted in read-only mode (editing disabled) or not
+     * \see setReadOnly()
+     * \see readOnlyChanged()
+     * \see isReadOnly()
+     */
     bool mReadOnly = false;
 
     /**

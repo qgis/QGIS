@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProjectDisplaySettings : QObject
 {
 %Docstring(signature="appended")
@@ -21,6 +22,7 @@ values such as map coordinates and bearings.
 #include "qgsprojectdisplaysettings.h"
 %End
   public:
+
 
     QgsProjectDisplaySettings( QObject *parent = 0 );
 %Docstring
@@ -76,6 +78,55 @@ Returns the project's geographic coordinate format, which controls how geographi
 .. seealso:: :py:func:`geographicCoordinateFormatChanged`
 %End
 
+    Qgis::CoordinateDisplayType coordinateType() const;
+%Docstring
+Returns default coordinate type for the project.
+
+.. seealso:: :py:func:`setCoordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    void setCoordinateType( Qgis::CoordinateDisplayType type );
+%Docstring
+Sets the default coordinate ``type`` for the project.
+
+.. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    QgsCoordinateReferenceSystem coordinateCustomCrs() const;
+%Docstring
+Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
+
+    void setCoordinateCustomCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
+
+    QgsCoordinateReferenceSystem coordinateCrs() const;
+%Docstring
+Returns the coordinate display CRS used derived from the coordinate type.
+
+.. seealso:: :py:func:`coordinateType`
+
+.. note::
+
+   if not parented to a project object, an invalid CRS will be returned.
+
+.. versionadded:: 3.28
+%End
+
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the settings's state from a DOM element.
@@ -108,6 +159,39 @@ Emitted when the geographic coordinate format changes.
 .. seealso:: :py:func:`setGeographicCoordinateFormat`
 
 .. seealso:: :py:func:`geographicCoordinateFormat`
+%End
+
+    void coordinateTypeChanged();
+%Docstring
+Emitted when the default coordinate format changes.
+
+.. seealso:: :py:func:`setCoordinateType`
+
+.. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    void coordinateCustomCrsChanged();
+%Docstring
+Emitted when the coordinate custom CRS changes.
+
+.. seealso:: :py:func:`setCoordinateCustomCrs`
+
+.. seealso:: :py:func:`coordinateCustomCrs`
+
+.. versionadded:: 3.28
+%End
+
+    void coordinateCrsChanged();
+%Docstring
+Emitted when the coordinate CRS changes.
+
+.. seealso:: :py:func:`coordinateCrs`
+
+.. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
 %End
 
 };

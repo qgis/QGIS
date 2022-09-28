@@ -21,6 +21,8 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayerref.h"
 
+#include <QObject>
+
 class QgsMapLayer;
 class QgsProviderSublayerDetails;
 class QgsPointCloudLayer;
@@ -35,6 +37,7 @@ class QgsVectorTileLayer;
  */
 class APP_EXPORT QgsAppLayerHandling
 {
+    Q_GADGET
 
   public:
 
@@ -46,83 +49,105 @@ class APP_EXPORT QgsAppLayerHandling
     };
 
     /**
-     * Add a vector layer directly without prompting user for location
-     * The caller must provide information compatible with the provider plugin
-     * using the \a vectorLayerPath and \a baseName. The provider can use these
-     * parameters in any way necessary to initialize the layer. The \a baseName
-     * parameter is used in the Map Legend so it should be formed in a meaningful
-     * way.
+     * Adds a vector layer from a given \a uri and \a provider.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
+     * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey = QLatin1String( "ogr" ) );
+    static QgsVectorLayer *addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ) );
 
     /**
-     * Add a raster layer directly without prompting user for location
-     * The caller must provide information compatible with the provider plugin
-     * using the \a uri and \a baseName. The provider can use these
-     * parameters in any way necessary to initialize the layer. The \a baseName
-     * parameter is used in the Map Legend so it should be formed in a meaningful
-     * way.
+     * Adds a list of vector layers from a list of layer \a uris supported by the OGR provider.
+     *
+     * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
+     * depending on the contents of the datasource and the user's current QGIS settings.
+     *
+     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
+     * if a uri does not result in a valid vector layer.
      */
-    static QgsRasterLayer *addRasterLayer( QString const &uri, QString const &baseName, QString const &providerKey = QLatin1String( "gdal" ) );
+    static QList< QgsMapLayer * > addOgrVectorLayers( const QStringList &uris, const QString &encoding, const QString &dataSourceType, bool &ok, bool showWarningOnInvalid = true );
 
     /**
-     * Adds a mesh layer directly without prompting user for location
-     * The caller must provide information compatible with the provider plugin
-     * using the \a url and \a baseName. The provider can use these
-     * parameters in any way necessary to initialize the layer. The \a baseName
-     * parameter is used in the Map Legend so it should be formed in a meaningful
-     * way.
+     * Adds a raster layer from a given \a uri and \a provider.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
+     * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+    static QgsRasterLayer *addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ) );
 
-    //! Open a point cloud layer - this is the generic function which takes all parameters
+    /**
+     * Adds a list of raster layers from a list of layer \a uris supported by the GDAL provider.
+     *
+     * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
+     * depending on the contents of the datasource and the user's current QGIS settings.
+     *
+     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
+     * if a uri does not result in a valid vector layer.
+     */
+    static QList< QgsMapLayer * > addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid = true );
+
+    /**
+     * Adds a mesh layer from a given \a uri and \a provider.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
+     * depending on the contents of the datasource and the user's current QGIS settings.
+     */
+    static QgsMeshLayer *addMeshLayer( const QString &uri, const QString &baseName, const QString &provider );
+
+    /**
+     * Adds a point cloud layer from a given \a uri and \a provider.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
+     * if the \a uri does not result in a valid point cloud layer.
+     */
     static QgsPointCloudLayer *addPointCloudLayer( const QString &uri,
         const QString &baseName,
-        const QString &providerKey,
-        bool guiWarning = true );
+        const QString &provider,
+        bool showWarningOnInvalid = true );
 
-    //! Open a plugin layer using its provider
+    /**
+     * Adds a plugin layer from a given \a uri and \a provider.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     */
     static QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
 
-    //! Open a vector tile layer - this is the generic function which takes all parameters
-    static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool guiWarning = true );
-
-    static void postProcessAddedLayer( QgsMapLayer *layer );
-
-    static bool addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning = true );
-
-
     /**
-     * This method will open a dialog so the user can select GDAL sublayers to load
-     * \returns TRUE if any items were loaded
+     * Adds a vector tile layer from a given \a uri.
+     *
+     * The \a baseName parameter will be used as the layer name (and shown in the map legend).
+     *
+     * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
+     * if the \a uri does not result in a valid vector tile layer.
      */
-    static bool askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes );
-
-
-    static SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false );
-
-    static QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
-
+    static QgsVectorTileLayer *addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid = true );
 
     /**
-     * Open a raster or vector file; ignore other files.
-     * Used to process a commandline argument, FileOpen or Drop event.
+     * Post processes an entire group of added \a layers.
+     *
+     * \note This method will be called for the group AFTER the postProcessAddedLayer()
+     * method has been called for each layer in turn. All added layers will already
+     * have been added to the project.
+     */
+    static void postProcessAddedLayers( const QList< QgsMapLayer * > &layers );
+
+    /**
+     * Open a map layer from a file.
+     *
      * Set \a allowInteractive to TRUE if it is OK to ask the user for information (mostly for
      * when a vector layer has sublayers and we want to ask which sublayers to use).
-     * \returns TRUE if the file is successfully opened
+     *
+     * \returns a list of added map layers if the file is successfully opened
      */
-    static bool openLayer( const QString &fileName, bool allowInteractive = false );
-
-    template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
-
-
-    /**
-     * Overloaded version of the private addRasterLayer()
-     * Method that takes a list of file names instead of prompting
-     * user with a dialog.
-     * \returns TRUE if successfully added layer(s)
-     */
-    static bool addRasterLayers( const QStringList &files, bool guiWarning = true );
+    static QList< QgsMapLayer * > openLayer( const QString &fileName, bool &ok, bool allowInteractive = false, bool suppressBulkLayerPostProcessing = false );
 
     //! Add a 'pre-made' map layer to the project
     static void addMapLayer( QgsMapLayer *mapLayer );
@@ -133,7 +158,19 @@ class APP_EXPORT QgsAppLayerHandling
     static void addLayerDefinition();
 
     //! Add a list of database layers to the map
-    static void addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey );
+    static QList< QgsMapLayer * > addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
+
+    /**
+     * Flags which control the behavior of loading layer dependencies.
+     */
+    enum class DependencyFlag : int
+    {
+      LoadAllRelationships = 1 << 1, //!< Causes all relationships to be loaded, regardless of whether the originating table is the referenced or referencing table. By default relationships are only loaded when the originating table is the referencing table.
+      SilentLoad = 1 << 2, //!< Dependencies are loaded without any user-visible notifications.
+    };
+    Q_ENUM( DependencyFlag )
+    Q_DECLARE_FLAGS( DependencyFlags, DependencyFlag )
+    Q_FLAG( DependencyFlags )
 
     /**
      * Searches for layer dependencies by querying the form widgets and the
@@ -143,7 +180,9 @@ class APP_EXPORT QgsAppLayerHandling
      * \return a list of weak references to broken layer dependencies
      */
     static const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories );
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories,
+        QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+        DependencyFlags dependencyFlags = DependencyFlags() );
 
     /**
      * Scans the \a vectorLayer for broken dependencies and automatically
@@ -153,7 +192,9 @@ class APP_EXPORT QgsAppLayerHandling
      * ("Forms" for the form widgets and "Relations" for layer weak relations).
      */
     static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
-        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+        QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+        DependencyFlags dependencyFlags = DependencyFlags() );
 
     /**
      * Scans the \a vectorLayer for weak relations and automatically
@@ -161,8 +202,11 @@ class APP_EXPORT QgsAppLayerHandling
      *
      * This method will automatically attempt to repair any relations using
      * other layers already present in the current project.
+     *
+     * If \a guiWarnings is TRUE then the explanation for invalid relationships
+     * will be shown to the user.
      */
-    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name, bool guiWarnings = false );
 
     /**
      * Triggered when a vector layer style has changed, checks for widget config layer dependencies
@@ -170,8 +214,31 @@ class APP_EXPORT QgsAppLayerHandling
      */
     static void onVectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
 
+  private:
 
+    template<typename T> static T *addLayerPrivate( QgsMapLayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true );
+
+    /**
+     * Post processes a single added \a layer, applying any default behavior which should
+     * happen to newly added layers.
+     *
+     * \note If a group of a layers is added at once, this method will be called one-by-one
+     * for each layer BEFORE the postProcessAddedLayers() method is called for the entire
+     * group.
+     */
+    static void postProcessAddedLayer( QgsMapLayer *layer );
+
+    /**
+     * This method will open a dialog so the user can select GDAL sublayers to load
+     * \returns TRUE if any items were loaded
+     */
+    static bool askUserForZipItemLayers( const QString &path, const QList< QgsMapLayerType > &acceptableTypes );
+
+    static SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false );
+
+    static QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName );
 
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppLayerHandling::DependencyFlags );
 
 #endif // QGSAPPLAYERHANDLING_H

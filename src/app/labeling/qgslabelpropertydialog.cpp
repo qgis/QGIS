@@ -376,7 +376,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
     //TODO - pass expression context
     const QVariant result = mDataDefinedProperties.value( key, context );
-    if ( !result.isValid() || result.isNull() )
+    if ( QgsVariantUtils::isNull( result ) )
     {
       //could not evaluate data defined value
       continue;

@@ -206,8 +206,6 @@ project settings, they may be converted to relative paths when the project is sa
 .. seealso:: :py:func:`styleDatabasesChanged`
 %End
 
-%If (CONCATENATED_TABLES_MODEL)
-
     QgsCombinedStyleModel *combinedStyleModel();
 %Docstring
 Returns the combined style model which includes all style databases
@@ -220,7 +218,6 @@ This model also includes :py:func:`QgsStyle.defaultStyle()`.
    This is only available on builds based on Qt 5.13 or later.
 
 .. seealso:: :py:func:`styles`
-%End
 %End
 
   signals:

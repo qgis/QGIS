@@ -186,14 +186,15 @@ class TestQgsGrassCommandGroup
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsGrassProvider: public QObject
+class TestQgsGrassProvider: public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsGrassProvider() : QgsTest( QStringLiteral( "Grass provider tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void fatalError();
     void locations();
@@ -230,7 +231,6 @@ class TestQgsGrassProvider: public QObject
     bool setAttributes( QgsFeature &feature, const QMap<QString, QVariant> &attributes );
     QString mGisdbase;
     QString mLocation;
-    QString mReport;
     QString mBuildMapset;
 };
 
@@ -283,21 +283,6 @@ void TestQgsGrassProvider::initTestCase()
   reportRow( "mLocation: " + mLocation );
   reportRow( "mBuildMapset: " + mBuildMapset );
   qDebug() << "mGisdbase = " << mGisdbase << " mLocation = " << mLocation;
-}
-
-//runs after all tests
-void TestQgsGrassProvider::cleanupTestCase()
-{
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
-  //QgsApplication::exitQgis();
 }
 
 bool TestQgsGrassProvider::verify( bool ok )

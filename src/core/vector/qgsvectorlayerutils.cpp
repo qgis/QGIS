@@ -137,7 +137,7 @@ QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer,
     double val = value.toDouble( &convertOk );
     if ( convertOk )
       values << val;
-    else if ( value.isNull() )
+    else if ( QgsVariantUtils::isNull( value ) )
     {
       if ( nullCount )
         *nullCount += 1;
@@ -425,9 +425,9 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const 
 
     if ( !exempt )
     {
-      valid = valid && !value.isNull();
+      valid = valid && !QgsVariantUtils::isNull( value );
 
-      if ( value.isNull() )
+      if ( QgsVariantUtils::isNull( value ) )
       {
         errors << QObject::tr( "value is NULL" );
         notNullConstraintViolated = true;
@@ -541,8 +541,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
       // 2. client side default expression
       // note - deliberately not using else if!
       QgsDefaultValue defaultValueDefinition = layer->defaultValueDefinition( idx );
-      if ( ( v.isNull() || ( hasUniqueConstraint
-                             && checkUniqueValue( idx, v ) )
+      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
+             && checkUniqueValue( idx, v ) )
              || defaultValueDefinition.applyOnUpdate() )
            && defaultValueDefinition.isValid() )
       {
@@ -554,8 +554,8 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 3. provider side default value clause
       // note - not an else if deliberately. Users may return null from a default value expression to fallback to provider defaults
-      if ( ( v.isNull() || ( hasUniqueConstraint
-                             && checkUniqueValue( idx, v ) ) )
+      if ( ( QgsVariantUtils::isNull( v ) || ( hasUniqueConstraint
+             && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -569,9 +569,9 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 4. provider side default literal
       // note - deliberately not using else if!
-      if ( ( v.isNull() || ( checkUnique
-                             && hasUniqueConstraint
-                             && checkUniqueValue( idx, v ) ) )
+      if ( ( QgsVariantUtils::isNull( v ) || ( checkUnique
+             && hasUniqueConstraint
+             && checkUniqueValue( idx, v ) ) )
            && fields.fieldOrigin( idx ) == QgsFields::OriginProvider )
       {
         int providerIndex = fields.fieldOriginIndex( idx );
@@ -585,7 +585,7 @@ QgsFeatureList QgsVectorLayerUtils::createFeatures( const QgsVectorLayer *layer,
 
       // 5. passed attribute value
       // note - deliberately not using else if!
-      if ( v.isNull() && fd.attributes().contains( idx ) )
+      if ( QgsVariantUtils::isNull( v ) && fd.attributes().contains( idx ) )
       {
         v = fd.attributes().value( idx );
       }

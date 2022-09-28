@@ -106,6 +106,11 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
                 else:
                     details.project.addMapLayer(mapLayer)
 
+                if (ProcessingConfig.getSetting(ProcessingConfig.VECTOR_FEATURE_COUNT) and
+                        layer.type() == QgsMapLayerType.VectorLayer):
+                    layer_tree_layer = details.project.layerTreeRoot().findLayer(layer.id())
+                    layer_tree_layer.setCustomProperty("showFeatureCount", True)
+
                 if details.postProcessor():
                     details.postProcessor().postProcessLayer(layer, context, feedback)
 

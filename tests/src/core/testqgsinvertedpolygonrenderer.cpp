@@ -36,18 +36,16 @@
  * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsInvertedPolygon : public QObject
+class TestQgsInvertedPolygon : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsInvertedPolygon();
+    TestQgsInvertedPolygon() : QgsTest( QStringLiteral( "Inverted Polygon Renderer Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void singleSubRenderer();
     void graduatedSubRenderer();
@@ -64,11 +62,8 @@ class TestQgsInvertedPolygon : public QObject
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
-
-TestQgsInvertedPolygon::TestQgsInvertedPolygon() = default;
 
 void TestQgsInvertedPolygon::initTestCase()
 {
@@ -93,20 +88,10 @@ void TestQgsInvertedPolygon::initTestCase()
   mpPolysLayer->setSimplifyMethod( simplifyMethod );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-  mReport += QLatin1String( "<h1>Inverted Polygon Renderer Tests</h1>\n" );
 }
 
 void TestQgsInvertedPolygon::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPolysLayer;
 
   QgsApplication::exitQgis();
@@ -114,14 +99,12 @@ void TestQgsInvertedPolygon::cleanupTestCase()
 
 void TestQgsInvertedPolygon::singleSubRenderer()
 {
-  mReport += QLatin1String( "<h2>Inverted polygon renderer, single sub renderer test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_single" ) );
 }
 
 void TestQgsInvertedPolygon::graduatedSubRenderer()
 {
-  mReport += QLatin1String( "<h2>Inverted polygon renderer, graduated sub renderer test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_graduated.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_graduated" ) );
 }
@@ -138,14 +121,12 @@ void TestQgsInvertedPolygon::checkSymbolItem()
 void TestQgsInvertedPolygon::preprocess()
 {
   // FIXME will have to find some overlapping polygons
-  mReport += QLatin1String( "<h2>Inverted polygon renderer, preprocessing test</h2>\n" );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_preprocess" ) );
 }
 
 void TestQgsInvertedPolygon::projectionTest()
 {
-  mReport += QLatin1String( "<h2>Inverted polygon renderer, projection test</h2>\n" );
   mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ) );
   const QgsRectangle extent( QgsPointXY( -8639421, 8382691 ), QgsPointXY( -3969110, 12570905 ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
@@ -163,7 +144,6 @@ void TestQgsInvertedPolygon::curvedPolygons()
       myCurvedPolyFileInfo.completeBaseName(), "ogr" );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << curvedLayer );
 
-  mReport += "<h2>Inverted polygon renderer, curved polygons test</h2>\n";
   mMapSettings.setLayers( QList< QgsMapLayer * >() << curvedLayer );
   QVERIFY( setQml( curvedLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_curved" ) );
@@ -172,7 +152,6 @@ void TestQgsInvertedPolygon::curvedPolygons()
 
 void TestQgsInvertedPolygon::rotationTest()
 {
-  mReport += QLatin1String( "<h2>Inverted polygon renderer, rotation test</h2>\n" );
   mMapSettings.setRotation( 45 );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_rotation" ) );

@@ -37,7 +37,7 @@
 #include "qgswebview.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmessagelog.h"
-
+#include "qgsvariantutils.h"
 
 bool QgsAction::runable() const
 {
@@ -128,7 +128,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
     if ( reply->error() == QNetworkReply::NoError )
     {
 
-      if ( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ).isNull() )
+      if ( QgsVariantUtils::isNull( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ) ) )
       {
 
         const QByteArray replyData = reply->readAll();
@@ -196,7 +196,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
             filename = QString::fromStdString( ascii );
           }
         }
-        else if ( !reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).isNull() )
+        else if ( !QgsVariantUtils::isNull( reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ) ) )
         {
           QString contentTypeHeader { reply->header( QNetworkRequest::KnownHeaders::ContentTypeHeader ).toString() };
           // Strip charset if any

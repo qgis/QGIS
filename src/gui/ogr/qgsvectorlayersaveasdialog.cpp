@@ -59,12 +59,13 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, O
   }
   setup();
 
-  if ( layer && leLayername->isEnabled() )
+  if ( layer )
   {
     mDefaultOutputLayerNameFromInputLayerName = QgsMapLayerUtils::launderLayerName( layer->name() );
     leLayername->setDefaultValue( mDefaultOutputLayerNameFromInputLayerName );
     leLayername->setClearMode( QgsFilterLineEdit::ClearToDefault );
-    leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
+    if ( leLayername->isEnabled() )
+      leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
   }
 
   if ( !( mOptions & Symbology ) )

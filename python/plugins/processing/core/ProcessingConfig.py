@@ -63,6 +63,7 @@ class ProcessingConfig:
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
     TEMP_PATH = 'TEMP_PATH2'
     RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
+    VECTOR_FEATURE_COUNT = 'VECTOR_FEATURE_COUNT'
 
     settings = {}
     settingIcons = {}
@@ -183,6 +184,11 @@ class ProcessingConfig:
             valuetype=Setting.STRING,
             placeholder=ProcessingConfig.tr("Leave blank to avoid loading results in a predetermined group")
         ))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.VECTOR_FEATURE_COUNT,
+            ProcessingConfig.tr('Show feature count for output vector layers'), False))
 
     @staticmethod
     def setGroupIcon(group, icon):

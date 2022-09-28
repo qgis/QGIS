@@ -41,7 +41,7 @@ QIcon QgsMapToolShapeRegularPolygon2PointsMetadata::icon() const
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRegularPolygon2PointsMetadata::category() const
 {
-  return QgsMapToolShapeAbstract::ShapeCategory::Circle;
+  return QgsMapToolShapeAbstract::ShapeCategory::RegularPolygon;
 }
 
 QgsMapToolShapeAbstract *QgsMapToolShapeRegularPolygon2PointsMetadata::factory( QgsMapToolCapture *parentTool ) const

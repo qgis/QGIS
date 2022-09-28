@@ -131,11 +131,18 @@ class CORE_EXPORT QgsActionManager: public QObject
     bool readXml( const QDomNode &layer_node );
 
     /**
-     * Gets an action by its id.
+     * Gets an action by its \a id.
      *
      * \since QGIS 3.0
      */
     QgsAction action( QUuid id ) const;
+
+    /**
+     * Gets an action by its \a id.
+     *
+     * \since QGIS 3.28
+     */
+    QgsAction action( const QString &id ) const;
 
     /**
      * Each scope can have a default action. This will be saved in the project

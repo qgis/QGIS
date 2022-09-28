@@ -317,6 +317,7 @@ Constructor for QgsSymbolLegendNode.
 :param item: the legend symbol item
 :param parent: attach a parent QObject to the legend node.
 %End
+    ~QgsSymbolLegendNode();
 
     virtual Qt::ItemFlags flags() const;
 

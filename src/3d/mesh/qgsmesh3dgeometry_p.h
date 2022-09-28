@@ -21,7 +21,11 @@
 #include <QFuture>
 
 #include <Qt3DExtras/qt3dextras_global.h>
-#include <Qt3DRender/qgeometry.h>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DRender/QGeometry>
+#else
+#include <Qt3DCore/QGeometry>
+#endif
 #include <QVector3D>
 
 #include <qgsvector3d.h>
@@ -43,11 +47,19 @@
 
 #define SIP_NO_FILE
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 namespace Qt3DRender
 {
   class QAttribute;
   class QBuffer;
 }
+#else
+namespace Qt3DCore
+{
+  class QAttribute;
+  class QBuffer;
+}
+#endif
 
 class QgsMeshLayer;
 
@@ -95,7 +107,11 @@ class QgsMesh3DGeometryBuilder: public QObject
 /**
 * Base class for creating attributes and vertex/index buffers for a mesh layer
 */
-class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+class QgsMesh3dGeometry: public Qt3DRender::QGeometry
+#else
+class QgsMesh3dGeometry: public Qt3DCore::QGeometry
+#endif
 {
     Q_OBJECT
   protected:
@@ -107,20 +123,35 @@ class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
 
     ~QgsMesh3dGeometry() = default;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void prepareVerticesPositionAttribute( Qt3DRender::QBuffer *buffer, int stride, int offset );
     void prepareVerticesNormalAttribute( Qt3DRender::QBuffer *buffer, int stride, int offset );
     void prepareIndexesAttribute( Qt3DRender::QBuffer *buffer );
+#else
+    void prepareVerticesPositionAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset );
+    void prepareVerticesNormalAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset );
+    void prepareIndexesAttribute( Qt3DCore::QBuffer *buffer );
+#endif
 
     QgsVector3D mOrigin;
     float mVertScale;
     QgsTriangularMesh mTriangulaMesh;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
     Qt3DRender::QBuffer *mIndexBuffer = nullptr;
 
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
+#else
+    Qt3DCore::QBuffer *mVertexBuffer = nullptr;
+    Qt3DCore::QBuffer *mIndexBuffer = nullptr;
+
+    Qt3DCore::QAttribute *mPositionAttribute = nullptr;
+    Qt3DCore::QAttribute *mNormalAttribute = nullptr;
+    Qt3DCore::QAttribute *mIndexAttribute = nullptr;
+#endif
 
     QgsMesh3DGeometryBuilder *mBuilder;
 
@@ -171,7 +202,11 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 
     //! Returns the number of active faces
     int extractDataset( QVector<double> &verticaleMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void prepareVerticesDatasetAttribute( Qt3DRender::QBuffer *buffer, int stride, int offset );
+#else
+    void prepareVerticesDatasetAttribute( Qt3DCore::QBuffer *buffer, int stride, int offset );
+#endif
 
     bool mIsVerticalMagnitudeRelative;
     int mVerticalGroupDatasetIndex;
@@ -180,11 +215,17 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 
     QgsMeshLayer *meshLayer() const;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QAttribute *mMagnitudeAttribute = nullptr;
+#else
+    Qt3DCore::QAttribute *mMagnitudeAttribute = nullptr;
+#endif
 };
 
 class QgsMeshDataset3DGeometryBuilder: public QgsMesh3DGeometryBuilder
 {
+    Q_OBJECT
+
   public:
     QgsMeshDataset3DGeometryBuilder( const QgsTriangularMesh &mesh,
                                      const QgsMesh &nativeMesh,

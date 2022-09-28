@@ -89,14 +89,13 @@ class TestPyQgsAppStartup(unittest.TestCase):
         with open(myTestFile, 'rt', encoding='utf-8') as res_file:
             lines = res_file.readlines()
 
-        # platform should be "Desktop"
-        self.assertEqual(lines, ['Platform: desktop'])
-
         try:
             p.terminate()
         except OSError as e:
             if e.errno != errno.ESRCH:
                 raise e
+
+        return lines
 
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter
@@ -113,10 +112,38 @@ class TestPyQgsAppStartup(unittest.TestCase):
         f = open(testmod, 'w')
         f.writelines(testcode)
         f.close()
-        self.doTestStartup(
+        testfile_lines = self.doTestStartup(
             testFile=testfilepath,
             timeOut=360,
             env={'PYQGIS_STARTUP': testmod})
+
+        # platform should be "Desktop"
+        self.assertEqual(testfile_lines, ['Platform: desktop'])
+
+    def testPyArgs(self):
+        testfile = 'pyqgis_code.txt'
+        testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
+        testcode = [
+            "import sys\n"
+            "f = open('{0}', 'a')\n".format(testfilepath),
+            "for arg in sys.argv:\n"
+            "  f.write(arg)\n",
+            "  f.write('\\n')\n",
+            "f.close()\n"
+        ]
+        testmod = os.path.join(self.TMP_DIR, 'pyqgis_code.py').replace('\\', '/')
+        f = open(testmod, 'w')
+        f.writelines(testcode)
+        f.close()
+
+        testfile_lines = self.doTestStartup(
+            testFile=testfilepath,
+            timeOut=10,
+            additionalArguments=["--code", testmod, "--py-args", "--specialScriptArgument's", 'a "Quoted" text arg', "--"])
+
+        self.assertEqual(testfile_lines, [testmod + '\n',
+                                          "--specialScriptArgument's\n",
+                                          'a "Quoted" text arg\n'])
 
 
 if __name__ == '__main__':

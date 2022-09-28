@@ -131,7 +131,7 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
 
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layerItem->providerKey(), layerItem->uri() );
     QString errCause;
-    if ( parts.empty() || parts.value( QStringLiteral( "path" ) ).isNull() || parts.value( QStringLiteral( "layerName" ) ).isNull() )
+    if ( parts.empty() || QgsVariantUtils::isNull( parts.value( QStringLiteral( "path" ) ) ) || QgsVariantUtils::isNull( parts.value( QStringLiteral( "layerName" ) ) ) )
     {
       errCause = QObject::tr( "Layer URI %1 is not valid!" ).arg( layerItem->uri() );
     }
@@ -348,7 +348,12 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
     {
       importResults.append( tr( "You cannot import layer %1 over itself!" ).arg( dropUri.name ) );
       hasError = true;
-
+    }
+    // Neither we should support copying the whole GPKG file
+    else if ( dropUri.providerKey.isEmpty() && dropUri.uri == dropUri.filePath )
+    {
+      importResults.append( tr( "You cannot import a GeoPackage file over another GeoPackage file!" ) );
+      hasError = true;
     }
     else
     {

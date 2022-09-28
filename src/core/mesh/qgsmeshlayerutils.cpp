@@ -659,6 +659,11 @@ QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh 
       const int index1( face.at( ( i + 1 ) % 3 ) );
       const int index2( face.at( ( i + 2 ) % 3 ) );
 
+      if ( std::isnan( verticalMagnitude[index] ) ||
+           std::isnan( verticalMagnitude[index1] ) ||
+           std::isnan( verticalMagnitude[index2] ) )
+        continue;
+
       const QgsMeshVertex &vert( triangularMesh.vertices().at( index ) );
       const QgsMeshVertex &otherVert1( triangularMesh.vertices().at( index1 ) );
       const QgsMeshVertex &otherVert2( triangularMesh.vertices().at( index2 ) );

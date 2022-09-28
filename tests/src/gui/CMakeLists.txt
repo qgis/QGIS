@@ -91,5 +91,6 @@ if (ENABLE_PGTEST)
     test_gui_texteditwrapper
     test_gui_newdatabasetablewidget
     test_gui_queryresultwidget
+    test_gui_listwidget
     PROPERTIES LABELS "POSTGRES")
 endif()

@@ -561,7 +561,7 @@ void QgsVectorDataProvider::fillMinMaxCache() const
     {
       const QVariant &varValue = attrs.at( attributeIndex );
 
-      if ( varValue.isNull() )
+      if ( QgsVariantUtils::isNull( varValue ) )
         continue;
 
       switch ( flds.at( attributeIndex ).type() )
@@ -623,11 +623,11 @@ void QgsVectorDataProvider::fillMinMaxCache() const
         default:
         {
           const QString value = varValue.toString();
-          if ( mCacheMinValues[ attributeIndex ].isNull() || value < mCacheMinValues[attributeIndex ].toString() )
+          if ( QgsVariantUtils::isNull( mCacheMinValues[ attributeIndex ] ) || value < mCacheMinValues[attributeIndex ].toString() )
           {
             mCacheMinValues[attributeIndex] = value;
           }
-          if ( mCacheMaxValues[attributeIndex].isNull() || value > mCacheMaxValues[attributeIndex].toString() )
+          if ( QgsVariantUtils::isNull( mCacheMaxValues[attributeIndex] ) || value > mCacheMaxValues[attributeIndex].toString() )
           {
             mCacheMaxValues[attributeIndex] = value;
           }

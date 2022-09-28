@@ -16,6 +16,9 @@
 
 #include <QDoubleSpinBox>
 #include <QLineEdit>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QRegularExpressionValidator>
 
 #include "qgsgeorefvalidators.h"
 #include "qgsgeorefdelegates.h"
@@ -92,8 +95,8 @@ QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionView
     const QModelIndex &/*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
-  const QRegExp re( "-?\\d*(\\.\\d+)?" );
-  QRegExpValidator *validator = new QRegExpValidator( re, editor );
+  const thread_local QRegularExpression re( QStringLiteral( "-?\\d*(\\.\\d+)?" ) );
+  QRegularExpressionValidator *validator = new QRegularExpressionValidator( re, editor );
   editor->setValidator( validator );
 
   return editor;

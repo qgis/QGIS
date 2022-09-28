@@ -30,7 +30,11 @@
 #include <QVector2D>
 
 #include <Qt3DRender/QLayer>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
+#else
+#include <Qt3DCore/QBuffer>
+#endif
 #include <Qt3DRender/QGeometryRenderer>
 
 #include <QtWidgets/QMenu>
@@ -207,9 +211,15 @@ class Qgs3DWiredMesh : public Qt3DRender::QGeometryRenderer
     void setVertices( const QList<QVector3D> &vertices );
 
   private:
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QGeometry *mGeom = nullptr;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+#else
+    Qt3DCore::QGeometry *mGeom = nullptr;
+    Qt3DCore::QAttribute *mPositionAttribute = nullptr;
+    Qt3DCore::QBuffer *mVertexBuffer = nullptr;
+#endif
 };
 
 #endif // QGS3DAXIS_H

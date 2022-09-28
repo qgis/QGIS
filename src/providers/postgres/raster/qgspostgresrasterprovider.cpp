@@ -16,6 +16,8 @@
 
 #include <cstring>
 #include "qgspostgresrasterprovider.h"
+#include "qgspostgresprovidermetadatautils.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgspostgrestransaction.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
@@ -88,7 +90,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), true );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true );
   if ( !mConnectionRO )
   {
     return;
@@ -117,8 +119,42 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
                                QStringLiteral( "PostGIS" ), Qgis::MessageLevel::Warning );
   }
 
+  // Try to load metadata
+  const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
+  QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresRasterProvider", schemaQuery ) );
+  if ( res.PQntuples( ) > 0 )
+  {
+    const QString schemaName = res.PQgetvalue( 0, 0 );
+    // TODO: also filter CRS?
+    const QString selectQuery = QStringLiteral( R"SQL(
+            SELECT
+              qmd
+           FROM %4.qgis_layer_metadata
+             WHERE
+                f_table_schema=%1
+                AND f_table_name=%2
+                AND f_geometry_column %3
+                AND layer_type='raster'
+           )SQL" )
+                                .arg( QgsPostgresConn::quotedValue( mUri.schema() ) )
+                                .arg( QgsPostgresConn::quotedValue( mUri.table() ) )
+                                .arg( mUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( mUri.geometryColumn() ) ) )
+                                .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+    QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresRasterProvider", selectQuery ) );
+    if ( res.PQntuples() > 0 )
+    {
+      QgsLayerMetadata metadata;
+      QDomDocument doc;
+      doc.setContent( res.PQgetvalue( 0, 0 ) );
+      mLayerMetadata.readMetadataXml( doc.documentElement() );
+      QgsMessageLog::logMessage( tr( "PostgreSQL raster layer metadata loaded from the database." ), tr( "PostGIS" ) );
+    }
+  }
+
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setCrs( crs() );
+
 
   mValid = true;
 }
@@ -687,6 +723,16 @@ QList<QgsMapLayerType> QgsPostgresRasterProviderMetadata::supportedLayerTypes() 
   return { QgsMapLayerType::RasterLayer };
 }
 
+bool QgsPostgresRasterProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
+{
+  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::RasterLayer, uri, metadata, errorMessage );
+}
+
+QgsProviderMetadata::ProviderCapabilities QgsPostgresRasterProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata;
+}
+
 QgsPostgresRasterProvider *QgsPostgresRasterProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags )
 {
   return new QgsPostgresRasterProvider( uri, options, flags );
@@ -719,6 +765,11 @@ QgsPostgresRasterProvider *QgsPostgresRasterProvider::clone() const
   QgsPostgresRasterProvider *provider = new QgsPostgresRasterProvider( *this, options );
   provider->copyBaseSettings( *this );
   return provider;
+}
+
+QgsRasterDataProvider::ProviderCapabilities QgsPostgresRasterProvider::providerCapabilities() const
+{
+  return QgsRasterDataProvider::ProviderCapability::ReadLayerMetadata;
 }
 
 
@@ -814,7 +865,7 @@ QgsPostgresConn *QgsPostgresRasterProvider::connectionRW()
 {
   if ( !mConnectionRW )
   {
-    mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
+    mConnectionRW = QgsPostgresConn::connectDb( mUri, false );
   }
   return mConnectionRW;
 }
@@ -2428,4 +2479,9 @@ QgsPostgresRasterProviderException::QgsPostgresRasterProviderException( const QS
 QgsFields QgsPostgresRasterProvider::fields() const
 {
   return mAttributeFields;
+}
+
+QgsLayerMetadata QgsPostgresRasterProvider::layerMetadata() const
+{
+  return mLayerMetadata;
 }

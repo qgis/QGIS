@@ -19,6 +19,7 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 QString QgsDateTimeFieldFormatter::DATE_FORMAT = QStringLiteral( "yyyy-MM-dd" );
 const QString QgsDateTimeFieldFormatter::TIME_FORMAT = QStringLiteral( "HH:mm:ss" );
@@ -40,7 +41,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 
   QString result;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     return QgsApplication::nullRepresentation();
   }

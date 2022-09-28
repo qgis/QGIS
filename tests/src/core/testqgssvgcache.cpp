@@ -25,20 +25,20 @@
 #include <QtConcurrent>
 #include <QElapsedTimer>
 #include "qgssvgcache.h"
-#include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
 
 /**
  * \ingroup UnitTests
  * This is a unit test for QgsSvgCache.
  */
-class TestQgsSvgCache : public QObject
+class TestQgsSvgCache : public QgsTest
 {
     Q_OBJECT
 
-  private:
+  public:
+    TestQgsSvgCache() : QgsTest( QStringLiteral( "QgsSvgCache Tests" ) ) {}
 
-    QString mReport;
+  private:
 
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
@@ -64,22 +64,11 @@ void TestQgsSvgCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-  mReport += "<h1>QgsSvgCache Tests</h1>\n";
 }
 
 void TestQgsSvgCache::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestQgsSvgCache::fillCache()
@@ -338,12 +327,71 @@ void TestQgsSvgCache::dynamicSvg()
   // test rendering SVGs with manual aspect ratio
   QgsSvgCache cache;
   const QString dynamicImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg.svg" );
-  const QByteArray svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+  const QString svg = cache.svgContent( dynamicImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
   1.0, 0, false, {{"text1", "green?"}, {"text2", "supergreen"}, {"align",  "middle" }} );
-  const QString contolImage = TEST_DATA_DIR + QStringLiteral( "/svg/test_dynamic_svg_control.svg" );
-  const QByteArray control_svg = cache.svgContent( contolImage, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
-                                 1.0, 0, false, {} );
-  QCOMPARE( svg, control_svg );
+
+  QDomDocument doc;
+  QVERIFY( doc.setContent( svg ) );
+
+  // because Qt ordering of QDomElement attributes are random, we can't directly compare the XML string
+  // and instead have to check manually element by element...
+  const QDomElement svgElement = doc.firstChildElement( QStringLiteral( "svg" ) );
+  QVERIFY( !svgElement.isNull() );
+  QCOMPARE( svgElement.attribute( QStringLiteral( "width" ) ), QStringLiteral( "30mm" ) );
+  QCOMPARE( svgElement.attribute( QStringLiteral( "height" ) ), QStringLiteral( "30mm" ) );
+  QCOMPARE( svgElement.attribute( QStringLiteral( "version" ) ), QStringLiteral( "1.1" ) );
+  QCOMPARE( svgElement.attribute( QStringLiteral( "viewBox" ) ), QStringLiteral( "0 0 32.75 32.75" ) );
+  QCOMPARE( svgElement.attribute( QStringLiteral( "xmlns" ) ), QStringLiteral( "http://www.w3.org/2000/svg" ) );
+
+  const QDomElement gElement = svgElement.firstChildElement( QStringLiteral( "g" ) );
+  QVERIFY( !gElement.isNull() );
+  QCOMPARE( gElement.attribute( QStringLiteral( "transform" ) ), QStringLiteral( "translate(-81.521 -137.75)" ) );
+
+  const QDomElement g2Element = gElement.firstChildElement( QStringLiteral( "g" ) );
+  QVERIFY( !g2Element.isNull() );
+  QCOMPARE( g2Element.attribute( QStringLiteral( "fill" ) ), QStringLiteral( "#FFFFFF" ) );
+  QCOMPARE( g2Element.attribute( QStringLiteral( "fill-opacity" ) ), QStringLiteral( "0.7" ) );
+  QCOMPARE( g2Element.attribute( QStringLiteral( "stroke" ) ), QStringLiteral( "#000000" ) );
+
+  const QDomElement circleElement = g2Element.firstChildElement( QStringLiteral( "circle" ) );
+  QVERIFY( !circleElement.isNull() );
+  QCOMPARE( circleElement.attribute( QStringLiteral( "cx" ) ), QStringLiteral( "97.896" ) );
+  QCOMPARE( circleElement.attribute( QStringLiteral( "cy" ) ), QStringLiteral( "154.12" ) );
+  QCOMPARE( circleElement.attribute( QStringLiteral( "r" ) ), QStringLiteral( "15.875" ) );
+
+  const QDomElement path1Element = g2Element.firstChildElement( QStringLiteral( "path" ) );
+  QVERIFY( !path1Element.isNull() );
+  QCOMPARE( path1Element.attribute( QStringLiteral( "d" ) ), QStringLiteral( "m82.815 148.83h30.162" ) );
+  QCOMPARE( path1Element.attribute( QStringLiteral( "stroke-width" ) ), QStringLiteral( ".26458px" ) );
+
+  const QDomElement path2Element = path1Element.nextSiblingElement( QStringLiteral( "path" ) );
+  QVERIFY( !path2Element.isNull() );
+  QCOMPARE( path2Element.attribute( QStringLiteral( "d" ) ), QStringLiteral( "m82.815 159.42h30.162" ) );
+  QCOMPARE( path2Element.attribute( QStringLiteral( "stroke-width" ) ), QStringLiteral( ".25px" ) );
+
+  const QDomElement g3Element = g2Element.nextSiblingElement( QStringLiteral( "g" ) );
+  QVERIFY( !g3Element.isNull() );
+  QCOMPARE( g3Element.attribute( QStringLiteral( "stroke-width" ) ), QStringLiteral( ".265" ) );
+  QCOMPARE( g3Element.attribute( QStringLiteral( "text-anchor" ) ), QStringLiteral( "middle" ) );
+  QCOMPARE( g3Element.attribute( QStringLiteral( "alignment-baseline" ) ), QStringLiteral( "middle" ) );
+
+  const QDomElement text1Element = g3Element.firstChildElement( QStringLiteral( "text" ) );
+  QVERIFY( !text1Element.isNull() );
+  QCOMPARE( text1Element.attribute( QStringLiteral( "x" ) ), QStringLiteral( "98" ) );
+  QCOMPARE( text1Element.attribute( QStringLiteral( "y" ) ), QStringLiteral( "147.5" ) );
+  QCOMPARE( text1Element.attribute( QStringLiteral( "font-size" ) ), QStringLiteral( "6px" ) );
+  QCOMPARE( text1Element.attribute( QStringLiteral( "font-family" ) ), QStringLiteral( "QGIS Vera Sans" ) );
+  QCOMPARE( text1Element.attribute( QStringLiteral( "font-weight" ) ), QStringLiteral( "bold" ) );
+  QCOMPARE( text1Element.text(), QStringLiteral( "green?" ) );
+
+  const QDomElement text2Element = text1Element.nextSiblingElement( QStringLiteral( "text" ) );
+  QVERIFY( !text2Element.isNull() );
+  QCOMPARE( text2Element.attribute( QStringLiteral( "x" ) ), QStringLiteral( "98" ) );
+  QCOMPARE( text2Element.attribute( QStringLiteral( "y" ) ), QStringLiteral( "156.3" ) );
+  QCOMPARE( text2Element.attribute( QStringLiteral( "font-size" ) ), QStringLiteral( "4.5px" ) );
+  QCOMPARE( text2Element.attribute( QStringLiteral( "font-family" ) ), QStringLiteral( "QGIS Vera Sans" ) );
+  QCOMPARE( text2Element.attribute( QStringLiteral( "font-weight" ) ), QStringLiteral( "bold" ) );
+  QCOMPARE( text2Element.text(), QStringLiteral( "supergreen" ) );
 }
 
 void TestQgsSvgCache::aspectRatio()
@@ -383,7 +431,6 @@ bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mi
   painter.drawImage( 0, 0, image );
   painter.end();
 
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString tempDir = QDir::tempPath() + '/';
   const QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );

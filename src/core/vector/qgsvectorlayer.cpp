@@ -186,6 +186,11 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
     {
       providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
     }
+    if ( options.forceReadOnly )
+    {
+      providerFlags |= QgsDataProvider::ForceReadOnly;
+      mDataSourceReadOnly = true;
+    }
     setDataSource( vectorLayerPath, baseName, providerKey, providerOptions, providerFlags );
   }
 
@@ -268,6 +273,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   {
     dataSource = source();
   }
+  options.forceReadOnly = mDataSourceReadOnly;
   QgsVectorLayer *layer = new QgsVectorLayer( dataSource, name(), mProviderKey, options );
   if ( mDataProvider && layer->dataProvider() )
   {
@@ -1569,6 +1575,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     mProviderKey = QStringLiteral( "ogr" );
   }
 
+  const QDomElement elem = layer_node.toElement();
   QgsDataProvider::ProviderOptions options { context.transformContext() };
   QgsDataProvider::ReadFlags flags;
   if ( mReadFlags & QgsMapLayer::FlagTrustLayerMetadata )
@@ -1581,11 +1588,15 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     {
       QgsDebugMsg( QStringLiteral( "Could not set data provider for layer %1" ).arg( publicSource() ) );
     }
-    const QDomElement elem = layer_node.toElement();
 
     // for invalid layer sources, we fallback to stored wkbType if available
     if ( elem.hasAttribute( QStringLiteral( "wkbType" ) ) )
       mWkbType = qgsEnumKeyToValue( elem.attribute( QStringLiteral( "wkbType" ) ), mWkbType );
+  }
+  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
+    mDataSourceReadOnly = true;
   }
 
   QDomElement pkeyElem = pkeyNode.toElement();
@@ -3633,25 +3644,11 @@ QgsFeatureList QgsVectorLayer::selectedFeatures() const
   features.reserve( mSelectedFeatureIds.count() );
   QgsFeature f;
 
-  if ( mSelectedFeatureIds.count() <= 8 )
-  {
-    // for small amount of selected features, fetch them directly
-    // because request with FilterFids would go iterate over the whole layer
-    const auto constMSelectedFeatureIds = mSelectedFeatureIds;
-    for ( QgsFeatureId fid : constMSelectedFeatureIds )
-    {
-      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
-      features << f;
-    }
-  }
-  else
-  {
-    QgsFeatureIterator it = getSelectedFeatures();
+  QgsFeatureIterator it = getSelectedFeatures();
 
-    while ( it.nextFeature( f ) )
-    {
-      features.push_back( f );
-    }
+  while ( it.nextFeature( f ) )
+  {
+    features.push_back( f );
   }
 
   return features;
@@ -3756,13 +3753,17 @@ bool QgsVectorLayer::isSpatial() const
 
 bool QgsVectorLayer::isReadOnly() const
 {
-  return mReadOnly;
+  return mDataSourceReadOnly || mReadOnly;
 }
 
 bool QgsVectorLayer::setReadOnly( bool readonly )
 {
   // exit if the layer is in editing mode
   if ( readonly && mEditBuffer )
+    return false;
+
+  // exit if the data source is in read-only mode
+  if ( !readonly && mDataSourceReadOnly )
     return false;
 
   mReadOnly = readonly;
@@ -3773,6 +3774,9 @@ bool QgsVectorLayer::setReadOnly( bool readonly )
 bool QgsVectorLayer::supportsEditing() const
 {
   if ( ! mDataProvider )
+    return false;
+
+  if ( mDataSourceReadOnly )
     return false;
 
   return mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities && ! mReadOnly;
@@ -4492,7 +4496,7 @@ void QgsVectorLayer::minimumOrMaximumValue( int index, QVariant *minimum, QVaria
       while ( fit.nextFeature( f ) )
       {
         const QVariant currentValue = f.attribute( index );
-        if ( currentValue.isNull() )
+        if ( QgsVariantUtils::isNull( currentValue ) )
           continue;
 
         if ( firstValue )
@@ -5432,6 +5436,11 @@ QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 QList<QgsWeakRelation> QgsVectorLayer::weakRelations() const
 {
   return mWeakRelations;
+}
+
+void QgsVectorLayer::setWeakRelations( const QList<QgsWeakRelation> &relations )
+{
+  mWeakRelations = relations;
 }
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )

@@ -323,7 +323,7 @@ bool QgsCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
   mHierarchyMutex.lock();
 
   auto it = mHierarchy.constFind( n );
-  const bool found = it != mHierarchy.constEnd() && *it  > 0;
+  const bool found = it != mHierarchy.constEnd() && ( *it ) >= 0;
   mHierarchyMutex.unlock();
   return found;
 }
@@ -348,7 +348,7 @@ QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const Indexed
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
     const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
-    if ( fetchNodeHierarchy( n2 ) && mHierarchy[n] > 0 )
+    if ( fetchNodeHierarchy( n2 ) && mHierarchy[n] >= 0 )
       lst.append( n2 );
   }
   return lst;

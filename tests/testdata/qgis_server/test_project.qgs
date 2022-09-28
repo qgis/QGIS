@@ -544,7 +544,7 @@
       <labelOnTop/>
       <widgets/>
       <previewExpression>"name"</previewExpression>
-      <mapTip>[% 'Name: ' ||  "name" %]</mapTip>
+      <mapTip>[% 'Name: ' ||  represent_value( "name" ) %]</mapTip>
     </maplayer>
     <maplayer refreshOnNotifyEnabled="0" maxScale="0" refreshOnNotifyMessage="" type="vector" minScale="1e+8" labelsEnabled="0" readOnly="0" simplifyMaxScale="1" simplifyDrawingTol="1" styleCategories="AllStyleCategories" geometry="Point" simplifyDrawingHints="1" autoRefreshEnabled="0" hasScaleBasedVisibilityFlag="0" simplifyAlgorithm="0" simplifyLocal="1" autoRefreshTime="0">
       <extent>

@@ -155,8 +155,8 @@ QVariantMap QgsBasicNumericFormat::configuration( const QgsReadWriteContext & ) 
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
   res.insert( QStringLiteral( "show_trailing_zeros" ), mShowTrailingZeros );
   res.insert( QStringLiteral( "rounding_type" ), static_cast< int >( mRoundingType ) );
-  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator );
-  res.insert( QStringLiteral( "decimal_separator" ), mDecimalSeparator );
+  res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
+  res.insert( QStringLiteral( "decimal_separator" ), mDecimalSeparator.isNull() ? QVariant() : QVariant::fromValue( mDecimalSeparator ) );
   return res;
 }
 

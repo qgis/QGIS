@@ -15,10 +15,10 @@
 
 #include "qgscolorrampbutton.h"
 #include "qgscolorramp.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
 #include "qgsstyle.h"
+#include "qgsguiutils.h"
 
 #include "qgsstylesavedialog.h"
 #include "qgsgradientcolorrampdialog.h"

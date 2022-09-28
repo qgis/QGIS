@@ -1076,7 +1076,6 @@ class QgsVectorFileWriterMetadataContainer
                              )
                            );
 
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       // FlatGeobuf
       datasetOptions.clear();
       layerOptions.clear();
@@ -1092,7 +1091,6 @@ class QgsVectorFileWriterMetadataContainer
                                QStringLiteral( "UTF-8" )
                              )
                            );
-#endif
 
       // ESRI Shapefile
       datasetOptions.clear();
@@ -2455,7 +2453,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       OGR_F_UnsetField( poFeature.get(), ogrField );
       continue;
     }
-    else if ( !attrValue.isValid() || attrValue.isNull() )
+    else if ( QgsVariantUtils::isNull( attrValue ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2898,22 +2896,6 @@ QgsVectorFileWriter::~QgsVectorFileWriter()
       QgsDebugMsg( QStringLiteral( "Error while committing transaction on OGRLayer." ) );
     }
   }
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
-  if ( mDS )
-  {
-    // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
-    QString drvName = GDALGetDriverShortName( GDALGetDatasetDriver( mDS.get() ) );
-    if ( drvName == QLatin1String( "XLSX" ) ||
-         drvName == QLatin1String( "ODS" ) )
-    {
-      CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
-      mDS.reset();
-      CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
-    }
-  }
-#endif
-
   mDS.reset();
 
   if ( mOgrRef )
@@ -3603,7 +3585,7 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
     }
   }
 
-  QStringList extensionList = qgis::setToList( extensions );
+  QStringList extensionList( extensions.constBegin(), extensions.constEnd() );
 
   std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
   {

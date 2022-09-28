@@ -92,6 +92,12 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Returns TRUE if at least one rule needs geometry.
+     * \since QGIS 3.26.3
+     */
+    bool rulesNeedGeometry() const;
+
   signals:
 
     /**

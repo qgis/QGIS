@@ -39,6 +39,7 @@
 #include "qgsoptionswidgetfactory.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -228,7 +229,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   if ( optView )
   {
     optView->setMaximumWidth(
-      mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
+      QgsVariantUtils::isNull( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ) ) ? 150 : 16777215 );
     // get rid of annoying outer focus rect on Mac
     optView->setAttribute( Qt::WA_MacShowFocusRect, false );
   }

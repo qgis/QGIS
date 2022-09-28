@@ -33,8 +33,6 @@
 #include "geomfunction.h"
 #include "labelposition.h"
 #include "pointset.h"
-#include "util.h"
-#include "costcalculator.h"
 
 #include "qgis.h"
 #include "qgsgeometry.h"
@@ -136,14 +134,18 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
   x.resize( nbPoints );
   y.resize( nbPoints );
 
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  GEOSCoordSeq_copyToArrays_r( geosctxt, coordSeq, x.data(), y.data(), nullptr, nullptr );
+  auto xminmax = std::minmax_element( x.begin(), x.end() );
+  xmin = *xminmax.first;
+  xmax = *xminmax.second;
+  auto yminmax = std::minmax_element( y.begin(), y.end() );
+  ymin = *yminmax.first;
+  ymax = *yminmax.second;
+#else
   for ( int i = 0; i < nbPoints; ++i )
   {
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
     GEOSCoordSeq_getXY_r( geosctxt, coordSeq, i, &x[i], &y[i] );
-#else
-    GEOSCoordSeq_getX_r( geosctxt, coordSeq, i, &x[i] );
-    GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &y[i] );
-#endif
 
     xmax = x[i] > xmax ? x[i] : xmax;
     xmin = x[i] < xmin ? x[i] : xmin;
@@ -151,6 +153,7 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
     ymax = y[i] > ymax ? y[i] : ymax;
     ymin = y[i] < ymin ? y[i] : ymin;
   }
+#endif
 }
 
 Layer *FeaturePart::layer()
@@ -408,16 +411,11 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
     if ( pointGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
       unsigned int nPoints = 0;
       GEOSCoordSeq_getSize_r( geosctxt, coordSeq, &nPoints );
       if ( nPoints == 0 )
         return nullptr;
       GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
-#else
-      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-#endif
     }
   }
   catch ( GEOSException &e )
@@ -1416,9 +1414,11 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( flags == 0 )
     flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
   const bool hasAboveBelowLinePlacement = flags & QgsLabeling::LinePlacementFlag::AboveLine || flags & QgsLabeling::LinePlacementFlag::BelowLine;
-  const double offsetDistance = mLF->distLabel() + li->characterHeight() / 2;
+  const double offsetDistance = mLF->distLabel() + li->characterHeight( 0 ) / 2;
   std::unique_ptr< PointSet > mapShapeOffsetPositive;
+  bool positiveShapeHasNegativeDistance = false;
   std::unique_ptr< PointSet > mapShapeOffsetNegative;
+  bool negativeShapeHasNegativeDistance = false;
   if ( hasAboveBelowLinePlacement && !qgsDoubleNear( offsetDistance, 0 ) )
   {
     // create offseted map shapes to be used for above and below line placements
@@ -1430,8 +1430,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     {
       if ( mapShapeOffsetPositive )
         mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance );
+      positiveShapeHasNegativeDistance = offsetDistance < 0;
       if ( mapShapeOffsetNegative )
         mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance * -1 );
+      negativeShapeHasNegativeDistance = offsetDistance > 0;
     }
     else
     {
@@ -1450,8 +1452,10 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       }
       if ( mapShapeOffsetPositive )
         mapShapeOffsetPositive->offsetCurveByDistance( offsetDistance * -1 );
+      positiveShapeHasNegativeDistance = offsetDistance > 0;
       if ( mapShapeOffsetNegative )
         mapShapeOffsetNegative->offsetCurveByDistance( offsetDistance );
+      negativeShapeHasNegativeDistance = offsetDistance < 0;
     }
   }
 
@@ -1501,7 +1505,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       return 0;
 
     const std::size_t candidateTargetCount = maximumLineCandidates();
-    double delta = std::max( li->characterHeight() / 6, totalDistance / candidateTargetCount );
+    double delta = std::max( li->characterHeight( 0 ) / 6, totalDistance / candidateTargetCount );
 
     // generate curved labels
     double distanceAlongLineToStartCandidate = 0;
@@ -1552,9 +1556,16 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
         continue;
       }
 
+
       bool isBackupPlacementOnly = false;
       if ( flags & QgsLabeling::LinePlacementFlag::MapOrientation )
       {
+        if ( ( currentMapShape == mapShapeOffsetPositive.get() && positiveShapeHasNegativeDistance )
+             || ( currentMapShape == mapShapeOffsetNegative.get() && negativeShapeHasNegativeDistance ) )
+        {
+          labeledLineSegmentIsRightToLeft = !labeledLineSegmentIsRightToLeft;
+        }
+
         if ( ( offset != NoOffset ) && !labeledLineSegmentIsRightToLeft && !( flags & QgsLabeling::LinePlacementFlag::AboveLine ) )
         {
           if ( singleCandidateOnly && offset == PositiveOffset )
@@ -2293,12 +2304,7 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
   GEOSCoordSeq_setXY_r( geosctxt, coord, 0, p2otherX, p2otherY );
-#else
-  GEOSCoordSeq_setX_r( geosctxt, coord, 0, p2otherX );
-  GEOSCoordSeq_setY_r( geosctxt, coord, 0, p2otherY );
-#endif
 
   geos::unique_ptr p2OtherEnd( GEOSGeom_createPoint_r( geosctxt, coord ) );
   try

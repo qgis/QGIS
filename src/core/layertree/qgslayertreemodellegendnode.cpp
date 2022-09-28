@@ -19,7 +19,6 @@
 #include "qgslayertreemodellegendnode.h"
 
 #include "qgsdatadefinedsizelegend.h"
-#include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsrasterlayer.h"
@@ -31,14 +30,14 @@
 #include "qgspointcloudrenderer.h"
 #include "qgsrasterrenderer.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsfeatureid.h"
-#include "qgslayoutitem.h"
-#include "qgsvectorlayerfeaturecounter.h"
 #include "qgsexpression.h"
 #include "qgstextrenderer.h"
 #include "qgssettings.h"
 #include "qgsfileutils.h"
 #include "qgsmarkersymbol.h"
+#include "qgsvariantutils.h"
+#include "qgslayertreelayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 
 #include <QBuffer>
 
@@ -323,6 +322,8 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   }
 }
 
+QgsSymbolLegendNode::~QgsSymbolLegendNode() = default;
+
 Qt::ItemFlags QgsSymbolLegendNode::flags() const
 {
   if ( mItem.isCheckable() )
@@ -343,25 +344,29 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   const int largeIconSize = QgsLayerTreeModel::scaleIconSize( 512 );
   QSize minSz( iconSize, iconSize );
-  if ( mItem.symbol() && mItem.symbol()->type() == Qgis::SymbolType::Marker )
+  if ( mItem.symbol() && ( mItem.symbol()->type() == Qgis::SymbolType::Marker
+                           || mItem.symbol()->type() == Qgis::SymbolType::Line ) )
   {
+    int maxSize = largeIconSize;
+
     // unusued width, height variables
     double width = 0.0;
     double height = 0.0;
-    const std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
+    bool ok;
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height, &ok ) );
+
+    if ( !ok && context )
+    {
+      // It's not possible to get a restricted size symbol, so we restrict
+      // pixmap target size to be sure it would fit MAXIMUM_SIZE
+      maxSize = static_cast<int>( std::round( MAXIMUM_SIZE * context->scaleFactor() ) );
+    }
+
+    const QSize size( mItem.symbol()->type() == Qgis::SymbolType::Marker ? maxSize : minSz.width(),
+                      maxSize );
+
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), QSize( largeIconSize, largeIconSize ), 0,
-                  context ).toImage(),
-              minSz,
-              true ).size();
-  }
-  else if ( mItem.symbol() && mItem.symbol()->type() == Qgis::SymbolType::Line )
-  {
-    double width = 0.0;
-    double height = 0.0;
-    const std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
-    minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), QSize( minSz.width(), largeIconSize ), 0,
+              QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), size, 0,
                   context ).toImage(),
               minSz,
               true ).size();
@@ -370,7 +375,7 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   if ( !mTextOnSymbolLabel.isEmpty() && context )
   {
     const double w = QgsTextRenderer::textWidth( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel );
-    const double h = QgsTextRenderer::textHeight( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel, QgsTextRenderer::Point );
+    const double h = QgsTextRenderer::textHeight( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel, Qgis::TextLayoutMode::Point );
     int wInt = ceil( w ), hInt = ceil( h );
     if ( wInt > minSz.width() ) minSz.setWidth( wInt );
     if ( hInt > minSz.height() ) minSz.setHeight( hInt );
@@ -390,7 +395,7 @@ QString QgsSymbolLegendNode::symbolLabel() const
   if ( mEmbeddedInParent )
   {
     const QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
-    const QString layerName = legendlabel.isNull() ? mLayerNode->name() : legendlabel.toString();
+    const QString layerName = QgsVariantUtils::isNull( legendlabel ) ? mLayerNode->name() : legendlabel.toString();
     label = mUserLabel.isEmpty() ? layerName : mUserLabel;
   }
   else
@@ -534,7 +539,7 @@ QVariant QgsSymbolLegendNode::data( int role ) const
           if ( !isNullSize )
           {
             const qreal yBaselineVCenter = ( mIconSize.height() + fm.ascent() - fm.descent() ) / 2;
-            QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+            QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, Qgis::TextHorizontalAlignment::Center,
                                        QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
           }
         }
@@ -741,7 +746,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
       if ( !isNullSize )
       {
         const qreal yBaselineVCenter = ( height * dotsPerMM + fm.ascent() - fm.descent() ) / 2;
-        QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+        QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, Qgis::TextHorizontalAlignment::Center,
                                    QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
       }
     }
@@ -1526,7 +1531,7 @@ QSizeF QgsVectorLabelLegendNode::drawSymbol( const QgsLegendSettings &settings, 
   const QPointF textPos( renderContext.scaleFactor() * ( xOffset + settings.symbolSize().width() / 2.0 - textWidth / 2.0 ), renderContext.scaleFactor() * ( yOffset + settings.symbolSize().height() / 2.0 + textHeight / 2.0 ) );
 
   const QgsScopedRenderContextScaleToPixels scopedScaleToPixels( ctx );
-  QgsTextRenderer::drawText( textPos, 0.0, QgsTextRenderer::AlignLeft, textLines, ctx, textFormat );
+  QgsTextRenderer::drawText( textPos, 0.0, Qgis::TextHorizontalAlignment::Left, textLines, ctx, textFormat );
 
   const double symbolWidth = std::max( textWidth, settings.symbolSize().width() );
   const double symbolHeight = std::max( textHeight, settings.symbolSize().height() );
@@ -1564,4 +1569,3 @@ void QgsVectorLabelLegendNode::textWidthHeight( double &width, double &height, Q
   height = QgsTextRenderer::textHeight( ctx, textFormat, 'A', true );
   width = QgsTextRenderer::textWidth( ctx, textFormat, textLines, &fm );
 }
-

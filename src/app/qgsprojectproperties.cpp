@@ -20,7 +20,6 @@
 
 //qgis includes
 #include "qgsapplication.h"
-#include "qgsdistancearea.h"
 #include "qgisapp.h"
 #include "qgis.h"
 #include "qgscoordinatetransform.h"
@@ -34,18 +33,13 @@
 #include "qgsprojectstylesettings.h"
 #include "qgsnative.h"
 #include "qgsprojectlayergroupdialog.h"
-#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsscaleutils.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
 #include "qgscolorramp.h"
-#include "qgssymbolselectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
 #include "qgsdoublevalidator.h"
@@ -53,23 +47,19 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"
 #include "qgsexpressioncontext.h"
-#include "qgsmapoverviewcanvas.h"
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgsunittypes.h"
-#include "qgstablewidgetitem.h"
 #include "qgstreewidgetitem.h"
 #include "qgslayertree.h"
 #include "qgsprintlayout.h"
 #include "qgsmetadatawidget.h"
-#include "qgsmessagelog.h"
 #include "qgslayercapabilitiesmodel.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsprojectservervalidator.h"
 #include "qgsprojectstorage.h"
-#include "qgsprojectstorageregistry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
@@ -88,6 +78,7 @@
 #include <QDesktopServices>
 #include <QAbstractListModel>
 #include <QList>
+#include <QRegularExpression>
 #include <QRegularExpressionValidator>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
@@ -110,11 +101,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mMetadataWidget = new QgsMetadataWidget();
   mMetadataPage->layout()->addWidget( mMetadataWidget );
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  // not supported on Qt < 5.13
-  mGroupBoxStyleDatabases->hide();
-#endif
 
   connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
   connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
@@ -143,14 +129,17 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::addStyleDatabase );
   connect( mButtonRemoveStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::removeStyleDatabase );
   connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::newStyleDatabase );
+  connect( mCoordinateDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateGuiForCoordinateType(); } );
+  connect( mCoordinateCrs, &QgsProjectionSelectionWidget::crsChanged, this, [ = ]( const QgsCoordinateReferenceSystem & ) { updateGuiForCoordinateCrs(); } );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
-  mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), MapUnits );
-  mCoordinateDisplayComboBox->addItem( tr( "Geographic (Latitude / Longitude)" ), Geographic );
+  mCoordinateDisplayComboBox->addItem( tr( "Map Units" ), static_cast<int>( Qgis::CoordinateDisplayType::MapCrs ) );
+  mCoordinateDisplayComboBox->addItem( tr( "Map Geographic (degrees)" ), static_cast<int>( Qgis::CoordinateDisplayType::MapGeographic ) );
+  mCoordinateDisplayComboBox->addItem( tr( "Custom Projection Units" ), static_cast<int>( Qgis::CoordinateDisplayType::CustomCrs ) );
 
   mCoordinateOrderComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::CoordinateOrder::Default ) );
   mCoordinateOrderComboBox->addItem( tr( "Easting, Northing (Longitude, Latitude)" ), static_cast< int >( Qgis::CoordinateOrder::XY ) );
@@ -396,11 +385,23 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     updateEllipsoidUI( index );
   }
 
-  const QString format = QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QStringLiteral( "MU" ) );
-  if ( format == QLatin1String( "MU" ) )
-    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( MapUnits ) );
-  else
-    mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( Geographic ) );
+  const Qgis::CoordinateDisplayType coordinateType = QgsProject::instance()->displaySettings()->coordinateType();
+  mCoordinateDisplayComboBox->setCurrentIndex( mCoordinateDisplayComboBox->findData( static_cast<int>( coordinateType ) ) );
+  switch ( coordinateType )
+  {
+    case Qgis::CoordinateDisplayType::MapCrs:
+      mCoordinateCrs->setEnabled( false );
+      mCoordinateCrs->setCrs( mCrs );
+      break;
+    case Qgis::CoordinateDisplayType::MapGeographic:
+      mCoordinateCrs->setEnabled( false );
+      mCoordinateCrs->setCrs( !mCrs.isGeographic() ? mCrs.toGeographicCrs() : mCrs );
+      break;
+    case Qgis::CoordinateDisplayType::CustomCrs:
+      mCoordinateCrs->setEnabled( true );
+      mCoordinateCrs->setCrs( QgsProject::instance()->displaySettings()->coordinateCustomCrs() );
+      break;
+  }
 
   const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
   mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
@@ -1202,26 +1203,26 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), spinBoxDP->value() );
 
-  QString degreeFormat;
-  switch ( static_cast< CoordinateFormat >( mCoordinateDisplayComboBox->currentData().toInt() ) )
+  const Qgis::CoordinateDisplayType coordinateType = static_cast< Qgis::CoordinateDisplayType >( mCoordinateDisplayComboBox->currentData().toInt() );
+  QgsProject::instance()->displaySettings()->setCoordinateType( coordinateType );
+  if ( coordinateType == Qgis::CoordinateDisplayType::CustomCrs )
   {
-    case Geographic:
-      degreeFormat = QStringLiteral( "D" );
-      break;
-    case MapUnits:
-      degreeFormat = QStringLiteral( "MU" );
-      break;
+    QgsProject::instance()->displaySettings()->setCoordinateCustomCrs( mCoordinateCrs->crs() );
   }
-  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), degreeFormat );
+  else
+  {
+    QgsProject::instance()->displaySettings()->setCoordinateCustomCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  }
+
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ), qgsEnumValueToKey( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) ) );
 
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
+  const QgsUnitTypes::DistanceUnit distanceUnits = static_cast< QgsUnitTypes::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setDistanceUnits( distanceUnits );
 
-  QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
+  const QgsUnitTypes::AreaUnit areaUnits = static_cast< QgsUnitTypes::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setAreaUnits( areaUnits );
 
   QgsProject::instance()->setFilePathStorage( static_cast< Qgis::FilePathType >( cbxAbsolutePath->currentData().toInt() ) );
@@ -1404,7 +1405,7 @@ void QgsProjectProperties::apply()
   QStringList keywordStringList = mWMSKeywordList->text().split( ',' );
   if ( !keywordStringList.isEmpty() )
   {
-    keywordStringList.replaceInStrings( QRegExp( "^\\s+" ), QString() ).replaceInStrings( QRegExp( "\\s+$" ), QString() );
+    keywordStringList.replaceInStrings( QRegularExpression( QStringLiteral( "^\\s+" ) ), QString() ).replaceInStrings( QRegularExpression( "\\s+$" ), QString() );
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSKeywordList" ), QStringLiteral( "/" ), keywordStringList );
   }
   else
@@ -1856,6 +1857,45 @@ void QgsProjectProperties::cbxWCSPubliedStateChanged( int aIdx )
   }
 }
 
+void QgsProjectProperties::updateGuiForCoordinateCrs()
+{
+  const Qgis::CoordinateDisplayType coordinateType = static_cast<Qgis::CoordinateDisplayType>( mCoordinateDisplayComboBox->currentData().toInt() );
+  const int customIndex = mCoordinateDisplayComboBox->findData( static_cast<int>( Qgis::CoordinateDisplayType::CustomCrs ) );
+  if ( coordinateType == Qgis::CoordinateDisplayType::CustomCrs )
+  {
+    const QgsUnitTypes::DistanceUnit units = mCoordinateCrs->crs().mapUnits();
+    mCoordinateDisplayComboBox->setItemText( customIndex, tr( "Custom Projection Units (%1)" ).arg( QgsUnitTypes::toString( units ) ) );
+  }
+  else
+  {
+    mCoordinateDisplayComboBox->setItemText( customIndex, tr( "Custom Projection Units" ) );
+  }
+}
+
+void QgsProjectProperties::updateGuiForCoordinateType()
+{
+  const Qgis::CoordinateDisplayType coordinateType = static_cast<Qgis::CoordinateDisplayType>( mCoordinateDisplayComboBox->currentData().toInt() );
+  switch ( coordinateType )
+  {
+    case Qgis::CoordinateDisplayType::MapCrs:
+      mCoordinateCrs->setEnabled( false );
+      mCoordinateCrs->setCrs( mCrs );
+      break;
+
+    case Qgis::CoordinateDisplayType::MapGeographic:
+      mCoordinateCrs->setEnabled( false );
+      mCoordinateCrs->setCrs( !mCrs.isGeographic() ? mCrs.toGeographicCrs() : mCrs );
+      break;
+
+    case Qgis::CoordinateDisplayType::CustomCrs:
+      mCoordinateCrs->setEnabled( true );
+      mCoordinateCrs->setCrs( QgsProject::instance()->displaySettings()->coordinateCustomCrs() );
+      break;
+  }
+
+  updateGuiForCoordinateCrs();
+}
+
 void QgsProjectProperties::updateGuiForMapUnits()
 {
   if ( !mCrs.isValid() )
@@ -1873,7 +1913,7 @@ void QgsProjectProperties::updateGuiForMapUnits()
       mAreaUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
       mAreaUnitsCombo->setCurrentIndex( idx );
     }
-    idx = mCoordinateDisplayComboBox->findData( MapUnits );
+    idx = mCoordinateDisplayComboBox->findData( static_cast<int>( Qgis::CoordinateDisplayType::MapCrs ) );
     if ( idx >= 0 )
     {
       mCoordinateDisplayComboBox->setItemText( idx, tr( "Unknown Units" ) );
@@ -1892,7 +1932,7 @@ void QgsProjectProperties::updateGuiForMapUnits()
     mCoordinateDisplayComboBox->setEnabled( true );
 
     //make sure map units option is shown in coordinate display combo
-    int idx = mCoordinateDisplayComboBox->findData( MapUnits );
+    int idx = mCoordinateDisplayComboBox->findData( static_cast<int>( Qgis::CoordinateDisplayType::MapCrs ) );
     QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( units ) );
     mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
 
@@ -2597,12 +2637,12 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
 void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
-  QRegExp regExp( "1:0*[1-9]\\d*" );
-  if ( regExp.exactMatch( changedScaleItem->text() ) )
+  const thread_local QRegularExpression sRegExp( "^1:0*[1-9]\\d*$" );
+  if ( sRegExp.match( changedScaleItem->text() ).hasMatch() )
   {
     //Remove leading zeroes from the denominator
-    regExp.setPattern( QStringLiteral( "1:0*" ) );
-    changedScaleItem->setText( changedScaleItem->text().replace( regExp, QStringLiteral( "1:" ) ) );
+    const thread_local QRegularExpression sNoLeadingZeroRegExp( "1:0*" );
+    changedScaleItem->setText( changedScaleItem->text().replace( sNoLeadingZeroRegExp, QStringLiteral( "1:" ) ) );
   }
   else
   {

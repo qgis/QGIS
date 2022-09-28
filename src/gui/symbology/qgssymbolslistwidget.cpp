@@ -607,7 +607,6 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::St
     return;
 
   QgsStyle *style = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( mStyle != QgsStyle::defaultStyle() )
   {
     // get new instance of symbol from style
@@ -617,10 +616,6 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QString &name, QgsStyle::St
   {
     style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
   }
-#else
-  ( void )stylePath;
-  style = mStyle;
-#endif
 
   if ( !style )
     return;

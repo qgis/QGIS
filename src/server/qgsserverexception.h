@@ -167,20 +167,8 @@ class SERVER_EXPORT QgsServerApiException: public QgsServerException
           { "description", what().toStdString() },
         }
       };
-      if ( responseFormat == QLatin1String( "application/json" ) )
-      {
-        return QByteArray::fromStdString( data.dump() );
-      }
-      else if ( responseFormat == QLatin1String( "text/html" ) )
-      {
-        // TODO: template
-        return QByteArray::fromStdString( data.dump() );
-      }
-      else
-      {
-        // TODO: template
-        return QByteArray::fromStdString( data.dump() );
-      }
+
+      return QByteArray::fromStdString( data.dump() );
     }
 
   private:

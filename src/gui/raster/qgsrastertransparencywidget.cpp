@@ -582,7 +582,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
       const int bandNo = bands.value( i );
       if ( myPixelMap.count( bandNo ) == 1 )
       {
-        if ( myPixelMap.value( bandNo ).isNull() )
+        if ( QgsVariantUtils::isNull( myPixelMap.value( bandNo ) ) )
         {
           return; // Don't add nodata, transparent anyway
         }

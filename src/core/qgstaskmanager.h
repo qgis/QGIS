@@ -602,11 +602,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     bool mInitialized = false;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex *mTaskMutex;
-#else
     mutable QRecursiveMutex *mTaskMutex;
-#endif
 
     QMap< long, TaskInfo > mTasks;
     QMap< long, QgsTaskList > mTaskDependencies;

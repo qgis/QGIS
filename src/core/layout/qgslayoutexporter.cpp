@@ -599,9 +599,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         //error beginning print
         return FileError;
       }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
       p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
-#endif
       layerExportResult = printPrivate( printer, p, false, subSettings.dpi, subSettings.rasterizeWholeImage );
       p.end();
       return layerExportResult;
@@ -703,9 +701,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       //error beginning print
       return FileError;
     }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
     p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
-#endif
     result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
     p.end();
 
@@ -787,9 +783,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
         //error beginning print
         return PrintError;
       }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
       p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
-#endif
     }
 
     QgsLayoutExporter exporter( iterator->layout() );
@@ -895,9 +889,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
     //error beginning print
     return PrintError;
   }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   p.setRenderHint( QPainter::LosslessImageRendering, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
-#endif
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
@@ -962,9 +954,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
         //error beginning print
         return PrintError;
       }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
       p.setRenderHint( QPainter::LosslessImageRendering, iterator->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering );
-#endif
     }
 
     QgsLayoutExporter exporter( iterator->layout() );

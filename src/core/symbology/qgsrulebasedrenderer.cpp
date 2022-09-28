@@ -967,7 +967,7 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
   mRootRule->startRender( context, fields, mFilter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
-  QList<int> symbolZLevels = qgis::setToList( symbolZLevelsSet );
+  QList<int> symbolZLevels( symbolZLevelsSet.begin(), symbolZLevelsSet.end() );
   std::sort( symbolZLevels.begin(), symbolZLevels.end() );
 
   // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]
@@ -1285,7 +1285,7 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
   {
     QString value;
     // not quoting numbers saves a type cast
-    if ( cat.value().isNull() )
+    if ( QgsVariantUtils::isNull( cat.value() ) )
       value = "NULL";
     else if ( cat.value().type() == QVariant::Int )
       value = cat.value().toString();
@@ -1295,7 +1295,7 @@ void QgsRuleBasedRenderer::refineRuleCategories( QgsRuleBasedRenderer::Rule *ini
       value = QString::number( cat.value().toDouble(), 'f', 4 );
     else
       value = QgsExpression::quotedString( cat.value().toString() );
-    const QString filter = QStringLiteral( "%1 %2 %3" ).arg( attr, cat.value().isNull() ? QStringLiteral( "IS" ) : QStringLiteral( "=" ), value );
+    const QString filter = QStringLiteral( "%1 %2 %3" ).arg( attr, QgsVariantUtils::isNull( cat.value() ) ? QStringLiteral( "IS" ) : QStringLiteral( "=" ), value );
     const QString label = !cat.label().isEmpty() ? cat.label() :
                           cat.value().isValid() ? value : QString();
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );

@@ -70,7 +70,7 @@ bool QgsUuidWidgetWrapper::valid() const
 
 void QgsUuidWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     int maxLength = 0;
     if ( field().type() == QVariant::String && field().length() > 0 )

@@ -20,10 +20,10 @@
 
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspallabeling.h"
-#include "qgsnewauxiliarylayerdialog.h"
-#include "qgsauxiliarystorage.h"
+#include "qgslabelposition.h"
 #include "qgscalloutposition.h"
 #include "qgscallout.h"
+#include "qgsdiagramrenderer.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;

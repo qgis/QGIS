@@ -472,7 +472,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       const QVariant originalValue = it->attribute( i );
       QVariant attrValue = originalValue;
-      if ( ! attrValue.isNull() && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
+      if ( ! QgsVariantUtils::isNull( attrValue ) && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
       {
         // Push first conversion error only
         if ( result )
@@ -634,7 +634,7 @@ bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttribut
 
 bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
-  QList<int> attrIdx = qgis::setToList( attributes );
+  QList<int> attrIdx( attributes.begin(), attributes.end() );
   std::sort( attrIdx.begin(), attrIdx.end(), std::greater<int>() );
 
   // delete attributes one-by-one with decreasing index
@@ -676,7 +676,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
     {
       QVariant attrValue = it2.value();
       // Check attribute conversion
-      const bool conversionError { ! attrValue.isNull()
+      const bool conversionError { ! QgsVariantUtils::isNull( attrValue )
                                    && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
       if ( conversionError )
       {

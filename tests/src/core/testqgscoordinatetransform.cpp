@@ -42,11 +42,9 @@ class TestQgsCoordinateTransform: public QObject
     void scaleFactor_data();
     void transform_data();
     void transform();
-#if PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
     void transformEpoch_data();
     void transformEpoch();
     void dynamicToDynamicErrorHandler();
-#endif
     void transformLKS();
     void transformContextNormalize();
     void transform2DPoint();
@@ -400,7 +398,6 @@ void TestQgsCoordinateTransform::transform()
   QGSCOMPARENEAR( y, outY, precision );
 }
 
-#if PROJ_VERSION_MAJOR>7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
 void TestQgsCoordinateTransform::transformEpoch_data()
 {
   QTest::addColumn<QgsCoordinateReferenceSystem>( "sourceCrs" );
@@ -558,7 +555,6 @@ void TestQgsCoordinateTransform::dynamicToDynamicErrorHandler()
 
   QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( nullptr );
 }
-#endif
 
 void TestQgsCoordinateTransform::transformBoundingBox()
 {

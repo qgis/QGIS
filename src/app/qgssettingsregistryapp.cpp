@@ -25,6 +25,8 @@
 #include "georeferencer/qgstransformsettingsdialog.h"
 #include "vertextool/qgsvertexeditor.h"
 #include "elevation/qgselevationprofilewidget.h"
+#include "qgsgpsinformationwidget.h"
+#include "qgsgpsmarker.h"
 
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
@@ -51,6 +53,11 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsElevationProfileWidget::settingShowLayerTree );
 
   addSettingsEntry( &QgsIdentifyResultsDialog::settingHideNullValues );
+
+  addSettingsEntry( &QgsGpsInformationWidget::settingLastLogFolder );
+
+  addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
+  addSettingsEntry( &QgsGpsMarker::settingRotateLocationMarker );
 
   QgsApplication::settingsRegistryCore()->addSubRegistry( this );
 }

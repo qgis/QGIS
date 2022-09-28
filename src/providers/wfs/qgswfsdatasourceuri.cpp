@@ -171,7 +171,8 @@ QSet<QString> QgsWFSDataSourceURI::unknownParamKeys() const
     QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG,
     QgsWFSConstants::URI_PARAM_PAGING_ENABLED,
     QgsWFSConstants::URI_PARAM_PAGE_SIZE,
-    QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES
+    QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
+    QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE
   };
 
   QSet<QString> l_unknownParamKeys;
@@ -414,6 +415,13 @@ bool QgsWFSDataSourceURI::preferCoordinatesForWfst11() const
 {
   return mURI.hasParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ) &&
          mURI.param( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ).toUpper() == QLatin1String( "TRUE" );
+}
+
+bool QgsWFSDataSourceURI::skipInitialGetFeature() const
+{
+  if ( !mURI.hasParam( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ) )
+    return false;
+  return mURI.param( QgsWFSConstants::URI_PARAM_SKIP_INITIAL_GET_FEATURE ).toUpper() == QLatin1String( "TRUE" );
 }
 
 QString QgsWFSDataSourceURI::build( const QString &baseUri,

@@ -47,6 +47,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsprojectmetadata.h"
 #include "qgstranslationcontext.h"
+#include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttranslator.h"
 #include "qgscolorscheme.h"
 #include "qgssettings.h"
@@ -79,7 +80,6 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectStyleSettings;
-class QgsProjectDisplaySettings;
 class QgsProjectTimeSettings;
 class QgsAnnotationLayer;
 class QgsAttributeEditorContainer;
@@ -118,6 +118,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
     Q_PROPERTY( bool topologicalEditing READ topologicalEditing WRITE setTopologicalEditing NOTIFY topologicalEditingChanged )
+    Q_PROPERTY( QgsUnitTypes::DistanceUnit distanceUnits READ distanceUnits WRITE setDistanceUnits NOTIFY distanceUnitsChanged )
+    Q_PROPERTY( QgsUnitTypes::AreaUnit areaUnits READ areaUnits WRITE setAreaUnits NOTIFY areaUnitsChanged )
+    Q_PROPERTY( QgsProjectDisplaySettings *displaySettings READ displaySettings CONSTANT )
 
   public:
 
@@ -692,7 +695,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see areaUnits()
      * \since QGIS 2.14
      */
-    QgsUnitTypes::DistanceUnit distanceUnits() const;
+    QgsUnitTypes::DistanceUnit distanceUnits() const { return mDistanceUnits; }
 
     /**
      * Sets the default distance measurement units for the project.
@@ -707,7 +710,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see distanceUnits()
      * \since QGIS 2.14
      */
-    QgsUnitTypes::AreaUnit areaUnits() const;
+    QgsUnitTypes::AreaUnit areaUnits() const { return mAreaUnits; }
 
     /**
      * Sets the default area measurement units for the project.
@@ -1763,6 +1766,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void ellipsoidChanged( const QString &ellipsoid );
 
+    /**
+     * Emitted when the default distance units changes.
+     *
+     * \see setDistanceUnits()
+     * \since QGIS 3.28
+     */
+    void distanceUnitsChanged();
+
+    /**
+     * Emitted when the default area units changes.
+     *
+     * \see setAreaUnits()
+     * \since QGIS 3.28
+     */
+    void areaUnitsChanged();
 
     /**
      * Emitted when the project transformContext() is changed.
@@ -2080,8 +2098,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Therefore any error message returned by commitErrors also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
      *
-     * By setting \a stopEditing to FALSE, the layer will stay in editing mode.
+     * \param commitErrors will be set to a list of descriptive errors if the commit fails.
+     * \param stopEditing if set to FALSE, the layer will stay in editing mode.
      * Otherwise the layer editing mode will be disabled if the commit is successful.
+     * \param vectorLayer for which the changes will be committed. For buffered transactions this
+     * parameter is not mandatory, as the changes from all layers will be committed.
+     *
+     * \returns TRUE if the commit was successful.
      *
      * \see startEditing()
      * \see rollBack()
@@ -2092,6 +2115,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Stops a current editing operation on vectorLayer and discards any uncommitted edits.
+     *
+     * \param rollbackErrors will be set to a list of descriptive errors if the rollback fails.
+     * \param stopEditing if set to FALSE, the layer will stay in editing mode.
+     * Otherwise the layer editing mode will be disabled if the rollback is successful.
+     * \param vectorLayer for which the changes will be rolled back. For buffered transactions this
+     * parameter is not mandatory, as the changes from all layers will be rolled back.
+     *
+     * \returns TRUE if the rollback was successful.
      *
      * \see startEditing()
      * \see commitChanges()
@@ -2248,6 +2279,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QColor mBackgroundColor;
     QColor mSelectionColor;
+
+    QgsUnitTypes::DistanceUnit mDistanceUnits = QgsUnitTypes::DistanceMeters;
+    QgsUnitTypes::AreaUnit mAreaUnits = QgsUnitTypes::AreaSquareMeters;
 
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing

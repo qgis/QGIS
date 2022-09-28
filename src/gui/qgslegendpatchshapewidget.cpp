@@ -62,12 +62,7 @@ void QgsLegendPatchShapeWidget::setShapeFromStyle( const QString &name, QgsStyle
   if ( name.isEmpty() )
     return;
 
-  QgsStyle *style = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
-#else
-  ( void )stylePath;
-#endif
+  QgsStyle *style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
 
   if ( !style )
     style = QgsStyle::defaultStyle();

@@ -135,7 +135,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       int recursionGuard { 0 };
 
       // This function recursively finds referenced layers
-      const auto findReferenced = [ &project, &feedback, &recursionGuard, &layers, this ]( const QgsVectorLayer * vLayer, bool onlySaveSelected, auto &&findReferenced ) -> void
+      const auto findReferenced = [ =, &project, &feedback, &recursionGuard, &layers ]( const QgsVectorLayer * vLayer, bool onlySaveSelected, auto &&findReferenced ) -> void
       {
         const QgsVectorLayer *originalLayer { qobject_cast<QgsVectorLayer *>( project->mapLayer( mClonedLayerIds.value( vLayer->id(), vLayer->id() ) ) ) };
         Q_ASSERT( originalLayer );
@@ -204,7 +204,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
       };
 
       // This function recursively finds referencing layers
-      const auto findReferencing = [ &project, &feedback, &recursionGuard, &layers, this ]( const QgsVectorLayer * vLayer, bool onlySaveSelected, auto &&findReferencing ) -> void
+      const auto findReferencing = [ =, &project, &feedback, &recursionGuard, &layers ]( const QgsVectorLayer * vLayer, bool onlySaveSelected, auto &&findReferencing ) -> void
       {
         const QgsVectorLayer *originalLayer { qobject_cast<QgsVectorLayer *>( project->mapLayer( mClonedLayerIds.value( vLayer->id(), vLayer->id() ) ) ) };
         Q_ASSERT( originalLayer );

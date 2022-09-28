@@ -1679,6 +1679,8 @@ void QgsAdvancedDigitizingDockWidget::disable()
 
   mCurrentMapToolSupportsCad = false;
 
+  mSnapIndicator->setVisible( false );
+
   setCadEnabled( false );
 }
 

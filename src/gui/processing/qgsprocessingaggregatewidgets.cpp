@@ -246,11 +246,7 @@ bool QgsAggregateMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
     return false;
   }
   beginMoveRows( QModelIndex( ), row, row, QModelIndex(), row + 2 );
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  mMapping.swap( row, row + 1 );
-#else
   mMapping.swapItemsAt( row, row + 1 );
-#endif
   endMoveRows();
   return true;
 }

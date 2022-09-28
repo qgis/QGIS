@@ -26,7 +26,7 @@
 #include "qgspathresolver.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgseffectstack.h"
+#include "qgspainteffect.h"
 #include "qgspainteffectregistry.h"
 #include "qgsstylesavedialog.h"
 #include "qgsexpressioncontextutils.h"
@@ -174,7 +174,9 @@ void QgsTextFormatWidget::initWidget()
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mOverrunDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                         << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
-  mFontLineHeightSpinBox->setClearValue( 1.0 );
+  mLineHeightUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels
+                                   << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+  mFontLineHeightSpinBox->setClearValue( 100.0 );
   mShapeRotationDblSpnBx->setClearValue( 0.0 );
   mShapeOffsetXSpnBx->setClearValue( 0.0 );
   mShapeOffsetYSpnBx->setClearValue( 0.0 );
@@ -186,6 +188,14 @@ void QgsTextFormatWidget::initWidget()
   mZIndexSpinBox->setClearValue( 0.0 );
   mLineDistanceSpnBx->setClearValue( 0.0 );
   mSpinStretch->setClearValue( 100 );
+
+  connect( mLineHeightUnitWidget, &QgsUnitSelectionWidget::changed, this, [ = ]
+  {
+    if ( mLineHeightUnitWidget->unit() == QgsUnitTypes::RenderPercentage )
+      mFontLineHeightSpinBox->setClearValue( 100.0 );
+    else
+      mFontLineHeightSpinBox->setClearValue( 10.0 );
+  } );
 
   mOffsetTypeComboBox->addItem( tr( "From Point" ), static_cast< int >( Qgis::LabelOffsetType::FromPoint ) );
   mOffsetTypeComboBox->addItem( tr( "From Symbol Bounds" ), static_cast< int >( Qgis::LabelOffsetType::FromSymbolBounds ) );
@@ -227,8 +237,8 @@ void QgsTextFormatWidget::initWidget()
   connect( chkLineBelow, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
   connect( chkLineOn, &QAbstractButton::toggled, this, &QgsTextFormatWidget::updateLinePlacementOptions );
 
-  mTextOrientationComboBox->addItem( tr( "Horizontal" ), QgsTextFormat::HorizontalOrientation );
-  mTextOrientationComboBox->addItem( tr( "Vertical" ), QgsTextFormat::VerticalOrientation );
+  mTextOrientationComboBox->addItem( tr( "Horizontal" ), static_cast< int >( Qgis::TextOrientation::Horizontal ) );
+  mTextOrientationComboBox->addItem( tr( "Vertical" ), static_cast< int >( Qgis::TextOrientation::Vertical ) );
 
   populateFontCapitalsComboBox();
 
@@ -379,6 +389,7 @@ void QgsTextFormatWidget::initWidget()
           << mFontLetterSpacingSpinBox
           << mFontLimitPixelChkBox
           << mFontLineHeightSpinBox
+          << mLineHeightUnitWidget
           << mFontMaxPixelSpinBox
           << mFontMinPixelSpinBox
           << mFontMultiLineAlignComboBox
@@ -534,7 +545,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
     case Labeling:
       toggleDDButtons( true );
       mTextFormatsListWidget->setEntityTypes( QList< QgsStyle::StyleEntity >() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
-      mTextOrientationComboBox->addItem( tr( "Rotation-based" ), QgsTextFormat::RotationBasedOrientation );
+      mTextOrientationComboBox->addItem( tr( "Rotation-based" ), static_cast< int >( Qgis::TextOrientation::RotationBased ) );
       break;
 
     case Text:
@@ -593,7 +604,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mFontMultiLineAlignComboBox->hide();
       mFontMultiLineAlignDDBtn->hide();
 
-      mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( QgsTextFormat::RotationBasedOrientation ) );
+      mTextOrientationComboBox->removeItem( mTextOrientationComboBox->findData( static_cast< int >( Qgis::TextOrientation::RotationBased ) ) );
       break;
     }
   }
@@ -922,7 +933,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   whileBlocking( mSpinStretch )->setValue( format.stretchFactor() );
   mTextOpacityWidget->setOpacity( format.opacity() );
   comboBlendMode->setBlendMode( format.blendMode() );
-  mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( format.orientation() ) );
+  mTextOrientationComboBox->setCurrentIndex( mTextOrientationComboBox->findData( static_cast< int >( format.orientation() ) ) );
   mHtmlFormattingCheckBox->setChecked( format.allowHtmlFormatting() );
 
   mFontWordSpacingSpinBox->setValue( format.font().wordSpacing() );
@@ -949,7 +960,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mLabelingOptionsListWidget->setCurrentRow( 0 );
     whileBlocking( mOptionsTab )->setCurrentIndex( 0 );
   }
-  mFontLineHeightSpinBox->setValue( format.lineHeight() );
+  mFontLineHeightSpinBox->setValue( format.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( format.lineHeight() * 100 ) : format.lineHeight() );
+  mLineHeightUnitWidget->setUnit( format.lineHeightUnit() );
 
   // shape background
   mShapeDrawChkBx->setChecked( background.enabled() );
@@ -1062,9 +1074,10 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setBlendMode( comboBlendMode->blendMode() );
   format.setSizeUnit( mFontSizeUnitWidget->unit() );
   format.setSizeMapUnitScale( mFontSizeUnitWidget->getMapUnitScale() );
-  format.setLineHeight( mFontLineHeightSpinBox->value() );
+  format.setLineHeight( mLineHeightUnitWidget->unit() == QgsUnitTypes::RenderPercentage ? ( mFontLineHeightSpinBox->value() / 100 ) : mFontLineHeightSpinBox->value() );
+  format.setLineHeightUnit( mLineHeightUnitWidget->unit() );
   format.setPreviewBackgroundColor( mPreviewBackgroundColor );
-  format.setOrientation( static_cast< QgsTextFormat::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
+  format.setOrientation( static_cast< Qgis::TextOrientation >( mTextOrientationComboBox->currentData().toInt() ) );
   format.setAllowHtmlFormatting( mHtmlFormattingCheckBox->isChecked( ) );
   format.setCapitalization( static_cast< Qgis::Capitalization >( mFontCapitalsComboBox->currentData().toInt() ) );
 
@@ -1903,12 +1916,7 @@ void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::Sty
   if ( name.isEmpty() )
     return;
 
-  QgsStyle *style = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
-#else
-  ( void )stylePath;
-#endif
+  QgsStyle *style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
 
   if ( !style )
     style = QgsStyle::defaultStyle();

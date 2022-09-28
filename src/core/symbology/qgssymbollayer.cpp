@@ -593,7 +593,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHorizontalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyHorizontalAnchor, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       horizontalAnchorPoint = decodeHorizontalAnchorPoint( exprVal.toString() );
     }
@@ -601,7 +601,7 @@ void QgsMarkerSymbolLayer::markerOffset( QgsSymbolRenderContext &context, double
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyVerticalAnchor ) )
   {
     QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyVerticalAnchor, context.renderContext().expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       verticalAnchorPoint = decodeVerticalAnchorPoint( exprVal.toString() );
     }
@@ -909,11 +909,7 @@ QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 
 void QgsSymbolLayer::prepareMasks( const QgsSymbolRenderContext &context )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-  mClipPath = QPainterPath();
-#else
   mClipPath.clear();
-#endif
 
   const QgsRenderContext &renderContext = context.renderContext();
   const QList<QPainterPath> clipPaths = renderContext.symbolLayerClipPaths( this );

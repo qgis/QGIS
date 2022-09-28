@@ -446,7 +446,7 @@ if(WITH_CORE)
     set(QT_MIN_VERSION 6.0.0)
     set(QT_VERSION_BASE "Qt6")
   else()
-    set(QT_MIN_VERSION 5.12.0)
+    set(QT_MIN_VERSION 5.14.0)
     set(QT_VERSION_BASE "Qt5")
     set(HAS_KDE_QT5_PDF_TRANSFORM_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the PDF brush transform fix")
     set(HAS_KDE_QT5_SMALL_CAPS_FIX FALSE CACHE BOOL "Using KDE's Qt 5.15 fork with the QFont::SmallCaps fix")
@@ -481,9 +481,6 @@ if(WITH_CORE)
     find_package(${QT_VERSION_BASE} COMPONENTS 3DCore 3DRender 3DInput 3DLogic 3DExtras REQUIRED)
     set(HAVE_3D TRUE)  # used in qgsconfig.h
   endif()
-  if (APPLE)
-    find_package(${QT_VERSION_BASE} COMPONENTS MacExtras REQUIRED)
-  endif()
 
   # get the Qt plugins directory
   get_target_property(QMAKE_EXECUTABLE ${QT_VERSION_BASE}::qmake LOCATION)
@@ -498,7 +495,7 @@ if(WITH_CORE)
   endif()
   if (WITH_QUICK)
     find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Android" AND NOT BUILD_WITH_QT6)
       find_package(${QT_VERSION_BASE} COMPONENTS AndroidExtras)
     endif()
 
@@ -1023,23 +1020,13 @@ if (WITH_CORE)
 endif()
 
 ####################################################
-# clang-tidy
-set (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
-mark_as_advanced(WITH_CLANG_TIDY)
-if (WITH_CORE)
-  if(WITH_CLANG_TIDY)
-    find_program(
-      CLANG_TIDY_EXE
-      NAMES "clang-tidy"
-      DOC "Path to clang-tidy executable"
-      )
-    if(NOT CLANG_TIDY_EXE)
-      message(STATUS "clang-tidy not found.")
-    else()
-      message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-      set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
-    endif()
-  endif()
+# asan
+set (WITH_ASAN FALSE CACHE BOOL "Use AddressSanitizer")
+mark_as_advanced(WITH_ASAN)
+if(WITH_ASAN)
+  message(STATUS "Enabling AddressSanitizer")
+  add_compile_options(-fsanitize=address)
+  add_link_options(-fsanitize=address)
 endif()
 
 #############################################################

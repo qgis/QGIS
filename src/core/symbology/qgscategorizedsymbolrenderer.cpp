@@ -145,16 +145,16 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
 
   // create the ogc:Filter for the range
   QString filterFunc;
-  if ( mValue.isNull() || mValue.toString().isEmpty() )
+  if ( QgsVariantUtils::isNull( mValue ) || mValue.toString().isEmpty() )
   {
     filterFunc = QStringLiteral( "%1 = '%2' or %1 is null" )
-                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ).append( '"' ).prepend( '"' ),
                        mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
   }
   else
   {
     filterFunc = QStringLiteral( "%1 = '%2'" )
-                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ).append( '"' ).prepend( '"' ),
                        mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
   }
 
@@ -225,7 +225,7 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, 
   foundMatchingSymbol = false;
 
   // TODO: special case for int, double
-  QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QString() : value.toString() );
+  QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( QgsVariantUtils::isNull( value ) ? QString() : value.toString() );
   if ( it == mSymbolHash.constEnd() )
   {
     if ( mSymbolHash.isEmpty() )
@@ -542,7 +542,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
 
   for ( const QgsRendererCategory &cat : std::as_const( mCategories ) )
   {
-    if ( cat.value() == "" || cat.value().isNull() )
+    if ( cat.value() == "" || QgsVariantUtils::isNull( cat.value() ) )
     {
       hasDefault = true;
       defaultActive = cat.renderState();
@@ -930,7 +930,7 @@ QString QgsCategorizedSymbolRenderer::displayString( const QVariant &v, int prec
   auto _displayString = [ ]( const QVariant & v, int precision ) -> QString
   {
 
-    if ( v.isNull() )
+    if ( QgsVariantUtils::isNull( v ) )
     {
       return QgsApplication::nullRepresentation();
     }
@@ -1107,9 +1107,9 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeatu
     else
     {
       // Numeric NULL cat value is stored as an empty string
-      if ( value.isNull() && ( value.type() == QVariant::Double || value.type() == QVariant::Int ||
-                               value.type() == QVariant::UInt || value.type() == QVariant::LongLong ||
-                               value.type() == QVariant::ULongLong ) )
+      if ( QgsVariantUtils::isNull( value ) && ( value.type() == QVariant::Double || value.type() == QVariant::Int ||
+           value.type() == QVariant::UInt || value.type() == QVariant::LongLong ||
+           value.type() == QVariant::ULongLong ) )
       {
         match = cat.value().toString().isEmpty();
       }
@@ -1170,7 +1170,7 @@ QString QgsCategorizedSymbolRenderer::legendKeyToExpression( const QString &key,
       value = QVariant();
     }
 
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       return QStringLiteral( "%1 IS NULL" ).arg( attributeComponent );
     else if ( fieldType == QVariant::Type::Invalid )
       return QStringLiteral( "%1 = %2" ).arg( attributeComponent, QgsExpression::quotedValue( value ) );
@@ -1365,7 +1365,7 @@ int QgsCategorizedSymbolRenderer::matchToSymbols( QgsStyle *style, Qgis::SymbolT
 
   int matched = 0;
   unmatchedSymbols = style->symbolNames();
-  const QSet< QString > allSymbolNames = qgis::listToSet( unmatchedSymbols );
+  const QSet< QString > allSymbolNames( unmatchedSymbols.begin(), unmatchedSymbols.end() );
 
   const QRegularExpression tolerantMatchRe( QStringLiteral( "[^\\w\\d ]" ), QRegularExpression::UseUnicodePropertiesOption );
 
@@ -1433,7 +1433,7 @@ QgsCategoryList QgsCategorizedSymbolRenderer::createCategories( const QList<QVar
     for ( const QVariant &value : vals )
     {
       QgsSymbol *newSymbol = symbol->clone();
-      if ( !value.isNull() )
+      if ( !QgsVariantUtils::isNull( value ) )
       {
         const int fieldIdx = fields.lookupField( attributeName );
         QString categoryName = displayString( value );

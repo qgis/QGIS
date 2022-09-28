@@ -103,7 +103,7 @@ QgsSqlExpressionCompiler::Result QgsMssqlExpressionCompiler::compileNode( const 
 QString QgsMssqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
   {
     //no NULL literal support
     ok = false;

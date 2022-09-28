@@ -77,12 +77,12 @@ class TestQgsColorScheme : public QObject
 
 void TestQgsColorScheme::initTestCase()
 {
-
+  QgsApplication::init();
 }
 
 void TestQgsColorScheme::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsColorScheme::init()

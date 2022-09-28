@@ -136,9 +136,55 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
   }
 }
 
-bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QString &enc, const QString &dataSourceType, bool guiWarning )
+void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &layers )
+{
+  for ( QgsMapLayer *layer : layers )
+  {
+    switch ( layer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+      {
+        QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+
+        // try to automatically load related tables for OGR layers
+        if ( vl->providerType() == QLatin1String( "ogr" ) )
+        {
+          // first need to create weak relations!!
+          std::unique_ptr< QgsAbstractDatabaseProviderConnection > conn { QgsMapLayerUtils::databaseConnection( vl ) };
+          if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
+          {
+            const QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
+            const QString layerName = uriParts.value( QStringLiteral( "layerName" ) ).toString();
+            if ( layerName.isEmpty() )
+              continue;
+
+            const QList< QgsWeakRelation > relations = conn->relationships( QString(), layerName );
+            if ( !relations.isEmpty() )
+            {
+              vl->setWeakRelations( relations );
+              resolveVectorLayerDependencies( vl, QgsMapLayer::StyleCategory::Relations, QgsVectorLayerRef::MatchType::Source, DependencyFlag::LoadAllRelationships | DependencyFlag::SilentLoad );
+              resolveVectorLayerWeakRelations( vl, QgsVectorLayerRef::MatchType::Source, true );
+            }
+          }
+        }
+        break;
+      }
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
+  }
+}
+
+QList< QgsMapLayer * > QgsAppLayerHandling::addOgrVectorLayers( const QStringList &layers, const QString &encoding, const QString &dataSourceType, bool &ok, bool showWarningOnInvalid )
 {
   //note: this method ONLY supports vector layers from the OGR provider!
+  ok = false;
 
   QgsCanvasRefreshBlocker refreshBlocker;
 
@@ -287,9 +333,9 @@ bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QStr
       {
         QString fileUri = uri;
         fileUri.replace( QLatin1String( "/vsicurl/" ), " " );
-        return addVectorLayers( QStringList() << fileUri, enc, dataSourceType, guiWarning );
+        return addOgrVectorLayers( QStringList() << fileUri, encoding, dataSourceType, showWarningOnInvalid );
       }
-      else if ( guiWarning )
+      else if ( showWarningOnInvalid )
       {
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
       }
@@ -301,17 +347,17 @@ bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QStr
   {
     // we also return true if we asked the user for sublayers, but they choose none. In this case nothing
     // went wrong, so we shouldn't return false and cause GUI warnings to appear
-    return userAskedToAddLayers || !addedLayers.isEmpty();
+    ok = userAskedToAddLayers || !addedLayers.isEmpty();
   }
 
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayers( layersToAdd );
   for ( QgsMapLayer *l : std::as_const( layersToAdd ) )
   {
-    if ( !enc.isEmpty() )
+    if ( !encoding.isEmpty() )
     {
       if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l ) )
-        vl->setProviderEncoding( enc );
+        vl->setProviderEncoding( encoding );
     }
 
     QgisApp::instance()->askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
@@ -319,10 +365,12 @@ bool QgsAppLayerHandling::addVectorLayers( const QStringList &layers, const QStr
   }
   QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
 
-  return true;
+  ok = true;
+  addedLayers.append( layersToAdd );
+  return addedLayers;
 }
 
-QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarning )
+QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri, const QString &baseName, const QString &provider, bool showWarningOnInvalid )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -337,11 +385,11 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
   QgsDebugMsgLevel( "completeBaseName: " + base, 2 );
 
   // create the layer
-  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, providerKey ) );
+  std::unique_ptr<QgsPointCloudLayer> layer( new QgsPointCloudLayer( uri, base, provider ) );
 
   if ( !layer || !layer->isValid() )
   {
-    if ( guiWarning )
+    if ( showWarningOnInvalid )
     {
       QString msg = QObject::tr( "%1 is not a valid or recognized data source, error: \"%2\"" ).arg( uri, layer->error().message( QgsErrorMessage::Format::Text ) );
       QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
@@ -360,9 +408,9 @@ QgsPointCloudLayer *QgsAppLayerHandling::addPointCloudLayer( const QString &uri,
   return layer.release();
 }
 
-QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey )
+QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const QString &baseName, const QString &provider )
 {
-  QgsPluginLayer *layer = QgsApplication::pluginLayerRegistry()->createLayer( providerKey, uri );
+  QgsPluginLayer *layer = QgsApplication::pluginLayerRegistry()->createLayer( provider, uri );
   if ( !layer )
     return nullptr;
 
@@ -373,7 +421,7 @@ QgsPluginLayer *QgsAppLayerHandling::addPluginLayer( const QString &uri, const Q
   return layer;
 }
 
-QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool guiWarning )
+QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri, const QString &baseName, bool showWarningOnInvalid )
 {
   QgsCanvasRefreshBlocker refreshBlocker;
   QgsSettings settings;
@@ -393,7 +441,7 @@ QgsVectorTileLayer *QgsAppLayerHandling::addVectorTileLayer( const QString &uri,
 
   if ( !layer || !layer->isValid() )
   {
-    if ( guiWarning )
+    if ( showWarningOnInvalid )
     {
       QString msg = QObject::tr( "%1 is not a valid or recognized data source." ).arg( uri );
       QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
@@ -650,7 +698,6 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
     }
 
     QgisApp::instance()->askUserForDatumTransform( ml->crs(), projectCrsAfterLayerAdd, ml );
-    QgsAppLayerHandling::postProcessAddedLayer( ml );
   }
 
   if ( group )
@@ -662,12 +709,25 @@ QList<QgsMapLayer *> QgsAppLayerHandling::addSublayers( const QList<QgsProviderS
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
 
+  // Post process all added layers
+  for ( QgsMapLayer *ml : std::as_const( result ) )
+  {
+    QgsAppLayerHandling::postProcessAddedLayer( ml );
+  }
+
   return result;
 }
 
-bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteractive )
+QList< QgsMapLayer * > QgsAppLayerHandling::openLayer( const QString &fileName, bool &ok, bool allowInteractive, bool suppressBulkLayerPostProcessing )
 {
-  bool ok = false;
+  QList< QgsMapLayer * > openedLayers;
+  auto postProcessAddedLayers = [suppressBulkLayerPostProcessing, &openedLayers]
+  {
+    if ( !suppressBulkLayerPostProcessing )
+      QgsAppLayerHandling::postProcessAddedLayers( openedLayers );
+  };
+
+  ok = false;
   const QFileInfo fileInfo( fileName );
 
   // highest priority = delegate to provider registry to handle
@@ -688,13 +748,22 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         break;
 
       case QgsMapLayerType::PointCloudLayer:
-        ok = static_cast< bool >( addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) );
+      {
+        if ( QgsPointCloudLayer *layer = addPointCloudLayer( fileName, fileInfo.completeBaseName(), candidateProviders.at( 0 ).metadata()->key(), false ) )
+        {
+          ok = true;
+          openedLayers << layer;
+        }
         break;
+      }
     }
   }
 
   if ( ok )
-    return true;
+  {
+    postProcessAddedLayers();
+    return openedLayers;
+  }
 
   CPLPushErrorHandler( CPLQuietErrorHandler );
 
@@ -705,7 +774,8 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
     if ( askUserForZipItemLayers( fileName, {} ) )
     {
       CPLPopErrorHandler();
-      return true;
+      ok = true;
+      return openedLayers;
     }
   }
 
@@ -724,8 +794,11 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
         if ( vtLayer->isValid() )
         {
+          openedLayers << vtLayer.get();
           QgsProject::instance()->addMapLayer( vtLayer.release() );
-          return true;
+          postProcessAddedLayers();
+          ok = true;
+          return openedLayers;
         }
       }
       else // raster tiles
@@ -734,8 +807,13 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         QUrlQuery uq;
         uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
         uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( fileName ).toString() );
-        if ( addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
-          return true;
+        if ( QgsRasterLayer *rasterLayer = addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
+        {
+          openedLayers << rasterLayer;
+          postProcessAddedLayers();
+          ok = true;
+          return openedLayers;
+        }
       }
     }
   }
@@ -749,9 +827,12 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
     std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName(), options ) );
     if ( vtLayer->isValid() )
     {
+      openedLayers << vtLayer.get();
       QgsAppLayerHandling::postProcessAddedLayer( vtLayer.get() );
       QgsProject::instance()->addMapLayer( vtLayer.release() );
-      return true;
+      postProcessAddedLayers();
+      ok = true;
+      return openedLayers;
     }
   }
 
@@ -839,14 +920,15 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         base = QgsMapLayer::formatLayerName( base );
       }
 
-      addSublayers( sublayers, base, groupName );
+      openedLayers.append( addSublayers( sublayers, base, groupName ) );
       QgisApp::instance()->activateDeactivateLayerRelatedActions( QgisApp::instance()->activeLayer() );
     }
     else if ( !nonLayerItems.empty() )
     {
+      ok = true;
       QgsCanvasRefreshBlocker refreshBlocker;
       if ( QgisApp::instance()->checkTasksDependOnProject() )
-        return true;
+        return {};
 
       // possibly save any pending work before opening a different project
       if ( QgisApp::instance()->checkUnsavedLayerEdits() && QgisApp::instance()->checkMemoryLayers() && QgisApp::instance()->saveDirty() )
@@ -854,7 +936,7 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
         // error handling and reporting is in addProject() function
         QgisApp::instance()->addProject( nonLayerItems.at( 0 ).uri() );
       }
-      return true;
+      return {};
     }
   }
 
@@ -883,30 +965,35 @@ bool QgsAppLayerHandling::openLayer( const QString &fileName, bool allowInteract
     const QString msg = QObject::tr( "%1 is not a valid or recognized data source." ).arg( fileName );
     QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
   }
-
-  return ok;
-}
-
-QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
-{
-  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, vectorLayerPath, baseName, !providerKey.isEmpty() ? providerKey : QLatin1String( "ogr" ), true );
-}
-
-QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &providerKey )
-{
-  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !providerKey.isEmpty() ? providerKey : QLatin1String( "gdal" ), true );
-}
-
-QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
-{
-  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, url, baseName, providerKey, true );
-}
-
-bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWarning )
-{
-  if ( files.empty() )
+  else
   {
-    return false;
+    postProcessAddedLayers();
+  }
+
+  return openedLayers;
+}
+
+QgsVectorLayer *QgsAppLayerHandling::addVectorLayer( const QString &uri, const QString &baseName, const QString &provider )
+{
+  return addLayerPrivate< QgsVectorLayer >( QgsMapLayerType::VectorLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "ogr" ), true );
+}
+
+QgsRasterLayer *QgsAppLayerHandling::addRasterLayer( const QString &uri, const QString &baseName, const QString &provider )
+{
+  return addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, baseName, !provider.isEmpty() ? provider : QLatin1String( "gdal" ), true );
+}
+
+QgsMeshLayer *QgsAppLayerHandling::addMeshLayer( const QString &uri, const QString &baseName, const QString &provider )
+{
+  return addLayerPrivate< QgsMeshLayer >( QgsMapLayerType::MeshLayer, uri, baseName, provider, true );
+}
+
+QList<QgsMapLayer *> QgsAppLayerHandling::addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid )
+{
+  ok = false;
+  if ( uris.empty() )
+  {
+    return {};
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -914,51 +1001,53 @@ bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWar
   // this is messy since some files in the list may be rasters and others may
   // be ogr layers. We'll set returnValue to false if one or more layers fail
   // to load.
-  bool returnValue = true;
-  for ( const QString &src : files )
+
+  QList< QgsMapLayer * > res;
+
+  for ( const QString &uri : uris )
   {
     QString errMsg;
-    bool ok = false;
 
     // if needed prompt for zipitem layers
-    QString vsiPrefix = QgsZipItem::vsiPrefix( src );
-    if ( ( !src.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || src.endsWith( QLatin1String( ".zip" ) ) || src.endsWith( QLatin1String( ".tar" ) ) ) &&
+    QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+    if ( ( !uri.startsWith( QLatin1String( "/vsi" ), Qt::CaseInsensitive ) || uri.endsWith( QLatin1String( ".zip" ) ) || uri.endsWith( QLatin1String( ".tar" ) ) ) &&
          ( vsiPrefix == QLatin1String( "/vsizip/" ) || vsiPrefix == QLatin1String( "/vsitar/" ) ) )
     {
-      if ( askUserForZipItemLayers( src, { QgsMapLayerType::RasterLayer } ) )
+      if ( askUserForZipItemLayers( uri, { QgsMapLayerType::RasterLayer } ) )
         continue;
     }
 
-    const bool isVsiCurl { src.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
-    const bool isRemoteUrl { src.startsWith( QLatin1String( "http" ) ) || src == QLatin1String( "ftp" ) };
+    const bool isVsiCurl { uri.startsWith( QLatin1String( "/vsicurl" ), Qt::CaseInsensitive ) };
+    const bool isRemoteUrl { uri.startsWith( QLatin1String( "http" ) ) || uri == QLatin1String( "ftp" ) };
 
     std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
     if ( isVsiCurl || isRemoteUrl )
     {
       cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
-      QgisApp::instance()->visibleMessageBar()->pushInfo( QObject::tr( "Remote layer" ), QObject::tr( "loading %1, please wait …" ).arg( src ) );
+      QgisApp::instance()->visibleMessageBar()->pushInfo( QObject::tr( "Remote layer" ), QObject::tr( "loading %1, please wait …" ).arg( uri ) );
       qApp->processEvents();
     }
 
-    if ( QgsRasterLayer::isValidRasterFileName( src, errMsg ) )
+    if ( QgsRasterLayer::isValidRasterFileName( uri, errMsg ) )
     {
-      QFileInfo myFileInfo( src );
+      QFileInfo myFileInfo( uri );
 
       // set the layer name to the file base name unless provided explicitly
       QString layerName;
-      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), src );
+      const QVariantMap uriDetails = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "gdal" ), uri );
       if ( !uriDetails[ QStringLiteral( "layerName" ) ].toString().isEmpty() )
       {
         layerName = uriDetails[ QStringLiteral( "layerName" ) ].toString();
       }
       else
       {
-        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( src );
+        layerName = QgsProviderUtils::suggestLayerNameFromFilePath( uri );
       }
 
       // try to create the layer
       cursorOverride.reset();
-      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, src, layerName, QStringLiteral( "gdal" ), guiWarning );
+      QgsRasterLayer *layer = addLayerPrivate< QgsRasterLayer >( QgsMapLayerType::RasterLayer, uri, layerName, QStringLiteral( "gdal" ), showWarningOnInvalid );
+      res << layer;
 
       if ( layer && layer->isValid() )
       {
@@ -981,21 +1070,17 @@ bool QgsAppLayerHandling::addRasterLayers( const QStringList &files, bool guiWar
       // Issue message box warning unless we are loading from cmd line since
       // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
-      if ( guiWarning )
+      if ( showWarningOnInvalid )
       {
-        QString msg = QObject::tr( "%1 is not a supported raster data source" ).arg( src );
+        QString msg = QObject::tr( "%1 is not a supported raster data source" ).arg( uri );
         if ( !errMsg.isEmpty() )
           msg += '\n' + errMsg;
 
         QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Unsupported Data Source" ), msg, Qgis::MessageLevel::Critical );
       }
     }
-    if ( ! ok )
-    {
-      returnValue = false;
-    }
   }
-  return returnValue;
+  return res;
 }
 
 void QgsAppLayerHandling::addMapLayer( QgsMapLayer *mapLayer )
@@ -1084,8 +1169,9 @@ void QgsAppLayerHandling::addLayerDefinition()
   openLayerDefinition( path );
 }
 
-void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey )
+QList< QgsMapLayer * > QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok )
 {
+  ok = false;
   QList<QgsMapLayer *> myList;
 
   if ( layerPathList.empty() )
@@ -1093,7 +1179,7 @@ void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, c
     // no layers to add so bail out, but
     // allow mMapCanvas to handle events
     // first
-    return;
+    return {};
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
@@ -1116,7 +1202,7 @@ void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, c
       QApplication::restoreOverrideCursor();
 
       // XXX insert meaningful whine to the user here
-      return;
+      return {};
     }
 
     if ( layer->isValid() )
@@ -1150,6 +1236,9 @@ void QgsAppLayerHandling::addDatabaseLayers( const QStringList &layerPathList, c
   }
 
   QApplication::restoreOverrideCursor();
+
+  ok = true;
+  return myList;
 }
 
 template<typename T>
@@ -1276,7 +1365,7 @@ T *QgsAppLayerHandling::addLayerPrivate( QgsMapLayerType type, const QString &ur
   return result;
 }
 
-const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
+const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories, QgsVectorLayerRef::MatchType matchType, DependencyFlags dependencyFlags )
 {
   QList<QgsVectorLayerRef> brokenDependencies;
 
@@ -1297,7 +1386,7 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
                ! dependency.source.isEmpty() ||
                ! dependency.layerId.isEmpty() )
           {
-            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly( QgsProject::instance(), matchType ) };
             if ( ! depVl || ! depVl->isValid() )
             {
               brokenDependencies.append( dependency );
@@ -1311,58 +1400,65 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
   if ( categories.testFlag( QgsMapLayer::StyleCategory::Relations ) )
   {
     // Check for layer weak relations
-    const QList<QgsWeakRelation> constWeakRelations { vl->weakRelations() };
-    for ( const QgsWeakRelation &rel : constWeakRelations )
+    const QList<QgsWeakRelation> weakRelations { vl->weakRelations() };
+    for ( const QgsWeakRelation &weakRelation : weakRelations )
     {
-      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
-      for ( const QgsRelation &relation : relations )
-      {
-        QgsVectorLayerRef dependency;
-        bool found = false;
-        if ( ! relation.isValid() )
-        {
-          // This is the big question: do we really
-          // want to automatically load the referencing layer(s) too?
-          // This could potentially lead to a cascaded load of a
-          // long list of layers.
-          // The code is in place but let's leave it disabled for now.
-          if ( relation.referencedLayer() == vl )
-          {
-            // Do nothing because vl is the referenced layer
-#if 0
-            dependency = rel.referencingLayer();
-            found = true;
-#endif
-          }
-          else if ( relation.referencingLayer() == vl )
-          {
-            dependency = rel.referencedLayer();
-            found = true;
-          }
-          else
-          {
-            // Something wrong is going on here, maybe this relation
-            // does not really apply to this layer?
-            QgsMessageLog::logMessage( QObject::tr( "None of the layers in the relation stored in the style match the current layer, skipping relation id: %1." ).arg( relation.id() ) );
-          }
+      QList< QgsVectorLayerRef > dependencies;
 
-          if ( found )
+      if ( !( dependencyFlags & DependencyFlag::LoadAllRelationships ) )
+      {
+        // This is the big question: do we really
+        // want to automatically load the referencing layer(s) too?
+        // This could potentially lead to a cascaded load of a
+        // long list of layers.
+
+        // for now, unless we are forcing load of all relationships we only consider relationships
+        // where the referencing layer is a match.
+        if ( weakRelation.referencingLayer().resolveWeakly( QgsProject::instance(), matchType ) != vl )
+        {
+          continue;
+        }
+      }
+
+      switch ( weakRelation.cardinality() )
+      {
+        case Qgis::RelationshipCardinality::ManyToMany:
+        {
+          if ( !weakRelation.mappingTable().resolveWeakly( QgsProject::instance(), matchType ) )
+            dependencies << weakRelation.mappingTable();
+          FALLTHROUGH;
+        }
+
+        case Qgis::RelationshipCardinality::OneToOne:
+        case Qgis::RelationshipCardinality::OneToMany:
+        case Qgis::RelationshipCardinality::ManyToOne:
+        {
+          if ( !weakRelation.referencedLayer().resolveWeakly( QgsProject::instance(), matchType ) )
+            dependencies << weakRelation.referencedLayer();
+
+          if ( !weakRelation.referencingLayer().resolveWeakly( QgsProject::instance(), matchType ) )
+            dependencies << weakRelation.referencingLayer();
+
+          break;
+        }
+      }
+
+      for ( const QgsVectorLayerRef &dependency : std::as_const( dependencies ) )
+      {
+        // Make sure we don't add it twice if it was already added by the form widgets check
+        bool refFound = false;
+        for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
+        {
+          if ( ( !dependency.layerId.isEmpty() && dependency.layerId == otherRef.layerId )
+               || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
           {
-            // Make sure we don't add it twice if it was already added by the form widgets check
-            bool refFound = false;
-            for ( const QgsVectorLayerRef &otherRef : std::as_const( brokenDependencies ) )
-            {
-              if ( dependency.layerId == otherRef.layerId || ( dependency.source == otherRef.source && dependency.provider == otherRef.provider ) )
-              {
-                refFound = true;
-                break;
-              }
-            }
-            if ( ! refFound )
-            {
-              brokenDependencies.append( dependency );
-            }
+            refFound = true;
+            break;
           }
+        }
+        if ( ! refFound )
+        {
+          brokenDependencies.append( dependency );
         }
       }
     }
@@ -1370,12 +1466,12 @@ const QList<QgsVectorLayerRef> QgsAppLayerHandling::findBrokenLayerDependencies(
   return brokenDependencies;
 }
 
-void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories )
+void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, QgsMapLayer::StyleCategories categories, QgsVectorLayerRef::MatchType matchType, DependencyFlags dependencyFlags )
 {
   if ( vl && vl->isValid() )
   {
-    const auto constDependencies { findBrokenLayerDependencies( vl, categories ) };
-    for ( const QgsVectorLayerRef &dependency : constDependencies )
+    const QList<QgsVectorLayerRef> dependencies { findBrokenLayerDependencies( vl, categories, matchType, dependencyFlags ) };
+    for ( const QgsVectorLayerRef &dependency : dependencies )
     {
       // Check for projects without layer dependencies (see 7e8c7b3d0e094737336ff4834ea2af625d2921bf)
       if ( QgsProject::instance()->mapLayer( dependency.layerId ) || ( dependency.name.isEmpty() && dependency.source.isEmpty() ) )
@@ -1383,7 +1479,7 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
         continue;
       }
       // try to aggressively resolve the broken dependencies
-      bool loaded = false;
+      QgsVectorLayer *loadedLayer = nullptr;
       const QString providerName { vl->dataProvider()->name() };
       QgsProviderMetadata *providerMetadata { QgsProviderRegistry::instance()->providerMetadata( providerName ) };
       if ( providerMetadata )
@@ -1412,40 +1508,54 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
           }
 
           // Helper to find layers in connections
-          auto layerFinder = [ &conn, &dependency, &providerName ]( const QString & tableSchema, const QString & tableName ) -> bool
+          auto layerFinder = [ &conn, &dependency, &providerName ]( const QString & tableSchema, const QString & tableName ) -> QgsVectorLayer *
           {
             // First try the current schema (or no schema if it's not supported from the provider)
             try
             {
               const QString layerUri { conn->tableUri( tableSchema, tableName )};
+              // Aggressive doesn't mean stupid: check if a layer with the same URI
+              // was already loaded, this catches a corner case for renamed/moved GPKGS
+              // where the dependency was actually loaded but it was found as broken
+              // because the source does not match anymore (for instance when loaded
+              // from a style definition).
+              QStringList layerUris;
+              for ( auto it = QgsProject::instance()->mapLayers().cbegin(); it != QgsProject::instance()->mapLayers().cend(); ++it )
+              {
+                if ( it.value()->publicSource() == layerUri )
+                {
+                  return nullptr;
+                }
+              }
               // Load it!
-              std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, dependency.name, providerName );
+              std::unique_ptr< QgsVectorLayer > newVl = std::make_unique< QgsVectorLayer >( layerUri, !dependency.name.isEmpty() ? dependency.name : tableName, providerName );
               if ( newVl->isValid() )
               {
+                QgsVectorLayer *res = newVl.get();
                 QgsProject::instance()->addMapLayer( newVl.release() );
-                return true;
+                return res;
               }
             }
             catch ( QgsProviderConnectionException & )
             {
               // Do nothing!
             }
-            return false;
+            return nullptr;
           };
 
-          loaded = layerFinder( tableSchema, tableName );
+          loadedLayer = layerFinder( tableSchema, tableName );
 
           // Try different schemas
-          if ( ! loaded && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
+          if ( ! loadedLayer && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::Schemas ) && ! tableSchema.isEmpty() )
           {
             const QStringList schemas { conn->schemas() };
             for ( const QString &schemaName : schemas )
             {
               if ( schemaName != tableSchema )
               {
-                loaded = layerFinder( schemaName, tableName );
+                loadedLayer = layerFinder( schemaName, tableName );
               }
-              if ( loaded )
+              if ( loadedLayer )
               {
                 break;
               }
@@ -1453,29 +1563,29 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
           }
         }
       }
-      if ( ! loaded )
+      if ( ! loadedLayer )
       {
         const QString msg { QObject::tr( "layer '%1' requires layer '%2' to be loaded but '%2' could not be found, please load it manually if possible." ).arg( vl->name(), dependency.name ) };
         QgisApp::instance()->messageBar()->pushWarning( QObject::tr( "Missing layer form dependency" ), msg );
       }
-      else
+      else if ( !( dependencyFlags & DependencyFlag::SilentLoad ) )
       {
         QgisApp::instance()->messageBar()->pushSuccess( QObject::tr( "Missing layer form dependency" ), QObject::tr( "Layer dependency '%2' required by '%1' was automatically loaded." )
             .arg( vl->name(),
-                  dependency.name ) );
+                  loadedLayer->name() ) );
       }
     }
   }
 }
 
-void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer )
+void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType, bool guiWarnings )
 {
   if ( vectorLayer && vectorLayer->isValid() )
   {
     const QList<QgsWeakRelation> constWeakRelations { vectorLayer->weakRelations( ) };
     for ( const QgsWeakRelation &rel : constWeakRelations )
     {
-      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) };
+      const QList< QgsRelation > relations { rel.resolvedRelations( QgsProject::instance(), matchType ) };
       for ( const QgsRelation &relation : relations )
       {
         if ( relation.isValid() )
@@ -1490,6 +1600,10 @@ void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vecto
             }
           }
           QgsProject::instance()->relationManager()->addRelation( relation );
+        }
+        else if ( guiWarnings )
+        {
+          QgisApp::instance()->messageBar()->pushWarning( QObject::tr( "Invalid relationship %1" ).arg( relation.name() ), relation.validationError() );
         }
       }
     }

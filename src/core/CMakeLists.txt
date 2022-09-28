@@ -166,6 +166,8 @@ set(QGIS_CORE_SRCS
   metadata/qgslayermetadataformatter.cpp
   metadata/qgsmetadatautils.cpp
   metadata/qgsprojectmetadata.cpp
+  metadata/qgsabstractlayermetadataprovider.cpp
+  metadata/qgslayermetadataproviderregistry.cpp
 
   numericformats/qgsbasicnumericformat.cpp
   numericformats/qgsbearingnumericformat.cpp
@@ -260,6 +262,7 @@ set(QGIS_CORE_SRCS
   providers/qgsdataprovider.cpp
   providers/qgsprovidermetadata.cpp
   providers/qgsproviderregistry.cpp
+  providers/qgsprovidersqlquerybuilder.cpp
   providers/qgsprovidersublayerdetails.cpp
   providers/qgsprovidersublayermodel.cpp
   providers/qgsprovidersublayertask.cpp
@@ -278,6 +281,7 @@ set(QGIS_CORE_SRCS
 
   providers/meshmemory/qgsmeshmemorydataprovider.cpp
 
+  providers/ogr/qgsogrlayermetadataprovider.cpp
   providers/ogr/qgsogrprovider.cpp
   providers/ogr/qgsogrprovidermetadata.cpp
   providers/ogr/qgsogrproviderutils.cpp
@@ -309,6 +313,7 @@ set(QGIS_CORE_SRCS
   textrenderer/qgstextbuffersettings.cpp
   textrenderer/qgstextcharacterformat.cpp
   textrenderer/qgstextdocument.cpp
+  textrenderer/qgstextdocumentmetrics.cpp
   textrenderer/qgstextformat.cpp
   textrenderer/qgstextfragment.cpp
   textrenderer/qgstextmasksettings.cpp
@@ -364,6 +369,7 @@ set(QGIS_CORE_SRCS
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
+  qgselevationmap.cpp
   qgselevationutils.cpp
   qgserror.cpp
   qgseventtracing.cpp
@@ -758,6 +764,7 @@ set(QGIS_CORE_SRCS
   pointcloud/qgspointcloudrenderer.cpp
   pointcloud/qgspointcloudrendererregistry.cpp
   pointcloud/qgspointcloudrgbrenderer.cpp
+  pointcloud/qgspointcloudlayerexporter.cpp
 
   pointcloud/expression/qgspointcloudexpression.cpp
   pointcloud/expression/qgspointcloudexpressionnode.cpp
@@ -795,7 +802,6 @@ set(QGIS_CORE_SRCS
   geometry/qgsgeometrycollection.cpp
   geometry/qgsgeometryeditutils.cpp
   geometry/qgsgeometryfactory.cpp
-  geometry/qgsgeometrymakevalid.cpp
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgsinternalgeometryengine.cpp
@@ -1028,6 +1034,7 @@ set(QGIS_CORE_HDRS
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditorwidgetsetup.h
+  qgselevationmap.h
   qgselevationutils.h
   qgserror.h
   qgseventtracing.h
@@ -1567,6 +1574,7 @@ set(QGIS_CORE_HDRS
   pointcloud/qgspointcloudrenderer.h
   pointcloud/qgspointcloudrendererregistry.h
   pointcloud/qgspointcloudrgbrenderer.h
+  pointcloud/qgspointcloudlayerexporter.h
 
   pointcloud/expression/qgspointcloudexpression.h
   pointcloud/expression/qgspointcloudexpressionnode.h
@@ -1595,6 +1603,8 @@ set(QGIS_CORE_HDRS
   metadata/qgslayermetadatavalidator.h
   metadata/qgsmetadatautils.h
   metadata/qgsprojectmetadata.h
+  metadata/qgsabstractlayermetadataprovider.h
+  metadata/qgslayermetadataproviderregistry.h
 
   network/qgsblockingnetworkrequest.h
   network/qgsfiledownloader.h
@@ -1673,6 +1683,7 @@ set(QGIS_CORE_HDRS
   providers/qgsdataprovider.h
   providers/qgsprovidermetadata.h
   providers/qgsproviderregistry.h
+  providers/qgsprovidersqlquerybuilder.h
   providers/qgsprovidersublayerdetails.h
   providers/qgsprovidersublayermodel.h
   providers/qgsprovidersublayertask.h
@@ -1690,6 +1701,7 @@ set(QGIS_CORE_HDRS
 
   providers/meshmemory/qgsmeshmemorydataprovider.h
 
+  providers/ogr/qgsogrlayermetadataprovider.h
   providers/ogr/qgsgeopackagedataitems.h
   providers/ogr/qgsgeopackageprojectstorage.h
   providers/ogr/qgsgeopackageproviderconnection.h
@@ -1814,6 +1826,7 @@ set(QGIS_CORE_HDRS
   textrenderer/qgstextbuffersettings.h
   textrenderer/qgstextcharacterformat.h
   textrenderer/qgstextdocument.h
+  textrenderer/qgstextdocumentmetrics.h
   textrenderer/qgstextformat.h
   textrenderer/qgstextfragment.h
   textrenderer/qgstextmasksettings.h
@@ -1960,6 +1973,9 @@ if (WITH_PDAL)
   include_directories(SYSTEM
     ${PDAL_INCLUDE_DIR}
   )
+  if(MSVC)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+  endif()
 endif()
 
 if (HAVE_OPENCL)

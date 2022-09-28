@@ -507,9 +507,6 @@ int main( int argc, char *argv[] )
       if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
       else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
       else if ( q == QLatin1String( "SmoothPixmapTransform" ) ) hints |= QPainter::SmoothPixmapTransform;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      else if ( q == QLatin1String( "NonCosmeticDefaultPen" ) ) hints |= QPainter::NonCosmeticDefaultPen;
-#endif
       else
       {
         fprintf( stderr, "Unknown quality option\n" );

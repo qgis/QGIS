@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewmouseevent.h"
@@ -23,10 +22,8 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemwidget.h"
-#include "qgslayoutitemshape.h"
 #include "qgsproject.h"
-#include "qgsgui.h"
-#include "qgslayoututils.h"
+#include "qgslayout.h"
 #include <QtTest/QSignalSpy>
 #include <QSvgGenerator>
 #include <QPrinter>
@@ -215,8 +212,8 @@ void TestQgsLayoutView::events()
                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   QMouseEvent dblClick( QEvent::MouseButtonDblClick, point,
                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QWheelEvent wheelEvent( point, 10,
-                          Qt::LeftButton, Qt::NoModifier );
+  QWheelEvent wheelEvent( point, QPointF(), QPoint( 0, 10 ), QPoint( 0, 10 ),
+                          Qt::LeftButton, Qt::NoModifier, Qt::NoScrollPhase, false );
   QKeyEvent keyPress( QEvent::KeyPress, 10, Qt::NoModifier );
   QKeyEvent keyRelease( QEvent::KeyRelease, 10, Qt::NoModifier );
 
@@ -250,11 +247,6 @@ class TestItem : public QgsLayoutItem // clazy:exclude=missing-qobject-macro
     void draw( QgsLayoutItemRenderContext & ) override
     {    }
 };
-
-QgsLayout *mLayout = nullptr;
-QString mReport;
-
-bool renderCheck( QString testName, QImage &image, int mismatchCount );
 
 void TestQgsLayoutView::guiRegistry()
 {

@@ -50,6 +50,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsdxfexport_p.h"
 #include "qgssymbol.h"
+#include "qgsvariantutils.h"
 
 #include "qgswkbtypes.h"
 #include "qgspoint.h"
@@ -61,6 +62,10 @@
 
 #include <QIODevice>
 #include <QTextCodec>
+
+#ifdef _MSC_VER
+#define strcasecmp( a, b ) stricmp( a, b )
+#endif
 
 QgsDxfExport::QgsDxfExport() = default;
 
@@ -1308,7 +1313,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
     {
       const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
-      if ( !exprVal.isNull() )
+      if ( !QgsVariantUtils::isNull( exprVal ) )
       {
         offsetQuad = static_cast<Qgis::LabelQuadrantPosition>( exprVal.toInt() );
       }
@@ -1362,7 +1367,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
     hali = HAlign::HLeft;
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString haliString = exprVal.toString();
       if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
@@ -1381,7 +1386,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   {
     vali = VAlign::VBottom;
     QVariant exprVal = props.value( QgsPalLayerSettings::Vali, expressionContext );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString valiString = exprVal.toString();
       if ( valiString.compare( QLatin1String( "Bottom" ), Qt::CaseInsensitive ) != 0 )
@@ -2193,7 +2198,7 @@ QStringList QgsDxfExport::encodings()
   for ( const QByteArray &codec : codecs )
   {
     int i;
-    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
+    for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcasecmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )
       ;
 
     if ( i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) )

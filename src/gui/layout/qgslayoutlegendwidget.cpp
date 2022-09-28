@@ -1498,7 +1498,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   {
     currentLabel = mLayer->name();
     QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
-    if ( !v.isNull() )
+    if ( !QgsVariantUtils::isNull( v ) )
       currentLabel = v.toString();
     mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
 

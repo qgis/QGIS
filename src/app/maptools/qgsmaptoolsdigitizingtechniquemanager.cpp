@@ -29,6 +29,7 @@
 #include <QAction>
 #include <QToolButton>
 #include <QMenu>
+#include <QActionGroup>
 
 QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QObject *parent )
   : QObject( parent )

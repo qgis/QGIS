@@ -193,7 +193,6 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
   const QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QList<QgsLabelPosition>::const_iterator it;
   for ( const QgsLabelPosition &pos : labelPosList )
   {
     mCurrentLabel = LabelDetails( pos, canvas() );

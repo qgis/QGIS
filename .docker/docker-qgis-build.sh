@@ -57,12 +57,19 @@ if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
 fi
 
 CMAKE_EXTRA_ARGS=()
-if [[ ${PATCH_QT_3D} == "true" ]]; then
+
+if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
   CMAKE_EXTRA_ARGS+=(
-    "-DQT5_3DEXTRA_LIBRARY=/usr/lib/x86_64-linux-gnu/libQt53DExtras.so"
-    "-DQT5_3DEXTRA_INCLUDE_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers"
-    "-DCMAKE_PREFIX_PATH=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake"
-    "-DQt53DExtras_DIR=${CTEST_SOURCE_DIR}/external/qt3dextra-headers/cmake/Qt53DExtras"
+   "-DQSCINTILLA_INCLUDE_DIR=/usr/include/qt6"
+   "-DQSCINTILLA_LIBRARY=/usr/lib64/libqscintilla2_qt6.so"
+   "-DQWT_INCLUDE_DIR=/usr/local/qwt-6.2.0/include/"
+   "-DQWT_LIBRARY=/usr/local/qwt-6.2.0/lib/libqwt.so.6"
+  )
+fi
+
+if [[ "${WITH_COMPILE_COMMANDS}" == "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
   )
 fi
 
@@ -77,9 +84,9 @@ cmake \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
  -DUSE_CCACHE=OFF \
  -DBUILD_WITH_QT6=${BUILD_WITH_QT6} \
- -DWITH_DESKTOP=${WITH_QT5} \
+ -DWITH_DESKTOP=ON \
  -DWITH_ANALYSIS=ON \
- -DWITH_GUI=${WITH_QT5} \
+ -DWITH_GUI=ON \
  -DWITH_QUICK=${WITH_QUICK} \
  -DWITH_3D=${WITH_3D} \
  -DWITH_STAGED_PLUGINS=ON \
@@ -101,7 +108,7 @@ cmake \
  -DWITH_APIDOC=OFF \
  -DWITH_ASTYLE=OFF \
  -DWITH_BINDINGS=${WITH_QT5} \
- -DWITH_SERVER=${WITH_QT5} \
+ -DWITH_SERVER=ON \
  -DWITH_SERVER_LANDINGPAGE_WEBAPP=${WITH_QT5} \
  -DWITH_ORACLE=${WITH_QT5} \
  -DWITH_PDAL=ON \

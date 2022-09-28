@@ -132,7 +132,7 @@ void QgsUniqueValuesWidgetWrapper::updateValues( const QVariant &value, const QV
 
   if ( mLineEdit )
   {
-    if ( value.isNull() )
+    if ( QgsVariantUtils::isNull( value ) )
       mLineEdit->setText( QgsApplication::nullRepresentation() );
     else
       mLineEdit->setText( value.toString() );

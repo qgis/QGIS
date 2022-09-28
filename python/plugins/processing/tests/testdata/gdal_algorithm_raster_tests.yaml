@@ -194,6 +194,7 @@ tests:
         compare:
           fields:
             location: skip
+            fid: skip
 
   - algorithm: gdal:gridaverage
     name: Moving average interpolation (gdal_grid)
@@ -441,7 +442,9 @@ tests:
       OPTIONS: ''
     results:
       OUTPUT:
-        hash: c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
+        hash:
+        - c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
+        - 0bcc662c2c87a0b62186fd3216b3b2319e12b1d1a106131e0cfd4dfd
         type: rasterhash
 
   - algorithm: gdal:warpreproject

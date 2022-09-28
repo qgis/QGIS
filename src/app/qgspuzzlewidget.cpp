@@ -19,6 +19,7 @@
 
 #include <QGraphicsPixmapItem>
 #include <QMessageBox>
+#include <QRandomGenerator>
 
 
 static bool testSolved( QVector<int> &positions )
@@ -57,7 +58,7 @@ static void shuffle( QVector<int> &positions, int count )
   {
     do
     {
-      const int move = qrand() % 4;
+      const int move = QRandomGenerator::global()->generate() % 4;
       cOther = cEmpty + moveX[move];
       rOther = rEmpty + moveY[move];
     }

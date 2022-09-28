@@ -138,6 +138,12 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 
     std::shared_ptr<QgsTransaction> transaction;
     transaction.reset( QgsTransaction::create( connectionString, providerKey ) );
+    if ( !transaction )
+    {
+      commitErrors << tr( "ERROR: data source '%1', is not available for transactions." ).arg( connectionString );
+      success = false;
+      break;
+    }
 
     QString errorMsg;
     if ( ! transaction->begin( errorMsg ) )
@@ -353,13 +359,14 @@ bool QgsVectorLayerEditBufferGroup::rollBack( QStringList &rollbackErrors, bool 
     {
       layer->clearEditBuffer();
       layer->undoStack()->clear();
+      emit layer->editingStopped();
     }
-    emit layer->editingStopped();
 
     if ( rollbackExtent )
       layer->updateExtents();
 
-    layer->dataProvider()->leaveUpdateMode();
+    if ( stopEditing )
+      layer->dataProvider()->leaveUpdateMode();
 
     layer->triggerRepaint();
   }

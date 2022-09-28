@@ -30,17 +30,16 @@
  * \ingroup UnitTests
  * This is a unit test for contour renderer
  */
-class TestQgsRasterContourRenderer : public QObject
+class TestQgsRasterContourRenderer : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsRasterContourRenderer() = default;
+    TestQgsRasterContourRenderer() : QgsTest( QStringLiteral( "Raster Contour Renderer Tests" ) ) {}
 
   private:
     QString mDataDir;
     QgsRasterLayer *mLayer = nullptr;
-    QString mReport;
     QgsMapSettings *mMapSettings = nullptr;
 
     bool imageCheck( const QString &testType, QgsRasterLayer *layer, QgsRectangle extent );
@@ -79,7 +78,6 @@ void TestQgsRasterContourRenderer::cleanupTestCase()
 
 bool TestQgsRasterContourRenderer::imageCheck( const QString &testType, QgsRasterLayer *layer, QgsRectangle extent )
 {
-  mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setExtent( extent );
   mMapSettings->setDestinationCrs( layer->crs() );
   mMapSettings->setOutputDpi( 96 );

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayout.h"
 #include "qgstest.h"
 #include "qgslayoututils.h"
 #include "qgsproject.h"
@@ -23,18 +22,19 @@
 #include "qgsfontutils.h"
 #include "qgsrenderchecker.h"
 #include "qgsvectorlayer.h"
+#include "qgslayout.h"
 
 #include <QStyleOptionGraphicsItem>
 
-class TestQgsLayoutUtils: public QObject
+class TestQgsLayoutUtils: public QgsTest
 {
     Q_OBJECT
 
+  public:
+    TestQgsLayoutUtils() : QgsTest( QStringLiteral( "Layout Utils Tests" ) ) {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void rotate();
     void normalizedAngle(); //test normalised angle function
     void snappedAngle();
@@ -61,39 +61,14 @@ class TestQgsLayoutUtils: public QObject
 
     bool renderCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
 
-    QString mReport;
     QFont mTestFont;
 };
 
 void TestQgsLayoutUtils::initTestCase()
 {
-  mReport = QStringLiteral( "<h1>Layout Utils Tests</h1>\n" );
-
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Oblique" ) );
   mTestFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Oblique " ) );
   mTestFont.setItalic( true );
-}
-
-void TestQgsLayoutUtils::cleanupTestCase()
-{
-  const QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-}
-
-void TestQgsLayoutUtils::init()
-{
-
-}
-
-void TestQgsLayoutUtils::cleanup()
-{
-
 }
 
 void TestQgsLayoutUtils::rotate()
@@ -671,7 +646,6 @@ void TestQgsLayoutUtils::mapLayerFromString()
 
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
   const QString myTmpDir = QDir::tempPath() + '/';
   const QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );

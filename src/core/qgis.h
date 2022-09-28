@@ -1018,6 +1018,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( JoinStyle )
 
     /**
+     * Algorithms to use when repairing invalid geometries.
+     *
+     * \since QGIS 3.28
+     */
+    enum class MakeValidMethod : int
+    {
+      Linework = 0, //!< Combines all rings into a set of noded lines and then extracts valid polygons from that linework.
+      Structure = 1, //!< Structured method, first makes all rings valid and then merges shells and subtracts holes from shells to generate valid result. Assumes that holes and shells are correctly categorized. Requires GEOS 3.10+.
+    };
+    Q_ENUM( MakeValidMethod )
+
+    /**
      * Feature request spatial filter types.
      *
      * \since QGIS 3.22
@@ -1388,6 +1400,83 @@ class CORE_EXPORT Qgis
     Q_ENUM( TextRenderFormat )
 
     /**
+     * Text orientations.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextFormat::TextOrientation
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextOrientation SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextFormat, TextOrientation ) : int
+      {
+      Horizontal SIP_MONKEYPATCH_COMPAT_NAME( HorizontalOrientation ), //!< Horizontally oriented text
+      Vertical SIP_MONKEYPATCH_COMPAT_NAME( VerticalOrientation ), //!< Vertically oriented text
+      RotationBased SIP_MONKEYPATCH_COMPAT_NAME( RotationBasedOrientation ), //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
+    };
+    Q_ENUM( TextOrientation )
+
+    /**
+     * Text layout modes.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::DrawMode
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextLayoutMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, DrawMode ) : int
+      {
+      Rectangle SIP_MONKEYPATCH_COMPAT_NAME( Rect ), //!< Text within rectangle layout mode
+      Point, //!< Text at point of origin layout mode
+      Labeling SIP_MONKEYPATCH_COMPAT_NAME( Label ), //!< Labeling-specific layout mode
+    };
+    Q_ENUM( TextLayoutMode )
+
+    /**
+     * Text components.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::TextPart
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int
+      {
+      Text, //!< Text component
+      Buffer, //!< Buffer component
+      Background, //!< Background shape
+      Shadow, //!< Drop shadow
+    };
+    Q_ENUM( TextComponent )
+
+    /**
+     * Text horizontal alignment.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::HAlignment
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextHorizontalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, HAlignment ) : int
+      {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( AlignLeft ), //!< Left align
+      Center SIP_MONKEYPATCH_COMPAT_NAME( AlignCenter ), //!< Center align
+      Right SIP_MONKEYPATCH_COMPAT_NAME( AlignRight ), //!< Right align
+      Justify SIP_MONKEYPATCH_COMPAT_NAME( AlignJustify ), //!< Justify align
+    };
+    Q_ENUM( TextHorizontalAlignment )
+
+    /**
+     * Text vertical alignment.
+     *
+     * \note Prior to QGIS 3.28 this was available as QgsTextRenderer::VAlignment
+     *
+     * \since QGIS 3.28
+     */
+    enum class TextVerticalAlignment SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, VAlignment ) : int
+      {
+      Top SIP_MONKEYPATCH_COMPAT_NAME( AlignTop ), //!< Align to top
+      VerticalCenter SIP_MONKEYPATCH_COMPAT_NAME( AlignVCenter ), //!< Center align
+      Bottom SIP_MONKEYPATCH_COMPAT_NAME( AlignBottom ), //!< Align to bottom
+    };
+    Q_ENUM( TextVerticalAlignment )
+
+    /**
      * Rendering subcomponent properties.
      *
      * \since QGIS 3.22
@@ -1450,6 +1539,14 @@ class CORE_EXPORT Qgis
       HalfArc, //!< A line-only half arc (since QGIS 3.20)
       ThirdArc, //!< A line-only one third arc (since QGIS 3.20)
       QuarterArc, //!< A line-only one quarter arc (since QGIS 3.20)
+      ParallelogramRight, //!< Parallelogram that slants right (since QGIS 3.28)
+      ParallelogramLeft, //!< Parallelogram that slants left (since QGIS 3.28)
+      Trapezoid, //!< Trapezoid (since QGIS 3.28)
+      Shield, //!< A shape consisting of a triangle attached to a rectangle (since QGIS 3.28)
+      DiamondStar, //!< A 4-sided star (since QGIS 3.28)
+      Heart, //!< Heart (since QGIS 3.28)
+      Decagon, //!< Decagon (since QGIS 3.28)
+      RoundedSquare, //!< A square with rounded corners (since QGIS 3.28)
     };
     Q_ENUM( MarkerShape )
 
@@ -2001,6 +2098,7 @@ class CORE_EXPORT Qgis
       DontStoreOriginalStyles SIP_MONKEYPATCH_COMPAT_NAME( FlagDontStoreOriginalStyles ) = 1 << 3, //!< Skip the initial XML style storage for layers. Useful for minimising project load times in non-interactive contexts.
       DontLoad3DViews SIP_MONKEYPATCH_COMPAT_NAME( FlagDontLoad3DViews ) = 1 << 4, //!< Skip loading 3D views (since QGIS 3.26)
       DontLoadProjectStyles = 1 << 5, //!< Skip loading project style databases (deprecated -- use ProjectCapability::ProjectStyles flag instead)
+      ForceReadOnlyLayers = 1 << 6, //!< Open layers in a read-only mode. (since QGIS 3.28)
     };
     Q_ENUM( ProjectReadFlag )
 
@@ -2113,6 +2211,19 @@ class CORE_EXPORT Qgis
       ManyToMany, //!< Many to many relationship
     };
     Q_ENUM( RelationshipCardinality )
+
+    /**
+     * Formats for displaying coordinates
+     *
+     * \since QGIS 3.28
+     */
+    enum class CoordinateDisplayType : int
+    {
+      MapCrs, //!< Map CRS
+      MapGeographic, //!< Map Geographic CRS equivalent (stays unchanged if the map CRS is geographic)
+      CustomCrs, //!< Custom CRS
+    };
+    Q_ENUM( CoordinateDisplayType )
 
     /**
      * Identify search radius in mm
@@ -2496,36 +2607,15 @@ namespace qgis
   template<class T>
   QSet<T> listToSet( const QList<T> &list )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return list.toSet();
-#else
     return QSet<T>( list.begin(), list.end() );
-#endif
   }
 
   template<class T>
   QList<T> setToList( const QSet<T> &set )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    return set.toList();
-#else
     return QList<T>( set.begin(), set.end() );
-#endif
   }
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-namespace std
-{
-  template<> struct hash<QString>
-  {
-    std::size_t operator()( const QString &s ) const noexcept
-    {
-      return ( size_t ) qHash( s );
-    }
-  };
-}
-#endif
 
 ///@endcond
 #endif

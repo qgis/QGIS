@@ -28,6 +28,7 @@ This is the interface for those who want to add entries to the :py:class:`QgsDat
       OrderDatabaseProvider,
       OrderRemoteProvider,
       OrderGeoCmsProvider,
+      OrderSearchProvider,
       OrderOtherProvider,
     };
 

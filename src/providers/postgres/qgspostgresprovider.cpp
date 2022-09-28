@@ -22,6 +22,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgslayermetadataproviderregistry.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsxmlutils.h"
@@ -42,11 +43,13 @@
 #include "qgsstringutils.h"
 #include "qgsjsonutils.h"
 #include "qgsdbquerylog.h"
+#include "qgsproject.h"
+#include "qgspostgreslayermetadataprovider.h"
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgspostgresproviderconnection.h"
-
+#include "qgspostgresprovidermetadatautils.h"
 #include <QRegularExpression>
 
 const QString QgsPostgresProvider::POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -174,7 +177,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
     return;
   }
 
-  mConnectionRO = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), true );
+  mConnectionRO = QgsPostgresConn::connectDb( mUri, true );
   if ( !mConnectionRO )
   {
     return;
@@ -209,6 +212,38 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
   }
 
   mLayerExtent.setMinimal();
+
+  // Try to load metadata
+  const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
+  QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresProvider", schemaQuery ) );
+  if ( res.PQntuples( ) > 0 )
+  {
+    const QString schemaName = res.PQgetvalue( 0, 0 );
+    // TODO: also filter CRS?
+    const QString selectQuery = QStringLiteral( R"SQL(
+            SELECT
+              qmd
+           FROM %4.qgis_layer_metadata
+             WHERE
+                f_table_schema=%1
+                AND f_table_name=%2
+                AND f_geometry_column %3
+                AND layer_type='vector'
+           )SQL" )
+                                .arg( QgsPostgresConn::quotedValue( mUri.schema() ) )
+                                .arg( QgsPostgresConn::quotedValue( mUri.table() ) )
+                                .arg( mUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( mUri.geometryColumn() ) ) )
+                                .arg( QgsPostgresConn::quotedIdentifier( schemaName ) );
+
+    QgsPostgresResult res( mConnectionRO->LoggedPQexec( "QgsPostgresProvider", selectQuery ) );
+    if ( res.PQntuples() > 0 )
+    {
+      QgsLayerMetadata metadata;
+      QDomDocument doc;
+      doc.setContent( res.PQgetvalue( 0, 0 ) );
+      mLayerMetadata.readMetadataXml( doc.documentElement() );
+    }
+  }
 
   // set the primary key
   if ( !determinePrimaryKey() )
@@ -338,7 +373,7 @@ QgsPostgresConn *QgsPostgresProvider::connectionRW()
   }
   else if ( !mConnectionRW )
   {
-    mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
+    mConnectionRW = QgsPostgresConn::connectDb( mUri, false );
   }
   return mConnectionRW;
 }
@@ -357,6 +392,26 @@ void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
 {
   // static_cast since layers cannot be added to a transaction of a non-matching provider
   mTransaction = static_cast<QgsPostgresTransaction *>( transaction );
+
+  const QString sessionRoleKey = QStringLiteral( "session_role" );
+  if ( mUri.hasParam( sessionRoleKey ) )
+  {
+    const QString sessionRole = mUri.param( sessionRoleKey );
+    if ( !sessionRole.isEmpty() )
+    {
+      if ( !mTransaction->connection()->setSessionRole( sessionRole ) )
+      {
+        QgsDebugMsgLevel(
+          QStringLiteral(
+            "Set session role failed for ROLE %1"
+          )
+          .arg( quotedValue( sessionRole ) )
+          ,
+          2
+        );
+      }
+    }
+  }
 }
 
 QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPostgresConn *conn )
@@ -479,7 +534,7 @@ void QgsPostgresProvider::disconnectDb()
 
 QString QgsPostgresProvider::quotedByteaValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   const QByteArray ba = value.toByteArray();
@@ -658,7 +713,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
       {
         QgsField fld = fields.at( pkAttrs[0] );
         whereClause = conn->fieldExpression( fld );
-        if ( !pkVals[0].isNull() )
+        if ( !QgsVariantUtils::isNull( pkVals[0] ) )
           whereClause += '=' + pkVals[0].toString();
         else
           whereClause += QLatin1String( " IS NULL" );
@@ -680,7 +735,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
           QgsField fld = fields.at( idx );
 
           whereClause += delim + conn->fieldExpressionForWhereClause( fld, pkVals[i].type() );
-          if ( pkVals[i].isNull() )
+          if ( QgsVariantUtils::isNull( pkVals[i] ) )
             whereClause += QLatin1String( " IS NULL" );
           else
             whereClause += '=' + QgsPostgresConn::quotedValue( pkVals[i] ); // remove toString as it must be handled by quotedValue function
@@ -924,13 +979,22 @@ bool QgsPostgresProvider::loadFields()
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading fields for table %1" ).arg( mTableName ), 2 );
 
-    // Get the table description
-    sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
-    QgsPostgresResult tresult( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
-    if ( tresult.PQntuples() > 0 )
+    if ( mLayerMetadata.abstract().isEmpty() )
     {
-      mDataComment = tresult.PQgetvalue( 0, 0 );
-      mLayerMetadata.setAbstract( mDataComment );
+      // Get the table description
+      sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=regclass(%1)::oid AND objsubid=0" ).arg( quotedValue( mQuery ) );
+      QgsPostgresResult tresult( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
+
+      if ( ! tresult.result() )
+      {
+        throw PGException( tresult );
+      }
+
+      if ( tresult.PQntuples() > 0 )
+      {
+        mDataComment = tresult.PQgetvalue( 0, 0 );
+        mLayerMetadata.setAbstract( mDataComment );
+      }
     }
   }
 
@@ -990,6 +1054,12 @@ bool QgsPostgresProvider::loadFields()
                    tableoidsFilter );
 
       QgsPostgresResult fmtFieldTypeResult( connectionRO()->LoggedPQexec( "QgsPostgresProvider", sql ) );
+
+      if ( ! fmtFieldTypeResult.result() )
+      {
+        throw PGException( fmtFieldTypeResult );
+      }
+
       for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
       {
         Oid attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toUInt();
@@ -1348,7 +1418,7 @@ bool QgsPostgresProvider::loadFields()
          && defValMap[tableoid][attnum].isEmpty() )
     {
       const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
-      const QString seqSql = QStringLiteral( "SELECT c.oid "
+      const QString seqSql = QStringLiteral( "SELECT c.oid::regclass "
                                              "  FROM pg_class c "
                                              "  LEFT JOIN pg_namespace n "
                                              "    ON ( n.oid = c.relnamespace ) "
@@ -1360,7 +1430,7 @@ bool QgsPostgresProvider::loadFields()
       QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
       if ( seqResult.PQntuples() == 1 )
       {
-        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedValue( seqName ) );
+        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedValue( seqResult.PQgetvalue( 0, 0 ) ) );
       }
     }
 
@@ -1470,9 +1540,12 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
+    bool forceReadOnly = ( mReadFlags & QgsDataProvider::ForceReadOnly );
     bool inRecovery = false;
-
-    if ( connectionRO()->pgVersion() >= 90000 )
+    // Check if the database is still in recovery after a database crash
+    // or if you are connected to a (read-only) standby server
+    // only if the provider has not been force to be in read-only mode
+    if ( !forceReadOnly && connectionRO()->pgVersion() >= 90000 )
     {
       testAccess = connectionRO()->LoggedPQexec( "QgsPostgresProvider",  QStringLiteral( "SELECT pg_is_in_recovery()" ) );
       if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK || testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
@@ -1489,7 +1562,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       mEnabledCapabilities |= QgsVectorDataProvider::SelectAtId;
     }
 
-    if ( !inRecovery )
+    // Do not check the editable capabilities if the provider has been forced to be
+    // in read-only mode or if the database is still in recovery
+    if ( !forceReadOnly && !inRecovery )
     {
       if ( connectionRO()->pgVersion() >= 80400 )
       {
@@ -2305,7 +2380,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
   {
     // stricter check - if we are evaluating default values only on commit then we can only bypass the check
     // if the attribute values matches the original default clause
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !QgsVariantUtils::isNull( value );
   }
 }
 
@@ -2474,7 +2549,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) );
           // a PK field with a sequence val is auto populate by QGIS with this default
           // we are only interested in non default values
-          if ( !v2.isNull() && v2.toString() != defaultValue )
+          if ( !QgsVariantUtils::isNull( v2 ) && v2.toString() != defaultValue )
           {
             foundNonEmptyPK = true;
             break;
@@ -2660,7 +2735,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QVariant( QVariant::Int );
 
         QString v;
-        if ( value.isNull() )
+        if ( QgsVariantUtils::isNull( value ) )
         {
           QgsField fld = field( attrIdx );
           v = paramValue( defaultValues[ i ], defaultValues[ i ] );
@@ -4501,7 +4576,7 @@ Qgis::VectorExportResult QgsPostgresProvider::createEmptyLayer( const QString &u
   QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( tableName ), 2 );
 
   // create the table
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     if ( errorMessage )
@@ -5316,7 +5391,7 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
   errorCause.clear();
 
   QgsDataSourceUri dsUri( uri );
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errorCause = QObject::tr( "Connection to database failed" );
@@ -5344,13 +5419,15 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
                                       " WHERE f_table_catalog=%1"
                                       " AND f_table_schema=%2"
                                       " AND f_table_name=%3"
-                                      " AND f_geometry_column=%4"
+                                      " AND f_geometry_column %4"
                                       " AND (type=%5 OR type IS NULL)"
                                       " AND styleName=%6" )
                              .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                              .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                              .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                             .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                             .arg( dsUri.geometryColumn().isEmpty() ?
+                                   QStringLiteral( "IS NULL" ) :
+                                   QStringLiteral( "= %1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
                              .arg( wkbTypeString )
                              .arg( QgsPostgresConn::quotedValue( styleId.isEmpty() ? dsUri.table() : styleId ) );
 
@@ -5378,7 +5455,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   QString sldStyle { sldStyleIn };
   QgsPostgresUtils::replaceInvalidXmlChars( sldStyle );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -5476,7 +5553,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                       .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
                        .arg( wkbTypeString )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
@@ -5493,7 +5570,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                    " WHERE f_table_catalog=%6"
                    " AND f_table_schema=%7"
                    " AND f_table_name=%8"
-                   " AND f_geometry_column=%9"
+                   " AND f_geometry_column %9"
                    " AND styleName=%10"
                    " AND (type=%2 OR type IS NULL)" )
           .arg( useAsDefault ? "true" : "false" )
@@ -5503,7 +5580,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-          .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+          .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) ) )
           .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
           // Must be the final .arg replacement - see above
           .arg( QgsPostgresConn::quotedValue( qmlStyle ),
@@ -5517,12 +5594,12 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                         " WHERE f_table_catalog=%1"
                                         " AND f_table_schema=%2"
                                         " AND f_table_name=%3"
-                                        " AND f_geometry_column=%4"
+                                        " AND f_geometry_column %4"
                                         " AND (type=%5 OR type IS NULL)" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                               .arg( dsUri.geometryColumn().isEmpty() ? QStringLiteral( "IS NULL" ) : QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
                                .arg( wkbTypeString );
 
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
@@ -5545,7 +5622,7 @@ QString QgsPostgresProviderMetadata::loadStyle( const QString &uri, QString &err
   QgsDataSourceUri dsUri( uri );
   QString selectQmlQuery;
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );
@@ -5625,7 +5702,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
   errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -5678,12 +5755,14 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
 
   QString selectOthersQuery = QString( "SELECT id,styleName,description"
                                        " FROM layer_styles"
-                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column=%4 AND type=%5)"
+                                       " WHERE NOT (f_table_catalog=%1 AND f_table_schema=%2 AND f_table_name=%3 AND f_geometry_column %4 AND type=%5)"
                                        " ORDER BY update_time DESC" )
                               .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                               .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                               .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                              .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                              .arg( dsUri.geometryColumn().isEmpty() ?
+                                    QStringLiteral( "IS NULL" ) :
+                                    QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
                               .arg( wkbTypeString );
 
   result = conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), selectOthersQuery );
@@ -5712,7 +5791,7 @@ bool QgsPostgresProviderMetadata::deleteStyleById( const QString &uri, const QSt
   QgsDataSourceUri dsUri( uri );
   bool deleted;
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -5745,7 +5824,7 @@ QString QgsPostgresProviderMetadata::getStyleById( const QString &uri, const QSt
 {
   QgsDataSourceUri dsUri( uri );
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), true );
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, true );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
@@ -5807,18 +5886,25 @@ QgsAbstractProviderConnection *QgsPostgresProviderMetadata::createConnection( co
 
 
 QgsPostgresProjectStorage *gPgProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+QgsPostgresLayerMetadataProvider *gPgLayerMetadataProvider = nullptr;   // when not null it is owned by QgsApplication::layerMetadataProviderRegistry()
 
 void QgsPostgresProviderMetadata::initProvider()
 {
   Q_ASSERT( !gPgProjectStorage );
   gPgProjectStorage = new QgsPostgresProjectStorage;
   QgsApplication::projectStorageRegistry()->registerProjectStorage( gPgProjectStorage );  // takes ownership
+  Q_ASSERT( !gPgLayerMetadataProvider );
+  gPgLayerMetadataProvider = new QgsPostgresLayerMetadataProvider();
+  QgsApplication::layerMetadataProviderRegistry()->registerLayerMetadataProvider( gPgLayerMetadataProvider );  // takes ownership
+
 }
 
 void QgsPostgresProviderMetadata::cleanupProvider()
 {
   QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gPgProjectStorage );  // destroys the object
   gPgProjectStorage = nullptr;
+  QgsApplication::layerMetadataProviderRegistry()->unregisterLayerMetadataProvider( gPgLayerMetadataProvider );
+  gPgLayerMetadataProvider = nullptr;
 
   QgsPostgresConnPool::cleanupInstance();
 }
@@ -6054,4 +6140,15 @@ QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts ) const
 QList<QgsMapLayerType> QgsPostgresProviderMetadata::supportedLayerTypes() const
 {
   return { QgsMapLayerType::VectorLayer };
+}
+
+bool QgsPostgresProviderMetadata::saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage )
+{
+  return QgsPostgresProviderMetadataUtils::saveLayerMetadata( QgsMapLayerType::VectorLayer, uri, metadata, errorMessage );
+}
+
+
+QgsProviderMetadata::ProviderCapabilities QgsPostgresProviderMetadata::providerCapabilities() const
+{
+  return QgsProviderMetadata::ProviderCapability::SaveLayerMetadata;
 }

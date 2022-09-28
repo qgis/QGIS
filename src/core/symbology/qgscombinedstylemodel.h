@@ -20,9 +20,6 @@
 #include "qgis_sip.h"
 #include <QtGlobal>
 
-SIP_IF_MODULE( CONCATENATED_TABLES_MODEL )
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 #include <QConcatenateTablesProxyModel>
 
 class QgsStyle;
@@ -103,6 +100,5 @@ class CORE_EXPORT QgsCombinedStyleModel: public QConcatenateTablesProxyModel
     QList< QSize > mAdditionalSizes;
 
 };
-#endif
 
 #endif //QGSCOMBINEDSTYLEMODEL_H

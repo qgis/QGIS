@@ -16,118 +16,76 @@
 #include <memory>
 #include <QSvgRenderer>
 #include <QPainter>
-#include <QScreen>
 #include <QPixmap>
-#include <QDesktopWidget>
 
 #include "qgsmeshrenderer3daveragingwidget.h"
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
-#include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmesh3daveraging.h"
 #include "qgsapplication.h"
+#include "qgsscreenhelper.h"
 
-static void _setSvg( QLabel *imageLabel,
-                     const QString &imgName )
-{
-  const qreal dpi = QgsApplication::desktop()->logicalDpiX();
-  const int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
-
-  QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
-  if ( renderer.isValid() )
-  {
-    const QSize defaultSvgSize = renderer.defaultSize();
-    const int desiredHeight = defaultSvgSize.height() * desiredWidth / defaultSvgSize.width();
-
-    QPixmap pixmap( QSize( desiredWidth, desiredHeight ) );
-    pixmap.fill( Qt::transparent );
-    QPainter painter;
-
-    painter.begin( &pixmap );
-    renderer.render( &painter );
-    painter.end();
-    imageLabel->setPixmap( pixmap );
-  }
-}
 
 QgsMeshRenderer3dAveragingWidget::QgsMeshRenderer3dAveragingWidget( QWidget *parent )
   : QWidget( parent )
 
 {
   setupUi( this );
+
+  mScreenHelper = new QgsScreenHelper( this );
+
   connect( mAveragingMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::onAveragingMethodChanged );
 
   // Single Level Average Method (top)
   connect( mSingleVerticalLayerIndexTopSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mSingleTopPngLabel,
-           QStringLiteral( "SingleTop.svg" )
-         );
-  mSingleTopGroup->adjustSize();
 
   // Single Level Average Method (bottom)
   connect( mSingleVerticalLayerIndexBottomSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mSingleBottomPngLabel,
-           QStringLiteral( "SingleBottom.svg" )
-         );
 
   // Multi Levels Averaging Method (top)
   connect( mMultiTopVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   connect( mMultiTopVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mMultiTopPngLabel,
-           QStringLiteral( "MultiTop.svg" )
-         );
 
   // MultiLevels Averaging Method (bottom)
   connect( mMultiBottomVerticalLayerStartIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   connect( mMultiBottomVerticalLayerEndIndexSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mMultiBottomPngLabel,
-           QStringLiteral( "MultiBottom.svg" )
-         );
 
   // Sigma Averaging Method
   connect( mSigmaStartFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   connect( mSigmaEndFractionSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mSigmaPngLabel,
-           QStringLiteral( "Sigma.svg" )
-         );
 
   // Depth Averaging Method
   connect( mDepthStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   connect( mDepthEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mDepthPngLabel,
-           QStringLiteral( "Depth.svg" )
-         );
 
   // Height Averaging Method
   connect( mHeightStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   connect( mHeightEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mHeightPngLabel,
-           QStringLiteral( "Height.svg" )
-         );
+
 
   // Elevation Averaging Method
   connect( mElevationStartSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
   connect( mElevationEndSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRenderer3dAveragingWidget::widgetChanged );
-  _setSvg( mElevationPngLabel,
-           QStringLiteral( "Elevation.svg" )
-         );
+
+  updateGraphics();
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsMeshRenderer3dAveragingWidget::updateGraphics );
 }
 
 void QgsMeshRenderer3dAveragingWidget::setLayer( QgsMeshLayer *layer )
@@ -293,4 +251,40 @@ void QgsMeshRenderer3dAveragingWidget::onAveragingMethodChanged( int methodIndex
 {
   whileBlocking( mAveragingMethodStackedWidget )->setCurrentIndex( methodIndex );
   emit widgetChanged();
+}
+
+void QgsMeshRenderer3dAveragingWidget::updateGraphics()
+{
+  setLabelSvg( mSingleTopPngLabel, QStringLiteral( "SingleTop.svg" ) );
+  mSingleTopGroup->adjustSize();
+
+  setLabelSvg( mSingleBottomPngLabel, QStringLiteral( "SingleBottom.svg" ) );
+  setLabelSvg( mMultiTopPngLabel, QStringLiteral( "MultiTop.svg" ) );
+  setLabelSvg( mMultiBottomPngLabel, QStringLiteral( "MultiBottom.svg" ) );
+  setLabelSvg( mSigmaPngLabel, QStringLiteral( "Sigma.svg" ) );
+  setLabelSvg( mDepthPngLabel, QStringLiteral( "Depth.svg" ) );
+  setLabelSvg( mHeightPngLabel, QStringLiteral( "Height.svg" ) );
+  setLabelSvg( mElevationPngLabel, QStringLiteral( "Elevation.svg" ) );
+}
+
+void QgsMeshRenderer3dAveragingWidget::setLabelSvg( QLabel *imageLabel, const QString &imgName )
+{
+  const qreal dpi = mScreenHelper->screenDpi();
+  const int desiredWidth = static_cast<int>( 100 * dpi / 25.4 );
+
+  QSvgRenderer renderer( QStringLiteral( ":/images/themes/default/mesh/%1" ).arg( imgName ) );
+  if ( renderer.isValid() )
+  {
+    const QSize defaultSvgSize = renderer.defaultSize();
+    const int desiredHeight = defaultSvgSize.height() * desiredWidth / defaultSvgSize.width();
+
+    QPixmap pixmap( QSize( desiredWidth, desiredHeight ) );
+    pixmap.fill( Qt::transparent );
+    QPainter painter;
+
+    painter.begin( &pixmap );
+    renderer.render( &painter );
+    painter.end();
+    imageLabel->setPixmap( pixmap );
+  }
 }

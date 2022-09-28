@@ -26,7 +26,6 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
-#include "qgstemporalrangeobject.h"
 #include "qgsmapcanvasinteractionblocker.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
@@ -76,6 +75,7 @@ class QgsRenderedItemResults;
 class QgsTemporaryCursorOverride;
 
 class QgsTemporalController;
+class QgsScreenHelper;
 
 class QMenu;
 class QgsMapMouseEvent;
@@ -1290,6 +1290,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap *mMap = nullptr;
 
+    QgsScreenHelper *mScreenHelper = nullptr;
+
     /**
      * Temporal controller for tracking update of temporal objects
      * which relates with canvas
@@ -1423,8 +1425,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
     QList< QgsMapCanvasInteractionBlocker * > mInteractionBlockers;
 
     int mBlockItemPositionUpdates = 0;
-
-    QMetaObject::Connection mScreenDpiChangedConnection;
 
     std::unique_ptr< QgsTemporaryCursorOverride > mTemporaryCursorOverride;
 

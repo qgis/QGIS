@@ -188,9 +188,7 @@ void QgsGradientStop::setColorSpec( QColor::Spec spec )
   {
     case QColor::Rgb:
     case QColor::Invalid:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
     case QColor::Cmyk:
       mFunc = _interpolateRgb;
       break;
@@ -463,9 +461,7 @@ QVariantMap QgsGradientColorRamp::properties() const
       break;
     case QColor::Cmyk:
     case QColor::Invalid:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
       break;
   }
 
@@ -599,9 +595,7 @@ void QgsGradientColorRamp::setColorSpec( QColor::Spec spec )
   {
     case QColor::Rgb:
     case QColor::Invalid:
-#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
     case QColor::ExtendedRgb:
-#endif
     case QColor::Cmyk:
       mFunc = _interpolateRgb;
       break;

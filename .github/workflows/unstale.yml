@@ -9,6 +9,7 @@ jobs:
   remove_labels:
     permissions:
       issues: write  # for actions-ecosystem/action-remove-labels to remove issue labels
+      pull-requests: write  # for actions-ecosystem/action-remove-labels to remove PR labels
     if: contains(github.event.issue.labels.*.name, 'stale')
     runs-on: ubuntu-latest
     steps:

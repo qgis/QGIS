@@ -126,7 +126,7 @@ for my $i (<i18n/qgis_*.ts>) {
 	my $name = $locale->get_language_from_code($langcode);
 	$name .= $charset;
 
-	open F, "lrelease $i|";
+	open F, "LC_MESSAGES=C lrelease $i|";
 
 	my($translations,$finished,$unfinished);
 	my $untranslated=0;

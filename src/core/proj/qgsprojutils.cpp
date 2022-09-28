@@ -163,7 +163,6 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
       }
     }
   }
-#if PROJ_VERSION_MAJOR > 7 || (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
   else
   {
     proj_pj_unique_ptr ensemble( horiz ? proj_crs_get_datum_ensemble( context, horiz.get() ) : nullptr );
@@ -178,7 +177,6 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
       }
     }
   }
-#endif
   return isDynamic;
 }
 

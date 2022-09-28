@@ -24,10 +24,7 @@
 #include "qgscolorramp.h"
 #include "qgstextformat.h"
 #include "qgsstyle.h"
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 #include "qgscombinedstylemodel.h"
-#endif
 
 #include <QDomElement>
 
@@ -35,9 +32,7 @@ QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mCombinedStyleModel = new QgsCombinedStyleModel( this );
-#endif
 }
 
 QgsProjectStyleSettings::~QgsProjectStyleSettings()
@@ -139,9 +134,7 @@ void QgsProjectStyleSettings::setProjectStyle( QgsStyle *style )
 {
   if ( mProjectStyle )
   {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
     mCombinedStyleModel->removeStyle( mProjectStyle );
-#endif
     mProjectStyle->deleteLater();
   }
   mProjectStyle = style;
@@ -153,9 +146,7 @@ void QgsProjectStyleSettings::setProjectStyle( QgsStyle *style )
   {
     connect( mProject, &QgsProject::projectColorsChanged, mProjectStyle, &QgsStyle::triggerIconRebuild );
   }
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mCombinedStyleModel->addStyle( mProjectStyle );
-#endif
 
   emit projectStyleChanged();
 }
@@ -399,9 +390,7 @@ void QgsProjectStyleSettings::loadStyleAtPath( const QString &path )
   }
   style->setName( fileInfo.completeBaseName() );
   mStyles.append( style );
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   mCombinedStyleModel->addStyle( style );
-#endif
 
   if ( mProject )
   {
@@ -420,9 +409,7 @@ void QgsProjectStyleSettings::clearStyles()
     mStyleDatabases.removeAll( path );
     if ( QgsStyle *style = styleAtPath( path ) )
     {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
       mCombinedStyleModel->removeStyle( style );
-#endif
       style->deleteLater();
       mStyles.removeAll( style );
     }
@@ -430,22 +417,18 @@ void QgsProjectStyleSettings::clearStyles()
   }
 
   // should already be empty, but play it safe..!
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   for ( QgsStyle *style : std::as_const( mStyles ) )
   {
     mCombinedStyleModel->removeStyle( style );
   }
-#endif
   qDeleteAll( mStyles );
   mStyles.clear();
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
 QgsCombinedStyleModel *QgsProjectStyleSettings::combinedStyleModel()
 {
   return mCombinedStyleModel;
 }
-#endif
 
 
 
@@ -463,11 +446,9 @@ QgsProjectStyleDatabaseModel::QgsProjectStyleDatabaseModel( QgsProjectStyleSetti
   connect( mSettings, &QgsProjectStyleSettings::styleDatabaseAboutToBeRemoved, this, &QgsProjectStyleDatabaseModel::styleDatabaseAboutToBeRemoved );
   connect( mSettings, &QgsProjectStyleSettings::styleDatabaseRemoved, this, &QgsProjectStyleDatabaseModel::styleDatabaseRemoved );
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   if ( mSettings->projectStyle() )
     setProjectStyle( mSettings->projectStyle() );
   connect( mSettings, &QgsProjectStyleSettings::projectStyleChanged, this, &QgsProjectStyleDatabaseModel::projectStyleChanged );
-#endif
 }
 
 int QgsProjectStyleDatabaseModel::rowCount( const QModelIndex &parent ) const

@@ -93,7 +93,8 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   else if ( mRequest.filterType() == QgsFeatureRequest::FilterFids )
   {
     mUsingFeatureIdList = true;
-    mFeatureIdList = qgis::setToList( mRequest.filterFids() );
+    const QgsFeatureIds filterFids = mRequest.filterFids();
+    mFeatureIdList = QList<QgsFeatureId>( filterFids.begin(), filterFids.end() );
   }
   else
   {

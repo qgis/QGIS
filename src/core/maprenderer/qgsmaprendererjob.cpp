@@ -25,9 +25,7 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
-#include "qgsproject.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
@@ -35,9 +33,7 @@
 #include "qgslabelingengine.h"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayerlabeling.h"
-#include "qgssettings.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgssymbollayer.h"
 #include "qgsvectorlayerutils.h"
@@ -257,7 +253,8 @@ bool QgsMapRendererJob::prepareLabelCache() const
     // we may need to clear label cache and re-register labeled features - check for that here
 
     // can we reuse the cached label solution?
-    bool canUseCache = canCache && qgis::listToSet( mCache->dependentLayers( LABEL_CACHE_ID ) ) == labeledLayers;
+    const QList< QgsMapLayer * > labelDependentLayers = mCache->dependentLayers( LABEL_CACHE_ID );
+    bool canUseCache = canCache && QSet< QgsMapLayer * >( labelDependentLayers.begin(), labelDependentLayers.end() ) == labeledLayers;
     if ( !canUseCache )
     {
       // no - participating layers have changed

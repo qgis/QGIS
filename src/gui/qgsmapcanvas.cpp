@@ -47,7 +47,6 @@ email                : sherman at mrcc.com
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
-#include "qgsdatumtransformdialog.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -56,9 +55,7 @@ email                : sherman at mrcc.com
 #include "qgsmaplayer.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolpan.h"
-#include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"
-#include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderercache.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererjob.h"
@@ -66,8 +63,6 @@ email                : sherman at mrcc.com
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettingsutils.h"
 #include "qgsmessagelog.h"
-#include "qgsmessageviewer.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
@@ -82,8 +77,6 @@ email                : sherman at mrcc.com
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayertemporalproperties.h"
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsvectorlayertemporalproperties.h"
 #include "qgstemporalcontroller.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsprojectionselectiondialog.h"
@@ -97,6 +90,7 @@ email                : sherman at mrcc.com
 #include "qgstemporalnavigationobject.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectortilelayer.h"
+#include "qgsscreenhelper.h"
 
 /**
  * \ingroup gui
@@ -139,6 +133,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setMouseTracking( true );
   setFocusPolicy( Qt::StrongFocus );
+
+  mScreenHelper = new QgsScreenHelper( this );
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
 
   mResizeTimer = new QTimer( this );
   mResizeTimer->setSingleShot( true );
@@ -256,8 +253,20 @@ QgsMapCanvas::~QgsMapCanvas()
   if ( mMapTool )
   {
     mMapTool->deactivate();
+    disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool = nullptr;
   }
+
+  // we also clear the canvas pointer for all child map tools. We're now in a partially destroyed state and it's
+  // no longer safe for map tools to try to cleanup things in the canvas during their destruction (such as removing
+  // associated canvas items)
+  // NOTE -- it may be better to just delete the map tool children here upfront?
+  const QList< QgsMapTool * > tools = findChildren< QgsMapTool *>();
+  for ( QgsMapTool *tool : tools )
+  {
+    tool->mCanvas = nullptr;
+  }
+
   mLastNonZoomMapTool = nullptr;
 
   cancelJobs();
@@ -1234,6 +1243,7 @@ void QgsMapCanvas::updateDevicePixelFromScreen()
     mSettings.setOutputDpi( window()->windowHandle()->screen()->logicalDotsPerInch() );
     mSettings.setDpiTarget( window()->windowHandle()->screen()->logicalDotsPerInch() );
   }
+  refresh();
 }
 
 void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
@@ -1447,9 +1457,9 @@ void QgsMapCanvas::setExtent( const QgsRectangle &r, bool magnified )
     mLastExtent.removeAt( i );
   }
 
-  if ( !mLastExtent.isEmpty() && mLastExtent.last() != extent() )
+  if ( !mLastExtent.isEmpty() && mLastExtent.last() != mSettings.extent() )
   {
-    mLastExtent.append( extent() );
+    mLastExtent.append( mSettings.extent() );
   }
 
   // adjust history to no more than 100
@@ -1595,7 +1605,7 @@ void QgsMapCanvas::zoomToNextExtent()
 void QgsMapCanvas::clearExtentHistory()
 {
   mLastExtent.clear(); // clear the zoom history list
-  mLastExtent.append( extent() ) ; // set the current extent in the list
+  mLastExtent.append( mSettings.extent() ) ; // set the current extent in the list
   mLastExtentIndex = mLastExtent.size() - 1;
   // update controls' enabled state
   emit zoomLastStatusChanged( mLastExtentIndex > 0 );
@@ -2577,11 +2587,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   // zoom map to mouse cursor by scaling
   QgsPointXY oldCenter = center();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->pos().x(), e->pos().y() ) );
-#else
   QgsPointXY mousePos( getCoordinateTransform()->toMapCoordinates( e->position().x(), e->position().y() ) );
-#endif
   QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * signedWheelFactor ),
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
@@ -3069,23 +3075,6 @@ void QgsMapCanvas::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
   updateDevicePixelFromScreen();
-  // keep device pixel ratio up to date on screen or resolution change
-  QWindow *l_window = window()->windowHandle();
-  if ( l_window )
-  {
-    connect( l_window, &QWindow::screenChanged, this, [ = ]( QScreen * )
-    {
-      disconnect( mScreenDpiChangedConnection );
-      QWindow *windowInLambda = window()->windowHandle();
-      if ( windowInLambda )
-      {
-        mScreenDpiChangedConnection = connect( windowInLambda->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
-        updateDevicePixelFromScreen();
-      }
-    } );
-
-    mScreenDpiChangedConnection = connect( l_window->screen(), &QScreen::physicalDotsPerInchChanged, this, &QgsMapCanvas::updateDevicePixelFromScreen );
-  }
 }
 
 QPoint QgsMapCanvas::mouseLastXY()
@@ -3210,8 +3199,10 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     if ( !project->viewSettings()->defaultViewExtent().isNull() )
     {
       setReferencedExtent( project->viewSettings()->defaultViewExtent() );
-      clearExtentHistory(); // clear the extent history on project load
     }
+
+    setRotation( project->viewSettings()->defaultRotation() );
+    clearExtentHistory(); // clear the extent history on project load
   }
 }
 
@@ -3332,23 +3323,20 @@ void QgsMapCanvas::mapToolDestroyed()
 
 bool QgsMapCanvas::event( QEvent *e )
 {
-  if ( !QTouchDevice::devices().empty() )
+  if ( e->type() == QEvent::Gesture )
   {
-    if ( e->type() == QEvent::Gesture )
+    if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
     {
-      if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
-      {
-        QPointF pos = tapAndHoldGesture->position();
-        pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
-        QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
-        emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
-      }
+      QPointF pos = tapAndHoldGesture->position();
+      pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
+      QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+      emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
+    }
 
-      // call handler of current map tool
-      if ( mMapTool )
-      {
-        return mMapTool->gestureEvent( static_cast<QGestureEvent *>( e ) );
-      }
+    // call handler of current map tool
+    if ( mMapTool )
+    {
+      return mMapTool->gestureEvent( static_cast<QGestureEvent *>( e ) );
     }
   }
 

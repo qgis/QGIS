@@ -173,7 +173,8 @@ bool QgsVectorTileLayer::loadDataSource()
 
 bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &uri, const QgsDataSourceUri &dataSourceUri )
 {
-  QUrl url( uri );
+  QString tileServiceUri = uri;
+  QUrl url( tileServiceUri );
   // some services don't default to json format, while others do... so let's explicitly request it!
   // (refs https://github.com/qgis/QGIS/issues/4231)
   QUrlQuery query;
@@ -206,19 +207,74 @@ bool QgsVectorTileLayer::setupArcgisVectorTileServiceConnection( const QString &
   {
     return false;
   }
+
   mArcgisLayerConfiguration = doc.object().toVariantMap();
   if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
   {
     return false;
   }
 
-  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), uri );
-  mSourcePath = uri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
+  if ( !mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).isValid() )
+  {
+    // maybe url is pointing to a resources/styles/root.json type url, that's ok too!
+    const QString sourceUri = mArcgisLayerConfiguration.value( QStringLiteral( "sources" ) ).toMap().value( QStringLiteral( "esri" ) ).toMap().value( QStringLiteral( "url" ) ).toString();
+    if ( !sourceUri.isEmpty() )
+    {
+      QUrl url( sourceUri );
+      // some services don't default to json format, while others do... so let's explicitly request it!
+      // (refs https://github.com/qgis/QGIS/issues/4231)
+      QUrlQuery query;
+      query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "pjson" ) );
+      url.setQuery( query );
+
+      QNetworkRequest request = QNetworkRequest( url );
+
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
+
+      QgsBlockingNetworkRequest networkRequest;
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      const QByteArray raw = content.content();
+
+      // Parse data
+      QJsonParseError err;
+      const QJsonDocument doc = QJsonDocument::fromJson( raw, &err );
+      if ( doc.isNull() )
+      {
+        return false;
+      }
+
+      tileServiceUri = sourceUri;
+
+      // the resources/styles/root.json configuration is actually our style definition
+      mArcgisStyleConfiguration = mArcgisLayerConfiguration;
+      mArcgisLayerConfiguration = doc.object().toVariantMap();
+      if ( mArcgisLayerConfiguration.contains( QStringLiteral( "error" ) ) )
+      {
+        return false;
+      }
+    }
+  }
+
+  mSourcePath = tileServiceUri + '/' + mArcgisLayerConfiguration.value( QStringLiteral( "tiles" ) ).toList().value( 0 ).toString();
   if ( !QgsVectorTileUtils::checkXYZUrlTemplate( mSourcePath ) )
   {
     QgsDebugMsg( QStringLiteral( "Invalid format of URL for XYZ source: " ) + mSourcePath );
     return false;
   }
+
+  mArcgisLayerConfiguration.insert( QStringLiteral( "serviceUri" ), tileServiceUri );
+
 
   mMatrixSet.fromEsriJson( mArcgisLayerConfiguration );
   setCrs( mMatrixSet.crs() );
@@ -539,27 +595,34 @@ bool QgsVectorTileLayer::loadDefaultStyleAndSubLayersPrivate( QString &error, QS
       context.setSprites( spriteImage, spriteDefinition );
     }
   }
-  else if ( !styleUrl.isEmpty() )
+  else if ( !mArcgisStyleConfiguration.isEmpty() || !styleUrl.isEmpty() )
   {
-    QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
-
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
-
-    QgsBlockingNetworkRequest networkRequest;
-    switch ( networkRequest.get( request ) )
+    if ( !mArcgisStyleConfiguration.isEmpty() )
     {
-      case QgsBlockingNetworkRequest::NoError:
-        break;
-
-      case QgsBlockingNetworkRequest::NetworkError:
-      case QgsBlockingNetworkRequest::TimeoutError:
-      case QgsBlockingNetworkRequest::ServerExceptionError:
-        error = QObject::tr( "Error retrieving default style" );
-        return false;
+      styleDefinition = mArcgisStyleConfiguration;
     }
+    else
+    {
+      QNetworkRequest request = QNetworkRequest( QUrl( styleUrl ) );
 
-    const QgsNetworkReplyContent content = networkRequest.reply();
-    styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+      QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) );
+
+      QgsBlockingNetworkRequest networkRequest;
+      switch ( networkRequest.get( request ) )
+      {
+        case QgsBlockingNetworkRequest::NoError:
+          break;
+
+        case QgsBlockingNetworkRequest::NetworkError:
+        case QgsBlockingNetworkRequest::TimeoutError:
+        case QgsBlockingNetworkRequest::ServerExceptionError:
+          error = QObject::tr( "Error retrieving default style" );
+          return false;
+      }
+
+      const QgsNetworkReplyContent content = networkRequest.reply();
+      styleDefinition = QgsJsonUtils::parseJson( content.content() ).toMap();
+    }
 
     if ( styleDefinition.contains( QStringLiteral( "sprite" ) ) )
     {

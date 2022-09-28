@@ -25,6 +25,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgsexpression_p.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -86,7 +87,7 @@ QString QgsExpression::quotedValue( const QVariant &value )
 
 QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( type )
@@ -254,7 +255,8 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) c
   {
     if ( fieldName == QgsFeatureRequest::ALL_ATTRIBUTES )
     {
-      referencedIndexes = qgis::listToSet( fields.allAttributesList() );
+      const QgsAttributeList attributesList = fields.allAttributesList();
+      referencedIndexes = QSet<int>( attributesList.begin(), attributesList.end() );
       break;
     }
     const int idx = fields.lookupField( fieldName );
@@ -457,7 +459,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
 #else
-      expr_action += QStringView {action}.mid( start, index - start );
+      expr_action += QStringView {action} .mid( start, index - start );
 #endif
       continue;
     }
@@ -476,7 +478,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
       expr_action += action.midRef( start, index - start );
 #else
-      expr_action += QStringView {action}.mid( start, index - start );
+      expr_action += QStringView {action} .mid( start, index - start );
 #endif
       continue;
     }
@@ -488,7 +490,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
 #if QT_VERSION < QT_VERSION_CHECK(5, 15, 2)
   expr_action += action.midRef( index );
 #else
-  expr_action += QStringView {action}.mid( index ).toString();
+  expr_action += QStringView {action} .mid( index ).toString();
 #endif
 
   return expr_action;
@@ -746,6 +748,11 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "layer_crs" ), QCoreApplication::translate( "variable_help", "CRS Authority ID of current layer." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layer" ), QCoreApplication::translate( "variable_help", "The current layer." ) );
 
+  //feature variables
+  sVariableHelpTexts()->insert( QStringLiteral( "feature" ), QCoreApplication::translate( "variable_help", "The current feature being evaluated. This can be used with the 'attribute' function to evaluate attribute values from the current feature." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "id" ), QCoreApplication::translate( "variable_help", "The ID of the current feature being evaluated." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "geometry" ), QCoreApplication::translate( "variable_help", "The geometry of the current feature being evaluated." ) );
+
   //composition variables
   sVariableHelpTexts()->insert( QStringLiteral( "layout_name" ), QCoreApplication::translate( "variable_help", "Name of composition." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "layout_numpages" ), QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
@@ -802,7 +809,8 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "frame_number" ), QCoreApplication::translate( "variable_help", "Current frame number during animation playback" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "frame_duration" ), QCoreApplication::translate( "variable_help", "Temporal duration of each animation frame (as an interval value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep" ), QCoreApplication::translate( "variable_help", "Frame time step during animation playback" ) );
-  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep_unit" ), QCoreApplication::translate( "variable_help", "Unit of the frame time step during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep_unit" ), QCoreApplication::translate( "variable_help", "Unit value of the frame time step during animation playback" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "frame_timestep_units" ), QCoreApplication::translate( "variable_help", "String representation of the frame time step unit during animation playback" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "animation_start_time" ), QCoreApplication::translate( "variable_help", "Start of the animation's overall temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "animation_end_time" ), QCoreApplication::translate( "variable_help", "End of the animation's overall temporal time range (as a datetime value)" ) );
   sVariableHelpTexts()->insert( QStringLiteral( "animation_interval" ), QCoreApplication::translate( "variable_help", "Duration of the animation's overall temporal time range (as an interval value)" ) );
@@ -982,7 +990,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   const QString startToken = htmlOutput ? QStringLiteral( "<i>&lt;" ) : QStringLiteral( "<" );
   const QString endToken = htmlOutput ? QStringLiteral( "&gt;</i>" ) : QStringLiteral( ">" );
 
-  if ( value.canConvert<QgsGeometry>() )
+  if ( value.userType() == QMetaType::type( "QgsGeometry" ) )
   {
     //result is a geometry
     QgsGeometry geom = value.value<QgsGeometry>();
@@ -1000,13 +1008,13 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
-  else if ( value.canConvert< QgsFeature >() )
+  else if ( value.userType() == QMetaType::type( "QgsFeature" ) )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
-  else if ( value.canConvert< QgsInterval >() )
+  else if ( value.userType() == QMetaType::type( "QgsInterval" ) )
   {
     QgsInterval interval = value.value<QgsInterval>();
     if ( interval.days() > 1 )
@@ -1026,7 +1034,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
     }
   }
-  else if ( value.canConvert< QgsGradientColorRamp >() )
+  else if ( value.userType() == QMetaType::type( "QgsGradientColorRamp" ) )
   {
     return startToken + tr( "gradient ramp" ) + endToken;
   }
@@ -1129,7 +1137,7 @@ QString QgsExpression::createFieldEqualityExpression( const QString &fieldName, 
 {
   QString expr;
 
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     expr = QStringLiteral( "%1 IS NULL" ).arg( quotedColumnRef( fieldName ) );
   else if ( fieldType == QVariant::Type::Invalid )
     expr = QStringLiteral( "%1 = %2" ).arg( quotedColumnRef( fieldName ), quotedValue( value ) );

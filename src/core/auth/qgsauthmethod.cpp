@@ -25,7 +25,4 @@ QWidget *QgsAuthMethod::editWidget( QWidget *parent ) const
 #endif
 
 QgsAuthMethod::QgsAuthMethod()
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  : mMutex( QMutex::RecursionMode::Recursive )
-#endif
 {}

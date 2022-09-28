@@ -85,11 +85,7 @@ void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::Style
     return;
 
   QgsStyle *style = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
   style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
-#else
-  ( void )stylePath;
-#endif
 
   if ( !style )
     style = QgsStyle::defaultStyle();

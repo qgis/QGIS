@@ -287,6 +287,17 @@ QgsAction QgsActionManager::action( QUuid id ) const
   return QgsAction();
 }
 
+QgsAction QgsActionManager::action( const QString &id ) const
+{
+  for ( const QgsAction &action : std::as_const( mActions ) )
+  {
+    if ( action.id().toString() == id )
+      return action;
+  }
+
+  return QgsAction();
+}
+
 void QgsActionManager::setDefaultAction( const QString &actionScope, QUuid actionId )
 {
   mDefaultActions[ actionScope ] = actionId;

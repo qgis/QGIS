@@ -56,7 +56,7 @@
 #include "ocispatial/wkbptr.h"
 
 
-#define LoggedExecStatic(query, sql, args, uri ) execLoggedStatic( query, sql, args, uri, QStringLiteral( "QgsOracleProvider" ), QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedExecStatic(query, sql, args, uri ) QgsOracleProvider::execLoggedStatic( query, sql, args, uri, QStringLiteral( "QgsOracleProvider" ), QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
 
 
 const QString ORACLE_KEY = "oracle";
@@ -803,6 +803,13 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
+    if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+    {
+      // Does not check editable capabilities
+      qry.finish();
+
+      return true;
+    }
     if ( conn->currentUser() == mOwnerName )
     {
       // full set of privileges for the owner
@@ -1313,6 +1320,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       delim = ',';
     }
 
+    QString getFidSql;
     if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap )
     {
       QString keys, kdelim;
@@ -1332,7 +1340,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         defaultValues << defaultValueClause( idx );
       }
 
-      if ( !getfid.prepare( QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys, mQuery ) ) )
+      getFidSql = QStringLiteral( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys, mQuery );
+      if ( !getfid.prepare( getFidSql ) )
       {
         throw OracleException( tr( "Could not prepare get feature id statement" ), getfid );
       }
@@ -1404,8 +1413,14 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
         ins.addBindValue( value );
       }
 
-      if ( !ins.exec() )
+      QgsDatabaseQueryLogWrapper logInsWrapper { insert, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN };
+      const bool res { ins.exec() };
+      logInsWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( ins ) );
+      logInsWrapper.setFetchedRows( ins.numRowsAffected() );
+
+      if ( !res )
       {
+        logInsWrapper.setError( ins.lastError().text() );
         throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), ins );
       }
 
@@ -1422,7 +1437,13 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
           {
             getfid.addBindValue( QVariant( ins.lastInsertId() ) );
 
+            QgsDatabaseQueryLogWrapper logGetFidWrapper { getFidSql, mUri.uri(), QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleProvider" ), QGS_QUERY_LOG_ORIGIN };
+
             const bool result { getfid.exec() };
+            logGetFidWrapper.setQuery( QgsOracleConn::getLastExecutedQuery( getfid ) );
+            logGetFidWrapper.setFetchedRows( getfid.size() );
+            if ( !result )
+              logGetFidWrapper.setError( getfid.lastError().text() );
 
             if ( !result || !getfid.next() )
               throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
@@ -3577,6 +3598,19 @@ QVariantList QgsOracleSharedData::lookupKey( QgsFeatureId featureId )
   return QVariantList();
 }
 
+bool QgsOracleProviderMetadata::layerStylesTableExists( QgsOracleConn *conn, const QgsDataSourceUri &dsUri, QString &errCause )
+{
+  QSqlQuery qry( *conn );
+  if ( !LoggedExecStatic( qry, QStringLiteral( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ), QVariantList(), dsUri.uri() )
+       || !qry.next() )
+  {
+    errCause = QObject::tr( "Unable to find layer style table [%1]" ).arg( qry.lastError().text() );
+    return false;
+  }
+  else
+    return qry.value( 0 ).toInt() > 0;
+}
+
 bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &styleId, QString &errorCause )
 {
   errorCause.clear();
@@ -3591,38 +3625,25 @@ bool QgsOracleProviderMetadata::styleExists( const QString &uri, const QString &
   }
 
   QSqlQuery qry = QSqlQuery( *conn );
-  if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
+
+  if ( !layerStylesTableExists( conn, dsUri, errorCause ) )
   {
-    errorCause = QObject::tr( "Unable to check layer style existence [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return false;
-  }
-  else if ( qry.value( 0 ).toInt() == 0 )
-  {
-    // layer styles table does not exist
     conn->disconnect();
     return false;
   }
 
-  if ( !qry.prepare( "SELECT id,stylename FROM layer_styles"
-                     " WHERE f_table_catalog=?"
-                     " AND f_table_schema=?"
-                     " AND f_table_name=?"
-                     " AND f_geometry_column" +
-                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
-                     " AND styleName=?" ) )
-  {
-    errorCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return false;
-  }
-  qry.addBindValue( dsUri.database() );
-  qry.addBindValue( dsUri.schema() );
-  qry.addBindValue( dsUri.table() );
+  QVariantList args { dsUri.database(), dsUri.schema(), dsUri.table() };
   if ( !dsUri.geometryColumn().isEmpty() )
-    qry.addBindValue( dsUri.geometryColumn() );
-  qry.addBindValue( styleId.isEmpty() ? dsUri.table() : styleId );
-  if ( !qry.exec() )
+    args << dsUri.geometryColumn();
+  args << ( styleId.isEmpty() ? dsUri.table() : styleId );
+
+  if ( !LoggedExecStatic( qry, "SELECT id,stylename FROM layer_styles"
+                          " WHERE f_table_catalog=?"
+                          " AND f_table_schema=?"
+                          " AND f_table_name=?"
+                          " AND f_geometry_column" +
+                          QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
+                          " AND styleName=?", args, dsUri.uri() ) )
   {
     errorCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3649,6 +3670,8 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
     bool useAsDefault,
     QString &errCause )
 {
+  errCause.clear();
+
   QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
@@ -3659,59 +3682,55 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
   }
 
   QSqlQuery qry = QSqlQuery( *conn );
-  if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
+  if ( !layerStylesTableExists( conn, dsUri, errCause ) )
   {
-    errCause = QObject::tr( "Unable to check layer style existence [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return false;
-  }
-  else if ( qry.value( 0 ).toInt() == 0 )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Creating layer style table." ), 2 );
-
-    if ( !qry.exec( "CREATE TABLE layer_styles("
-                    "id INTEGER PRIMARY KEY,"
-                    "f_table_catalog VARCHAR2(30) NOT NULL,"
-                    "f_table_schema VARCHAR2(30) NOT NULL,"
-                    "f_table_name VARCHAR2(30) NOT NULL,"
-                    "f_geometry_column VARCHAR2(30),"
-                    "stylename VARCHAR2(2047),"
-                    "styleqml CLOB,"
-                    "stylesld CLOB,"
-                    "useasdefault INTEGER,"
-                    "description VARCHAR2(2047),"
-                    "owner VARCHAR2(30),"
-                    "ui CLOB,"
-                    "update_time timestamp"
-                    ")" ) )
+    if ( !errCause.isEmpty() )
     {
-      errCause = QObject::tr( "Unable to create layer style table [%1]" ).arg( qry.lastError().text() );
       conn->disconnect();
       return false;
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Creating layer style table." ), 2 );
+
+      if ( !LoggedExecStatic( qry, QStringLiteral(
+                                "CREATE TABLE layer_styles("
+                                "id INTEGER PRIMARY KEY,"
+                                "f_table_catalog VARCHAR2(30) NOT NULL,"
+                                "f_table_schema VARCHAR2(30) NOT NULL,"
+                                "f_table_name VARCHAR2(30) NOT NULL,"
+                                "f_geometry_column VARCHAR2(30),"
+                                "stylename VARCHAR2(2047),"
+                                "styleqml CLOB,"
+                                "stylesld CLOB,"
+                                "useasdefault INTEGER,"
+                                "description VARCHAR2(2047),"
+                                "owner VARCHAR2(30),"
+                                "ui CLOB,"
+                                "update_time timestamp"
+                                ")" ), QVariantList(), dsUri.uri() ) )
+      {
+        errCause = QObject::tr( "Unable to create layer style table [%1]" ).arg( qry.lastError().text() );
+        conn->disconnect();
+        return false;
+      }
     }
   }
 
   int id;
   QString sql;
-  if ( !qry.prepare( "SELECT id,stylename FROM layer_styles"
-                     " WHERE f_table_catalog=?"
-                     " AND f_table_schema=?"
-                     " AND f_table_name=?"
-                     " AND f_geometry_column" +
-                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
-                     " AND styleName=?" ) )
-  {
-    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return false;
-  }
-  qry.addBindValue( dsUri.database() );
-  qry.addBindValue( dsUri.schema() );
-  qry.addBindValue( dsUri.table() );
+  QVariantList args {dsUri.database(), dsUri.schema(),  dsUri.table()};
   if ( !dsUri.geometryColumn().isEmpty() )
-    qry.addBindValue( dsUri.geometryColumn() );
-  qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName );
-  if ( !qry.exec() )
+    args << dsUri.geometryColumn();
+  args << ( styleName.isEmpty() ? dsUri.table() : styleName );
+
+  if ( !LoggedExecStatic( qry, "SELECT id,stylename FROM layer_styles"
+                          " WHERE f_table_catalog=?"
+                          " AND f_table_schema=?"
+                          " AND f_table_name=?"
+                          " AND f_geometry_column" +
+                          QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
+                          " AND styleName=?", args, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Unable to check style existence [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
@@ -3738,7 +3757,8 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
           .arg( uiFileContent.isEmpty() ? "" : ",ui=?" )
           .arg( id );
   }
-  else if ( qry.exec( "select coalesce(max(id)+1,0) FROM layer_styles" ) && qry.next() )
+  else if ( LoggedExecStatic( qry, QStringLiteral( "select coalesce(max(id)+1,0) FROM layer_styles" ), QVariantList(), dsUri.uri() )
+            && qry.next() )
   {
     id = qry.value( 0 ).toInt();
 
@@ -3760,28 +3780,18 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
     return false;
   }
 
-  if ( !qry.prepare( sql ) )
-  {
-    errCause = QObject::tr( "Could not prepare insert/update [%1]" ).arg( qry.lastError().text() );
-    QgsDebugMsg( QStringLiteral( "prepare insert/update failed" ) );
-    conn->disconnect();
-    return false;
-  }
+  args = {dsUri.database(), dsUri.schema(), dsUri.table(), dsUri.geometryColumn(),
+          ( styleName.isEmpty() ? dsUri.table() : styleName ),
+          qmlStyle, sldStyle,
+          ( useAsDefault ? 1 : 0 ),
+          ( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ),
+          dsUri.username()
+         };
 
-  qry.addBindValue( dsUri.database() );
-  qry.addBindValue( dsUri.schema() );
-  qry.addBindValue( dsUri.table() );
-  qry.addBindValue( dsUri.geometryColumn() );
-  qry.addBindValue( styleName.isEmpty() ? dsUri.table() : styleName );
-  qry.addBindValue( qmlStyle );
-  qry.addBindValue( sldStyle );
-  qry.addBindValue( useAsDefault ? 1 : 0 );
-  qry.addBindValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription );
-  qry.addBindValue( dsUri.username() );
   if ( !uiFileContent.isEmpty() )
-    qry.addBindValue( uiFileContent );
+    args << uiFileContent;
 
-  if ( !qry.exec() )
+  if ( !LoggedExecStatic( qry, sql, args, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not execute insert/update [%1]" ).arg( qry.lastError().text() );
     QgsDebugMsg( QStringLiteral( "execute insert/update failed" ) );
@@ -3791,21 +3801,14 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
 
   if ( useAsDefault )
   {
-    if ( !qry.prepare( QStringLiteral( "UPDATE layer_styles"
-                                       " SET useasdefault=0,update_time=(select current_timestamp from dual)"
-                                       " WHERE f_table_catalog=?"
-                                       " AND f_table_schema=?"
-                                       " AND f_table_name=?"
-                                       " AND f_geometry_column=?"
-                                       " AND id<>?" ) ) ||
-         !(
-           qry.addBindValue( dsUri.database() ),
-           qry.addBindValue( dsUri.schema() ),
-           qry.addBindValue( dsUri.table() ),
-           qry.addBindValue( dsUri.geometryColumn() ),
-           qry.addBindValue( id ),
-           qry.exec()
-         ) )
+    args = {dsUri.database(), dsUri.schema(), dsUri.table(), dsUri.geometryColumn(), id};
+    if ( !LoggedExecStatic( qry, QStringLiteral( "UPDATE layer_styles"
+                            " SET useasdefault=0,update_time=(select current_timestamp from dual)"
+                            " WHERE f_table_catalog=?"
+                            " AND f_table_schema=?"
+                            " AND f_table_name=?"
+                            " AND f_geometry_column=?"
+                            " AND id<>?" ), args, dsUri.uri() ) )
     {
       errCause = QObject::tr( "Could not reset default status [%1]" ).arg( qry.lastError().text() );
       QgsDebugMsg( QStringLiteral( "execute update failed" ) );
@@ -3821,6 +3824,7 @@ bool QgsOracleProviderMetadata::saveStyle( const QString &uri,
 
 QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCause )
 {
+  errCause.clear();
   QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
@@ -3832,36 +3836,28 @@ QString QgsOracleProviderMetadata::loadStyle( const QString &uri, QString &errCa
 
   QSqlQuery qry( *conn );
 
+  if ( !layerStylesTableExists( conn, dsUri, errCause ) )
+  {
+    conn->disconnect();
+    return QString();
+  }
+
   QString style;
-  if ( !qry.exec( "SELECT COUNT(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() || qry.value( 0 ).toInt() == 0 )
-  {
-    errCause = QObject::tr( "Unable to find layer style table [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return QString();
-  }
 
-  if ( !qry.prepare( "SELECT styleQML FROM ("
-                     "SELECT styleQML"
-                     " FROM layer_styles"
-                     " WHERE f_table_catalog=?"
-                     " AND f_table_schema=?"
-                     " AND f_table_name=?"
-                     " AND f_geometry_column" +
-                     QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
-                     " ORDER BY useAsDefault DESC"
-                     ") WHERE rownum=1" ) )
-  {
-    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return QString();
-  }
-  qry.addBindValue( dsUri.database() );
-  qry.addBindValue( dsUri.schema() );
-  qry.addBindValue( dsUri.table() );
+  QVariantList args { dsUri.database(), dsUri.schema(), dsUri.table()};
   if ( !dsUri.geometryColumn().isEmpty() )
-    qry.addBindValue( dsUri.geometryColumn() );
+    args << dsUri.geometryColumn();
 
-  if ( !qry.exec() )
+  if ( !LoggedExecStatic( qry, "SELECT styleQML FROM ("
+                          "SELECT styleQML"
+                          " FROM layer_styles"
+                          " WHERE f_table_catalog=?"
+                          " AND f_table_schema=?"
+                          " AND f_table_name=?"
+                          " AND f_geometry_column" +
+                          QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) +
+                          " ORDER BY useAsDefault DESC"
+                          ") WHERE rownum=1", args, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not retrieve style [%1]" ).arg( qry.lastError().text() );
   }
@@ -3885,6 +3881,8 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
     QStringList &descriptions,
     QString &errCause )
 {
+  errCause.clear();
+
   QgsDataSourceUri dsUri( uri );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri, false );
@@ -3896,35 +3894,21 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
 
   QSqlQuery qry( *conn );
 
-  if ( !qry.exec( "SELECT count(*) FROM user_tables WHERE table_name='LAYER_STYLES'" ) || !qry.next() )
+  if ( !layerStylesTableExists( conn, dsUri, errCause ) )
   {
-    errCause = QObject::tr( "Could not verify existence of layer style table [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return -1;
-  }
-  if ( qry.value( 0 ).toInt() == 0 )
-  {
-    errCause = QObject::tr( "Layer style table does not exist [%1]" ).arg( qry.value( 0 ).toString() );
     conn->disconnect();
     return -1;
   }
 
-  if ( !qry.prepare( "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
-                     + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ) ) )
-  {
-    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
-    conn->disconnect();
-    return -1;
-  }
-  qry.addBindValue( dsUri.database() );
-  qry.addBindValue( dsUri.schema() );
-  qry.addBindValue( dsUri.table() );
+  QVariantList args {dsUri.database(), dsUri.schema(), dsUri.table()};
   if ( !dsUri.geometryColumn().isEmpty() )
-    qry.addBindValue( dsUri.geometryColumn() );
-  if ( !qry.exec() )
+    args << dsUri.geometryColumn();
+
+  if ( !LoggedExecStatic( qry, "SELECT id,styleName,description FROM layer_styles WHERE f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
+                          + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" ), args, dsUri.uri() ) )
   {
+    errCause = QObject::tr( "Could not execute select [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
-    errCause = QObject::tr( "No style for layer found" );
     return -1;
   }
 
@@ -3939,27 +3923,27 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
 
   qry.finish();
 
-  if ( !qry.prepare( "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
-                     + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
-                     + ") ORDER BY update_time DESC" ) )
+  args = QVariantList()
+         << dsUri.database()
+         << dsUri.schema()
+         << dsUri.table();
+  if ( !dsUri.geometryColumn().isEmpty() )
+    args << dsUri.geometryColumn();
+
+  if ( !LoggedExecStatic( qry, "SELECT id,styleName,description FROM layer_styles WHERE NOT (f_table_catalog=? AND f_table_schema=? AND f_table_name=? AND f_geometry_column"
+                          + QString( dsUri.geometryColumn().isEmpty() ? " IS NULL" : "=?" )
+                          + ") ORDER BY update_time DESC", args, dsUri.uri() ) )
   {
-    errCause = QObject::tr( "Could not prepare select [%1]" ).arg( qry.lastError().text() );
+    errCause = QObject::tr( "Could not execute select [%1]" ).arg( qry.lastError().text() );
     conn->disconnect();
     return -1;
   }
-  qry.addBindValue( dsUri.database() );
-  qry.addBindValue( dsUri.schema() );
-  qry.addBindValue( dsUri.table() );
-  if ( !dsUri.geometryColumn().isEmpty() )
-    qry.addBindValue( dsUri.geometryColumn() );
-  if ( qry.exec() )
+
+  while ( qry.next() )
   {
-    while ( qry.next() )
-    {
-      ids << qry.value( 0 ).toString();
-      names << qry.value( 1 ).toString();
-      descriptions << qry.value( 2 ).toString();
-    }
+    ids << qry.value( 0 ).toString();
+    names << qry.value( 1 ).toString();
+    descriptions << qry.value( 2 ).toString();
   }
 
   conn->disconnect();
@@ -3968,6 +3952,7 @@ int QgsOracleProviderMetadata::listStyles( const QString &uri,
 
 QString QgsOracleProviderMetadata::getStyleById( const QString &uri, const QString &styleId, QString &errCause )
 {
+  errCause.clear();
   QString style;
   QgsDataSourceUri dsUri( uri );
 
@@ -3980,10 +3965,7 @@ QString QgsOracleProviderMetadata::getStyleById( const QString &uri, const QStri
 
   QSqlQuery qry( *conn );
 
-  if ( !qry.prepare( QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=?" ) ) ||
-       !(
-         qry.addBindValue( styleId ),
-         qry.exec() ) )
+  if ( !LoggedExecStatic( qry, QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=?" ), QVariantList() << styleId, dsUri.uri() ) )
   {
     errCause = QObject::tr( "Could not load layer style table [%1]" ).arg( qry.lastError().text() );
   }

@@ -23,7 +23,6 @@
 #include "qgsprocessing.h"
 #include "qgsproperty.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfeaturesource.h"
 #include "qgsprocessingutils.h"
 #include "qgsfilefiltergenerator.h"
 #include "qgsremappingproxyfeaturesink.h"
@@ -840,7 +839,42 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     void setAdditionalExpressionContextVariables( const QStringList &variables ) { mAdditionalExpressionVariables = variables; }
 
+#ifndef SIP_RUN
+
+    /**
+     * Flags for passing to the valueAsStringPrivate() method.
+     *
+     * \note Not available in Python bindings
+     *
+     * \since QGIS 3.28
+     */
+    enum class ValueAsStringFlag : int
+    {
+      AllowMapLayerValues = 1 << 0, //!< Enable map layer value handling
+    };
+    Q_DECLARE_FLAGS( ValueAsStringFlags, ValueAsStringFlag )
+#endif
+
   protected:
+
+#ifndef SIP_RUN
+
+    /**
+     * Internal method for evaluating values as string.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.28
+     */
+    QString valueAsStringPrivate( const QVariant &value, QgsProcessingContext &context, bool &ok, ValueAsStringFlags flags ) const;
+
+    /**
+     * Internal method for evaluating values as JSON objects.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.28
+     */
+    QVariant valueAsJsonObjectPrivate( const QVariant &value, QgsProcessingContext &context, ValueAsStringFlags flags ) const;
+#endif
 
     //! Parameter name
     QString mName;
@@ -884,6 +918,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterDefinition::Flags )
+
+#ifndef SIP_RUN
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterDefinition::ValueAsStringFlags )
+#endif
 
 //! List of processing parameters
 typedef QList< const QgsProcessingParameterDefinition * > QgsProcessingParameterDefinitions;
@@ -1755,6 +1793,8 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -1787,6 +1827,8 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2113,6 +2155,8 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QString createFileFilter() const override;
@@ -2510,6 +2554,8 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString createFileFilter() const override;
 
     /**
@@ -2845,6 +2891,8 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QString createFileFilter() const override;
 
@@ -2884,6 +2932,8 @@ class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParamete
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString createFileFilter() const override;
 
     /**
@@ -2917,6 +2967,8 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QString createFileFilter() const override;
@@ -3073,6 +3125,8 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
     QString createFileFilter() const override;
@@ -4293,6 +4347,8 @@ class CORE_EXPORT QgsProcessingParameterPointCloudLayer : public QgsProcessingPa
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString createFileFilter() const override;
 
     /**
@@ -4326,6 +4382,8 @@ class CORE_EXPORT QgsProcessingParameterAnnotationLayer : public QgsProcessingPa
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
 
     /**
      * Creates a new parameter using the definition from a script code.

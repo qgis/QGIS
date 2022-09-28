@@ -16,7 +16,19 @@
 #include "qgs3daxis.h"
 
 #include <Qt3DCore/QTransform>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QGeometry>
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QGeometry>
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+#endif
 #include <Qt3DExtras/QCylinderMesh>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QConeMesh>
@@ -32,6 +44,7 @@
 #include <QFontDatabase>
 #include <ctime>
 #include <QApplication>
+#include <QActionGroup>
 
 #include "qgsmapsettings.h"
 #include "qgs3dmapscene.h"
@@ -1195,17 +1208,17 @@ void Qgs3DAxis::onTextZChanged( const QString &text )
 //
 
 Qgs3DWiredMesh::Qgs3DWiredMesh( Qt3DCore::QNode *parent )
-  : Qt3DRender::QGeometryRenderer( parent ),
-    mPositionAttribute( new Qt3DRender::QAttribute( this ) ),
-    mVertexBuffer( new Qt3DRender::QBuffer( this ) )
+  : Qt3DRender::QGeometryRenderer( parent )
+  , mPositionAttribute( new Qt3DQAttribute( this ) )
+  , mVertexBuffer( new Qt3DQBuffer( this ) )
 {
-  mPositionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
 
-  mGeom = new Qt3DRender::QGeometry( this );
+  mGeom = new Qt3DQGeometry( this );
   mGeom->addAttribute( mPositionAttribute );
 
   setInstanceCount( 1 );

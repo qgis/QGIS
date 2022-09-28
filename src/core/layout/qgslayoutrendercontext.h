@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
       FlagDrawSelection = 1 << 7, //!< Draw selection
       FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
       FlagRenderLabelsByMapLayer = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
-      FlagLosslessImageRendering = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF). This flag only works with builds based on Qt 5.13 or later.
+      FlagLosslessImageRendering = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

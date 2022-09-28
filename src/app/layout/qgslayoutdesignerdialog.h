@@ -19,8 +19,6 @@
 
 #include "ui_qgslayoutdesignerbase.h"
 #include "qgslayoutdesignerinterface.h"
-#include "qgslayoutexporter.h"
-#include "qgslayoutpagecollection.h"
 #include <QToolButton>
 
 class QgsLayoutDesignerDialog;
@@ -50,6 +48,7 @@ class QgsLayoutAtlas;
 class QgsFeature;
 class QgsMasterLayoutInterface;
 class QgsLayoutGuideWidget;
+class QgsScreenHelper;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -354,7 +353,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void closeEvent( QCloseEvent * ) override;
     void dropEvent( QDropEvent *event ) override;
     void dragEnterEvent( QDragEnterEvent *event ) override;
-    void showEvent( QShowEvent *event ) override;
 
   private slots:
 
@@ -418,7 +416,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void backgroundTaskCountChanged( int total );
     void onMapPreviewRefreshed();
     void onItemAdded( QgsLayoutItem *item );
-    void updateDevicePixelFromScreen();
 
   private:
 
@@ -429,6 +426,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QgsMasterLayoutInterface *mMasterLayout = nullptr;
 
     QgsLayout *mLayout = nullptr;
+
+    QgsScreenHelper *mScreenHelper = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -517,9 +516,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     void storeExportResults( QgsLayoutExporter::ExportResult result, QgsLayoutExporter *exporter = nullptr );
     std::unique_ptr< QgsLayoutDesignerInterface::ExportResults> mLastExportResults;
     QMap< QString, QgsLabelingResults *> mLastExportLabelingResults;
-
-    double mScreenDpi = 96.0;
-    QMetaObject::Connection mScreenDpiChangedConnection;
 
     //! Save window state
     void saveWindowState();

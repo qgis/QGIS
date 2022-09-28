@@ -211,12 +211,34 @@ class QgsPostgresConn : public QObject
     Q_OBJECT
 
   public:
-    /*
+
+    /**
+     * Get a new PostgreSQL connection
+     *
+     * \param connInfo the QgsDataSourceUri connection info with username / password
+     * \param readOnly is the connection read only ?
      * \param shared allow using a shared connection. Should never be
      *        called from a thread other than the main one.
      *        An assertion guards against such programmatic error.
+     * \param transaction is the connection a transaction ?
+     *
+     * \returns the PostgreSQL connection
      */
     static QgsPostgresConn *connectDb( const QString &connInfo, bool readOnly, bool shared = true, bool transaction = false );
+
+    /**
+     * Get a new PostgreSQL connection
+     *
+     * \param uri the QgsDataSourceUri with username / password
+     * \param readOnly is the connection read only ?
+     * \param shared allow using a shared connection. Should never be
+     *        called from a thread other than the main one.
+     *        An assertion guards against such programmatic error.
+     * \param transaction is the connection a transaction ?
+     *
+     * \returns the PostgreSQL connection
+     */
+    static QgsPostgresConn *connectDb( const QgsDataSourceUri &uri, bool readOnly, bool shared = true, bool transaction = false );
 
 
     QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
@@ -251,6 +273,27 @@ class QgsPostgresConn : public QObject
 
     //! PostgreSQL version
     int pgVersion() const { return mPostgresqlVersion; }
+
+    /**
+     * Sets the current user identifier of the current PostgreSQL session
+     *
+     * \param sessionRole the PostgreSQL ROLE for the session, it must be a role that the current session user is a member of.
+     *
+     * \returns TRUE if successful
+     *
+     * \since QGIS 3.28.0
+     */
+    bool setSessionRole( const QString &sessionRole );
+
+    /**
+     * Resets the current user identifier of the current PostgreSQL session
+     * to the current session user identifier (user used to log in)
+     *
+     * \returns TRUE if successful
+     *
+     * \since QGIS 3.28.0
+     */
+    bool resetSessionRole();
 
     //! run a query and free result buffer
     bool PQexecNR( const QString &query, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
@@ -407,6 +450,7 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( const QString &connName );
     static bool allowProjectsInDatabase( const QString &connName );
     static void deleteConnection( const QString &connName );
+    static bool allowMetadataInDatabase( const QString &connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
@@ -484,11 +528,7 @@ class QgsPostgresConn : public QObject
 
     bool mTransaction;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mLock { QMutex::Recursive };
-#else
     mutable QRecursiveMutex mLock;
-#endif
 };
 
 // clazy:excludeall=qstring-allocations

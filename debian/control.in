@@ -57,8 +57,8 @@ Build-Depends:
  python3-pyqt5.qtpositioning,
  python3-pyqt5.qtsql,
  python3-pyqt5.qtsvg,
-#bullseye focal hirsute# python3-sip-dev, python3-sip,
-#sid impish jammy# python3-pyqtbuild, sip-tools,
+#bullseye focal# python3-sip-dev, python3-sip,
+#sid jammy kinetic# python3-pyqtbuild, sip-tools,
  python3-termcolor,
  python3-yaml,
  qt3d5-dev,
@@ -66,13 +66,14 @@ Build-Depends:
  qt3d-defaultgeometryloader-plugin,
  qt3d-gltfsceneio-plugin,
  qt3d-scene2d-plugin,
- qt5keychain-dev,
+#bullseye focal# qt5keychain-dev,
+#jammy kinetic sid# qtkeychain-qt5-dev,
  qtbase5-dev,
  qtbase5-private-dev,
  qtpositioning5-dev,
  qttools5-dev-tools,
  qttools5-dev,
-#!sid# libpdal-dev, pdal,
+#!sid !kinetic# libpdal-dev, pdal,
  libprotobuf-dev,
  protobuf-compiler,
  libzstd-dev,
@@ -423,7 +424,7 @@ Depends:
 Breaks: python-qgis-common (<< ${source:Version})
 Replaces: python-qgis-common (<< ${source:Version})
 Suggests:
-#focal hirsute impish jammy bullseye sid# otb-qgis,
+#focal jammy kinetic bullseye sid# otb-qgis,
  saga
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -442,7 +443,7 @@ Depends:
  libqca-qt5-2-plugins,
  libqt5sql5-sqlite,
  qt5-image-formats-plugins,
-#bulleye sid hirsute impish jammy# qt5-image-formats-plugin-pdf,
+#bullseye sid jammy kinetic# qt5-image-formats-plugin-pdf,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)

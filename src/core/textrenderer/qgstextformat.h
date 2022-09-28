@@ -41,14 +41,6 @@ class CORE_EXPORT QgsTextFormat
 {
   public:
 
-    //! Text orientation
-    enum TextOrientation
-    {
-      HorizontalOrientation, //!< Vertically oriented text
-      VerticalOrientation, //!< Horizontally oriented text
-      RotationBasedOrientation, //!< Horizontally or vertically oriented text based on rotation (only available for map labeling)
-    };
-
     /**
      * Default constructor for QgsTextFormat. Creates a text format initially
      * set to an invalid state (see isValid()).
@@ -418,35 +410,62 @@ class CORE_EXPORT QgsTextFormat
     void setBlendMode( QPainter::CompositionMode mode );
 
     /**
-     * Returns the line height for text. This is a number between
-     * 0.0 and 10.0 representing the leading between lines as a
-     * multiplier of line height.
+     * Returns the line height for text.
+     *
+     * If lineHeightUnit() is QgsUnitTypes::RenderPercentage (the default), then this is a number representing
+     * the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
+     * Otherwise the line height is an absolute measurement in lineHeightUnit().
+     *
      * \see setLineHeight()
+     * \see lineHeightUnit()
      */
     double lineHeight() const;
 
     /**
      * Sets the line height for text.
-     * \param height a number between
-     * 0.0 and 10.0 representing the leading between lines as a
-     * multiplier of line height.
+     *
+     * If lineHeightUnit() is QgsUnitTypes::RenderPercentage (the default), then \a height is a number representing
+     * the leading between lines as a multiplier of line height (where 0 - 1.0 represents 0 to 100% of text line height).
+     * Otherwise \a height is an absolute measurement in lineHeightUnit().
+     *
      * \see lineHeight()
+     * \see setLineHeightUnit()
      */
     void setLineHeight( double height );
+
+    /**
+     * Returns the units for the line height for text.
+     *
+     * \see setLineHeightUnit()
+     * \see lineHeight()
+     *
+     * \since QGIS 3.28
+     */
+    QgsUnitTypes::RenderUnit lineHeightUnit() const;
+
+    /**
+     * Sets the \a unit for the line height for text.
+     *
+     * \see lineHeightUnit()
+     * \see setLineHeight()
+     *
+     * \since QGIS 3.28
+     */
+    void setLineHeightUnit( QgsUnitTypes::RenderUnit unit );
 
     /**
      * Returns the orientation of the text.
      * \see setOrientation()
      * \since QGIS 3.10
      */
-    TextOrientation orientation() const;
+    Qgis::TextOrientation orientation() const;
 
     /**
      * Sets the \a orientation for the text.
      * \see orientation()
      * \since QGIS 3.10
      */
-    void setOrientation( TextOrientation orientation );
+    void setOrientation( Qgis::TextOrientation orientation );
 
     /**
      * Returns the text capitalization style.

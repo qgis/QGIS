@@ -151,6 +151,10 @@ bool QgsPointCloudLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
     {
       flags |= QgsDataProvider::FlagTrustDataSource;
     }
+    if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+    {
+      flags |= QgsDataProvider::ForceReadOnly;
+    }
     setDataSource( mDataSource, mLayerName, mProviderKey, providerOptions, flags );
     const QDomNode subset = layerNode.namedItem( QStringLiteral( "subset" ) );
     const QString subsetText = subset.toElement().text();
@@ -899,5 +903,3 @@ void QgsPointCloudLayer::resetRenderer()
 
   emit rendererChanged();
 }
-
-

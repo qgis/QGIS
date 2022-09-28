@@ -17,6 +17,7 @@
 
 #include "qgsslider.h"
 #include "qgslogger.h"
+#include "qgsvariantutils.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -70,10 +71,10 @@ void QgsSlider::setValue( const QVariant &value )
 
 void QgsSlider::update()
 {
-  if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
+  if ( QgsVariantUtils::isNull( mMin ) || QgsVariantUtils::isNull( mMax ) || QgsVariantUtils::isNull( mStep ) )
     return;
 
-  if ( mValue.isNull() )
+  if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
   if ( mMin.type() == QVariant::Int &&
@@ -111,7 +112,7 @@ QVariant QgsSlider::variantValue() const
 
 void QgsSlider::onValueChanged( int value )
 {
-  if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
+  if ( QgsVariantUtils::isNull( mMin ) || QgsVariantUtils::isNull( mMax ) || QgsVariantUtils::isNull( mStep ) )
   {
     mValue = QVariant();
   }

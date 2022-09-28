@@ -28,7 +28,6 @@
 #include "qgsprocessingfeedback.h"
 
 #include "pal/feature.h"
-#include "pal/pointset.h"
 #include "pal/labelposition.h"
 
 #include <QPainter>
@@ -496,54 +495,57 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( dest, context ) ) )
   {
     vl->setRenderer( new QgsNullSymbolRenderer() );
-    vl->renderer()->setReferenceScale( scale );
+    if ( vl->renderer() )
+    {
+      vl->renderer()->setReferenceScale( scale );
 
-    QgsPalLayerSettings settings;
-    QgsPropertyCollection settingsProperties;
+      QgsPalLayerSettings settings;
+      QgsPropertyCollection settingsProperties;
 
-    settings.fieldName = QStringLiteral( "LabelText" );
-    settings.obstacleSettings().setIsObstacle( false );
-    settings.placement = Qgis::LabelPlacement::OverPoint;
-    settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
-    settings.placementSettings().setAllowDegradedPlacement( true );
-    settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
+      settings.fieldName = QStringLiteral( "LabelText" );
+      settings.obstacleSettings().setIsObstacle( false );
+      settings.placement = Qgis::LabelPlacement::OverPoint;
+      settings.quadOffset = Qgis::LabelQuadrantPosition::AboveRight;
+      settings.placementSettings().setAllowDegradedPlacement( true );
+      settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
 
-    QgsTextFormat textFormat;
-    textFormat.setSize( 9 );
-    textFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
-    textFormat.setColor( QColor( 0, 0, 0 ) );
+      QgsTextFormat textFormat;
+      textFormat.setSize( 9 );
+      textFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
+      textFormat.setColor( QColor( 0, 0, 0 ) );
 
-    QgsTextBufferSettings buffer = textFormat.buffer();
-    buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
+      QgsTextBufferSettings buffer = textFormat.buffer();
+      buffer.setSizeUnit( QgsUnitTypes::RenderPoints );
 
-    textFormat.setBuffer( buffer );
-    settings.setFormat( textFormat );
+      textFormat.setBuffer( buffer );
+      settings.setFormat( textFormat );
 
-    settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::FontOpacity, QgsProperty::fromField( QStringLiteral( "FontOpacity" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromField( QStringLiteral( "Family" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromField( QStringLiteral( "Italic" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromField( QStringLiteral( "Bold" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Underline, QgsProperty::fromField( QStringLiteral( "Underline" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "Size" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, QgsProperty::fromField( QStringLiteral( "FontLetterSpacing" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::FontWordSpacing, QgsProperty::fromField( QStringLiteral( "FontWordSpacing" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::BufferDraw, QgsProperty::fromField( QStringLiteral( "BufferDraw" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::BufferSize, QgsProperty::fromField( QStringLiteral( "BufferSize" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::BufferColor, QgsProperty::fromField( QStringLiteral( "BufferColor" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::BufferOpacity, QgsProperty::fromField( QStringLiteral( "BufferOpacity" ) ) );
-    settingsProperties.setProperty( QgsPalLayerSettings::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
-    settings.setDataDefinedProperties( settingsProperties );
+      settingsProperties.setProperty( QgsPalLayerSettings::Color, QgsProperty::fromExpression( QStringLiteral( "if(\"LabelUnplaced\",'255,0,0',\"Color\")" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::FontOpacity, QgsProperty::fromField( QStringLiteral( "FontOpacity" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Family, QgsProperty::fromField( QStringLiteral( "Family" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Italic, QgsProperty::fromField( QStringLiteral( "Italic" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Bold, QgsProperty::fromField( QStringLiteral( "Bold" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Underline, QgsProperty::fromField( QStringLiteral( "Underline" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Size, QgsProperty::fromField( QStringLiteral( "Size" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::FontLetterSpacing, QgsProperty::fromField( QStringLiteral( "FontLetterSpacing" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::FontWordSpacing, QgsProperty::fromField( QStringLiteral( "FontWordSpacing" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::MultiLineAlignment, QgsProperty::fromField( QStringLiteral( "MultiLineAlignment" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::MultiLineHeight, QgsProperty::fromField( QStringLiteral( "MultiLineHeight" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::LabelRotation, QgsProperty::fromField( QStringLiteral( "LabelRotation" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::BufferDraw, QgsProperty::fromField( QStringLiteral( "BufferDraw" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::BufferSize, QgsProperty::fromField( QStringLiteral( "BufferSize" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::BufferColor, QgsProperty::fromField( QStringLiteral( "BufferColor" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::BufferOpacity, QgsProperty::fromField( QStringLiteral( "BufferOpacity" ) ) );
+      settingsProperties.setProperty( QgsPalLayerSettings::Show, QgsProperty::fromExpression( QStringLiteral( "\"LabelUnplaced\"=false" ) ) );
+      settings.setDataDefinedProperties( settingsProperties );
 
-    QgsAbstractVectorLayerLabeling *labeling = new QgsVectorLayerSimpleLabeling( settings );
-    vl->setLabeling( labeling );
-    vl->setLabelsEnabled( true );
+      QgsAbstractVectorLayerLabeling *labeling = new QgsVectorLayerSimpleLabeling( settings );
+      vl->setLabeling( labeling );
+      vl->setLabelsEnabled( true );
 
-    QString errorMessage;
-    vl->saveStyleToDatabase( QString(), QString(), true, QString(), errorMessage );
+      QString errorMessage;
+      vl->saveStyleToDatabase( QString(), QString(), true, QString(), errorMessage );
+    }
   }
 
   QVariantMap outputs;

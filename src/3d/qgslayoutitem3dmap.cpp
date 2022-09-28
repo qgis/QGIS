@@ -183,10 +183,16 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     if ( mDrawing )
       return;
     mDrawing = true;
+    disconnect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
+    disconnect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
+
     Qgs3DUtils::captureSceneImage( *mEngine.get(), mScene );
     QImage img = Qgs3DUtils::captureSceneImage( *mEngine.get(), mScene );
     painter->drawImage( r, img );
     painter->restore();
+
+    connect( mEngine.get(), &QgsAbstract3DEngine::imageCaptured, this, &QgsLayoutItem3DMap::onImageCaptured );
+    connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
     mDrawing = false;
   }
 }

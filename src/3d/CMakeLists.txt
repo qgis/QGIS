@@ -34,10 +34,14 @@ set(QGIS_3D_SRCS
   qgsskyboxsettings.cpp
   qgsshadowrenderingframegraph.cpp
   qgspostprocessingentity.cpp
+  qgsrenderpassquad.cpp
+  qgsambientocclusionrenderentity.cpp
+  qgsambientocclusionblurentity.cpp
   qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
+  qgsambientocclusionsettings.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp
@@ -130,6 +134,10 @@ set(QGIS_3D_HDRS
   qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
+  qgsrenderpassquad.h
+  qgsambientocclusionrenderentity.h
+  qgsambientocclusionblurentity.h
+  qgsambientocclusionsettings.h
 
   lights/qgsdirectionallightsettings.h
   lights/qgslightsource.h

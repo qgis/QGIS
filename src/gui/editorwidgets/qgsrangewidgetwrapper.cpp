@@ -275,7 +275,7 @@ void QgsRangeWidgetWrapper::updateValues( const QVariant &value, const QVariantL
 {
   if ( mDoubleSpinBox )
   {
-    if ( value.isNull() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
+    if ( QgsVariantUtils::isNull( value ) && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
       mDoubleSpinBox->setValue( mDoubleSpinBox->minimum() );
     }
@@ -287,7 +287,7 @@ void QgsRangeWidgetWrapper::updateValues( const QVariant &value, const QVariantL
 
   if ( mIntSpinBox )
   {
-    if ( value.isNull() && config( QStringLiteral( "AllowNull" ), true ).toBool() )
+    if ( QgsVariantUtils::isNull( value ) && config( QStringLiteral( "AllowNull" ), true ).toBool() )
     {
       mIntSpinBox->setValue( mIntSpinBox->minimum() );
     }

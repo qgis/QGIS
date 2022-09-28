@@ -190,7 +190,7 @@ QStringList QgsRelationReferenceWidgetWrapper::additionalFields() const
 
 void QgsRelationReferenceWidgetWrapper::updateValues( const QVariant &val, const QVariantList &additionalValues )
 {
-  if ( !mWidget || ( !mIndeterminateState && val == value() && val.isNull() == value().isNull() ) )
+  if ( !mWidget || ( !mIndeterminateState && val == value() && QgsVariantUtils::isNull( val ) == QgsVariantUtils::isNull( value() ) ) )
     return;
 
   mIndeterminateState = false;

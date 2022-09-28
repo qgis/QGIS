@@ -219,6 +219,13 @@ void QgsLabelingGui::showLineAnchorSettings()
   else
   {
     QgsLabelSettingsWidgetDialog dialog( widget, this );
+
+    dialog.buttonBox()->addButton( QDialogButtonBox::Help );
+    connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [ = ]
+    {
+      QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#placement-for-line-layers" ) );
+    } );
+
     if ( dialog.exec() )
     {
       applySettings();
@@ -702,12 +709,7 @@ void QgsLabelingGui::updateUi()
 
 void QgsLabelingGui::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type, const QString &stylePath )
 {
-  QgsStyle *style = nullptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
-  style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
-#else
-  ( void )stylePath;
-#endif
+  QgsStyle *style = QgsProject::instance()->styleSettings()->styleAtPath( stylePath );
 
   if ( !style )
     style = QgsStyle::defaultStyle();

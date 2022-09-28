@@ -23,7 +23,6 @@
 #include <QPixmap>
 #include <QMenu>
 #include <QClipboard>
-#include <QDesktopWidget>
 #include <QMenuBar>
 #include <QPushButton>
 #include <QPrinter>
@@ -39,6 +38,7 @@
 #include <QRegExp>
 #include <QScreen>
 #include <QFont>
+#include <QActionGroup>
 
 //graph
 #include <qwt_plot.h>
@@ -50,16 +50,15 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
-#include "qgsattributedialog.h"
 #include "qgsdockwidget.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureaction.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturestore.h"
+#include "qgsfileutils.h"
 #include "qgsgeometry.h"
 #include "qgsguiutils.h"
 #include "qgshighlight.h"
-#include "qgsmaptoolidentifyaction.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -135,7 +134,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
     // Try to get some information from the URL
     const QFileInfo info( url.toString() );
     QString savePath = settings.value( DOWNLOADER_LAST_DIR_KEY ).toString();
-    const QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), QStringLiteral( "_" ) );
+    const QString fileName = QgsFileUtils::stringToSafeFilename( info.fileName() );
     if ( ! savePath.isEmpty() && ! fileName.isEmpty() )
     {
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );
@@ -707,7 +706,7 @@ QgsIdentifyResultsFeatureItem *QgsIdentifyResultsDialog::createFeatureItem( QgsV
       continue;
     }
 
-    if ( attrs.at( i ).isNull() && QgsIdentifyResultsDialog::settingHideNullValues.value() )
+    if ( QgsVariantUtils::isNull( attrs.at( i ) ) && QgsIdentifyResultsDialog::settingHideNullValues.value() )
     {
       continue;
     }
@@ -1000,8 +999,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
           {
             // Precision is not set, let's guess it from the
             // standard conversion to string
-            const auto strVal { value.toString() };
-            const int dotPosition { strVal.indexOf( '.' ) };
+            const QString strVal = value.toString();
+            const auto dotPosition = strVal.indexOf( '.' );
             int precision;
             if ( dotPosition < 0 )
             {
@@ -1260,7 +1259,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorTileLayer *layer,
     if ( i >= fields.count() )
       break;
 
-    if ( attrs.at( i ).isNull() || !attrs.at( i ).isValid() )
+    if ( QgsVariantUtils::isNull( attrs.at( i ) ) )
       continue;  // skip attributes that are not present (there can be many of them)
 
     const QString value = fields.at( i ).displayString( attrs.at( i ) );
@@ -1453,7 +1452,7 @@ void QgsIdentifyResultsDialog::itemClicked( QTreeWidgetItem *item, int column )
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "action" ) )
   {
-    doAction( item, item->data( 0, Qt::UserRole + 1 ).toString() );
+    doAction( item, item->data( 0, Qt::UserRole + 1 ).toUuid() );
   }
   else if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "map_layer_action" ) )
   {
@@ -1703,7 +1702,7 @@ void QgsIdentifyResultsDialog::deactivate()
   }
 }
 
-void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QString &action )
+void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QUuid &action )
 {
   QTreeWidgetItem *featItem = featureItem( item );
   if ( !featItem )
@@ -2199,7 +2198,7 @@ void QgsIdentifyResultsDialog::featureForm()
   if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f ) )
     return;
 
-  const QString actionId = featItem->data( 0, Qt::UserRole + 1 ).toString();
+  const QUuid actionId = featItem->data( 0, Qt::UserRole + 1 ).toUuid();
 
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, actionId, -1, this );
   if ( vlayer->isEditable() )

@@ -22,8 +22,6 @@
 #include "qgslegendrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
-#include "qgssymbollayerutils.h"
-#include "qgsmaplayerlegend.h"
 
 #include "qgswmsutils.h"
 #include "qgswmsrequest.h"
@@ -77,15 +75,20 @@ namespace QgsWms
     {
       switch ( parseImageFormat( parameters.formatAsString() ) )
       {
-        case PNG:
-        case PNG8:
-        case PNG16:
-        case PNG1:
+        case ImageOutputFormat::PNG:
+        case ImageOutputFormat::PNG8:
+        case ImageOutputFormat::PNG16:
+        case ImageOutputFormat::PNG1:
           format = QgsWmsParameters::Format::PNG;
           imageContentType = "image/png";
           imageSaveFormat = "PNG";
           break;
-        default:
+        case ImageOutputFormat::Unknown:
+          break;
+
+        // not possible
+        case QgsWms::ImageOutputFormat::JPEG:
+        case QgsWms::ImageOutputFormat::WEBP:
           break;
       }
     }

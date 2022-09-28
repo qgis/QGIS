@@ -123,8 +123,6 @@ Constructor for QgsStyleProxyModel, using the specified source ``model`` and ``p
 The source ``model`` object must exist for the lifetime of this model.
 %End
 
-%If (CONCATENATED_TABLES_MODEL)
-
     explicit QgsStyleProxyModel( QgsCombinedStyleModel *model, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsStyleProxyModel, using the specified source combined ``model`` and ``parent`` object.
@@ -136,7 +134,6 @@ The source ``model`` object must exist for the lifetime of this model.
    This is only available on builds based on Qt 5.13 or later.
 
 .. versionadded:: 3.26
-%End
 %End
 
     QString filterString() const;

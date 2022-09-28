@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssqliteutils.h"
+#include "qgsvariantutils.h"
 
 #include <sqlite3.h>
 #include <cstdarg>
@@ -265,7 +266,7 @@ QString QgsSqliteUtils::quotedIdentifier( const QString &identifier )
 
 QString QgsSqliteUtils::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )

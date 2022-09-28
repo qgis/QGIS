@@ -17,7 +17,6 @@
 
 
 #include <QScreen>
-#include <QDesktopWidget>
 #include <QMessageBox>
 
 #include "qgsgui.h"
@@ -25,9 +24,7 @@
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgssourceselectproviderregistry.h"
-#include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
-#include "qgslayoutviewrubberband.h"
 #include "qgsannotationitemguiregistry.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
@@ -50,9 +47,6 @@
 #include "qgswindowmanagerinterface.h"
 #include "qgssettings.h"
 #include "qgsdataitemguiproviderregistry.h"
-#include "qgsgdalguiprovider.h"
-#include "qgsogrguiprovider.h"
-#include "qgsproviderregistry.h"
 #include "qgsproviderguiregistry.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsmessagebar.h"
@@ -65,6 +59,10 @@
 #include "qgsmaptoolshaperegistry.h"
 #include "qgssettingsregistrygui.h"
 #include "qgshistoryproviderregistry.h"
+#include "qgslayermetadatasourceselectprovider.h"
+
+#include <QPushButton>
+#include <QToolButton>
 
 QgsGui *QgsGui::instance()
 {
@@ -241,7 +239,10 @@ QColor QgsGui::sampleColor( QPoint point )
   {
     return QColor();
   }
-  const QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+
+  const int x = point.x() - screen->geometry().left();
+  const int y = point.y() - screen->geometry().top();
+  const QPixmap snappedPixmap = screen->grabWindow( 0, x, y, 1, 1 );
   const QImage snappedImage = snappedPixmap.toImage();
   return snappedImage.pixel( 0, 0 );
 }
@@ -296,6 +297,7 @@ QgsGui::QgsGui()
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
+  mSourceSelectProviderRegistry->addProvider( new QgsLayerMetadataSourceSelectProvider() );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 

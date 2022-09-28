@@ -346,6 +346,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     void showColorDialog();
 
+    void updateSizeHint();
+
 };
 
 #endif // QGSSYMBOLBUTTON_H

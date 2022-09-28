@@ -87,7 +87,7 @@ QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
 
 QIcon QgsRelationshipsItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/relations.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconBrowserRelations.svg" ) );
 }
 
 QString QgsRelationshipsItem::connectionUri() const
@@ -111,7 +111,7 @@ QgsRelationshipItem::QgsRelationshipItem( QgsDataItem *parent, const QgsWeakRela
 
 QIcon QgsRelationshipItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/relation.svg" ) );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconBrowserRelations.svg" ) );
 }
 
 const QgsWeakRelation &QgsRelationshipItem::relation() const

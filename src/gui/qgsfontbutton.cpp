@@ -29,10 +29,10 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsvectorlayer.h"
 #include "qgstextrenderer.h"
+#include "qgsscreenhelper.h"
 #include <QMenu>
 #include <QClipboard>
 #include <QDrag>
-#include <QDesktopWidget>
 #include <QToolTip>
 
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
@@ -56,6 +56,9 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   const int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
   const int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 20;
   mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
+
+  mScreenHelper = new QgsScreenHelper( this );
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [ = ] { updatePreview(); } );
 }
 
 QSize QgsFontButton::minimumSizeHint() const
@@ -479,7 +482,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
       context.setMapToPixel( newCoordXForm );
 
-      context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+      context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
       context.setUseAdvancedEffects( true );
       context.setPainter( &p );
 
@@ -510,7 +513,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       if ( textRect.width() > 2000 )
         textRect.setWidth( 2000 );
 
-      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, QStringList() << tr( "Aa" ),
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << tr( "Aa" ),
                                  context, *tempFormat );
       break;
     }
@@ -901,7 +904,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       newCoordXForm.setParameters( 1, 0, 0, 0, 0, 0 );
       context.setMapToPixel( newCoordXForm );
 
-      context.setScaleFactor( QgsApplication::desktop()->logicalDpiX() / 25.4 );
+      context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
       context.setUseAdvancedEffects( true );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );
@@ -933,7 +936,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       if ( textRect.width() > 2000 )
         textRect.setWidth( 2000 );
 
-      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << text(),
                                  context, tempFormat );
       break;
     }

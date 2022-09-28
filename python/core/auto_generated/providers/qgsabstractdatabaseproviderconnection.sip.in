@@ -797,6 +797,40 @@ forms the left (or "parent" / "referenced") side of the relationship are retriev
 .. versionadded:: 3.28
 %End
 
+    virtual QgsProviderSqlQueryBuilder *queryBuilder() const /Factory/;
+%Docstring
+Returns a SQL query builder for the connection, which provides an interface for provider-specific creation of SQL queries.
+
+The caller takes ownership of the returned object.
+
+.. versionadded:: 3.28
+%End
+
+    virtual QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = 0 ) const throw( QgsProviderConnectionException, QgsNotSupportedException );
+%Docstring
+Search the stored layer metadata in the connection,
+optionally limiting the search to the metadata identifier, title,
+abstract, keywords and categories.
+``searchContext`` context for the search
+``searchString`` limit the search to metadata having an extent intersecting ``geographicExtent``,
+an optional ``feedback`` can be used to monitor and control the search process.
+
+The default implementation raises a :py:class:`QgsNotSupportedException`, data providers may implement
+the search functionality.
+
+A :py:class:`QgsProviderConnectionException` is raised in case of errors happening during the search for
+providers that implement the search functionality.
+
+:return: a (possibly empty) list of :py:class:`QgsLayerMetadataProviderResult`, throws a :py:class:`QgsProviderConnectionException`
+         if any error occurred during the search.
+
+:raises QgsProviderConnectionException: 
+
+:raises QgsNotSupportedException: 
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
 

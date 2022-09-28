@@ -257,7 +257,7 @@ class CORE_EXPORT QgsTileDownloadManager
      * Blocks the current thread until the queue is empty. This should not be used
      * in production code, it is however useful for auto tests
      */
-    bool waitForPendingRequests( int msec = -1 );
+    bool waitForPendingRequests( int msec = -1 ) const;
 
     //! Asks the worker thread to stop and blocks until it is not stopped.
     void shutdown();
@@ -291,6 +291,7 @@ class CORE_EXPORT QgsTileDownloadManager
     void addEntry( const QueueEntry &entry );
     void updateEntry( const QueueEntry &entry );
     void removeEntry( const QNetworkRequest &request );
+    void processStagedEntryRemovals();
 
     void signalQueueModified();
 
@@ -299,13 +300,14 @@ class CORE_EXPORT QgsTileDownloadManager
 
   private:
 
-    QList<QueueEntry> mQueue;
+    std::vector<QueueEntry> mQueue;
+
+    bool mStageQueueRemovals = false;
+    std::vector< QNetworkRequest > mStagedQueueRemovals;
+
     bool mShuttingDown = false;
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    mutable QMutex mMutex;
-#else
     mutable QRecursiveMutex mMutex;
-#endif
+
     QThread *mWorkerThread = nullptr;
     QgsTileDownloadManagerWorker *mWorker = nullptr;
     Stats mStats;

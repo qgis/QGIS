@@ -19,6 +19,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudindex.h"
 #include "qgsapplication.h"
+#include "qgsvariantutils.h"
 
 QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
   : QAbstractItemModel( parent )
@@ -273,7 +274,7 @@ bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const Q
     return true;
 
   const QVariant typeVar = mModel->data( index, QgsPointCloudAttributeModel::AttributeTypeRole );
-  if ( typeVar.isNull() )
+  if ( QgsVariantUtils::isNull( typeVar ) )
     return true;
 
   bool ok;

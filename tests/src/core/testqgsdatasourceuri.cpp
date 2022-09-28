@@ -27,6 +27,12 @@ class TestQgsDataSourceUri: public QObject
   private slots:
     void checkparser();
     void checkparser_data();
+    void checkSetConnection();
+    void checkSetConnection_data();
+    void checkSetConnectionService();
+    void checkSetConnectionService_data();
+    void checkConnectionInfo();
+    void checkConnectionInfo_data();
     void checkAuthParams();
     void checkParameterKeys();
 };
@@ -44,6 +50,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QString>( "service" );
   QTest::addColumn<QString>( "user" );
   QTest::addColumn<QString>( "password" );
+  QTest::addColumn<QString>( "authcfg" );
   QTest::addColumn<QString>( "dbname" );
   QTest::addColumn<QString>( "host" );
   QTest::addColumn<QString>( "port" );
@@ -66,6 +73,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
       << "" // dbname
       << "myhost" // host
       << "1234" // port
@@ -88,6 +96,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "" // password
+      << "" // authcfg
       << "qgis_tests" // dbname
       << "localhost" // host
       << "5432" // port
@@ -110,6 +119,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
@@ -132,6 +142,30 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
+      << "mydb" // dbname
+      << "myhost" // host
+      << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "pg_notable_authcfg" )
+      << "PG: dbname=mydb host=myhost authcfg=myauthcfg port=5432 mode=2 schema=myschema "
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "" // user
+      << "" // password
+      << "myauthcfg" // authcfg
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
@@ -156,6 +190,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << "" // service
       << "myname" // user
       << "mypasswd" // password
+      << "" // authcfg
       << "mydb" // dbname
       << "myhost" // host
       << "5432" // port
@@ -180,6 +215,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QString, service );
   QFETCH( QString, user );
   QFETCH( QString, password );
+  QFETCH( QString, authcfg );
   QFETCH( QString, dbname );
   QFETCH( QString, host );
   QFETCH( QString, port );
@@ -199,6 +235,7 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.service(), service );
   QCOMPARE( ds.username(), user );
   QCOMPARE( ds.password(), password );
+  QCOMPARE( ds.authConfigId(), authcfg );
   QCOMPARE( ds.database(), dbname );
   QCOMPARE( ds.host(), host );
   QCOMPARE( ds.port(), port );
@@ -206,6 +243,171 @@ void TestQgsDataSourceUri::checkparser()
   QCOMPARE( ds.sslMode(), sslmode );
   QCOMPARE( ds.sql(), sql );
   QCOMPARE( ds.param( "myparam" ), myparam );
+}
+
+void TestQgsDataSourceUri::checkSetConnection_data()
+{
+  QTest::addColumn<QString>( "host" );
+  QTest::addColumn<QString>( "port" );
+  QTest::addColumn<QString>( "dbname" );
+  QTest::addColumn<QString>( "user" );
+  QTest::addColumn<QString>( "password" );
+  QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
+  QTest::addColumn<QString>( "authcfg" );
+
+  QTest::newRow( "simple" )
+      << "myhost" // host
+      << "5432" // port
+      << "mydb" // dbname
+      << "myname" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // authcfg
+      ;
+
+  QTest::newRow( "authcfg" )
+      << "myhost" // host
+      << "5432" // port
+      << "" // dbname
+      << "" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "myauthcfg" // authcfg
+      ;
+}
+
+void TestQgsDataSourceUri::checkSetConnection()
+{
+  QFETCH( QString, host );
+  QFETCH( QString, port );
+  QFETCH( QString, dbname );
+  QFETCH( QString, user );
+  QFETCH( QString, password );
+  QFETCH( QgsDataSourceUri::SslMode, sslmode );
+  QFETCH( QString, authcfg );
+
+  QgsDataSourceUri uri;
+  if ( authcfg.isEmpty() )
+    uri.setConnection( host, port, dbname, user, password, sslmode );
+  else
+    uri.setConnection( host, port, dbname, user, password, sslmode, authcfg );
+
+  QCOMPARE( uri.host(), host );
+  QCOMPARE( uri.port(), port );
+  QCOMPARE( uri.database(), dbname );
+  QCOMPARE( uri.username(), user );
+  QCOMPARE( uri.password(), password );
+  QCOMPARE( uri.sslMode(), sslmode );
+  QCOMPARE( uri.authConfigId(), authcfg );
+}
+
+void TestQgsDataSourceUri::checkSetConnectionService_data()
+{
+  QTest::addColumn<QString>( "service" );
+  QTest::addColumn<QString>( "dbname" );
+  QTest::addColumn<QString>( "user" );
+  QTest::addColumn<QString>( "password" );
+  QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
+  QTest::addColumn<QString>( "authcfg" );
+
+  QTest::newRow( "simple" )
+      << "myservice" // service
+      << "mydb" // dbname
+      << "myname" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // authcfg
+      ;
+
+  QTest::newRow( "authcfg" )
+      << "myservice" // service
+      << "" // dbname
+      << "" // user
+      << "mypasswd" // password
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "myauthcfg" // authcfg
+      ;
+}
+
+void TestQgsDataSourceUri::checkSetConnectionService()
+{
+  QFETCH( QString, service );
+  QFETCH( QString, dbname );
+  QFETCH( QString, user );
+  QFETCH( QString, password );
+  QFETCH( QgsDataSourceUri::SslMode, sslmode );
+  QFETCH( QString, authcfg );
+
+  QgsDataSourceUri uri;
+  if ( authcfg.isEmpty() )
+    uri.setConnection( service, dbname, user, password, sslmode );
+  else
+    uri.setConnection( service, dbname, user, password, sslmode, authcfg );
+
+  QCOMPARE( uri.service(), service );
+  QCOMPARE( uri.database(), dbname );
+  QCOMPARE( uri.username(), user );
+  QCOMPARE( uri.password(), password );
+  QCOMPARE( uri.sslMode(), sslmode );
+  QCOMPARE( uri.authConfigId(), authcfg );
+}
+
+void TestQgsDataSourceUri::checkConnectionInfo_data()
+{
+  QTest::addColumn<QString>( "uri" );
+  QTest::addColumn<QString>( "conninfo" );
+
+
+  QTest::newRow( "service" )
+      << "service='qgis_test'"
+      << "service='qgis_test'" // conninfo
+      ;
+
+  QTest::newRow( "db_host_port_user_pw" )
+      << "dbname='qgis_test' host=postgres port=5432 user='qgis_test_user' password='qgis_test_user_password'"
+      << "dbname='qgis_test' host=postgres port=5432 user='qgis_test_user' password='qgis_test_user_password'" // conninfo
+      ;
+
+  QTest::newRow( "oci" )
+      << "host=myhost port=1234 user='myname' password='mypasswd' estimatedmetadata=true srid=1000003007 table=\"myschema\".\"mytable\" (GEOM) myparam='myvalue' sql="
+      << "host=myhost port=1234 user='myname' password='mypasswd'" // conninfo
+      ;
+
+  QTest::newRow( "pgrast" )
+      << R"(PG: dbname='qgis_tests' host=localhost port=5432 user='myname' sslmode=disable estimatedmetadata=true srid=3067 table="public"."basic_map_tiled" (rast))"
+      << "dbname='qgis_tests' host=localhost port=5432 user='myname' sslmode=disable" // conninfo
+      ;
+
+  QTest::newRow( "pg_notable" )
+      << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=myschema "
+      << "dbname='mydb' host=myhost port=5432 user='myname' password='mypasswd'" // conninfo
+      ;
+
+  QTest::newRow( "pg_notable_quoted" )
+      << "dbname='mydb' host='myhost' user='myname' password='mypasswd' port='5432' mode='2' schema=myschema"
+      << "dbname='mydb' host=myhost port=5432 user='myname' password='mypasswd'" // conninfo
+      ;
+
+  QTest::newRow( "pgmlsz" )
+      << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable type=MultiLineStringZ"
+      << "dbname='mydb' host=myhost port=5432 user='myname' password='mypasswd'" // conninfo
+      ;
+}
+
+void TestQgsDataSourceUri::checkConnectionInfo()
+{
+  QFETCH( QString, uri );
+  QFETCH( QString, conninfo );
+
+  QgsDataSourceUri ds( uri );
+  QCOMPARE( ds.connectionInfo(), conninfo );
+  QCOMPARE( ds.connectionInfo( true ), conninfo );
+  QCOMPARE( ds.connectionInfo( false ), conninfo );
+
+  ds.setParam( QStringLiteral( "extraparam" ), QStringLiteral( "extravalue" ) );
+  QCOMPARE( ds.connectionInfo(), conninfo );
+  QCOMPARE( ds.connectionInfo( true ), conninfo );
+  QCOMPARE( ds.connectionInfo( false ), conninfo );
 }
 
 void TestQgsDataSourceUri::checkAuthParams()

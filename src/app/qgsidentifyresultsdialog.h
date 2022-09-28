@@ -324,7 +324,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void highlightFeature( QTreeWidgetItem *item );
 
-    void doAction( QTreeWidgetItem *item, const QString &action );
+    void doAction( QTreeWidgetItem *item, const QUuid &action );
 
     void doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction *action );
 

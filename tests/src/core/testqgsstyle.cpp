@@ -60,16 +60,14 @@
  * \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
-class TestStyle : public QObject
+class TestStyle : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestStyle();
+    TestStyle() : QgsTest( QStringLiteral( "Style Tests" ) ) {}
 
   private:
-
-    QString mReport;
 
     QgsStyle *mStyle = nullptr;
     QString mTestDataDir;
@@ -138,9 +136,6 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
 
 };
 
-
-TestStyle::TestStyle() = default;
-
 // slots
 void TestStyle::initTestCase()
 {
@@ -168,8 +163,6 @@ void TestStyle::initTestCase()
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
 
-  mReport += QLatin1String( "<h1>Style Tests</h1>\n" );
-
   QgsApplication::symbol3DRegistry()->addSymbolType( new Qgs3DSymbolMetadata( QStringLiteral( "dummy" ), QObject::tr( "Dummy" ),
       &Dummy3DSymbol::create, nullptr, nullptr ) );
 }
@@ -184,16 +177,6 @@ void TestStyle::cleanupTestCase()
 
   QgsCptCityArchive::clearArchives();
   QgsApplication::exitQgis();
-
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
 }
 
 void TestStyle::testProperties()

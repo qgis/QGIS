@@ -102,6 +102,9 @@
 %Include auto_generated/qgshttpheaderwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
+%Include auto_generated/qgslayermetadatasearchwidget.sip
+%Include auto_generated/qgslayermetadataresultsmodel.sip
+%Include auto_generated/qgslayermetadataresultsproxymodel.sip
 %Include auto_generated/qgslegendfilterbutton.sip
 %Include auto_generated/qgslegendpatchshapebutton.sip
 %Include auto_generated/qgslegendpatchshapewidget.sip
@@ -196,6 +199,7 @@
 %Include auto_generated/qgsscalerangewidget.sip
 %Include auto_generated/qgsscalevisibilitydialog.sip
 %Include auto_generated/qgsscalewidget.sip
+%Include auto_generated/qgsscreenhelper.sip
 %Include auto_generated/qgsscrollarea.sip
 %Include auto_generated/qgssearchquerybuilder.sip
 %Include auto_generated/qgssubsetstringeditorinterface.sip
@@ -457,5 +461,6 @@
 %Include auto_generated/settings/qgssettingsregistrygui.sip
 %Include auto_generated/tableeditor/qgstableeditordialog.sip
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
+%Include auto_generated/vectortile/qgsvectortilelayerproperties.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip
 %Include auto_generated/qgsadvanceddigitizingcanvasitem.sip

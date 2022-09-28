@@ -203,16 +203,13 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::newRow( "intersects min_overlap multi no match" ) << "overlay_intersects('polys', min_overlap:=1.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
   QTest::newRow( "intersects min_overlap multi match" ) << "overlay_intersects('polys', min_overlap:=1.34)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   QTest::newRow( "intersects min_inscribed_circle_radius multi no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << false;
   QTest::newRow( "intersects min_inscribed_circle_radius multi match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=0.5)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << true;
-#endif
 
   // Single part intersection
   QTest::newRow( "intersects min_overlap no match" ) << "overlay_intersects('polys', min_overlap:=1.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
   QTest::newRow( "intersects min_overlap match" ) << "overlay_intersects('polys', min_overlap:=1.34)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   QTest::newRow( "intersects min_inscribed_circle_radius no match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=1.0)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
   QTest::newRow( "intersects min_inscribed_circle_radius match" ) << "overlay_intersects('polys', min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
 
@@ -230,8 +227,6 @@ void TestQgsOverlayExpression::testOverlay_data()
   QTest::newRow( "intersects combined no match 3" ) << "overlay_intersects('polys', min_overlap:=1.5, min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << false;
 
   QTest::newRow( "intersects combined match" ) << "overlay_intersects('polys', min_overlap:=1.34, min_inscribed_circle_radius:=0.5)" << "POLYGON((-105 33.75, -102.76 33.75, -102.76 35.2, -105 35.2, -105 33.75))" << true;
-
-#endif
 
   // Check linestrings
   QTest::newRow( "intersects linestring match" ) << "overlay_intersects('polys', min_overlap:=1.76)" << "LINESTRING(-105 33.75, -102.76 33.75)" << true;
@@ -274,16 +269,12 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   expected3.insert( QStringLiteral( "id" ), 3LL );
   expected3.insert( QStringLiteral( "result" ), 3LL );
   expected3.insert( QStringLiteral( "overlap" ), 1.4033836999701634 );
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   expected3 .insert( QStringLiteral( "radius" ), 0.5344336346973622 );
-#endif
   QVariantMap expected1;
   expected1.insert( QStringLiteral( "id" ), 1LL );
   expected1.insert( QStringLiteral( "result" ), 1LL );
   expected1.insert( QStringLiteral( "overlap" ), 1.2281139270096446 );
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   expected1.insert( QStringLiteral( "radius" ),  0.46454276882989376 );
-#endif
 
   QTest::newRow( "intersects min_overlap multi match return measure" ) << "overlay_intersects('polys', expression:=$id, min_overlap:=1.34, return_details:=true)" << "POLYGON((-107.37 33.75, -102.76 33.75, -102.76 36.97, -107.37 36.97, -107.37 33.75))" << ( QVariantList() << expected3 ) ;
 
@@ -314,10 +305,8 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     expected1.insert( QStringLiteral( "result" ), 1 );
     expected1.insert( QStringLiteral( "overlap" ), 18.569843123334977 );
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
     expected3.insert( QStringLiteral( "radius" ), 1.3414663642343596 );
     expected1.insert( QStringLiteral( "radius" ), 1.8924012738149243 );
-#endif
 
     QTest::newRow( "intersects multi match points return sorted" ) << "overlay_intersects('polys', sort_by_intersection_size:='des', return_details:=true, expression:=$id)" << "MULTIPOINT((-107.37 33.75), (-102.8 36.97))" << ( QVariantList() << expected3 << expected1 ) ;
 
@@ -399,7 +388,6 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
     QTest::newRow( "intersects points multi match" ) << "overlay_intersects('points', return_details:=true, expression:=$id)" << "POLYGON((0 -1, 3.5 -1, 3.5 1, 0 1, 0 -1))" << ( QVariantList() << expectedPoint1 << expectedPoint2 );
   }
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=9 )
   // Test polygon intersection resulting in a point with min_inscribed_circle_radius and expression
   QTest::newRow( "intersects point expression no match" ) << "overlay_intersects('polys', expression:=$id, min_inscribed_circle_radius:=0.5, sort_by_intersection_size:='desc')" << "POLYGON((-90.825 34.486, -89.981 35.059, -90.009 33.992, -90.825 34.486))" << ( QVariantList() );
   // Test polygon intersection resulting in a line with min_inscribed_circle_radius and expression
@@ -409,7 +397,6 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   expectedPoly.insert( QStringLiteral( "radius" ), 12.576424447201404 );
   expectedPoly.insert( QStringLiteral( "result" ), 1002 );
   QTest::newRow( "intersects line expression no match" ) << "overlay_intersects('polygons2', expression:=fid, return_details:=true, min_inscribed_circle_radius:=3, sort_by_intersection_size:='desc')" << "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" << ( QVariantList() << expectedPoly );
-#endif
 }
 
 void TestQgsOverlayExpression::testOverlayExpression()

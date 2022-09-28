@@ -270,7 +270,7 @@ QgsFields QgsJsonUtils::stringToFields( const QString &string, QTextCodec *encod
 
 QString QgsJsonUtils::encodeValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "null" );
 
   switch ( value.type() )
@@ -400,7 +400,7 @@ QVariantList QgsJsonUtils::parseArray( const QString &json, QVariant::Type type 
 
 json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 {
-  if ( val.isNull() || ! val.isValid() )
+  if ( QgsVariantUtils::isNull( val ) )
   {
     return nullptr;
   }

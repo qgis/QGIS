@@ -163,7 +163,7 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   }
   else
   {
-    setExpression( vl.isNull() ? QgsApplication::nullRepresentation() : vl.toString() );
+    setExpression( QgsVariantUtils::isNull( vl ) ? QgsApplication::nullRepresentation() : vl.toString() );
     emit valueChanged();
   }
   emit expressionChanged( mExpression );

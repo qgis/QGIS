@@ -44,7 +44,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
   if ( !mWidget )
     return;
 
-  mWidget->setHtml( mHtmlCode );
+  mWidget->setHtml( mHtmlCode.replace( "\n", "\\n" ) );
 #ifdef WITH_QTWEBKIT
 
   const int horizontalDpi = mWidget->logicalDpiX();

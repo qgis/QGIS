@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsfeaturerequest.h"
 #include "qgsstringutils.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -468,7 +469,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return compare( fL - fR ) ? TVL_True : TVL_False;
       }
       // warning - QgsExpression::isIntervalSafe is VERY expensive and should not be used here
-      else if ( vL.canConvert< QgsInterval >() && vR.canConvert< QgsInterval >() )
+      else if ( vL.userType() == QMetaType::type( "QgsInterval" ) && vR.userType() == QMetaType::type( "QgsInterval" ) )
       {
         double fL = QgsExpressionUtils::getInterval( vL, parent ).seconds();
         ENSURE_NO_EVAL_ERROR
@@ -564,7 +565,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
           }
           esc_regexp.replace( QLatin1String( "\\\\_" ), QLatin1String( "_" ) );
 
-          matches = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption ).match( str ).hasMatch();
+          matches = QRegularExpression( QRegularExpression::anchoredPattern( esc_regexp ), mOp == boLike || mOp == boNotLike ? QRegularExpression::DotMatchesEverythingOption : QRegularExpression::DotMatchesEverythingOption | QRegularExpression::CaseInsensitiveOption ).match( str ).hasMatch();
         }
         else
         {
@@ -1358,7 +1359,7 @@ bool QgsExpressionNodeLiteral::prepareNode( QgsExpression *parent, const QgsExpr
 
 QString QgsExpressionNodeLiteral::valueAsString() const
 {
-  if ( mValue.isNull() )
+  if ( QgsVariantUtils::isNull( mValue ) )
     return QStringLiteral( "NULL" );
 
   switch ( mValue.type() )
@@ -1817,7 +1818,7 @@ bool QgsExpressionNodeBetweenOperator::prepareNode( QgsExpression *parent, const
 QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, const QgsExpressionContext *context )
 {
   const QVariant nodeVal = mNode->eval( parent, context );
-  if ( nodeVal.isNull() )
+  if ( QgsVariantUtils::isNull( nodeVal ) )
   {
     return QVariant();
   }
@@ -1828,7 +1829,7 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
   const QVariant lowBoundValue = lowBound.eval( parent, context );
   const bool lowBoundBool { lowBoundValue.toBool() };
 
-  if ( ! lowBoundValue.isNull() && ! lowBoundBool )
+  if ( ! QgsVariantUtils::isNull( lowBoundValue ) && ! lowBoundBool )
   {
     return QVariant( mNegate );
   }
@@ -1836,7 +1837,7 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
   QgsExpressionNodeBinaryOperator highBound { QgsExpressionNodeBinaryOperator::BinaryOperator::boLE, nodeValNode.clone(), mHigherBound->clone() };
   const QVariant highBoundValue = highBound.eval( parent, context );
 
-  if ( lowBoundValue.isNull() && highBoundValue.isNull() )
+  if ( QgsVariantUtils::isNull( lowBoundValue ) && QgsVariantUtils::isNull( highBoundValue ) )
   {
     return QVariant();
   }
@@ -1844,12 +1845,12 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
   const bool highBoundBool { highBoundValue.toBool() };
 
   // We already checked if both are nulls
-  if ( lowBoundValue.isNull() || highBoundValue.isNull() )
+  if ( QgsVariantUtils::isNull( lowBoundValue ) || QgsVariantUtils::isNull( highBoundValue ) )
   {
 
     // In this case we can return a boolean
-    if ( ( lowBoundValue.isNull() && ! highBoundBool ) ||
-         ( highBoundValue.isNull() && ! lowBoundBool ) )
+    if ( ( QgsVariantUtils::isNull( lowBoundValue ) && ! highBoundBool ) ||
+         ( QgsVariantUtils::isNull( highBoundValue ) && ! lowBoundBool ) )
     {
       return QVariant( mNegate );
     }
@@ -1859,7 +1860,7 @@ QVariant QgsExpressionNodeBetweenOperator::evalNode( QgsExpression *parent, cons
 
   }
 
-  if ( ! highBoundValue.isNull() && ! highBoundBool )
+  if ( ! QgsVariantUtils::isNull( highBoundValue ) && ! highBoundBool )
   {
     return QVariant( mNegate );
   }
@@ -2008,7 +2009,7 @@ QVariant QgsExpressionNodeIndexOperator::evalNode( QgsExpression *parent, const 
     }
 
     default:
-      if ( !container.isNull() )
+      if ( !QgsVariantUtils::isNull( container ) )
         parent->setEvalErrorString( tr( "[] can only be used with map or array values, not %1" ).arg( QMetaType::typeName( container.type() ) ) );
       return QVariant();
   }

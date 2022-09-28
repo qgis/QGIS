@@ -389,11 +389,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  , mTaskMutex( new QMutex( QMutex::Recursive ) )
-#else
   , mTaskMutex( new QRecursiveMutex() )
-#endif
 {
 
 }
@@ -517,7 +513,7 @@ QgsTask *QgsTaskManager::task( long id ) const
 QList<QgsTask *> QgsTaskManager::tasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  return qgis::setToList( mParentTasks );
+  return QList<QgsTask *>( mParentTasks.begin(), mParentTasks.end() );
 }
 
 int QgsTaskManager::count() const
@@ -660,7 +656,7 @@ QList<QgsTask *> QgsTaskManager::activeTasks() const
   QMutexLocker ml( mTaskMutex );
   QSet< QgsTask * > activeTasks = mActiveTasks;
   activeTasks.intersect( mParentTasks );
-  return qgis::setToList( activeTasks );
+  return QList<QgsTask *>( activeTasks.constBegin(), activeTasks.constEnd() );
 }
 
 int QgsTaskManager::countActiveTasks( bool includeHidden ) const

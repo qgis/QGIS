@@ -26,6 +26,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsgeopackageproviderconnection.h"
 #include "qgsogrdbconnection.h"
 #include "qgsfileutils.h"
+#include "qgsvariantutils.h"
 
 #include <ogr_srs_api.h>
 #include <cpl_port.h>
@@ -47,12 +48,7 @@ email                : nyall dot dawson at gmail dot com
 
 ///@cond PRIVATE
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-Q_GLOBAL_STATIC_WITH_ARGS( QMutex, sGlobalMutex, ( QMutex::Recursive ) )
-#else
 Q_GLOBAL_STATIC( QRecursiveMutex, sGlobalMutex )
-#endif
-
 
 //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
 typedef QMap< QString, int > OpenedDsCountMap;
@@ -273,14 +269,12 @@ QString createFilters( const QString &type )
         if ( !sDirectoryExtensions.contains( QStringLiteral( "gdb" ) ) )
           sDirectoryExtensions << QStringLiteral( "gdb" );
       }
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       else if ( driverName.startsWith( QLatin1String( "FlatGeobuf" ) ) )
       {
         sProtocolDrivers += QLatin1String( "FlatGeobuf;" );
         sFileFilters += createFileFilter_( QObject::tr( "FlatGeobuf" ), QStringLiteral( "*.fgb" ) );
         sExtensions << QStringLiteral( "fgb" );
       }
-#endif
       else if ( driverName.startsWith( QLatin1String( "PGeo" ) ) )
       {
         sDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
@@ -396,7 +390,7 @@ QString createFilters( const QString &type )
       }
       else if ( driverName.startsWith( QLatin1String( "MSSQL" ) ) )
       {
-        sDatabaseDrivers += QObject::tr( "MSSQL" ) + ",MSSQL;";
+        sDatabaseDrivers += QObject::tr( "MS SQL Server" ) + ",MSSQL;";
       }
       else if ( driverName.startsWith( QLatin1String( "OCI" ) ) )
       {
@@ -958,7 +952,7 @@ QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, boo
     {
       // Preserve open options so pooled connections always carry those on
       QString openOptions;
-      static thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
+      const thread_local QRegularExpression openOptionsRegex( QStringLiteral( "((?:\\|option:(?:[^|]*))+)" ) );
       QRegularExpressionMatch match = openOptionsRegex.match( dataSourceURI );
       if ( match.hasMatch() )
       {
@@ -1290,18 +1284,6 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       GDALClose( hDS );
     }
   }
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
-  else if ( mGDALDriverName == QLatin1String( "XLSX" ) ||
-            mGDALDriverName == QLatin1String( "ODS" ) )
-  {
-    // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
-    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
-    GDALClose( hDS );
-    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
-  }
-#endif
-
   else
   {
     GDALClose( hDS );
@@ -1327,7 +1309,7 @@ QByteArray QgsOgrProviderUtils::quotedIdentifier( QByteArray field, const QStrin
 
 QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 {
-  if ( value.isNull() )
+  if ( QgsVariantUtils::isNull( value ) )
     return QStringLiteral( "NULL" );
 
   switch ( value.type() )
@@ -2566,8 +2548,10 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
     layer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
+    long long layerFeatureCount = 0;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
+      ++layerFeatureCount;
       OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
       if ( gType != wkbNone )
       {
@@ -2582,11 +2566,16 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         break;
     }
     layer->ResetReading();
-    // it may happen that there are no features in the layer, in that case add unknown type
-    // to show to user that the layer exists but it is empty
     if ( fCount.isEmpty() )
     {
-      fCount[wkbUnknown] = 0;
+      if ( layerFeatureCount > 0 )
+        fCount[wkbNone] = 0;
+      else
+      {
+        // it may happen that there are no features in the layer, in that case add unknown type
+        // to show to user that the layer exists but it is empty
+        fCount[wkbUnknown] = 0;
+      }
     }
 
     // List TIN and PolyhedralSurface as Polygon
@@ -2645,8 +2634,11 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
           details.setName( layerName );
         }
       }
+
+      const OGRwkbGeometryType eOGRGeomType = ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key();
+
       details.setFeatureCount( fCount.value( countIt.key() ) );
-      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( eOGRGeomType ) );
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
@@ -2657,8 +2649,15 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
       // the uri from the sublayer is used to construct an actual vector layer)
       if ( details.wkbType() != QgsWkbTypes::Unknown )
+      {
         parts.insert( QStringLiteral( "geometryType" ),
-                      ogrWkbGeometryTypeName( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+                      ogrWkbGeometryTypeName( eOGRGeomType ) );
+        if ( fCount.size() == 1 )
+        {
+          details.setFeatureCount( layerFeatureCount );
+          parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
+        }
+      }
       else
         parts.remove( QStringLiteral( "geometryType" ) );
 
@@ -3016,21 +3015,13 @@ void QgsOgrLayer::SetSpatialFilter( OGRGeometryH hGeometry )
   OGR_L_SetSpatialFilter( hLayer, hGeometry );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QMutex *&mutex ) const
-#else
 GDALDatasetH QgsOgrLayer::getDatasetHandleAndMutex( QRecursiveMutex *&mutex ) const
-#endif
 {
   mutex = &( ds->mutex );
   return ds->hDS;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-OGRLayerH QgsOgrLayer::getHandleAndMutex( QMutex *&mutex ) const
-#else
 OGRLayerH QgsOgrLayer::getHandleAndMutex( QRecursiveMutex *&mutex ) const
-#endif
 {
   mutex = &( ds->mutex );
   return hLayer;
@@ -3100,24 +3091,7 @@ OGRErr QgsOgrLayer::SyncToDisk()
 {
   QMutexLocker locker( &ds->mutex );
 
-  OGRErr eErr;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0) && GDAL_VERSION_NUM <= GDAL_COMPUTE_VERSION(3,1,3)
-  // Workaround bug in GDAL 3.1.0 to 3.1.3 that creates XLSX and ODS files incompatible with LibreOffice due to use of ZIP64
-  QString drvName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
-  if ( drvName == QLatin1String( "XLSX" ) ||
-       drvName == QLatin1String( "ODS" ) )
-  {
-    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", "NO" );
-    eErr = OGR_L_SyncToDisk( hLayer );
-    CPLSetThreadLocalConfigOption( "CPL_CREATE_ZIP64", nullptr );
-  }
-  else
-#endif
-  {
-    eErr = OGR_L_SyncToDisk( hLayer );
-  }
-
-  return eErr;
+  return OGR_L_SyncToDisk( hLayer );
 }
 
 void QgsOgrLayer::ExecuteSQLNoReturn( const QByteArray &sql )
@@ -3153,11 +3127,7 @@ QString QgsOgrLayer::GetMetadataItem( const QString &key, const QString &domain 
                               domain.toUtf8().constData() );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-QMutex &QgsOgrFeatureDefn::mutex()
-#else
 QRecursiveMutex &QgsOgrFeatureDefn::mutex()
-#endif
 {
   return layer->mutex();
 }

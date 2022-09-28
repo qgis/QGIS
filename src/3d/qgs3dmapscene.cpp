@@ -138,6 +138,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::renderersChanged, this, &Qgs3DMapScene::onRenderersChanged );
   connect( &map, &Qgs3DMapSettings::skyboxSettingsChanged, this, &Qgs3DMapScene::onSkyboxSettingsChanged );
   connect( &map, &Qgs3DMapSettings::shadowSettingsChanged, this, &Qgs3DMapScene::onShadowSettingsChanged );
+  connect( &map, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapScene::onAmbientOcclusionSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingEnabledChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingStrengthChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
   connect( &map, &Qgs3DMapSettings::eyeDomeLightingDistanceChanged, this, &Qgs3DMapScene::onEyeDomeShadingSettingsChanged );
@@ -237,6 +238,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // force initial update of debugging setting of preview quads
   onDebugShadowMapSettingsChanged();
   onDebugDepthMapSettingsChanged();
+  // force initial update of ambient occlusion settings
+  onAmbientOcclusionSettingsChanged();
 
   mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
   onCameraMovementSpeedChanged();
@@ -1100,6 +1103,16 @@ void Qgs3DMapScene::onShadowSettingsChanged()
   }
   else
     shadowRenderingFrameGraph->setShadowRenderingEnabled( false );
+}
+
+void Qgs3DMapScene::onAmbientOcclusionSettingsChanged()
+{
+  QgsShadowRenderingFrameGraph *shadowRenderingFrameGraph = mEngine->frameGraph();
+  QgsAmbientOcclusionSettings ambientOcclusionSettings = mMap.ambientOcclusionSettings();
+  shadowRenderingFrameGraph->setAmbientOcclusionEnabled( ambientOcclusionSettings.isEnabled() );
+  shadowRenderingFrameGraph->setAmbientOcclusionRadius( ambientOcclusionSettings.radius() );
+  shadowRenderingFrameGraph->setAmbientOcclusionIntensity( ambientOcclusionSettings.intensity() );
+  shadowRenderingFrameGraph->setAmbientOcclusionThreshold( ambientOcclusionSettings.threshold() );
 }
 
 void Qgs3DMapScene::onDebugShadowMapSettingsChanged()

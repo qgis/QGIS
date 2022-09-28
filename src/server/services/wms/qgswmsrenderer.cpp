@@ -29,6 +29,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapserviceexception.h"
 #include "qgslayertree.h"
+#include "qgslayoututils.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgsmaplayer.h"
@@ -375,7 +376,7 @@ namespace QgsWms
         }
 
         // Handles the pk-less case
-        const int pkIndexesSize {std::max( pkIndexes.size(), 1 )};
+        const int pkIndexesSize {std::max< int >( pkIndexes.size(), 1 )};
 
         QStringList pkAttributeNames;
         for ( int pkIndex : std::as_const( pkIndexes ) )
@@ -503,6 +504,8 @@ namespace QgsWms
         if ( ok )
           exportSettings.dpi = dpi;
       }
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       if ( atlas )
@@ -536,6 +539,8 @@ namespace QgsWms
           dpi = _dpi;
       }
       exportSettings.dpi = dpi;
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
       // Draw selections
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Destination image size in px
@@ -607,6 +612,8 @@ namespace QgsWms
       exportSettings.flags |= QgsLayoutRenderContext::FlagDrawSelection;
       // Print as raster
       exportSettings.rasterizeWholeImage = layout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+      // Set scales
+      exportSettings.predefinedMapScales = QgsLayoutUtils::predefinedScales( layout.get( ) );
 
       // Export all pages
       if ( atlas )
@@ -1821,7 +1828,9 @@ namespace QgsWms
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
-          maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &renderContext.expressionContext() ) );
+          QgsExpressionContext context { renderContext.expressionContext() };
+          context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+          maptipElem.setAttribute( QStringLiteral( "value" ),  QgsExpression::replaceExpressionText( mapTip, &context ) );
           featureElement.appendChild( maptipElem );
         }
 
@@ -2082,7 +2091,7 @@ namespace QgsWms
           attributeElement.setAttribute( QStringLiteral( "name" ), layer->bandName( it.key() ) );
 
           QString value;
-          if ( ! it.value().isNull() )
+          if ( ! QgsVariantUtils::isNull( it.value() ) )
           {
             value  = QString::number( it.value().toDouble() );
           }
@@ -2172,7 +2181,8 @@ namespace QgsWms
            || tokenIt->compare( QLatin1String( "LIKE" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "ILIKE" ), Qt::CaseInsensitive ) == 0
            || tokenIt->compare( QLatin1String( "DMETAPHONE" ), Qt::CaseInsensitive ) == 0
-           || tokenIt->compare( QLatin1String( "SOUNDEX" ), Qt::CaseInsensitive ) == 0 )
+           || tokenIt->compare( QLatin1String( "SOUNDEX" ), Qt::CaseInsensitive ) == 0
+           || mContext.settings().allowedExtraSqlTokens().contains( *tokenIt, Qt::CaseSensitivity::CaseInsensitive ) )
       {
         continue;
       }
@@ -3127,6 +3137,7 @@ namespace QgsWms
 
   void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QList<QgsWmsParametersFilter> &filters )
   {
+
     if ( layer->type() == QgsMapLayerType::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -3160,10 +3171,12 @@ namespace QgsWms
                                         " has been rejected because of security reasons."
                                         " Note: Text strings have to be enclosed in single or double quotes."
                                         " A space between each word / special character is mandatory."
-                                        " Allowed Keywords and special characters are "
-                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                        " Allowed Keywords and special characters are"
+                                        " IS,NOT,NULL,AND,OR,IN,=,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX%2."
                                         " Not allowed are semicolons in the filter expression." ).arg(
-                                          filter.mFilter ) );
+                                          filter.mFilter, mContext.settings().allowedExtraSqlTokens().isEmpty() ?
+                                          QString() :
+                                          mContext.settings().allowedExtraSqlTokens().join( ',' ).prepend( ',' ) ) );
           }
 
           QString newSubsetString = filter.mFilter;

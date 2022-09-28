@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersqlquerybuilder.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProviderSqlQueryBuilder
+{
+%Docstring(signature="appended")
+Provides an interface for provider-specific creation of SQL queries.
+
+The :py:class:`QgsProviderSqlQueryBuilder` provides an interface for creation of SQL queries, which
+can be overridden for backend provider specific SQL syntax.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgsprovidersqlquerybuilder.h"
+%End
+  public:
+
+    virtual ~QgsProviderSqlQueryBuilder();
+
+    virtual QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const;
+%Docstring
+Returns a result size limited SQL query string generated for the given ``schema`` and table ``name``, retrieving all columns for the first ``limit`` rows.
+
+The base class method returns the SQL query "SELECT * FROM table LIMIT 10". Subclasses may return database specific equivalents to this query.
+%End
+
+    virtual QString quoteIdentifier( const QString &identifier ) const;
+%Docstring
+Returns a properly quoted version of a table/schema ``identifier``.
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/qgsprovidersqlquerybuilder.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

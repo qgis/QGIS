@@ -236,7 +236,8 @@ namespace QgsWfs
 
       //xsd:element
       QDomElement attElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
-      attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( cleanTagNameRegExp, QString() ) );
+      const thread_local QRegularExpression sCleanTagNameRegExp( QStringLiteral( "[^\\w\\.-_]" ), QRegularExpression::PatternOption::UseUnicodePropertiesOption );
+      attElem.setAttribute( QStringLiteral( "name" ), attributeName.replace( ' ', '_' ).replace( sCleanTagNameRegExp, QString() ) );
       const QVariant::Type attributeType = field.type();
       if ( attributeType == QVariant::Int )
       {

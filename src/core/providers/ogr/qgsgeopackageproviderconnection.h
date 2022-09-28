@@ -50,6 +50,7 @@ class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
     QgsFields fields( const QString &schema, const QString &table ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
+    QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
 
   protected:
     QString databaseQueryLogIdentifier() const override;

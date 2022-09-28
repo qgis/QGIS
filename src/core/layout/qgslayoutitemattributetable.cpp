@@ -35,6 +35,7 @@
 #include "qgsgeometryengine.h"
 #include "qgsconditionalstyle.h"
 #include "qgsfontutils.h"
+#include "qgsvariantutils.h"
 
 //
 // QgsLayoutItemAttributeTable
@@ -601,7 +602,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
           val = fieldFormatter->representValue( layer, idx, setup.config(), cache, val );
         }
 
-        QVariant v = val.isNull() ? QString() : replaceWrapChar( val );
+        QVariant v = QgsVariantUtils::isNull( val ) ? QString() : replaceWrapChar( val );
         currentRow << Cell( v, style, f );
         rowContents << v;
       }
@@ -808,11 +809,7 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     }
 
     const QStringList filteredAttributes { layout()->renderContext().featureFilterProvider()->layerAttributes( source, allowedAttributes.values() ) };
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     const QSet<QString> filteredAttributesSet( filteredAttributes.constBegin(), filteredAttributes.constEnd() );
-#else
-    const QSet<QString> filteredAttributesSet { filteredAttributes.toSet() };
-#endif
     if ( filteredAttributesSet != allowedAttributes )
     {
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };

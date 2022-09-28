@@ -278,7 +278,7 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest &request )
         {
           QString colName = mSource->mFields[mSource->mPrimaryKeyAttrs[i]].name();
           QString expr;
-          if ( key[i].isNull() )
+          if ( QgsVariantUtils::isNull( key[i] ) )
             expr = QString( "[%1] IS NULL" ).arg( colName );
           else
             expr = QString( "[%1]=%2" ).arg( colName, QgsMssqlProvider::quotedValue( key[i] ) );
@@ -494,7 +494,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature &feature )
         v = QgsVectorDataProvider::convertValue( fld.type(), originalValue.toString() );
 
       // second chance for time fields -- time fields are not correctly handled by sql server driver on linux (maybe win too?)
-      if ( v.isNull() && fld.type() == QVariant::Time && originalValue.isValid() && originalValue.type() == QVariant::ByteArray )
+      if ( QgsVariantUtils::isNull( v ) && fld.type() == QVariant::Time && originalValue.isValid() && originalValue.type() == QVariant::ByteArray )
       {
         // time fields can be returned as byte arrays... woot
         const QByteArray ba = originalValue.toByteArray();

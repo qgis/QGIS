@@ -152,8 +152,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   {
     //ensure that all fields required for filter expressions are prepared
     QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
-    attributeIndexes += qgis::listToSet( attrs );
-    attrs = qgis::setToList( attributeIndexes );
+    attributeIndexes += QSet< int >( attrs.constBegin(), attrs.constEnd() );
+    attrs = QgsAttributeList( attributeIndexes.constBegin(), attributeIndexes.constEnd() );
     mRequest.setSubsetOfAttributes( attrs );
   }
   // also need attributes required by order by
@@ -166,8 +166,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     {
       attributeIndexes << attrIdx;
     }
-    attributeIndexes += qgis::listToSet( attrs );
-    attrs = qgis::setToList( attributeIndexes );
+    attributeIndexes += QSet< int >( attrs.constBegin(), attrs.constEnd() );
+    attrs = QgsAttributeList( attributeIndexes.constBegin(), attributeIndexes.constEnd() );
     mRequest.setSubsetOfAttributes( attrs );
   }
 
@@ -634,7 +634,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
   , mFields( p->mAttributeFields )
   , mFirstFieldIsFid( p->mFirstFieldIsFid )
-  , mOgrGeometryTypeFilter( QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( p->mOgrGeometryTypeFilter ) )
+  , mOgrGeometryTypeFilter( p->mUniqueGeometryType ? wkbUnknown : QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( p->mOgrGeometryTypeFilter ) )
   , mDriverName( p->mGDALDriverName )
   , mCrs( p->crs() )
   , mWkbType( p->wkbType() )

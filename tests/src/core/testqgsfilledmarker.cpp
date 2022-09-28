@@ -42,18 +42,16 @@
  * \ingroup UnitTests
  * This is a unit test for QgsFilledMarkerSymbolLayer.
  */
-class TestQgsFilledMarkerSymbol : public QObject
+class TestQgsFilledMarkerSymbol : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsFilledMarkerSymbol() = default;
+    TestQgsFilledMarkerSymbol() : QgsTest( QStringLiteral( "Filled Marker Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
 
     void filledMarkerSymbol();
     void dataDefinedShape();
@@ -71,7 +69,6 @@ class TestQgsFilledMarkerSymbol : public QObject
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
-    QString mReport;
 };
 
 
@@ -120,20 +117,10 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
-  mReport += QLatin1String( "<h1>Filled Marker Tests</h1>\n" );
 
 }
 void TestQgsFilledMarkerSymbol::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-
   delete mpPointsLayer;
 
   QgsApplication::exitQgis();

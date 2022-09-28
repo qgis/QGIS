@@ -57,7 +57,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     if ( cbxIdx > -1 )
     {
       v = mComboBox->currentData();
-      if ( v.isNull() )
+      if ( QgsVariantUtils::isNull( v ) )
         v = QVariant( field().type() );
     }
   }
@@ -252,7 +252,7 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
     if ( idx == -1 )
     {
       // if value doesn't exist, we show it in '(...)' (just like value map widget)
-      if ( value.isNull( ) )
+      if ( QgsVariantUtils::isNull( value ) )
       {
         mComboBox->setCurrentIndex( -1 );
       }

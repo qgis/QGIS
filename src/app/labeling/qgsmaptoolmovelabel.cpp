@@ -833,9 +833,9 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
   }
 
   const QgsAttributes attributes = f.attributes();
-  if ( !attributes.at( xCol ).isNull() )
+  if ( !QgsVariantUtils::isNull( attributes.at( xCol ) ) )
     x = attributes.at( xCol ).toDouble( &xSuccess );
-  if ( !attributes.at( yCol ).isNull() )
+  if ( !QgsVariantUtils::isNull( attributes.at( yCol ) ) )
     y = attributes.at( yCol ).toDouble( &ySuccess );
 
   return true;

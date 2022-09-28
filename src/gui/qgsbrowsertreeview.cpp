@@ -27,6 +27,7 @@
 #include <QSortFilterProxyModel>
 #include <QDir>
 #include <QFileInfo>
+#include <QRegularExpression>
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
@@ -352,11 +353,10 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
   {
     const QModelIndex childIndex = model()->index( i, 0, parentIndex );
     const QString childPath = model()->data( childIndex, QgsBrowserGuiModel::PathRole ).toString();
-    QString escapedChildPath = childPath;
-    escapedChildPath.replace( '|', QLatin1String( "\\|" ) );
+    const QString escapedChildPath = QRegularExpression::escape( childPath );
 
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
-    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )
+    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegularExpression( "^" + escapedChildPath + "/.*" ) ) != -1 )
     {
       QgsDebugMsgLevel( QStringLiteral( "-> expand" ), 2 );
       const QModelIndex modelIndex = browserModel()->findPath( childPath, Qt::MatchExactly );

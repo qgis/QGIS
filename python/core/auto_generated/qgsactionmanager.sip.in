@@ -114,9 +114,16 @@ Reads the actions in in XML format
 
     QgsAction action( QUuid id ) const;
 %Docstring
-Gets an action by its id.
+Gets an action by its ``id``.
 
 .. versionadded:: 3.0
+%End
+
+    QgsAction action( const QString &id ) const;
+%Docstring
+Gets an action by its ``id``.
+
+.. versionadded:: 3.28
 %End
 
     void setDefaultAction( const QString &actionScope, QUuid actionId );

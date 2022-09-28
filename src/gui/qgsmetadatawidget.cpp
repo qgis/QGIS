@@ -797,7 +797,7 @@ bool QgsMetadataWidget::checkMetadata()
     for ( const QgsAbstractMetadataBaseValidator::ValidationResult &result : std::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
-      if ( ! result._identifier().isNull() )
+      if ( ! QgsVariantUtils::isNull( result._identifier() ) )
       {
         errors += QLatin1Char( ' ' ) % QVariant( result._identifier().toInt() + 1 ).toString();
       }

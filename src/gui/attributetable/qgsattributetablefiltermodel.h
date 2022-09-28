@@ -251,6 +251,13 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
 
+    /**
+     * Returns the stored filter expression string.
+     *
+     * \since QGIS 3.28.0
+     */
+    QString filterExpression() const { return mFilterExpression; };
+
   signals:
 
     /**

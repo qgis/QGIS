@@ -19,9 +19,25 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/QNode>
-#include <Qt3DRender/QGeometry>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QGeometry>
+
+typedef Qt3DRender::QAttribute Qt3DQAttribute;
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+typedef Qt3DRender::QGeometry Qt3DQGeometry;
+#else
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
+
+typedef Qt3DCore::QAttribute Qt3DQAttribute;
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+typedef Qt3DCore::QGeometry Qt3DQGeometry;
+#endif
+
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPlaneGeometry>
 #include <Qt3DCore/QTransform>
@@ -30,8 +46,6 @@
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QTexture>
-#include <Qt3DRender/QBufferDataGenerator>
-#include <Qt3DRender/QBufferDataGeneratorPtr>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QAbstractTexture>
@@ -48,7 +62,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#include "qgstessellatedpolygongeometry.h"
+#include "qgsbillboardgeometry.h"
 #include "qgsterraintileentity_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgschunknode_p.h"
@@ -61,26 +75,18 @@
 #include "qgs3dexportobject.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
-#include "qgsmesh3dgeometry_p.h"
-#include "qgsmeshlayer.h"
-#include "qgsmesh3dentity_p.h"
 #include "qgsmeshterraingenerator.h"
 #include "qgsvectorlayer.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgspolygon3dsymbol.h"
-#include "qgsline3dsymbol.h"
-#include "qgspoint3dsymbol.h"
-#include "qgsrulebased3drenderer.h"
 #include "qgs3dutils.h"
-#include "qgsbillboardgeometry.h"
 #include "qgsimagetexture.h"
 
 #include <numeric>
 
 template<typename T>
-QVector<T> getAttributeData( Qt3DRender::QAttribute *attribute, const QByteArray &data )
+QVector<T> getAttributeData( Qt3DQAttribute *attribute, const QByteArray &data )
 {
   const uint bytesOffset = attribute->byteOffset();
   const uint bytesStride = attribute->byteStride();
@@ -120,21 +126,21 @@ QVector<uint> _getIndexDataImplementation( const QByteArray &data )
   return result;
 }
 
-QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, const QByteArray &data )
+QVector<uint> getIndexData( Qt3DQAttribute *indexAttribute, const QByteArray &data )
 {
   switch ( indexAttribute->vertexBaseType() )
   {
-    case Qt3DRender::QAttribute::VertexBaseType::Int:
+    case Qt3DQAttribute::VertexBaseType::Int:
       return _getIndexDataImplementation<int>( data );
-    case Qt3DRender::QAttribute::VertexBaseType::UnsignedInt:
+    case Qt3DQAttribute::VertexBaseType::UnsignedInt:
       return _getIndexDataImplementation<uint>( data );
-    case Qt3DRender::QAttribute::VertexBaseType::Short:
+    case Qt3DQAttribute::VertexBaseType::Short:
       return _getIndexDataImplementation<short>( data );
-    case Qt3DRender::QAttribute::VertexBaseType::UnsignedShort:
+    case Qt3DQAttribute::VertexBaseType::UnsignedShort:
       return _getIndexDataImplementation<ushort>( data );
-    case Qt3DRender::QAttribute::VertexBaseType::Byte:
+    case Qt3DQAttribute::VertexBaseType::Byte:
       return _getIndexDataImplementation<char>( data );
-    case Qt3DRender::QAttribute::VertexBaseType::UnsignedByte:
+    case Qt3DQAttribute::VertexBaseType::UnsignedByte:
       return _getIndexDataImplementation<uchar>( data );
     default:
       QgsDebugMsg( "Probably trying to get index data using an attribute that has vertex data" );
@@ -143,7 +149,7 @@ QVector<uint> getIndexData( Qt3DRender::QAttribute *indexAttribute, const QByteA
   return QVector<uint>();
 }
 
-QByteArray getData( Qt3DRender::QBuffer *buffer )
+QByteArray getData( Qt3DQBuffer *buffer )
 {
   QByteArray bytes = buffer->data();
   if ( bytes.isNull() )
@@ -153,9 +159,9 @@ QByteArray getData( Qt3DRender::QBuffer *buffer )
   return bytes;
 }
 
-Qt3DRender::QAttribute *findAttribute( Qt3DRender::QGeometry *geometry, const QString &name, Qt3DRender::QAttribute::AttributeType type )
+Qt3DQAttribute *findAttribute( Qt3DQGeometry *geometry, const QString &name, Qt3DQAttribute::AttributeType type )
 {
-  for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+  for ( Qt3DQAttribute *attribute : geometry->attributes() )
   {
     if ( attribute->attributeType() != type ) continue;
     if ( attribute->name() == name ) return attribute;
@@ -326,7 +332,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   Qt3DRender::QGeometryRenderer *mesh = findTypedComponent<Qt3DRender::QGeometryRenderer>( tileEntity );
   Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
 
-  Qt3DRender::QGeometry *geometry = mesh->geometry();
+  Qt3DQGeometry *geometry = mesh->geometry();
   Qt3DExtras::QPlaneGeometry *tileGeometry = qobject_cast<Qt3DExtras::QPlaneGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
@@ -338,12 +344,12 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
   const QVector3D translation = transform->translation();
 
   // Generate vertice data
-  Qt3DRender::QAttribute *positionAttribute = tileGeometry->positionAttribute();
+  Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
   const QByteArray verticesBytes = getData( positionAttribute->buffer() );
   const QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, verticesBytes );
 
   // Generate index data
-  Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
+  Qt3DQAttribute *indexAttribute = tileGeometry->indexAttribute();
   const QByteArray indexBytes = getData( indexAttribute->buffer() );
   const QVector<uint> indexesBuffer = getIndexData( indexAttribute,  indexBytes );
 
@@ -365,7 +371,7 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
     object->setupNormalCoordinates( normalsBuffer );
   }
 
-  Qt3DRender::QAttribute *texCoordsAttribute = tileGeometry->texCoordAttribute();
+  Qt3DQAttribute *texCoordsAttribute = tileGeometry->texCoordAttribute();
   if ( mExportTextures && texCoordsAttribute != nullptr )
   {
     // Reuse vertex buffer data for texture coordinates
@@ -383,7 +389,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   Qt3DRender::QGeometryRenderer *mesh = findTypedComponent<Qt3DRender::QGeometryRenderer>( tileEntity );
   Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( tileEntity );
 
-  Qt3DRender::QGeometry *geometry = mesh->geometry();
+  Qt3DQGeometry *geometry = mesh->geometry();
   DemTerrainTileGeometry *tileGeometry = qobject_cast<DemTerrainTileGeometry *>( geometry );
   if ( tileGeometry == nullptr )
   {
@@ -394,11 +400,11 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   const float scale = transform->scale();
   const QVector3D translation = transform->translation();
 
-  Qt3DRender::QAttribute *positionAttribute = tileGeometry->positionAttribute();
+  Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
   const QByteArray positionBytes = positionAttribute->buffer()->data();
   const QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, positionBytes );
 
-  Qt3DRender::QAttribute *indexAttribute = tileGeometry->indexAttribute();
+  Qt3DQAttribute *indexAttribute = tileGeometry->indexAttribute();
   const QByteArray indexBytes = indexAttribute->buffer()->data();
   const QVector<unsigned int> indexBuffer = getIndexData( indexAttribute, indexBytes );
 
@@ -409,7 +415,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   object->setupPositionCoordinates( positionBuffer, scale, translation );
   object->setupFaces( indexBuffer );
 
-  Qt3DRender::QAttribute *normalsAttributes = tileGeometry->normalAttribute();
+  Qt3DQAttribute *normalsAttributes = tileGeometry->normalAttribute();
   if ( mExportNormals && normalsAttributes != nullptr )
   {
     const QByteArray normalsBytes = normalsAttributes->buffer()->data();
@@ -417,7 +423,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
     object->setupNormalCoordinates( normalsBuffer );
   }
 
-  Qt3DRender::QAttribute *texCoordsAttribute = tileGeometry->texCoordsAttribute();
+  Qt3DQAttribute *texCoordsAttribute = tileGeometry->texCoordsAttribute();
   if ( mExportTextures && texCoordsAttribute != nullptr )
   {
     const QByteArray texCoordsBytes = texCoordsAttribute->buffer()->data();
@@ -447,14 +453,14 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const 
 QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QString &objectNamePrefix )
 {
   QVector<Qgs3DExportObject *> objects;
-  const QList<Qt3DRender::QGeometry *> geometriesList =  entity->findChildren<Qt3DRender::QGeometry *>();
-  for ( Qt3DRender::QGeometry *geometry : geometriesList )
+  const QList<Qt3DQGeometry *> geometriesList =  entity->findChildren<Qt3DQGeometry *>();
+  for ( Qt3DQGeometry *geometry : geometriesList )
   {
-    Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
-    Qt3DRender::QAttribute *indexAttribute = nullptr;
-    for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+    Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+    Qt3DQAttribute *indexAttribute = nullptr;
+    for ( Qt3DQAttribute *attribute : geometry->attributes() )
     {
-      if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
         indexAttribute = attribute;
     }
     if ( positionAttribute == nullptr || indexAttribute == nullptr )
@@ -464,7 +470,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qt3DRender::QAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DRender::QAttribute::VertexAttribute );
+    Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
     const QByteArray instancePositionBytes = getData( instanceDataAttribute->buffer() );
     QVector<float> instancePosition = getAttributeData<float>( instanceDataAttribute, instancePositionBytes );
     for ( int i = 0; i < instancePosition.size(); i += 3 )
@@ -476,7 +482,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
 
       object->setSmoothEdges( mSmoothEdges );
 
-      Qt3DRender::QAttribute *normalsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+      Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
       if ( mExportNormals && normalsAttribute != nullptr )
       {
         // Reuse vertex bytes
@@ -530,16 +536,16 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     parent = parent->parent();
   }
 
-  Qt3DRender::QGeometry *geometry = mesh->geometry();
+  Qt3DQGeometry *geometry = mesh->geometry();
 
-  Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
-  Qt3DRender::QAttribute *indexAttribute = nullptr;
+  Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+  Qt3DQAttribute *indexAttribute = nullptr;
   QByteArray indexBytes, vertexBytes;
   QVector<uint> indexData;
   QVector<float> positionData;
-  for ( Qt3DRender::QAttribute *attribute : geometry->attributes() )
+  for ( Qt3DQAttribute *attribute : geometry->attributes() )
   {
-    if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+    if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
       indexAttribute = attribute;
   }
 
@@ -572,7 +578,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
 
-  Qt3DRender::QAttribute *normalsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultNormalAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+  Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
   if ( mExportNormals && normalsAttribute != nullptr )
   {
     // Reuse vertex bytes
@@ -580,7 +586,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     object->setupNormalCoordinates( normalsData );
   }
 
-  Qt3DRender::QAttribute *texCoordsAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultTextureCoordinateAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+  Qt3DQAttribute *texCoordsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultTextureCoordinateAttributeName(), Qt3DQAttribute::VertexAttribute );
   if ( mExportTextures && texCoordsAttribute != nullptr )
   {
     // Reuse vertex bytes
@@ -598,12 +604,12 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
     if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
-    Qt3DRender::QGeometry *geom = renderer->geometry();
-    Qt3DRender::QAttribute *positionAttribute = findAttribute( geom, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
-    Qt3DRender::QAttribute *indexAttribute = nullptr;
-    for ( Qt3DRender::QAttribute *attribute : geom->attributes() )
+    Qt3DQGeometry *geom = renderer->geometry();
+    Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
+    Qt3DQAttribute *indexAttribute = nullptr;
+    for ( Qt3DQAttribute *attribute : geom->attributes() )
     {
-      if ( attribute->attributeType() == Qt3DRender::QAttribute::IndexAttribute )
+      if ( attribute->attributeType() == Qt3DQAttribute::IndexAttribute )
       {
         indexAttribute = attribute;
         break;
@@ -636,10 +642,10 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
-    Qt3DRender::QGeometry *geometry = qobject_cast<QgsBillboardGeometry *>( renderer->geometry() );
+    Qt3DQGeometry *geometry = qobject_cast<QgsBillboardGeometry *>( renderer->geometry() );
     if ( geometry == nullptr )
       continue;
-    Qt3DRender::QAttribute *positionAttribute = findAttribute( geometry, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::VertexAttribute );
+    Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
     const QByteArray positionBytes = getData( positionAttribute->buffer() );
     if ( positionBytes.size() == 0 )
       continue;

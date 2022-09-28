@@ -144,12 +144,6 @@ if (UNIX AND NOT APPLE AND NOT ANDROID)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
 endif()
 
-if (APPLE)
-  find_package(${QT_VERSION_BASE}MacExtras)
-
-  target_link_libraries(qgis_native ${QT_VERSION_BASE}::MacExtras)
-endif()
-
 if (MSVC)
   find_package(${QT_VERSION_BASE}WinExtras)
 

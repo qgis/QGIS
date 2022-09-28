@@ -640,6 +640,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths or create data providers for layers.
       FlagTrustLayerMetadata = 1 << 1, //!< Trust layer metadata. Improves layer load time by skipping expensive checks like primary key unicity, geometry type and srid and by using estimated metadata on layer load. Since QGIS 3.16
       FlagReadExtentFromXml = 1 << 2, //!< Read extent from xml and skip get extent from provider.
+      FlagForceReadOnly = 1 << 3, //!< Force open as read only.
     };
     Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 

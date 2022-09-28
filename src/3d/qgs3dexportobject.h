@@ -21,7 +21,7 @@
 #include <QVector>
 #include <QVector3D>
 #include <QImage>
-#include <Qt3DRender/QAttribute>
+#include <QMap>
 
 #include "qgis_3d.h"
 

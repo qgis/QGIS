@@ -60,7 +60,7 @@
  * \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
-class TestQgsGeometry : public QObject
+class TestQgsGeometry : public QgsTest
 {
     Q_OBJECT
 
@@ -229,12 +229,12 @@ class TestQgsGeometry : public QObject
     QPainter *mpPainter = nullptr;
     QPen mPen1;
     QPen mPen2;
-    QString mReport;
 
 };
 
 TestQgsGeometry::TestQgsGeometry()
-  : mpPolylineGeometryD( nullptr )
+  : QgsTest( QStringLiteral( "Geometry Tests" ) )
+  , mpPolylineGeometryD( nullptr )
   , mpPolygonGeometryA( nullptr )
   , mpPolygonGeometryB( nullptr )
   , mpPolygonGeometryC( nullptr )
@@ -249,10 +249,6 @@ void TestQgsGeometry::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-  mReport += QLatin1String( "<h1>Geometry Tests</h1>\n" );
-  mReport += QLatin1String( "<p><font color=\"green\">Green = polygonA</font></p>\n" );
-  mReport += QLatin1String( "<p><font color=\"red\">Red = polygonB</font></p>\n" );
-  mReport += QLatin1String( "<p><font color=\"blue\">Blue = polygonC</font></p>\n" );
 }
 
 
@@ -260,18 +256,6 @@ void TestQgsGeometry::cleanupTestCase()
 {
   delete mpPainter;
   mpPainter = nullptr;
-
-  // Runs once after all tests are run
-  QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-    //QDesktopServices::openUrl( "file:///" + myReportFile );
-  }
-
   QgsApplication::exitQgis();
 }
 
@@ -409,7 +393,7 @@ void TestQgsGeometry::asVariant()
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
-  QVERIFY( !var.canConvert< QgsReferencedGeometry >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsGeometry" ) );
 
   QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
   QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
@@ -441,7 +425,7 @@ void TestQgsGeometry::referenced()
   QVariant var = QVariant::fromValue( geom1 );
   QVERIFY( var.isValid() );
 
-  QVERIFY( var.canConvert< QgsReferencedGeometry >() );
+  QCOMPARE( var.userType(), QMetaType::type( "QgsReferencedGeometry" ) );
 
   QgsReferencedGeometry geom2 = qvariant_cast<QgsReferencedGeometry>( var );
   QCOMPARE( geom2.asWkt(), geom1.asWkt() );
@@ -1758,10 +1742,8 @@ void TestQgsGeometry::exportToGeoJSON()
   QCOMPARE( obtained, geojson );
 }
 
-bool TestQgsGeometry::renderCheck( const QString &testName, const QString &comment, int mismatchCount )
+bool TestQgsGeometry::renderCheck( const QString &testName, const QString &, int mismatchCount )
 {
-  mReport += "<h2>" + testName + "</h2>\n";
-  mReport += "<h3>" + comment + "</h3>\n";
   QString myTmpDir = QDir::tempPath() + '/';
   QString myFileName = myTmpDir + testName + ".png";
   mImage.save( myFileName, "PNG" );
@@ -2063,7 +2045,6 @@ void TestQgsGeometry::isSimple_data()
   QTest::newRow( "multipoint" ) << QStringLiteral( "MULTIPOINT((1 1), (2 2))" ) << true;
   QTest::newRow( "must not contain the same point twice" ) << QStringLiteral( "MULTIPOINT((1 1), (1 1))" ) << false;
   QTest::newRow( "multiline string simple" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 1, 1 1))" ) << true;
-  QTest::newRow( "may be touching at endpoints" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 0, 1 0))" ) << true;
   QTest::newRow( "must not intersect each other" ) << QStringLiteral( "MULTILINESTRING((0 0, 1 1), (0 1, 1 0))" ) << false;
 }
 
@@ -2260,16 +2241,8 @@ void TestQgsGeometry::splitGeometry()
   QgsPointSequence testPoints;
   qDebug() << GEOSversion() << "\n";
   QgsGeometry g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))" ) );
-  if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 9 )
-  {
-    QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                                newGeoms, false, testPoints ), Qgis::GeometryOperationResult::NothingHappened );
-  }
-  else
-  {
-    QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
-                                newGeoms, false, testPoints ), Qgis::GeometryOperationResult::InvalidBaseGeometry );
-  }
+  QCOMPARE( g1.splitGeometry( QgsPointSequence() << QgsPoint( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPoint( 492955.04876351181883365, 7082338.06309300474822521 ),
+                              newGeoms, false, testPoints ), Qgis::GeometryOperationResult::InvalidBaseGeometry );
   QVERIFY( newGeoms.isEmpty() );
 
   // Bug https://github.com/qgis/QGIS/issues/33489

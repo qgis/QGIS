@@ -17,11 +17,9 @@
 #include "qgsdecorationtitledialog.h"
 
 #include "qgisapp.h"
-#include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
@@ -31,7 +29,6 @@
 #include <QMenu>
 #include <QDate>
 #include <QDomDocument>
-#include <QMatrix>
 #include <QFile>
 
 //non qt includes
@@ -114,7 +111,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   const QFontMetricsF textMetrics = QgsTextRenderer::fontMetrics( context, mTextFormat );
   const double textDescent = textMetrics.descent();
   const double textWidth = QgsTextRenderer::textWidth( context, mTextFormat, displayStringList );
-  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, QgsTextRenderer::Point );
+  const double textHeight = QgsTextRenderer::textHeight( context, mTextFormat, displayStringList, Qgis::TextLayoutMode::Point );
 
   QPaintDevice *device = context.painter()->device();
   const int deviceHeight = device->height() / device->devicePixelRatioF();
@@ -156,7 +153,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   QPolygonF backgroundBar;
 
   // Determine placement of label from form combo box
-  QgsTextRenderer::HAlignment horizontalAlignment = QgsTextRenderer::AlignLeft;
+  Qgis::TextHorizontalAlignment horizontalAlignment = Qgis::TextHorizontalAlignment::Left;
   switch ( mPlacement )
   {
     case BottomLeft: // Bottom Left, xOffset is set above
@@ -180,7 +177,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
                     << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth - xOffset;
-      horizontalAlignment = QgsTextRenderer::AlignRight;
+      horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case BottomRight: // Bottom Right
       backgroundBar << QPointF( 0, deviceHeight )
@@ -189,7 +186,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
                     << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth - xOffset;
-      horizontalAlignment = QgsTextRenderer::AlignRight;
+      horizontalAlignment = Qgis::TextHorizontalAlignment::Right;
       break;
     case TopCenter: // Top Center
       backgroundBar << QPointF( 0, 0 )
@@ -198,7 +195,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
                     << QPointF( 0, yOffset * 2 + textHeight );
       yOffset = yOffset + textHeight - textDescent;
       xOffset = deviceWidth / 2 + xOffset;
-      horizontalAlignment = QgsTextRenderer::AlignCenter;
+      horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     case BottomCenter: // Bottom Center
       backgroundBar << QPointF( 0, deviceHeight )
@@ -207,7 +204,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
                     << QPointF( 0, deviceHeight - ( yOffset * 2 + textHeight ) );
       yOffset = deviceHeight - yOffset - textDescent;
       xOffset = deviceWidth / 2 + xOffset;
-      horizontalAlignment = QgsTextRenderer::AlignCenter;
+      horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     default:
       QgsDebugMsg( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );

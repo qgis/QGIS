@@ -76,8 +76,6 @@ class TestQgsDxfExport : public QObject
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
-    QString mReport;
-
     void setDefaultLabelParams( QgsPalLayerSettings &settings );
     QString getTempFileName( const QString &file ) const;
 

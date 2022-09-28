@@ -18,25 +18,27 @@
 #include "qgsapplication.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutframe.h"
-#include "qgslayout.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
+#include "qgslayout.h"
+
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutHtml : public QObject
+class TestQgsLayoutHtml : public QgsTest
 {
     Q_OBJECT
+
+  public:
+    TestQgsLayoutHtml() : QgsTest( QStringLiteral( "Layout HTML Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
     void sourceMode(); //test if rendering manual HTML works
     void userStylesheets(); //test if user stylesheets work
     void evalExpressions(); //test if rendering with expressions works
@@ -47,7 +49,6 @@ class TestQgsLayoutHtml : public QObject
     void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
 
   private:
-    QString mReport;
     QFont mTestFont;
 };
 
@@ -56,33 +57,13 @@ void TestQgsLayoutHtml::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mReport = QStringLiteral( "<h1>Layout HTML Tests</h1>\n" );
-
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Oblique" ) );
   mTestFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Oblique " ) );
 }
 
 void TestQgsLayoutHtml::cleanupTestCase()
 {
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
-}
-
-void TestQgsLayoutHtml::init()
-{
-
-}
-
-void TestQgsLayoutHtml::cleanup()
-{
-
 }
 
 void TestQgsLayoutHtml::sourceMode()

@@ -10,12 +10,6 @@
     <height>262</height>
    </rect>
   </property>
-  <property name="maximumSize">
-   <size>
-    <width>524287</width>
-    <height>500</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Advanced Digitizing</string>
   </property>

@@ -16,6 +16,7 @@
 
 #include "qgssqlstatement.h"
 #include "qgis.h"
+#include "qgsvariantutils.h"
 
 #include <QRegularExpression>
 
@@ -479,7 +480,7 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeFunction::clone() const
 
 QString QgsSQLStatement::NodeLiteral::dump() const
 {
-  if ( mValue.isNull() )
+  if ( QgsVariantUtils::isNull( mValue ) )
     return QStringLiteral( "NULL" );
 
   switch ( mValue.type() )

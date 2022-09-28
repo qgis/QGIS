@@ -108,12 +108,21 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
   }
 }
 
-QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode, QWidget *parent, Qt::WindowFlags flags, bool *initiallyDocked, const QString &filterExpression )
   : QDialog( parent, flags )
   , mLayer( layer )
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+  connect( mMainViewButtonGroup, qOverload< int >( &QButtonGroup::buttonClicked ), mMainView, &QgsDualView::setCurrentIndex );
+#else
+  connect( mMainViewButtonGroup, &QButtonGroup::idClicked, mMainView, &QgsDualView::setCurrentIndex );
+#endif
+  connect( mActionToggleEditing, &QAction::toggled, mActionSaveEdits, &QAction::setEnabled );
+  connect( mActionToggleEditing, &QAction::toggled, mActionReload, &QAction::setDisabled );
+
   connect( mActionCutSelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionCutSelectedRows_triggered );
   connect( mActionCopySelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionCopySelectedRows_triggered );
   connect( mActionPasteFeatures, &QAction::triggered, this, &QgsAttributeTableDialog::mActionPasteFeatures_triggered );
@@ -211,6 +220,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   else if ( initialMode == QgsAttributeTableFilterModel::ShowEdited )
   {
     r.setFilterFids( layer->editBuffer() ? layer->editBuffer()->allAddedOrEditedFeatures() : QgsFeatureIds() );
+  }
+  else if ( !filterExpression.isEmpty() )
+  {
+    r.setFilterExpression( filterExpression );
   }
   if ( !needsGeom )
     r.setFlags( QgsFeatureRequest::NoGeometry );
@@ -374,6 +387,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
     case QgsAttributeTableFilterModel::ShowEdited:
       mFeatureFilterWidget->filterEdited();
+      break;
+
+    case QgsAttributeTableFilterModel::ShowFilteredList:
+      mFeatureFilterWidget->setFilterExpression( filterExpression );
       break;
 
     case QgsAttributeTableFilterModel::ShowAll:
@@ -682,7 +699,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeTable_triggered()
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
   QgsFeature f;
-  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QString(), -1, this );
+  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, QUuid(), -1, this );
   action.setForceSuppressFormPopup( true ); // we're already showing the table, allowing users to enter the new feature's attributes directly
   if ( action.addFeature() )
   {
@@ -703,7 +720,7 @@ void QgsAttributeTableDialog::mActionAddFeatureViaAttributeForm_triggered()
 
   QgsFeature f;
 
-  QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QString(), -1, this );
+  QgsFeatureAction action( tr( "Feature Added" ), f, mLayer, QUuid(), -1, this );
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
   if ( action.addFeature() )

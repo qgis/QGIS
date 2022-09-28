@@ -526,6 +526,10 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
     dotProduct += 1.0;
 
   QgsVector new_v = p + q;
+  if ( qgsDoubleNear( new_v.length(), 0.0 ) )
+  {
+    return QgsVector( 0, 0 );
+  }
   // 0.1 magic number from JOSM implementation - think this is to limit each iterative step
   return new_v.normalized() * ( 0.1 * dotProduct * scale );
 }
@@ -1138,7 +1142,10 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
     bufferedLines << QgsGeometry::unaryUnion( parts );
   }
 
-  return QgsGeometry::collectGeometry( bufferedLines );
+  QgsGeometry res = QgsGeometry::collectGeometry( bufferedLines );
+  // happens on some GEOS versions...
+  res.removeDuplicateNodes();
+  return res;
 }
 
 QgsGeometry QgsInternalGeometryEngine::taperedBuffer( double start, double end, int segments ) const

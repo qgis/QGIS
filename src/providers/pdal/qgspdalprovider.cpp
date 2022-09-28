@@ -431,7 +431,7 @@ void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()
       }
     }
     sExtensions.sort();
-    const QString extensionsString = QStringLiteral( "*." ).append( sExtensions.join( QStringLiteral( " *." ) ) );
+    const QString extensionsString = QStringLiteral( "*." ).append( sExtensions.join( QLatin1String( " *." ) ) );
     sFilterString = tr( "PDAL Point Clouds" ) + QString( " (%1 %2)" ).arg( extensionsString, extensionsString.toUpper() );
   } );
 }

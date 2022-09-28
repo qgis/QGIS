@@ -19,7 +19,13 @@
 #include <QVector4D>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickTriangleEvent>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
+typedef Qt3DRender::QBuffer Qt3DQBuffer;
+#else
+#include <Qt3DCore/QBuffer>
+typedef Qt3DCore::QBuffer Qt3DQBuffer;
+#endif
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
@@ -717,7 +723,7 @@ void QgsChunkedEntity::onPickEvent( Qt3DRender::QPickEvent *event )
 double QgsChunkedEntity::calculateEntityGpuMemorySize( Qt3DCore::QEntity *entity )
 {
   long long usedGpuMemory = 0;
-  for ( Qt3DRender::QBuffer *buffer : entity->findChildren<Qt3DRender::QBuffer *>() )
+  for ( Qt3DQBuffer *buffer : entity->findChildren<Qt3DQBuffer *>() )
   {
     usedGpuMemory += buffer->data().size();
   }

@@ -18,6 +18,7 @@
 #include "qgspallabeling.h"
 #include "qgssymbollayerutils.h"
 #include "qgspainteffectregistry.h"
+#include "qgsapplication.h"
 
 QgsTextMaskSettings::QgsTextMaskSettings()
 {
@@ -159,7 +160,7 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
   if ( properties.isActive( QgsPalLayerSettings::MaskBufferUnit ) )
   {
     const QVariant exprVal = properties.value( QgsPalLayerSettings::MaskBufferUnit, context.expressionContext() );
-    if ( !exprVal.isNull() )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
       const QString units = exprVal.toString();
       if ( !units.isEmpty() )
@@ -176,7 +177,7 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
   {
     context.expressionContext().setOriginalValueVariable( d->opacity * 100 );
     const QVariant val = properties.value( QgsPalLayerSettings::MaskOpacity, context.expressionContext(), d->opacity * 100 );
-    if ( !val.isNull() )
+    if ( !QgsVariantUtils::isNull( val ) )
     {
       d->opacity = val.toDouble() / 100.0;
     }

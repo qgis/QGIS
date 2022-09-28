@@ -308,12 +308,7 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
       return QVariant();
     case Qt::DecorationRole:
       return QVariant();
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-    case Qt::BackgroundColorRole:
-#else
     case Qt::BackgroundRole:
-#endif
       return QVariant();
   }
 
@@ -783,11 +778,7 @@ QVariant QgsMeshAvailableDatasetGroupTreeModel::data( const QModelIndex &index, 
     case Name:
       return textDisplayed( index );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
-    case Qt::BackgroundColorRole:
-#else
     case Qt::BackgroundRole:
-#endif
       return backGroundColor( index );
   }
   return QgsMeshDatasetGroupTreeModel::data( index, role );

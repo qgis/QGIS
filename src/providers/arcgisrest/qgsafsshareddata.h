@@ -51,6 +51,9 @@ class QgsAfsSharedData : public QObject
 
     quint32 featureIdToObjectId( QgsFeatureId id );
 
+    // lock must already be obtained by caller!
+    QgsFeatureId objectIdToFeatureId( quint32 oid ) const;
+
     bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
     QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
 
@@ -74,11 +77,14 @@ class QgsAfsSharedData : public QObject
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
+    int mMaximumFetchObjectsCount = 100;
 
     QString mObjectIdFieldName;
     int mObjectIdFieldIdx = -1;
 
     QList<quint32> mObjectIds;
+    QHash<quint32, QgsFeatureId> mObjectIdToFeatureId;
+
     QSet<QgsFeatureId> mDeletedFeatureIds;
     QMap<QgsFeatureId, QgsFeature> mCache;
     QgsCoordinateReferenceSystem mSourceCRS;

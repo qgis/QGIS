@@ -816,8 +816,8 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
-        print([f.driverName for f in formats2])
-        self.assertTrue(formats2[0].driverName < formats2[1].driverName)
+        # print([f.filterString for f in formats2])
+        self.assertTrue(formats2[0].filterString < formats2[1].filterString)
         self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
         self.assertNotEqual(formats2[0].driverName, 'GeoPackage')
 

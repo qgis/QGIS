@@ -259,9 +259,31 @@ QToolButton:checked:disabled
 {
     border: 1px solid rgba(240,240,240,100);
 }
-QToolButton::menu-arrow 
+QToolButton::menu-arrow
 {
     image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QToolButton::menu-arrow:disabled
+{
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QToolButton::menu-indicator
+{
+    top: 0.2em;
+    right: -0.2em;
+    image: url(@theme_path/icons/arrow-down.svg);
+    width: 0.8em;
+    height: 1.2em;
+}
+QToolButton::menu-indicator:disabled
+{
+    top: 0.2em;
+    right: -0.2em;
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
     width: 0.8em;
     height: 1.2em;
 }

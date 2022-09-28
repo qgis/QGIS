@@ -229,11 +229,7 @@ QgsAbstractDatabaseProviderConnection::TableProperty QgsOgrProviderConnection::t
   if ( !userLayer )
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while retrieving table properties: %1" ).arg( errCause ) );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
   OGRLayerH layer = userLayer->getHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
 

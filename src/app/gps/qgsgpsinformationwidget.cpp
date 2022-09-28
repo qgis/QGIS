@@ -25,16 +25,13 @@
 #include "qgsgeometry.h"
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
-#include "qgslayertreeview.h"
 #include "qgslogger.h"
 #include "qgsmaptooladdfeature.h"
-#include "qgsnmeaconnection.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgswkbptr.h"
 #include "qgssettings.h"
 #include "qgsstatusbar.h"
 #include "gmath.h"
@@ -48,6 +45,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
 #include "qgslinesymbol.h"
+#include "qgsgpsconnection.h"
 
 // QWT Charting widget
 
@@ -96,9 +94,20 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnAddVertex, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnAddVertex_clicked );
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
-  connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
   connect( mMapCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsInformationWidget::tapAndHold );
+
+  mLogFilename->setDialogTitle( tr( "GPS Log File" ) );
+  mLogFilename->setStorageMode( QgsFileWidget::SaveFile );
+  mLogFilename->setFilter( tr( "NMEA files" ) + " (*.nmea)" );
+  mLogFilename->lineEdit()->setShowClearButton( false );
+  const QString lastLogFolder = settingLastLogFolder.value();
+  mLogFilename->setDefaultRoot( lastLogFolder.isEmpty() ? QDir::homePath() : lastLogFolder );
+  connect( mLogFilename, &QgsFileWidget::fileChanged, this, [ = ]
+  {
+    settingLastLogFolder.setValue( QFileInfo( mLogFilename->filePath() ).absolutePath() );
+  } );
+
 
   mRecenterButton->setEnabled( false );
 
@@ -127,7 +136,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
     mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
-  mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
@@ -254,9 +262,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   // Restore state
 
-  mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
+  mCheckShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
   mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool() );
-  mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "markerSize" ), "12", QgsSettings::Gps ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt() );
   mSpinTrackWidth->setClearValue( 2 );
   mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>() );
@@ -452,8 +459,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "lastPort" ), mCboDevices->currentData().toString(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "trackWidth" ), mSpinTrackWidth->value(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "trackColor" ), mBtnTrackColor->color(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "markerSize" ), mSliderMarkerSize->value(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "showMarker" ), mGroupShowMarker->isChecked(), QgsSettings::Gps );
+  mySettings.setValue( QStringLiteral( "showMarker" ), mCheckShowMarker->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
@@ -630,7 +636,8 @@ void QgsGpsInformationWidget::connectGps()
   mTxtSatellitesUsed->clear();
   mTxtStatus->clear();
 
-  mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
+  mLastGpsPosition = QgsPointXY();
+  mSecondLastGpsPosition = QgsPointXY();
 
   QString port;
 
@@ -684,11 +691,11 @@ void QgsGpsInformationWidget::connected( QgsGpsConnection *conn )
   QgsApplication::gpsConnectionRegistry()->registerConnection( mNmea );
   showStatusBarMessage( tr( "Connected to GPS device." ) );
 
-  if ( mLogFileGroupBox->isChecked() && ! mTxtLogFile->text().isEmpty() )
+  if ( mLogFileGroupBox->isChecked() && !mLogFilename->filePath().isEmpty() )
   {
-    if ( ! mLogFile )
+    if ( !mLogFile )
     {
-      mLogFile = new QFile( mTxtLogFile->text() );
+      mLogFile = new QFile( mLogFilename->filePath() );
     }
 
     if ( mLogFile->open( QIODevice::Append ) )  // open in binary and explicitly output CR + LF per NMEA
@@ -752,7 +759,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   FixStatus fixStatus = NoData;
 
   // no fix if any of the three report bad; default values are invalid values and won't be changed if the corresponding NMEA msg is not received
-  if ( info.status == 'V' || info.fixType == NMEA_FIX_BAD || info.qualityIndicator == Qgis::GpsQualityIndicator::Invalid || info.qualityIndicator == Qgis::GpsQualityIndicator::Unknown ) // some sources say that 'V' indicates position fix, but is below acceptable quality
+  if ( info.status == 'V' || info.fixType == NMEA_FIX_BAD || info.qualityIndicator == Qgis::GpsQualityIndicator::Invalid ) // some sources say that 'V' indicates position fix, but is below acceptable quality
   {
     fixStatus = NoFix;
   }
@@ -761,7 +768,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     fixStatus = Fix2D;
     validFlag = true;
   }
-  else if ( info.status == 'A' || info.fixType == NMEA_FIX_3D || ( info.qualityIndicator != Qgis::GpsQualityIndicator::Invalid && info.qualityIndicator != Qgis::GpsQualityIndicator::Unknown ) ) // good
+  else if ( info.status == 'A' || info.fixType == NMEA_FIX_3D || ( info.qualityIndicator != Qgis::GpsQualityIndicator::Invalid ) ) // good
   {
     fixStatus = Fix3D;
     validFlag = true;
@@ -972,7 +979,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QString() ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.qualityDescription() );
-    mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
+    mTxtSatellitesUsed->setText( tr( "%1 used (%2 in view)" ).arg( info.satellitesUsed ).arg( info.satellitesInView.size() ) );
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : QString() );
   } //position
 
@@ -1020,11 +1027,13 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     updateGpsDistanceStatusMessage( false );
   }
 
+  double bearing = 0;
+  double trueNorth = 0;
+  const QgsSettings settings;
+  const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
+
   if ( !std::isnan( info.direction ) || ( mTravelBearingCheckBox->isChecked() && !mSecondLastGpsPosition.isEmpty() ) )
   {
-    const QgsSettings settings;
-    double bearing = 0;
-    double trueNorth = 0;
     if ( !mTravelBearingCheckBox->isChecked() )
     {
       bearing = info.direction;
@@ -1052,8 +1061,6 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       }
 
     }
-
-    const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
 
     if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
@@ -1113,7 +1120,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   }
 
   // new marker position after recentering
-  if ( mGroupShowMarker->isChecked() ) // show marker
+  if ( mCheckShowMarker->isChecked() ) // show marker
   {
     if ( validFlag ) // update cursor position if valid position
     {
@@ -1122,8 +1129,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       {
         mMapMarker = new QgsGpsMarker( mMapCanvas );
       }
-      mMapMarker->setSize( mSliderMarkerSize->value() );
       mMapMarker->setGpsPosition( myNewCenter );
+
+      mMapMarker->setMarkerRotation( bearing - trueNorth + adjustment );
     }
   }
   else
@@ -1240,7 +1248,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         return;
       }
 
-      QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QString(), -1, this );
+      QgsFeatureAction action( tr( "Feature Added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
         if ( mCbxAutoCommit->isChecked() )
@@ -1335,7 +1343,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       }
 
       f.setGeometry( g );
-      QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QString(), -1, this );
+      QgsFeatureAction action( tr( "Feature added" ), f, vlayer, QUuid(), -1, this );
       if ( action.addFeature( attrMap ) )
       {
         if ( mCbxAutoCommit->isChecked() )
@@ -1412,32 +1420,6 @@ void QgsGpsInformationWidget::createRubberBand()
   mRubberBand->setColor( mBtnTrackColor->color() );
   mRubberBand->setWidth( mSpinTrackWidth->value() );
   mRubberBand->show();
-}
-
-void QgsGpsInformationWidget::mBtnLogFile_clicked()
-{
-//=========================
-  // This does not allow for an extension other than ".nmea"
-  // Retrieve last used log file dir from persistent settings
-  QgsSettings settings;
-  const QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
-  const QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file As" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
-  if ( saveFilePath.isNull() ) //canceled
-  {
-    return;
-  }
-  const QFileInfo myFI( saveFilePath );
-  const QString myPath = myFI.path();
-  settings.setValue( settingPath, myPath );
-
-  // make sure the .nmea extension is included in the path name. if not, add it...
-  if ( "nmea" != myFI.suffix() )
-  {
-    saveFilePath = myFI.filePath() + ".nmea";
-  }
-  mTxtLogFile->setText( saveFilePath );
-  mTxtLogFile->setToolTip( saveFilePath );
 }
 
 void QgsGpsInformationWidget::logNmeaSentence( const QString &nmeaString )

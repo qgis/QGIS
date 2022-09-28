@@ -217,11 +217,7 @@ void QgsCrashReport::exportToCrashFolder()
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
       QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-      stream << mStackTrace->fullStack << endl;
-#else
       stream << mStackTrace->fullStack << Qt::endl;
-#endif
     }
     file.close();
   }
@@ -231,11 +227,7 @@ void QgsCrashReport::exportToCrashFolder()
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    stream << htmlToMarkdown( toHtml() ) << endl;
-#else
     stream << htmlToMarkdown( toHtml() ) << Qt::endl;
-#endif
   }
   file.close();
 
@@ -332,7 +324,7 @@ QString QgsCrashReport::htmlToMarkdown( const QString &html )
   converted.replace( QLatin1String( "<pre>" ), QLatin1String( "\n```\n" ) );
   converted.replace( QLatin1String( "</pre>" ), QLatin1String( "```\n" ) );
 
-  static thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
+  const thread_local QRegularExpression hrefRegEx( QStringLiteral( "<a\\s+href\\s*=\\s*([^<>]*)\\s*>([^<>]*)</a>" ) );
 
   int offset = 0;
   QRegularExpressionMatch match = hrefRegEx.match( converted );

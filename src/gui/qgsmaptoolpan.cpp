@@ -20,7 +20,6 @@
 #include "qgsmaptopixel.h"
 #include "qgsmapmouseevent.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
@@ -34,7 +33,8 @@ QgsMapToolPan::QgsMapToolPan( QgsMapCanvas *canvas )
 
 QgsMapToolPan::~QgsMapToolPan()
 {
-  mCanvas->ungrabGesture( Qt::PinchGesture );
+  if ( mCanvas )
+    mCanvas->ungrabGesture( Qt::PinchGesture );
 }
 
 void QgsMapToolPan::activate()
@@ -116,7 +116,7 @@ void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  if ( !QTouchDevice::devices().isEmpty() && !mPinching )
+  if ( !mPinching )
   {
     mCanvas->zoomWithCenter( e->x(), e->y(), true );
   }
@@ -124,9 +124,6 @@ void QgsMapToolPan::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 
 bool QgsMapToolPan::gestureEvent( QGestureEvent *event )
 {
-  if ( QTouchDevice::devices().isEmpty() )
-    return true; // no touch support
-
   if ( QGesture *gesture = event->gesture( Qt::PinchGesture ) )
   {
     mPinching = true;

@@ -18,10 +18,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QRegExpValidator>
 #include <QSpacerItem>
 #include <QTimer>
 #include <QToolButton>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QRandomGenerator>
 
 #include "qgsstatusbarcoordinateswidget.h"
 #include "qgsapplication.h"
@@ -58,8 +60,8 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mLineEdit->setAlignment( Qt::AlignCenter );
   connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates );
 
-  const QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
-  mCoordsEditValidator = new QRegExpValidator( coordValidator, this );
+  const QRegularExpression coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
+  mCoordsEditValidator = new QRegularExpressionValidator( coordValidator, this );
   mLineEdit->setToolTip( tr( "Current map coordinate (longitude,latitude or east,north)" ) );
 
   //toggle to switch between mouse pos and extents display in status bar widget
@@ -164,7 +166,8 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   double first = 0;
   double second = 0;
   QString coordText = mLineEdit->text();
-  coordText.replace( QRegExp( " {2,}" ), QStringLiteral( " " ) );
+  const thread_local QRegularExpression sMultipleWhitespaceRx( QStringLiteral( " {2,}" ) );
+  coordText.replace( sMultipleWhitespaceRx, QStringLiteral( " " ) );
 
   QStringList parts = coordText.split( ',' );
   if ( parts.size() == 2 )
@@ -217,10 +220,13 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   QRectF rect = mMapCanvas->sceneRect();
   if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
     return; // do not affect panning
-  rect.moveTo( ( qrand() % ( 2 * d ) ) - d, ( qrand() % ( 2 * d ) ) - d );
+
+
+
+  rect.moveTo( ( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d, ( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d );
   mMapCanvas->setSceneRect( rect );
   QTransform matrix;
-  matrix.rotate( ( qrand() % ( 2 * r ) ) - r );
+  matrix.rotate( ( QRandomGenerator::global()->generate() % ( 2 * r ) ) - r );
   mMapCanvas->setTransform( matrix );
 }
 
@@ -249,7 +255,8 @@ void QgsStatusBarCoordinatesWidget::world()
   }
   const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   const QFileInfo fileInfo = QFileInfo( fileName );
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  options.forceReadOnly = true;
   QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
       tr( "World Map" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
@@ -378,4 +385,3 @@ void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
     mLineEdit->setMaximumWidth( width );
   }
 }
-

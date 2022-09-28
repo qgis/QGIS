@@ -1,0 +1,14 @@
+{
+  "name": "geometries_to_array",
+  "type": "function",
+  "groups": ["Arrays"],
+  "description": "Splits a geometry into simpler geometries in an array.",
+  "arguments": [{
+    "arg": "geometry",
+     "description": "the input geometry"
+  }],
+  "examples": [{ "expression":"geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))'))", "returns":"an array of a polygon and a line geometries"},
+               { "expression":"geom_to_wkt(geometries_to_array(geom_from_wkt('GeometryCollection (Polygon ((5 8, 4 1, 3 2, 5 8)),LineString (3 2, 4 2))'))[0])", "returns":"'Polygon ((5 8, 4 1, 3 2, 5 8))'"},
+               { "expression":"geometries_to_array(geom_from_wkt('MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))'))", "returns":"an array of two polygon geometries"}],
+  "tags": [ "split", "convert", "separate", "collection", "multi", "part" ]
+}

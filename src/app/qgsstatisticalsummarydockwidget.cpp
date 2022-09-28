@@ -287,7 +287,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
     const double val = value.toDouble( &convertOk );
     if ( convertOk )
       values << val;
-    else if ( value.isNull() )
+    else if ( QgsVariantUtils::isNull( value ) )
     {
       missingValues += 1;
     }

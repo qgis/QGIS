@@ -37,6 +37,7 @@ email                : sherman at mrcc.com
 #include "qgsprovidersublayerdetails.h"
 #include "qgsvectorlayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsvariantutils.h"
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>         // to collect version information
@@ -400,6 +401,13 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
+
+  const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
+  if ( parts.contains( QStringLiteral( "uniqueGeometryType" ) ) )
+  {
+    mUniqueGeometryType = parts.value( QStringLiteral( "uniqueGeometryType" ) ).toString() == QLatin1String( "yes" );
+  }
+
   // to be called only after mFilePath has been set
   invalidateNetworkCache();
 
@@ -417,7 +425,14 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  open( OpenModeInitial );
+  if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+  {
+    open( OpenModeForceReadOnly );
+  }
+  else
+  {
+    open( OpenModeInitial );
+  }
 
   QList<NativeType> nativeTypes;
   if ( mOgrOrigLayer )
@@ -662,11 +677,7 @@ void QgsOgrProvider::loadFields()
   }
   else
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
     mOGRGeomType = getOgrGeomType( mGDALDriverName, ogrLayer );
@@ -722,11 +733,7 @@ void QgsOgrProvider::loadFields()
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
   // needed for field domain retrieval on GDAL 3.3+
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *datasetMutex = nullptr;
-#else
   QRecursiveMutex *datasetMutex = nullptr;
-#endif
   GDALDatasetH ds = mOgrLayer->getDatasetHandleAndMutex( datasetMutex );
   QMutexLocker locker( datasetMutex );
 #endif
@@ -780,13 +787,11 @@ void QgsOgrProvider::loadFields()
                           width, prec, QString(), varSubType
                         );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
     const QString alias = textEncoding()->toUnicode( OGR_Fld_GetAlternativeNameRef( fldDef ) );
     if ( !alias.isEmpty() )
     {
       newField.setAlias( alias );
     }
-#endif
 
     // check if field is nullable
     bool nullable = OGR_Fld_IsNullable( fldDef );
@@ -913,13 +918,12 @@ void QgsOgrProvider::loadFields()
 
 void QgsOgrProvider::loadMetadata()
 {
+  // Set default, may be overridden by stored metadata
+  mLayerMetadata.setCrs( crs() );
+
   if ( mOgrOrigLayer )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     QMutexLocker locker( mutex );
 
@@ -1039,11 +1043,7 @@ QString QgsOgrProvider::storageType() const
 
 void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes ) const
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
   OGRLayerH ogrLayer = mOgrLayer->getHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
   QgsOgrProviderUtils::setRelevantFields( ogrLayer, mAttributeFields.count(), fetchGeometry, fetchAttributes, mFirstFieldIsFid, mSubsetString );
@@ -1240,7 +1240,7 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
   else
   {
     // stricter check
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !QgsVariantUtils::isNull( value );
   }
 }
 
@@ -1389,7 +1389,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
   if ( mFirstFieldIsFid && attributes.count() > 0 )
   {
     QVariant attrFid = attributes.at( 0 );
-    if ( !attrFid.isNull() )
+    if ( !QgsVariantUtils::isNull( attrFid ) )
     {
       bool ok = false;
       qlonglong id = attrFid.toLongLong( &ok );
@@ -1429,7 +1429,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
     {
       OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }
-    else if ( attrVal.isNull() || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() && attrVal.type() != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
+    else if ( QgsVariantUtils::isNull( attrVal ) || ( type != OFTString && ( ( attrVal.type() != QVariant::List && attrVal.toString().isEmpty() && attrVal.type() != QVariant::StringList && attrVal.toStringList().isEmpty() ) || ( attrVal.type() == QVariant::List && attrVal.toList().empty() ) ) ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -1644,11 +1644,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( !( flags & QgsFeatureSink::FastInsert ) &&
        ( mGDALDriverName == QLatin1String( "CSV" ) || mGDALDriverName == QLatin1String( "XLSX" ) || mGDALDriverName == QLatin1String( "ODS" ) ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     {
       QMutexLocker locker( mutex );
@@ -1901,7 +1897,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
     return false;
 
   bool res = true;
-  QList<int> attrsLst = qgis::setToList( attributes );
+  QList<int> attrsLst( attributes.begin(), attributes.end() );
   // sort in descending order
   std::sort( attrsLst.begin(), attrsLst.end(), std::greater<int>() );
   const auto constAttrsLst = attrsLst;
@@ -2026,7 +2022,7 @@ bool QgsOgrProvider::rollbackTransaction()
 
 bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities, bool hasExistingRef )
 {
-  QgsCPLErrorHandler handler;
+  QgsCPLErrorHandler handler( QObject::tr( "OGR" ) );
 
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
@@ -2041,11 +2037,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   if ( !theSQL.isEmpty() )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     GDALDatasetH ds = mOgrOrigLayer->getDatasetHandleAndMutex( mutex );
     OGRLayerH subsetLayerH;
@@ -2074,11 +2066,7 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   {
     mOgrSqlLayer.reset();
     mOgrLayer = mOgrOrigLayer.get();
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     {
       QMutexLocker locker( mutex );
@@ -2107,6 +2095,11 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( mOgrGeometryTypeFilter != wkbUnknown )
   {
     parts.insert( QStringLiteral( "geometryType" ), QgsOgrProviderUtils::ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
+  }
+
+  if ( mUniqueGeometryType )
+  {
+    parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
   }
 
   if ( !mOpenOptions.isEmpty() )
@@ -2230,7 +2223,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
 
       OGRFieldType type = OGR_Fld_GetType( fd );
-      if ( it2->isNull() || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->type() != QVariant::StringList && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) || ( it2->type() == QVariant::StringList && it2->toStringList().empty() ) ) ) )
+      if ( QgsVariantUtils::isNull( *it2 ) || ( type != OFTString && ( ( it2->type() != QVariant::List && it2->type() != QVariant::StringList && it2->toString().isEmpty() ) || ( it2->type() == QVariant::List && it2->toList().empty() ) || ( it2->type() == QVariant::StringList && it2->toStringList().empty() ) ) ) )
       {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
@@ -2549,11 +2542,7 @@ bool QgsOgrProvider::createSpatialIndex()
   else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
             mGDALDriverName == QLatin1String( "SQLite" ) )
   {
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-    QMutex *mutex = nullptr;
-#else
     QRecursiveMutex *mutex = nullptr;
-#endif
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     QByteArray sql = QByteArray( "SELECT CreateSpatialIndex(" + quotedIdentifier( layerName ) + ","
                                  + quotedIdentifier( OGR_L_GetGeometryColumn( layer ) ) + ") " ); // quote the layer name so spaces are handled
@@ -3077,11 +3066,7 @@ QList<QgsRelation> QgsOgrProvider::discoverRelations( const QgsVectorLayer *targ
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
   QList<QgsRelation> output;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  QMutex *mutex = nullptr;
-#else
   QRecursiveMutex *mutex = nullptr;
-#endif
   GDALDatasetH hDS = mOgrLayer->getDatasetHandleAndMutex( mutex );
   QMutexLocker locker( mutex );
 
@@ -3441,7 +3426,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
 
   // feature count returns number of features within current spatial filter
   // so we remove it if there's any and then put it back
-  if ( mOgrGeometryTypeFilter == wkbUnknown )
+  if ( mOgrGeometryTypeFilter == wkbUnknown || mUniqueGeometryType )
   {
     mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )
@@ -3598,14 +3583,12 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     QStringList options( mOpenOptions );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
     // assume trusted data to get more speed
     if ( mGDALDriverName == QLatin1String( "FlatGeobuf" ) &&
          !options.contains( QStringLiteral( "VERIFY_BUFFERS=YES" ) ) )
     {
       options << QStringLiteral( "VERIFY_BUFFERS=NO" );
     }
-#endif
 
     // try to open read-only
     if ( !mLayerName.isNull() )
@@ -3633,13 +3616,9 @@ void QgsOgrProvider::open( OpenMode mode )
     {
       // determine encoding from shapefile cpg or LDID information, if possible
       QString shpEncoding;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
       shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) );
       if ( shpEncoding.isEmpty() )
         shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) );
-#else
-      shpEncoding = QgsOgrUtils::readShapefileEncoding( mFilePath );
-#endif
 
       if ( !shpEncoding.isEmpty() )
         setEncoding( shpEncoding );

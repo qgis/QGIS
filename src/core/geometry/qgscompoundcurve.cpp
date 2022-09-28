@@ -1148,10 +1148,19 @@ std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCompoundCur
 
 void QgsCompoundCurve::sumUpArea( double &sum ) const
 {
+  if ( mHasCachedSummedUpArea )
+  {
+    sum += mSummedUpArea;
+    return;
+  }
+
+  mSummedUpArea = 0;
   for ( const QgsCurve *curve : mCurves )
   {
-    curve->sumUpArea( sum );
+    curve->sumUpArea( mSummedUpArea );
   }
+  mHasCachedSummedUpArea = true;
+  sum += mSummedUpArea;
 }
 
 void QgsCompoundCurve::close()

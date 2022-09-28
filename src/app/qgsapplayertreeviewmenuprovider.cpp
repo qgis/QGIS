@@ -243,7 +243,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             queryResultWidget->setWidgetMode( QgsQueryResultWidget::QueryWidgetMode::QueryLayerUpdateMode );
             queryResultWidget->setSqlVectorLayerOptions( options );
             queryResultWidget->executeQuery();
-            queryResultWidget->layout()->setMargin( 0 );
+            queryResultWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
             dialog.layout()->addWidget( queryResultWidget );
 
             connect( queryResultWidget, &QgsQueryResultWidget::createSqlVectorLayer, queryResultWidget, [queryResultWidget, layer, this ]( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions & options )
@@ -321,31 +321,33 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      if ( vlayer )
+      if ( vlayer || meshLayer )
       {
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
         QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
 
         // attribute table
-        QgsSettings settings;
-        const QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
-        const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
-        QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open &Attribute Table" ),
-                                        QgisApp::instance(), lambdaOpenAttributeTable );
-        attributeTableAction->setEnabled( vlayer->isValid() );
+        if ( vlayer )
+        {
+          QgsSettings settings;
+          const QgsAttributeTableFilterModel::FilterMode initialMode = settings.enumValue( QStringLiteral( "qgis/attributeTableBehavior" ),  QgsAttributeTableFilterModel::ShowAll );
+          const auto lambdaOpenAttributeTable = [ = ] { QgisApp::instance()->attributeTable( initialMode ); };
+          QAction *attributeTableAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open &Attribute Table" ),
+                                          QgisApp::instance(), lambdaOpenAttributeTable );
+          attributeTableAction->setEnabled( vlayer->isValid() );
+        }
 
         // allow editing
-        const QgsVectorDataProvider *provider = vlayer->dataProvider();
-        if ( vlayer->supportsEditing() )
+        if ( layer->supportsEditing() )
         {
           if ( toggleEditingAction )
           {
             menu->addAction( toggleEditingAction );
-            toggleEditingAction->setChecked( vlayer->isEditable() );
-            toggleEditingAction->setEnabled( vlayer->isValid() );
+            toggleEditingAction->setChecked( layer->isEditable() );
+            toggleEditingAction->setEnabled( layer->isValid() );
           }
-          if ( saveLayerEditsAction && vlayer->isModified() )
+          if ( saveLayerEditsAction && layer->isModified() )
           {
             menu->addAction( saveLayerEditsAction );
           }
@@ -354,7 +356,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        if ( provider && provider->supportsSubsetString() )
+        if ( vlayer && vlayer->dataProvider() && vlayer->dataProvider()->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), qOverload<>( &QgisApp::layerSubsetString ) );
           action->setEnabled( !vlayer->isEditable() );
@@ -539,30 +541,19 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             break;
 
           case QgsMapLayerType::RasterLayer:
-            if ( rlayer )
-            {
-              QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
-              QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
-              QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
-              QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
-              connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
-              menuExportRaster->addAction( actionSaveAs );
-              actionSaveAs->setEnabled( rlayer->isValid() );
-              connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
-              menuExportRaster->addAction( actionSaveAsDefinitionLayer );
-              connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
-              menuExportRaster->addAction( actionSaveStyle );
-              menu->addMenu( menuExportRaster );
-            }
-            break;
-
           case QgsMapLayerType::MeshLayer:
           case QgsMapLayerType::VectorTileLayer:
           case QgsMapLayerType::PointCloudLayer:
           {
+            bool enableSaveAs = ( pcLayer && pcLayer->isValid() ) ||
+                                ( rlayer && rlayer->isValid() );
             QMenu *menuExportRaster = new QMenu( tr( "E&xport" ), menu );
+            QAction *actionSaveAs = new QAction( tr( "Save &As…" ), menuExportRaster );
             QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer &Definition File…" ), menuExportRaster );
             QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportRaster );
+            connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
+            menuExportRaster->addAction( actionSaveAs );
+            actionSaveAs->setEnabled( enableSaveAs );
             connect( actionSaveAsDefinitionLayer, &QAction::triggered, QgisApp::instance(), &QgisApp::saveAsLayerDefinition );
             menuExportRaster->addAction( actionSaveAsDefinitionLayer );
             connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveStyleFile(); } );
@@ -802,7 +793,6 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         QAction *selectMatching = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelected.svg" ) ), tr( "Select Features" ), menu );
         menu->addAction( selectMatching );
-        menu->addSeparator();
         connect( selectMatching, &QAction::triggered, this, [layerId, ruleKey ]
         {
           if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
@@ -836,6 +826,23 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
             }
           }
         } );
+
+        QAction *showMatchingInAttributeTable = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.svg" ) ), tr( "Show in Attribute Table" ), menu );
+        menu->addAction( showMatchingInAttributeTable );
+        connect( showMatchingInAttributeTable, &QAction::triggered, this, [layerId, ruleKey ]
+        {
+          if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+          {
+            bool ok = false;
+            QString filterExp = layer->renderer() ? layer->renderer()->legendKeyToExpression( ruleKey, layer, ok ) : QString();
+            if ( ok )
+            {
+              QgisApp::instance()->attributeTable( QgsAttributeTableFilterModel::ShowFilteredList, filterExp );
+            }
+          }
+        } );
+
+        menu->addSeparator();
       }
 
       if ( layer && layer->type() == QgsMapLayerType::VectorLayer && symbolNode->symbol() )

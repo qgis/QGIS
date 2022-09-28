@@ -1411,7 +1411,7 @@ void TestQgsLineString::CRSTransform()
   QGSCOMPARENEAR( ls.pointN( 1 ).z(), 3, 0.001 );
   QCOMPARE( ls.pointN( 1 ).m(), 4.0 );
 
-#if PROJ_VERSION_MAJOR<6 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
+#if 0 // note - z value transform doesn't currently work with proj 6+, because we don't yet support compound CRS definitions
   //z value transform
   ls.transform( tr, Qgis::TransformDirection::Forward, true );
 

@@ -17,7 +17,6 @@
 
 #include <QVector3D>
 
-#include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstessellator.h"
 #include "qgsmultipolygon.h"
@@ -317,7 +316,7 @@ void TestQgsTessellator::asMultiPolygon()
 
   QgsTessellator t2( 0, 0, false );
   t2.addPolygon( polygonZ, 0 );
-  QCOMPARE( t2.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 4, 2 1 2, 3 2 3, 1 2 4)),((1 2 4, 1 1 1, 2 1 2, 1 2 4)))" ) );
+  QCOMPARE( t2.asMultiPolygon()->asWkt( 6 ), QStringLiteral( "MultiPolygonZ (((1 2 4, 2 1 2, 3 2 3, 1 2 4)),((1 2 4, 1 1 1, 2 1 2, 1 2 4)))" ) );
 }
 
 void TestQgsTessellator::testBadCoordinates()
@@ -335,8 +334,8 @@ void TestQgsTessellator::testBadCoordinates()
   tZ.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
 
-  QCOMPARE( tZ.zMinimum(), 1 );
-  QCOMPARE( tZ.zMaximum(), 2 );
+  QCOMPARE( tZ.zMinimum(), 1.0f );
+  QCOMPARE( tZ.zMaximum(), 2.0f );
 
   // triangulation would crash for me with this polygon if there is no simplification
   // to remove the coordinates that are very close to each other

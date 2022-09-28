@@ -68,13 +68,19 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderJob
     {
-        RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
+
+        /**
+         * Constructor for a render job, with the specified feature to render and symbol.
+         *
+         * \note The symbol ownership is not transferred.
+         */
+        RenderJob( const QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
           : ftr( _ftr )
           , symbol( _s )
         {}
 
         //! Feature to render
-        QgsRuleBasedRenderer::FeatureToRender &ftr;
+        QgsRuleBasedRenderer::FeatureToRender ftr;
 
         //! Symbol to render feature with (not owned by this object).
         QgsSymbol *symbol = nullptr;

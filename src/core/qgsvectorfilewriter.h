@@ -78,7 +78,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       public:
         SetOption( const QString &docString, const QStringList &values, const QString &defaultValue, bool allowNone = false )
           : Option( docString, Set )
-          , values( qgis::listToSet( values ) )
+          , values( values.begin(), values.end() )
           , defaultValue( defaultValue )
           , allowNone( allowNone )
         {}

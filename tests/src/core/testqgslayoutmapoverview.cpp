@@ -28,12 +28,12 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestQgsLayoutMapOverview : public QObject
+class TestQgsLayoutMapOverview : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutMapOverview() = default;
+    TestQgsLayoutMapOverview() : QgsTest( QStringLiteral( "Layout Map Overview Tests" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -50,7 +50,6 @@ class TestQgsLayoutMapOverview : public QObject
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
-    QString mReport;
 };
 
 void TestQgsLayoutMapOverview::initTestCase()
@@ -64,21 +63,12 @@ void TestQgsLayoutMapOverview::initTestCase()
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
-  mReport = QStringLiteral( "<h1>Composer Map Overview Tests</h1>\n" );
 }
 
 void TestQgsLayoutMapOverview::cleanupTestCase()
 {
   delete mRasterLayer;
 
-  const QString myReportFile = QDir::tempPath() + "/qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
   QgsApplication::exitQgis();
 }
 

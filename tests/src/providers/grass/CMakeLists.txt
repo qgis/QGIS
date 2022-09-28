@@ -33,6 +33,7 @@ macro (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core
+    qgis_test
     qgisgrass${grass_build_version}
   )
   if(WIN32 AND NOT USING_NMAKE)

@@ -416,7 +416,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   long long featureLimit = -1;
   bool overrideGeometryCheck = false;
   QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
-  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
@@ -426,7 +426,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     overrideGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
     geometryCheck = fromVar.geometryCheck;
   }
-  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  else if ( val.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     // input is a QgsProcessingOutputLayerDefinition (e.g. an output from earlier in a model) - get extra properties from it
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
@@ -442,7 +442,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   }
 
   QString layerRef;
-  if ( val.canConvert<QgsProperty>() )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) )
   {
     layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), fallbackValue.toString() );
   }
@@ -490,25 +490,25 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
 {
   QVariant val = value;
 
-  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
+  if ( val.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
   {
     // input is a QgsCoordinateReferenceSystem - done!
     return val.value< QgsCoordinateReferenceSystem >();
   }
-  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  else if ( val.userType() == QMetaType::type( "QgsProcessingFeatureSourceDefinition" ) )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
   }
-  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  else if ( val.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     val = fromVar.sink;
   }
 
-  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
   {
     val = val.value< QgsProperty >().staticValue();
   }
@@ -517,7 +517,7 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
   if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
     return layer->crs();
 
-  if ( val.canConvert<QgsProperty>() )
+  if ( val.userType() == QMetaType::type( "QgsProperty" ) )
     val = val.value< QgsProperty >().valueAsString( context.expressionContext(), fallbackValue.toString() );
 
   if ( !val.isValid() )
@@ -601,16 +601,16 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
   if ( !value.isValid() )
     return QStringLiteral( "None" );
 
-  if ( value.canConvert<QgsProperty>() )
+  if ( value.userType() == QMetaType::type( "QgsProperty" ) )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
-  else if ( value.canConvert<QgsCoordinateReferenceSystem>() )
+  else if ( value.userType() == QMetaType::type( "QgsCoordinateReferenceSystem" ) )
   {
     if ( !value.value< QgsCoordinateReferenceSystem >().isValid() )
       return QStringLiteral( "QgsCoordinateReferenceSystem()" );
     else
       return QStringLiteral( "QgsCoordinateReferenceSystem('%1')" ).arg( value.value< QgsCoordinateReferenceSystem >().authid() );
   }
-  else if ( value.canConvert< QgsRectangle >() )
+  else if ( value.userType() == QMetaType::type( "QgsRectangle" ) )
   {
     QgsRectangle r = value.value<QgsRectangle>();
     return QStringLiteral( "'%1, %3, %2, %4'" ).arg( qgsDoubleToString( r.xMinimum() ),
@@ -618,7 +618,7 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ) );
   }
-  else if ( value.canConvert< QgsReferencedRectangle >() )
+  else if ( value.userType() == QMetaType::type( "QgsReferencedRectangle" ) )
   {
     QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
     return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
@@ -626,13 +626,13 @@ QString QgsProcessingUtils::variantToPythonLiteral( const QVariant &value )
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
   }
-  else if ( value.canConvert< QgsPointXY >() )
+  else if ( value.userType() == QMetaType::type( "QgsPointXY" ) )
   {
     QgsPointXY r = value.value<QgsPointXY>();
     return QStringLiteral( "'%1,%2'" ).arg( qgsDoubleToString( r.x() ),
                                             qgsDoubleToString( r.y() ) );
   }
-  else if ( value.canConvert< QgsReferencedPointXY >() )
+  else if ( value.userType() == QMetaType::type( "QgsReferencedPointXY" ) )
   {
     QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
     return QStringLiteral( "'%1,%2 [%3]'" ).arg( qgsDoubleToString( r.x() ),
@@ -992,14 +992,14 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
   if ( !input.isValid() )
     return QStringLiteral( "memory:%1" ).arg( id.toString() );
 
-  if ( input.canConvert<QgsProcessingOutputLayerDefinition>() )
+  if ( input.userType() == QMetaType::type( "QgsProcessingOutputLayerDefinition" ) )
   {
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( input );
     QVariant newSink = generateIteratingDestination( fromVar.sink, id, context );
     fromVar.sink = QgsProperty::fromValue( newSink );
     return fromVar;
   }
-  else if ( input.canConvert<QgsProperty>() )
+  else if ( input.userType() == QMetaType::type( "QgsProperty" ) )
   {
     QString res = input.value< QgsProperty>().valueAsString( context.expressionContext() );
     return generateIteratingDestination( res, id, context );

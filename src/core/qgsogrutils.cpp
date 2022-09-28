@@ -605,7 +605,7 @@ bool QgsOgrUtils::readOgrFeatureGeometry( OGRFeatureH ogrFet, QgsFeature &featur
 
 std::unique_ptr< QgsPoint > ogrGeometryToQgsPoint( OGRGeometryH geom )
 {
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  QgsWkbTypes::Type wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_G_GetGeometryType( geom ) );
 
   double x, y, z, m;
   OGR_G_GetPointZM( geom, 0, &x, &y, &z, &m );
@@ -628,7 +628,7 @@ std::unique_ptr< QgsMultiPoint > ogrGeometryToQgsMultiPoint( OGRGeometryH geom )
 
 std::unique_ptr< QgsLineString > ogrGeometryToQgsLineString( OGRGeometryH geom )
 {
-  QgsWkbTypes::Type wkbType = static_cast<QgsWkbTypes::Type>( OGR_G_GetGeometryType( geom ) );
+  QgsWkbTypes::Type wkbType = QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGR_G_GetGeometryType( geom ) );
 
   int count = OGR_G_GetPointCount( geom );
   QVector< double > x( count );
@@ -1128,170 +1128,16 @@ QString QgsOgrUtils::readShapefileEncoding( const QString &path )
 
 QString QgsOgrUtils::readShapefileEncodingFromCpg( const QString &path )
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
   QString errCause;
   QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( path, false, QStringList(), 0, errCause, false );
   return layer ? layer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) ) : QString();
-#else
-  if ( !QFileInfo::exists( path ) )
-    return QString();
-
-  // first try to read cpg file, if present
-  const QFileInfo fi( path );
-  const QString baseName = fi.completeBaseName();
-  const QString cpgPath = fi.dir().filePath( QStringLiteral( "%1.%2" ).arg( baseName, fi.suffix() == QLatin1String( "SHP" ) ? QStringLiteral( "CPG" ) : QStringLiteral( "cpg" ) ) );
-  if ( QFile::exists( cpgPath ) )
-  {
-    QFile cpgFile( cpgPath );
-    if ( cpgFile.open( QIODevice::ReadOnly ) )
-    {
-      QTextStream cpgStream( &cpgFile );
-      const QString cpgString = cpgStream.readLine();
-      cpgFile.close();
-
-      if ( !cpgString.isEmpty() )
-      {
-        // from OGRShapeLayer::ConvertCodePage
-        // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrsf_frmts/shape/ogrshapelayer.cpp#L342
-        bool ok = false;
-        int cpgCodePage = cpgString.toInt( &ok );
-        if ( ok && ( ( cpgCodePage >= 437 && cpgCodePage <= 950 )
-                     || ( cpgCodePage >= 1250 && cpgCodePage <= 1258 ) ) )
-        {
-          return QStringLiteral( "CP%1" ).arg( cpgCodePage );
-        }
-        else if ( cpgString.startsWith( QLatin1String( "8859" ) ) )
-        {
-          if ( cpgString.length() > 4 && cpgString.at( 4 ) == '-' )
-            return QStringLiteral( "ISO-8859-%1" ).arg( cpgString.mid( 5 ) );
-          else
-            return QStringLiteral( "ISO-8859-%1" ).arg( cpgString.mid( 4 ) );
-        }
-        else if ( cpgString.startsWith( QLatin1String( "UTF-8" ), Qt::CaseInsensitive ) ||
-                  cpgString.startsWith( QLatin1String( "UTF8" ), Qt::CaseInsensitive ) )
-          return QStringLiteral( "UTF-8" );
-        else if ( cpgString.startsWith( QLatin1String( "ANSI 1251" ), Qt::CaseInsensitive ) )
-          return QStringLiteral( "CP1251" );
-
-        return cpgString;
-      }
-    }
-  }
-
-  return QString();
-#endif
 }
 
 QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
   QString errCause;
   QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( path, false, QStringList(), 0, errCause, false );
   return layer ? layer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) ) : QString();
-#else
-  // from OGRShapeLayer::ConvertCodePage
-  // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrsf_frmts/shape/ogrshapelayer.cpp#L342
-
-  if ( !QFileInfo::exists( path ) )
-    return QString();
-
-  // first try to read cpg file, if present
-  const QFileInfo fi( path );
-  const QString baseName = fi.completeBaseName();
-
-  // fallback to LDID value, read from DBF file
-  const QString dbfPath = fi.dir().filePath( QStringLiteral( "%1.%2" ).arg( baseName, fi.suffix() == QLatin1String( "SHP" ) ? QStringLiteral( "DBF" ) : QStringLiteral( "dbf" ) ) );
-  if ( QFile::exists( dbfPath ) )
-  {
-    QFile dbfFile( dbfPath );
-    if ( dbfFile.open( QIODevice::ReadOnly ) )
-    {
-      dbfFile.read( 29 );
-      QDataStream dbfIn( &dbfFile );
-      dbfIn.setByteOrder( QDataStream::LittleEndian );
-      quint8 ldid;
-      dbfIn >> ldid;
-      dbfFile.close();
-
-      int nCP = -1;  // Windows code page.
-
-      // http://www.autopark.ru/ASBProgrammerGuide/DBFSTRUC.HTM
-      switch ( ldid )
-      {
-        case 1: nCP = 437;      break;
-        case 2: nCP = 850;      break;
-        case 3: nCP = 1252;     break;
-        case 4: nCP = 10000;    break;
-        case 8: nCP = 865;      break;
-        case 10: nCP = 850;     break;
-        case 11: nCP = 437;     break;
-        case 13: nCP = 437;     break;
-        case 14: nCP = 850;     break;
-        case 15: nCP = 437;     break;
-        case 16: nCP = 850;     break;
-        case 17: nCP = 437;     break;
-        case 18: nCP = 850;     break;
-        case 19: nCP = 932;     break;
-        case 20: nCP = 850;     break;
-        case 21: nCP = 437;     break;
-        case 22: nCP = 850;     break;
-        case 23: nCP = 865;     break;
-        case 24: nCP = 437;     break;
-        case 25: nCP = 437;     break;
-        case 26: nCP = 850;     break;
-        case 27: nCP = 437;     break;
-        case 28: nCP = 863;     break;
-        case 29: nCP = 850;     break;
-        case 31: nCP = 852;     break;
-        case 34: nCP = 852;     break;
-        case 35: nCP = 852;     break;
-        case 36: nCP = 860;     break;
-        case 37: nCP = 850;     break;
-        case 38: nCP = 866;     break;
-        case 55: nCP = 850;     break;
-        case 64: nCP = 852;     break;
-        case 77: nCP = 936;     break;
-        case 78: nCP = 949;     break;
-        case 79: nCP = 950;     break;
-        case 80: nCP = 874;     break;
-        case 87: return QStringLiteral( "ISO-8859-1" );
-        case 88: nCP = 1252;     break;
-        case 89: nCP = 1252;     break;
-        case 100: nCP = 852;     break;
-        case 101: nCP = 866;     break;
-        case 102: nCP = 865;     break;
-        case 103: nCP = 861;     break;
-        case 104: nCP = 895;     break;
-        case 105: nCP = 620;     break;
-        case 106: nCP = 737;     break;
-        case 107: nCP = 857;     break;
-        case 108: nCP = 863;     break;
-        case 120: nCP = 950;     break;
-        case 121: nCP = 949;     break;
-        case 122: nCP = 936;     break;
-        case 123: nCP = 932;     break;
-        case 124: nCP = 874;     break;
-        case 134: nCP = 737;     break;
-        case 135: nCP = 852;     break;
-        case 136: nCP = 857;     break;
-        case 150: nCP = 10007;   break;
-        case 151: nCP = 10029;   break;
-        case 200: nCP = 1250;    break;
-        case 201: nCP = 1251;    break;
-        case 202: nCP = 1254;    break;
-        case 203: nCP = 1253;    break;
-        case 204: nCP = 1257;    break;
-        default: break;
-      }
-
-      if ( nCP != -1 )
-      {
-        return QStringLiteral( "CP%1" ).arg( nCP );
-      }
-    }
-  }
-  return QString();
-#endif
 }
 
 QVariantMap QgsOgrUtils::parseStyleString( const QString &string )

@@ -103,6 +103,45 @@ struct QgsGeometryPrivate;
 
 /**
  * \ingroup core
+ * \brief Encapsulates parameters under which a geometry operation is performed.
+ *
+ * \since QGIS 3.28
+ */
+class CORE_EXPORT QgsGeometryParameters
+{
+  public:
+
+    /**
+     * Returns the grid size which will be used to snap vertices of a geometry.
+     *
+     * This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+     * geometry result vertices will be computed on that same precision grid.
+     *
+     * A value of -1 indicates that no precision reduction will be applied.
+     *
+     * \see setGridSize()
+     */
+    double gridSize() const { return mGridSize; }
+
+    /**
+     * Sets the grid \a size which will be used to snap vertices of a geometry.
+     *
+     * This parameter is used to control the grid size (or precision) for GEOS geometry operations. Output
+     * geometry result vertices will be computed on that same precision grid.
+     *
+     * A value of -1 indicates that no precision reduction will be applied.
+     *
+     * \see gridSize()
+     */
+    void setGridSize( double size ) { mGridSize = size; }
+
+  private:
+
+    double mGridSize = -1;
+};
+
+/**
+ * \ingroup core
  * \brief A geometry is the spatial representation of a feature.
  *
  * QgsGeometry acts as a generic container for geometry objects. QgsGeometry objects are implicitly shared,
@@ -1627,6 +1666,21 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry convexHull() const;
 
     /**
+     * Returns a possibly concave polygon that contains all the points in the geometry.
+     *
+     * If the input is a NULL geometry, the output will also be a NULL geometry.
+     *
+     * If an error was encountered while creating the result, more information can be retrieved
+     * by calling lastError() on the returned geometry.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.10 or earlier.
+     *
+     *
+     * \since QGIS 3.28
+     */
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const SIP_THROW( QgsNotSupportedException );
+
+    /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
      *
      * Returns the Voronoi polygons for the nodes contained within the geometry.
@@ -1699,9 +1753,12 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the subdivision results.
+     *
      * \since QGIS 3.0
      */
-    QgsGeometry subdivide( int maxNodes = 256 ) const;
+    QgsGeometry subdivide( int maxNodes = 256, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns an interpolated point on the geometry at the specified \a distance.
@@ -1751,8 +1808,11 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the intersection results.
      */
-    QgsGeometry intersection( const QgsGeometry &geometry ) const;
+    QgsGeometry intersection( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Clips the geometry using the specified \a rectangle.
@@ -1773,8 +1833,11 @@ class CORE_EXPORT QgsGeometry
      * by calling lastError() on the returned geometry.
      *
      * \note this operation is not called union since its a reserved word in C++.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the union results.
      */
-    QgsGeometry combine( const QgsGeometry &geometry ) const;
+    QgsGeometry combine( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -1793,8 +1856,11 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the difference results.
      */
-    QgsGeometry difference( const QgsGeometry &geometry ) const;
+    QgsGeometry difference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     /**
      * Returns a geometry representing the points making up this geometry that do not make up other.
@@ -1803,8 +1869,11 @@ class CORE_EXPORT QgsGeometry
      *
      * If an error was encountered while creating the result, more information can be retrieved
      * by calling lastError() on the returned geometry.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the difference results.
      */
-    QgsGeometry symDifference( const QgsGeometry &geometry ) const;
+    QgsGeometry symDifference( const QgsGeometry &geometry, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
 
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
@@ -2354,15 +2423,16 @@ class CORE_EXPORT QgsGeometry
      * If an error was encountered during the process, more information can be retrieved
      * by calling lastError() on the returned geometry.
      *
+     * The \a method and \a keepCollapsed arguments are available since QGIS 3.28.
+     * They require builds based on GEOS 3.10 or later.
+     *
      * \returns new valid QgsGeometry or null geometry on error
      *
-     * \note For QGIS builds using GEOS library versions older than 3.8 this method calls
-     * an internal fork of PostGIS' ST_MakeValid() function. For builds based on GEOS 3.8 or
-     * later this method calls the GEOS MakeValid method directly.
+     * \throws QgsNotSupportedException on QGIS builds based on GEOS 3.9 or earlier when the \a method is not Qgis::MakeValidMethod::Linework or the \a keepCollapsed option is set.
      *
      * \since QGIS 3.0
      */
-    QgsGeometry makeValid() const;
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Forces geometries to respect the Right-Hand-Rule, in which the area that is bounded by a polygon
@@ -2478,8 +2548,11 @@ class CORE_EXPORT QgsGeometry
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
+     *
+     * Since QGIS 3.28 the optional \a parameters argument can be used to specify parameters which
+     * control the union results.
      */
-    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries, const QgsGeometryParameters &parameters = QgsGeometryParameters() );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent

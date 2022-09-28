@@ -43,11 +43,7 @@ const QString QgsDartMeasurement::toString() const
 void QgsDartMeasurement::send() const
 {
   QTextStream out( stdout );
-#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-  out << toString() << endl;
-#else
   out << toString() << Qt::endl;
-#endif
 }
 
 const QString QgsDartMeasurement::typeToString( QgsDartMeasurement::Type type )
