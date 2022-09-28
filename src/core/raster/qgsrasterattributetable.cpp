@@ -18,25 +18,25 @@
 #include "qgsogrprovider.h"
 #include "qgsfileutils.h"
 
-QgsRasterAttributeTable::RatType QgsRasterAttributeTable::type() const
+Qgis::RasterAttributeTableType QgsRasterAttributeTable::type() const
 {
   return mType;
 }
 
-void QgsRasterAttributeTable::setType( const RatType type )
+void QgsRasterAttributeTable::setType( const Qgis::RasterAttributeTableType type )
 {
   mType = type;
 }
 
 bool QgsRasterAttributeTable::hasColor()
 {
-  QList<FieldUsage> usages;
+  QList<Qgis::RasterAttributeTableFieldUsage> usages;
   for ( const QgsRasterAttributeTable::Field &field : std::as_const( mFields ) )
   {
     usages.push_back( field.usage );
   }
-  return ( usages.contains( FieldUsage::Red ) && usages.contains( FieldUsage::Green ) && usages.contains( FieldUsage::Blue ) ) ||
-         ( usages.contains( FieldUsage::RedMin ) && usages.contains( FieldUsage::GreenMin ) && usages.contains( FieldUsage::BlueMin ) && usages.contains( FieldUsage::RedMax ) && usages.contains( FieldUsage::GreenMax ) && usages.contains( FieldUsage::BlueMax ) );
+  return ( usages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Green ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) ) ||
+         ( usages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) );
 }
 
 QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fields() const
@@ -103,12 +103,12 @@ bool QgsRasterAttributeTable::insertField( const Field &field, int position )
   return true;
 }
 
-bool QgsRasterAttributeTable::insertField( const QString &name, FieldUsage usage, QVariant::Type type, int position )
+bool QgsRasterAttributeTable::insertField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type, int position )
 {
   return insertField( { name, usage, type}, position );
 }
 
-bool QgsRasterAttributeTable::appendField( const QString &name, FieldUsage usage, QVariant::Type type )
+bool QgsRasterAttributeTable::appendField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type )
 {
   return insertField( name, usage, type, mFields.count() );
 }
@@ -243,19 +243,19 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
   bool hasValueField { false };
   for ( const QgsField &field : rat.fields() )
   {
-    const FieldUsage usage { guessFieldUsage( field.name(), field.type() ) };
+    const Qgis::RasterAttributeTableFieldUsage usage { guessFieldUsage( field.name(), field.type() ) };
     QVariant::Type type { field.type() };
     // DBF sets all int fields to long but for RGBA it doesn't make sense
     if ( type == QVariant::Type::LongLong &&
-         ( usage == FieldUsage::Red || usage == FieldUsage::RedMax || usage == FieldUsage::RedMin ||
-           usage == FieldUsage::Green || usage == FieldUsage::GreenMax || usage == FieldUsage::GreenMin ||
-           usage == FieldUsage::Blue || usage == FieldUsage::BlueMax || usage == FieldUsage::BlueMin ||
-           usage == FieldUsage::Alpha || usage == FieldUsage::AlphaMax || usage == FieldUsage::AlphaMin ) )
+         ( usage == Qgis::RasterAttributeTableFieldUsage::Red || usage == Qgis::RasterAttributeTableFieldUsage::RedMax || usage == Qgis::RasterAttributeTableFieldUsage::RedMin ||
+           usage == Qgis::RasterAttributeTableFieldUsage::Green || usage == Qgis::RasterAttributeTableFieldUsage::GreenMax || usage == Qgis::RasterAttributeTableFieldUsage::GreenMin ||
+           usage == Qgis::RasterAttributeTableFieldUsage::Blue || usage == Qgis::RasterAttributeTableFieldUsage::BlueMax || usage == Qgis::RasterAttributeTableFieldUsage::BlueMin ||
+           usage == Qgis::RasterAttributeTableFieldUsage::Alpha || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMax || usage == Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
     {
       type = QVariant::Int;
     }
 
-    if ( usage == FieldUsage::MinMax || usage == FieldUsage::Min || usage == FieldUsage::Max )
+    if ( usage == Qgis::RasterAttributeTableFieldUsage::MinMax || usage == Qgis::RasterAttributeTableFieldUsage::Min || usage == Qgis::RasterAttributeTableFieldUsage::Max )
     {
       hasValueField = true;
     }
@@ -267,7 +267,7 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
   // Do we have a value field? If not, try to guess one
   if ( ! hasValueField && mFields.count() > 1 && ( mFields.at( 0 ).type == QVariant::Int || mFields.at( 0 ).type == QVariant::Char || mFields.at( 0 ).type == QVariant::UInt || mFields.at( 0 ).type == QVariant::LongLong || mFields.at( 0 ).type == QVariant::ULongLong ) )
   {
-    mFields[0].usage = FieldUsage::MinMax;
+    mFields[0].usage = Qgis::RasterAttributeTableFieldUsage::MinMax;
   }
 
   const int fieldCount { static_cast<int>( fields().count( ) ) };
@@ -305,7 +305,7 @@ const QList<QList<QVariant> > QgsRasterAttributeTable::data() const
   return mData;
 }
 
-QgsRasterAttributeTable::FieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )
+Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )
 {
   static const QStringList minValueNames { {
       QStringLiteral( "min" ),
@@ -329,88 +329,88 @@ QgsRasterAttributeTable::FieldUsage QgsRasterAttributeTable::guessFieldUsage( co
   {
     if ( minValueNames.contains( fieldLower ) )
     {
-      return FieldUsage::Min;
+      return Qgis::RasterAttributeTableFieldUsage::Min;
     }
     else if ( maxValueNames.contains( fieldLower ) )
     {
-      return FieldUsage::Max;
+      return Qgis::RasterAttributeTableFieldUsage::Max;
     }
     else if ( fieldLower.contains( "red" ) || fieldLower == QStringLiteral( "r" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
-        return FieldUsage::RedMin;
+        return Qgis::RasterAttributeTableFieldUsage::RedMin;
       }
       else if ( fieldLower.contains( "max" ) )
       {
-        return FieldUsage::RedMax;
+        return Qgis::RasterAttributeTableFieldUsage::RedMax;
       }
       else
       {
-        return FieldUsage::Red;
+        return Qgis::RasterAttributeTableFieldUsage::Red;
       }
     }
     else if ( fieldLower.contains( "green" ) || fieldLower == QStringLiteral( "g" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
-        return FieldUsage::GreenMin;
+        return Qgis::RasterAttributeTableFieldUsage::GreenMin;
       }
       else if ( fieldLower.contains( "max" ) )
       {
-        return FieldUsage::GreenMax;
+        return Qgis::RasterAttributeTableFieldUsage::GreenMax;
       }
       else
       {
-        return FieldUsage::Green;
+        return Qgis::RasterAttributeTableFieldUsage::Green;
       }
     }
     else if ( fieldLower.contains( "blue" ) || fieldLower == QStringLiteral( "b" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
-        return FieldUsage::BlueMin;
+        return Qgis::RasterAttributeTableFieldUsage::BlueMin;
       }
       else if ( fieldLower.contains( "max" ) )
       {
-        return FieldUsage::BlueMax;
+        return Qgis::RasterAttributeTableFieldUsage::BlueMax;
       }
       else
       {
-        return FieldUsage::Blue;
+        return Qgis::RasterAttributeTableFieldUsage::Blue;
       }
     }
     else if ( fieldLower.contains( "alpha" ) || fieldLower == QStringLiteral( "a" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
-        return FieldUsage::AlphaMin;
+        return Qgis::RasterAttributeTableFieldUsage::AlphaMin;
       }
       else if ( fieldLower.contains( "max" ) )
       {
-        return FieldUsage::AlphaMax;
+        return Qgis::RasterAttributeTableFieldUsage::AlphaMax;
       }
       else
       {
-        return FieldUsage::Alpha;
+        return Qgis::RasterAttributeTableFieldUsage::Alpha;
       }
     }
     else if ( fieldLower == QStringLiteral( "value" ) )
     {
-      return FieldUsage::MinMax;
+      return Qgis::RasterAttributeTableFieldUsage::MinMax;
     }
     else if ( fieldLower == QStringLiteral( "count" ) )
     {
       // This could really be max count but it's more likely pixel count
-      return FieldUsage::PixelCount;
+      return Qgis::RasterAttributeTableFieldUsage::PixelCount;
     }
   }
   else if ( type == QVariant::String )  // default to name for strings
   {
-    return FieldUsage::Name;
+    return Qgis::RasterAttributeTableFieldUsage::Name;
   }
 
   // default to generic for not strings
-  return FieldUsage::Generic;
+  return Qgis::RasterAttributeTableFieldUsage::Generic;
 
 }

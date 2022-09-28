@@ -24,53 +24,25 @@ methods to handle data from QGIS and to import/export a RAT from/to a DBF VAT fi
 %End
   public:
 
-    enum class FieldUsage
-    {
-      Generic,
-      PixelCount,
-      Name,
-      Min,
-      Max,
-      MinMax,
-      Red,
-      Green,
-      Blue,
-      Alpha,
-      RedMin,
-      GreenMin,
-      BlueMin,
-      AlphaMin,
-      RedMax,
-      GreenMax,
-      BlueMax,
-      AlphaMax,
-      MaxCount
-    };
-
-    enum class RatType
-    {
-      Thematic,
-      Athematic
-    };
 
     struct Field
     {
 
-      Field( const QString &name, const FieldUsage &usage, const QVariant::Type type );
+      Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type );
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
 %End
       QString name;
-      FieldUsage usage;
+      Qgis::RasterAttributeTableFieldUsage usage;
       QVariant::Type type;
     };
 
-    RatType type() const;
+    Qgis::RasterAttributeTableType type() const;
 %Docstring
 Returns the RAT type.
 %End
 
-    void setType( const RatType type );
+    void setType( const Qgis::RasterAttributeTableType type );
 %Docstring
 Sets the RAT ``type``
 %End
@@ -115,12 +87,12 @@ Returns ``True`` if the RAT is valid.
 Inserts a new ``field`` at ``position`` and returns ``True`` on success.
 %End
 
-    bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
+    bool insertField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type, int position = 0 );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, returns ``True`` on success.
 %End
 
-    bool appendField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type );
+    bool appendField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, returns ``True`` on success.
 %End
@@ -160,7 +132,7 @@ Reads the RAT from a DBF file specified by ``path``, optionally reporting any er
 Returns the RAT rows.
 %End
 
-    static FieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
+    static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 %Docstring
 Try to determine the field usage from its ``name`` and ``type``.
 %End

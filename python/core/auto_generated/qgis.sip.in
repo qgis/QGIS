@@ -445,7 +445,7 @@ The development version
     };
 
     enum class RasterResamplingStage
-      {
+    {
       //! Resampling occurs in ResamplingFilter
       ResampleFilter,
       //! Resampling occurs in Provider
@@ -460,6 +460,35 @@ The development version
     typedef QFlags<Qgis::RasterRendererFlag> RasterRendererFlags;
 
 
+
+    enum class RasterAttributeTableFieldUsage
+    {
+      Generic,
+      PixelCount,
+      Name,
+      Min,
+      Max,
+      MinMax,
+      Red,
+      Green,
+      Blue,
+      Alpha,
+      RedMin,
+      GreenMin,
+      BlueMin,
+      AlphaMin,
+      RedMax,
+      GreenMax,
+      BlueMax,
+      AlphaMax,
+      MaxCount
+    };
+
+    enum class RasterAttributeTableType
+    {
+      Thematic,
+      Athematic
+    };
 
     enum class MeshEditingErrorType
     {

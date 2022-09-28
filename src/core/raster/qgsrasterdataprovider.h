@@ -743,6 +743,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /**
      * Returns the (possibly NULL) attribute table for the specified \a bandNumber.
+     *
      * \since QGIS 3.30
      */
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
@@ -751,6 +752,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Set the attribute table to \a attributeTable for the specified \a bandNumber,
      * if the \a attributeTable is NULL any existing attribute table for the specified
      * band will be removed.
+     *
      * \note Ownership of the attribute table is transferred to the provider.
      * \since QGIS 3.30
      */
@@ -759,19 +761,22 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Remove the attribute table for the specified \a bandNumber.
      * If the attribute table does not exist this method does nothing.
+     *
      * \since QGIS 3.30
      */
     void removeAttributeTable( int bandNumber );
 
     /**
      * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, any error message is set to \a errorMessage.
+     *
      * \returns TRUE on success
      * \since QGIS 3.30
      */
     bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = nullptr ) const;
 
     /**
-     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, any error message is set to \a errorMessage..
+     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, any error message is set to \a errorMessage.
+     *
      * \returns TRUE on success
      * \since QGIS 3.30
      */
@@ -782,6 +787,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * The default implementation does nothing and returns FALSE.
      * Data providers that have NativeRasterAttributeTable
      * provider capability will try to save the native attribute table.
+     *
      * \returns TRUE on success
      * \since QGIS 3.30
      */
@@ -792,6 +798,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * The default implementation does nothing and returns FALSE.
      * Data providers that have NativeRasterAttributeTable
      * provider capability will try to read the native attribute table.
+     *
      * \returns TRUE on success
      * \since QGIS 3.30
      */

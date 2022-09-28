@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "gdal.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 
 #include <QObject>
 
@@ -38,40 +39,6 @@ class CORE_EXPORT QgsRasterAttributeTable
 
   public:
 
-    /**
-     * \brief The FieldUsage enum represents the usage of a RAT field.
-     */
-    enum class FieldUsage : int
-    {
-      Generic = GFU_Generic, //!< Field usage Generic
-      PixelCount = GFU_PixelCount, //!< Field usage PixelCount
-      Name = GFU_Name, //!< Field usage Name
-      Min = GFU_Min, //!< Field usage Min
-      Max = GFU_Max, //!< Field usage Max
-      MinMax = GFU_MinMax, //!< Field usage MinMax
-      Red = GFU_Red, //!< Field usage Red
-      Green = GFU_Green, //!< Field usage Green
-      Blue = GFU_Blue, //!< Field usage Blue
-      Alpha = GFU_Alpha, //!< Field usage Alpha
-      RedMin = GFU_RedMin, //!< Field usage RedMin
-      GreenMin = GFU_GreenMin, //!< Field usage GreenMin
-      BlueMin = GFU_BlueMin, //!< Field usage BlueMin
-      AlphaMin = GFU_AlphaMin, //!< Field usage AlphaMin
-      RedMax = GFU_RedMax, //!< Field usage RedMax
-      GreenMax = GFU_GreenMax, //!< Field usage GreenMax
-      BlueMax = GFU_BlueMax, //!< Field usage BlueMax
-      AlphaMax = GFU_AlphaMax, //!< Field usage AlphaMax
-      MaxCount = GFU_MaxCount //!< Field usage MaxCount
-    };
-
-    /**
-     * \brief The RatType enum represents the type of RAT.
-     */
-    enum class RatType : int
-    {
-      Thematic = GRTT_THEMATIC,
-      Athematic = GRTT_ATHEMATIC
-    };
 
     /**
      * \brief The Field struct represents a RAT field, including its name, usage and type.
@@ -82,21 +49,21 @@ class CORE_EXPORT QgsRasterAttributeTable
       /**
        * Creates a new Field with \a name, \a type and \a usage.
        */
-      Field( const QString &name, const FieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
+      Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ): name( name ), usage( usage ), type( type ) {}
       QString name;
-      FieldUsage usage;
+      Qgis::RasterAttributeTableFieldUsage usage;
       QVariant::Type type;
     };
 
     /**
      * Returns the RAT type.
      */
-    RatType type() const;
+    Qgis::RasterAttributeTableType type() const;
 
     /**
      * Sets the RAT \a type
      */
-    void setType( const RatType type );
+    void setType( const Qgis::RasterAttributeTableType type );
 
     /**
      * Returns TRUE if the RAT has RGB information.
@@ -141,12 +108,12 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, returns TRUE on success.
      */
-    bool insertField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type, int position = 0 );
+    bool insertField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type, int position = 0 );
 
     /**
      * Creates a new field from \a name, \a usage and \a type and appends it to the fields, returns TRUE on success.
      */
-    bool appendField( const QString &name, QgsRasterAttributeTable::FieldUsage usage, QVariant::Type type );
+    bool appendField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type );
 
     /**
      * Appends a new \a field and returns TRUE on success.
@@ -186,11 +153,11 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Try to determine the field usage from its \a name and \a type.
      */
-    static FieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
+    static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 
   private:
 
-    RatType mType = RatType::Athematic;
+    Qgis::RasterAttributeTableType mType = Qgis::RasterAttributeTableType::Athematic;
     QList<Field> mFields;
     QList<QVariantList> mData;
     bool mIsDirty;

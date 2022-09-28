@@ -19,6 +19,7 @@
 #include "qgsgdalprovider.h"
 ///@cond PRIVATE
 
+#include "qgis.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsgdalprovider.h"
@@ -3084,10 +3085,10 @@ bool QgsGdalProvider::readNativeAttributeTable()
         // Fields
         QgsFields ratFields;
         QStringList lowerNames;
-        QList<QgsRasterAttributeTable::FieldUsage> usages;
+        QList<Qgis::RasterAttributeTableFieldUsage> usages;
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
-          QgsRasterAttributeTable::FieldUsage usage { static_cast<QgsRasterAttributeTable::FieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
+          Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
           QVariant::Type type;
           switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
           {
@@ -3113,16 +3114,16 @@ bool QgsGdalProvider::readNativeAttributeTable()
           usages.append( usage );
         }
 
-        QStringList cNames { ratFields.names( ) };
+        QStringList ratFieldNames { ratFields.names( ) };
         QStringList lNames;
 
         // Try to identify fields in case of RAT with wrong usages
-        if ( ! usages.contains( QgsRasterAttributeTable::FieldUsage::MinMax ) ||
-             !( usages.contains( QgsRasterAttributeTable::FieldUsage::Min ) && usages.contains( QgsRasterAttributeTable::FieldUsage::Max ) ) )
+        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) ||
+             !( usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) ) )
         {
           if ( lowerNames.contains( QStringLiteral( "value" ) ) )
           {
-            usages[ lowerNames.indexOf( QStringLiteral( "value" ) ) ] = QgsRasterAttributeTable::FieldUsage::MinMax;
+            usages[ lowerNames.indexOf( QStringLiteral( "value" ) ) ] = Qgis::RasterAttributeTableFieldUsage::MinMax;
           }
           else
           {
@@ -3138,7 +3139,7 @@ bool QgsGdalProvider::readNativeAttributeTable()
             {
               if ( lowerNames.contains( minName ) )
               {
-                usages[ lowerNames.indexOf( minName ) ] = QgsRasterAttributeTable::FieldUsage::Min;
+                usages[ lowerNames.indexOf( minName ) ] = Qgis::RasterAttributeTableFieldUsage::Min;
                 break;
               }
             }
@@ -3155,18 +3156,18 @@ bool QgsGdalProvider::readNativeAttributeTable()
             {
               if ( lowerNames.contains( maxName ) )
               {
-                usages[ lowerNames.indexOf( maxName ) ] = QgsRasterAttributeTable::FieldUsage::Max;
+                usages[ lowerNames.indexOf( maxName ) ] = Qgis::RasterAttributeTableFieldUsage::Max;
                 break;
               }
             }
           }
         }
 
-        if ( ! usages.contains( QgsRasterAttributeTable::FieldUsage::PixelCount ) )
+        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::PixelCount ) )
         {
           if ( lowerNames.contains( QStringLiteral( "count" ) ) )
           {
-            usages[ lowerNames.indexOf( QStringLiteral( "count" ) ) ] = QgsRasterAttributeTable::FieldUsage::PixelCount;
+            usages[ lowerNames.indexOf( QStringLiteral( "count" ) ) ] = Qgis::RasterAttributeTableFieldUsage::PixelCount;
           }
         }
 
