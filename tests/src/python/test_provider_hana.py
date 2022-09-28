@@ -544,7 +544,8 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             "user='myuser' password='mypwd' srid=2016 table=\"public\".\"gis\" (geom) type=MultiPolygon key='id' "
             "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-            "sslTrustStore='server_root.crt' "),
+            "sslTrustStore='server_root.crt' "
+            "proxyEnabled='true' proxyHttp='false' proxyHost='h' proxyPort=2 proxyUsername='u' proxyPassword='p' "),
             {
                 'connectionType': '0',
                 'dsn': 'HANADB1',
@@ -566,7 +567,13 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'sslHostNameInCertificate': 'hostname.domain.com',
                 'sslKeyStore': 'mykey.pem',
                 'sslTrustStore': 'server_root.crt',
-                'selectatid': False})
+                'selectatid': False,
+                'proxyEnabled': 'true',
+                'proxyHttp': 'true',
+                'proxyHost': 'h',
+                'proxyPort': 2,
+                'proxyUsername': 'u',
+                'proxyPassword': 'p'})
 
         self.assertEqual(md.encodeUri({'connectionType': '0',
                                        'dsn': 'HANADB1',
@@ -588,13 +595,20 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'sslHostNameInCertificate': 'hostname.domain.com',
                                        'sslKeyStore': 'mykey.pem',
                                        'sslTrustStore': 'server_root.crt',
-                                       'selectatid': False}),
+                                       'selectatid': False,
+                                       'proxyEnabled': 'true',
+                                       'proxyHttp': 'false',
+                                       'proxyHost': 'h',
+                                       'proxyPort': '3',
+                                       'proxyUsername': 'u',
+                                       'proxyPassword': 'p'}),
                          "connectionType='0' dsn='HANADB1' "
                          "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
                          "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
                          "sslCryptoProvider='commoncrypto' sslEnabled='true' "
                          "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
                          "sslTrustStore='server_root.crt' sslValidateCertificate='false' "
+                         "proxyEnabled='true' proxyHttp='false' proxyHost='h' proxyPort='3' proxyUsername='u' proxyPassword='p' "
                          "type='MultiPolygon' table=\"public\".\"gis\" (geom)")
 
 

@@ -57,6 +57,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   connect( rbtnTenantDatabase, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnTenantDatabase_clicked );
   connect( rbtnSystemDatabase, &QRadioButton::clicked, this, &QgsHanaNewConnection::rbtnSystemDatabase_clicked );
   connect( chkEnableSSL, &QCheckBox::clicked, this, &QgsHanaNewConnection::chkEnableSSL_clicked );
+  connect( chkEnableProxy, &QCheckBox::clicked, this, &QgsHanaNewConnection::chkEnableProxy_clicked );
   connect( chkValidateCertificate, &QCheckBox::clicked, this, &QgsHanaNewConnection::chkValidateCertificate_clicked );
   connect( btnConnect, &QPushButton::clicked, this, &QgsHanaNewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaNewConnection::showHelp );
@@ -97,6 +98,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
 
   chkEnableSSL_clicked();
+  chkEnableProxy_clicked();
 }
 
 void QgsHanaNewConnection::accept()
@@ -252,6 +254,16 @@ void QgsHanaNewConnection::chkEnableSSL_clicked()
   txtTrustStore->setEnabled( enabled );
 }
 
+void QgsHanaNewConnection::chkEnableProxy_clicked()
+{
+  const bool enabled = chkEnableProxy->isChecked();
+  cmbProxyType->setEnabled( enabled );
+  txtProxyHost->setEnabled( enabled );
+  txtProxyPort->setEnabled( enabled );
+  txtProxyUsername->setEnabled( enabled );
+  txtProxyPassword->setEnabled( enabled );
+}
+
 void QgsHanaNewConnection::chkValidateCertificate_clicked()
 {
   txtOverrideHostName->setEnabled( chkValidateCertificate->isChecked() );
@@ -289,6 +301,12 @@ void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
   settings.setSslTrustStore( txtTrustStore->text() );
   settings.setSslValidateCertificate( chkValidateCertificate->isChecked() );
   settings.setSslHostNameInCertificate( txtOverrideHostName->text() );
+  settings.setEnableProxy( chkEnableProxy->isChecked() );
+  settings.setEnableProxyHttp( cmbProxyType->currentIndex() == 0 );
+  settings.setProxyHost( txtProxyHost->text() );
+  settings.setProxyPort( QVariant( txtProxyPort->text() ).toUInt() );
+  settings.setProxyUsername( txtProxyUsername->text() );
+  settings.setProxyPassword( txtProxyPassword->text() );
 }
 
 void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &settings )
@@ -331,16 +349,6 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   chkUserTablesOnly->setChecked( settings.userTablesOnly() );
   chkAllowGeometrylessTables->setChecked( settings.allowGeometrylessTables() );
 
-  chkEnableSSL->setChecked( settings.enableSsl() );
-  const int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
-  if ( idx >= 0 )
-    cbxCryptoProvider->setCurrentIndex( idx );
-
-  chkValidateCertificate->setChecked( settings.sslValidateCertificate() );
-  txtOverrideHostName->setText( settings.sslHostNameInCertificate() );
-  txtKeyStore->setText( settings.sslKeyStore() );
-  txtTrustStore->setText( settings.sslTrustStore() );
-
   if ( settings.saveUserName() )
   {
     mAuthSettings->setUsername( settings.userName() );
@@ -354,6 +362,25 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   }
 
   mAuthSettings->setConfigId( settings.authCfg() );
+
+  // SSL parameters
+  chkEnableSSL->setChecked( settings.enableSsl() );
+  const int idx = cbxCryptoProvider->findData( settings.sslCryptoProvider() );
+  if ( idx >= 0 )
+    cbxCryptoProvider->setCurrentIndex( idx );
+
+  chkValidateCertificate->setChecked( settings.sslValidateCertificate() );
+  txtOverrideHostName->setText( settings.sslHostNameInCertificate() );
+  txtKeyStore->setText( settings.sslKeyStore() );
+  txtTrustStore->setText( settings.sslTrustStore() );
+
+  // Proxy parameters
+  chkEnableProxy->setChecked( settings.enableProxy() );
+  cmbProxyType->setCurrentIndex( settings.enableProxyHttp() ? 0 : 1 );
+  txtProxyHost->setText( settings.proxyHost() );
+  txtProxyPort->setText( QString::number( settings.proxyPort() ) );
+  txtProxyUsername->setText( settings.proxyUsername() );
+  txtProxyPassword->setText( settings.proxyPassword() );
 }
 
 QgsHanaConnectionType QgsHanaNewConnection::getCurrentConnectionType() const

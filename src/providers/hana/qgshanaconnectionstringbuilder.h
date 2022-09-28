@@ -78,13 +78,20 @@ class QgsHanaConnectionStringBuilder
     QString mSchema;
     QString mUserName;
     QString mPassword;
-    // Ssl parameters
+    // SSL parameters
     bool mSslEnabled = false;
     QString mSslCryptoProvider;
     QString mSslKeyStore;
     QString mSslTrustStore;
     bool mSslValidateCertificate = false;
     QString mSslHostNameInCertificate;
+    // Proxy parameters
+    bool mProxyEnabled = false;
+    bool mProxyHttp = false;
+    QString mProxyHost;
+    uint mProxyPort;
+    QString mProxyUsername;
+    QString mProxyPassword;
 };
 
 #endif // QGSHANACONNECTIONSTRINGBUILDER_H
