@@ -121,7 +121,7 @@ else()
     add_dependencies(provider_wfs ui)
   endif()
 
-  target_include_directories(qgis_gui PUBLIC
+  target_include_directories(provider_wfs PUBLIC
     ${CMAKE_SOURCE_DIR}/src/providers/wfs
     ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
   )
