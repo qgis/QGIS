@@ -142,13 +142,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
        */
       bool skipCrsValidation = false;
 
-      //! Sets to TRUE to load the default raster attribute table for providers that support it
-      bool loadDefaultRat = true;
-
-      //! Sets to the path of a DBF raster attribute table to load it
-      QString fileBasedRat;
-
-
     };
 
     /**
