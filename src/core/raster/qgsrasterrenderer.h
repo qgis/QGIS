@@ -63,7 +63,17 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     Qgis::DataType dataType( int bandNo ) const override;
 
+    /**
+     * Returns a unique string representation of the renderer type.
+     */
     virtual QString type() const { return mType; }
+
+    /**
+     * Returns flags which dictate renderer behavior.
+     *
+     * \since QGIS 3.28
+     */
+    virtual Qgis::RasterRendererFlags flags() const;
 
     bool setInput( QgsRasterInterface *input ) override;
 

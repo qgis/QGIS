@@ -61,6 +61,11 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
   return Qgis::DataType::UnknownDataType;
 }
 
+Qgis::RasterRendererFlags QgsRasterRenderer::flags() const
+{
+  return Qgis::RasterRendererFlags();
+}
+
 bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band

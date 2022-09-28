@@ -53,6 +53,11 @@ QgsSingleBandGrayRenderer *QgsSingleBandGrayRenderer::clone() const
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsSingleBandGrayRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )

@@ -55,6 +55,11 @@ QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsPalettedRasterRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 QgsRasterRenderer *QgsPalettedRasterRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )
