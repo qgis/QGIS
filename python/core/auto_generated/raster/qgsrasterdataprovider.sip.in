@@ -726,18 +726,18 @@ If the attribute table does not exist this method does nothing.
 .. versionadded:: 3.30
 %End
 
-    bool writeFileBasedAttributeTable( int bandNumber, const QString &path ) const;
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = 0 ) const;
 %Docstring
-Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``.
+Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``, any error message is set to ``errorMessage``.
 
 :return: ``True`` on success
 
 .. versionadded:: 3.30
 %End
 
-    bool readFileBasedAttributeTable( int bandNumber, const QString &path );
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = 0 );
 %Docstring
-Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``.
+Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``, any error message is set to ``errorMessage``..
 
 :return: ``True`` on success
 

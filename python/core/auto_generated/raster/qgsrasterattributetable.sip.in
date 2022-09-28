@@ -65,12 +65,12 @@ Creates a new Field with ``name``, ``type`` and ``usage``.
       QVariant::Type type;
     };
 
-    const RatType &type() const;
+    RatType type() const;
 %Docstring
 Returns the RAT type.
 %End
 
-    void setType( const RatType &newType );
+    void setType( const RatType type );
 %Docstring
 Sets the RAT ``type``
 %End
@@ -155,7 +155,7 @@ Writes the RAT to a DBF file specified by ``path``, optionally reporting any err
 Reads the RAT from a DBF file specified by ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
-    const QList<QList<QVariant>> &data() const;
+    const QList<QList<QVariant>> data() const;
 %Docstring
 Returns the RAT rows.
 %End

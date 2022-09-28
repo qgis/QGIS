@@ -15,16 +15,17 @@
  ***************************************************************************/
 #include "qgsrasterattributetable.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectorlayer.h"
+#include "qgsogrprovider.h"
+#include "qgsfileutils.h"
 
-const QgsRasterAttributeTable::RatType &QgsRasterAttributeTable::type() const
+QgsRasterAttributeTable::RatType QgsRasterAttributeTable::type() const
 {
   return mType;
 }
 
-void QgsRasterAttributeTable::setType( const QgsRasterAttributeTable::RatType &newType )
+void QgsRasterAttributeTable::setType( const RatType type )
 {
-  mType = newType;
+  mType = type;
 }
 
 bool QgsRasterAttributeTable::hasColor()
@@ -57,8 +58,7 @@ QgsFields QgsRasterAttributeTable::qgisFields() const
 QgsFeatureList QgsRasterAttributeTable::qgisFeatures() const
 {
   QgsFeatureList features;
-  const auto ratData { data( ) };
-  for ( const QVariantList &row : std::as_const( ratData ) )
+  for ( const QVariantList &row : std::as_const( mData ) )
   {
     QgsAttributes attributes;
     for ( const auto &cell : std::as_const( row ) )
@@ -126,7 +126,7 @@ bool QgsRasterAttributeTable::removeField( const QString &name )
 
   if ( toRemove != mFields.end() )
   {
-    const long long idx { std::distance( mFields.begin(), toRemove ) };
+    const int idx { static_cast<int>( std::distance( mFields.begin(), toRemove ) ) };
     mFields.erase( toRemove, mFields.end() );
     for ( auto it = mData.begin(); it != mData.end(); ++it )
     {
@@ -175,6 +175,8 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
   options.actionOnExistingFile =  QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile;
   options.driverName = QStringLiteral( "ESRI Shapefile" );
   options.fileEncoding = QStringLiteral( "UTF-8" );
+  options.layerOptions = QStringList() << QStringLiteral( "SHPT=NULL" );
+
   std::unique_ptr<QgsVectorFileWriter> writer;
 
   // Strip .dbf from path because OGR adds it back
@@ -183,6 +185,8 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
   {
     cleanedPath.chop( 4 );
   }
+
+  cleanedPath = QgsFileUtils::ensureFileNameHasExtension( cleanedPath, {{ QStringLiteral( ".vat" ) } } );
 
   writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
 
@@ -195,7 +199,8 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
     }
     return false;
   }
-  auto features { qgisFeatures() };
+
+  QgsFeatureList features { qgisFeatures() };
   bool result { writer->addFeatures( features ) };
 
   if ( ! result )
@@ -219,7 +224,7 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
 bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorMessage )
 {
-  QgsVectorLayer rat { path, QStringLiteral( "rat_temp" ), QStringLiteral( "ogr" ) };
+  QgsOgrProvider rat { path, QgsDataProvider::ProviderOptions() };
   if ( ! rat.isValid() )
   {
     if ( errorMessage )
@@ -267,7 +272,7 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
 
   const int fieldCount { static_cast<int>( fields().count( ) ) };
   QgsFeature f;
-  QgsFeatureIterator fit { rat.getFeatures( ) };
+  QgsFeatureIterator fit { rat.getFeatures( QgsFeatureRequest() ) };
   while ( fit.nextFeature( f ) )
   {
     if ( f.attributeCount() != fieldCount )
@@ -295,7 +300,7 @@ bool QgsRasterAttributeTable::isValid() const
   return mFields.count() > 0 && mData.count( ) > 0;
 }
 
-const QList<QList<QVariant> > &QgsRasterAttributeTable::data() const
+const QList<QList<QVariant> > QgsRasterAttributeTable::data() const
 {
   return mData;
 }

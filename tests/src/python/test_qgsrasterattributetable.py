@@ -233,7 +233,8 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat = d.attributeTable(1)
         self.assertTrue(rat.isValid())
         self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
-        self.assertEqual([f.type for f in rat.fields()], [QVariant.Int, QVariant.Int, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
+        # Note: when reading from DBF, count and value are always long
+        self.assertEqual([f.type for f in rat.fields()], [QVariant.LongLong, QVariant.LongLong, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
         self.assertEqual(rat.data(), [
             [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
             [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],

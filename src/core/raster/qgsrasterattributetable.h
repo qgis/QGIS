@@ -91,12 +91,12 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the RAT type.
      */
-    const RatType &type() const;
+    RatType type() const;
 
     /**
      * Sets the RAT \a type
      */
-    void setType( const RatType &newType );
+    void setType( const RatType type );
 
     /**
      * Returns TRUE if the RAT has RGB information.
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the RAT rows.
      */
-    const QList<QList<QVariant>> &data() const;
+    const QList<QList<QVariant>> data() const;
 
     /**
      * Try to determine the field usage from its \a name and \a type.
@@ -190,7 +190,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
   private:
 
-    RatType mType;
+    RatType mType = RatType::Athematic;
     QList<Field> mFields;
     QList<QVariantList> mData;
     bool mIsDirty;
