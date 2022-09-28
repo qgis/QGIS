@@ -120,7 +120,12 @@ else()
     )
     add_dependencies(provider_wfs ui)
   endif()
-  
+
+  target_include_directories(qgis_gui PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
+  )
+
   install(TARGETS provider_wfs
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
