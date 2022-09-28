@@ -1567,13 +1567,12 @@ class TestQgsProject(unittest.TestCase):
         self.assertFalse(project4.mapLayer(layer_b.id()).isEditable())
         self.assertFalse(project4.mapLayer(layer_c.id()).isEditable())
 
-    def test_remember_evalutate_defaut_values(self):
+    def test_remember_evaluate_default_values(self):
         """
         Test that EvaluateDefaultValues property is correctly set when loading project
         """
 
         project = QgsProject()
-        project.removeAllMapLayers()
 
         layer = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
 
