@@ -1,0 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayermetadataresultsproxymodel.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsLayerMetadataResultsProxyModel : QSortFilterProxyModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsLayerMetadataResultsProxyModel` class is a proxy model for :py:class:`QgsLayerMetadataResultsModel`,
+it handles text and extent filtering.
+
+.. versionadded:: 3.28
+%End
+
+%TypeHeaderCode
+#include "qgslayermetadataresultsproxymodel.h"
+%End
+  public:
+
+    explicit QgsLayerMetadataResultsProxyModel( QObject *parent = 0 );
+%Docstring
+Constructs a QgsLayerMetadataResultsProxyModel with an optional ``parent``.
+%End
+
+    const QString filterString() const;
+%Docstring
+Returns the filter string.
+%End
+
+    void setFilterGeometryTypeEnabled( bool enabled );
+%Docstring
+Sets the geometry type filter status to ``enabled``.
+%End
+
+    void setFilterMapLayerTypeEnabled( bool enabled );
+%Docstring
+Sets the map layer type filter status to ``enabled``.
+%End
+
+  public slots:
+
+    void setFilterExtent( const QgsRectangle &extent );
+%Docstring
+Sets the extent filter to ``extent``.
+%End
+
+    void setFilterGeometryType( const QgsWkbTypes::GeometryType geometryType );
+%Docstring
+Sets the geometry type filter to ``geometryType``.
+%End
+
+    void setFilterString( const QString &filterString );
+%Docstring
+Sets the text filter to ``filterString``.
+%End
+
+    void setFilterMapLayerType( const QgsMapLayerType mapLayerType );
+%Docstring
+Sets the map layer type filter to ``mapLayerType``.
+%End
+
+  protected:
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgslayermetadataresultsproxymodel.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

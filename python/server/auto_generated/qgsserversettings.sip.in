@@ -49,6 +49,7 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_API_RESOURCES_DIRECTORY,
       QGIS_SERVER_API_WFS3_MAX_LIMIT,
       QGIS_SERVER_TRUST_LAYER_METADATA,
+      QGIS_SERVER_FORCE_READONLY_LAYERS,
       QGIS_SERVER_DISABLE_GETPRINT,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES,
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS,
@@ -61,6 +62,7 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_LANDING_PAGE_PREFIX,
       QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
       QGIS_SERVER_PROJECT_CACHE_STRATEGY,
+      QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
     };
 };
 
@@ -279,6 +281,16 @@ variable QGIS_SERVER_TRUST_LAYER_METADATA.
 .. versionadded:: 3.16
 %End
 
+    bool forceReadOnlyLayers() const;
+%Docstring
+Returns ``True`` if the reading flag force layer read only is activated.
+
+The default value is ``False``, this value can be changed by setting the environment
+variable QGIS_SERVER_FORCE_READONLY_LAYERS.
+
+.. versionadded:: 3.28
+%End
+
     bool getPrintDisabled() const;
 %Docstring
 Returns ``True`` if WMS GetPrint request is disabled and the project's
@@ -317,6 +329,16 @@ Possible values are:
 - 'off': Disable completely internal project's cache handling
 
 .. versionadded:: 3.26
+%End
+
+    QStringList allowedExtraSqlTokens() const;
+%Docstring
+Returns the list of strings that represent the allowed extra SQL tokens
+accepted as components of a feature filter.
+The default value is an empty string, the value can be changed by setting the environment
+variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
+
+.. versionadded:: 3.28
 %End
 
     static QString name( QgsServerSettingsEnv::EnvVar env );

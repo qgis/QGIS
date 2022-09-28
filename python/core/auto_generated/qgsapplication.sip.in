@@ -976,6 +976,13 @@ Returns registry of available project storage implementations.
 .. versionadded:: 3.2
 %End
 
+    static QgsLayerMetadataProviderRegistry *layerMetadataProviderRegistry() /KeepReference/;
+%Docstring
+Returns registry of available layer metadata provider implementations.
+
+.. versionadded:: 3.28
+%End
+
     static QgsExternalStorageRegistry *externalStorageRegistry() /KeepReference/;
 %Docstring
 Returns registry of available external storage implementations.

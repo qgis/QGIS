@@ -140,6 +140,23 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      */
     void setDescription( const QString &description );
 
+    /**
+     * Returns TRUE if the parameter is hidden from the schema.
+     *
+     * Hidden params can be useful to implement legacy parameters or
+     * parameters that can be accepted without being advertised.
+     *
+     * \since QGIS 3.28
+     */
+    bool hidden() const;
+
+    /**
+     * Set the parameter's \a hidden status, parameters are not hidden by default.
+     *
+     * \since QGIS 3.28
+     */
+    void setHidden( bool hidden );
+
   private:
 
     QString mName;
@@ -148,6 +165,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     customValidator mCustomValidator = nullptr;
     QString mDescription;
     QVariant mDefaultValue;
+    bool mHidden = false;
 
     friend class TestQgsServerQueryStringParameter;
 

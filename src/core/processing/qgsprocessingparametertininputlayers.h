@@ -60,6 +60,8 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
     QString type() const override;
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok SIP_OUT ) const override;
+    QVariant valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     //! Returns the type name for the parameter class.

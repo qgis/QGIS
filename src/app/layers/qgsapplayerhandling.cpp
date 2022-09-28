@@ -163,7 +163,7 @@ void QgsAppLayerHandling::postProcessAddedLayers( const QList<QgsMapLayer *> &la
             {
               vl->setWeakRelations( relations );
               resolveVectorLayerDependencies( vl, QgsMapLayer::StyleCategory::Relations, QgsVectorLayerRef::MatchType::Source, DependencyFlag::LoadAllRelationships | DependencyFlag::SilentLoad );
-              resolveVectorLayerWeakRelations( vl, QgsVectorLayerRef::MatchType::Source );
+              resolveVectorLayerWeakRelations( vl, QgsVectorLayerRef::MatchType::Source, true );
             }
           }
         }
@@ -1578,7 +1578,7 @@ void QgsAppLayerHandling::resolveVectorLayerDependencies( QgsVectorLayer *vl, Qg
   }
 }
 
-void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType )
+void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType, bool guiWarnings )
 {
   if ( vectorLayer && vectorLayer->isValid() )
   {
@@ -1600,6 +1600,10 @@ void QgsAppLayerHandling::resolveVectorLayerWeakRelations( QgsVectorLayer *vecto
             }
           }
           QgsProject::instance()->relationManager()->addRelation( relation );
+        }
+        else if ( guiWarnings )
+        {
+          QgisApp::instance()->messageBar()->pushWarning( QObject::tr( "Invalid relationship %1" ).arg( relation.name() ), relation.validationError() );
         }
       }
     }

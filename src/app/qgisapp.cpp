@@ -93,6 +93,7 @@
 #include "qgsvectorlayersavestyledialog.h"
 #include "maptools/qgsappmaptools.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsauxiliarystorage.h"
 
 #include "qgsbrowserwidget.h"
 #include "annotations/qgsannotationitempropertieswidget.h"
@@ -203,6 +204,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsattributedialog.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
+#include "qgsauxiliarystorage.h"
 #include "qgsappscreenshots.h"
 #include "qgsapplicationexitblockerinterface.h"
 #include "qgsbookmarks.h"
@@ -283,6 +285,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsactionlocatorfilter.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
 #include "qgsalllayersfeatureslocatorfilter.h"
+#include "qgslayermetadatalocatorfilter.h"
 #include "qgsbookmarklocatorfilter.h"
 #include "qgsexpressioncalculatorlocatorfilter.h"
 #include "qgsgotolocatorfilter.h"
@@ -2104,6 +2107,11 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
+    // Prevent autoSelectAddedLayer() to do any work during the iteration on
+    // files, as calling setCurrentIndex() has a huge performance hit.
+    // cf https://github.com/qgis/QGIS/issues/49439
+    mBlockAutoSelectAddedLayer = true;
+
     QList< QgsMapLayer * > addedLayers;
     for ( const QString &file : std::as_const( files ) )
     {
@@ -2130,6 +2138,10 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       addedLayers.append( handleDropUriList( lst, true ) );
     }
+
+    // Manually run autoSelectAddedLayer()
+    mBlockAutoSelectAddedLayer = false;
+    autoSelectAddedLayer( addedLayers );
 
     if ( !addedLayers.isEmpty() )
       QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
@@ -2484,14 +2496,9 @@ void QgisApp::dataSourceManager( const QString &pageName )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), true ).toBool() )
-  {
-    mDataSourceManagerDialog->show();
-  }
-  else
-  {
-    mDataSourceManagerDialog->exec();
-  }
+
+  mDataSourceManagerDialog->show();
+  mDataSourceManagerDialog->activate();
 }
 
 QgsBrowserGuiModel *QgisApp::browserModel()
@@ -3892,6 +3899,7 @@ void QgisApp::createStatusBar()
   mLocatorWidget->locator()->registerFilter( new QgsBookmarkLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsSettingsLocatorFilter() );
   mLocatorWidget->locator()->registerFilter( new QgsGotoLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsLayerMetadataLocatorFilter() );
 
   mNominatimGeocoder = std::make_unique< QgsNominatimGeocoder>();
   mLocatorWidget->locator()->registerFilter( new QgsNominatimLocatorFilter( mNominatimGeocoder.get(), mMapCanvas ) );
@@ -4828,6 +4836,9 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )
 {
+  if ( mBlockAutoSelectAddedLayer )
+    return;
+
   if ( !layers.isEmpty() )
   {
     QgsLayerTreeLayer *nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
@@ -8376,19 +8387,33 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       QgsDatumTransformDialog::run( pclayer->crs(), destCRS, this, mMapCanvas );
     }
     exp->setCrs( destCRS, pclayer->transformContext() );
-    exp->setFormat( dialog.format() );
+
+    const QgsPointCloudLayerExporter::ExportFormat format = dialog.exportFormat();
+    exp->setFormat( format );
 
     // LAZ format exports all attributes
-    if ( dialog.format() != QLatin1String( "LAZ" ) )
+    switch ( format )
     {
-      if ( dialog.hasAttributes() )
-        exp->setAttributes( dialog.attributes() );
-      else
-        exp->setNoAttributes();
+      case QgsPointCloudLayerExporter::ExportFormat::Memory:
+      case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
+      case QgsPointCloudLayerExporter::ExportFormat::Shp:
+      case QgsPointCloudLayerExporter::ExportFormat::Dxf:
+      case QgsPointCloudLayerExporter::ExportFormat::Csv:
+        if ( dialog.hasAttributes() )
+          exp->setAttributes( dialog.attributes() );
+        else
+          exp->setNoAttributes();
+        break;
+
+      case QgsPointCloudLayerExporter::ExportFormat::Las:
+        break;
     }
 
     if ( dialog.hasFilterExtent() )
       exp->setFilterExtent( dialog.filterExtent() );
+
+    if ( dialog.hasFilterLayer() )
+      exp->setFilterGeometry( dialog.filterLayer(), dialog.filterLayerSelectedOnly() );
 
     if ( dialog.hasZRange() )
       exp->setZRange( dialog.zRange() );
@@ -12200,7 +12225,6 @@ QMap<QString, QString> QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Coordinate Transforms" ), QStringLiteral( "mOptionsPageTransformations" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) );
@@ -13254,6 +13278,10 @@ void QgisApp::closeProject()
   // Avoid unnecessary layer changed handling for each layer removed - instead,
   // defer the handling until we've removed all layers
   mBlockActiveLayerChanged = true;
+  // Explicitly unset the selection in the layer tree view, otherwise we get
+  // bad performance when the project has a big number of layers, which causes
+  // the current index to be changed many times.
+  mLayerTreeView->setCurrentIndex( QModelIndex() );
   QgsProject::instance()->clear();
   mBlockActiveLayerChanged = false;
 

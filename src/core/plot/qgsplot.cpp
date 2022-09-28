@@ -327,7 +327,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
     const QString text = mXAxis.numericFormat()->formatDouble( currentX, numericContext );
     QgsTextRenderer::drawText( QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, mSize.height() - context.convertToPainterUnits( mMargins.bottom(), QgsUnitTypes::RenderMillimeters ) ),
-                               0, QgsTextRenderer::AlignCenter, { text }, context, mXAxis.textFormat() );
+                               0, Qgis::TextHorizontalAlignment::Center, { text }, context, mXAxis.textFormat() );
   }
 
   // y
@@ -341,7 +341,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
     QgsTextRenderer::drawText( QPointF(
                                  maxYAxisLabelWidth + context.convertToPainterUnits( mMargins.left(), QgsUnitTypes::RenderMillimeters ),
                                  chartAreaBottom - ( currentY - mMinY ) * yScale + height / 2 ),
-                               0, QgsTextRenderer::AlignRight, { text }, context, mYAxis.textFormat(), false );
+                               0, Qgis::TextHorizontalAlignment::Right, { text }, context, mYAxis.textFormat(), false );
   }
 
   // give subclasses a chance to draw their content

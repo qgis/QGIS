@@ -803,6 +803,13 @@ bool QgsOracleProvider::hasSufficientPermsAndCapabilities()
   QSqlQuery qry( *conn );
   if ( !mIsQuery )
   {
+    if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+    {
+      // Does not check editable capabilities
+      qry.finish();
+
+      return true;
+    }
     if ( conn->currentUser() == mOwnerName )
     {
       // full set of privileges for the owner

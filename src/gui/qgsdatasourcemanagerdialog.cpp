@@ -19,6 +19,7 @@
 #include "qgsdatasourcemanagerdialog.h"
 #include "ui_qgsdatasourcemanagerdialog.h"
 #include "qgsbrowserdockwidget.h"
+#include "qgslayermetadatasearchwidget.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
 #include "qgssourceselectprovider.h"
@@ -59,13 +60,14 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
   mPageNames.append( QStringLiteral( "browser" ) );
+
   // Forward all browser signals
   connect( mBrowserWidget, &QgsBrowserDockWidget::handleDropUriList, this, &QgsDataSourceManagerDialog::handleDropUriList );
   connect( mBrowserWidget, &QgsBrowserDockWidget::openFile, this, &QgsDataSourceManagerDialog::openFile );
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
-  // Add provider dialogs
+  // Add registered source select dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
   for ( QgsSourceSelectProvider *provider : sourceSelectProviders )
   {
@@ -98,6 +100,13 @@ void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 QgsMessageBar *QgsDataSourceManagerDialog::messageBar() const
 {
   return mMessageBar;
+}
+
+void QgsDataSourceManagerDialog::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
 }
 
 void QgsDataSourceManagerDialog::setCurrentPage( int index )

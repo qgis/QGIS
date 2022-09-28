@@ -37,7 +37,6 @@
 #include "qgscurve.h"
 #include "qgsregularpolygon.h"
 #include "qgsquadrilateral.h"
-#include "qgsmultipolygon.h"
 #include "qgsvariantutils.h"
 #include "qgsogcutils.h"
 #include "qgsdistancearea.h"
@@ -286,8 +285,28 @@ static QVariant fcnGetVariable( const QVariantList &values, const QgsExpressionC
   if ( !context )
     return QVariant();
 
-  QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
-  return context->variable( name );
+  const QString name = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+
+  if ( name == QLatin1String( "feature" ) )
+  {
+    return context->hasFeature() ? QVariant::fromValue( context->feature() ) : QVariant();
+  }
+  else if ( name == QLatin1String( "id" ) )
+  {
+    return context->hasFeature() ? QVariant::fromValue( context->feature().id() ) : QVariant();
+  }
+  else if ( name == QLatin1String( "geometry" ) )
+  {
+    if ( !context->hasFeature() )
+      return QVariant();
+
+    const QgsFeature feature = context->feature();
+    return feature.hasGeometry() ? QVariant::fromValue( feature.geometry() ) : QVariant();
+  }
+  else
+  {
+    return context->variable( name );
+  }
 }
 
 static QVariant fcnEvalTemplate( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -2567,6 +2586,55 @@ static QVariant fcnGeomIsValid( const QVariantList &values, const QgsExpressionC
   return QVariant( isValid );
 }
 
+static QVariant fcnGeomMakeValid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  const QString methodString = QgsExpressionUtils::getStringValue( values.at( 1 ), parent ).trimmed();
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+  Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework;
+#else
+  Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Structure;
+#endif
+  if ( methodString.compare( QLatin1String( "linework" ), Qt::CaseInsensitive ) == 0 )
+    method = Qgis::MakeValidMethod::Linework;
+  else if ( methodString.compare( QLatin1String( "structure" ), Qt::CaseInsensitive ) == 0 )
+    method = Qgis::MakeValidMethod::Structure;
+
+  const bool keepCollapsed = values.value( 2 ).toBool();
+
+  QgsGeometry valid;
+  try
+  {
+    valid = geom.makeValid( method, keepCollapsed );
+  }
+  catch ( QgsNotSupportedException & )
+  {
+    parent->setEvalErrorString( QObject::tr( "The make_valid parameters require a newer GEOS library version" ) );
+    return QVariant();
+  }
+
+  return QVariant::fromValue( valid );
+}
+
+static QVariant fcnGeometryCollectionAsArray( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  QVector<QgsGeometry> multiGeom = geom.asGeometryCollection();
+  QVariantList array;
+  for ( int i = 0; i < multiGeom.size(); ++i )
+  {
+    array += QVariant::fromValue( multiGeom.at( i ) );
+  }
+
+  return array;
+}
+
 static QVariant fcnGeomX( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -2876,6 +2944,24 @@ static QVariant fcnLineMerge( const QVariantList &values, const QgsExpressionCon
 
   return QVariant::fromValue( merged );
 }
+
+static QVariant fcnSharedPaths( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  const QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( geom.isNull() )
+    return QVariant();
+
+  const QgsGeometry geom2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  if ( geom2.isNull() )
+    return QVariant();
+
+  const QgsGeometry sharedPaths = geom.sharedPaths( geom2 );
+  if ( sharedPaths.isNull() )
+    return QVariant();
+
+  return QVariant::fromValue( sharedPaths );
+}
+
 
 static QVariant fcnSimplify( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
@@ -7802,7 +7888,17 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "point2" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "point3" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "option" ), true, 0 ),
-                                            fcnMakeRectangleFrom3Points, QStringLiteral( "GeometryGroup" ) );
+                                            fcnMakeRectangleFrom3Points, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "make_valid" ),  QgsExpressionFunction::ParameterList
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
+#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
+      QgsExpressionFunction::Parameter( QStringLiteral( "method" ), true, QStringLiteral( "linework" ) ),
+#else
+      QgsExpressionFunction::Parameter( QStringLiteral( "method" ), true, QStringLiteral( "structure" ) ),
+#endif
+      QgsExpressionFunction::Parameter( QStringLiteral( "keep_collapsed" ), true, false )
+    }, fcnGeomMakeValid, QStringLiteral( "GeometryGroup" ) );
     QgsStaticExpressionFunction *xAtFunc = new QgsStaticExpressionFunction( QStringLiteral( "$x_at" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "i" ) ), fcnXat, QStringLiteral( "GeometryGroup" ), QString(), true, QSet<QString>(), false, QStringList() << QStringLiteral( "xat" ) << QStringLiteral( "x_at" ) );
     xAtFunc->setIsStatic( false );
     functions << xAtFunc;
@@ -7925,6 +8021,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             fcnGeometryN, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "boundary" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnBoundary, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "line_merge" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnLineMerge, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "shared_paths" ), QgsExpressionFunction::ParameterList
+    {
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) ),
+      QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) )
+    }, fcnSharedPaths, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "bounds" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ), fcnBounds, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "simplify" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnSimplify, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "simplify_vw" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tolerance" ) ), fcnSimplifyVW, QStringLiteral( "GeometryGroup" ) )
@@ -8301,7 +8402,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         if ( !argNode->isStatic( parent, context ) )
           return false;
 
-        QString varName = argNode->eval( parent, context ).toString();
+        const QString varName = argNode->eval( parent, context ).toString();
+        if ( varName == QLatin1String( "feature" ) || varName == QLatin1String( "id" ) || varName == QLatin1String( "geometry" ) )
+          return false;
 
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         return scope ? scope->isStatic( varName ) : false;
@@ -8400,6 +8503,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "array_to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "array" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "," ) << QgsExpressionFunction::Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnArrayToString, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "string_to_array" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "delimiter" ), true, "," ) << QgsExpressionFunction::Parameter( QStringLiteral( "emptyvalue" ), true, "" ), fcnStringToArray, QStringLiteral( "Arrays" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "generate_series" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "start" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "stop" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "step" ), true, 1.0 ), fcnGenerateSeries, QStringLiteral( "Arrays" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "geometries_to_array" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometries" ) ), fcnGeometryCollectionAsArray, QStringLiteral( "Arrays" ) )
 
         //functions for maps
         << new QgsStaticExpressionFunction( QStringLiteral( "from_json" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnLoadJson, QStringLiteral( "Maps" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "json_to_map" ) )

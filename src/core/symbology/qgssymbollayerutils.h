@@ -881,10 +881,14 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param maxSize the maximum size in mm
      * \param context the render context
      * \param width expected width, can be changed by the function
-     * \param height expected height, can be changed by this function
-     * \return 0 if size is within minSize/maxSize range. New symbol if size was out of min/max range. Caller takes ownership
+     * \param height expected height, can be changed by the function
+     * \param ok if not nullptr, ok is set to false if it's not possible to compute a restricted symbol (if geometry generators
+     * are involved for instance)
+     * \return nullptr if size is within minSize/maxSize range or if it's not possible to compute a
+     * restricted size symbol. New symbol if size was out of min/max range.
+     * Caller takes ownership
      */
-    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height );
+    static QgsSymbol *restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok = nullptr );
 
     /**
      * Evaluates a map of properties using the given \a context and returns a variant map with evaluated expressions from the properties.
@@ -925,5 +929,3 @@ class QPolygonF;
 QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::GeometryType geometryType ) SIP_SKIP;
 
 #endif
-
-

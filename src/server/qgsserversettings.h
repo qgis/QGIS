@@ -67,6 +67,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_API_RESOURCES_DIRECTORY, //!< Base directory where HTML templates and static assets (e.g. images, js and css files) are searched for (since QGIS 3.10).
       QGIS_SERVER_API_WFS3_MAX_LIMIT, //!< Maximum value for "limit" in a features request, defaults to 10000 (since QGIS 3.10).
       QGIS_SERVER_TRUST_LAYER_METADATA, //!< Trust layer metadata. Improves project read time. (since QGIS 3.16).
+      QGIS_SERVER_FORCE_READONLY_LAYERS, //!< Force to open layers in read-only mode. (since QGIS 3.28).
       QGIS_SERVER_DISABLE_GETPRINT, //!< Disabled WMS GetPrint request and don't load layouts. Improves project read time. (since QGIS 3.16).
       QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES, //!< Directories used by the landing page service to find .qgs and .qgz projects (since QGIS 3.16)
       QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS, //!< PostgreSQL connection strings used by the landing page service to find projects (since QGIS 3.16)
@@ -79,6 +80,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
       QGIS_SERVER_LANDING_PAGE_PREFIX, //! Prefix of the path component of the landing page base URL, default is empty (since QGIS 3.20).
       QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL, //! Set the interval for cache invalidation strategy 'interval', default to 0 which select the legacy File system watcher  (since QGIS 3.26).
       QGIS_SERVER_PROJECT_CACHE_STRATEGY, //! Set the project cache strategy. Possible values are 'filesystem', 'periodic' or 'off' (since QGIS 3.26).
+      QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS, //! Adds these tokens to the list of allowed tokens that the services accept when filtering features (since QGIS 3.28).
     };
     Q_ENUM( EnvVar )
 };
@@ -280,6 +282,16 @@ class SERVER_EXPORT QgsServerSettings
     bool trustLayerMetadata() const;
 
     /**
+     * Returns TRUE if the reading flag force layer read only is activated.
+     *
+     * The default value is FALSE, this value can be changed by setting the environment
+     * variable QGIS_SERVER_FORCE_READONLY_LAYERS.
+     *
+     * \since QGIS 3.28
+     */
+    bool forceReadOnlyLayers() const;
+
+    /**
      * Returns TRUE if WMS GetPrint request is disabled and the project's
      * reading flag QgsProject::ReadFlag::FlagDontLoadLayouts is activated.
      *
@@ -316,6 +328,16 @@ class SERVER_EXPORT QgsServerSettings
      * \since QGIS 3.26
      */
     QString projectCacheStrategy() const;
+
+    /**
+     * Returns the list of strings that represent the allowed extra SQL tokens
+     * accepted as components of a feature filter.
+     * The default value is an empty string, the value can be changed by setting the environment
+     * variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
+     *
+     * \since QGIS 3.28
+     */
+    QStringList allowedExtraSqlTokens() const;
 
     /**
      * Returns the string representation of a setting.

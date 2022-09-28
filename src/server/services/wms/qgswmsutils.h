@@ -49,6 +49,12 @@ namespace QgsWms
   };
 
   /**
+   * Returns the highest version supported by this implementation
+   * \since QGIS 3.22.12
+   */
+  QString implementationVersion();
+
+  /**
    * Returns WMS service URL
    */
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings );
@@ -67,5 +73,3 @@ namespace QgsWms
 } // namespace QgsWms
 
 #endif
-
-

@@ -24,38 +24,39 @@ static const QString SERVICE_WFS = QStringLiteral( "WFS" );
 QgsWfsConnection::QgsWfsConnection( const QString &connName )
   : QgsOwsConnection( SERVICE_WFS, connName )
 {
-  const QString version = settingsConnectionVersion.value( {service(), connName} );
+  const QStringList detailsParameters = {service().toLower(), connName};
+  const QString version = settingsConnectionVersion.value( detailsParameters );
   if ( !version.isEmpty() )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_VERSION ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_VERSION, version );
   }
 
-  const QString maxnumfeatures = settingsConnectionMaxNumFeatures.value( {service(), connName} );
+  const QString maxnumfeatures = settingsConnectionMaxNumFeatures.value( detailsParameters );
   if ( !maxnumfeatures.isEmpty() )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, maxnumfeatures );
   }
 
-  const QString pagesize = settingsConnectionPagesize.value( {service(), connName} );
+  const QString pagesize = settingsConnectionPagesize.value( detailsParameters );
   if ( !pagesize.isEmpty() )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_PAGE_SIZE, pagesize );
   }
 
-  if ( settingsConnectionPagingEnabled.exists( {service(), connName} ) )
+  if ( settingsConnectionPagingEnabled.exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsConnectionPagingEnabled.value( {service(), connName} ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    mUri.setParam( QgsWFSConstants::URI_PARAM_PAGING_ENABLED, settingsConnectionPagingEnabled.value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
 
-  if ( settingsConnectionPreferCoordinatesForWfsT11.exists( {service(), connName} ) )
+  if ( settingsConnectionPreferCoordinatesForWfsT11.exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
-                   settingsConnectionPreferCoordinatesForWfsT11.value( {service(), connName} ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+                   settingsConnectionPreferCoordinatesForWfsT11.value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );

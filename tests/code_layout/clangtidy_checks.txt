@@ -1,0 +1,5 @@
+bugprone-*,
+
+# Those we don't want to fix
+-bugprone-easily-swappable-parameters,
+-bugprone-virtual-near-miss

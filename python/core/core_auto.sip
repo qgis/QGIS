@@ -44,6 +44,7 @@
 %Include auto_generated/qgsdiagramrenderer.sip
 %Include auto_generated/qgsdistancearea.sip
 %Include auto_generated/qgseditorwidgetsetup.sip
+%Include auto_generated/qgselevationmap.sip
 %Include auto_generated/qgselevationutils.sip
 %Include auto_generated/qgserror.sip
 %Include auto_generated/qgsexpressioncontext.sip
@@ -499,6 +500,8 @@
 %Include auto_generated/metadata/qgslayermetadatavalidator.sip
 %Include auto_generated/metadata/qgsmetadatautils.sip
 %Include auto_generated/metadata/qgsprojectmetadata.sip
+%Include auto_generated/metadata/qgsabstractlayermetadataprovider.sip
+%Include auto_generated/metadata/qgslayermetadataproviderregistry.sip
 %Include auto_generated/network/qgsblockingnetworkrequest.sip
 %Include auto_generated/network/qgsfiledownloader.sip
 %Include auto_generated/network/qgsnetworkaccessmanager.sip
@@ -682,6 +685,7 @@
 %Include auto_generated/textrenderer/qgstextbuffersettings.sip
 %Include auto_generated/textrenderer/qgstextcharacterformat.sip
 %Include auto_generated/textrenderer/qgstextdocument.sip
+%Include auto_generated/textrenderer/qgstextdocumentmetrics.sip
 %Include auto_generated/textrenderer/qgstextformat.sip
 %Include auto_generated/textrenderer/qgstextfragment.sip
 %Include auto_generated/textrenderer/qgstextmasksettings.sip

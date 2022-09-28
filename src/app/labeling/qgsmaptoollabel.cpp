@@ -17,26 +17,22 @@
 
 #include "qgsmaptoollabel.h"
 #include "qgsfeatureiterator.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgssettingsregistrycore.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsauxiliarystorage.h"
-#include "qgsgui.h"
 #include "qgstextrenderer.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsstatusbar.h"
 #include "qgslabelingresults.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QMouseEvent>
 

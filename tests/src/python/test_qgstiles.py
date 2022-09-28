@@ -177,6 +177,18 @@ class TestQgsTiles(unittest.TestCase):
         self.assertAlmostEqual(matrix_set.tileMatrix(4).scale(), 34942642, 0)
         self.assertAlmostEqual(matrix_set.tileMatrix(5).scale(), 17471321, 0)
 
+        # tile matrix 0 should not be present -- we restricted the range to 1-13
+        self.assertAlmostEqual(matrix_set.tileMatrix(0).zoomLevel(), -1)
+        # but the root tile matrix should still be available for calculations
+        self.assertTrue(matrix_set.rootMatrix().isRootTileMatrix())
+        self.assertEqual(matrix_set.rootMatrix().matrixWidth(), 1)
+        self.assertEqual(matrix_set.rootMatrix().matrixHeight(), 1)
+        self.assertEqual(matrix_set.rootMatrix().crs().authid(), 'EPSG:3857')
+        self.assertAlmostEqual(matrix_set.rootMatrix().extent().xMinimum(), -20037508.3427892, 3)
+        self.assertAlmostEqual(matrix_set.rootMatrix().extent().xMaximum(), 20037508.3427892, 3)
+        self.assertAlmostEqual(matrix_set.rootMatrix().extent().yMinimum(), -20037508.3427892, 3)
+        self.assertAlmostEqual(matrix_set.rootMatrix().extent().yMaximum(), 20037508.3427892, 3)
+
     def testTileMatrixSetRemoveTiles(self):
         matrix_set = QgsTileMatrixSet()
         matrix_set.addGoogleCrs84QuadTiles(1, 13)
@@ -194,6 +206,8 @@ class TestQgsTiles(unittest.TestCase):
         matrix_set.addMatrix(
             QgsTileMatrix.fromCustomDef(3, QgsCoordinateReferenceSystem('EPSG:3857'), QgsPointXY(1, 2), 1000, 4, 8))
 
+        matrix_set.setRootMatrix(QgsTileMatrix.fromCustomDef(0, QgsCoordinateReferenceSystem('EPSG:3857'), QgsPointXY(1, 2), 1000, 1, 1))
+
         doc = QDomDocument("testdoc")
         res = matrix_set.writeXml(doc, QgsReadWriteContext())
 
@@ -205,6 +219,13 @@ class TestQgsTiles(unittest.TestCase):
         self.assertEqual(set2.tileMatrix(1).crs().authid(), 'EPSG:4326')
         self.assertEqual(set2.tileMatrix(2).crs().authid(), 'EPSG:4326')
         self.assertEqual(set2.tileMatrix(3).crs().authid(), 'EPSG:3857')
+
+        self.assertEqual(set2.rootMatrix().crs().authid(), 'EPSG:3857')
+        self.assertTrue(set2.rootMatrix().isRootTileMatrix())
+        self.assertAlmostEqual(set2.rootMatrix().extent().xMinimum(), 1, 3)
+        self.assertAlmostEqual(set2.rootMatrix().extent().xMaximum(), 1001, 3)
+        self.assertAlmostEqual(set2.rootMatrix().extent().yMinimum(), -998, 3)
+        self.assertAlmostEqual(set2.rootMatrix().extent().yMaximum(), 2, 3)
 
     def testVectorTileMatrixSet(self):
         matrix_set = QgsVectorTileMatrixSet()
@@ -383,6 +404,15 @@ class TestQgsTiles(unittest.TestCase):
 
         self.assertEqual(vector_tile_set.minimumZoom(), 0)
         self.assertEqual(vector_tile_set.maximumZoom(), 14)
+
+        self.assertTrue(vector_tile_set.rootMatrix().isRootTileMatrix())
+        self.assertEqual(vector_tile_set.rootMatrix().matrixWidth(), 1)
+        self.assertEqual(vector_tile_set.rootMatrix().matrixHeight(), 1)
+        self.assertEqual(vector_tile_set.rootMatrix().crs().authid(), 'EPSG:3978')
+        self.assertAlmostEqual(vector_tile_set.rootMatrix().extent().xMinimum(), -34655613.47869982, 3)
+        self.assertAlmostEqual(vector_tile_set.rootMatrix().extent().xMaximum(), 34655613.47869982, 3)
+        self.assertAlmostEqual(vector_tile_set.rootMatrix().extent().yMinimum(), -30836282.31264031, 3)
+        self.assertAlmostEqual(vector_tile_set.rootMatrix().extent().yMaximum(), 38474944.64475933, 3)
 
         self.assertEqual(vector_tile_set.crs().authid(), 'EPSG:3978')
         self.assertAlmostEqual(vector_tile_set.tileMatrix(0).extent().xMinimum(), -34655613.47869982, 3)

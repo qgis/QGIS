@@ -484,6 +484,49 @@
             <number>0</number>
            </property>
            <item>
+            <widget class="QgsCollapsibleGroupBox" name="chkUseScaleDependentRendering">
+             <property name="title">
+              <string>Scale Dependent Visibility</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <property name="syncGroup" stdset="0">
+              <string notr="true">rastergeneral</string>
+             </property>
+             <layout class="QGridLayout" name="_5">
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
+               <number>11</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>6</number>
+              </property>
+              <item row="0" column="0" colspan="2">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="whatsThis">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
              <property name="title">
               <string>Simplify Mesh</string>
@@ -615,10 +658,10 @@
               <string>Layer Temporal Settings</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_3">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>Reference time</string>
+                 <string>Start time</string>
                 </property>
                </widget>
               </item>
@@ -635,54 +678,14 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="mTemporalReloadButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>24</width>
-                  <height>24</height>
-                 </size>
-                </property>
+              <item row="6" column="1" colspan="2">
+               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
                 <property name="toolTip">
-                 <string>Reload from provider</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../../images/images.qrc">
-                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+                 <string>Method for selection of temporal mesh dataset from a range time</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Start time</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1" colspan="2">
-               <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="buttonSymbols">
-                 <enum>QAbstractSpinBox::NoButtons</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>End time</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1" colspan="2">
+              <item row="4" column="1" colspan="2">
                <widget class="QDateTimeEdit" name="mTemporalDateTimeEnd">
                 <property name="enabled">
                  <bool>false</bool>
@@ -710,17 +713,64 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_10">
                 <property name="text">
                  <string>Dataset matching method</string>
                 </property>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Reference time</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>End time</string>
+                </property>
+               </widget>
+              </item>
               <item row="3" column="1" colspan="2">
-               <widget class="QComboBox" name="mComboBoxTemporalDatasetMatchingMethod">
+               <widget class="QDateTimeEdit" name="mTemporalDateTimeStart">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+                <property name="buttonSymbols">
+                 <enum>QAbstractSpinBox::NoButtons</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="mTemporalReloadButton">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
                 <property name="toolTip">
-                 <string>Method for selection of temporal mesh dataset from a range time</string>
+                 <string>Reload from provider</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../../../images/images.qrc">
+                  <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QCheckBox" name="mAlwaysTimeFromSourceCheckBox">
+                <property name="text">
+                 <string>Always take reference time from data source</string>
                 </property>
                </widget>
               </item>
@@ -851,6 +901,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
@@ -879,11 +934,13 @@
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mStaticDatasetGroupBox</tabstop>
   <tabstop>scrollArea</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mSimplifyMeshGroupBox</tabstop>
   <tabstop>mSimplifyReductionFactorSpinBox</tabstop>
   <tabstop>mSimplifyMeshResolutionSpinBox</tabstop>
   <tabstop>mTemporalDateTimeReference</tabstop>
   <tabstop>mTemporalReloadButton</tabstop>
+  <tabstop>mAlwaysTimeFromSourceCheckBox</tabstop>
   <tabstop>mTemporalDateTimeStart</tabstop>
   <tabstop>mTemporalDateTimeEnd</tabstop>
   <tabstop>mComboBoxTemporalDatasetMatchingMethod</tabstop>

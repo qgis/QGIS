@@ -31,6 +31,7 @@
 #endif
 
 class QgsCoordinateTransform;
+class QgsGeos;
 
 /**
  * \class QgsPointCloudLayerExporter
@@ -43,6 +44,44 @@ class QgsCoordinateTransform;
 class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 {
   public:
+
+    /**
+     * Supported export formats for point clouds
+     */
+    enum class ExportFormat : int
+    {
+      Memory = 0, //!< Memory layer
+      Las = 1, //!< LAS/LAZ point cloud
+      Gpkg = 2, //!< Geopackage
+      Shp = 3, //!< ESRI ShapeFile
+      Dxf = 4, //!< AutoCAD dxf
+      Csv = 5, //!< Comma separated values
+    };
+
+    /**
+     * Gets a list of the supported export formats.
+     *
+     * \see setFormat()
+     */
+    static QList< ExportFormat > supportedFormats() SIP_SKIP
+    {
+      QList< ExportFormat > formats;
+      formats << ExportFormat::Memory
+#ifdef HAVE_PDAL_QGIS
+              << ExportFormat::Las
+#endif
+              << ExportFormat::Gpkg
+              << ExportFormat::Shp
+              << ExportFormat::Dxf
+              << ExportFormat::Csv;
+      return formats;
+    }
+
+    /**
+     * Gets the OGR driver name for the specified \a format
+     * \note Not available in python bindings
+     */
+    static QString getOgrDriverName( ExportFormat format ) SIP_SKIP;
 
     /**
      * Constructor for QgsPointCloudLayerExporter, associated with the specified \a layer.
@@ -86,6 +125,18 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QgsRectangle filterExtent() const { return mExtent; }
 
     /**
+     * Sets a spatial filter for points to be exported based on \a geom in the point cloud's CRS.
+     * Points that do not intersect \a geometry will be skipped.
+     */
+    void setFilterGeometry( const QgsAbstractGeometry *geometry );
+
+    /**
+     * Sets a spatial filter for points to be exported based on the features of \a layer.
+     * Points that do not intersect the \a layer's features will be skipped.
+     */
+    void setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly = false );
+
+    /**
      * Sets an inclusive range for Z values to be exported.
      * Points with Z values outside the range will be skipped.
      */
@@ -111,13 +162,13 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Sets the list of point cloud \a attributes that will be exported.
      * If never called, all attributes will be exported.
-     * \note This has no effect when exporting to LAZ format.
+     * \note This has no effect when exporting to LAS/LAZ format.
      */
     void setAttributes( const QStringList &attributes );
 
     /**
      * Sets that no attributes will be exported.
-     * \note This has no effect when exporting to LAZ format.
+     * \note This has no effect when exporting to LAS/LAZ format.
      */
     void setNoAttributes() { mRequestedAttributes.clear(); }
 
@@ -132,7 +183,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QStringList attributes() const { return mRequestedAttributes; }
 
     /**
-     * Sets the \a crs for the exported file, and the transform \a context that will be used for
+     * Sets the \a crs for the exported file, and the transform \a context that will be used
      * for reprojection if different from the point cloud layer's CRS.
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; }
@@ -145,21 +196,14 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     /**
      * Sets the \a format for the exported file.
      * \returns true if the \a format is supported, false otherwise.
-     * \see supportedFormats()
+     * \see ExportFormat
      */
-    bool setFormat( const QString &format );
+    bool setFormat( const ExportFormat format );
 
     /**
      * Returns the format for the exported file or layer.
      */
-    QString format() const { return mFormat; }
-
-    /**
-     * Gets a list of the supported export formats.
-     *
-     * \see setFormat()
-     */
-    QStringList supportedFormats() const { return mSupportedFormats; }
+    ExportFormat format() const { return mFormat; }
 
     /**
      * Sets the maximum number of points to be exported. Default value is 0.
@@ -214,7 +258,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     QgsPointCloudIndex *mIndex = nullptr;
     QString mName = QObject::tr( "Exported" );
-    QString mFormat;
+    ExportFormat mFormat = ExportFormat::Memory;
     QString mFilename;
     QString mLastError;
     QgsRectangle mExtent = QgsRectangle( -std::numeric_limits<double>::infinity(),
@@ -222,11 +266,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
                                          std::numeric_limits<double>::infinity(),
                                          std::numeric_limits<double>::infinity(),
                                          false );
+    std::unique_ptr< QgsGeos > mFilterGeometryEngine;
     QgsDoubleRange mZRange;
     QgsFeedback *mFeedback = nullptr;
     qint64 mPointsLimit = 0;
     QStringList mRequestedAttributes;
-    QStringList mSupportedFormats;
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;

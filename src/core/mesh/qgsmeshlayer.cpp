@@ -67,6 +67,10 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   {
     flags |= QgsDataProvider::FlagTrustDataSource;
   }
+  if ( mReadFlags & QgsMapLayer::FlagForceReadOnly )
+  {
+    flags |= QgsDataProvider::ForceReadOnly;
+  }
   setDataSourcePrivate( meshLayerPath, baseName, providerKey, providerOptions, flags );
   resetDatasetGroupTreeItem();
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
@@ -999,7 +1003,11 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
   // All dataset group are removed and replace by a unique virtual dataset group that provide vertices elevation value.
   mExtraDatasetUri.clear();
   mDatasetGroupStore.reset( new QgsMeshDatasetGroupStore( this ) );
-  mDatasetGroupStore->addDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
+
+  std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup( mMeshEditor->createZValueDatasetGroup() );
+  if ( mDatasetGroupStore->addDatasetGroup( zValueDatasetGroup.get() ) )
+    zValueDatasetGroup.release();
+
   resetDatasetGroupTreeItem();
 
   connect( mMeshEditor, &QgsMeshEditor::meshEdited, this, &QgsMeshLayer::onMeshEdited );
@@ -1415,6 +1423,23 @@ QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProf
   return new QgsMeshLayerProfileGenerator( this, request );
 }
 
+void QgsMeshLayer::checkSymbologyConsistency()
+{
+  const QList<int> groupIndexes = mDatasetGroupStore->datasetGroupIndexes();
+  if ( !groupIndexes.contains( mRendererSettings.activeScalarDatasetGroup() ) )
+  {
+    if ( !groupIndexes.empty() )
+      mRendererSettings.setActiveScalarDatasetGroup( groupIndexes.first() );
+    else
+      mRendererSettings.setActiveScalarDatasetGroup( -1 );
+  }
+
+  if ( !groupIndexes.contains( mRendererSettings.activeVectorDatasetGroup() ) )
+  {
+    mRendererSettings.setActiveVectorDatasetGroup( -1 );
+  }
+}
+
 bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
                                   QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
 {
@@ -1428,6 +1453,8 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   const QDomElement elemRendererSettings = elem.firstChildElement( "mesh-renderer-settings" );
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings, context );
+
+  checkSymbologyConsistency();
 
   const QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
   if ( !elemSimplifySettings.isNull() )
@@ -1585,7 +1612,7 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
 
-  if ( !mTemporalProperties->timeExtent().begin().isValid() )
+  if ( !mTemporalProperties->timeExtent().begin().isValid() || mTemporalProperties->alwaysLoadReferenceTimeFromSource() )
     temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
 
   // read static dataset
@@ -1655,6 +1682,7 @@ void QgsMeshLayer::reload()
   if ( !mMeshEditor && mDataProvider && mDataProvider->isValid() )
   {
     mDataProvider->reloadData();
+    mDatasetGroupStore->setPersistentProvider( mDataProvider, QStringList() ); //extra dataset are already loaded
 
     //reload the mesh structure
     if ( !mNativeMesh )
@@ -1662,11 +1690,18 @@ void QgsMeshLayer::reload()
 
     dataProvider()->populateMesh( mNativeMesh.get() );
 
+    if ( mTemporalProperties->alwaysLoadReferenceTimeFromSource() )
+      mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+
     //clear the TriangularMeshes
     mTriangularMeshes.clear();
 
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
+
+    checkSymbologyConsistency();
+
+    emit reloaded();
   }
 }
 

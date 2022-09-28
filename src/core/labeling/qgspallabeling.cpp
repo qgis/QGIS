@@ -21,6 +21,7 @@
 #include "qgsexception.h"
 #include "qgsapplication.h"
 #include "qgsstyle.h"
+#include "qgstextrenderer.h"
 
 #include <list>
 
@@ -535,7 +536,7 @@ void QgsPalLayerSettings::startRender( QgsRenderContext &context )
   if ( placement == Qgis::LabelPlacement::Curved )
   {
     // force horizontal orientation, other orientation modes aren't unsupported for curved placement
-    mFormat.setOrientation( QgsTextFormat::HorizontalOrientation );
+    mFormat.setOrientation( Qgis::TextOrientation::Horizontal );
     mDataDefinedProperties.property( QgsPalLayerSettings::TextOrientation ).setActive( false );
   }
 
@@ -1390,7 +1391,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
   const QStringList text = QStringList() << ( previewText.isEmpty() ? settings.legendString() : previewText );
-  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, QgsTextRenderer::Rect );
+  const double textHeight = QgsTextRenderer::textHeight( context, tempFormat, text, Qgis::TextLayoutMode::Rectangle );
   QRectF textRect = rect;
   textRect.setLeft( xtrans + padding );
   textRect.setWidth( rect.width() - xtrans - 2 * padding );
@@ -1416,7 +1417,7 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
     callout->stopRender( context );
   }
 
-  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, text, context, tempFormat );
+  QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Center, text, context, tempFormat );
 
   if ( size.width() > 30 )
   {
@@ -1459,7 +1460,7 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext &ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY, QgsTextDocument *document )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f, QgsRenderContext *context, double *rotatedLabelX, double *rotatedLabelY, QgsTextDocument *document, QgsTextDocumentMetrics *documentMetrics )
 {
   if ( !fm || !f )
   {
@@ -1481,7 +1482,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   QString wrapchr = wrapChar;
   int evalAutoWrapLength = autoWrapLength;
   double multilineH = mFormat.lineHeight();
-  QgsTextFormat::TextOrientation orientation = mFormat.orientation();
+  Qgis::TextOrientation orientation = mFormat.orientation();
 
   bool addDirSymb = mLineSettings.addDirectionSymbol();
   QString leftDirSymb = mLineSettings.leftDirectionSymbol();
@@ -1625,72 +1626,77 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   if ( document )
   {
     document->splitLines( wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
-    multiLineSplit = document->toPlainText();
+
+    *documentMetrics = QgsTextDocumentMetrics::calculateMetrics( *document, mFormat, *rc );
+    const QSizeF size = documentMetrics->documentSize( Qgis::TextLayoutMode::Labeling, orientation );
+    w = size.width();
+    h = size.height();
   }
   else
   {
-    multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
-  }
+    const QStringList multiLineSplit = QgsPalLabeling::splitToLines( textCopy, wrapchr, evalAutoWrapLength, useMaxLineLengthForAutoWrap );
+    const int lines = multiLineSplit.size();
 
-  int lines = multiLineSplit.size();
+    const double lineHeightPainterUnits = rc->convertToPainterUnits( mFormat.lineHeight(), mFormat.lineHeightUnit() );
 
-  switch ( orientation )
-  {
-    case QgsTextFormat::HorizontalOrientation:
+    switch ( orientation )
     {
-      h += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
-
-      for ( const auto &line : multiLineSplit )
+      case Qgis::TextOrientation::Horizontal:
       {
-        w = std::max( w, fm->horizontalAdvance( line ) );
-      }
-      break;
-    }
+        h += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
 
-    case QgsTextFormat::VerticalOrientation:
-    {
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
-      double labelWidth = fm->maxWidth();
-      w = labelWidth + ( lines - 1 ) * labelWidth * multilineH;
-
-      int maxLineLength = 0;
-      for ( const auto &line : multiLineSplit )
-      {
-        maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
-      }
-      h = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
-      break;
-    }
-
-    case QgsTextFormat::RotationBasedOrientation:
-    {
-      double widthHorizontal = 0.0;
-      for ( const auto &line : multiLineSplit )
-      {
-        widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
+        for ( const QString &line : std::as_const( multiLineSplit ) )
+        {
+          w = std::max( w, fm->horizontalAdvance( line ) );
+        }
+        break;
       }
 
-      double widthVertical = 0.0;
-      double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
-      double labelWidth = fm->maxWidth();
-      widthVertical = labelWidth + ( lines - 1 ) * labelWidth * multilineH;
-
-      double heightHorizontal = 0.0;
-      heightHorizontal += fm->height() + static_cast< double >( ( lines - 1 ) * labelHeight * multilineH );
-
-      double heightVertical = 0.0;
-      int maxLineLength = 0;
-      for ( const auto &line : multiLineSplit )
+      case Qgis::TextOrientation::Vertical:
       {
-        maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
-      }
-      heightVertical = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
+        double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+        double labelWidth = fm->maxWidth();
+        w = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
 
-      w = widthHorizontal;
-      rw = heightVertical;
-      h = heightHorizontal;
-      rh = widthVertical;
-      break;
+        int maxLineLength = 0;
+        for ( const QString &line : std::as_const( multiLineSplit ) )
+        {
+          maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
+        }
+        h = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
+        break;
+      }
+
+      case Qgis::TextOrientation::RotationBased:
+      {
+        double widthHorizontal = 0.0;
+        for ( const QString &line : std::as_const( multiLineSplit ) )
+        {
+          widthHorizontal = std::max( w, fm->horizontalAdvance( line ) );
+        }
+
+        double widthVertical = 0.0;
+        double letterSpacing = mFormat.scaledFont( *context ).letterSpacing();
+        double labelWidth = fm->maxWidth();
+        widthVertical = labelWidth + ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelWidth * multilineH ) : lineHeightPainterUnits );
+
+        double heightHorizontal = 0.0;
+        heightHorizontal += fm->height() + static_cast< double >( ( lines - 1 ) * ( mFormat.lineHeightUnit() == QgsUnitTypes::RenderPercentage ? ( labelHeight * multilineH ) : lineHeightPainterUnits ) );
+
+        double heightVertical = 0.0;
+        int maxLineLength = 0;
+        for ( const QString &line : std::as_const( multiLineSplit ) )
+        {
+          maxLineLength = std::max( maxLineLength, static_cast<int>( line.length() ) );
+        }
+        heightVertical = fm->ascent() * maxLineLength + ( maxLineLength - 1 ) * letterSpacing;
+
+        w = widthHorizontal;
+        rw = heightVertical;
+        h = heightHorizontal;
+        rh = widthVertical;
+        break;
+      }
     }
   }
 
@@ -2005,14 +2011,23 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
   // NOTE: this should come AFTER any option that affects font metrics
   std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( labelFont ) );
-  double labelX, labelY, rotatedLabelX, rotatedLabelY; // will receive label size
+  double labelWidth;
+  double labelHeight;
+  double rotatedLabelX;
+  double rotatedLabelY;
 
   QgsTextDocument doc;
-  if ( format().allowHtmlFormatting() )
+  QgsTextDocumentMetrics documentMetrics;
+  if ( format().allowHtmlFormatting() && !labelText.isEmpty() )
+  {
     doc = QgsTextDocument::fromHtml( QStringList() << labelText );
-
-  // also applies the line split to doc!
-  calculateLabelSize( labelFontMetrics.get(), labelText, labelX, labelY, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, format().allowHtmlFormatting() ? &doc : nullptr );
+    // also applies the line split to doc and calculates document metrics!
+    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, &doc, &documentMetrics );
+  }
+  else
+  {
+    calculateLabelSize( labelFontMetrics.get(), labelText, labelWidth, labelHeight, mCurFeat, &context, &rotatedLabelX, &rotatedLabelY, nullptr, nullptr );
+  }
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
   //
@@ -2466,11 +2481,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
             QString haliString = exprVal.toString();
             if ( haliString.compare( QLatin1String( "Center" ), Qt::CaseInsensitive ) == 0 )
             {
-              xdiff -= labelX / 2.0;
+              xdiff -= labelWidth / 2.0;
             }
             else if ( haliString.compare( QLatin1String( "Right" ), Qt::CaseInsensitive ) == 0 )
             {
-              xdiff -= labelX;
+              xdiff -= labelWidth;
             }
           }
         }
@@ -2486,22 +2501,22 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
             {
               if ( valiString.compare( QLatin1String( "Top" ), Qt::CaseInsensitive ) == 0 )
               {
-                ydiff -= labelY;
+                ydiff -= labelHeight;;
               }
               else
               {
                 double descentRatio = labelFontMetrics->descent() / labelFontMetrics->height();
                 if ( valiString.compare( QLatin1String( "Base" ), Qt::CaseInsensitive ) == 0 )
                 {
-                  ydiff -= labelY * descentRatio;
+                  ydiff -= labelHeight * descentRatio;
                 }
                 else //'Cap' or 'Half'
                 {
                   double capHeightRatio = ( labelFontMetrics->boundingRect( 'H' ).height() + 1 + labelFontMetrics->descent() ) / labelFontMetrics->height();
-                  ydiff -= labelY * capHeightRatio;
+                  ydiff -= labelHeight * capHeightRatio;
                   if ( valiString.compare( QLatin1String( "Half" ), Qt::CaseInsensitive ) == 0 )
                   {
-                    ydiff += labelY * ( capHeightRatio - descentRatio ) / 2.0;
+                    ydiff += labelHeight * ( capHeightRatio - descentRatio ) / 2.0;
                   }
                 }
               }
@@ -2617,11 +2632,11 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   }
 
   //  feature to the layer
-  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
+  std::unique_ptr< QgsTextLabelFeature > labelFeature = std::make_unique< QgsTextLabelFeature>( feature.id(), std::move( geos_geom_clone ), QSizeF( labelWidth, labelHeight ) );
   labelFeature->setAnchorPosition( anchorPosition );
   labelFeature->setFeature( feature );
   labelFeature->setSymbol( symbol );
-  labelFeature->setDocument( doc );
+  labelFeature->setDocument( doc, documentMetrics );
   if ( !qgsDoubleNear( rotatedLabelX, 0.0 ) && !qgsDoubleNear( rotatedLabelY, 0.0 ) )
     labelFeature->setRotatedSize( QSizeF( rotatedLabelX, rotatedLabelY ) );
   mFeatsRegPal++;
@@ -2664,7 +2679,6 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
   // store the label's calculated font for later use during painting
   QgsDebugMsgLevel( QStringLiteral( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString(), labelFont.styleName() ), 4 );
   labelFeature->setDefinedFont( labelFont );
-  labelFeature->setFontMetrics( *labelFontMetrics );
 
   labelFeature->setMaximumCharacterAngleInside( std::clamp( maxcharanglein, 20.0, 60.0 ) * M_PI / 180 );
   labelFeature->setMaximumCharacterAngleOutside( std::clamp( maxcharangleout, -95.0, -20.0 ) * M_PI / 180 );
@@ -2682,7 +2696,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
-      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, *labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, format().allowHtmlFormatting() ? &doc : nullptr ) );
+      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, labelFont, *labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, format().allowHtmlFormatting() ? &doc : nullptr, format().allowHtmlFormatting() ? &documentMetrics : nullptr ) );
       break;
   }
 

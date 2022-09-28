@@ -38,6 +38,10 @@ class QgsBrowserModel;
  * This class provides common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.
+ *
+ * The implementation is generic enough to handle other layer search and
+ * selection widgets.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog

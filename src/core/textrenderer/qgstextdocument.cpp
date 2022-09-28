@@ -18,8 +18,10 @@
 #include "qgsstringutils.h"
 #include "qgstextblock.h"
 #include "qgstextfragment.h"
+
 #include <QTextDocument>
 #include <QTextBlock>
+
 
 QgsTextDocument::~QgsTextDocument() = default;
 

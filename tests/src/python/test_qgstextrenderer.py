@@ -143,6 +143,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertTrue(t.isValid())
 
         t = QgsTextFormat()
+        t.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        self.assertTrue(t.isValid())
+
+        t = QgsTextFormat()
         t.setOrientation(QgsTextFormat.VerticalOrientation)
         self.assertTrue(t.isValid())
 
@@ -716,6 +720,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         s.setOpacity(0.5)
         s.setBlendMode(QPainter.CompositionMode_DestinationAtop)
         s.setLineHeight(5)
+        s.setLineHeightUnit(QgsUnitTypes.RenderInches)
         s.setPreviewBackgroundColor(QColor(100, 150, 200))
         s.setOrientation(QgsTextFormat.VerticalOrientation)
         s.setAllowHtmlFormatting(True)
@@ -802,6 +807,10 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
 
+        s.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        self.assertNotEqual(s, s2)
+        s = self.createFormatSettings()
+
         s.setPreviewBackgroundColor(QColor(100, 250, 200))
         self.assertNotEqual(s, s2)
         s = self.createFormatSettings()
@@ -858,6 +867,7 @@ class PyQgsTextRenderer(unittest.TestCase):
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_DestinationAtop)
         self.assertEqual(s.lineHeight(), 5)
+        self.assertEqual(s.lineHeightUnit(), QgsUnitTypes.RenderInches)
         self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
         self.assertEqual(s.orientation(), QgsTextFormat.VerticalOrientation)
         self.assertEqual(s.capitalization(), QgsStringUtils.TitleCase)
@@ -2301,6 +2311,24 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setLineHeight(1.5)
         assert self.checkRender(format, 'text_line_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
 
+    def testDrawLineHeightAbsolute(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(20)
+        format.setLineHeightUnit(QgsUnitTypes.RenderPoints)
+        assert self.checkRender(format, 'text_line_absolute_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
+    def testDrawLineHeightAbsolute(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(30)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setLineHeight(20)
+        format.setLineHeightUnit(QgsUnitTypes.RenderMillimeters)
+        assert self.checkRender(format, 'text_line_absolute_mm_height', QgsTextRenderer.Text, text=['test', 'multi', 'line'])
+
     def testDrawBufferSizeMM(self):
         format = QgsTextFormat()
         format.setFont(getTestFont('bold'))
@@ -3148,6 +3176,138 @@ class PyQgsTextRenderer(unittest.TestCase):
         format.setOrientation(QgsTextFormat.VerticalOrientation)
         assert self.checkRenderPoint(format, 'text_html_formatting_buffer_vertical', None, text=[
             '<s>t</s><span style="text-decoration: overline">e</span><span style="color: red">s<span style="text-decoration: underline">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormatting(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('regular'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricLineHeight(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('regular'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.setLineHeight(0.5)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_line_height', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBuffer(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_shadow', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBufferShadow(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(200, 50, 150))
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer_shadow', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBufferVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingShadowVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_shadow_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
+            point=QPointF(50, 200))
+
+    def testHtmlMixedMetricFormattingBufferShadowVertical(self):
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setSize(60)
+        format.setSizeUnit(QgsUnitTypes.RenderPoints)
+        format.setColor(QColor(0, 255, 0))
+        format.setAllowHtmlFormatting(True)
+        format.buffer().setEnabled(True)
+        format.buffer().setSize(5)
+        format.buffer().setColor(QColor(200, 50, 150))
+        format.shadow().setEnabled(True)
+        format.shadow().setOffsetDistance(5)
+        format.shadow().setBlurRadius(0)
+        format.shadow().setColor(QColor(50, 150, 200))
+        format.setOrientation(QgsTextFormat.VerticalOrientation)
+        assert self.checkRenderPoint(format, 'text_html_mixed_metric_formatting_buffer_shadow_vertical', None, text=[
+            '<i>t</i><b style="font-size: 30pt">e</b><p><span style="color: red">s<span style="color: rgba(255,0,0,0.5); text-decoration: underline; font-size:80pt">t</span></span>'],
             point=QPointF(50, 200))
 
     def testTextRenderFormat(self):

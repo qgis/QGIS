@@ -195,7 +195,7 @@
  * try/catch blocks around call and catch the correct exception, otherwise only
  * unknown generic exceptions are available for Python code.
  */
-#define SIP_THROW(name)
+#define SIP_THROW(name, ...)
 
 /*
  * Will insert a `%End` directive in sip files

@@ -96,9 +96,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-72</y>
         <width>557</width>
-        <height>501</height>
+        <height>616</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -165,6 +165,38 @@
          <property name="title">
           <string>Extent</string>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mFilterGeometryGroupBox">
+         <property name="title">
+          <string>Filter by Polygon Layer</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Export points intersecting features from layer</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsMapLayerComboBox" name="mFilterGeometryLayerComboBox"/>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mSelectedFeaturesCheckBox">
+            <property name="text">
+             <string>Selected features only</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -345,6 +377,11 @@
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

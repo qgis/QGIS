@@ -99,6 +99,32 @@ class TestQgsFeature(unittest.TestCase):
         feat2.setFields(fields)
         self.assertNotEqual(feat, feat2)
 
+    def test_hash(self):
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+
+        feat = QgsFeature(fields, 0)
+        feat.initAttributes(1)
+        feat.setAttribute(0, "text")
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertIsNotNone(hash(feat))
+
+        # try a second identical feature, hash should be the same
+        feat2 = QgsFeature(fields, 0)
+        feat2.initAttributes(1)
+        feat2.setAttribute(0, "text")
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
+
+        self.assertEqual(hash(feat), hash(feat2))
+
+        # different feature, different hash
+        feat2.setId(100)
+        self.assertNotEqual(hash(feat), hash(feat2))
+
     def test_ValidFeature(self):
         myPath = os.path.join(unitTestDataPath(), 'points.shp')
         myLayer = QgsVectorLayer(myPath, 'Points', 'ogr')

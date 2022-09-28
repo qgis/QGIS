@@ -49,5 +49,5 @@ bool QgsPointCloudRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) con
 
 QString QgsPointCloudRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return QStringLiteral( "mOptsPage_Rendering" );
 }

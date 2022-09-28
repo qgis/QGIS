@@ -1734,6 +1734,37 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.fieldConstraints(
             0) & QgsFieldConstraints.ConstraintUnique)
 
+    def testReadOnly(self):
+        # Check default edition capabilities
+        vl = QgsVectorLayer('%s sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=' %
+                            (self.dbconn), "someData", "postgres")
+        self.assertFalse(vl.readOnly())
+        caps = vl.dataProvider().capabilities()
+        self.assertTrue(caps & QgsVectorDataProvider.AddFeatures)
+        self.assertTrue(caps & QgsVectorDataProvider.DeleteFeatures)
+        self.assertTrue(caps & QgsVectorDataProvider.ChangeAttributeValues)
+        self.assertTrue(caps & QgsVectorDataProvider.AddAttributes)
+        self.assertTrue(caps & QgsVectorDataProvider.DeleteAttributes)
+        self.assertTrue(caps & QgsVectorDataProvider.RenameAttributes)
+        self.assertTrue(caps & QgsVectorDataProvider.ChangeGeometries)
+        self.assertTrue(caps & QgsVectorDataProvider.SelectAtId)
+
+        # Check forceReadOnly
+        options = QgsVectorLayer.LayerOptions()
+        options.forceReadOnly = True
+        vl = QgsVectorLayer('%s sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=' %
+                            (self.dbconn), "someData", "postgres", options)
+        self.assertTrue(vl.readOnly())
+        caps = vl.dataProvider().capabilities()
+        self.assertFalse(caps & QgsVectorDataProvider.AddFeatures)
+        self.assertFalse(caps & QgsVectorDataProvider.DeleteFeatures)
+        self.assertFalse(caps & QgsVectorDataProvider.ChangeAttributeValues)
+        self.assertFalse(caps & QgsVectorDataProvider.AddAttributes)
+        self.assertFalse(caps & QgsVectorDataProvider.DeleteAttributes)
+        self.assertFalse(caps & QgsVectorDataProvider.RenameAttributes)
+        self.assertFalse(caps & QgsVectorDataProvider.ChangeGeometries)
+        self.assertTrue(caps & QgsVectorDataProvider.SelectAtId)
+
     def testVectorLayerUtilsUniqueWithProviderDefault(self):
         vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' %
                             (self.dbconn), "someData", "postgres")
@@ -2102,14 +2133,20 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(errorMsg, "")
 
         qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertTrue('v="\u001E"' in qml)
         self.assertEqual(errmsg, "")
+
+        found = False
+        for line in qml.split('\n'):
+            found = 'value="\u001E"' in qml and 'name="chr"' in qml
+            if found:
+                break
+        self.assertTrue(found, f"record separator character (\u001E) not found in qml: {qml}")
 
         # Test loadStyle from metadata
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         qml = md.loadStyle(self.dbconn + " type=POINT table=\"qgis_test\".\"editData\" (geom)", 'fontSymbol')
         self.assertTrue(qml.startswith('<!DOCTYPE qgi'), qml)
-        self.assertTrue('v="\u001E"' in qml)
+        self.assertTrue('value="\u001E"' in qml)
 
     def testHasMetadata(self):
         # views don't have metadata
@@ -2567,7 +2604,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         feature.setGeometry(geom)
         self.assertTrue(vl.dataProvider().addFeature(feature))
 
-        self.assertEqual(vl.dataProvider().defaultValueClause(0), "nextval('b29560_gid_seq'::regclass)")
+        self.assertEqual(vl.dataProvider().defaultValueClause(0), "nextval('qgis_test.b29560_gid_seq'::regclass)")
 
         del (vl)
 
@@ -2579,6 +2616,24 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         feature = next(vl.getFeatures())
         self.assertIsNotNone(feature.id())
+
+    def testEvalDefaultOnProviderSide(self):
+        """Test issue GH #50168"""
+
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."gh_50168" CASCADE')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."gh_50168" ( id integer generated always as identity primary key, test_string VARCHAR(128) )')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' srid=4326 table="qgis_test"."gh_50168" () sql=', 'gh_50168', 'postgres')
+        self.assertTrue(vl.isValid())
+        vl.dataProvider().setProviderProperty(QgsVectorDataProvider.EvaluateDefaultValues, True)
+
+        f = QgsFeature(vl.fields())
+        f.setAttribute('test_string', 'QGIS Rocks')
+
+        dp = vl.dataProvider()
+        self.assertNotEqual(dp.defaultValue(0), QVariant())
 
     @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test flaky')
     def testDefaultValuesAndClauses(self):

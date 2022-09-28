@@ -25,6 +25,18 @@ Handles exporting point cloud layers to memory layers, OGR supported files and P
 %End
   public:
 
+    enum class ExportFormat
+    {
+      Memory,
+      Las,
+      Gpkg,
+      Shp,
+      Dxf,
+      Csv,
+    };
+
+
+
     QgsPointCloudLayerExporter( QgsPointCloudLayer *layer );
 %Docstring
 Constructor for QgsPointCloudLayerExporter, associated with the specified ``layer``.
@@ -69,6 +81,18 @@ Points that fall outside the extent will be skipped.
 Gets the filter extent for points to be exported.
 %End
 
+    void setFilterGeometry( const QgsAbstractGeometry *geometry );
+%Docstring
+Sets a spatial filter for points to be exported based on ``geom`` in the point cloud's CRS.
+Points that do not intersect ``geometry`` will be skipped.
+%End
+
+    void setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly = false );
+%Docstring
+Sets a spatial filter for points to be exported based on the features of ``layer``.
+Points that do not intersect the ``layer``'s features will be skipped.
+%End
+
     void setZRange( const QgsDoubleRange zRange );
 %Docstring
 Sets an inclusive range for Z values to be exported.
@@ -101,7 +125,7 @@ If never called, all attributes will be exported.
 
 .. note::
 
-   This has no effect when exporting to LAZ format.
+   This has no effect when exporting to LAS/LAZ format.
 %End
 
     void setNoAttributes();
@@ -110,7 +134,7 @@ Sets that no attributes will be exported.
 
 .. note::
 
-   This has no effect when exporting to LAZ format.
+   This has no effect when exporting to LAS/LAZ format.
 %End
 
     void setAllAttributes();
@@ -125,7 +149,7 @@ Gets the list of point cloud attributes that will be exported.
 
     void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() );
 %Docstring
-Sets the ``crs`` for the exported file, and the transform ``context`` that will be used for
+Sets the ``crs`` for the exported file, and the transform ``context`` that will be used
 for reprojection if different from the point cloud layer's CRS.
 %End
 
@@ -134,25 +158,18 @@ for reprojection if different from the point cloud layer's CRS.
 Gets the ``crs`` for the exported file.
 %End
 
-    bool setFormat( const QString &format );
+    bool setFormat( const ExportFormat format );
 %Docstring
 Sets the ``format`` for the exported file.
 
 :return: true if the ``format`` is supported, false otherwise.
 
-.. seealso:: :py:func:`supportedFormats`
+.. seealso:: ExportFormat
 %End
 
-    QString format() const;
+    ExportFormat format() const;
 %Docstring
 Returns the format for the exported file or layer.
-%End
-
-    QStringList supportedFormats() const;
-%Docstring
-Gets a list of the supported export formats.
-
-.. seealso:: :py:func:`setFormat`
 %End
 
     void setPointsLimit( qint64 limit );

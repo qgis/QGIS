@@ -32,6 +32,7 @@
 #include "qgis_core.h"
 #include <functional>
 #include "qgsabstractproviderconnection.h"
+#include "qgsabstractlayermetadataprovider.h"
 #include "qgsfields.h"
 #include "qgsexception.h"
 

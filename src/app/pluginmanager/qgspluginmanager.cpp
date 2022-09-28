@@ -32,13 +32,12 @@
 #include <QDesktopServices>
 #include <QRegularExpression>
 #include <QUrl>
+#include <QCheckBox>
 
 #include "qgsmessagelog.h"
 
 #include "qgis.h"
-#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsconfig.h"
 #include "qgsmessagebar.h"
 #include "qgsproviderregistry.h"
 #include "qgspluginregistry.h"
@@ -49,6 +48,8 @@
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgssettingsregistrygui.h"
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
 #endif
@@ -239,11 +240,8 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   connect( mZipFileWidget, &QgsFileWidget::fileChanged, this, &QgsPluginManager::mZipFileWidget_fileChanged );
   connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
-  // Initialize list of allowed checking intervals
-  mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
-
   // Initialize the "Settings" tab widgets
-  if ( settings.value( settingsGroup + "/checkOnStart", false ).toBool() )
+  if ( QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates.value() )
   {
     ckbCheckUpdates->setChecked( true );
   }
@@ -257,13 +255,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   {
     ckbDeprecated->setChecked( true );
   }
-
-  const int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
-  const int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
-  comboInterval->setCurrentIndex( indx );
 }
-
-
 
 void QgsPluginManager::loadPlugin( const QString &id )
 {
@@ -600,12 +592,12 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setEditable( false );
 
       // Set checkable if the plugin is installed and not disabled due to incompatibility.
-      // Broken plugins are checkable to to allow disabling them
+      // Broken plugins are checkable to allow disabling them
       mypDetailItem->setCheckable( it->value( QStringLiteral( "installed" ) ) == QLatin1String( "true" ) && it->value( QStringLiteral( "error" ) ) != QLatin1String( "incompatible" ) );
 
       // Set ckeckState depending on the plugin is loaded or not.
       // Initially mark all unchecked, then overwrite state of loaded ones with checked.
-      // Only do it with installed plugins, not not initialize checkboxes of not installed plugins at all.
+      // Only do it with installed plugins, do not initialize checkboxes of not installed plugins at all.
       if ( it->value( QStringLiteral( "installed" ) ) == QLatin1String( "true" ) )
       {
         mypDetailItem->setCheckState( Qt::Unchecked );
@@ -917,7 +909,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( ! metadata->value( QStringLiteral( "about" ) ).isEmpty() )
   {
     QString about = metadata->value( QStringLiteral( "about" ) );
-    // The regular expression insures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
+    // The regular expression ensures that a new line will be present after the closure of a paragraph tag (i.e. </p>)
     about = about.replace( QRegularExpression( QStringLiteral( "&lt;\\/p&gt;([^\\n])" ) ), QStringLiteral( "&lt;/p&gt;\n\\1" ) ).remove( stripHtml );
     html += about.replace( '\n', QLatin1String( "<br/>" ) );
     html += QLatin1String( "<br/><br/>" );
@@ -1035,7 +1027,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_stable" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdated.isValid() )
-        dateUpdatedStr += QStringLiteral( "%1 %2" ).arg( tr( "updated at" ), dateUpdated.toString() );
+        dateUpdatedStr += tr( "updated at %1" ).arg( dateUpdated.toString() );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
@@ -1059,7 +1051,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       const QDateTime dateUpdated = QDateTime::fromString( metadata->value( QStringLiteral( "update_date_experimental" ) ).trimmed(), Qt::ISODate );
       if ( dateUpdated.isValid() )
-        dateUpdatedStr += QStringLiteral( "%1 %2" ).arg( tr( "updated at" ), dateUpdated.toString() );
+        dateUpdatedStr += tr( "updated at %1" ).arg( dateUpdated.toString() );
     }
 
     html += QStringLiteral( "<tr><td class='key'>%1 </td><td title='%2'><a href='%2'>%3</a> %4</td></tr>"
@@ -1094,20 +1086,24 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "upgradeable" ) )
   {
     buttonInstall->setText( tr( "Upgrade Plugin" ) );
+    buttonInstall->setToolTip( tr( "Upgrades selected plugin to latest stable version" ) );
     buttonInstall->setDefault( true );
   }
   else if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "newer" ) )
   {
     buttonInstall->setText( tr( "Downgrade Plugin" ) );
+    buttonInstall->setToolTip( tr( "Downgrades selected plugin to latest stable version" ) );
   }
   else if ( metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "not installed" ) || metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "new" ) )
   {
     buttonInstall->setText( tr( "Install Plugin" ) );
+    buttonInstall->setToolTip( tr( "Installs latest stable version of the selected plugin" ) );
   }
   else
   {
     // Default (will be grayed out if not available for reinstallation)
     buttonInstall->setText( tr( "Reinstall Plugin" ) );
+    buttonInstall->setToolTip( tr( "Reinstalls latest stable version of the selected plugin" ) );
   }
 
   // Set buttonInstall text (and sometimes focus)
@@ -1115,19 +1111,23 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "upgradeable" ) )
   {
     buttonInstallExperimental->setText( tr( "Upgrade Experimental Plugin" ) );
+    buttonInstallExperimental->setToolTip( tr( "Upgrades selected plugin to the experimental version" ) );
   }
   else if ( metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "newer" ) )
   {
     buttonInstallExperimental->setText( tr( "Downgrade Experimental Plugin" ) );
+    buttonInstallExperimental->setToolTip( tr( "Downgrades selected plugin to the experimental version" ) );
   }
   else if ( metadata->value( QStringLiteral( "status_exp" ) ) == QLatin1String( "not installed" ) || metadata->value( QStringLiteral( "status" ) ) == QLatin1String( "new" ) )
   {
     buttonInstallExperimental->setText( tr( "Install Experimental Plugin" ) );
+    buttonInstallExperimental->setToolTip( tr( "Installs experimental version of the selected plugin" ) );
   }
   else
   {
     // Default (will be grayed out if not available for reinstallation)
     buttonInstallExperimental->setText( tr( "Reinstall Experimental Plugin" ) );
+    buttonInstallExperimental->setToolTip( tr( "Reinstalls experimental version of the selected plugin" ) );
   }
 
   // Enable/disable buttons
@@ -1147,9 +1147,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
 
   buttonUninstall->setEnabled( metadata->value( QStringLiteral( "pythonic" ) ).toUpper() == QLatin1String( "TRUE" ) && metadata->value( QStringLiteral( "readonly" ) ) != QLatin1String( "true" ) && ! metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 
-  buttonUninstall->setHidden(
-    metadata->value( QStringLiteral( "version_installed" ) ).isEmpty()
-  );
+  buttonUninstall->setHidden( metadata->value( QStringLiteral( "version_installed" ) ).isEmpty() );
 
   // Store the id of the currently displayed plugin
   mCurrentlyDisplayedPlugin = metadata->value( QStringLiteral( "id" ) );
@@ -1290,9 +1288,7 @@ void QgsPluginManager::reject()
     // get the QgsSettings group from the installer
     QString settingsGroup;
     QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
-    QgsSettings settings;
-    settings.setValue( settingsGroup + "/checkOnStart", QVariant( ckbCheckUpdates->isChecked() ) );
-    settings.setValue( settingsGroup + "/checkOnStartInterval", QVariant( mCheckingOnStartIntervals.value( comboInterval->currentIndex() ) ) );
+    QgsSettingsRegistryGui::settingsAutomaticallyCheckForPluginUpdates.setValue( ckbCheckUpdates->isChecked() );
     QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().onManagerClose()" ) );
   }
 #endif

@@ -130,6 +130,7 @@ ADD_PYTHON_TEST(PyQgsGraduatedSymbolRenderer test_qgsgraduatedsymbolrenderer.py)
 ADD_PYTHON_TEST(PyQgsGraph test_qgsgraph.py)
 ADD_PYTHON_TEST(PyQgsGroupLayer test_qgsgrouplayer.py)
 ADD_PYTHON_TEST(PyQgsHashLineSymbolLayer test_qgshashlinesymbollayer.py)
+ADD_PYTHON_TEST(PyQgsHelp test_qgshelp.py)
 ADD_PYTHON_TEST(PyQgsHighlight test_qgshighlight.py)
 ADD_PYTHON_TEST(PyQgsHistoryProviderRegistry test_qgshistoryproviderregistry.py)
 ADD_PYTHON_TEST(PyQgsImageCache test_qgsimagecache.py)
@@ -143,6 +144,9 @@ ADD_PYTHON_TEST(PyQgsLabelObstacleSettings test_qgslabelobstaclesettings.py)
 ADD_PYTHON_TEST(PyQgsLabelSettingsWidget test_qgslabelsettingswidget.py)
 ADD_PYTHON_TEST(PyQgsLabelThinningSettings test_qgslabelthinningsettings.py)
 ADD_PYTHON_TEST(PyQgsLayerMetadata test_qgslayermetadata.py)
+ADD_PYTHON_TEST(PyQgsLayerMetadataProviderPython test_qgslayermetadataprovider_python.py)
+ADD_PYTHON_TEST(PyQgsLayerMetadataProviderOgr test_qgslayermetadataprovider_ogr.py)
+ADD_PYTHON_TEST(PyQgsLayerMetadataResultsModel test_qgslayermetadataresultsmodel.py)
 ADD_PYTHON_TEST(PyQgsLayerTreeMapCanvasBridge test_qgslayertreemapcanvasbridge.py)
 ADD_PYTHON_TEST(PyQgsLayerTree test_qgslayertree.py)
 ADD_PYTHON_TEST(PyQgsLayerTreeView test_qgslayertreeview.py)
@@ -440,6 +444,7 @@ endif()
 
 if (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsImportIntoPostGIS test_processing_importintopostgis.py)
+  ADD_PYTHON_TEST(PyQgsLayerMetadataProviderPostgres test_qgslayermetadataprovider_postgres.py)
   ADD_PYTHON_TEST(PyQgsVectorFileWriterPostgres test_qgsvectorfilewriter_postgres.py)
   ADD_PYTHON_TEST(PyQgsQueryResultModel test_qgsqueryresultmodel.py)
   ADD_PYTHON_TEST(PyQgsVectorLayerUtilsPostgres test_qgsvectorlayerutils_postgres.py)
@@ -473,7 +478,7 @@ if (ENABLE_PGTEST)
     PyQgsRelationEditWidget PyQgsRelationPostgres PyQgsVectorLayerTools PyQgsProjectStoragePostgres
     PyQgsAuthManagerPKIPostgresTest PyQgsAuthManagerPasswordPostgresTest PyQgsAuthManagerOgrPostgresTest
     PyQgsDbManagerPostgis PyQgsDatabaseSchemaModel PyQgsDatabaseTableModel PyQgsDatabaseSchemaComboBox PyQgsDatabaseTableComboBox
-    PyQgsProviderConnectionPostgres PyQgsPostgresProviderLatency
+    PyQgsProviderConnectionPostgres PyQgsPostgresProviderLatency PyQgsLayerMetadataProviderPostgres
     PROPERTIES LABELS "POSTGRES")
 endif()
 

@@ -222,8 +222,8 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
                 }
                 else
                 {
-                  inGeoms.append( inGeom );
-                  inGeoms.append( newGeometries );
+                  outGeoms.append( inGeom );
+                  outGeoms.append( newGeometries );
                 }
               }
               else

@@ -307,6 +307,29 @@ void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
   }
 }
 
+bool QgsCameraController::screenPointToWorldPos( QPoint position, Qt3DRender::QCamera *cameraBefore, double &depth, QVector3D &worldPosition )
+{
+  depth = sampleDepthBuffer( mDepthBufferImage, position.x(), position.y() );
+  if ( !std::isfinite( depth ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: depth is NaN or Inf. This should not happen." ), 2 );
+    return false;
+  }
+  else
+  {
+    worldPosition = Qgs3DUtils::screenPointToWorldPos( position, depth, mViewport.size(), cameraBefore );
+    if ( !std::isfinite( worldPosition.x() ) || !std::isfinite( worldPosition.y() ) || !std::isfinite( worldPosition.z() ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "screenPointToWorldPos: position is NaN or Inf. This should not happen." ), 2 );
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+}
+
 void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseEvent *mouse )
 {
   if ( mIgnoreNextMouseMove )
@@ -338,14 +361,15 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     if ( !mRotationCenterCalculated )
     {
-      double depth = sampleDepthBuffer( mDepthBufferImage, mMiddleButtonClickPos.x(), mMiddleButtonClickPos.y() );
-
-      mRotationCenter = Qgs3DUtils::screenPointToWorldPos( mMiddleButtonClickPos, depth, mViewport.size(), mCameraBeforeRotation.get() );
-
-      mRotationDistanceFromCenter = ( mRotationCenter - mCameraBeforeRotation->position() ).length();
-
-      emit cameraRotationCenterChanged( mRotationCenter );
-      mRotationCenterCalculated = true;
+      double depth;
+      QVector3D worldPosition;
+      if ( screenPointToWorldPos( mMiddleButtonClickPos, mCameraBeforeRotation.get(), depth, worldPosition ) )
+      {
+        mRotationCenter = worldPosition;
+        mRotationDistanceFromCenter = ( mRotationCenter - mCameraBeforeRotation->position() ).length();
+        emit cameraRotationCenterChanged( mRotationCenter );
+        mRotationCenterCalculated = true;
+      }
     }
 
     // First transformation : Shift camera position and view center and rotate the camera
@@ -395,12 +419,15 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     if ( !mDragPointCalculated )
     {
-      double depth = sampleDepthBuffer( mDepthBufferImage, mDragButtonClickPos.x(), mDragButtonClickPos.y() );
+      double depth;
+      QVector3D worldPosition;
+      if ( screenPointToWorldPos( mDragButtonClickPos, mCameraBeforeDrag.get(), depth, worldPosition ) )
+      {
+        mDragDepth = depth;
+        mDragPoint = worldPosition;
+        mDragPointCalculated = true;
+      }
 
-      mDragDepth = depth;
-
-      mDragPoint = Qgs3DUtils::screenPointToWorldPos( mDragButtonClickPos, mDragDepth, mViewport.size(), mCameraBeforeDrag.get() );
-      mDragPointCalculated = true;
     }
 
     QVector3D cameraBeforeDragPos = mCameraBeforeDrag->position();
@@ -440,10 +467,13 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
 
     if ( !mDragPointCalculated )
     {
-      double depth = sampleDepthBuffer( mDepthBufferImage, mDragButtonClickPos.x(), mDragButtonClickPos.y() );
-
-      mDragPoint = Qgs3DUtils::screenPointToWorldPos( mDragButtonClickPos, depth, mViewport.size(), mCameraBeforeDrag.get() );
-      mDragPointCalculated = true;
+      double depth;
+      QVector3D worldPosition;
+      if ( screenPointToWorldPos( mDragButtonClickPos, mCameraBeforeDrag.get(), depth, worldPosition ) )
+      {
+        mDragPoint = worldPosition;
+        mDragPointCalculated = true;
+      }
     }
 
     float dist = ( mCameraBeforeDrag->position() - mDragPoint ).length();
@@ -510,10 +540,13 @@ void QgsCameraController::handleTerrainNavigationWheelZoom()
 
   if ( !mZoomPointCalculated )
   {
-    double depth = sampleDepthBuffer( mDepthBufferImage, mMousePos.x(), mMousePos.y() );
-
-    mZoomPoint = Qgs3DUtils::screenPointToWorldPos( mMousePos, depth, mViewport.size(), mCameraBeforeZoom.get() );
-    mZoomPointCalculated = true;
+    double depth;
+    QVector3D worldPosition;
+    if ( screenPointToWorldPos( mMousePos, mCameraBeforeZoom.get(), depth, worldPosition ) )
+    {
+      mZoomPoint = worldPosition;
+      mZoomPointCalculated = true;
+    }
   }
 
   float f = mCumulatedWheelY / ( 120.0 * 24.0 );

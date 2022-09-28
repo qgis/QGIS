@@ -17,7 +17,6 @@
 
 #include "qgsmaptoolshowhidelabels.h"
 
-#include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
@@ -27,6 +26,7 @@
 #include "qgsrubberband.h"
 #include "qgslogger.h"
 #include "qgslabelingresults.h"
+#include "qgsnewauxiliarylayerdialog.h"
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

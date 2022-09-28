@@ -417,6 +417,13 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       return matchedPath.toStdString() + "/static/" + asset;
     } );
 
+
+    // Returns true if a string begins with the provided string prefix, false otherwise
+    env.add_callback( "starts_with", 2, [ ]( Arguments & args )
+    {
+      return string_view::starts_with( args.at( 0 )->get<std::string_view>( ), args.at( 1 )->get<std::string_view>( ) );
+    } );
+
     context.response()->write( env.render_file( pathInfo.fileName().toStdString(), data ) );
   }
   catch ( std::exception &e )

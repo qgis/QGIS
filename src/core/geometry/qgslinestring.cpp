@@ -1936,13 +1936,30 @@ QgsPoint QgsLineString::centroid() const
 
 void QgsLineString::sumUpArea( double &sum ) const
 {
-  int maxIndex = numPoints() - 1;
-  double triangleFormulaSum = 0.0; // https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
-  for ( int i = 0; i < maxIndex; ++i )
+  if ( mHasCachedSummedUpArea )
   {
-    triangleFormulaSum += ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
+    sum += mSummedUpArea;
+    return;
   }
-  sum += 0.5 * triangleFormulaSum;
+
+  mSummedUpArea = 0;
+  const int maxIndex = mX.size();
+  if ( maxIndex == 0 )
+    return;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  double prevX = *x++;
+  double prevY = *y++;
+  for ( int i = 1; i < maxIndex; ++i )
+  {
+    mSummedUpArea += 0.5 * ( prevX * ( *y ) - prevY * ( *x ) );
+    prevX = *x++;
+    prevY = *y++;
+  }
+
+  mHasCachedSummedUpArea = true;
+  sum += mSummedUpArea;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )

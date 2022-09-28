@@ -513,7 +513,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       if ( textRect.width() > 2000 )
         textRect.setWidth( 2000 );
 
-      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignCenter, QStringList() << tr( "Aa" ),
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << tr( "Aa" ),
                                  context, *tempFormat );
       break;
     }
@@ -936,7 +936,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       if ( textRect.width() > 2000 )
         textRect.setWidth( 2000 );
 
-      QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << text(),
                                  context, tempFormat );
       break;
     }

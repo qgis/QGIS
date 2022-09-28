@@ -22,6 +22,8 @@
 #include "qtoolbutton.h"
 #include "qgsrectangle.h"
 
+#include <QPointer>
+
 #define SIP_NO_FILE
 
 class QLabel;
@@ -115,6 +117,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QToolButton *mBtnOptions = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QgsRubberBand *mViewFrustumHighlight = nullptr;
+    QPointer<QDialog> mConfigureDialog;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

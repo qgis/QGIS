@@ -35,7 +35,9 @@ QgsCoordinateBoundsPreviewMapWidget::QgsCoordinateBoundsPreviewMapWidget( QWidge
   setDestinationCrs( srs );
 
   const QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
-  mLayers << new QgsVectorLayer( layerPath );
+  QgsVectorLayer::LayerOptions options;
+  options.forceReadOnly = true;
+  mLayers << new QgsVectorLayer( layerPath, tr( "World Map" ), QStringLiteral( "ogr" ), options );
   setLayers( mLayers );
   mPanTool = new QgsMapToolPan( this );
   setMapTool( mPanTool );

@@ -699,7 +699,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mShowFeatureCountByDefaultCheckBox->setChecked( QgsSettingsRegistryCore::settingsLayerTreeShowFeatureCountForNewLayers.value() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
   cbxShowNews->setChecked( !mSettings->value( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), false, QgsSettings::Core ).toBool() );
-  mDataSourceManagerNonModal->setChecked( mSettings->value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
   cbxCheckVersion->setVisible( mSettings->value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
@@ -1287,7 +1286,9 @@ void QgsOptions::checkPageWidgetNameMap()
     }
   };
   traverseModel( QModelIndex() );
-  Q_ASSERT_X( pageNames.count() == pageTitles.count(), "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
+
+  Q_ASSERT_X( pageNames.count() == pageTitles.count(),  "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, contains too many entries, "
+              " this is often a problem with missing translations for the entries (extra entries: %1)" ).arg( ( pageNames.keys().toSet() - pageTitles.toSet() ).values().join( ',' ) ).toLocal8Bit().constData() );
 
   int page = 0;
   for ( const QString &pageTitle : std::as_const( pageTitles ) )
@@ -1557,7 +1558,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/hideSplash" ), cbxHideSplash->isChecked() );
   mSettings->setValue( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QgsWelcomePage::newsFeedUrl() ) ), !cbxShowNews->isChecked(), QgsSettings::Core );
 
-  mSettings->setValue( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), mDataSourceManagerNonModal->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dockAttributeTable" ), cbxAttributeTableDocked->isChecked() );
   mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );

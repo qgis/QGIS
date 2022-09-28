@@ -80,8 +80,9 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
     return;
   const QgsPointCloudAttribute::DataType attributeType = attribute->type();
 
+  const bool renderElevation = context.elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite();
+  const bool considerZ = !zRange.isInfinite() || renderElevation;
 
   int rendered = 0;
   double x = 0;
@@ -106,9 +107,9 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
       break;
     }
 
+    // z value filtering is cheapest, if we're doing it...
     if ( considerZ )
     {
-      // z value filtering is cheapest, if we're doing it...
       z = pointZ( context, ptr, i );
       if ( !zRange.contains( z ) )
         continue;
@@ -136,6 +137,8 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
       }
 
       drawPoint( x, y, color, context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, context );
       rendered++;
     }
   }

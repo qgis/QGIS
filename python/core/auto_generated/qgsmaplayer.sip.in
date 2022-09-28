@@ -644,6 +644,7 @@ or layer with temporary data (as temporary mesh layer dataset)
       FlagDontResolveLayers,
       FlagTrustLayerMetadata,
       FlagReadExtentFromXml,
+      FlagForceReadOnly,
     };
     typedef QFlags<QgsMapLayer::ReadFlag> ReadFlags;
 

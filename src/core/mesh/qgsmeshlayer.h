@@ -896,7 +896,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      *
      * \since QGIS 3.8
      */
-    void timeSettingsChanged( );
+    void timeSettingsChanged();
+
+    /**
+     * Emitted when the mesh layer is reloaded, see reload()
+     *
+     * \since QGIS 3.28
+     */
+    void reloaded();
 
   private: // Private methods
 
@@ -981,6 +988,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
 
     void updateActiveDatasetGroups();
+
+    void checkSymbologyConsistency();
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;

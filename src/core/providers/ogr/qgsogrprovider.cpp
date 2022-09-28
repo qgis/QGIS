@@ -401,6 +401,13 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
+
+  const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
+  if ( parts.contains( QStringLiteral( "uniqueGeometryType" ) ) )
+  {
+    mUniqueGeometryType = parts.value( QStringLiteral( "uniqueGeometryType" ) ).toString() == QLatin1String( "yes" );
+  }
+
   // to be called only after mFilePath has been set
   invalidateNetworkCache();
 
@@ -418,7 +425,14 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
   QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-  open( OpenModeInitial );
+  if ( mReadFlags & QgsDataProvider::ForceReadOnly )
+  {
+    open( OpenModeForceReadOnly );
+  }
+  else
+  {
+    open( OpenModeInitial );
+  }
 
   QList<NativeType> nativeTypes;
   if ( mOgrOrigLayer )
@@ -904,6 +918,9 @@ void QgsOgrProvider::loadFields()
 
 void QgsOgrProvider::loadMetadata()
 {
+  // Set default, may be overridden by stored metadata
+  mLayerMetadata.setCrs( crs() );
+
   if ( mOgrOrigLayer )
   {
     QRecursiveMutex *mutex = nullptr;
@@ -2078,6 +2095,11 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
   if ( mOgrGeometryTypeFilter != wkbUnknown )
   {
     parts.insert( QStringLiteral( "geometryType" ), QgsOgrProviderUtils::ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
+  }
+
+  if ( mUniqueGeometryType )
+  {
+    parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
   }
 
   if ( !mOpenOptions.isEmpty() )
@@ -3404,7 +3426,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
 
   // feature count returns number of features within current spatial filter
   // so we remove it if there's any and then put it back
-  if ( mOgrGeometryTypeFilter == wkbUnknown )
+  if ( mOgrGeometryTypeFilter == wkbUnknown || mUniqueGeometryType )
   {
     mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )

@@ -62,8 +62,9 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
     return;
   const QgsPointCloudAttribute::DataType attributeType = attribute->type();
 
+  const bool renderElevation = context.elevationMap();
   const QgsDoubleRange zRange = context.renderContext().zRange();
-  const bool considerZ = !zRange.isInfinite();
+  const bool considerZ = !zRange.isInfinite() || renderElevation;
 
   const bool applyZOffset = attribute->name() == QLatin1String( "Z" );
   const bool applyXOffset = attribute->name() == QLatin1String( "X" );
@@ -122,6 +123,8 @@ void QgsPointCloudAttributeByRampRenderer::renderBlock( const QgsPointCloudBlock
 
       mColorRampShader.shade( attributeValue, &red, &green, &blue, &alpha );
       drawPoint( x, y, QColor( red, green, blue, alpha ), context );
+      if ( renderElevation )
+        drawPointToElevationMap( x, y, z, context );
 
       rendered++;
     }

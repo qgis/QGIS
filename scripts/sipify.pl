@@ -513,7 +513,7 @@ sub fix_annotations {
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/SIP_TYPEHINT\(\s*([\w\.\s,\[\]]+?)\s*\)/\/TypeHint="$1"\//g;
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
-    $line =~ s/SIP_THROW\(\s*(\w+)\s*\)/throw\( $1 \)/;
+    $line =~ s/SIP_THROW\(\s*([\w\s,]+?)\s*\)/throw\( $1 \)/;
 
     # combine multiple annotations
     # https://regex101.com/r/uvCt4M/5

@@ -2548,8 +2548,10 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
 
     layer->ResetReading();
     gdal::ogr_feature_unique_ptr fet;
+    long long layerFeatureCount = 0;
     while ( fet.reset( layer->GetNextFeature() ), fet )
     {
+      ++layerFeatureCount;
       OGRwkbGeometryType gType =  resolveGeometryTypeForFeature( fet.get(), driverName );
       if ( gType != wkbNone )
       {
@@ -2564,11 +2566,16 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
         break;
     }
     layer->ResetReading();
-    // it may happen that there are no features in the layer, in that case add unknown type
-    // to show to user that the layer exists but it is empty
     if ( fCount.isEmpty() )
     {
-      fCount[wkbUnknown] = 0;
+      if ( layerFeatureCount > 0 )
+        fCount[wkbNone] = 0;
+      else
+      {
+        // it may happen that there are no features in the layer, in that case add unknown type
+        // to show to user that the layer exists but it is empty
+        fCount[wkbUnknown] = 0;
+      }
     }
 
     // List TIN and PolyhedralSurface as Polygon
@@ -2627,8 +2634,11 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
           details.setName( layerName );
         }
       }
+
+      const OGRwkbGeometryType eOGRGeomType = ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key();
+
       details.setFeatureCount( fCount.value( countIt.key() ) );
-      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+      details.setWkbType( QgsOgrUtils::ogrGeometryTypeToQgsWkbType( eOGRGeomType ) );
       details.setGeometryColumnName( geometryColumnName );
       details.setDescription( longDescription );
       details.setProviderKey( QStringLiteral( "ogr" ) );
@@ -2639,8 +2649,15 @@ QList< QgsProviderSublayerDetails > QgsOgrProviderUtils::querySubLayerList( int 
       // in the uri for the sublayers (otherwise we'll be forced to re-do this iteration whenever
       // the uri from the sublayer is used to construct an actual vector layer)
       if ( details.wkbType() != QgsWkbTypes::Unknown )
+      {
         parts.insert( QStringLiteral( "geometryType" ),
-                      ogrWkbGeometryTypeName( ( bIs25D || fHasZ.contains( countIt.key() ) ) ? wkbSetZ( countIt.key() ) : countIt.key() ) );
+                      ogrWkbGeometryTypeName( eOGRGeomType ) );
+        if ( fCount.size() == 1 )
+        {
+          details.setFeatureCount( layerFeatureCount );
+          parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
+        }
+      }
       else
         parts.remove( QStringLiteral( "geometryType" ) );
 

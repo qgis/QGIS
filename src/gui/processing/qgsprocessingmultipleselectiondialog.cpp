@@ -311,7 +311,7 @@ void QgsProcessingMultipleInputPanelWidget::addFiles()
 void QgsProcessingMultipleInputPanelWidget::addDirectory()
 {
   QgsSettings settings;
-  QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
+  const QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
 
   const QString dir = QFileDialog::getExistingDirectory( this, tr( "Select Directory" ), path );
   if ( dir.isEmpty() )
@@ -331,7 +331,7 @@ void QgsProcessingMultipleInputPanelWidget::addDirectory()
     }
   }
 
-  QDirIterator it( path, nameFilters, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
+  QDirIterator it( dir, nameFilters, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
   QStringList files;
   while ( it.hasNext() )
   {

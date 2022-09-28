@@ -53,17 +53,47 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
 
+  updateSizeHint();
+}
+
+void QgsSymbolButton::updateSizeHint()
+{
   //make sure height of button looks good under different platforms
   const QSize size = QToolButton::minimumSizeHint();
   const int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4 );
-  mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
+  switch ( mType )
+  {
+    case Qgis::SymbolType::Marker:
+      if ( mSymbol )
+      {
+        mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight * 3 ) );
+        setMaximumWidth( mSizeHint.height() * 1.5 );
+        setMinimumWidth( maximumWidth() );
+      }
+      else
+      {
+        mSizeHint = QSize( size.width(), fontHeight );
+        setMaximumWidth( 999999 );
+        mSizeHint.setWidth( QToolButton::sizeHint().width() );
+      }
+      break;
+
+    case Qgis::SymbolType::Line:
+    case Qgis::SymbolType::Fill:
+    case Qgis::SymbolType::Hybrid:
+      mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
+      break;
+  }
+
+  setMinimumHeight( mSizeHint.height( ) );
+
+  updateGeometry();
 }
 
 QgsSymbolButton::~QgsSymbolButton() = default;
 
 QSize QgsSymbolButton::minimumSizeHint() const
 {
-
   return mSizeHint;
 }
 
@@ -94,8 +124,9 @@ void QgsSymbolButton::setSymbolType( Qgis::SymbolType type )
         break;
     }
   }
-  updatePreview();
   mType = type;
+  updateSizeHint();
+  updatePreview();
 }
 
 void QgsSymbolButton::showSettingsDialog()
@@ -218,6 +249,7 @@ void QgsSymbolButton::registerExpressionContextGenerator( QgsExpressionContextGe
 void QgsSymbolButton::setSymbol( QgsSymbol *symbol )
 {
   mSymbol.reset( symbol );
+  updateSizeHint();
   updatePreview();
   emit changed();
 }

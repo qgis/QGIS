@@ -24,13 +24,32 @@
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsproject.h"
+#include "qgsgeos.h"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/StageFactory.hpp>
 #include <pdal/io/BufferReader.hpp>
 #include <pdal/Dimension.hpp>
 #endif
+
+QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
+{
+  switch ( format )
+  {
+    case ExportFormat::Gpkg:
+      return QStringLiteral( "GPKG" );
+    case ExportFormat::Dxf:
+      return QStringLiteral( "DXF" );
+    case ExportFormat::Shp:
+      return QStringLiteral( "ESRI Shapefile" );
+    case ExportFormat::Csv:
+      return QStringLiteral( "CSV" );
+    case ExportFormat::Memory:
+    case ExportFormat::Las:
+      break;
+  }
+  return QString();
+}
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
@@ -43,14 +62,6 @@ QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *laye
   if ( !ok )
     mPointRecordFormat = 3;
 
-  mSupportedFormats << QStringLiteral( "memory" )
-#ifdef HAVE_PDAL_QGIS
-                    << QStringLiteral( "LAZ" )
-#endif
-                    << QStringLiteral( "GPKG" )
-                    << QStringLiteral( "ESRI Shapefile" )
-                    << QStringLiteral( "DXF" );
-
   setAllAttributes();
 }
 
@@ -61,14 +72,58 @@ QgsPointCloudLayerExporter::~QgsPointCloudLayerExporter()
   delete mTransform;
 }
 
-bool QgsPointCloudLayerExporter::setFormat( const QString &format )
+bool QgsPointCloudLayerExporter::setFormat( const ExportFormat format )
 {
-  if ( mSupportedFormats.contains( format, Qt::CaseInsensitive ) )
+  if ( supportedFormats().contains( format ) )
   {
     mFormat = format;
     return true;
   }
   return false;
+}
+
+void QgsPointCloudLayerExporter::setFilterGeometry( const QgsAbstractGeometry *geometry )
+{
+  mFilterGeometryEngine.reset( new QgsGeos( geometry ) );
+  mFilterGeometryEngine->prepareGeometry();
+}
+
+void QgsPointCloudLayerExporter::setFilterGeometry( QgsMapLayer *layer, bool selectedFeaturesOnly )
+{
+  QgsVectorLayer *vlayer = dynamic_cast< QgsVectorLayer * >( layer );
+  if ( !vlayer )
+    return;
+
+  QVector< QgsGeometry > allGeometries;
+  QgsFeatureIterator fit;
+  const QgsFeatureRequest request = QgsFeatureRequest( mExtent ).setNoAttributes();
+  if ( selectedFeaturesOnly )
+    fit = vlayer->getSelectedFeatures( request );
+  else
+    fit = vlayer->getFeatures( request );
+
+  QgsCoordinateTransform transform( vlayer->crs(), mSourceCrs, mTransformContext );
+
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
+  {
+    if ( f.hasGeometry() )
+    {
+      allGeometries.append( f.geometry() );
+    }
+  }
+  QgsGeometry unaryUnion = QgsGeometry::unaryUnion( allGeometries );
+  try
+  {
+    unaryUnion.transform( transform );
+  }
+  catch ( const QgsCsException &cse )
+  {
+    QgsDebugMsg( QStringLiteral( "Error transforming union of filter layer: %1" ).arg( cse.what() ) );
+    QgsDebugMsg( QStringLiteral( "FilterGeometry will be ignored." ) );
+    return;
+  }
+  setFilterGeometry( unaryUnion.constGet() );
 }
 
 void QgsPointCloudLayerExporter::setAttributes( const QStringList &attributeList )
@@ -137,7 +192,7 @@ void QgsPointCloudLayerExporter::prepareExport()
   delete mMemoryLayer;
   mMemoryLayer = nullptr;
 
-  if ( mFormat == QLatin1String( "memory" ) )
+  if ( mFormat == ExportFormat::Memory )
   {
     if ( QApplication::instance()->thread() != QThread::currentThread() )
       QgsDebugMsgLevel( QStringLiteral( "prepareExport() should better be called from the main thread!" ), 2 );
@@ -161,71 +216,98 @@ void QgsPointCloudLayerExporter::doExport()
     }
   }
 
-  if ( mFormat == QLatin1String( "memory" ) )
-  {
-    if ( !mMemoryLayer )
-      prepareExport();
+  QStringList layerCreationOptions;
 
-    ExporterMemory exp( this );
-    exp.run();
-  }
-#ifdef HAVE_PDAL_QGIS
-  else if ( mFormat == QLatin1String( "LAZ" ) )
+  switch ( mFormat )
   {
-    setAllAttributes();
-    // PDAL may throw exceptions
-    try
+    case ExportFormat::Memory:
     {
-      ExporterPdal exp( this );
+      if ( !mMemoryLayer )
+        prepareExport();
+
+      ExporterMemory exp( this );
       exp.run();
+      break;
     }
-    catch ( std::runtime_error &e )
+
+    case ExportFormat::Las:
     {
-      setLastError( QString::fromLatin1( e.what() ) );
-      QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
-    }
-  }
+#ifdef HAVE_PDAL_QGIS
+      setAllAttributes();
+      // PDAL may throw exceptions
+      try
+      {
+        ExporterPdal exp( this );
+        exp.run();
+      }
+      catch ( std::runtime_error &e )
+      {
+        setLastError( QString::fromLatin1( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "PDAL has thrown an exception: {}" ).arg( e.what() ) );
+      }
 #endif
-  else
-  {
-    QgsVectorFileWriter::SaveVectorOptions saveOptions;
-    saveOptions.layerName = mName;
-    saveOptions.driverName = mFormat;
-    saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( mFormat );
-    saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( mFormat );
-    saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-    saveOptions.actionOnExistingFile = mActionOnExistingFile;
-    saveOptions.feedback = mFeedback;
-    mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
-    ExporterVector exp( this );
-    exp.run();
+      break;
+    }
+
+    case ExportFormat::Csv:
+      layerCreationOptions << QStringLiteral( "GEOMETRY=AS_XYZ" )
+                           << QStringLiteral( "SEPARATOR=COMMA" ); // just in case ogr changes the default lco
+      FALLTHROUGH
+    case ExportFormat::Gpkg:
+    case ExportFormat::Dxf:
+    case ExportFormat::Shp:
+    {
+      const QString ogrDriver = getOgrDriverName( mFormat );
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.layerName = mName;
+      saveOptions.driverName = ogrDriver;
+      saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( ogrDriver );
+      saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( ogrDriver );
+      saveOptions.layerOptions << layerCreationOptions;
+      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.actionOnExistingFile = mActionOnExistingFile;
+      saveOptions.feedback = mFeedback;
+      mVectorSink = QgsVectorFileWriter::create( mFilename, outputFields(), QgsWkbTypes::PointZ, mTargetCrs, QgsCoordinateTransformContext(), saveOptions );
+      ExporterVector exp( this );
+      exp.run();
+      return;
+    }
   }
 }
 
 QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 {
-  if ( mFormat == QLatin1String( "memory" ) && mMemoryLayer )
+  switch ( mFormat )
   {
-    QgsMapLayer *retVal = mMemoryLayer;
-    mMemoryLayer = nullptr;
-    return retVal;
+    case ExportFormat::Memory:
+    {
+      QgsMapLayer *retVal = mMemoryLayer;
+      mMemoryLayer = nullptr;
+      return retVal;
+    }
+
+    case ExportFormat::Las:
+    {
+      const QFileInfo fileInfo( mFilename );
+      return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
+    }
+
+    case ExportFormat::Gpkg:
+    {
+      QString uri( mFilename );
+      uri += "|layername=" + mName;
+      return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
+    }
+
+    case ExportFormat::Dxf:
+    case ExportFormat::Shp:
+    case ExportFormat::Csv:
+    {
+      const QFileInfo fileInfo( mFilename );
+      return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+    }
   }
-
-  const QFileInfo fileInfo( mFilename );
-
-  if ( mFormat == QLatin1String( "LAZ" ) )
-  {
-    return new QgsPointCloudLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "pdal" ) );
-  }
-
-  if ( mFormat == QLatin1String( "GPKG" ) )
-  {
-    QString uri( mFilename );
-    uri += "|layername=" + mName;
-    return new QgsVectorLayer( uri, mName, QStringLiteral( "ogr" ) );
-  }
-
-  return new QgsVectorLayer( mFilename, fileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  BUILTIN_UNREACHABLE
 }
 
 //
@@ -234,6 +316,18 @@ QgsMapLayer *QgsPointCloudLayerExporter::takeExportedLayer()
 
 void QgsPointCloudLayerExporter::ExporterBase::run()
 {
+  QgsRectangle geometryFilterRectangle( -std::numeric_limits<double>::infinity(),
+                                        -std::numeric_limits<double>::infinity(),
+                                        std::numeric_limits<double>::infinity(),
+                                        std::numeric_limits<double>::infinity(),
+                                        false );
+  if ( mParent->mFilterGeometryEngine )
+  {
+    const QgsAbstractGeometry *envelope = mParent->mFilterGeometryEngine->envelope();
+    if ( envelope )
+      geometryFilterRectangle = envelope->boundingBox();
+  }
+
   QVector<IndexedPointCloudNode> nodes;
   qint64 pointCount = 0;
   QQueue<IndexedPointCloudNode> queue;
@@ -242,8 +336,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   {
     IndexedPointCloudNode node = queue.front();
     queue.pop_front();
-    if ( mParent->mExtent.intersects( mParent->mIndex->nodeMapExtent( node ) ) &&
-         mParent->mZRange.overlaps( mParent->mIndex->nodeZRange( node ) ) )
+    const QgsRectangle nodeExtent = mParent->mIndex->nodeMapExtent( node );
+    if ( mParent->mExtent.intersects( nodeExtent ) &&
+         mParent->mZRange.overlaps( mParent->mIndex->nodeZRange( node ) ) &&
+         geometryFilterRectangle.intersects( nodeExtent ) )
     {
       pointCount += mParent->mIndex->nodePointCount( node );
       nodes.push_back( node );
@@ -257,7 +353,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
 
   int pointsSkipped = 0;
-  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? mParent->mPointsLimit : pointCount;
+  const qint64 pointsToExport = mParent->mPointsLimit > 0 ? std::min( mParent->mPointsLimit, pointCount ) : pointCount;
   QgsPointCloudRequest request;
   request.setAttributes( mParent->requestedAttributeCollection() );
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
@@ -271,12 +367,10 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
     int recordSize = attributesCollection.pointRecordSize();
     const QgsVector3D scale = block->scale();
     const QgsVector3D offset = block->offset();
-    int xOffset;
-    int yOffset;
-    int zOffset;
-    attributesCollection.find( QStringLiteral( "X" ), xOffset );
-    attributesCollection.find( QStringLiteral( "Y" ), yOffset );
-    attributesCollection.find( QStringLiteral( "Z" ), zOffset );
+    int xOffset = 0, yOffset = 0, zOffset = 0;
+    const QgsPointCloudAttribute::DataType xType = attributesCollection.find( QStringLiteral( "X" ), xOffset )->type();
+    const QgsPointCloudAttribute::DataType yType = attributesCollection.find( QStringLiteral( "Y" ), yOffset )->type();
+    const QgsPointCloudAttribute::DataType zType = attributesCollection.find( QStringLiteral( "Z" ), zOffset )->type();
     for ( int i = 0; i < count; ++i )
     {
 
@@ -296,13 +390,14 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
 
       double x, y, z;
       QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize,
-                                           xOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           yOffset, QgsPointCloudAttribute::DataType::Int32,
-                                           zOffset, QgsPointCloudAttribute::DataType::Int32,
+                                           xOffset, xType,
+                                           yOffset, yType,
+                                           zOffset, zType,
                                            scale, offset,
                                            x, y, z );
       if ( ! mParent->mZRange.contains( z ) ||
-           ! mParent->mExtent.contains( x, y ) )
+           ! mParent->mExtent.contains( x, y ) ||
+           ( mParent->mFilterGeometryEngine && ! mParent->mFilterGeometryEngine->contains( x, y ) ) )
       {
         ++pointsSkipped;
         continue;
