@@ -105,7 +105,7 @@ class CORE_EXPORT QgsSymbol
      * \see symbolLayerCount
      * \since QGIS 2.7
      */
-    QgsSymbolLayerList symbolLayers() { return mLayers; }
+    QgsSymbolLayerList symbolLayers() const { return mLayers; }
 
 #ifndef SIP_RUN
 
@@ -749,4 +749,3 @@ class CORE_EXPORT QgsSymbol
 };
 
 #endif
-
