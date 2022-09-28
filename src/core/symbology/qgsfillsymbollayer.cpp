@@ -423,7 +423,7 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
     // Apply alpha from symbol
     bool ok;
-    const double alpha { props.value( QStringLiteral( "alpha" ), 0.0 ).toDouble( &ok ) };
+    const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
     QColor strokeColor { mStrokeColor };
     if ( ok )
     {
