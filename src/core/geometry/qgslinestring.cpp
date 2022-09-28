@@ -1936,6 +1936,13 @@ QgsPoint QgsLineString::centroid() const
 
 void QgsLineString::sumUpArea( double &sum ) const
 {
+  if ( mHasCachedSummedUpArea )
+  {
+    sum += mSummedUpArea;
+    return;
+  }
+
+  mSummedUpArea = 0;
   const int maxIndex = mX.size();
   if ( maxIndex == 0 )
     return;
@@ -1946,10 +1953,13 @@ void QgsLineString::sumUpArea( double &sum ) const
   double prevY = *y++;
   for ( int i = 1; i < maxIndex; ++i )
   {
-    sum += 0.5 * ( prevX * ( *y ) - prevY * ( *x ) );
+    mSummedUpArea += 0.5 * ( prevX * ( *y ) - prevY * ( *x ) );
     prevX = *x++;
     prevY = *y++;
   }
+
+  mHasCachedSummedUpArea = true;
+  sum += mSummedUpArea;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )
