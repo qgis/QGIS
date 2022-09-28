@@ -48,6 +48,9 @@ Constructor for QgsPalettedRasterRenderer.
 %Docstring
 QgsPalettedRasterRenderer cannot be copied. Use :py:func:`~QgsPalettedRasterRenderer.clone` instead.
 %End
+    virtual Qgis::RasterRendererFlags flags() const;
+
+
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;

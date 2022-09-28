@@ -53,6 +53,11 @@ QgsHillshadeRenderer *QgsHillshadeRenderer::clone() const
   return r;
 }
 
+Qgis::RasterRendererFlags QgsHillshadeRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 QgsRasterRenderer *QgsHillshadeRenderer::create( const QDomElement &elem, QgsRasterInterface *input )
 {
   if ( elem.isNull() )

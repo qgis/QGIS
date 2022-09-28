@@ -39,6 +39,7 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
     const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & ) = delete;
 
     QgsSingleBandColorDataRenderer *clone() const override SIP_FACTORY;
+    Qgis::RasterRendererFlags flags() const override;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 

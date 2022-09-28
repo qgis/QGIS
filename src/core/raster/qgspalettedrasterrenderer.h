@@ -69,6 +69,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     const QgsPalettedRasterRenderer &operator=( const QgsPalettedRasterRenderer & ) = delete;
 
     QgsPalettedRasterRenderer *clone() const override SIP_FACTORY;
+    Qgis::RasterRendererFlags flags() const override;
+
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;

@@ -100,6 +100,11 @@ QgsSingleBandPseudoColorRenderer *QgsSingleBandPseudoColorRenderer::clone() cons
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsSingleBandPseudoColorRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader *shader )
 {
   mShader.reset( shader );

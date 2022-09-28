@@ -69,6 +69,11 @@ QgsMultiBandColorRenderer *QgsMultiBandColorRenderer::clone() const
   return renderer;
 }
 
+Qgis::RasterRendererFlags QgsMultiBandColorRenderer::flags() const
+{
+  return Qgis::RasterRendererFlag::InternalLayerOpacityHandling;
+}
+
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement *ce )
 {
   delete mRedContrastEnhancement;
