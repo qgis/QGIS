@@ -30,6 +30,7 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 #include <QHeaderView>
+#include <QMimeData>
 #include <QScrollBar>
 
 #ifdef ENABLE_MODELTEST
@@ -618,8 +619,53 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
   layerTreeModel()->setFlags( oldFlags );
 }
 
+void QgsLayerTreeView::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  {
+    // the mime data are coming from layer tree, so ignore that, do not import those layers again
+    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    {
+      event->accept();
+      return;
+    }
+  }
+  QTreeView::dragEnterEvent( event );
+}
+
+void QgsLayerTreeView::dragMoveEvent( QDragMoveEvent *event )
+{
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  {
+    // the mime data are coming from layer tree, so ignore that, do not import those layers again
+    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    {
+      event->accept();
+      return;
+    }
+  }
+  QTreeView::dragMoveEvent( event );
+}
+
 void QgsLayerTreeView::dropEvent( QDropEvent *event )
 {
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.uri" ) ) )
+  {
+    // the mime data are coming from layer tree, so ignore that, do not import those layers again
+    if ( !event->mimeData()->hasFormat( QStringLiteral( "application/qgis.layertreemodeldata" ) ) )
+    {
+      event->accept();
+
+      QModelIndex index = indexAt( event->pos() );
+      if ( index.isValid() )
+      {
+        setCurrentIndex( index );
+      }
+
+      emit datasetsDropped( event );
+      return;
+    }
+  }
   if ( event->keyboardModifiers() & Qt::AltModifier )
   {
     event->accept();

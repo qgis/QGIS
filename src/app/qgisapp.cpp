@@ -2063,6 +2063,13 @@ void QgisApp::dropEvent( QDropEvent *event )
   timer->setSingleShot( true );
   timer->setInterval( 50 );
 
+  Qgis::LayerTreeInsertionMethod method = QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod();
+  if ( mLayerTreeDrop )
+  {
+    // Override current method to always add layers on top of the node over which the drop occured
+    QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint );
+  }
+
   // first, allow custom handlers to directly operate on the mime data
   const QVector<QPointer<QgsCustomDropHandler >> handlers = mCustomDropHandlers;
   for ( QgsCustomDropHandler *handler : handlers )
@@ -2103,7 +2110,7 @@ void QgisApp::dropEvent( QDropEvent *event )
     lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
   }
 
-  connect( timer, &QTimer::timeout, this, [this, timer, files, lst]
+  connect( timer, &QTimer::timeout, this, [this, timer, files, lst, method]
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
@@ -2147,6 +2154,12 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       QgsAppLayerHandling::addSortedLayersToLegend( addedLayers );
       QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
+    }
+
+    if ( mLayerTreeDrop )
+    {
+      QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( method );
+      mLayerTreeDrop = false;
     }
 
     timer->deleteLater();
@@ -4258,6 +4271,12 @@ void QgisApp::setupConnections()
     // only mark dirty for non-view only changes
     if ( !QgsLayerTreeView::viewOnlyCustomProperties().contains( key ) )
       QgisApp::markDirty();
+  } );
+
+  connect( mLayerTreeView, &QgsLayerTreeView::datasetsDropped, this, [ = ]( QDropEvent * event )
+  {
+    mLayerTreeDrop = true;
+    dropEvent( event );
   } );
 
   // connect map layer registry
