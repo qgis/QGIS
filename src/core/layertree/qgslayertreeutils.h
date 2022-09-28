@@ -130,6 +130,22 @@ class CORE_EXPORT QgsLayerTreeUtils
      */
     static QgsLayerTreeGroup *firstGroupWithoutCustomProperty( QgsLayerTreeGroup *group, const QString &property );
 
+    /**
+     * Inserts a \a layer within a given \a group at an optimal index position by insuring a given layer
+     * type will always sit on top of or below other types. From top to bottom, the stacking logic is
+     * as follow:
+     *
+     * - vector points
+     * - vector lines
+     * - vector polygons
+     * - point clouds
+     * - meshes
+     * - rasters
+     * - base maps
+     *
+     * A base map is defined as a non-gdal provider raster layer (e.g. XYZ raster layer, vector tile layer, etc.)
+     * \since QGIS 3.28
+     */
     static QgsLayerTreeLayer *insertLayerAtOptimalPlacement( QgsLayerTreeGroup *group, QgsMapLayer *layer );
 };
 
