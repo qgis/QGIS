@@ -70,11 +70,6 @@ Constructor for LayerOptions.
 
       bool skipCrsValidation;
 
-      bool loadDefaultRat;
-
-      QString fileBasedRat;
-
-
     };
 
     explicit QgsRasterLayer( const QString &uri,
