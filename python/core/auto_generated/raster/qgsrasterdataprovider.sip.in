@@ -737,7 +737,7 @@ Writes the filesystem-based attribute table for the specified ``bandNumber`` to 
 
     bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = 0 );
 %Docstring
-Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``, any error message is set to ``errorMessage``..
+Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``, any error message is set to ``errorMessage``.
 
 :return: ``True`` on success
 

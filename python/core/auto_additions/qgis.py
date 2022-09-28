@@ -715,6 +715,35 @@ Qgis.RasterRendererFlag.baseClass = Qgis
 Qgis.RasterRendererFlags.baseClass = Qgis
 RasterRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ = "Field usage Generic"
+Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ = "Field usage PixelCount"
+Qgis.RasterAttributeTableFieldUsage.Name.__doc__ = "Field usage Name"
+Qgis.RasterAttributeTableFieldUsage.Min.__doc__ = "Field usage Min"
+Qgis.RasterAttributeTableFieldUsage.Max.__doc__ = "Field usage Max"
+Qgis.RasterAttributeTableFieldUsage.MinMax.__doc__ = "Field usage MinMax"
+Qgis.RasterAttributeTableFieldUsage.Red.__doc__ = "Field usage Red"
+Qgis.RasterAttributeTableFieldUsage.Green.__doc__ = "Field usage Green"
+Qgis.RasterAttributeTableFieldUsage.Blue.__doc__ = "Field usage Blue"
+Qgis.RasterAttributeTableFieldUsage.Alpha.__doc__ = "Field usage Alpha"
+Qgis.RasterAttributeTableFieldUsage.RedMin.__doc__ = "Field usage RedMin"
+Qgis.RasterAttributeTableFieldUsage.GreenMin.__doc__ = "Field usage GreenMin"
+Qgis.RasterAttributeTableFieldUsage.BlueMin.__doc__ = "Field usage BlueMin"
+Qgis.RasterAttributeTableFieldUsage.AlphaMin.__doc__ = "Field usage AlphaMin"
+Qgis.RasterAttributeTableFieldUsage.RedMax.__doc__ = "Field usage RedMax"
+Qgis.RasterAttributeTableFieldUsage.GreenMax.__doc__ = "Field usage GreenMax"
+Qgis.RasterAttributeTableFieldUsage.BlueMax.__doc__ = "Field usage BlueMax"
+Qgis.RasterAttributeTableFieldUsage.AlphaMax.__doc__ = "Field usage AlphaMax"
+Qgis.RasterAttributeTableFieldUsage.MaxCount.__doc__ = "Field usage MaxCount"
+Qgis.RasterAttributeTableFieldUsage.__doc__ = 'The RasterAttributeTableFieldUsage enum represents the usage of a RAT field.\n\n.. versionadded:: 3.30\n\n' + '* ``Generic``: ' + Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ + '\n' + '* ``PixelCount``: ' + Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ + '\n' + '* ``Name``: ' + Qgis.RasterAttributeTableFieldUsage.Name.__doc__ + '\n' + '* ``Min``: ' + Qgis.RasterAttributeTableFieldUsage.Min.__doc__ + '\n' + '* ``Max``: ' + Qgis.RasterAttributeTableFieldUsage.Max.__doc__ + '\n' + '* ``MinMax``: ' + Qgis.RasterAttributeTableFieldUsage.MinMax.__doc__ + '\n' + '* ``Red``: ' + Qgis.RasterAttributeTableFieldUsage.Red.__doc__ + '\n' + '* ``Green``: ' + Qgis.RasterAttributeTableFieldUsage.Green.__doc__ + '\n' + '* ``Blue``: ' + Qgis.RasterAttributeTableFieldUsage.Blue.__doc__ + '\n' + '* ``Alpha``: ' + Qgis.RasterAttributeTableFieldUsage.Alpha.__doc__ + '\n' + '* ``RedMin``: ' + Qgis.RasterAttributeTableFieldUsage.RedMin.__doc__ + '\n' + '* ``GreenMin``: ' + Qgis.RasterAttributeTableFieldUsage.GreenMin.__doc__ + '\n' + '* ``BlueMin``: ' + Qgis.RasterAttributeTableFieldUsage.BlueMin.__doc__ + '\n' + '* ``AlphaMin``: ' + Qgis.RasterAttributeTableFieldUsage.AlphaMin.__doc__ + '\n' + '* ``RedMax``: ' + Qgis.RasterAttributeTableFieldUsage.RedMax.__doc__ + '\n' + '* ``GreenMax``: ' + Qgis.RasterAttributeTableFieldUsage.GreenMax.__doc__ + '\n' + '* ``BlueMax``: ' + Qgis.RasterAttributeTableFieldUsage.BlueMax.__doc__ + '\n' + '* ``AlphaMax``: ' + Qgis.RasterAttributeTableFieldUsage.AlphaMax.__doc__ + '\n' + '* ``MaxCount``: ' + Qgis.RasterAttributeTableFieldUsage.MaxCount.__doc__
+# --
+Qgis.RasterAttributeTableFieldUsage.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterAttributeTableType.Thematic.__doc__ = ""
+Qgis.RasterAttributeTableType.Athematic.__doc__ = ""
+Qgis.RasterAttributeTableType.__doc__ = 'The RasterAttributeTableType enum represents the type of RAT.\n\n.. versionadded:: 3.30\n\n' + '* ``Thematic``: ' + Qgis.RasterAttributeTableType.Thematic.__doc__ + '\n' + '* ``Athematic``: ' + Qgis.RasterAttributeTableType.Athematic.__doc__
+# --
+Qgis.RasterAttributeTableType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.MeshEditingErrorType.NoError.__doc__ = "No type"
 Qgis.MeshEditingErrorType.InvalidFace.__doc__ = "An error occurs due to an invalid face (for example, vertex indexes are unordered)"
 Qgis.MeshEditingErrorType.TooManyVerticesInFace.__doc__ = "A face has more vertices than the maximum number supported per face"
