@@ -161,32 +161,98 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
   std::unique_ptr< QgsCompoundCurve > compoundCurve = std::make_unique< QgsCompoundCurve >();
-  std::unique_ptr< QgsLineString > lineString;
+
+  QVector< double > lineX;
+  QVector< double > lineY;
+  QVector< double > lineZ;
+  QVector< double > lineM;
+  int maxCurveListSize = curvesList.size();
+  lineX.resize( maxCurveListSize );
+  lineY.resize( maxCurveListSize );
+
+  const bool hasZ = QgsWkbTypes::hasZ( pointType );
+  if ( hasZ )
+    lineZ.resize( maxCurveListSize );
+  const bool hasM = QgsWkbTypes::hasM( pointType );
+  if ( hasM )
+    lineM.resize( maxCurveListSize );
+
+  double *outLineX = lineX.data();
+  double *outLineY = lineY.data();
+  double *outLineZ = lineZ.data();
+  double *outLineM = lineM.data();
+  int actualLineSize = 0;
+
+  bool xok = false;
+  bool yok = false;
+
+  int curveListIndex = 0;
   for ( const QVariant &curveData : curvesList )
   {
     if ( curveData.type() == QVariant::List )
     {
-      std::unique_ptr< QgsPoint > point( convertPoint( curveData.toList(), pointType ) );
-      if ( !point )
-      {
+      const QVariantList coordList = curveData.toList();
+      const int nCoords = coordList.size();
+      if ( nCoords < 2 )
         return nullptr;
-      }
-      if ( !lineString )
-        lineString = std::make_unique< QgsLineString >();
 
-      lineString->addVertex( *point );
+      const double x = coordList[0].toDouble( &xok );
+      const double y = coordList[1].toDouble( &yok );
+      if ( !xok || !yok )
+        return nullptr;
+
+      actualLineSize++;
+      *outLineX++ = x;
+      *outLineY++ = y;
+      if ( hasZ )
+      {
+        *outLineZ++ = nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+      }
+
+      if ( hasM )
+      {
+        // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
+        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+      }
     }
     else if ( curveData.type() == QVariant::Map )
     {
       // The last point of the linestring is the start point of this circular string
-      std::unique_ptr< QgsCircularString > circularString( convertCircularString( curveData.toMap(), pointType, lineString ? lineString->endPoint() : QgsPoint() ) );
+      QgsPoint lastLineStringPoint;
+      if ( actualLineSize > 0 )
+      {
+        lastLineStringPoint = QgsPoint( lineX.at( actualLineSize - 1 ),
+                                        lineY.at( actualLineSize - 1 ),
+                                        hasZ ? lineZ.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN(),
+                                        hasM ? lineM.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN() );
+      }
+      std::unique_ptr< QgsCircularString > circularString( convertCircularString( curveData.toMap(), pointType, lastLineStringPoint ) );
       if ( !circularString )
       {
         return nullptr;
       }
 
-      if ( lineString )
-        compoundCurve->addCurve( lineString.release() );
+      if ( actualLineSize > 0 )
+      {
+        lineX.resize( actualLineSize );
+        lineY.resize( actualLineSize );
+        if ( hasZ )
+          lineZ.resize( actualLineSize );
+        if ( hasM )
+          lineM.resize( actualLineSize );
+
+        compoundCurve->addCurve( new QgsLineString( lineX, lineY, lineZ, lineM ) );
+        lineX.resize( maxCurveListSize - curveListIndex );
+        lineY.resize( maxCurveListSize - curveListIndex );
+        if ( hasZ )
+          lineZ.resize( maxCurveListSize - curveListIndex );
+        if ( hasM )
+          lineM.resize( maxCurveListSize - curveListIndex );
+        outLineX = lineX.data();
+        outLineY = lineY.data();
+        outLineZ = lineZ.data();
+        outLineM = lineM.data();
+      }
 
       // If the previous curve had less than two points, remove it
       if ( compoundCurve->curveAt( compoundCurve->nCurves() - 1 )->nCoordinates() < 2 )
@@ -196,20 +262,40 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
       compoundCurve->addCurve( circularString.release() );
 
       // Prepare a new line string
-      lineString = std::make_unique< QgsLineString >();
-      lineString->addVertex( endPointCircularString );
+      actualLineSize = 1;
+      *outLineX++ = endPointCircularString.x();
+      *outLineY++ = endPointCircularString.y();
+      if ( hasZ )
+        *outLineZ++ = endPointCircularString.z();
+      if ( hasM )
+        *outLineM++ = endPointCircularString.m();
+    }
+    curveListIndex++;
+  }
+
+  if ( actualLineSize == 1 && compoundCurve->nCurves() > 0 )
+  {
+    const QgsCurve *finalCurve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
+    const QgsPoint finalCurveEndPoint = finalCurve->endPoint();
+    if ( qgsDoubleNear( finalCurveEndPoint.x(), lineX.at( 0 ) )
+         && qgsDoubleNear( finalCurveEndPoint.y(), lineY.at( 0 ) )
+         && ( !hasZ || qgsDoubleNear( finalCurveEndPoint.z(), lineZ.at( 0 ) ) )
+         && ( !hasM || qgsDoubleNear( finalCurveEndPoint.m(), lineM.at( 0 ) ) ) )
+    {
+      actualLineSize = 0; // redundant final curve containing a duplicate vertex
     }
   }
 
-  if ( lineString && lineString->numPoints() == 1 && compoundCurve->nCurves() > 0 )
+  if ( actualLineSize > 0 )
   {
-    const QgsCurve *finalCurve = compoundCurve->curveAt( compoundCurve->nCurves() - 1 );
-    if ( finalCurve->endPoint() == lineString->startPoint() )
-      lineString.reset(); // redundant final curve containing a duplicate vertex
+    lineX.resize( actualLineSize );
+    lineY.resize( actualLineSize );
+    if ( hasZ )
+      lineZ.resize( actualLineSize );
+    if ( hasM )
+      lineM.resize( actualLineSize );
+    compoundCurve->addCurve( new QgsLineString( lineX, lineY, lineZ, lineM ) );
   }
-
-  if ( lineString )
-    compoundCurve->addCurve( lineString.release() );
 
   return compoundCurve;
 }
