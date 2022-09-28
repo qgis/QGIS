@@ -30,6 +30,7 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
+                       QgsDataProvider,
                        QgsLabelingEngineSettings,
                        QgsVectorLayer,
                        QgsRasterLayer,
@@ -1565,6 +1566,35 @@ class TestQgsProject(unittest.TestCase):
         self.assertFalse(project4.mapLayer(layer_a.id()).isEditable())
         self.assertFalse(project4.mapLayer(layer_b.id()).isEditable())
         self.assertFalse(project4.mapLayer(layer_c.id()).isEditable())
+
+    def test_remember_evaluate_default_values(self):
+        """
+        Test that EvaluateDefaultValues property is correctly set when loading project
+        """
+
+        project = QgsProject()
+
+        layer = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+
+        project.addMapLayers([layer])
+
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), None)
+        project.setFlags(project.flags() | Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertTrue(project.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertEqual(layer.dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
+
+        tmp_dir = QTemporaryDir()
+        tmp_project_file = "{}/project.qgs".format(tmp_dir.path())
+        self.assertTrue(project.write(tmp_project_file))
+
+        project2 = QgsProject()
+        self.assertTrue(project2.read(tmp_project_file))
+
+        layers = list(project2.mapLayers().values())
+        self.assertEqual(len(layers), 1)
+
+        self.assertTrue(project2.flags() & Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide)
+        self.assertEqual(layers[0].dataProvider().providerProperty(QgsDataProvider.EvaluateDefaultValues, None), True)
 
 
 if __name__ == '__main__':
