@@ -307,8 +307,17 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
   if ( curves.count() == 0 )
     return nullptr;
 
-  std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
   std::unique_ptr< QgsMultiSurface > result = std::make_unique< QgsMultiSurface >();
+  if ( curves.count() == 1 )
+  {
+    // shortcut for exterior ring only
+    std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
+    newPolygon->setExteriorRing( curves.takeAt( 0 ) );
+    result->addGeometry( newPolygon.release() );
+    return result;
+  }
+
+  std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
   result->reserve( curves.size() );
   while ( !curves.isEmpty() )
   {
