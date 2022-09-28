@@ -179,7 +179,7 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
   }
 
   QgsLayerTreeGroup *parent = nullptr;
-  QgsLayerTreeNode *currentNode { QgisApp::instance()->layerTreeView()->currentNode() };
+  QgsLayerTreeNode *currentNode = QgisApp::instance()->layerTreeView()->currentNode();
   int currentIndex = 0;
   if ( currentNode && currentNode->parent() )
   {
@@ -196,7 +196,7 @@ void QgsAppLayerHandling::addSortedLayersToLegend( QList<QgsMapLayer *> &layers 
         nodeIdx++;
         if ( child == currentNode )
         {
-          currentIndex = nodeIdx;
+          currentIndex = nodeIdx - 1;
           break;
         }
       }
