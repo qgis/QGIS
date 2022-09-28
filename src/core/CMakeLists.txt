@@ -2280,10 +2280,6 @@ if (APPLE)
   target_link_libraries(qgis_core ${LIBTASN1_LIBRARY})
 endif()
 
-if (APPLE AND NOT IOS)
-  target_link_libraries(qgis_core qgis_native)
-endif()
-
 target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Core
   ${QT_VERSION_BASE}::Gui
