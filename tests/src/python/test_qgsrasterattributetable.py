@@ -127,15 +127,15 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
-        rat.appendField(QgsRasterAttributeTable.Field('Value', QgsRasterAttributeTable.FieldUsage.MinMax, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Double', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Count', Qgis.RasterAttributeTableFieldUsage.PixelCount, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Double', Qgis.RasterAttributeTableFieldUsage.Generic, QVariant.Double))
 
         data_rows = [
             [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
@@ -177,14 +177,14 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         ]
 
         rat = QgsRasterAttributeTable()
-        rat.appendField(QgsRasterAttributeTable.Field('Value', QgsRasterAttributeTable.FieldUsage.MinMax, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Count', Qgis.RasterAttributeTableFieldUsage.PixelCount, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
 
         for row in data_rows:
             rat.appendRow(row)
@@ -244,15 +244,15 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
-        rat.appendField(QgsRasterAttributeTable.Field('Value', QgsRasterAttributeTable.FieldUsage.MinMax, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Count', QgsRasterAttributeTable.FieldUsage.PixelCount, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Class', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class2', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Class3', QgsRasterAttributeTable.FieldUsage.Name, QVariant.String))
-        rat.appendField(QgsRasterAttributeTable.Field('Red', QgsRasterAttributeTable.FieldUsage.Red, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Green', QgsRasterAttributeTable.FieldUsage.Green, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Blue', QgsRasterAttributeTable.FieldUsage.Blue, QVariant.Int))
-        rat.appendField(QgsRasterAttributeTable.Field('Double', QgsRasterAttributeTable.FieldUsage.Generic, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Count', Qgis.RasterAttributeTableFieldUsage.PixelCount, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Double', Qgis.RasterAttributeTableFieldUsage.Generic, QVariant.Double))
 
         data_rows = [
             [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
