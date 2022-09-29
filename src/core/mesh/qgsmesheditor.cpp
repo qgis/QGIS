@@ -341,18 +341,18 @@ bool QgsMeshEditor::faceCanBeAddedWithNewVertices( const QList<int> &verticesInd
     if ( !circulator.goBoundaryClockwise() ) //vertex not on boundary
       return false;
 
-    int prevOppositVertex = circulator.oppositeVertexClockwise();
-    if ( prevOppositVertex == nextIndex ) //manifold face
+    int prevOppVertex = circulator.oppositeVertexClockwise();
+    if ( prevOppVertex == nextIndex ) //manifold face
       return false;
 
     if ( !circulator.goBoundaryCounterClockwise() )
       return false;
 
-    int nextOppositVertex = circulator.oppositeVertexCounterClockwise();
-    if ( nextOppositVertex == prevIndex ) //manifold face
+    int nextOppVertex = circulator.oppositeVertexCounterClockwise();
+    if ( nextOppVertex == prevIndex ) //manifold face
       return false;
 
-    if ( nextIndex != nextOppositVertex && prevIndex != prevOppositVertex ) //unique shared vertex
+    if ( nextIndex != nextOppVertex && prevIndex != prevOppVertex ) //unique shared vertex
       return false;
   }
 

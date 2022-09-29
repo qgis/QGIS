@@ -140,7 +140,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \since QGIS 3.28
      */
-    QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices );
+    QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices ); SIP_SKIP
 
     //! Removes faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
