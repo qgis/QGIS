@@ -7,7 +7,7 @@
     "arg": "array",
     "description": "an array"
   }, {
-    "arg": "index",
+    "arg": "pos",
     "description": "the index to get (0 based)"
   }],
   "examples": [{
