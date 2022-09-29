@@ -103,20 +103,44 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     //! Resets the triangular mesh
     void resetTriangularMesh( QgsTriangularMesh *triangularMesh ); SIP_SKIP
 
-    //! Returns TRUE if a \a face can be added to the mesh
-    bool faceCanBeAdded( const QgsMeshFace &face );
+    /**
+     * Returns TRUE if a \a face can be added to the mesh
+     *
+     * \note All vertices related to this face must be already in the mesh.
+     */
+    bool faceCanBeAdded( const QgsMeshFace &face ) const;
+
+    /**
+     * Returns TRUE if a face formed by some vertices con be added to the mesh.
+     * The vertices are defined by \a verticesIndex that contains the index of already existing vertices
+     * or the value -1 if the vertex is not existing for now in the mesh. The positions of new vertices are stored in \a newVertices
+     * sorted by their positions in the face.
+     *
+     * \since QGIS 3.28
+     */
+    bool faceCanBeAddedWithNewVertices( const QList<int> &verticesIndex, const QList<QgsMeshVertex> &newVertices ) const; SIP_SKIP
 
     /**
      * Returns TRUE if the face does not intersect or contains any other elements (faces or vertices)
      * The topological compatibility is not checked
      */
-    bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 
     //! Adds faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError addFaces( const QVector<QgsMeshFace> &faces ); SIP_SKIP
 
     //! Adds a face \a face to the mesh with vertex indexes \a vertexIndexes, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError addFace( const QVector<int> &vertexIndexes );
+
+    /**
+     * Adds a face formed by some vertices \a vertexIndexes to the mesh, returns topological errors if this operation fails (operation is not realized)
+     * The vertices are defined by \a verticesIndex that contains the index of already existing vertices
+     * or the value -1 if the vertex is not existing for now in the mesh. The positions of new vertices are stored in \a newVertices
+     * sorted by their positions in the face.
+     *
+     * \since QGIS 3.28
+     */
+    QgsMeshEditingError addFaceWithNewVertices( const QList<int> &vertexIndexes, const QList<QgsMeshVertex> &newVertices );
 
     //! Removes faces \a faces to the mesh, returns topological errors if this operation fails (operation is not realized)
     QgsMeshEditingError removeFaces( const QList<int> &facesToRemove );
@@ -294,7 +318,9 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     int mValidVerticesCount = 0;
     int mValidFacesCount = 0;
 
-    QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error );
+    QVector<QgsMeshFace> prepareFaces( const QVector<QgsMeshFace> &faces, QgsMeshEditingError &error ) const;
+    QList<int> prepareFaceWithNewVertices( const QList<int> &vertices, const QList<QgsMeshVertex> &newVertices, QgsMeshEditingError &error ) const;
+    bool isFaceGeometricallyCompatible( const QList<int> &vertexIndex, const QList<QgsMeshVertex> &vertices ) const;
 
     //! undo/redo stuff
     QUndoStack *mUndoStack = nullptr;
