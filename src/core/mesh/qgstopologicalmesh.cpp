@@ -37,18 +37,24 @@ static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceI
   return vertexPositionInFace( vertexIndex, mesh.face( faceIndex ) );
 }
 
-static double crossProduct( int centralVertex, int vertex1, int vertex2, const QgsMesh &mesh )
-{
-  QgsMeshVertex vc = mesh.vertices.at( centralVertex );
-  QgsMeshVertex v1 = mesh.vertices.at( vertex1 );
-  QgsMeshVertex v2 = mesh.vertices.at( vertex2 );
 
+static double crossProduct( const QgsMeshVertex &vc, const QgsMeshVertex &v1, const QgsMeshVertex &v2 )
+{
   double ux1 = v1.x() - vc.x();
   double uy1 = v1.y() - vc.y();
   double vx1 = v2.x() - vc.x();
   double vy1 = v2.y() - vc.y();
 
   return ux1 * vy1 - uy1 * vx1;
+}
+
+static double crossProduct( int centralVertex, int vertex1, int vertex2, const QgsMesh &mesh )
+{
+  QgsMeshVertex vc = mesh.vertices.at( centralVertex );
+  QgsMeshVertex v1 = mesh.vertices.at( vertex1 );
+  QgsMeshVertex v2 = mesh.vertices.at( vertex2 );
+
+  return crossProduct( vc, v1, v2 );
 }
 
 
@@ -629,33 +635,19 @@ QList<int> QgsTopologicalMesh::freeVerticesIndexes() const
   return QList<int>( mFreeVertices.begin(), mFreeVertices.end() );
 }
 
-QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
+QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, int &direction )
 {
-  // First check if the face is convex and put it counter clockwise
-  // If the index are not well ordered (edges intersect), invalid face --> return false
-  int faceSize = face.count();
-  if ( faceSize < 3 )
-    return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
-
-  int direction = 0;
-  for ( int i = 0; i < faceSize; ++i )
+  int size = vertices.size();
+  direction = 0;
+  for ( int i = 0; i < size; ++i )
   {
-    int iv0 =  face[i];
-    int iv1 = face[( i + 1 ) % faceSize];
-    int iv2 = face[( i + 2 ) % faceSize];
+    int iv0 =  i;
+    int iv1 = ( i + 1 ) % size;
+    int iv2 = ( i + 2 ) % size;
 
-    if ( iv0 < 0 || iv0 >= mesh->vertexCount() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv0 );
-
-    if ( iv1 < 0 || iv1 >= mesh->vertexCount() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv1 );
-
-    if ( iv2 < 0 || iv2 >= mesh->vertexCount() )
-      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
-
-    const QgsMeshVertex &v0 = mesh->vertices.at( iv0 ) ;
-    const QgsMeshVertex &v1 = mesh->vertices.at( iv1 ) ;
-    const QgsMeshVertex &v2 = mesh->vertices.at( iv2 ) ;
+    const QgsMeshVertex &v0 = vertices.at( iv0 ) ;
+    const QgsMeshVertex &v1 = vertices.at( iv1 ) ;
+    const QgsMeshVertex &v2 = vertices.at( iv2 ) ;
 
     if ( v0.isEmpty() )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv0 );
@@ -666,7 +658,7 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face
     if ( v2.isEmpty() )
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv2 );
 
-    double crossProd = crossProduct( iv1, iv0, iv2, *mesh ); //if cross product>0, we have two edges clockwise
+    double crossProd = crossProduct( v1, v0, v2 ); //if cross product>0, we have two edges clockwise
     if ( direction != 0 && crossProd * direction < 0 )   // We have a convex face or a (partially) flat face
       return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidFace, -1 );
     else if ( crossProd == 0 )
@@ -674,6 +666,33 @@ QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face
     else if ( direction == 0 && crossProd != 0 )
       direction = crossProd / std::fabs( crossProd );
   }
+
+  return QgsMeshEditingError( Qgis::MeshEditingErrorType::NoError, -1 );
+}
+
+QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
+{
+  // First check if the topology of the face , then put it counter clockwise if needed
+  // If the index are not well ordered (edges intersect), invalid face
+  int faceSize = face.count();
+  if ( faceSize < 3 )
+    return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
+
+  QVector<QgsMeshVertex> vertices( face.size() );
+
+  for ( int i = 0; i < faceSize; ++i )
+  {
+    int iv =  face[i];
+    if ( iv < 0 || iv >= mesh->vertexCount() )
+      return QgsMeshEditingError( Qgis::MeshEditingErrorType::InvalidVertex, iv );
+
+    vertices[i] = mesh->vertices.at( face[i] );
+  }
+
+  int direction = 0;
+  QgsMeshEditingError error = QgsTopologicalMesh::checkTopologyOfVerticesAsFace( vertices, direction );
+  if ( error != QgsMeshEditingError() )
+    return error;
 
   if ( direction > 0 )// clockwise --> reverse the order of the index;
   {

@@ -307,6 +307,14 @@ class CORE_EXPORT QgsTopologicalMesh
     static QgsMeshEditingError counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh );
 
     /**
+     * Checks the topology of the \a vertices as the are contained in a face and returns indication on direction.
+     * If \a direction > 0 the face would be clockwise
+     *
+     * \since QGIS 3.28
+     */
+    static QgsMeshEditingError checkTopologyOfVerticesAsFace( const QVector<QgsMeshVertex> &vertices, int &direction );
+
+    /**
      * Reindexes faces and vertices, after this operation, the topological
      * mesh can't be edited anymore and only the method mesh can be used to access to the raw mesh.
      */
