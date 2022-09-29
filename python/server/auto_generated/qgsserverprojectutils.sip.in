@@ -247,6 +247,15 @@ Returns if the geometry has to be segmentize in GetFeatureInfo request.
 :return: if the geometry has to be segmentize in GetFeatureInfo request.
 %End
 
+  bool wmsAddLegendGroupsLegendGraphic( const QgsProject &project );
+%Docstring
+Returns if legend groups should be in the legend graphic response if GetLegendGraphic is called on a layer group.
+
+:param project: the QGIS project
+
+:return: if the GetLegendGraphic response has to contain legend groups
+%End
+
   int wmsFeatureInfoPrecision( const QgsProject &project );
 %Docstring
 Returns the geometry precision for GetFeatureInfo request.

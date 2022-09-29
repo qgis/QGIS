@@ -28,6 +28,7 @@
 #include "qgswmsserviceexception.h"
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
+#include "qgsserverprojectutils.h"
 
 #include <QImage>
 #include <QJsonObject>
@@ -118,7 +119,7 @@ namespace QgsWms
     QgsRenderer renderer( context );
 
     // retrieve legend settings and model
-    std::unique_ptr<QgsLayerTree> tree( layerTreeWithGroups( context, QgsProject::instance()->layerTreeRoot() ) );
+    std::unique_ptr<QgsLayerTree> tree( QgsServerProjectUtils::wmsAddLegendGroupsLegendGraphic( *project ) ? layerTreeWithGroups( context, QgsProject::instance()->layerTreeRoot() ) : layerTree( context ) );
     const std::unique_ptr<QgsLayerTreeModel> model( legendModel( context, *tree.get() ) );
 
     // rendering

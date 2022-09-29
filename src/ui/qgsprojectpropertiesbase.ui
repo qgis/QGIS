@@ -298,8 +298,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>457</width>
-                <height>642</height>
+                <width>640</width>
+                <height>971</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -317,7 +317,7 @@
                  <property name="title">
                   <string>General Settings</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
@@ -578,7 +578,7 @@
                  <property name="title">
                   <string>Measurements</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
@@ -647,7 +647,7 @@
                  <property name="title">
                   <string>Coordinate and Bearing Display</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
@@ -797,7 +797,7 @@
                    </widget>
                   </item>
                   <item row="1" column="1">
-                   <widget class="QgsProjectionSelectionWidget" name="mCoordinateCrs" native="true">
+                   <widget class="QgsProjectionSelectionWidget" name="mCoordinateCrs">
                     <property name="enabled">
                      <bool>false</bool>
                     </property>
@@ -901,7 +901,7 @@
              <property name="checked">
               <bool>false</bool>
              </property>
-             <property name="syncGroup" stdset="0">
+             <property name="syncGroup">
               <string notr="true">projgeneral</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -990,7 +990,7 @@
               <string>If checked the preset extent will be used as the full extent of the project. If unchecked, the project's full extent will be calculated using the full extent of all layers in the project.</string>
              </property>
              <property name="title">
-              <string>Set Project Full Extent</string>
+              <string>Extent (current: none)</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -1042,8 +1042,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>243</width>
-                <height>61</height>
+                <width>340</width>
+                <height>57</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1107,8 +1107,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>424</width>
-                <height>86</height>
+                <width>634</width>
+                <height>90</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1179,8 +1179,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>242</width>
-                <height>466</height>
+                <width>344</width>
+                <height>817</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12" stretch="0,0,1,1">
@@ -1201,7 +1201,7 @@
                  <property name="title">
                   <string>Default Symbols</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1423,7 +1423,7 @@
                  <property name="title">
                   <string>Options</string>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1437,7 +1437,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget">
                       <property name="focusPolicy">
                        <enum>Qt::StrongFocus</enum>
                       </property>
@@ -1584,7 +1584,7 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup" stdset="0">
+                 <property name="syncGroup">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_20">
@@ -1882,8 +1882,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>136</width>
-                <height>47</height>
+                <width>176</width>
+                <height>45</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1966,7 +1966,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>679</width>
-                <height>1023</height>
+                <height>1515</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2020,13 +2020,13 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="syncGroup" stdset="0">
+                       <property name="syncGroup">
                         <string notr="true">projowsserver</string>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_6">
@@ -2336,10 +2336,31 @@
                      <string>WMS capabilities</string>
                     </attribute>
                     <layout class="QGridLayout" name="gridLayout_25">
-                     <item row="2" column="1">
-                      <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
+                     <item row="14" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_17">
+                       <item>
+                        <widget class="QLabel" name="mWMSMaxAtlasFeaturesLabel">
+                         <property name="text">
+                          <string>Maximum features for Atlas print requests</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
+                         <property name="maximum">
+                          <number>9999999</number>
+                         </property>
+                         <property name="value">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="1" column="0" colspan="2">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
                        <property name="title">
-                        <string>Exclude layers</string>
+                        <string>CRS restrictions</string>
                        </property>
                        <property name="checkable">
                         <bool>true</bool>
@@ -2347,37 +2368,20 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout">
-                        <item row="0" column="0" colspan="3">
-                         <widget class="QListWidget" name="mLayerRestrictionsListWidget"/>
-                        </item>
-                        <item row="1" column="0">
-                         <widget class="QToolButton" name="mAddLayerRestrictionButton">
-                          <property name="toolTip">
-                           <string>Add layer to exclude</string>
-                          </property>
-                          <property name="text">
-                           <string/>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../../images/images.qrc">
-                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                          </property>
-                         </widget>
+                       <layout class="QGridLayout" name="gridLayout_5">
+                        <item row="0" column="0" colspan="5">
+                         <widget class="QListWidget" name="mWMSList"/>
                         </item>
                         <item row="1" column="1">
-                         <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
+                         <widget class="QToolButton" name="pbnWMSRemoveSRS">
                           <property name="toolTip">
-                           <string>Remove selected layer</string>
-                          </property>
-                          <property name="text">
-                           <string/>
+                           <string>Remove selected CRS</string>
                           </property>
                           <property name="icon">
                            <iconset resource="../../images/images.qrc">
@@ -2385,14 +2389,35 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="1" column="3">
+                         <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                          <property name="toolTip">
+                           <string>Fetch all CRS's from layers</string>
+                          </property>
+                          <property name="text">
+                           <string>Used</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item row="1" column="0">
+                         <widget class="QToolButton" name="pbnWMSAddSRS">
+                          <property name="toolTip">
+                           <string>Add new CRS</string>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
                         <item row="1" column="2">
-                         <spacer name="horizontalSpacer_3">
+                         <spacer name="horizontalSpacer">
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
                           </property>
                           <property name="sizeHint" stdset="0">
                            <size>
-                            <width>0</width>
+                            <width>40</width>
                             <height>20</height>
                            </size>
                           </property>
@@ -2401,12 +2426,26 @@
                        </layout>
                       </widget>
                      </item>
-                     <item row="4" column="0" colspan="2">
-                      <widget class="QCheckBox" name="mWmsUseLayerIDs">
-                       <property name="text">
-                        <string>Use layer ids as names</string>
-                       </property>
-                      </widget>
+                     <item row="15" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_18">
+                       <item>
+                        <widget class="QLabel" name="label_33">
+                         <property name="toolTip">
+                          <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
+                         </property>
+                         <property name="text">
+                          <string>Tile buffer in pixels</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox">
+                         <property name="maximum">
+                          <number>1024</number>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                      <item row="5" column="0" colspan="2">
                       <widget class="QCheckBox" name="mUseAttributeFormSettingsCheckBox">
@@ -2426,10 +2465,10 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
                        <layout class="QGridLayout" name="gridLayout_10">
@@ -2480,31 +2519,14 @@
                        </layout>
                       </widget>
                      </item>
-                     <item row="0" column="0" colspan="2">
-                      <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
-                       <property name="title">
-                        <string>Ad&amp;vertised extent</string>
+                     <item row="4" column="0" colspan="2">
+                      <widget class="QCheckBox" name="mWmsUseLayerIDs">
+                       <property name="text">
+                        <string>Use layer ids as names</string>
                        </property>
-                       <property name="checkable">
-                        <bool>true</bool>
-                       </property>
-                       <property name="checked">
-                        <bool>false</bool>
-                       </property>
-                       <property name="collapsed" stdset="0">
-                        <bool>false</bool>
-                       </property>
-                       <property name="saveCollapsedState" stdset="0">
-                        <bool>true</bool>
-                       </property>
-                       <layout class="QVBoxLayout" name="verticalLayout_29">
-                        <item>
-                         <widget class="QgsExtentWidget" name="mAdvertisedExtentServer" native="true"/>
-                        </item>
-                       </layout>
                       </widget>
                      </item>
-                     <item row="10" column="0" colspan="2">
+                     <item row="11" column="0" colspan="2">
                       <layout class="QGridLayout" name="gridLayout_9">
                        <item row="1" column="1">
                         <widget class="QLabel" name="mMaxWidthLabel_2">
@@ -2551,28 +2573,35 @@
                        </item>
                       </layout>
                      </item>
-                     <item row="13" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_17">
+                     <item row="16" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetFixedSize</enum>
+                       </property>
                        <item>
-                        <widget class="QLabel" name="mWMSMaxAtlasFeaturesLabel">
+                        <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
                          <property name="text">
-                          <string>Maximum features for Atlas print requests</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsSpinBox" name="mWMSMaxAtlasFeaturesSpinBox">
-                         <property name="maximum">
-                          <number>9999999</number>
-                         </property>
-                         <property name="value">
-                          <number>1</number>
+                          <string>Default map units per mm in legend</string>
                          </property>
                         </widget>
                        </item>
                       </layout>
                      </item>
-                     <item row="12" column="0" colspan="2">
+                     <item row="10" column="0" colspan="2">
+                      <layout class="QHBoxLayout" name="horizontalLayout_2">
+                       <item>
+                        <widget class="QLabel" name="mWMSUrlLabel">
+                         <property name="text">
+                          <string>Advertised URL</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
+                       </item>
+                      </layout>
+                     </item>
+                     <item row="13" column="0" colspan="2">
                       <layout class="QHBoxLayout" name="horizontalLayout_10">
                        <item>
                         <widget class="QLabel" name="mWMSImageQualityLabel">
@@ -2599,7 +2628,7 @@
                        </item>
                       </layout>
                      </item>
-                     <item row="8" column="0" colspan="2">
+                     <item row="9" column="0" colspan="2">
                       <layout class="QHBoxLayout" name="grpWMSPrecision">
                        <item>
                         <widget class="QLabel" name="label_5">
@@ -2620,41 +2649,6 @@
                           <number>8</number>
                          </property>
                         </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="7" column="0" colspan="2">
-                      <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
-                       <property name="text">
-                        <string>Segmentize feature info geometry</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="15" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="mWMSDefaultMapUnitsPerMmLayout">
-                       <property name="sizeConstraint">
-                        <enum>QLayout::SetFixedSize</enum>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="mWMSDefaultMapUnitsPerMmLabel">
-                         <property name="text">
-                          <string>Default map units per mm in legend</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="9" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_2">
-                       <item>
-                        <widget class="QLabel" name="mWMSUrlLabel">
-                         <property name="text">
-                          <string>Advertised URL</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
                        </item>
                       </layout>
                      </item>
@@ -2797,31 +2791,10 @@
                        </property>
                       </widget>
                      </item>
-                     <item row="14" column="0" colspan="2">
-                      <layout class="QHBoxLayout" name="horizontalLayout_18">
-                       <item>
-                        <widget class="QLabel" name="label_33">
-                         <property name="toolTip">
-                          <string>When using tiles set this to the size of the larger symbols to avoid cut symbols at tile boundaries. This works by drawing features that are outside the tile extent.</string>
-                         </property>
-                         <property name="text">
-                          <string>Tile buffer in pixels</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QgsSpinBox" name="mWMSTileBufferSpinBox">
-                         <property name="maximum">
-                          <number>1024</number>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                     <item row="1" column="0" colspan="2">
-                      <widget class="QgsCollapsibleGroupBox" name="grpWMSList">
+                     <item row="2" column="1">
+                      <widget class="QgsCollapsibleGroupBox" name="mLayerRestrictionsGroupBox">
                        <property name="title">
-                        <string>CRS restrictions</string>
+                        <string>Exclude layers</string>
                        </property>
                        <property name="checkable">
                         <bool>true</bool>
@@ -2829,41 +2802,23 @@
                        <property name="checked">
                         <bool>false</bool>
                        </property>
-                       <property name="collapsed" stdset="0">
+                       <property name="collapsed">
                         <bool>false</bool>
                        </property>
-                       <property name="saveCollapsedState" stdset="0">
+                       <property name="saveCollapsedState">
                         <bool>true</bool>
                        </property>
-                       <layout class="QGridLayout" name="gridLayout_5">
-                        <item row="0" column="0" colspan="5">
-                         <widget class="QListWidget" name="mWMSList"/>
-                        </item>
-                        <item row="1" column="1">
-                         <widget class="QToolButton" name="pbnWMSRemoveSRS">
-                          <property name="toolTip">
-                           <string>Remove selected CRS</string>
-                          </property>
-                          <property name="icon">
-                           <iconset resource="../../images/images.qrc">
-                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="3">
-                         <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                          <property name="toolTip">
-                           <string>Fetch all CRS's from layers</string>
-                          </property>
-                          <property name="text">
-                           <string>Used</string>
-                          </property>
-                         </widget>
+                       <layout class="QGridLayout" name="gridLayout">
+                        <item row="0" column="0" colspan="3">
+                         <widget class="QListWidget" name="mLayerRestrictionsListWidget"/>
                         </item>
                         <item row="1" column="0">
-                         <widget class="QToolButton" name="pbnWMSAddSRS">
+                         <widget class="QToolButton" name="mAddLayerRestrictionButton">
                           <property name="toolTip">
-                           <string>Add new CRS</string>
+                           <string>Add layer to exclude</string>
+                          </property>
+                          <property name="text">
+                           <string/>
                           </property>
                           <property name="icon">
                            <iconset resource="../../images/images.qrc">
@@ -2871,20 +2826,72 @@
                           </property>
                          </widget>
                         </item>
+                        <item row="1" column="1">
+                         <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
+                          <property name="toolTip">
+                           <string>Remove selected layer</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset resource="../../images/images.qrc">
+                            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                          </property>
+                         </widget>
+                        </item>
                         <item row="1" column="2">
-                         <spacer name="horizontalSpacer">
+                         <spacer name="horizontalSpacer_3">
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
                           </property>
                           <property name="sizeHint" stdset="0">
                            <size>
-                            <width>40</width>
+                            <width>0</width>
                             <height>20</height>
                            </size>
                           </property>
                          </spacer>
                         </item>
                        </layout>
+                      </widget>
+                     </item>
+                     <item row="0" column="0" colspan="2">
+                      <widget class="QgsCollapsibleGroupBox" name="grpWMSExt">
+                       <property name="title">
+                        <string>Ad&amp;vertised extent</string>
+                       </property>
+                       <property name="checkable">
+                        <bool>true</bool>
+                       </property>
+                       <property name="checked">
+                        <bool>false</bool>
+                       </property>
+                       <property name="collapsed">
+                        <bool>false</bool>
+                       </property>
+                       <property name="saveCollapsedState">
+                        <bool>true</bool>
+                       </property>
+                       <layout class="QVBoxLayout" name="verticalLayout_29">
+                        <item>
+                         <widget class="QgsExtentWidget" name="mAdvertisedExtentServer" native="true"/>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item row="7" column="0" colspan="2">
+                      <widget class="QCheckBox" name="mSegmentizeFeatureInfoGeometryCheckBox">
+                       <property name="text">
+                        <string>Segmentize feature info geometry</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="8" column="0">
+                      <widget class="QCheckBox" name="mAddLayerGroupsLegendGraphicCheckBox">
+                       <property name="text">
+                        <string>Add layer groups in GetLegendGraphic</string>
+                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -3417,9 +3424,48 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3433,26 +3479,20 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3468,23 +3508,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QgsCollapsibleGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionTreeWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectiontreewidget.h</header>
@@ -3497,25 +3520,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorrampbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

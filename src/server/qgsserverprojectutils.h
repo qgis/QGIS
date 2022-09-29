@@ -238,6 +238,13 @@ namespace QgsServerProjectUtils
   SERVER_EXPORT bool wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project );
 
   /**
+   * Returns if legend groups should be in the legend graphic response if GetLegendGraphic is called on a layer group.
+   * \param project the QGIS project
+   * \returns if the GetLegendGraphic response has to contain legend groups
+   */
+  SERVER_EXPORT bool wmsAddLegendGroupsLegendGraphic( const QgsProject &project );
+
+  /**
    * Returns the geometry precision for GetFeatureInfo request.
    * \param project the QGIS project
    * \returns the geometry precision for GetFeatureInfo request.
