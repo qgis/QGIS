@@ -5260,7 +5260,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   {
     const QString previewImagePath = mRecentProjects.takeLast().previewImagePath;
     if ( QFileInfo::exists( previewImagePath ) )
-      QFile( mRecentProjects.takeLast().previewImagePath ).remove();
+      QFile( previewImagePath ).remove();
   }
 
   // Persist the list
