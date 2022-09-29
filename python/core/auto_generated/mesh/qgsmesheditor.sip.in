@@ -88,12 +88,16 @@ Tries to fix the topological ``error`` in the mesh. Returns ``False`` if the fix
 .. versionadded:: 3.28
 %End
 
-    bool faceCanBeAdded( const QgsMeshFace &face );
+    bool faceCanBeAdded( const QgsMeshFace &face ) const;
 %Docstring
 Returns ``True`` if a ``face`` can be added to the mesh
+
+.. note::
+
+   All vertices related to this face must be already in the mesh.
 %End
 
-    bool isFaceGeometricallyCompatible( const QgsMeshFace &face );
+    bool isFaceGeometricallyCompatible( const QgsMeshFace &face ) const;
 %Docstring
 Returns ``True`` if the face does not intersect or contains any other elements (faces or vertices)
 The topological compatibility is not checked
