@@ -20,12 +20,13 @@ set(WFS_SRCS
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
   qgsbasenetworkrequest.cpp
-  qgsoapiflandingpagerequest.cpp
-  qgsoapifapirequest.cpp
-  qgsoapifcollection.cpp
-  qgsoapifitemsrequest.cpp
-  qgsoapifprovider.cpp
-  qgsoapifutils.cpp
+
+  oapif/qgsoapiflandingpagerequest.cpp
+  oapif/qgsoapifapirequest.cpp
+  oapif/qgsoapifcollection.cpp
+  oapif/qgsoapifitemsrequest.cpp
+  oapif/qgsoapifprovider.cpp
+  oapif/qgsoapifutils.cpp
 )
 
 if (WITH_GUI)
@@ -47,6 +48,7 @@ add_library(provider_wfs_a STATIC ${WFS_SRCS})
 
 target_include_directories(provider_wfs_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/wfs
+  ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
 )
 
 target_link_libraries(provider_wfs_a
@@ -69,7 +71,8 @@ if (WITH_GUI)
   add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
 
   target_include_directories(provider_wfs_gui_a PUBLIC
-    ${CMAKE_BINARY_DIR}/src/providers/wfs
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
   )
 
   target_link_libraries(provider_wfs_a
@@ -117,7 +120,12 @@ else()
     )
     add_dependencies(provider_wfs ui)
   endif()
-  
+
+  target_include_directories(provider_wfs PUBLIC
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs
+    ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
+  )
+
   install(TARGETS provider_wfs
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
