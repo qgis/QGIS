@@ -2499,7 +2499,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
   {
     mDataSourceManagerDialog->openPage( pageName );
   }
-  if ( QgsSettings().value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), true ).toBool() )
+  if ( QgsSettings().value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() )
   {
     mDataSourceManagerDialog->show();
   }
