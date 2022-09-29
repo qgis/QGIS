@@ -2066,7 +2066,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   Qgis::LayerTreeInsertionMethod method = QgsProject::instance()->layerTreeRegistryBridge()->layerInsertionMethod();
   if ( mLayerTreeDrop )
   {
-    // Override current method to always add layers on top of the node over which the drop occured
+    // Override current method to always add layers on top of the node over which the drop occurred
     QgsProject::instance()->layerTreeRegistryBridge()->setLayerInsertionMethod( Qgis::LayerTreeInsertionMethod::AboveInsertionPoint );
   }
 
