@@ -980,7 +980,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -992,7 +992,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   // build a minimal expression context
   QgsExpressionContext expContext;
-  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mapLayer ) );
   renderContext.setExpressionContext( expContext );
 
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
