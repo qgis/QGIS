@@ -105,9 +105,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void onGenerateTsFileButton() const;
 
     /**
-     * Set WMS default extent to current canvas extent
+     * When the group box about advertised extent has been toggled
      */
-    void pbnWMSExtCanvas_clicked();
+    void wmsExtent_toggled();
 
     /**
      *
