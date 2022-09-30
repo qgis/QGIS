@@ -408,8 +408,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );
 
-    void addWidgetWrapper( QgsEditorWidgetWrapper *eww );
-
     /**
      * Creates widget wrappers for all suitable widgets found.
      * Called once maximally.
@@ -465,7 +463,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QDialogButtonBox *mButtonBox = nullptr;
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
-    QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
+    QMultiMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QList< QgsAttributeFormWidget *> mFormWidgets;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
     QMap<QLabel *, QgsProperty> mLabelDataDefinedProperties;
