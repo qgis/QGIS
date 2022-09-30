@@ -2653,7 +2653,9 @@ void QgsMapToolEditMeshFrame::addVertex(
 
   if ( mCadDockWidget->cadEnabled() && mCurrentFaceIndex == -1 )
     zValue = currentZValue();
-  else if ( mapPointMatch.isValid() )
+  else if ( mapPointMatch.isValid() &&
+            mapPointMatch.layer() &&
+            QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
   {
     QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
     zValue = layerPoint.z();
