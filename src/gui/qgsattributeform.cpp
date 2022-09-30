@@ -2233,7 +2233,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         formWidget->createSearchWidgetWrappers( mContext );
 
         newWidgetInfo.widget = formWidget;
-        addWidgetWrapper( eww );
+        mWidgets.append( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
         newWidgetInfo.hint = fields.at( fldIdx ).comment();
