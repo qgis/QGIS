@@ -2651,7 +2651,7 @@ void QgsAttributeForm::setMultiEditFeatureIds( const QgsFeatureIds &fids )
   if ( fids.isEmpty() )
   {
     // no selected features
-    QMap< int, QgsAttributeFormEditorWidget * >::const_iterator wIt = mFormEditorWidgets.constBegin();
+    QMultiMap< int, QgsAttributeFormEditorWidget * >::const_iterator wIt = mFormEditorWidgets.constBegin();
     for ( ; wIt != mFormEditorWidgets.constEnd(); ++ wIt )
     {
       wIt.value()->initialize( QVariant() );
