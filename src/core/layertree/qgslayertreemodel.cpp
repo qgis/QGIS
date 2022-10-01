@@ -177,11 +177,16 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       QString name = nodeLayer->name();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      if ( vlayer && nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
       {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+        const bool estimatedCount = QgsDataSourceUri( vlayer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        const qlonglong count = vlayer->featureCount();
+
+        // if you modify this line, please update QgsSymbolLegendNode::updateLabel
+        name += QStringLiteral( " [%1%2]" ).arg(
+                  estimatedCount ? QStringLiteral( "≈" ) : QString(),
+                  count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
       }
       return name;
     }
@@ -315,6 +320,14 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         }
 
         parts << "<i>" + source.toHtmlEscaped() + "</i>";
+
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        const bool showFeatureCount = nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+        const bool estimatedCount = QgsDataSourceUri( layer->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
+        if ( showFeatureCount && estimatedCount )
+        {
+          parts << tr( "<b>Feature count is estimated</b> : the feature count is determined by the database statistics" );
+        }
 
         return parts.join( QLatin1String( "<br/>" ) );
       }
