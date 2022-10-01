@@ -24,6 +24,11 @@ methods to handle data from QGIS and to import/export a RAT from/to a DBF VAT fi
 %End
   public:
 
+    struct Ramp
+    {
+      QColor min;
+      QColor max;
+    };
 
     struct Field
     {
@@ -32,6 +37,17 @@ methods to handle data from QGIS and to import/export a RAT from/to a DBF VAT fi
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
 %End
+
+      bool isColor( ) const;
+%Docstring
+Returns ``True`` if the field carries a color component (Red, Green, Blue and optionally Alpha) information.
+%End
+
+      bool isRamp( ) const;
+%Docstring
+Returns ``True`` if the field carries a color ramp component information (RedMin/RedMax, GreenMin/GreenMax, BlueMin/BlueMax and optionally AlphaMin/AlphaMax) information.
+%End
+
       QString name;
       Qgis::RasterAttributeTableFieldUsage usage;
       QVariant::Type type;
@@ -47,19 +63,111 @@ Returns the RAT type.
 Sets the RAT ``type``
 %End
 
-    bool hasColor();
+    bool hasColor() const;
 %Docstring
-Returns ``True`` if the RAT has RGB information.
+Returns ``True`` if the RAT has color RGBA information.
+
+.. seealso:: :py:func:`color`
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`hasRamp`
+
+.. seealso:: :py:func:`setRamp`
+
+.. seealso:: :py:func:`ramp`
+%End
+
+    bool setColor( const int row, const QColor &color );
+%Docstring
+Sets the color for the row at ``rowIndex`` to ``color``.
+``returns`` ``True`` on sucess.
+
+.. seealso:: :py:func:`hasColor`
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`hasRamp`
+
+.. seealso:: :py:func:`setRamp`
+
+.. seealso:: :py:func:`ramp`
+%End
+
+    bool hasRamp() const;
+%Docstring
+Returns ``True`` if the RAT has ramp RGBA information.
+
+.. seealso:: :py:func:`setRamp`
+
+.. seealso:: :py:func:`ramp`
+
+.. seealso:: :py:func:`hasColor`
+
+.. seealso:: :py:func:`setColor`
+%End
+
+    bool setRamp( const int row, const QColor &colorMin, const QColor &colorMax );
+%Docstring
+Sets the color ramp for the row at ``rowIndex`` to ``colorMin`` and ``colorMax``.
+``returns`` ``True`` on sucess.
+
+.. seealso:: :py:func:`hasRamp`
+
+.. seealso:: :py:func:`ramp`
+
+.. seealso:: :py:func:`hasColor`
+
+.. seealso:: :py:func:`setColor`
+%End
+
+    QList<Qgis::RasterAttributeTableFieldUsage> usages( ) const;
+%Docstring
+Returns the list of field usages.
+%End
+
+    QColor color( int row ) const;
+%Docstring
+Returns the color of the rat ``row`` or an invalid color if row does not exist or if there is no color definition.
+
+.. seealso:: :py:func:`hasColor`
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`hasRamp`
+
+.. seealso:: :py:func:`setRamp`
+
+.. seealso:: :py:func:`ramp`
+%End
+
+    Ramp ramp( int row ) const;
+%Docstring
+Returns the color of the rat ``row`` or an invalid color if row does not exist or if there is no color ramp definition.
+
+.. seealso:: :py:func:`hasRamp`
+
+.. seealso:: :py:func:`setRamp`
+
+.. seealso:: :py:func:`hasColor`
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`color`
 %End
 
     QList<QgsRasterAttributeTable::Field> fields() const;
 %Docstring
 Returns the RAT fields.
+
+.. seealso:: :py:func:`qgisFields`
 %End
 
     QgsFields qgisFields() const;
 %Docstring
 Returns the RAT fields as :py:class:`QgsFields`.
+
+.. seealso:: :py:func:`fields`
 %End
 
     QgsFeatureList qgisFeatures( ) const;
@@ -77,44 +185,61 @@ Returns ``True`` if the RAT was modified from its last reading from the storage.
 Sets the RAT dirty state to ``isDirty``;
 %End
 
-    bool isValid() const;
+    bool isValid( QString *errorMessage /Out/ = 0 ) const;
 %Docstring
-Returns ``True`` if the RAT is valid.
+Returns ``True`` if the RAT is valid, optionally reporting validity checks results in ``errorMessage``.
 %End
 
-    bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0 );
+    bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0, QString *errorMessage /Out/ = 0 );
 %Docstring
-Inserts a new ``field`` at ``position`` and returns ``True`` on success.
+Inserts a new ``field`` at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+.. note::
+
+   Out of range position is automatically clamped to a valid value.
 %End
 
-    bool insertField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type, int position = 0 );
+    bool insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, int position = 0, QString *errorMessage /Out/ = 0 );
 %Docstring
-Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, returns ``True`` on success.
+Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
-    bool appendField( const QString &name, Qgis::RasterAttributeTableFieldUsage usage, QVariant::Type type );
+    bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, returns ``True`` on success.
 %End
 
-    bool appendField( const QgsRasterAttributeTable::Field &field );
+    bool appendField( const QgsRasterAttributeTable::Field &field, QString *errorMessage /Out/ = 0 );
 %Docstring
-Appends a new ``field`` and returns ``True`` on success.
+Appends a new ``field``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
-    bool removeField( const QString &name );
+    bool removeField( const QString &name, QString *errorMessage /Out/ = 0 );
 %Docstring
-Removes the field with ``name``, returns ``True`` on success.
+Removes the field with ``name``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
-    bool insertRow( const QVariantList data, int position = 0 );
+    bool insertRow( const QVariantList &rowData, int position = 0, QString *errorMessage /Out/ = 0 );
 %Docstring
-Inserts a row of ``data`` in the RAT at ``position``, returns ``True`` on success.
+Inserts a row of ``rowData`` in the RAT at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+.. note::
+
+   Out of range position is automatically clamped to a valid value.
 %End
 
-    bool appendRow( const QVariantList data );
+    bool removeRow( int position = 0, QString *errorMessage /Out/ = 0 );
 %Docstring
-Appends a row of ``data`` to the RAT, returns ``True`` on success.
+Removes the row in the RAT at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+.. note::
+
+   position must be a valid position.
+%End
+
+    bool appendRow( const QVariantList &data, QString *errorMessage /Out/ = 0 );
+%Docstring
+Appends a row of ``data`` to the RAT, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
     bool writeToFile( const QString &path, QString *errorMessage /Out/ = 0 );
@@ -132,9 +257,40 @@ Reads the RAT from a DBF file specified by ``path``, optionally reporting any er
 Returns the RAT rows.
 %End
 
+    const QgsRasterAttributeTable::Field fieldByName( const QString name, bool *ok /Out/ = 0 ) const;
+%Docstring
+Returns a field by ``name`` or a default constructed field with empty name if the field is not found.
+
+
+:return: - the matching field or a default constructed one.
+         - ok: will be set to ``True`` if the field was found.
+%End
+
+    const QList<QgsRasterAttributeTable::Field> fieldsByUsage( const Qgis::RasterAttributeTableFieldUsage fieldUsage ) const;
+%Docstring
+Returns the list of fields matching ``fieldUsage``.
+%End
+
+    bool setValue( const int row, const int column, const QVariant &value );
+%Docstring
+Sets the ``value`` for ``row`` and ``column``.
+
+:return: ``True`` on success.
+%End
+
+    QVariant value( const int row, const int column );
+%Docstring
+Returns the ``value`` for ``row`` and ``column``.
+%End
+
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 %Docstring
 Try to determine the field usage from its ``name`` and ``type``.
+%End
+
+    static QString usageName( const Qgis::RasterAttributeTableFieldUsage fieldusage );
+%Docstring
+Returns the translated human readable name of ``fieldUsage``.
 %End
 
 };

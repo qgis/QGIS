@@ -229,9 +229,9 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     bool initIfNeeded();
 
     //! Load attribute tables
-    bool readNativeAttributeTable() override;
+    bool readNativeAttributeTable( QString *errorMessage = nullptr ) override;
 
-    bool writeNativeAttributeTable() const override;  //#spellok
+    bool writeNativeAttributeTable( QString *errorMessage = nullptr ) const override;  //#spellok
 
     // There are 2 cloning mechanisms.
     // * Either the cloned provider use the same GDAL handles as the main provider

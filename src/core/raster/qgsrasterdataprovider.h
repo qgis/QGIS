@@ -767,42 +767,43 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void removeAttributeTable( int bandNumber );
 
     /**
-     * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, any error message is set to \a errorMessage.
+     * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     *
+     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr ) const;
+
+    /**
+     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
      *
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = nullptr ) const;
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, any error message is set to \a errorMessage.
-     *
-     * \returns TRUE on success
-     * \since QGIS 3.30
-     */
-    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage = nullptr );
-
-    /**
-     * Writes the native attribute table.
+     * Writes the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
      * The default implementation does nothing and returns FALSE.
      * Data providers that have NativeRasterAttributeTable
      * provider capability will try to save the native attribute table.
      *
+     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    virtual bool writeNativeAttributeTable( ) const;  //#spellok
+    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr ) const;  //#spellok
 
     /**
-     * Reads the native attribute table.
+     * Reads the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
      * The default implementation does nothing and returns FALSE.
-     * Data providers that have NativeRasterAttributeTable
-     * provider capability will try to read the native attribute table.
+     * Data providers that have NativeRasterAttributeTable provider capability will try to read the native attribute table.
      *
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    virtual bool readNativeAttributeTable( );
+    virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT  = nullptr );
 
 
   signals:
