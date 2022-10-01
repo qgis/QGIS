@@ -3068,9 +3068,9 @@ void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo
   }
 }
 
-bool QgsGdalProvider::readNativeAttributeTable()
+bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
 {
-  bool hasAtLeastOneValidRat { false };
+  bool hasAtLeastOnedRat { false };
 
   if ( mGdalBaseDataset )
   {
@@ -3208,39 +3208,49 @@ bool QgsGdalProvider::readNativeAttributeTable()
           rat->appendRow( rowData );
         }
 
-        if ( rat->isValid() )
-        {
-          hasAtLeastOneValidRat = true;
-          setAttributeTable( bandNumber, rat.release() );
-        }
+        hasAtLeastOnedRat = true;
+        setAttributeTable( bandNumber, rat.release() );
 
       }
     }
   }
+  else if ( errorMessage )
+  {
+    *errorMessage = QObject::tr( "Dataset is not valid and RAT could not be loaded." );
+  }
 
-  return hasAtLeastOneValidRat;
+  return hasAtLeastOnedRat;
 }
 
-bool QgsGdalProvider::writeNativeAttributeTable() const  //#spellok
+
+bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const //#spellok
 {
   bool success { false };
   for ( int band = 1; band <= bandCount(); band++ )
   {
     QgsRasterAttributeTable *rat { attributeTable( band ) };
-    if ( rat && rat->isValid() && rat->isDirty() )
+    if ( ! rat )
+    {
+      continue;
+    }
+    if ( rat->isDirty() )
     {
       GDALRasterBandH hBand { GDALGetRasterBand( mGdalBaseDataset, band ) };
       GDALRasterAttributeTableH hRat = GDALCreateRasterAttributeTable( );
       if ( GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) ) != CE_None )
       {
+        if ( errorMessage )
+        {
+          *errorMessage = QObject::tr( "RAT table type could not be set, RAT was not saved (GDAL error)." );
+        }
         GDALDestroyRasterAttributeTable( hRat );
         return false;
       }
-      const auto cFields { rat->fields() };
+      const QList<QgsRasterAttributeTable::Field> ratFields { rat->fields() };
       QMap<int, GDALRATFieldType> typeMap;
 
       int colIdx { 0 };
-      for ( const auto &field : std::as_const( cFields ) )
+      for ( const QgsRasterAttributeTable::Field &field : std::as_const( ratFields ) )
       {
         GDALRATFieldType fType { GFT_String };
         switch ( field.type )
@@ -3263,6 +3273,10 @@ bool QgsGdalProvider::writeNativeAttributeTable() const  //#spellok
         }
         if ( GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) ) != CE_None )
         {
+          if ( errorMessage )
+          {
+            *errorMessage = QObject::tr( "RAT column '%1 could not be created, RAT was not saved (GDAL error)." ).arg( field.name );
+          }
           GDALDestroyRasterAttributeTable( hRat );
           return false;
         }
@@ -3294,6 +3308,10 @@ bool QgsGdalProvider::writeNativeAttributeTable() const  //#spellok
 
       if ( GDALSetDefaultRAT( hBand, hRat ) != CE_None )
       {
+        if ( errorMessage )
+        {
+          *errorMessage = QObject::tr( "RAT could not be saved (GDAL error)." );
+        }
         GDALDestroyRasterAttributeTable( hRat );
         return false;
       }
@@ -3303,7 +3321,10 @@ bool QgsGdalProvider::writeNativeAttributeTable() const  //#spellok
       success = true;
 
     }
-
+    else if ( ! rat->isDirty() && errorMessage )
+    {
+      *errorMessage = QObject::tr( "RAT has not modifications and was not saved." );
+    }
   }
   return success;
 }
