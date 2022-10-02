@@ -445,7 +445,7 @@ The development version
     };
 
     enum class RasterResamplingStage
-    {
+      {
       //! Resampling occurs in ResamplingFilter
       ResampleFilter,
       //! Resampling occurs in Provider
