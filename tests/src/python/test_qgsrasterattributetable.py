@@ -163,7 +163,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         d = raster.dataProvider()
         ok, errors = rat.isValid()
         self.assertTrue(ok)
-        ok, errors = d.writeNativeAttributeTable() # spellok
+        ok, errors = d.writeNativeAttributeTable()  # spellok
         self.assertTrue(ok)
 
         # Check written data

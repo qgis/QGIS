@@ -43,7 +43,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * \brief The Ramp struct represents the min and max colors of a RAT row.
      */
-    struct Ramp
+    struct CORE_EXPORT Ramp
     {
       QColor min;
       QColor max;
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * \brief The Field struct represents a RAT field, including its name, usage and type.
      */
-    struct Field
+    struct CORE_EXPORT Field
     {
 
       /**
@@ -241,7 +241,8 @@ class CORE_EXPORT QgsRasterAttributeTable
     const QList<QList<QVariant>> data() const;
 
     /**
-     * Returns a field by \a name or a default constructed field with empty name if the field is not found.
+     * Returns a field by name or a default constructed field with empty name if the field is not found.
+     * \param name of the field
      * \param ok if specified, will be set to TRUE if the field was found.
      * \returns the matching field or a default constructed one.
      */
