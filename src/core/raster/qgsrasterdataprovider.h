@@ -789,8 +789,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Data providers that have NativeRasterAttributeTable
      * provider capability will try to save the native attribute table.
      *
-     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
      * \returns TRUE on success
+     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
      * \since QGIS 3.30
      */
     virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr ) const;  //#spellok

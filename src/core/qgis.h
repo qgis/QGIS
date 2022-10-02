@@ -719,7 +719,7 @@ class CORE_EXPORT Qgis
      * \since QGIS 3.22
      */
     enum class RasterResamplingStage SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, ResamplingStage ) : int
-    {
+      {
       //! Resampling occurs in ResamplingFilter
       ResampleFilter,
       //! Resampling occurs in Provider
