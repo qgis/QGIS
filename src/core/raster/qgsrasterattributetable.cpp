@@ -359,7 +359,7 @@ bool QgsRasterAttributeTable::insertRow( const QVariantList &rowData, int positi
 
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
-    QVariant cell { rowData[ idx ] };
+    QVariant cell ( rowData[ idx ] );
     if ( ! cell.canConvert( mFields.at( idx ).type ) || ! cell.convert( mFields.at( idx ).type ) )
     {
       if ( errorMessage )
