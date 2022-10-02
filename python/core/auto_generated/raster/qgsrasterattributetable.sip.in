@@ -259,8 +259,9 @@ Returns the RAT rows.
 
     const QgsRasterAttributeTable::Field fieldByName( const QString name, bool *ok /Out/ = 0 ) const;
 %Docstring
-Returns a field by ``name`` or a default constructed field with empty name if the field is not found.
+Returns a field by name or a default constructed field with empty name if the field is not found.
 
+:param name: of the field
 
 :return: - the matching field or a default constructed one.
          - ok: will be set to ``True`` if the field was found.

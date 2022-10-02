@@ -527,7 +527,7 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
 {
   QStringList errors;
 
-  if ( ! mFields.count( ) )
+  if ( mFields.isEmpty() )
   {
     errors.push_back( QObject::tr( "RAT has no fields." ) );
   }
