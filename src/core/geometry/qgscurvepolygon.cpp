@@ -783,7 +783,7 @@ void QgsCurvePolygon::removeInteriorRings( double minimumAllowedArea )
     {
       double area = 0.0;
       mInteriorRings.at( ringIndex )->sumUpArea( area );
-      if ( area < minimumAllowedArea )
+      if ( std::fabs( area ) < minimumAllowedArea )
         delete mInteriorRings.takeAt( ringIndex );
     }
   }
