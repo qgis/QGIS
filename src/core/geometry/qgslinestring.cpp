@@ -1915,11 +1915,13 @@ QgsPoint QgsLineString::centroid() const
       continue;
 
     totalLineLength += segmentLength;
-    sumX += segmentLength * 0.5 * ( currentX + prevX );
-    sumY += segmentLength * 0.5 * ( currentY + prevY );
+    sumX += segmentLength * ( currentX + prevX );
+    sumY += segmentLength * ( currentY + prevY );
     prevX = currentX;
     prevY = currentY;
   }
+  sumX *= 0.5;
+  sumY *= 0.5;
 
   if ( qgsDoubleNear( totalLineLength, 0.0 ) )
     return QgsPoint( mX.at( 0 ), mY.at( 0 ) );
