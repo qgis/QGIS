@@ -406,6 +406,6 @@ QList< QgsCelestialBody> QgsCoordinateReferenceSystemRegistry::celestialBodies()
 
   return mCelestialBodies;
 #else
-  throw QgsNotSupportedException( QStringLiteral( "Retrieving celestial bodies requires a QGIS build based on PROJ 8.1 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Retrieving celestial bodies requires a QGIS build based on PROJ 8.1 or later" ) );
 #endif
 }
