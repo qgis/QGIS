@@ -1384,6 +1384,37 @@ Adds a ring to polygon/multipolygon features (takes ownership)
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
+    Qgis::GeometryOperationResult addMultiRing( QgsCurve *ring /Transfer/, QgsFeatureIds *featureIds = 0 ) /PyName=addMultiCurvedRing/;
+%Docstring
+Adds a ring to polygon/multipolygon features (takes ownership)
+
+:param ring: ring to add
+:param featureIds: if specified, features ID for features ring was added to will be stored in this parameter
+
+:return: Qgis.GeometryOperationResult
+
+         - Success
+         - LayerNotEditable
+         - AddRingNotInExistingFeature
+         - InvalidInputGeometryType
+         - AddRingNotClosed
+         - AddRingNotValid
+         - AddRingCrossesExistingRings
+
+.. note::
+
+   available in Python as addMultiCurvedRing
+
+.. note::
+
+   Calls to :py:func:`~QgsVectorLayer.addMultiRing` are only valid for layers in which edits have been enabled
+   by a call to :py:func:`~QgsVectorLayer.startEditing`. Changes made to features using this method are not committed
+   to the underlying data provider until a :py:func:`~QgsVectorLayer.commitChanges` call is made. Any uncommitted
+   changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
+
+.. seealso:: :py:func:`addRing`
+%End
+
  Qgis::GeometryOperationResult addPart( const QList<QgsPointXY> &ring ) /Deprecated/;
 %Docstring
 Adds a new part polygon to a multipart feature

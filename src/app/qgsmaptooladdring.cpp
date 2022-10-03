@@ -68,7 +68,7 @@ void QgsMapToolAddRing::polygonCaptured( const QgsCurvePolygon *polygon )
     return;
 
   vlayer->beginEditCommand( tr( "Ring added" ) );
-  const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( polygon->exteriorRing()->clone() );
+  const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addMultiRing( polygon->exteriorRing()->clone() );
   QString errorMessage;
   switch ( addRingReturnCode )
   {

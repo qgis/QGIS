@@ -95,6 +95,16 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Adds a ring to polygon/multipolygon features
      * \param ring ring to add
      * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
+     * all intersecting features are tested and the ring is added to all valid features.
+     * \param modifiedFeatureIds if specified, feature IDS for features that ring was added to will be stored in this parameter
+     * \return OperationResult result code: success or reason of failure
+     */
+    Qgis::GeometryOperationResult addMultiRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds = nullptr );
+
+    /**
+     * Adds a ring to polygon/multipolygon features
+     * \param ring ring to add
+     * \param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
      * all intersecting features are tested and the ring is added to the first valid feature.
      * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
      * \return OperationResult result code: success or reason of failure
