@@ -292,6 +292,9 @@
 %Include auto_generated/codeeditors/qgscodeeditorpython.sip
 %End
 %If ( HAVE_QSCI_SIP )
+%Include auto_generated/codeeditors/qgscodeeditorr.sip
+%End
+%If ( HAVE_QSCI_SIP )
 %Include auto_generated/codeeditors/qgscodeeditorsql.sip
 %End
 %Include auto_generated/devtools/qgsdevtoolwidget.sip
