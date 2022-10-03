@@ -852,7 +852,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
   private:
 #ifndef QT_NO_SSL
-    void unlockAfterSslErrorHandled();
     void afterSslErrorHandled( QNetworkReply *reply );
 #endif
 
@@ -872,10 +871,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     static QgsNetworkAccessManager *sMainNAM;
     // ssl error handler, will be set for main thread ONLY
     std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;
-    // only in use by worker threads, unused in main thread
-    QMutex mSslErrorHandlerMutex;
-    // only in use by worker threads, unused in main thread
-    QWaitCondition mSslErrorWaitCondition;
+    // Used by worker threads to wait for ssl error handler run in main thread
+    QSemaphore mSslErrorHandlerSemaphore;
 
     // auth request handler, will be set for main thread ONLY
     std::unique_ptr< QgsNetworkAuthenticationHandler > mAuthHandler;
