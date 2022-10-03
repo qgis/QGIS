@@ -1211,6 +1211,21 @@ class TestQgsSymbolLayer(unittest.TestCase):
         self.assertEqual(mSymbolLayer.subSymbol().color(), QColor(250, 150, 200))
         self.assertEqual(mSymbolLayer.color(), QColor(250, 150, 200))
 
+    def testSldOpacityFillExport(self):
+        """Test issue GH #33376"""
+
+        vl = QgsVectorLayer('Point?crs=epsg:4326', 'test', 'memory')
+
+        foo_sym = QgsFillSymbol.createSimple({'color': '#00ff00', 'outline_color': '#0000ff'})
+        foo_sym.setOpacity(0.66)
+        vl.setRenderer(QgsSingleSymbolRenderer(foo_sym))
+        doc = QDomDocument()
+        vl.exportSldStyle(doc, None)
+        self.assertIn('<se:SvgParameter name="fill-opacity">0.66</se:SvgParameter>', doc.toString())
+        self.assertIn('<se:SvgParameter name="fill">#00ff00</se:SvgParameter>', doc.toString())
+        self.assertIn('<se:SvgParameter name="stroke">#0000ff</se:SvgParameter>', doc.toString())
+        self.assertIn('<se:SvgParameter name="stroke-opacity">0.66</se:SvgParameter>', doc.toString())
+
     def testQgsVectorFieldSymbolLayer(self):
         """
         Test QgsVectorFieldSymbolLayer
