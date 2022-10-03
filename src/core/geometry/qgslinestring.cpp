@@ -1953,10 +1953,11 @@ void QgsLineString::sumUpArea( double &sum ) const
   double prevY = *y++;
   for ( int i = 1; i < maxIndex; ++i )
   {
-    mSummedUpArea += 0.5 * ( prevX * ( *y ) - prevY * ( *x ) );
+    mSummedUpArea += prevX * ( *y ) - prevY * ( *x );
     prevX = *x++;
     prevY = *y++;
   }
+  mSummedUpArea *= 0.5;
 
   mHasCachedSummedUpArea = true;
   sum += mSummedUpArea;
