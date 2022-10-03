@@ -769,8 +769,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
      *
-     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
      * \returns TRUE on success
+     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
      * \since QGIS 3.30
      */
     bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr ) const;

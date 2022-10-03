@@ -81,7 +81,7 @@ Returns ``True`` if the RAT has color RGBA information.
     bool setColor( const int row, const QColor &color );
 %Docstring
 Sets the color for the row at ``rowIndex`` to ``color``.
-``returns`` ``True`` on sucess.
+``returns`` ``True`` on success.
 
 .. seealso:: :py:func:`hasColor`
 
@@ -110,7 +110,7 @@ Returns ``True`` if the RAT has ramp RGBA information.
     bool setRamp( const int row, const QColor &colorMin, const QColor &colorMax );
 %Docstring
 Sets the color ramp for the row at ``rowIndex`` to ``colorMin`` and ``colorMax``.
-``returns`` ``True`` on sucess.
+``returns`` ``True`` on success.
 
 .. seealso:: :py:func:`hasRamp`
 
