@@ -730,11 +730,11 @@ If the attribute table does not exist this method does nothing.
 %Docstring
 Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 
+:return: ``True`` on success
+
 .. note::
 
    No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
-   
-:return: ``True`` on success
 
 .. versionadded:: 3.30
 %End

@@ -97,7 +97,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * Sets the color for the row at \a rowIndex to \a color.
-     * \a returns TRUE on sucess.
+     * \a returns TRUE on success.
      * \see hasColor()
      * \see setColor()
      * \see hasRamp()
@@ -117,7 +117,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * Sets the color ramp for the row at \a rowIndex to \a colorMin and \a colorMax.
-     * \a returns TRUE on sucess.
+     * \a returns TRUE on success.
      * \see hasRamp()
      * \see ramp()
      * \see hasColor()
