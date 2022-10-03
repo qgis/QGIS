@@ -573,7 +573,7 @@ double QgsGeos::frechetDistance( const QgsAbstractGeometry *geom, QString *error
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<7
   ( void )geom;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistance requires a QGIS build based on GEOS 3.7 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating frechetDistance requires a QGIS build based on GEOS 3.7 or later" ) );
 #else
   double distance = -1.0;
   if ( !mGeos )
@@ -603,7 +603,7 @@ double QgsGeos::frechetDistanceDensify( const QgsAbstractGeometry *geom, double 
   ( void )geom;
   ( void )densifyFraction;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating frechetDistanceDensify requires a QGIS build based on GEOS 3.7 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating frechetDistanceDensify requires a QGIS build based on GEOS 3.7 or later" ) );
 #else
   double distance = -1.0;
   if ( !mGeos )
@@ -2228,7 +2228,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::maximumInscribedCircle( double tol
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<9
   ( void )tolerance;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating maximumInscribedCircle requires a QGIS build based on GEOS 3.9 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating maximumInscribedCircle requires a QGIS build based on GEOS 3.9 or later" ) );
 #else
   if ( !mGeos )
   {
@@ -2251,7 +2251,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::largestEmptyCircle( double toleran
   ( void )tolerance;
   ( void )boundary;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating largestEmptyCircle requires a QGIS build based on GEOS 3.9 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating largestEmptyCircle requires a QGIS build based on GEOS 3.9 or later" ) );
 #else
   if ( !mGeos )
   {
@@ -2276,7 +2276,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumWidth( QString *errorMsg ) 
 {
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumWidth requires a QGIS build based on GEOS 3.6 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating minimumWidth requires a QGIS build based on GEOS 3.6 or later" ) );
 #else
   if ( !mGeos )
   {
@@ -2297,7 +2297,7 @@ double QgsGeos::minimumClearance( QString *errorMsg ) const
 {
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumClearance requires a QGIS build based on GEOS 3.6 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating minimumClearance requires a QGIS build based on GEOS 3.6 or later" ) );
 #else
   if ( !mGeos )
   {
@@ -2320,7 +2320,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::minimumClearanceLine( QString *err
 {
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<6
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating minimumClearanceLine requires a QGIS build based on GEOS 3.6 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating minimumClearanceLine requires a QGIS build based on GEOS 3.6 or later" ) );
 #else
   if ( !mGeos )
   {
