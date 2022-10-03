@@ -42,7 +42,7 @@
        <item>
         <widget class="QStackedWidget" name="mPreviewStackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -190,6 +190,32 @@
            </property>
            <item>
             <widget class="QgsCodeEditorJavascript" name="mJsPreview" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page_7">
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QgsCodeEditorR" name="mRPreview" native="true">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -859,6 +885,12 @@
    <class>QgsCodeEditorJavascript</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorjs.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorR</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorr.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

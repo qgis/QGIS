@@ -166,6 +166,7 @@ QgsCodeEditorOptionsWidget::QgsCodeEditorOptionsWidget( QWidget *parent )
   mListLanguage->addItem( tr( "HTML" ) );
   mListLanguage->addItem( tr( "CSS" ) );
   mListLanguage->addItem( tr( "JavaScript" ) );
+  mListLanguage->addItem( tr( "R" ) );
 
   connect( mListLanguage, &QListWidget::currentRowChanged, this, [ = ]
   {
@@ -262,6 +263,26 @@ window.onAction(function update() {
     }
 });)""" );
 
+  mRPreview->setText( R"""(# a comment
+x <- 1:12
+sample(x)
+sample(x, replace = TRUE)
+
+resample <- function(x, ...) x[sample.int(length(x), ...)]
+resample(x[x >  8]) # length 2
+
+a_variable <- "My string"
+
+`%func_name%` <- function(arg_1,arg_2) {
+  # function body
+}
+
+`%pwr%` <- function(x,y)
+{
+ return(x^y)
+}
+)""");
+
   mListLanguage->setCurrentRow( 0 );
   mPreviewStackedWidget->setCurrentIndex( 0 );
 
@@ -336,6 +357,7 @@ void QgsCodeEditorOptionsWidget::updatePreview()
   mHtmlPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
   mCssPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
   mJsPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
+  mRPreview->setCustomAppearance( theme, colors, fontFamily, fontSize );
 }
 
 //
