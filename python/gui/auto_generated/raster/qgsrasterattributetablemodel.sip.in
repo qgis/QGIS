@@ -1,0 +1,114 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetablemodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsRasterAttributeTableModel : QAbstractTableModel
+{
+%Docstring(signature="appended")
+The :py:class:`QgsRasterAttributeTableModel` class manages a :py:class:`QgsRasterAttributeTable`
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetablemodel.h"
+%End
+  public:
+
+    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent = 0 );
+%Docstring
+Creates a new QgsRasterAttributeTableModel from raster attribute table ``rat`` and optional ``parent``.
+%End
+
+    bool editable() const;
+%Docstring
+Returns true if the RAT is editable.
+%End
+
+    void setEditable( bool editable );
+%Docstring
+Sets the RAT editable state to ``editable``.
+%End
+
+    bool hasColor() const;
+%Docstring
+Returns ``True`` if the RAT has color information.
+%End
+
+    bool hasRamp() const;
+%Docstring
+Returns ``True`` if the RAT has ramp information.
+%End
+
+    QStringList headerNames( ) const;
+%Docstring
+Returns all the header names, including the "virtual" color header if the RAT has color or ramp.
+%End
+
+    QString headerTooltip( const int section ) const;
+%Docstring
+Returns the tooltip for the given ``section``.
+%End
+
+
+    bool insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, const int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Inserts a field at the given position.
+
+:param name: field name
+:param usage: field usage
+:param type: field type
+:param position: insertion point (before)
+
+:return: - true on success
+         - errorMessage: error message
+%End
+    bool removeField( const int position, QString *errorMessage /Out/ = 0 );
+
+    bool removeColorOrRamp( QString *errorMessage /Out/ = 0 );
+%Docstring
+Removes all color or ramp information, returns ``True`` on success.
+%End
+
+    bool insertRow( const QVariantList &rowData, const int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Inserts a new row before ``position``, returns ``True`` on success.
+%End
+
+    bool removeRow( const int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Removes the row at ``position``, returns ``True`` on success.
+%End
+
+    static QString RAT_COLOR_HEADER_NAME;
+
+  public:
+    virtual int rowCount( const QModelIndex &parent ) const;
+
+    virtual int columnCount( const QModelIndex &parent ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetablemodel.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
