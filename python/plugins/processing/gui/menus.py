@@ -67,6 +67,7 @@ def initMenusAndToolbars():
                                'native:randompointsonlines': researchToolsMenu,
                                'qgis:regularpoints': researchToolsMenu,
                                'native:selectbylocation': researchToolsMenu,
+                               'native:selectwithindistance': researchToolsMenu,
                                'native:polygonfromlayerextent': researchToolsMenu})
     geoprocessingToolsMenu = vectorMenu + "/" + Processing.tr('&Geoprocessing Tools')
     defaultMenuEntries.update({'native:buffer': geoprocessingToolsMenu,
