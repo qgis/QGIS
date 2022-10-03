@@ -2601,6 +2601,16 @@ void QgsMapToolEditMeshFrame::addVertex(
     const QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
     zValue = layerPoint.z();
   }
+  else if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) //we are on a edge -->interpolate the z value
+  {
+    const QVector<int> &edge = edgeVertices( mCurrentEdge );
+    const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
+    const QgsMeshVertex &v1 = triangularMesh.vertices().at( edge.at( 0 ) );
+    const QgsMeshVertex &v2 = triangularMesh.vertices().at( edge.at( 1 ) );
+    double dist = v1.distance( v2 );
+    double vertDist = QgsGeometryUtils::projectPointOnSegment( QgsPoint( mapPoint ), v1, v2 ).distance( v1 );
+    zValue = v1.z() + ( v2.z() - v1.z() ) * vertDist / dist;
+  }
   else if ( mCurrentFaceIndex != -1 ) //we are on a face -->interpolate the z value
   {
     const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
