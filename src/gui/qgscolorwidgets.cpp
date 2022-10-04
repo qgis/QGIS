@@ -1556,22 +1556,30 @@ void QgsColorTextWidget::textChanged()
 void QgsColorTextWidget::showMenu()
 {
   QMenu colorContextMenu;
+  QAction *hexRgbaAction = nullptr;
+  QAction *rgbaAction = nullptr;
 
   QAction *hexRgbAction = new QAction( tr( "#RRGGBB" ), nullptr );
   colorContextMenu.addAction( hexRgbAction );
-  QAction *hexRgbaAction = new QAction( tr( "#RRGGBBAA" ), nullptr );
-  colorContextMenu.addAction( hexRgbaAction );
+  if ( mAllowAlpha )
+  {
+    hexRgbaAction = new QAction( tr( "#RRGGBBAA" ), nullptr );
+    colorContextMenu.addAction( hexRgbaAction );
+  }
   QAction *rgbAction = new QAction( tr( "rgb( r, g, b )" ), nullptr );
   colorContextMenu.addAction( rgbAction );
-  QAction *rgbaAction = new QAction( tr( "rgba( r, g, b, a )" ), nullptr );
-  colorContextMenu.addAction( rgbaAction );
+  if ( mAllowAlpha )
+  {
+    rgbaAction = new QAction( tr( "rgba( r, g, b, a )" ), nullptr );
+    colorContextMenu.addAction( rgbaAction );
+  }
 
   QAction *selectedAction = colorContextMenu.exec( QCursor::pos() );
   if ( selectedAction == hexRgbAction )
   {
     mFormat = QgsColorTextWidget::HexRgb;
   }
-  else if ( selectedAction == hexRgbaAction )
+  else if ( hexRgbaAction && selectedAction == hexRgbaAction )
   {
     mFormat = QgsColorTextWidget::HexRgbA;
   }
@@ -1579,7 +1587,7 @@ void QgsColorTextWidget::showMenu()
   {
     mFormat = QgsColorTextWidget::Rgb;
   }
-  else if ( selectedAction == rgbaAction )
+  else if ( rgbaAction && selectedAction == rgbaAction )
   {
     mFormat = QgsColorTextWidget::Rgba;
   }
@@ -1591,6 +1599,10 @@ void QgsColorTextWidget::showMenu()
   updateText();
 }
 
+void QgsColorTextWidget::setAllowOpacity( const bool allowOpacity )
+{
+  mAllowAlpha = allowOpacity;
+}
 
 //
 // QgsColorPreviewWidget
