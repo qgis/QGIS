@@ -56,14 +56,15 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
   }
 
   QgsHanaSettings settings( mName, true );
-  QString userName = conn->getUserName();
-  if ( userName.isEmpty() )
-    userName = settings.userName();
-
-  updateToolTip( userName, conn->getDatabaseVersion() );
 
   try
   {
+    QString userName = conn->getUserName();
+    if ( userName.isEmpty() )
+      userName = settings.userName();
+
+    updateToolTip( userName, conn->getDatabaseVersion() );
+
     const QVector<QgsHanaSchemaProperty> schemas =
       conn->getSchemas( settings.userTablesOnly() ? userName : QString() );
 
