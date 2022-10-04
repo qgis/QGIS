@@ -25,6 +25,9 @@ A generic dialog for building expression strings
                                 QWidget *parent /TransferThis/ = 0,
                                 const QString &key = "generic",
                                 const QgsExpressionContext &context = QgsExpressionContext() );
+%Docstring
+Constructor
+%End
 
     QgsExpressionBuilderWidget *expressionBuilder();
 %Docstring
