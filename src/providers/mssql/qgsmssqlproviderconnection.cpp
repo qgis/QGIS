@@ -293,10 +293,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 }
 
 
-QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query )
+QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, std::unique_ptr<QSqlQuery> query )
   : mResolveTypes( resolveTypes )
   , mColumnCount( columnCount )
-  , mQuery( query )
+  , mQuery( std::move( query ) )
 {
   // Load first row
   nextRow();
@@ -317,30 +317,30 @@ bool QgssMssqlProviderResultIterator::hasNextRowPrivate() const
 QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
 {
   QVariantList row;
-  if ( mQuery.next() )
+  if ( mQuery->next() )
   {
     for ( int col = 0; col < mColumnCount; ++col )
     {
       if ( mResolveTypes )
       {
-        row.push_back( mQuery.value( col ) );
+        row.push_back( mQuery->value( col ) );
       }
       else
       {
-        row.push_back( mQuery.value( col ).toString() );
+        row.push_back( mQuery->value( col ).toString() );
       }
     }
   }
   else
   {
-    mQuery.finish();
+    mQuery->finish();
   }
   return row;
 }
 
 long long QgssMssqlProviderResultIterator::rowCountPrivate() const
 {
-  return mQuery.size();
+  return mQuery->size();
 }
 
 

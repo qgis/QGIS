@@ -25,13 +25,13 @@
 struct QgssMssqlProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
 
-    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, const QSqlQuery &query );
+    QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, std::unique_ptr<QSqlQuery> query );
 
   private:
 
     bool mResolveTypes = true;
     int mColumnCount = 0;
-    QSqlQuery mQuery;
+    std::unique_ptr<QSqlQuery> mQuery;
     QVariantList mNextRow;
 
     QVariantList nextRowPrivate() override;
