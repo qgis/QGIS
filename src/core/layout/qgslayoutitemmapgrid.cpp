@@ -1392,7 +1392,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   context.painter()->rotate( rotation );
   context.painter()->translate( -anchor );
   const QgsScopedRenderContextScaleToPixels scale( context );
-  QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, QgsTextRenderer::AlignLeft, QStringList() << annotationString, context, mAnnotationFormat );
+  QgsTextRenderer::drawText( QPointF( 0, 0 ), 0, QgsTextRenderer::AlignLeft, annotationString.split( '\n' ), context, mAnnotationFormat );
 }
 
 QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemMapGrid::AnnotationCoordinate coord, QgsExpressionContext &expressionContext ) const
