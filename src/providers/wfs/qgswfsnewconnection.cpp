@@ -41,9 +41,15 @@ QgsDataSourceUri QgsWFSNewConnection::createUri()
   // Honor any defined authentication settings
   QgsDataSourceUri uri;
   uri.setParam( QStringLiteral( "url" ), urlTrimmed().toString() );
-  uri.setUsername( authSettingsWidget()->username() );
-  uri.setPassword( authSettingsWidget()->password() );
-  uri.setAuthConfigId( authSettingsWidget()->configId() );
+  if ( authSettingsWidget()->configurationTabIsSelected() )
+  {
+    uri.setAuthConfigId( authSettingsWidget()->configId() );
+  }
+  else
+  {
+    uri.setUsername( authSettingsWidget()->username() );
+    uri.setPassword( authSettingsWidget()->password() );
+  }
   return uri;
 }
 
