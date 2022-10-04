@@ -388,7 +388,7 @@ typedef QSet<int> QgsAttributeIds;
  *
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource, public QgsAbstractProfileSource
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsFeatureSink, public QgsFeatureSource, public QgsAbstractProfileSource
 {
     Q_OBJECT
 

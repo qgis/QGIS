@@ -51,9 +51,16 @@ Initialize without any layer
 
     void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 %Docstring
-Initialize with a layer
+Initialize with a vector layer
 
 .. versionadded:: 3.14
+%End
+
+    void initWithMapLayer( QgsMapLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
+%Docstring
+Initialize with a map layer
+
+.. versionadded:: 3.28
 %End
 
     void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
@@ -63,18 +70,41 @@ Initialize with given fields without any layer
 .. versionadded:: 3.14
 %End
 
-    void setLayer( QgsVectorLayer *layer );
+ void setLayer( QgsVectorLayer *layer );
 %Docstring
 Sets layer in order to get the fields and values
 
 .. note::
 
    this needs to be called before calling :py:func:`~QgsExpressionBuilderWidget.loadFieldNames`.
+
+.. deprecated:: QGIS 3.28
+  use :py:func:`~QgsExpressionBuilderWidget.setMapLayer` instead
 %End
 
-    QgsVectorLayer *layer() const;
+
+    void setMapLayer( QgsMapLayer *layer );
 %Docstring
-Returns the current layer or a None.
+Sets layer in order to get the fields and values
+
+.. note::
+
+   it the layer type is vector, this needs to be called before calling :py:func:`~QgsExpressionBuilderWidget.loadFieldNames`.
+%End
+
+ QgsVectorLayer *layer() const;
+%Docstring
+Returns the current vector layer or a None, if the layer type is not vector
+
+.. deprecated:: QGIS 3.28
+  use :py:func:`~QgsExpressionBuilderWidget.mapLayer` instead
+%End
+
+    QgsMapLayer *mapLayer() const;
+%Docstring
+Returns the current map layer
+
+.. versionadded:: 3.28
 %End
 
  void loadFieldNames();

@@ -41,6 +41,8 @@
 #include "qgsdataprovider.h"
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -69,7 +71,7 @@ class QgsRenderContext;
  * \brief Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
  */
-class CORE_EXPORT QgsMapLayer : public QObject
+class CORE_EXPORT QgsMapLayer : public QObject, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator
 {
     Q_OBJECT
 
@@ -205,6 +207,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     virtual QgsMapLayer *clone() const = 0;
+
+    QgsExpressionContext createExpressionContext() const override ;
+    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
     /**
      * Returns the type of the layer.

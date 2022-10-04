@@ -268,6 +268,12 @@ void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const Qgs
   setLayer( layer );
 }
 
+void QgsExpressionBuilderWidget::initWithMapLayer( QgsMapLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
+{
+  init( context, recentCollection, flags );
+  setMapLayer( layer );
+}
+
 void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   init( context, recentCollection, flags );
@@ -276,6 +282,11 @@ void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const 
 
 
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
+{
+  setMapLayer( layer );
+}
+
+void QgsExpressionBuilderWidget::setMapLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
   mExpressionTreeView->setLayer( mLayer );
@@ -287,7 +298,8 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
   {
     mExpressionContext << QgsExpressionContextUtils::layerScope( mLayer );
     expressionContextUpdated();
-    txtExpressionString->setFields( mLayer->fields() );
+    if ( mLayer->type() == QgsMapLayerType::VectorLayer )
+      txtExpressionString->setFields( qobject_cast<QgsVectorLayer *>( mLayer )->fields() );
   }
 }
 
@@ -300,6 +312,11 @@ void QgsExpressionBuilderWidget::expressionContextUpdated()
 
 QgsVectorLayer *QgsExpressionBuilderWidget::layer() const
 {
+  return qobject_cast<QgsVectorLayer *>( mLayer );
+}
+
+QgsMapLayer *QgsExpressionBuilderWidget::mapLayer() const
+{
   return mLayer;
 }
 
@@ -310,12 +327,16 @@ void QgsExpressionBuilderWidget::expressionTreeItemChanged( QgsExpressionItem *i
   if ( !item )
     return;
 
-  bool isField = mLayer && item->getItemType() == QgsExpressionItem::Field;
+  bool isField = mLayer &&
+                 mLayer->type() == QgsMapLayerType::VectorLayer  &&
+                 item->getItemType() == QgsExpressionItem::Field;
   if ( isField )
   {
     mValuesModel->clear();
 
-    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( mLayer, item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString() ) );
+    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues(
+                                  qobject_cast<QgsVectorLayer *>( mLayer ),
+                                  item->data( QgsExpressionItem::ITEM_NAME_ROLE ).toString() ) );
     cbxValuesInUse->setChecked( false );
   }
   mValueGroupBox->setVisible( isField );
@@ -361,7 +382,7 @@ QgsVectorLayer *QgsExpressionBuilderWidget::contextLayer( const QgsExpressionIte
   }
   else
   {
-    layer = mLayer;
+    layer =  qobject_cast<QgsVectorLayer *>( mLayer );
   }
   return layer;
 }

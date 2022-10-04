@@ -20,6 +20,7 @@
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsvectorlayer.h"
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   : QToolButton( parent )

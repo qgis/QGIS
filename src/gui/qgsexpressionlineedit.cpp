@@ -122,7 +122,7 @@ void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
   mDa.reset( new QgsDistanceArea( da ) );
 }
 
-void QgsExpressionLineEdit::setLayer( QgsVectorLayer *layer )
+void QgsExpressionLineEdit::setLayer( QgsMapLayer *layer )
 {
   if ( !mExpressionContextGenerator || mExpressionContextGenerator == mLayer )
     mExpressionContextGenerator = layer;

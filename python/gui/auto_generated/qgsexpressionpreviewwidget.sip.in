@@ -29,7 +29,7 @@ If the layer is set, one can browse across features to see the different outputs
 Constructor
 %End
 
-    void setLayer( QgsVectorLayer *layer );
+    void setLayer( QgsMapLayer *layer );
 %Docstring
 Sets the layer used in the preview
 %End

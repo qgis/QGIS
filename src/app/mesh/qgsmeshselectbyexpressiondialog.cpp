@@ -21,6 +21,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgsmeshlayer.h"
 
 QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *parent ):
   QDialog( parent )
@@ -77,13 +78,19 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeshSelectByExpressionDialog::showHelp );
 
   connect( mComboBoxElementType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshSelectByExpressionDialog::onElementTypeChanged );
-
-  mExpressionBuilder->setExpressionPreviewVisible( false );
 }
 
 QString QgsMeshSelectByExpressionDialog::expression() const
 {
   return mExpressionBuilder->expressionText();
+}
+
+void QgsMeshSelectByExpressionDialog::setMeshLayer( QgsMeshLayer *layer )
+{
+  mLayer = layer;
+
+  QgsExpressionContext expressionContext( {QgsExpressionContextUtils::meshExpressionScope( currentElementType() )} );
+  mExpressionBuilder->initWithMapLayer( mLayer, expressionContext, QStringLiteral( "mesh_vertex_selection" ), QgsExpressionBuilderWidget::LoadAll );
 }
 
 void QgsMeshSelectByExpressionDialog::showHelp() const
@@ -96,14 +103,14 @@ void QgsMeshSelectByExpressionDialog::saveRecent() const
   mExpressionBuilder->expressionTree()->saveToRecent( mExpressionBuilder->expressionText(), QStringLiteral( "mesh_vertex_selection" ) );
 }
 
-void QgsMeshSelectByExpressionDialog::onElementTypeChanged() const
+void QgsMeshSelectByExpressionDialog::onElementTypeChanged()
 {
   QgsMesh::ElementType elementType = currentElementType() ;
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/meshSelection/elementType" ), elementType );
 
   QgsExpressionContext expressionContext( {QgsExpressionContextUtils::meshExpressionScope( elementType )} );
-  mExpressionBuilder->init( expressionContext, QStringLiteral( "mesh_vertex_selection" ), QgsExpressionBuilderWidget::LoadAll );
+  mExpressionBuilder->initWithMapLayer( mLayer, expressionContext, QStringLiteral( "mesh_vertex_selection" ), QgsExpressionBuilderWidget::LoadAll );
 }
 
 QgsMesh::ElementType QgsMeshSelectByExpressionDialog::currentElementType() const

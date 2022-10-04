@@ -102,14 +102,14 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     void setGeomCalculator( const QgsDistanceArea &distanceArea );
 
     /**
-     * Sets a layer associated with the widget. Required in order to get the fields and values
+     * Sets a layer associated with the widget. Required in order to get information
      * from the layer.
      * This will also automatically register the layer as expression context generator if
      * no generator has been set before or the previous layer has been used as generator.
      *
      * \see registerExpressionContextGenerator
      */
-    void setLayer( QgsVectorLayer *layer );
+    void setLayer( QgsMapLayer *layer );
 
     /**
      * Returns the current expression shown in the widget.
@@ -177,7 +177,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     std::unique_ptr<QgsDistanceArea> mDa;
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
-    QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QString mExpectedOutputFormat;
 
     bool isExpressionValid( const QString &expressionStr );

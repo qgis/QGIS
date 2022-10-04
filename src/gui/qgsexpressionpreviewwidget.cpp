@@ -39,10 +39,31 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   connect( mCopyPreviewAction, &QAction::triggered, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
 }
 
-void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
+void QgsExpressionPreviewWidget::setLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
-  mFeaturePickerWidget->setLayer( layer );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayer );
+
+  if ( layer )
+  {
+    switch ( mLayer->type() )
+    {
+      case QgsMapLayerType::VectorLayer:
+        setFeaturePickerVisible( true );
+        break;
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::RasterLayer:
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::GroupLayer:
+        setFeaturePickerVisible( false );
+        break;
+    }
+  }
+
+  mFeaturePickerWidget->setLayer( vl );
 }
 
 void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
@@ -150,6 +171,12 @@ void QgsExpressionPreviewWidget::refreshPreview()
       mCopyPreviewAction->setEnabled( true );
     }
   }
+}
+
+void QgsExpressionPreviewWidget::setFeaturePickerVisible( bool b )
+{
+  mPickerLabel->setVisible( b );
+  mFeaturePickerWidget->setVisible( b );
 }
 
 void QgsExpressionPreviewWidget::linkActivated( const QString & )

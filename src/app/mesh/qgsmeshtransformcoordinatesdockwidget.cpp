@@ -57,7 +57,16 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
 {
-  return QgsExpressionContext( {QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex )} );
+  int firstIndex = mInputVertices.isEmpty() ? 0 : mInputVertices.first();
+  QgsExpressionContext expressionContext( {QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex, firstIndex )} );
+  std::unique_ptr<QgsExpressionContextScope> scope;
+  if ( !mInputLayer )
+    scope = std::make_unique<QgsExpressionContextScope>();
+  else
+    scope.reset( mInputLayer->createExpressionContextScope() );
+  expressionContext << scope.release();
+
+  return expressionContext;
 }
 
 QgsMeshVertex QgsMeshTransformCoordinatesDockWidget::transformedVertex( int i )
@@ -81,6 +90,8 @@ bool QgsMeshTransformCoordinatesDockWidget::isCalculated() const
 void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const QList<int> &vertexIndexes )
 {
   mInputLayer = layer;
+  for ( QgsExpressionLineEdit *le : std::as_const( mExpressionLineEdits ) )
+    le->setLayer( mInputLayer );
   mInputVertices = vertexIndexes;
   mIsCalculated = false;
   mIsResultValid = false;
@@ -196,4 +207,3 @@ void QgsMeshTransformCoordinatesDockWidget::importVertexCoordinates()
     }
   }
 }
-

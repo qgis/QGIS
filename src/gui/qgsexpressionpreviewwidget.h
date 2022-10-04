@@ -39,8 +39,10 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
     //! Constructor
     explicit QgsExpressionPreviewWidget( QWidget *parent = nullptr );
 
-    //! Sets the layer used in the preview
-    void setLayer( QgsVectorLayer *layer );
+    /**
+     * Sets the layer used in the preview
+     */
+    void setLayer( QgsMapLayer *layer );
 
     //! Sets the expression
     void setExpressionText( const QString &expression );
@@ -119,8 +121,9 @@ class GUI_EXPORT QgsExpressionPreviewWidget : public QWidget, private Ui::QgsExp
   private:
     void setExpressionToolTip( const QString &toolTip );
     void refreshPreview();
+    void setFeaturePickerVisible( bool b );
 
-    QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QgsExpressionContext mExpressionContext;
     QgsDistanceArea mDa;
     bool mUseGeomCalculator = false;

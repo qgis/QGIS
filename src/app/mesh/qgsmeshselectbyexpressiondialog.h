@@ -41,6 +41,9 @@ class APP_EXPORT QgsMeshSelectByExpressionDialog : public QDialog, private Ui::Q
     //! Returns the text expression defined in the dialog
     QString expression() const;
 
+    //! Sets the mesh layer
+    void setMeshLayer( QgsMeshLayer *layer );
+
   signals:
     //! Emitted when one of the select tool button is clicked
     void select( const QString &expression, Qgis::SelectBehavior behavior, QgsMesh::ElementType elementType );
@@ -51,13 +54,14 @@ class APP_EXPORT QgsMeshSelectByExpressionDialog : public QDialog, private Ui::Q
   private slots:
     void showHelp() const;
     void saveRecent() const;
-    void onElementTypeChanged() const;
+    void onElementTypeChanged();
 
   private:
     QAction *mActionSelect = nullptr;
     QAction *mActionAddToSelection = nullptr;
     QAction *mActionRemoveFromSelection = nullptr;
 
+    QgsMeshLayer *mLayer = nullptr;
     QgsMesh::ElementType currentElementType() const;
 };
 

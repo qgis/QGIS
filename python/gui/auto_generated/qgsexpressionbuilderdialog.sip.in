@@ -20,7 +20,7 @@ A generic dialog for building expression strings
 #include "qgsexpressionbuilderdialog.h"
 %End
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer *layer,
+    QgsExpressionBuilderDialog( QgsMapLayer *layer,
                                 const QString &startText = QString(),
                                 QWidget *parent /TransferThis/ = 0,
                                 const QString &key = "generic",

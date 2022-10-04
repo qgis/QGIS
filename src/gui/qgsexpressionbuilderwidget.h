@@ -72,10 +72,16 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
-     * Initialize with a layer
+     * Initialize with a vector layer
      * \since QGIS 3.14
      */
     void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
+
+    /**
+     * Initialize with a map layer
+     * \since QGIS 3.28
+     */
+    void initWithMapLayer( QgsMapLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Initialize with given fields without any layer
@@ -86,13 +92,31 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /**
      * Sets layer in order to get the fields and values
      * \note this needs to be called before calling loadFieldNames().
+     *
+     * \deprecated since QGIS 3.28, use setMapLayer() instead
      */
-    void setLayer( QgsVectorLayer *layer );
+    Q_DECL_DEPRECATED void setLayer( QgsVectorLayer *layer );
+
 
     /**
-     * Returns the current layer or a nullptr.
+     * Sets layer in order to get the fields and values
+     * \note it the layer type is vector, this needs to be called before calling loadFieldNames().
      */
-    QgsVectorLayer *layer() const;
+    void setMapLayer( QgsMapLayer *layer );
+
+    /**
+     * Returns the current vector layer or a nullptr, if the layer type is not vector
+     *
+     * \deprecated since QGIS 3.28, use mapLayer() instead
+     */
+    Q_DECL_DEPRECATED QgsVectorLayer *layer() const;
+
+    /**
+     * Returns the current map layer
+     *
+     * \since QGIS 3.28
+     */
+    QgsMapLayer *mapLayer() const;
 
     //! \deprecated since QGIS 3.14 this is now done automatically
     Q_DECL_DEPRECATED void loadFieldNames() {} SIP_DEPRECATED
@@ -438,7 +462,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     bool mAutoSave = true;
     QString mFunctionsPath;
-    QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsExpressionContext mExpressionContext;

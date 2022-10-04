@@ -14,7 +14,7 @@
 
 
 
-class QgsMapLayer : QObject
+class QgsMapLayer : QObject, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator
 {
 %Docstring(signature="appended")
 Base class for all map layer types.
@@ -127,6 +127,11 @@ is still unique.
 
 .. versionadded:: 3.0
 %End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
+
 
     QgsMapLayerType type() const;
 %Docstring

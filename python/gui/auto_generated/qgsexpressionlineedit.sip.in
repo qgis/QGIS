@@ -92,9 +92,9 @@ Set the geometry calculator used in the expression dialog.
 :param distanceArea: calculator
 %End
 
-    void setLayer( QgsVectorLayer *layer );
+    void setLayer( QgsMapLayer *layer );
 %Docstring
-Sets a layer associated with the widget. Required in order to get the fields and values
+Sets a layer associated with the widget. Required in order to get information
 from the layer.
 This will also automatically register the layer as expression context generator if
 no generator has been set before or the previous layer has been used as generator.

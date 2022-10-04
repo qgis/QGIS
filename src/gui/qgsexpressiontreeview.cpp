@@ -134,7 +134,7 @@ QgsExpressionTreeView::QgsExpressionTreeView( QWidget *parent )
   setCurrentIndex( firstItem );
 }
 
-void QgsExpressionTreeView::setLayer( QgsVectorLayer *layer )
+void QgsExpressionTreeView::setLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
 
@@ -467,7 +467,7 @@ void QgsExpressionTreeView::loadFieldNames()
     registerItem( QStringLiteral( "Fields and Values" ), QStringLiteral( "NULL" ), QStringLiteral( "NULL" ), QString(), QgsExpressionItem::ExpressionNode, false, -1 );
   }
 
-  if ( mLayer )
+  if ( mLayer && mLayer->type() == QgsMapLayerType::VectorLayer )
   {
     // Add feature variables to record and attributes group (and highlighted items)
 
@@ -486,15 +486,11 @@ void QgsExpressionTreeView::loadFieldNames()
     registerItem( tr( "Record and Attributes" ), QStringLiteral( "feature" ), QStringLiteral( "@feature" ), currentFeatureHelp, QgsExpressionItem::ExpressionNode, true, -1 );
     registerItem( tr( "Record and Attributes" ), QStringLiteral( "id" ), QStringLiteral( "@id" ), currentFeatureIdHelp, QgsExpressionItem::ExpressionNode, true, -1 );
     registerItem( tr( "Record and Attributes" ), QStringLiteral( "geometry" ), QStringLiteral( "@geometry" ), currentGeometryHelp, QgsExpressionItem::ExpressionNode, true, -1 );
+
+
+    const QgsFields &fields = qobject_cast<QgsVectorLayer *>( mLayer )->fields();
+    loadFieldNames( fields );
   }
-
-  // this can happen if fields are manually set
-  if ( !mLayer )
-    return;
-
-  const QgsFields &fields = mLayer->fields();
-
-  loadFieldNames( fields );
 }
 
 void QgsExpressionTreeView::loadRelations()

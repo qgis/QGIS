@@ -174,9 +174,9 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     QgsExpressionTreeView( QWidget *parent = nullptr );
 
     /**
-     * Sets layer in order to get the fields and values
+     * Sets layer in order to get layer information
      */
-    void setLayer( QgsVectorLayer *layer );
+    void setLayer(QgsMapLayer *layer );
 
     /**
      * This allows loading fields without specifying a layer
@@ -370,7 +370,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
 
     MenuProvider *mMenuProvider = nullptr;
 
-    QgsVectorLayer *mLayer = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QPointer< QgsProject > mProject;
     QgsExpressionContext mExpressionContext;
     QString mRecentKey;

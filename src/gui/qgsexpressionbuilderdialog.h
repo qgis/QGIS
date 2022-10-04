@@ -34,7 +34,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer *layer,
+    QgsExpressionBuilderDialog( QgsMapLayer *layer,
                                 const QString &startText = QString(),
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                 const QString &key = "generic",

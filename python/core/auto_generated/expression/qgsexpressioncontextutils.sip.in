@@ -377,9 +377,10 @@ Creates a new scope which contains variables and functions relating to provider 
 Registers all known core functions provided by :py:class:`QgsExpressionContextScope` objects.
 %End
 
-    static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType ) /Factory/;
+    static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType, int defaultIndex = 0 ) /Factory/;
 %Docstring
-Creates a new scope which contains functions relating to mesh layer element ``elementType``
+Creates a new scope which contains functions relating to mesh layer element ``elementType``,
+using \defaultIndex if not overriden later
 
 .. versionadded:: 3.22
 %End

@@ -19,7 +19,7 @@
 #include "qgsgui.h"
 #include <QMessageBox>
 
-QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
+QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsMapLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
   , mInitialText( startText )
   , mRecentKey( key )
@@ -31,7 +31,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   connect( builder, &QgsExpressionBuilderWidget::evalErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
 
   builder->setExpressionContext( context );
-  builder->setLayer( layer );
+  builder->setMapLayer( layer );
   builder->setExpressionText( startText );
   builder->expressionTree()->loadRecent( mRecentKey );
   builder->expressionTree()->loadUserExpressions( );

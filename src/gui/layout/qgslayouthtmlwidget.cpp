@@ -21,6 +21,7 @@
 #include "qgscodeeditorcss.h"
 #include "qgssettings.h"
 #include "qgslayoutundostack.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QUrl>

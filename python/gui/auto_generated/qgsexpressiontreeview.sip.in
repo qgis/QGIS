@@ -150,9 +150,9 @@ Returns a newly created menu instance
 Constructor
 %End
 
-    void setLayer( QgsVectorLayer *layer );
+    void setLayer(QgsMapLayer *layer );
 %Docstring
-Sets layer in order to get the fields and values
+Sets layer in order to get layer information
 %End
 
     void loadFieldNames( const QgsFields &fields );

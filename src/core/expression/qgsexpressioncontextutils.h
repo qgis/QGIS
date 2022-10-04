@@ -332,10 +332,12 @@ class CORE_EXPORT QgsExpressionContextUtils
     static void registerContextFunctions();
 
     /**
-     * Creates a new scope which contains functions relating to mesh layer element \a elementType
+     * Creates a new scope which contains functions relating to mesh layer element \a elementType,
+     * using \defaultIndex if not overriden later
+     *
      * \since QGIS 3.22
      */
-    static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType ) SIP_FACTORY;
+    static QgsExpressionContextScope *meshExpressionScope( QgsMesh::ElementType elementType, int defaultIndex = 0 ) SIP_FACTORY;
 
   private:
 

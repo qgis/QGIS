@@ -18,7 +18,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
+class QgsVectorLayer : QgsMapLayer, QgsFeatureSink, QgsFeatureSource, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
 Represents a vector layer which manages a vector based data sets.
