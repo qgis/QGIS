@@ -186,12 +186,12 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Inserts a new \a field at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      * \note Out of range position is automatically clamped to a valid value.
      */
-    bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0, QString *errorMessage SIP_OUT = nullptr );
+    bool insertField( int position, const QgsRasterAttributeTable::Field &field, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Creates a new field from \a name, \a usage and \a type and inserts it at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
-    bool insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, int position = 0, QString *errorMessage SIP_OUT = nullptr );
+    bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Creates a new field from \a name, \a usage and \a type and appends it to the fields, returns TRUE on success.
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Inserts a row of \a rowData in the RAT at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      * \note Out of range position is automatically clamped to a valid value.
      */
-    bool insertRow( const QVariantList &rowData, int position = 0, QString *errorMessage SIP_OUT = nullptr );
+    bool insertRow( int position, const QVariantList &rowData, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Removes the row in the RAT at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.

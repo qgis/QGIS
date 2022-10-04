@@ -217,7 +217,7 @@ void QgsRasterAttributeTable::setIsDirty( bool isDirty )
   mIsDirty = isDirty;
 }
 
-bool QgsRasterAttributeTable::insertField( const Field &field, int position, QString *errorMessage )
+bool QgsRasterAttributeTable::insertField( int position, const Field &field, QString *errorMessage )
 {
 
   const int realPos { std::clamp( position, 0, static_cast<int>( mFields.count() ) ) };
@@ -301,19 +301,19 @@ bool QgsRasterAttributeTable::insertField( const Field &field, int position, QSt
   return true;
 }
 
-bool QgsRasterAttributeTable::insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, int position, QString *errorMessage )
+bool QgsRasterAttributeTable::insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
 {
-  return insertField( { name, usage, type}, position, errorMessage );
+  return insertField( position, { name, usage, type}, errorMessage );
 }
 
 bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
 {
-  return insertField( name, usage, type, mFields.count(), errorMessage );
+  return insertField( mFields.count(), name, usage, type, errorMessage );
 }
 
 bool QgsRasterAttributeTable::appendField( const Field &field, QString *errorMessage )
 {
-  return insertField( field, mFields.count(), errorMessage );
+  return insertField( mFields.count(), field, errorMessage );
 }
 
 bool QgsRasterAttributeTable::removeField( const QString &name, QString *errorMessage )
@@ -341,10 +341,10 @@ bool QgsRasterAttributeTable::removeField( const QString &name, QString *errorMe
   return false;
 }
 
-bool QgsRasterAttributeTable::insertRow( const QVariantList &rowData, int position, QString *errorMessage )
+bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowData, QString *errorMessage )
 {
 
-  const int realPos { std::clamp( position, 0, static_cast<int>( mFields.count() ) ) };
+  const int realPos { std::clamp( position, 0, static_cast<int>( mData.count() ) ) };
 
   if ( rowData.size() != mFields.size() )
   {
@@ -395,7 +395,7 @@ bool QgsRasterAttributeTable::removeRow( int position, QString *errorMessage )
 
 bool QgsRasterAttributeTable::appendRow( const QVariantList &data, QString *errorMessage )
 {
-  return insertRow( data, mData.count(), errorMessage );
+  return insertRow( mData.count(), data, errorMessage );
 }
 
 bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMessage )

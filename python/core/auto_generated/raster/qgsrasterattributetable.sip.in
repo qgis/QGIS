@@ -190,7 +190,7 @@ Sets the RAT dirty state to ``isDirty``;
 Returns ``True`` if the RAT is valid, optionally reporting validity checks results in ``errorMessage``.
 %End
 
-    bool insertField( const QgsRasterAttributeTable::Field &field, int position = 0, QString *errorMessage /Out/ = 0 );
+    bool insertField( int position, const QgsRasterAttributeTable::Field &field, QString *errorMessage /Out/ = 0 );
 %Docstring
 Inserts a new ``field`` at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 
@@ -199,7 +199,7 @@ Inserts a new ``field`` at ``position``, optionally reporting any error in ``err
    Out of range position is automatically clamped to a valid value.
 %End
 
-    bool insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, int position = 0, QString *errorMessage /Out/ = 0 );
+    bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
@@ -219,7 +219,7 @@ Appends a new ``field``, optionally reporting any error in ``errorMessage``, ret
 Removes the field with ``name``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
-    bool insertRow( const QVariantList &rowData, int position = 0, QString *errorMessage /Out/ = 0 );
+    bool insertRow( int position, const QVariantList &rowData, QString *errorMessage /Out/ = 0 );
 %Docstring
 Inserts a row of ``rowData`` in the RAT at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 
