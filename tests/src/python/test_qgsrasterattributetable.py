@@ -28,8 +28,6 @@ from qgis.PyQt.QtGui import QColor
 
 
 from qgis.core import (Qgis,
-                       QgsMapLayerServerProperties,
-                       QgsRaster,
                        QgsRasterLayer,
                        QgsRasterAttributeTable,
                        )
@@ -330,11 +328,11 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(rat.isValid()[0])
 
         self.assertTrue(rat.removeField('Red')[0])
-        self.assertTrue(rat.insertField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int), -1)[0])
+        self.assertTrue(rat.insertField(-1, QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))[0])
         self.assertEqual([f.name for f in rat.fields()], ['Red', 'Class', 'Value', 'Green', 'Blue'])
         self.assertTrue(rat.removeField('Red')[0])
         # 100 is not valid but field is appended
-        self.assertTrue(rat.insertField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int), 100)[0])
+        self.assertTrue(rat.insertField(100, QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))[0])
         self.assertEqual([f.name for f in rat.fields()], ['Class', 'Value', 'Green', 'Blue', 'Red'])
 
         # Test row operations
@@ -366,13 +364,13 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(rat.data()[0][0], 'two')
 
         # Insert row
-        self.assertTrue(rat.insertRow(['zero', 0, 0, 0, 0], -1)[0])
+        self.assertTrue(rat.insertRow(-1, ['zero', 0, 0, 0, 0])[0])
         self.assertEqual(rat.data()[0][0], 'zero')
         self.assertEqual(len(rat.data()), 4)
-        self.assertTrue(rat.insertRow(['five', 1, 2, 3, 4], 10000)[0])
+        self.assertTrue(rat.insertRow(1000, ['five', 1, 2, 3, 4])[0])
         self.assertEqual(rat.data()[4], ['five', 1, 2, 3, 4])
         self.assertEqual(len(rat.data()), 5)
-        self.assertTrue(rat.insertRow(['after 0', 1, 2, 3, 4], 1)[0])
+        self.assertTrue(rat.insertRow(1, ['after 0', 1, 2, 3, 4])[0])
         self.assertEqual(rat.data()[1], ['after 0', 1, 2, 3, 4])
         self.assertEqual(len(rat.data()), 6)
 

@@ -40,6 +40,11 @@ bool QgsRasterAttributeTableModel::hasColor() const
   return mRat && mRat->hasColor();
 }
 
+bool QgsRasterAttributeTableModel::hasRamp() const
+{
+  return mRat && mRat->hasRamp();
+}
+
 QStringList QgsRasterAttributeTableModel::headerNames() const
 {
   QStringList headers;
@@ -51,9 +56,9 @@ QStringList QgsRasterAttributeTableModel::headerNames() const
       headers.push_back( f.name );
     }
 
-    if ( hasColor() )
+    if ( hasColor() || hasRamp() )
     {
-      headers.insert( 0, RAT_COLOR_HEADER_NAME );
+      headers.append( RAT_COLOR_HEADER_NAME );
     }
   }
   return headers;
@@ -61,8 +66,14 @@ QStringList QgsRasterAttributeTableModel::headerNames() const
 
 QString QgsRasterAttributeTableModel::headerTooltip( const int section ) const
 {
-  const QString fieldName { headerNames().at( section ) };
-  const bool isColor { fieldName == RAT_COLOR_HEADER_NAME };
+  const QStringList hNames { headerNames() };
+  if ( section < 0 || section >= hNames.count( ) )
+  {
+    return QString( );
+  }
+
+  const QString fieldName { hNames.at( section ) };
+  const bool isColor { section == hNames.count( ) - 1 };
 
   if ( isColor )
   {
@@ -85,7 +96,25 @@ QString QgsRasterAttributeTableModel::headerTooltip( const int section ) const
             """)HTML" ).arg( QgsRasterAttributeTable::usageName( field.usage ), QVariant::typeToName( field.type ) ) ;
 }
 
-bool QgsRasterAttributeTableModel::insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, const int position, QString *errorMessage )
+bool QgsRasterAttributeTableModel::isValid( QString *errorMessage )
+{
+  if ( ! mRat )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = tr( "Raster Attribute Table is not set for this model." );
+    }
+    return false;
+  }
+  return mRat->isValid( errorMessage );
+}
+
+bool QgsRasterAttributeTableModel::isDirty()
+{
+  return mRat && mRat->isDirty( );
+}
+
+bool QgsRasterAttributeTableModel::insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
 {
 
   if ( ! editChecks( errorMessage ) )
@@ -101,11 +130,12 @@ bool QgsRasterAttributeTableModel::insertField( const QString &name, const Qgis:
     }
     return false;
   }
+
   const int newPosition { std::clamp( position, 0, mRat->fields().count( ) ) };
   const QgsRasterAttributeTable::Field field { name, usage, type };
-  beginInsertColumns( QModelIndex(), newPosition, newPosition );
-  const bool retVal { mRat->insertField( field, newPosition, errorMessage ) };
-  endInsertColumns();
+  beginResetModel( );
+  const bool retVal { mRat->insertField( newPosition, field, errorMessage ) };
+  endResetModel();
   return retVal;
 }
 
@@ -126,13 +156,13 @@ bool QgsRasterAttributeTableModel::removeField( const int position, QString *err
     return false;
   }
 
-  beginRemoveColumns( QModelIndex(), position, position );
+  beginResetModel( );
   const bool retVal { mRat->removeField( mRat->fields().at( position ).name, errorMessage ) };
-  endRemoveColumns();
+  endResetModel();
   return retVal;
 }
 
-bool QgsRasterAttributeTableModel::removeColor( QString *errorMessage )
+bool QgsRasterAttributeTableModel::removeColorOrRamp( QString *errorMessage )
 {
 
   if ( ! editChecks( errorMessage ) )
@@ -142,6 +172,10 @@ bool QgsRasterAttributeTableModel::removeColor( QString *errorMessage )
 
   if ( ! mRat->hasColor() && ! mRat->hasRamp( ) )
   {
+    if ( errorMessage )
+    {
+      *errorMessage = tr( "RAT has not color or ramp information." );
+    }
     return false;
   }
 
@@ -152,14 +186,18 @@ bool QgsRasterAttributeTableModel::removeColor( QString *errorMessage )
   {
     if ( f.isColor() || f.isRamp() )
     {
-      ret &= mRat->removeField( f.name );
+      ret &= mRat->removeField( f.name, errorMessage );
+      if ( ! ret )
+      {
+        break;
+      }
     }
   }
   endResetModel();
   return ret;
 }
 
-bool QgsRasterAttributeTableModel::insertRow( const QVariantList &rowData, const int position, QString *errorMessage )
+bool QgsRasterAttributeTableModel::insertRow( const int position, const QVariantList &rowData, QString *errorMessage )
 {
   if ( ! editChecks( errorMessage ) )
   {
@@ -175,9 +213,9 @@ bool QgsRasterAttributeTableModel::insertRow( const QVariantList &rowData, const
     return false;
   }
 
-  beginInsertRows( QModelIndex(), position, position );
-  const bool retVal { mRat->insertRow( rowData, position, errorMessage ) };
-  endInsertRows();
+  beginResetModel();
+  const bool retVal { mRat->insertRow( position, rowData, errorMessage ) };
+  endResetModel();
   return retVal;
 }
 
@@ -197,9 +235,9 @@ bool QgsRasterAttributeTableModel::removeRow( const int position, QString *error
     return false;
   }
 
-  beginRemoveRows( QModelIndex(), position, position );
+  beginResetModel();
   const bool retVal { mRat->removeRow( position, errorMessage ) };
-  endRemoveRows();
+  endResetModel();
   return retVal;
 }
 
@@ -233,7 +271,7 @@ int QgsRasterAttributeTableModel::rowCount( const QModelIndex &parent ) const
 
 int QgsRasterAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
-  return ( !parent.isValid() && mRat ) ? mRat->fields().count() : 0;
+  return ( ! parent.isValid() && mRat ) ? ( mRat->fields().count() + ( mRat->hasColor() || mRat->hasRamp() ? 1 : 0 ) ) : 0;
 }
 
 QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role ) const
@@ -241,16 +279,24 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
   if ( mRat && index.isValid() && index.row() < rowCount( QModelIndex() ) && index.column() < columnCount( QModelIndex() ) )
   {
     const QString fieldName { headerNames().at( index.column() ) };
-    const bool isColor { fieldName == RAT_COLOR_HEADER_NAME };
+    const bool isColor { index.column() == columnCount( QModelIndex() ) - 1 };
     bool ok;
     const QgsRasterAttributeTable::Field field { mRat->fieldByName( fieldName, &ok ) };
     if ( ! isColor && ! ok )
     {
       return QVariant();
     }
-    if ( hasColor() && isColor && role == Qt::ItemDataRole::BackgroundRole )
+    if ( hasColor() && isColor )
     {
-      return mRat->color( index.row() );
+      switch ( role )
+      {
+        case Qt::ItemDataRole::BackgroundRole:
+          return mRat->color( index.row() );
+        case Qt::ItemDataRole::DisplayRole:
+          return mRat->color( index.row() ).name();
+        default:
+          return QVariant();
+      }
     }
     else if ( ! isColor && role == Qt::ItemDataRole::TextAlignmentRole && field.type != QVariant::String )
     {
@@ -260,7 +306,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
     {
       return tr( "This data is part of a color definition: click on '%1' column to edit." ).arg( RAT_COLOR_HEADER_NAME );
     }
-    else if ( role == Qt::ItemDataRole::DisplayRole or role == Qt::ItemDataRole::EditRole )
+    else if ( role == Qt::ItemDataRole::DisplayRole || role == Qt::ItemDataRole::EditRole )
     {
       return mRat->data().at( index.row() ).at( index.column() );
     }
@@ -280,7 +326,7 @@ bool QgsRasterAttributeTableModel::setData( const QModelIndex &index, const QVar
     {
       return false;
     }
-    if ( hasColor() && ( isColor || field.isColor() ) )
+    if ( hasColor() && isColor )
     {
       if ( ! value.canConvert( QVariant::Type::Color ) )
       {
@@ -290,9 +336,9 @@ bool QgsRasterAttributeTableModel::setData( const QModelIndex &index, const QVar
       {
         return false;
       }
-      QModelIndex colorColIdx { QgsRasterAttributeTableModel::index( index.row(), headerNames().indexOf( RAT_COLOR_HEADER_NAME ), QModelIndex() )};
+      const QModelIndex colorColIdx { QgsRasterAttributeTableModel::index( index.row(), headerNames().indexOf( RAT_COLOR_HEADER_NAME ), QModelIndex() )};
       emit dataChanged( colorColIdx, colorColIdx );
-      QModelIndex fieldColIdx { QgsRasterAttributeTableModel::index( index.row(), index.column(), QModelIndex() )};
+      const QModelIndex fieldColIdx { QgsRasterAttributeTableModel::index( index.row(), index.column(), QModelIndex() )};
       emit dataChanged( fieldColIdx, fieldColIdx );
       return true;
     }
@@ -302,7 +348,7 @@ bool QgsRasterAttributeTableModel::setData( const QModelIndex &index, const QVar
       const bool retVal { mRat->setValue( index.row(), index.column(), value ) };
       if ( retVal )
       {
-        QModelIndex fieldColIdx { QgsRasterAttributeTableModel::index( index.row(), index.column(), QModelIndex() )};
+        const QModelIndex fieldColIdx { QgsRasterAttributeTableModel::index( index.row(), index.column(), QModelIndex() )};
         emit dataChanged( fieldColIdx, fieldColIdx );
       }
       return retVal;

@@ -68,6 +68,16 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
      */
     QString headerTooltip( const int section ) const;
 
+    /**
+     * Checks if the RAT is valid, optionally returns validation errors in \a errorMessage.
+     */
+    bool isValid( QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Returns TRUE if the RAT was modified since it was last saved or read.
+     */
+    bool isDirty( );
+
     // RAT operations
 
     /**
@@ -79,21 +89,25 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
      * \param errorMessage optional error message
      * \returns true on success
      */
-    bool insertField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, const int position, QString *errorMessage SIP_OUT = nullptr );
+    bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Remove the field at given \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
     bool removeField( const int position, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Removes all color or ramp information, returns TRUE on success.
+     * Removes all color or ramp information, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool removeColorOrRamp( QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Inserts a new row before \a position, returns TRUE on success.
+     * Inserts a new row before \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
-    bool insertRow( const QVariantList &rowData, const int position, QString *errorMessage SIP_OUT = nullptr );
+    bool insertRow( const int position, const QVariantList &rowData, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Removes the row at \a position, returns TRUE on success.
+     * Removes the row at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool removeRow( const int position, QString *errorMessage SIP_OUT = nullptr );
 
@@ -115,9 +129,7 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-
 
 };
 
