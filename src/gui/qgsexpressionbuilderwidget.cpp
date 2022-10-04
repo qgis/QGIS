@@ -265,7 +265,7 @@ void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, cons
 void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
 {
   init( context, recentCollection, flags );
-  setLayer( layer );
+  setMapLayer( layer );
 }
 
 void QgsExpressionBuilderWidget::initWithMapLayer( QgsMapLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, QgsExpressionBuilderWidget::Flags flags )
@@ -1220,7 +1220,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem *express
 QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu( QgsExpressionItem *item )
 {
   QMenu *menu = nullptr;
-  QgsVectorLayer *layer = mExpressionBuilderWidget->layer();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mExpressionBuilderWidget->mapLayer() );
   if ( item->getItemType() == QgsExpressionItem::Field && layer )
   {
     menu = new QMenu( mExpressionBuilderWidget );

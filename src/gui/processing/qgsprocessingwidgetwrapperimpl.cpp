@@ -2293,7 +2293,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
     if ( mFieldExpWidget )
       mFieldExpWidget->setLayer( nullptr );
     else if ( mExpBuilderWidget )
-      mExpBuilderWidget->setLayer( nullptr );
+      mExpBuilderWidget->setMapLayer( nullptr );
     else if ( mExpLineEdit )
       mExpLineEdit->setLayer( nullptr );
     return;
@@ -2315,7 +2315,7 @@ void QgsProcessingExpressionWidgetWrapper::setParentLayerWrapperValue( const Qgs
   if ( mFieldExpWidget )
     mFieldExpWidget->setLayer( layer );
   if ( mExpBuilderWidget )
-    mExpBuilderWidget->setLayer( layer );
+    mExpBuilderWidget->setMapLayer( layer );
   else if ( mExpLineEdit )
     mExpLineEdit->setLayer( layer );
 }
@@ -2371,8 +2371,8 @@ const QgsVectorLayer *QgsProcessingExpressionWidgetWrapper::linkedVectorLayer() 
   if ( mFieldExpWidget && mFieldExpWidget->layer() )
     return mFieldExpWidget->layer();
 
-  if ( mExpBuilderWidget && mExpBuilderWidget->layer() )
-    return mExpBuilderWidget->layer();
+  if ( mExpBuilderWidget && mExpBuilderWidget->mapLayer() )
+    return qobject_cast<QgsVectorLayer *>( mExpBuilderWidget->mapLayer() );
 
   return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
 }
