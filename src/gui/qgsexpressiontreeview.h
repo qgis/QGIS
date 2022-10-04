@@ -176,7 +176,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     /**
      * Sets layer in order to get layer information
      */
-    void setLayer(QgsMapLayer *layer );
+    void setLayer( QgsMapLayer *layer );
 
     /**
      * This allows loading fields without specifying a layer

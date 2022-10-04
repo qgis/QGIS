@@ -150,7 +150,7 @@ Returns a newly created menu instance
 Constructor
 %End
 
-    void setLayer(QgsMapLayer *layer );
+    void setLayer( QgsMapLayer *layer );
 %Docstring
 Sets layer in order to get layer information
 %End

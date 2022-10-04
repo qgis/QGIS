@@ -333,7 +333,7 @@ class CORE_EXPORT QgsExpressionContextUtils
 
     /**
      * Creates a new scope which contains functions relating to mesh layer element \a elementType,
-     * using \defaultIndex if not overriden later
+     * using \a defaultIndex if not overridden later
      *
      * \since QGIS 3.22
      */
