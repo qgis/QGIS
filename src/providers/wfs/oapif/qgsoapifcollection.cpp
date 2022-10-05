@@ -297,6 +297,16 @@ bool QgsOapifCollection::deserialize( const json &j )
     }
   }
 
+  if ( j.contains( "crs" ) )
+  {
+    const auto crsUrl = j["crs"];
+    if ( crsUrl.is_string() )
+    {
+      QString crs = QString::fromStdString( crsUrl.get<std::string>() );
+      mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ) );
+    }
+  }
+
   return true;
 }
 
