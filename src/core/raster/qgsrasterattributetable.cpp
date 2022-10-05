@@ -640,13 +640,53 @@ bool QgsRasterAttributeTable::setValue( const int row, const int column, const Q
   return true;
 }
 
-QVariant QgsRasterAttributeTable::value( const int row, const int column )
+QVariant QgsRasterAttributeTable::value( const int row, const int column ) const
 {
   if ( row < 0 || row >= mData.count( ) || column < 0 || column >=  mData[ row ].count( ) )
   {
     return QVariant();
   }
   return mData[ row ][ column ];
+}
+
+QVariantList QgsRasterAttributeTable::row( const double matchValue ) const
+{
+  if ( ! isValid() )
+  {
+    return QVariantList();
+  }
+
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+
+  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
+  {
+    const int colIdx { fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax ) };
+    for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+    {
+      bool ok;
+      if ( matchValue == value( rowIdx, colIdx ).toDouble( &ok ) && ok )
+      {
+        return mData.at( rowIdx );
+      }
+    }
+  }
+  else
+  {
+    const int minColIdx { fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Min ) };
+    const int maxColIdx { fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Max ) };
+    for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+    {
+      bool ok;
+      if ( matchValue >= value( rowIdx, minColIdx ).toDouble( &ok ) && ok )
+      {
+        if ( matchValue < value( rowIdx, maxColIdx ).toDouble( &ok ) && ok )
+        {
+          return mData.at( rowIdx );
+        }
+      }
+    }
+  }
+  return QVariantList();
 }
 
 Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( const QString &name, const QVariant::Type type )

@@ -315,19 +315,18 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   const double yMin = yMax - yres;
   const QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
 
-  for ( int i = 1; i <= bandCount(); i++ )
+  for ( int bandNumber = 1; bandNumber <= bandCount(); bandNumber++ )
   {
-    std::unique_ptr< QgsRasterBlock > bandBlock( block( i, pixelExtent, 1, 1 ) );
+    std::unique_ptr< QgsRasterBlock > bandBlock( block( bandNumber, pixelExtent, 1, 1 ) );
 
     if ( bandBlock )
     {
       const double value = bandBlock->value( 0 );
-
-      results.insert( i, value );
+      results.insert( bandNumber, value );
     }
     else
     {
-      results.insert( i, QVariant() );
+      results.insert( bandNumber, QVariant() );
     }
   }
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );

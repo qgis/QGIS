@@ -286,9 +286,14 @@ Sets the ``value`` for ``row`` and ``column``.
 :return: ``True`` on success.
 %End
 
-    QVariant value( const int row, const int column );
+    QVariant value( const int row, const int column ) const;
 %Docstring
 Returns the ``value`` for ``row`` and ``column``.
+%End
+
+    QVariantList row( const double matchValue ) const;
+%Docstring
+Returns a row of data for the given ``matchValue`` or and empty row if there is not match.
 %End
 
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );

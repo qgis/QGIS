@@ -275,7 +275,12 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the \a value for \a row and \a column.
      */
-    QVariant value( const int row, const int column );
+    QVariant value( const int row, const int column ) const;
+
+    /**
+     * Returns a row of data for the given \a matchValue or and empty row if there is not match.
+     */
+    QVariantList row( const double matchValue ) const;
 
     /**
      * Try to determine the field usage from its \a name and \a type.
