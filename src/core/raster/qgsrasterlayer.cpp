@@ -744,9 +744,17 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
 
-  // TODO: automatic load RAT if set for single band
-  // if ( mDataProvider->bandCount() == 1 && mDataProvider->attributeTable( 1 ) )
-  // ....
+  QString errorMessage;
+  const bool hasRat { mDataProvider->readNativeAttributeTable( &errorMessage ) };
+  if ( ! hasRat )
+  {
+    QgsDebugMsgLevel( "Raster RAT read failed " + errorMessage, 2 );
+  }
+  else
+  {
+    QgsDebugMsgLevel( "Raster RAT read success", 2 );
+  }
+
   if ( mRasterType == ColorLayer )
   {
     QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );
