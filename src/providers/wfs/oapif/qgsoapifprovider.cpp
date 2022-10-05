@@ -708,25 +708,12 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
   const QgsRectangle &rect = mShared->currentRect();
   if ( !rect.isNull() )
   {
-    // Clamp to avoid server errors.
-    const double minx = std::max( -180.0, rect.xMinimum() );
-    const double miny = std::max( -90.0, rect.yMinimum() );
-    const double maxx = std::min( 180.0, rect.xMaximum() );
-    const double maxy = std::min( 90.0, rect.yMaximum() );
-    if ( minx > 180.0 || miny > 90.0 || maxx  < -180.0 || maxy < -90.0 )
-    {
-      // completely out of range. Servers could error out
-      url.clear();
-    }
-    else if ( minx > -180.0 || miny > -90.0 || maxx < 180.0 || maxy < 90.0 )
-    {
-      url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-      url += QStringLiteral( "bbox=%1,%2,%3,%4" )
-             .arg( qgsDoubleToString( minx ),
-                   qgsDoubleToString( miny ),
-                   qgsDoubleToString( maxx ),
-                   qgsDoubleToString( maxy ) );
-    }
+    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+    url += QStringLiteral( "bbox=%1,%2,%3,%4" )
+           .arg( qgsDoubleToString( rect.xMinimum() ),
+                 qgsDoubleToString( rect.yMinimum() ),
+                 qgsDoubleToString( rect.xMaximum() ),
+                 qgsDoubleToString( rect.yMaximum() ) );
   }
 
   while ( !url.isEmpty() )
