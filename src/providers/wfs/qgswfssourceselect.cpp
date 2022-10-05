@@ -36,6 +36,7 @@
 #include "qgsquerybuilder.h"
 #include "qgswfsguiutils.h"
 #include "qgswfssubsetstringeditor.h"
+#include "qgsguiutils.h"
 
 #include <QDomDocument>
 #include <QListWidgetItem>
@@ -391,6 +392,9 @@ void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
 
     typedef QList< QStandardItem * > StandardItemList;
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << filterItem );
+
+    gbCRS->setEnabled( false );
+    labelCoordRefSys->setText( collection.mLayerMetadata.crs().authid() );
   }
 
   if ( !mOAPIFCollections->nextUrl().isEmpty() )
@@ -491,11 +495,16 @@ void QgsWFSSourceSelect::connectToServer()
     mCapabilities->requestCapabilities( synchronous, forceRefresh );
     QApplication::setOverrideCursor( Qt::WaitCursor );
   }
+
+  gbCRS->setEnabled( true );
 }
 
 
 void QgsWFSSourceSelect::addButtonClicked()
 {
+  std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
+  cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+
   //get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
@@ -505,7 +514,9 @@ void QgsWFSSourceSelect::addButtonClicked()
 
   QgsWfsConnection connection( cmbConnections->currentText() );
 
-  QString pCrsString( labelCoordRefSys->text() );
+  QString pCrsString;
+  if ( gbCRS->isEnabled() )
+    pCrsString = labelCoordRefSys->text();
 
   //create layers that user selected from this WFS source
   QModelIndexList list = treeView->selectionModel()->selectedRows();

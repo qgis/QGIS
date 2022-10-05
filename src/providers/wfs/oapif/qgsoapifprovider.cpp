@@ -45,8 +45,6 @@ QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &o
     return;
   }
 
-  mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-
   mSubsetString = mShared->mURI.filter();
 
   if ( !init() )
@@ -145,6 +143,11 @@ bool QgsOapifProvider::init()
   mShared->mCapabilityExtent = collectionRequest.collection().mBbox;
 
   mLayerMetadata = collectionRequest.collection().mLayerMetadata;
+
+  mShared->mSourceCrs = mLayerMetadata.crs();
+  if ( ! mShared->mSourceCrs.isValid() )
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+
   // Merge contact info from /api
   mLayerMetadata.setContacts( apiRequest.metadata().contacts() );
 
