@@ -694,7 +694,10 @@ bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const 
 
 bool QgsRasterDataProvider::readNativeAttributeTable( QString *errorMessage )
 {
-  Q_UNUSED( errorMessage )
+  if ( errorMessage )
+  {
+    *errorMessage = QObject::tr( "Raster data provider has no native Raster Attribute Table support." );
+  }
   return false;
 }
 

@@ -106,8 +106,22 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
 
-        # Create a 2x2 single band float raster
+        # Create the single band version of the 16 bit raster
+        # 2x2_1_BAND_INT16
+        self.uri_2x2_1_BAND_INT16 = os.path.join(self.temp_path, '2x2_1_BAND_INT16.tif')
+        dst_ds = gdal.GetDriverByName('GTiff').Create(
+            self.uri_2x2_1_BAND_INT16, ny, nx, 1, gdal.GDT_Int16)
 
+        dst_ds.SetGeoTransform(geotransform)    # specify coords
+        srs = osr.SpatialReference()            # establish encoding
+        srs.ImportFromEPSG(3857)                # WGS84 lat/long
+        dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
+        dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
+
+        dst_ds.FlushCache()                     # write to disk
+        dst_ds = None
+
+        # Create a 2x2 single band float raster
         #  Initialize the Image Size
         image_size = (2, 2)
 
@@ -132,7 +146,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
 
-    def testRat(self):
+    def ___testRat(self):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
@@ -268,7 +282,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(rat.fieldByName("Red")[1])
         self.assertFalse(rat.fieldByName("xxx")[1])
 
-    def testTableOperationsAndValidation(self):
+    def ____testTableOperationsAndValidation(self):
 
         rat = QgsRasterAttributeTable()
         valid, error = rat.isValid()
@@ -396,7 +410,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(rat.ramp(1).min.name(), '#010203')
         self.assertEqual(rat.ramp(1).max.name(), '#020304')
 
-    def testWriteReadDbfRat(self):
+    def ____testWriteReadDbfRat(self):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
@@ -438,6 +452,42 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
             [0, 1, 'zero', 'zero2', 'zero3', 0, 10, 100, 1.234],
             [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
             [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
+
+    def testRenderer(self):
+
+        # Create RAT for 16 bit raster
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+
+        data_rows = [
+            [0, 'zero', 'zero', 'even', 0, 0, 0],
+            [2, 'one', 'not0', 'odd', 1, 1, 1],
+            [4, 'two', 'not0', 'even', 2, 2, 2],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, rat)
+        d = raster.dataProvider()
+        ok, errors = rat.isValid()
+        self.assertTrue(ok)
+        ok, errors = d.writeNativeAttributeTable()  # spellok
+        self.assertTrue(ok)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        self.assertIsNotNone(raster.attributeTable(1))
+
+        from IPython import embed
+        embed(using=False)
 
 
 if __name__ == '__main__':
