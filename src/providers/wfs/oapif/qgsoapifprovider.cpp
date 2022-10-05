@@ -705,15 +705,33 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
     hasQueryParam = true;
   }
 
-  const QgsRectangle &rect = mShared->currentRect();
+  QgsRectangle rect = mShared->currentRect();
   if ( !rect.isNull() )
   {
-    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-    url += QStringLiteral( "bbox=%1,%2,%3,%4" )
-           .arg( qgsDoubleToString( rect.xMinimum() ),
-                 qgsDoubleToString( rect.yMinimum() ),
-                 qgsDoubleToString( rect.xMaximum() ),
-                 qgsDoubleToString( rect.yMaximum() ) );
+    if ( mShared->mSourceCrs.isGeographic() )
+    {
+      // Clamp to avoid server errors.
+      rect.setXMinimum( std::max( -180.0, rect.xMinimum() ) );
+      rect.setYMinimum( std::max( -90.0, rect.yMinimum() ) );
+      rect.setXMaximum( std::min( 180.0, rect.xMaximum() ) );
+      rect.setYMaximum( std::min( 90.0, rect.yMaximum() ) );
+      if ( rect.xMinimum() > 180.0 || rect.yMinimum() > 90.0 || rect.xMaximum()  < -180.0 || rect.yMaximum() < -90.0 )
+      {
+        // completely out of range. Servers could error out
+        url.clear();
+        rect = QgsRectangle();
+      }
+    }
+
+    if ( ! rect.isNull() )
+    {
+      url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
+      url += QStringLiteral( "bbox=%1,%2,%3,%4" )
+             .arg( qgsDoubleToString( rect.xMinimum() ),
+                   qgsDoubleToString( rect.yMinimum() ),
+                   qgsDoubleToString( rect.xMaximum() ),
+                   qgsDoubleToString( rect.yMaximum() ) );
+    }
   }
 
   while ( !url.isEmpty() )
