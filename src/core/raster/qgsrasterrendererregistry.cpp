@@ -21,6 +21,7 @@
 #include "qgsrastertransparency.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgscolorrampimpl.h"
 #include "qgsrastercontourrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
@@ -121,23 +122,55 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     case QgsRaster::PalettedColor:
     {
       const int grayBand = 1; //reasonable default
-      const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
-      renderer = new QgsPalettedRasterRenderer( provider,
-          grayBand,
-          classes );
+      if ( provider->attributeTable( grayBand ) )
+      {
+        std::unique_ptr<QgsColorRamp> ramp;
+        if ( ! provider->attributeTable( grayBand )->hasColor() )
+        {
+          ramp.reset( new QgsRandomColorRamp() );
+        }
+        const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), ramp.get() );
+        renderer = new QgsPalettedRasterRenderer( provider,
+            grayBand,
+            classes );
+      }
+      else
+      {
+        const QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
+        renderer = new QgsPalettedRasterRenderer( provider,
+            grayBand,
+            classes );
+      }
     }
     break;
     case QgsRaster::MultiBandSingleBandGray:
     case QgsRaster::SingleBandGray:
     {
       const int grayBand = 1;
-      renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
-      QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
-            provider->dataType( grayBand ) ) );
+      // If the raster band has an attribute table, use it.
+      if ( provider->attributeTable( grayBand ) )
+      {
+        std::unique_ptr<QgsColorRamp> ramp;
+        if ( ! provider->attributeTable( grayBand )->hasColor() )
+        {
+          ramp.reset( new QgsRandomColorRamp() );
+        }
+        const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), ramp.get() );
+        renderer = new QgsPalettedRasterRenderer( provider,
+            grayBand,
+            classes );
+      }
+      else
+      {
+        renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
-// Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
-      ( ( QgsSingleBandGrayRenderer * )renderer )->setContrastEnhancement( ce );
+        QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
+              provider->dataType( grayBand ) ) );
+
+        // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
+        ( ( QgsSingleBandGrayRenderer * )renderer )->setContrastEnhancement( ce );
+      }
       break;
     }
     case QgsRaster::SingleBandPseudoColor:

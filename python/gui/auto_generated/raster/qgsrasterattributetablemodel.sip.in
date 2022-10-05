@@ -27,27 +27,27 @@ Creates a new QgsRasterAttributeTableModel from raster attribute table ``rat`` a
 
     bool editable() const;
 %Docstring
-Returns true if the RAT is editable.
+Returns true if the Raster Attribute Table is editable.
 %End
 
     void setEditable( bool editable );
 %Docstring
-Sets the RAT editable state to ``editable``.
+Sets the Raster Attribute Table editable state to ``editable``.
 %End
 
     bool hasColor() const;
 %Docstring
-Returns ``True`` if the RAT has color information.
+Returns ``True`` if the Raster Attribute Table has color information.
 %End
 
     bool hasRamp() const;
 %Docstring
-Returns ``True`` if the RAT has ramp information.
+Returns ``True`` if the Raster Attribute Table has ramp information.
 %End
 
     QStringList headerNames( ) const;
 %Docstring
-Returns all the header names, including the "virtual" color header if the RAT has color or ramp.
+Returns all the header names, including the "virtual" color header if the Raster Attribute Table has color or ramp.
 %End
 
     QString headerTooltip( const int section ) const;
@@ -57,12 +57,12 @@ Returns the tooltip for the given ``section``.
 
     bool isValid( QString *errorMessage /Out/ = 0 );
 %Docstring
-Checks if the RAT is valid, optionally returns validation errors in ``errorMessage``.
+Checks if the Raster Attribute Table is valid, optionally returns validation errors in ``errorMessage``.
 %End
 
     bool isDirty( );
 %Docstring
-Returns ``True`` if the RAT was modified since it was last saved or read.
+Returns ``True`` if the Raster Attribute Table was modified since it was last saved or read.
 %End
 
 

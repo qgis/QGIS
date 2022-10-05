@@ -25,23 +25,26 @@
 
 #include <QObject>
 #include <QLinearGradient>
+#include <QCoreApplication>
 
 /**
  * \ingroup core
  * \brief The QgsRasterAttributeTable class represents a raster attribute table (RAT).
  *
- * This class is modeled after the GDAL RAT implementation, it adds some convenience
- * methods to handle data from QGIS and to import/export a RAT from/to a DBF VAT file.
+ * This class is modeled after the GDAL Raster Attribute Table implementation, it adds some convenience
+ * methods to handle data from QGIS and to import/export a Raster Attribute Table from/to a DBF VAT file.
  *
  * \since QGIS 3.30
  */
 class CORE_EXPORT QgsRasterAttributeTable
 {
 
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterAttributeTable )
+
   public:
 
     /**
-     * \brief The Ramp struct represents the min and max colors of a RAT row.
+     * \brief The Ramp struct represents the min and max colors of a Raster Attribute Table row.
      */
     struct CORE_EXPORT Ramp
     {
@@ -50,7 +53,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     };
 
     /**
-     * \brief The Field struct represents a RAT field, including its name, usage and type.
+     * \brief The Field struct represents a Raster Attribute Table field, including its name, usage and type.
      */
     struct CORE_EXPORT Field
     {
@@ -76,17 +79,27 @@ class CORE_EXPORT QgsRasterAttributeTable
     };
 
     /**
-     * Returns the RAT type.
+     * \brief The Field struct represents a Raster Attribute Table classification entry for a MinMax Raster Attribute Table.
+     */
+    struct CORE_EXPORT MinMaxClass
+    {
+      QString name;
+      QVector< double > minMaxValues;
+      QColor color;
+    };
+
+    /**
+     * Returns the Raster Attribute Table type.
      */
     Qgis::RasterAttributeTableType type() const;
 
     /**
-     * Sets the RAT \a type
+     * Sets the Raster Attribute Table \a type
      */
     void setType( const Qgis::RasterAttributeTableType type );
 
     /**
-     * Returns TRUE if the RAT has color RGBA information.
+     * Returns TRUE if the Raster Attribute Table has color RGBA information.
      * \see color()
      * \see setColor()
      * \see hasRamp()
@@ -107,7 +120,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool setColor( const int row, const QColor &color );
 
     /**
-     * Returns TRUE if the RAT has ramp RGBA information.
+     * Returns TRUE if the Raster Attribute Table has ramp RGBA information.
      * \see setRamp()
      * \see ramp()
      * \see hasColor()
@@ -151,34 +164,34 @@ class CORE_EXPORT QgsRasterAttributeTable
     Ramp ramp( int row ) const;
 
     /**
-     * Returns the RAT fields.
+     * Returns the Raster Attribute Table fields.
      * \see qgisFields()
      */
     QList<QgsRasterAttributeTable::Field> fields() const;
 
     /**
-     * Returns the RAT fields as QgsFields.
+     * Returns the Raster Attribute Table fields as QgsFields.
      * \see fields()
      */
     QgsFields qgisFields() const;
 
     /**
-     * Returns the RAT rows as a list of QgsFeature.
+     * Returns the Raster Attribute Table rows as a list of QgsFeature.
      */
     QgsFeatureList qgisFeatures( ) const;
 
     /**
-     * Returns TRUE if the RAT was modified from its last reading from the storage.
+     * Returns TRUE if the Raster Attribute Table was modified from its last reading from the storage.
      */
     bool isDirty() const;
 
     /**
-     * Sets the RAT dirty state to \a isDirty;
+     * Sets the Raster Attribute Table dirty state to \a isDirty;
      */
     void setIsDirty( bool isDirty );
 
     /**
-     * Returns TRUE if the RAT is valid, optionally reporting validity checks results in \a errorMessage.
+     * Returns TRUE if the Raster Attribute Table is valid, optionally reporting validity checks results in \a errorMessage.
      */
     bool isValid( QString *errorMessage SIP_OUT = nullptr ) const;
 
@@ -209,13 +222,13 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool removeField( const QString &name, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Inserts a row of \a rowData in the RAT at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * Inserts a row of \a rowData in the Raster Attribute Table at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      * \note Out of range position is automatically clamped to a valid value.
      */
     bool insertRow( int position, const QVariantList &rowData, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Removes the row in the RAT at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * Removes the row in the Raster Attribute Table at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      * \note position must be a valid position.
      */
     bool removeRow( int position = 0, QString *errorMessage SIP_OUT = nullptr );
@@ -226,17 +239,17 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool appendRow( const QVariantList &data, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Writes the RAT to a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * Writes the Raster Attribute Table to a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool writeToFile( const QString &path, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Reads the RAT from a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * Reads the Raster Attribute Table from a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool readFromFile( const QString &path, QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Returns the RAT rows.
+     * Returns the Raster Attribute Table rows.
      */
     const QList<QList<QVariant>> data() const;
 
@@ -273,6 +286,11 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Returns the translated human readable name of \a fieldUsage.
      */
     static QString usageName( const Qgis::RasterAttributeTableFieldUsage fieldusage );
+
+    /**
+     * Returns the classes for a thematic RAT, classified by \a classificationColumn, the default value of -1 makes the method guess the classification column based on the field usage.
+     */
+    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
 
   private:
 
