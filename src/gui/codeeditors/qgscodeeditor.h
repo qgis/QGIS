@@ -45,6 +45,19 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   public:
 
     /**
+     * Code editor modes.
+     *
+     * \since QGIS 3.30
+     */
+    enum class Mode
+    {
+      ScriptEditor, //!< Standard mode, allows for display and edit of entire scripts
+      OutputDisplay, //!< Read only mode for display of command outputs
+      CommandInput, //!< Command input mode
+    };
+    Q_ENUM( Mode )
+
+    /**
      * Margin roles.
      *
      * This enum contains the roles which the different numbered margins are used for.
@@ -86,9 +99,10 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param folding FALSE: Enable folding for code editor (deprecated, use \a flags instead)
      * \param margin FALSE: Enable margin for code editor (deprecated)
      * \param flags flags controlling behavior of code editor (since QGIS 3.28)
+     * \param mode code editor mode (since QGIS 3.30)
      * \since QGIS 2.6
      */
-    QgsCodeEditor( QWidget * parent SIP_TRANSFERTHIS = nullptr, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags() );
+    QgsCodeEditor( QWidget * parent SIP_TRANSFERTHIS = nullptr, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 
     /**
      * Set the widget title
@@ -216,6 +230,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void clearWarnings();
 
     /**
+     * Returns the code editor mode.
+     *
+     * \since QGIS 3.30
+     */
+    QgsCodeEditor::Mode mode() const { return mMode; }
+
+    /**
      * Returns TRUE if the cursor is on the last line of the document.
      *
      * \since QGIS 3.28
@@ -242,10 +263,10 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
   protected:
 
-    bool isFixedPitch( const QFont & font );
+    bool isFixedPitch( const QFont &font );
 
-    void focusOutEvent( QFocusEvent * event ) override;
-    void keyPressEvent( QKeyEvent * event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
@@ -285,6 +306,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QString mWidgetTitle;
     bool mMargin = false;
     QgsCodeEditor::Flags mFlags;
+    QgsCodeEditor::Mode mMode = QgsCodeEditor::Mode::ScriptEditor;
 
     bool mUseDefaultSettings = true;
     // used if above is false, inplace of values taken from QSettings:

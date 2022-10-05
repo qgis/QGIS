@@ -76,7 +76,7 @@ class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor
   public:
 
     //! Constructor for QgsCodeEditorR
-    QgsCodeEditorR( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsCodeEditorR( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 
   protected:
     void initializeLexer() override;

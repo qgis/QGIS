@@ -22,12 +22,13 @@
 #include <Qsci/qscilexerjson.h>
 
 
-QgsCodeEditorR::QgsCodeEditorR( QWidget *parent )
+QgsCodeEditorR::QgsCodeEditorR( QWidget *parent, Mode mode )
   : QgsCodeEditor( parent,
                    QString(),
                    false,
                    false,
-                   QgsCodeEditor::Flag::CodeFolding )
+                   QgsCodeEditor::Flag::CodeFolding,
+	           mode )
 {
   if ( !parent )
   {

@@ -1,5 +1,12 @@
 # The following has been generated automatically from src/gui/codeeditors/qgscodeeditor.h
 # monkey patching scoped based enum
+QgsCodeEditor.Mode.ScriptEditor.__doc__ = "Standard mode, allows for display and edit of entire scripts"
+QgsCodeEditor.Mode.OutputDisplay.__doc__ = "Read only mode for display of command outputs"
+QgsCodeEditor.Mode.CommandInput.__doc__ = "Command input mode"
+QgsCodeEditor.Mode.__doc__ = 'Code editor modes.\n\n.. versionadded:: 3.30\n\n' + '* ``ScriptEditor``: ' + QgsCodeEditor.Mode.ScriptEditor.__doc__ + '\n' + '* ``OutputDisplay``: ' + QgsCodeEditor.Mode.OutputDisplay.__doc__ + '\n' + '* ``CommandInput``: ' + QgsCodeEditor.Mode.CommandInput.__doc__
+# --
+QgsCodeEditor.Mode.baseClass = QgsCodeEditor
+# monkey patching scoped based enum
 QgsCodeEditor.LineNumbers = QgsCodeEditor.MarginRole.LineNumbers
 QgsCodeEditor.LineNumbers.is_monkey_patched = True
 QgsCodeEditor.LineNumbers.__doc__ = "Line numbers"
