@@ -30,6 +30,7 @@ from qgis.PyQt.QtGui import QColor
 from qgis.core import (Qgis,
                        QgsRasterLayer,
                        QgsRasterAttributeTable,
+                       QgsPalettedRasterRenderer,
                        )
 
 from qgis.testing import start_app, unittest
@@ -453,7 +454,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
             [2, 1, 'one', 'one2', 'one3', 100, 20, 0, 0.998],
             [4, 2, 'two', 'two2', 'two3', 200, 30, 50, 123456]])
 
-    def testRenderer(self):
+    def testClassification(self):
 
         # Create RAT for 16 bit raster
         rat = QgsRasterAttributeTable()
@@ -467,8 +468,8 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         data_rows = [
             [0, 'zero', 'zero', 'even', 0, 0, 0],
-            [2, 'one', 'not0', 'odd', 1, 1, 1],
-            [4, 'two', 'not0', 'even', 2, 2, 2],
+            [1, 'one', 'not0', 'odd', 1, 1, 1],
+            [2, 'two', 'not0', 'even', 2, 2, 2],
         ]
 
         for row in data_rows:
@@ -486,8 +487,78 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
         self.assertIsNotNone(raster.attributeTable(1))
 
-        from IPython import embed
-        embed(using=False)
+        # Test classes
+        rat = raster.attributeTable(1)
+        classes = rat.minMaxClasses()
+        self.assertEqual({c.name: c.minMaxValues for c in classes}, {'zero': [0.0], 'one': [1.0], 'two': [2.0]})
+        self.assertEqual(classes[0].color.name(), '#000000')
+        self.assertEqual(classes[1].color.name(), '#010101')
+        self.assertEqual(classes[2].color.name(), '#020202')
+
+        classes = rat.minMaxClasses(1)
+        self.assertEqual({c.name: c.minMaxValues for c in classes}, {'zero': [0.0], 'one': [1.0], 'two': [2.0]})
+        classes = rat.minMaxClasses(2)
+        self.assertEqual({c.name: c.minMaxValues for c in classes}, {'zero': [0.0], 'not0': [1.0, 2.0]})
+        self.assertEqual(classes[0].color.name(), '#000000')
+        self.assertEqual(classes[1].color.name(), '#010101')
+
+        classes = rat.minMaxClasses(3)
+        self.assertEqual({c.name: c.minMaxValues for c in classes}, {'even': [0.0, 2.0], 'odd': [1.0]})
+        self.assertEqual(classes[0].color.name(), '#000000')
+        self.assertEqual(classes[1].color.name(), '#010101')
+
+        # Class out of range errors
+        classes = rat.minMaxClasses(100)
+        self.assertEqual(len(classes), 0)
+        classes = rat.minMaxClasses(-100)
+        self.assertEqual(len(classes), 0)
+        classes = rat.minMaxClasses(4)
+        self.assertEqual(len(classes), 0)
+
+    def testPalettedRenderer(self):
+
+        # Create RAT for 16 bit raster
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class3', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+
+        data_rows = [
+            [0, 'zero', 'zero', 'even', 0, 0, 0],
+            [1, 'one', 'not0', 'odd', 1, 1, 1],
+            [2, 'two', 'not0', 'even', 2, 2, 2],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, rat)
+        d = raster.dataProvider()
+        ok, errors = rat.isValid()
+        self.assertTrue(ok)
+        ok, errors = d.writeNativeAttributeTable()  # spellok
+        self.assertTrue(ok)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        rat = raster.attributeTable(1)
+        renderer = QgsPalettedRasterRenderer(raster.dataProvider(), 1, [])
+
+        classes = []
+
+        for c in rat.minMaxClasses():
+            mc = QgsPalettedRasterRenderer.MultiValueClass(c.minMaxValues, c.color, c.name)
+            classes.append(mc)
+
+        renderer.setMultiValueClasses(classes)
+        self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in renderer.multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
+        self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in QgsPalettedRasterRenderer.rasterAttributeTableToClassData(rat)], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
+        self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in raster.renderer().multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
 
 
 if __name__ == '__main__':

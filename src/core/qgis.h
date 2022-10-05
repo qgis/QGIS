@@ -748,7 +748,7 @@ class CORE_EXPORT Qgis
     Q_FLAG( RasterRendererFlags )
 
     /*
-     * \brief The RasterAttributeTableFieldUsage enum represents the usage of a RAT field.
+     * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
      * \since QGIS 3.30
      */
     enum class RasterAttributeTableFieldUsage : int

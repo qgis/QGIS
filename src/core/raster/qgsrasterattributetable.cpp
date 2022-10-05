@@ -226,7 +226,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Field name must not be empty." );
+      *errorMessage = tr( "Field name must not be empty." );
     }
     return false;
   }
@@ -239,7 +239,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "A field with name '%1' already exists." ).arg( field.name );
+      *errorMessage = tr( "A field with name '%1' already exists." ).arg( field.name );
     }
     return false;
   }
@@ -269,7 +269,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "A field with unique usage '%1' already exists." ).arg( usageName( field.usage ) );
+      *errorMessage = tr( "A field with unique usage '%1' already exists." ).arg( usageName( field.usage ) );
     }
     return false;
   }
@@ -336,7 +336,7 @@ bool QgsRasterAttributeTable::removeField( const QString &name, QString *errorMe
 
   if ( errorMessage )
   {
-    *errorMessage = QObject::tr( "A field with name '%1' was not found." ).arg( name );
+    *errorMessage = tr( "A field with name '%1' was not found." ).arg( name );
   }
   return false;
 }
@@ -350,7 +350,7 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Row element count differs from field count (%1)'." ).arg( mFields.size() );
+      *errorMessage = tr( "Row element count differs from field count (%1)'." ).arg( mFields.size() );
     }
     return false;
   }
@@ -364,7 +364,7 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
     {
       if ( errorMessage )
       {
-        *errorMessage = QObject::tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QVariant::typeToName( mFields.at( idx ).type ) );
+        *errorMessage = tr( "Row data at column %1 cannot be converted to field type (%2)." ).arg( idx ).arg( QVariant::typeToName( mFields.at( idx ).type ) );
       }
       return false;
     }
@@ -385,7 +385,7 @@ bool QgsRasterAttributeTable::removeRow( int position, QString *errorMessage )
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Position is not valid or the table is empty." );
+      *errorMessage = tr( "Position is not valid or the table is empty." );
     }
     return false;
   }
@@ -424,7 +424,7 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Error creating RAT table: %1." ).arg( writer->errorMessage() );
+      *errorMessage = tr( "Error creating Raster Attribute Table table: %1." ).arg( writer->errorMessage() );
     }
     return false;
   }
@@ -436,7 +436,7 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Error creating RAT table: could not add rows." );
+      *errorMessage = tr( "Error creating Raster Attribute Table table: could not add rows." );
     }
     return false;
   }
@@ -453,12 +453,12 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
 bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorMessage )
 {
-  QgsOgrProvider rat { path, QgsDataProvider::ProviderOptions() };
-  if ( ! rat.isValid() )
+  QgsOgrProvider ratDbfSource { path, QgsDataProvider::ProviderOptions() };
+  if ( ! ratDbfSource.isValid() )
   {
     if ( errorMessage )
     {
-      *errorMessage = QObject::tr( "Error reading RAT table from file: invalid layer." );
+      *errorMessage = tr( "Error reading Raster Attribute Table table from file: invalid layer." );
     }
     return false;
   }
@@ -470,7 +470,7 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
   mData.clear();
 
   bool hasValueField { false };
-  for ( const QgsField &field : rat.fields() )
+  for ( const QgsField &field : ratDbfSource.fields() )
   {
     const Qgis::RasterAttributeTableFieldUsage usage { guessFieldUsage( field.name(), field.type() ) };
     QVariant::Type type { field.type() };
@@ -490,7 +490,12 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
     }
 
     QgsRasterAttributeTable::Field ratField { field.name(), usage, type };
-    appendField( ratField );
+    if ( ! appendField( ratField, errorMessage ) )
+    {
+      mFields = oldFields;
+      mData = oldData;
+      return false;
+    }
   }
 
   // Do we have a value field? If not, try to guess one
@@ -499,16 +504,16 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
     mFields[0].usage = Qgis::RasterAttributeTableFieldUsage::MinMax;
   }
 
-  const int fieldCount { static_cast<int>( fields().count( ) ) };
+  const int fieldCount { static_cast<int>( ratDbfSource.fields().count( ) ) };
   QgsFeature f;
-  QgsFeatureIterator fit { rat.getFeatures( QgsFeatureRequest() ) };
+  QgsFeatureIterator fit { ratDbfSource.getFeatures( QgsFeatureRequest() ) };
   while ( fit.nextFeature( f ) )
   {
     if ( f.attributeCount() != fieldCount )
     {
       if ( errorMessage )
       {
-        *errorMessage = QObject::tr( "Error reading RAT table from file: number of fields and number of attributes do not match." );
+        *errorMessage = tr( "Error reading Raster Attribute Table table from file: number of fields and number of attributes do not match." );
       }
       mFields = oldFields;
       mData = oldData;
@@ -529,12 +534,12 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
 
   if ( mFields.isEmpty() )
   {
-    errors.push_back( QObject::tr( "RAT has no fields." ) );
+    errors.push_back( tr( "RAT has no fields." ) );
   }
 
   if ( mData.isEmpty() )
   {
-    errors.push_back( QObject::tr( "RAT has no rows." ) );
+    errors.push_back( tr( "RAT has no rows." ) );
   }
 
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
@@ -542,7 +547,7 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   const bool isValueRamp { fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) &&fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) };
   if ( ! isMinMax && ! isValueRamp )
   {
-    errors.push_back( QObject::tr( "RAT has no MinMax nor a pair of Min and Max fields." ) );
+    errors.push_back( tr( "RAT has no MinMax nor a pair of Min and Max fields." ) );
   }
 
   // Check color
@@ -550,11 +555,11 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   {
     if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) ) )
     {
-      errors.push_back( QObject::tr( "RAT has some but not all the fields required for color definition (Red, Green, Blue)." ) );
+      errors.push_back( tr( "RAT has some but not all the fields required for color definition (Red, Green, Blue)." ) );
     }
     else if ( ! isMinMax )
     {
-      errors.push_back( QObject::tr( "RAT has all the fields required for color definition (Red, Green, Blue) but no MinMax field." ) );
+      errors.push_back( tr( "RAT has all the fields required for color definition (Red, Green, Blue) but no MinMax field." ) );
     }
   }
 
@@ -563,11 +568,11 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   {
     if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) ) )
     {
-      errors.push_back( QObject::tr( "RAT has some but not all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax)." ) );
+      errors.push_back( tr( "RAT has some but not all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax)." ) );
     }
     else if ( ! isValueRamp )
     {
-      errors.push_back( QObject::tr( "RAT has all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax) but no Min and Max field." ) );
+      errors.push_back( tr( "RAT has all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax) but no Min and Max field." ) );
     }
   }
 
@@ -674,67 +679,72 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
     {
       return Qgis::RasterAttributeTableFieldUsage::Max;
     }
-    else if ( fieldLower.contains( "red" ) || fieldLower == QLatin1String( "r" ) )
+    // Colors (not double)
+    else if ( type != QVariant::Double )
     {
-      if ( fieldLower.contains( "min" ) )
+      if ( fieldLower.contains( "red" ) || fieldLower == QStringLiteral( "r" ) )
       {
-        return Qgis::RasterAttributeTableFieldUsage::RedMin;
+        if ( fieldLower.contains( "min" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::RedMin;
+        }
+        else if ( fieldLower.contains( "max" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::RedMax;
+        }
+        else
+        {
+          return Qgis::RasterAttributeTableFieldUsage::Red;
+        }
       }
-      else if ( fieldLower.contains( "max" ) )
+      else if ( fieldLower.contains( "green" ) || fieldLower == QStringLiteral( "g" ) )
       {
-        return Qgis::RasterAttributeTableFieldUsage::RedMax;
+        if ( fieldLower.contains( "min" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::GreenMin;
+        }
+        else if ( fieldLower.contains( "max" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::GreenMax;
+        }
+        else
+        {
+          return Qgis::RasterAttributeTableFieldUsage::Green;
+        }
       }
-      else
+      else if ( fieldLower.contains( "blue" ) || fieldLower == QStringLiteral( "b" ) )
       {
-        return Qgis::RasterAttributeTableFieldUsage::Red;
+        if ( fieldLower.contains( "min" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::BlueMin;
+        }
+        else if ( fieldLower.contains( "max" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::BlueMax;
+        }
+        else
+        {
+          return Qgis::RasterAttributeTableFieldUsage::Blue;
+        }
+      }
+      else if ( fieldLower.contains( "alpha" ) || fieldLower == QStringLiteral( "a" ) )
+      {
+        if ( fieldLower.contains( "min" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::AlphaMin;
+        }
+        else if ( fieldLower.contains( "max" ) )
+        {
+          return Qgis::RasterAttributeTableFieldUsage::AlphaMax;
+        }
+        else
+        {
+          return Qgis::RasterAttributeTableFieldUsage::Alpha;
+        }
       }
     }
-    else if ( fieldLower.contains( "green" ) || fieldLower == QLatin1String( "g" ) )
-    {
-      if ( fieldLower.contains( "min" ) )
-      {
-        return Qgis::RasterAttributeTableFieldUsage::GreenMin;
-      }
-      else if ( fieldLower.contains( "max" ) )
-      {
-        return Qgis::RasterAttributeTableFieldUsage::GreenMax;
-      }
-      else
-      {
-        return Qgis::RasterAttributeTableFieldUsage::Green;
-      }
-    }
-    else if ( fieldLower.contains( "blue" ) || fieldLower == QLatin1String( "b" ) )
-    {
-      if ( fieldLower.contains( "min" ) )
-      {
-        return Qgis::RasterAttributeTableFieldUsage::BlueMin;
-      }
-      else if ( fieldLower.contains( "max" ) )
-      {
-        return Qgis::RasterAttributeTableFieldUsage::BlueMax;
-      }
-      else
-      {
-        return Qgis::RasterAttributeTableFieldUsage::Blue;
-      }
-    }
-    else if ( fieldLower.contains( "alpha" ) || fieldLower == QLatin1String( "a" ) )
-    {
-      if ( fieldLower.contains( "min" ) )
-      {
-        return Qgis::RasterAttributeTableFieldUsage::AlphaMin;
-      }
-      else if ( fieldLower.contains( "max" ) )
-      {
-        return Qgis::RasterAttributeTableFieldUsage::AlphaMax;
-      }
-      else
-      {
-        return Qgis::RasterAttributeTableFieldUsage::Alpha;
-      }
-    }
-    else if ( fieldLower == QLatin1String( "value" ) )
+    // end colors
+    else if ( fieldLower == QStringLiteral( "value" ) )
     {
       return Qgis::RasterAttributeTableFieldUsage::MinMax;
     }
@@ -759,46 +769,126 @@ QString QgsRasterAttributeTable::usageName( const Qgis::RasterAttributeTableFiel
   switch ( usage )
   {
     case Qgis::RasterAttributeTableFieldUsage::Red:
-      return QObject::tr( "Red" );
+      return tr( "Red" );
     case Qgis::RasterAttributeTableFieldUsage::Green:
-      return QObject::tr( "Green" );
+      return tr( "Green" );
     case Qgis::RasterAttributeTableFieldUsage::Blue:
-      return QObject::tr( "Blue" );
+      return tr( "Blue" );
     case Qgis::RasterAttributeTableFieldUsage::Alpha:
-      return QObject::tr( "Alpha" );
+      return tr( "Alpha" );
     case Qgis::RasterAttributeTableFieldUsage::RedMin:
-      return QObject::tr( "Red Minimum" );
+      return tr( "Red Minimum" );
     case Qgis::RasterAttributeTableFieldUsage::GreenMin:
-      return QObject::tr( "Green Minimum" );
+      return tr( "Green Minimum" );
     case Qgis::RasterAttributeTableFieldUsage::BlueMin:
-      return QObject::tr( "Blue Minimum" );
+      return tr( "Blue Minimum" );
     case Qgis::RasterAttributeTableFieldUsage::AlphaMin:
-      return QObject::tr( "Alpha Minimum" );
+      return tr( "Alpha Minimum" );
     case Qgis::RasterAttributeTableFieldUsage::RedMax:
-      return QObject::tr( "Red Maximum" );
+      return tr( "Red Maximum" );
     case Qgis::RasterAttributeTableFieldUsage::GreenMax:
-      return QObject::tr( "Green Maximum" );
+      return tr( "Green Maximum" );
     case Qgis::RasterAttributeTableFieldUsage::BlueMax:
-      return QObject::tr( "Blue Maximum" );
+      return tr( "Blue Maximum" );
     case Qgis::RasterAttributeTableFieldUsage::AlphaMax:
-      return QObject::tr( "Alpha Maximum" );
+      return tr( "Alpha Maximum" );
     case Qgis::RasterAttributeTableFieldUsage::Generic:
-      return QObject::tr( "Generic" );
+      return tr( "Generic" );
     case Qgis::RasterAttributeTableFieldUsage::Name:
-      return QObject::tr( "Name" );
+      return tr( "Name" );
     case Qgis::RasterAttributeTableFieldUsage::PixelCount:
-      return QObject::tr( "Pixel Count" );
+      return tr( "Pixel Count" );
     case Qgis::RasterAttributeTableFieldUsage::MaxCount:
-      return QObject::tr( "Maximum Count" );
+      return tr( "Maximum Count" );
     case Qgis::RasterAttributeTableFieldUsage::MinMax:
-      return QObject::tr( "Value" );
+      return tr( "Value" );
     case Qgis::RasterAttributeTableFieldUsage::Min:
-      return QObject::tr( "Minimum Value" );
+      return tr( "Minimum Value" );
     case Qgis::RasterAttributeTableFieldUsage::Max:
-      return QObject::tr( "Maximum Value" );
+      return tr( "Maximum Value" );
   }
   return QString();
 }
+
+QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClasses( const int classificationColumn ) const
+{
+  QList<QgsRasterAttributeTable::MinMaxClass> classes;
+  if ( !isValid() )
+  {
+    QgsDebugMsg( "minMaxClasses was called on an invalid RAT" );
+    return classes;
+  }
+
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+  if ( ! fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
+  {
+    QgsDebugMsg( "minMaxClasses was called on a ramp raster" );
+    return classes;
+  }
+
+  const int minMaxIndex { fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax ) };
+
+  Q_ASSERT( minMaxIndex >= 0 );
+
+  int classificationIndex = classificationColumn;
+  if ( classificationIndex >= 0 && classificationIndex < mFields.count( ) )
+  {
+    const Field classificationField { mFields.at( classificationIndex ) };
+    if ( ( classificationField.usage != Qgis::RasterAttributeTableFieldUsage::Name && classificationField.usage != Qgis::RasterAttributeTableFieldUsage::Generic ) )
+    {
+      QgsDebugMsg( "minMaxClasses was called with a classification column which is not suitable for classification" );
+      return classes;
+    }
+  }
+  else if ( classificationIndex == -1 )  // Special value for not-set
+  {
+    // Find first value or generic field
+    if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Name ) )
+    {
+      classificationIndex = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Name );
+    }
+    else
+    {
+      classificationIndex = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Generic );
+      Q_ASSERT( classificationIndex >= 0 );
+    }
+  }
+  else if ( classificationIndex >= mFields.count( ) )
+  {
+    QgsDebugMsg( "minMaxClasses was called with a classification column out of range" );
+    return classes;
+  }
+
+  if ( classificationIndex >= 0 )
+  {
+    QStringList labels;
+    int rowIdx { 0 };
+    for ( const QVariantList &row : std::as_const( mData ) )
+    {
+      const QString label { row.at( classificationIndex ).toString() };
+      bool ok;
+      const double value { row.at( minMaxIndex ).toDouble( &ok ) };
+      // This should never happen, could eventually become a Q_ASSERT
+      if ( ! ok )
+      {
+        QgsDebugMsg( "minMaxClasses could not convert a MinMax value to double" );
+        return classes;
+      }
+      if ( labels.contains( label ) )
+      {
+        classes[ labels.indexOf( label ) ].minMaxValues.push_back( value );
+      }
+      else
+      {
+        labels.push_back( label );
+        classes.push_back( { label, { value }, color( rowIdx ) } );
+      }
+      rowIdx++;
+    }
+  }
+  return classes;
+}
+
 
 bool QgsRasterAttributeTable::Field::isColor() const
 {

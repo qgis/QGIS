@@ -39,27 +39,27 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent = nullptr );
 
     /**
-     * Returns true if the RAT is editable.
+     * Returns true if the Raster Attribute Table is editable.
      */
     bool editable() const;
 
     /**
-     * Sets the RAT editable state to \a editable.
+     * Sets the Raster Attribute Table editable state to \a editable.
      */
     void setEditable( bool editable );
 
     /**
-     * Returns TRUE if the RAT has color information.
+     * Returns TRUE if the Raster Attribute Table has color information.
      */
     bool hasColor() const;
 
     /**
-     * Returns TRUE if the RAT has ramp information.
+     * Returns TRUE if the Raster Attribute Table has ramp information.
      */
     bool hasRamp() const;
 
     /**
-     * Returns all the header names, including the "virtual" color header if the RAT has color or ramp.
+     * Returns all the header names, including the "virtual" color header if the Raster Attribute Table has color or ramp.
      */
     QStringList headerNames( ) const;
 
@@ -69,16 +69,16 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     QString headerTooltip( const int section ) const;
 
     /**
-     * Checks if the RAT is valid, optionally returns validation errors in \a errorMessage.
+     * Checks if the Raster Attribute Table is valid, optionally returns validation errors in \a errorMessage.
      */
     bool isValid( QString *errorMessage SIP_OUT = nullptr );
 
     /**
-     * Returns TRUE if the RAT was modified since it was last saved or read.
+     * Returns TRUE if the Raster Attribute Table was modified since it was last saved or read.
      */
     bool isDirty( );
 
-    // RAT operations
+    // Raster Attribute Table operations
 
     /**
      * Inserts a field at the given position.

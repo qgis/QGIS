@@ -3117,7 +3117,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         QStringList ratFieldNames { ratFields.names( ) };
         QStringList lNames;
 
-        // Try to identify fields in case of RAT with wrong usages
+        // Try to identify fields in case of Raster Attribute Table with wrong usages
         if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) ||
              !( usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) ) )
         {
@@ -3208,15 +3208,21 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           rat->appendRow( rowData );
         }
 
-        hasAtLeastOnedRat = true;
-        setAttributeTable( bandNumber, rat.release() );
-
+        hasAtLeastOnedRat = rat->fields().count( ) > 0;
+        if ( hasAtLeastOnedRat )
+        {
+          setAttributeTable( bandNumber, rat.release() );
+        }
+        else if ( errorMessage )
+        {
+          *errorMessage = QObject::tr( "Raster Attribute Table has no columns: skipping." );
+        }
       }
     }
   }
   else if ( errorMessage )
   {
-    *errorMessage = QObject::tr( "Dataset is not valid and RAT could not be loaded." );
+    *errorMessage = QObject::tr( "Dataset is not valid and Raster Attribute Table could not be loaded." );
   }
 
   return hasAtLeastOnedRat;
@@ -3241,7 +3247,7 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const /
       {
         if ( errorMessage )
         {
-          *errorMessage = QObject::tr( "RAT table type could not be set, RAT was not saved (GDAL error)." );
+          *errorMessage = QObject::tr( "RAT table type could not be set, Raster Attribute Table was not saved (GDAL error)." );
         }
         GDALDestroyRasterAttributeTable( hRat );
         return false;
@@ -3275,7 +3281,7 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const /
         {
           if ( errorMessage )
           {
-            *errorMessage = QObject::tr( "RAT column '%1 could not be created, RAT was not saved (GDAL error)." ).arg( field.name );
+            *errorMessage = QObject::tr( "RAT column '%1 could not be created, Raster Attribute Table was not saved (GDAL error)." ).arg( field.name );
           }
           GDALDestroyRasterAttributeTable( hRat );
           return false;

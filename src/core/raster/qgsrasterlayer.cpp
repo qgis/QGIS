@@ -744,15 +744,38 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
 
   QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
 
+  // Raster Attribute Table logic to load from provider or same basename + vat.dbf file.
   QString errorMessage;
-  const bool hasRat { mDataProvider->readNativeAttributeTable( &errorMessage ) };
+  bool hasRat { mDataProvider->readNativeAttributeTable( &errorMessage ) };
   if ( ! hasRat )
   {
-    QgsDebugMsgLevel( "Raster RAT read failed " + errorMessage, 2 );
+    errorMessage.clear();
+    QgsDebugMsgLevel( "Native Raster Raster Attribute Table read failed " + errorMessage, 2 );
+    if ( QFile::exists( mDataProvider->dataSourceUri( ) +  ".vat.dbf" ) )
+    {
+      std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+      hasRat = rat->readFromFile( mDataProvider->dataSourceUri( ) +  ".vat.dbf", &errorMessage );
+      if ( hasRat )
+      {
+        if ( rat->isValid( &errorMessage ) )
+        {
+          mDataProvider->setAttributeTable( 1, rat.release() );
+          QgsDebugMsgLevel( "DBF Raster Attribute Table successfully read from " + mDataProvider->dataSourceUri( ) +  ".vat.dbf", 2 );
+        }
+        else
+        {
+          QgsDebugMsgLevel( "DBF Raster Attribute Table is not valid, skipping: " + errorMessage, 2 );
+        }
+      }
+      else
+      {
+        QgsDebugMsgLevel( "DBF Raster Attribute Table read failed " + errorMessage, 2 );
+      }
+    }
   }
   else
   {
-    QgsDebugMsgLevel( "Raster RAT read success", 2 );
+    QgsDebugMsgLevel( "Native Raster Attribute Table read success", 2 );
   }
 
   if ( mRasterType == ColorLayer )
