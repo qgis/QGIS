@@ -144,8 +144,9 @@ bool QgsOapifProvider::init()
 
   mLayerMetadata = collectionRequest.collection().mLayerMetadata;
 
-  mShared->mSourceCrs = mLayerMetadata.crs();
-  if ( ! mShared->mSourceCrs.isValid() )
+  if ( mLayerMetadata.crs().isValid() )
+    mShared->mSourceCrs = mLayerMetadata.crs();
+  else
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
   // Merge contact info from /api
