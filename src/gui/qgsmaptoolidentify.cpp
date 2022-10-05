@@ -1079,6 +1079,39 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             valueString = QgsRasterBlock::printValue( value.toDouble() );
           }
         }
+        if ( const QgsRasterAttributeTable *rat = layer->attributeTable( it.key() ) )
+        {
+          bool ok;
+          const double doubleValue { it.value().toDouble( &ok ) };
+          if ( ok )
+          {
+            const QVariantList row = rat->row( doubleValue );
+            if ( ! row.isEmpty() )
+            {
+              for ( int colIdx = 0; colIdx < std::min( rat->fields().count( ), row.count() ); ++colIdx )
+              {
+                const QgsRasterAttributeTable::Field ratField { rat->fields().at( colIdx ) };
+                QString ratValue;
+                switch ( ratField.type )
+                {
+                  case QVariant::Type::Char:
+                  case QVariant::Type::Int:
+                  case QVariant::Type::UInt:
+                  case QVariant::Type::LongLong:
+                  case QVariant::Type::ULongLong:
+                    ratValue = QLocale().toString( row.at( colIdx ).toLongLong() );
+                    break;
+                  case QVariant::Type::Double:
+                    ratValue = QLocale().toString( row.at( colIdx ).toDouble( ) );
+                    break;
+                  default:
+                    ratValue = row.at( colIdx ).toString();
+                }
+                derivedAttributes.insert( ratField.name, ratValue );
+              }
+            }
+          }
+        }
         attributes.insert( dprovider->generateBandName( it.key() ), valueString );
       }
       QString label = layer->name();

@@ -515,6 +515,11 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         classes = rat.minMaxClasses(4)
         self.assertEqual(len(classes), 0)
 
+        # Test row function
+        self.assertEqual(rat.row(0), [0, 'zero', 'zero', 'even', 0, 0, 0])
+        self.assertEqual(rat.row(2.0), [2, 'two', 'not0', 'even', 2, 2, 2])
+        self.assertEqual(rat.row(100.0), [])
+
     def testPalettedRenderer(self):
 
         # Create RAT for 16 bit raster
