@@ -30,6 +30,13 @@ A text editor based on QScintilla2.
 %End
   public:
 
+    enum class Mode
+    {
+      ScriptEditor,
+      OutputDisplay,
+      CommandInput,
+    };
+
     enum class MarginRole
       {
       LineNumbers,
@@ -45,7 +52,7 @@ A text editor based on QScintilla2.
     typedef QFlags<QgsCodeEditor::Flag> Flags;
 
 
-    QgsCodeEditor( QWidget * parent /TransferThis/ = 0, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags() );
+    QgsCodeEditor( QWidget * parent /TransferThis/ = 0, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
 Construct a new code editor.
 
@@ -54,6 +61,7 @@ Construct a new code editor.
 :param folding: ``False``: Enable folding for code editor (deprecated, use ``flags`` instead)
 :param margin: ``False``: Enable margin for code editor (deprecated)
 :param flags: flags controlling behavior of code editor (since QGIS 3.28)
+:param mode: code editor mode (since QGIS 3.30)
 
 .. versionadded:: 2.6
 %End
@@ -190,6 +198,13 @@ Clears all warning messages from the editor.
 .. versionadded:: 3.16
 %End
 
+    QgsCodeEditor::Mode mode() const;
+%Docstring
+Returns the code editor mode.
+
+.. versionadded:: 3.30
+%End
+
     bool isCursorOnLastLine() const;
 %Docstring
 Returns ``True`` if the cursor is on the last line of the document.
@@ -217,11 +232,11 @@ it is visible.
 
   protected:
 
-    bool isFixedPitch( const QFont & font );
+    bool isFixedPitch( const QFont &font );
 
-    virtual void focusOutEvent( QFocusEvent * event );
+    virtual void focusOutEvent( QFocusEvent *event );
 
-    virtual void keyPressEvent( QKeyEvent * event );
+    virtual void keyPressEvent( QKeyEvent *event );
 
 
     virtual void initializeLexer();

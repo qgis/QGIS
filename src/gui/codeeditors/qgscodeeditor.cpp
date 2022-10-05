@@ -69,11 +69,12 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
 };
 
 
-QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin, QgsCodeEditor::Flags flags )
+QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin, QgsCodeEditor::Flags flags, QgsCodeEditor::Mode mode )
   : QsciScintilla( parent )
   , mWidgetTitle( title )
   , mMargin( margin )
   , mFlags( flags )
+  , mMode( mode )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
@@ -104,6 +105,31 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
     setSciWidget();
     initializeLexer();
   } );
+
+  switch ( mMode )
+  {
+    case QgsCodeEditor::Mode::ScriptEditor:
+      break;
+
+    case QgsCodeEditor::Mode::OutputDisplay:
+    {
+      // Don't want to see the horizontal scrollbar at all
+      SendScintilla( QsciScintilla::SCI_SETHSCROLLBAR, 0 );
+
+      setWrapMode( QsciScintilla::WrapCharacter );
+      break;
+    }
+
+    case QgsCodeEditor::Mode::CommandInput:
+    {
+      // Don't want to see the horizontal scrollbar at all
+      SendScintilla( QsciScintilla::SCI_SETHSCROLLBAR, 0 );
+
+      setWrapMode( QsciScintilla::WrapCharacter );
+      SendScintilla( QsciScintilla::SCI_EMPTYUNDOBUFFER );
+      break;
+    }
+  }
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -335,7 +361,7 @@ bool QgsCodeEditor::foldingVisible()
 
 void QgsCodeEditor::updateFolding()
 {
-  if ( mFlags & QgsCodeEditor::Flag::CodeFolding )
+  if ( ( mFlags & QgsCodeEditor::Flag::CodeFolding ) && mMode == QgsCodeEditor::Mode::ScriptEditor )
   {
     setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), "0" );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );

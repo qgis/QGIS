@@ -24,7 +24,7 @@ code autocompletion.
 %End
   public:
 
-    QgsCodeEditorR( QWidget *parent /TransferThis/ = 0 );
+    QgsCodeEditorR( QWidget *parent /TransferThis/ = 0, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
 Constructor for QgsCodeEditorR
 %End
