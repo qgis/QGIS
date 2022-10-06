@@ -20,6 +20,8 @@
 #include "qgsrasterlayer.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsrastershader.h"
+#include "qgsrastershaderfunction.h"
 
 Qgis::RasterAttributeTableType QgsRasterAttributeTable::type() const
 {
@@ -945,9 +947,50 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
   }
   else if ( const QgsSingleBandPseudoColorRenderer *pseudoColorRenderer = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( renderer ) )
   {
-    QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
-    // TODO !
-    return rat;
+    if ( const QgsRasterShader *shader = pseudoColorRenderer->shader() )
+    {
+      if ( const QgsColorRampShader *shaderFunction = dynamic_cast<const QgsColorRampShader *>( shader->rasterShaderFunction() ) )
+      {
+        QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
+        rat->setType( Qgis::RasterAttributeTableType::Athematic );
+        rat->appendField( QStringLiteral( "Min" ), Qgis::RasterAttributeTableFieldUsage::Min, QVariant::Type::Double );
+        rat->appendField( QStringLiteral( "Max" ), Qgis::RasterAttributeTableFieldUsage::Max, QVariant::Type::Double );
+        rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
+        rat->appendField( QStringLiteral( "RedMin" ), Qgis::RasterAttributeTableFieldUsage::RedMin, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "GreenMin" ), Qgis::RasterAttributeTableFieldUsage::GreenMin, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "BlueMin" ), Qgis::RasterAttributeTableFieldUsage::BlueMin, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "AlphaMin" ), Qgis::RasterAttributeTableFieldUsage::AlphaMin, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "RedMax" ), Qgis::RasterAttributeTableFieldUsage::RedMax, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "GreenMax" ), Qgis::RasterAttributeTableFieldUsage::GreenMax, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "BlueMax" ), Qgis::RasterAttributeTableFieldUsage::BlueMax, QVariant::Type::Int );
+        rat->appendField( QStringLiteral( "AlphaMax" ), Qgis::RasterAttributeTableFieldUsage::AlphaMax, QVariant::Type::Int );
+        const QList<QgsColorRampShader::ColorRampItem> rampItems { shaderFunction->colorRampItemList() };
+        if ( rampItems.count( ) > 1 )
+        {
+          QColor color1 { rampItems.at( 0 ).color };
+          QString label1 { rampItems.at( 0 ).label };
+          QVariant value1( rampItems.at( 0 ).value );
+          for ( int i = 1; i < rampItems.count( ); ++i )
+          {
+            const QgsColorRampShader::ColorRampItem &rampItem { rampItems.at( i )};
+            rat->appendRow( QVariantList() << value1 << rampItem.value << QStringLiteral( "%1 - %2" ).arg( label1, rampItem.label ) << 0 << 0 << 0 << 255 << 0 << 0 << 0 << 255 );
+            rat->setRamp( rat->data().length() - 1, color1, rampItem.color );
+            label1 = rampItem.label;
+            value1 = rampItem.value;
+            color1 = rampItem.color;
+          }
+        }
+        return rat;
+      }
+      else
+      {
+        return nullptr;
+      }
+    }
+    else
+    {
+      return nullptr;
+    }
   }
   else
   {
