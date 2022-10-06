@@ -31,6 +31,8 @@ from qgis.core import (Qgis,
                        QgsRasterLayer,
                        QgsRasterAttributeTable,
                        QgsPalettedRasterRenderer,
+                       QgsSingleBandPseudoColorRenderer,
+                       QgsPresetSchemeColorRamp,
                        )
 
 from qgis.testing import start_app, unittest
@@ -587,6 +589,28 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         usages = rat.usages()
         self.assertEqual(usages, [Qgis.RasterAttributeTableFieldUsage.MinMax, Qgis.RasterAttributeTableFieldUsage.Name, Qgis.RasterAttributeTableFieldUsage.Red, Qgis.RasterAttributeTableFieldUsage.Green, Qgis.RasterAttributeTableFieldUsage.Blue, Qgis.RasterAttributeTableFieldUsage.Alpha])
+
+    def testCreateFromPseudoColorRaster(self):
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        renderer = QgsSingleBandPseudoColorRenderer(raster.dataProvider(), 1)
+        ramp = QgsPresetSchemeColorRamp([QColor('#00000'), QColor('#0F0F0F'), QColor('#CFCFCF'), QColor('#FFFFFF')])
+        renderer.setClassificationMin(0)
+        renderer.setClassificationMax(4)
+        renderer.createShader(ramp)
+        raster.setRenderer(renderer)
+
+        self.assertEqual([(i.color.name(), i.value) for i in raster.renderer().shader().rasterShaderFunction().colorRampItemList()],
+                         [('#000000', 0.0),
+                          ('#0f0f0f', 1.3333333333333333),
+                          ('#cfcfcf', 2.6666666666666665),
+                          ('#ffffff', 4.0)])
+
+        rat = QgsRasterAttributeTable.createFromRaster(raster)
+        self.assertEqual(rat.data(), [
+            [0.0, 1.3333333333333333, '0 - 1.33', 0, 0, 0, 255, 15, 15, 15, 255],
+            [1.3333333333333333, 2.6666666666666665, '1.33 - 2.67', 15, 15, 15, 255, 207, 207, 207, 255],
+            [2.6666666666666665, 4.0, '2.67 - 4', 207, 207, 207, 255, 255, 255, 255, 255]])
 
 
 if __name__ == '__main__':
