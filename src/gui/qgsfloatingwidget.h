@@ -16,6 +16,7 @@
 #define QGSFLOATINGWIDGET_H
 
 #include <QWidget>
+#include <QPointer>
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
@@ -129,7 +130,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
   private:
 
-    QWidget *mAnchorWidget = nullptr;
+    QPointer< QWidget > mAnchorWidget;
     QgsFloatingWidgetEventFilter *mParentEventFilter = nullptr;
     QgsFloatingWidgetEventFilter *mAnchorEventFilter = nullptr;
     AnchorPoint mFloatAnchorPoint = BottomMiddle;
