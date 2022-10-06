@@ -147,7 +147,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         dst_ds.FlushCache()                     # write to disk
         dst_ds = None
 
-    def ___testRat(self):
+    def testRat(self):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
@@ -188,6 +188,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertIsNone(d.attributeTable(2))
 
         rat = d.attributeTable(1)
+        self.assertEqual(rat.type(), Qgis.RasterAttributeTableType.Thematic)
         self.assertTrue(rat.isValid()[0])
         self.assertEqual([f.name for f in rat.fields()], ['Value', 'Count', 'Class', 'Class2', 'Class3', 'Red', 'Green', 'Blue', 'Double'])
         self.assertEqual([f.type for f in rat.fields()], [QVariant.Int, QVariant.Int, QVariant.String, QVariant.String, QVariant.String, QVariant.Int, QVariant.Int, QVariant.Int, QVariant.Double])
@@ -283,7 +284,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(rat.fieldByName("Red")[1])
         self.assertFalse(rat.fieldByName("xxx")[1])
 
-    def ____testTableOperationsAndValidation(self):
+    def testTableOperationsAndValidation(self):
 
         rat = QgsRasterAttributeTable()
         valid, error = rat.isValid()
@@ -411,7 +412,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(rat.ramp(1).min.name(), '#010203')
         self.assertEqual(rat.ramp(1).max.name(), '#020304')
 
-    def ____testWriteReadDbfRat(self):
+    def testWriteReadDbfRat(self):
 
         # Create RAT
         rat = QgsRasterAttributeTable()
