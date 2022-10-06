@@ -44,6 +44,7 @@ set(TESTS
   test_qgsserver_wms_restorer.cpp
   test_qgsserver_wms_exceptions.cpp
   test_qgsserver_wms_parameters.cpp
+  test_qgsserver_wms_vector_tile.cpp
 )
 
 foreach(TESTSRC ${TESTS})
