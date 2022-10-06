@@ -17,6 +17,9 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsogrprovider.h"
 #include "qgsfileutils.h"
+#include "qgsrasterlayer.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 
 Qgis::RasterAttributeTableType QgsRasterAttributeTable::type() const
 {
@@ -126,6 +129,18 @@ QList<Qgis::RasterAttributeTableFieldUsage> QgsRasterAttributeTable::usages() co
   }
   return usages;
 }
+
+///@cond private
+QList<int> QgsRasterAttributeTable::intUsages( ) const
+{
+  QList<int> usages;
+  for ( const QgsRasterAttributeTable::Field &field : std::as_const( mFields ) )
+  {
+    usages.push_back( static_cast<int>( field.usage ) );
+  }
+  return usages;
+}
+///@endcond
 
 QColor QgsRasterAttributeTable::color( int row ) const
 {
@@ -890,6 +905,54 @@ QList<Qgis::RasterAttributeTableFieldUsage> QgsRasterAttributeTable::valueAndCol
       Qgis::RasterAttributeTableFieldUsage::AlphaMax,
     }};
   return valueColorUsages;
+}
+
+QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLayer *raster )
+{
+
+  if ( ! raster || ! raster->dataProvider() || ! raster->isValid() )
+  {
+    return nullptr;
+  }
+
+  const QgsRasterRenderer *renderer = raster->renderer();
+
+  if ( ! renderer )
+  {
+    return nullptr;
+  }
+
+  if ( const QgsPalettedRasterRenderer *palettedRenderer = dynamic_cast<const QgsPalettedRasterRenderer *>( renderer ) )
+  {
+    QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
+    rat->setType( Qgis::RasterAttributeTableType::Thematic );
+    rat->appendField( QStringLiteral( "Value" ), Qgis::RasterAttributeTableFieldUsage::MinMax, QVariant::Type::Double );
+    rat->appendField( QStringLiteral( "Class" ), Qgis::RasterAttributeTableFieldUsage::Name, QVariant::Type::String );
+    rat->appendField( QStringLiteral( "Red" ), Qgis::RasterAttributeTableFieldUsage::Red, QVariant::Type::Int );
+    rat->appendField( QStringLiteral( "Green" ), Qgis::RasterAttributeTableFieldUsage::Green, QVariant::Type::Int );
+    rat->appendField( QStringLiteral( "Blue" ), Qgis::RasterAttributeTableFieldUsage::Blue, QVariant::Type::Int );
+    rat->appendField( QStringLiteral( "Alpha" ), Qgis::RasterAttributeTableFieldUsage::Alpha, QVariant::Type::Int );
+
+    const QgsPalettedRasterRenderer::ClassData classes { palettedRenderer->classes() };
+
+    for ( const QgsPalettedRasterRenderer::Class &klass : std::as_const( classes ) )
+    {
+      rat->appendRow( QVariantList() << klass.value << klass.label << 0 << 0 << 0 << 255 );
+      rat->setColor( rat->data().length() - 1, klass.color );
+    }
+
+    return rat;
+  }
+  else if ( const QgsSingleBandPseudoColorRenderer *pseudoColorRenderer = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( renderer ) )
+  {
+    QgsRasterAttributeTable *rat = new QgsRasterAttributeTable();
+    // TODO !
+    return rat;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClasses( const int classificationColumn ) const
