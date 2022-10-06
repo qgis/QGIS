@@ -433,6 +433,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         ]
 
         usages = [f.usage for f in rat.fields()]
+        self.assertEqual(usages, rat.usages())
 
         for row in data_rows:
             rat.appendRow(row)
@@ -565,6 +566,27 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in renderer.multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
         self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in QgsPalettedRasterRenderer.rasterAttributeTableToClassData(rat)], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
         self.assertEqual(["%s:%s:%s" % (c.values, c.label, c.color.name()) for c in raster.renderer().multiValueClasses()], ['[0.0]:zero:#000000', '[1.0]:one:#010101', '[2.0]:two:#020202'])
+
+    def testCreateFromPalettedRaster(self):
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        classes = QgsPalettedRasterRenderer.classDataFromRaster(raster.dataProvider(), 1, None)
+
+        for i in range(len(classes)):
+            classes[i].color = QColor(f'#0{i}0{i}0{i}')
+
+        renderer = QgsPalettedRasterRenderer(raster.dataProvider(), 1, classes)
+        raster.setRenderer(renderer)
+
+        rat = QgsRasterAttributeTable.createFromRaster(raster)
+        self.assertEqual(rat.data(), [
+            [0.0, '0', 0, 0, 0, 255],
+            [2.0, '2', 1, 1, 1, 255],
+            [4.0, '4', 2, 2, 2, 255]
+        ])
+
+        usages = rat.usages()
+        self.assertEqual(usages, [Qgis.RasterAttributeTableFieldUsage.MinMax, Qgis.RasterAttributeTableFieldUsage.Name, Qgis.RasterAttributeTableFieldUsage.Red, Qgis.RasterAttributeTableFieldUsage.Green, Qgis.RasterAttributeTableFieldUsage.Blue, Qgis.RasterAttributeTableFieldUsage.Alpha])
 
 
 if __name__ == '__main__':

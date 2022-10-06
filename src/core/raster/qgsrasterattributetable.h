@@ -27,6 +27,8 @@
 #include <QLinearGradient>
 #include <QCoreApplication>
 
+class QgsRasterLayer;
+
 /**
  * \ingroup core
  * \brief The QgsRasterAttributeTable class represents a Raster Attribute Table (RAT).
@@ -141,7 +143,15 @@ class CORE_EXPORT QgsRasterAttributeTable
     /**
      * Returns the list of field usages.
      */
-    QList<Qgis::RasterAttributeTableFieldUsage> usages( ) const;
+    QList<Qgis::RasterAttributeTableFieldUsage> usages( ) const SIP_SKIP;
+
+///@cond PRIVATE
+
+    /**
+     * Returns the list of field usages.
+     */
+    QList<int> intUsages( ) const SIP_PYNAME( usages );
+///@encond
 
     /**
      * Returns the color of the rat \a row or an invalid color if row does not exist or if there is no color definition.
@@ -302,6 +312,11 @@ class CORE_EXPORT QgsRasterAttributeTable
      */
     static QList<Qgis::RasterAttributeTableFieldUsage> valueAndColorFieldUsages();
 
+    /**
+     * Creates a new Raster Attribute Table from a \a rasterLayer, the renderer must be one of Paletted or SingleBandPseudoColor.
+     * \returns NULL in case of errors or unsupported renderer.
+     */
+    static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer ) SIP_FACTORY;
 
   private:
 

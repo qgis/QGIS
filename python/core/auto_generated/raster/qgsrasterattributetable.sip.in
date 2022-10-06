@@ -8,6 +8,7 @@
 
 
 
+
 class QgsRasterAttributeTable
 {
 %Docstring(signature="appended")
@@ -128,7 +129,9 @@ Sets the color ramp for the row at ``rowIndex`` to ``colorMin`` and ``colorMax``
 .. seealso:: :py:func:`setColor`
 %End
 
-    QList<Qgis::RasterAttributeTableFieldUsage> usages( ) const;
+
+
+    QList<int> intUsages( ) const /PyName=usages/;
 %Docstring
 Returns the list of field usages.
 %End
@@ -316,6 +319,12 @@ Returns the translated human readable name of ``fieldUsage``.
 Returns the list of field usages for colors and values.
 %End
 
+    static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer ) /Factory/;
+%Docstring
+Creates a new Raster Attribute Table from a ``rasterLayer``, the renderer must be one of Paletted or SingleBandPseudoColor.
+
+:return: NULL in case of errors or unsupported renderer.
+%End
 
 };
 
