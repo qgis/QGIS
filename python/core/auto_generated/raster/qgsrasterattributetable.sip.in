@@ -11,7 +11,7 @@
 class QgsRasterAttributeTable
 {
 %Docstring(signature="appended")
-The :py:class:`QgsRasterAttributeTable` class represents a raster attribute table (RAT).
+The :py:class:`QgsRasterAttributeTable` class represents a Raster Attribute Table (RAT).
 
 This class is modeled after the GDAL Raster Attribute Table implementation, it adds some convenience
 methods to handle data from QGIS and to import/export a Raster Attribute Table from/to a DBF VAT file.
@@ -296,6 +296,11 @@ Returns the ``value`` for ``row`` and ``column``.
 Returns a row of data for the given ``matchValue`` or and empty row if there is not match.
 %End
 
+    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
+%Docstring
+Returns the classes for a thematic RAT, classified by ``classificationColumn``, the default value of -1 makes the method guess the classification column based on the field usage.
+%End
+
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
 %Docstring
 Try to determine the field usage from its ``name`` and ``type``.
@@ -306,10 +311,11 @@ Try to determine the field usage from its ``name`` and ``type``.
 Returns the translated human readable name of ``fieldUsage``.
 %End
 
-    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
+    static QList<Qgis::RasterAttributeTableFieldUsage> valueAndColorFieldUsages();
 %Docstring
-Returns the classes for a thematic RAT, classified by ``classificationColumn``, the default value of -1 makes the method guess the classification column based on the field usage.
+Returns the list of field usages for colors and values.
 %End
+
 
 };
 

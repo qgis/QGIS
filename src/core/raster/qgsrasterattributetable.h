@@ -29,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsRasterAttributeTable class represents a raster attribute table (RAT).
+ * \brief The QgsRasterAttributeTable class represents a Raster Attribute Table (RAT).
  *
  * This class is modeled after the GDAL Raster Attribute Table implementation, it adds some convenience
  * methods to handle data from QGIS and to import/export a Raster Attribute Table from/to a DBF VAT file.
@@ -283,6 +283,11 @@ class CORE_EXPORT QgsRasterAttributeTable
     QVariantList row( const double matchValue ) const;
 
     /**
+     * Returns the classes for a thematic RAT, classified by \a classificationColumn, the default value of -1 makes the method guess the classification column based on the field usage.
+     */
+    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
+
+    /**
      * Try to determine the field usage from its \a name and \a type.
      */
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
@@ -293,9 +298,10 @@ class CORE_EXPORT QgsRasterAttributeTable
     static QString usageName( const Qgis::RasterAttributeTableFieldUsage fieldusage );
 
     /**
-     * Returns the classes for a thematic RAT, classified by \a classificationColumn, the default value of -1 makes the method guess the classification column based on the field usage.
+     * Returns the list of field usages for colors and values.
      */
-    QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
+    static QList<Qgis::RasterAttributeTableFieldUsage> valueAndColorFieldUsages();
+
 
   private:
 
