@@ -393,12 +393,18 @@ void QgsHanaNewConnection::resizeEvent( QResizeEvent * )
   auto resizeLayout = []( QLayout * layout )
   {
     QWidget *widget = layout->parentWidget();
+    widget->adjustSize();
     widget->resize( widget->parentWidget()->width(), widget->height() );
   };
 
   // We need to manually resize layouts located inside the StackedWidget.
   resizeLayout( grdConnectionSettings );
   resizeLayout( frmDsn );
+
+  pageHostPort->adjustSize();
+  auto size = pageHostPort->size();
+  swConnectionControls->setMinimumHeight( size.height() );
+  swConnectionControls->setMaximumHeight( size.height() );
 }
 
 void QgsHanaNewConnection::testConnection()
