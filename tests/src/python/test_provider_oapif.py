@@ -111,9 +111,13 @@ def create_landing_page_api_collection(endpoint, extraparam=''):
                 "spatial": {
                     "bbox": [
                         [-71.123, 66.33, -65.32, 78.3]
-                    ]
+                    ],
+                    "crs": "http://www.opengis.net/def/crs/EPSG/0/4326"
                 }
-            }
+            },
+            "crs": [
+                "http://www.opengis.net/def/crs/EPSG/0/4326"
+            ]
         }).encode('UTF-8'))
 
 
@@ -181,6 +185,10 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         # can't run the base provider test suite here - WFS/OAPIF extent handling is different
         # to other providers
         pass
+
+    # def testCrs(self):
+        # Overwrite base provider test crs. OAPIF norm specify OGC:CRS84 as default crs
+        # self.assertEqual(self.source.sourceCrs().authid(), 'OGC:CRS84')
 
     def testFeaturePaging(self):
 

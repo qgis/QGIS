@@ -38,6 +38,8 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     static const QString OAPIF_PROVIDER_KEY;
     static const QString OAPIF_PROVIDER_DESCRIPTION;
 
+    static const QString OAPIF_PROVIDER_DEFAULT_CRS;
+
     explicit QgsOapifProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, QgsDataProvider::ReadFlags flags = QgsDataProvider::ReadFlags() );
     ~QgsOapifProvider() override;
 
