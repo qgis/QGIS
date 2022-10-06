@@ -850,6 +850,28 @@ QString QgsRasterAttributeTable::usageName( const Qgis::RasterAttributeTableFiel
   return QString();
 }
 
+QList<Qgis::RasterAttributeTableFieldUsage> QgsRasterAttributeTable::valueAndColorFieldUsages()
+{
+  static const QList<Qgis::RasterAttributeTableFieldUsage> valueColorUsages {{
+      Qgis::RasterAttributeTableFieldUsage::MinMax,
+      Qgis::RasterAttributeTableFieldUsage::Min,
+      Qgis::RasterAttributeTableFieldUsage::Max,
+      Qgis::RasterAttributeTableFieldUsage::Red,
+      Qgis::RasterAttributeTableFieldUsage::Green,
+      Qgis::RasterAttributeTableFieldUsage::Blue,
+      Qgis::RasterAttributeTableFieldUsage::Alpha,
+      Qgis::RasterAttributeTableFieldUsage::RedMin,
+      Qgis::RasterAttributeTableFieldUsage::GreenMin,
+      Qgis::RasterAttributeTableFieldUsage::BlueMin,
+      Qgis::RasterAttributeTableFieldUsage::AlphaMin,
+      Qgis::RasterAttributeTableFieldUsage::RedMax,
+      Qgis::RasterAttributeTableFieldUsage::GreenMax,
+      Qgis::RasterAttributeTableFieldUsage::BlueMax,
+      Qgis::RasterAttributeTableFieldUsage::AlphaMax,
+    }};
+  return valueColorUsages;
+}
+
 QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClasses( const int classificationColumn ) const
 {
   QList<QgsRasterAttributeTable::MinMaxClass> classes;
