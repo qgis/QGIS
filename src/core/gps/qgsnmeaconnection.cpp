@@ -171,6 +171,12 @@ void QgsNmeaConnection::processStringBuffer()
 
 void QgsNmeaConnection::processGgaSentence( const char *data, int len )
 {
+  //GSA
+  mLastGPSInformation.satPrn.clear();
+  //GSV
+  mLastGPSInformation.satellitesInView.clear();
+  mLastGPSInformation.satellitesUsed = 0;
+  
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
   {
@@ -355,7 +361,7 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
   if ( nmea_parse_GPGSV( data, len, &result ) )
   {
     //clear satellite information when a new series of packs arrives
-    // clear() on VTG
+    // clear() on GGA
 
     // for determining when to graph sat info
     mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
@@ -411,12 +417,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 
 void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 {
-  //GSA
-  mLastGPSInformation.satPrn.clear();
-  //GSV
-  mLastGPSInformation.satellitesInView.clear();
-  mLastGPSInformation.satellitesUsed = 0;
-
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
   {
@@ -429,7 +429,7 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )
   {
-    // clear() on VTG
+    // clear() on GGA
     mLastGPSInformation.hdop = result.HDOP;
     mLastGPSInformation.pdop = result.PDOP;
     mLastGPSInformation.vdop = result.VDOP;
