@@ -296,6 +296,16 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
     it->insert( realPos, defaultValue );
   }
 
+  // Set/change the table type from the value field type
+  if ( field.usage == Qgis::RasterAttributeTableFieldUsage::MinMax )
+  {
+    setType( Qgis::RasterAttributeTableType::Thematic );
+  }
+  else if ( field.usage == Qgis::RasterAttributeTableFieldUsage::Max || field.usage == Qgis::RasterAttributeTableFieldUsage::Max )
+  {
+    setType( Qgis::RasterAttributeTableType::Athematic );
+  }
+
   setIsDirty( true );
 
   return true;
@@ -522,6 +532,15 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
     appendRow( f.attributes().toList() );
   }
 
+  if ( usages().contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
+  {
+    setType( Qgis::RasterAttributeTableType::Thematic );
+  }
+  else
+  {
+    setType( Qgis::RasterAttributeTableType::Athematic );
+  }
+
   setIsDirty( false );
 
   return true;
@@ -719,6 +738,15 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
     {
       return Qgis::RasterAttributeTableFieldUsage::Max;
     }
+    else if ( fieldLower == QStringLiteral( "value" ) )
+    {
+      return Qgis::RasterAttributeTableFieldUsage::MinMax;
+    }
+    else if ( fieldLower == QStringLiteral( "count" ) )
+    {
+      // This could really be max count but it's more likely pixel count
+      return Qgis::RasterAttributeTableFieldUsage::PixelCount;
+    }
     // Colors (not double)
     else if ( type != QVariant::Double )
     {
@@ -784,22 +812,14 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
       }
     }
     // end colors
-    else if ( fieldLower == QStringLiteral( "value" ) )
-    {
-      return Qgis::RasterAttributeTableFieldUsage::MinMax;
-    }
-    else if ( fieldLower == QLatin1String( "count" ) )
-    {
-      // This could really be max count but it's more likely pixel count
-      return Qgis::RasterAttributeTableFieldUsage::PixelCount;
-    }
   }
-  else if ( type == QVariant::String )  // default to name for strings
+
+  if ( type == QVariant::String )  // default to name for strings
   {
     return Qgis::RasterAttributeTableFieldUsage::Name;
   }
 
-  // default to generic for not strings
+  // default to generic for all other cases
   return Qgis::RasterAttributeTableFieldUsage::Generic;
 
 }
@@ -882,6 +902,7 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
   }
 
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+
   if ( ! fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
   {
     QgsDebugMsg( "minMaxClasses was called on a ramp raster" );

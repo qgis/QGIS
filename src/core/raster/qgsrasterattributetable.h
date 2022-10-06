@@ -305,7 +305,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
   private:
 
-    Qgis::RasterAttributeTableType mType = Qgis::RasterAttributeTableType::Athematic;
+    Qgis::RasterAttributeTableType mType = Qgis::RasterAttributeTableType::Thematic;
     QList<Field> mFields;
     QList<QVariantList> mData;
     bool mIsDirty;

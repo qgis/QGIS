@@ -3209,8 +3209,10 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         }
 
         hasAtLeastOnedRat = rat->fields().count( ) > 0;
+
         if ( hasAtLeastOnedRat )
         {
+          rat->setType( static_cast<Qgis::RasterAttributeTableType>( GDALRATGetTableType( hRat ) ) );
           setAttributeTable( bandNumber, rat.release() );
         }
         else if ( errorMessage )
@@ -3311,6 +3313,8 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const /
         }
         rowIdx++;
       }
+
+      GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) );
 
       if ( GDALSetDefaultRAT( hBand, hRat ) != CE_None )
       {
