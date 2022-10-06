@@ -30,6 +30,7 @@
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
 
+const QString QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
 
 QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, QgsDataProvider::ReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags ),
@@ -147,7 +148,8 @@ bool QgsOapifProvider::init()
   if ( mLayerMetadata.crs().isValid() )
     mShared->mSourceCrs = mLayerMetadata.crs();
   else
-    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
+                            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
 
   // Merge contact info from /api
   mLayerMetadata.setContacts( apiRequest.metadata().contacts() );

@@ -19,6 +19,7 @@ using namespace nlohmann;
 #include "qgslogger.h"
 #include "qgsoapifcollection.h"
 #include "qgsoapifutils.h"
+#include "qgsoapifprovider.h"
 
 #include <set>
 
@@ -111,7 +112,7 @@ bool QgsOapifCollection::deserialize( const json &j )
       if ( spatial.is_object() && spatial.contains( "bbox" ) )
       {
         QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-                                            QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) ) );
+                                            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) );
         if ( spatial.contains( "crs" ) )
         {
           const auto jCrs = spatial["crs"];
@@ -192,7 +193,7 @@ bool QgsOapifCollection::deserialize( const json &j )
           mBbox.set( values[0], values[1], values[2], values[3] );
           QgsLayerMetadata::SpatialExtent spatialExtent;
           spatialExtent.extentCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-                                      QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" ) );
+                                      QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
           mLayerMetadata.setCrs( spatialExtent.extentCrs );
           metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );
         }
