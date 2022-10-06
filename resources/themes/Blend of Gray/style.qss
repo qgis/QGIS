@@ -1,7 +1,11 @@
 QWidget
 {
-    color: @text;
     background: transparent;
+}
+
+QLabel, QCheckBox, QRadioButton
+{
+    color: @text;
 }
 
 QWindow, QMainWindow, QMdiSubWindow, QDialog, QAbstractScrollArea, QFocusFrame, QWizardPage, QDockWidget, QDockWidgetGroupWindow, QTabWidget, QGroupBox
@@ -200,7 +204,6 @@ QLineEdit, QTextEdit, QPlainTextEdit
     border-style: solid;
     border-radius: 0.2em;
     background-color:@itembackground;
-    color:@text;
     selection-background-color: @selection;
     selection-color: @itemdarkbackground;
 }
