@@ -732,7 +732,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         endpoint = basetestpath + '/fake_qgis_http_endpoint_ogc84'
 
         create_landing_page_api_collection(endpoint,
-                                           crs_url="", # OGC norm says that if crs is not explicitly defined it is OGC:CRS84
+                                           crs_url="",  # OGC norm says that if crs is not explicitly defined it is OGC:CRS84
                                            bbox=[66.33, -71.123, 78.3, -65.32])
 
         items = {
