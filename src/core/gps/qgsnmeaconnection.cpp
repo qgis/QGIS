@@ -176,7 +176,6 @@ void QgsNmeaConnection::processGgaSentence( const char *data, int len )
   //GSV
   mLastGPSInformation.satellitesInView.clear();
   mLastGPSInformation.satellitesUsed = 0;
-  
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
   {
