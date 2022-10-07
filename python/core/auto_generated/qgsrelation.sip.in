@@ -274,6 +274,19 @@ Returns the validity of this relation. Don't use the information if it's not val
 A relation is considered valid if both referenced and referencig layers are valid.
 
 :return: ``True`` if the relation is valid
+
+.. seealso:: :py:func:`validationError`
+%End
+
+    QString validationError() const;
+%Docstring
+Returns a user-friendly explanation for why the relationship is invalid.
+
+Returns an empty string if the relationship :py:func:`~QgsRelation.isValid`.
+
+.. seealso:: :py:func:`isValid`
+
+.. versionadded:: 3.28
 %End
 
     bool hasEqualDefinition( const QgsRelation &other ) const;

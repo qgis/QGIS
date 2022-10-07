@@ -172,6 +172,20 @@ def executeSaga(feedback):
         )
     ]
 
+    def readline_with_recover(stdout):
+        """A method wrapping stdout.readline() with try-except recovering.
+        detailed in https://github.com/qgis/QGIS/pull/49226
+        Args:
+            stdout: io.TextIOWrapper - proc.stdout
+
+        Returns:
+            str: read line or replaced text when recovered
+        """
+        try:
+            return stdout.readline()
+        except UnicodeDecodeError:
+            return ''  # replaced-text
+
     with subprocess.Popen(
         command,
         shell=True,
@@ -181,7 +195,7 @@ def executeSaga(feedback):
         universal_newlines=True,
     ) as proc:
         try:
-            for line in iter(proc.stdout.readline, ''):
+            for line in iter(lambda: readline_with_recover(proc.stdout), ''):
                 if '%' in line:
                     s = ''.join(x for x in line if x.isdigit())
                     try:

@@ -1286,7 +1286,9 @@ void QgsOptions::checkPageWidgetNameMap()
     }
   };
   traverseModel( QModelIndex() );
-  Q_ASSERT_X( pageNames.count() == pageTitles.count(), "QgsOptions::checkPageWidgetNameMap()", "QgisApp::optionsPagesMap() is outdated, contains too many entries" );
+
+  Q_ASSERT_X( pageNames.count() == pageTitles.count(),  "QgsOptions::checkPageWidgetNameMap()", QStringLiteral( "QgisApp::optionsPagesMap() is outdated, contains too many entries, "
+              " this is often a problem with missing translations for the entries (extra entries: %1)" ).arg( ( pageNames.keys().toSet() - pageTitles.toSet() ).values().join( ',' ) ).toLocal8Bit().constData() );
 
   int page = 0;
   for ( const QString &pageTitle : std::as_const( pageTitles ) )

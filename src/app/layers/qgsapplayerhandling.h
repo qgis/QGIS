@@ -202,8 +202,11 @@ class APP_EXPORT QgsAppLayerHandling
      *
      * This method will automatically attempt to repair any relations using
      * other layers already present in the current project.
+     *
+     * If \a guiWarnings is TRUE then the explanation for invalid relationships
+     * will be shown to the user.
      */
-    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name );
+    static void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name, bool guiWarnings = false );
 
     /**
      * Triggered when a vector layer style has changed, checks for widget config layer dependencies

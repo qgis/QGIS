@@ -173,6 +173,9 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry show feature counts for newly added layers by default
     static const inline QgsSettingsEntryBool settingsLayerTreeShowFeatureCountForNewLayers = QgsSettingsEntryBool( QStringLiteral( "show_feature_count_for_new_layers" ), QgsSettings::Prefix::CORE_LAYERTREE, false, QStringLiteral( "If true, feature counts will be shown in the layer tree for all newly added layers." ) );
+
+    //! Settings entry enable WMS tile prefetching.
+    static const inline QgsSettingsEntryBool settingsEnableWMSTilePrefetching = QgsSettingsEntryBool( QStringLiteral( "enable_wms_tile_prefetch" ), QgsSettings::Prefix::WMS, false, QStringLiteral( "Whether to include WMS layers when rendering tiles adjacent to the visible map area" ) );
 #endif
 
 };

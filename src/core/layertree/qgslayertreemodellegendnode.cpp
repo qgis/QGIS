@@ -37,6 +37,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgsvariantutils.h"
 #include "qgslayertreelayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 
 #include <QBuffer>
 
@@ -343,25 +344,29 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   const int largeIconSize = QgsLayerTreeModel::scaleIconSize( 512 );
   QSize minSz( iconSize, iconSize );
-  if ( mItem.symbol() && mItem.symbol()->type() == Qgis::SymbolType::Marker )
+  if ( mItem.symbol() && ( mItem.symbol()->type() == Qgis::SymbolType::Marker
+                           || mItem.symbol()->type() == Qgis::SymbolType::Line ) )
   {
+    int maxSize = largeIconSize;
+
     // unusued width, height variables
     double width = 0.0;
     double height = 0.0;
-    const std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
+    bool ok;
+    std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height, &ok ) );
+
+    if ( !ok && context )
+    {
+      // It's not possible to get a restricted size symbol, so we restrict
+      // pixmap target size to be sure it would fit MAXIMUM_SIZE
+      maxSize = static_cast<int>( std::round( MAXIMUM_SIZE * context->scaleFactor() ) );
+    }
+
+    const QSize size( mItem.symbol()->type() == Qgis::SymbolType::Marker ? maxSize : minSz.width(),
+                      maxSize );
+
     minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), QSize( largeIconSize, largeIconSize ), 0,
-                  context ).toImage(),
-              minSz,
-              true ).size();
-  }
-  else if ( mItem.symbol() && mItem.symbol()->type() == Qgis::SymbolType::Line )
-  {
-    double width = 0.0;
-    double height = 0.0;
-    const std::unique_ptr<QgsSymbol> symbol( QgsSymbolLayerUtils::restrictedSizeSymbol( mItem.symbol(), MINIMUM_SIZE, MAXIMUM_SIZE, context, width, height ) );
-    minSz = QgsImageOperation::nonTransparentImageRect(
-              QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), QSize( minSz.width(), largeIconSize ), 0,
+              QgsSymbolLayerUtils::symbolPreviewPixmap( symbol ? symbol.get() : mItem.symbol(), size, 0,
                   context ).toImage(),
               minSz,
               true ).size();
@@ -462,6 +467,11 @@ QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() co
   context->setMapToPixel( QgsMapToPixel( mupp ) );
   context->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
   context->setFlag( Qgis::RenderContextFlag::RenderSymbolPreview, true );
+
+  QgsExpressionContext expContext;
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayerNode ? mLayerNode->layer() : nullptr ) );
+  context->setExpressionContext( expContext );
+
   return context.release();
 }
 
@@ -840,8 +850,13 @@ void QgsSymbolLegendNode::updateLabel()
 
   if ( showFeatureCount && vl )
   {
+    const bool estimatedCount = QgsDataSourceUri( vl->dataProvider()->dataSourceUri() ).useEstimatedMetadata();
     const qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ;
-    mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+
+    // if you modify this line, please update QgsLayerTreeModel::data (DisplayRole)
+    mLabel += QStringLiteral( " [%1%2]" ).arg(
+                estimatedCount ? QStringLiteral( "≈" ) : QString(),
+                count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
   }
 
   emit dataChanged();
@@ -1564,4 +1579,3 @@ void QgsVectorLabelLegendNode::textWidthHeight( double &width, double &height, Q
   height = QgsTextRenderer::textHeight( ctx, textFormat, 'A', true );
   width = QgsTextRenderer::textWidth( ctx, textFormat, textLines, &fm );
 }
-

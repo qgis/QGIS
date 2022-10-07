@@ -75,6 +75,7 @@ void QgsAfsSharedData::clearCache()
 
   mCache.clear();
   mObjectIds.clear();
+  mObjectIdToFeatureId.clear();
   mDeletedFeatureIds.clear();
   QString error;
   getObjectIds( error );
@@ -119,9 +120,13 @@ bool QgsAfsSharedData::getObjectIds( QString &errorMessage )
     }
   }
   const QVariantList objectIds = objectIdData.value( QStringLiteral( "objectIds" ) ).toList();
+  mObjectIds.reserve( mObjectIds.size() + objectIds.size() );
+  mObjectIdToFeatureId.reserve( mObjectIdToFeatureId.size() + objectIds.size() );
   for ( const QVariant &objectId : objectIds )
   {
-    mObjectIds.append( objectId.toInt() );
+    const int objectIdInt = objectId.toInt();
+    mObjectIdToFeatureId.insert( objectIdInt, mObjectIds.size() );
+    mObjectIds.append( objectIdInt );
   }
   return true;
 }
@@ -130,6 +135,12 @@ quint32 QgsAfsSharedData::featureIdToObjectId( QgsFeatureId id )
 {
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   return mObjectIds.value( id, -1 );
+}
+
+QgsFeatureId QgsAfsSharedData::objectIdToFeatureId( quint32 oid ) const
+{
+  // lock must already be obtained by caller!
+  return mObjectIdToFeatureId.value( oid, -1 );
 }
 
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect, QgsFeedback *feedback )
@@ -213,7 +224,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
   {
     const QVariantMap featureData = featuresData[i].toMap();
     QgsFeature feature;
-    int featureId = startId + i;
+    QgsFeatureId featureId = startId + i;
 
     // Set attributes
     const QVariantMap attributesData = featureData[QStringLiteral( "attributes" )].toMap();
@@ -239,7 +250,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, const QgsRect
       attributes[idx] = attribute;
       if ( mFields.at( idx ).name() == mObjectIdFieldName )
       {
-        featureId = mObjectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
+        featureId = objectIdToFeatureId( attributesData[mFields.at( idx ).name()].toInt() );
       }
     }
     feature.setAttributes( attributes );
@@ -275,14 +286,14 @@ QgsFeatureIds QgsAfsSharedData::getFeatureIdsInExtent( const QgsRectangle &exten
   QString errorText;
 
   const QString authcfg = mDataSource.authConfigId();
-  const QList<quint32> featuresInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
-                                        extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql() );
+  const QList<quint32> objectIdsInRect = QgsArcGisRestQueryUtils::getObjectIdsByExtent( mDataSource.param( QStringLiteral( "url" ) ),
+                                         extent, errorTitle, errorText, authcfg, mDataSource.httpHeaders(), feedback, mDataSource.sql() );
 
   QgsReadWriteLocker locker( mReadWriteLock, QgsReadWriteLocker::Read );
   QgsFeatureIds ids;
-  for ( const quint32 id : featuresInRect )
+  for ( const quint32 objectId : objectIdsInRect )
   {
-    const int featureId = mObjectIds.indexOf( id );
+    const QgsFeatureId featureId = objectIdToFeatureId( objectId );
     if ( featureId >= 0 )
       ids.insert( featureId );
   }
@@ -368,7 +379,9 @@ bool QgsAfsSharedData::addFeatures( QgsFeatureList &features, QString &errorMess
     const QVariantMap resultMap = result.toMap();
     const long long objectId = resultMap.value( QStringLiteral( "objectId" ) ).toLongLong();
 
-    features[i].setId( mObjectIds.size() );
+    const QgsFeatureId newId = mObjectIds.size();
+    features[i].setId( newId );
+    mObjectIdToFeatureId.insert( objectId, newId );
     mObjectIds.append( objectId );
 
     i++;

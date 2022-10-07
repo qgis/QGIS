@@ -404,7 +404,17 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     // <Fill>
     QDomElement fillElem = doc.createElement( QStringLiteral( "se:Fill" ) );
     symbolizerElem.appendChild( fillElem );
-    QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, mColor );
+
+    QColor color { mColor };
+
+    // Apply alpha from symbol
+    bool ok;
+    const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
+    if ( ok )
+    {
+      color.setAlphaF( color.alphaF() * alpha );
+    }
+    QgsSymbolLayerUtils::fillToSld( doc, fillElem, mBrushStyle, color );
   }
 
   if ( mStrokeStyle != Qt::NoPen )
@@ -413,7 +423,15 @@ void QgsSimpleFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
     QDomElement strokeElem = doc.createElement( QStringLiteral( "se:Stroke" ) );
     symbolizerElem.appendChild( strokeElem );
     double strokeWidth = QgsSymbolLayerUtils::rescaleUom( mStrokeWidth, mStrokeWidthUnit, props );
-    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, mStrokeColor, strokeWidth, &mPenJoinStyle );
+    // Apply alpha from symbol
+    bool ok;
+    const double alpha { props.value( QStringLiteral( "alpha" ), QVariant() ).toDouble( &ok ) };
+    QColor strokeColor { mStrokeColor };
+    if ( ok )
+    {
+      strokeColor.setAlphaF( strokeColor.alphaF() * alpha );
+    }
+    QgsSymbolLayerUtils::lineToSld( doc, strokeElem, mStrokeStyle, strokeColor, strokeWidth, &mPenJoinStyle );
   }
 
   // <se:Displacement>
@@ -4068,6 +4086,9 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
   const bool prevIsSubsymbol = context.renderContext().flags() & Qgis::RenderContextFlag::RenderingSubSymbol;
   context.renderContext().setFlag( Qgis::RenderContextFlag::RenderingSubSymbol );
 
+  const double prevOpacity = mMarkerSymbol->opacity();
+  mMarkerSymbol->setOpacity( mMarkerSymbol->opacity() * context.opacity() );
+
   bool alternateColumn = false;
   int currentCol = -3; // because we actually render a few rows/cols outside the bounds, try to align the col/row numbers to start at 1 for the first visible row/col
   for ( double currentX = left; currentX <= right; currentX += width, alternateColumn = !alternateColumn )
@@ -4150,6 +4171,8 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
       mMarkerSymbol->renderPoint( QPointF( x, y ), context.feature(), context.renderContext() );
     }
   }
+
+  mMarkerSymbol->setOpacity( prevOpacity );
 
   p->restore();
 

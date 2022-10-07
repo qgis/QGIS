@@ -341,6 +341,9 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      */
     mutable QgsRectangle mBoundingBox;
 
+    mutable bool mHasCachedSummedUpArea = false;
+    mutable double mSummedUpArea = 0;
+
   private:
 
     mutable bool mHasCachedValidity = false;

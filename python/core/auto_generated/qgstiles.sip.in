@@ -249,6 +249,20 @@ Adds tile matrices corresponding to the standard web mercator/GoogleCRS84Quad se
 Returns the tile matrix corresponding to the specified ``zoom``.
 %End
 
+    QgsTileMatrix rootMatrix() const;
+%Docstring
+Returns the root tile matrix (usually corresponding to zoom level 0).
+
+.. versionadded:: 3.28
+%End
+
+    void setRootMatrix( const QgsTileMatrix &matrix );
+%Docstring
+Sets the root tile ``matrix`` (usually corresponding to zoom level 0).
+
+.. versionadded:: 3.28
+%End
+
     void addMatrix( const QgsTileMatrix &matrix );
 %Docstring
 Adds a ``matrix`` to the set.

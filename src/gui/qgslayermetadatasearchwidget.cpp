@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsiconutils.h"
 
 
 QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
@@ -48,6 +49,19 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   mExtentFilterComboBox->addItem( QStringLiteral( "Map Canvas Extent" ) );
   mExtentFilterComboBox->addItem( QStringLiteral( "Current Project Extent" ) );
   mExtentFilterComboBox->setCurrentIndex( 0 );
+  mExtentFilterComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
+  mExtentFilterComboBox->adjustSize();
+
+  mGeometryTypeComboBox->addItem( QString( ), QVariant() );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::PointGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::PointGeometry ), QgsWkbTypes::GeometryType::PointGeometry );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::LineGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::LineGeometry ), QgsWkbTypes::GeometryType::LineGeometry );
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::PolygonGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::PolygonGeometry ), QgsWkbTypes::GeometryType::PolygonGeometry );
+  // Note: unknown geometry is mapped to null and missing from the combo
+  mGeometryTypeComboBox->addItem( QgsIconUtils::iconForGeometryType( QgsWkbTypes::GeometryType::NullGeometry ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::GeometryType::NullGeometry ), QgsWkbTypes::GeometryType::NullGeometry );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconRaster.svg" ) ), tr( "Raster" ), QVariant() );
+  mGeometryTypeComboBox->setCurrentIndex( 0 );
+  mGeometryTypeComboBox->setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToContents );
+  mGeometryTypeComboBox->adjustSize();
 
   auto updateLoadBtn = [ = ]
   {
@@ -99,6 +113,33 @@ QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt:
   connect( mSearchFilterLineEdit, &QLineEdit::textEdited, mProxyModel, &QgsLayerMetadataResultsProxyModel::setFilterString );
   connect( mSearchFilterLineEdit, &QgsFilterLineEdit::cleared, mProxyModel, [ = ] { mProxyModel->setFilterString( QString() ); } );
   connect( mExtentFilterComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsLayerMetadataSearchWidget::updateExtentFilter );
+
+  connect( mGeometryTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    if ( index == 0 ) // reset all filters
+    {
+      mProxyModel->setFilterGeometryTypeEnabled( false );
+      mProxyModel->setFilterMapLayerTypeEnabled( false );
+    }
+    else
+    {
+      const QVariant geomTypeFilterValue( mGeometryTypeComboBox->currentData() );
+      if ( geomTypeFilterValue.isValid() )  // Vector layers
+      {
+        mProxyModel->setFilterGeometryTypeEnabled( true );
+        mProxyModel->setFilterGeometryType( geomTypeFilterValue.value<QgsWkbTypes::GeometryType>( ) );
+        mProxyModel->setFilterMapLayerTypeEnabled( true );
+        mProxyModel->setFilterMapLayerType( QgsMapLayerType::VectorLayer );
+      }
+      else // Raster layers
+      {
+        mProxyModel->setFilterGeometryTypeEnabled( false );
+        mProxyModel->setFilterMapLayerTypeEnabled( true );
+        mProxyModel->setFilterMapLayerType( QgsMapLayerType::RasterLayer );
+      }
+    }
+
+  } );
 
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, [ = ]( const QList<QgsMapLayer *> & )
   {

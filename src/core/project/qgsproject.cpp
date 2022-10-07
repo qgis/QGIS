@@ -1767,30 +1767,6 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     }
   }
 
-  element = doc->documentElement().firstChildElement( QStringLiteral( "projectFlags" ) );
-  if ( !element.isNull() )
-  {
-    mFlags = qgsFlagKeysToValue( element.attribute( QStringLiteral( "set" ) ), Qgis::ProjectFlags() );
-  }
-  else
-  {
-    // older project compatibility
-    element = doc->documentElement().firstChildElement( QStringLiteral( "evaluateDefaultValues" ) );
-    if ( !element.isNull() )
-    {
-      if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
-        mFlags |= Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
-    }
-
-    // Read trust layer metadata config in the project
-    element = doc->documentElement().firstChildElement( QStringLiteral( "trust" ) );
-    if ( !element.isNull() )
-    {
-      if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
-        mFlags |= Qgis::ProjectFlag::TrustStoredLayerStatistics;
-    }
-  }
-
   // read the layer tree from project file
   profile.switchTask( tr( "Loading layer tree" ) );
   mRootGroup->setCustomProperty( QStringLiteral( "loading" ), 1 );
@@ -1852,6 +1828,8 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
   // now that layers are loaded, we can resolve layer tree's references to the layers
   profile.switchTask( tr( "Resolving references" ) );
   mRootGroup->resolveReferences( this );
+
+  loadProjectFlags( doc.get() );
 
   if ( !layerTreeElem.isNull() )
   {
@@ -4268,6 +4246,36 @@ bool QgsProject::accept( QgsStyleEntityVisitorInterface *visitor ) const
     return false;
 
   return true;
+}
+
+void QgsProject::loadProjectFlags( const QDomDocument *doc )
+{
+  QDomElement element = doc->documentElement().firstChildElement( QStringLiteral( "projectFlags" ) );
+  Qgis::ProjectFlags flags;
+  if ( !element.isNull() )
+  {
+    flags = qgsFlagKeysToValue( element.attribute( QStringLiteral( "set" ) ), Qgis::ProjectFlags() );
+  }
+  else
+  {
+    // older project compatibility
+    element = doc->documentElement().firstChildElement( QStringLiteral( "evaluateDefaultValues" ) );
+    if ( !element.isNull() )
+    {
+      if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+        flags |= Qgis::ProjectFlag::EvaluateDefaultValuesOnProviderSide;
+    }
+
+    // Read trust layer metadata config in the project
+    element = doc->documentElement().firstChildElement( QStringLiteral( "trust" ) );
+    if ( !element.isNull() )
+    {
+      if ( element.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+        flags |= Qgis::ProjectFlag::TrustStoredLayerStatistics;
+    }
+  }
+
+  setFlags( flags );
 }
 
 /// @cond PRIVATE

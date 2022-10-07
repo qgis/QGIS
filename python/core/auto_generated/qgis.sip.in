@@ -452,6 +452,15 @@ The development version
       Provider
     };
 
+    enum class RasterRendererFlag
+    {
+      InternalLayerOpacityHandling,
+    };
+
+    typedef QFlags<Qgis::RasterRendererFlag> RasterRendererFlags;
+
+
+
     enum class MeshEditingErrorType
     {
       NoError,
@@ -1415,6 +1424,7 @@ QFlags<Qgis::RasterTemporalCapabilityFlag> operator|(Qgis::RasterTemporalCapabil
 
 QFlags<Qgis::SelectionFlag> operator|(Qgis::SelectionFlag f1, QFlags<Qgis::SelectionFlag> f2);
 
+QFlags<Qgis::RasterRendererFlag> operator|(Qgis::RasterRendererFlag f1, QFlags<Qgis::RasterRendererFlag> f2);
 
 
 

@@ -106,6 +106,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &settingsDigitizingTracingMaxFeatureCount );
   addSettingsEntry( &settingsGpsBabelPath );
   addSettingsEntry( &settingsLayerTreeShowFeatureCountForNewLayers );
+  addSettingsEntry( &settingsEnableWMSTilePrefetching );
 
   addSettingsEntry( &QgsOwsConnection::settingsConnectionSelected );
   addSettingsEntryGroup( &QgsOwsConnection::settingsServiceConnectionDetailsGroup );

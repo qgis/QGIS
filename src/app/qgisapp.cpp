@@ -2107,6 +2107,11 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     QgsCanvasRefreshBlocker refreshBlocker;
 
+    // Prevent autoSelectAddedLayer() to do any work during the iteration on
+    // files, as calling setCurrentIndex() has a huge performance hit.
+    // cf https://github.com/qgis/QGIS/issues/49439
+    mBlockAutoSelectAddedLayer = true;
+
     QList< QgsMapLayer * > addedLayers;
     for ( const QString &file : std::as_const( files ) )
     {
@@ -2133,6 +2138,10 @@ void QgisApp::dropEvent( QDropEvent *event )
     {
       addedLayers.append( handleDropUriList( lst, true ) );
     }
+
+    // Manually run autoSelectAddedLayer()
+    mBlockAutoSelectAddedLayer = false;
+    autoSelectAddedLayer( addedLayers );
 
     if ( !addedLayers.isEmpty() )
       QgsAppLayerHandling::postProcessAddedLayers( addedLayers );
@@ -4827,6 +4836,9 @@ void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )
 {
+  if ( mBlockAutoSelectAddedLayer )
+    return;
+
   if ( !layers.isEmpty() )
   {
     QgsLayerTreeLayer *nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
@@ -5053,7 +5065,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   {
     const QString previewImagePath = mRecentProjects.takeLast().previewImagePath;
     if ( QFileInfo::exists( previewImagePath ) )
-      QFile( mRecentProjects.takeLast().previewImagePath ).remove();
+      QFile( previewImagePath ).remove();
   }
 
   // Persist the list
@@ -8431,18 +8443,21 @@ QString QgisApp::saveAsPointCloudLayer( QgsPointCloudLayer *pclayer )
       if ( exp->feedback() && exp->feedback()->isCanceled() )
         return;
 
-      QgsMapLayer *ml = exp->takeExportedLayer();
+      std::unique_ptr<QgsMapLayer> ml( exp->takeExportedLayer() );
       if ( ! ml->isValid() )
       {
-        visibleMessageBar()->pushMessage( tr( "Export failed" ),
-                                          tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
-                                          Qgis::MessageLevel::Warning );
+        if ( ! exp->lastError().isEmpty() )
+          visibleMessageBar()->pushMessage( tr( "Export failed" ),
+                                            tr( "A problem occurred while exporting: %1" ).arg( exp->lastError() ),
+                                            Qgis::MessageLevel::Warning );
+        else
+          visibleMessageBar()->pushMessage( tr( "Cannot open file" ),
+                                            tr( "Cannot open exported file: %1" ).arg( ml->error().summary() ),
+                                            Qgis::MessageLevel::Warning );
       }
 
-      if ( addToCanvas )
-        QgsProject::instance()->addMapLayer( ml );
-      else
-        delete ml;
+      if ( addToCanvas && ml->isValid() )
+        QgsProject::instance()->addMapLayer( ml.release() );
     } );
   }
   return vectorFilename;
@@ -12213,7 +12228,6 @@ QMap<QString, QString> QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Coordinate Transforms" ), QStringLiteral( "mOptionsPageTransformations" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Data Sources" ), QStringLiteral( "mOptionsPageDataSources" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "GDAL" ), QStringLiteral( "mOptionsPageGDAL" ) );
-    sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Rendering" ), QStringLiteral( "mOptionsPageRendering" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Canvas & Legend" ), QStringLiteral( "mOptionsPageMapCanvas" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Map Tools" ), QStringLiteral( "mOptionsPageMapTools" ) );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Digitizing" ), QStringLiteral( "mOptionsPageDigitizing" ) );
@@ -13267,6 +13281,10 @@ void QgisApp::closeProject()
   // Avoid unnecessary layer changed handling for each layer removed - instead,
   // defer the handling until we've removed all layers
   mBlockActiveLayerChanged = true;
+  // Explicitly unset the selection in the layer tree view, otherwise we get
+  // bad performance when the project has a big number of layers, which causes
+  // the current index to be changed many times.
+  mLayerTreeView->setCurrentIndex( QModelIndex() );
   QgsProject::instance()->clear();
   mBlockActiveLayerChanged = false;
 

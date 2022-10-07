@@ -1915,11 +1915,13 @@ QgsPoint QgsLineString::centroid() const
       continue;
 
     totalLineLength += segmentLength;
-    sumX += segmentLength * 0.5 * ( currentX + prevX );
-    sumY += segmentLength * 0.5 * ( currentY + prevY );
+    sumX += segmentLength * ( currentX + prevX );
+    sumY += segmentLength * ( currentY + prevY );
     prevX = currentX;
     prevY = currentY;
   }
+  sumX *= 0.5;
+  sumY *= 0.5;
 
   if ( qgsDoubleNear( totalLineLength, 0.0 ) )
     return QgsPoint( mX.at( 0 ), mY.at( 0 ) );
@@ -1936,12 +1938,31 @@ QgsPoint QgsLineString::centroid() const
 
 void QgsLineString::sumUpArea( double &sum ) const
 {
-  int maxIndex = numPoints() - 1;
-
-  for ( int i = 0; i < maxIndex; ++i )
+  if ( mHasCachedSummedUpArea )
   {
-    sum += 0.5 * ( mX.at( i ) * mY.at( i + 1 ) - mY.at( i ) * mX.at( i + 1 ) );
+    sum += mSummedUpArea;
+    return;
   }
+
+  mSummedUpArea = 0;
+  const int maxIndex = mX.size();
+  if ( maxIndex == 0 )
+    return;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  double prevX = *x++;
+  double prevY = *y++;
+  for ( int i = 1; i < maxIndex; ++i )
+  {
+    mSummedUpArea += prevX * ( *y ) - prevY * ( *x );
+    prevX = *x++;
+    prevY = *y++;
+  }
+  mSummedUpArea *= 0.5;
+
+  mHasCachedSummedUpArea = true;
+  sum += mSummedUpArea;
 }
 
 void QgsLineString::importVerticesFromWkb( const QgsConstWkbPtr &wkb )

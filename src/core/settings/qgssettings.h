@@ -107,6 +107,7 @@ class CORE_EXPORT QgsSettings : public QObject
         static const inline char *CORE_LAYERTREE = "core/layer-tree";
         static const inline char *STYLE_MANAGER = "app/style-manager";
         static const inline char *FONTS = "fonts";
+        static const inline char *WMS = "wms";
     };
 
     /**

@@ -27,6 +27,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaprenderercache.h"
+#include "qgsrasterlayer.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsexception.h"
@@ -43,6 +44,7 @@
 #include "qgsvectorlayerrenderer.h"
 #include "qgsrendereditemresults.h"
 #include "qgsmaskpaintdevice.h"
+#include "qgsrasterrenderer.h"
 
 ///@cond PRIVATE
 
@@ -526,9 +528,23 @@ std::vector<LayerRenderJob> QgsMapRendererJob::prepareJobs( QPainter *painter, Q
 
     job.blendMode = ml->blendMode();
 
-    // raster layer opacity is handled directly within the raster layer renderer, so don't
-    // apply default opacity handling here!
-    job.opacity = ml->type() != QgsMapLayerType::RasterLayer ? ml->opacity() : 1.0;
+    if ( ml->type() == QgsMapLayerType::RasterLayer )
+    {
+      // raster layers are abnormal wrt opacity handling -- opacity is sometimes handled directly within the raster layer renderer
+      QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( ml );
+      if ( rl->renderer()->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling )
+      {
+        job.opacity = 1.0;
+      }
+      else
+      {
+        job.opacity = ml->opacity();
+      }
+    }
+    else
+    {
+      job.opacity = ml->opacity();
+    }
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( !mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )

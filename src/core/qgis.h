@@ -727,6 +727,26 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterResamplingStage )
 
     /**
+     * Flags which control behavior of raster renderers.
+     *
+     * \since QGIS 3.28
+     */
+    enum class RasterRendererFlag : int
+    {
+      InternalLayerOpacityHandling = 1 << 0, //!< The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied.
+    };
+
+    /**
+     * Flags which control behavior of raster renderers.
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( RasterRendererFlags, RasterRendererFlag )
+
+    Q_ENUM( RasterRendererFlag )
+    Q_FLAG( RasterRendererFlags )
+
+    /**
      * Type of error that can occur during mesh frame editing.
      *
      * \since QGIS 3.22
@@ -2370,7 +2390,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ProjectCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CoordinateTransformationFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterTemporalCapabilityFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SelectionFlags )
-
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::RasterRendererFlags )
 
 // hack to workaround warnings when casting void pointers
 // retrieved from QLibrary::resolve to function pointers.

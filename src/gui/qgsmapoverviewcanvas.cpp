@@ -266,8 +266,6 @@ void QgsMapOverviewCanvas::setLayers( const QList<QgsMapLayer *> &layers )
     connect( ml, &QgsMapLayer::repaintRequested, this, &QgsMapOverviewCanvas::layerRepaintRequested );
   }
 
-  updateFullExtent();
-
   refresh();
 }
 
