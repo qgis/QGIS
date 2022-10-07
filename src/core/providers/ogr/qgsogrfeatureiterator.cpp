@@ -634,7 +634,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
   , mFields( p->mAttributeFields )
   , mFirstFieldIsFid( p->mFirstFieldIsFid )
-  , mOgrGeometryTypeFilter( QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( p->mOgrGeometryTypeFilter ) )
+  , mOgrGeometryTypeFilter( p->mUniqueGeometryType ? wkbUnknown : QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( p->mOgrGeometryTypeFilter ) )
   , mDriverName( p->mGDALDriverName )
   , mCrs( p->crs() )
   , mWkbType( p->wkbType() )

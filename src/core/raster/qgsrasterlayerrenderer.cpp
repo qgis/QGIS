@@ -22,7 +22,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrendercontext.h"
-#include "qgsproject.h"
+#include "qgsrasterrenderer.h"
 #include "qgsexception.h"
 #include "qgsrasterlayertemporalproperties.h"
 #include "qgsmapclippingutils.h"
@@ -70,6 +70,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
+  , mLayerOpacity( layer->opacity() )
   , mProviderCapabilities( static_cast<QgsRasterDataProvider::Capability>( layer->dataProvider()->capabilities() ) )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {
@@ -374,5 +375,15 @@ QgsFeedback *QgsRasterLayerRenderer::feedback() const
 bool QgsRasterLayerRenderer::forceRasterRender() const
 {
   // preview of intermediate raster rendering results requires a temporary output image
-  return renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput );
+  if ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput ) )
+    return true;
+
+  if ( QgsRasterRenderer *renderer = mPipe->renderer() )
+  {
+    if ( !( renderer->flags() & Qgis::RasterRendererFlag::InternalLayerOpacityHandling )
+         && renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) ) )
+      return true;
+  }
+
+  return false;
 }

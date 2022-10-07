@@ -980,7 +980,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( const QgsSymbolLayer *l
   return picture;
 }
 
-QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType )
+QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &, Qgis::SymbolType parentSymbolType, QgsMapLayer *mapLayer )
 {
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
@@ -992,7 +992,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( const QgsSymbolLayer *layer, 
   renderContext.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
   // build a minimal expression context
   QgsExpressionContext expContext;
-  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  expContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mapLayer ) );
   renderContext.setExpressionContext( expContext );
 
   QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, Qgis::SymbolRenderHints(), nullptr );
@@ -3171,19 +3171,6 @@ QVariantMap QgsSymbolLayerUtils::parseProperties( const QDomElement &element )
 void QgsSymbolLayerUtils::saveProperties( QVariantMap props, QDomDocument &doc, QDomElement &element )
 {
   element.appendChild( QgsXmlUtils::writeVariant( props, doc ) );
-
-  // -----
-  // let's do this to try to keep some backward compatibility
-  // to open a project saved on 3.18+ in QGIS <= 3.16
-  // TODO QGIS 4: remove
-  for ( QVariantMap::iterator it = props.begin(); it != props.end(); ++it )
-  {
-    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
-    propEl.setAttribute( QStringLiteral( "k" ), it.key() );
-    propEl.setAttribute( QStringLiteral( "v" ), it.value().toString() );
-    element.appendChild( propEl );
-  }
-  // -----
 }
 
 QgsSymbolMap QgsSymbolLayerUtils::loadSymbols( QDomElement &element, const QgsReadWriteContext &context )
@@ -4996,18 +4983,34 @@ double QgsSymbolLayerUtils::rendererFrameRate( const QgsFeatureRenderer *rendere
   return visitor.refreshRate;
 }
 
-QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height )
+QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double minSize, double maxSize, QgsRenderContext *context, double &width, double &height, bool *ok )
 {
   if ( !s || !context )
   {
-    return 0;
+    return nullptr;
   }
+
+  if ( ok )
+    *ok = true;
 
   double size;
   const QgsMarkerSymbol *markerSymbol = dynamic_cast<const QgsMarkerSymbol *>( s );
   const QgsLineSymbol *lineSymbol = dynamic_cast<const QgsLineSymbol *>( s );
   if ( markerSymbol )
   {
+    const QgsSymbolLayerList sls = s->symbolLayers();
+    for ( const QgsSymbolLayer *sl : std::as_const( sls ) )
+    {
+      // geometry generators involved, there is no way to get a restricted size symbol
+      if ( sl->type() != Qgis::SymbolType::Marker )
+      {
+        if ( ok )
+          *ok = false;
+
+        return nullptr;
+      }
+    }
+
     size = markerSymbol->size( *context );
   }
   else if ( lineSymbol )
@@ -5016,7 +5019,10 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
-    return 0; //not size restriction implemented for other symbol types
+    if ( ok )
+      *ok = false;
+
+    return nullptr; //not size restriction implemented for other symbol types
   }
 
   size /= context->scaleFactor();
@@ -5031,7 +5037,8 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
   }
   else
   {
-    return 0;
+    // no need to restricted size symbol
+    return nullptr;
   }
 
   if ( markerSymbol )
@@ -5051,7 +5058,8 @@ QgsSymbol *QgsSymbolLayerUtils::restrictedSizeSymbol( const QgsSymbol *s, double
     height = size;
     return ls;
   }
-  return 0;
+
+  return nullptr;
 }
 
 QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, QgsProperty> &propertiesMap, const QgsExpressionContext &context )
@@ -5064,4 +5072,3 @@ QgsStringMap QgsSymbolLayerUtils::evaluatePropertiesMap( const QMap<QString, Qgs
   }
   return properties;
 }
-

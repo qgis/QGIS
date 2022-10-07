@@ -70,6 +70,7 @@ class TestQgsPointPatternFillSymbol : public QgsTest
     void pointPatternFillCompletelyWithin();
     void pointPatternFillCentroidWithin();
     void pointPatternFillDataDefinedClip();
+    void pointPatternFillDataDefinedWithOpacity();
     void pointPatternRandomOffset();
     void pointPatternRandomOffsetPercent();
     void pointPatternRandomOffsetDataDefined();
@@ -448,6 +449,36 @@ void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedClip()
   pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
   pointPatternFill->dataDefinedProperties().setProperty( QgsSymbolLayer::PropertyMarkerClipping, QgsProperty::fromExpression( QStringLiteral( "case when $id % 4 = 0 then 'shape' when $id % 4 = 1 then 'centroid_within' when $id % 4 = 2 then 'completely_within' else 'no' end" ) ) );
   const bool res = imageCheck( "symbol_pointfill_datadefined_clip", layer.get() );
+  QVERIFY( res );
+}
+
+void TestQgsPointPatternFillSymbol::pointPatternFillDataDefinedWithOpacity()
+{
+  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  QVERIFY( layer->isValid() );
+
+  QgsPointPatternFillSymbolLayer *pointPatternFill = new QgsPointPatternFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, pointPatternFill );
+  layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_style" ), QStringLiteral( "no" ) );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
+  properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake',5,10)" ) ) );
+
+  pointPatternFill->setSubSymbol( pointSymbol );
+  pointPatternFill->setDistanceX( 10 );
+  pointPatternFill->setDistanceY( 10 );
+  pointPatternFill->setClipMode( Qgis::MarkerClipMode::Shape );
+
+  fillSymbol->setOpacity( 0.5 );
+
+  const bool res = imageCheck( "symbol_pointfill_datadefined_clip_opacity", layer.get() );
   QVERIFY( res );
 }
 

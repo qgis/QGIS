@@ -37,6 +37,8 @@ A renderer for generating live hillshade models.
 
     virtual QgsHillshadeRenderer *clone() const /Factory/;
 
+    virtual Qgis::RasterRendererFlags flags() const;
+
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 %Docstring

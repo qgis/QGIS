@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsjsonutils.h"
+#include "json.hpp"
 #include "qgspdalindexingtask.h"
 #include "qgseptpointcloudindex.h"
 #include "qgstaskmanager.h"
@@ -268,6 +269,8 @@ bool QgsPdalProvider::load( const QString &uri )
       mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
 
       mPointCount = quickInfo.m_pointCount;
+      if ( mPointCount == 0 )
+        throw pdal::pdal_error( "File contains no points" );
 
       // projection
       const QString wkt = QString::fromStdString( quickInfo.m_srs.getWKT() );
@@ -279,10 +282,18 @@ bool QgsPdalProvider::load( const QString &uri )
       throw pdal::pdal_error( "No reader for " + driver );
     }
   }
+  catch ( json::exception &error )
+  {
+    const QString errorString = QStringLiteral( "Error parsing table metadata: %1" ).arg( error.what() );
+    QgsDebugMsg( errorString );
+    appendError( errorString );
+    return false;
+  }
   catch ( pdal::pdal_error &error )
   {
-    QgsDebugMsg( QStringLiteral( "Error loading PDAL data source %1" ).arg( error.what() ) );
-    QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( error.what() ), QStringLiteral( "PDAL" ) );
+    const QString errorString = QString::fromStdString( error.what() );
+    QgsDebugMsg( errorString );
+    appendError( errorString );
     return false;
   }
 }

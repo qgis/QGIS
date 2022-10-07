@@ -66,6 +66,7 @@ class QgsRelationPrivate : public QSharedData
     QList< QgsRelation::FieldPair > mFieldPairs;
 
     bool mValid = false;
+    QString mValidationError;
 };
 
 /// @endcond

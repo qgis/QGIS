@@ -319,7 +319,7 @@ void QgsLayoutPictureWidget::setGuiElementValues()
       mAnchorPointComboBox->setEnabled( false );
     }
 
-    switch ( mPicture->mode() )
+    switch ( mPicture->originalMode() )
     {
       case QgsLayoutItemPicture::FormatSVG:
       case QgsLayoutItemPicture::FormatUnknown:
@@ -499,4 +499,3 @@ void QgsLayoutPictureWidget::populateDataDefinedButtons()
   updateDataDefinedButton( mStrokeColorDDBtn );
   updateDataDefinedButton( mStrokeWidthDDBtn );
 }
-

@@ -3089,15 +3089,21 @@ namespace QgsWms
 
     if ( !renderJob.errors().isEmpty() )
     {
+      const QgsMapRendererJob::Error e = renderJob.errors().at( 0 );
+
       QString layerWMSName;
-      QString firstErrorLayerId = renderJob.errors().at( 0 ).layerID;
-      QgsMapLayer *errorLayer = mProject->mapLayer( firstErrorLayerId );
+      QgsMapLayer *errorLayer = mProject->mapLayer( e.layerID );
       if ( errorLayer )
       {
         layerWMSName = mContext.layerNickname( *errorLayer );
       }
 
-      throw QgsException( QStringLiteral( "Map rendering error in layer '%1'" ).arg( layerWMSName ) );
+      QString errorMessage = QStringLiteral( "Rendering error : '%1'" ).arg( e.message );
+      if ( ! layerWMSName.isEmpty() )
+      {
+        errorMessage = QStringLiteral( "Rendering error : '%1' in layer '%2'" ).arg( e.message, layerWMSName );
+      }
+      throw QgsException( errorMessage );
     }
 
     return painter;

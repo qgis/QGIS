@@ -2201,6 +2201,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Save auxiliary storage to database
     bool saveAuxiliaryStorage( const QString &filename = QString() );
 
+    //! load project flags
+    void loadProjectFlags( const QDomDocument *doc );
+
     //! Returns the property definition used for a data defined server property
     static QgsPropertiesDefinition &dataDefinedServerPropertyDefinitions();
 

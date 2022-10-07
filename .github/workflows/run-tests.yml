@@ -45,7 +45,6 @@ jobs:
             with-3d: ON
             with-quick: ON
             with-clazy: ON
-            patch-qt-3d: false
             with-grass7: OFF
             with-grass8: OFF
             with-compile-commands: ON
@@ -61,7 +60,6 @@ jobs:
             with-3d: ON
             with-quick: OFF
             with-clazy: OFF
-            patch-qt-3d: false
             with-grass7: OFF
             with-grass8: OFF
             with-compile-commands: OFF
@@ -164,7 +162,6 @@ jobs:
                      --env BUILD_WITH_QT6=${{ matrix.with-qt6 }} \
                      --env WITH_QUICK=${{ matrix.with-quick }} \
                      --env WITH_3D=${{ matrix.with-3d }} \
-                     --env PATCH_QT_3D=${{ matrix.patch-qt-3d }} \
                      --env WITH_GRASS7=${{ matrix.with-grass7 }} \
                      --env WITH_GRASS8=${{ matrix.with-grass8 }} \
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \

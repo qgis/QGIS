@@ -169,10 +169,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::makeValid( Qgis::MakeValidMethod m
 
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<10
   if ( method != Qgis::MakeValidMethod::Linework )
-    throw QgsNotSupportedException( QStringLiteral( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
+    throw QgsNotSupportedException( QObject::tr( "The structured method to make geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
 
   if ( keepCollapsed )
-    throw QgsNotSupportedException( QStringLiteral( "The keep collapsed option for making geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
+    throw QgsNotSupportedException( QObject::tr( "The keep collapsed option for making geometries valid requires a QGIS build based on GEOS 3.10 or later" ) );
   geos::unique_ptr geos;
   try
   {
@@ -2011,7 +2011,7 @@ QgsAbstractGeometry *QgsGeos::concaveHull( double targetPercent, bool allowHoles
   ( void )allowHoles;
   ( void )targetPercent;
   ( void )errorMsg;
-  throw QgsNotSupportedException( QStringLiteral( "Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later" ) );
+  throw QgsNotSupportedException( QObject::tr( "Calculating concaveHull requires a QGIS build based on GEOS 3.11 or later" ) );
 #else
   if ( !mGeos )
   {
@@ -2136,6 +2136,8 @@ bool QgsGeos::isSimple( QString *errorMsg ) const
 
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
+  GEOSContextHandle_t ctxt = geosinit()->ctxt;
+
   std::unique_ptr< QgsLineString > segmentized;
   const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( curve );
 
@@ -2153,27 +2155,54 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 
   const int numPoints = line->numPoints();
 
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  const bool hasZ = line->is3D();
 
-  if ( !forceClose || ( line->pointN( 0 ) == line->pointN( numPoints - 1 ) ) )
+#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+  if ( qgsDoubleNear( precision, 0 ) )
   {
-    // use optimised method if we don't have to force close an open ring
-    try
+    if ( !forceClose || ( line->pointN( 0 ) == line->pointN( numPoints - 1 ) ) )
     {
-      coordSeq = GEOSCoordSeq_copyFromArrays_r( geosinit()->ctxt, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
-      if ( !coordSeq )
+      // use optimised method if we don't have to force close an open ring
+      try
       {
-        QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
-        return nullptr;
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( ctxt, line->xData(), line->yData(), line->zData(), nullptr, numPoints );
+        if ( !coordSeq )
+        {
+          QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points" ).arg( numPoints ) );
+          return nullptr;
+        }
       }
+      CATCH_GEOS( nullptr )
     }
-    CATCH_GEOS( nullptr )
+    else
+    {
+      QVector< double > x = line->xVector();
+      if ( numPoints > 0 )
+        x.append( x.at( 0 ) );
+      QVector< double > y = line->yVector();
+      if ( numPoints > 0 )
+        y.append( y.at( 0 ) );
+      QVector< double > z = line->zVector();
+      if ( hasZ && numPoints > 0 )
+        z.append( z.at( 0 ) );
+      try
+      {
+        coordSeq = GEOSCoordSeq_copyFromArrays_r( ctxt, x.constData(), y.constData(), !hasZ ? nullptr : z.constData(), nullptr, numPoints + 1 );
+        if ( !coordSeq )
+        {
+          QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create closed coordinate sequence for %1 points" ).arg( numPoints + 1 ) );
+          return nullptr;
+        }
+      }
+      CATCH_GEOS( nullptr )
+    }
+    return coordSeq;
   }
 #endif
 
-  bool hasZ = line->is3D();
-  bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
   int coordDims = 2;
+  const bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
+
   if ( hasZ )
   {
     ++coordDims;
@@ -2191,7 +2220,7 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
 
   try
   {
-    coordSeq = GEOSCoordSeq_create_r( geosinit()->ctxt, numOutPoints, coordDims );
+    coordSeq = GEOSCoordSeq_create_r( ctxt, numOutPoints, coordDims );
     if ( !coordSeq )
     {
       QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ) );
@@ -2217,15 +2246,15 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         }
         if ( hasZ )
         {
-          GEOSCoordSeq_setXYZ_r( geosinit()->ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision, std::round( *zData++ / precision ) * precision );
+          GEOSCoordSeq_setXYZ_r( ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision, std::round( *zData++ / precision ) * precision );
         }
         else
         {
-          GEOSCoordSeq_setXY_r( geosinit()->ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision );
+          GEOSCoordSeq_setXY_r( ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision, std::round( *yData++ / precision ) * precision );
         }
         if ( hasM )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit()->ctxt, coordSeq, i, 3, line->mAt( *mData++ ) );
+          GEOSCoordSeq_setOrdinate_r( ctxt, coordSeq, i, 3, *mData++ );
         }
       }
     }
@@ -2243,15 +2272,15 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
         }
         if ( hasZ )
         {
-          GEOSCoordSeq_setXYZ_r( geosinit()->ctxt, coordSeq, i, *xData++, *yData++, *zData++ );
+          GEOSCoordSeq_setXYZ_r( ctxt, coordSeq, i, *xData++, *yData++, *zData++ );
         }
         else
         {
-          GEOSCoordSeq_setXY_r( geosinit()->ctxt, coordSeq, i, *xData++, *yData++ );
+          GEOSCoordSeq_setXY_r( ctxt, coordSeq, i, *xData++, *yData++ );
         }
         if ( hasM )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit()->ctxt, coordSeq, i, 3, *mData++ );
+          GEOSCoordSeq_setOrdinate_r( ctxt, coordSeq, i, 3, *mData++ );
         }
       }
     }

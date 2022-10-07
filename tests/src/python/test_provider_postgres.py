@@ -2133,14 +2133,20 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(errorMsg, "")
 
         qml, errmsg = vl.getStyleFromDatabase("1")
-        self.assertTrue('v="\u001E"' in qml)
         self.assertEqual(errmsg, "")
+
+        found = False
+        for line in qml.split('\n'):
+            found = 'value="\u001E"' in qml and 'name="chr"' in qml
+            if found:
+                break
+        self.assertTrue(found, f"record separator character (\u001E) not found in qml: {qml}")
 
         # Test loadStyle from metadata
         md = QgsProviderRegistry.instance().providerMetadata('postgres')
         qml = md.loadStyle(self.dbconn + " type=POINT table=\"qgis_test\".\"editData\" (geom)", 'fontSymbol')
         self.assertTrue(qml.startswith('<!DOCTYPE qgi'), qml)
-        self.assertTrue('v="\u001E"' in qml)
+        self.assertTrue('value="\u001E"' in qml)
 
     def testHasMetadata(self):
         # views don't have metadata

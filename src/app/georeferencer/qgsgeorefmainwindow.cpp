@@ -275,6 +275,23 @@ void QgsGeoreferencerMainWindow::openLayer( QgsMapLayerType layerType, const QSt
   else
   {
     mFileName = fileName;
+    uri = mFileName;
+    switch ( layerType )
+    {
+      case QgsMapLayerType::RasterLayer:
+        provider = QStringLiteral( "gdal" );
+        break;
+      case QgsMapLayerType::VectorLayer:
+        provider = QStringLiteral( "ogr" );
+        break;
+      case QgsMapLayerType::PluginLayer:
+      case QgsMapLayerType::MeshLayer:
+      case QgsMapLayerType::VectorTileLayer:
+      case QgsMapLayerType::AnnotationLayer:
+      case QgsMapLayerType::PointCloudLayer:
+      case QgsMapLayerType::GroupLayer:
+        break;
+    }
   }
   mModifiedFileName.clear();
   mCreateWorldFileOnly = false;

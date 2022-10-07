@@ -911,7 +911,16 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QgsPoint centroid() const override;
 
+    /**
+     * Calculates the shoelace/triangle formula sum for the points in the linestring.
+     * If the linestring is closed (i.e. a polygon) then the polygon area is equal to the absolute value of the sum.
+     * Please note that the sum will be negative if the points are defined in clockwise order.
+     * Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
+     * since otherwise a bug can be introduced (such as the bug fixed for github issue 49578)
+     * \see https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
+     */
     void sumUpArea( double &sum SIP_OUT ) const override;
+
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     bool addZValue( double zValue = 0 ) override;

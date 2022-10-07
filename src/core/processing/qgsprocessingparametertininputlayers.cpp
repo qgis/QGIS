@@ -85,6 +85,16 @@ QString QgsProcessingParameterTinInputLayers::valueAsPythonString( const QVarian
   return parts.join( ',' ).prepend( '[' ).append( ']' );
 }
 
+QString QgsProcessingParameterTinInputLayers::valueAsString( const QVariant &value, QgsProcessingContext &context, bool &ok ) const
+{
+  return valueAsStringPrivate( value, context, ok, ValueAsStringFlag::AllowMapLayerValues );
+}
+
+QVariant QgsProcessingParameterTinInputLayers::valueAsJsonObject( const QVariant &value, QgsProcessingContext &context ) const
+{
+  return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
+}
+
 QString QgsProcessingParameterTinInputLayers::asPythonString( QgsProcessing::PythonOutputType outputType ) const
 {
   switch ( outputType )

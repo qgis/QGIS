@@ -1179,6 +1179,23 @@
            45.56177551668844927
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tomas Johansson",
+        "Committer": "No",
+        "First Commit Message": "Bugfixed 'Delete holes' (removeInteriorRings) when the area argument is used. Github issue #49578",
+        "First Commit Date": "04-08-2022",
+        "GIT Nickname": "TomasJohansson"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.1525,
+          60.6750
+        ]
+      }
     }
   ]
 }

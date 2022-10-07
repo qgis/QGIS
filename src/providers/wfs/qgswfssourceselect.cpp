@@ -688,18 +688,21 @@ void QgsWFSSourceSelect::changeCRSFilter()
     {
       QSet<QString> crsNames( qgis::listToSet( *crsIterator ) );
 
-      if ( mProjectionSelector )
-      {
-        mProjectionSelector->setOgcWmsCrsFilter( crsNames );
-        QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
-        if ( !preferredCRS.isEmpty() )
-        {
-          QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
-          mProjectionSelector->setCrs( refSys );
+      // Delete and recreate mProjectionSelector as setOgcWmsCrsFilter()
+      // behavior is undefined after the dialog has been shown.
+      delete mProjectionSelector;
+      mProjectionSelector = new QgsProjectionSelectionDialog( this );
 
-          labelCoordRefSys->setText( preferredCRS );
-        }
+      mProjectionSelector->setOgcWmsCrsFilter( crsNames );
+      QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
+      if ( !preferredCRS.isEmpty() )
+      {
+        QgsCoordinateReferenceSystem refSys = QgsCoordinateReferenceSystem::fromOgcWmsCrs( preferredCRS );
+        mProjectionSelector->setCrs( refSys );
+
+        labelCoordRefSys->setText( preferredCRS );
       }
+
     }
   }
 }

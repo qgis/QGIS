@@ -81,6 +81,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
+    double mLayerOpacity = 1.0;
     QgsRasterPipe *mPipe = nullptr;
 
     QgsRasterDataProvider::Capability mProviderCapabilities;

@@ -207,6 +207,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType c
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
+  , mSslErrorHandlerSemaphore( 1 )
   , mAuthRequestHandlerSemaphore( 1 )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
@@ -385,14 +386,6 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   return reply;
 }
 
-#ifndef QT_NO_SSL
-void QgsNetworkAccessManager::unlockAfterSslErrorHandled()
-{
-  Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
-  mSslErrorWaitCondition.wakeOne();
-}
-#endif
-
 void QgsNetworkAccessManager::abortRequest()
 {
   QTimer *timer = qobject_cast<QTimer *>( sender() );
@@ -434,6 +427,9 @@ void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
 
   emit requestEncounteredSslErrors( getRequestId( reply ), errors );
 
+  // acquire semaphore a first time, so we block next acquire until release is called
+  mSslErrorHandlerSemaphore.acquire();
+
   // in main thread this will trigger SSL error handler immediately and return once the errors are handled,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit sslErrorsOccurred( reply, errors );
@@ -441,9 +437,8 @@ void QgsNetworkAccessManager::onReplySslErrors( const QList<QSslError> &errors )
   {
     // lock thread and wait till error is handled. If we return from this slot now, then the reply will resume
     // without actually giving the main thread the chance to act on the ssl error and possibly ignore it.
-    mSslErrorHandlerMutex.lock();
-    mSslErrorWaitCondition.wait( &mSslErrorHandlerMutex );
-    mSslErrorHandlerMutex.unlock();
+    mSslErrorHandlerSemaphore.acquire();
+    mSslErrorHandlerSemaphore.release();
     afterSslErrorHandled( reply );
   }
 }
@@ -454,11 +449,6 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
   {
     restartTimeout( reply );
     emit sslErrorsHandled( reply );
-  }
-  else if ( this == sMainNAM )
-  {
-    // notify other threads to allow them to handle the reply
-    qobject_cast< QgsNetworkAccessManager *>( reply->manager() )->unlockAfterSslErrorHandled(); // safe to call directly - the other thread will be stuck waiting for us
   }
 }
 
@@ -505,6 +495,7 @@ void QgsNetworkAccessManager::handleSslErrors( QNetworkReply *reply, const QList
 {
   mSslErrorHandler->handleSslErrors( reply, errors );
   afterSslErrorHandled( reply );
+  qobject_cast<QgsNetworkAccessManager *>( reply->manager() )->mSslErrorHandlerSemaphore.release();
 }
 
 #endif
@@ -519,7 +510,9 @@ void QgsNetworkAccessManager::onAuthRequired( QNetworkReply *reply, QAuthenticat
 
   emit requestRequiresAuth( getRequestId( reply ), auth->realm() );
 
+  // acquire semaphore a first time, so we block next acquire until release is called
   mAuthRequestHandlerSemaphore.acquire();
+
   // in main thread this will trigger auth handler immediately and return once the request is satisfied,
   // while in worker thread the signal will be queued (and return immediately) -- hence the need to lock the thread in the next block
   emit authRequestOccurred( reply, auth );

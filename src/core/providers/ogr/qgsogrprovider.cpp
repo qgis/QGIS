@@ -401,6 +401,13 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
               mOgrGeometryTypeFilter,
               mOpenOptions );
 
+
+  const QVariantMap parts = QgsOgrProviderMetadata().decodeUri( uri );
+  if ( parts.contains( QStringLiteral( "uniqueGeometryType" ) ) )
+  {
+    mUniqueGeometryType = parts.value( QStringLiteral( "uniqueGeometryType" ) ).toString() == QLatin1String( "yes" );
+  }
+
   // to be called only after mFilePath has been set
   invalidateNetworkCache();
 
@@ -2090,6 +2097,11 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
     parts.insert( QStringLiteral( "geometryType" ), QgsOgrProviderUtils::ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
   }
 
+  if ( mUniqueGeometryType )
+  {
+    parts.insert( QStringLiteral( "uniqueGeometryType" ), QStringLiteral( "yes" ) );
+  }
+
   if ( !mOpenOptions.isEmpty() )
   {
     parts.insert( QStringLiteral( "openOptions" ), mOpenOptions );
@@ -3414,7 +3426,7 @@ void QgsOgrProvider::recalculateFeatureCount() const
 
   // feature count returns number of features within current spatial filter
   // so we remove it if there's any and then put it back
-  if ( mOgrGeometryTypeFilter == wkbUnknown )
+  if ( mOgrGeometryTypeFilter == wkbUnknown || mUniqueGeometryType )
   {
     mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )

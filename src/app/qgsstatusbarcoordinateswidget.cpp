@@ -221,12 +221,10 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
     return; // do not affect panning
 
-
-
-  rect.moveTo( ( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d, ( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d );
+  rect.moveTo( static_cast< int >( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d, static_cast< int >( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d );
   mMapCanvas->setSceneRect( rect );
   QTransform matrix;
-  matrix.rotate( ( QRandomGenerator::global()->generate() % ( 2 * r ) ) - r );
+  matrix.rotate( static_cast<int >( QRandomGenerator::global()->generate() % ( 2 * r ) ) - r );
   mMapCanvas->setTransform( matrix );
 }
 
