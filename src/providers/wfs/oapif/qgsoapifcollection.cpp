@@ -300,11 +300,14 @@ bool QgsOapifCollection::deserialize( const json &j )
 
   if ( j.contains( "crs" ) )
   {
-    const auto crsUrl = j["crs"];
-    if ( crsUrl.is_string() )
+    const auto crsUrls = j["crs"];
+    if ( crsUrls.is_array() )
     {
-      QString crs = QString::fromStdString( crsUrl.get<std::string>() );
-      mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ) );
+      for ( const auto &crsUrl : crsUrls )
+      {
+        QString crs = QString::fromStdString( crsUrl.get<std::string>() );
+        mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ) );
+      }
     }
   }
 

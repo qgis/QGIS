@@ -146,10 +146,16 @@ bool QgsOapifProvider::init()
   mLayerMetadata = collectionRequest.collection().mLayerMetadata;
 
   if ( mLayerMetadata.crs().isValid() )
-    mShared->mSourceCrs = mLayerMetadata.crs();
+  {
+    // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copyng the
+    // CRS his mPj pointer gets deleted and it is impossible to create a transform
+    mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
+  }
   else
+  {
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
                             QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+  }
 
   // Merge contact info from /api
   mLayerMetadata.setContacts( apiRequest.metadata().contacts() );
