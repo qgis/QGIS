@@ -174,10 +174,10 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
       uri.setParam( QStringLiteral( "proxyHttp" ), QStringLiteral( "true" ) );
     uri.setParam( QStringLiteral( "proxyHost" ), mProxyHost );
     uri.setParam( QStringLiteral( "proxyPort" ), QString::number( mProxyPort ) );
-    if (!mProxyUsername.isEmpty())
+    if ( !mProxyUsername.isEmpty() )
     {
-        uri.setParam( QStringLiteral( "proxyUsername" ), mProxyUsername );
-        uri.setParam( QStringLiteral( "proxyPassword" ), mProxyPassword );
+      uri.setParam( QStringLiteral( "proxyUsername" ), mProxyUsername );
+      uri.setParam( QStringLiteral( "proxyPassword" ), mProxyPassword );
     }
   }
 

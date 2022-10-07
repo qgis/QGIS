@@ -53,7 +53,7 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
   if ( uri.hasParam( "connectionType" ) )
     connType = static_cast<QgsHanaConnectionType>( uri.param( "connectionType" ).toUInt() );
 
-  addItem( "connectionType", QString::number(static_cast<uint> (connType) ) );
+  addItem( "connectionType", QString::number( static_cast<uint>( connType ) ) );
   switch ( connType )
   {
     case QgsHanaConnectionType::DSN:
