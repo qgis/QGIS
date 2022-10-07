@@ -2174,6 +2174,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, QgsReadWriteContext &context, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() ) SIP_SKIP;
 
     /**
+     * Remove auxiliary layer thanks to a vector later id.
+     */
+    void removeAuxiliaryLayer( const QgsMapLayer *ml );
+
+    /**
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      * \note not available in Python bindings

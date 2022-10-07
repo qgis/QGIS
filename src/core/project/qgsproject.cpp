@@ -3872,26 +3872,47 @@ QgsProject::addMapLayer( QgsMapLayer *layer,
   return addedLayers.isEmpty() ? nullptr : addedLayers[0];
 }
 
+void QgsProject::removeAuxiliaryLayer( const QgsMapLayer *ml )
+{
+  if ( ! ml || ml->type() != QgsMapLayerType::VectorLayer )
+    return;
+
+  const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( ml );
+  if ( vl && vl->auxiliaryLayer() )
+  {
+    const QgsDataSourceUri uri( vl->auxiliaryLayer()->source() );
+    QgsAuxiliaryStorage::deleteTable( uri );
+  }
+}
+
 void QgsProject::removeMapLayers( const QStringList &layerIds )
 {
+  for ( const auto &layerId : layerIds )
+    removeAuxiliaryLayer( mLayerStore->mapLayer( layerId ) );
+
   mProjectScope.reset();
   mLayerStore->removeMapLayers( layerIds );
 }
 
 void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
 {
+  for ( const auto &layer : layers )
+    removeAuxiliaryLayer( layer );
+
   mProjectScope.reset();
   mLayerStore->removeMapLayers( layers );
 }
 
 void QgsProject::removeMapLayer( const QString &layerId )
 {
+  removeAuxiliaryLayer( mLayerStore->mapLayer( layerId ) );
   mProjectScope.reset();
   mLayerStore->removeMapLayer( layerId );
 }
 
 void QgsProject::removeMapLayer( QgsMapLayer *layer )
 {
+  removeAuxiliaryLayer( layer );
   mProjectScope.reset();
   mLayerStore->removeMapLayer( layer );
 }
