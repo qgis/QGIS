@@ -272,6 +272,13 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     OGR_L_SetAttributeFilter( mOgrLayer, nullptr );
   }
 
+  if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  {
+    const QgsAttributeList attrs = mRequest.subsetOfAttributes();
+    mRequestAttributes = QVector< int >( attrs.begin(), attrs.end() );
+    std::sort( mRequestAttributes.begin(), mRequestAttributes.end() );
+  }
+
   //start with first feature
   rewind();
 
@@ -529,27 +536,21 @@ bool QgsOgrFeatureIterator::close()
 }
 
 
-void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const
+QVariant QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, int attindex ) const
 {
   if ( mFirstFieldIsFid && attindex == 0 )
   {
-    f.setAttribute( 0, static_cast<qint64>( OGR_F_GetFID( ogrFet ) ) );
-    return;
+    return static_cast<qint64>( OGR_F_GetFID( ogrFet ) );
   }
 
   int attindexWithoutFid = ( mFirstFieldIsFid ) ? attindex - 1 : attindex;
   bool ok = false;
-  QVariant value = QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mFieldsWithoutFid, attindexWithoutFid, mSource->mEncoding, &ok );
-  if ( !ok )
-    return;
-
-  f.setAttribute( attindex, value );
+  return QgsOgrUtils::getOgrFeatureAttribute( ogrFet, mFieldsWithoutFid, attindexWithoutFid, mSource->mEncoding, &ok );
 }
 
 bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) const
 {
   feature.setId( OGR_F_GetFID( fet.get() ) );
-  feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   const bool useExactIntersect = mRequest.spatialFilterType() == Qgis::SpatialFilterType::BoundingBox && ( mRequest.flags() & QgsFeatureRequest::ExactIntersect );
@@ -596,23 +597,31 @@ bool QgsOgrFeatureIterator::readFeature( const gdal::ogr_feature_unique_ptr &fet
   }
 
   // fetch attributes
+  const int fieldCount = mSource->mFields.count();
+  QgsAttributes attributes( fieldCount );
+  QVariant *attributeData = attributes.data();
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
-    QgsAttributeList attrs = mRequest.subsetOfAttributes();
-    for ( QgsAttributeList::const_iterator it = attrs.constBegin(); it != attrs.constEnd(); ++it )
+    const int requestedAttributeTotal = mRequestAttributes.size();
+    if ( requestedAttributeTotal > 0 )
     {
-      getFeatureAttribute( fet.get(), feature, *it );
+      const int *requestAttribute = mRequestAttributes.constData();
+      for ( int i = 0; i < requestedAttributeTotal; ++i )
+      {
+        const int idx = requestAttribute[i];
+        attributeData[idx] = getFeatureAttribute( fet.get(), idx );
+      }
     }
   }
   else
   {
     // all attributes
-    const auto fieldCount = mSource->mFields.count();
     for ( int idx = 0; idx < fieldCount; ++idx )
     {
-      getFeatureAttribute( fet.get(), feature, idx );
+      *attributeData++ = getFeatureAttribute( fet.get(), idx );
     }
   }
+  feature.setAttributes( attributes );
 
   if ( mRequest.flags() & QgsFeatureRequest::EmbeddedSymbols )
   {
