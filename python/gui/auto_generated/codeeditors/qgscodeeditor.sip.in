@@ -181,6 +181,31 @@ Clears all warning messages from the editor.
 .. versionadded:: 3.16
 %End
 
+    bool isCursorOnLastLine() const;
+%Docstring
+Returns ``True`` if the cursor is on the last line of the document.
+
+.. versionadded:: 3.28
+%End
+
+  public slots:
+
+    virtual void moveCursorToStart();
+%Docstring
+Moves the cursor to the start of the document and scrolls to ensure
+it is visible.
+
+.. versionadded:: 3.28
+%End
+
+    virtual void moveCursorToEnd();
+%Docstring
+Moves the cursor to the end of the document and scrolls to ensure
+it is visible.
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
     bool isFixedPitch( const QFont &font );

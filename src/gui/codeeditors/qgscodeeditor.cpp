@@ -512,3 +512,27 @@ void QgsCodeEditor::clearWarnings()
   setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, 0 );
   mWarningLines.clear();
 }
+
+bool QgsCodeEditor::isCursorOnLastLine() const
+{
+  int line = 0;
+  int index = 0;
+  getCursorPosition( &line, &index );
+  return line == lines() - 1;
+}
+
+void QgsCodeEditor::moveCursorToStart()
+{
+  setCursorPosition( 0, 0 );
+  ensureCursorVisible();
+  ensureLineVisible( 0 );
+}
+
+void QgsCodeEditor::moveCursorToEnd()
+{
+  const int endLine = lines() - 1;
+  const int endLineLength = lineLength( endLine );
+  setCursorPosition( endLine, endLineLength );
+  ensureCursorVisible();
+  ensureLineVisible( endLine );
+}
