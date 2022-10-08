@@ -383,8 +383,9 @@ bool QgsValueMapConfigDlg::validateKey( QTableWidgetItem *key ) const
   {
     return false;
   }
-  QVariant ks = QVariant( key->text() );
-  if ( ! mField.convertCompatible( ks ) )
+  QString keystr = key->text();
+  QVariant ks = QVariant( keystr );
+  if ( !( ( keystr.isEmpty() || keystr == "NULL" ) || mField.convertCompatible( ks ) ) )
   {
     QgsApplication::instance()->messageLog()->logMessage( tr( "Provided key is incompatible" ) );
     key->setBackground( QBrush( Qt::red ) );
