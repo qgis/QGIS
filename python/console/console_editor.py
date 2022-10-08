@@ -135,18 +135,6 @@ class Editor(QgsCodeEditorPython):
         # Set Python lexer
         self.initializeLexer()
 
-    def move_cursor_to_end(self):
-        """Move cursor to end of text"""
-        line, index = self.get_end_pos()
-        self.setCursorPosition(line, index)
-        self.ensureCursorVisible()
-        self.ensureLineVisible(line)
-
-    def get_end_pos(self):
-        """Return (line, index) position of the last character"""
-        line = self.lines() - 1
-        return (line, len(self.text(line)))
-
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         menu.addAction(
