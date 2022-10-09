@@ -23,13 +23,16 @@
 
 
 QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
-  : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {
     setTitle( tr( "JSON Editor" ) );
   }
-  setFoldingVisible( true );
   QgsCodeEditorJson::initializeLexer();
 }
 

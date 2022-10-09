@@ -69,11 +69,11 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
 };
 
 
-QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin )
+QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin, QgsCodeEditor::Flags flags )
   : QsciScintilla( parent )
   , mWidgetTitle( title )
-  , mFolding( folding )
   , mMargin( margin )
+  , mFlags( flags )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
@@ -83,6 +83,10 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   {
     setWindowTitle( mWidgetTitle );
   }
+
+  if ( folding )
+    mFlags |= QgsCodeEditor::Flag::CodeFolding;
+
   setSciWidget();
   setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
@@ -202,6 +206,8 @@ QFont QgsCodeEditor::lexerFont() const
 
 void QgsCodeEditor::runPostLexerConfigurationTasks()
 {
+  updateFolding();
+
   setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
   setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 
@@ -230,7 +236,10 @@ void QgsCodeEditor::setSciWidget()
   setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 
   setLineNumbersVisible( false );
-  setFoldingVisible( false );
+
+  // temporarily disable folding, will be enabled later if required by updateFolding()
+  setFolding( QsciScintilla::NoFoldStyle );
+  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
 
   setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
 
@@ -239,7 +248,7 @@ void QgsCodeEditor::setSciWidget()
   setIndentationGuidesForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
   setIndentationGuidesBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   // whether margin will be shown
-  setFoldingVisible( mFolding );
+  updateFolding();
   const QColor foldColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Fold );
   setFoldMarginColors( foldColor, foldColor );
   // indentation
@@ -308,8 +317,25 @@ bool QgsCodeEditor::lineNumbersVisible() const
 
 void QgsCodeEditor::setFoldingVisible( bool folding )
 {
-  mFolding = folding;
   if ( folding )
+  {
+    mFlags |= QgsCodeEditor::Flag::CodeFolding;
+  }
+  else
+  {
+    mFlags &= ~( static_cast< int >( QgsCodeEditor::Flag::CodeFolding ) );
+  }
+  updateFolding();
+}
+
+bool QgsCodeEditor::foldingVisible()
+{
+  return mFlags & QgsCodeEditor::Flag::CodeFolding;
+}
+
+void QgsCodeEditor::updateFolding()
+{
+  if ( mFlags & QgsCodeEditor::Flag::CodeFolding )
   {
     setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), "0" );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );

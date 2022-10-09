@@ -24,13 +24,16 @@
 
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
-  : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {
     setTitle( tr( "HTML Editor" ) );
   }
-  setFoldingVisible( true );
   QgsCodeEditorHTML::initializeLexer();
 }
 

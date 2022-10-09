@@ -31,7 +31,11 @@
 #include <QDesktopServices>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
-  : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding )
   , mAPISFilesList( filenames )
 {
   if ( !parent )
@@ -170,7 +174,6 @@ void QgsCodeEditorPython::initializeLexer()
   }
 
   setLineNumbersVisible( true );
-  setFoldingVisible( true );
   setIndentationsUseTabs( false );
   setIndentationGuides( true );
 
