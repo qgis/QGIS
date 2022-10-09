@@ -2245,6 +2245,29 @@ void TestQgsLineString::sumUpArea()
                 << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
   ls.sumUpArea( area );
   QGSCOMPARENEAR( area, -18, 4 * std::numeric_limits<double>::epsilon() );
+
+  double shift = 10.0;
+  ls.setPoints( QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 )
+                << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 )
+                << QgsPoint( shift + 0, shift + 0 ) );
+  ls.sumUpArea( area );
+  QGSCOMPARENEAR( area, -14, 4 * std::numeric_limits<double>::epsilon() );
+
+  // the length of the equator ~ 40 075.014 172 304 363 km
+  shift = 40075.014172304363;
+  // expected area = 4, 1% error corresponds to 0.04
+  double epsilonArea = 0.04;
+  // accuracyMeterPow = 3 => kilometer; accuracyMeterPow = 0 => meter; accuracyMeterPow = -3 => millimeter;
+  for ( int accuracyMeterPow = 3; accuracyMeterPow >= -3; accuracyMeterPow-- )
+  {
+    area = accuracyMeterPow - 4.0;
+    ls.setPoints( QgsPointSequence() << QgsPoint( shift + 0, shift + 0 ) << QgsPoint( shift + 2, shift + 0 )
+                  << QgsPoint( shift + 2, shift + 2 ) << QgsPoint( shift + 0, shift + 2 )
+                  << QgsPoint( shift + 0, shift + 0 ) );
+    ls.sumUpArea( area );
+    QGSCOMPARENEAR( area, accuracyMeterPow, epsilonArea );
+    shift = shift * 10.0;
+  }
 }
 
 void TestQgsLineString::boundingBox()

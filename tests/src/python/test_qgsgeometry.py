@@ -932,10 +932,10 @@ class TestQgsGeometry(unittest.TestCase):
                 exp = float(row['area'])
                 result = geom.constGet().area()
                 self.assertAlmostEqual(result, exp, 5,
-                                       "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
+                                       "Area of {}: mismatch\nExpected:\n{}\nGot:\n{}\n".format(row['wkt'], exp, result))
                 result = geom.area()
                 self.assertAlmostEqual(result, exp, 5,
-                                       "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
+                                       "Area of {}: mismatch\nExpected:\n{}\nGot:\n{}\n".format(row['wkt'], exp, result))
 
                 # test length calculation
                 exp = float(row['length'])
