@@ -30,8 +30,8 @@ A text editor based on QScintilla2.
 %End
   public:
 
-    enum MarginRole
-    {
+    enum class MarginRole
+      {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
