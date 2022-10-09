@@ -51,12 +51,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.16
      */
-    enum MarginRole
-    {
+    enum class MarginRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCodeEditor, MarginRole ) : int
+      {
       LineNumbers = 0, //!< Line numbers
       ErrorIndicators = 1, //!< Error indicators
       FoldingControls = 2, //!< Folding controls
     };
+    Q_ENUM( MarginRole )
 
     /**
      * Construct a new code editor.
