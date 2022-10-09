@@ -67,6 +67,7 @@ class TestQgsVertexTool : public QObject
     void testSelectVerticesByPolygon();
     void testTopologicalEditingMoveVertexZ();
     void testTopologicalEditingMoveVertexOnSegmentZ();
+    void testTopologicalEditingMoveVerticesOnSegmentZ();
     void testTopologicalEditingMoveVertexOnIntersectionZ();
     void testMoveVertex();
     void testMoveEdge();
@@ -342,6 +343,9 @@ void TestQgsVertexTool::cleanupTestCase()
 
 void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
 {
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
+
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
   QgsProject::instance()->setTopologicalEditing( true );
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
@@ -361,10 +365,16 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexZ()
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 }
 
 void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
 {
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
+
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue.setValue( 333 );
 
   const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
@@ -388,6 +398,62 @@ void TestQgsVertexTool::testTopologicalEditingMoveVertexOnSegmentZ()
   mLayerLineZ->undoStack()->undo();
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
+}
+
+void TestQgsVertexTool::testTopologicalEditingMoveVerticesOnSegmentZ()
+{
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
+
+  // Adds a temp feature
+  // The 2 vertices are parallel to the linez2
+  QgsFeature linez;
+  linez.setGeometry( QgsGeometry::fromWkt( "LineStringZ (5.5 8 5, 6.5 8 10)" ) );
+  mLayerLineZ->addFeature( linez );
+
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 4 );
+
+  // Activates topological editing
+  const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+  QgsProject::instance()->setTopologicalEditing( true );
+
+  // And snapping
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( Qgis::SnappingMode::AllLayers );
+  cfg.setTolerance( 10 );
+  cfg.setTypeFlag( static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // Selects the temp feature
+  mousePress( 5, 8.5, Qt::LeftButton );
+  mouseMove( 7, 7.5 );
+  mouseRelease( 7, 7.5, Qt::LeftButton );
+
+  // And moves on the linez2
+  mouseClick( 5.5, 8, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  mouseClick( 5.5, 7, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+
+  // Verifies than the temp line has been moved and topological vertices added.
+  QCOMPARE( mLayerLineZ->getFeature( linez.id() ).geometry().asWkt(), QString( "LineStringZ (5.5 7 6.25, 6.5 7 10)" ) );
+  QCOMPARE( mLayerLineZ->getFeature( mFidLineZF2 ).geometry().asWkt(), QString( "LineStringZ (5 7 5, 5.5 7 6.25, 6.5 7 10, 7 7 10)" ) );
+
+  // Undo changes
+  mLayerLineZ->deleteFeature( linez.id() );
+
+  QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  mLayerLineZ->undoStack()->undo();
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  QCOMPARE( mLayerLineZ->undoStack()->index(), 3 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 3 );
 }
 
 void TestQgsVertexTool::testTopologicalEditingMoveVertexOnIntersectionZ()
