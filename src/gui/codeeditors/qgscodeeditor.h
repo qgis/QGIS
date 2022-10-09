@@ -60,21 +60,41 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_ENUM( MarginRole )
 
     /**
+     * \brief Flags controlling behavior of code editor
+     *
+     * \since QGIS 3.28
+     */
+    enum class Flag : int
+    {
+      CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
+    };
+    Q_ENUM( Flag )
+
+    /**
+     * \brief Flags controlling behavior of code editor
+     *
+     * \since QGIS 3.28
+     */
+    Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
+
+    /**
      * Construct a new code editor.
      *
      * \param parent The parent QWidget
      * \param title The title to show in the code editor dialog
-     * \param folding FALSE: Enable folding for code editor
+     * \param folding FALSE: Enable folding for code editor (deprecated, use \a flags instead)
      * \param margin FALSE: Enable margin for code editor (deprecated)
+     * \param flags flags controlling behavior of code editor (since QGIS 3.28)
      * \since QGIS 2.6
      */
-    QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget * parent SIP_TRANSFERTHIS = nullptr, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags() );
 
     /**
      * Set the widget title
      * \param title widget title
      */
-    void setTitle( const QString &title );
+    void setTitle( const QString & title );
 
     /**
      * Set margin visible state
@@ -117,14 +137,14 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * Returns TRUE if the folding controls are visible in the editor.
      * \see setFoldingVisible()
      */
-    bool foldingVisible() { return mFolding; }
+    bool foldingVisible();
 
     /**
      * Insert text at cursor position, or replace any selected text if user has
      * made a selection.
      * \param text The text to be inserted
      */
-    void insertText( const QString &text );
+    void insertText( const QString & text );
 
     /**
      * Returns the default color for the specified \a role.
@@ -137,7 +157,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      *
      * \since QGIS 3.16
      */
-    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString & theme = QString() );
 
     /**
      * Returns the color to use in the editor for the specified \a role.
@@ -161,7 +181,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see color()
      * \since QGIS 3.16
      */
-    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor & color );
 
     /**
      * Returns the monospaced font to use for code editors.
@@ -177,7 +197,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \note Not available in Python bindings
      * \since QGIS 3.16
      */
-    void setCustomAppearance( const QString &scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > &customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
+    void setCustomAppearance( const QString & scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > & customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString & fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
 
     /**
      * Adds a \a warning message and indicator to the specified a \a lineNumber.
@@ -185,7 +205,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \see clearWarnings()
      * \since QGIS 3.16
      */
-    void addWarning( int lineNumber, const QString &warning );
+    void addWarning( int lineNumber, const QString & warning );
 
     /**
      * Clears all warning messages from the editor.
@@ -222,10 +242,10 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
   protected:
 
-    bool isFixedPitch( const QFont &font );
+    bool isFixedPitch( const QFont & font );
 
-    void focusOutEvent( QFocusEvent *event ) override;
-    void keyPressEvent( QKeyEvent *event ) override;
+    void focusOutEvent( QFocusEvent * event ) override;
+    void keyPressEvent( QKeyEvent * event ) override;
 
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
@@ -260,10 +280,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   private:
 
     void setSciWidget();
+    void updateFolding();
 
     QString mWidgetTitle;
-    bool mFolding;
-    bool mMargin;
+    bool mMargin = false;
+    QgsCodeEditor::Flags mFlags;
 
     bool mUseDefaultSettings = true;
     // used if above is false, inplace of values taken from QSettings:
@@ -279,6 +300,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     static constexpr int MARKER_NUMBER = 6;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCodeEditor::Flags )
 
 // clazy:excludeall=qstring-allocations
 

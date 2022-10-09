@@ -12,3 +12,10 @@ QgsCodeEditor.FoldingControls.__doc__ = "Folding controls"
 QgsCodeEditor.MarginRole.__doc__ = 'Margin roles.\n\nThis enum contains the roles which the different numbered margins are used for.\n\n.. versionadded:: 3.16\n\n' + '* ``LineNumbers``: ' + QgsCodeEditor.MarginRole.LineNumbers.__doc__ + '\n' + '* ``ErrorIndicators``: ' + QgsCodeEditor.MarginRole.ErrorIndicators.__doc__ + '\n' + '* ``FoldingControls``: ' + QgsCodeEditor.MarginRole.FoldingControls.__doc__
 # --
 QgsCodeEditor.MarginRole.baseClass = QgsCodeEditor
+# monkey patching scoped based enum
+QgsCodeEditor.Flag.CodeFolding.__doc__ = "Indicates that code folding should be enabled for the editor"
+QgsCodeEditor.Flag.__doc__ = 'Flags controlling behavior of code editor\n\n.. versionadded:: 3.28\n\n' + '* ``CodeFolding``: ' + QgsCodeEditor.Flag.CodeFolding.__doc__
+# --
+QgsCodeEditor.Flag.baseClass = QgsCodeEditor
+QgsCodeEditor.Flags.baseClass = QgsCodeEditor
+Flags = QgsCodeEditor  # dirty hack since SIP seems to introduce the flags in module

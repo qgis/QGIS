@@ -23,13 +23,16 @@
 
 
 QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
-  : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {
     setTitle( tr( "CSS Editor" ) );
   }
-  setFoldingVisible( true );
   QgsCodeEditorCSS::initializeLexer();
 }
 

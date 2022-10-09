@@ -29,7 +29,6 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   {
     setTitle( tr( "SQL Editor" ) );
   }
-  setFoldingVisible( false );
   setAutoCompletionCaseSensitivity( false );
   QgsCodeEditorSQL::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
 }
