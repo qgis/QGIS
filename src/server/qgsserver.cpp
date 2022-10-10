@@ -399,6 +399,16 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 
     response.clear();
 
+    // Clean up qgis access control filter's cache to prevent side effects
+    // across requests
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    QgsAccessControl *accessControls = sServerInterface->accessControls();
+    if ( accessControls )
+    {
+      accessControls->unresolveFilterFeatures();
+    }
+#endif
+
     // Pass the filters to the requestHandler, this is needed for the following reasons:
     // Allow server request to call sendResponse plugin hook if enabled
     QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
