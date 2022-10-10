@@ -502,8 +502,7 @@ void QgsWFSSourceSelect::connectToServer()
 
 void QgsWFSSourceSelect::addButtonClicked()
 {
-  std::unique_ptr< QgsTemporaryCursorOverride > cursorOverride;
-  cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
 
   //get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
