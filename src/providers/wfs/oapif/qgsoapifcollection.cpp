@@ -305,8 +305,14 @@ bool QgsOapifCollection::deserialize( const json &j )
     {
       for ( const auto &crsUrl : crsUrls )
       {
-        QString crs = QString::fromStdString( crsUrl.get<std::string>() );
-        mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ) );
+        if ( crsUrl.is_string() )
+        {
+          QString crs = QString::fromStdString( crsUrl.get<std::string>() );
+          mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs ) );
+
+          // Take the first CRS of the list
+          break;
+        }
       }
     }
   }
