@@ -88,6 +88,7 @@ namespace MDAL
       DateTime operator+( const RelativeTimestamp &duration ) const;
       DateTime operator-( const RelativeTimestamp &duration ) const;
       bool operator==( const DateTime &other ) const;
+      bool operator!=( const DateTime &other ) const;
       bool operator<( const DateTime &other ) const;
 
       bool isValid() const;

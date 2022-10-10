@@ -66,6 +66,7 @@ class HdfFile
       Create
     };
     typedef HdfH<H5I_FILE> Handle;
+    typedef std::shared_ptr<Handle> SharedHandle;
 
     HdfFile( const std::string &path, HdfFile::Mode mode );
     ~HdfFile();
@@ -75,15 +76,20 @@ class HdfFile
     inline std::vector<std::string> groups() const;
 
     inline HdfGroup group( const std::string &path ) const;
+    inline HdfGroup createGroup( const std::string &path ) const;
     inline HdfDataset dataset( const std::string &path ) const;
+    inline HdfDataset dataset( const std::string &path, HdfDataType dtype, size_t nItems = 1 ) const;
+    inline HdfDataset dataset( const std::string &path, HdfDataType dtype, HdfDataspace dataspace ) const;
     inline HdfAttribute attribute( const std::string &attr_name ) const;
     inline bool pathExists( const std::string &path ) const;
     std::string filePath() const;
 
   protected:
-    std::shared_ptr<Handle> d;
+    SharedHandle d;
     std::string mPath;
 };
+
+typedef std::shared_ptr<HdfFile> HdfFileShared;
 
 class HdfDataType
 {
@@ -109,10 +115,6 @@ class HdfGroup
   public:
     typedef HdfH<H5I_GROUP> Handle;
 
-    static HdfGroup create( hid_t file, const std::string &path );
-    HdfGroup( hid_t file, const std::string &path );
-    HdfGroup( std::shared_ptr<Handle> handle );
-
     bool isValid() const;
     hid_t id() const;
     hid_t file_id() const;
@@ -132,8 +134,17 @@ class HdfGroup
   protected:
     std::vector<std::string> objects( H5G_obj_t type ) const;
 
+  private:
+    HdfGroup( HdfFile::SharedHandle file, const std::string &path );
+    HdfGroup( std::shared_ptr<Handle> handle, HdfFile::SharedHandle file );
+
+  private:
+    HdfFile::SharedHandle mFile; //must be declared before "std::shared_ptr<Handle> d" to be sure it will be the last destroyed
+
   protected:
     std::shared_ptr<Handle> d;
+
+    friend class HdfFile;
 };
 
 class HdfAttribute
@@ -195,13 +206,6 @@ class HdfDataset
 
     //! creates invalid dataset
     HdfDataset() = default;
-
-    //! Creates new, simple 1 dimensional dataset
-    HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, size_t nItems = 1 );
-    //! Creates new dataset with custom dimensions
-    HdfDataset( hid_t file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace );
-    //! Opens dataset for reading
-    HdfDataset( hid_t file, const std::string &path );
     ~HdfDataset();
     bool isValid() const;
     hid_t id() const;
@@ -287,20 +291,43 @@ class HdfDataset
     //! Writes array of double data
     void write( std::vector<double> &value );
 
+  private:
+    //! Creates new, simple 1 dimensional dataset
+    HdfDataset( HdfFile::SharedHandle file, const std::string &path, HdfDataType dtype, size_t nItems = 1 );
+    //! Creates new dataset with custom dimensions
+    HdfDataset( HdfFile::SharedHandle file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace );
+    //! Opens dataset for reading
+    HdfDataset( HdfFile::SharedHandle file, const std::string &path );
+
+  private:
+    HdfFile::SharedHandle mFile; //must be declared before "std::shared_ptr<Handle> d" to be sure it will be the last destroyed
+
   protected:
     std::shared_ptr<Handle> d;
     HdfDataType mType; // when in write mode
+
+    friend class HdfFile;
+    friend class HdfGroup;
 };
 
 inline std::vector<std::string> HdfFile::groups() const { return group( "/" ).groups(); }
 
-inline HdfGroup HdfFile::group( const std::string &path ) const { return HdfGroup( d->id, path ); }
+inline HdfGroup HdfFile::group( const std::string &path ) const { return HdfGroup( d, path ); }
 
-inline HdfDataset HdfFile::dataset( const std::string &path ) const { return HdfDataset( d->id, path ); }
+inline HdfGroup HdfFile::createGroup( const std::string &path ) const
+{
+  return HdfGroup( std::make_shared< HdfGroup::Handle >( H5Gcreate2( d->id, path.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) ), d );
+}
 
-inline HdfGroup HdfGroup::group( const std::string &groupName ) const { return HdfGroup( file_id(), childPath( groupName ) ); }
+inline HdfDataset HdfFile::dataset( const std::string &path ) const { return HdfDataset( d, path ); }
 
-inline HdfDataset HdfGroup::dataset( const std::string &dsName ) const { return HdfDataset( file_id(), childPath( dsName ) ); }
+inline HdfDataset HdfFile::dataset( const std::string &path, HdfDataType dtype, size_t nItems ) const { return HdfDataset( d, path, dtype, nItems ); }
+
+inline HdfDataset HdfFile::dataset( const std::string &path, HdfDataType dtype, HdfDataspace dataspace ) const {return HdfDataset( d, path, dtype, dataspace );}
+
+inline HdfGroup HdfGroup::group( const std::string &groupName ) const { return HdfGroup( mFile, childPath( groupName ) ); }
+
+inline HdfDataset HdfGroup::dataset( const std::string &dsName ) const { return HdfDataset( mFile, childPath( dsName ) ); }
 
 inline bool HdfDataset::hasAttribute( const std::string &attr_name ) const
 {

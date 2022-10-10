@@ -284,8 +284,7 @@ static void fromClassificationToValue( const MDAL::Classification &classificatio
 {
   for ( size_t i = 0; i < values.size(); ++i )
   {
-    if ( std::isnan( values[i] ) )
-      continue;
+    if ( std::isnan( values[i] ) ) {continue;}
 
     size_t boundIndex = size_t( values[i] ) - classStartAt;
     if ( boundIndex >= classification.size() )
@@ -297,12 +296,9 @@ static void fromClassificationToValue( const MDAL::Classification &classificatio
     std::pair<double, double> bounds = classification.at( boundIndex );
     double bound1 = bounds.first;
     double bound2 = bounds.second;
-    if ( bound1 == NC_FILL_DOUBLE )
-      bound1 = bound2;
-    if ( bound2 == NC_FILL_DOUBLE )
-      bound2 = bound1;
-    if ( bound1 == NC_FILL_DOUBLE || bound2 == NC_FILL_DOUBLE )
-      values[i] = std::numeric_limits<double>::quiet_NaN();
+    if ( bound1 == NC_FILL_DOUBLE ) {bound1 = bound2;}
+    if ( bound2 == NC_FILL_DOUBLE ) {bound2 = bound1;}
+    if ( bound1 == NC_FILL_DOUBLE || bound2 == NC_FILL_DOUBLE ) {values[i] = std::numeric_limits<double>::quiet_NaN();}
     else
       values[i] = ( bound1 + bound2 ) / 2;
   }
@@ -446,8 +442,7 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverCF::create3DDataset( std::shared_ptr<
     size_t, const MDAL::CFDatasetGroupInfo &,
     double, double )
 {
-  std::shared_ptr<MDAL::Dataset> dataset;
-  return dataset;
+  return std::shared_ptr<MDAL::Dataset>();
 }
 
 
@@ -468,13 +463,16 @@ bool MDAL::DriverCF::canReadMesh( const std::string &uri )
     mNcFile.reset( new NetCDFFile );
     mNcFile->openFile( uri );
     populateDimensions( );
+    mNcFile.reset();
   }
   catch ( MDAL_Status )
   {
+    mNcFile.reset();
     return false;
   }
   catch ( MDAL::Error )
   {
+    mNcFile.reset();
     return false;
   }
   return true;
@@ -573,7 +571,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
       new MemoryMesh(
         name(),
         mDimensions.size( mDimensions.MaxVerticesInFace ),
-        mFileName
+        buildMeshUri( fileName, meshName, name() )
       )
     );
     mesh->setFaces( std::move( faces ) );
@@ -590,6 +588,8 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverCF::load( const std::string &fileName,
 
     // Create datasets
     addDatasetGroups( mesh.get(), times, dsinfo_map, referenceTime );
+
+    mNcFile.reset();
 
     return std::unique_ptr<Mesh>( mesh.release() );
   }
@@ -641,6 +641,15 @@ bool MDAL::CFDimensions::isDatasetType( MDAL::CFDimensions::Type type ) const
            ( type == Face ) ||
            ( type == Volume3D )
          );
+}
+
+int MDAL::CFDimensions::netCfdId( MDAL::CFDimensions::Type type ) const
+{
+  for ( const auto &it : mNcId )
+    if ( it.second == type )
+      return it.first;
+
+  return -1;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
