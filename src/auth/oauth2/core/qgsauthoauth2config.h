@@ -30,10 +30,7 @@
 class QgsAuthOAuth2Config : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( ConfigType )
-    Q_ENUMS( GrantFlow )
-    Q_ENUMS( ConfigFormat )
-    Q_ENUMS( AccessMethod )
+
     Q_PROPERTY( QString id READ id WRITE setId NOTIFY idChanged )
     Q_PROPERTY( int version READ version WRITE setVersion NOTIFY versionChanged )
     Q_PROPERTY( ConfigType configType READ configType WRITE setConfigType NOTIFY configTypeChanged )
@@ -65,6 +62,7 @@ class QgsAuthOAuth2Config : public QObject
       Predefined,
       Custom,
     };
+    Q_ENUM( ConfigType )
 
     //! OAuth2 grant flow
     enum GrantFlow
@@ -73,12 +71,14 @@ class QgsAuthOAuth2Config : public QObject
       Implicit,      //!< See http://tools.ietf.org/html/rfc6749#section-4.2
       ResourceOwner, //!< See http://tools.ietf.org/html/rfc6749#section-4.3
     };
+    Q_ENUM( GrantFlow )
 
     //! Configuration format for serialize/unserialize operations
     enum ConfigFormat
     {
       JSON,
     };
+    Q_ENUM( ConfigFormat )
 
     //! Access method
     enum AccessMethod
@@ -87,6 +87,7 @@ class QgsAuthOAuth2Config : public QObject
       Form,
       Query,
     };
+    Q_ENUM( AccessMethod )
 
     //! Construct a QgsAuthOAuth2Config instance
     explicit QgsAuthOAuth2Config( QObject *parent = nullptr );

@@ -16,7 +16,6 @@ class O2ReplyServer;
 /// Simple OAuth2 authenticator.
 class O0_EXPORT O2: public O0BaseAuth {
     Q_OBJECT
-    Q_ENUMS(GrantFlow)
 
 public:
     /// Authorization flow types.
@@ -25,6 +24,7 @@ public:
         GrantFlowImplicit, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.2
         GrantFlowResourceOwnerPasswordCredentials,
     };
+    Q_ENUM(GrantFlow)
 
     /// Authorization flow.
     Q_PROPERTY(GrantFlow grantFlow READ grantFlow WRITE setGrantFlow NOTIFY grantFlowChanged)
