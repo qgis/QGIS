@@ -1438,7 +1438,7 @@ namespace QgsWfs
       for ( int i = 0; i < params.attributeIndexes.count(); ++i )
       {
         int idx = params.attributeIndexes[i];
-        if ( idx >= fields.count() )
+        if ( idx >= fields.count() || QgsVariantUtils::isNull( featureAttributes[idx] ) )
         {
           continue;
         }
@@ -1535,7 +1535,7 @@ namespace QgsWfs
       for ( int i = 0; i < params.attributeIndexes.count(); ++i )
       {
         int idx = params.attributeIndexes[i];
-        if ( idx >= fields.count() )
+        if ( idx >= fields.count() || QgsVariantUtils::isNull( featureAttributes[idx] ) )
         {
           continue;
         }
