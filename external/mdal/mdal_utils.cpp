@@ -16,7 +16,7 @@
 #include <ctime>
 #include <stdlib.h>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define UNICODE
 #include <locale>
 #include <codecvt>
@@ -38,7 +38,7 @@ std::string MDAL::getEnvVar( const std::string &varname, const std::string &defa
 
 bool MDAL::openInputFile( std::ifstream &inputFileStream, const std::string &fileName, std::ios_base::openmode mode )
 {
-#ifdef _WIN32
+#ifdef _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   inputFileStream.open( wStr, std::ifstream::in | mode );
@@ -53,7 +53,7 @@ std::ifstream MDAL::openInputFile( const std::string &fileName, std::ios_base::o
 {
   std::ifstream ret;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   ret.open( wStr, mode );
@@ -68,7 +68,7 @@ std::ofstream MDAL::openOutputFile( const std::string &fileName, std::ios_base::
 {
   std::ofstream ret;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
   std::wstring_convert< std::codecvt_utf8_utf16< wchar_t > > converter;
   std::wstring wStr = converter.from_bytes( fileName );
   ret.open( wStr, mode );
@@ -263,7 +263,7 @@ std::string MDAL::fileExtension( const std::string &path )
 std::string MDAL::pathJoin( const std::string &path1, const std::string &path2 )
 {
 //https://stackoverflow.com/questions/6297738/how-to-build-a-full-path-string-safely-from-separate-strings#6297807
-#ifdef _WIN32
+#ifdef _MSC_VER
   return path1 + "\\" + path2;
 #else
   return path1 + "/" + path2;
@@ -292,7 +292,7 @@ bool MDAL::contains( const std::string &str, const std::string &substr, Contains
                 substr.begin(),   substr.end(),
                 []( char ch1, char ch2 )
     {
-#ifdef _WIN32
+#ifdef _MSC_VER
       return toupper( ch1 ) == toupper( ch2 );
 #else
       return std::toupper( ch1 ) == std::toupper( ch2 );
@@ -343,7 +343,7 @@ std::string MDAL::leftJustified( const std::string &str, size_t width, char fill
 std::string MDAL::toLower( const std::string &std )
 {
   std::string res( std );
-#ifdef _WIN32
+#ifdef _MSC_VER
   //silence algorithm(1443): warning C4244: '=': conversion from 'int' to 'char'
   std::transform( res.begin(), res.end(), res.begin(),
   []( char c ) {return static_cast<char>( ::tolower( c ) );} );
@@ -401,7 +401,7 @@ std::string MDAL::trim( const std::string &s, const std::string &delimiters )
   return ltrim( rtrim( s, delimiters ), delimiters );
 }
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 static std::string utf8ToWin32Recode( const std::string &utf8String )
 {
   //from GDAL: ./port/cpl_recode_stub.cpp, CPLWin32Recode()
@@ -429,7 +429,7 @@ static std::string utf8ToWin32Recode( const std::string &utf8String )
 std::string MDAL::systemFileName( const std::string &utf8FileName )
 {
   std::string ret;
-#ifdef _WIN32
+#ifdef _MSC_VER
   ret = utf8ToWin32Recode( utf8FileName );
 #else
   ret = utf8FileName;
