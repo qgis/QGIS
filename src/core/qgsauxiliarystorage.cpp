@@ -59,6 +59,12 @@ Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
   QgsPalLayerSettings::CalloutDraw,
   QgsPalLayerSettings::LabelAllParts
 } ) )
+typedef QVector<QgsSymbolLayer::Property> SymbolPropertyList;
+Q_GLOBAL_STATIC_WITH_ARGS( SymbolPropertyList, symbolHiddenProperties, (
+{
+  QgsSymbolLayer::PropertyAngle,
+  QgsSymbolLayer::PropertyOffset
+} ) )
 
 //
 // QgsAuxiliaryLayer
@@ -359,8 +365,11 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
 
 bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 {
+  std::cout << "QgsAuxiliaryLayer::isHiddenProperty 0: " << index << std::endl;
   bool hidden = false;
   const QgsPropertyDefinition def = propertyDefinitionFromIndex( index );
+
+  std::cout << def.origin().toStdString() << std::endl;
 
   if ( def.origin().compare( QLatin1String( "labeling" ) ) == 0 )
   {
@@ -368,6 +377,19 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
     for ( const QgsPalLayerSettings::Property &p : palProps )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
+      if ( propName.compare( def.name() ) == 0 )
+      {
+        hidden = true;
+        break;
+      }
+    }
+  }
+  else if ( def.origin().compare( QLatin1String( "symbol" ) ) == 0 )
+  {
+    const SymbolPropertyList &symbolProps = *symbolHiddenProperties();
+    for ( const QgsSymbolLayer::Property &p : symbolProps )
+    {
+      const QString propName = QgsSymbolLayer::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )
       {
         hidden = true;
