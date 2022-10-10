@@ -159,8 +159,8 @@ void HdfAttribute::write( int value )
 }
 
 HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path, HdfDataType dtype, size_t nItems )
-  : mType( dtype )
-  , mFile( file )
+  : mFile( file ),
+    mType( dtype )
 {
   // Crete dataspace for attribute
   std::vector<hsize_t> dimsSingle = {nItems};
@@ -171,15 +171,15 @@ HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path, Hdf
 
 
 HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path, HdfDataType dtype, HdfDataspace dataspace )
-  : mType( dtype )
-  , mFile( file )
+  : mFile( file ),
+    mType( dtype )
 {
   d = std::make_shared< Handle >( H5Dcreate2( file->id, path.c_str(), dtype.id(), dataspace.id(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) );
 }
 
 HdfDataset::HdfDataset( HdfFile::SharedHandle file, const std::string &path )
-  : d( std::make_shared< Handle >( H5Dopen2( file->id, path.c_str(), H5P_DEFAULT ) ) )
-  , mFile( file )
+  : mFile( file ),
+    d( std::make_shared< Handle >( H5Dopen2( file->id, path.c_str(), H5P_DEFAULT ) ) )
 {
 }
 
