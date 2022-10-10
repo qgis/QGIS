@@ -44,6 +44,8 @@ namespace MDAL
       void setDimension( Type type, size_t count, int ncid = -1 );
       //! Returns whether the type is one that case be used for datasets definition
       bool isDatasetType( Type type ) const;
+      //! Returns the netCFD id corresponding to \a type
+      int netCfdId( Type type ) const;
 
     private:
       std::map<Type, size_t> mCount;
