@@ -129,7 +129,7 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
     const QString original = res;
     res.truncate( trimPoint + 1 );
     if ( mUseScientific )
-      res += original.mid( ePoint );
+      res += original.midRef( ePoint );
   }
 
   return res;

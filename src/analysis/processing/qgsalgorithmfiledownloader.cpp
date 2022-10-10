@@ -146,7 +146,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
     {
       QFile tmpFile( outputFile );
       tmpFile.rename( tmpFile.fileName() + url.mid( lastDotIndex ) );
-      outputFile += url.mid( lastDotIndex );
+      outputFile += url.midRef( lastDotIndex );
     }
   }
 

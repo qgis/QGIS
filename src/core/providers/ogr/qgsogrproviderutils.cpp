@@ -1373,7 +1373,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
         inLiteral = !inLiteral;
         literalChar = inLiteral ? line[i] : QChar( ' ' );
       }
-      if ( !inLiteral && line.mid( i ).startsWith( QLatin1String( "--" ) ) )
+      if ( !inLiteral && line.midRef( i ).startsWith( QLatin1String( "--" ) ) )
       {
         line = line.left( i );
         break;
