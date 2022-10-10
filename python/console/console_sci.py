@@ -168,12 +168,12 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.historyDlg.activateWindow()
 
     def commandConsole(self, commands):
-        if not self.is_cursor_on_last_line():
-            self.move_cursor_to_end()
+        if not self.isCursorOnLastLine():
+            self.moveCursorToEnd()
         for cmd in commands:
             self.setText(cmd)
             self.entered()
-        self.move_cursor_to_end()
+        self.moveCursorToEnd()
         self.setFocus()
 
     def getText(self):
@@ -194,40 +194,13 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
     def getTextLength(self):
         return self.SendScintilla(QsciScintilla.SCI_GETLENGTH)
 
-    def get_end_pos(self):
-        """Return (line, index) position of the last character"""
-        line = self.lines() - 1
-        return line, len(self.text(line))
-
-    def is_cursor_at_start(self):
-        """Return True if cursor is at the end of text"""
-        cline, cindex = self.getCursorPosition()
-        return cline == 0 and cindex == 0
-
-    def is_cursor_at_end(self):
-        """Return True if cursor is at the end of text"""
-        cline, cindex = self.getCursorPosition()
-        return (cline, cindex) == self.get_end_pos()
-
-    def move_cursor_to_start(self):
-        """Move cursor to start of text"""
-        self.setCursorPosition(0, 0)
-        self.ensureCursorVisible()
-        self.ensureLineVisible(0)
+    def moveCursorToStart(self):
+        super().moveCursorToStart()
         self.displayPrompt(self.continuationLine)
 
-    def move_cursor_to_end(self):
-        """Move cursor to end of text"""
-        line, index = self.get_end_pos()
-        self.setCursorPosition(line, index)
-        self.ensureCursorVisible()
-        self.ensureLineVisible(line)
+    def moveCursorToEnd(self):
+        super().moveCursorToEnd()
         self.displayPrompt(self.continuationLine)
-
-    def is_cursor_on_last_line(self):
-        """Return True if cursor is on the last line"""
-        cline, _ = self.getCursorPosition()
-        return cline == self.lines() - 1
 
     def new_prompt(self, prompt):
         """
@@ -315,14 +288,14 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         if self.softHistoryIndex < len(self.softHistory) - 1 and self.softHistory:
             self.softHistoryIndex += 1
             self.setText(self.softHistory[self.softHistoryIndex])
-            self.move_cursor_to_end()
+            self.moveCursorToEnd()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def showNext(self):
         if self.softHistoryIndex > 0 and self.softHistory:
             self.softHistoryIndex -= 1
             self.setText(self.softHistory[self.softHistoryIndex])
-            self.move_cursor_to_end()
+            self.moveCursorToEnd()
             # self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def keyPressEvent(self, e):
@@ -351,7 +324,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
                     QsciScintilla.keyPressEvent(self, e)
                 return
             # all other keystrokes get sent to the input line
-            self.move_cursor_to_end()
+            self.moveCursorToEnd()
 
         if e.modifiers() & (
                 Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
@@ -466,8 +439,8 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.setFocus()
         if e.button() == Qt.MidButton:
             stringSel = QApplication.clipboard().text(QClipboard.Selection)
-            if not self.is_cursor_on_last_line():
-                self.move_cursor_to_end()
+            if not self.isCursorOnLastLine():
+                self.moveCursorToEnd()
             self.insertFromDropPaste(stringSel)
             e.accept()
         else:
@@ -481,11 +454,11 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         but it seems not used by QScintilla code.
         """
         stringPaste = QApplication.clipboard().text()
-        if self.is_cursor_on_last_line():
+        if self.isCursorOnLastLine():
             if self.hasSelectedText():
                 self.removeSelectedText()
         else:
-            self.move_cursor_to_end()
+            self.moveCursorToEnd()
         self.insertFromDropPaste(stringPaste)
 
     # Drag and drop
@@ -505,7 +478,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
             for line in pasteList[:-1]:
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
                 self.insert(cleanLine)
-                self.move_cursor_to_end()
+                self.moveCursorToEnd()
                 self.runCommand(self.text())
             if pasteList[-1] != "":
                 line = pasteList[-1]
@@ -517,18 +490,18 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:
             self.append(line)
-            self.move_cursor_to_end()
+            self.moveCursorToEnd()
             self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
             self.runCommand(self.text())
         self.append(listOpenFile[-1])
-        self.move_cursor_to_end()
+        self.moveCursorToEnd()
         self.SendScintilla(QsciScintilla.SCI_DELETEBACK)
 
     def entered(self):
-        self.move_cursor_to_end()
+        self.moveCursorToEnd()
         self.runCommand(self.text())
         self.setFocus()
-        self.move_cursor_to_end()
+        self.moveCursorToEnd()
 
     def runCommand(self, cmd):
         self.writeCMD(cmd)
@@ -555,7 +528,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         # prevents to commands with more lines to break the console
         # in the case they have a eol different from '\n'
         self.setText('')
-        self.move_cursor_to_end()
+        self.moveCursorToEnd()
         self.displayPrompt(self.continuationLine)
 
     def write(self, txt):
@@ -645,6 +618,6 @@ class HistoryDialog(QDialog, Ui_HistoryDialogPythonConsole):
             if item < self.parent.softHistoryIndex:
                 self.parent.softHistoryIndex -= 1
             self.parent.setText(self.parent.softHistory[self.parent.softHistoryIndex])
-            self.parent.move_cursor_to_end()
+            self.parent.moveCursorToEnd()
             # Remove row from the command history dialog
             self.model.removeRow(item)
