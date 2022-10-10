@@ -1257,7 +1257,7 @@ bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup,
   {
     dsGroupName = dsGroup->name() + "_" + std::to_string( i ); // make sure we have unique group name
   }
-  HdfGroup group = file.createGroup( "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName );
+  HdfGroup group = file.createGroup( groupTNOR.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName );
 
   HdfAttribute attDataType( group.id(), "Data Type", H5T_NATIVE_INT );
   attDataType.write( 0 );

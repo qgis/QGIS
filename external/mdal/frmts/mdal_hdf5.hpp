@@ -76,7 +76,16 @@ class HdfFile
     inline std::vector<std::string> groups() const;
 
     inline HdfGroup group( const std::string &path ) const;
+
+    //!  Creates a group wint an absolute path
     inline HdfGroup createGroup( const std::string &path ) const;
+
+    /**
+     *  Creates a group with the id of location and a path that can be relative from the location
+     *  (see https://docs.hdfgroup.org/hdf5/v1_12/group___h5_g.html#ga86d93295965f750ef25dea2505a711d9)
+     */
+    inline HdfGroup createGroup( hid_t locationId, const std::string &path ) const;
+
     inline HdfDataset dataset( const std::string &path ) const;
     inline HdfDataset dataset( const std::string &path, HdfDataType dtype, size_t nItems = 1 ) const;
     inline HdfDataset dataset( const std::string &path, HdfDataType dtype, HdfDataspace dataspace ) const;
@@ -317,6 +326,11 @@ inline HdfGroup HdfFile::group( const std::string &path ) const { return HdfGrou
 inline HdfGroup HdfFile::createGroup( const std::string &path ) const
 {
   return HdfGroup( std::make_shared< HdfGroup::Handle >( H5Gcreate2( d->id, path.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) ), d );
+}
+
+inline HdfGroup HdfFile::createGroup( hid_t locationId, const std::string &path ) const
+{
+  return HdfGroup( std::make_shared< HdfGroup::Handle >( H5Gcreate2( locationId, path.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT ) ), d );
 }
 
 inline HdfDataset HdfFile::dataset( const std::string &path ) const { return HdfDataset( d, path ); }
