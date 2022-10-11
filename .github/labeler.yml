@@ -1,5 +1,6 @@
 "3D":
   - any: [
+    'resources/3d/**/*',
     'src/3d/**/*',
     'src/app/3d/**/*',
   ]
@@ -29,14 +30,23 @@
 "Form":
   - any: [
     'src/core/editform/**/*',
-    'src/gui/attributeformconfig',
+    'src/gui/attributeformconfig/**/*',
   ]
 
 "GRASS":
   - any: ['python/plugins/grassprovider/**/*']
 
 "GUI/UX":
-  - any: ['src/gui/**/*']
+  - any: [
+    'images/**/*',
+    'resources/themes/**/*',
+#    'src/gui/**/*', too broad
+  ]
+
+"HANA data provider":
+  - any: [
+    'src/providers/hana/**/*',
+  ]
 
 "Labeling":
   - any: [
@@ -52,6 +62,7 @@
 
 "Mesh":
   - any: [
+    'external/mdal/**/*',
     'src/analysis/mesh/**/*',
     'src/core/mesh/**/*',
     'src/gui/mesh/**/*',
@@ -76,6 +87,11 @@
       'src/analysis/**/*',
       'src/core/processing/**/*',
       'src/process/**/*'
+  ]
+
+"Python Console":
+  - any: [
+    'python/console/**/*',
   ]
 
 "Quick":
