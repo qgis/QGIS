@@ -1227,7 +1227,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
       double z = point.z();
       if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
            && std::isnan( z ) )
-        z = -DBL_MAX;
+        z = -std::numeric_limits<double>::max();
 
       wkb << z;
     }
@@ -1236,7 +1236,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
       double m = point.m();
       if ( flags & QgsAbstractGeometry::FlagExportNanAsDoubleMin
            && std::isnan( m ) )
-        m = -DBL_MAX;
+        m = -std::numeric_limits<double>::max();
 
       wkb << m;
     }
