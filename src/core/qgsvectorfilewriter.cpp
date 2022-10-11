@@ -2840,7 +2840,11 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       }
       else // wkb type matches
       {
-        QByteArray wkb( geom.asWkb( QgsAbstractGeometry::FlagExportTrianglesAsPolygons ) );
+        QgsAbstractGeometry::WkbFlags wkbFlags = QgsAbstractGeometry::FlagExportTrianglesAsPolygons;
+        if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+          wkbFlags |= QgsAbstractGeometry::FlagExportNanAsDoubleMin;
+
+        QByteArray wkb( geom.asWkb( wkbFlags ) );
         OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
         OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
