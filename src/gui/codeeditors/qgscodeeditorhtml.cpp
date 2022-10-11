@@ -13,9 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorhtml.h"
-#include "qgssymbollayerutils.h"
 
 #include <QWidget>
 #include <QString>

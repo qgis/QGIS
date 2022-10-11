@@ -13,9 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorexpression.h"
-#include "qgssymbollayerutils.h"
+#include "qgsexpression.h"
 
 #include <QString>
 #include <QFont>

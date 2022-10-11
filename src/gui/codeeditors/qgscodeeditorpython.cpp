@@ -30,12 +30,12 @@
 #include <Qsci/qscilexerpython.h>
 #include <QDesktopServices>
 
-QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
+QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames, Mode mode )
   : QgsCodeEditor( parent,
                    QString(),
                    false,
                    false,
-                   QgsCodeEditor::Flag::CodeFolding )
+                   QgsCodeEditor::Flag::CodeFolding, mode )
   , mAPISFilesList( filenames )
 {
   if ( !parent )

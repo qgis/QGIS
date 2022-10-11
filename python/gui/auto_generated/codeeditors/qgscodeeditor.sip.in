@@ -227,7 +227,31 @@ Returns ``True`` if the cursor is on the last line of the document.
 .. versionadded:: 3.28
 %End
 
+    void setHistoryFilePath( const QString &path );
+%Docstring
+Sets the file path to use for recording and retrieving previously
+executed commands.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+
+    QStringList history() const;
+
   public slots:
+
+    virtual void runCommand( const QString &command );
+%Docstring
+Runs a command in the editor.
+
+The base class method does nothing.
+
+.. versionadded:: 3.30
+%End
 
     virtual void moveCursorToStart();
 %Docstring
@@ -245,6 +269,53 @@ it is visible.
 .. versionadded:: 3.28
 %End
 
+    void showPreviousCommand();
+%Docstring
+Shows the previous command from the session in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    void showNextCommand();
+%Docstring
+Shows the next command from the session in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+    void showHistory();
+
+    void removeHistoryCommand( int index );
+
+    void clearSessionHistory();
+%Docstring
+Clears the history of commands run in the current session.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
+
+
+    void clearPersistentHistory();
+
+    bool writeHistoryFile();
+
+  signals:
+
+    void sessionHistoryCleared();
+    void persistentHistoryCleared();
+
   protected:
 
     bool isFixedPitch( const QFont &font );
@@ -252,6 +323,8 @@ it is visible.
     virtual void focusOutEvent( QFocusEvent *event );
 
     virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
 
     virtual void initializeLexer();
@@ -283,6 +356,13 @@ Performs tasks which must be run after a lexer has been set for the widget.
 
 .. versionadded:: 3.16
 %End
+
+
+    void syncSoftHistory();
+    void updateSoftHistory();
+    void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
+
+    virtual void populateContextMenu( QMenu *menu );
 
 };
 
