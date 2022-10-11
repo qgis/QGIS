@@ -173,13 +173,13 @@ QByteArray QgsPolygon::asWkb( QgsAbstractGeometry::WkbFlags flags ) const
   {
     QgsPointSequence pts;
     mExteriorRing->points( pts );
-    QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure() );
+    QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure(), flags );
   }
   for ( const QgsCurve *curve : mInteriorRings )
   {
     QgsPointSequence pts;
     curve->points( pts );
-    QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure() );
+    QgsGeometryUtils::pointsToWKB( wkb, pts, curve->is3D(), curve->isMeasure(), flags );
   }
 
   return wkbArray;
