@@ -209,6 +209,14 @@ bool QgsServer::init()
   // configuration
   sSettings()->load();
 
+  // override settings
+  QgsSettings settings;
+  settings.setValue(
+    QStringLiteral( "PostgreSQL/application_name" ),
+    sSettings()->applicationName(),
+    QgsSettings::Providers
+  );
+
   // init and configure logger
   QgsServerLogger::instance();
   QgsServerLogger::instance()->setLogLevel( sSettings()->logLevel() );
@@ -613,4 +621,3 @@ void QgsServer::initPython()
   }
 }
 #endif
-
