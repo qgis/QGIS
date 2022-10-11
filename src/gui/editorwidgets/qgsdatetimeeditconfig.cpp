@@ -438,6 +438,14 @@ void QgsDateTimeEditConfig::updateDisplayFormat( const QString &fieldFormat )
     {
       mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT );
     }
+    else if ( fieldFormat == QgsDateTimeFieldFormatter::DATE_FORMAT )
+    {
+      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DATE_DISPLAY_FORMAT );
+    }
+    else if ( fieldFormat == QgsDateTimeFieldFormatter::DATETIME_FORMAT )
+    {
+      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DATETIME_DISPLAY_FORMAT );
+    }
     else
     {
       mDisplayFormatEdit->setText( fieldFormat );
@@ -505,7 +513,7 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
     mFieldFormatComboBox->setCurrentIndex( 4 );
   }
 
-  const QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
+  const QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultDisplayFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );
   if ( displayFormat == mFieldFormatEdit->text() )
   {
