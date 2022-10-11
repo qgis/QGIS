@@ -517,7 +517,7 @@ QByteArray QgsCircularString::asWkb( WkbFlags flags ) const
   wkb << static_cast<quint32>( wkbType() );
   QgsPointSequence pts;
   points( pts );
-  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure() );
+  QgsGeometryUtils::pointsToWKB( wkb, pts, is3D(), isMeasure(), flags );
   return wkbArray;
 }
 
