@@ -13,9 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditorsql.h"
-#include "qgssymbollayerutils.h"
 
 #include <QWidget>
 #include <QString>
@@ -35,7 +33,7 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
 
 Qgis::ScriptLanguage QgsCodeEditorSQL::language() const
 {
-  return Qgis::ScriptLanguage::SQL;
+  return Qgis::ScriptLanguage::Sql;
 }
 
 QgsCodeEditorSQL::~QgsCodeEditorSQL()

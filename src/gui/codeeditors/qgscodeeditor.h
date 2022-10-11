@@ -259,7 +259,29 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     bool isCursorOnLastLine() const;
 
+    /**
+     * Sets the file path to use for recording and retrieving previously
+     * executed commands.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void setHistoryFilePath( const QString &path );
+
+
+    QStringList history() const;
+
   public slots:
+
+    /**
+     * Runs a command in the editor.
+     *
+     * The base class method does nothing.
+
+     * \since QGIS 3.30
+     */
+    virtual void runCommand( const QString &command );
 
     /**
      * Moves the cursor to the start of the document and scrolls to ensure
@@ -277,12 +299,54 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual void moveCursorToEnd();
 
+    /**
+     * Shows the previous command from the session in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void showPreviousCommand();
+
+    /**
+     * Shows the next command from the session in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void showNextCommand();
+
+    void showHistory();
+
+    void removeHistoryCommand( int index );
+
+    /**
+     * Clears the history of commands run in the current session.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
+    void clearSessionHistory();
+
+
+    void clearPersistentHistory();
+
+    bool writeHistoryFile();
+
+  signals:
+
+    void sessionHistoryCleared();
+    void persistentHistoryCleared();
+
   protected:
 
     bool isFixedPitch( const QFont &font );
 
     void focusOutEvent( QFocusEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
@@ -314,10 +378,18 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void runPostLexerConfigurationTasks();
 
+
+    void syncSoftHistory();
+    void updateSoftHistory();
+    void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
+
+    virtual void populateContextMenu( QMenu *menu );
+
   private:
 
     void setSciWidget();
     void updateFolding();
+    bool readHistoryFile();
 
     QString mWidgetTitle;
     bool mMargin = false;
@@ -333,6 +405,12 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     int mFontSize = 0;
 
     QVector< int > mWarningLines;
+
+    // for use in command input mode
+    QStringList mHistory;
+    QStringList mSoftHistory;
+    int mSoftHistoryIndex = 0;
+    QString mHistoryFilePath;
 
     static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
 
