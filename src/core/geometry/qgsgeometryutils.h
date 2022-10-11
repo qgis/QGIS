@@ -455,7 +455,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
      * \note not available in Python bindings
      */
-    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure ) SIP_SKIP;
+    static void pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure, QgsAbstractGeometry::WkbFlags flags ) SIP_SKIP;
 
     /**
      * Returns a WKT coordinate list
