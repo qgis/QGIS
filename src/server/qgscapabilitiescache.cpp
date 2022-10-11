@@ -99,10 +99,11 @@ void QgsCapabilitiesCache::removeChangedEntry( const QString &path )
 void QgsCapabilitiesCache::removeOutdatedEntries()
 {
   QgsDebugMsg( QStringLiteral( "Checking for outdated entries" ) );
-  for ( const QString &configFilePath : mCachedCapabilitiesTimestamps.keys() )
+  for ( auto it = mCachedCapabilitiesTimestamps.constBegin(); it != mCachedCapabilitiesTimestamps.constEnd(); it++ )
   {
+    const QString configFilePath = it.key();
     const QFileInfo fi( configFilePath );
-    if ( !fi.exists() || mCachedCapabilitiesTimestamps[ configFilePath ] < fi.lastModified() )
+    if ( !fi.exists() || it.value() < fi.lastModified() )
       removeChangedEntry( configFilePath );
   }
 

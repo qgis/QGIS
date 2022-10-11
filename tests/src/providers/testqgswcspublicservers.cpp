@@ -306,9 +306,9 @@ void TestQgsWcsPublicServers::test()
       }
       myServerUri.setParam( QStringLiteral( "cache" ), QStringLiteral( "AlwaysNetwork" ) );
 
-      for ( const QString &key : myServer.params.keys() )
+      for ( auto it = myServer.params.constBegin(); it != myServer.params.constEnd(); it++ )
       {
-        myServerUri.setParam( key, myServer.params.value( key ) );
+        myServerUri.setParam( it.key(), it.value() );
       }
 
       QgsWcsCapabilities myCapabilities;
@@ -573,9 +573,9 @@ void TestQgsWcsPublicServers::report()
     if ( !myServer.params.isEmpty() )
     {
       myReport += QLatin1String( "<br>Additional params: " );
-      for ( const QString &key : myServer.params.keys() )
+      for ( auto it = myServer.params.constBegin(); it != myServer.params.constEnd(); it++ )
       {
-        myReport += key + '=' + myServer.params.value( key ) + " ";
+        myReport += it.key() + '=' + it.value() + " ";
       }
       myReport += QLatin1String( "<br>\n" );
     }

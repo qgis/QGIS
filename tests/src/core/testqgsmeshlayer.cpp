@@ -1016,7 +1016,7 @@ void TestQgsMeshLayer::test_path()
   QCOMPARE( layers1.count(), 1 );
 
   // Check if the mesh is still here but invalid
-  QgsMeshLayer *meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.values().at( 0 ) );
+  QgsMeshLayer *meshLayer1 = qobject_cast<QgsMeshLayer *>( layers1.first() );
   QVERIFY( meshLayer1 );
   QVERIFY( !meshLayer1->isValid() );
   QCOMPARE( meshLayer1->name(), QStringLiteral( "mesh layer" ) );
@@ -1028,7 +1028,7 @@ void TestQgsMeshLayer::test_path()
   QMap<QString, QgsMapLayer *> layers2 = project2.mapLayers();
   QCOMPARE( layers2.count(), 1 );
 
-  QgsMeshLayer *meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.values().at( 0 ) );
+  QgsMeshLayer *meshLayer2 = qobject_cast<QgsMeshLayer *>( layers2.first() );
   QVERIFY( meshLayer2 );
   QVERIFY( meshLayer2->isValid() );
   QCOMPARE( meshLayer2->name(), QStringLiteral( "mesh layer" ) );

@@ -311,7 +311,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   }
 
   if ( !broken.empty() )
-    throw QgsProcessingException( QCoreApplication::translate( "QgsProcessingModelAlgorithm", "Cannot run model, the following algorithms are not available on this system: %1" ).arg( broken.values().join( QLatin1String( ", " ) ) ) );
+    throw QgsProcessingException( QCoreApplication::translate( "QgsProcessingModelAlgorithm", "Cannot run model, the following algorithms are not available on this system: %1" ).arg( qgsSetJoin( broken, QLatin1String( ", " ) ) ) );
 
   QElapsedTimer totalTime;
   totalTime.start();

@@ -286,11 +286,12 @@ void QgsOptionsDialogHighlightTree::reset()
       item->setHidden( !mTreeInitialVisible.value( item, true ) );
     };
     showChildren( treeWidget->invisibleRootItem() );
-    for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
+    for ( auto it = mTreeInitialExpand.constBegin(); it != mTreeInitialExpand.constEnd(); it++ )
     {
+      QTreeWidgetItem *item = it.key();
       if ( item )
       {
-        item->setExpanded( mTreeInitialExpand.value( item ) );
+        item->setExpanded( it.value() );
       }
     }
     mTreeInitialExpand.clear();

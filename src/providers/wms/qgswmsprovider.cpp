@@ -544,7 +544,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
 
       if ( mSettings.mTileMatrixSetId.isEmpty() && tl->setLinks.size() == 1 )
       {
-        QString tms = tl->setLinks.keys()[0];
+        QString tms = tl->setLinks.constBegin().key();
 
         if ( !mCaps.mTileMatrixSets.contains( tms ) )
         {
@@ -579,8 +579,8 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
       }
       if ( !mTileMatrixSet->tileMatrices.empty() )
       {
-        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.values().first().tileWidth );
-        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.values().first().tileHeight );
+        setProperty( "tileWidth", mTileMatrixSet->tileMatrices.first().tileWidth );
+        setProperty( "tileHeight", mTileMatrixSet->tileMatrices.first().tileHeight );
       }
     }
     else

@@ -223,9 +223,9 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
     if ( layerStyle.layerName().isEmpty() )
     {
       // matching all layers
-      for ( QString layerName : tileData.keys() )
+      for ( const auto &features : tileData )
       {
-        for ( const QgsFeature &f : tileData[layerName] )
+        for ( const QgsFeature &f : features )
         {
           scope->setFeature( f );
           if ( filterExpression.isValid() && !filterExpression.evaluate( &context.expressionContext() ).toBool() )

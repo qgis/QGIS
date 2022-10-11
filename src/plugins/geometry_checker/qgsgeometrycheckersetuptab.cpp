@@ -461,7 +461,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     featurePools.insert( layer->id(), new QgsVectorDataProviderFeaturePool( layer, selectedOnly ) );
   }
   // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
-  if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.keys().contains( ui.comboLineLayerIntersection->currentData().toString() ) )
+  if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.contains( ui.comboLineLayerIntersection->currentData().toString() ) )
   {
     QgsVectorLayer *layer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( ui.comboLineLayerIntersection->currentData().toString() );
     Q_ASSERT( layer );

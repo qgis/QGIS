@@ -67,7 +67,8 @@ class TestQgis : public QgsTest
     void testQgsFlagValueToKeys();
     void testQgsFlagKeysToValue();
     void testQMapQVariantList();
-
+    void testQgsMapJoin();
+    void testQgsSetJoin();
 };
 
 void TestQgis::permissiveToDouble()
@@ -528,6 +529,49 @@ void TestQgis::testQMapQVariantList()
 
   QVERIFY( it != ids.constEnd() );
   QCOMPARE( it.value(), 5L );
+}
+
+void TestQgis::testQgsMapJoin()
+{
+  QMap< QString, int> map;
+
+  map.insert( "tutu", 3 );
+  map.insert( "titi", 4 );
+  map.insert( "tata", 5 );
+
+  QString res = qgsMapJoinValues( map, QStringLiteral( ", " ) );
+
+  QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
+  QVERIFY( re.match( res ).hasMatch() );
+  QVERIFY( res.contains( "3" ) );
+  QVERIFY( res.contains( "4" ) );
+  QVERIFY( res.contains( "5" ) );
+
+  res = qgsMapJoinKeys( map, QStringLiteral( ", " ) );
+
+  re.setPattern( "(tutu|titi|tata), (tutu|titi|tata), (tutu|titi|tata)" );
+  QVERIFY( re.match( res ).hasMatch() );
+  QVERIFY( res.contains( "tutu" ) );
+  QVERIFY( res.contains( "titi" ) );
+  QVERIFY( res.contains( "tata" ) );
+}
+
+void TestQgis::testQgsSetJoin()
+{
+  QSet<int> set;
+
+  set.insert( 3 );
+  set.insert( 4 );
+  set.insert( 4 );
+  set.insert( 5 );
+
+  const QString res = qgsSetJoin( set, QStringLiteral( ", " ) );
+
+  QRegularExpression re( "[3|4|5], [3|4|5], [3|4|5]" );
+  QVERIFY( re.match( res ).hasMatch() );
+  QVERIFY( res.contains( "3" ) );
+  QVERIFY( res.contains( "4" ) );
+  QVERIFY( res.contains( "5" ) );
 }
 
 

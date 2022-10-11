@@ -1327,8 +1327,9 @@ QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > TestQgsGeomet
   const QDir tmpDir( tempDir.path() );
 
   QMap<QString, QgsFeaturePool *> featurePools;
-  for ( const QString &layerFile : layers.keys() )
+  for ( auto it = layers.begin(); it != layers.end(); it++ )
   {
+    const QString layerFile = it.key();
     QFile( testDataDir.absoluteFilePath( layerFile ) ).copy( tmpDir.absoluteFilePath( layerFile ) );
     if ( layerFile.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
@@ -1341,6 +1342,7 @@ QPair<QgsGeometryCheckContext *, QMap<QString, QgsFeaturePool *> > TestQgsGeomet
     QgsVectorLayer *layer = new QgsVectorLayer( tmpDir.absoluteFilePath( layerFile ), layerFile );
     Q_ASSERT( layer && layer->isValid() );
     layers[layerFile] = layer->id();
+    //*it = layer->id();
     layer->dataProvider()->enterUpdateMode();
     featurePools.insert( layer->id(), createFeaturePool( layer ) );
   }
@@ -1424,15 +1426,18 @@ bool TestQgsGeometryChecks::fixCheckError( QMap<QString, QgsFeaturePool *> featu
   const QString strChangeWhat[] = { "ChangeFeature", "ChangePart", "ChangeRing", "ChangeNode" };
   const QString strChangeType[] = { "ChangeAdded", "ChangeRemoved", "ChangeChanged" };
   int totChanges = 0;
-  for ( const QString &layerId : changes.keys() )
+  for ( auto itLayerChanges = changes.constBegin(); itLayerChanges != changes.constEnd(); itLayerChanges++ )
   {
-    for ( const QgsFeatureId &fid : changes[layerId].keys() )
+    const QString layerId = itLayerChanges.key();
+    const auto &featureChanges = itLayerChanges.value();
+    for ( auto itFeatureChanges = featureChanges.constBegin(); itFeatureChanges != featureChanges.constEnd(); itFeatureChanges++ )
     {
-      for ( const QgsGeometryCheck::Change &change : changes[layerId][fid] )
+      const QgsFeatureId fid = itFeatureChanges.key();
+      for ( const QgsGeometryCheck::Change &change : itFeatureChanges.value() )
       {
         QTextStream( stdout ) << "   * Change: " << layerId << ":" << fid << " :: " << strChangeWhat[change.what] << ", " << strChangeType[change.type] << ", " << change.vidx.part << ":" << change.vidx.ring << ":" << change.vidx.vertex << Qt::endl;
       }
-      totChanges += changes[layerId][fid].size();
+      totChanges += itFeatureChanges.value().size();
     }
   }
   QTextStream( stdout ) << "   * Num changes: " << totChanges << ", expected num changes: " << expectedChanges.size() << Qt::endl;

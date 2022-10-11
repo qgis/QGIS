@@ -108,7 +108,7 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   setMethod( method );
 
   // Fill the headers dictionary
-  for ( const auto &headerKey : qgsEnumMap<QgsServerRequest::RequestHeader>().values() )
+  for ( const auto &headerKey : qgsEnumMap<QgsServerRequest::RequestHeader>() )
   {
     const QString headerName = QgsStringUtils::capitalize(
                                  QString( headerKey ).replace( QLatin1Char( '_' ), QLatin1Char( ' ' ) ), Qgis::Capitalization::TitleCase
@@ -256,9 +256,10 @@ void QgsFcgiServerRequest::printRequestInfos( const QUrl &url ) const
 
   qDebug() << "Headers:";
   qDebug() << "------------------------------------------------";
-  for ( const auto &headerName : headers().keys() )
+  const QMap<QString, QString> &hdrs = headers();
+  for ( auto it = hdrs.constBegin(); it != hdrs.constEnd(); it++ )
   {
-    qDebug() << headerName << ": " << headers().value( headerName );
+    qDebug() << it.key() << ": " << it.value();
   }
 }
 
