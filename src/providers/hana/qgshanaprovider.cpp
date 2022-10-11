@@ -1881,7 +1881,6 @@ QVariantMap QgsHanaProviderMetadata::decodeUri( const QString &uri ) const
 
   setUriPart( QStringLiteral( "connectionType" ) );
   setUriPart( QStringLiteral( "dsn" ) );
-
   if ( ! dsUri.driver().isEmpty() )
     uriParts[ QStringLiteral( "driver" ) ] = dsUri.driver();
   if ( ! dsUri.database().isEmpty() )
@@ -1942,10 +1941,14 @@ QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts ) const
       dsUri.setParam( key, parts.value( key ).toString() );
   };
 
+  setUriParam( QStringLiteral( "connectionType" ) );
+  setUriParam( QStringLiteral( "dsn" ) );
   if ( parts.contains( QStringLiteral( "driver" ) ) )
     dsUri.setDriver( parts.value( QStringLiteral( "driver" ) ).toString() );
   if ( parts.contains( QStringLiteral( "dbname" ) ) )
     dsUri.setDatabase( parts.value( QStringLiteral( "dbname" ) ).toString() );
+  setUriParam( QStringLiteral( "host" ) );
+  setUriParam( QStringLiteral( "port" ) );
   if ( parts.contains( QStringLiteral( "username" ) ) )
     dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
   if ( parts.contains( QStringLiteral( "password" ) ) )
@@ -1958,15 +1961,10 @@ QString QgsHanaProviderMetadata::encodeUri( const QVariantMap &parts ) const
     dsUri.setSchema( parts.value( QStringLiteral( "schema" ) ).toString() );
   if ( parts.contains( QStringLiteral( "table" ) ) )
     dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
-  if ( parts.contains( QStringLiteral( "srid" ) ) )
-    dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
   if ( parts.contains( QStringLiteral( "key" ) ) )
     dsUri.setKeyColumn( parts.value( QStringLiteral( "key" ) ).toString() );
-
-  setUriParam( QStringLiteral( "connectionType" ) );
-  setUriParam( QStringLiteral( "dsn" ) );
-  setUriParam( QStringLiteral( "host" ) );
-  setUriParam( QStringLiteral( "port" ) );
+  if ( parts.contains( QStringLiteral( "srid" ) ) )
+    dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
   setUriParam( QStringLiteral( "selectatid" ) );
 
   // SSL parameters
