@@ -342,6 +342,10 @@ void QgsFileWidget::openFileDialog()
     }
   }
 
+  // return dialog focus on Mac
+  activateWindow();
+  raise();
+
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;
 
