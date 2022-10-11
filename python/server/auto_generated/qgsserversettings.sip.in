@@ -63,6 +63,7 @@ Provides some enum describing the environment currently supported for configurat
       QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL,
       QGIS_SERVER_PROJECT_CACHE_STRATEGY,
       QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS,
+      QGIS_SERVER_APPLICATION_NAME,
     };
 };
 
@@ -337,6 +338,16 @@ Returns the list of strings that represent the allowed extra SQL tokens
 accepted as components of a feature filter.
 The default value is an empty string, the value can be changed by setting the environment
 variable QGIS_SERVER_ALLOWED_EXTRA_SQL_TOKENS.
+
+.. versionadded:: 3.28
+%End
+
+    QString applicationName() const;
+%Docstring
+Returns the QGIS Server application name.
+The default value is the concatenation of :py:func:`QgsApplication.applicationName()`
+and :py:func:`QgsApplication.platform()` separated by a space, the value can be changed
+by setting the environment variable QGIS_SERVER_APPLICATION_NAME.
 
 .. versionadded:: 3.28
 %End
