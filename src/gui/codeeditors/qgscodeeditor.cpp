@@ -69,11 +69,11 @@ QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleTo
 };
 
 
-QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin )
+QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin, QgsCodeEditor::Flags flags )
   : QsciScintilla( parent )
   , mWidgetTitle( title )
-  , mFolding( folding )
   , mMargin( margin )
+  , mFlags( flags )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
@@ -83,6 +83,10 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   {
     setWindowTitle( mWidgetTitle );
   }
+
+  if ( folding )
+    mFlags |= QgsCodeEditor::Flag::CodeFolding;
+
   setSciWidget();
   setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
@@ -90,9 +94,9 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   SendScintilla( SCI_SETMULTIPASTE, 1 );
   SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
 
-  SendScintilla( SCI_SETMARGINTYPEN, QgsCodeEditor::MarginRole::ErrorIndicators, SC_MARGIN_SYMBOL );
-  SendScintilla( SCI_SETMARGINMASKN, QgsCodeEditor::MarginRole::ErrorIndicators, 1 << MARKER_NUMBER );
-  setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, 0 );
+  SendScintilla( SCI_SETMARGINTYPEN, static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), SC_MARGIN_SYMBOL );
+  SendScintilla( SCI_SETMARGINMASKN, static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 1 << MARKER_NUMBER );
+  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
   setAnnotationDisplay( QsciScintilla::AnnotationBoxed );
 
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [ = ]
@@ -202,6 +206,8 @@ QFont QgsCodeEditor::lexerFont() const
 
 void QgsCodeEditor::runPostLexerConfigurationTasks()
 {
+  updateFolding();
+
   setMatchedBraceForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground ) );
   setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 
@@ -230,16 +236,19 @@ void QgsCodeEditor::setSciWidget()
   setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 
   setLineNumbersVisible( false );
-  setFoldingVisible( false );
 
-  setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, 0 );
+  // temporarily disable folding, will be enabled later if required by updateFolding()
+  setFolding( QsciScintilla::NoFoldStyle );
+  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
+
+  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
 
   setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
   setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   setIndentationGuidesForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
   setIndentationGuidesBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   // whether margin will be shown
-  setFoldingVisible( mFolding );
+  updateFolding();
   const QColor foldColor = lexerColor( QgsCodeEditorColorScheme::ColorRole::Fold );
   setFoldMarginColors( foldColor, foldColor );
   // indentation
@@ -270,15 +279,15 @@ void QgsCodeEditor::setMarginVisible( bool margin )
     marginFont.setPointSize( 10 );
     setMarginLineNumbers( 0, true );
     setMarginsFont( marginFont );
-    setMarginWidth( QgsCodeEditor::MarginRole::LineNumbers, QStringLiteral( "00000" ) );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), QStringLiteral( "00000" ) );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   }
   else
   {
-    setMarginWidth( QgsCodeEditor::MarginRole::LineNumbers, 0 );
-    setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, 0 );
-    setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, 0 );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), 0 );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
   }
 }
 
@@ -288,30 +297,47 @@ void QgsCodeEditor::setLineNumbersVisible( bool visible )
   {
     QFont marginFont = lexerFont();
     marginFont.setPointSize( 10 );
-    setMarginLineNumbers( QgsCodeEditor::MarginRole::LineNumbers, true );
+    setMarginLineNumbers( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), true );
     setMarginsFont( marginFont );
-    setMarginWidth( QgsCodeEditor::MarginRole::LineNumbers, QStringLiteral( "00000" ) );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), QStringLiteral( "00000" ) );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   }
   else
   {
-    setMarginLineNumbers( QgsCodeEditor::MarginRole::LineNumbers, false );
-    setMarginWidth( QgsCodeEditor::MarginRole::LineNumbers, 0 );
+    setMarginLineNumbers( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), false );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), 0 );
   }
 }
 
 bool QgsCodeEditor::lineNumbersVisible() const
 {
-  return marginLineNumbers( QgsCodeEditor::MarginRole::LineNumbers );
+  return marginLineNumbers( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ) );
 }
 
 void QgsCodeEditor::setFoldingVisible( bool folding )
 {
-  mFolding = folding;
   if ( folding )
   {
-    setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, "0" );
+    mFlags |= QgsCodeEditor::Flag::CodeFolding;
+  }
+  else
+  {
+    mFlags &= ~( static_cast< int >( QgsCodeEditor::Flag::CodeFolding ) );
+  }
+  updateFolding();
+}
+
+bool QgsCodeEditor::foldingVisible()
+{
+  return mFlags & QgsCodeEditor::Flag::CodeFolding;
+}
+
+void QgsCodeEditor::updateFolding()
+{
+  if ( mFlags & QgsCodeEditor::Flag::CodeFolding )
+  {
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), "0" );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
     setFolding( QsciScintilla::PlainFoldStyle );
@@ -319,7 +345,7 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   else
   {
     setFolding( QsciScintilla::NoFoldStyle );
-    setMarginWidth( QgsCodeEditor::MarginRole::FoldingControls, 0 );
+    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
   }
 }
 
@@ -489,7 +515,7 @@ void QgsCodeEditor::setCustomAppearance( const QString &scheme, const QMap<QgsCo
 
 void QgsCodeEditor::addWarning( const int lineNumber, const QString &warning )
 {
-  setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, "000" );
+  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), "000" );
   markerAdd( lineNumber, MARKER_NUMBER );
   QFont font = lexerFont();
   font.setItalic( true );
@@ -509,6 +535,30 @@ void QgsCodeEditor::clearWarnings()
     markerDelete( line );
     clearAnnotations( line );
   }
-  setMarginWidth( QgsCodeEditor::MarginRole::ErrorIndicators, 0 );
+  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
   mWarningLines.clear();
+}
+
+bool QgsCodeEditor::isCursorOnLastLine() const
+{
+  int line = 0;
+  int index = 0;
+  getCursorPosition( &line, &index );
+  return line == lines() - 1;
+}
+
+void QgsCodeEditor::moveCursorToStart()
+{
+  setCursorPosition( 0, 0 );
+  ensureCursorVisible();
+  ensureLineVisible( 0 );
+}
+
+void QgsCodeEditor::moveCursorToEnd()
+{
+  const int endLine = lines() - 1;
+  const int endLineLength = lineLength( endLine );
+  setCursorPosition( endLine, endLineLength );
+  ensureCursorVisible();
+  ensureLineVisible( endLine );
 }

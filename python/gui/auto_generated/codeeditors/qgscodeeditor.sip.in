@@ -30,26 +30,35 @@ A text editor based on QScintilla2.
 %End
   public:
 
-    enum MarginRole
-    {
+    enum class MarginRole
+      {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
     };
 
-    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false );
+    enum class Flag
+    {
+      CodeFolding,
+    };
+
+    typedef QFlags<QgsCodeEditor::Flag> Flags;
+
+
+    QgsCodeEditor( QWidget * parent /TransferThis/ = 0, const QString & title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags() );
 %Docstring
 Construct a new code editor.
 
 :param parent: The parent QWidget
 :param title: The title to show in the code editor dialog
-:param folding: ``False``: Enable folding for code editor
+:param folding: ``False``: Enable folding for code editor (deprecated, use ``flags`` instead)
 :param margin: ``False``: Enable margin for code editor (deprecated)
+:param flags: flags controlling behavior of code editor (since QGIS 3.28)
 
 .. versionadded:: 2.6
 %End
 
-    void setTitle( const QString &title );
+    void setTitle( const QString & title );
 %Docstring
 Set the widget title
 
@@ -108,7 +117,7 @@ Returns ``True`` if the folding controls are visible in the editor.
 .. seealso:: :py:func:`setFoldingVisible`
 %End
 
-    void insertText( const QString &text );
+    void insertText( const QString & text );
 %Docstring
 Insert text at cursor position, or replace any selected text if user has
 made a selection.
@@ -116,7 +125,7 @@ made a selection.
 :param text: The text to be inserted
 %End
 
-    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme = QString() );
+    static QColor defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString & theme = QString() );
 %Docstring
 Returns the default color for the specified ``role``.
 
@@ -141,7 +150,7 @@ selected a custom color scheme for the editor.
 .. versionadded:: 3.16
 %End
 
-    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor &color );
+    static void setColor( QgsCodeEditorColorScheme::ColorRole role, const QColor & color );
 %Docstring
 Sets the ``color`` to use in the editor for the specified ``role``.
 
@@ -163,7 +172,7 @@ Returns the monospaced font to use for code editors.
 %End
 
 
-    void addWarning( int lineNumber, const QString &warning );
+    void addWarning( int lineNumber, const QString & warning );
 %Docstring
 Adds a ``warning`` message and indicator to the specified a ``lineNumber``.
 
@@ -181,13 +190,38 @@ Clears all warning messages from the editor.
 .. versionadded:: 3.16
 %End
 
+    bool isCursorOnLastLine() const;
+%Docstring
+Returns ``True`` if the cursor is on the last line of the document.
+
+.. versionadded:: 3.28
+%End
+
+  public slots:
+
+    virtual void moveCursorToStart();
+%Docstring
+Moves the cursor to the start of the document and scrolls to ensure
+it is visible.
+
+.. versionadded:: 3.28
+%End
+
+    virtual void moveCursorToEnd();
+%Docstring
+Moves the cursor to the end of the document and scrolls to ensure
+it is visible.
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
-    bool isFixedPitch( const QFont &font );
+    bool isFixedPitch( const QFont & font );
 
-    virtual void focusOutEvent( QFocusEvent *event );
+    virtual void focusOutEvent( QFocusEvent * event );
 
-    virtual void keyPressEvent( QKeyEvent *event );
+    virtual void keyPressEvent( QKeyEvent * event );
 
 
     virtual void initializeLexer();
@@ -221,6 +255,9 @@ Performs tasks which must be run after a lexer has been set for the widget.
 %End
 
 };
+
+QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEditor::Flag> f2);
+
 
 
 /************************************************************************

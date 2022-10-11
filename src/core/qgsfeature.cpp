@@ -183,6 +183,9 @@ void QgsFeature::setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry )
 
 void QgsFeature::clearGeometry()
 {
+  if ( d->geometry.isNull() && d->valid )
+    return;
+
   setGeometry( QgsGeometry() );
 }
 

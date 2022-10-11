@@ -772,6 +772,82 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         archive.unzip(qgz)
         self.assertNotEqual(archive.auxiliaryStorageFile(), '')
 
+    def testAfterRemovingLayerFromProject(self):
+        # init project
+        p0 = QgsProject()
+
+        # add vector layers in project
+        vl0 = createLayer()
+        vl0Shp = writeShape(vl0, 'vl0.shp')
+
+        vl1 = createLayer()
+        vl1Shp = writeShape(vl1, 'vl1.shp')
+
+        p0.addMapLayers([vl0, vl1])
+
+        # add auxiliary layer for vl0
+        pkf = vl0.fields().field(vl0.fields().indexOf('pk'))
+        al0 = p0.auxiliaryStorage().createAuxiliaryLayer(pkf, vl0)
+        self.assertTrue(al0.isValid())
+        vl0.setAuxiliaryLayer(al0)
+
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        self.assertTrue(al0.addAuxiliaryField(pdef))
+
+        # add auxiliary layer for vl1
+        pkf = vl1.fields().field(vl1.fields().indexOf('pk'))
+        al1 = p0.auxiliaryStorage().createAuxiliaryLayer(pkf, vl1)
+        self.assertTrue(al1.isValid())
+        vl1.setAuxiliaryLayer(al1)
+
+        pdef = QgsPropertyDefinition('propname', QgsPropertyDefinition.DataTypeNumeric, '', '', 'ut')
+        self.assertTrue(al1.addAuxiliaryField(pdef))
+
+        # save project
+        f = tmpPath() + '.qgs'
+        p0.write(f)
+
+        # open project and check that auxiliary layers exist
+        p1 = QgsProject()
+        p1.read(f)
+
+        asCount = 0
+        for layer in p1.mapLayers().values():
+            if layer.auxiliaryLayer():
+                asCount += 1
+        self.assertEqual(asCount, 2)
+
+        qgd = p1.auxiliaryStorage().currentFileName()
+
+        layer = QgsVectorLayer(f"{qgd}|layername={vl0.id()}", 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+
+        layer = QgsVectorLayer(f"{qgd}|layername={vl1.id()}", 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+
+        # remove layer from project
+        p1.removeMapLayer(vl0.id())
+
+        # save project
+        f = tmpPath() + '.qgz'
+        p1.write(f)
+
+        # open project
+        p2 = QgsProject()
+        p2.read(f)
+
+        # check that the underlying qgd database doesn't keep the layer
+        # previously removed
+        qgd = p2.auxiliaryStorage().currentFileName()
+
+        uri = f"{qgd}|layername={vl0.id()}"
+        layer = QgsVectorLayer(uri, 'test', u'ogr')
+        self.assertFalse(layer.isValid())
+
+        uri = f"{qgd}|layername={vl1.id()}"
+        layer = QgsVectorLayer(uri, 'test', u'ogr')
+        self.assertTrue(layer.isValid())
+
 
 if __name__ == '__main__':
     unittest.main()
