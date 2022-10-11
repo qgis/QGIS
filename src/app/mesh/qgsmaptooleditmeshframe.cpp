@@ -2591,6 +2591,7 @@ void QgsMapToolEditMeshFrame::addVertex(
   QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
 
   double zValue;
+  QgsPointXY effectivePoint = mapPoint;
 
   if ( mCadDockWidget->cadEnabled() && mCurrentFaceIndex == -1 )
     zValue = currentZValue();
@@ -2607,9 +2608,9 @@ void QgsMapToolEditMeshFrame::addVertex(
     const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
     const QgsMeshVertex &v1 = triangularMesh.vertices().at( edge.at( 0 ) );
     const QgsMeshVertex &v2 = triangularMesh.vertices().at( edge.at( 1 ) );
-    double dist = v1.distance( v2 );
-    double vertDist = QgsGeometryUtils::projectPointOnSegment( QgsPoint( mapPoint ), v1, v2 ).distance( v1 );
-    zValue = v1.z() + ( v2.z() - v1.z() ) * vertDist / dist;
+    const QgsPoint projectedPoint = QgsGeometryUtils::projectPointOnSegment( QgsPoint( mapPoint ), v1, v2 );
+    zValue = v1.z() + ( v2.z() - v1.z() ) * projectedPoint.distance( v1 ) / v1.distance( v2 );
+    effectivePoint = QgsPointXY( projectedPoint );
   }
   else if ( mCurrentFaceIndex != -1 ) //we are on a face -->interpolate the z value
   {
@@ -2624,7 +2625,7 @@ void QgsMapToolEditMeshFrame::addVertex(
   else
     zValue = currentZValue();
 
-  const QVector<QgsMeshVertex> points( 1, QgsMeshVertex( mapPoint.x(), mapPoint.y(), zValue ) );
+  const QVector<QgsMeshVertex> points( 1, QgsMeshVertex( effectivePoint.x(), effectivePoint.y(), zValue ) );
   if ( mCurrentEditor )
   {
     double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
