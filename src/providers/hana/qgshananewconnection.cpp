@@ -199,7 +199,7 @@ void QgsHanaNewConnection::btnConnect_clicked()
 void QgsHanaNewConnection::cmbConnectionType_changed( int index )
 {
   swConnectionControls->setCurrentIndex( index );
-  resizeEvent( nullptr );
+  resizeWidgets();
 }
 
 void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
@@ -383,12 +383,12 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
   txtProxyPassword->setText( settings.proxyPassword() );
 }
 
-QgsHanaConnectionType QgsHanaNewConnection::getCurrentConnectionType() const
+void QgsHanaNewConnection::resizeEvent( QResizeEvent * )
 {
-  return static_cast<QgsHanaConnectionType>( swConnectionControls->currentIndex() );
+  resizeWidgets();
 }
 
-void QgsHanaNewConnection::resizeEvent( QResizeEvent * )
+void QgsHanaNewConnection::resizeWidgets()
 {
   auto resizeLayout = []( QLayout * layout )
   {
@@ -475,6 +475,11 @@ void QgsHanaNewConnection::testConnection()
     bar->pushMessage( tr( "Connection to the server was successful." ), Qgis::MessageLevel::Info );
   else
     bar->pushMessage( tr( "Connection failed: %1." ).arg( errorMsg ), Qgis::MessageLevel::Warning );
+}
+
+QgsHanaConnectionType QgsHanaNewConnection::getCurrentConnectionType() const
+{
+  return static_cast<QgsHanaConnectionType>( swConnectionControls->currentIndex() );
 }
 
 QString QgsHanaNewConnection::getDatabaseName() const

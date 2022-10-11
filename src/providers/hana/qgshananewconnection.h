@@ -37,8 +37,6 @@ class QgsHanaNewConnection : public QDialog, private Ui::QgsHanaNewConnectionBas
       const QString &connName = QString(),
       Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    QgsHanaConnectionType getCurrentConnectionType() const;
-
     void resizeEvent( QResizeEvent *ev ) override;
 
     //! Tests the connection using the parameters supplied
@@ -48,7 +46,9 @@ class QgsHanaNewConnection : public QDialog, private Ui::QgsHanaNewConnectionBas
     void accept() override;
 
   private:
+    QgsHanaConnectionType getCurrentConnectionType() const;
     QString getDatabaseName() const;
+    void resizeWidgets();
 
     void btnConnect_clicked();
     void cmbConnectionType_changed( int index );
