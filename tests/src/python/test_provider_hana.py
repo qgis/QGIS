@@ -538,6 +538,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def testEncodeDecodeUri(self):
         """Test HANA encode/decode URI"""
         md = QgsProviderRegistry.instance().providerMetadata('hana')
+        self.maxDiff = None
         self.assertEqual(md.decodeUri(
             "connectionType=0 dsn='HANADB1' "
             "driver='/usr/sap/hdbclient/libodbcHDB.so' dbname='qgis_tests' host=localhost port=30015 "
@@ -545,7 +546,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
             "sslEnabled='true' sslCryptoProvider='commoncrypto' sslValidateCertificate='false' "
             "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
             "sslTrustStore='server_root.crt' "
-            "proxyEnabled='true' proxyHttp='false' proxyHost='h' proxyPort=2 proxyUsername='u' proxyPassword='p' "),
+            "proxyEnabled='true' proxyHttp='true' proxyHost='h' proxyPort=2 proxyUsername='u' proxyPassword='p' "),
             {
                 'connectionType': '0',
                 'dsn': 'HANADB1',
@@ -571,7 +572,7 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                 'proxyEnabled': 'true',
                 'proxyHttp': 'true',
                 'proxyHost': 'h',
-                'proxyPort': 2,
+                'proxyPort': '2',
                 'proxyUsername': 'u',
                 'proxyPassword': 'p'})
 
@@ -602,14 +603,13 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
                                        'proxyPort': '3',
                                        'proxyUsername': 'u',
                                        'proxyPassword': 'p'}),
-                         "connectionType='0' dsn='HANADB1' "
                          "dbname='qgis_tests' driver='/usr/sap/hdbclient/libodbcHDB.so' user='myuser' password='mypwd' "
-                         "srid=2016 host='localhost' key='id' port='30015' selectatid='false' "
-                         "sslCryptoProvider='commoncrypto' sslEnabled='true' "
+                         "key='id' srid=2016 connectionType='0' dsn='HANADB1' host='localhost' port='30015' "
+                         "proxyEnabled='true' proxyHost='h' proxyHttp='false' proxyPassword='p' proxyPort='3' "
+                         "proxyUsername='u' selectatid='false' sslCryptoProvider='commoncrypto' sslEnabled='true' "
                          "sslHostNameInCertificate='hostname.domain.com' sslKeyStore='mykey.pem' "
-                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' "
-                         "proxyEnabled='true' proxyHttp='false' proxyHost='h' proxyPort='3' proxyUsername='u' proxyPassword='p' "
-                         "type='MultiPolygon' table=\"public\".\"gis\" (geom)")
+                         "sslTrustStore='server_root.crt' sslValidateCertificate='false' type='MultiPolygon' "
+                         "table=\"public\".\"gis\" (geom)")
 
 
 if __name__ == '__main__':
