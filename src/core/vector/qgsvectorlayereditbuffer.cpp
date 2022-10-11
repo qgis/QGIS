@@ -32,7 +32,7 @@ template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map
   typename QMap<Key, T>::const_iterator i = map.constEnd();
   while ( i != map.constBegin() )
   {
-    i--;
+    --i;
     ks.append( i.key() );
     vs.append( i.value() );
   }
