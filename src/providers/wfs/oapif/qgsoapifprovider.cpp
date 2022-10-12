@@ -740,6 +740,10 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
                    qgsDoubleToString( rect.yMinimum() ),
                    qgsDoubleToString( rect.xMaximum() ),
                    qgsDoubleToString( rect.yMaximum() ) );
+
+      if ( mShared->mSourceCrs
+           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+        url += QStringLiteral( "&bbox-crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
     }
   }
 
