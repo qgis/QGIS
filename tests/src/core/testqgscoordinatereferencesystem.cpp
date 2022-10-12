@@ -1892,11 +1892,11 @@ void TestQgsCoordinateReferenceSystem::toOgcUri()
 {
   QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3717" ) );
   QVERIFY( crs.isValid() );
-  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/EPSG/9.6.2/3717" );
+  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/EPSG/0/3717" );
 
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   QVERIFY( crs.isValid() );
-  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/EPSG/9.6.2/4326" );
+  QCOMPARE( crs.toOgcUri(), "http://www.opengis.net/def/crs/EPSG/0/4326" );
 
   crs = QgsCoordinateReferenceSystem( QStringLiteral( "OGC:CRS84" ) );
   QVERIFY( crs.isValid() );

@@ -289,7 +289,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                  "geometry": {"type": "Point", "coordinates": [-68.2, 70.8]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-71,65.5,-65,78&bbox-crs=http://www.opengis.net/def/crs/EPSG/9.6.2/4326&' + ACCEPT_ITEMS),
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=65.5,-71,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
                   'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
@@ -307,7 +307,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
 
         # Test clamping of bbox
         with open(
-                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-180,64.5,-65,78&bbox-crs=http://www.opengis.net/def/crs/EPSG/9.6.2/4326&' + ACCEPT_ITEMS),
+                sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=64.5,-180,78,-65&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS),
                 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
@@ -334,7 +334,7 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
                  "geometry": {"type": "Point", "coordinates": [-65.32, 78.3]}}
             ]
         }
-        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-180,-90,180,90&bbox-crs=http://www.opengis.net/def/crs/EPSG/9.6.2/4326&' + ACCEPT_ITEMS), 'wb') as f:
+        with open(sanitize(endpoint, '/collections/mycollection/items?limit=1000&bbox=-90,-180,90,180&bbox-crs=http://www.opengis.net/def/crs/EPSG/0/4326&' + ACCEPT_ITEMS), 'wb') as f:
             f.write(json.dumps(items).encode('UTF-8'))
 
         extent = QgsRectangle(-181, -91, 181, 91)

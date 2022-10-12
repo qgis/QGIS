@@ -732,6 +732,9 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFe
       }
     }
 
+    if ( mShared->mSourceCrs.hasAxisInverted() )
+      rect.invert();
+
     if ( ! rect.isNull() )
     {
       url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
