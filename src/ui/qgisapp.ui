@@ -3375,7 +3375,6 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
  </widget>
  <resources>
   <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>
