@@ -78,7 +78,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     /**
      * Gets the expression to generate this geometry.
      */
-    QString geometryExpression() const { return mExpression->expression(); }
+    QString geometryExpression() const;
 
     /**
      * Returns the unit for the geometry expression.

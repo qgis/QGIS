@@ -24,17 +24,12 @@
 #include <QRegularExpression>
 #include <QProgressBar>
 
-#include "qgssettings.h"
-#include "qgsfilterlineedit.h"
-#include "qgsfocuskeeper.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
 #include "qgsapplication.h"
-#include "qgsfileutils.h"
-#include "qgsmimedatautils.h"
 #include "qgsexternalstorage.h"
 #include "qgsexternalstorageregistry.h"
 #include "qgsmessagebar.h"
+#include "qgsexpression.h"
 
 #define FILEPATH_VARIABLE "selected_file_path"
 
