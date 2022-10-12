@@ -111,7 +111,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     bool faceCanBeAdded( const QgsMeshFace &face ) const;
 
     /**
-     * Returns TRUE if a face formed by some vertices con be added to the mesh.
+     * Returns TRUE if a face formed by some vertices can be added to the mesh.
      * The vertices are defined by \a verticesIndex that contains the index of already existing vertices
      * or the value -1 if the vertex is not existing for now in the mesh. The positions of new vertices are stored in \a newVertices
      * sorted by their positions in the face.

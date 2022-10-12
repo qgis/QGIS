@@ -315,7 +315,7 @@ bool QgsMeshEditor::faceCanBeAddedWithNewVertices( const QList<int> &verticesInd
 
   // if we are here, the face is convex and not flat
 
-  // Now we chekc the topology of the potential new face
+  // Now we check the topology of the potential new face
   int size = face.size();
   QList<QgsMeshVertex> allVertices;
   allVertices.reserve( verticesIndex.size() );
