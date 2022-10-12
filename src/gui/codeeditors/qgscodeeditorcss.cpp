@@ -36,6 +36,11 @@ QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
   QgsCodeEditorCSS::initializeLexer();
 }
 
+Qgis::ScriptLanguage QgsCodeEditorCSS::language() const
+{
+  return Qgis::ScriptLanguage::Css;
+}
+
 void QgsCodeEditorCSS::initializeLexer()
 {
   QsciLexerCSS *lexer = new QgsQsciLexerCSS( this );

@@ -19,6 +19,8 @@
 
 #include <QString>
 #include "qgscodeeditorcolorscheme.h"
+#include "qgis.h"
+
 // qscintilla includes
 #include <Qsci/qsciapis.h>
 #include "qgis_sip.h"
@@ -109,6 +111,20 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param title widget title
      */
     void setTitle( const QString & title );
+
+    /**
+     * Returns the associated scripting language.
+     *
+     * \since QGIS 3.30
+     */
+    virtual Qgis::ScriptLanguage language() const;
+
+    /**
+     * Returns a user-friendly, translated name of the specified script \a language.
+     *
+     * \since QGIS 3.30
+     */
+    static QString languageToString( Qgis::ScriptLanguage language );
 
     /**
      * Set margin visible state

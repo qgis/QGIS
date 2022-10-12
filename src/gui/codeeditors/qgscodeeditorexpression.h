@@ -41,6 +41,8 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
     //! Constructor for QgsCodeEditorExpression
     QgsCodeEditorExpression( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    Qgis::ScriptLanguage language() const override;
+
     /**
      * Variables and functions from this expression context will be added to
      * the API.

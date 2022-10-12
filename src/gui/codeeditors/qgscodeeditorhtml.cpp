@@ -37,6 +37,11 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
   QgsCodeEditorHTML::initializeLexer();
 }
 
+Qgis::ScriptLanguage QgsCodeEditorHTML::language() const
+{
+  return Qgis::ScriptLanguage::Html;
+}
+
 void QgsCodeEditorHTML::initializeLexer()
 {
   QFont font = lexerFont();

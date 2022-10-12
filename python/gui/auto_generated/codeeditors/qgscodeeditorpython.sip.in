@@ -38,6 +38,9 @@ Construct a new Python editor.
 .. versionadded:: 2.6
 %End
 
+    virtual Qgis::ScriptLanguage language() const;
+
+
     void loadAPIs( const QList<QString> &filenames );
 %Docstring
 Load APIs from one or more files

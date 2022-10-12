@@ -37,6 +37,11 @@ QgsCodeEditorR::QgsCodeEditorR( QWidget *parent, Mode mode )
   QgsCodeEditorR::initializeLexer();
 }
 
+Qgis::ScriptLanguage QgsCodeEditorR::language() const
+{
+  return Qgis::ScriptLanguage::R;
+}
+
 void QgsCodeEditorR::initializeLexer()
 {
   QgsQsciLexerR *lexer = new QgsQsciLexerR( this );
