@@ -21,8 +21,9 @@
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 #include "qgsunittypes.h"
-#include <QVariantMap>
+
 #include <memory>
+#include <QVariantMap>
 #include <QImage>
 
 class QgsVectorTileRenderer;
