@@ -82,6 +82,17 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
   request.setLimit( 10 );
   request.setExpressionContext( context );
 
+  // avoid endless recursion by removing virtual fields while going through features
+  // to determine result type
+  QgsAttributeList attributes;
+  const QgsFields fields = layer->fields();
+  for ( int i = 0; i < fields.count(); i++ )
+  {
+    if ( fields.fieldOrigin( i ) != QgsFields::OriginExpression )
+      attributes << i;
+  }
+  request.setSubsetOfAttributes( attributes );
+
   QVariant value;
   QgsFeature f;
   QgsFeatureIterator it = layer->getFeatures( request );
@@ -101,5 +112,3 @@ std::tuple<QVariant::Type, int> QgsExpressionUtils::determineResultType( const Q
   value = QVariant();
   return std::make_tuple( value.type(), value.userType() );
 }
-
-
