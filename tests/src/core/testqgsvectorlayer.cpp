@@ -77,6 +77,7 @@ class TestQgsVectorLayer : public QgsTest
     void testCopyPasteFieldConfiguration();
     void testCopyPasteFieldConfiguration_data();
     void testFieldExpression();
+    void testFieldAggregateExpression();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -467,6 +468,36 @@ void TestQgsVectorLayer::testFieldExpression()
   QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "virtual_field" ) ) ),  QStringLiteral( "'abc'" ) );
   QCOMPARE( layer1.expressionField( layer1.fields().lookupField( QStringLiteral( "name" ) ) ),  QString() );
 }
+
+void TestQgsVectorLayer::testFieldAggregateExpression()
+{
+  QString testPolysFile( TEST_DATA_DIR );
+  testPolysFile += QStringLiteral( "/projects/communes.gpkg|layername=communes" );
+
+  QgsVectorLayer layer( testPolysFile, QStringLiteral( "layer1" ), QStringLiteral( "ogr" ) );
+  QVERIFY( layer.isValid() );
+
+  layer.addExpressionField( QStringLiteral( "sum($area)" ), QgsField( QStringLiteral( "virtual_field" ), QVariant::String ) );
+
+  const int vfIndex = layer.fields().count() - 1;
+  QCOMPARE( layer.fields().at( 0 ).name(), QStringLiteral( "fid" ) );
+  QCOMPARE( layer.fields().at( vfIndex ).name(), QStringLiteral( "virtual_field" ) );
+
+  QgsFeature feature;
+  auto featureIt = layer.getFeatures();
+  featureIt.nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( 0 ).toInt(), 1 );
+  QVERIFY( qgsDoubleNear( feature.attribute( vfIndex ).toDouble(), 359065580.0, 1 ) );
+
+  QgsFeature feature2;
+  featureIt.nextFeature( feature2 );
+  QVERIFY( feature2.isValid() );
+  QCOMPARE( feature2.attribute( 0 ).toInt(), 2 );
+  QVERIFY( qgsDoubleNear( feature2.attribute( vfIndex ).toDouble(), 359065580.0, 1 ) );
+}
+
+
 
 QGSTEST_MAIN( TestQgsVectorLayer )
 #include "testqgsvectorlayer.moc"
