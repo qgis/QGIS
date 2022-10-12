@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
+#include "qgsunittypes.h"
 #include <QVariantMap>
 #include <memory>
 #include <QImage>
