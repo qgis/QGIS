@@ -2286,6 +2286,25 @@ class CORE_EXPORT Qgis
     Q_ENUM( CoordinateDisplayType )
 
     /**
+     * Scripting languages.
+     *
+     * \since QGIS 3.30
+     */
+    enum class ScriptLanguage : int
+    {
+      Css, //!< CSS
+      QgisExpression, //!< QGIS expressions
+      Html, //!< HTML
+      JavaScript, //!< JavaScript
+      Json, //!< JSON
+      Python, //!< Python
+      R, //!< R Stats
+      Sql, //!< SQL
+      Unknown, //!< Unknown/other language
+    };
+    Q_ENUM( ScriptLanguage )
+
+    /**
      * Identify search radius in mm
      * \since QGIS 2.3
      */

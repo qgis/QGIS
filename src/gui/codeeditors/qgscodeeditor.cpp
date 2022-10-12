@@ -296,6 +296,37 @@ void QgsCodeEditor::setTitle( const QString &title )
   setWindowTitle( title );
 }
 
+Qgis::ScriptLanguage QgsCodeEditor::language() const
+{
+  return Qgis::ScriptLanguage::Unknown;
+}
+
+QString QgsCodeEditor::languageToString( Qgis::ScriptLanguage language )
+{
+  switch ( language )
+  {
+    case Qgis::ScriptLanguage::Css:
+      return tr( "CSS" );
+    case Qgis::ScriptLanguage::QgisExpression:
+      return tr( "Expression" );
+    case Qgis::ScriptLanguage::Html:
+      return tr( "HTML" );
+    case Qgis::ScriptLanguage::JavaScript:
+      return tr( "JavaScript" );
+    case Qgis::ScriptLanguage::Json:
+      return tr( "JSON" );
+    case Qgis::ScriptLanguage::Python:
+      return tr( "Python" );
+    case Qgis::ScriptLanguage::R:
+      return tr( "R" );
+    case Qgis::ScriptLanguage::Sql:
+      return tr( "SQL" );
+    case Qgis::ScriptLanguage::Unknown:
+      return QString();
+  }
+  BUILTIN_UNREACHABLE
+}
+
 void QgsCodeEditor::setMarginVisible( bool margin )
 {
   mMargin = margin;

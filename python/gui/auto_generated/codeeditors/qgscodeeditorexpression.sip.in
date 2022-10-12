@@ -29,6 +29,9 @@ code autocompletion.
 Constructor for QgsCodeEditorExpression
 %End
 
+    virtual Qgis::ScriptLanguage language() const;
+
+
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Variables and functions from this expression context will be added to

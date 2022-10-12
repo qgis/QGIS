@@ -36,6 +36,11 @@ QgsCodeEditorJavascript::QgsCodeEditorJavascript( QWidget *parent )
   QgsCodeEditorJavascript::initializeLexer();
 }
 
+Qgis::ScriptLanguage QgsCodeEditorJavascript::language() const
+{
+  return Qgis::ScriptLanguage::JavaScript;
+}
+
 void QgsCodeEditorJavascript::initializeLexer()
 {
   QsciLexerJavaScript *lexer = new QsciLexerJavaScript( this );

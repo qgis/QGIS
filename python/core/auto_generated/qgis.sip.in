@@ -1327,6 +1327,19 @@ The development version
       CustomCrs,
     };
 
+    enum class ScriptLanguage
+    {
+      Css,
+      QgisExpression,
+      Html,
+      JavaScript,
+      Json,
+      Python,
+      R,
+      Sql,
+      Unknown,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;

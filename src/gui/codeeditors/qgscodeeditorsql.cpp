@@ -33,6 +33,11 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   QgsCodeEditorSQL::initializeLexer(); // avoid cppcheck warning by explicitly specifying namespace
 }
 
+Qgis::ScriptLanguage QgsCodeEditorSQL::language() const
+{
+  return Qgis::ScriptLanguage::SQL;
+}
+
 QgsCodeEditorSQL::~QgsCodeEditorSQL()
 {
   if ( mApis )

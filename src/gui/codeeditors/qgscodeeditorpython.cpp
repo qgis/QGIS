@@ -48,6 +48,11 @@ QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> 
   QgsCodeEditorPython::initializeLexer();
 }
 
+Qgis::ScriptLanguage QgsCodeEditorPython::language() const
+{
+  return Qgis::ScriptLanguage::Python;
+}
+
 void QgsCodeEditorPython::initializeLexer()
 {
   // current line

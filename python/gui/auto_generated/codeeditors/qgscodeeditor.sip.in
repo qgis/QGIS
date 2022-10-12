@@ -13,6 +13,7 @@
 
 
 
+
 class QgsCodeEditor : QsciScintilla
 {
 %Docstring(signature="appended")
@@ -71,6 +72,20 @@ Construct a new code editor.
 Set the widget title
 
 :param title: widget title
+%End
+
+    virtual Qgis::ScriptLanguage language() const;
+%Docstring
+Returns the associated scripting language.
+
+.. versionadded:: 3.30
+%End
+
+    static QString languageToString( Qgis::ScriptLanguage language );
+%Docstring
+Returns a user-friendly, translated name of the specified script ``language``.
+
+.. versionadded:: 3.30
 %End
 
  void setMarginVisible( bool margin ) /Deprecated/;

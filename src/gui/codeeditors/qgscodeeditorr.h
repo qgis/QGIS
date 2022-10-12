@@ -77,6 +77,7 @@ class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor
 
     //! Constructor for QgsCodeEditorR
     QgsCodeEditorR( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
+    Qgis::ScriptLanguage language() const override;
 
   protected:
     void initializeLexer() override;

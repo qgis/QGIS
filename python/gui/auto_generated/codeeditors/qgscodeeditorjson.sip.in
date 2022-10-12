@@ -29,6 +29,9 @@ code autocompletion.
 Constructor for QgsCodeEditorJson
 %End
 
+    virtual Qgis::ScriptLanguage language() const;
+
+
   protected:
     virtual void initializeLexer();
 

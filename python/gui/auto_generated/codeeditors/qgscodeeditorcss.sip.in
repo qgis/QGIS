@@ -30,6 +30,8 @@ code autocompletion.
 %Docstring
 Constructor for QgsCodeEditorCSS
 %End
+    virtual Qgis::ScriptLanguage language() const;
+
 
   protected:
     virtual void initializeLexer();

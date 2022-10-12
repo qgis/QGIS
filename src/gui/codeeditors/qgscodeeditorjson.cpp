@@ -36,6 +36,11 @@ QgsCodeEditorJson::QgsCodeEditorJson( QWidget *parent )
   QgsCodeEditorJson::initializeLexer();
 }
 
+Qgis::ScriptLanguage QgsCodeEditorJson::language() const
+{
+  return Qgis::ScriptLanguage::Json;
+}
+
 void QgsCodeEditorJson::initializeLexer()
 {
   QsciLexerJSON *lexer = new QsciLexerJSON( this );

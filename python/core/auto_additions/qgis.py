@@ -2044,3 +2044,16 @@ Qgis.CoordinateDisplayType.CustomCrs.__doc__ = "Custom CRS"
 Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. versionadded:: 3.28\n\n' + '* ``MapCrs``: ' + Qgis.CoordinateDisplayType.MapCrs.__doc__ + '\n' + '* ``MapGeographic``: ' + Qgis.CoordinateDisplayType.MapGeographic.__doc__ + '\n' + '* ``CustomCrs``: ' + Qgis.CoordinateDisplayType.CustomCrs.__doc__
 # --
 Qgis.CoordinateDisplayType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ScriptLanguage.Css.__doc__ = "CSS"
+Qgis.ScriptLanguage.QgisExpression.__doc__ = "QGIS expressions"
+Qgis.ScriptLanguage.Html.__doc__ = "HTML"
+Qgis.ScriptLanguage.JavaScript.__doc__ = "JavaScript"
+Qgis.ScriptLanguage.Json.__doc__ = "JSON"
+Qgis.ScriptLanguage.Python.__doc__ = "Python"
+Qgis.ScriptLanguage.R.__doc__ = "R Stats"
+Qgis.ScriptLanguage.Sql.__doc__ = "SQL"
+Qgis.ScriptLanguage.Unknown.__doc__ = "Unknown/other language"
+Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\n' + '* ``Css``: ' + Qgis.ScriptLanguage.Css.__doc__ + '\n' + '* ``QgisExpression``: ' + Qgis.ScriptLanguage.QgisExpression.__doc__ + '\n' + '* ``Html``: ' + Qgis.ScriptLanguage.Html.__doc__ + '\n' + '* ``JavaScript``: ' + Qgis.ScriptLanguage.JavaScript.__doc__ + '\n' + '* ``Json``: ' + Qgis.ScriptLanguage.Json.__doc__ + '\n' + '* ``Python``: ' + Qgis.ScriptLanguage.Python.__doc__ + '\n' + '* ``R``: ' + Qgis.ScriptLanguage.R.__doc__ + '\n' + '* ``Sql``: ' + Qgis.ScriptLanguage.Sql.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ScriptLanguage.Unknown.__doc__
+# --
+Qgis.ScriptLanguage.baseClass = Qgis
