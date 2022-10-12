@@ -672,8 +672,8 @@ QgsMeshEditingError QgsTopologicalMesh::checkTopologyOfVerticesAsFace( const QVe
 
 QgsMeshEditingError QgsTopologicalMesh::counterClockwiseFaces( QgsMeshFace &face, QgsMesh *mesh )
 {
-  // First check if the topology of the face , then put it counter clockwise if needed
-  // If the index are not well ordered (edges intersect), invalid face
+  // First check the topology of the face, then put it counter clockwise if needed
+  // If the indexes are not well ordered (edges intersect), invalid face
   int faceSize = face.count();
   if ( faceSize < 3 )
     return QgsMeshEditingError( Qgis::MeshEditingErrorType::FlatFace, -1 );
