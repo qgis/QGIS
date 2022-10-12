@@ -1501,7 +1501,7 @@ QString QgsCoordinateReferenceSystem::toOgcUri() const
   if ( parts.length() == 2 )
   {
     if ( parts[0] == QLatin1String( "EPSG" ) )
-      return  QStringLiteral( "http://www.opengis.net/def/crs/EPSG/9.6.2/%1" ).arg( parts[1] ) ;
+      return  QStringLiteral( "http://www.opengis.net/def/crs/EPSG/0/%1" ).arg( parts[1] ) ;
     else if ( parts[0] == QLatin1String( "OGC" ) )
     {
       return  QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/%1" ).arg( parts[1] ) ;
