@@ -58,6 +58,13 @@ QString QgsAccessControl::resolveFilterFeatures( const QgsVectorLayer *layer ) c
   return expression;
 }
 
+//! Clear feature's filter of layers
+void QgsAccessControl::unresolveFilterFeatures()
+{
+  mFilterFeaturesExpressions.clear();
+  mResolved = false;
+}
+
 //! Filter the features of the layer
 void QgsAccessControl::filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const
 {
