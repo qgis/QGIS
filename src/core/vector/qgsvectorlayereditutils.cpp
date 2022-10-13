@@ -120,7 +120,7 @@ Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featu
 
 
 static
-Qgis::GeometryOperationResult _addRing( QgsVectorLayer *layer, QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
+Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
 {
 
   if ( !layer || !layer->isSpatial() )
@@ -194,16 +194,16 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
   if ( modifiedFeatureId )
   {
     QgsFeatureIds *modifiedFeatureIds = new QgsFeatureIds;
-    Qgis::GeometryOperationResult result = _addRing( mLayer, ring, targetFeatureIds, modifiedFeatureIds, true );
+    Qgis::GeometryOperationResult result = staticAddRing( mLayer, ring, targetFeatureIds, modifiedFeatureIds, true );
     *modifiedFeatureId = *modifiedFeatureIds->begin();
     return result;
   }
-  return _addRing( mLayer, ring, targetFeatureIds, nullptr, true );
+  return staticAddRing( mLayer, ring, targetFeatureIds, nullptr, true );
 }
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addMultiRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds )
 {
-  return _addRing( mLayer, ring, targetFeatureIds, modifiedFeatureIds, false );
+  return staticAddRing( mLayer, ring, targetFeatureIds, modifiedFeatureIds, false );
 }
 
 
