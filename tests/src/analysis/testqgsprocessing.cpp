@@ -9718,8 +9718,8 @@ void TestQgsProcessing::parameterMeshDatasetGroups()
   QgsProject project;
   context.setProject( &project );
 
-  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant() ), QList<int>( {0} ) );
-  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList() ), QList<int>( {0} ) );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant() ), QList<int>() );
+  QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList() ), QList<int>() );
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( 3 ), QList<int>( {3} ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariant( "3" ) ), QList<int>( {3} ) );
   QCOMPARE( QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( QVariantList( { "3", "4", "5"} ) ), QList<int>( {3, 4, 5 } ) );
