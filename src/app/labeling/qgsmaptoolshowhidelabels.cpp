@@ -56,8 +56,8 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QgsMapMouseEvent *e )
     return;
 
   int showCol;
-  if ( !labelCanShowHide( vlayer, showCol )
-       || !diagramCanShowHide( vlayer, showCol ) )
+  if ( ( vlayer->labelsEnabled() && !labelCanShowHide( vlayer, showCol ) )
+       || ( vlayer->diagramsEnabled() && !diagramCanShowHide( vlayer, showCol ) ) )
   {
     if ( !vlayer->auxiliaryLayer() )
     {
