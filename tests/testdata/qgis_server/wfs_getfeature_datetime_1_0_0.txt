@@ -1,0 +1,209 @@
+Content-Type: text/xml; subtype=gml/2.1.2; charset=utf-8
+
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:qgs="http://www.qgis.org/gml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.qgis.org/gml ?">
+ <gml:boundedBy>
+  <gml:Box srsName="EPSG:4326">
+   <gml:coordinates cs="," ts=" ">-7.99492,37.4402 -0.855025,43.0264</gml:coordinates>
+  </gml:Box>
+ </gml:boundedBy>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.1">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-7.9293612,43.0263943 -7.9293612,43.0263943</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-7.9293612,43.0263943</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>1</qgs:fid>
+   <qgs:id>0</qgs:id>
+   <qgs:date>2021-05-31</qgs:date>
+   <qgs:time>10:00:00</qgs:time>
+   <qgs:datetime>2021-05-31 10:00:00</qgs:datetime>
+   <qgs:date_time>2021-05-31T10:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.2">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-2.63107078,37.98492015 -2.63107078,37.98492015</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-2.63107078,37.98492015</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>2</qgs:fid>
+   <qgs:id>1</qgs:id>
+   <qgs:date>2021-06-30</qgs:date>
+   <qgs:time>07:00:00</qgs:time>
+   <qgs:datetime>2021-06-30 07:00:00</qgs:datetime>
+   <qgs:date_time>2021-06-30T07:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.3">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-3.95764769,39.67467133 -3.95764769,39.67467133</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-3.95764769,39.67467133</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>3</qgs:fid>
+   <qgs:id>2</qgs:id>
+   <qgs:date>2021-05-31</qgs:date>
+   <qgs:time>17:00:00</qgs:time>
+   <qgs:datetime>2021-05-31 17:00:00</qgs:datetime>
+   <qgs:date_time>2021-05-31T17:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.4">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-0.85502457,37.82787511 -0.85502457,37.82787511</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-0.85502457,37.82787511</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>4</qgs:fid>
+   <qgs:id>3</qgs:id>
+   <qgs:date>2021-10-28</qgs:date>
+   <qgs:time>10:00:00</qgs:time>
+   <qgs:datetime>2021-10-28 10:00:00</qgs:datetime>
+   <qgs:date_time>2021-10-28T10:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.5">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-6.16296928,42.57122133 -6.16296928,42.57122133</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-6.16296928,42.57122133</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>5</qgs:fid>
+   <qgs:id>4</qgs:id>
+   <qgs:date>2021-07-30</qgs:date>
+   <qgs:time>01:00:00</qgs:time>
+   <qgs:datetime>2021-07-30 01:00:00</qgs:datetime>
+   <qgs:date_time>2021-07-30T01:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.6">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-6.67461865,37.4402079 -6.67461865,37.4402079</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-6.67461865,37.4402079</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>6</qgs:fid>
+   <qgs:id>5</qgs:id>
+   <qgs:date>2021-08-29</qgs:date>
+   <qgs:time>19:00:00</qgs:time>
+   <qgs:datetime>2021-08-29 19:00:00</qgs:datetime>
+   <qgs:date_time>2021-08-29T19:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.7">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-3.77557445,40.4568878 -3.77557445,40.4568878</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-3.77557445,40.4568878</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>7</qgs:fid>
+   <qgs:id>6</qgs:id>
+   <qgs:date>2021-12-27</qgs:date>
+   <qgs:time>22:00:00</qgs:time>
+   <qgs:datetime>2021-12-27 22:00:00</qgs:datetime>
+   <qgs:date_time>2021-12-27T22:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.8">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-1.98059826,42.02960468 -1.98059826,42.02960468</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-1.98059826,42.02960468</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>8</qgs:fid>
+   <qgs:id>7</qgs:id>
+   <qgs:date>2021-09-28</qgs:date>
+   <qgs:time>09:00:00</qgs:time>
+   <qgs:datetime>2021-09-28 09:00:00</qgs:datetime>
+   <qgs:date_time>2021-09-28T09:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.9">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-7.99492105,38.86510435 -7.99492105,38.86510435</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-7.99492105,38.86510435</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>9</qgs:fid>
+   <qgs:id>8</qgs:id>
+   <qgs:date>2021-09-28</qgs:date>
+   <qgs:time>21:00:00</qgs:time>
+   <qgs:datetime>2021-09-28 21:00:00</qgs:datetime>
+   <qgs:date_time>2021-09-28T21:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+ <gml:featureMember>
+  <qgs:Datetime_dim fid="Datetime_dim.10">
+   <gml:boundedBy>
+    <gml:Box srsName="EPSG:4326">
+     <gml:coordinates cs="," ts=" ">-6.79827095,37.93340218 -6.79827095,37.93340218</gml:coordinates>
+    </gml:Box>
+   </gml:boundedBy>
+   <qgs:geometry>
+    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
+     <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">-6.79827095,37.93340218</coordinates>
+    </Point>
+   </qgs:geometry>
+   <qgs:fid>10</qgs:fid>
+   <qgs:id>9</qgs:id>
+   <qgs:date>2021-07-30</qgs:date>
+   <qgs:time>05:00:00</qgs:time>
+   <qgs:datetime>2021-07-30 05:00:00</qgs:datetime>
+   <qgs:date_time>2021-07-30T05:00:00</qgs:date_time>
+  </qgs:Datetime_dim>
+ </gml:featureMember>
+</wfs:FeatureCollection>
