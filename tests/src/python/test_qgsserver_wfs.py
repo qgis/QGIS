@@ -901,6 +901,35 @@ class TestQgsServerWFS(QgsServerTestBase):
         self.assertEqual([c[:4] for c in e.findall('.//')[0].text.split(' ')], ['7.25', '44.7'])
         self.assertEqual([c[:4] for c in e.findall('.//')[1].text.split(' ')], ['7.29', '44.8'])
 
+    def test_describeFeatureTypeDateTime(self):
+        """Test DescribeFeatureType with dateTime fields"""
+        project_file = "../qgis_server_accesscontrol/project_with_dimensions.qgs"
+        self.wfs_request_compare("DescribeFeatureType", '1.0.0', "TYPENAME=Datetime_dim&",
+                                 'wfs_describeFeatureType_1_0_0_typename_datetime_dim', project_file=project_file)
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=Datetime_dim&",
+                                 'wfs_describeFeatureType_1_1_0_typename_datetime_dim', project_file=project_file)
+
+        self.wfs_request_compare("DescribeFeatureType", '1.1.0', "TYPENAME=datetime_str&",
+                                 'wfs_describeFeatureType_1_1_0_typename_datetime_str', project_file=project_file)
+
+    def test_GetFeature_with_datetime(self):
+        """ Test GetFeature with date-time data"""
+        project_file = "../qgis_server_accesscontrol/project_with_dimensions.qgs"
+
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=datetime_str&",
+            'wfs_getfeature_datetime_str',
+            project_file=project_file)
+
+        self.wfs_request_compare(
+            "GetFeature",
+            "1.0.0",
+            "TYPENAME=Datetime_dim&",
+            'wfs_getfeature_datetime',
+            project_file=project_file)
+
 
 if __name__ == '__main__':
     unittest.main()
