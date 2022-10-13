@@ -116,7 +116,6 @@ QList<int> QgsProcessingParameterMeshDatasetGroups::valueAsDatasetGroup( const Q
 
   QList<int> ret;
 
-  // if invalid or empty, return only the group 0
   if ( value.isValid() )
   {
     if ( value.type() == QVariant::List )
