@@ -4328,6 +4328,10 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         // performing actual row insert
         ret = sqlite3_step( stmt );
 
+        char *expandedSql = sqlite3_expanded_sql( stmt );
+        QgsDatabaseQueryLogWrapper logWrapper( QString( expandedSql ), uri( ).uri( false ), QStringLiteral( "spatialite" ), QStringLiteral( "QgsSpatiaLiteProvider" ), QStringLiteral( "addFeatures" ) );
+        sqlite3_free( expandedSql );
+
         sqlite3_finalize( stmt );
 
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
@@ -4345,6 +4349,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           const char *err = sqlite3_errmsg( sqliteHandle( ) );
           errMsg = ( char * ) sqlite3_malloc( ( int ) strlen( err ) + 1 );
           strcpy( errMsg, err );
+          logWrapper.setError( errMsg );
           break;
         }
       }
