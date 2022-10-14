@@ -2021,6 +2021,70 @@ void TestQgsMeshEditor::refineMesh()
         checkRefinedFace( mesh, facesRefinement, i, 2, -1, 3, 4 );
     }
   }
+  {
+    // Atempt to refine a face with 5 vertices (not allowed)
+    QgsMesh mesh;
+    QgsTriangularMesh triangularMesh;
+    QgsMeshEditor meshEditor( &mesh, &triangularMesh );
+    QgsMeshEditingError error;
+
+    mesh.vertices.append( QgsMeshVertex( 0, 200, 0 ) ); // 0
+    mesh.vertices.append( QgsMeshVertex( 200, 200, 0 ) ); // 1
+    mesh.vertices.append( QgsMeshVertex( 0, 0, 0 ) ); // 2
+    mesh.vertices.append( QgsMeshVertex( 200, 0, 0 ) ); //
+    mesh.vertices.append( QgsMeshVertex( 100, 175, 0 ) ); // 4
+    mesh.vertices.append( QgsMeshVertex( 25, 150, 0 ) ); // 5
+    mesh.vertices.append( QgsMeshVertex( 25, 25, 0 ) ); // 6
+    mesh.vertices.append( QgsMeshVertex( 175, 25, 0 ) ); // 7
+    mesh.vertices.append( QgsMeshVertex( 175, 150, 0 ) ); // 8
+
+    mesh.faces.append( {2, 5, 0 } ); // 0
+    mesh.faces.append( {0, 5, 4 } ); // 1
+    mesh.faces.append( {0, 4, 1 } ); // 2
+    mesh.faces.append( {1, 4, 8 } ); // 3
+    mesh.faces.append( {4, 5, 6, 7, 8 } ); // 4
+    mesh.faces.append( {2, 6, 5 } ); // 5
+    mesh.faces.append( {6, 2, 3, 7 } ); // 6
+    mesh.faces.append( {3, 8, 7} ); // 7
+
+    const QgsCoordinateTransform transform;
+    triangularMesh.update( &mesh, transform );
+    QVERIFY( meshEditor.initialize() == QgsMeshEditingError() );
+    QVERIFY( meshEditor.checkConsistency( error ) );
+
+    QCOMPARE( meshEditor.mMesh->faceCount(), 8 );
+    QCOMPARE( meshEditor.mMesh->vertexCount(), 9 );
+
+    QList<int> facesList;
+    facesList << 4;
+
+    QgsMeshEditRefineFaces refineEditing;
+    refineEditing.setInputFaces( facesList );
+    QHash<int, QgsMeshEditRefineFaces::FaceRefinement > facesRefinement;
+    QHash<int, QgsMeshEditRefineFaces::BorderFace> borderFaces;
+    QSet<int> facesToRefine;
+    facesToRefine = qgis::listToSet( facesList );
+
+    refineEditing.createNewVerticesAndRefinedFaces( &meshEditor, facesToRefine, facesRefinement );
+    refineEditing.createNewBorderFaces( &meshEditor, facesToRefine, facesRefinement, borderFaces );
+
+    // refinement not done
+    QCOMPARE( meshEditor.mMesh->faceCount(), 8 );
+    QCOMPARE( meshEditor.mMesh->vertexCount(), 9 );
+
+    facesList.clear();
+    facesList << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7;
+    refineEditing = QgsMeshEditRefineFaces();
+    refineEditing.setInputFaces( facesList );
+    facesRefinement.clear();
+    borderFaces.clear();
+    facesToRefine.clear();
+    facesToRefine = qgis::listToSet( facesList );
+
+    refineEditing.createNewVerticesAndRefinedFaces( &meshEditor, facesToRefine, facesRefinement );
+    refineEditing.createNewBorderFaces( &meshEditor, facesToRefine, facesRefinement, borderFaces );
+
+  }
 }
 
 void TestQgsMeshEditor::transformByExpression()
