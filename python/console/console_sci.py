@@ -84,7 +84,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.buffer = []
         self.continuationLine = False
 
-        self.displayPrompt(self.continuationLine)
+        self.displayPrompt()
 
         for statement in _init_statements:
             try:
@@ -146,15 +146,15 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
     def moveCursorToStart(self):
         super().moveCursorToStart()
-        self.displayPrompt(self.continuationLine)
+        self.displayPrompt()
 
     def moveCursorToEnd(self):
         super().moveCursorToEnd()
-        self.displayPrompt(self.continuationLine)
+        self.displayPrompt()
 
-    def displayPrompt(self, more=False):
+    def displayPrompt(self):
         self.SendScintilla(QsciScintilla.SCI_MARGINSETTEXT, 0,
-                           str.encode("..." if more else ">>>"))
+                           str.encode("..." if self.continuationLine else ">>>"))
 
     def on_session_history_cleared(self):
         msgText = QCoreApplication.translate('PythonConsole',
@@ -262,7 +262,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
                     self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
 
-        self.displayPrompt(self.continuationLine)
+        self.displayPrompt()
 
     def populateContextMenu(self, menu):
         pyQGISHelpAction = menu.addAction(
@@ -362,16 +362,14 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         else:
             self.buffer.append(cmd)
             src = "\n".join(self.buffer)
-            more = self.runsource(src)
-            self.continuationLine = more
-            if not more:
+            self.continuationLine = self.runsource(src)
+            if not self.continuationLine:
                 self.buffer = []
 
         # prevents commands with more lines to break the console
         # in the case they have an eol different from '\n'
-        self.setText('')
+        self.clear('')
         self.moveCursorToEnd()
-        self.displayPrompt(self.continuationLine)
 
     def write(self, txt):
         if sys.stderr:
