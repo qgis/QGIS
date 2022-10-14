@@ -131,37 +131,17 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
     crs = destCrs;
   }
 
-  const bool isGeographic = crs.isGeographic();
   const Qgis::CoordinateOrder order = axisOrder == Qgis::CoordinateOrder::Default ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( crs ) : axisOrder;
-
-  if ( isGeographic )
+  switch ( order )
   {
+    case Qgis::CoordinateOrder::Default:
+    case Qgis::CoordinateOrder::XY:
+      return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
 
-    switch ( order )
-    {
-      case Qgis::CoordinateOrder::Default:
-      case Qgis::CoordinateOrder::XY:
-        return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
-
-      case Qgis::CoordinateOrder::YX:
-        return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
-    }
-    BUILTIN_UNREACHABLE
+    case Qgis::CoordinateOrder::YX:
+      return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
   }
-  else
-  {
-    // coordinates in map units
-    switch ( order )
-    {
-      case Qgis::CoordinateOrder::Default:
-      case Qgis::CoordinateOrder::XY:
-        return QStringLiteral( "%1%2%3" ).arg( formattedX, QgsCoordinateFormatter::separator(), formattedY );
-
-      case Qgis::CoordinateOrder::YX:
-        return QStringLiteral( "%1%2%3" ).arg( formattedY, QgsCoordinateFormatter::separator(), formattedX );
-    }
-    BUILTIN_UNREACHABLE
-  }
+  BUILTIN_UNREACHABLE
 }
 
 void QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision, QString &x, QString &y )
