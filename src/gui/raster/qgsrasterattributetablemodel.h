@@ -16,11 +16,12 @@
 #ifndef QGSRASTERATTRIBUTETABLEMODEL_H
 #define QGSRASTERATTRIBUTETABLEMODEL_H
 
-#include <QAbstractTableModel>
-#include <QObject>
 #include "qgis_core.h"
 #include "qgsrasterattributetable.h"
 #include "qgis_sip.h"
+
+#include <QAbstractTableModel>
+#include <QObject>
 
 /**
  * \ingroup core
@@ -36,7 +37,7 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     /**
      * Creates a new QgsRasterAttributeTableModel from raster attribute table \a rat and optional \a parent.
      */
-    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent = nullptr );
+    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent  SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns true if the Raster Attribute Table is editable.
@@ -105,6 +106,16 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
      * Inserts a new row before \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool insertRow( const int position, const QVariantList &rowData, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Create RGBA fields and inserts them at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    bool insertColor( int position, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Create RGBA minimum and maximum fields and inserts them at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     */
+    bool insertRamp( int position, QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Removes the row at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.

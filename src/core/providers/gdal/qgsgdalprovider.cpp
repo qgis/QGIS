@@ -3088,7 +3088,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         QList<Qgis::RasterAttributeTableFieldUsage> usages;
         for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
         {
-          Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
+          const Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
           QVariant::Type type;
           switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
           {
@@ -3118,7 +3118,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         QStringList lNames;
 
         // Try to identify fields in case of Raster Attribute Table with wrong usages
-        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) ||
+        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) &&
              !( usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) ) )
         {
           if ( lowerNames.contains( QStringLiteral( "value" ) ) )
@@ -3213,6 +3213,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         if ( hasAtLeastOnedRat )
         {
           rat->setType( static_cast<Qgis::RasterAttributeTableType>( GDALRATGetTableType( hRat ) ) );
+          rat->setDirty( false );
           setAttributeTable( bandNumber, rat.release() );
         }
         else if ( errorMessage )
@@ -3326,7 +3327,7 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const /
         return false;
       }
 
-      rat->setIsDirty( false );
+      rat->setDirty( false );
       GDALFlushCache( mGdalBaseDataset );
       success = true;
 

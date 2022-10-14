@@ -440,6 +440,7 @@ endif()
 
 if (WITH_GUI)
   ADD_PYTHON_TEST(PyQgsProviderGuiRegistry test_qgsproviderguiregistry.py WITH_SPATIALITE=${WITH_SPATIALITE})
+  ADD_PYTHON_TEST(PyQgsRasterAttributeTableWidget test_qgsrasterattributetablewidget.py)
 endif()
 
 if (WITH_DESKTOP)

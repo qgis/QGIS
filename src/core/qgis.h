@@ -747,7 +747,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( RasterRendererFlag )
     Q_FLAG( RasterRendererFlags )
 
-    /*
+    /**
      * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
      * \since QGIS 3.30
      */
@@ -2573,6 +2573,7 @@ class CORE_EXPORT Qgis
 };
 
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
+QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolFlags )

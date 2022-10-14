@@ -20,6 +20,7 @@ import qgis  # NOQA
 from osgeo import gdal
 from osgeo import osr
 import numpy as np
+import shutil
 
 import os
 
@@ -36,11 +37,115 @@ from qgis.core import (Qgis,
                        )
 
 from qgis.testing import start_app, unittest
+from utilities import unitTestDataPath
 from qgis.testing.mocked import get_iface
 
 # Convenience instances in case you may need them
 # not used in this test
 start_app()
+
+
+def createTestRasters(cls, path):
+
+    cls.temp_path = path
+
+    # Create a 2x2 int raster
+
+    #  Initialize the Image Size
+    image_size = (2, 2)
+
+    #  Choose some Geographic Transform (Around Lake Tahoe)
+    lat = [39, 38.5]
+    lon = [-120, -119.5]
+
+    #  Create Each Channel
+    r_pixels = np.zeros((image_size), dtype=np.uint16)
+    g_pixels = np.zeros((image_size), dtype=np.uint16)
+
+    """ Raster 2x2_2_BANDS_INT16
+    Band 1
+    0 2
+    4 4
+
+    Band 2
+    1 3
+    5 5
+    """
+
+    r_pixels[0, 0] = 0
+    g_pixels[0, 0] = 1
+
+    r_pixels[0, 1] = 2
+    g_pixels[0, 1] = 3
+
+    r_pixels[1, 0] = 4
+    g_pixels[1, 0] = 5
+
+    r_pixels[1, 1] = 4
+    g_pixels[1, 1] = 5
+
+    # set geotransform
+    nx = image_size[0]
+    ny = image_size[1]
+    xmin, ymin, xmax, ymax = [min(lon), min(lat), max(lon), max(lat)]
+    xres = (xmax - xmin) / float(nx)
+    yres = (ymax - ymin) / float(ny)
+    geotransform = (xmin, xres, 0, ymax, 0, -yres)
+
+    # create the 2-band raster file
+    cls.uri_2x2_2_BANDS_INT16 = os.path.join(cls.temp_path, '2x2_2_BANDS_INT16.tif')
+    dst_ds = gdal.GetDriverByName('GTiff').Create(
+        cls.uri_2x2_2_BANDS_INT16, ny, nx, 2, gdal.GDT_Int16)
+
+    dst_ds.SetGeoTransform(geotransform)    # specify coords
+    srs = osr.SpatialReference()            # establish encoding
+    srs.ImportFromEPSG(3857)                # WGS84 lat/long
+    dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
+    dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
+    dst_ds.GetRasterBand(2).WriteArray(g_pixels)  # write g-band to the raster
+
+    dst_ds.FlushCache()                     # write to disk
+    dst_ds = None
+
+    # Create the single band version of the 16 bit raster
+    # 2x2_1_BAND_INT16
+    cls.uri_2x2_1_BAND_INT16 = os.path.join(cls.temp_path, '2x2_1_BAND_INT16.tif')
+    dst_ds = gdal.GetDriverByName('GTiff').Create(
+        cls.uri_2x2_1_BAND_INT16, ny, nx, 1, gdal.GDT_Int16)
+
+    dst_ds.SetGeoTransform(geotransform)    # specify coords
+    srs = osr.SpatialReference()            # establish encoding
+    srs.ImportFromEPSG(3857)                # WGS84 lat/long
+    dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
+    dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
+
+    dst_ds.FlushCache()                     # write to disk
+    dst_ds = None
+
+    # Create a 2x2 single band float raster
+    #  Initialize the Image Size
+    image_size = (2, 2)
+
+    #  Create Each Channel
+    r_pixels = np.zeros((image_size), dtype=np.float)
+
+    r_pixels[0, 0] = -1E23
+    r_pixels[0, 1] = 2.345
+    r_pixels[1, 0] = 3.456E12
+    r_pixels[1, 1] = 4.567E23
+
+    cls.uri_2x2_1_BAND_FLOAT = os.path.join(cls.temp_path, '2x2_1_BAND_FLOAT.tif')
+    dst_ds = gdal.GetDriverByName('GTiff').Create(
+        cls.uri_2x2_1_BAND_FLOAT, ny, nx, 1, gdal.GDT_Float32)
+
+    dst_ds.SetGeoTransform(geotransform)    # specify coords
+    srs = osr.SpatialReference()            # establish encoding
+    srs.ImportFromEPSG(3857)                # WGS84 lat/long
+    dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
+    dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
+
+    dst_ds.FlushCache()                     # write to disk
+    dst_ds = None
 
 
 class TestQgsRasterAttributeTable(unittest.TestCase):
@@ -51,103 +156,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.temp_dir = QTemporaryDir()
         self.temp_path = self.temp_dir.path()
 
-        # Create a 2x2 int raster
-
-        #  Initialize the Image Size
-        image_size = (2, 2)
-
-        #  Choose some Geographic Transform (Around Lake Tahoe)
-        lat = [39, 38.5]
-        lon = [-120, -119.5]
-
-        #  Create Each Channel
-        r_pixels = np.zeros((image_size), dtype=np.uint16)
-        g_pixels = np.zeros((image_size), dtype=np.uint16)
-
-        """ Raster 2x2_2_BANDS_INT16
-        Band 1
-        0 2
-        4 4
-
-        Band 2
-        1 3
-        5 5
-        """
-
-        r_pixels[0, 0] = 0
-        g_pixels[0, 0] = 1
-
-        r_pixels[0, 1] = 2
-        g_pixels[0, 1] = 3
-
-        r_pixels[1, 0] = 4
-        g_pixels[1, 0] = 5
-
-        r_pixels[1, 1] = 4
-        g_pixels[1, 1] = 5
-
-        # set geotransform
-        nx = image_size[0]
-        ny = image_size[1]
-        xmin, ymin, xmax, ymax = [min(lon), min(lat), max(lon), max(lat)]
-        xres = (xmax - xmin) / float(nx)
-        yres = (ymax - ymin) / float(ny)
-        geotransform = (xmin, xres, 0, ymax, 0, -yres)
-
-        # create the 2-band raster file
-        self.uri_2x2_2_BANDS_INT16 = os.path.join(self.temp_path, '2x2_2_BANDS_INT16.tif')
-        dst_ds = gdal.GetDriverByName('GTiff').Create(
-            self.uri_2x2_2_BANDS_INT16, ny, nx, 2, gdal.GDT_Int16)
-
-        dst_ds.SetGeoTransform(geotransform)    # specify coords
-        srs = osr.SpatialReference()            # establish encoding
-        srs.ImportFromEPSG(3857)                # WGS84 lat/long
-        dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
-        dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
-        dst_ds.GetRasterBand(2).WriteArray(g_pixels)  # write g-band to the raster
-
-        dst_ds.FlushCache()                     # write to disk
-        dst_ds = None
-
-        # Create the single band version of the 16 bit raster
-        # 2x2_1_BAND_INT16
-        self.uri_2x2_1_BAND_INT16 = os.path.join(self.temp_path, '2x2_1_BAND_INT16.tif')
-        dst_ds = gdal.GetDriverByName('GTiff').Create(
-            self.uri_2x2_1_BAND_INT16, ny, nx, 1, gdal.GDT_Int16)
-
-        dst_ds.SetGeoTransform(geotransform)    # specify coords
-        srs = osr.SpatialReference()            # establish encoding
-        srs.ImportFromEPSG(3857)                # WGS84 lat/long
-        dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
-        dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
-
-        dst_ds.FlushCache()                     # write to disk
-        dst_ds = None
-
-        # Create a 2x2 single band float raster
-        #  Initialize the Image Size
-        image_size = (2, 2)
-
-        #  Create Each Channel
-        r_pixels = np.zeros((image_size), dtype=np.float)
-
-        r_pixels[0, 0] = -1E23
-        r_pixels[0, 1] = 2.345
-        r_pixels[1, 0] = 3.456E12
-        r_pixels[1, 1] = 4.567E23
-
-        self.uri_2x2_1_BAND_FLOAT = os.path.join(self.temp_path, '2x2_1_BAND_FLOAT.tif')
-        dst_ds = gdal.GetDriverByName('GTiff').Create(
-            self.uri_2x2_1_BAND_FLOAT, ny, nx, 1, gdal.GDT_Float32)
-
-        dst_ds.SetGeoTransform(geotransform)    # specify coords
-        srs = osr.SpatialReference()            # establish encoding
-        srs.ImportFromEPSG(3857)                # WGS84 lat/long
-        dst_ds.SetProjection(srs.ExportToWkt())  # export coords to file
-        dst_ds.GetRasterBand(1).WriteArray(r_pixels)   # write r-band to the raster
-
-        dst_ds.FlushCache()                     # write to disk
-        dst_ds = None
+        createTestRasters(self, self.temp_path)
 
     def testRat(self):
 
@@ -411,8 +420,8 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertTrue(rat.hasRamp())
 
         self.assertTrue(rat.setRamp(1, QColor('#010203'), QColor('#020304')))
-        self.assertEqual(rat.ramp(1).min.name(), '#010203')
-        self.assertEqual(rat.ramp(1).max.name(), '#020304')
+        self.assertEqual(rat.ramp(1).color1().name(), '#010203')
+        self.assertEqual(rat.ramp(1).color2().name(), '#020304')
 
     def testWriteReadDbfRat(self):
 
@@ -580,7 +589,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         renderer = QgsPalettedRasterRenderer(raster.dataProvider(), 1, classes)
         raster.setRenderer(renderer)
 
-        rat = QgsRasterAttributeTable.createFromRaster(raster)
+        rat, band = QgsRasterAttributeTable.createFromRaster(raster)
         self.assertEqual(rat.data(), [
             [0.0, '0', 0, 0, 0, 255],
             [2.0, '2', 1, 1, 1, 255],
@@ -606,11 +615,178 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
                           ('#cfcfcf', 2.6666666666666665),
                           ('#ffffff', 4.0)])
 
-        rat = QgsRasterAttributeTable.createFromRaster(raster)
+        rat, band = QgsRasterAttributeTable.createFromRaster(raster)
         self.assertEqual(rat.data(), [
             [0.0, 1.3333333333333333, '0 - 1.33', 0, 0, 0, 255, 15, 15, 15, 255],
             [1.3333333333333333, 2.6666666666666665, '1.33 - 2.67', 15, 15, 15, 255, 207, 207, 207, 255],
             [2.6666666666666665, 4.0, '2.67 - 4', 207, 207, 207, 255, 255, 255, 255, 255]])
+
+    def testUsageInformation(self):
+
+        usage_info = QgsRasterAttributeTable.usageInformation()
+        for u in range(0, Qgis.RasterAttributeTableFieldUsage.MaxCount):
+            info = usage_info[u]
+
+    def testFloatRatNoColorTable(self):
+
+        path = os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.tif')
+        shutil.copyfile(os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.tif'), os.path.join(self.temp_path, 'band1_float32_noct_epsg4326.tif'))
+        shutil.copyfile(os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.tif.aux.xml'), os.path.join(self.temp_path, 'band1_float32_noct_epsg4326.tif.aux.xml'))
+
+        raster = QgsRasterLayer(os.path.join(self.temp_path, 'band1_float32_noct_epsg4326.tif'))
+        self.assertEqual(raster.attributeTableCount(), 1)
+
+        rat = raster.attributeTable(1)
+        self.assertTrue(rat.isValid()[0], rat.isValid()[1])
+
+        ramp = rat.colorRamp()[0]
+        self.assertEqual(len(ramp.stops()), 4)
+
+    def testRamp(self):
+
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('ValueMin', Qgis.RasterAttributeTableFieldUsage.Min, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('ValueMax', Qgis.RasterAttributeTableFieldUsage.Max, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+
+        data_rows = [
+            [2, 2.99999, 'two', 20, 20, 20],
+            [0, 0.999999, 'zero', 0, 0, 0],
+            [1, 1.999999, 'one', 10, 10, 10],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        self.assertTrue(rat.isValid()[0])
+
+        ramp, labels = rat.colorRamp()
+
+        self.assertEqual(ramp.color1().name(), '#000000')
+        self.assertEqual(ramp.color2().name(), '#141414')
+        self.assertEqual(len(ramp.stops()), 2)
+        self.assertEqual([int(s.offset * 100) for s in ramp.stops()], [33, 66])
+        self.assertGreater(len(labels), 0)
+
+        for i in range(3):
+            rat.removeRow(0)
+
+        data_rows = [
+            [2.599999, 2.99999, 'two.5-three', 0, 255, 0],
+            [0, 1.99999, 'zero-two', 0, 0, 255],
+            [2, 2.5, 'two-two.5', 255, 0, 0],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        self.assertTrue(rat.isValid()[0])
+
+        ramp, labels = rat.colorRamp()
+        self.assertEqual(labels, ['0 - 1.99999', '2 - 2.5', '2.6 - 2.99999'])
+
+        self.assertEqual(ramp.color1().name(), '#0000ff')
+        self.assertEqual(ramp.color2().name(), '#00ff00')
+        self.assertEqual(len(ramp.stops()), 2)
+        self.assertEqual([int(s.offset * 100) for s in ramp.stops()], [66, 86])
+
+        ramp, labels = rat.colorRamp(2)
+        self.assertEqual(labels, ['zero-two', 'two-two.5', 'two.5-three'])
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        self.assertTrue(raster.isValid())
+        raster.dataProvider().setAttributeTable(1, rat)
+        d = raster.dataProvider()
+        ok, errors = rat.isValid()
+        self.assertTrue(ok)
+        ok, errors = d.writeNativeAttributeTable()  # spellok
+        self.assertTrue(ok)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        rat = raster.attributeTable(1)
+        renderer = raster.renderer()
+        shader = renderer.shader()
+        self.assertEqual(shader.minimumValue(), 0.0)
+        self.assertEqual(shader.maximumValue(), 2.99999)
+        func = shader.rasterShaderFunction()
+        self.assertEqual(func.minimumValue(), 0.0)
+        self.assertEqual(func.maximumValue(), 2.99999)
+
+        self.assertEqual([(int(100 * st.offset), st.color.name()) for st in func.sourceColorRamp().stops()], [(66, '#ff0000'), (86, '#00ff00')])
+
+        # Test range classes and colors
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('ValueMin', Qgis.RasterAttributeTableFieldUsage.Min, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('ValueMax', Qgis.RasterAttributeTableFieldUsage.Max, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('RedMin', Qgis.RasterAttributeTableFieldUsage.RedMin, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('GreenMin', Qgis.RasterAttributeTableFieldUsage.GreenMin, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('BlueMin', Qgis.RasterAttributeTableFieldUsage.BlueMin, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('RedMax', Qgis.RasterAttributeTableFieldUsage.RedMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('GreenMax', Qgis.RasterAttributeTableFieldUsage.GreenMax, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('BlueMax', Qgis.RasterAttributeTableFieldUsage.BlueMax, QVariant.Int))
+
+        data_rows = [
+            [2.599999, 2.99999, 'two.5-three', 0, 255, 0, 255, 0, 0],
+            [0, 1.99999, 'zero-two', 255, 0, 0, 0, 255, 0],
+            [2, 2.5, 'two-two.5', 0, 255, 0, 0, 0, 255],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        self.assertTrue(rat.isValid()[0])
+        raster.dataProvider().setAttributeTable(1, rat)
+        d = raster.dataProvider()
+        ok, errors = rat.isValid()
+        self.assertTrue(ok)
+        ok, errors = d.writeNativeAttributeTable()  # spellok
+        self.assertTrue(ok)
+
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_INT16)
+        rat = raster.attributeTable(1)
+        renderer = raster.renderer()
+        shader = renderer.shader()
+
+        func = shader.rasterShaderFunction()
+        self.assertEqual([(int(100 * st.offset), st.color.name()) for st in func.sourceColorRamp().stops()], [(66, '#00ff00'), (66, '#00ff00'), (85, '#0000ff'), (85, '#00ff00')]
+                         )
+
+        # Test range classes and discrete colors on float
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_FLOAT)
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('ValueMin', Qgis.RasterAttributeTableFieldUsage.Min, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('ValueMax', Qgis.RasterAttributeTableFieldUsage.Max, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Class2', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+
+        # Unordered!
+        data_rows = [
+            [1e+20, 5e+25, 'green class', 'class 2', 0, 255, 0],
+            [-1e+25, 3000000000000, 'red class', 'class 0', 255, 0, 0],
+            [3000000000000, 1e+20, 'blue class', 'class 1', 0, 0, 255],
+        ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        self.assertTrue(rat.isValid()[0])
+        raster.dataProvider().setAttributeTable(1, rat)
+        ok, errors = raster.dataProvider().writeNativeAttributeTable()  # spellok
+        self.assertTrue(ok)
+        raster = QgsRasterLayer(self.uri_2x2_1_BAND_FLOAT)
+
+        renderer = raster.renderer()
+        shader = renderer.shader()
+
+        func = shader.rasterShaderFunction()
+        self.assertEqual([i[0] for i in renderer.legendSymbologyItems()], ['red class', 'blue class', 'green class'])
 
 
 if __name__ == '__main__':

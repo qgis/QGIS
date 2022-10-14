@@ -1105,6 +1105,24 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void legendLayerStretchUsingCurrentExtent();
 
+    /**
+     * Open the RasterAttributeTable for the raster layer.
+     * Only works on raster layers.
+     *
+     * \since QGIS 3.30
+     */
+    void openRasterAttributeTable();
+
+    /**
+     * Creates a new RasterAttributeTable from the raster layer renderer if the
+     * renderer supports it.
+     *
+     * Only works on raster layers.
+     *
+     * \since QGIS 3.30
+     */
+    void createRasterAttributeTable();
+
     //! Watch for QFileOpenEvent.
     bool event( QEvent *event ) override;
 

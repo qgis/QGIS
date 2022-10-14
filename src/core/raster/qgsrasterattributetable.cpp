@@ -22,6 +22,14 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsrastershaderfunction.h"
+#include <mutex>
+#include <cmath>
+
+///@cond private
+std::once_flag usageInformationLoaderFlag;
+QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> QgsRasterAttributeTable::sUsageInformation;
+///@endcond
+
 
 Qgis::RasterAttributeTableType QgsRasterAttributeTable::type() const
 {
@@ -166,11 +174,11 @@ QColor QgsRasterAttributeTable::color( int row ) const
   return QColor();
 }
 
-QgsRasterAttributeTable::Ramp QgsRasterAttributeTable::ramp( int row ) const
+QgsGradientColorRamp QgsRasterAttributeTable::ramp( int row ) const
 {
   if ( ! hasRamp() || row < 0 || row >= mData.count() )
   {
-    return Ramp();
+    return QgsGradientColorRamp();
   }
   QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
   const QVariantList rowData = mData.at( row );
@@ -188,7 +196,7 @@ QgsRasterAttributeTable::Ramp QgsRasterAttributeTable::ramp( int row ) const
   {
     colorMax.setAlpha( rowData.at( fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::AlphaMax ) ).toInt() );
   }
-  return Ramp{ colorMin, colorMax };
+  return QgsGradientColorRamp( colorMin, colorMax );
 }
 
 QList<QgsRasterAttributeTable::Field> QgsRasterAttributeTable::fields() const
@@ -229,7 +237,7 @@ bool QgsRasterAttributeTable::isDirty() const
   return mIsDirty;
 }
 
-void QgsRasterAttributeTable::setIsDirty( bool isDirty )
+void QgsRasterAttributeTable::setDirty( bool isDirty )
 {
   mIsDirty = isDirty;
 }
@@ -323,7 +331,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
     setType( Qgis::RasterAttributeTableType::Athematic );
   }
 
-  setIsDirty( true );
+  setDirty( true );
 
   return true;
 }
@@ -331,6 +339,43 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
 bool QgsRasterAttributeTable::insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
 {
   return insertField( position, { name, usage, type}, errorMessage );
+}
+
+bool QgsRasterAttributeTable::insertColor( int position, QString *errorMessage )
+{
+  const QList<Qgis::RasterAttributeTableFieldUsage> colors {{ Qgis::RasterAttributeTableFieldUsage::Red, Qgis::RasterAttributeTableFieldUsage::Green, Qgis::RasterAttributeTableFieldUsage::Blue, Qgis::RasterAttributeTableFieldUsage::Alpha }};
+  int idx { position };
+  for ( const Qgis::RasterAttributeTableFieldUsage usage : std::as_const( colors ) )
+  {
+    if ( ! insertField( idx, usageName( usage ), usage, QVariant::Type::Int, errorMessage ) )
+    {
+      return false;
+    }
+    ++idx;
+  }
+  return true;
+}
+
+bool QgsRasterAttributeTable::insertRamp( int position, QString *errorMessage )
+{
+  if ( mType != Qgis::RasterAttributeTableType::Athematic )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = tr( "A color ramp can only be added to an athematic attribute table." );
+    }
+  }
+  const QList<Qgis::RasterAttributeTableFieldUsage> colors {{ Qgis::RasterAttributeTableFieldUsage::RedMin, Qgis::RasterAttributeTableFieldUsage::GreenMin, Qgis::RasterAttributeTableFieldUsage::BlueMin, Qgis::RasterAttributeTableFieldUsage::AlphaMin, Qgis::RasterAttributeTableFieldUsage::RedMax, Qgis::RasterAttributeTableFieldUsage::GreenMax, Qgis::RasterAttributeTableFieldUsage::BlueMax, Qgis::RasterAttributeTableFieldUsage::AlphaMax }};
+  int idx { position };
+  for ( const Qgis::RasterAttributeTableFieldUsage usage : std::as_const( colors ) )
+  {
+    if ( ! insertField( idx, usageName( usage ), usage, QVariant::Type::Int, errorMessage ) )
+    {
+      return false;
+    }
+    ++idx;
+  }
+  return true;
 }
 
 bool QgsRasterAttributeTable::appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage )
@@ -357,7 +402,7 @@ bool QgsRasterAttributeTable::removeField( const QString &name, QString *errorMe
     {
       it->removeAt( idx );
     }
-    setIsDirty( true );
+    setDirty( true );
     return true;
   }
 
@@ -402,7 +447,7 @@ bool QgsRasterAttributeTable::insertRow( int position, const QVariantList &rowDa
   }
 
   mData.insert( realPos, dataValid );
-  setIsDirty( true );
+  setDirty( true );
   return true;
 }
 
@@ -472,7 +517,8 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
   if ( result )
   {
-    setIsDirty( false );
+    mFilePath = cleanedPath;
+    setDirty( false );
   }
 
   return result;
@@ -558,7 +604,8 @@ bool QgsRasterAttributeTable::readFromFile( const QString &path, QString *errorM
     setType( Qgis::RasterAttributeTableType::Athematic );
   }
 
-  setIsDirty( false );
+  mFilePath = path;
+  setDirty( false );
 
   return true;
 }
@@ -592,10 +639,6 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
     if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) ) )
     {
       errors.push_back( tr( "RAT has some but not all the fields required for color definition (Red, Green, Blue)." ) );
-    }
-    else if ( ! isMinMax )
-    {
-      errors.push_back( tr( "RAT has all the fields required for color definition (Red, Green, Blue) but no MinMax field." ) );
     }
   }
 
@@ -671,7 +714,9 @@ bool QgsRasterAttributeTable::setValue( const int row, const int column, const Q
     return false;
   }
 
+  const QVariant oldVal = mData[ row ][ column ];
   mData[ row ][ column ] = newVal;
+  setDirty( newVal != oldVal );
 
   return true;
 }
@@ -683,6 +728,76 @@ QVariant QgsRasterAttributeTable::value( const int row, const int column ) const
     return QVariant();
   }
   return mData[ row ][ column ];
+}
+
+double QgsRasterAttributeTable::minValue() const
+{
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+  bool ok { false };
+  int fieldIdx { -1 };
+
+  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
+  {
+    fieldIdx = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax );
+  }
+  else if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) )
+  {
+    fieldIdx = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Min );
+  }
+
+  double min { std::numeric_limits<double>::max() };
+  for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+  {
+    min = std::min( min, value( rowIdx, fieldIdx ).toDouble( &ok ) );
+    if ( ! ok )
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
+  }
+
+  if ( fieldIdx == -1 || ! ok )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  else
+  {
+    return min;
+  }
+}
+
+double QgsRasterAttributeTable::maxValue() const
+{
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+  bool ok { false };
+  int fieldIdx { -1 };
+
+  if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) )
+  {
+    fieldIdx = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax );
+  }
+  else if ( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) )
+  {
+    fieldIdx = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Max );
+  }
+
+  double max { std::numeric_limits<double>::lowest() };
+  for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+  {
+    max = std::max( max, value( rowIdx, fieldIdx ).toDouble( &ok ) );
+    if ( ! ok )
+    {
+      return std::numeric_limits<double>::quiet_NaN();
+    }
+  }
+
+  if ( fieldIdx == -1 || ! ok )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  else
+  {
+    return max;
+  }
 }
 
 QVariantList QgsRasterAttributeTable::row( const double matchValue ) const
@@ -909,7 +1024,7 @@ QList<Qgis::RasterAttributeTableFieldUsage> QgsRasterAttributeTable::valueAndCol
   return valueColorUsages;
 }
 
-QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLayer *raster )
+QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLayer *raster, int *bandNumber )
 {
 
   if ( ! raster || ! raster->dataProvider() || ! raster->isValid() )
@@ -943,6 +1058,10 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
       rat->setColor( rat->data().length() - 1, klass.color );
     }
 
+    if ( bandNumber )
+    {
+      *bandNumber = palettedRenderer->band();
+    }
     return rat;
   }
   else if ( const QgsSingleBandPseudoColorRenderer *pseudoColorRenderer = dynamic_cast<const QgsSingleBandPseudoColorRenderer *>( renderer ) )
@@ -980,6 +1099,10 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
             color1 = rampItem.color;
           }
         }
+        if ( bandNumber )
+        {
+          *bandNumber = pseudoColorRenderer->band();
+        }
         return rat;
       }
       else
@@ -996,6 +1119,50 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
   {
     return nullptr;
   }
+}
+
+QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> QgsRasterAttributeTable::usageInformation()
+{
+  std::call_once( usageInformationLoaderFlag, [ ]
+  {
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Generic, { tr( "General Purpose Field" ), false, false, false, false, true, true, QList<QVariant::Type>() << QVariant::String << QVariant::Int << QVariant::LongLong << QVariant::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::PixelCount, { tr( "Histogram Pixel Count" ), true, false, false, false, true, false, QList<QVariant::Type>() << QVariant::LongLong } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Name, { tr( "Class Name" ), false, false, false, false, true, true, QList<QVariant::Type>() << QVariant::String } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MinMax, { tr( "Class Value (min=max)" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Min, { tr( "Class Minimum Value" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Max, { tr( "Class Maximum Value)" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Red, { tr( "Red Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Green, { tr( "Green Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Blue, { tr( "Blue Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Alpha, { tr( "Alpha Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::RedMin, { tr( "Red Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::GreenMin, { tr( "Green Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::BlueMin, { tr( "Blue Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::AlphaMin, { tr( "Alpha Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::RedMax, { tr( "Red Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::GreenMax, { tr( "Green Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::BlueMax, { tr( "Blue Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::AlphaMax, { tr( "Alpha Color Minimum Value (0-255)" ), true, false, false, true, true, false, QList<QVariant::Type>() << QVariant::Int } );
+    // Unsupported!!
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MaxCount, { tr( "Maximum GFU value(equals to GFU_AlphaMax+1 currently)" ), true, false, false, true, false, false, QList<QVariant::Type>() << QVariant::Int } );
+  } );
+  return QgsRasterAttributeTable::sUsageInformation;
+}
+
+QHash<int, QgsRasterAttributeTable::UsageInformation> QgsRasterAttributeTable::usageInformationInt()
+{
+  QHash<int, QgsRasterAttributeTable::UsageInformation> usageInfoInt;
+  const QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> usageInfo { QgsRasterAttributeTable::usageInformation() };
+  for ( auto it = usageInfo.cbegin(); it != usageInfo.cend(); ++it )
+  {
+    usageInfoInt.insert( static_cast<int>( it.key() ), it.value() );
+  }
+  return usageInfoInt;
+}
+
+const QString &QgsRasterAttributeTable::filePath() const
+{
+  return mFilePath;
 }
 
 QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClasses( const int classificationColumn ) const
@@ -1078,6 +1245,264 @@ QList<QgsRasterAttributeTable::MinMaxClass> QgsRasterAttributeTable::minMaxClass
   return classes;
 }
 
+QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, const int labelColumn ) const
+{
+  QgsGradientColorRamp ramp{ Qt::GlobalColor::white, Qt::GlobalColor::black };
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+  const int minIdx { fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Min ) };
+  const int maxIdx { fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Max ) };
+  const bool isRange { minIdx >= 0 && maxIdx >= 0 };
+
+  int labelIdx { labelColumn };
+  if ( labelColumn < 0 || labelColumn >= fields().count( ) ||
+       ( fieldUsages.at( labelColumn ) != Qgis::RasterAttributeTableFieldUsage::Name && fieldUsages.at( labelColumn ) != Qgis::RasterAttributeTableFieldUsage::Generic ) )
+  {
+    labelIdx = -1;
+  }
+
+  if ( ! mData.isEmpty() && ( minIdx >= 0 && maxIdx >= 0 ) )
+  {
+    QgsGradientStopsList stops;
+    const bool hasColorOrRamp { hasColor() || hasRamp() };
+    {
+
+      const double min { minValue() };
+      const double max { maxValue() };
+      const double range { max - min };
+
+      if ( range != 0 )
+      {
+
+        if ( ! isnan( min ) && ! isnan( max ) )
+        {
+          QList<QVariantList> dataCopy { mData };
+          std::sort( dataCopy.begin(), dataCopy.end(), [ & ]( const QVariantList & first, const QVariantList & second ) -> bool
+          {
+            return ( first.at( maxIdx ).toDouble() + first.at( minIdx ).toDouble() ) / 2  < ( second.at( maxIdx ).toDouble() + second.at( minIdx ).toDouble() ) / 2;
+          } );
+
+          QgsRasterAttributeTable orderedRat;
+          for ( const Field &f : std::as_const( mFields ) )
+          {
+            orderedRat.appendField( f );
+          }
+          for ( const QVariantList &r : std::as_const( dataCopy ) )
+          {
+            orderedRat.appendRow( r );
+          }
+
+          QColor lastColor { ramp.color1() };
+
+          if ( hasColorOrRamp )
+          {
+            ramp.setColor1( orderedRat.hasColor() ? orderedRat.color( 0 ) : orderedRat.ramp( 0 ).color1() );
+            ramp.setColor2( orderedRat.hasColor() ? orderedRat.color( orderedRat.data().count() - 1 ) : orderedRat.ramp( orderedRat.data().count() - 1 ).color2() );
+            lastColor = orderedRat.hasColor() ? orderedRat.color( 0 ) : orderedRat.ramp( 0 ).color2();
+          }
+
+          auto labelFromField = [ & ]( int rowIdx ) -> QString
+          {
+            if ( labelIdx < 0 )
+            {
+              return QStringLiteral( "%L1 - %L2" ).arg( orderedRat.value( rowIdx, minIdx ).toDouble() ).arg( orderedRat.value( rowIdx, maxIdx ).toDouble() );
+            }
+            const QVariant val { orderedRat.value( rowIdx, labelIdx ) };
+            bool ok { true };
+            QString res;
+            switch ( val.type() )
+            {
+              case QVariant::Type::Char:
+                return QString( val.toChar() );
+              case QVariant::Type::Int:
+                res = QLocale().toString( val.toInt( &ok ) );
+                break;
+              case QVariant::Type::LongLong:
+                res = QLocale().toString( val.toLongLong( &ok ) );
+                break;
+              case QVariant::Type::UInt:
+                res = QLocale().toString( val.toUInt( &ok ) );
+                break;
+              case QVariant::Type::ULongLong:
+                res = QLocale().toString( val.toULongLong( &ok ) );
+                break;
+              case QVariant::Type::Double:
+                res = QLocale().toString( val.toDouble( &ok ), 'g' );
+                break;
+              case QVariant::Type::String:
+              default:
+                return val.toString( );
+            }
+            return ok ? res : val.toString();
+          };
+
+          // Case 1: range classes, discrete colors
+          // Create stops for the min value of each class except for the first.
+          if ( orderedRat.hasColor() && isRange )
+          {
+            labels.push_back( labelFromField( 0 ) );
+
+            for ( int rowIdx = 1; rowIdx < orderedRat.data().count(); ++rowIdx )
+            {
+              const double offset { ( orderedRat.value( rowIdx, minIdx ).toDouble( ) - min ) / range };
+              const QColor color { orderedRat.color( rowIdx ) };
+              stops.append( QgsGradientStop( offset, color ) );
+              labels.push_back( labelFromField( rowIdx ) );
+            }
+          }
+          // Case 2: range classes, gradients colors
+          // Take the class borders (average value between max of previous class and min of the next)
+          // to avoid potential overlapping or gaps between classes.
+          // Create stop:
+          //   first stop at value taking the max color of the previous class
+          //   second stop at value + epsilon taking the min color of the next class
+          else if ( orderedRat.hasRamp() && isRange )
+          {
+            labels.push_back( labelFromField( 0 ) );
+            for ( int rowIdx = 1; rowIdx < orderedRat.data().count(); ++rowIdx )
+            {
+              const int prevRowIdx { rowIdx - 1 };
+              const double offset { ( ( orderedRat.value( rowIdx, minIdx ).toDouble( ) + orderedRat.value( prevRowIdx, maxIdx ).toDouble( ) ) / 2.0  - min ) / range };
+              const QgsGradientColorRamp previousRamp { orderedRat.ramp( prevRowIdx ) };
+              stops.append( QgsGradientStop( offset, previousRamp.color2() ) );
+              const QgsGradientColorRamp currentRamp { orderedRat.ramp( rowIdx ) };
+              stops.append( QgsGradientStop( offset + std::numeric_limits<double>::epsilon(), currentRamp.color1() ) );
+              labels.push_back( labelFromField( rowIdx ) );
+            }
+          }
+
+#if 0
+          // Collect stops and colors
+          for ( int rowIdx = 0; rowIdx < orderedRat.data().count(); ++rowIdx )
+          {
+
+            const double offset { ( orderedRat.value( rowIdx, maxIdx ).toDouble( ) - min ) / range };
+
+            if ( hasColor( ) && rowIdx < orderedRat.data().count() - 1 )
+            {
+              const QColor color { orderedRat.color( rowIdx ) };
+              stops.append( QgsGradientStop( offset, color ) );
+            }
+            else if ( hasRamp() && rowIdx < orderedRat.data().count() - 1 )
+            {
+              const QColor color1 { orderedRat.ramp( rowIdx ).color1() };
+              if ( color1 != lastColor )
+              {
+                stops.append( QgsGradientStop( lastOffset + std::numeric_limits<double>::epsilon(), color1 ) );
+              }
+              const QColor color2 { orderedRat.ramp( rowIdx ).color2() };
+              lastColor = color2;
+              stops.append( QgsGradientStop( offset, color1 ) );
+            }
+            else if ( ! hasColor() && ! hasRamp() )
+            {
+              stops.push_back( QgsGradientStop( offset, ramp.color( offset ) ) );
+            }
+            lastOffset = offset;
+          }
+#endif
+
+        }
+      }
+    }
+
+    ramp.setStops( stops );
+    ramp.setDiscrete( hasColor() );
+
+  }
+
+  return ramp;
+}
+
+QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn )
+{
+
+  if ( ! provider )
+  {
+    return nullptr;
+  }
+
+  QgsRasterRenderer *renderer = nullptr;
+
+  if ( type() == Qgis::RasterAttributeTableType::Thematic )
+  {
+    std::unique_ptr<QgsColorRamp> ramp;
+    if ( ! hasColor() )
+    {
+      ramp.reset( new QgsRandomColorRamp() );
+    }
+    const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( this, classificationColumn, ramp.get() );
+    renderer = new QgsPalettedRasterRenderer( provider,
+        bandNumber,
+        classes );
+  }
+  else
+  {
+    QgsSingleBandPseudoColorRenderer *pseudoColorRenderer = new QgsSingleBandPseudoColorRenderer( provider, bandNumber );
+    QStringList labels;
+    // Athematic classification is not supported, but the classificationColumn will be used for labels.
+    // if it's not specified, try to guess it here.
+    int labelColumn { classificationColumn };
+    if ( labelColumn < 0 )
+    {
+      const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+      labelColumn = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Name );
+      if ( labelColumn < 0 )
+      {
+        labelColumn = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Generic );
+      }
+    }
+    QgsGradientColorRamp *ramp { colorRamp( labels, labelColumn ).clone() };
+    pseudoColorRenderer->setClassificationMin( minValue() );
+    pseudoColorRenderer->setClassificationMax( maxValue() );
+    // Use discrete for single colors, interpolated for ramps
+    pseudoColorRenderer->createShader( ramp, hasColor() ? QgsColorRampShader::Type::Discrete : QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
+    pseudoColorRenderer->shader()->setMaximumValue( maxValue() );
+    pseudoColorRenderer->shader()->setMinimumValue( minValue() );
+    // Set labels
+    if ( QgsColorRampShader *shaderFunction = static_cast<QgsColorRampShader *>( pseudoColorRenderer->shader()->rasterShaderFunction() ) )
+    {
+      QgsColorRampLegendNodeSettings *settings = new QgsColorRampLegendNodeSettings( *( shaderFunction->legendSettings() ) );
+      settings->setUseContinuousLegend( false );
+      shaderFunction->setLegendSettings( settings );
+      shaderFunction->setMinimumValue( minValue() );
+      shaderFunction->setMaximumValue( maxValue() );
+      const QList<QgsColorRampShader::ColorRampItem> itemList { shaderFunction->colorRampItemList() };
+      const bool labelsAreUsable { labels.count() == itemList.count() };
+      if ( ! itemList.isEmpty() )
+      {
+        QList<QgsColorRampShader::ColorRampItem> deduplicatedDitemList;
+        // Deduplicate entries, this is necessary because the ramp for athematic
+        // ramp rasters creates a stop for each class limit (min and max) which
+        // should be coincident with the previous class max and next class min.
+        QgsColorRampShader::ColorRampItem item { itemList.first() };
+        if ( labelsAreUsable )
+        {
+          item.label = labels.first();
+        }
+        deduplicatedDitemList.push_back( item );
+        for ( int idx = 1; idx < itemList.count(); ++idx )
+        {
+          QgsColorRampShader::ColorRampItem item { itemList.at( idx ) };
+          if ( qgsDoubleNear( item.value, deduplicatedDitemList.last().value ) && item.color == deduplicatedDitemList.last().color )
+          {
+            continue;
+          }
+          else
+          {
+            if ( labelsAreUsable )
+            {
+              item.label = labels.at( idx );
+            }
+            deduplicatedDitemList.push_back( item );
+          }
+        }
+        shaderFunction->setColorRampItemList( deduplicatedDitemList );
+      }
+    }
+    renderer = pseudoColorRenderer;
+  }
+  return renderer;
+}
 
 bool QgsRasterAttributeTable::Field::isColor() const
 {
