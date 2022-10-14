@@ -117,6 +117,8 @@
 #include "options/qgsvectorrenderingoptions.h"
 
 #include "raster/qgsrasterelevationpropertieswidget.h"
+#include "raster/qgsrasterattributetabledialog.h"
+#include "raster/qgscreaterasterattributetabledialog.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
 #include "elevation/qgselevationprofilewidget.h"
@@ -12005,6 +12007,102 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
 
     mLayerTreeView->refreshLayerSymbology( layer->id() );
     refreshMapCanvas();
+  }
+}
+
+void QgisApp::openRasterAttributeTable()
+{
+  if ( !mLayerTreeView )
+    return;
+
+  //find current Layer
+  QgsMapLayer *currentLayer = mLayerTreeView->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
+  if ( layer && layer->attributeTableCount() > 0 )
+  {
+    QgsRasterAttributeTableDialog *dlg = new QgsRasterAttributeTableDialog( layer );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->show();
+  }
+}
+
+void QgisApp::createRasterAttributeTable()
+{
+  if ( !mLayerTreeView )
+    return;
+
+  //find current Layer
+  QgsMapLayer *currentLayer = mLayerTreeView->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
+
+  int bandNumber { 0 };
+
+  if ( layer && layer->canCreateRasterAttributeTable() )
+  {
+    // Create the attribute table from the renderer and open it
+    QgsCreateRasterAttributeTableDialog dlg { layer };
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      QString errorMessage;
+      QgsRasterAttributeTable *rat { QgsRasterAttributeTable::createFromRaster( layer, &bandNumber ) };
+
+      if ( ! rat )
+      {
+        visibleMessageBar()->pushMessage( tr( "Error Creating Raster Attribute Table" ),
+                                          tr( "The Raster Attribute Table could not be created." ),
+                                          Qgis::MessageLevel::Critical );
+        return;
+      }
+
+      layer->dataProvider()->setAttributeTable( bandNumber, rat );
+
+      // Save it
+      const QString filePath { dlg.filePath() };
+      if ( ! filePath.isEmpty() )
+      {
+        if ( QMessageBox::question( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( filePath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        {
+          return;
+        }
+
+        if ( ! rat->writeToFile( filePath, &errorMessage ) )
+        {
+          visibleMessageBar()->pushMessage( tr( "Error Saving Raster Attribute Table" ),
+                                            errorMessage,
+                                            Qgis::MessageLevel::Critical );
+          layer->dataProvider()->setAttributeTable( bandNumber, nullptr );
+          return;
+        }
+      }
+      else
+      {
+        if ( ! layer->dataProvider()->writeNativeAttributeTable( &errorMessage ) )
+        {
+          visibleMessageBar()->pushMessage( tr( "Error Saving Raster Attribute Table" ),
+                                            errorMessage,
+                                            Qgis::MessageLevel::Critical );
+          layer->dataProvider()->setAttributeTable( bandNumber, nullptr );
+          return;
+        }
+
+      }
+
+      visibleMessageBar()->pushMessage( tr( "Raster Attribute Table Saved" ),
+                                        tr( "The new Raster Attribute Table was successfully created." ),
+                                        Qgis::MessageLevel::Success );
+
+      if ( dlg.openWhenDone() )
+      {
+        openRasterAttributeTable();
+      }
+
+    }
   }
 }
 

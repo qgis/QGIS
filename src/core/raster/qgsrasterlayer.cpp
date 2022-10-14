@@ -257,6 +257,27 @@ QgsRasterAttributeTable *QgsRasterLayer::attributeTable( int bandNoInt ) const
   return mDataProvider->attributeTable( bandNoInt );
 }
 
+int QgsRasterLayer::attributeTableCount()
+{
+  if ( !mDataProvider )
+    return 0;
+
+  int ratCount { 0 };
+  for ( int bandNo = 1; bandNo <= bandCount(); ++bandNo )
+  {
+    if ( attributeTable( bandNo ) )
+    {
+      ratCount++;
+    }
+  }
+  return ratCount;
+}
+
+bool QgsRasterLayer::canCreateRasterAttributeTable()
+{
+  return mDataProvider && renderer() && renderer()->canCreateRasterAttributeTable();
+}
+
 void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
 {
   setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( drawingStyle, mDataProvider ) );
@@ -1216,9 +1237,24 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
       if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
       {
-        myPseudoColorRenderer->setClassificationMin( min );
-        myPseudoColorRenderer->setClassificationMax( max );
-        if ( myPseudoColorRenderer->shader() )
+        // Do not overwrite min/max with NaN if they were already set,
+        // for example when the style was already loaded from a raster attribute table
+        // in that case we need to respect the style from the attribute table and do
+        // not perform any reclassification.
+        bool minMaxChanged { false };
+        if ( ! std::isnan( min ) )
+        {
+          myPseudoColorRenderer->setClassificationMin( min );
+          minMaxChanged = true;
+        }
+
+        if ( ! std::isnan( max ) )
+        {
+          myPseudoColorRenderer->setClassificationMax( max );
+          minMaxChanged = true;
+        }
+
+        if ( minMaxChanged && myPseudoColorRenderer->shader() )
         {
           QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( myPseudoColorRenderer->shader()->rasterShaderFunction() );
           if ( colorRampShader )

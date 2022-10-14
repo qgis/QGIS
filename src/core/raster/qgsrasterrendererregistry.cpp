@@ -129,7 +129,7 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
         {
           ramp.reset( new QgsRandomColorRamp() );
         }
-        const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), ramp.get() );
+        const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), -1, ramp.get() );
         renderer = new QgsPalettedRasterRenderer( provider,
             grayBand,
             classes );
@@ -148,20 +148,13 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
     {
       const int grayBand = 1;
 
-      // If the raster band has an attribute table, use it.
-      if ( provider->attributeTable( grayBand ) )
+      // If the raster band has an attribute table try to use it.
+      if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ) )
       {
-        std::unique_ptr<QgsColorRamp> ramp;
-        if ( ! provider->attributeTable( grayBand )->hasColor() )
-        {
-          ramp.reset( new QgsRandomColorRamp() );
-        }
-        const QgsPalettedRasterRenderer::MultiValueClassData classes = QgsPalettedRasterRenderer::rasterAttributeTableToClassData( provider->attributeTable( grayBand ), ramp.get() );
-        renderer = new QgsPalettedRasterRenderer( provider,
-            grayBand,
-            classes );
+        renderer = rat->createRenderer( provider, grayBand );
       }
-      else
+
+      if ( ! renderer )
       {
         renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 

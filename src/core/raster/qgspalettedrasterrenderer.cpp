@@ -442,7 +442,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClas
   return classes;
 }
 
-QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, QgsColorRamp *ramp )
+QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, const int classificationColumn, QgsColorRamp *ramp )
 {
   if ( ! attributeTable || ! attributeTable->isValid() )
   {
@@ -451,7 +451,7 @@ QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::raster
 
   QgsPalettedRasterRenderer::MultiValueClassData classData;
 
-  const QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses { attributeTable->minMaxClasses() };
+  const QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses { attributeTable->minMaxClasses( classificationColumn ) };
   for ( const QgsRasterAttributeTable::MinMaxClass &minMaxClass : std::as_const( minMaxClasses ) )
   {
     classData.push_back( { minMaxClass.minMaxValues, minMaxClass.color, minMaxClass.name  } );
@@ -773,4 +773,9 @@ void QgsPalettedRasterRenderer::updateArrays()
       mColors[value] = qPremultiply( it->color.rgba() );
     }
   }
+}
+
+bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable( ) const
+{
+  return true;
 }

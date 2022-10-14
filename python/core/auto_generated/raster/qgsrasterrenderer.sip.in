@@ -56,6 +56,14 @@ Returns flags which dictate renderer behavior.
 .. versionadded:: 3.28
 %End
 
+    virtual bool canCreateRasterAttributeTable( ) const;
+%Docstring
+Returns ``True`` if the renderer is suitable for attribute table creation.
+The default implementation returns ``False``.
+
+.. versionadded:: 3.30
+%End
+
     virtual bool setInput( QgsRasterInterface *input );
 
 

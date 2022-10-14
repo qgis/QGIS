@@ -221,6 +221,16 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           QAction *stretch = menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), &QgisApp::legendLayerStretchUsingCurrentExtent );
           stretch->setEnabled( rlayer->isValid() );
         }
+
+        if ( rlayer->attributeTableCount() > 0 )
+        {
+          // Open RAT action
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ), tr( "Open Raster Attribute Table" ), QgisApp::instance(), &QgisApp::openRasterAttributeTable );
+        }
+        else if ( rlayer->canCreateRasterAttributeTable() )
+        {
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), tr( "Create Raster Attribute Table" ), QgisApp::instance(), &QgisApp::createRasterAttributeTable );
+        }
       }
 
       // No raster support in createSqlVectorLayer (yet)

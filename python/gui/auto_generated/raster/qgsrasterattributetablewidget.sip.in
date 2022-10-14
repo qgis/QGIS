@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetablewidget.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRasterAttributeTableWidget : QWidget
+{
+%Docstring(signature="appended")
+The :py:class:`QgsRasterAttributeTableWidget` class provides an attribute table for rasters and methods to edit the table.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetablewidget.h"
+%End
+  public:
+
+    explicit QgsRasterAttributeTableWidget( QWidget *parent /TransferThis/ = 0, QgsRasterLayer *rasterLayer = 0, const int bandNumber = 0 );
+%Docstring
+Creates a new QgsRasterAttributeTableWidget
+
+:param parent: parent widget
+:param rasterLayer: raster layer
+:param bandNumber: optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
+:param parent: parent widget
+%End
+
+    void setRasterLayer( QgsRasterLayer *rasterLayer, const int bandNumber = 0 );
+%Docstring
+Sets the raster layer and an optional band number.
+
+:param rasterLayer: raster layer
+:param bandNumber: optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
+%End
+
+    bool isDirty( ) const;
+%Docstring
+Returns ``True`` if the associated raster attribute table is dirty
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetablewidget.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

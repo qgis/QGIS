@@ -468,3 +468,8 @@ QList<QgsLayerTreeModelLegendNode *> QgsSingleBandPseudoColorRenderer::createLeg
   }
   return res;
 }
+
+bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const
+{
+  return true;
+}

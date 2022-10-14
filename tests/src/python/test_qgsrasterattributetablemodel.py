@@ -65,7 +65,7 @@ class TestQgsRasterAttributeTableModel(unittest.TestCase):
         for row in data_rows:
             rat.appendRow(row)
 
-        rat.setIsDirty(False)
+        rat.setDirty(False)
 
         self.rat = rat
 

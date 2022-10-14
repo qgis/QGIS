@@ -120,6 +120,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     MultiValueClassData multiValueClasses( ) const;
 
+    bool canCreateRasterAttributeTable( ) const override;
+
     /**
      * Sets the multi value classes to \a setMultiValueClasses.
      * \since QGIS 3.30
@@ -172,10 +174,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
 
     /**
-     * Read classes from the Raster Attribute Table \a attributeTable, optionally settings the colors from \a ramp.
+     * Reads and returns classes from the Raster Attribute Table \a attributeTable, optionally classifying the attribute table by \a classificationColumn and settings the colors from \a ramp. The default value of -1 for the classificationColumn uses the first available value column.
+     * \note The method will return an empty list of classes in case the Raster Attribute Table is not thematic.
      * \since QGIS 3.30
      */
-    static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, QgsColorRamp *ramp = nullptr );
+    static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, const int classificationColumn = -1, QgsColorRamp *ramp = nullptr );
 
     /**
      * Converts a \a string containing a color table or class data to to paletted renderer class data.

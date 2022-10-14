@@ -25,10 +25,16 @@ methods to handle data from QGIS and to import/export a Raster Attribute Table f
 %End
   public:
 
-    struct Ramp
+    struct UsageInformation
     {
-      QColor min;
-      QColor max;
+      QString description;  //! Usage description
+      bool unique;  //! Usage must be unique
+      bool required;  //! Usage is required
+      bool isColor; //! Usage is part of a color component
+      bool isRamp; //! Usage is part of a ramp component
+      bool supported; //! Usage is supported
+      bool maybeClass;  //! May be suitable for classification
+      QList<QVariant::Type> allowedTypes; //! Usage allowed types
     };
 
     struct Field
@@ -151,9 +157,9 @@ Returns the color of the rat ``row`` or an invalid color if row does not exist o
 .. seealso:: :py:func:`ramp`
 %End
 
-    Ramp ramp( int row ) const;
+    QgsGradientColorRamp ramp( int row ) const;
 %Docstring
-Returns the color of the rat ``row`` or an invalid color if row does not exist or if there is no color ramp definition.
+Returns the gradient color ramp of the rat ``row`` or a default constructed gradient if row does not exist or if there is no color ramp definition.
 
 .. seealso:: :py:func:`hasRamp`
 
@@ -190,7 +196,7 @@ Returns the Raster Attribute Table rows as a list of :py:class:`QgsFeature`.
 Returns ``True`` if the Raster Attribute Table was modified from its last reading from the storage.
 %End
 
-    void setIsDirty( bool isDirty );
+    void setDirty( bool isDirty );
 %Docstring
 Sets the Raster Attribute Table dirty state to ``isDirty``;
 %End
@@ -214,9 +220,19 @@ Inserts a new ``field`` at ``position``, optionally reporting any error in ``err
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
+    bool insertColor( int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Create RGBA fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
+    bool insertRamp( int position, QString *errorMessage /Out/ = 0 );
+%Docstring
+Create RGBA minimum and maximum fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+%End
+
     bool appendField( const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 );
 %Docstring
-Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, returns ``True`` on success.
+Creates a new field from ``name``, ``usage`` and ``type`` and appends it to the fields, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
     bool appendField( const QgsRasterAttributeTable::Field &field, QString *errorMessage /Out/ = 0 );
@@ -294,14 +310,41 @@ Sets the ``value`` for ``row`` and ``column``.
 Returns the ``value`` for ``row`` and ``column``.
 %End
 
+    double minValue( ) const;
+%Docstring
+Returns the minimum value of the MinMax (thematic) or Min (athematic) column, returns NaN on errors.
+%End
+
+    double maxValue( ) const;
+%Docstring
+Returns the maximum value of the MinMax (thematic) or Max (athematic) column, returns NaN on errors.
+%End
+
     QVariantList row( const double matchValue ) const;
 %Docstring
-Returns a row of data for the given ``matchValue`` or and empty row if there is not match.
+Returns a row of data for the given ``matchValue`` or and empty row
+if there is not match.
 %End
 
     QList<QgsRasterAttributeTable::MinMaxClass> minMaxClasses( const int classificationColumn  = -1 ) const;
 %Docstring
-Returns the classes for a thematic RAT, classified by ``classificationColumn``, the default value of -1 makes the method guess the classification column based on the field usage.
+Returns the classes for a thematic Raster Attribute Table, classified
+by ``classificationColumn``, the default value of -1 makes the method guess
+the classification column based on the field usage.
+%End
+
+    QgsGradientColorRamp colorRamp( QStringList &labels /Out/, const int labelColumn = -1 ) const;
+%Docstring
+Returns the color ramp for an athematic Raster Attribute Table
+returning the ``labels``, optionally generated from ``labelColumn``.
+%End
+
+    QgsRasterRenderer *createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 ) /Factory/;
+%Docstring
+Creates and returns a (possibly ``None``) raster renderer for the
+specified ``provider`` and ``bandNumber`` and optionally classified
+by ``classificationColumn``, the default value of -1 makes the method
+guess the classification column based on the field usage.
 %End
 
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
@@ -309,9 +352,20 @@ Returns the classes for a thematic RAT, classified by ``classificationColumn``, 
 Try to determine the field usage from its ``name`` and ``type``.
 %End
 
+    const QString &filePath() const;
+%Docstring
+Returns the (possibly empty) path of the file-based RAT, the path is set when a RAT is read or written from/to a file.
+
+.. seealso:: :py:func:`writeToFile`
+
+.. seealso:: :py:func:`readFromFile`
+%End
+
     static QString usageName( const Qgis::RasterAttributeTableFieldUsage fieldusage );
 %Docstring
 Returns the translated human readable name of ``fieldUsage``.
+
+.. seealso:: :py:func:`usageInformation`
 %End
 
     static QList<Qgis::RasterAttributeTableFieldUsage> valueAndColorFieldUsages();
@@ -319,12 +373,24 @@ Returns the translated human readable name of ``fieldUsage``.
 Returns the list of field usages for colors and values.
 %End
 
-    static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer ) /Factory/;
+    static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber /Out/ = 0 ) /Factory/;
 %Docstring
-Creates a new Raster Attribute Table from a ``rasterLayer``, the renderer must be one of Paletted or SingleBandPseudoColor.
+Creates a new Raster Attribute Table from a ``rasterLayer``, the renderer must be Paletted or SingleBandPseudoColor, optionally reporting in ``bandNumber`` the raster band from which the attribute table was created.
 
 :return: NULL in case of errors or unsupported renderer.
 %End
+
+
+
+    static QHash<int, QgsRasterAttributeTable::UsageInformation> usageInformationInt( ) /PyName=usageInformation/;
+%Docstring
+Returns information about supported Raster Attribute Table usages.
+
+.. seealso:: :py:func:`usageName`
+%End
+
+    static QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> sUsageInformation;
+
 
 };
 

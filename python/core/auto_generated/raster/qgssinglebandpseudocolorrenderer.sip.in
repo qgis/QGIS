@@ -57,6 +57,9 @@ Returns the raster shader
    available in Python as constShader
 %End
 
+    virtual bool canCreateRasterAttributeTable( ) const;
+
+
     void createShader( QgsColorRamp *colorRamp /Transfer/ = 0,
                        QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
                        QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
