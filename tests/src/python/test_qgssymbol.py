@@ -60,7 +60,8 @@ from qgis.core import (QgsGeometry,
                        Qgis,
                        QgsSymbolLayer,
                        QgsProperty,
-                       QgsRasterFillSymbolLayer
+                       QgsRasterFillSymbolLayer,
+                       QgsPoint
                        )
 
 from qgis.testing import unittest, start_app
@@ -718,6 +719,43 @@ class TestQgsSymbol(unittest.TestCase):
             painter.end()
 
         return image
+
+    def test_render_line_nan_z(self):
+        geom = QgsGeometry.fromPolyline([
+            QgsPoint(10, 10, 0),
+            QgsPoint(20, 20, 0),
+            QgsPoint(30, 10, float("nan")),
+        ])
+
+        f = QgsFeature()
+        f.setGeometry(geom)
+
+        image = QImage(200, 200, QImage.Format_RGB32)
+
+        painter = QPainter()
+        ms = QgsMapSettings()
+        extent = geom.get().boundingBox()
+        # buffer extent by 10%
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
+
+        ms.setExtent(extent)
+        ms.setOutputSize(image.size())
+        context = QgsRenderContext.fromMapSettings(ms)
+        context.setPainter(painter)
+        context.setScaleFactor(96 / 25.4)  # 96 DPI
+
+        symbol = QgsLineSymbol.createSimple({'color': '#ffffff', 'line_width': '3'})
+
+        painter.begin(image)
+        try:
+            image.fill(QColor(0, 0, 0))
+            symbol.startRender(context)
+            symbol.renderFeature(f, context)
+            symbol.stopRender(context)
+        finally:
+            painter.end()
+
+        assert self.imageCheck('Linestring with nan z', 'linestring_nan_z', image)
 
     def testGeometryCollectionRender(self):
         tests = [{'name': 'Marker',
