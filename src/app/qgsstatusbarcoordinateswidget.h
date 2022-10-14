@@ -25,10 +25,10 @@ class QToolButton;
 class QValidator;
 
 class QgsMapCanvas;
-class QgsPointXY;
 
 #include <QWidget>
 #include "qgis_app.h"
+#include "qgspointxy.h"
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {
@@ -65,6 +65,8 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void userGroups();
     void showExtent();
     void ensureCoordinatesVisible();
+    void updateCoordinateDisplay();
+    void coordinateDisplaySettingsChanged();
 
   private:
     void refreshMapCanvas();
@@ -82,6 +84,8 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;
+
+    QgsPointXY mLastCoordinate;
 
 };
 
