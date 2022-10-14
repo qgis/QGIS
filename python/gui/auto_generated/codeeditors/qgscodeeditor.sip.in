@@ -244,11 +244,13 @@ executed commands.
 
   public slots:
 
-    virtual void runCommand( const QString &command );
+    void runCommand( const QString &command );
 %Docstring
 Runs a command in the editor.
 
-The base class method does nothing.
+The base class method does nothing. Subclasses must implement
+the virtual :py:func:`~QgsCodeEditor.runCommandImpl` method with interpreter-specific
+logic for executing commands.
 
 .. versionadded:: 3.30
 %End
@@ -361,6 +363,17 @@ Performs tasks which must be run after a lexer has been set for the widget.
     void syncSoftHistory();
     void updateSoftHistory();
     void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
+
+    virtual void runCommandImpl( const QString &command );
+%Docstring
+Executes a command.
+
+The base class method does nothing. Subclasses must implement
+this method with interpreter-specific logic for executing commands.
+
+.. versionadded:: 3.30
+%End
+
 
     virtual void populateContextMenu( QMenu *menu );
 

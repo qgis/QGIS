@@ -504,7 +504,13 @@ QStringList QgsCodeEditor::history() const
   return mHistory;
 }
 
-void QgsCodeEditor::runCommand( const QString & )
+void QgsCodeEditor::runCommand( const QString &command )
+{
+  updateHistory( { command } );
+  runCommandImpl( command );
+}
+
+void QgsCodeEditor::runCommandImpl( const QString & )
 {
 
 }

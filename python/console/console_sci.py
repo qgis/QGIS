@@ -344,10 +344,9 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.setFocus()
         self.moveCursorToEnd()
 
-    def runCommand(self, cmd):
+    def runCommandImpl(self, cmd):
         self.writeCMD(cmd)
         import webbrowser
-        self.updateHistory([cmd])
         version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
             re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
         if cmd in ('_pyqgis', '_api', '_cookbook'):
@@ -368,8 +367,8 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
             if not more:
                 self.buffer = []
 
-        # prevents to commands with more lines to break the console
-        # in the case they have a eol different from '\n'
+        # prevents commands with more lines to break the console
+        # in the case they have an eol different from '\n'
         self.setText('')
         self.moveCursorToEnd()
         self.displayPrompt(self.continuationLine)

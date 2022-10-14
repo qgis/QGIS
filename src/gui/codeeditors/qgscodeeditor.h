@@ -277,11 +277,13 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     /**
      * Runs a command in the editor.
      *
-     * The base class method does nothing.
-
+     * The base class method does nothing. Subclasses must implement
+     * the virtual runCommandImpl() method with interpreter-specific
+     * logic for executing commands.
+     *
      * \since QGIS 3.30
      */
-    virtual void runCommand( const QString &command );
+    void runCommand( const QString &command );
 
     /**
      * Moves the cursor to the start of the document and scrolls to ensure
@@ -382,6 +384,17 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void syncSoftHistory();
     void updateSoftHistory();
     void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
+
+    /**
+     * Executes a command.
+     *
+     * The base class method does nothing. Subclasses must implement
+     * this method with interpreter-specific logic for executing commands.
+     *
+     * \since QGIS 3.30
+     */
+    virtual void runCommandImpl( const QString &command );
+
 
     virtual void populateContextMenu( QMenu *menu );
 
