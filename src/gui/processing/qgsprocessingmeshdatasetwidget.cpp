@@ -654,7 +654,7 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeSteps()
 
   for ( auto it = timeStep.constBegin(); it != timeStep.constEnd(); it++ )
   {
-    QString stringTime = QgsMeshLayerUtils::formatTime( it.key() / 1000 / 3600, mReferenceTime, QgsMeshTimeSettings() );
+    QString stringTime = QgsMeshLayerUtils::formatTime( static_cast<double>( it.key() ) / 1000. / 3600., mReferenceTime, QgsMeshTimeSettings() );
     QVariantList data;
     const QgsMeshDatasetIndex &index = it.value();
     data << index.group() << index.dataset();
@@ -690,7 +690,7 @@ void QgsProcessingMeshDatasetTimeWidget::populateTimeStepsFromLayer()
 
   for ( auto it = timeStep.constBegin(); it != timeStep.constEnd(); it++ )
   {
-    QString stringTime = mMeshLayer->formatTime( it.key() / 1000.0 / 3600.0 );
+    QString stringTime = mMeshLayer->formatTime( static_cast<double>( it.key() ) / 1000.0 / 3600.0 );
     QVariantList data;
     const QgsMeshDatasetIndex &index = it.value();
     data << index.group() << index.dataset();
