@@ -364,7 +364,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     const double yRes = viewExtent.height() / height;
 
     // Find overview
-    const int minPixelSize { static_cast<int>( std::min( xRes, yRes ) ) };
+    const double minPixelSize { std::min( xRes, yRes ) };
+
     // TODO: round?
     const unsigned int desiredOverviewFactor { static_cast<unsigned int>( minPixelSize / std::max( std::abs( mScaleX ), std::abs( mScaleY ) ) ) };
 
