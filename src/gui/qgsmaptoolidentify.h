@@ -307,9 +307,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     */
     void closestPointAttributes( const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes );
 
-    QString formatCoordinate( const QgsPointXY &canvasPoint ) const;
-    QString formatXCoordinate( const QgsPointXY &canvasPoint ) const;
-    QString formatYCoordinate( const QgsPointXY &canvasPoint ) const;
+    void formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y ) const;
 
     // Last geometry (point or polygon) in map CRS
     QgsGeometry mLastGeometry;
