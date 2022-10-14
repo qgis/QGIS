@@ -9,17 +9,17 @@
   <defs
      id="defs14" />
   <path
-     d="M 2,2 H 22 V 22 H 2 Z"
+     d="M 1.5,1.5 H 22.5 V 22.5 H 1.5 Z"
      fill="#fce94f"
      stroke="#c4a000"
      stroke-linecap="round"
-     id="path19250-3"
+     id="distance-selection"
      style="stroke:#c4a000;stroke-width:1;stroke-dasharray:none;stroke-opacity:1" />
   <path
-     d="M 6.000000,6 H 18 V 18 H 6.000000 Z"
-     fill="#fce94f"
+     d="M 5.5,5.5 H 18.5 V 18.5 H 5.5 Z"
+     fill="#7ea57e"
      stroke="#c4a000"
      stroke-linecap="round"
-     id="path19250"
-     style="fill:#8cbe8c;fill-opacity:1;stroke:#555753;stroke-opacity:1" />
+     id="from-object"
+     style="stroke:#555753;stroke-width:1;stroke-dasharray:none;stroke-opacity:1" />
 </svg>
