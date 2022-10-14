@@ -21,8 +21,12 @@
 
 #include "qgsmaptoolsdigitizingtechniquemanager.h"
 #include "qgsidentifyresultsdialog.h"
+
+#ifdef HAVE_GEOREFERENCER
 #include "georeferencer/qgsgeorefmainwindow.h"
 #include "georeferencer/qgstransformsettingsdialog.h"
+#endif
+
 #include "vertextool/qgsvertexeditor.h"
 #include "elevation/qgselevationprofilewidget.h"
 #include "qgsgpsinformationwidget.h"
@@ -35,6 +39,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeDefaultForShape );
   addSettingsEntry( &QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent );
 
+#ifdef HAVE_GEOREFERENCER
   addSettingsEntry( &QgsGeoreferencerMainWindow::settingResamplingMethod );
   addSettingsEntry( &QgsGeoreferencerMainWindow::settingCompressionMethod );
   addSettingsEntry( &QgsGeoreferencerMainWindow::settingUseZeroForTransparent );
@@ -46,6 +51,7 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
 
   addSettingsEntry( &QgsTransformSettingsDialog::settingLastDestinationFolder );
   addSettingsEntry( &QgsTransformSettingsDialog::settingLastPdfFolder );
+#endif
 
   addSettingsEntry( &QgsVertexEditor::settingAutoPopupVertexEditorDock );
 
