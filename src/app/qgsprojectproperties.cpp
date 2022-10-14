@@ -406,7 +406,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       break;
   }
 
-  const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
+  const Qgis::CoordinateOrder axisOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
   mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
 
   mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
@@ -1217,7 +1217,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->displaySettings()->setCoordinateCustomCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   }
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ), qgsEnumValueToKey( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) ) );
+  QgsProject::instance()->displaySettings()->setCoordinateAxisOrder( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) );
 
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();

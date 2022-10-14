@@ -95,6 +95,18 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.MapGeographic)
 
+    def testCoordinateAxisOrder(self):
+        p = QgsProjectDisplaySettings()
+
+        self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.Default)
+
+        spy = QSignalSpy(p.coordinateAxisOrderChanged)
+        p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.YX)
+        p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
+        self.assertEqual(len(spy), 1)
+
     def testCoordinateTypeCustomCrs(self):
         p = QgsProjectDisplaySettings()
 
@@ -173,6 +185,8 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
         p.setGeographicCoordinateFormat(format)
 
+        p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
+
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
 
@@ -186,6 +200,7 @@ class TestQgsProjectDisplaySettings(unittest.TestCase):
         self.assertEqual(p2.bearingFormat().directionFormat(), QgsBearingNumericFormat.UseRange0To360)
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 7)
         self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
+        self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.YX)
 
 
 if __name__ == '__main__':
