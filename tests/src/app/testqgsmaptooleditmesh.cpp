@@ -33,6 +33,8 @@ class TestQgsMapToolEditMesh : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
+    void hoverElements();
+
     void editMesh();
 
   private:
@@ -41,6 +43,8 @@ class TestQgsMapToolEditMesh : public QObject
     QString mDataDir;
     std::unique_ptr<QgsMapCanvas> mCanvas;
     QgsMapToolEditMeshFrame *mEditMeshMapTool;
+
+    std::unique_ptr<QgsMeshLayer> meshLayerSimpleBox;
 };
 
 
@@ -52,28 +56,65 @@ void TestQgsMapToolEditMesh::initTestCase()
   mQgisApp = new QgisApp();
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
-  mCanvas.reset( new QgsMapCanvas() );
-  mEditMeshMapTool = new QgsMapToolEditMeshFrame( mCanvas.get() );
 }
 
 void TestQgsMapToolEditMesh::init()
 {
-  const QString uri = QString( mDataDir + "/quad_flower.2dm" );
+  mCanvas.reset( new QgsMapCanvas() );
+  mEditMeshMapTool = new QgsMapToolEditMeshFrame( mCanvas.get() );
+}
+
+void TestQgsMapToolEditMesh::hoverElements()
+{
+  QString uri = QString( mDataDir + "/simplebox_clm.nc" );
+  meshLayerSimpleBox.reset( new QgsMeshLayer( uri, "Simple box", "mdal" ) );
+  QVERIFY( meshLayerSimpleBox->isValid() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerSimpleBox.get() );
+
+  QgsCoordinateReferenceSystem wgs84Crs;
+  wgs84Crs.createFromProj( "+proj=longlat +datum=WGS84 +no_defs" );
+  QVERIFY( wgs84Crs.isValid() );
+  QVERIFY( meshLayerSimpleBox->crs().isValid() );
+  mCanvas->setDestinationCrs( wgs84Crs );
+
+  QgsCoordinateTransform transform( meshLayerSimpleBox->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QVERIFY( meshLayerSimpleBox->startFrameEditing( transform ) );
+
+  QgsRectangle extent( 3.31351393, 47.97489613, 3.31351792, 47.97508220 );
+  mCanvas->setExtent( extent );
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( meshLayerSimpleBox.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+  tool.mouseMove( 3.31376427, 47.97500487 );
+  QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {-1, -1} ) );
+  QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
+
+  tool.mouseMove( 3.31368247, 47.97500500 );
+  QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
+
+  tool.mouseMove( 3.31368064, 47.97503705 );
+  QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, 10 );
+}
+
+void TestQgsMapToolEditMesh::editMesh()
+{
+  QString uri = QString( mDataDir + "/quad_flower.2dm" );
   meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
-  QVERIFY( meshLayerQuadFlower );
+  QVERIFY( meshLayerQuadFlower->isValid() );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 
   const QgsCoordinateTransform transform;
   meshLayerQuadFlower->startFrameEditing( transform );
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerQuadFlower.get() );
-}
-
-void TestQgsMapToolEditMesh::editMesh()
-{
   const double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
 
-  const QgsCoordinateTransform transform;
   QVERIFY( meshLayerQuadFlower->meshEditor() );
 
   TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );

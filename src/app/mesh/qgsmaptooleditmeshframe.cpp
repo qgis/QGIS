@@ -1374,7 +1374,7 @@ void QgsMapToolEditMeshFrame::searchEdge( const QgsPointXY &mapPoint )
       const QgsPointXY pt2 = mapVertexXY( iv2 );
 
       QgsPointXY pointOneEdge;
-      double distance = sqrt( mapPoint.sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pointOneEdge ) );
+      double distance = sqrt( mapPoint.sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), pointOneEdge, 0 ) );
       if ( distance < tolerance && distance < minimumDistance && edgeCanBeInteractive( iv1, iv2 ) )
       {
         mCurrentEdge = {faceIndex, iv2};
