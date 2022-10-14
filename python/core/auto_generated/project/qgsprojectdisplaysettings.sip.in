@@ -96,6 +96,28 @@ Sets the default coordinate ``type`` for the project.
 .. versionadded:: 3.28
 %End
 
+    Qgis::CoordinateOrder coordinateAxisOrder() const;
+%Docstring
+Returns default coordinate axis order to use when displaying coordinates for the project.
+
+.. seealso:: :py:func:`setCoordinateAxisOrder`
+
+.. seealso:: :py:func:`coordinateAxisOrderChanged`
+
+.. versionadded:: 3.28
+%End
+
+    void setCoordinateAxisOrder( Qgis::CoordinateOrder order );
+%Docstring
+Sets the default coordinate axis ``order`` to use when displaying coordinates for the project.
+
+.. seealso:: :py:func:`coordinateAxisOrder`
+
+.. seealso:: :py:func:`coordinateAxisOrderChanged`
+
+.. versionadded:: 3.28
+%End
+
     QgsCoordinateReferenceSystem coordinateCustomCrs() const;
 %Docstring
 Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
@@ -168,6 +190,17 @@ Emitted when the default coordinate format changes.
 .. seealso:: :py:func:`setCoordinateType`
 
 .. seealso:: :py:func:`coordinateType`
+
+.. versionadded:: 3.28
+%End
+
+    void coordinateAxisOrderChanged();
+%Docstring
+Emitted when the default coordinate axis order changes.
+
+.. seealso:: :py:func:`setCoordinateAxisOrder`
+
+.. seealso:: :py:func:`coordinateAxisOrder`
 
 .. versionadded:: 3.28
 %End

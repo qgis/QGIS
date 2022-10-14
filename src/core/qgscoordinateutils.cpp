@@ -112,7 +112,7 @@ QString QgsCoordinateUtils::formatCoordinateForProject( QgsProject *project, con
   if ( !project )
     return QString();
 
-  const Qgis::CoordinateOrder axisOrder = qgsEnumKeyToValue( project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default );
+  const Qgis::CoordinateOrder axisOrder = project->displaySettings()->coordinateAxisOrder();
 
   QgsCoordinateReferenceSystem crs = project->displaySettings()->coordinateCrs();
   if ( !crs.isValid() && !destCrs.isValid() )
