@@ -377,6 +377,10 @@ this method with interpreter-specific logic for executing commands.
 
     virtual void populateContextMenu( QMenu *menu );
 
+  protected slots:
+
+    virtual void updatePrompt();
+
 };
 
 QFlags<QgsCodeEditor::Flag> operator|(QgsCodeEditor::Flag f1, QFlags<QgsCodeEditor::Flag> f2);

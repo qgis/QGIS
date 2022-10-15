@@ -499,6 +499,11 @@ void QgsCodeEditor::populateContextMenu( QMenu * )
 
 }
 
+void QgsCodeEditor::updatePrompt()
+{
+
+}
+
 QStringList QgsCodeEditor::history() const
 {
   return mHistory;
@@ -508,6 +513,9 @@ void QgsCodeEditor::runCommand( const QString &command )
 {
   updateHistory( { command } );
   runCommandImpl( command );
+
+  clear();
+  moveCursorToEnd();
 }
 
 void QgsCodeEditor::runCommandImpl( const QString & )
@@ -810,6 +818,9 @@ void QgsCodeEditor::moveCursorToStart()
   setCursorPosition( 0, 0 );
   ensureCursorVisible();
   ensureLineVisible( 0 );
+
+  if ( mMode == QgsCodeEditor::Mode::CommandInput )
+    updatePrompt();
 }
 
 void QgsCodeEditor::moveCursorToEnd()
@@ -819,4 +830,7 @@ void QgsCodeEditor::moveCursorToEnd()
   setCursorPosition( endLine, endLineLength );
   ensureCursorVisible();
   ensureLineVisible( endLine );
+
+  if ( mMode == QgsCodeEditor::Mode::CommandInput )
+    updatePrompt();
 }

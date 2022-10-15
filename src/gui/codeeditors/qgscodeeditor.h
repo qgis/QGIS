@@ -398,6 +398,10 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     virtual void populateContextMenu( QMenu *menu );
 
+  protected slots:
+
+    virtual void updatePrompt();
+
   private:
 
     void setSciWidget();
