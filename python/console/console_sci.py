@@ -84,7 +84,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.buffer = []
         self.continuationLine = False
 
-        self.displayPrompt()
+        self.updatePrompt()
 
         for statement in _init_statements:
             try:
@@ -144,15 +144,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
 
-    def moveCursorToStart(self):
-        super().moveCursorToStart()
-        self.displayPrompt()
-
-    def moveCursorToEnd(self):
-        super().moveCursorToEnd()
-        self.displayPrompt()
-
-    def displayPrompt(self):
+    def updatePrompt(self):
         self.SendScintilla(QsciScintilla.SCI_MARGINSETTEXT, 0,
                            str.encode("..." if self.continuationLine else ">>>"))
 
@@ -262,7 +254,7 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
                     self.setCursorPosition(line, index + 7)
             QsciScintilla.keyPressEvent(self, e)
 
-        self.displayPrompt()
+        self.updatePrompt()
 
     def populateContextMenu(self, menu):
         pyQGISHelpAction = menu.addAction(
@@ -365,11 +357,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
             self.continuationLine = self.runsource(src)
             if not self.continuationLine:
                 self.buffer = []
-
-        # prevents commands with more lines to break the console
-        # in the case they have an eol different from '\n'
-        self.clear('')
-        self.moveCursorToEnd()
 
     def write(self, txt):
         if sys.stderr:
