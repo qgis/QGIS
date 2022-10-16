@@ -313,6 +313,18 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
   SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDER,  lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
   SendScintilla( SCI_STYLESETFORE, STYLE_INDENTGUIDE, lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
   SendScintilla( SCI_STYLESETBACK, STYLE_INDENTGUIDE,  lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
+
+  if ( mMode == QgsCodeEditor::Mode::CommandInput )
+  {
+    setCaretLineVisible( false );
+    setLineNumbersVisible( false ); // NO linenumbers for the input line
+    // Margin 1 is used for the '>' prompt (console input)
+    setMarginLineNumbers( 1, true );
+    setMarginWidth( 1, "00000" );
+    setMarginType( 1, QsciScintilla::MarginType::TextMarginRightJustified );
+    setMarginsBackgroundColor( color( QgsCodeEditorColorScheme::ColorRole::Background ) );
+    setEdgeMode( QsciScintilla::EdgeNone );
+  }
 }
 
 void QgsCodeEditor::setSciWidget()
