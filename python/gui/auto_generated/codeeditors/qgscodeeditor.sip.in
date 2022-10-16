@@ -13,6 +13,31 @@
 
 
 
+class QgsCodeInterpreter
+{
+
+%TypeHeaderCode
+#include "qgscodeeditor.h"
+%End
+  public:
+
+
+    virtual ~QgsCodeInterpreter();
+
+    int exec( const QString &command );
+
+    virtual int currentState() const;
+
+    virtual QString promptForState( int state ) const = 0;
+
+  protected:
+
+    virtual int execCommandImpl( const QString &command ) = 0;
+
+};
+
+
+
 
 class QgsCodeEditor : QsciScintilla
 {
@@ -242,15 +267,16 @@ executed commands.
 
     QStringList history() const;
 
+    QgsCodeInterpreter *interpreter() const;
+    void setInterpreter( QgsCodeInterpreter *newInterpreter );
+
   public slots:
 
     void runCommand( const QString &command );
 %Docstring
 Runs a command in the editor.
 
-The base class method does nothing. Subclasses must implement
-the virtual :py:func:`~QgsCodeEditor.runCommandImpl` method with interpreter-specific
-logic for executing commands.
+An :py:func:`~QgsCodeEditor.interpreter` must be set.
 
 .. versionadded:: 3.30
 %End
@@ -364,22 +390,10 @@ Performs tasks which must be run after a lexer has been set for the widget.
     void updateSoftHistory();
     void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
 
-    virtual void runCommandImpl( const QString &command );
-%Docstring
-Executes a command.
-
-The base class method does nothing. Subclasses must implement
-this method with interpreter-specific logic for executing commands.
-
-.. versionadded:: 3.30
-%End
-
+    void updatePrompt();
 
     virtual void populateContextMenu( QMenu *menu );
 
-  protected slots:
-
-    virtual void updatePrompt();
 
 };
 

@@ -33,7 +33,8 @@ from qgis.core import QgsApplication, QgsSettings, Qgis
 from qgis.gui import (
     QgsCodeEditorPython,
     QgsCodeEditorColorScheme,
-    QgsCodeEditor
+    QgsCodeEditor,
+    QgsCodeInterpreter
 )
 
 _init_statements = [
@@ -66,25 +67,13 @@ except ModuleNotFoundError:
 ]
 
 
-class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
+class PythonInterpreter(QgsCodeInterpreter, code.InteractiveInterpreter):
 
-    def __init__(self, parent=None):
-        super(QgsCodeEditorPython, self).__init__(parent, [], QgsCodeEditor.Mode.CommandInput)
+    def __init__(self):
+        super(QgsCodeInterpreter, self).__init__()
         code.InteractiveInterpreter.__init__(self, locals=None)
 
-        self.parent = parent
-
-        self.opening = ['(', '{', '[', "'", '"']
-        self.closing = [')', '}', ']', "'", '"']
-
-        self.settings = QgsSettings()
-
-        self.new_input_line = True
-
         self.buffer = []
-        self.continuationLine = False
-
-        self.updatePrompt()
 
         for statement in _init_statements:
             try:
@@ -92,10 +81,74 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
             except ModuleNotFoundError:
                 pass
 
+    def execCommandImpl(self, cmd):
+        res = self.currentState()
+
+        self.writeCMD(cmd)
+        import webbrowser
+        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
+            re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
+        if cmd in ('_pyqgis', '_api', '_cookbook'):
+            if cmd == '_pyqgis':
+                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
+            elif cmd == '_api':
+                webbrowser.open(
+                    "https://qgis.org/api/{}".format('' if version == 'master' else version))
+            elif cmd == '_cookbook':
+                webbrowser.open(
+                    "https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
+                        'testing' if version == 'master' else version))
+        else:
+            self.buffer.append(cmd)
+            src = "\n".join(self.buffer)
+            res = self.runsource(src)
+            if res == 0:
+                self.buffer = []
+
+        return res
+
+    def writeCMD(self, txt):
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
+        if len(txt) > 0:
+            prompt = "... " if self.currentState() == 1 else ">>> "
+            sys.stdout.write(prompt + txt + '\n')
+
+    def runsource(self, source, filename='<input>', symbol='single'):
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
+
+        hook = sys.excepthook
+        try:
+            def excepthook(etype, value, tb):
+                self.write("".join(traceback.format_exception(etype, value, tb)))
+
+            sys.excepthook = excepthook
+
+            return super(PythonInterpreter, self).runsource(source, filename, symbol)
+        finally:
+            sys.excepthook = hook
+
+    def promptForState(self, state):
+        return "..." if state == 1 else ">>>"
+
+
+class ShellScintilla(QgsCodeEditorPython):
+
+    def __init__(self, parent=None):
+        super().__init__(parent, [], QgsCodeEditor.Mode.CommandInput)
+
+        self.parent = parent
+        self._interpreter = PythonInterpreter()
+        self.setInterpreter(self._interpreter)
+
+        self.opening = ['(', '{', '[', "'", '"']
+        self.closing = [')', '}', ']', "'", '"']
+
+        self.settings = QgsSettings()
+
         self.setHistoryFilePath(
             os.path.join(QgsApplication.qgisSettingsDirPath(), "console_history.txt"))
-
-        self.historyDlg = None  # HistoryDialog(self)
 
         self.refreshSettingsShell()
 
@@ -143,10 +196,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
-
-    def updatePrompt(self):
-        self.SendScintilla(QsciScintilla.SCI_MARGINSETTEXT, 0,
-                           str.encode("..." if self.continuationLine else ">>>"))
 
     def on_session_history_cleared(self):
         msgText = QCoreApplication.translate('PythonConsole',
@@ -336,49 +385,6 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
         self.setFocus()
         self.moveCursorToEnd()
 
-    def runCommandImpl(self, cmd):
-        self.writeCMD(cmd)
-        import webbrowser
-        version = 'master' if 'master' in Qgis.QGIS_VERSION.lower() else \
-            re.findall(r'^\d.[0-9]*', Qgis.QGIS_VERSION)[0]
-        if cmd in ('_pyqgis', '_api', '_cookbook'):
-            if cmd == '_pyqgis':
-                webbrowser.open("https://qgis.org/pyqgis/{}".format(version))
-            elif cmd == '_api':
-                webbrowser.open(
-                    "https://qgis.org/api/{}".format('' if version == 'master' else version))
-            elif cmd == '_cookbook':
-                webbrowser.open(
-                    "https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
-                        'testing' if version == 'master' else version))
-        else:
-            self.buffer.append(cmd)
-            src = "\n".join(self.buffer)
-            self.continuationLine = self.runsource(src)
-            if not self.continuationLine:
-                self.buffer = []
-
     def write(self, txt):
         if sys.stderr:
             sys.stderr.write(txt)
-
-    def writeCMD(self, txt):
-        if sys.stdout:
-            sys.stdout.fire_keyboard_interrupt = False
-        if len(txt) > 0:
-            prompt = "... " if self.continuationLine else ">>> "
-            sys.stdout.write(prompt + txt + '\n')
-
-    def runsource(self, source, filename='<input>', symbol='single'):
-        if sys.stdout:
-            sys.stdout.fire_keyboard_interrupt = False
-        hook = sys.excepthook
-        try:
-            def excepthook(etype, value, tb):
-                self.write("".join(traceback.format_exception(etype, value, tb)))
-
-            sys.excepthook = excepthook
-
-            return super(ShellScintilla, self).runsource(source, filename, symbol)
-        finally:
-            sys.excepthook = hook

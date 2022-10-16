@@ -32,6 +32,31 @@
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 
+class GUI_EXPORT QgsCodeInterpreter
+{
+  public:
+
+
+    virtual ~QgsCodeInterpreter();
+
+    int exec( const QString &command );
+
+    virtual int currentState() const { return mState; }
+
+    virtual QString promptForState( int state ) const = 0;
+
+  protected:
+
+    virtual int execCommandImpl( const QString &command ) = 0;
+
+  private:
+
+    int mState = 0;
+
+};
+
+
+
 class QWidget;
 
 /**
@@ -272,14 +297,15 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     QStringList history() const;
 
+    QgsCodeInterpreter *interpreter() const;
+    void setInterpreter( QgsCodeInterpreter *newInterpreter );
+
   public slots:
 
     /**
      * Runs a command in the editor.
      *
-     * The base class method does nothing. Subclasses must implement
-     * the virtual runCommandImpl() method with interpreter-specific
-     * logic for executing commands.
+     * An interpreter() must be set.
      *
      * \since QGIS 3.30
      */
@@ -385,22 +411,10 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void updateSoftHistory();
     void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
 
-    /**
-     * Executes a command.
-     *
-     * The base class method does nothing. Subclasses must implement
-     * this method with interpreter-specific logic for executing commands.
-     *
-     * \since QGIS 3.30
-     */
-    virtual void runCommandImpl( const QString &command );
-
+    void updatePrompt();
 
     virtual void populateContextMenu( QMenu *menu );
 
-  protected slots:
-
-    virtual void updatePrompt();
 
   private:
 
@@ -428,6 +442,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     QStringList mSoftHistory;
     int mSoftHistoryIndex = 0;
     QString mHistoryFilePath;
+
+    QgsCodeInterpreter *mInterpreter = nullptr;
 
     static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
 

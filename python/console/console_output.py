@@ -24,7 +24,11 @@ from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
-from qgis.gui import QgsMessageBar, QgsCodeEditorPython
+from qgis.gui import (
+    QgsMessageBar,
+    QgsCodeEditorPython,
+    QgsCodeInterpreter
+)
 import sys
 
 
