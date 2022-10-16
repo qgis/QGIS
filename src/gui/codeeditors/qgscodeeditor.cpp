@@ -501,7 +501,22 @@ void QgsCodeEditor::populateContextMenu( QMenu * )
 
 void QgsCodeEditor::updatePrompt()
 {
+  if ( mInterpreter )
+  {
+    const QString prompt = mInterpreter->promptForState( mInterpreter->currentState() );
+    SendScintilla( QsciScintilla::SCI_MARGINSETTEXT, static_cast< uintptr_t >( 0 ), prompt.toUtf8().constData() );
+  }
+}
 
+QgsCodeInterpreter *QgsCodeEditor::interpreter() const
+{
+  return mInterpreter;
+}
+
+void QgsCodeEditor::setInterpreter( QgsCodeInterpreter *newInterpreter )
+{
+  mInterpreter = newInterpreter;
+  updatePrompt();
 }
 
 QStringList QgsCodeEditor::history() const
@@ -512,15 +527,12 @@ QStringList QgsCodeEditor::history() const
 void QgsCodeEditor::runCommand( const QString &command )
 {
   updateHistory( { command } );
-  runCommandImpl( command );
+
+  if ( mInterpreter )
+    mInterpreter->exec( command );
 
   clear();
   moveCursorToEnd();
-}
-
-void QgsCodeEditor::runCommandImpl( const QString & )
-{
-
 }
 
 void QgsCodeEditor::clearSessionHistory()
@@ -833,4 +845,12 @@ void QgsCodeEditor::moveCursorToEnd()
 
   if ( mMode == QgsCodeEditor::Mode::CommandInput )
     updatePrompt();
+}
+
+QgsCodeInterpreter::~QgsCodeInterpreter() = default;
+
+int QgsCodeInterpreter::exec( const QString &command )
+{
+  mState = execCommandImpl( command );
+  return mState;
 }
