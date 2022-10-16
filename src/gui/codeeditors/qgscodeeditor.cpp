@@ -174,6 +174,43 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   {
     // Shortcut QScintilla and redirect the event to the QWidget handler
     QWidget::keyPressEvent( event ); // clazy:exclude=skipped-base-method
+    return;
+  }
+
+  if ( mMode == QgsCodeEditor::Mode::CommandInput )
+  {
+    switch ( event->key() )
+    {
+      case Qt::Key_Return:
+      case Qt::Key_Enter:
+        runCommand( text() );
+        updatePrompt();
+        return;
+
+      case Qt::Key_Down:
+
+        if ( !isListActive() )
+        {
+          showPreviousCommand();
+          updatePrompt();
+          return;
+        }
+        break;
+
+      case Qt::Key_Up:
+
+        if ( !isListActive() )
+        {
+          showNextCommand();
+          updatePrompt();
+          return;
+        }
+        break;
+
+      default:
+        break;
+    }
+    QsciScintilla::keyPressEvent( event );
   }
   else
   {
