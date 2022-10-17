@@ -183,6 +183,8 @@ class QgsGeoreferencerMainWindow : public QMainWindow, private Ui::QgsGeorefPlug
     bool georeferenceRaster();
     bool georeferenceVector();
 
+    void postProcessGeoreferencedLayer( const QString &fileName, QgsMapLayerType type, const QString &provider );
+
     bool writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString &fileName, const QgsGeorefTransform &transform );
     bool writePDFMapFile( const QString &fileName, const QgsGeorefTransform &transform );
