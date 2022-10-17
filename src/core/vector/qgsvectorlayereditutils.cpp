@@ -129,6 +129,23 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, QgsCurve *ri
     return Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
   }
 
+  if ( !ring )
+  {
+    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
+  }
+
+  if ( !ring->isClosed() )
+  {
+    delete ring;
+    return Qgis::GeometryOperationResult::AddRingNotClosed;
+  }
+
+  if ( !layer->isValid() || !layer->editBuffer() || !layer->dataProvider() )
+  {
+    delete ring;
+    return Qgis::GeometryOperationResult::LayerNotEditable;
+  }
+
   Qgis::GeometryOperationResult addRingReturnCode = Qgis::GeometryOperationResult::AddRingNotInExistingFeature; //default: return code for 'ring not inserted'
   QgsFeature f;
 
@@ -203,6 +220,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addMultiRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds )
 {
+
   return staticAddRing( mLayer, ring, targetFeatureIds, modifiedFeatureIds, false );
 }
 

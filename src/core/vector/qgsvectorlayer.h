@@ -1392,29 +1392,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     Q_INVOKABLE Qgis::GeometryOperationResult addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /**
-     * Adds a ring to polygon/multipolygon features (takes ownership)
-     * \param ring ring to add
-     * \param featureIds if specified, features ID for features ring was added to will be stored in this parameter
-     * \returns Qgis::GeometryOperationResult
-     *
-     * - Success
-     * - LayerNotEditable
-     * - AddRingNotInExistingFeature
-     * - InvalidInputGeometryType
-     * - AddRingNotClosed
-     * - AddRingNotValid
-     * - AddRingCrossesExistingRings
-     *
-     * \note available in Python as addMultiCurvedRing
-     * \note Calls to addMultiRing() are only valid for layers in which edits have been enabled
-     * by a call to startEditing(). Changes made to features using this method are not committed
-     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
-     * changes can be discarded by calling rollBack().
-     * \see addRing
-     */
-    Q_INVOKABLE Qgis::GeometryOperationResult addMultiRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureIds *featureIds = nullptr ) SIP_PYNAME( addMultiCurvedRing );
-
-    /**
      * Adds a new part polygon to a multipart feature
      * \returns Qgis::GeometryOperationResult
      *

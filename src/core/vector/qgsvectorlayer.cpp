@@ -1323,44 +1323,6 @@ Qgis::GeometryOperationResult QgsVectorLayer::addRing( QgsCurve *ring, QgsFeatur
   return result;
 }
 
-Qgis::GeometryOperationResult QgsVectorLayer::addMultiRing( QgsCurve *ring, QgsFeatureIds *featureIds )
-{
-  if ( !isValid() || !mEditBuffer || !mDataProvider )
-  {
-    delete ring;
-    return Qgis::GeometryOperationResult::LayerNotEditable;
-  }
-
-  if ( !ring )
-  {
-    return Qgis::GeometryOperationResult::InvalidInputGeometryType;
-  }
-
-  if ( !ring->isClosed() )
-  {
-    delete ring;
-    return Qgis::GeometryOperationResult::AddRingNotClosed;
-  }
-
-  QgsVectorLayerEditUtils utils( this );
-  Qgis::GeometryOperationResult result = Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
-
-  //first try with selected features
-  if ( !mSelectedFeatureIds.isEmpty() )
-  {
-    result = utils.addMultiRing( static_cast< QgsCurve * >( ring->clone() ), mSelectedFeatureIds, featureIds );
-  }
-
-  if ( result != Qgis::GeometryOperationResult::Success )
-  {
-    //try with all intersecting features
-    result = utils.addMultiRing( static_cast< QgsCurve * >( ring->clone() ), QgsFeatureIds(), featureIds );
-  }
-
-  delete ring;
-  return result;
-}
-
 Qgis::GeometryOperationResult QgsVectorLayer::addPart( const QList<QgsPointXY> &points )
 {
   QgsPointSequence pts;

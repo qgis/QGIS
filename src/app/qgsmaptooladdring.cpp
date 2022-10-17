@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgscurvepolygon.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayereditutils.h"
 #include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 
@@ -68,7 +69,8 @@ void QgsMapToolAddRing::polygonCaptured( const QgsCurvePolygon *polygon )
     return;
 
   vlayer->beginEditCommand( tr( "Ring added" ) );
-  const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addMultiRing( polygon->exteriorRing()->clone() );
+  QgsVectorLayerEditUtils utils( vlayer );
+  const Qgis::GeometryOperationResult addRingReturnCode = utils.addMultiRing( polygon->exteriorRing()->clone() );
   QString errorMessage;
   switch ( addRingReturnCode )
   {
