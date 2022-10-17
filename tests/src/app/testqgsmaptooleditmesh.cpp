@@ -79,7 +79,9 @@ void TestQgsMapToolEditMesh::hoverElements()
   mCanvas->setDestinationCrs( wgs84Crs );
 
   QgsCoordinateTransform transform( meshLayerSimpleBox->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  QVERIFY( meshLayerSimpleBox->startFrameEditing( transform ) );
+  QgsMeshEditingError error;
+  QVERIFY( meshLayerSimpleBox->startFrameEditing( transform, error, false ) );
+  QVERIFY( error.errorType == Qgis::MeshEditingErrorType::NoError );
 
   QgsRectangle extent( 3.31351393, 47.97489613, 3.31351792, 47.97508220 );
   mCanvas->setExtent( extent );
@@ -140,7 +142,6 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QVERIFY( !meshLayerQuadFlower->meshEditor() );
 
-  QgsMeshEditingError error;
   meshLayerQuadFlower->startFrameEditing( transform, error, false );
   QVERIFY( error == QgsMeshEditingError() );
 
