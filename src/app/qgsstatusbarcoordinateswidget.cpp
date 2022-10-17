@@ -392,7 +392,7 @@ void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
     mLineEdit->clear();
   else
     mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mMapCanvas->mapSettings().destinationCrs(),
-                        mMousePrecisionDecimalPlaces ) );
+                        static_cast< int >( mMousePrecisionDecimalPlaces ) ) );
 
   ensureCoordinatesVisible();
 }
