@@ -94,9 +94,9 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   } );
 }
 
-QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
+QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crsAtIndex( int index ) const
 {
-  switch ( static_cast< CrsOption >( mCrsComboBox->currentData().toInt() ) )
+  switch ( static_cast< CrsOption >( mCrsComboBox->itemData( index ).toInt() ) )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
@@ -108,7 +108,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
       return mCrs;
     case QgsProjectionSelectionWidget::RecentCrs:
     {
-      const long srsid = mCrsComboBox->currentData( Qt::UserRole + 1 ).toLongLong();
+      const long srsid = mCrsComboBox->itemData( index, Qt::UserRole + 1 ).toLongLong();
       const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       return crs;
     }
@@ -116,6 +116,11 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
       return QgsCoordinateReferenceSystem();
   }
   return mCrs;
+}
+
+QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
+{
+  return crsAtIndex( mCrsComboBox->currentIndex() );
 }
 
 void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectionWidget::CrsOption option, const bool visible )
@@ -200,9 +205,19 @@ bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::
 void QgsProjectionSelectionWidget::selectCrs()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+
+  QSet< QString > ogcFilter;
+  ogcFilter.reserve( mFilter.size( ) );
+  for ( const QgsCoordinateReferenceSystem &crs : std::as_const( mFilter ) )
+  {
+    ogcFilter << crs.authid();
+  }
+
   if ( panel && panel->dockMode() )
   {
     mActivePanel = new QgsCrsSelectionWidget( this );
+    if ( !ogcFilter.isEmpty() )
+      mActivePanel->setOgcWmsCrsFilter( ogcFilter );
     if ( !mMessage.isEmpty() )
       mActivePanel->setMessage( mMessage );
     mActivePanel->setCrs( mCrs );
@@ -243,6 +258,8 @@ void QgsProjectionSelectionWidget::selectCrs()
     QgsProjectionSelectionDialog dlg( this );
     if ( !mMessage.isEmpty() )
       dlg.setMessage( mMessage );
+    if ( !ogcFilter.isEmpty() )
+      dlg.setOgcWmsCrsFilter( ogcFilter );
     dlg.setCrs( mCrs );
     dlg.setWindowTitle( mDialogTitle );
 
@@ -346,6 +363,18 @@ void QgsProjectionSelectionWidget::setDialogTitle( const QString &title )
 QString QgsProjectionSelectionWidget::dialogTitle() const
 {
   return mDialogTitle;
+}
+
+void QgsProjectionSelectionWidget::setFilter( const QList<QgsCoordinateReferenceSystem> &crses )
+{
+  mFilter = crses;
+
+
+  for ( int i = mCrsComboBox->count() - 1; i >= 0; --i )
+  {
+    if ( !mFilter.contains( crsAtIndex( i ) ) )
+      mCrsComboBox->removeItem( i );
+  }
 }
 
 void QgsProjectionSelectionWidget::setSourceEnsemble( const QString &ensemble )
@@ -581,7 +610,7 @@ void QgsProjectionSelectionWidget::addRecentCrs()
       continue;
     }
 
-    if ( crs.isValid() )
+    if ( crs.isValid() && ( mFilter.isEmpty() || mFilter.contains( crs ) ) )
     {
       mCrsComboBox->addItem( crs.userFriendlyIdentifier(), QgsProjectionSelectionWidget::RecentCrs );
       mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant( ( long long )srsid ), Qt::UserRole + 1 );
@@ -629,3 +658,4 @@ QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData
   }
   return nullptr;
 }
+
