@@ -208,7 +208,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
         newGeometry = inputFeature.geometry();
       }
 
-      if ( !QgsOverlayUtils::sanitizeIntersectionResult( newGeometry, sinkType ) )
+      if ( !QgsOverlayUtils::sanitizeIntersectionResult( newGeometry, sinkType, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
         continue;
 
       QgsFeature outputFeature;
