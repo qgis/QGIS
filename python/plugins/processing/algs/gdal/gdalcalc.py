@@ -205,7 +205,32 @@ class gdalcalc(GdalAlgorithm):
     def commandName(self):
         return 'gdal_calc'
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        self.setOutputValue(self.OUTPUT, out)
+        formula = self.parameterAsString(parameters, self.FORMULA, context)
+        if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None:
+            noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
+        else:
+            noData = None
+
+        arguments = [
+            '--overwrite',
+            f'--calc "{formula}"',
+            '--format',
+            GdalUtils.getFormatShortNameFromFilename(out),
+            '--type',
+            self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)]
+        ]
+
+        if noData is not None:
+            arguments.append('--NoDataValue')
+            arguments.append(noData)
+        layer = self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
+        if layer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
+
         def all_equal(iterator):
             iterator = iter(iterator)
             try:
@@ -233,33 +258,6 @@ class gdalcalc(GdalAlgorithm):
                     srs.append(layer.crs().authid())
             if not (all_equal(pixel_size_X) and all_equal(pixel_size_Y) and all_equal(srs)):
                 raise QgsProcessingException(self.tr('For all output extent options, the pixel size (resolution) and SRS (Spatial Reference System) of all the input rasters must be the same'))
-        return GdalAlgorithm.processAlgorithm(self, parameters, context, feedback)
-
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
-
-        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        self.setOutputValue(self.OUTPUT, out)
-        formula = self.parameterAsString(parameters, self.FORMULA, context)
-        if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None:
-            noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
-        else:
-            noData = None
-
-        arguments = [
-            '--overwrite',
-            f'--calc "{formula}"',
-            '--format',
-            GdalUtils.getFormatShortNameFromFilename(out),
-            '--type',
-            self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)]
-        ]
-
-        if noData is not None:
-            arguments.append('--NoDataValue')
-            arguments.append(noData)
-        layer = self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
-        if layer is None:
-            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
 
         extent = self.EXTENT_OPTIONS[self.parameterAsEnum(parameters, self.EXTENT_OPT, context)]
         if extent != 'ignore':
