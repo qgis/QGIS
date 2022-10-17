@@ -1246,7 +1246,8 @@ mOptsPage_Information, mOptsPage_Source, mOptsPage_Style, mOptsPage_StyleContent
 mOptsPage_Rendering, mOptsPage_Temporal, mOptsPage_Metadata
 
 Point Cloud Layer:
-mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics
+mOptsPage_Information, mOptsPage_Source, mOptsPage_Metadata, mOptsPage_Statistics,
+mOptsPage_Rendering
 
 Vector Tile Layer:
 mOptsPage_Information, mOptsPage_Style, mOptsPage_Labeling, mOptsPage_Metadata
