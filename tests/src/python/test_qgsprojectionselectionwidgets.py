@@ -17,6 +17,7 @@ from qgis.gui import (QgsProjectionSelectionWidget,
                       QgsProjectionSelectionTreeWidget,
                       QgsProjectionSelectionDialog)
 from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsProjUtils
+from qgis.PyQt.QtWidgets import QComboBox
 from qgis.testing import start_app, unittest
 
 
@@ -113,6 +114,31 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         # both current and not set options should be shown
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CurrentCrs))
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.CrsNotSet))
+
+    def testFilter(self):
+        w = QgsProjectionSelectionWidget()
+
+        w.setOptionVisible(QgsProjectionSelectionWidget.LayerCrs, True)
+        w.setLayerCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        w.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        w.setOptionVisible(QgsProjectionSelectionWidget.CurrentCrs, True)
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
+
+        self.assertIsInstance(w.children()[0], QComboBox)
+        cb = w.children()[0]
+        self.assertEqual(cb.count(), 4)
+        self.assertEqual(cb.itemText(0), 'EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(1), 'Default CRS: EPSG:4326 - WGS 84')
+        self.assertEqual(cb.itemText(2), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(3), 'EPSG:3111 - GDA94 / Vicgrid')
+
+        w.setFilter([QgsCoordinateReferenceSystem('EPSG:3111')])
+        self.assertEqual(cb.count(), 2)
+        self.assertEqual(cb.itemText(0), 'Layer CRS: EPSG:3111 - GDA94 / Vicgrid')
+        self.assertEqual(cb.itemText(1), 'EPSG:3111 - GDA94 / Vicgrid')
+
+        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem())
 
     def testSignal(self):
         w = QgsProjectionSelectionWidget()
