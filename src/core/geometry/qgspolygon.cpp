@@ -316,11 +316,14 @@ QgsPolygon *QgsPolygon::surfaceToPolygon() const
 QgsCurvePolygon *QgsPolygon::toCurveType() const
 {
   QgsCurvePolygon *curvePolygon = new QgsCurvePolygon();
-  curvePolygon->setExteriorRing( mExteriorRing->clone() );
-  int nInteriorRings = mInteriorRings.size();
-  for ( int i = 0; i < nInteriorRings; ++i )
+  if ( mExteriorRing )
   {
-    curvePolygon->addInteriorRing( mInteriorRings.at( i )->clone() );
+    curvePolygon->setExteriorRing( mExteriorRing->clone() );
+    int nInteriorRings = mInteriorRings.size();
+    for ( int i = 0; i < nInteriorRings; ++i )
+    {
+      curvePolygon->addInteriorRing( mInteriorRings.at( i )->clone() );
+    }
   }
   return curvePolygon;
 }
