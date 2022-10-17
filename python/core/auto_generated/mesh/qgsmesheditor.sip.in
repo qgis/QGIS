@@ -75,7 +75,7 @@ Initializes the mesh editor and returns first error if the internal native mesh 
 
     QgsMeshEditingError initializeWithErrorsFix();
 %Docstring
-Initializes the mesh editor, if topological errors occur,tries to fix this errors
+Initializes the mesh editor. If topological errors occur,tries to fix these errors
 and returns error if there is one that couldn't be fixed
 
 .. versionadded:: 3.28
@@ -84,7 +84,7 @@ and returns error if there is one that couldn't be fixed
 
     bool fixError( const QgsMeshEditingError &error );
 %Docstring
-Tries to fix the topological ``error`` ``in`` the mesh. Returns false if the fix fails
+Tries to fix the topological ``error`` in the mesh. Returns false if the fix fails
 
 .. versionadded:: 3.28
 %End

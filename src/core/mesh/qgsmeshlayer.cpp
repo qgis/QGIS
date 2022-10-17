@@ -993,7 +993,7 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform, Q
 
   if ( fixErrors )
   {
-    mRendererCache.reset(); // fixing errors could leads to remove faces/vertices
+    mRendererCache.reset(); // fixing errors could lead to remove faces/vertices
     error = mMeshEditor->initializeWithErrorsFix();
   }
   else
