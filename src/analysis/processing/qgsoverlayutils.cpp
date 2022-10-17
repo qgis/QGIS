@@ -20,7 +20,7 @@
 
 ///@cond PRIVATE
 
-bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType )
+bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType, SanitizeFlags flags )
 {
   if ( geom.isNull() )
   {
@@ -45,16 +45,20 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes
     return false;
   }
 
-  // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
-  // when we promised multi-part geometries, so ensure we have the right type
-  geom.convertToMultiType();
+  if ( geometryType != QgsWkbTypes::GeometryType::PointGeometry
+       || !( flags & SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
+  {
+    // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
+    // when we promised multi-part geometries, so ensure we have the right type
+    geom.convertToMultiType();
+  }
 
   return true;
 }
 
 
 //! Makes sure that what came out from difference of two geometries is good to be used in the output
-static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType )
+static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType, QgsOverlayUtils::SanitizeFlags flags )
 {
   if ( geom.isNull() )
   {
@@ -74,9 +78,13 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, QgsWkbTypes::GeometryTy
   if ( geom.isEmpty() )
     return false;
 
-  // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
-  // when we promised multi-part geometries, so ensure we have the right type
-  geom.convertToMultiType();
+  if ( geometryType != QgsWkbTypes::GeometryType::PointGeometry
+       || !( flags & QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint ) )
+  {
+    // some data providers are picky about the geometries we pass to them: we can't add single-part geometries
+    // when we promised multi-part geometries, so ensure we have the right type
+    geom.convertToMultiType();
+  }
 
   return true;
 }
@@ -87,7 +95,7 @@ static QString writeFeatureError()
   return QObject::tr( "Could not write feature" );
 }
 
-void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs )
+void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, QgsOverlayUtils::DifferenceOutput outputAttrs, SanitizeFlags flags )
 {
   const QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::geometryType( QgsWkbTypes::multiType( sourceA.wkbType() ) );
   QgsFeatureRequest requestB;
@@ -163,7 +171,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
         geom = geom.difference( geomB );
       }
 
-      if ( !geom.isNull() && !sanitizeDifferenceResult( geom, geometryType ) )
+      if ( !geom.isNull() && !sanitizeDifferenceResult( geom, geometryType, flags ) )
         continue;
 
       const QgsAttributes attrsA( featA.attributes() );
@@ -279,7 +287,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
   }
 }
 
-void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback )
+void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback, SanitizeFlags flags )
 {
   long count = 0;
   const long totalCount = source.featureCount();
@@ -390,7 +398,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
       index.deleteFeature( f );
       geometries.remove( fid1 );
 
-      if ( sanitizeDifferenceResult( g12, geometryType ) )
+      if ( sanitizeDifferenceResult( g12, geometryType, flags ) )
       {
         geometries.insert( fid1, g12 );
 
@@ -411,7 +419,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
       geometries.remove( fid2 );
 
-      if ( sanitizeDifferenceResult( g21, geometryType ) )
+      if ( sanitizeDifferenceResult( g21, geometryType, flags ) )
       {
         geometries.insert( fid2, g21 );
 

@@ -95,11 +95,11 @@ QVariantMap QgsSymmetricalDifferenceAlgorithm::processAlgorithm( const QVariantM
   long count = 0;
   const long total = sourceA->featureCount() + sourceB->featureCount();
 
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );
   if ( feedback->isCanceled() )
     return outputs;
 
-  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
+  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );
 
   return outputs;
 }
