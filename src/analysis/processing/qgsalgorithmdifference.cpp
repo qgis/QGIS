@@ -120,7 +120,7 @@ QVariantMap QgsDifferenceAlgorithm::processAlgorithm( const QVariantMap &paramet
     geometryParameters.setGridSize( parameterAsDouble( parameters, QStringLiteral( "GRID_SIZE" ), context ) );
   }
 
-  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA, geometryParameters, QgsOverlayUtils::SanitizeFlag::DontPromotePointGeometryToMultiPoint );
 
   return outputs;
 }
