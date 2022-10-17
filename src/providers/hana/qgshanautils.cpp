@@ -49,18 +49,18 @@ QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
       connectionItems << QStringLiteral( "%1=%2" ).arg( key, value );
   };
 
-  QgsHanaConnectionType connType = QgsHanaConnectionType::HOST_PORT;
+  QgsHanaConnectionType connType = QgsHanaConnectionType::HostPort;
   if ( uri.hasParam( "connectionType" ) )
     connType = static_cast<QgsHanaConnectionType>( uri.param( "connectionType" ).toUInt() );
 
   addItem( "connectionType", QString::number( static_cast<uint>( connType ) ) );
   switch ( connType )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       if ( uri.hasParam( "dsn" ) )
         addItem( "dsn", escape( uri.param( "dsn" ) ) );
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       if ( !uri.database().isEmpty() )
         addItem( "dbname", escape( uri.database() ) );
       if ( !uri.host().isEmpty() )

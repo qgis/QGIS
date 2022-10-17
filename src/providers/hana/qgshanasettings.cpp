@@ -20,7 +20,7 @@
 
 bool QgsHanaIdentifierType::isValid( uint i ) noexcept
 {
-  return ( i >= INSTANCE_NUMBER ) && ( i <= PORT_NUMBER );
+  return ( i >= InstanceNumber ) && ( i <= PortNumber );
 }
 
 QgsHanaIdentifierType::Value QgsHanaIdentifierType::fromInt( uint i )
@@ -38,7 +38,7 @@ QgsHanaSettings::QgsHanaSettings( const QString &name, bool autoLoad )
 
 QString QgsHanaSettings::port() const
 {
-  if ( QgsHanaIdentifierType::fromInt( mIdentifierType ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
+  if ( QgsHanaIdentifierType::fromInt( mIdentifierType ) == QgsHanaIdentifierType::InstanceNumber )
   {
     if ( mMultitenant )
       return QString( "3" + mIdentifier + "13" );
@@ -68,13 +68,13 @@ void QgsHanaSettings::setFromDataSourceUri( const QgsDataSourceUri &uri )
     mConnectionType = static_cast<QgsHanaConnectionType>( uri.param( QStringLiteral( "connectionType" ) ).toUInt() );
   switch ( mConnectionType )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       mDsn = uri.param( QStringLiteral( "dsn" ) );
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       mDriver = uri.driver();
       mHost = uri.host();
-      mIdentifierType = QgsHanaIdentifierType::PORT_NUMBER;
+      mIdentifierType = QgsHanaIdentifierType::PortNumber;
       mIdentifier = uri.port();
       mDatabase = uri.database();
       break;
@@ -140,12 +140,12 @@ QgsDataSourceUri QgsHanaSettings::toDataSourceUri() const
   uri.setParam( "connectionType", QString::number( static_cast<uint>( mConnectionType ) ) );
   switch ( mConnectionType )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       uri.setParam( "dsn", mDsn );
       uri.setUsername( mUserName );
       uri.setPassword( mPassword );
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       uri.setConnection( mHost, port(), mDatabase, mUserName, mPassword );
       uri.setDriver( mDriver );
       break;
@@ -188,15 +188,15 @@ void QgsHanaSettings::load()
 {
   QgsSettings settings;
   const QString key = path();
-  mConnectionType = QgsHanaConnectionType::HOST_PORT;
+  mConnectionType = QgsHanaConnectionType::HostPort;
   if ( settings.contains( key + "/connectionType" ) )
     mConnectionType = static_cast<QgsHanaConnectionType>( settings.value( key + "/connectionType" ).toUInt() );
   switch ( mConnectionType )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       mDsn = settings.value( key + "/dsn" ).toString();
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       mDriver = settings.value( key + "/driver" ).toString();
       mHost = settings.value( key + "/host" ).toString();
       mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
@@ -263,10 +263,10 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/connectionType", static_cast<uint>( mConnectionType ) );
   switch ( mConnectionType )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       settings.setValue( key + "/dsn", mDsn );
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       settings.setValue( key + "/driver", mDriver );
       settings.setValue( key + "/host", mHost );
       settings.setValue( key + "/identifierType", mIdentifierType );

@@ -24,8 +24,8 @@ struct QgsHanaIdentifierType
 {
   enum Value
   {
-    INSTANCE_NUMBER = 0,
-    PORT_NUMBER = 1
+    InstanceNumber = 0,
+    PortNumber = 1
   };
 
   static bool isValid( uint ) noexcept;
@@ -34,8 +34,8 @@ struct QgsHanaIdentifierType
 
 enum class QgsHanaConnectionType : uint
 {
-  HOST_PORT = 0,
-  DSN = 1
+  HostPort = 0,
+  Dsn = 1
 };
 
 class QgsHanaSettings
@@ -76,7 +76,7 @@ class QgsHanaSettings
     /**
      * The identifier type that specifies whether the port number depends
      * on the instance number of a database or not. Possible values are
-     * 0 - INSTANCE_NUMBER, 1 - PORT_NUMBER.
+     * 0 - InstanceNumber, 1 - PortNumber.
      */
     uint identifierType() const { return mIdentifierType; }
     void setIdentifierType( uint identifierType ) { mIdentifierType = identifierType; }
@@ -301,7 +301,7 @@ class QgsHanaSettings
 
   private:
     QString mName;
-    QgsHanaConnectionType mConnectionType = QgsHanaConnectionType::HOST_PORT;
+    QgsHanaConnectionType mConnectionType = QgsHanaConnectionType::HostPort;
     QString mDsn;
     QString mDriver;
     QString mHost;

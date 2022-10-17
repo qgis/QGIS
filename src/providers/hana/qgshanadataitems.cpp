@@ -114,14 +114,14 @@ void QgsHanaConnectionItem::updateToolTip( const QString &userName, const QStrin
 {
   QgsHanaSettings settings( mName, true );
   QString tip;
-  if ( settings.connectionType() == QgsHanaConnectionType::HOST_PORT )
+  if ( settings.connectionType() == QgsHanaConnectionType::HostPort )
   {
     if ( !settings.database().isEmpty() )
       tip = tr( "Database: " ) + settings.database();
     if ( !tip.isEmpty() )
       tip += '\n';
     tip += tr( "Host: " ) + settings.host() + QStringLiteral( " " );
-    if ( QgsHanaIdentifierType::fromInt( settings.identifierType() ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
+    if ( QgsHanaIdentifierType::fromInt( settings.identifierType() ) == QgsHanaIdentifierType::InstanceNumber )
       tip += settings.identifier();
     else
       tip += settings.port();

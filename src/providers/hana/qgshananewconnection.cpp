@@ -112,7 +112,7 @@ void QgsHanaNewConnection::accept()
 
   switch ( getCurrentConnectionType() )
   {
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       if ( isStringEmpty( txtDriver->text() ) )
       {
         QMessageBox::warning( this,
@@ -137,7 +137,7 @@ void QgsHanaNewConnection::accept()
         }
       }
       break;
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       if ( cmbDsn->count() == 0 )
       {
         QMessageBox::warning( this,
@@ -204,7 +204,7 @@ void QgsHanaNewConnection::cmbConnectionType_changed( int index )
 
 void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
 {
-  if ( QgsHanaIdentifierType::fromInt( static_cast<uint>( index ) ) == QgsHanaIdentifierType::INSTANCE_NUMBER )
+  if ( QgsHanaIdentifierType::fromInt( static_cast<uint>( index ) ) == QgsHanaIdentifierType::InstanceNumber )
   {
     txtIdentifier->setMaxLength( 2 );
     txtIdentifier->setValidator( new QIntValidator( 0, 99, this ) );
@@ -275,10 +275,10 @@ void QgsHanaNewConnection::readSettingsFromControls( QgsHanaSettings &settings )
   settings.setConnectionType( connType );
   switch ( connType )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       settings.setDsn( cmbDsn->count() > 0 ? cmbDsn->currentText() : "" );
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       settings.setDriver( txtDriver->text() );
       settings.setHost( txtHost->text() );
       settings.setIdentifierType( static_cast<uint>( cmbIdentifierType->currentIndex() ) );
@@ -315,7 +315,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
 
   switch ( settings.connectionType() )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
     {
       cmbConnectionType->setCurrentIndex( 1 );
       int index = cmbDsn->findText( settings.dsn() );
@@ -323,11 +323,11 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
         cmbDsn->setCurrentIndex( index );
       break;
     }
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       cmbConnectionType->setCurrentIndex( 0 );
       txtDriver->setText( settings.driver() );
       txtHost->setText( settings.host() );
-      cmbIdentifierType->setCurrentIndex( QgsHanaIdentifierType::INSTANCE_NUMBER );
+      cmbIdentifierType->setCurrentIndex( QgsHanaIdentifierType::InstanceNumber );
       cmbIdentifierType->setCurrentIndex( static_cast<int>( settings.identifierType() ) );
       txtIdentifier->setText( settings.identifier() );
       if ( !settings.multitenant() )
@@ -413,11 +413,11 @@ void QgsHanaNewConnection::testConnection()
 
   switch ( getCurrentConnectionType() )
   {
-    case QgsHanaConnectionType::DSN:
+    case QgsHanaConnectionType::Dsn:
       if ( cmbDsn->count() == 0 )
         warningMsg = tr( "DSN has not been specified." );
       break;
-    case QgsHanaConnectionType::HOST_PORT:
+    case QgsHanaConnectionType::HostPort:
       if ( txtHost->text().isEmpty() )
         warningMsg = tr( "Host name has not been specified." );
       else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
