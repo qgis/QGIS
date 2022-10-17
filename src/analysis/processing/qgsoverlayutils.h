@@ -41,12 +41,30 @@ namespace QgsOverlayUtils
     OutputBA,  //!< Write attributes of both layers, inverted (first attributes of B, then attributes of A)
   };
 
-  void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, DifferenceOutput outputAttrs );
+  /**
+   * Flags for controlling the geometry sanitization behavior.
+   *
+   * \since QGIS 3.28
+   */
+  enum SanitizeFlag
+  {
+    DontPromotePointGeometryToMultiPoint = 1 << 0, //!< Don't force promote point geometries to a multipoint type
+  };
+
+  /**
+   * Flags for controlling the geometry sanitization behavior.
+   *
+   * \since QGIS 3.28
+   */
+  Q_DECLARE_FLAGS( SanitizeFlags, SanitizeFlag )
+
+  void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, DifferenceOutput outputAttrs,
+                   SanitizeFlags flags = SanitizeFlags() );
 
   void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, long &count, long totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
 
   //! Makes sure that what came out from intersection of two geometries is good to be used in the output
-  bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType );
+  bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType, SanitizeFlags flags = SanitizeFlags() );
 
   /**
    * Copies features from the source to the sink and resolves overlaps: for each pair of overlapping features A and B
@@ -58,8 +76,10 @@ namespace QgsOverlayUtils
    *
    * As a result, for all pairs of features in the output, a pair either has no common interior or their interior is the same.
    */
-  void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback );
+  void resolveOverlaps( const QgsFeatureSource &source, QgsFeatureSink &sink, QgsProcessingFeedback *feedback, SanitizeFlags flags = SanitizeFlags() );
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsOverlayUtils::SanitizeFlags )
 
 ///@endcond PRIVATE
 
