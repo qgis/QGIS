@@ -1836,6 +1836,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
 
         self.assertTrue(layer.isValid())
+
+        # Check NOT NULL constraint on atttext
+        field = layer.fields().at(1)
+        self.assertTrue(bool(field.constraints().constraints() & QgsFieldConstraints.ConstraintNotNull))
+
         self.assertTrue(layer.startEditing())
 
         f = QgsFeature(layer.fields())
