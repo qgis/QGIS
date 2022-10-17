@@ -2022,7 +2022,7 @@ void TestQgsMeshEditor::refineMesh()
     }
   }
   {
-    // Atempt to refine a face with 5 vertices (not allowed)
+    // Attempt to refine a face with 5 vertices (not allowed)
     QgsMesh mesh;
     QgsTriangularMesh triangularMesh;
     QgsMeshEditor meshEditor( &mesh, &triangularMesh );
@@ -2069,8 +2069,8 @@ void TestQgsMeshEditor::refineMesh()
     refineEditing.createNewBorderFaces( &meshEditor, facesToRefine, facesRefinement, borderFaces );
 
     // refinement not done
-    QCOMPARE( meshEditor.mMesh->faceCount(), 8 );
-    QCOMPARE( meshEditor.mMesh->vertexCount(), 9 );
+    QVERIFY( facesRefinement.isEmpty() );
+    QVERIFY( borderFaces.isEmpty() );
 
     facesList.clear();
     facesList << 0 << 1 << 2 << 3 << 4 << 5 << 6 << 7;
@@ -2083,6 +2083,9 @@ void TestQgsMeshEditor::refineMesh()
 
     refineEditing.createNewVerticesAndRefinedFaces( &meshEditor, facesToRefine, facesRefinement );
     refineEditing.createNewBorderFaces( &meshEditor, facesToRefine, facesRefinement, borderFaces );
+
+    QVERIFY( !facesRefinement.isEmpty() );
+    QVERIFY( !borderFaces.isEmpty() );
 
   }
 }
