@@ -98,6 +98,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * all intersecting features are tested and the ring is added to all valid features.
      * \param modifiedFeatureIds if specified, feature IDS for features that ring was added to will be stored in this parameter
      * \return OperationResult result code: success or reason of failure
+     * \since QGIS 3.28
      */
     Qgis::GeometryOperationResult addMultiRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds = nullptr );
 
