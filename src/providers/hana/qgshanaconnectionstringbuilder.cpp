@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgshanaconnectionstringbuilder.h"
+#include <QRegExp>
 
 QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSourceUri &uri )
   : mDriver( uri.driver() )
@@ -54,25 +55,16 @@ QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSou
 QString QgsHanaConnectionStringBuilder::toString() const
 {
   QStringList props;
-  auto addProperty = [&props]( const QString & name, const QString & value )
-  {
-    // See notes for constructing connection string for HANA
-    // https://help.sap.com/docs/SAP_HANA_CLIENT/f1b440ded6144a54ada97ff95dac7adf/7cab593774474f2f8db335710b2f5c50.html
 
+  // See notes for constructing connection string for HANA
+  // https://help.sap.com/docs/SAP_HANA_CLIENT/f1b440ded6144a54ada97ff95dac7adf/7cab593774474f2f8db335710b2f5c50.html
+  QRegExp rxSpecialChars( "\\[|\\]|\\{|\\}|\\(|\\)|\\,|\\;|\\?|\\*|\\=|\\!|\\@" );
+  auto addProperty = [&props, &rxSpecialChars]( const QString & name, const QString & value )
+  {
     if ( value.isEmpty() )
       return;
 
-    bool hasSpecialChars = false;
-    for ( const QChar ch : value )
-    {
-      if ( QStringLiteral( "[]{}(),;?*=!@" ).indexOf( ch ) != -1 )
-      {
-        hasSpecialChars = true;
-        break;
-      }
-    }
-
-    if ( hasSpecialChars )
+    if ( rxSpecialChars.indexIn( value ) != -1 )
     {
       QString newValue = QString( value ).replace( '}', QLatin1String( "}}" ) );
       props.append( name + "={" + newValue + "}" );
