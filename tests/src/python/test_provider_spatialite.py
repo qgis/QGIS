@@ -1825,7 +1825,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         con = spatialite_connect(self.dbname, isolation_level=None)
         cur = con.cursor()
         cur.execute("BEGIN")
-        sql = "CREATE TABLE table50523 (_id INTEGER PRIMARY KEY AUTOINCREMENT, atttext TEXT NOT NULL)"
+        sql = """CREATE TABLE table50523 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT,
+            atttext TEXT NOT NULL)"""
+
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('table50523', 'position', 25832, 'POLYGON', 'XY', 0)"
         cur.execute(sql)
