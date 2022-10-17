@@ -592,7 +592,10 @@ void TestQgsPolygon::polygon()
   QCOMPARE( *toP, p12 );
 
   //toCurveType
-  std::unique_ptr< QgsCurvePolygon > curveType( p12.toCurveType() );
+  std::unique_ptr< QgsCurvePolygon > curveType( QgsPolygon().toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygon );
+
+  curveType.reset( p12.toCurveType() );
   QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygonZM );
   QCOMPARE( curveType->exteriorRing()->numPoints(), 5 );
   QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
