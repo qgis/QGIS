@@ -872,6 +872,15 @@ void QgsWMSSourceSelect::lstLayers_itemSelectionChanged()
   labelCoordRefSys->setDisabled( mCRSs.isEmpty() );
   mCrsSelector->setDisabled( mCRSs.isEmpty() );
 
+  QList< QgsCoordinateReferenceSystem > crsFilter;
+  crsFilter.reserve( mCRSs.size() );
+  for ( const QString &crs : std::as_const( mCRSs ) )
+  {
+    crsFilter << QgsCoordinateReferenceSystem( crs );
+  }
+  if ( !crsFilter.isEmpty() )
+    mCrsSelector->setFilter( crsFilter );
+
   if ( !layers.isEmpty() && !mCRSs.isEmpty() )
   {
 
