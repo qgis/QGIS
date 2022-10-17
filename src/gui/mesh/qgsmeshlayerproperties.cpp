@@ -135,6 +135,8 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#source-properties" ) );
   mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#symbology-properties" ) );
   mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#rendering-properties" ) );
+  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#temporal-properties" ) );
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#metadata-properties" ) );
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
@@ -171,8 +173,6 @@ void QgsMeshLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfigWi
 
   QgsMapLayerConfigWidget *page = factory->createWidget( mMeshLayer, mCanvas, false, this );
   mConfigWidgets << page;
-
-  page->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
 
   const QString beforePage = factory->layerPropertiesPagePositionHint();
   if ( beforePage.isEmpty() )

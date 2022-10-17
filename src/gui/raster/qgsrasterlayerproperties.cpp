@@ -525,6 +525,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     mOptsPage_Histogram->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#histogram-properties" ) );
 
   mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#rendering-properties" ) );
+  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#temporal-properties" ) );
 
   if ( mOptsPage_Pyramids )
     mOptsPage_Pyramids->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#pyramids-properties" ) );

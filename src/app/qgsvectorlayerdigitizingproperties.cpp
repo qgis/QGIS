@@ -31,6 +31,7 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
+  setObjectName( QStringLiteral( "mOptsPage_Digitizing" ) );
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
 
