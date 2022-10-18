@@ -594,7 +594,9 @@ bool QgsField::convertCompatible( QVariant &v, QString *errorMessage ) const
     v = QVariant( d->type );
 
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type" ).arg( original.toString() );
+      *errorMessage = QObject::tr( "Could not convert value \"%1\" to target type \"%2\"" )
+                      .arg( original.toString() )
+                      .arg( d->typeName );
 
     return false;
   }
