@@ -32,7 +32,7 @@
 #include <sys/time.h>
 #endif
 
-#ifdef MSVC
+#ifdef _MSC_VER
 #include <Windows.h>
 #include <ShlObj.h>
 #pragma comment(lib,"Shell32.lib")
@@ -280,7 +280,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
   return foundFiles;
 }
 
-#ifdef MSVC
+#ifdef _MSC_VER
 std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
@@ -294,7 +294,7 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
-#ifdef MSVC
+#ifdef _MSC_VER
   auto pathType = [ = ]( const QString & path ) -> DriveType
   {
     std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
