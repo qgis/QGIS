@@ -54,6 +54,10 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
   mFormulaString = decodedUriParams.formula;
 
+  mSrcNoDataValue.push_back(-FLT_MAX);
+  mSrcHasNoDataValue.push_back(true);
+  mUseSrcNoDataValue.push_back(true);
+
   mLastError.clear();
   mCalcNode.reset( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
 
@@ -123,6 +127,10 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
   , mLastError( other.mLastError )
 
 {
+  mSrcNoDataValue = other.mSrcNoDataValue;
+  mSrcHasNoDataValue = other.mSrcHasNoDataValue;
+  mUseSrcNoDataValue = other.mUseSrcNoDataValue;
+
   for ( const auto &it : other.mRasterLayers )
   {
     QgsRasterLayer *rcProvidedLayer = it->clone();
@@ -148,6 +156,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 {
   Q_UNUSED( bandNo );
   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
+  tblock->setNoDataValue(mSrcNoDataValue[0]);
   double *outputData = ( double * )( tblock->bits() );
 
   QMap< QString, QgsRasterBlock * > inputBlocks;
@@ -181,7 +190,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
     inputBlocks.insert( it->ref, block.release() );
   }
 
-  QgsRasterMatrix resultMatrix( width, 1, nullptr, -FLT_MAX );
+  QgsRasterMatrix resultMatrix( width, 1, nullptr, mSrcNoDataValue[0] );
 
   for ( int i = 0; i < height; ++i )
   {
