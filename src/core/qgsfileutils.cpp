@@ -295,7 +295,7 @@ std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
 #ifdef _MSC_VER
-  auto pathType = [ = ]( const QString & path ) -> DriveType
+  auto pathType = [ = ]( const QString & path ) -> Qgis::DriveType
   {
     std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
     const UINT type = GetDriveTypeW( pathArray.get() );
@@ -323,7 +323,7 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
         return Qgis::DriveType::RamDisk;
     }
 
-    return Unknown;
+    return Qgis::DriveType::Unknown;
 
   };
 
@@ -334,8 +334,8 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
   {
     prevPath = currentPath;
     currentPath = QFileInfo( currentPath ).path();
-    const DriveType type = pathType( currentPath );
-    if ( type != Unknown && type != Invalid )
+    const Qgis::DriveType type = pathType( currentPath );
+    if ( type != Qgis::DriveType::Unknown && type != Qgis::DriveType::Invalid )
       return type;
   }
   return Unknown;
