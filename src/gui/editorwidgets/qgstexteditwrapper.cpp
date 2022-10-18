@@ -22,6 +22,7 @@
 #include "qgsjsonutils.h"
 #include "qgsmessagebar.h"
 #include "qgslogger.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QSettings>
 #include <nlohmann/json.hpp>
@@ -122,7 +123,10 @@ QVariant QgsTextEditWrapper::value() const
   }
   else
   {
-    return QVariant( field().type() );
+    // If an invalid variant is returned this will be interpreted as
+    // no change, according to QgsEditorWidgetWrapper::value()
+    // documentation
+    return QVariant();
   }
 }
 
