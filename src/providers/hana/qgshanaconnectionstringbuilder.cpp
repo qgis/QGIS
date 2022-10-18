@@ -15,7 +15,7 @@
  *
  ***************************************************************************/
 #include "qgshanaconnectionstringbuilder.h"
-#include <QRegExp>
+#include <QRegularExpression>
 
 QgsHanaConnectionStringBuilder::QgsHanaConnectionStringBuilder( const QgsDataSourceUri &uri )
   : mDriver( uri.driver() )
@@ -58,13 +58,14 @@ QString QgsHanaConnectionStringBuilder::toString() const
 
   // See notes for constructing connection string for HANA
   // https://help.sap.com/docs/SAP_HANA_CLIENT/f1b440ded6144a54ada97ff95dac7adf/7cab593774474f2f8db335710b2f5c50.html
-  QRegExp rxSpecialChars( "\\[|\\]|\\{|\\}|\\(|\\)|\\,|\\;|\\?|\\*|\\=|\\!|\\@" );
+  QRegularExpression rxSpecialChars( "\\[|\\]|\\{|\\}|\\(|\\)|\\,|\\;|\\?|\\*|\\=|\\!|\\@" );
   auto addProperty = [&props, &rxSpecialChars]( const QString & name, const QString & value )
   {
     if ( value.isEmpty() )
       return;
 
-    if ( rxSpecialChars.indexIn( value ) != -1 )
+    QRegularExpressionMatch match = rxSpecialChars.match( value );
+    if ( match.hasMatch() )
     {
       QString newValue = QString( value ).replace( '}', QLatin1String( "}}" ) );
       props.append( name + "={" + newValue + "}" );

@@ -25,6 +25,8 @@
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 using namespace std;
 
@@ -95,7 +97,8 @@ QgsHanaNewConnection::QgsHanaNewConnection(
     const QgsHanaSettings settings( connName, true );
     updateControlsFromSettings( settings );
   }
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
+
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]*" ) ), txtName ) );
 
   chkEnableSSL_clicked();
   chkEnableProxy_clicked();
