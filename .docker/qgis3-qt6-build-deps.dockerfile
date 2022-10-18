@@ -95,3 +95,13 @@ RUN cd /usr/src \
   && make -j4 \
   && make install
 
+# HANA: client side
+# Install hdbsql tool
+RUN curl -v -j -k -L -H "Cookie: eula_3_1_agreed=tools.hana.ondemand.com/developer-license-3_1.txt" https://tools.hana.ondemand.com/additional/hanaclient-latest-linux-x64.tar.gz --output hanaclient-latest-linux-x64.tar.gz \
+  && tar -xvf hanaclient-latest-linux-x64.tar.gz \
+  && mkdir /usr/sap \
+  && ./client/hdbinst -a client --sapmnt=/usr/sap \
+  && rm -rf client \
+  && rm hanaclient*
+ENV PATH="/usr/sap/hdbclient:${PATH}"
+
