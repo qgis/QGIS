@@ -127,7 +127,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         layer.commitChanges()
 
         vle = QgsVectorLayerEditUtils(layer)
-        assert Qgis.GeometryOperationResult.LayerNotEditable == vle.addMultiRing(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
+        assert Qgis.GeometryOperationResult.LayerNotEditable == vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
         layer.commitChanges()
 
         assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
@@ -148,7 +148,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         assert layer.featureCount() == 2
 
         vle = QgsVectorLayerEditUtils(layer)
-        assert Qgis.GeometryOperationResult.AddRingNotClosed == vle.addMultiRing(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3)]))
+        assert Qgis.GeometryOperationResult.AddRingNotClosed == vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3)]))
         layer.commitChanges()
 
         assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
@@ -169,7 +169,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         assert layer.featureCount() == 2
 
         vle = QgsVectorLayerEditUtils(layer)
-        assert Qgis.GeometryOperationResult.AddRingNotInExistingFeature == vle.addMultiRing(QgsLineString([QgsPoint(8, 8), QgsPoint(8, 9), QgsPoint(9, 9), QgsPoint(9, 8), QgsPoint(8, 8)]))
+        assert Qgis.GeometryOperationResult.AddRingNotInExistingFeature == vle.addRingV2(QgsLineString([QgsPoint(8, 8), QgsPoint(8, 9), QgsPoint(9, 9), QgsPoint(9, 8), QgsPoint(8, 8)]))
         layer.commitChanges()
 
         assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
@@ -189,7 +189,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         assert layer.featureCount() == 2
 
         vle = QgsVectorLayerEditUtils(layer)
-        assert Qgis.GeometryOperationResult.Success == vle.addMultiRing(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
+        assert Qgis.GeometryOperationResult.Success == vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
         layer.commitChanges()
 
         assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"

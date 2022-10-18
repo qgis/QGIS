@@ -100,7 +100,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \return OperationResult result code: success or reason of failure
      * \since QGIS 3.28
      */
-    Qgis::GeometryOperationResult addMultiRing( QgsCurve *ring SIP_TRANSFER, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds SIP_OUT = nullptr );
+    Qgis::GeometryOperationResult addRingV2( QgsCurve *ring SIP_TRANSFER, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds SIP_OUT = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features

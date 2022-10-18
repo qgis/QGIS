@@ -87,7 +87,7 @@ Adds a ring to polygon/multipolygon features
 :return: OperationResult result code: success or reason of failure
 %End
 
-    Qgis::GeometryOperationResult addMultiRing( QgsCurve *ring /Transfer/, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds /Out/ = 0 );
+    Qgis::GeometryOperationResult addRingV2( QgsCurve *ring /Transfer/, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureIds *modifiedFeatureIds /Out/ = 0 );
 %Docstring
 Adds a ring to polygon/multipolygon features
 

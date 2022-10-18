@@ -216,7 +216,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
   return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, nullptr, true );
 }
 
-Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addMultiRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds )
+Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRingV2( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds )
 {
 
   std::unique_ptr<QgsCurve> uniquePtrRing( ring );
