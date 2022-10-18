@@ -116,7 +116,7 @@ void QgsCrashHandler::handleCrash( int processID, int threadID,
   args << fileName;
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : QApplication::applicationDirPath() );
-#ifdef MSVC
+#ifdef _MSC_VER
   QString path = prefixPath + QStringLiteral( "/qgiscrashhandler.exe" );
 #else
   QString path = prefixPath + QStringLiteral( "/qgiscrashhandler" );
