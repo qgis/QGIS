@@ -29,6 +29,7 @@ class QgsMessageBar;
 
 #include "qgsfilewidget.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpression.h"
 
 /**
  * \ingroup gui

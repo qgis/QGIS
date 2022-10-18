@@ -264,19 +264,17 @@ class ShellScintilla(QgsCodeEditorPython, code.InteractiveInterpreter):
     def clearHistory(self, clearSession=False):
         if clearSession:
             self.history = []
+            self.readHistoryFile()
             self.syncSoftHistory()
             msgText = QCoreApplication.translate('PythonConsole',
-                                                 'Session and file history cleared successfully.')
+                                                 'Session history cleared successfully.')
             self.parent.callWidgetMessageBar(msgText)
-            return
-        ok = False
-        try:
-            cH = codecs.open(_historyFile, 'w', encoding='utf-8')
-            ok = True
-        except:
-            raise
-        cH.close()
-        if ok:
+        else:
+            self.history = []
+            if QFile.exists(_historyFile):
+                with open(_historyFile, 'w', encoding='utf-8') as h:
+                    h.truncate()
+
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'History cleared successfully.')
             self.parent.callWidgetMessageBar(msgText)

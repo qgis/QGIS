@@ -276,6 +276,13 @@ void TestQgsMapToolIdentifyAction::closestPoint()
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800.000" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated M" )].left( 4 ), QStringLiteral( "11.9" ) );
   QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated Z" )].left( 4 ), QStringLiteral( "1.96" ) );
+
+  QgsProject::instance()->displaySettings()->setCoordinateAxisOrder( Qgis::CoordinateOrder::YX );
+  result = action->identify( static_cast< int >( mapPoint.x() ),
+                             static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << tempLayer2.get() );
+  QCOMPARE( result.length(), 1 );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588.000" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800.000" ) );
 }
 
 void TestQgsMapToolIdentifyAction::lengthCalculation()

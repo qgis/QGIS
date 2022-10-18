@@ -783,7 +783,7 @@ int QgsMeshLayer::closestEdge( const QgsPointXY &point, double searchRadius, Qgs
       const QgsMeshVertex &vertex1 = mesh->vertices()[edge.first];
       const QgsMeshVertex &vertex2 = mesh->vertices()[edge.second];
       QgsPointXY projPoint;
-      const double sqrDist = point.sqrDistToSegment( vertex1.x(), vertex1.y(), vertex2.x(), vertex2.y(), projPoint );
+      const double sqrDist = point.sqrDistToSegment( vertex1.x(), vertex1.y(), vertex2.x(), vertex2.y(), projPoint, 0 );
       if ( sqrDist < sqrMaxDistFromPoint )
       {
         selectedIndex = edgeIndex;

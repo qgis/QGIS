@@ -128,6 +128,8 @@ class CORE_EXPORT QgsCoordinateFormatter
 
     static QString formatXAsDegrees( double val, int precision, FormatFlags flags );
     static QString formatYAsDegrees( double val, int precision, FormatFlags flags );
+
+    friend class QgsCoordinateUtils;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCoordinateFormatter::FormatFlags )

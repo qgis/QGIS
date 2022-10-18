@@ -27,7 +27,7 @@ namespace MDAL
    *       As SelafinFile is not thread safe, it has to be shared in the same thread.
    *
    * This class can be used to create a mesh with all the dataset contained in a file with the static method createMessh()
-   * It is also pôssible to add all the dataset of a file in a separate existing mesh with the static method populateDataset()
+   * It is also possible to add all the dataset of a file in a separate existing mesh with the static method populateDataset()
    *
    * All the method to access with lazy loading to the mesh data or datasets are encapsulted and only accessible by the friend classes :
    *    MeshSelafin

@@ -47,7 +47,7 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   // so we need to set font for it separately
   mScale->setMinimumWidth( 10 );
   mScale->setContentsMargins( 0, 0, 0, 0 );
-  mScale->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
+  mScale->setToolTip( tr( "Current map scale" ) );
 
   // layout
   mLayout = new QHBoxLayout( this );

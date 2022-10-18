@@ -26,9 +26,6 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
 #include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgslogger.h"
@@ -37,7 +34,6 @@
 #include "qgsprojectstylesettings.h"
 #include "qgsstyle.h"
 #include "qgspainteffect.h"
-#include "qgseffectstack.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
@@ -142,10 +138,13 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
   }
 
   // transform the points to screen coordinates
+  const QVector< double > preTransformPointsZ = pointsZ;
+  bool wasTransformed = false;
   if ( ct.isValid() )
   {
     //create x, y arrays
     const int nVertices = pointsX.size();
+    wasTransformed = true;
 
     try
     {
@@ -164,13 +163,25 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
     const double *xIn = pointsX.data();
     const double *yIn = pointsY.data();
     const double *zIn = pointsZ.data();
+
+    const double *preTransformZIn = wasTransformed ? preTransformPointsZ.constData() : nullptr;
+
     double *xOut = pointsX.data();
     double *yOut = pointsY.data();
     double *zOut = pointsZ.data();
     int outSize = 0;
     for ( int i = 0; i < size; ++i )
     {
-      if ( std::isfinite( *xIn ) && std::isfinite( *yIn ) && std::isfinite( *zIn ) )
+      bool pointOk = std::isfinite( *xIn ) && std::isfinite( *yIn );
+
+      // skip z points which have been made non-finite during transformations only. Ie if:
+      // - we did no transformation, then always render even if non-finite z
+      // - we did transformation and z is finite then render
+      // - we did transformation and z is non-finite BUT input z was also non finite then render
+      // - we did transformation and z is non-finite AND input z WAS finite then skip
+      pointOk &= !wasTransformed || std::isfinite( *zIn ) || !std::isfinite( *preTransformZIn );
+
+      if ( pointOk )
       {
         *xOut++ = *xIn++;
         *yOut++ = *yIn++;
@@ -183,6 +194,9 @@ QPolygonF QgsSymbol::_getLineString3d( QgsRenderContext &context, const QgsCurve
         yIn++;
         zIn++;
       }
+
+      if ( preTransformZIn )
+        preTransformZIn++;
     }
     pointsX.resize( outSize );
     pointsY.resize( outSize );
@@ -368,9 +382,12 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
   }
 
   //transform the QPolygonF to screen coordinates
+  const QVector< double > preTransformPointsZ = pointsZ;
+  bool wasTransformed = false;
   if ( ct.isValid() )
   {
     const int nVertices = pointsX.size();
+    wasTransformed = true;
     try
     {
       ct.transformCoords( nVertices, pointsX.data(), pointsY.data(), pointsZ.data(), Qgis::TransformDirection::Forward );
@@ -388,13 +405,24 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
     const double *xIn = pointsX.data();
     const double *yIn = pointsY.data();
     const double *zIn = pointsZ.data();
+
+    const double *preTransformZIn = wasTransformed ? preTransformPointsZ.constData() : nullptr;
+
     double *xOut = pointsX.data();
     double *yOut = pointsY.data();
     double *zOut = pointsZ.data();
     int outSize = 0;
     for ( int i = 0; i < size; ++i )
     {
-      if ( std::isfinite( *xIn ) && std::isfinite( *yIn ) && std::isfinite( *zIn ) )
+      bool pointOk = std::isfinite( *xIn ) && std::isfinite( *yIn );
+      // skip z points which have been made non-finite during transformations only. Ie if:
+      // - we did no transformation, then always render even if non-finite z
+      // - we did transformation and z is finite then render
+      // - we did transformation and z is non-finite BUT input z was also non finite then render
+      // - we did transformation and z is non-finite AND input z WAS finite then skip
+      pointOk &= !wasTransformed || std::isfinite( *zIn ) || !std::isfinite( *preTransformZIn );
+
+      if ( pointOk )
       {
         *xOut++ = *xIn++;
         *yOut++ = *yIn++;
@@ -407,6 +435,9 @@ QPolygonF QgsSymbol::_getPolygonRing3d( QgsRenderContext &context, const QgsCurv
         yIn++;
         zIn++;
       }
+
+      if ( preTransformZIn )
+        preTransformZIn++;
     }
     pointsX.resize( outSize );
     pointsY.resize( outSize );

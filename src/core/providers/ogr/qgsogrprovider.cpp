@@ -1240,7 +1240,9 @@ bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::C
   else
   {
     // stricter check
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !QgsVariantUtils::isNull( value );
+    return mDefaultValues.contains( fieldIndex ) && !QgsVariantUtils::isNull( value ) && (
+             mDefaultValues.value( fieldIndex ) == value.toString()
+             || value.userType() == QMetaType::type( "QgsUnsetAttributeValue" ) );
   }
 }
 
@@ -1425,7 +1427,9 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags, QgsFeatureId
 
     QVariant attrVal = attributes.at( qgisAttributeId );
     // The field value is equal to the default (that might be a provider-side expression)
-    if ( mDefaultValues.contains( qgisAttributeId ) && attrVal.toString() == mDefaultValues.value( qgisAttributeId ) )
+    if ( attributes.isUnsetValue( qgisAttributeId )
+         || ( mDefaultValues.contains( qgisAttributeId ) && attrVal.toString() == mDefaultValues.value( qgisAttributeId ) )
+       )
     {
       OGR_F_UnsetField( feature.get(), ogrAttributeId );
     }

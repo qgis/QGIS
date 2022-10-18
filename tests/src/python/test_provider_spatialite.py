@@ -1819,6 +1819,55 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(feature.isValid())
 
+    def testRegression50523(self):
+        """Test for issue GH #50523"""
+
+        con = spatialite_connect(self.dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = """CREATE TABLE table50523 (
+            _id INTEGER PRIMARY KEY AUTOINCREMENT,
+            atttext TEXT NOT NULL)"""
+
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('table50523', 'position', 25832, 'POLYGON', 'XY', 0)"
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
+
+        self.assertTrue(layer.isValid())
+
+        # Check NOT NULL constraint on atttext
+        field = layer.fields().at(1)
+        self.assertTrue(bool(field.constraints().constraints() & QgsFieldConstraints.ConstraintNotNull))
+
+        self.assertTrue(layer.startEditing())
+
+        f = QgsFeature(layer.fields())
+        g = QgsGeometry.fromWkt('polygon((0 0, 1 1, 1 0, 0 0))')
+        g.isGeosValid()
+        self.assertTrue(g.isGeosValid())
+        f.setGeometry(g)
+        f.fields()
+        f.fields().names()
+        f.setAttribute(1, QVariant(QVariant.String))
+        f.setAttribute(0, 'Autogenerate')
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertFalse(layer.commitChanges())
+        self.assertTrue(layer.rollBack())
+
+        self.assertTrue(layer.startEditing())
+        f.setAttribute(1, 'some text')
+        self.assertTrue(layer.addFeatures([f]))
+        self.assertTrue(layer.commitChanges())
+
+        layer = QgsVectorLayer(
+            'dbname=\'{}\' table="table50523" (position) sql='.format(self.dbname), 'test', 'spatialite')
+        self.assertEqual(len([f for f in layer.getFeatures()]), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

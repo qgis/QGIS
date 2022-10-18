@@ -18,7 +18,6 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgis.h"
-#include "qgsunittypes.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include <QObject>
@@ -45,6 +44,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
   public:
 
     Q_PROPERTY( Qgis::CoordinateDisplayType coordinateType READ coordinateType WRITE setCoordinateType NOTIFY coordinateTypeChanged )
+    Q_PROPERTY( Qgis::CoordinateOrder coordinateAxisOrder READ coordinateAxisOrder WRITE setCoordinateAxisOrder NOTIFY coordinateAxisOrderChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCustomCrs READ coordinateCustomCrs WRITE setCoordinateCustomCrs NOTIFY coordinateCustomCrsChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCrs READ coordinateCrs NOTIFY coordinateCrsChanged )
 
@@ -113,6 +113,22 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     void setCoordinateType( Qgis::CoordinateDisplayType type );
 
     /**
+     * Returns default coordinate axis order to use when displaying coordinates for the project.
+     * \see setCoordinateAxisOrder()
+     * \see coordinateAxisOrderChanged()
+     * \since QGIS 3.28
+     */
+    Qgis::CoordinateOrder coordinateAxisOrder() const { return mCoordinateAxisOrder; }
+
+    /**
+     * Sets the default coordinate axis \a order to use when displaying coordinates for the project.
+     * \see coordinateAxisOrder()
+     * \see coordinateAxisOrderChanged()
+     * \since QGIS 3.28
+     */
+    void setCoordinateAxisOrder( Qgis::CoordinateOrder order );
+
+    /**
      * Returns the coordinate custom CRS used when the project coordinate type is set to Qgis.CoordinateDisplayType.CustomCrs.
      * \see setCoordinateCustomCrs()
      * \since QGIS 3.28
@@ -174,6 +190,15 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     void coordinateTypeChanged();
 
     /**
+     * Emitted when the default coordinate axis order changes.
+     *
+     * \see setCoordinateAxisOrder()
+     * \see coordinateAxisOrder()
+     * \since QGIS 3.28
+     */
+    void coordinateAxisOrderChanged();
+
+    /**
      * Emitted when the coordinate custom CRS changes.
      *
      * \see setCoordinateCustomCrs()
@@ -200,6 +225,7 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
     QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
     QgsCoordinateReferenceSystem mCoordinateCrs;
+    Qgis::CoordinateOrder mCoordinateAxisOrder = Qgis::CoordinateOrder::Default;
 
 };
 

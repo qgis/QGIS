@@ -45,6 +45,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
 #include "qgsmessagelog.h"
 #include "qgsrenderer.h"
 #include "qgsfeature.h"
@@ -3130,8 +3131,14 @@ namespace QgsWms
           break;
         }
 
-        case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::VectorTileLayer:
+        {
+          QgsVectorTileLayer *vl = qobject_cast<QgsVectorTileLayer *>( layer );
+          vl->setOpacity( opacity / 255. );
+          break;
+        }
+
+        case QgsMapLayerType::MeshLayer:
         case QgsMapLayerType::PluginLayer:
         case QgsMapLayerType::AnnotationLayer:
         case QgsMapLayerType::PointCloudLayer:
