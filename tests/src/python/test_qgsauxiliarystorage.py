@@ -300,7 +300,7 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
                 break
         self.assertTrue(tested)
 
-        # Add a hidden property
+        # Add a PAL hidden property
         p = QgsPalLayerSettings.propertyDefinitions()[QgsPalLayerSettings.PositionX]
         self.assertTrue(al.addAuxiliaryField(p))
 
@@ -320,7 +320,7 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
                 break
         self.assertTrue(tested)
 
-        # Add a color property
+        # Add a PAL color property
         p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.PropertyFillColor]
         self.assertTrue(al.addAuxiliaryField(p))
 
@@ -331,6 +331,33 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         index = vl.fields().indexOf(afName)
         setup = vl.editorWidgetSetup(index)
         self.assertEqual(setup.type(), 'Color')
+
+        # Add a symbol hidden property
+        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.PropertyAngle]
+        self.assertTrue(al.addAuxiliaryField(p))
+
+        index = al.indexOfPropertyDefinition(p)
+        self.assertTrue(al.isHiddenProperty(index))
+
+        afName = QgsAuxiliaryLayer.nameFromProperty(p, True)
+        index = vl.fields().indexOf(afName)
+        setup = vl.editorWidgetSetup(index)
+        self.assertEqual(setup.type(), 'Hidden')
+
+        tested = False
+        for c in vl.attributeTableConfig().columns():
+            if c.name == afName:
+                self.assertTrue(c.hidden)
+                tested = True
+                break
+        self.assertTrue(tested)
+
+        # Add a not hidden symbol property
+        p = QgsSymbolLayer.propertyDefinitions()[QgsSymbolLayer.PropertyWidth]
+        self.assertTrue(al.addAuxiliaryField(p))
+
+        index = al.indexOfPropertyDefinition(p)
+        self.assertFalse(al.isHiddenProperty(index))
 
     def testClear(self):
         s = QgsAuxiliaryStorage()

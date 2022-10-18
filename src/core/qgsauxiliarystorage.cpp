@@ -30,7 +30,10 @@
 #define AS_JOINFIELD QStringLiteral( "ASPK" )
 #define AS_EXTENSION QStringLiteral( "qgd" )
 #define AS_JOINPREFIX QStringLiteral( "auxiliary_storage_" )
+
 typedef QVector<QgsPalLayerSettings::Property> PalPropertyList;
+typedef QVector<QgsSymbolLayer::Property> SymbolPropertyList;
+
 Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
 {
   QgsPalLayerSettings::PositionX,
@@ -58,6 +61,11 @@ Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
   QgsPalLayerSettings::AlwaysShow,
   QgsPalLayerSettings::CalloutDraw,
   QgsPalLayerSettings::LabelAllParts
+} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( SymbolPropertyList, symbolHiddenProperties, (
+{
+  QgsSymbolLayer::PropertyAngle,
+  QgsSymbolLayer::PropertyOffset
 } ) )
 
 //
@@ -368,6 +376,19 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
     for ( const QgsPalLayerSettings::Property &p : palProps )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
+      if ( propName.compare( def.name() ) == 0 )
+      {
+        hidden = true;
+        break;
+      }
+    }
+  }
+  else if ( def.origin().compare( QLatin1String( "symbol" ) ) == 0 )
+  {
+    const SymbolPropertyList &symbolProps = *symbolHiddenProperties();
+    for ( const QgsSymbolLayer::Property &p : symbolProps )
+    {
+      const QString propName = QgsSymbolLayer::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )
       {
         hidden = true;
