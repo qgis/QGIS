@@ -1502,7 +1502,9 @@ void QgsApplication::exitQgis()
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
 
-  delete QgsProject::instance();
+  // avoid creating instance just to delete it!
+  if ( QgsProject::sProject )
+    delete QgsProject::instance();
 
   // avoid creating instance just to delete it!
   if ( QgsProviderRegistry::exists() )

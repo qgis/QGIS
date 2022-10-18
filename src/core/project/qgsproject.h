@@ -2315,6 +2315,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     int mBlockSnappingUpdates = 0;
 
+    friend class QgsApplication;
+
     friend class QgsProjectDirtyBlocker;
 
     // Required to avoid creating a new project in it's destructor
