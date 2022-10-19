@@ -2263,19 +2263,27 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "vector" ) )
     {
-      addedLayers << QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addVectorLayer( uri, u.name, u.providerKey );
+      if ( layer )
+        addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "raster" ) )
     {
-      addedLayers << QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addRasterLayer( uri, u.name, u.providerKey );
+      if ( layer )
+        addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
-      addedLayers << QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addMeshLayer( uri, u.name, u.providerKey );
+      if ( layer )
+        addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "pointcloud" ) )
     {
-      addedLayers << QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addPointCloudLayer( uri, u.name, u.providerKey );
+      if ( layer )
+        addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "vector-tile" ) )
     {
@@ -2365,7 +2373,9 @@ QList< QgsMapLayer * > QgisApp::handleDropUriList( const QgsMimeDataUtils::UriLi
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
     {
-      addedLayers << QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey );
+      QgsMapLayer *layer = QgsAppLayerHandling::addPluginLayer( uri, u.name, u.providerKey );
+      if ( layer )
+        addedLayers << layer;
     }
     else if ( u.layerType == QLatin1String( "custom" ) )
     {
