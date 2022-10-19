@@ -572,6 +572,88 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     maxColumnHeight = std::max( currentColumnHeight, maxColumnHeight );
   }
 
+  auto refineColumns = [&componentGroups, this]() -> bool
+  {
+    QHash< int, double > columnHeights;
+    QHash< int, int > columnGroupCounts;
+    double currentColumnHeight = 0;
+    int currentColumn = -1;
+    int columnCount = 0;
+    int groupCount = 0;
+    double maxCurrentColumnHeight = 0;
+    for ( int i = 0; i < componentGroups.size(); i++ )
+    {
+      const LegendComponentGroup &group = componentGroups.at( i );
+      if ( group.column != currentColumn )
+      {
+        if ( currentColumn >= 0 )
+        {
+          columnHeights.insert( currentColumn, currentColumnHeight );
+          columnGroupCounts.insert( currentColumn, groupCount );
+        }
+
+        currentColumn = group.column;
+        currentColumnHeight = 0;
+        groupCount = 0;
+        columnCount = std::max( columnCount, currentColumn + 1 );
+      }
+
+      const double spaceAbove = spaceAboveGroup( group );
+      currentColumnHeight += spaceAbove + group.size.height();
+      groupCount++;
+    }
+    columnHeights.insert( currentColumn, currentColumnHeight );
+    columnGroupCounts.insert( currentColumn, groupCount );
+
+    double totalColumnHeights = 0;
+    for ( int i = 0; i < columnCount; ++ i )
+    {
+      totalColumnHeights += columnHeights[i];
+      maxCurrentColumnHeight = std::max( maxCurrentColumnHeight, columnHeights[i] );
+    }
+
+    const double averageColumnHeight = totalColumnHeights / columnCount;
+
+    bool changed = false;
+    int nextCandidateColumnForShift = 1;
+    for ( int i = 0; i < componentGroups.size(); i++ )
+    {
+      LegendComponentGroup &group = componentGroups[ i ];
+      if ( group.column < nextCandidateColumnForShift )
+        continue;
+
+      // try shifting item to previous group
+      const bool canShift = !group.placeColumnBreakBeforeGroup
+                            && columnGroupCounts[ group.column ] >= 2;
+
+      if ( canShift
+           && columnHeights[ group.column - 1 ] < averageColumnHeight
+           && ( columnHeights[ group.column - 1 ] + group.size.height() ) * 0.9 < maxCurrentColumnHeight
+         )
+      {
+        group.column -= 1;
+        columnHeights[ group.column ] += group.size.height() + spaceAboveGroup( group );
+        columnGroupCounts[ group.column ]++;
+        columnHeights[ group.column + 1 ] -= group.size.height();
+        columnGroupCounts[ group.column + 1]--;
+        changed = true;
+      }
+      else
+      {
+        nextCandidateColumnForShift = group.column + 1;
+      }
+    }
+    return changed;
+  };
+
+  bool wasRefined = true;
+  int iterations = 0;
+  while ( wasRefined && iterations < 2 )
+  {
+    wasRefined = refineColumns();
+    iterations++;
+  }
+
   // Align labels of symbols for each layer/column to the same labelXOffset
   QMap<QString, qreal> maxSymbolWidth;
   for ( int i = 0; i < componentGroups.size(); i++ )
