@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
 #include "qgisapp.h"
+#include "qgsvectorlayereditutils.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
@@ -69,11 +70,12 @@ void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
   if ( !vlayer )
     return;
 
-  QgsFeatureId fid;
+  QgsFeatureIds fids;
 
   vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-  const Qgis::GeometryOperationResult addRingReturnCode = vlayer->addRing( polygon->exteriorRing()->clone(), &fid );
+  QgsVectorLayerEditUtils utils( vlayer );
+  const Qgis::GeometryOperationResult addRingReturnCode = utils.addRingV2( polygon->exteriorRing()->clone(), vlayer->selectedFeatureIds(), &fids );
 
   // AP: this is all dead code:
   //todo: open message box to communicate errors
@@ -110,7 +112,10 @@ void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
     return;
   }
 
-  createFeature( QgsGeometry( polygon->clone() ), fid );
+  for ( const auto fid : fids )
+  {
+    createFeature( QgsGeometry( polygon->clone() ), fid );
+  }
 }
 
 
