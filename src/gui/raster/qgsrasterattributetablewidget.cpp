@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsmessagebar.h"
 #include "qgsrasterattributetableaddcolumndialog.h"
+#include "qgsrasterattributetableaddrowdialog.h"
 #include "qgscolorbutton.h"
 #include "qgsgradientcolorrampdialog.h"
 #include "qgspalettedrasterrenderer.h"
@@ -99,7 +100,6 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
   mAttributeTable = nullptr;
   mCurrentBand = 0;
   mRasterBandsComboBox->clear();
-  mClassifyComboBox->clear();
 
   QList<int> availableRats;
 
@@ -141,42 +141,18 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
       updateButtons();
     } );
 
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsInserted, this, [ = ]( const QModelIndex &, int, int )
+    {
+      setDelegates();
+    } );
+
+    connect( mModel.get(), &QgsRasterAttributeTableModel::columnsRemoved, this, [ = ]( const QModelIndex &, int, int )
+    {
+      setDelegates();
+    } );
+
     static_cast<QSortFilterProxyModel *>( mRATView->model() )->setSourceModel( mModel.get() );
-
-    const QList<QgsRasterAttributeTable::Field> tableFields { mAttributeTable->fields() };
-    int fieldIdx { 0 };
-    const QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> usageInfo { QgsRasterAttributeTable::usageInformation() };
-    for ( const QgsRasterAttributeTable::Field &f : std::as_const( tableFields ) )
-    {
-      if ( usageInfo[f.usage].maybeClass )
-      {
-        mClassifyComboBox->addItem( QgsFields::iconForFieldType( f.type ), f.name, QVariant( fieldIdx ) );
-      }
-      fieldIdx++;
-    }
-
-    if ( mAttributeTable->hasColor() )
-    {
-      if ( mAttributeTable->usages().contains( Qgis::RasterAttributeTableFieldUsage::Alpha ) )
-      {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorAlphaDelegate( mRATView ) );
-      }
-      else
-      {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorDelegate( mRATView ) );
-      }
-    }
-    else if ( mAttributeTable->hasRamp() )
-    {
-      if ( mAttributeTable->usages().contains( Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
-      {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorRampAlphaDelegate( mRATView ) );
-      }
-      else
-      {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorRampDelegate( mRATView ) );
-      }
-    }
+    setDelegates();
   }
   else
   {
@@ -250,7 +226,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
             return;
           }
         }
-        else if ( nativeRatSupported )
+        else if ( newPath.isEmpty() )
         {
           saveToNative = true;
         }
@@ -371,8 +347,29 @@ void QgsRasterAttributeTableWidget::addRow()
 {
   if ( mAttributeTable )
   {
+    // Default to append
+    int position { mModel->rowCount( QModelIndex() ) };
+    const QModelIndex currentIndex { mProxyModel->mapToSource( mRATView->selectionModel()->currentIndex() ) };
+
+    // If there is a selected row, ask if before of after.
+    if ( currentIndex.isValid() )
+    {
+      // Ask the user where to insert the new row (before or after the currently
+      // selected row).
+      QgsRasterAttributeTableAddRowDialog dlg;
+      if ( dlg.exec() != QDialog::DialogCode::Accepted )
+      {
+        return;
+      }
+      else
+      {
+        position = currentIndex.row() + ( dlg.insertAfter() ? 1 : 0 );
+      }
+    }
+
     bool result { true };
     QString errorMessage;
+
     QVariantList rowData;
 
     QList<QgsRasterAttributeTable::Field> fields { mAttributeTable->fields() };
@@ -381,18 +378,15 @@ void QgsRasterAttributeTableWidget::addRow()
       rowData.push_back( QVariant( field.type ) );
     }
 
-    const QModelIndex currentIndex { mProxyModel->mapToSource( mRATView->selectionModel()->currentIndex() ) };
-    if ( currentIndex.isValid() )
-    {
-      result = mModel->insertRow( currentIndex.row(), rowData, &errorMessage );
-    }
-    else
-    {
-      result = mModel->insertRow( mModel->rowCount( QModelIndex() ), rowData, &errorMessage );
-    }
+    result = mModel->insertRow( position, rowData, &errorMessage );
+
     if ( ! result )
     {
       notify( tr( "Error adding row" ), errorMessage,  Qgis::MessageLevel::Critical );
+    }
+    else
+    {
+      mRATView->scrollTo( mRATView->model()->index( position, 0 ) );
     }
   }
 }
@@ -447,6 +441,50 @@ void QgsRasterAttributeTableWidget::notify( const QString &title, const QString 
       {
         QMessageBox::critical( nullptr, title, message );
         break;
+      }
+    }
+  }
+}
+
+void QgsRasterAttributeTableWidget::setDelegates()
+{
+  mClassifyComboBox->clear();
+  if ( mAttributeTable )
+  {
+    const QList<QgsRasterAttributeTable::Field> tableFields { mAttributeTable->fields() };
+    int fieldIdx { 0 };
+    const QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> usageInfo { QgsRasterAttributeTable::usageInformation() };
+    for ( const QgsRasterAttributeTable::Field &f : std::as_const( tableFields ) )
+    {
+      // Clear all delegates.
+      mRATView->setItemDelegateForColumn( fieldIdx, nullptr );
+      if ( usageInfo[f.usage].maybeClass )
+      {
+        mClassifyComboBox->addItem( QgsFields::iconForFieldType( f.type ), f.name, QVariant( fieldIdx ) );
+      }
+      fieldIdx++;
+    }
+
+    if ( mAttributeTable->hasColor() )
+    {
+      if ( mAttributeTable->usages().contains( Qgis::RasterAttributeTableFieldUsage::Alpha ) )
+      {
+        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorAlphaDelegate( mRATView ) );
+      }
+      else
+      {
+        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorDelegate( mRATView ) );
+      }
+    }
+    else if ( mAttributeTable->hasRamp() )
+    {
+      if ( mAttributeTable->usages().contains( Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
+      {
+        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorRampAlphaDelegate( mRATView ) );
+      }
+      else
+      {
+        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorRampDelegate( mRATView ) );
       }
     }
   }

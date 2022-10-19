@@ -164,6 +164,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
     void removeRow();
     void bandChanged( const int index );
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+    void setDelegates( );
 
 };
 

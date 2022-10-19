@@ -72,11 +72,6 @@ Returns ``True`` if the field carries a color ramp component information (RedMin
 Returns the Raster Attribute Table type.
 %End
 
-    void setType( const Qgis::RasterAttributeTableType type );
-%Docstring
-Sets the Raster Attribute Table ``type``
-%End
-
     bool hasColor() const;
 %Docstring
 Returns ``True`` if the Raster Attribute Table has color RGBA information.
@@ -225,6 +220,13 @@ Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``po
 Create RGBA fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
+    bool setFieldUsage( int fieldIndex, const Qgis::RasterAttributeTableFieldUsage usage );
+%Docstring
+Change the usage of the field at index ``fieldIndex`` to ``usage`` with checks for allowed types.
+
+:return: ``True`` on success.
+%End
+
     bool insertRamp( int position, QString *errorMessage /Out/ = 0 );
 %Docstring
 Create RGBA minimum and maximum fields and inserts them at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
@@ -336,15 +338,30 @@ the classification column based on the field usage.
     QgsGradientColorRamp colorRamp( QStringList &labels /Out/, const int labelColumn = -1 ) const;
 %Docstring
 Returns the color ramp for an athematic Raster Attribute Table
-returning the ``labels``, optionally generated from ``labelColumn``.
+setting the labels in ``labels``, optionally generated from ``labelColumn``.
 %End
 
     QgsRasterRenderer *createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 ) /Factory/;
 %Docstring
 Creates and returns a (possibly ``None``) raster renderer for the
-specified ``provider`` and ``bandNumber`` and optionally classified
+specified ``provider`` and ``bandNumber`` and optionally reclassified
 by ``classificationColumn``, the default value of -1 makes the method
 guess the classification column based on the field usage.
+
+.. note::
+
+   athematic attribute tables with color ramps cannot be reclassified,
+   the renderer will still use the ``classificationColumn`` for
+   generating the class labels.
+%End
+
+    QList<QList<QVariant>> orderedRows( ) const;
+%Docstring
+Returns the data rows ordered by the value column(s) in ascending order, if
+the attribute table type is athematic the middle value for each row range
+is considered for ordering.
+If the attribute table does not have any value field (and hence is not valid),
+the current data are returned without any change.
 %End
 
     static Qgis::RasterAttributeTableFieldUsage guessFieldUsage( const QString &name, const QVariant::Type type );
@@ -389,7 +406,6 @@ Returns information about supported Raster Attribute Table usages.
 .. seealso:: :py:func:`usageName`
 %End
 
-    static QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> sUsageInformation;
 
 
 };

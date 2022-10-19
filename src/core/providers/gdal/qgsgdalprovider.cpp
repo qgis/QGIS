@@ -3114,63 +3114,6 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           usages.append( usage );
         }
 
-        QStringList ratFieldNames { ratFields.names( ) };
-        QStringList lNames;
-
-        // Try to identify fields in case of Raster Attribute Table with wrong usages
-        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) &&
-             !( usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) ) )
-        {
-          if ( lowerNames.contains( QStringLiteral( "value" ) ) )
-          {
-            usages[ lowerNames.indexOf( QLatin1String( "value" ) ) ] = Qgis::RasterAttributeTableFieldUsage::MinMax;
-          }
-          else
-          {
-            const QStringList minValueNames { {
-                QStringLiteral( "min" ),
-                QStringLiteral( "min_value" ),
-                QStringLiteral( "min value" ),
-                QStringLiteral( "value min" ),
-                QStringLiteral( "value_min" ),
-              } };
-
-            for ( const QString &minName : std::as_const( minValueNames ) )
-            {
-              if ( lowerNames.contains( minName ) )
-              {
-                usages[ lowerNames.indexOf( minName ) ] = Qgis::RasterAttributeTableFieldUsage::Min;
-                break;
-              }
-            }
-
-            const QStringList maxValueNames { {
-                QStringLiteral( "max" ),
-                QStringLiteral( "max_value" ),
-                QStringLiteral( "max value" ),
-                QStringLiteral( "value max" ),
-                QStringLiteral( "value_max" ),
-              } };
-
-            for ( const QString &maxName : std::as_const( minValueNames ) )
-            {
-              if ( lowerNames.contains( maxName ) )
-              {
-                usages[ lowerNames.indexOf( maxName ) ] = Qgis::RasterAttributeTableFieldUsage::Max;
-                break;
-              }
-            }
-          }
-        }
-
-        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::PixelCount ) )
-        {
-          if ( lowerNames.contains( QStringLiteral( "count" ) ) )
-          {
-            usages[ lowerNames.indexOf( QLatin1String( "count" ) ) ] = Qgis::RasterAttributeTableFieldUsage::PixelCount;
-          }
-        }
-
         std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
 
         for ( const auto &field : std::as_const( ratFields ) )
@@ -3208,33 +3151,58 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
           rat->appendRow( rowData );
         }
 
+        // Try to cope with invalid rats due to generic fields
+        if ( ! rat->isValid( ) )
+        {
+          std::unique_ptr<QgsRasterAttributeTable> ratCopy = std::make_unique<QgsRasterAttributeTable>( *rat );
+          bool changed { false };
+          for ( int fieldIdx = 0; fieldIdx < ratCopy->fields().count( ); ++fieldIdx )
+          {
+            const QgsRasterAttributeTable::Field field { ratCopy->fields().at( fieldIdx ) };
+            if ( field.usage == Qgis::RasterAttributeTableFieldUsage::Generic )
+            {
+              const Qgis::RasterAttributeTableFieldUsage newUsage { QgsRasterAttributeTable::guessFieldUsage( field.name, field.type ) };
+              if ( newUsage != Qgis::RasterAttributeTableFieldUsage::Generic && ratCopy->setFieldUsage( fieldIdx, newUsage ) )
+              {
+                changed = true;
+              }
+            }
+          }
+
+          // Did that work?
+          if ( changed && ratCopy->isValid( ) )
+          {
+            rat.reset( ratCopy.release() );
+          }
+        }
+
         hasAtLeastOnedRat = rat->fields().count( ) > 0;
 
         if ( hasAtLeastOnedRat )
         {
-          rat->setType( static_cast<Qgis::RasterAttributeTableType>( GDALRATGetTableType( hRat ) ) );
           rat->setDirty( false );
           setAttributeTable( bandNumber, rat.release() );
         }
         else if ( errorMessage )
         {
-          *errorMessage = QObject::tr( "Raster Attribute Table has no columns: skipping." );
+          *errorMessage = QObject::tr( "Raster attribute table has no columns: skipping." );
         }
       }
     }
   }
   else if ( errorMessage )
   {
-    *errorMessage = QObject::tr( "Dataset is not valid and Raster Attribute Table could not be loaded." );
+    *errorMessage = QObject::tr( "Dataset is not valid and raster attribute table could not be loaded." );
   }
 
   return hasAtLeastOnedRat;
 }
 
 
-bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const //#spellok
+bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spellok
 {
   bool success { false };
+  bool wasReopenedReadWrite { false };
   for ( int band = 1; band <= bandCount(); band++ )
   {
     QgsRasterAttributeTable *rat { attributeTable( band ) };
@@ -3242,101 +3210,136 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const /
     {
       continue;
     }
-    if ( rat->isDirty() )
+
+    // Needs to be in write mode for HFA and perhaps other formats!
+    if ( GDALGetAccess( mGdalDataset ) == GA_ReadOnly )
     {
-      GDALRasterBandH hBand { GDALGetRasterBand( mGdalBaseDataset, band ) };
-      GDALRasterAttributeTableH hRat = GDALCreateRasterAttributeTable( );
-      if ( GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) ) != CE_None )
+      QgsDebugMsg( QStringLiteral( "re-opening the dataset in read/write mode" ) );
+      GDALClose( mGdalDataset );
+
+      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE );
+
+      // if the dataset couldn't be opened in read / write mode, tell the user
+      if ( !mGdalBaseDataset )
+      {
+        mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY );
+        //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+        mGdalDataset = mGdalBaseDataset;
+        if ( errorMessage )
+        {
+          *errorMessage = tr( "GDAL Error reopening dataset in write mode, raster attribute table could not be saved." );
+        }
+        return false;
+      }
+      wasReopenedReadWrite = true;
+    }
+
+    GDALRasterBandH hBand { GDALGetRasterBand( mGdalBaseDataset, band ) };
+    GDALRasterAttributeTableH hRat = GDALCreateRasterAttributeTable( );
+    if ( GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) ) != CE_None )
+    {
+      if ( errorMessage )
+      {
+        *errorMessage = QObject::tr( "GDAL error setting the table type, raster attribute table could not be saved." );
+      }
+      GDALDestroyRasterAttributeTable( hRat );
+      return false;
+    }
+    const QList<QgsRasterAttributeTable::Field> ratFields { rat->fields() };
+    QMap<int, GDALRATFieldType> typeMap;
+
+    int colIdx { 0 };
+    for ( const QgsRasterAttributeTable::Field &field : std::as_const( ratFields ) )
+    {
+      GDALRATFieldType fType { GFT_String };
+      switch ( field.type )
+      {
+        case QVariant::Int:
+        case QVariant::UInt:
+        case QVariant::LongLong:
+        case QVariant::ULongLong:
+        {
+          fType = GFT_Integer;
+          break;
+        }
+        case QVariant::Double:
+        {
+          fType = GFT_Real;
+          break;
+        }
+        default:
+          fType = GFT_String;
+      }
+      if ( GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) ) != CE_None )
       {
         if ( errorMessage )
         {
-          *errorMessage = QObject::tr( "RAT table type could not be set, Raster Attribute Table was not saved (GDAL error)." );
+          *errorMessage = QObject::tr( "GDAL error creating column '%1, raster attribute table could not be saved." ).arg( field.name );
         }
         GDALDestroyRasterAttributeTable( hRat );
         return false;
       }
-      const QList<QgsRasterAttributeTable::Field> ratFields { rat->fields() };
-      QMap<int, GDALRATFieldType> typeMap;
+      typeMap[ colIdx ] = fType;
+      colIdx++;
+    }
 
-      int colIdx { 0 };
-      for ( const QgsRasterAttributeTable::Field &field : std::as_const( ratFields ) )
+    // Save data
+    const QList<QVariantList> data { rat->data() };
+    int rowIdx { 0 };
+    for ( const auto &row : std::as_const( data ) )
+    {
+      for ( int colIdx = 0; colIdx < row.size(); colIdx++ )
       {
-        GDALRATFieldType fType { GFT_String };
-        switch ( field.type )
+        switch ( typeMap[ colIdx ] )
         {
-          case QVariant::Int:
-          case QVariant::UInt:
-          case QVariant::LongLong:
-          case QVariant::ULongLong:
-          {
-            fType = GFT_Integer;
+          case GFT_Real:
+            GDALRATSetValueAsDouble( hRat, rowIdx, colIdx, row[ colIdx ].toDouble( ) );
             break;
-          }
-          case QVariant::Double:
-          {
-            fType = GFT_Real;
+          case GFT_Integer:
+            GDALRATSetValueAsInt( hRat, rowIdx, colIdx, row[ colIdx ].toInt( ) );
             break;
-          }
           default:
-            fType = GFT_String;
+            GDALRATSetValueAsString( hRat, rowIdx, colIdx, row[ colIdx ].toString().toStdString().c_str() );
         }
-        if ( GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) ) != CE_None )
-        {
-          if ( errorMessage )
-          {
-            *errorMessage = QObject::tr( "RAT column '%1 could not be created, Raster Attribute Table was not saved (GDAL error)." ).arg( field.name );
-          }
-          GDALDestroyRasterAttributeTable( hRat );
-          return false;
-        }
-        typeMap[ colIdx ] = fType;
-        colIdx++;
       }
+      rowIdx++;
+    }
 
-      // Save data
-      const QList<QVariantList> data { rat->data() };
-      int rowIdx { 0 };
-      for ( const auto &row : std::as_const( data ) )
+    GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) );
+
+    if ( GDALSetDefaultRAT( hBand, hRat ) != CE_None )
+    {
+      if ( errorMessage )
       {
-        for ( int colIdx = 0; colIdx < row.size(); colIdx++ )
-        {
-          switch ( typeMap[ colIdx ] )
-          {
-            case GFT_Real:
-              GDALRATSetValueAsDouble( hRat, rowIdx, colIdx, row[ colIdx ].toDouble( ) );
-              break;
-            case GFT_Integer:
-              GDALRATSetValueAsInt( hRat, rowIdx, colIdx, row[ colIdx ].toInt( ) );
-              break;
-            default:
-              GDALRATSetValueAsString( hRat, rowIdx, colIdx, row[ colIdx ].toString().toStdString().c_str() );
-          }
-        }
-        rowIdx++;
+        *errorMessage = tr( "GDAL error saving raster attribute table, raster attribute table could not be saved." );
       }
-
-      GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) );
-
-      if ( GDALSetDefaultRAT( hBand, hRat ) != CE_None )
-      {
-        if ( errorMessage )
-        {
-          *errorMessage = QObject::tr( "RAT could not be saved (GDAL error)." );
-        }
-        GDALDestroyRasterAttributeTable( hRat );
-        return false;
-      }
-
+      GDALDestroyRasterAttributeTable( hRat );
+      success = false;
+    }
+    else
+    {
       rat->setDirty( false );
       GDALFlushCache( mGdalBaseDataset );
       success = true;
-
-    }
-    else if ( ! rat->isDirty() && errorMessage )
-    {
-      *errorMessage = QObject::tr( "RAT has not modifications and was not saved." );
     }
   }
+
+  if ( wasReopenedReadWrite )
+  {
+    QgsDebugMsg( QStringLiteral( "re-opening the dataset in read-only mode" ) );
+    GDALClose( mGdalDataset );
+
+    mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY );
+
+    // if the dataset couldn't be opened in read / write mode, tell the user
+    if ( !mGdalBaseDataset )
+    {
+      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE );
+      //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+      mGdalDataset = mGdalBaseDataset;
+    }
+  }
+
   return success;
 }
 

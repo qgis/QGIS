@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>336</width>
-    <height>206</height>
+    <width>391</width>
+    <height>222</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="mCreateInfoLabel">
      <property name="text">
-      <string>&lt;p&gt;Create a new Raster Attribute Table (RAT) using the current symbology.&lt;/p&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create a new Raster Attribute Table (RAT) from the current symbology.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -27,23 +27,23 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Raster Attribute Table Destination</string>
+      <string>Raster Attribute Table Storage</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
        <widget class="QRadioButton" name="mNativeRadioButton">
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This method will save the attribute table using the data provider, &lt;/p&gt;&lt;p&gt;overwriting any existing attribute table for the raster band used&lt;/p&gt;&lt;p&gt;by the current style.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Depending on the data provider and the raster file format, the &lt;/p&gt;&lt;p&gt;attribute table will be embedded in the main raster file or saved&lt;/p&gt;&lt;p&gt; into a sidecar file manged by the data provider.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
-         <string>Data provider</string>
+         <string>Managed by the data provider</string>
         </property>
         <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="0">
        <widget class="QRadioButton" name="mDbfRadioButton">
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This method will save the attribute table into a sidecar VAT.DBF file.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;The resulting file will not be associated with any particular band.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -53,8 +53,15 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QgsFileWidget" name="mDbfPathWidget" native="true"/>
+      <item row="2" column="0">
+       <widget class="QgsFileWidget" name="mDbfPathWidget" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>180</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

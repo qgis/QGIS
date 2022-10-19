@@ -748,7 +748,7 @@ Loads the filesystem-based attribute table for the specified ``bandNumber`` from
 .. versionadded:: 3.30
 %End
 
-    virtual bool writeNativeAttributeTable( QString *errorMessage /Out/ = 0 ) const;  //#spellok
+    virtual bool writeNativeAttributeTable( QString *errorMessage /Out/ = 0 );  //#spellok
 
     virtual bool readNativeAttributeTable( QString *errorMessage /Out/  = 0 );
 %Docstring
