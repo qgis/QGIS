@@ -25,24 +25,13 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   setupUi( this );
 
-  const bool nativeRatSupported { mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable ) };
+  // Apparently, some drivers (HFA) ignore Min/Max fields and set them to generic,
+  // for this reason we disable the native support for thematic RATs (later in the loop)
+  bool nativeRatSupported { mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable ) };
 
   connect( mNativeRadioButton, &QRadioButton::toggled, this, &QgsCreateRasterAttributeTableDialog::updateButtons );
   connect( mDbfRadioButton, &QRadioButton::toggled, this, &QgsCreateRasterAttributeTableDialog::updateButtons );
 
-  if ( ! nativeRatSupported )
-  {
-    mNativeRadioButton->setEnabled( false );
-    mDbfRadioButton->setChecked( true );
-  }
-  else
-  {
-    mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
-    if ( QFile::exists( mRasterLayer->dataProvider()->dataSourceUri( ) ) )
-    {
-      mDbfPathWidget->setFilePath( mRasterLayer->dataProvider()->dataSourceUri( ) + ".vat.dbf" );
-    }
-  }
 
   // Check for existing rats
   QStringList existingRatsInfo;
@@ -52,6 +41,12 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
     {
       if ( QgsRasterAttributeTable *rat = mRasterLayer->attributeTable( bandNo ) )
       {
+        // disable the native support for thematic RATs
+        if ( nativeRatSupported && rat->type() != Qgis::RasterAttributeTableType::Athematic )
+        {
+          nativeRatSupported = false;
+          existingRatsInfo.push_back( tr( "The data provider supports attribute table storage but some drivers do not support 'thematic' types, for this reason the option is disabled." ) );
+        }
         if ( ! rat->filePath().isEmpty() )
         {
           existingRatsInfo.push_back( tr( "Raster band %1 already has an associated attribute table at %2." ).arg( QString::number( bandNo ), rat->filePath() ) );
@@ -67,15 +62,37 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
   if ( ! existingRatsInfo.isEmpty() )
   {
     mCreateInfoLabel->setText( mCreateInfoLabel->text().append( QStringLiteral( "<br><ul><li>" ) + existingRatsInfo.join( QStringLiteral( "</li><li>" ) ) ).append( QStringLiteral( "</ul>" ) ) );
+    mCreateInfoLabel->show();
+  }
+
+  if ( ! nativeRatSupported )
+  {
+    mNativeRadioButton->setEnabled( false );
+    mDbfRadioButton->setChecked( true );
+  }
+  else
+  {
+    mDbfPathWidget->setFilter( QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+    if ( QFile::exists( mRasterLayer->dataProvider()->dataSourceUri( ) ) )
+    {
+      mDbfPathWidget->setFilePath( mRasterLayer->dataProvider()->dataSourceUri( ) + ".vat.dbf" );
+    }
   }
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+
+  updateButtons();
 }
 
 QString QgsCreateRasterAttributeTableDialog::filePath() const
 {
   return mDbfPathWidget->filePath();
+}
+
+bool QgsCreateRasterAttributeTableDialog::saveToFile() const
+{
+  return mDbfRadioButton->isChecked();
 }
 
 bool QgsCreateRasterAttributeTableDialog::openWhenDone() const

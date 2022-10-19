@@ -15,6 +15,7 @@
  ***************************************************************************/
 #include "qgsrasterattributetablemodel.h"
 #include <QColor>
+#include <QFont>
 
 
 QString QgsRasterAttributeTableModel::RAT_COLOR_HEADER_NAME = QObject::tr( "Color" );
@@ -391,6 +392,12 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
     else if ( role == Qt::ItemDataRole::DisplayRole || role == Qt::ItemDataRole::EditRole )
     {
       return mRat->data().at( index.row() ).at( index.column() );
+    }
+    else if ( role == Qt::ItemDataRole::FontRole && ( field.isColor() || field.isRamp() ) )
+    {
+      QFont font;
+      font.setItalic( true );
+      return font;
     }
   }
   return QVariant();

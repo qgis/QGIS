@@ -12061,10 +12061,11 @@ void QgisApp::createRasterAttributeTable()
       layer->dataProvider()->setAttributeTable( bandNumber, rat );
 
       // Save it
-      const QString filePath { dlg.filePath() };
-      if ( ! filePath.isEmpty() )
+      const bool saveToFile { dlg.saveToFile() };
+      if ( saveToFile )
       {
-        if ( QMessageBox::question( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( filePath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        const QString filePath { dlg.filePath() };
+        if ( QFile::exists( filePath ) && QMessageBox::question( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( filePath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
         {
           return;
         }

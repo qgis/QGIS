@@ -149,9 +149,15 @@ QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       const int grayBand = 1;
 
       // If the raster band has an attribute table try to use it.
-      if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ) )
+      QString ratErrorMessage;
+      if ( QgsRasterAttributeTable *rat = provider->attributeTable( grayBand ); rat && rat->isValid( &ratErrorMessage ) )
       {
         renderer = rat->createRenderer( provider, grayBand );
+      }
+
+      if ( ! ratErrorMessage.isEmpty() )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Invalid RAT from band 1, RAT was not used to create the renderer: %1." ).arg( ratErrorMessage ), 2 );
       }
 
       if ( ! renderer )

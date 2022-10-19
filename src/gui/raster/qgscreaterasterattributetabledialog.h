@@ -49,6 +49,11 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     QString filePath( ) const;
 
     /**
+     * Returns TRUE if the option to save to a file is selected.
+     */
+    bool saveToFile( ) const;
+
+    /**
      * Returns TRUE if the option to open the newly created attribute table is checked.
      */
     bool openWhenDone( ) const;

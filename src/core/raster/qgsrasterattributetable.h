@@ -105,11 +105,6 @@ class CORE_EXPORT QgsRasterAttributeTable
     Qgis::RasterAttributeTableType type() const;
 
     /**
-     * Sets the Raster Attribute Table \a type
-     */
-    void setType( const Qgis::RasterAttributeTableType type );
-
-    /**
      * Returns TRUE if the Raster Attribute Table has color RGBA information.
      * \see color()
      * \see setColor()
@@ -231,6 +226,12 @@ class CORE_EXPORT QgsRasterAttributeTable
     bool insertColor( int position, QString *errorMessage SIP_OUT = nullptr );
 
     /**
+     * Change the usage of the field at index \a fieldIndex to \a usage with checks for allowed types.
+     * \return TRUE on success.
+     */
+    bool setFieldUsage( int fieldIndex, const Qgis::RasterAttributeTableFieldUsage usage );
+
+    /**
      * Create RGBA minimum and maximum fields and inserts them at \a position, optionally reporting any error in \a errorMessage, returns TRUE on success.
      */
     bool insertRamp( int position, QString *errorMessage SIP_OUT = nullptr );
@@ -331,17 +332,30 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * Returns the color ramp for an athematic Raster Attribute Table
-     * returning the \a labels, optionally generated from \a labelColumn.
+     * setting the labels in \a labels, optionally generated from \a labelColumn.
      */
     QgsGradientColorRamp colorRamp( QStringList &labels SIP_OUT, const int labelColumn = -1 ) const;
 
     /**
      * Creates and returns a (possibly NULLPTR) raster renderer for the
-     * specified \a provider and \a bandNumber and optionally classified
+     * specified \a provider and \a bandNumber and optionally reclassified
      * by \a classificationColumn, the default value of -1 makes the method
      * guess the classification column based on the field usage.
+     *
+     * \note athematic attribute tables with color ramps cannot be reclassified,
+     *       the renderer will still use the \a classificationColumn for
+     *       generating the class labels.
      */
     QgsRasterRenderer *createRenderer( QgsRasterDataProvider *provider, const int bandNumber, const int classificationColumn = -1 ) SIP_FACTORY;
+
+    /**
+     * Returns the data rows ordered by the value column(s) in ascending order, if
+     * the attribute table type is athematic the middle value for each row range
+     * is considered for ordering.
+     * If the attribute table does not have any value field (and hence is not valid),
+     * the current data are returned without any change.
+     */
+    QList<QList<QVariant>> orderedRows( ) const;
 
     /**
      * Try to determine the field usage from its \a name and \a type.
@@ -387,7 +401,7 @@ class CORE_EXPORT QgsRasterAttributeTable
      */
     static QHash<int, QgsRasterAttributeTable::UsageInformation> usageInformationInt( ) SIP_PYNAME( usageInformation );
 
-    static QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> sUsageInformation;
+    static QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> sUsageInformation SIP_SKIP;
 
 ///@encond
 
@@ -398,6 +412,9 @@ class CORE_EXPORT QgsRasterAttributeTable
     QList<QVariantList> mData;
     bool mIsDirty;
     QString mFilePath;
+
+    // Set type from fields.
+    void setType( );
 
 };
 

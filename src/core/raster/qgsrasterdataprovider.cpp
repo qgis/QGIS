@@ -714,7 +714,7 @@ bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const Q
   }
 }
 
-bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage ) const  //#spellok
+bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage )  //#spellok
 {
   Q_UNUSED( errorMessage );
   return false;

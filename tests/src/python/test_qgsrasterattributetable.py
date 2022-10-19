@@ -730,9 +730,9 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         rat.appendField(QgsRasterAttributeTable.Field('BlueMax', Qgis.RasterAttributeTableFieldUsage.BlueMax, QVariant.Int))
 
         data_rows = [
-            [2.599999, 2.99999, 'two.5-three', 0, 255, 0, 255, 0, 0],
-            [0, 1.99999, 'zero-two', 255, 0, 0, 0, 255, 0],
-            [2, 2.5, 'two-two.5', 0, 255, 0, 0, 0, 255],
+            [2.50000000001, 3, 'two.5-three', 0, 255, 0, 255, 0, 0],
+            [0, 2, 'zero-two', 255, 0, 0, 0, 255, 0],
+            [2.00000000001, 2.5, 'two-two.5', 0, 255, 0, 0, 0, 255],
         ]
 
         for row in data_rows:
@@ -752,7 +752,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         shader = renderer.shader()
 
         func = shader.rasterShaderFunction()
-        self.assertEqual([(int(100 * st.offset), st.color.name()) for st in func.sourceColorRamp().stops()], [(66, '#00ff00'), (66, '#00ff00'), (85, '#0000ff'), (85, '#00ff00')]
+        self.assertEqual([(int(100 * st.offset), st.color.name()) for st in func.sourceColorRamp().stops()], [(66, '#00ff00'), (83, '#0000ff')]
                          )
 
         # Test range classes and discrete colors on float
@@ -777,6 +777,15 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
             rat.appendRow(row)
 
         self.assertTrue(rat.isValid()[0])
+
+        # Test ordered
+        ordered = rat.orderedRows()
+        self.assertEqual(ordered, [
+            [-1e+25, 3000000000000, 'red class', 'class 0', 255, 0, 0],
+            [3000000000000, 1e+20, 'blue class', 'class 1', 0, 0, 255],
+            [1e+20, 5e+25, 'green class', 'class 2', 0, 255, 0],
+        ])
+
         raster.dataProvider().setAttributeTable(1, rat)
         ok, errors = raster.dataProvider().writeNativeAttributeTable()  # spellok
         self.assertTrue(ok)
@@ -787,6 +796,23 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         func = shader.rasterShaderFunction()
         self.assertEqual([i[0] for i in renderer.legendSymbologyItems()], ['red class', 'blue class', 'green class'])
+
+        # Test color less athematic RAT
+        rat = raster.attributeTable(1)
+        self.assertTrue(rat.removeField('Red')[0])
+        self.assertTrue(rat.removeField('Green')[0])
+        self.assertTrue(rat.removeField('Blue')[0])
+        self.assertFalse(rat.hasColor())
+        self.assertFalse(rat.hasRamp())
+
+        ramp = rat.colorRamp()
+        ramp, labels = rat.colorRamp()
+        self.assertEqual(len(ramp.stops()) + 1, len(labels))
+        self.assertEqual(labels, ['-1e+25 - 3e+12', '3e+12 - 1e+20', '1e+20 - 5e+25'])
+
+        ramp, labels = rat.colorRamp(2)
+        self.assertEqual(len(ramp.stops()) + 1, len(labels))
+        self.assertEqual(labels, ['red class', 'blue class', 'green class'])
 
 
 if __name__ == '__main__':

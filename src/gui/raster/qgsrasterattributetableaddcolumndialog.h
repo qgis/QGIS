@@ -23,11 +23,20 @@
 
 class QgsRasterAttributeTable;
 
+/**
+ * The QgsRasterAttributeTableAddColumnDialog class collects options to add a new column to a raster attribute table.
+ * \since QGIS 3.30
+ */
 class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, private Ui::QgsRasterAttributeTableAddColumnDialogBase
 {
     Q_OBJECT
   public:
 
+    /**
+     * Creates a new QgsRasterAttributeTableAddColumnDialog
+     * \param attributeTable the raster attribute table
+     * \param parent optional parent
+     */
     QgsRasterAttributeTableAddColumnDialog( QgsRasterAttributeTable *attributeTable, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
