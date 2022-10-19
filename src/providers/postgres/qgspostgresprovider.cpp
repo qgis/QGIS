@@ -416,7 +416,11 @@ QgsReferencedGeometry QgsPostgresProvider::fromEwkt( const QString &ewkt, QgsPos
 
   QRegularExpressionMatch regularExpressionMatch = regularExpressionSRID.match( ewkt );
   if ( !regularExpressionMatch.hasMatch() )
-    return QgsReferencedGeometry();
+  {
+    QgsGeometry geom = QgsGeometry::fromWkt( ewkt );
+    QgsCoordinateReferenceSystem crs; // TODO: use projects' crs ?
+    return QgsReferencedGeometry( geom, crs );
+  }
 
   QString wkt = ewkt.mid( regularExpressionMatch.captured( 0 ).size() );
   int srid = regularExpressionMatch.captured( 1 ).toInt();
