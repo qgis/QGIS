@@ -197,7 +197,7 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
         assert Qgis.GeometryOperationResult.Success == result[0]
-        assert [2, 1] == result[1]
+        assert [1, 2] == sorted(result[1])
         layer.commitChanges()
 
         assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
