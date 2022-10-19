@@ -459,17 +459,22 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   qreal maxGroupHeight = 0;
   int forcedColumnBreaks = 0;
   double totalSpaceAboveGroups = 0;
+
   for ( const LegendComponentGroup &group : std::as_const( componentGroups ) )
   {
-    totalHeight += spaceAboveGroup( group );
-    totalSpaceAboveGroups += spaceAboveGroup( group );
-    totalHeight += group.size.height();
-    maxGroupHeight = std::max( group.size.height(), maxGroupHeight );
+    const double topMargin = spaceAboveGroup( group );
+    totalHeight += topMargin;
+    totalSpaceAboveGroups += topMargin;
+
+    const double groupHeight = group.size.height();
+    totalHeight += groupHeight;
+    maxGroupHeight = std::max( groupHeight, maxGroupHeight );
 
     if ( group.placeColumnBreakBeforeGroup )
       forcedColumnBreaks++;
   }
-  double averageGroupHeight = ( totalHeight - totalSpaceAboveGroups ) / componentGroups.size();
+  const double totalGroupHeight = ( totalHeight - totalSpaceAboveGroups );
+  double averageGroupHeight = totalGroupHeight / componentGroups.size();
 
   if ( mSettings.columnCount() == 0 && forcedColumnBreaks == 0 )
     return 0;
@@ -494,36 +499,53 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
   double averageSpaceAboveGroups = 0;
   if ( componentGroups.size() > targetNumberColumns )
     averageSpaceAboveGroups = totalSpaceAboveGroups / ( componentGroups.size() );
-  // Correct the totalHeight using the number of columns because the first item
-  // in each column does not get any space above it
-  totalHeight -= targetNumberColumns * averageSpaceAboveGroups;
 
+  double totalRemainingGroupHeight = totalGroupHeight;
+  double totalRemainingSpaceAboveGroups = totalSpaceAboveGroups;
   for ( int i = 0; i < componentGroups.size(); i++ )
   {
-    LegendComponentGroup group = componentGroups.at( i );
-    double currentHeight = currentColumnHeight;
-    if ( currentColumnGroupCount > 0 )
-      currentHeight += spaceAboveGroup( group );
-    currentHeight += group.size.height();
+    const LegendComponentGroup &group = componentGroups.at( i );
+    const double currentGroupHeight = group.size.height();
+    const double spaceAboveCurrentGroup = spaceAboveGroup( group );
 
-    int numberRemainingGroups = componentGroups.size() - i;
+    totalRemainingGroupHeight -= currentGroupHeight;
+    totalRemainingSpaceAboveGroups -= spaceAboveCurrentGroup;
+
+    double currentColumnHeightIfGroupIsIncluded = currentColumnHeight;
+    if ( currentColumnGroupCount > 0 )
+      currentColumnHeightIfGroupIsIncluded += spaceAboveCurrentGroup;
+    currentColumnHeightIfGroupIsIncluded += currentGroupHeight;
+
+    const int numberRemainingGroupsIncludingThisOne = componentGroups.size() - i;
+    const int numberRemainingColumnsIncludingThisOne = numberAutoPlacedBreaks + 1 - autoPlacedBreaks;
+    const int numberRemainingColumnBreaks = numberRemainingColumnsIncludingThisOne - 1;
+
+    const double averageRemainingSpaceAboveGroups = numberRemainingGroupsIncludingThisOne > 1 ? ( totalRemainingSpaceAboveGroups / ( numberRemainingGroupsIncludingThisOne - 1 ) ) : 0;
+    const double estimatedRemainingSpaceAboveGroupsWhichWontBeUsedBecauseGroupsAreFirstInColumn = numberRemainingColumnBreaks * averageRemainingSpaceAboveGroups;
+    const double estimatedRemainingTotalHeightAfterThisGroup = totalRemainingGroupHeight
+        + totalRemainingSpaceAboveGroups
+        - estimatedRemainingSpaceAboveGroupsWhichWontBeUsedBecauseGroupsAreFirstInColumn;
+
+    const double estimatedTotalHeightOfRemainingColumnsIncludingThisOne = currentColumnHeightIfGroupIsIncluded
+        + estimatedRemainingTotalHeightAfterThisGroup;
 
     // Recalc average height for remaining columns including current
-    int numberRemainingColumns = numberAutoPlacedBreaks + 1 - autoPlacedBreaks;
-    double avgColumnHeight = ( currentHeight + numberRemainingGroups * averageGroupHeight + ( numberRemainingGroups - numberRemainingColumns - 1 ) *  averageSpaceAboveGroups ) / numberRemainingColumns;
+    double averageRemainingColumnHeightIncludingThisOne = estimatedTotalHeightOfRemainingColumnsIncludingThisOne / numberRemainingColumnsIncludingThisOne;
+
     // Round up to the next full number of groups to put in one column
     // This ensures that earlier columns contain more elements than later columns
-    int averageGroupsPerColumn = std::ceil( avgColumnHeight / ( averageGroupHeight + averageSpaceAboveGroups ) );
-    avgColumnHeight = averageGroupsPerColumn * ( averageGroupHeight + averageSpaceAboveGroups ) - averageSpaceAboveGroups;
+    const int averageGroupsPerRemainingColumnsIncludingThisOne = std::ceil( averageRemainingColumnHeightIncludingThisOne / ( averageGroupHeight + averageSpaceAboveGroups ) );
+
+    averageRemainingColumnHeightIncludingThisOne = averageGroupsPerRemainingColumnsIncludingThisOne * ( averageGroupHeight + averageSpaceAboveGroups ) - averageSpaceAboveGroups;
 
     bool canCreateNewColumn = ( currentColumnGroupCount > 0 )  // do not leave empty column
                               && ( currentColumn < targetNumberColumns - 1 ) // must not exceed max number of columns
                               && ( autoPlacedBreaks < numberAutoPlacedBreaks );
 
-    bool shouldCreateNewColumn = currentHeight  > avgColumnHeight  // current group height is greater than expected group height
+    bool shouldCreateNewColumn = currentColumnHeightIfGroupIsIncluded > averageRemainingColumnHeightIncludingThisOne  // current group height is greater than expected group height
                                  && currentColumnGroupCount > 0 // do not leave empty column
-                                 && currentHeight > maxGroupHeight  // no sense to make smaller columns than max group height
-                                 && currentHeight > maxColumnHeight; // no sense to make smaller columns than max column already created
+                                 && currentColumnHeightIfGroupIsIncluded > maxGroupHeight  // no sense to make smaller columns than max group height
+                                 && currentColumnHeightIfGroupIsIncluded > maxColumnHeight; // no sense to make smaller columns than max column already created
 
     shouldCreateNewColumn |= group.placeColumnBreakBeforeGroup;
     canCreateNewColumn |= group.placeColumnBreakBeforeGroup;
@@ -543,7 +565,7 @@ int QgsLegendRenderer::setColumns( QList<LegendComponentGroup> &componentGroups 
     }
     else
     {
-      currentColumnHeight = currentHeight;
+      currentColumnHeight = currentColumnHeightIfGroupIsIncluded;
     }
     componentGroups[i].column = currentColumn;
     currentColumnGroupCount++;
