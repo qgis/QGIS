@@ -234,7 +234,7 @@ QDomElement QgsTextMaskSettings::writeXml( QDomDocument &doc ) const
   return textMaskElem;
 }
 
-QList<QgsSymbolLayerReference> QgsTextMaskSettings::maskedSymbolLayers() const
+const QList<QgsSymbolLayerReference> &QgsTextMaskSettings::maskedSymbolLayers() const
 {
   return d->maskedSymbolLayers;
 }

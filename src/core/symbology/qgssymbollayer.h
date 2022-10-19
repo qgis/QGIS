@@ -630,6 +630,20 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual void prepareMasks( const QgsSymbolRenderContext &context );
 
+    /**
+     * Set symbol layer identifier
+     * This id has to be unique in the whole project
+     * \since QGIS 3.28
+     */
+    void setId( const QString &id );
+
+    /**
+     * Returns symbol layer identifier
+     * This id is unique in the whole project
+     * \since QGIS 3.28
+     */
+    const QString &id() const;
+
   protected:
 
     /**
@@ -647,7 +661,7 @@ class CORE_EXPORT QgsSymbolLayer
     bool mLocked = false;
     QColor mColor;
     int mRenderingPass = 0;
-
+    QString mId;
     QgsPropertyCollection mDataDefinedProperties;
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;

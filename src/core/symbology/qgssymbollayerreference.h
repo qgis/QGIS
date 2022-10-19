@@ -137,8 +137,12 @@ class CORE_EXPORT QgsSymbolLayerReference
     QgsSymbolLayerReference() = default;
 
     //! Constructor
-    QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer )
-      : mLayerId( layerId ), mSymbolLayerId( symbolLayer )
+    Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer )
+      : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
+    {}
+
+    QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId )
+      : mLayerId( layerId ), mSymbolLayerId( symbolLayerId )
     {}
 
     /**
@@ -148,14 +152,22 @@ class CORE_EXPORT QgsSymbolLayerReference
 
     /**
      * The symbol layer's id
+     * \deprecated since QGIS 3.28, use symbolLayerIdV2 instead
      */
-    QgsSymbolLayerId symbolLayerId() const { return mSymbolLayerId; }
+    Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const { return mDeprecatedSymbolLayerId; }
+
+    /**
+     * The symbol layer's id
+     * \since QGIS 3.28
+     */
+    QString symbolLayerIdV2() const { return mSymbolLayerId; }
 
     //! Comparison operator
     bool operator==( const QgsSymbolLayerReference &other ) const
     {
-      return mLayerId == other.mLayerId &&
-             mSymbolLayerId == other.mSymbolLayerId;
+      return mLayerId == other.mLayerId
+             && mSymbolLayerId == other.mSymbolLayerId
+             && mDeprecatedSymbolLayerId == other.mDeprecatedSymbolLayerId;
     }
 
 #ifdef SIP_RUN
@@ -167,24 +179,26 @@ class CORE_EXPORT QgsSymbolLayerReference
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
   private:
     QString mLayerId;
-    QgsSymbolLayerId mSymbolLayerId;
+    // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
+    QgsSymbolLayerId mDeprecatedSymbolLayerId;
+    QString mSymbolLayerId;
 };
 
-inline uint qHash( const QgsSymbolLayerId &id )
+Q_DECL_DEPRECATED inline uint qHash( const QgsSymbolLayerId &id )
 {
   return qHash( id.symbolKey() ) ^ qHash( id.symbolLayerIndexPath() );
 }
 
 inline uint qHash( const QgsSymbolLayerReference &r )
 {
-  return qHash( r.layerId() ) ^ qHash( r.symbolLayerId() );
+  return qHash( r.layerId() ) ^ qHash( r.symbolLayerIdV2() );
 }
 
 typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;

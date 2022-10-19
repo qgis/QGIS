@@ -84,7 +84,7 @@ class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMasking
 class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
 {
   public:
-    typedef std::function<void( const QgsSymbolLayer *, const QgsSymbolLayerId & )> SymbolLayerCallback;
+    typedef std::function<void( const QgsSymbolLayer *, const QString & )> SymbolLayerCallback;
 
     //! constructor
     SymbolLayerVisitor( SymbolLayerCallback callback );

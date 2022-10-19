@@ -133,6 +133,28 @@ class TestSelectiveMasking(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    def get_symbollayer_ref(self, layer, ruleId, symbollayer_ids):
+        """
+        Returns the symbol layer according to given path to
+
+        """
+
+        renderer = layer.renderer()
+        symbol = None
+        if renderer.type() == "categorizedSymbol":
+            i = renderer.categoryIndexForValue(ruleId)
+            cat = renderer.categories()[i]
+            symbol = cat.symbol()
+        elif renderer.type() == "singleSymbol":
+            symbol = renderer.symbol()
+
+        symbollayer = symbol.symbolLayer(symbollayer_ids[0])
+        for i in range(1, len(symbollayer_ids)):
+            symbol = symbollayer.subSymbol()
+            symbollayer = symbol.symbolLayer(symbollayer_ids[i])
+
+        return QgsSymbolLayerReference(layer.id(), symbollayer.id())
+
     def check_renderings(self, map_settings, control_name):
         """Test a rendering with different configurations:
         - parallel rendering, no cache
@@ -159,6 +181,10 @@ class TestSelectiveMasking(unittest.TestCase):
                 suffix = ("_parallel" if do_parallel else "_sequential") + ("_cache" if use_cache else "_nocache")
                 res = self.checker.compareImages(control_name + suffix)
                 self.report += self.checker.report()
+                f = open("/tmp/merdier.html", "w")
+                f.write(self.report)
+                f.close()
+
                 self.assertTrue(res)
 
                 print(f"=== Rendering took {float(t) / 1000.0}s")
@@ -216,6 +242,11 @@ class TestSelectiveMasking(unittest.TestCase):
         self.checker.setRenderedImage(image_result_filename)
         res = self.checker.compareImages(control_name)
         self.report += self.checker.report()
+
+        f = open("/tmp/merdier.html", "w")
+        f.write(self.report)
+        f.close()
+
         self.assertTrue(res)
 
     def test_save_restore_references(self):
@@ -226,7 +257,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # simple ids
         mask_layer = QgsMaskMarkerSymbolLayer()
         mask_layer.setMasks([
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
         ])
@@ -235,7 +266,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
         mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
         self.assertEqual(mask_layer2.masks(), [
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some_id", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some_other_id", [4, 5])),
         ])
@@ -243,7 +274,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # complex ids
         mask_layer = QgsMaskMarkerSymbolLayer()
         mask_layer.setMasks([
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some id, #1", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other id, like, this", [4, 5])),
         ])
@@ -252,7 +283,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
         mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
         self.assertEqual(mask_layer2.masks(), [
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some id, #1", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other id, like, this", [4, 5])),
         ])
@@ -260,7 +291,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # complex ids, v2
         mask_layer = QgsMaskMarkerSymbolLayer()
         mask_layer.setMasks([
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("a string; with bits", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "a string; with bits", [0]),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some; id, #1", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other; id, lik;e, this", [4, 5])),
         ])
@@ -269,7 +300,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
         mask_layer2 = QgsMaskMarkerSymbolLayer.create(props)
         self.assertEqual(mask_layer2.masks(), [
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("a string; with bits", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "a string; with bits", [0]),
             QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("some; id, #1", [1, 3, 5, 19])),
             QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("some other; id, lik;e, this", [4, 5])),
         ])
@@ -284,10 +315,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -307,10 +338,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_with_labels.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_with_labels, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -327,7 +358,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # polygons
-            QgsSymbolLayerReference(self.polys_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.polys_layer, "", [0]),
         ])
         label_settings.setFormat(fmt)
         self.lines_with_labels.labeling().setSettings(label_settings)
@@ -348,7 +379,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_with_labels.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_with_labels, "", [0]),
         ])
 
         label_settings.setFormat(fmt)
@@ -366,7 +397,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_with_labels.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_with_labels, "", [0]),
         ])
         label_settings.setFormat(fmt)
         self.lines_with_labels.labeling().setSettings(label_settings)
@@ -390,10 +421,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # mask only vertical segments of "roads"
-            QgsSymbolLayerReference(self.lines_layer2.id(), QgsSymbolLayerId("", [1, 0])),
+            self.get_symbollayer_ref(self.lines_layer2, "", [1, 0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -416,10 +447,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         # overwrite with data-defined properties
         fmt.dataDefinedProperties().setProperty(QgsPalLayerSettings.MaskEnabled, QgsProperty.fromExpression('1'))
@@ -455,10 +486,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         child.setSettings(label_settings)
@@ -475,7 +506,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the polygons
-            QgsSymbolLayerReference(self.polys_layer2.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.polys_layer2, "", [0]),
         ])
         label_settings.setFormat(fmt)
         child.setSettings(label_settings)
@@ -495,10 +526,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -520,7 +551,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -540,7 +571,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -558,7 +589,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))
+            self.get_symbollayer_ref(self.lines_layer, "", [0])
         ])
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -579,7 +610,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the yellow part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 1)),
+            self.get_symbollayer_ref(self.lines_layer, "", [1]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -597,7 +628,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))
+            self.get_symbollayer_ref(self.lines_layer, "", [0])
         ])
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -618,7 +649,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -636,7 +667,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the yellow part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 1))
+            self.get_symbollayer_ref(self.lines_layer, "", [1])
         ])
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -679,7 +710,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the yellow part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 1)),
+            self.get_symbollayer_ref(self.lines_layer, "", [1]),
         ])
         # add an outer glow effect to the mask layer
         blur = QgsOuterGlowEffect.create({"enabled": "1",
@@ -707,10 +738,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         # add an outer glow effect to the mask
         blur = QgsOuterGlowEffect.create({"enabled": "1",
@@ -748,7 +779,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))])
+            self.get_symbollayer_ref(self.lines_layer, "", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -763,6 +794,7 @@ class TestSelectiveMasking(unittest.TestCase):
 
     def test_layout_export(self):
         """Test mask effects in a layout export at 300 dpi"""
+
         # modify labeling settings
         label_settings = self.polys_layer.labeling().settings()
         fmt = label_settings.format()
@@ -775,10 +807,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -799,10 +831,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         # add an outer glow effect to the mask
         blur = QgsOuterGlowEffect.create({"enabled": "1",
@@ -833,7 +865,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -851,7 +883,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
 
         # add an outer glow effect to the mask
@@ -892,10 +924,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -918,7 +950,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -939,7 +971,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         # add this mask layer to the point layer
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
@@ -963,10 +995,10 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
             # the black jets
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("B52", 0)),
-            QgsSymbolLayerReference(self.points_layer.id(), QgsSymbolLayerId("Jet", 0))])
+            self.get_symbollayer_ref(self.points_layer, "B52", [0]),
+            self.get_symbollayer_ref(self.points_layer, "Jet", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -989,7 +1021,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))])
+            self.get_symbollayer_ref(self.lines_layer, "", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
@@ -1055,7 +1087,7 @@ class TestSelectiveMasking(unittest.TestCase):
         mask_layer.setSubSymbol(circle_symbol)
         mask_layer.setMasks([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0)),
+            self.get_symbollayer_ref(self.lines_layer, "", [0]),
         ])
         self.points_layer.renderer().symbol().appendSymbolLayer(mask_layer)
 
@@ -1069,7 +1101,7 @@ class TestSelectiveMasking(unittest.TestCase):
         # and mask other symbol layers underneath
         fmt.mask().setMaskedSymbolLayers([
             # the black part of roads
-            QgsSymbolLayerReference(self.lines_layer.id(), QgsSymbolLayerId("", 0))])
+            self.get_symbollayer_ref(self.lines_layer, "", [0])])
 
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)

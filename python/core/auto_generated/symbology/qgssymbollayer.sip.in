@@ -648,6 +648,22 @@ This should be called prior to calling :py:func:`~QgsSymbolLayer.startRender` me
 .. versionadded:: 3.26
 %End
 
+    void setId( const QString &id );
+%Docstring
+Set symbol layer identifier
+This id has to be unique in the whole project
+
+.. versionadded:: 3.28
+%End
+
+    const QString &id() const;
+%Docstring
+Returns symbol layer identifier
+This id is unique in the whole project
+
+.. versionadded:: 3.28
+%End
+
   protected:
 
     QgsSymbolLayer( Qgis::SymbolType type, bool locked = false );
@@ -657,7 +673,6 @@ Constructor for QgsSymbolLayer.
 :param type: specifies the associated symbol type
 :param locked: if ``True``, then symbol layer colors will be locked and will ignore any symbol-level color changes.
 %End
-
 
 
 

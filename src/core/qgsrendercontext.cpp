@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgselevationmap.h"
 #include "qgsunittypes.h"
+#include "qgssymbollayer.h"
 
 #define POINTS_TO_MM 2.83464567
 #define INCH_TO_MM 25.4
@@ -708,12 +709,39 @@ void QgsRenderContext::setElevationMap( QgsElevationMap *map )
   mElevationMap = map;
 }
 
-void QgsRenderContext::addSymbolLayerClipPath( const QgsSymbolLayer *symbolLayer, QPainterPath path )
+void QgsRenderContext::addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path )
 {
-  mSymbolLayerClipPaths[ symbolLayer ].append( path );
+  mSymbolLayerClipPaths[ symbolLayerId ].append( path );
 }
 
-QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QgsSymbolLayer *symbolLayer ) const
+QList<QPainterPath> QgsRenderContext::symbolLayerClipPaths( const QString &symbolLayerId ) const
 {
-  return mSymbolLayerClipPaths[ symbolLayer ];
+  return mSymbolLayerClipPaths[ symbolLayerId ];
+}
+
+void QgsRenderContext::setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers )
+{
+  mDisabledSymbolLayers.clear();
+  for ( const QgsSymbolLayer *symbolLayer : symbolLayers )
+    mDisabledSymbolLayers << symbolLayer->id();
+}
+
+void QgsRenderContext::setDisabledSymbolLayersV2( const QSet<QString> &symbolLayers )
+{
+  mDisabledSymbolLayers = symbolLayers;
+}
+
+QSet<const QgsSymbolLayer *> QgsRenderContext::disabledSymbolLayers() const
+{
+  return QSet<const QgsSymbolLayer *>();
+}
+
+const QSet<QString> &QgsRenderContext::disabledSymbolLayersV2() const
+{
+  return mDisabledSymbolLayers;
+}
+
+bool QgsRenderContext::isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const
+{
+  return !mDisabledSymbolLayers.contains( layer->id() );
 }

@@ -1327,6 +1327,7 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
   const bool locked = element.attribute( QStringLiteral( "locked" ) ).toInt();
   const bool enabled = element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   const int pass = element.attribute( QStringLiteral( "pass" ) ).toInt();
+  const QString id = element.attribute( QStringLiteral( "id" ) );
 
   // parse properties
   QVariantMap props = parseProperties( element );
@@ -1343,6 +1344,10 @@ QgsSymbolLayer *QgsSymbolLayerUtils::loadSymbolLayer( QDomElement &element, cons
     layer->setLocked( locked );
     layer->setRenderingPass( pass );
     layer->setEnabled( enabled );
+
+    // old project format, empty is missing, keep the actual layer one
+    if ( !id.isEmpty() )
+      layer->setId( id );
 
     //restore layer effect
     const QDomElement effectElem = element.firstChildElement( QStringLiteral( "effect" ) );
@@ -1424,6 +1429,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     layerEl.setAttribute( QStringLiteral( "enabled" ), layer->enabled() );
     layerEl.setAttribute( QStringLiteral( "locked" ), layer->isLocked() );
     layerEl.setAttribute( QStringLiteral( "pass" ), layer->renderingPass() );
+    layerEl.setAttribute( QStringLiteral( "id" ), layer->id() );
 
     QVariantMap props = layer->properties();
 

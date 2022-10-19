@@ -977,7 +977,7 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
             for ( const auto &r : maskSettings.maskedSymbolLayers() )
             {
               QgsMaskedLayer &maskedLayer = maskedLayers[currentRule][r.layerId()];
-              maskedLayer.symbolLayerIds.insert( r.symbolLayerId() );
+              maskedLayer.symbolLayerIds.insert( r.symbolLayerIdV2() );
               maskedLayer.hasEffects = hasEffects;
             }
           }
@@ -1032,7 +1032,7 @@ QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *lay
           {
             QgsMaskedLayer &maskedLayer = maskedLayers[mask.layerId()];
             maskedLayer.hasEffects |= slHasEffects;
-            maskedLayer.symbolLayerIds.insert( mask.symbolLayerId() );
+            maskedLayer.symbolLayerIds.insert( mask.symbolLayerIdV2() );
           }
         }
 

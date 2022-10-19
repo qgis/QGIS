@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
       bool isLabeling = false;
 
       //! The symbol layer id
-      QgsSymbolLayerId symbolLayerId;
+      QString symbolLayerId;
     };
 
     //! constructor

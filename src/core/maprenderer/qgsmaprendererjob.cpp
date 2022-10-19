@@ -653,7 +653,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
   // We collect for each layer, the set of symbol layers that will be "masked"
   // and the list of source layers that have a mask
-  QHash<QString, QPair<QSet<QgsSymbolLayerId>, QList<MaskSource>>> maskedSymbolLayers;
+  QHash<QString, QPair<QSet<QString>, QList<MaskSource>>> maskedSymbolLayers;
 
   const bool forceVector = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
                            && !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
@@ -732,10 +732,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
         if ( !layerJobMapping.contains( sourceLayerId ) )
           continue;
 
-        for ( auto slIt = mit.value().symbolLayerIds.begin(); slIt != mit.value().symbolLayerIds.end(); slIt++ )
-        {
-          slRefs.insert( QgsSymbolLayerReference( mit.key(), *slIt ) );
-        }
+        for ( QString symbolLayerId : mit.value().symbolLayerIds )
+          slRefs.insert( QgsSymbolLayerReference( sourceLayerId, symbolLayerId ) );
 
         hasEffects |= mit.value().hasEffects;
       }
@@ -865,7 +863,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       continue;
 
     QList<MaskSource> &sourceList = it->second;
-    const QSet<QgsSymbolLayerId> &symbolList = it->first;
+    const QSet<QString> &symbolList = it->first;
 
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();
@@ -919,7 +917,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     // Render only the non masked symbol layer and we will compose 2nd pass with mask and first pass rendering in composeSecondPass
     // If vector output is enabled, disabled symbol layers would be actually rendered and masked with clipping path set in QgsMapRendererJob::initSecondPassJobs
-    job2.context()->setDisabledSymbolLayers( QgsSymbolLayerUtils::toSymbolLayerPointers( mapRenderer->featureRenderer(), symbolList ) );
+    job2.context()->setDisabledSymbolLayersV2( symbolList );
   }
 
   return secondPassJobs;
@@ -942,13 +940,13 @@ void QgsMapRendererJob::initSecondPassJobs( std::vector< LayerRenderJob > &secon
     {
       QPainter *maskPainter = p.first ? p.first->maskPainter.get() : labelJob.maskPainters[p.second].get();
       QPainterPath path = static_cast<QgsMaskPaintDevice *>( maskPainter->device() )->maskPainterPath();
-      for ( const QgsSymbolLayer *symbolLayer : job.context()->disabledSymbolLayers() )
+      for ( const QString &symbolLayerId : job.context()->disabledSymbolLayersV2() )
       {
-        job.context()->addSymbolLayerClipPath( symbolLayer, path );
+        job.context()->addSymbolLayerClipPath( symbolLayerId, path );
       }
     }
 
-    job.context()->setDisabledSymbolLayers( QSet<const QgsSymbolLayer *>() );
+    job.context()->setDisabledSymbolLayersV2( QSet<QString>() );
   }
 }
 

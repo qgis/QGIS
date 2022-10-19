@@ -106,19 +106,31 @@ Type used to refer to a specific symbol layer in a symbol of a layer.
 Default constructor
 %End
 
-    QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer );
+ QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer );
 %Docstring
 Constructor
 %End
+
+    QgsSymbolLayerReference( const QString &layerId, const QString &symbolLayerId );
 
     QString layerId() const;
 %Docstring
 The referenced vector layer / feature renderer
 %End
 
-    QgsSymbolLayerId symbolLayerId() const;
+ QgsSymbolLayerId symbolLayerId() const;
 %Docstring
 The symbol layer's id
+
+.. deprecated:: QGIS 3.28
+  use symbolLayerIdV2 instead
+%End
+
+    QString symbolLayerIdV2() const;
+%Docstring
+The symbol layer's id
+
+.. versionadded:: 3.28
 %End
 
     bool operator==( const QgsSymbolLayerReference &other ) const;
@@ -131,13 +143,13 @@ The symbol layer's id
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2 (%3)>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerId().symbolKey(), pathString.join( ',' ) );
+    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 
 };
 
-uint qHash( const QgsSymbolLayerId &id );
+ uint qHash( const QgsSymbolLayerId &id );
 
 uint qHash( const QgsSymbolLayerReference &r );
 

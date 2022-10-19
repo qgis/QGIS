@@ -198,7 +198,7 @@ class CORE_EXPORT QgsTextMaskSettings
      * \returns a list of references to masked symbol layers
      * \see setMaskedSymbolLayers
      */
-    QList<QgsSymbolLayerReference> maskedSymbolLayers() const;
+    const QList<QgsSymbolLayerReference> &maskedSymbolLayers() const;
 
     /**
      * Sets the symbol layers that will be masked by this buffer.

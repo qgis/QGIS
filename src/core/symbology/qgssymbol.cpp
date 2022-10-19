@@ -1153,6 +1153,7 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
     layer->setLocked( ( *it )->isLocked() );
     layer->setRenderingPass( ( *it )->renderingPass() );
     layer->setEnabled( ( *it )->enabled() );
+    layer->setId( ( *it )->id() );
     lst.append( layer );
   }
   return lst;
