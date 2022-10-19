@@ -70,6 +70,12 @@
 # were copied from the original srs.db shipped with QGIS trunk r8544,
 # after dumping it to a plain text format with SQLite Database Browser.
 
+# GNU prefix command for bsd/mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" == *bsd* ]] || [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
+
 ### FUNCTIONS ###
 
 mk_tbl_bookmarks ()
@@ -106,7 +112,7 @@ pop_tbl_ellps ()
 # Populate ellipsoids table. Care about (possible) apostrophes in strings, which
 # would brake the SQL syntax, as the "'" is also a string separator:
 
-proj -le | sed 's/^ *//g' | tr -d "\t" | sed "s/  */ /g" | sed "s/'/''/g" | awk 'BEGIN {sep="'\'','\''"} NF>4 {printf $1 sep $4; for (i=5;i<NF+1;i++) {printf " "$i} print sep $2 sep $3} NF<5 {print $1 sep $4 sep $2 sep $3}' | while read i; do
+proj -le | ${GP}sed 's/^ *//g' | tr -d "\t" | ${GP}sed "s/  */ /g" | ${GP}sed "s/'/''/g" | awk 'BEGIN {sep="'\'','\''"} NF>4 {printf $1 sep $4; for (i=5;i<NF+1;i++) {printf " "$i} print sep $2 sep $3} NF<5 {print $1 sep $4 sep $2 sep $3}' | while read i; do
  echo "INSERT INTO tbl_ellipsoid VALUES('"${i}"');"
 done
 }
@@ -129,11 +135,11 @@ pop_tbl_projs ()
 
 # Process each proj4 projection acronym...
 
-for i in $(proj -l | cut -d" " -f1 | sed -e 's/lonlat/longlat/' -e 's/latlon/latlong/') ; do
+for i in $(proj -l | cut -d" " -f1 | ${GP}sed -e 's/lonlat/longlat/' -e 's/latlon/latlong/') ; do
 
  #...to extract it's parameters, making sure not more than 4 fields are created...
 
- proj=$(proj -l=$i | tr -d "\t" | sed 's/^ *//g' | sed 's/ : /\n/' | sed "s/'/''/g" | awk '{print "'\''"$0"'\''"}' | tr "\n" "," | sed 's/,$/\n/' | sed "s/','/ /4g")
+ proj=$(proj -l=$i | tr -d "\t" | ${GP}sed 's/^ *//g' | ${GP}sed 's/ : /\n/' | ${GP}sed "s/'/''/g" | awk '{print "'\''"$0"'\''"}' | tr "\n" "," | ${GP}sed 's/,$/\n/' | ${GP}sed "s/','/ /4g")
 
  #...count the number of parameters...
 
@@ -197,16 +203,16 @@ no=0
 #Find valid EPSG numbers parsing GDAL's pcs.csv:
 for i in $(awk 'NR>1' ${gdal_share}/pcs.csv | cut -d, -f1); do
 
-  raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: ")
+  raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | ${GP}sed 's/  <> $//' | grep -v "^ERROR 6: ")
 
   if [[ -n "$raw" ]]; then
 
    no=$((no + 1))
-   name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
+   name=$(echo $raw | ${GP}sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | ${GP}sed 's/ <[[:digit:]]\{1,\}>//' | ${GP}sed "s/'/''/g")
    proj=$(echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2)
    ellps=$(echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2)
    srs=$(echo $raw | grep -o "+proj.\{1,\} +no_defs")
-   epsg=$(echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g')
+   epsg=$(echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | ${GP}sed 's/[^[:digit:]]//g')
    isgeo=0
 
    echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},${epsg},${isgeo});"
@@ -220,16 +226,16 @@ done
 #Find valid EPSG numbers parsing GDAL's gcs.csv:
 for i in $(awk 'NR>1' ${gdal_share}/gcs.csv | cut -d, -f1); do
 
-  raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | sed 's/  <> $//' | grep -v "^ERROR 6: ")
+  raw=$(epsg_tr.py -proj4 $i 2>&1 | tr "\n" " " | ${GP}sed 's/  <> $//' | grep -v "^ERROR 6: ")
 
   if [[ -n "$raw" ]]; then
 
    no=$((no + 1))
-   name=$(echo $raw | sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | sed 's/ <[[:digit:]]\{1,\}>//' | sed "s/'/''/g")
+   name=$(echo $raw | ${GP}sed 's/^# //' | grep -o "^.\{1,\} <[[:digit:]]\{1,\}>" | ${GP}sed 's/ <[[:digit:]]\{1,\}>//' | ${GP}sed "s/'/''/g")
    proj=$(echo $raw | grep -o "+proj=[^[:space:]]\{1,\}" | cut -d"=" -f2)
    ellps=$(echo $raw | grep -o "+ellps=[^[:space:]]\{1,\}" | cut -d"=" -f2)
    srs=$(echo $raw | grep -o "+proj.\{1,\} +no_defs")
-   epsg=$(echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | sed 's/[^[:digit:]]//g')
+   epsg=$(echo $raw | grep -o ' <[[:digit:]]\{1,\}> ' | ${GP}sed 's/[^[:digit:]]//g')
    isgeo=1
 
    echo "INSERT INTO tbl_srs VALUES(${no},'${name}','${proj}','${ellps}','${srs}',${epsg},${epsg},${isgeo});"
