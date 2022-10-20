@@ -82,7 +82,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     QgsMeshDatasetGroup *createZValueDatasetGroup() SIP_TRANSFERBACK;
 
-    //! Initializes the mesh editor and returns first error if the internal native mesh have topologic errors
+    //! Initializes the mesh editor and returns first error if the internal native mesh has topological errors
     QgsMeshEditingError initialize();
 
     /**
