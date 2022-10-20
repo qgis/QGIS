@@ -98,7 +98,6 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \since QGIS 3.28
      */
-
     bool fixError( const QgsMeshEditingError &error );
 
     //! Resets the triangular mesh
