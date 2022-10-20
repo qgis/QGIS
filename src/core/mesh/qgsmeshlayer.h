@@ -786,10 +786,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     /**
     * Starts editing of the mesh frame. Coordinate \a transform used to initialize the triangular mesh if needed.
     * This operation will disconnect the mesh layer from the data provider and removes all existing dataset group.
-    * Returns FALSE if starting fails and the error that is the reason (No error, if the mesh is not editable or already in edit mode).
+    * Returns FALSE if starting fails and the \a error that is the reason (No error, if the mesh is not editable or already in edit mode).
     *
-    * If fixErrors is set to TRUE, errors will be attempted to be fixed.
-    * In that case returns FALSE if there is an error that could not be fixed and the remaining error.
+    * If \a fixErrors is set to TRUE, errors will be attempted to be fixed.
+    * In that case returns FALSE if there is an error that could not be fixed and the remaining \a error.
     *
     * \since QGIS 3.28
     */
