@@ -62,14 +62,17 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f = QgsFeature(layer.fields(), 1)
         f.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
         assert pr.addFeatures([f])
-        assert layer.featureCount() == 1
+        self.assertEqual(layer.featureCount(), 1)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRing([QgsPointXY(1, 1), QgsPointXY(1, 2), QgsPointXY(2, 2), QgsPointXY(2, 1), QgsPointXY(1, 1)])
-        assert Qgis.GeometryOperationResult.Success == result[0]
+        self.assertEqual(Qgis.GeometryOperationResult.Success, result[0])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(1 1, 1 2, 2 2, 2 1, 1 1))"
+        )
 
     def testAddRingOutside(self):
         # test trying to add ring outside the feature's extent
@@ -80,14 +83,17 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f = QgsFeature(layer.fields(), 1)
         f.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 5 0, 5 5, 0 5, 0 0))'))
         assert pr.addFeatures([f])
-        assert layer.featureCount() == 1
+        self.assertEqual(layer.featureCount(), 1)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRing([QgsPointXY(-1, -1), QgsPointXY(-1, -2), QgsPointXY(-2, -2), QgsPointXY(-2, -1), QgsPointXY(-1, -1)])
-        assert Qgis.GeometryOperationResult.AddRingNotInExistingFeature == result[0]
+        self.assertEqual(Qgis.GeometryOperationResult.AddRingNotInExistingFeature, result[0])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
+        )
 
     def testAddRingOverlappedFeatures(self):
         # test adding ring on multi features
@@ -101,15 +107,22 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f2 = QgsFeature(layer.fields(), 1)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
         assert pr.addFeatures([f1, f2])
-        assert layer.featureCount() == 2
+        self.assertEqual(layer.featureCount(), 2)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRing([QgsPointXY(3, 3), QgsPointXY(3, 4), QgsPointXY(4, 4), QgsPointXY(4, 3), QgsPointXY(3, 3)])
-        assert Qgis.GeometryOperationResult.Success == result[0]
+        self.assertEqual(Qgis.GeometryOperationResult.Success,
+                         result[0])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
-        assert layer.getFeature(2).geometry().asWkt() == "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        )
 
     def testAddRingV2NotEditable(self):
         # test adding ring on multi features
@@ -123,17 +136,23 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f2 = QgsFeature(layer.fields(), 1)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
         assert pr.addFeatures([f1, f2])
-        assert layer.featureCount() == 2
+        self.assertEqual(layer.featureCount(), 2)
         layer.commitChanges()
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
-        assert Qgis.GeometryOperationResult.LayerNotEditable == result[0]
-        assert [] == result[1]
+        self.assertEqual(Qgis.GeometryOperationResult.LayerNotEditable, result[0])
+        self.assertEqual([], result[1])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
-        assert layer.getFeature(2).geometry().asWkt() == "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        )
 
     def testAddRingV2NotClosedRing(self):
         # test adding ring on multi features
@@ -147,16 +166,22 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f2 = QgsFeature(layer.fields(), 1)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
         assert pr.addFeatures([f1, f2])
-        assert layer.featureCount() == 2
+        self.assertEqual(layer.featureCount(), 2)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3)]))
-        assert Qgis.GeometryOperationResult.AddRingNotClosed == result[0]
-        assert [] == result[1]
+        self.assertEqual(Qgis.GeometryOperationResult.AddRingNotClosed, result[0])
+        self.assertEqual([], result[1])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
-        assert layer.getFeature(2).geometry().asWkt() == "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        )
 
     def testAddRingV2Outside(self):
         # test adding ring on multi features
@@ -170,16 +195,25 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f2 = QgsFeature(layer.fields(), 1)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
         assert pr.addFeatures([f1, f2])
-        assert layer.featureCount() == 2
+        self.assertEqual(layer.featureCount(), 2)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRingV2(QgsLineString([QgsPoint(8, 8), QgsPoint(8, 9), QgsPoint(9, 9), QgsPoint(9, 8), QgsPoint(8, 8)]))
-        assert Qgis.GeometryOperationResult.AddRingNotInExistingFeature == result[0]
-        assert [] == result[1]
+        self.assertEqual(
+            Qgis.GeometryOperationResult.AddRingNotInExistingFeature,
+            result[0]
+        )
+        self.assertEqual([], result[1])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
-        assert layer.getFeature(2).geometry().asWkt() == "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        )
 
     def testAddRingV2(self):
         # test adding ring on multi features
@@ -192,16 +226,22 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f2 = QgsFeature(layer.fields(), 1)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
         assert pr.addFeatures([f1, f2])
-        assert layer.featureCount() == 2
+        self.assertEqual(layer.featureCount(), 2)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]))
-        assert Qgis.GeometryOperationResult.Success == result[0]
+        self.assertEqual(Qgis.GeometryOperationResult.Success, result[0])
         self.assertEqual({2, 1}, set(result[1]))
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
-        assert layer.getFeature(2).geometry().asWkt() == "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2),(3 3, 3 4, 4 4, 4 3, 3 3))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2),(3 3, 3 4, 4 4, 4 3, 3 3))"
+        )
 
     def testAddRingV2SelectedFeatures(self):
         # test adding ring on multi features
@@ -215,16 +255,22 @@ class TestQgsVectorLayerEditUtils(unittest.TestCase):
         f2 = QgsFeature(layer.fields(), 1)
         f2.setGeometry(QgsGeometry.fromWkt('POLYGON((2 2, 6 2, 6 6, 2 6, 2 2))'))
         assert pr.addFeatures([f1, f2])
-        assert layer.featureCount() == 2
+        self.assertEqual(layer.featureCount(), 2)
 
         vle = QgsVectorLayerEditUtils(layer)
         result = vle.addRingV2(QgsLineString([QgsPoint(3, 3), QgsPoint(3, 4), QgsPoint(4, 4), QgsPoint(4, 3), QgsPoint(3, 3)]), [1])
-        assert Qgis.GeometryOperationResult.Success == result[0]
-        assert [1] == result[1]
+        self.assertEqual(Qgis.GeometryOperationResult.Success, result[0])
+        self.assertEqual([1], result[1])
         layer.commitChanges()
 
-        assert layer.getFeature(1).geometry().asWkt() == "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
-        assert layer.getFeature(2).geometry().asWkt() == "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        self.assertEqual(
+            layer.getFeature(1).geometry().asWkt(),
+            "Polygon ((0 0, 5 0, 5 5, 0 5, 0 0),(3 3, 3 4, 4 4, 4 3, 3 3))"
+        )
+        self.assertEqual(
+            layer.getFeature(2).geometry().asWkt(),
+            "Polygon ((2 2, 6 2, 6 6, 2 6, 2 2))"
+        )
 
 
 if __name__ == '__main__':
