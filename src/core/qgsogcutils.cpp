@@ -3435,6 +3435,11 @@ QgsExpressionNode *QgsOgcUtilsExpressionFromFilter::nodeLiteralFromOgcFilter( co
   }
 
   std::unique_ptr<QgsExpressionNode> root;
+  if ( !element.hasChildNodes() )
+  {
+    root.reset( new QgsExpressionNodeLiteral( QVariant( "" ) ) );
+    return root.release();
+  }
 
   // the literal content can have more children (e.g. CDATA section, text, ...)
   QDomNode childNode = element.firstChild();
