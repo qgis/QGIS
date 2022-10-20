@@ -320,6 +320,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     //! members for split face
     int mSplittableFaceCount = 0;
+    //! menbers for refinement face
+    int mRefinableFaceCount = 0;
 
     // assiociated widget
     QgsZValueWidget *mZValueWidget = nullptr; //own by QgsUserInputWidget instance
