@@ -137,14 +137,25 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
         if ( const std::string header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
         {
 
+          // Extract filename dealing with ill formed headers with unquoted file names
+
           std::string ascii;
-          const std::string q1 { R"(filename=")" };
-          if ( const unsigned long pos = header.find( q1 ); pos != std::string::npos )
+
+          const std::string q1 { R"(filename=)" };
+
+          if ( size_t pos = header.find( q1 ); pos != std::string::npos )
           {
-            const unsigned long len = pos + q1.size();
+
+            // Deal with ill formed headers with unquoted file names
+            if ( header.find( R"(filename=")" ) != std::string::npos )
+            {
+              pos++;
+            }
+
+            const size_t len = pos + q1.size();
 
             const std::string q2 { R"(")" };
-            if ( unsigned long pos = header.find( q2, len ); pos != std::string::npos )
+            if ( size_t pos = header.find( q2, len ); pos != std::string::npos )
             {
               bool escaped = false;
               while ( pos != std::string::npos && header[pos - 1] == '\\' )
@@ -178,7 +189,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
           std::string utf8;
 
           const std::string u { R"(UTF-8'')" };
-          if ( const unsigned long pos = header.find( u ); pos != std::string::npos )
+          if ( const size_t pos = header.find( u ); pos != std::string::npos )
           {
             utf8 = header.substr( pos + u.size() );
           }
