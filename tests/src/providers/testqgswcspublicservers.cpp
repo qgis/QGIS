@@ -37,13 +37,7 @@
 #include "qgssettings.h"
 
 #ifdef Q_OS_WIN
-// Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
-#ifdef MSVC
-#undef _fmode
-int _fmode = _O_BINARY;
-#else
-#endif  //_MSC_VER
 #else
 #include <getopt.h>
 #endif
