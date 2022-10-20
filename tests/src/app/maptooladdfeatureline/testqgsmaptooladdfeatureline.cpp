@@ -384,14 +384,14 @@ void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
   utils.mouseClick( 3, 2, Qt::LeftButton );
 
   // be sure it doesn't create an extra curve
-  QCOMPARE( mCaptureTool->captureCurve()->asWkt( 2 ), QStringLiteral( "CompoundCurve ((-841263.05 6405990.06, -841261.52 6405990.18, -841260.11 6405991.83))" ) );
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( -3 ), QStringLiteral( "CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))" ) );
 
   utils.mouseClick( 3, 2, Qt::RightButton );
 
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
-  QCOMPARE( lineLayer3857->getFeature( newFid ).geometry().asWkt( 2 ), QStringLiteral( "LineString (-841263.05 6405990.06, -841261.52 6405990.18, -841260.11 6405991.83)" ) );
+  QCOMPARE( lineLayer3857->getFeature( newFid ).geometry().asWkt( -3 ), QStringLiteral( "LineString (-841000 6406000, -841000 6406000, -841000 6406000)" ) );
 
   lineLayer3857->undoStack()->undo();
 
@@ -409,7 +409,7 @@ void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
   const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
-  QCOMPARE( lineLayer3857->getFeature( newFid2 ).geometry().asWkt( 2 ), QStringLiteral( "LineString (-841264.71 6405991.49, -841263.05 6405990.06, -841261.52 6405990.18, -841260.11 6405991.83, -841260.11 6405991.83, -841258.46 6405990.41)" ) );
+  QCOMPARE( lineLayer3857->getFeature( newFid2 ).geometry().asWkt( -3 ), QStringLiteral( "LineString (-841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000)" ) );
 
   mEnableTracingAction->setChecked( false );
   mCanvas->setCurrentLayer( mLayerLine );
