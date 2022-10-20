@@ -775,10 +775,10 @@ This operation will disconnect the mesh layer from the data provider and removes
 %Docstring
 Starts editing of the mesh frame. Coordinate ``transform`` used to initialize the triangular mesh if needed.
 This operation will disconnect the mesh layer from the data provider and removes all existing dataset group.
-Returns ``False`` if starting fails and the error that is the reason (No error, if the mesh is not editable or already in edit mode).
+Returns ``False`` if starting fails and the ``error`` that is the reason (No error, if the mesh is not editable or already in edit mode).
 
-If fixErrors is set to ``True``, errors will be attempted to be fixed.
-In that case returns ``False`` if there is an error that could not be fixed and the remaining error.
+If ``fixErrors`` is set to ``True``, errors will be attempted to be fixed.
+In that case returns ``False`` if there is an error that could not be fixed and the remaining ``error``.
 
 .. versionadded:: 3.28
 %End
