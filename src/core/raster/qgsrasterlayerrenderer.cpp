@@ -59,8 +59,8 @@ void QgsRasterLayerRendererFeedback::onNewData()
   feedback.setPreviewOnly( true );
   feedback.setRenderPartialOutput( true );
   QgsRasterIterator iterator( mR->mPipe->last() );
-  QgsRasterDrawer drawer( &iterator, mR->renderContext()->dpiTarget() );
-  drawer.draw( mR->renderContext()->painter(), mR->mRasterViewPort, &mR->renderContext()->mapToPixel(), &feedback );
+  QgsRasterDrawer drawer( &iterator );
+  drawer.draw( *( mR->renderContext() ), mR->mRasterViewPort, &feedback );
   mR->mReadyToCompose = true;
   QgsDebugMsgLevel( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ), 3 );
   mLastPreview = QTime::currentTime();
@@ -203,10 +203,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mWidth = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() ) );
   mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
-  // painter could be null (in parallel rendering for instance) so we fallback on scaleFactor which
-  // should be equal to outputDpi and so logicalDpiX (except for QPicture)
-  const double dpi = rendererContext.painter() ? rendererContext.painter()->device()->logicalDpiX() :
-                     25.4 * rendererContext.scaleFactor();
+  const double dpi = 25.4 * rendererContext.scaleFactor();
   if ( mProviderCapabilities & QgsRasterDataProvider::DpiDependentData
        && rendererContext.dpiTarget() >= 0.0 )
   {
@@ -347,8 +344,8 @@ bool QgsRasterLayerRenderer::render()
 
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
-  QgsRasterDrawer drawer( &iterator, renderContext()->dpiTarget() );
-  drawer.draw( renderContext()->painter(), mRasterViewPort, &renderContext()->mapToPixel(), mFeedback );
+  QgsRasterDrawer drawer( &iterator );
+  drawer.draw( *( renderContext() ), mRasterViewPort, mFeedback );
 
   if ( restoreOldResamplingStage )
   {
