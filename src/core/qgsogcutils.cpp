@@ -3374,22 +3374,15 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtilsExpressionFromFilter::nodeBinaryOper
       QString oprValue = static_cast<const QgsExpressionNodeLiteral *>( opRight.get() )->value().toString();
       if ( !wildCard.isEmpty() && wildCard != QLatin1String( "%" ) )
       {
+        // escape default wildcard
         oprValue.replace( '%', QLatin1String( "\\%" ) );
-        if ( oprValue.startsWith( wildCard ) )
+        // split value by
+        QStringList splitOprValue;
+        for ( const QString &val : oprValue.split( escape + wildCard ) )
         {
-          oprValue.replace( 0, 1, QStringLiteral( "%" ) );
+          splitOprValue << QString( val ).replace( wildCard, QLatin1String( "%" ) );
         }
-        const QRegularExpression rx( "[^" + QgsStringUtils::qRegExpEscape( escape ) + "](" + QgsStringUtils::qRegExpEscape( wildCard ) + ")" );
-        QRegularExpressionMatch match = rx.match( oprValue );
-        int pos;
-        while ( match.hasMatch() )
-        {
-          pos = match.capturedStart();
-          oprValue.replace( pos + 1, 1, QStringLiteral( "%" ) );
-          pos += 1;
-          match = rx.match( oprValue, pos );
-        }
-        oprValue.replace( escape + wildCard, wildCard );
+        oprValue = splitOprValue.join( wildCard );
       }
       if ( !singleChar.isEmpty() && singleChar != QLatin1String( "_" ) )
       {

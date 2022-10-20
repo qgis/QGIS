@@ -481,6 +481,172 @@ class TestQgsOgcUtils(unittest.TestCase):
         e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
         self.assertEqual(e.expression(), 'id = \'\'')
 
+    def test_expressionFromOgcFilterWithPropertyIsLike(self):
+        """
+        Test expressionFromOgcFilter with PropertyIsLike with wildCard
+        """
+
+        vl = QgsVectorLayer('Point', 'vl', 'memory')
+        vl.dataProvider().addAttributes([QgsField('id', QVariant.LongLong), QgsField('THEME', QVariant.String), QgsField('PROGRAMME', QVariant.String)])
+        vl.updateFields()
+
+        # test with vector layer and PropertyIsLike default attributes
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsLike escape="\\" wildCard="%" singleChar="_">
+                <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                <ogc:Literal>REPHY;%</ogc:Literal>
+              </ogc:PropertyIsLike>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'PROGRAMME LIKE \'REPHY;%\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsLike escape="\\" wildCard="%" singleChar="_">
+                <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                <ogc:Literal>%;REPHY;%</ogc:Literal>
+              </ogc:PropertyIsLike>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'PROGRAMME LIKE \'%;REPHY;%\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsLike escape="\\" wildCard="%" singleChar="_">
+                <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                <ogc:Literal>%;REPHY</ogc:Literal>
+              </ogc:PropertyIsLike>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'PROGRAMME LIKE \'%;REPHY\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsLike escape="\\" wildCard="%" singleChar="_">
+                <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                <ogc:Literal>REPHY</ogc:Literal>
+              </ogc:PropertyIsLike>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'PROGRAMME LIKE \'REPHY\'')
+
+        # test with vector layer and PropertyIsLike without attributes
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+              <ogc:PropertyIsLike>
+                <ogc:PropertyName>PROGRAMME</ogc:PropertyName>
+                <ogc:Literal>%;REPHY;%</ogc:Literal>
+              </ogc:PropertyIsLike>
+            </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement(), vl)
+        self.assertEqual(e.expression(), 'PROGRAMME LIKE \'%;REPHY;%\'')
+
+        # test without vector layer
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+          <ogc:Filter>
+            <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+              <ogc:PropertyName>Nom_deploi</ogc:PropertyName>
+              <ogc:Literal>ct3*</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement())
+        self.assertEqual(e.expression(), 'Nom_deploi ILIKE \'ct3%\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+          <ogc:Filter>
+            <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+              <ogc:PropertyName>Nom_deploi</ogc:PropertyName>
+              <ogc:Literal>*ct3</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement())
+        self.assertEqual(e.expression(), 'Nom_deploi ILIKE \'%ct3\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+          <ogc:Filter>
+            <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+              <ogc:PropertyName>Nom_deploi</ogc:PropertyName>
+              <ogc:Literal>*ct3*</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement())
+        self.assertEqual(e.expression(), 'Nom_deploi ILIKE \'%ct3%\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+          <ogc:Filter>
+            <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+              <ogc:PropertyName>Nom_deploi</ogc:PropertyName>
+              <ogc:Literal>ct3</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement())
+        self.assertEqual(e.expression(), 'Nom_deploi ILIKE \'ct3\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+          <ogc:Filter>
+            <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+              <ogc:PropertyName>Nom_deploi</ogc:PropertyName>
+              <ogc:Literal>ct*3</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement())
+        self.assertEqual(e.expression(), 'Nom_deploi ILIKE \'ct%3\'')
+
+        f = '''<?xml version="1.0" encoding="UTF-8"?>
+          <ogc:Filter>
+            <ogc:PropertyIsLike escapeChar="\\" matchCase="false" singleChar="?" wildCard="*">
+              <ogc:PropertyName>Nom_deploi</ogc:PropertyName>
+              <ogc:Literal>ct3\\** *ct1*\\*1 ct*3</ogc:Literal>
+            </ogc:PropertyIsLike>
+          </ogc:Filter>
+        '''
+        d = QDomDocument('filter')
+        d.setContent(f, True)
+
+        e = QgsOgcUtils.expressionFromOgcFilter(d.documentElement())
+        self.assertEqual(e.expression(), 'Nom_deploi ILIKE \'ct3*% %ct1%*1 ct%3\'')
+
     def test_expressionFromOgcFilterWithAndOrPropertyIsLike(self):
         """
         Test expressionFromOgcFilter with And, Or and PropertyIsLike with wildCard
