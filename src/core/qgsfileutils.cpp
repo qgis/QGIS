@@ -338,7 +338,7 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
     if ( type != Qgis::DriveType::Unknown && type != Qgis::DriveType::Invalid )
       return type;
   }
-  return Unknown;
+  return Qgis::DriveType::Unknown;
 
 #else
   ( void )path;
