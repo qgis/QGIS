@@ -3528,8 +3528,9 @@ int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn )
 {
   int resolutionLevel = -1;
   double currentResolution = mapUnitsPerPixel();
+  int nResolutions = resolutions.size();
 
-  for ( int i = 0, n = resolutions.size(); i < n; ++i )
+  for ( int i = 0; i < nResolutions; ++i )
   {
     if ( qgsDoubleNear( resolutions[i], currentResolution, 0.0001 ) )
     {
@@ -3541,8 +3542,24 @@ int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn )
       resolutionLevel = zoomIn ? ( i - 1 ) : i;
       break;
     }
+    resolutionLevel = zoomIn ? i : i + 1;
   }
-  return ( resolutionLevel < 0 || resolutionLevel >= resolutions.size() ) ? -1 : resolutionLevel;
+
+  if ( resolutionLevel < 0 || resolutionLevel >= nResolutions )
+  {
+    return -1;
+  }
+  if ( zoomIn && resolutionLevel == nResolutions - 1 && resolutions[nResolutions - 1] < currentResolution / mWheelZoomFactor )
+  {
+    // Avoid jumping straight to last resolution when zoomed far out and zooming in
+    return -1;
+  }
+  if ( !zoomIn && resolutionLevel == 0 && resolutions[0] > mWheelZoomFactor * currentResolution )
+  {
+    // Avoid jumping straight to first resolution when zoomed far in and zooming out
+    return -1;
+  }
+  return resolutionLevel;
 }
 
 double QgsMapCanvas::zoomInFactor() const

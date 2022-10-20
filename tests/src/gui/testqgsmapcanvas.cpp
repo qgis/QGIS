@@ -538,19 +538,55 @@ void TestQgsMapCanvas::testZoomResolutions()
 {
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
   const double resolution = mCanvas->mapSettings().mapUnitsPerPixel();
+  const double wheelFactor = 2.0;
+  mCanvas->setWheelFactor( wheelFactor );
 
   const double nextResolution = qCeil( resolution ) + 1;
   QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
   mCanvas->setZoomResolutions( resolutions );
 
+  // From first to last resolution in list
+  // Ensure we are at first resolution
+  while ( mCanvas->mapSettings().mapUnitsPerPixel() < resolutions[0] )
+  {
+    mCanvas->zoomOut();
+  }
+  int nResolutions = resolutions.size();
+  for ( int i = 1; i < nResolutions; ++i )
+  {
+    mCanvas->zoomOut();
+    QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[i], 0.0001 );
+  }
+
+  // beyond last resolution
   mCanvas->zoomOut();
-  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), wheelFactor * resolutions.last(), 0.0001 );
 
   mCanvas->zoomOut();
-  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[1], 0.0001 );
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), wheelFactor * wheelFactor * resolutions.last(), 0.0001 );
 
   mCanvas->zoomIn();
-  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), wheelFactor * resolutions.last(), 0.0001 );
+
+  // From last to first resolution in list
+  for ( int i = nResolutions - 1; i >= 0; --i )
+  {
+    mCanvas->zoomIn();
+    QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[i], 0.0001 );
+  }
+
+  // before first resolution
+  mCanvas->zoomIn();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first() / wheelFactor, 0.0001 );
+
+  mCanvas->zoomIn();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first() / ( wheelFactor * wheelFactor ), 0.0001 );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first() / wheelFactor, 0.0001 );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions.first(), 0.0001 );
 
   QCOMPARE( mCanvas->zoomResolutions(), resolutions );
 }
