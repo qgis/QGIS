@@ -189,6 +189,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
     void testTextOnSymbol();
+    void testColumnsMixedSymbolSize();
 
     void testBasicJson();
     void testOpacityJson();
@@ -202,7 +203,7 @@ class TestQgsLegendRenderer : public QgsTest
     QgsVectorLayer *mVL2 =  nullptr ; // polygon
     QgsVectorLayer *mVL3 =  nullptr ; // point
     QgsRasterLayer *mRL = nullptr;
-    bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
+    bool _testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing );
 
     bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
     {
@@ -972,7 +973,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
   QgsProject::instance()->removeMapLayer( vl4 );
 }
 
-bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, const QString &testName )
+bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing )
 {
   QgsFillSymbol *sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
@@ -993,6 +994,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsLayerTreeModel legendModel( root.get() );
   QgsLegendSettings settings;
   settings.setColumnCount( columnCount );
+  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, symbolSpacing );
   _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
   const QImage res = _renderLegend( &legendModel, settings );
   const bool result = _verifyImage( res, testName );
@@ -1030,7 +1032,11 @@ void TestQgsLegendRenderer::testColumns()
   QFETCH( QString, testName );
   QFETCH( int, items );
   QFETCH( int, columns );
-  QVERIFY( _testLegendColumns( items, columns, testName ) );
+
+  for ( double symbolSpacing : { 2.5, 5.0, 6.0 } )
+  {
+    QVERIFY( _testLegendColumns( items, columns, testName + ( symbolSpacing != 2.5 ? QStringLiteral( "_spacing_%1" ).arg( QString::number( symbolSpacing ).replace( ".", "_" ) ) : QString() ), symbolSpacing ) );
+  }
 }
 
 void TestQgsLegendRenderer::testColumnBreaks()
@@ -1449,6 +1455,39 @@ void TestQgsLegendRenderer::testTextOnSymbol()
   QVERIFY( _verifyImage( res, testName ) );
 
   delete root;
+}
+
+void TestQgsLegendRenderer::testColumnsMixedSymbolSize()
+{
+  QgsMarkerSymbol *sym = new QgsMarkerSymbol();
+  sym->setColor( Qt::cyan );
+
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
+
+  QList< QgsVectorLayer * > layers;
+  for ( double size : { 4, 5, 16} )
+  {
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "Layer %1" ).arg( size ), QStringLiteral( "memory" ) );
+    QgsProject::instance()->addMapLayer( vl );
+    sym->setSize( size );
+    vl->setRenderer( new QgsSingleSymbolRenderer( sym->clone() ) );
+    root->addLayer( vl );
+    layers << vl;
+  }
+  delete sym;
+
+  QgsLayerTreeModel legendModel( root.get() );
+  QgsLegendSettings settings;
+  settings.setColumnCount( 2 );
+  settings.rstyle( QgsLegendStyle::Style::Symbol ).setMargin( QgsLegendStyle::Side::Top, 9 );
+  _setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+  const QImage res = _renderLegend( &legendModel, settings );
+
+  for ( QgsVectorLayer *l : layers )
+  {
+    QgsProject::instance()->removeMapLayer( l );
+  }
+  QVERIFY( _verifyImage( res, QStringLiteral( "columns_with_mixed_symbol_sizes" ) ) );
 }
 
 void TestQgsLegendRenderer::testBasicJson()
