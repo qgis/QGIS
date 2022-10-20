@@ -35,12 +35,36 @@ QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator, double dpiTarget 
 {
 }
 
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator *iterator )
+  : mIterator( iterator )
+{
+}
+
+void QgsRasterDrawer::draw( QgsRenderContext &context, QgsRasterViewPort *viewPort, QgsRasterBlockFeedback *feedback )
+{
+  if ( context.dpiTarget() >= 0.0 )
+  {
+    mDpiScaleFactor = context.dpiTarget() / ( context.scaleFactor() * 25.4 );
+  }
+  else
+  {
+    mDpiScaleFactor = 1.0;
+  }
+
+  draw( context.painter(), viewPort, &context.mapToPixel(), feedback );
+}
+
 void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   if ( !p || !mIterator || !viewPort || !qgsMapToPixel )
   {
     return;
+  }
+
+  if ( mDpiTarget >= 0 )
+  {
+    mDpiScaleFactor = mDpiTarget / p->device()->logicalDpiX();
   }
 
   // last pipe filter has only 1 band
@@ -124,9 +148,8 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     return;
   }
 
-  const double dpiScaleFactor = mDpiTarget >= 0.0 ? mDpiTarget / p->device()->logicalDpiX() : 1.0;
   //top left position in device coords
-  const QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + std::floor( topLeftCol / dpiScaleFactor ), viewPort->mTopLeftPoint.y() + std::floor( topLeftRow / dpiScaleFactor ) );
+  const QPoint tlPoint = QPoint( std::floor( viewPort->mTopLeftPoint.x() + topLeftCol / mDpiScaleFactor ), std::floor( viewPort->mTopLeftPoint.y() + topLeftRow / mDpiScaleFactor ) );
 
   const QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, false );
@@ -151,7 +174,7 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
     }
   }
 
-  p->drawImage( tlPoint, dpiScaleFactor != 1.0 ? img.scaledToHeight( std::ceil( img.height() / dpiScaleFactor ) ) : img );
+  p->drawImage( tlPoint, mDpiScaleFactor != 1.0 ? img.scaledToHeight( std::ceil( img.height() / mDpiScaleFactor ) ) : img );
 
 #if 0
   // For debugging:
