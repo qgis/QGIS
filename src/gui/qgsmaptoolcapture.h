@@ -22,7 +22,6 @@
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
 #include "qobjectuniqueptr.h"
-#include "qgssnappingutils.h"
 
 #include <QPoint>
 #include <QList>

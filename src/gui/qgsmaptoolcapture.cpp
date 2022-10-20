@@ -17,7 +17,6 @@
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
-#include "qgslayertreeview.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -30,12 +29,12 @@
 #include "qgsvertexmarker.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsproject.h"
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
-#include "qgsgui.h"
+#include "qgssnappingutils.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QAction>
 #include <QCursor>
