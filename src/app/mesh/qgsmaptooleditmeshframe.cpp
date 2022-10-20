@@ -640,12 +640,17 @@ bool QgsMapToolEditMeshFrame::populateContextMenuWithEvent( QMenu *menu, QgsMapM
            ( mCurrentFaceIndex != -1 && mCurrentState == Digitizing ) )
       {
         newActions << mActionRemoveFaces;
-        lastActions << mActionFacesRefinement;
       }
 
       if ( mSplittableFaceCount > 0 ||
            ( mCurrentFaceIndex != -1 && mCurrentEditor->faceCanBeSplit( mCurrentFaceIndex ) ) )
         newActions << mActionSplitFaces;
+
+      int currentFaceSize = mCurrentFaceIndex != -1 ? nativeFace( mCurrentFaceIndex ).size() : 0;
+      if ( mRefinableFaceCount > 0 ||
+           currentFaceSize == 3 ||
+           currentFaceSize == 4 )
+        lastActions << mActionFacesRefinement;
 
       const QList<QAction * > existingActions = menu->actions();
       if ( !newActions.isEmpty() )
@@ -1979,7 +1984,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   if ( !mSelectedVertices.isEmpty() )
   {
     double vertexZValue = 0;
-    for ( int i : mSelectedVertices.keys() )
+    const QList selectVertices = mSelectedVertices.keys();
+    for ( int i : selectVertices )
       vertexZValue += mapVertex( i ).z();
     vertexZValue /= mSelectedVertices.count();
 
@@ -2081,10 +2087,10 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     }
   }
 
-  if ( !mSelectedFaces.isEmpty() )
+  const QList<int> facesList = qgis::setToList( mSelectedFaces );
+  if ( !facesList.isEmpty() )
   {
-    const QList<int> faceList = qgis::setToList( mSelectedFaces );
-    const QgsGeometry faceGeometrie( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceList.at( 0 ) ) ) ) );
+    const QgsGeometry faceGeometrie( new QgsPolygon( new QgsLineString( nativeFaceGeometry( facesList.at( 0 ) ) ) ) );
     if ( mSelectedFaces.count() == 1 )
     {
       mSelectedFacesRubberband->setToGeometry( faceGeometrie );
@@ -2095,8 +2101,8 @@ void QgsMapToolEditMeshFrame::prepareSelection()
       geomEngine->prepareGeometry();
 
       QVector<QgsGeometry> otherFaces( mSelectedFaces.count() );
-      for ( int i = 0; i < faceList.count(); ++i )
-        otherFaces[i] = QgsGeometry( new QgsPolygon( new QgsLineString( nativeFaceGeometry( faceList.at( i ) ) ) ) );
+      for ( int i = 0; i < facesList.count(); ++i )
+        otherFaces[i] = QgsGeometry( new QgsPolygon( new QgsLineString( nativeFaceGeometry( facesList.at( i ) ) ) ) );
       QString error;
       const QgsGeometry allFaces( geomEngine->combine( otherFaces, &error ) );
       mSelectedFacesRubberband->setToGeometry( allFaces );
@@ -2123,27 +2129,22 @@ void QgsMapToolEditMeshFrame::prepareSelection()
     mActionRemoveVerticesWithoutFillingHole->setText( tr( "Remove Selected Vertices without Filling Hole(s)" ) );
   }
 
-  if ( mSelectedFaces.count() == 1 )
-  {
+  if ( facesList.count() == 1 )
     mActionRemoveFaces->setText( tr( "Remove Selected Face" ) );
-    mActionFacesRefinement->setText( tr( "Refine Selected Face" ) );
-  }
-  else if ( mSelectedFaces.count() > 1 )
-  {
+  else if ( facesList.count() > 1 )
     mActionRemoveFaces->setText( tr( "Remove %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
-    mActionFacesRefinement->setText( tr( "Refine %n Selected Face(s)", nullptr, mSelectedFaces.count() ) );
-  }
   else
-  {
     mActionRemoveFaces->setText( tr( "Remove Current Face" ) );
-    mActionFacesRefinement->setText( tr( "Refine Current Face" ) );
-  }
 
   mSplittableFaceCount = 0;
+  mRefinableFaceCount = 0;
   for ( const int faceIndex : std::as_const( mSelectedFaces ) )
   {
     if ( mCurrentEditor->faceCanBeSplit( faceIndex ) )
       mSplittableFaceCount++;
+    int faceSize = nativeFace( faceIndex ).size();
+    if ( faceSize == 3 || faceSize == 4 )
+      mRefinableFaceCount++;
   }
 
   if ( mSplittableFaceCount == 1 )
@@ -2153,6 +2154,13 @@ void QgsMapToolEditMeshFrame::prepareSelection()
   else
     mActionSplitFaces->setText( tr( "Split Current Face" ) );
 
+  if ( mRefinableFaceCount == 1 )
+    mActionFacesRefinement->setText( tr( "Refine Selected Face" ) );
+  else if ( mRefinableFaceCount > 1 )
+    mActionFacesRefinement->setText( tr( "Refine %n Selected Face(s)", nullptr, mRefinableFaceCount ) );
+  else
+    mActionFacesRefinement->setText( tr( "Refine Current Face" ) );
+
   emit selectionChange( mCurrentLayer, mSelectedVertices.keys() );
 }
 
@@ -2160,7 +2168,8 @@ void QgsMapToolEditMeshFrame::updateSelectecVerticesMarker()
 {
   qDeleteAll( mSelectedVerticesMarker );
   mSelectedVerticesMarker.clear();
-  for ( const int vertexIndex : mSelectedVertices.keys() )
+  const QList selectVertices = mSelectedVertices.keys();
+  for ( const int vertexIndex : selectVertices )
   {
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
