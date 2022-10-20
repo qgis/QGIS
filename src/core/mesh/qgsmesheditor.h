@@ -94,7 +94,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
     QgsMeshEditingError initializeWithErrorsFix();
 
     /**
-     * Tries to fix the topological \a error in the mesh. Returns false if the fix fails
+     * Tries to fix the topological \a error in the mesh. Returns FALSE if the fix fails
      *
      * \since QGIS 3.28
      */
