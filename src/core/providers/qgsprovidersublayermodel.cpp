@@ -665,8 +665,9 @@ bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QMod
   if ( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
     return true;
 
-  // check against the Description column's edit role so that Feature count is searchable
-  if ( sourceModel()->data( sourceModel()->index( source_row, 1, source_parent ), static_cast< int >( Qt::EditRole ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
+  // check against the Description column's display role as it might be different from QgsProviderSublayerModel::Role::Description
+  const QModelIndex descriptionColumnIndex = sourceModel()->index( source_row, 1, source_parent );
+  if ( sourceModel()->data( descriptionColumnIndex, static_cast< int >( Qt::DisplayRole ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
     return true;
 
   const QVariant wkbTypeVariant =  sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::WkbType ) );
