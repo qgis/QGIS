@@ -270,6 +270,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     /**
      * Writes the Raster Attribute Table to a DBF file specified by \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * \note ".vat.dbf" extension is automatically added to the file path if not present.
      */
     bool writeToFile( const QString &path, QString *errorMessage SIP_OUT = nullptr );
 

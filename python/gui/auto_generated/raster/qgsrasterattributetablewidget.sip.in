@@ -70,9 +70,12 @@ This signal is emitted after a successful classify operation which changed the r
 Save the changes in the raster attribute table.
 %End
 
-    bool setEditable( bool editable );
+    bool setEditable( bool editable, bool allowCancel = true );
 %Docstring
 Set the editable state, it may trigger save changes if the attribute table has unsave changes.
+
+:param editable: editable state
+:param allowCancel: optional (default ``True``) flag to show cancel option in confirm save dialog.
 %End
 
 };

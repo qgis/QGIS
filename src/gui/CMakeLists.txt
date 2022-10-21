@@ -1,5 +1,6 @@
 set(QGIS_GUI_SRCS  
   raster/qgscreaterasterattributetabledialog.cpp
+  raster/qgsloadrasterattributetabledialog.cpp
   raster/qgsrasterattributetablewidget.cpp
   raster/qgsrasterattributetabledialog.cpp
   raster/qgsrasterattributetableaddcolumndialog.cpp
@@ -1286,6 +1287,7 @@ set(QGIS_GUI_HDRS
 
   raster/qgsrasterattributetablewidget.h
   raster/qgscreaterasterattributetabledialog.h
+  raster/qgsloadrasterattributetabledialog.h
   raster/qgsrasterattributetabledialog.h
   raster/qgsrasterattributetableaddcolumndialog.h
   raster/qgsrasterattributetableaddrowdialog.h
@@ -1455,6 +1457,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddrowdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscreaterasterattributetabledialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsloadrasterattributetabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddcolumndialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h

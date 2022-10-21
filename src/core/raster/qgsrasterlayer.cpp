@@ -1034,6 +1034,69 @@ void QgsRasterLayer::setDataSourcePrivate( const QString &dataSource, const QStr
   }
 }
 
+void QgsRasterLayer::writeRasterAttributeTableExternalPaths( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  if ( attributeTableCount() > 0 )
+  {
+    QDomElement elem = doc.createElement( QStringLiteral( "FileBasedAttributeTables" ) );
+    for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
+    {
+      if ( QgsRasterAttributeTable *rat = attributeTable( bandNo ); rat && ! rat->filePath().isEmpty() )
+      {
+        QDomElement ratElem = doc.createElement( QStringLiteral( "AttributeTable" ) );
+        ratElem.setAttribute( QStringLiteral( "band" ), bandNo );
+        ratElem.setAttribute( QStringLiteral( "path" ), context.pathResolver().writePath( rat->filePath( ) ) );
+        elem.appendChild( ratElem );
+      }
+    }
+    layerNode.appendChild( elem );
+  }
+}
+
+void QgsRasterLayer::readRasterAttributeTableExternalPaths( const QDomNode &layer_node, QgsReadWriteContext &context ) const
+{
+  const QDomElement ratsElement = layer_node.firstChildElement( QStringLiteral( "FileBasedAttributeTables" ) );
+  if ( !ratsElement.isNull() && ratsElement.childNodes().count() > 0 )
+  {
+    const QDomNodeList ratElements { ratsElement.childNodes() };
+    for ( int idx = 0; idx < ratElements.count(); idx++ )
+    {
+      const QDomNode ratElement { ratElements.at( idx ) };
+      if ( ratElement.attributes().contains( QStringLiteral( "band" ) )
+           && ratElement.attributes().contains( QStringLiteral( "path" ) ) )
+      {
+        bool ok;
+        const int band { ratElement.attributes().namedItem( QStringLiteral( "band" ) ).nodeValue().toInt( &ok ) };
+
+        // Check band is ok
+        if ( ! ok ||  band <= 0 || band > bandCount() )
+        {
+          QgsMessageLog::logMessage( tr( "Error reading raster attribute table: invalid band %1." ).arg( band ), tr( "Raster" ) );
+          continue;
+        }
+
+        const QString path { context.pathResolver().readPath( ratElement.attributes().namedItem( QStringLiteral( "path" ) ).nodeValue() ) };
+        if ( ! QFile::exists( path ) )
+        {
+          QgsMessageLog::logMessage( tr( "Raster attribute table not found at path: %1." ).arg( path ), tr( "Raster" ) );
+          continue;
+        }
+
+        std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+        QString errorMessage;
+        if ( ! rat->readFromFile( path, &errorMessage ) )
+        {
+          QgsMessageLog::logMessage( tr( "Error loading raster attribute table from path %1: %2" ).arg( path, errorMessage ), tr( "Raster" ) );
+          continue;
+        }
+
+        // All good, set the RAT
+        mDataProvider->setAttributeTable( band, rat.release() );
+      }
+    }
+  }
+}
+
 void QgsRasterLayer::closeDataProvider()
 {
   setValid( false );
@@ -2247,6 +2310,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     }
   }
 
+  readRasterAttributeTableExternalPaths( layer_node, context );
+
   readStyleManager( layer_node );
 
   return res;
@@ -2361,6 +2426,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   {
     layer_node.appendChild( noData );
   }
+
+  // Store file-based raster attribute table paths (if any)
+  writeRasterAttributeTableExternalPaths( layer_node, document, context );
 
   writeStyleManager( layer_node, document );
 

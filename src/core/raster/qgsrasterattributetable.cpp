@@ -509,6 +509,8 @@ bool QgsRasterAttributeTable::writeToFile( const QString &path, QString *errorMe
 
   writer.reset( QgsVectorFileWriter::create( cleanedPath, qgisFields(), QgsWkbTypes::Type::NoGeometry, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), options ) );
 
+  cleanedPath.append( QStringLiteral( ".dbf" ) );
+
   const QgsVectorFileWriter::WriterError error { writer->hasError() };
   if ( error != QgsVectorFileWriter::WriterError::NoError )
   {
@@ -1196,7 +1198,7 @@ QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInform
     QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Name, { tr( "Class Name" ), false, false, false, false, true, true, QList<QVariant::Type>() << QVariant::String } );
     QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::MinMax, { tr( "Class Value (min=max)" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
     QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Min, { tr( "Class Minimum Value" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
-    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Max, { tr( "Class Maximum Value)" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
+    QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Max, { tr( "Class Maximum Value" ), true, true, false, false, true, false, QList<QVariant::Type>() << QVariant::Int << QVariant::LongLong << QVariant::Double } );
     QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Red, { tr( "Red Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
     QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Green, { tr( "Green Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );
     QgsRasterAttributeTable::sUsageInformation.insert( Qgis::RasterAttributeTableFieldUsage::Blue, { tr( "Blue Color Value (0-255)" ), true, false, true, false, true, false, QList<QVariant::Type>() << QVariant::Int } );

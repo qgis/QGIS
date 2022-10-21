@@ -15,6 +15,9 @@
  ***************************************************************************/
 #include "qgscreaterasterattributetabledialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsmessagebar.h"
+#include "qgsgui.h"
+#include <QMessageBox>
 
 QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )
@@ -33,7 +36,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
   connect( mDbfRadioButton, &QRadioButton::toggled, this, &QgsCreateRasterAttributeTableDialog::updateButtons );
 
 
-  // Check for existing rats
+  // Check for existing RATs
   QStringList existingRatsInfo;
   if ( mRasterLayer->attributeTableCount() > 0 )
   {
@@ -62,6 +65,7 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
   if ( ! existingRatsInfo.isEmpty() )
   {
     mCreateInfoLabel->setText( mCreateInfoLabel->text().append( QStringLiteral( "<br><ul><li>" ) + existingRatsInfo.join( QStringLiteral( "</li><li>" ) ) ).append( QStringLiteral( "</ul>" ) ) );
+    mCreateInfoLabel->adjustSize();
     mCreateInfoLabel->show();
   }
 
@@ -83,6 +87,8 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   updateButtons();
+
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 QString QgsCreateRasterAttributeTableDialog::filePath() const
@@ -98,6 +104,110 @@ bool QgsCreateRasterAttributeTableDialog::saveToFile() const
 bool QgsCreateRasterAttributeTableDialog::openWhenDone() const
 {
   return mOpenRat->isChecked();
+}
+
+void QgsCreateRasterAttributeTableDialog::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+void QgsCreateRasterAttributeTableDialog::setOpenWhenDoneVisible( bool visible )
+{
+  if ( ! visible )
+  {
+    mOpenRat->setChecked( false );
+  }
+
+  mOpenRat->setVisible( visible );
+}
+
+void QgsCreateRasterAttributeTableDialog::accept()
+{
+  QString errorMessage;
+  int bandNumber { 0 };
+  QgsRasterAttributeTable *rat { QgsRasterAttributeTable::createFromRaster( mRasterLayer, &bandNumber ) };
+  bool success { false };
+
+  if ( ! rat )
+  {
+    notify( tr( "Error Creating Raster Attribute Table" ),
+            tr( "The raster attribute table could not be created." ),
+            Qgis::MessageLevel::Critical );
+  }
+  else
+  {
+    mRasterLayer->dataProvider()->setAttributeTable( bandNumber, rat );
+
+    // Save it
+    const bool storageIsFile { saveToFile() };
+    if ( storageIsFile )
+    {
+      const QString destinationPath { filePath() };
+      if ( QFile::exists( destinationPath ) && QMessageBox::warning( nullptr, tr( "Confirm Overwrite" ), tr( "Are you sure you want to overwrite the existing attribute table at '%1'?" ).arg( destinationPath ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+      {
+        success = rat->writeToFile( destinationPath, &errorMessage );
+        if ( ! success )
+        {
+          notify( tr( "Error Saving Raster Attribute Table" ),
+                  errorMessage,
+                  Qgis::MessageLevel::Critical );
+          mRasterLayer->dataProvider()->setAttributeTable( bandNumber, nullptr );
+        }
+      }
+    }
+    else
+    {
+      success = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );
+      if ( ! success )
+      {
+        notify( tr( "Error Saving Raster Attribute Table" ),
+                errorMessage,
+                Qgis::MessageLevel::Critical );
+        mRasterLayer->dataProvider()->setAttributeTable( bandNumber, nullptr );
+
+      }
+    }
+  }
+
+  if ( success )
+  {
+    notify( tr( "Raster Attribute Table Saved" ),
+            tr( "The new Raster Attribute Table was successfully created." ),
+            Qgis::MessageLevel::Success );
+  }
+
+  QDialog::accept();
+}
+
+void QgsCreateRasterAttributeTableDialog::notify( const QString &title, const QString &message, Qgis::MessageLevel level )
+{
+  if ( mMessageBar )
+  {
+    mMessageBar->pushMessage( message, level );
+  }
+  else
+  {
+    switch ( level )
+    {
+      case Qgis::MessageLevel::Info:
+      case Qgis::MessageLevel::Success:
+      case Qgis::MessageLevel::NoLevel:
+      {
+        QMessageBox::information( nullptr, title, message );
+        break;
+      }
+      case Qgis::MessageLevel::Warning:
+      {
+        QMessageBox::warning( nullptr, title, message );
+        break;
+      }
+      case Qgis::MessageLevel::Critical:
+      {
+        QMessageBox::critical( nullptr, title, message );
+        break;
+      }
+    }
+  }
 }
 
 void QgsCreateRasterAttributeTableDialog::updateButtons()

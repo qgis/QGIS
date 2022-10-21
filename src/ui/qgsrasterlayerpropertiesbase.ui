@@ -311,8 +311,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>648</width>
-                <height>690</height>
+                <width>253</width>
+                <height>392</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1472,12 +1472,26 @@ p, li { white-space: pre-wrap; }
                 <property name="text">
                  <string>There are no raster attribute tables associated with this data source. 
 
-If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree.
+If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree or the button below.
 
-From the layer tree context menu it you can also import an existing raster attribute table from a VAT.DBF file and associate it with a raster band.</string>
+You can also import an existing raster attribute table from a VAT.DBF file and associate it with a raster band.</string>
                 </property>
                 <property name="wordWrap">
                  <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mCreateRasterAttributeTableButton">
+                <property name="text">
+                 <string>New attribute table from current symbology</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mLoadRasterAttributeTableFromFileButton">
+                <property name="text">
+                 <string>Load attribute table from VAT.DBF file</string>
                 </property>
                </widget>
               </item>
@@ -1527,7 +1541,7 @@ From the layer tree context menu it you can also import an existing raster attri
                 <x>0</x>
                 <y>0</y>
                 <width>263</width>
-                <height>600</height>
+                <height>599</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">

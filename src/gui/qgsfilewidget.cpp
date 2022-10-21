@@ -432,6 +432,15 @@ QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelativ
   return filePath;
 }
 
+QSize QgsFileWidget::minimumSizeHint() const
+{
+  QSize size { mLineEdit->minimumSizeHint() };
+  const QSize btnSize { mFileWidgetButton->minimumSizeHint() };
+  size.setWidth( size.width() + btnSize.width() );
+  size.setHeight( std::max( size.height(), btnSize.height() ) );
+  return size;
+}
+
 
 QString QgsFileWidget::toUrl( const QString &path ) const
 {

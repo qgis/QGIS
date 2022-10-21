@@ -43,7 +43,11 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
 
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( "/mActionEditTable.svg" ), tr( "&Edit Attribute Table" ), editToolBar );
   mActionToggleEditing->setCheckable( true );
-  connect( mActionToggleEditing, &QAction::triggered, this, &QgsRasterAttributeTableWidget::setEditable );
+  connect( mActionToggleEditing, &QAction::triggered, this, [ = ]( bool editable )
+  {
+    setEditable( editable );
+  } );
+
   editToolBar->addAction( mActionToggleEditing );
 
   mActionAddColumn = new QAction( QgsApplication::getThemeIcon( "/mActionNewAttribute.svg" ), tr( "Add &Column" ), editToolBar );
@@ -182,14 +186,20 @@ void QgsRasterAttributeTableWidget::setMessageBar( QgsMessageBar *bar )
   mMessageBar = bar;
 }
 
-bool QgsRasterAttributeTableWidget::setEditable( bool editable )
+bool QgsRasterAttributeTableWidget::setEditable( bool editable, bool allowCancel )
 {
   const bool isDirty { mAttributeTableBuffer &&mAttributeTableBuffer->isDirty() &&mCurrentBand > 0 && mRasterLayer->attributeTable( mCurrentBand ) };
   bool retVal { true };
   // Switch to read-only
   if ( ! editable && isDirty )
   {
-    const QMessageBox::StandardButtons buttons { QMessageBox::Button::Cancel | QMessageBox::Button::Yes |  QMessageBox::Button::No };
+    QMessageBox::StandardButtons buttons { QMessageBox::Button::Yes |  QMessageBox::Button::No };
+
+    if ( allowCancel )
+    {
+      buttons |= QMessageBox::Button::Cancel;
+    }
+
     switch ( QMessageBox::question( nullptr, tr( "Save Attribute Table" ), tr( "Attribute table contains unsaved changes, do you want to save the changes?" ), buttons ) )
     {
       case QMessageBox::Button::Cancel:

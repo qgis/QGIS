@@ -29,6 +29,7 @@ from qgis.PyQt.QtGui import QColor
 
 
 from qgis.core import (Qgis,
+                       QgsProject,
                        QgsRasterLayer,
                        QgsRasterAttributeTable,
                        QgsPalettedRasterRenderer,
@@ -813,6 +814,44 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         ramp, labels = rat.colorRamp(2)
         self.assertEqual(len(ramp.stops()) + 1, len(labels))
         self.assertEqual(labels, ['red class', 'blue class', 'green class'])
+
+    def testFileStorage(self):
+
+        rat = QgsRasterAttributeTable()
+        rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Double))
+        rat.appendField(QgsRasterAttributeTable.Field('Class', Qgis.RasterAttributeTableFieldUsage.Name, QVariant.String))
+        rat.appendField(QgsRasterAttributeTable.Field('Red', Qgis.RasterAttributeTableFieldUsage.Red, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Green', Qgis.RasterAttributeTableFieldUsage.Green, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Blue', Qgis.RasterAttributeTableFieldUsage.Blue, QVariant.Int))
+        rat.appendField(QgsRasterAttributeTable.Field('Alpha', Qgis.RasterAttributeTableFieldUsage.Alpha, QVariant.Int))
+
+        data_rows = [[0.0, '0', 0, 0, 0, 255],
+                     [2.0, '2', 1, 1, 1, 255],
+                     [4.0, '4', 2, 2, 2, 255]
+                     ]
+
+        for row in data_rows:
+            rat.appendRow(row)
+
+        self.assertTrue(rat.isValid()[0])
+        self.assertTrue(rat.writeToFile(os.path.join(self.temp_path, 'my_rat')))
+
+        raster = QgsRasterLayer(self.uri_2x2_2_BANDS_INT16)
+        project = QgsProject.instance()
+        project.addMapLayers([raster])
+        raster.dataProvider().setAttributeTable(2, rat)
+        self.assertEqual(raster.attributeTableCount(), 1)
+        self.assertTrue(project.write(os.path.join(self.temp_path, 'my_project.qgs')))
+
+        project.read(os.path.join(self.temp_path, 'my_project.qgs'))
+        raster = list(project.mapLayers().values())[0]
+        self.assertEqual(raster.attributeTableCount(), 1)
+
+        rat = raster.attributeTable(2)
+        self.assertTrue(rat.isValid()[0])
+        self.assertEqual(rat.filePath(), os.path.join(self.temp_path, 'my_rat.vat.dbf'))
+        self.assertEqual(rat.usages(), [Qgis.RasterAttributeTableFieldUsage.MinMax, Qgis.RasterAttributeTableFieldUsage.Name, Qgis.RasterAttributeTableFieldUsage.Red, Qgis.RasterAttributeTableFieldUsage.Green, Qgis.RasterAttributeTableFieldUsage.Blue, Qgis.RasterAttributeTableFieldUsage.Alpha])
+        self.assertEqual(rat.data(), data_rows)
 
 
 if __name__ == '__main__':

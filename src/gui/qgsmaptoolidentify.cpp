@@ -1079,6 +1079,9 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             valueString = QgsRasterBlock::printValue( value.toDouble() );
           }
         }
+        attributes.insert( dprovider->generateBandName( it.key() ), valueString );
+
+        // Get raster attribute table attributes
         if ( const QgsRasterAttributeTable *rat = layer->attributeTable( it.key() ) )
         {
           bool ok;
@@ -1114,13 +1117,14 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
                   default:
                     ratValue = row.at( colIdx ).toString();
                 }
-                derivedAttributes.insert( ratField.name, ratValue );
+                attributes.insert( ratField.name, ratValue );
               }
             }
           }
-        }
-        attributes.insert( dprovider->generateBandName( it.key() ), valueString );
+        }  // end RAT
+
       }
+
       QString label = layer->name();
       results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
     }
