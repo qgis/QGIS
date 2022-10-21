@@ -46,6 +46,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsPropertyOverrideButton;
 class QgsRasterTransparencyWidget;
+class QgsRasterAttributeTableWidget;
 
 
 /**
@@ -296,5 +297,7 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     friend class QgsAppScreenShots;
 
     QgsCoordinateReferenceSystem mBackupCrs;
+
+    QgsRasterAttributeTableWidget *mRasterAttributeTableWidget = nullptr;
 };
 #endif

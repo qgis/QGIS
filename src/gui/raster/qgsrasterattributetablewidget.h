@@ -122,10 +122,48 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
      */
     bool isDirty( ) const;
 
+    /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the appropriate message bar.
+     * \see messageBar()
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+  signals:
+
+    /**
+     * This signal is emitted after a successful classify operation which changed the raster renderer.
+     */
+    void rendererChanged( );
+
+  public slots:
+
+    /**
+     * Save the changes in the raster attribute table.
+     */
+    void saveChanges();
+
+    /**
+     * Set the editable state, it may trigger save changes if the attribute table has unsave changes.
+     */
+    bool setEditable( bool editable );
+
+  private slots:
+
+
+    void classify();
+    void addColumn();
+    void removeColumn();
+    void addRow();
+    void removeRow();
+    void bandChanged( const int index );
+    void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+    void setDelegates( );
+
   private:
 
     QgsRasterLayer *mRasterLayer = nullptr;
-    QgsRasterAttributeTable *mAttributeTable = nullptr;
+    std::unique_ptr<QgsRasterAttributeTable> mAttributeTableBuffer;
     // Default to invalid (bands are 1-indexed)
     int mCurrentBand = 0;
     bool mEditable = false;
@@ -144,28 +182,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
 
     void init( int bandNumber = 0 );
     void updateButtons();
-
-    /**
-     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
-     * to the appropriate message bar.
-     * \see messageBar()
-     */
-    void setMessageBar( QgsMessageBar *bar );
-
-
-  private slots:
-
-    void setEditable( bool editable );
-    void saveChanges();
-    void classify();
-    void addColumn();
-    void removeColumn();
-    void addRow();
-    void removeRow();
-    void bandChanged( const int index );
-    void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
-    void setDelegates( );
-
 };
 
 #endif // QGSRASTERATTRIBUTETABLEWIDGET_H

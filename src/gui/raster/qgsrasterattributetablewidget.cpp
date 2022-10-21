@@ -90,14 +90,14 @@ void QgsRasterAttributeTableWidget::setRasterLayer( QgsRasterLayer *rasterLayer,
 
 bool QgsRasterAttributeTableWidget::isDirty() const
 {
-  return mAttributeTable && mAttributeTable->isDirty();
+  return mAttributeTableBuffer && mAttributeTableBuffer->isDirty();
 }
 
 void QgsRasterAttributeTableWidget::init( int bandNumber )
 {
 
   disconnect( mRasterBandsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterAttributeTableWidget::bandChanged );
-  mAttributeTable = nullptr;
+  mAttributeTableBuffer = nullptr;
   mCurrentBand = 0;
   mRasterBandsComboBox->clear();
 
@@ -120,22 +120,22 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
       if ( availableRats.contains( bandNumber ) )
       {
         mCurrentBand = bandNumber;
-        mAttributeTable = mRasterLayer->attributeTable( mCurrentBand );
-        mRasterBandsComboBox->setCurrentIndex( availableRats.indexOf( mCurrentBand ) );
       }
       else if ( ! availableRats.isEmpty() )
       {
         mCurrentBand = availableRats.first();
-        mAttributeTable = mRasterLayer->attributeTable( mCurrentBand );
-        mRasterBandsComboBox->setCurrentIndex( availableRats.indexOf( mCurrentBand ) );
       }
+
+      mAttributeTableBuffer = std::make_unique<QgsRasterAttributeTable>( *mRasterLayer->attributeTable( mCurrentBand ) );
+      mRasterBandsComboBox->setCurrentIndex( availableRats.indexOf( mCurrentBand ) );
     }
   }
 
-  if ( mAttributeTable )
+  if ( mAttributeTableBuffer )
   {
-    mModel.reset( new QgsRasterAttributeTableModel( mAttributeTable ) );
+    mModel.reset( new QgsRasterAttributeTableModel( mAttributeTableBuffer.get() ) );
     mModel->setEditable( mEditable );
+
     connect( mModel.get(), &QgsRasterAttributeTableModel::dataChanged, this, [ = ]( const QModelIndex &, const QModelIndex &, const QVector<int> & )
     {
       updateButtons();
@@ -166,14 +166,15 @@ void QgsRasterAttributeTableWidget::init( int bandNumber )
 
 void QgsRasterAttributeTableWidget::updateButtons()
 {
-  const bool enableEditingButtons { static_cast<bool>( mAttributeTable ) &&mEditable &&mRATView->selectionModel()->currentIndex().isValid() };
+  const bool enableEditingButtons( static_cast<bool>( mAttributeTableBuffer ) && mEditable && mRATView->selectionModel()->currentIndex().isValid() );
+  mActionToggleEditing->setChecked( mEditable );
   mActionAddColumn->setEnabled( mEditable );
   mActionRemoveColumn->setEnabled( enableEditingButtons );
   mActionAddRow->setEnabled( enableEditingButtons );
   mActionRemoveRow->setEnabled( enableEditingButtons );
-  mActionSaveChanges->setEnabled( mAttributeTable && mAttributeTable->isDirty() );
-  mClassifyButton->setEnabled( mAttributeTable && mRasterLayer );
-  mClassifyComboBox->setEnabled( mAttributeTable && mRasterLayer );
+  mActionSaveChanges->setEnabled( mAttributeTableBuffer && mAttributeTableBuffer->isDirty() );
+  mClassifyButton->setEnabled( mAttributeTableBuffer && mRasterLayer );
+  mClassifyComboBox->setEnabled( mAttributeTableBuffer && mRasterLayer );
 }
 
 void QgsRasterAttributeTableWidget::setMessageBar( QgsMessageBar *bar )
@@ -181,83 +182,109 @@ void QgsRasterAttributeTableWidget::setMessageBar( QgsMessageBar *bar )
   mMessageBar = bar;
 }
 
-void QgsRasterAttributeTableWidget::setEditable( bool editable )
+bool QgsRasterAttributeTableWidget::setEditable( bool editable )
 {
-  bool isDirty { false };
-
-  for ( int bandNo = 1; bandNo <= mRasterLayer->bandCount(); ++bandNo )
+  const bool isDirty { mAttributeTableBuffer &&mAttributeTableBuffer->isDirty() &&mCurrentBand > 0 && mRasterLayer->attributeTable( mCurrentBand ) };
+  bool retVal { true };
+  // Switch to read-only
+  if ( ! editable && isDirty )
   {
-    if ( mRasterLayer->dataProvider()->attributeTable( bandNo ) && mRasterLayer->dataProvider()->attributeTable( bandNo )->isDirty() )
+    const QMessageBox::StandardButtons buttons { QMessageBox::Button::Cancel | QMessageBox::Button::Yes |  QMessageBox::Button::No };
+    switch ( QMessageBox::question( nullptr, tr( "Save Attribute Table" ), tr( "Attribute table contains unsaved changes, do you want to save the changes?" ), buttons ) )
     {
-      isDirty = true;
-      break;
+      case QMessageBox::Button::Cancel:
+      {
+        retVal = false;
+        break;
+      }
+      case QMessageBox::Button::Yes:
+      {
+        saveChanges();
+        retVal = true;
+        break;
+      }
+      case QMessageBox::Button::No:
+      default:
+      {
+        // Reset to its original state
+        mAttributeTableBuffer = std::make_unique<QgsRasterAttributeTable>( *mRasterLayer->attributeTable( mCurrentBand ) );
+        init( mCurrentBand );
+        retVal = true;
+        break;
+      }
     }
   }
-  if ( isDirty && QMessageBox::question( nullptr, tr( "Save Attribute Table" ), tr( "Attribute table contains unsaved changes, do you want to save the changes?" ) ) == QMessageBox::Yes )
+
+  if ( retVal )
   {
-    saveChanges();
+    mEditable = editable;
+    mModel->setEditable( editable );
   }
 
-  mEditable = editable;
-  mModel->setEditable( editable );
   updateButtons();
+
+  return retVal;
 }
 
 void QgsRasterAttributeTableWidget::saveChanges()
 {
-  if ( mRasterLayer )
+  if ( mRasterLayer && mAttributeTableBuffer && mAttributeTableBuffer->isDirty() && mCurrentBand > 0 )
   {
-    for ( int bandNo = 1; bandNo <= mRasterLayer->bandCount(); ++bandNo )
+    QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( mCurrentBand ) };
+    if ( ! attributeTable )
     {
-      QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( bandNo ) };
-      if ( attributeTable && attributeTable->isDirty() )
+      QgsDebugMsg( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
+    }
+    else
+    {
+      *attributeTable = *mAttributeTableBuffer;
+      QString errorMessage;
+      QString newPath { attributeTable->filePath() };
+      const bool nativeRatSupported = mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable );
+      bool saveToNative { false };
+
+      if ( newPath.isEmpty() && ! nativeRatSupported )
       {
-        QString errorMessage;
-        QString newPath { attributeTable->filePath() };
-        const bool nativeRatSupported = mRasterLayer->dataProvider()->providerCapabilities().testFlag( QgsRasterDataProvider::ProviderCapability::NativeRasterAttributeTable );
-        bool saveToNative { false };
-
-        if ( newPath.isEmpty() && ! nativeRatSupported )
+        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri( ) ) ? mRasterLayer->dataProvider()->dataSourceUri( ) + ".vat.dbf" : QString(), QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+        if ( newPath.isEmpty() )
         {
-          newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( bandNo ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri( ) ) ? mRasterLayer->dataProvider()->dataSourceUri( ) + ".vat.dbf" : QString(), QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
-          if ( newPath.isEmpty() )
-          {
-            // Aborted by user
-            return;
-          }
-        }
-        else if ( newPath.isEmpty() )
-        {
-          saveToNative = true;
-        }
-
-        bool writeSuccess { false };
-
-        // Save to file
-        if ( ! saveToNative && ! newPath.isEmpty() )
-        {
-          writeSuccess = attributeTable->writeToFile( attributeTable->filePath(), &errorMessage );
-        }
-        else if ( saveToNative )
-        {
-          writeSuccess = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );
-        }
-
-        if ( writeSuccess )
-        {
-          notify( tr( "Attribute Table Write Success" ), tr( "The raster attibute table has been successfully saved." ), Qgis::MessageLevel::Success );
-        }
-        else
-        {
-          notify( tr( "Attribute Table Write Error" ), errorMessage, Qgis::MessageLevel::Critical );
-        }
-
-        // Save to native saves RATs for all bands, no need to loop further.
-        if ( saveToNative )
-        {
+          // Aborted by user
           return;
         }
       }
+      else if ( newPath.isEmpty() )
+      {
+        saveToNative = true;
+      }
+
+      bool writeSuccess { false };
+
+      // Save to file
+      if ( ! saveToNative && ! newPath.isEmpty() )
+      {
+        writeSuccess = attributeTable->writeToFile( attributeTable->filePath(), &errorMessage );
+      }
+      else if ( saveToNative )
+      {
+        writeSuccess = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );
+      }
+
+      if ( writeSuccess )
+      {
+        mAttributeTableBuffer->setDirty( false );
+        notify( tr( "Attribute Table Write Success" ), tr( "The raster attibute table has been successfully saved." ), Qgis::MessageLevel::Success );
+      }
+      else
+      {
+        notify( tr( "Attribute Table Write Error" ), errorMessage, Qgis::MessageLevel::Critical );
+      }
+
+      // Save to native saves RATs for all bands, no need to loop further.
+      if ( saveToNative )
+      {
+        return;
+      }
+
     }
   }
 
@@ -267,7 +294,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
 void QgsRasterAttributeTableWidget::classify()
 {
 
-  if ( ! mAttributeTable )
+  if ( ! mAttributeTableBuffer )
   {
     notify( tr( "Classification Error" ), tr( "The raster attribute table is not set." ), Qgis::MessageLevel::Critical );
     return;
@@ -279,13 +306,22 @@ void QgsRasterAttributeTableWidget::classify()
     return;
   }
 
-  if ( QMessageBox::question( nullptr, tr( "Apply Style From Attribute Table" ), tr( "The existing style for the raster will be replaced by a new style from the attribute table and any unsaved changes to the current style will be lost, do you want to proceed?" ) ) == QMessageBox::Yes )
+  QString confirmMessage;
+  QString errorMessage;
+
+  if ( ! mAttributeTableBuffer->isValid( &errorMessage ) )
+  {
+    confirmMessage = tr( "The attribute table does not seem to be valid and it may produce an unusable symbology, validation errors:<br>%1<br>" ).arg( errorMessage );
+  }
+
+  if ( QMessageBox::question( nullptr, tr( "Apply Style From Attribute Table" ), confirmMessage.append( tr( "The existing symbology for the raster will be replaced by a new symbology from the attribute table and any unsaved changes to the current symbology will be lost, do you want to proceed?" ) ) ) == QMessageBox::Yes )
   {
 
-    if ( QgsRasterRenderer *renderer = mAttributeTable->createRenderer( mRasterLayer->dataProvider(), mCurrentBand, mClassifyComboBox->currentData().toInt() ) )
+    if ( QgsRasterRenderer *renderer = mAttributeTableBuffer->createRenderer( mRasterLayer->dataProvider(), mCurrentBand, mClassifyComboBox->currentData().toInt() ) )
     {
       mRasterLayer->setRenderer( renderer );
       mRasterLayer->triggerRepaint( );
+      emit rendererChanged();
     }
     else
     {
@@ -296,9 +332,9 @@ void QgsRasterAttributeTableWidget::classify()
 
 void QgsRasterAttributeTableWidget::addColumn()
 {
-  if ( mAttributeTable )
+  if ( mAttributeTableBuffer )
   {
-    QgsRasterAttributeTableAddColumnDialog dlg { mAttributeTable };
+    QgsRasterAttributeTableAddColumnDialog dlg { mAttributeTableBuffer.get() };
     if ( dlg.exec() == QDialog::Accepted )
     {
       QString errorMessage;
@@ -330,7 +366,7 @@ void QgsRasterAttributeTableWidget::addColumn()
 void QgsRasterAttributeTableWidget::removeColumn()
 {
   const QModelIndex currentIndex { mProxyModel->mapToSource( mRATView->selectionModel()->currentIndex() ) };
-  if ( mAttributeTable && currentIndex.isValid() && currentIndex.column() < mAttributeTable->fields().count() )
+  if ( mAttributeTableBuffer && currentIndex.isValid() && currentIndex.column() < mAttributeTableBuffer->fields().count() )
   {
     if ( QMessageBox::question( nullptr, tr( "Remove Column" ), tr( "Do you want to remove the selected column? This action cannot be undone." ) ) == QMessageBox::Yes )
     {
@@ -345,7 +381,7 @@ void QgsRasterAttributeTableWidget::removeColumn()
 
 void QgsRasterAttributeTableWidget::addRow()
 {
-  if ( mAttributeTable )
+  if ( mAttributeTableBuffer )
   {
     // Default to append
     int position { mModel->rowCount( QModelIndex() ) };
@@ -372,7 +408,7 @@ void QgsRasterAttributeTableWidget::addRow()
 
     QVariantList rowData;
 
-    QList<QgsRasterAttributeTable::Field> fields { mAttributeTable->fields() };
+    QList<QgsRasterAttributeTable::Field> fields { mAttributeTableBuffer->fields() };
     for ( const QgsRasterAttributeTable::Field &field : std::as_const( fields ) )
     {
       rowData.push_back( QVariant( field.type ) );
@@ -393,7 +429,7 @@ void QgsRasterAttributeTableWidget::addRow()
 
 void QgsRasterAttributeTableWidget::removeRow()
 {
-  if ( mAttributeTable && mRATView->selectionModel()->currentIndex().isValid() )
+  if ( mAttributeTableBuffer && mRATView->selectionModel()->currentIndex().isValid() )
   {
     if ( QMessageBox::question( nullptr, tr( "Remove Row" ), tr( "Do you want to remove the selected row? This action cannot be undone." ) ) == QMessageBox::Yes )
     {
@@ -409,8 +445,13 @@ void QgsRasterAttributeTableWidget::removeRow()
 void QgsRasterAttributeTableWidget::bandChanged( const int index )
 {
   const QVariant itemData = mRasterBandsComboBox->itemData( index );
+
   if ( itemData.isValid() )
   {
+    if ( mEditable )
+    {
+      setEditable( false );
+    }
     init( itemData.toInt( ) );
   }
 }
@@ -449,9 +490,9 @@ void QgsRasterAttributeTableWidget::notify( const QString &title, const QString 
 void QgsRasterAttributeTableWidget::setDelegates()
 {
   mClassifyComboBox->clear();
-  if ( mAttributeTable )
+  if ( mAttributeTableBuffer )
   {
-    const QList<QgsRasterAttributeTable::Field> tableFields { mAttributeTable->fields() };
+    const QList<QgsRasterAttributeTable::Field> tableFields { mAttributeTableBuffer->fields() };
     int fieldIdx { 0 };
     const QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> usageInfo { QgsRasterAttributeTable::usageInformation() };
     for ( const QgsRasterAttributeTable::Field &f : std::as_const( tableFields ) )
@@ -465,26 +506,26 @@ void QgsRasterAttributeTableWidget::setDelegates()
       fieldIdx++;
     }
 
-    if ( mAttributeTable->hasColor() )
+    if ( mAttributeTableBuffer->hasColor() )
     {
-      if ( mAttributeTable->usages().contains( Qgis::RasterAttributeTableFieldUsage::Alpha ) )
+      if ( mAttributeTableBuffer->usages().contains( Qgis::RasterAttributeTableFieldUsage::Alpha ) )
       {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorAlphaDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorAlphaDelegate( mRATView ) );
       }
       else
       {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorDelegate( mRATView ) );
       }
     }
-    else if ( mAttributeTable->hasRamp() )
+    else if ( mAttributeTableBuffer->hasRamp() )
     {
-      if ( mAttributeTable->usages().contains( Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
+      if ( mAttributeTableBuffer->usages().contains( Qgis::RasterAttributeTableFieldUsage::AlphaMin ) )
       {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorRampAlphaDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorRampAlphaDelegate( mRATView ) );
       }
       else
       {
-        mRATView->setItemDelegateForColumn( mAttributeTable->fields().count( ), new ColorRampDelegate( mRATView ) );
+        mRATView->setItemDelegateForColumn( mAttributeTableBuffer->fields().count( ), new ColorRampDelegate( mRATView ) );
       }
     }
   }

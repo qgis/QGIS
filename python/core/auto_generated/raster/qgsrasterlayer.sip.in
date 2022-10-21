@@ -261,7 +261,7 @@ Returns the (possibly NULL) raster attribute table for the given band ``bandNumb
 .. versionadded:: 3.30
 %End
 
-    int attributeTableCount( );
+    int attributeTableCount( ) const;
 %Docstring
 Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
 

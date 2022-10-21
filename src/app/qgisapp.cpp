@@ -4382,6 +4382,12 @@ void QgisApp::setupConnections()
 
   connect( QgsProject::instance(), &QgsProject::transactionGroupsChanged, this, &QgisApp::onTransactionGroupsChanged );
 
+  // Handle dirty raster attribute tables
+  connect( QgsProject::instance(), qOverload<const QList< QgsMapLayer * > & >( &QgsProject::layersWillBeRemoved ), this, [ = ]( const QList< QgsMapLayer * > &layers )
+  {
+    checkUnsavedRasterAttributeTableEdits( layers, false );
+  } );
+
   // connect preview modes actions
   connect( mActionPreviewModeOff, &QAction::triggered, this, &QgisApp::disablePreviewMode );
   connect( mActionPreviewModeMono, &QAction::triggered, this, &QgisApp::activateMonoPreview );
@@ -5602,7 +5608,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
@@ -5640,7 +5646,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   if ( promptToSaveFlag )
   {
-    if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() )
+    if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
     {
       return false; //cancel pressed
     }
@@ -5712,7 +5718,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() )
+  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
   {
     return false; //cancel pressed
   }
@@ -6208,7 +6214,7 @@ void QgisApp::fileOpen()
     return;
 
   // possibly save any pending work before opening a new project
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkUnsavedRasterAttributeTableEdits() )
   {
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
@@ -6264,7 +6270,7 @@ void QgisApp::fileRevert()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
     return;
 
-  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() )
+  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || ! checkUnsavedRasterAttributeTableEdits() )
     return;
 
   // re-open the current project
@@ -6762,7 +6768,7 @@ void QgisApp::openProject( QAction *action )
   if ( checkTasksDependOnProject() )
     return;
 
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkUnsavedRasterAttributeTableEdits() )
     addProject( project );
 }
 
@@ -6807,7 +6813,7 @@ void QgisApp::openProject( const QString &fileName )
     return;
 
   // possibly save any pending work before opening a different project
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkUnsavedRasterAttributeTableEdits() )
   {
     // error handling and reporting is in addProject() function
     addProject( fileName );
@@ -12029,6 +12035,30 @@ void QgisApp::openRasterAttributeTable()
   }
 }
 
+void QgisApp::loadRasterAttributeTableFromFile( )
+{
+  if ( !mLayerTreeView )
+    return;
+
+  //find current Layer
+  QgsMapLayer *currentLayer = mLayerTreeView->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
+
+  int bandNumber { 0 };
+
+  if ( layer )
+  {
+    QgsCreateRasterAttributeTableDialog dlg { layer };
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      // TODO!
+    }
+  }
+}
+
 void QgisApp::createRasterAttributeTable()
 {
   if ( !mLayerTreeView )
@@ -12055,7 +12085,7 @@ void QgisApp::createRasterAttributeTable()
       if ( ! rat )
       {
         visibleMessageBar()->pushMessage( tr( "Error Creating Raster Attribute Table" ),
-                                          tr( "The Raster Attribute Table could not be created." ),
+                                          tr( "The raster attribute table could not be created." ),
                                           Qgis::MessageLevel::Critical );
         return;
       }
@@ -13381,6 +13411,94 @@ bool QgisApp::checkUnsavedLayerEdits()
   }
 
   return true;
+}
+
+bool QgisApp::checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> &mapLayers, bool allowCancel )
+{
+  bool retVal { true };
+
+  QVector<QgsRasterLayer *> rasterLayers;
+
+  if ( ! mapLayers.isEmpty() )
+  {
+    for ( QgsMapLayer *mapLayer : std::as_const( mapLayers ) )
+    {
+      if ( QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( mapLayer ) )
+      {
+        rasterLayers.push_back( rasterLayer );
+      }
+    }
+  }
+  else
+  {
+    rasterLayers = QgsProject::instance()->layers<QgsRasterLayer *>();
+  }
+
+  for ( QgsRasterLayer *rasterLayer : std::as_const( rasterLayers ) )
+  {
+    QStringList dirtyBands;
+    QList<QgsRasterAttributeTable *> dirtyRats;
+
+    for ( int bandNo = 1; bandNo < rasterLayer->bandCount(); ++bandNo )
+    {
+      if ( QgsRasterAttributeTable *rat = rasterLayer->attributeTable( bandNo ); rat && rat->isDirty() )
+      {
+        dirtyBands.push_back( QString::number( bandNo ) );
+        dirtyRats.push_back( rat );
+      }
+    }
+    if ( ! dirtyBands.isEmpty( ) )
+    {
+      QMessageBox::StandardButtons buttons = QMessageBox::Save | QMessageBox::Discard;
+      if ( allowCancel )
+      {
+        buttons |= QMessageBox::Cancel;
+      }
+
+      switch ( QMessageBox::question( nullptr,
+                                      tr( "Save Raster Attribute Table" ),
+                                      tr( "Do you want to save the changes to the attribute tables (bands: %1) associated with layer '%2'?" ).arg( dirtyBands.join( QStringLiteral( ", " ) ), rasterLayer->name() ),
+                                      buttons ) )
+      {
+
+        case QMessageBox::Save:
+        {
+          for ( QgsRasterAttributeTable *rat : std::as_const( dirtyRats ) )
+          {
+            QString errorMessage;
+            if ( rat->filePath().isEmpty( ) )
+            {
+              if ( ! rasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage ) )
+              {
+                visibleMessageBar()->pushMessage( tr( "Error Saving Raster Attribute Table" ),
+                                                  tr( "An error occourred while saving raster attribute table for layer '%1': %2" ).arg( rasterLayer->name(), errorMessage ),
+                                                  Qgis::MessageLevel::Critical );
+                retVal = false;
+              }
+            }
+            else
+            {
+              if ( ! rat->writeToFile( rat->filePath(), &errorMessage ) )
+              {
+                visibleMessageBar()->pushMessage( tr( "Error Saving Raster Attribute Table" ),
+                                                  tr( "An error occourred while saving raster attribute table for layer '%1' to VAT.DBF file '%2': %3" ).arg( rasterLayer->name(), rat->filePath(), errorMessage ),
+                                                  Qgis::MessageLevel::Critical );
+                retVal = false;
+              }
+            }
+          }
+          break;
+        }
+        case QMessageBox::Cancel:
+          retVal = false;
+          break;
+        case QMessageBox::Discard:
+        default:
+          break;
+      }
+    }
+  }
+  return retVal;
 }
 
 bool QgisApp::checkMemoryLayers()
@@ -16177,6 +16295,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       {
         rasterLayerPropertiesDialog->deleteLater();
       } );
+
+
       break;
     }
 

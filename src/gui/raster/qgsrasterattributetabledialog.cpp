@@ -16,11 +16,9 @@
 #include "qgsrasterattributetabledialog.h"
 #include "qgsrasterlayer.h"
 
-#include <QMessageBox>
 
 QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber, QWidget *parent )
   : QDialog( parent )
-  , mRasterLayer( rasterLayer )
 {
   Q_ASSERT( rasterLayer );
   setupUi( this );
@@ -28,40 +26,15 @@ QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *ra
   setWindowTitle( tr( "Raster Attribute Table for %1" ).arg( rasterLayer->name() ) );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsRasterAttributeTableDialog::reject );
+  connect( rasterLayer, &QgsRasterLayer::dataSourceChanged, this, &QgsRasterAttributeTableDialog::reject );
+  connect( rasterLayer, &QgsRasterLayer::willBeDeleted, this, &QgsRasterAttributeTableDialog::reject );
 
 }
 
 void QgsRasterAttributeTableDialog::reject()
 {
-  QList<int> dirtyBands;
-  for ( int bandNo = 1;  bandNo <= mRasterLayer->bandCount(); ++bandNo )
+  if ( mRatWidget->setEditable( false ) )
   {
-    if ( QgsRasterAttributeTable *rat = mRasterLayer->attributeTable( bandNo ) )
-    {
-      if ( rat->isDirty() )
-      {
-        dirtyBands.push_back( bandNo );
-      }
-    }
+    QDialog::reject();
   }
-
-  if ( ! dirtyBands.isEmpty() )
-  {
-    QString bandsStr;
-    for ( int i = 0; i < dirtyBands.size(); i++ )
-    {
-      bandsStr.append( QString::number( dirtyBands[i] ) );
-      if ( i < dirtyBands.size() - 1 )
-        bandsStr.append( QStringLiteral( ", " ) );
-    }
-
-    QString msg { dirtyBands.count( ) > 1 ? tr( "Attribute table bands (%1) contain unsaved changes, close without saving?" ).arg( bandsStr ) : tr( "Attribute table band %1 contains unsaved changes, close without saving?" ).arg( bandsStr ) };
-
-    if ( QMessageBox::question( nullptr, tr( "Save Attribute Table" ), msg ) != QMessageBox::Yes )
-    {
-      return;
-    }
-  }
-
-  QDialog::reject();
 }

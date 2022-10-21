@@ -326,7 +326,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
      * \since QGIS 3.30
      */
-    int attributeTableCount( );
+    int attributeTableCount( ) const;
 
     /**
      * Returns TRUE if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are QgsPalettedRasterRenderer and QgsSingleBandPseudoColorRenderer.

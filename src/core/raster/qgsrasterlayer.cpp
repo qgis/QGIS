@@ -257,7 +257,7 @@ QgsRasterAttributeTable *QgsRasterLayer::attributeTable( int bandNoInt ) const
   return mDataProvider->attributeTable( bandNoInt );
 }
 
-int QgsRasterLayer::attributeTableCount()
+int QgsRasterLayer::attributeTableCount() const
 {
   if ( !mDataProvider )
     return 0;

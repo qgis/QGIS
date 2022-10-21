@@ -1106,7 +1106,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void legendLayerStretchUsingCurrentExtent();
 
     /**
-     * Open the RasterAttributeTable for the raster layer.
+     * Open the Raster Attribute Table for the raster layer.
      * Only works on raster layers.
      *
      * \since QGIS 3.30
@@ -1114,7 +1114,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openRasterAttributeTable();
 
     /**
-     * Creates a new RasterAttributeTable from the raster layer renderer if the
+     * Creates a new Raster Attribute Table from the raster layer renderer if the
      * renderer supports it.
      *
      * Only works on raster layers.
@@ -1122,6 +1122,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.30
      */
     void createRasterAttributeTable();
+
+    /**
+     * Loads a Raster Attribute Table from a VAT.DBF file.
+     *
+     * Only works on raster layers.
+     *
+     * \since QGIS 3.30
+     */
+    void loadRasterAttributeTableFromFile();
 
     //! Watch for QFileOpenEvent.
     bool event( QEvent *event ) override;
@@ -1338,6 +1347,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * on any layer.
      */
     bool checkUnsavedLayerEdits();
+
+    /**
+     * Checks for unsaved changes in raster attribute tables and prompts the user to save
+     * or discard these changes for each raster attribute table.
+     *
+     * Returns TRUE if there are no unsaved raster attribute table remaining, or the user
+     * opted to discard them all. Returns FALSE if the user opted to cancel
+     * on any raster attribute table.
+     *
+     * \param mapLayers optional list of layers to check, if empty all project raster layers will be checked.
+     * \param allowCancel optional flag (default TRUE) that switches on the "Cancel" button.
+     */
+    bool checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> &mapLayers = QList<QgsMapLayer *>(), bool allowCancel = true );
 
     /**
      * Checks whether memory layers (with features) exist in the project, and if so
