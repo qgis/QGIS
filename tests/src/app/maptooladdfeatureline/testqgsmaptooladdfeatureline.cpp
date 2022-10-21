@@ -65,6 +65,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
 
     void testNoTracing();
     void testTracing();
+    void testTracingWithTransform();
     void testTracingWithOffset();
     void testTracingWithConvertToCurves();
     void testTracingWithConvertToCurvesCustomTolerance();
@@ -358,6 +359,61 @@ void TestQgsMapToolAddFeatureLine::testTracing()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   mEnableTracingAction->setChecked( false );
+}
+
+void TestQgsMapToolAddFeatureLine::testTracingWithTransform()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  QgsVectorLayer *lineLayer3857 = new QgsVectorLayer( QStringLiteral( "CompoundCurve?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( lineLayer3857->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << lineLayer3857 );
+
+  lineLayer3857->startEditing();
+  mCanvas->setCurrentLayer( lineLayer3857 );
+
+
+  // tracing enabled - same clicks - now following line
+
+  mEnableTracingAction->setChecked( true );
+  mCaptureTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+
+  const QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+
+  // be sure it doesn't create an extra curve
+  QCOMPARE( mCaptureTool->captureCurve()->asWkt( -3 ), QStringLiteral( "CompoundCurve ((-841000 6406000, -841000 6406000, -841000 6406000))" ) );
+
+  utils.mouseClick( 3, 2, Qt::RightButton );
+
+  const QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
+  QCOMPARE( lineLayer3857->getFeature( newFid ).geometry().asWkt( -3 ), QStringLiteral( "LineString (-841000 6406000, -841000 6406000, -841000 6406000)" ) );
+
+  lineLayer3857->undoStack()->undo();
+
+  // no other unexpected changes happened
+  QCOMPARE( lineLayer3857->undoStack()->index(), 0 );
+
+  // tracing enabled - combined with first and last segments that are not traced
+
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
+
+  const QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
+
+  QCOMPARE( lineLayer3857->undoStack()->index(), 1 );
+  QCOMPARE( lineLayer3857->getFeature( newFid2 ).geometry().asWkt( -3 ), QStringLiteral( "LineString (-841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000, -841000 6406000)" ) );
+
+  mEnableTracingAction->setChecked( false );
+  mCanvas->setCurrentLayer( mLayerLine );
+  QgsProject::instance()->removeMapLayer( lineLayer3857 );
 }
 
 void TestQgsMapToolAddFeatureLine::testTracingWithOffset()

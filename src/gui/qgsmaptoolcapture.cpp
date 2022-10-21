@@ -17,7 +17,6 @@
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
-#include "qgslayertreeview.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -30,12 +29,12 @@
 #include "qgsvertexmarker.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsapplication.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsproject.h"
 #include "qgsmaptoolcapturerubberband.h"
 #include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
-#include "qgsgui.h"
+#include "qgssnappingutils.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QAction>
 #include <QCursor>
@@ -281,17 +280,31 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     return false;
 
   QgsTracer::PathError err;
-  QVector<QgsPointXY> points = tracer->findShortestPath( pt0, point, &err );
-  if ( points.isEmpty() )
+  const QVector<QgsPointXY> tracedPointsInMapCrs = tracer->findShortestPath( pt0, point, &err );
+  if ( tracedPointsInMapCrs.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
   // transform points
   QgsPointSequence layerPoints;
-  QgsPoint lp; // in layer coords
-  for ( int i = 0; i < points.count(); ++i )
+  layerPoints.reserve( tracedPointsInMapCrs.size() );
+  QgsPointSequence mapPoints;
+  mapPoints.reserve( tracedPointsInMapCrs.size() );
+  for ( const QgsPointXY &tracedPointMapCrs : tracedPointsInMapCrs )
   {
-    if ( nextPoint( QgsPoint( points[i] ), lp ) != 0 )
+    QgsPoint mapPoint( tracedPointMapCrs );
+
+    QgsPoint lp; // in layer coords
+    if ( nextPoint( mapPoint, lp ) != 0 )
       return false;
+
+    // copy z and m from layer point back to mapPoint, as nextPoint() call will populate these based
+    // on the context of the trace
+    if ( lp.is3D() )
+      mapPoint.addZValue( lp.z() );
+    if ( lp.isMeasure() )
+      mapPoint.addMValue( lp.m() );
+
+    mapPoints << mapPoint;
     layerPoints << lp;
   }
 
@@ -302,7 +315,7 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   mSnappingMatches.append( QgsPointLocator::Match() );
 
   int pointBefore = mCaptureCurve.numPoints();
-  addCurve( new QgsLineString( layerPoints ) );
+  addCurve( new QgsLineString( mapPoints ) );
 
   resetRubberBand();
 
