@@ -31,6 +31,7 @@
 #include <qgsrasterdataprovider.h>
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasteridentifyresult.h"
 #include <qgsrectangle.h>
 #include "qgsproject.h"
 #include "qgsrastercalculator.h"
@@ -69,6 +70,8 @@ class TestQgsVirtualRasterProvider : public QgsTest
     void testConstructor();
     void testNewCalcNodeMethods();
     void testSecondGenerationVirtualRaster();
+    void testBlockReading();
+    void testIdentify();
 
   private:
     QString mTestDataDir;
@@ -280,5 +283,55 @@ void TestQgsVirtualRasterProvider::testSecondGenerationVirtualRaster()
   QCOMPARE( layerSecond->dataProvider()->crs(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 
 }
+
+
+void TestQgsVirtualRasterProvider::testBlockReading()
+{
+  // A virutal raster provider by addding the raster file with one
+  QString rastFileName = mTestDataDir + "raster/band1_byte_noct_epsg4326.tif";
+  QString providerUri = QString( "?crs=EPSG:4326&extent=-3,-4,7,6&width=10&height=10&formula=\"rast@1\"+1&rast:provider=gdal&rast:uri=%1" ).arg( rastFileName );
+  std::unique_ptr<QgsRasterLayer> layer = std::make_unique<QgsRasterLayer>( providerUri,
+                                          QStringLiteral( "layer" ),
+                                          QStringLiteral( "virtualraster" ) );
+
+  // read the top left portion of the raster, its pixel size is 3x3
+  QgsRectangle blockExtent( -3, 3, 0, 6 );
+  int blockPixelWidth = 3, blockPixelHeight = 3;
+  auto block = layer->dataProvider()->block( 1, blockExtent, blockPixelWidth, blockPixelHeight, nullptr );
+
+  // validation 1: the block's nodata value equals providers'nodata value
+  QVERIFY( layer->dataProvider()->sourceHasNoDataValue( 1 ) );
+  QVERIFY( layer->dataProvider()->useSourceNoDataValue( 1 ) );
+  QCOMPARE( block->noDataValue(), layer->dataProvider()->sourceNoDataValue( 1 ) );
+  // validation 2: the value of the bottom-right most cell(row=3, col=3) equals block's nodata value
+  double bottomRightvalue = block->value( 2, 2 );
+  QCOMPARE( bottomRightvalue, block->noDataValue() );
+  // validate 3: the value of the top-left most cell(row=0, col=0) equals 3
+  double topLeftValue = block->value( 0, 0 );
+  QCOMPARE( topLeftValue, 3 );
+}
+
+void TestQgsVirtualRasterProvider::testIdentify()
+{
+  // A virutal raster provider by addding the raster file with one
+  QString rastFileName = mTestDataDir + "raster/band1_byte_noct_epsg4326.tif";
+  QString providerUri = QString( "?crs=EPSG:4326&extent=-3,-4,7,6&width=10&height=10&formula=\"rast@1\"+1&rast:provider=gdal&rast:uri=%1" ).arg( rastFileName );
+  std::unique_ptr<QgsRasterLayer> layer = std::make_unique<QgsRasterLayer>( providerUri,
+                                          QStringLiteral( "layer" ),
+                                          QStringLiteral( "virtualraster" ) );
+
+// pixel at row=0, col=0
+  QgsPointXY r0c0Point( -2.5, 5.5 );
+  QgsRectangle r0c0PixelExtent( -3, 5, -2, 6 );
+  auto r0c0IdentifyResult = layer->dataProvider()->identify( r0c0Point, QgsRaster::IdentifyFormatValue, r0c0PixelExtent, 1, 1 );
+  QCOMPARE( r0c0IdentifyResult.results()[1].toDouble(), 3 );
+
+// pixel at row=3, col=3
+  QgsPointXY r3c3Point( -0.5, 3.5 );
+  QgsRectangle r3c3PixelExtent( -1, 3, 0, 4 );
+  auto r3c3IdentifyResult = layer->dataProvider()->identify( r3c3Point, QgsRaster::IdentifyFormatValue, r3c3PixelExtent, 1, 1 );
+  QVERIFY( r3c3IdentifyResult.results()[1].isNull() );
+}
+
 QGSTEST_MAIN( TestQgsVirtualRasterProvider )
 #include "testqgsvirtualrasterprovider.moc"

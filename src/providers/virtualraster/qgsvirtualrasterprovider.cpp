@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvirtualrasterprovider.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
@@ -54,9 +55,9 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QString &uri, const Qg
 
   mFormulaString = decodedUriParams.formula;
 
-  mSrcNoDataValue.push_back(-FLT_MAX);
-  mSrcHasNoDataValue.push_back(true);
-  mUseSrcNoDataValue.push_back(true);
+  mSrcNoDataValue.push_back( -FLT_MAX );
+  mSrcHasNoDataValue.push_back( true );
+  mUseSrcNoDataValue.push_back( true );
 
   mLastError.clear();
   mCalcNode.reset( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, mLastError ) );
@@ -156,7 +157,7 @@ QgsRasterBlock *QgsVirtualRasterProvider::block( int bandNo, const QgsRectangle 
 {
   Q_UNUSED( bandNo );
   std::unique_ptr< QgsRasterBlock > tblock = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float64, width, height );
-  tblock->setNoDataValue(mSrcNoDataValue[0]);
+  tblock->setNoDataValue( mSrcNoDataValue[0] );
   double *outputData = ( double * )( tblock->bits() );
 
   QMap< QString, QgsRasterBlock * > inputBlocks;
@@ -343,6 +344,22 @@ int QgsVirtualRasterProvider::capabilities() const
                          | QgsRasterDataProvider::Remove
                          | QgsRasterDataProvider::Prefetch;
   return capability;
+}
+
+QgsRasterIdentifyResult QgsVirtualRasterProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int dpi )
+{
+  auto result = QgsRasterDataProvider::identify( point, format, boundingBox, width, height, dpi );
+
+  // Checking the value returned by QgsRasterDataProvider::identify
+  // If it is NoData value, replace it with QVariant()
+  auto bandValues = result.results();
+  if ( !QgsVariantUtils::isNull( bandValues[1] )
+       && bandValues[1].toDouble() == mSrcNoDataValue[0] )
+  {
+    bandValues[1] = QVariant();
+  }
+
+  return QgsRasterIdentifyResult( result.format(), bandValues );
 }
 
 QString QgsVirtualRasterProvider::formulaString()

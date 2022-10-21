@@ -20,6 +20,8 @@
 #include "qgsprovidermetadata.h"
 #include "qgsrastercalculator.h"
 
+class QgsRasterIdentifyResult;
+
 /**
  * The QgsVirtualRasterProvider class implements a raster data provider that enable the use of the raster calculator
  * without the need of save on the disk a derived file.
@@ -62,6 +64,7 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
     static QString providerKey();
 
