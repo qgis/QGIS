@@ -967,6 +967,12 @@ static QString detailsErrorMessage( const QgsMeshEditingError &error )
 
 bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 {
+  QgsMeshEditingError error;
+  return startFrameEditing( transform, error, false );
+}
+
+bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform, QgsMeshEditingError &error, bool fixErrors )
+{
   if ( !supportsEditing() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Mesh layer \"%1\" not support mesh editing" ).arg( name() ) );
@@ -985,7 +991,13 @@ bool QgsMeshLayer::startFrameEditing( const QgsCoordinateTransform &transform )
 
   mMeshEditor = new QgsMeshEditor( this );
 
-  const QgsMeshEditingError error = mMeshEditor->initialize();
+  if ( fixErrors )
+  {
+    mRendererCache.reset(); // fixing errors could lead to remove faces/vertices
+    error = mMeshEditor->initializeWithErrorsFix();
+  }
+  else
+    error = mMeshEditor->initialize();
 
   if ( error.errorType != Qgis::MeshEditingErrorType::NoError )
   {

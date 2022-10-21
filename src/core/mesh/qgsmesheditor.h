@@ -82,8 +82,23 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      */
     QgsMeshDatasetGroup *createZValueDatasetGroup() SIP_TRANSFERBACK;
 
-    //! Initialize the mesh editor and return errors if the internal native mesh have topologic errors
+    //! Initializes the mesh editor and returns first error if the internal native mesh has topological errors
     QgsMeshEditingError initialize();
+
+    /**
+     * Initializes the mesh editor. If topological errors occur,tries to fix these errors
+     * and returns error if there is one that couldn't be fixed
+     *
+     *  \since QGIS 3.28
+     */
+    QgsMeshEditingError initializeWithErrorsFix();
+
+    /**
+     * Tries to fix the topological \a error in the mesh. Returns FALSE if the fix fails
+     *
+     * \since QGIS 3.28
+     */
+    bool fixError( const QgsMeshEditingError &error );
 
     //! Resets the triangular mesh
     void resetTriangularMesh( QgsTriangularMesh *triangularMesh ); SIP_SKIP
