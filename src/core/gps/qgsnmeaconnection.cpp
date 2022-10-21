@@ -365,7 +365,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
     // for determining when to graph sat info
     mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
 
-    int IDfind = 0;
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
       const nmeaSATELLITE currentSatellite = result.sat_data[i];
@@ -389,23 +388,24 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         satelliteInfo.id = currentSatellite.id + 87;
       }
 
-      IDfind = 0;
+      bool idAlreadyPresent = false;
       if ( mLastGPSInformation.satellitesInView.size() > NMEA_SATINPACK )
       {
-        for ( int j = 0; j < mLastGPSInformation.satellitesInView.size(); ++j )
+        for ( const QgsSatelliteInfo &existingSatInView : std::as_const( mLastGPSInformation.satellitesInView ) )
         {
-          QgsSatelliteInfo FindsatInView = mLastGPSInformation.satellitesInView.at( j );
-          if ( FindsatInView.id == currentSatellite.id )
+          if ( existingSatInView.id == currentSatellite.id )
           {
-            IDfind = 1;
+            idAlreadyPresent = true;
+            break;
           }
         }
       }
+
       if ( currentSatellite.sig > 0 )
       {
         satelliteInfo.inUse = 1; // check where used ???? (+=1)
       }
-      if ( IDfind == 0 && ( currentSatellite.azimuth > 0 && currentSatellite.elv > 0 ) )
+      if ( !idAlreadyPresent && currentSatellite.azimuth > 0 && currentSatellite.elv > 0 )
       {
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
       }
