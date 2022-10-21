@@ -148,13 +148,6 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
                                   QgsFeedback *feedback
                                 )
 {
-  QgsOffscreen3DEngine engine;
-  engine.setSize( outputSize );
-  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
-  engine.setRootEntity( scene );
-  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
-  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
-
   if ( animationSettings.keyFrames().size() < 2 )
   {
     error = QObject::tr( "Unable to export 3D animation. Add at least 2 keyframes" );
@@ -190,6 +183,22 @@ bool Qgs3DUtils::exportAnimation( const Qgs3DAnimationSettings &animationSetting
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
     return false;
   }
+
+  if ( !QDir().exists( outputDirectory ) )
+  {
+    if ( !QDir().mkpath( outputDirectory ) )
+    {
+      error = QObject::tr( "Output directory could not be created." );
+      return false;
+    }
+  }
+
+  QgsOffscreen3DEngine engine;
+  engine.setSize( outputSize );
+  Qgs3DMapScene *scene = new Qgs3DMapScene( mapSettings, &engine );
+  engine.setRootEntity( scene );
+  // We need to change render policy to RenderPolicy::Always, since otherwise render capture node won't work
+  engine.renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::RenderPolicy::Always );
 
   while ( time <= duration )
   {
