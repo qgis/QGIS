@@ -656,13 +656,18 @@ bool QgsProviderSublayerProxyModel::filterAcceptsRow( int source_row, const QMod
   if ( !mIncludeSystemTables && static_cast< Qgis::SublayerFlags >( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Flags ) ).toInt() ) & Qgis::SublayerFlag::SystemTable )
     return false;
 
+  if ( !mIncludeEmptyLayers && sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::FeatureCount ) ) == 0 )
+    return false;
+
   if ( mFilterString.trimmed().isEmpty() )
     return true;
 
   if ( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Name ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
     return true;
 
-  if ( sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::Description ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
+  // check against the Description column's display role as it might be different from QgsProviderSublayerModel::Role::Description
+  const QModelIndex descriptionColumnIndex = sourceModel()->index( source_row, 1, source_parent );
+  if ( sourceModel()->data( descriptionColumnIndex, static_cast< int >( Qt::DisplayRole ) ).toString().contains( mFilterString, Qt::CaseInsensitive ) )
     return true;
 
   const QVariant wkbTypeVariant =  sourceModel()->data( sourceIndex, static_cast< int >( QgsProviderSublayerModel::Role::WkbType ) );
@@ -700,6 +705,17 @@ bool QgsProviderSublayerProxyModel::includeSystemTables() const
 void QgsProviderSublayerProxyModel::setIncludeSystemTables( bool include )
 {
   mIncludeSystemTables = include;
+  invalidateFilter();
+}
+
+bool QgsProviderSublayerProxyModel::includeEmptyLayers() const
+{
+  return mIncludeEmptyLayers;
+}
+
+void QgsProviderSublayerProxyModel::setIncludeEmptyLayers( bool include )
+{
+  mIncludeEmptyLayers = include;
   invalidateFilter();
 }
 
