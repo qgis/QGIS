@@ -374,6 +374,9 @@ QgsFeedback *QgsRasterLayerRenderer::feedback() const
 
 bool QgsRasterLayerRenderer::forceRasterRender() const
 {
+  if ( !mRasterViewPort || !mPipe )
+    return false;  // this layer is not going to get rendered
+
   // preview of intermediate raster rendering results requires a temporary output image
   if ( renderContext()->testFlag( Qgis::RenderContextFlag::RenderPartialOutput ) )
     return true;
