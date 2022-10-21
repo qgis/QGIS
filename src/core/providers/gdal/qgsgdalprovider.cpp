@@ -3212,25 +3212,10 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
     }
 
     // Needs to be in write mode for HFA and perhaps other formats!
-    if ( GDALGetAccess( mGdalDataset ) == GA_ReadOnly )
+    if ( ! isEditable() )
     {
       QgsDebugMsg( QStringLiteral( "re-opening the dataset in read/write mode" ) );
-      GDALClose( mGdalDataset );
-
-      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE );
-
-      // if the dataset couldn't be opened in read / write mode, tell the user
-      if ( !mGdalBaseDataset )
-      {
-        mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY );
-        //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
-        mGdalDataset = mGdalBaseDataset;
-        if ( errorMessage )
-        {
-          *errorMessage = tr( "GDAL Error reopening dataset in write mode, raster attribute table could not be saved." );
-        }
-        return false;
-      }
+      setEditable( true );
       wasReopenedReadWrite = true;
     }
 
@@ -3327,17 +3312,7 @@ bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) //#spel
   if ( wasReopenedReadWrite )
   {
     QgsDebugMsg( QStringLiteral( "re-opening the dataset in read-only mode" ) );
-    GDALClose( mGdalDataset );
-
-    mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_READONLY );
-
-    // if the dataset couldn't be opened in read / write mode, tell the user
-    if ( !mGdalBaseDataset )
-    {
-      mGdalBaseDataset = gdalOpen( dataSourceUri( true ), GDAL_OF_UPDATE );
-      //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
-      mGdalDataset = mGdalBaseDataset;
-    }
+    setEditable( false );
   }
 
   return success;

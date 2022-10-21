@@ -26,13 +26,13 @@ class QgsRasterLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsRasterAttributeTableDialog class embeds an attribute table widget
- * and contains logic to handle confirmation when closing with unsaved changes.
+ * \brief The QgsRasterAttributeTableDialog class embeds an attribute table widget.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsRasterAttributeTableDialog: public QDialog, private Ui::QRasterAttributeTableDialogBase
 {
     Q_OBJECT
+
   public:
 
     QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
@@ -42,9 +42,6 @@ class GUI_EXPORT QgsRasterAttributeTableDialog: public QDialog, private Ui::QRas
 
     void reject() override;
 
-  private:
-
-    QgsRasterLayer *mRasterLayer = nullptr;
 };
 
 #endif // QGSRASTERATTRIBUTETABLEDIALOG_H

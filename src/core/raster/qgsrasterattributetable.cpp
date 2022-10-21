@@ -479,6 +479,7 @@ bool QgsRasterAttributeTable::removeRow( int position, QString *errorMessage )
     return false;
   }
   mData.removeAt( position );
+  setDirty( true );
   return true;
 }
 
@@ -723,8 +724,12 @@ bool QgsRasterAttributeTable::setValue( const int row, const int column, const Q
   }
 
   const QVariant oldVal = mData[ row ][ column ];
-  mData[ row ][ column ] = newVal;
-  setDirty( newVal != oldVal );
+
+  if ( newVal != oldVal )
+  {
+    mData[ row ][ column ] = newVal;
+    setDirty( true );
+  }
 
   return true;
 }
@@ -1508,7 +1513,7 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     pseudoColorRenderer->setClassificationMin( minValue() );
     pseudoColorRenderer->setClassificationMax( maxValue() );
     // Use discrete for single colors, interpolated for ramps
-    pseudoColorRenderer->createShader( ramp, hasColor() ? QgsColorRampShader::Type::Discrete : QgsColorRampShader::Type::Interpolated, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
+    pseudoColorRenderer->createShader( ramp, hasRamp() ? QgsColorRampShader::Type::Interpolated : QgsColorRampShader::Type::Discrete, QgsColorRampShader::ClassificationMode::Continuous, ramp->stops().count() + 2, true );
     pseudoColorRenderer->shader()->setMaximumValue( maxValue() );
     pseudoColorRenderer->shader()->setMinimumValue( minValue() );
     // Set labels
@@ -1516,10 +1521,30 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
     {
       shaderFunction->setMinimumValue( minValue() );
       shaderFunction->setMaximumValue( maxValue() );
-      const QList<QgsColorRampShader::ColorRampItem> itemList { shaderFunction->colorRampItemList() };
-      const bool labelsAreUsable { labels.count() == itemList.count() };
-      if ( ! itemList.isEmpty() )
+      const bool labelsAreUsable { ramp->count() > 2 && labels.count() == ramp->count() - 1 };
+
+      if ( labelsAreUsable )
       {
+        QList<QgsColorRampShader::ColorRampItem> deduplicatedDitemList;
+        const double range { maxValue() - minValue() };
+        int stopIdx { 0 };
+        for ( const QString &label : std::as_const( labels ) )
+        {
+          if ( stopIdx >= ramp->count() - 2 )
+          {
+            break;
+          }
+          double value { minValue() + ramp->stops().at( stopIdx ).offset * range };
+          QgsColorRampShader::ColorRampItem item { value, ramp->stops().at( stopIdx ).color, label };
+          deduplicatedDitemList.push_back( item );
+          stopIdx++;
+        }
+
+        QgsColorRampShader::ColorRampItem item { maxValue(), ramp->color2(), labels.last() };
+        deduplicatedDitemList.push_back( item );
+
+
+#if 0
         QList<QgsColorRampShader::ColorRampItem> deduplicatedDitemList;
         // Deduplicate entries, this is necessary when the ramp for athematic
         // ramp rasters creates a stop for each class limit (min and max) which
@@ -1548,6 +1573,8 @@ QgsRasterRenderer *QgsRasterAttributeTable::createRenderer( QgsRasterDataProvide
             deduplicatedDitemList.push_back( item );
           }
         }
+#endif
+
         shaderFunction->setColorRampItemList( deduplicatedDitemList );
       }
     }

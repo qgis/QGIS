@@ -68,6 +68,7 @@
 #include "qgsdoublevalidator.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsprojectutils.h"
+#include "qgsrasterattributetablewidget.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsprojecttimesettings.h"
@@ -233,6 +234,21 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     return;
   }
+
+  // Setup raster attribute table
+  if ( mRasterLayer->attributeTableCount() > 0 )
+  {
+    mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( this, mRasterLayer );
+    mOptsPage_RasterAttributeTable->layout()->addWidget( mRasterAttributeTableWidget );
+    // When the renderer changes we need to sync the style options page
+    connect( mRasterAttributeTableWidget, &QgsRasterAttributeTableWidget::rendererChanged, this, &QgsRasterLayerProperties::syncToLayer );
+    mNoRasterAttributeTableWidget->hide();
+  }
+  else
+  {
+    mNoRasterAttributeTableWidget->show();
+  }
+
 
   mBackupCrs = mRasterLayer->crs();
 

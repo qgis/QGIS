@@ -229,8 +229,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
         else if ( rlayer->canCreateRasterAttributeTable() )
         {
-          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), tr( "Create Raster Attribute Table" ), QgisApp::instance(), &QgisApp::createRasterAttributeTable );
+          menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCreateTable.svg" ) ), tr( "Create Raster Attribute Table" ), QgisApp::instance(), &QgisApp::createRasterAttributeTable );
         }
+
+        menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), tr( "Load Raster Attribute Table from VAT.DBF" ), QgisApp::instance(), &QgisApp::loadRasterAttributeTableFromFile );
       }
 
       // No raster support in createSqlVectorLayer (yet)

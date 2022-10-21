@@ -93,7 +93,7 @@
           <bool>true</bool>
          </property>
          <property name="currentRow">
-          <number>0</number>
+          <number>-1</number>
          </property>
          <item>
           <property name="text">
@@ -205,6 +205,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Attribute Tables</string>
+          </property>
+          <property name="toolTip">
+           <string>Manage Raster Attribute Tables</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>QGIS Server</string>
           </property>
           <property name="toolTip">
@@ -254,7 +266,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>10</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -299,8 +311,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>253</width>
-                <height>392</height>
+                <width>648</width>
+                <height>690</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1438,6 +1450,55 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_RasterAttributeTable">
+          <layout class="QVBoxLayout" name="verticalLayout_rat">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="mNoRasterAttributeTableWidget" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="mRasterAttributeTableLabel">
+                <property name="text">
+                 <string>There are no raster attribute tables associated with this data source. 
+
+If the current symbology can be converted to an attribute table you can create a new attribute table using the context menu available in the layer tree.
+
+From the layer tree context menu it you can also import an existing raster attribute table from a VAT.DBF file and associate it with a raster band.</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="mOptsPage_Server">
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="leftMargin">
@@ -1466,7 +1527,7 @@ p, li { white-space: pre-wrap; }
                 <x>0</x>
                 <y>0</y>
                 <width>263</width>
-                <height>566</height>
+                <height>600</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1993,6 +2054,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mInvertColorsCheck</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
