@@ -129,7 +129,7 @@ class TestQgsRasterAttributeTableWidget(unittest.TestCase):
         dialog.setLayout(layout)
 
         # For interactive testing while developing:
-        #dialog.exec_()
+        # dialog.exec_()
 
 
 if __name__ == '__main__':
