@@ -538,7 +538,7 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select *Advanced Install*):
 
-* qgis-dev-deps
+* qgis-ltr-deps
 
   * This will also select packages the above packages depend on.
 
