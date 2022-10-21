@@ -145,8 +145,10 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
 
     /**
      * Set the editable state, it may trigger save changes if the attribute table has unsave changes.
+     * \param editable editable state
+     * \param allowCancel optional (default TRUE) flag to show cancel option in confirm save dialog.
      */
-    bool setEditable( bool editable );
+    bool setEditable( bool editable, bool allowCancel = true );
 
   private slots:
 

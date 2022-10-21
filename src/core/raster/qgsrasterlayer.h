@@ -565,6 +565,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, QgsDataProvider::ReadFlags flags ) override;
 
+    /**
+     * Writes the paths to the external raster attribute table files associated with the raster bands.
+     * \param layerNode layer node
+     * \param doc document
+     * \param context read-write context
+     * \since QGIS 3.30
+     */
+    void writeRasterAttributeTableExternalPaths( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Reads the paths to the external raster attribute table files associated with the raster bands and loads the raster attribute tables, the raster symbology is not changed.
+     * \param layerNode layer node
+     * \param doc document
+     * \param context read-write context
+     * \since QGIS 3.30
+     */
+    void readRasterAttributeTableExternalPaths( const QDomNode &layer_node, QgsReadWriteContext &context ) const;
+
     //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;

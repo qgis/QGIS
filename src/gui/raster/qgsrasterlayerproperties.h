@@ -257,6 +257,11 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void setRendererWidget( const QString &rendererName );
 
+    /**
+     * Setup or update the raster attribute table options page.
+     */
+    void updateRasterAttributeTableOptionsPage();
+
     //TODO: we should move these gradient generators somewhere more generic
     //so they can be used generically throughout the app
     QLinearGradient greenGradient();

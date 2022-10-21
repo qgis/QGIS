@@ -273,6 +273,10 @@ Appends a row of ``data`` to the RAT, optionally reporting any error in ``errorM
     bool writeToFile( const QString &path, QString *errorMessage /Out/ = 0 );
 %Docstring
 Writes the Raster Attribute Table to a DBF file specified by ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+.. note::
+
+   ".vat.dbf" extension is automatically added to the file path if not present.
 %End
 
     bool readFromFile( const QString &path, QString *errorMessage /Out/ = 0 );

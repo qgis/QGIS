@@ -23,9 +23,11 @@
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgscontrastenhancement.h"
 #include "qgscoordinatetransform.h"
+#include "qgscreaterasterattributetabledialog.h"
 #include "qgscolorrampimpl.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
+#include "qgsloadrasterattributetabledialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaptoolemitpoint.h"
@@ -235,20 +237,34 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     return;
   }
 
-  // Setup raster attribute table
-  if ( mRasterLayer->attributeTableCount() > 0 )
-  {
-    mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( this, mRasterLayer );
-    mOptsPage_RasterAttributeTable->layout()->addWidget( mRasterAttributeTableWidget );
-    // When the renderer changes we need to sync the style options page
-    connect( mRasterAttributeTableWidget, &QgsRasterAttributeTableWidget::rendererChanged, this, &QgsRasterLayerProperties::syncToLayer );
-    mNoRasterAttributeTableWidget->hide();
-  }
-  else
-  {
-    mNoRasterAttributeTableWidget->show();
-  }
+  updateRasterAttributeTableOptionsPage();
 
+  connect( mRasterLayer, &QgsRasterLayer::rendererChanged, this, &QgsRasterLayerProperties::updateRasterAttributeTableOptionsPage );
+
+  connect( mCreateRasterAttributeTableButton, &QPushButton::clicked, this, [ = ]
+  {
+    if ( mRasterLayer->canCreateRasterAttributeTable() )
+    {
+      // Create the attribute table from the renderer
+      QgsCreateRasterAttributeTableDialog dlg { mRasterLayer };
+      dlg.setOpenWhenDoneVisible( false );
+      if ( dlg.exec() == QDialog::Accepted )
+      {
+        updateRasterAttributeTableOptionsPage();
+      }
+    }
+  } );
+
+  connect( mLoadRasterAttributeTableFromFileButton, &QPushButton::clicked, this, [ = ]
+  {
+    // Load the attribute table from a VAT.DBF file
+    QgsLoadRasterAttributeTableDialog dlg { mRasterLayer };
+    dlg.setOpenWhenDoneVisible( false );
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      updateRasterAttributeTableOptionsPage();
+    }
+  } );
 
   mBackupCrs = mRasterLayer->crs();
 
@@ -582,6 +598,30 @@ void QgsRasterLayerProperties::addPropertiesPageFactory( const QgsMapLayerConfig
 QgsExpressionContext QgsRasterLayerProperties::createExpressionContext() const
 {
   return mContext;
+}
+
+void QgsRasterLayerProperties::updateRasterAttributeTableOptionsPage( )
+{
+  if ( mRasterAttributeTableWidget )
+  {
+    mOptsPage_RasterAttributeTable->layout()->removeWidget( mRasterAttributeTableWidget );
+    mRasterAttributeTableWidget = nullptr;
+  }
+
+  // Setup raster attribute table
+  if ( mRasterLayer->attributeTableCount() > 0 )
+  {
+    mRasterAttributeTableWidget = new QgsRasterAttributeTableWidget( this, mRasterLayer );
+    mOptsPage_RasterAttributeTable->layout()->addWidget( mRasterAttributeTableWidget );
+    // When the renderer changes we need to sync the style options page
+    connect( mRasterAttributeTableWidget, &QgsRasterAttributeTableWidget::rendererChanged, this, &QgsRasterLayerProperties::syncToLayer );
+    mNoRasterAttributeTableWidget->hide();
+  }
+  else
+  {
+    mNoRasterAttributeTableWidget->show();
+    mCreateRasterAttributeTableButton->setEnabled( mRasterLayer->canCreateRasterAttributeTable() );
+  }
 }
 
 void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
@@ -1822,6 +1862,13 @@ void QgsRasterLayerProperties::updateInformationContent()
 
 void QgsRasterLayerProperties::onCancel()
 {
+
+  // Give the user a chance to save the raster attribute table edits.
+  if ( mRasterAttributeTableWidget && mRasterAttributeTableWidget->isDirty() )
+  {
+    mRasterAttributeTableWidget->setEditable( false, false );
+  }
+
   if ( mOldStyle.xmlData() != mRasterLayer->styleManager()->style( mRasterLayer->styleManager()->currentStyle() ).xmlData() )
   {
     // need to reset style to previous - style applied directly to the layer (not in apply())

@@ -103,8 +103,15 @@
       <string>Insertion point</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="6" column="0" colspan="2">
-       <widget class="QComboBox" name="mColumn"/>
+      <item row="3" column="0">
+       <widget class="QRadioButton" name="mBefore">
+        <property name="text">
+         <string>Before</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="4" column="0">
        <widget class="QRadioButton" name="mAfter">
@@ -116,15 +123,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QRadioButton" name="mBefore">
-        <property name="text">
-         <string>Before</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
+      <item row="6" column="0" colspan="2">
+       <widget class="QComboBox" name="mColumn"/>
       </item>
      </layout>
     </widget>

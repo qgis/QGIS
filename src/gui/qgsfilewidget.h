@@ -349,6 +349,10 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     //! Returns a filePath with relative path options applied (or not) !
     QString relativePath( const QString &filePath, bool removeRelative ) const;
 
+    // QWidget interface
+  public:
+    QSize minimumSizeHint() const override;
+
     friend class TestQgsFileWidget;
     friend class TestQgsExternalStorageFileWidget;
     friend class TestQgsExternalResourceWidgetWrapper;
