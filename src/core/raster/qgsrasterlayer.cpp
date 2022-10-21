@@ -1078,7 +1078,7 @@ void QgsRasterLayer::readRasterAttributeTableExternalPaths( const QDomNode &laye
         const QString path { context.pathResolver().readPath( ratElement.attributes().namedItem( QStringLiteral( "path" ) ).nodeValue() ) };
         if ( ! QFile::exists( path ) )
         {
-          QgsMessageLog::logMessage( tr( "Raster attribute table not found at path: %1." ).arg( path ), tr( "Raster" ) );
+          QgsMessageLog::logMessage( tr( "Error loading raster attribute table, file not found: %1." ).arg( path ), tr( "Raster" ) );
           continue;
         }
 
