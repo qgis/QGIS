@@ -200,21 +200,43 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     const QgsFields fieldsBackup = mShared->mFields;
     addGMLFields( true );
 
-    GetGeometryTypeFromOneFeature( mShared->mWKBType == QgsWkbTypes::Unknown );
+    const QgsWkbTypes::Type initialGeometryType = mShared->mWKBType;
 
-    // If we still didn't get the geometry type, and have a filter, temporarily
-    // disable the filter.
-    // See https://github.com/qgis/QGIS/issues/43950
-    if ( mShared->mWKBType == QgsWkbTypes::Unknown && !mSubsetString.isEmpty() )
+    // try first without a BBOX, because some servers exhibit very poor
+    // performance when being requested on a large extent
+    GetGeometryTypeFromOneFeature( false );
+    if ( initialGeometryType == QgsWkbTypes::Unknown )
     {
-      const QString oldFilter = mShared->setWFSFilter( QString() );
-      GetGeometryTypeFromOneFeature( true );
-      if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+      bool noGeometryFound = ( mShared->mWKBType == QgsWkbTypes::NoGeometry );
+      if ( noGeometryFound )
+        mShared->mWKBType = QgsWkbTypes::Unknown;
+
+      // If we still didn't get the geometry type, and have a filter, temporarily
+      // disable the filter.
+      // See https://github.com/qgis/QGIS/issues/43950
+      if ( mShared->mWKBType == QgsWkbTypes::Unknown && !mSubsetString.isEmpty() )
+      {
+        const QString oldFilter = mShared->setWFSFilter( QString() );
         GetGeometryTypeFromOneFeature( false );
-      mShared->setWFSFilter( oldFilter );
+        if ( mShared->mWKBType == QgsWkbTypes::NoGeometry )
+        {
+          noGeometryFound = true;
+          mShared->mWKBType = QgsWkbTypes::Unknown;
+        }
+        if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+          GetGeometryTypeFromOneFeature( true );
+        mShared->setWFSFilter( oldFilter );
+      }
+      else if ( mShared->mWKBType == QgsWkbTypes::Unknown )
+        GetGeometryTypeFromOneFeature( true );
+
+      if ( noGeometryFound && mShared->mWKBType == QgsWkbTypes::Unknown )
+        mShared->mWKBType = QgsWkbTypes::NoGeometry;
     }
-    else if ( mShared->mWKBType == QgsWkbTypes::Unknown )
-      GetGeometryTypeFromOneFeature( false );
+    else
+    {
+      mShared->mWKBType = initialGeometryType;
+    }
 
     // Edit the final mFields to add the description, identifier, name fields
     // if they were actually found.
