@@ -265,6 +265,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.settingsDictionary = {str(i): QgsMapSettings() for i in range(self.maxThreads)}
         for thread in self.settingsDictionary:
             self.settingsDictionary[thread].setOutputImageFormat(QImage.Format_ARGB32_Premultiplied)
+            self.settingsDictionary[thread].setTransformContext(context.transformContext())
             self.settingsDictionary[thread].setDestinationCrs(dest_crs)
             self.settingsDictionary[thread].setLayers(self.layers)
             self.settingsDictionary[thread].setOutputDpi(dpi)
