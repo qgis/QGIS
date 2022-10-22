@@ -31,22 +31,46 @@
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
-
+/**
+ * \ingroup gui
+ * \brief An interface for code interpreters.
+ * \since QGIS 3.30
+ */
 class GUI_EXPORT QgsCodeInterpreter
 {
   public:
 
-
     virtual ~QgsCodeInterpreter();
 
+    /**
+     * Executes a \a command in the interpreter.
+     *
+     * Returns an interpreter specific state value.
+     */
     int exec( const QString &command );
 
+    /**
+     * Returns the current interpreter state.
+     *
+     * The actual interpretation of the returned values depend on
+     * the interpreter subclass.
+     */
     virtual int currentState() const { return mState; }
 
+    /**
+     * Returns the interactive prompt string to use for the
+     * interpreter, given a \a state.
+     */
     virtual QString promptForState( int state ) const = 0;
 
   protected:
 
+    /**
+     * Pure virtual method for executing commands in the interpreter.
+     *
+     * Subclasses must implement this method. It will be called internally
+     * whenever the public exec() method is called.
+     */
     virtual int execCommandImpl( const QString &command ) = 0;
 
   private:
@@ -294,10 +318,30 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void setHistoryFilePath( const QString &path );
 
-
+    /**
+     * Returns the list of commands previously executed in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
     QStringList history() const;
 
+    /**
+     * Returns the attached code interpreter, or NULLPTR if not set.
+     *
+     * \see setInterpreter()
+     * \since QGIS 3.30
+     */
     QgsCodeInterpreter *interpreter() const;
+
+    /**
+     * Sets an attached code interpreter for executing commands when the editor
+     * is in the QgsCodeEditor::Mode::CommandInput mode.
+     *
+     * \see interpreter()
+     * \since QGIS 3.30
+     */
     void setInterpreter( QgsCodeInterpreter *newInterpreter );
 
   public slots:
