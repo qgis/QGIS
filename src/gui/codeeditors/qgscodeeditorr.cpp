@@ -28,7 +28,7 @@ QgsCodeEditorR::QgsCodeEditorR( QWidget *parent, Mode mode )
                    false,
                    false,
                    QgsCodeEditor::Flag::CodeFolding,
-	           mode )
+                   mode )
 {
   if ( !parent )
   {
