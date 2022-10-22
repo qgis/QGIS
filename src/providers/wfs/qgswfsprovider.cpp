@@ -189,11 +189,11 @@ QgsWFSProvider::QgsWFSProvider( const QString &uri, const ProviderOptions &optio
     // GML parser can detect them.
     const auto addGMLFields = [ = ]( bool forceAdd )
     {
-      if ( mShared->mFields.indexOf( QStringLiteral( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
+      if ( mShared->mFields.indexOf( QLatin1String( "description" ) ) < 0  && ( forceAdd || mSampleFeatureHasDescription ) )
         mShared->mFields.append( QgsField( QStringLiteral( "description" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-      if ( mShared->mFields.indexOf( QStringLiteral( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
+      if ( mShared->mFields.indexOf( QLatin1String( "identifier" ) ) < 0  && ( forceAdd || mSampleFeatureHasIdentifier ) )
         mShared->mFields.append( QgsField( QStringLiteral( "identifier" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
-      if ( mShared->mFields.indexOf( QStringLiteral( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
+      if ( mShared->mFields.indexOf( QLatin1String( "name" ) ) < 0  && ( forceAdd || mSampleFeatureHasName ) )
         mShared->mFields.append( QgsField( QStringLiteral( "name" ), QVariant::String, QStringLiteral( "xsd:string" ) ) );
     };
 

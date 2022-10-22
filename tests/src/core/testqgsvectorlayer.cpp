@@ -472,7 +472,7 @@ void TestQgsVectorLayer::testFieldExpression()
 void TestQgsVectorLayer::testFieldAggregateExpression()
 {
   QString testPolysFile( TEST_DATA_DIR );
-  testPolysFile += QStringLiteral( "/projects/communes.gpkg|layername=communes" );
+  testPolysFile += QLatin1String( "/projects/communes.gpkg|layername=communes" );
 
   QgsVectorLayer layer( testPolysFile, QStringLiteral( "layer1" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer.isValid() );

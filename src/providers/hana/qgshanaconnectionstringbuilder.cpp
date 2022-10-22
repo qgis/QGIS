@@ -116,5 +116,5 @@ QString QgsHanaConnectionStringBuilder::toString() const
 
   addProperty( QStringLiteral( "CHAR_AS_UTF8" ), QStringLiteral( "1" ) );
 
-  return props.join( QStringLiteral( ";" ) );
+  return props.join( QLatin1Char( ';' ) );
 }
