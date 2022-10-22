@@ -389,8 +389,20 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void showNextCommand();
 
+    /**
+     * Shows the command history dialog.
+
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
     void showHistory();
 
+    /**
+     * Removes the command at the specified \a index from the history of the code editor.
+     *
+     * \since QGIS 3.30
+     */
     void removeHistoryCommand( int index );
 
     /**
@@ -402,19 +414,44 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void clearSessionHistory();
 
-
+    /**
+     * Clears the entire persistent history of commands run in the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
     void clearPersistentHistory();
 
+    /**
+     * Stores the commands executed in the editor to the persistent history file.
+     *
+     * \since QGIS 3.30
+     */
     bool writeHistoryFile();
 
   signals:
 
+    /**
+     * Emitted when the history of commands run in the current session is cleared.
+     *
+     * \since QGIS 3.30
+     */
     void sessionHistoryCleared();
+
+    /**
+     * Emitted when the persistent history of commands run in the editor is cleared.
+     *
+     * \since QGIS 3.30
+     */
     void persistentHistoryCleared();
 
   protected:
 
-    bool isFixedPitch( const QFont &font );
+    /**
+     * Returns TRUE if a \a font is a fixed pitch font.
+     */
+    static bool isFixedPitch( const QFont &font );
 
     void focusOutEvent( QFocusEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
@@ -450,21 +487,40 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void runPostLexerConfigurationTasks();
 
-
-    void syncSoftHistory();
+    /**
+     * Updates the soft history by storing the current editor text in the history.
+     *
+     * \since QGIS 3.30
+     */
     void updateSoftHistory();
-    void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
 
+    /**
+     * Triggers an update of the interactive prompt part of the editor.
+     *
+     * \note Applies to code editors in the QgsCodeEditor::Mode::CommandInput mode only.
+     *
+     * \since QGIS 3.30
+     */
     void updatePrompt();
 
+    /**
+     * Called when the context \a menu for the widget is about to be shown, after it
+     * has been fully populated with the standard actions created by the base class.
+     *
+     * This method provides an opportunity for subclasses to add additional non-standard
+     * actions to the context menu.
+     *
+     * \since QGIS 3.30
+     */
     virtual void populateContextMenu( QMenu *menu );
-
 
   private:
 
     void setSciWidget();
     void updateFolding();
     bool readHistoryFile();
+    void syncSoftHistory();
+    void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
 
     QString mWidgetTitle;
     bool mMargin = false;

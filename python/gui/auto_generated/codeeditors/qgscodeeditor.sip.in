@@ -368,8 +368,22 @@ Shows the next command from the session in the editor.
 %End
 
     void showHistory();
+%Docstring
+Shows the command history dialog.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
 
     void removeHistoryCommand( int index );
+%Docstring
+Removes the command at the specified ``index`` from the history of the code editor.
+
+.. versionadded:: 3.30
+%End
 
     void clearSessionHistory();
 %Docstring
@@ -382,19 +396,46 @@ Clears the history of commands run in the current session.
 .. versionadded:: 3.30
 %End
 
-
     void clearPersistentHistory();
+%Docstring
+Clears the entire persistent history of commands run in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
 
     bool writeHistoryFile();
+%Docstring
+Stores the commands executed in the editor to the persistent history file.
+
+.. versionadded:: 3.30
+%End
 
   signals:
 
     void sessionHistoryCleared();
+%Docstring
+Emitted when the history of commands run in the current session is cleared.
+
+.. versionadded:: 3.30
+%End
+
     void persistentHistoryCleared();
+%Docstring
+Emitted when the persistent history of commands run in the editor is cleared.
+
+.. versionadded:: 3.30
+%End
 
   protected:
 
-    bool isFixedPitch( const QFont &font );
+    static bool isFixedPitch( const QFont &font );
+%Docstring
+Returns ``True`` if a ``font`` is a fixed pitch font.
+%End
 
     virtual void focusOutEvent( QFocusEvent *event );
 
@@ -433,15 +474,34 @@ Performs tasks which must be run after a lexer has been set for the widget.
 .. versionadded:: 3.16
 %End
 
-
-    void syncSoftHistory();
     void updateSoftHistory();
-    void updateHistory( const QStringList &commands, bool skipSoftHistory = false );
+%Docstring
+Updates the soft history by storing the current editor text in the history.
+
+.. versionadded:: 3.30
+%End
 
     void updatePrompt();
+%Docstring
+Triggers an update of the interactive prompt part of the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
 
     virtual void populateContextMenu( QMenu *menu );
+%Docstring
+Called when the context ``menu`` for the widget is about to be shown, after it
+has been fully populated with the standard actions created by the base class.
 
+This method provides an opportunity for subclasses to add additional non-standard
+actions to the context menu.
+
+.. versionadded:: 3.30
+%End
 
 };
 
