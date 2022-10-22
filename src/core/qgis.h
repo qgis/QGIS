@@ -27,6 +27,7 @@
 #include "qgstolerance.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "gdal.h"
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -745,6 +746,45 @@ class CORE_EXPORT Qgis
 
     Q_ENUM( RasterRendererFlag )
     Q_FLAG( RasterRendererFlags )
+
+    /*
+     * \brief The RasterAttributeTableFieldUsage enum represents the usage of a RAT field.
+     * \since QGIS 3.30
+     */
+    enum class RasterAttributeTableFieldUsage : int
+    {
+      Generic = GFU_Generic, //!< Field usage Generic
+      PixelCount = GFU_PixelCount, //!< Field usage PixelCount
+      Name = GFU_Name, //!< Field usage Name
+      Min = GFU_Min, //!< Field usage Min
+      Max = GFU_Max, //!< Field usage Max
+      MinMax = GFU_MinMax, //!< Field usage MinMax
+      Red = GFU_Red, //!< Field usage Red
+      Green = GFU_Green, //!< Field usage Green
+      Blue = GFU_Blue, //!< Field usage Blue
+      Alpha = GFU_Alpha, //!< Field usage Alpha
+      RedMin = GFU_RedMin, //!< Field usage RedMin
+      GreenMin = GFU_GreenMin, //!< Field usage GreenMin
+      BlueMin = GFU_BlueMin, //!< Field usage BlueMin
+      AlphaMin = GFU_AlphaMin, //!< Field usage AlphaMin
+      RedMax = GFU_RedMax, //!< Field usage RedMax
+      GreenMax = GFU_GreenMax, //!< Field usage GreenMax
+      BlueMax = GFU_BlueMax, //!< Field usage BlueMax
+      AlphaMax = GFU_AlphaMax, //!< Field usage AlphaMax
+      MaxCount = GFU_MaxCount //!< Field usage MaxCount
+    };
+    Q_ENUM( RasterAttributeTableFieldUsage )
+
+    /**
+     * \brief The RasterAttributeTableType enum represents the type of RAT.
+     * \since QGIS 3.30
+     */
+    enum class RasterAttributeTableType : int
+    {
+      Thematic = GRTT_THEMATIC,
+      Athematic = GRTT_ATHEMATIC
+    };
+    Q_ENUM( RasterAttributeTableType )
 
     /**
      * Type of error that can occur during mesh frame editing.

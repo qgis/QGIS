@@ -84,7 +84,7 @@ Raster namespace.
       MultiBandSingleBandGray,
       MultiBandSingleBandPseudoColor,
       MultiBandColor,
-      SingleBandColorDataStyle
+      SingleBandColorDataStyle,
     };
 
 

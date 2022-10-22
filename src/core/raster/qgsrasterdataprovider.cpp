@@ -24,6 +24,8 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgspoint.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QTime>
 #include <QMap>
@@ -640,6 +642,80 @@ void QgsRasterDataProvider::writeXml( QDomDocument &doc, QDomElement &parentElem
 
   resamplingElement.setAttribute( QStringLiteral( "maxOversampling" ),
                                   QString::number( mMaxOversampling ) );
+}
+
+QgsRasterAttributeTable *QgsRasterDataProvider::attributeTable( int bandNumber ) const
+{
+  try
+  {
+    return mAttributeTables.at( bandNumber ).get();
+  }
+  catch ( std::out_of_range const & )
+  {
+    return nullptr;
+  }
+}
+
+void QgsRasterDataProvider::setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable )
+{
+  if ( attributeTable )
+  {
+    mAttributeTables[ bandNumber ] = std::unique_ptr<QgsRasterAttributeTable>( attributeTable );
+  }
+  else
+  {
+    removeAttributeTable( bandNumber );
+  }
+}
+
+void QgsRasterDataProvider::removeAttributeTable( int bandNumber )
+{
+  if ( mAttributeTables.find( bandNumber ) !=  std::end( mAttributeTables ) )
+  {
+    mAttributeTables.erase( bandNumber );
+  }
+}
+
+bool QgsRasterDataProvider::writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage ) const
+{
+
+  QgsRasterAttributeTable *rat { attributeTable( bandNumber ) };
+  if ( ! rat )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage = QObject::tr( "Raster has no RAT for band %1" ).arg( bandNumber );
+    }
+    return false;
+  }
+
+  return rat->writeToFile( path, errorMessage );
+}
+
+bool QgsRasterDataProvider::readNativeAttributeTable( QString *errorMessage )
+{
+  Q_UNUSED( errorMessage )
+  return false;
+}
+
+bool QgsRasterDataProvider::readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage )
+{
+  std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+  if ( rat->readFromFile( path, errorMessage ) )
+  {
+    setAttributeTable( bandNumber, rat.release() );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool QgsRasterDataProvider::writeNativeAttributeTable( QString *errorMessage ) const  //#spellok
+{
+  Q_UNUSED( errorMessage );
+  return false;
 }
 
 QString QgsRasterDataProvider::colorInterpretationName( int bandNo ) const

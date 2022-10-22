@@ -317,6 +317,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QString bandName( int bandNoInt ) const;
 
     /**
+     * Returns the (possibly NULL) raster attribute table for the given band \a bandNumber.
+     * \since QGIS 3.30
+     */
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+
+    /**
      * Returns the source data provider.
      *
      * This will be NULLPTR if the layer is invalid.

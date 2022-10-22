@@ -19,10 +19,12 @@
 #include "qgsgdalprovider.h"
 ///@cond PRIVATE
 
+#include "qgis.h"
 #include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsgdalprovider.h"
 #include "qgsconfig.h"
+#include "qgsrasterattributetable.h"
 
 #include "qgsgdalutils.h"
 #include "qgsapplication.h"
@@ -1726,7 +1728,8 @@ QgsRasterDataProvider::ProviderCapabilities QgsGdalProvider::providerCapabilitie
 {
   return ProviderCapability::ProviderHintBenefitsFromResampling |
          ProviderCapability::ProviderHintCanPerformProviderResampling |
-         ProviderCapability::ReloadData;
+         ProviderCapability::ReloadData |
+         ProviderCapability::NativeRasterAttributeTable;
 }
 
 QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH dataset, const QString &baseUri )
@@ -3038,6 +3041,7 @@ bool QgsGdalProvider::initIfNeeded()
   CPLErrorReset();
   mGdalBaseDataset = gdalOpen( gdalUri, mUpdate ? GDAL_OF_UPDATE : GDAL_OF_READONLY );
 
+
   if ( !mGdalBaseDataset )
   {
     QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
@@ -3063,6 +3067,268 @@ void CPL_STDCALL showErrorsExceptTransformationAlreadyNorthUp( CPLErr, int errNo
     std::cerr << "GDAL ERROR " <<  errNo << ": " << msg << std::endl;
   }
 }
+
+bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
+{
+  bool hasAtLeastOnedRat { false };
+
+  if ( mGdalBaseDataset )
+  {
+    GDALRasterBandH hBand;
+    // Set attribute tables
+    for ( int bandNumber = 1; bandNumber <= GDALGetRasterCount( mGdalBaseDataset ); ++bandNumber )
+    {
+      hBand = GDALGetRasterBand( mGdalBaseDataset, bandNumber );
+      GDALRasterAttributeTableH hRat = GDALGetDefaultRAT( hBand );
+      if ( hRat )
+      {
+        // Fields
+        QgsFields ratFields;
+        QStringList lowerNames;
+        QList<Qgis::RasterAttributeTableFieldUsage> usages;
+        for ( int columnNumber = 0; columnNumber < GDALRATGetColumnCount( hRat ); ++columnNumber )
+        {
+          Qgis::RasterAttributeTableFieldUsage usage { static_cast<Qgis::RasterAttributeTableFieldUsage>( GDALRATGetUsageOfCol( hRat, columnNumber ) ) };
+          QVariant::Type type;
+          switch ( GDALRATGetTypeOfCol( hRat, columnNumber ) )
+          {
+            case GFT_Integer:
+            {
+              type = QVariant::Int;
+              break;
+            }
+            case GFT_Real:
+            {
+              type = QVariant::Double;
+              break;
+            }
+            case GFT_String:
+            {
+              type = QVariant::String;
+              break;
+            }
+          }
+          const QString name { GDALRATGetNameOfCol( hRat, columnNumber ) };
+          lowerNames.append( name.toLower() );
+          ratFields.append( QgsField( name, type ) );
+          usages.append( usage );
+        }
+
+        QStringList ratFieldNames { ratFields.names( ) };
+        QStringList lNames;
+
+        // Try to identify fields in case of RAT with wrong usages
+        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax ) ||
+             !( usages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) && usages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) ) )
+        {
+          if ( lowerNames.contains( QStringLiteral( "value" ) ) )
+          {
+            usages[ lowerNames.indexOf( QStringLiteral( "value" ) ) ] = Qgis::RasterAttributeTableFieldUsage::MinMax;
+          }
+          else
+          {
+            const QStringList minValueNames { {
+                QStringLiteral( "min" ),
+                QStringLiteral( "min_value" ),
+                QStringLiteral( "min value" ),
+                QStringLiteral( "value min" ),
+                QStringLiteral( "value_min" ),
+              } };
+
+            for ( const QString &minName : std::as_const( minValueNames ) )
+            {
+              if ( lowerNames.contains( minName ) )
+              {
+                usages[ lowerNames.indexOf( minName ) ] = Qgis::RasterAttributeTableFieldUsage::Min;
+                break;
+              }
+            }
+
+            const QStringList maxValueNames { {
+                QStringLiteral( "max" ),
+                QStringLiteral( "max_value" ),
+                QStringLiteral( "max value" ),
+                QStringLiteral( "value max" ),
+                QStringLiteral( "value_max" ),
+              } };
+
+            for ( const QString &maxName : std::as_const( minValueNames ) )
+            {
+              if ( lowerNames.contains( maxName ) )
+              {
+                usages[ lowerNames.indexOf( maxName ) ] = Qgis::RasterAttributeTableFieldUsage::Max;
+                break;
+              }
+            }
+          }
+        }
+
+        if ( ! usages.contains( Qgis::RasterAttributeTableFieldUsage::PixelCount ) )
+        {
+          if ( lowerNames.contains( QStringLiteral( "count" ) ) )
+          {
+            usages[ lowerNames.indexOf( QStringLiteral( "count" ) ) ] = Qgis::RasterAttributeTableFieldUsage::PixelCount;
+          }
+        }
+
+        std::unique_ptr<QgsRasterAttributeTable> rat = std::make_unique<QgsRasterAttributeTable>();
+
+        for ( const auto &field : std::as_const( ratFields ) )
+        {
+          rat->appendField( field.name(), usages[ lowerNames.indexOf( field.name().toLower() ) ], field.type() );
+        }
+
+        for ( int rowIdx = 0; rowIdx < GDALRATGetRowCount( hRat ); ++rowIdx )
+        {
+          QVariantList rowData;
+          const auto cFields { rat->fields() };
+          int colIdx { 0 };
+          for ( const auto &field : std::as_const( cFields ) )
+          {
+            switch ( field.type )
+            {
+              case QVariant::Int:
+              case QVariant::UInt:
+              case QVariant::LongLong:
+              case QVariant::ULongLong:
+              {
+                rowData.push_back( GDALRATGetValueAsInt( hRat, rowIdx, colIdx ) );
+                break;
+              }
+              case QVariant::Double:
+              {
+                rowData.push_back( GDALRATGetValueAsDouble( hRat, rowIdx, colIdx ) );
+                break;
+              }
+              default:
+                rowData.push_back( GDALRATGetValueAsString( hRat, rowIdx, colIdx ) );
+            }
+            colIdx++;
+          }
+          rat->appendRow( rowData );
+        }
+
+        hasAtLeastOnedRat = true;
+        setAttributeTable( bandNumber, rat.release() );
+
+      }
+    }
+  }
+  else if ( errorMessage )
+  {
+    *errorMessage = QObject::tr( "Dataset is not valid and RAT could not be loaded." );
+  }
+
+  return hasAtLeastOnedRat;
+}
+
+
+bool QgsGdalProvider::writeNativeAttributeTable( QString *errorMessage ) const //#spellok
+{
+  bool success { false };
+  for ( int band = 1; band <= bandCount(); band++ )
+  {
+    QgsRasterAttributeTable *rat { attributeTable( band ) };
+    if ( ! rat )
+    {
+      continue;
+    }
+    if ( rat->isDirty() )
+    {
+      GDALRasterBandH hBand { GDALGetRasterBand( mGdalBaseDataset, band ) };
+      GDALRasterAttributeTableH hRat = GDALCreateRasterAttributeTable( );
+      if ( GDALRATSetTableType( hRat, static_cast<GDALRATTableType>( rat->type() ) ) != CE_None )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = QObject::tr( "RAT table type could not be set, RAT was not saved (GDAL error)." );
+        }
+        GDALDestroyRasterAttributeTable( hRat );
+        return false;
+      }
+      const QList<QgsRasterAttributeTable::Field> ratFields { rat->fields() };
+      QMap<int, GDALRATFieldType> typeMap;
+
+      int colIdx { 0 };
+      for ( const QgsRasterAttributeTable::Field &field : std::as_const( ratFields ) )
+      {
+        GDALRATFieldType fType { GFT_String };
+        switch ( field.type )
+        {
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LongLong:
+          case QVariant::ULongLong:
+          {
+            fType = GFT_Integer;
+            break;
+          }
+          case QVariant::Double:
+          {
+            fType = GFT_Real;
+            break;
+          }
+          default:
+            fType = GFT_String;
+        }
+        if ( GDALRATCreateColumn( hRat, field.name.toStdString().c_str(), fType, static_cast<GDALRATFieldUsage>( field.usage ) ) != CE_None )
+        {
+          if ( errorMessage )
+          {
+            *errorMessage = QObject::tr( "RAT column '%1 could not be created, RAT was not saved (GDAL error)." ).arg( field.name );
+          }
+          GDALDestroyRasterAttributeTable( hRat );
+          return false;
+        }
+        typeMap[ colIdx ] = fType;
+        colIdx++;
+      }
+
+      // Save data
+      const QList<QVariantList> data { rat->data() };
+      int rowIdx { 0 };
+      for ( const auto &row : std::as_const( data ) )
+      {
+        for ( int colIdx = 0; colIdx < row.size(); colIdx++ )
+        {
+          switch ( typeMap[ colIdx ] )
+          {
+            case GFT_Real:
+              GDALRATSetValueAsDouble( hRat, rowIdx, colIdx, row[ colIdx ].toDouble( ) );
+              break;
+            case GFT_Integer:
+              GDALRATSetValueAsInt( hRat, rowIdx, colIdx, row[ colIdx ].toInt( ) );
+              break;
+            default:
+              GDALRATSetValueAsString( hRat, rowIdx, colIdx, row[ colIdx ].toString().toStdString().c_str() );
+          }
+        }
+        rowIdx++;
+      }
+
+      if ( GDALSetDefaultRAT( hBand, hRat ) != CE_None )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = QObject::tr( "RAT could not be saved (GDAL error)." );
+        }
+        GDALDestroyRasterAttributeTable( hRat );
+        return false;
+      }
+
+      rat->setIsDirty( false );
+      GDALFlushCache( mGdalBaseDataset );
+      success = true;
+
+    }
+    else if ( ! rat->isDirty() && errorMessage )
+    {
+      *errorMessage = QObject::tr( "RAT has not modifications and was not saved." );
+    }
+  }
+  return success;
+}
+
 
 void QgsGdalProvider::initBaseDataset()
 {

@@ -461,6 +461,35 @@ The development version
 
 
 
+    enum class RasterAttributeTableFieldUsage
+    {
+      Generic,
+      PixelCount,
+      Name,
+      Min,
+      Max,
+      MinMax,
+      Red,
+      Green,
+      Blue,
+      Alpha,
+      RedMin,
+      GreenMin,
+      BlueMin,
+      AlphaMin,
+      RedMax,
+      GreenMax,
+      BlueMax,
+      AlphaMax,
+      MaxCount
+    };
+
+    enum class RasterAttributeTableType
+    {
+      Thematic,
+      Athematic
+    };
+
     enum class MeshEditingErrorType
     {
       NoError,

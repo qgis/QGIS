@@ -139,6 +139,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
   {
     providerFlags |= QgsDataProvider::FlagLoadDefaultStyle;
   }
+
   setDataSource( uri, baseName, providerKey, providerOptions, providerFlags );
 
   if ( isValid() )
@@ -247,6 +248,13 @@ QString QgsRasterLayer::bandName( int bandNo ) const
 {
   if ( !mDataProvider ) return QString();
   return mDataProvider->generateBandName( bandNo );
+}
+
+QgsRasterAttributeTable *QgsRasterLayer::attributeTable( int bandNoInt ) const
+{
+  if ( !mDataProvider )
+    return nullptr;
+  return mDataProvider->attributeTable( bandNoInt );
 }
 
 void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
@@ -735,6 +743,10 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   }
 
   QgsDebugMsgLevel( "mRasterType = " + QString::number( mRasterType ), 4 );
+
+  // TODO: automatic load RAT if set for single band
+  // if ( mDataProvider->bandCount() == 1 && mDataProvider->attributeTable( 1 ) )
+  // ....
   if ( mRasterType == ColorLayer )
   {
     QgsDebugMsgLevel( "Setting drawing style to SingleBandColorDataStyle " + QString::number( QgsRaster::SingleBandColorDataStyle ), 4 );

@@ -34,6 +34,7 @@
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
 #include "qgsraster.h"
+#include "qgsrasterattributetable.h"
 #include "qgsfields.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
@@ -104,6 +105,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       ProviderHintCanPerformProviderResampling = 1 << 4, //!< Provider can perform resampling (to be opposed to post rendering resampling) (since QGIS 3.16)
       ReloadData = 1 << 5, //!< Is able to force reload data / clear local caches. Since QGIS 3.18, see QgsDataProvider::reloadProviderData()
       DpiDependentData = 1 << 6, //! Provider's rendering is dependent on requested pixel size of the viewport (since QGIS 3.20)
+      NativeRasterAttributeTable = 1 << 7, //!< Indicates that the provider supports native raster attribute table (since QGIS 3.30)
     };
 
     //! Provider capabilities
@@ -739,6 +741,71 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
+    /**
+     * Returns the (possibly NULL) attribute table for the specified \a bandNumber.
+     *
+     * \since QGIS 3.30
+     */
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+
+    /**
+     * Set the attribute table to \a attributeTable for the specified \a bandNumber,
+     * if the \a attributeTable is NULL any existing attribute table for the specified
+     * band will be removed.
+     *
+     * \note Ownership of the attribute table is transferred to the provider.
+     * \since QGIS 3.30
+     */
+    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable SIP_TRANSFER );
+
+    /**
+     * Remove the attribute table for the specified \a bandNumber.
+     * If the attribute table does not exist this method does nothing.
+     *
+     * \since QGIS 3.30
+     */
+    void removeAttributeTable( int bandNumber );
+
+    /**
+     * Writes the filesystem-based attribute table for the specified \a bandNumber to \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     *
+     * \returns TRUE on success
+     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+     * \since QGIS 3.30
+     */
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr ) const;
+
+    /**
+     * Loads the filesystem-based attribute table for the specified \a bandNumber from \a path, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage SIP_OUT = nullptr );
+
+    /**
+     * Writes the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * The default implementation does nothing and returns FALSE.
+     * Data providers that have NativeRasterAttributeTable
+     * provider capability will try to save the native attribute table.
+     *
+     * \returns TRUE on success
+     * \note No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+     * \since QGIS 3.30
+     */
+    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr ) const;  //#spellok
+
+    /**
+     * Reads the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
+     * The default implementation does nothing and returns FALSE.
+     * Data providers that have NativeRasterAttributeTable provider capability will try to read the native attribute table.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.30
+     */
+    virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT  = nullptr );
+
+
   signals:
 
     /**
@@ -746,6 +813,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \since QGIS 2.14
      */
     void statusChanged( const QString & ) const;
+
 
   protected:
 
@@ -822,6 +890,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Data provider temporal properties
      */
     std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
+
+    std::map<int, std::unique_ptr<QgsRasterAttributeTable>> mAttributeTables;
 
 };
 

@@ -79,6 +79,7 @@ Base class for raster data providers.
       ProviderHintCanPerformProviderResampling,
       ReloadData,
       DpiDependentData,
+      NativeRasterAttributeTable,
     };
 
     typedef QFlags<QgsRasterDataProvider::ProviderCapability> ProviderCapabilities;
@@ -697,6 +698,70 @@ Returns maximum oversampling factor for zoomed-out operations.
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
 
+    QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
+%Docstring
+Returns the (possibly NULL) attribute table for the specified ``bandNumber``.
+
+.. versionadded:: 3.30
+%End
+
+    void setAttributeTable( int bandNumber, QgsRasterAttributeTable *attributeTable /Transfer/ );
+%Docstring
+Set the attribute table to ``attributeTable`` for the specified ``bandNumber``,
+if the ``attributeTable`` is NULL any existing attribute table for the specified
+band will be removed.
+
+.. note::
+
+   Ownership of the attribute table is transferred to the provider.
+
+.. versionadded:: 3.30
+%End
+
+    void removeAttributeTable( int bandNumber );
+%Docstring
+Remove the attribute table for the specified ``bandNumber``.
+If the attribute table does not exist this method does nothing.
+
+.. versionadded:: 3.30
+%End
+
+    bool writeFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage /Out/ = 0 ) const;
+%Docstring
+Writes the filesystem-based attribute table for the specified ``bandNumber`` to ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+:return: ``True`` on success
+
+.. note::
+
+   No checks for RAT validity are performed when saving, it is client code responsibility to handle validation.
+
+.. versionadded:: 3.30
+%End
+
+    bool readFileBasedAttributeTable( int bandNumber, const QString &path, QString *errorMessage /Out/ = 0 );
+%Docstring
+Loads the filesystem-based attribute table for the specified ``bandNumber`` from ``path``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+
+:return: ``True`` on success
+
+.. versionadded:: 3.30
+%End
+
+    virtual bool writeNativeAttributeTable( QString *errorMessage /Out/ = 0 ) const;  //#spellok
+
+    virtual bool readNativeAttributeTable( QString *errorMessage /Out/  = 0 );
+%Docstring
+Reads the native attribute table, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
+The default implementation does nothing and returns ``False``.
+Data providers that have NativeRasterAttributeTable provider capability will try to read the native attribute table.
+
+:return: ``True`` on success
+
+.. versionadded:: 3.30
+%End
+
+
   signals:
 
     void statusChanged( const QString & ) const;
@@ -705,6 +770,7 @@ Emit a message to be displayed on status bar, usually used by network providers 
 
 .. versionadded:: 2.14
 %End
+
 
   protected:
 
