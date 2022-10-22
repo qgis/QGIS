@@ -3123,7 +3123,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         {
           if ( lowerNames.contains( QStringLiteral( "value" ) ) )
           {
-            usages[ lowerNames.indexOf( QStringLiteral( "value" ) ) ] = Qgis::RasterAttributeTableFieldUsage::MinMax;
+            usages[ lowerNames.indexOf( QLatin1String( "value" ) ) ] = Qgis::RasterAttributeTableFieldUsage::MinMax;
           }
           else
           {
@@ -3167,7 +3167,7 @@ bool QgsGdalProvider::readNativeAttributeTable( QString *errorMessage )
         {
           if ( lowerNames.contains( QStringLiteral( "count" ) ) )
           {
-            usages[ lowerNames.indexOf( QStringLiteral( "count" ) ) ] = Qgis::RasterAttributeTableFieldUsage::PixelCount;
+            usages[ lowerNames.indexOf( QLatin1String( "count" ) ) ] = Qgis::RasterAttributeTableFieldUsage::PixelCount;
           }
         }
 

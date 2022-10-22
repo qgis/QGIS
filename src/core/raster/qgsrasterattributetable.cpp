@@ -674,7 +674,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
     {
       return Qgis::RasterAttributeTableFieldUsage::Max;
     }
-    else if ( fieldLower.contains( "red" ) || fieldLower == QStringLiteral( "r" ) )
+    else if ( fieldLower.contains( "red" ) || fieldLower == QLatin1String( "r" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
@@ -689,7 +689,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
         return Qgis::RasterAttributeTableFieldUsage::Red;
       }
     }
-    else if ( fieldLower.contains( "green" ) || fieldLower == QStringLiteral( "g" ) )
+    else if ( fieldLower.contains( "green" ) || fieldLower == QLatin1String( "g" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
@@ -704,7 +704,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
         return Qgis::RasterAttributeTableFieldUsage::Green;
       }
     }
-    else if ( fieldLower.contains( "blue" ) || fieldLower == QStringLiteral( "b" ) )
+    else if ( fieldLower.contains( "blue" ) || fieldLower == QLatin1String( "b" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
@@ -719,7 +719,7 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
         return Qgis::RasterAttributeTableFieldUsage::Blue;
       }
     }
-    else if ( fieldLower.contains( "alpha" ) || fieldLower == QStringLiteral( "a" ) )
+    else if ( fieldLower.contains( "alpha" ) || fieldLower == QLatin1String( "a" ) )
     {
       if ( fieldLower.contains( "min" ) )
       {
@@ -734,11 +734,11 @@ Qgis::RasterAttributeTableFieldUsage QgsRasterAttributeTable::guessFieldUsage( c
         return Qgis::RasterAttributeTableFieldUsage::Alpha;
       }
     }
-    else if ( fieldLower == QStringLiteral( "value" ) )
+    else if ( fieldLower == QLatin1String( "value" ) )
     {
       return Qgis::RasterAttributeTableFieldUsage::MinMax;
     }
-    else if ( fieldLower == QStringLiteral( "count" ) )
+    else if ( fieldLower == QLatin1String( "count" ) )
     {
       // This could really be max count but it's more likely pixel count
       return Qgis::RasterAttributeTableFieldUsage::PixelCount;
