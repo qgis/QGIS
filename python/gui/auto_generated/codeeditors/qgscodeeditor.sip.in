@@ -12,27 +12,51 @@
 
 
 
-
 class QgsCodeInterpreter
 {
+%Docstring(signature="appended")
+An interface for code interpreters.
+
+.. versionadded:: 3.30
+%End
 
 %TypeHeaderCode
 #include "qgscodeeditor.h"
 %End
   public:
 
-
     virtual ~QgsCodeInterpreter();
 
     int exec( const QString &command );
+%Docstring
+Executes a ``command`` in the interpreter.
+
+Returns an interpreter specific state value.
+%End
 
     virtual int currentState() const;
+%Docstring
+Returns the current interpreter state.
+
+The actual interpretation of the returned values depend on
+the interpreter subclass.
+%End
 
     virtual QString promptForState( int state ) const = 0;
+%Docstring
+Returns the interactive prompt string to use for the
+interpreter, given a ``state``.
+%End
 
   protected:
 
     virtual int execCommandImpl( const QString &command ) = 0;
+%Docstring
+Pure virtual method for executing commands in the interpreter.
+
+Subclasses must implement this method. It will be called internally
+whenever the public :py:func:`~QgsCodeInterpreter.exec` method is called.
+%End
 
 };
 
@@ -264,11 +288,35 @@ executed commands.
 .. versionadded:: 3.30
 %End
 
-
     QStringList history() const;
+%Docstring
+Returns the list of commands previously executed in the editor.
+
+.. note::
+
+   Applies to code editors in the QgsCodeEditor.Mode.CommandInput mode only.
+
+.. versionadded:: 3.30
+%End
 
     QgsCodeInterpreter *interpreter() const;
+%Docstring
+Returns the attached code interpreter, or ``None`` if not set.
+
+.. seealso:: :py:func:`setInterpreter`
+
+.. versionadded:: 3.30
+%End
+
     void setInterpreter( QgsCodeInterpreter *newInterpreter );
+%Docstring
+Sets an attached code interpreter for executing commands when the editor
+is in the QgsCodeEditor.Mode.CommandInput mode.
+
+.. seealso:: :py:func:`interpreter`
+
+.. versionadded:: 3.30
+%End
 
   public slots:
 
