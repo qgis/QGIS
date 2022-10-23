@@ -47,8 +47,8 @@ QgsCustomProjectionOptionsWidget::QgsCustomProjectionOptionsWidget( QWidget *par
   populateList();
   if ( mDefinitions.empty() )
   {
-    leName->setEnabled(false);
-    mCrsDefinitionWidget->setEnabled(false);
+    leName->setEnabled( false );
+    mCrsDefinitionWidget->setEnabled( false );
   }
   else
   {
@@ -155,8 +155,8 @@ void QgsCustomProjectionOptionsWidget::pbnAdd_clicked()
 
   QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
 
-  leName->setEnabled(true);
-  mCrsDefinitionWidget->setEnabled(true);
+  leName->setEnabled( true );
+  mCrsDefinitionWidget->setEnabled( true );
 
   newItem->setText( QgisCrsNameColumn, name );
   newItem->setText( QgisCrsIdColumn, QString() );
@@ -207,8 +207,8 @@ void QgsCustomProjectionOptionsWidget::pbnRemove_clicked()
     mDefinitions.erase( mDefinitions.begin() + row );
   }
 
-  leName->setEnabled(false);
-  mCrsDefinitionWidget->setEnabled(false);
+  leName->setEnabled( false );
+  mCrsDefinitionWidget->setEnabled( false );
 }
 
 void QgsCustomProjectionOptionsWidget::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
