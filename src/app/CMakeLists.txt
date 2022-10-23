@@ -365,6 +365,7 @@ if (WITH_3D)
   )
 endif()
 
+find_package(${QT_VERSION_BASE} COMPONENTS UiTools REQUIRED)
 
 set (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 

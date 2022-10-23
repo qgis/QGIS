@@ -1368,11 +1368,7 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-if (BUILD_WITH_QT6)
-  find_package(Qt6 COMPONENTS Qml QuickWidgets REQUIRED)
-else()
-  find_package(Qt5 COMPONENTS Qml QuickWidgets REQUIRED)
-endif()
+find_package(${QT_VERSION_BASE} COMPONENTS Qml QuickWidgets UiTools REQUIRED)
 
 if(${QT_VERSION_BASE}Qml_FOUND)
   add_definitions(-DWITH_QML)
