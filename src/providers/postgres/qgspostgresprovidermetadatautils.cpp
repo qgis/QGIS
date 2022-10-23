@@ -18,6 +18,7 @@
 #include "qgspostgresproviderconnection.h"
 #include "qgscoordinatetransform.h"
 
+#include <QTextStream>
 
 QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &uri, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback )
 {
