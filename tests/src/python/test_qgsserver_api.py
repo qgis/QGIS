@@ -90,9 +90,9 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         crss = QgsServerApiUtils.publishedCrsList(project)
         self.assertTrue('http://www.opengis.net/def/crs/OGC/1.3/CRS84' in crss)
         self.assertTrue(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857' in crss)
+            'http://www.opengis.net/def/crs/EPSG/0/3857' in crss)
         self.assertTrue(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326' in crss)
+            'http://www.opengis.net/def/crs/EPSG/0/4326' in crss)
 
     def test_parse_crs(self):
         crs = QgsServerApiUtils.parseCrs(
@@ -100,11 +100,11 @@ class QgsServerAPIUtilsTest(QgsServerTestBase):
         self.assertTrue(crs.isValid())
 
         crs = QgsServerApiUtils.parseCrs(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326')
+            'http://www.opengis.net/def/crs/EPSG/0/4326')
         self.assertEqual(crs.postgisSrid(), 4326)
 
         crs = QgsServerApiUtils.parseCrs(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857')
+            'http://www.opengis.net/def/crs/EPSG/0/3857')
         self.assertTrue(crs.isValid())
         self.assertEqual(crs.postgisSrid(), 3857)
 
@@ -552,7 +552,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project = QgsProject()
         project.read(os.path.join(self.temporary_path, 'qgis_server', 'test_project_api.qgs'))
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?crs={}'.format(encoded_crs))
         self.compareApi(
@@ -564,7 +564,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(os.path.join(self.temporary_path, 'qgis_server',
                                   'test_project_wms_grouped_nested_layers.qgs'))
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/4326', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/4326', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
         self.compareApi(
@@ -576,7 +576,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
         project.read(os.path.join(self.temporary_path, 'qgis_server',
                                   'test_project_wms_grouped_nested_layers.qgs'))
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/as-areas-short-name/items?crs={}'.format(encoded_crs))
         self.compareApi(
@@ -645,7 +645,7 @@ class QgsServerAPITest(QgsServerAPITestBase):
 
         # Test with a different CRS
         encoded_crs = parse.quote(
-            'http://www.opengis.net/def/crs/EPSG/9.6.2/3857', safe='')
+            'http://www.opengis.net/def/crs/EPSG/0/3857', safe='')
         request = QgsBufferServerRequest(
             'http://server.qgis.org/wfs3/collections/testlayer%20èé/items?bbox=913191,5606014,913234,5606029&bbox-crs={}'.format(
                 encoded_crs))
