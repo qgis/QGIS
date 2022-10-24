@@ -2045,7 +2045,6 @@ Qgis.CoordinateDisplayType.__doc__ = 'Formats for displaying coordinates\n\n.. v
 # --
 Qgis.CoordinateDisplayType.baseClass = Qgis
 # monkey patching scoped based enum
-<<<<<<< HEAD
 Qgis.ScriptLanguage.Css.__doc__ = "CSS"
 Qgis.ScriptLanguage.QgisExpression.__doc__ = "QGIS expressions"
 Qgis.ScriptLanguage.Html.__doc__ = "HTML"
@@ -2058,11 +2057,10 @@ Qgis.ScriptLanguage.Unknown.__doc__ = "Unknown/other language"
 Qgis.ScriptLanguage.__doc__ = 'Scripting languages.\n\n.. versionadded:: 3.30\n\n' + '* ``Css``: ' + Qgis.ScriptLanguage.Css.__doc__ + '\n' + '* ``QgisExpression``: ' + Qgis.ScriptLanguage.QgisExpression.__doc__ + '\n' + '* ``Html``: ' + Qgis.ScriptLanguage.Html.__doc__ + '\n' + '* ``JavaScript``: ' + Qgis.ScriptLanguage.JavaScript.__doc__ + '\n' + '* ``Json``: ' + Qgis.ScriptLanguage.Json.__doc__ + '\n' + '* ``Python``: ' + Qgis.ScriptLanguage.Python.__doc__ + '\n' + '* ``R``: ' + Qgis.ScriptLanguage.R.__doc__ + '\n' + '* ``Sql``: ' + Qgis.ScriptLanguage.Sql.__doc__ + '\n' + '* ``Unknown``: ' + Qgis.ScriptLanguage.Unknown.__doc__
 # --
 Qgis.ScriptLanguage.baseClass = Qgis
-=======
+# monkey patching scoped based enum
 Qgis.LayerTreeInsertionMethod.AboveInsertionPoint.__doc__ = "Layers are added in the tree above the insertion point"
 Qgis.LayerTreeInsertionMethod.TopOfTree.__doc__ = "Layers are added at the top of the layer tree"
 Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__ = "Layers are added at optimal locations across the insertion point's group"
 Qgis.LayerTreeInsertionMethod.__doc__ = 'Layer tree insertion methods\n\n.. versionadded:: 3.30\n\n' + '* ``AboveInsertionPoint``: ' + Qgis.LayerTreeInsertionMethod.AboveInsertionPoint.__doc__ + '\n' + '* ``TopOfTree``: ' + Qgis.LayerTreeInsertionMethod.TopOfTree.__doc__ + '\n' + '* ``OptimalInInsertionGroup``: ' + Qgis.LayerTreeInsertionMethod.OptimalInInsertionGroup.__doc__
 # --
 Qgis.LayerTreeInsertionMethod.baseClass = Qgis
->>>>>>> 4a95e2b0a8 (Add UI to select which insertion method should be used when adding new layers)
