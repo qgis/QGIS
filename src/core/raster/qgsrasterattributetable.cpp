@@ -628,12 +628,12 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
 
   if ( mFields.isEmpty() )
   {
-    errors.push_back( tr( "RAT has no fields." ) );
+    errors.push_back( tr( "The attribute table has no fields." ) );
   }
 
   if ( mData.isEmpty() )
   {
-    errors.push_back( tr( "RAT has no rows." ) );
+    errors.push_back( tr( "The attribute table has no rows." ) );
   }
 
   const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
@@ -641,7 +641,7 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   const bool isValueRamp { fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Min ) &&fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Max ) };
   if ( ! isMinMax && ! isValueRamp )
   {
-    errors.push_back( tr( "RAT has no MinMax nor a pair of Min and Max fields." ) );
+    errors.push_back( tr( "The attribute table has no MinMax nor a pair of Min and Max fields." ) );
   }
 
   // Check color
@@ -649,7 +649,7 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   {
     if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Red ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Green ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::Blue ) ) )
     {
-      errors.push_back( tr( "RAT has some but not all the fields required for color definition (Red, Green, Blue)." ) );
+      errors.push_back( tr( "The attribute table has some but not all the fields required for color definition (Red, Green, Blue)." ) );
     }
   }
 
@@ -658,11 +658,11 @@ bool QgsRasterAttributeTable::isValid( QString *errorMessage ) const
   {
     if ( !( fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMin ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::RedMax ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::GreenMax ) && fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::BlueMax ) ) )
     {
-      errors.push_back( tr( "RAT has some but not all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax)." ) );
+      errors.push_back( tr( "The attribute table has some but not all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax)." ) );
     }
     else if ( ! isValueRamp )
     {
-      errors.push_back( tr( "RAT has all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax) but no Min and Max field." ) );
+      errors.push_back( tr( "The attribute table has all the fields required for color ramp definition (RedMin, GreenMin, BlueMin, RedMax, GreenMax, BlueMax) but no Min and Max field." ) );
     }
   }
 
@@ -1406,8 +1406,8 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
           };
 
           // Case 1: range classes, discrete colors
-          // Create stops for the lower value of each class except for the first use
-          // the color from the previous class
+          //    - create stops for the lower value of each class except for the first,
+          //    - use the color from the previous class
           if ( orderedRat.hasColor() && isRange )
           {
             labels.push_back( labelFromField( 0 ) );
@@ -1424,8 +1424,8 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
           // Take the class bounds (average value between max of previous class and min of the next)
           // to avoid potential overlapping or gaps between classes.
           // Create stop:
-          //   first stop at value taking the max color of the previous class
-          //   second stop at value + epsilon taking the min color of the next class, unless colors and offset are equal
+          //   - first stop at value taking the max color of the previous class
+          //   - second stop at value + epsilon taking the min color of the next class, unless colors and offset are equal
           else if ( orderedRat.hasRamp() && isRange )
           {
             double prevOffset { 0 };

@@ -162,7 +162,9 @@ Converts a raster color ``table`` to paletted renderer class data.
 
     static QgsPalettedRasterRenderer::MultiValueClassData rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, const int classificationColumn = -1, QgsColorRamp *ramp = 0 );
 %Docstring
-Reads and returns classes from the Raster Attribute Table ``attributeTable``, optionally classifying the attribute table by ``classificationColumn`` and settings the colors from ``ramp``. The default value of -1 for the classificationColumn uses the first available value column.
+Reads and returns classes from the Raster Attribute Table ``attributeTable``, optionally classifying the attribute table
+by ``classificationColumn`` and setting the colors from ``ramp``.
+The default value of -1 for the classificationColumn uses the first available value column.
 
 .. note::
 
