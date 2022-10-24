@@ -174,7 +174,10 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
 
     /**
-     * Reads and returns classes from the Raster Attribute Table \a attributeTable, optionally classifying the attribute table by \a classificationColumn and settings the colors from \a ramp. The default value of -1 for the classificationColumn uses the first available value column.
+     * Reads and returns classes from the Raster Attribute Table \a attributeTable, optionally classifying the attribute table
+     * by \a classificationColumn and setting the colors from \a ramp.
+     * The default value of -1 for the classificationColumn uses the first available value column.
+     *
      * \note The method will return an empty list of classes in case the Raster Attribute Table is not thematic.
      * \since QGIS 3.30
      */
@@ -182,6 +185,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     /**
      * Converts a \a string containing a color table or class data to to paletted renderer class data.
+     *
      * \see classDataFromFile()
      * \see classDataToString()
      * \since QGIS 3.0

@@ -644,6 +644,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(len(ramp.stops()), 4)
 
     def testRamp(self):
+        """Test ramps with various RAT types"""
 
         rat = QgsRasterAttributeTable()
         rat.appendField(QgsRasterAttributeTable.Field('ValueMin', Qgis.RasterAttributeTableFieldUsage.Min, QVariant.Double))
@@ -816,6 +817,8 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(labels, ['red class', 'blue class', 'green class'])
 
     def testFileStorage(self):
+        """Test tht RAT information for external file-based RATs
+        is stored in the project"""
 
         rat = QgsRasterAttributeTable()
         rat.appendField(QgsRasterAttributeTable.Field('Value', Qgis.RasterAttributeTableFieldUsage.MinMax, QVariant.Double))

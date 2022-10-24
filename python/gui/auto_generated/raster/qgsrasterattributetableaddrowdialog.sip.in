@@ -1,0 +1,45 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetableaddrowdialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsRasterAttributeTableAddRowDialog : QDialog
+{
+%Docstring(signature="appended")
+The :py:class:`QgsRasterAttributeTableAddColumnDialog` class collects options to add a new row to a raster attribute table.
+
+.. versionadded:: 3.30
+%End
+
+%TypeHeaderCode
+#include "qgsrasterattributetableaddrowdialog.h"
+%End
+  public:
+
+    QgsRasterAttributeTableAddRowDialog( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Creates a new QgsRasterAttributeTableAddRowDialog
+
+:param attributeTable: the raster attribute table
+:param parent: optional parent
+%End
+
+    bool insertAfter() const;
+%Docstring
+Returns ``True`` if the desired insertion position for the new row is after the currently selected row, ``False`` if the insertion point is before.
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterattributetableaddrowdialog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
