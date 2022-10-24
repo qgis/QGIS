@@ -716,7 +716,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
         self.assertEqual(func.minimumValue(), 0.0)
         self.assertEqual(func.maximumValue(), 2.99999)
 
-        self.assertEqual([(int(100 * st.offset), st.color.name()) for st in func.sourceColorRamp().stops()], [(66, '#ff0000'), (86, '#00ff00')])
+        self.assertEqual([(int(100 * st.offset), st.color.name()) for st in func.sourceColorRamp().stops()], [(66, '#0000ff'), (86, '#ff0000')])
 
         # Test range classes and colors
         rat = QgsRasterAttributeTable()
