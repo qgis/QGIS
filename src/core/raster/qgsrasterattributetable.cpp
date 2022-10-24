@@ -1406,7 +1406,8 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
           };
 
           // Case 1: range classes, discrete colors
-          // Create stops for the lower value of each class except for the first.
+          // Create stops for the lower value of each class except for the first use
+          // the color from the previous class
           if ( orderedRat.hasColor() && isRange )
           {
             labels.push_back( labelFromField( 0 ) );
@@ -1414,7 +1415,7 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
             for ( int rowIdx = 1; rowIdx < orderedRat.data().count(); ++rowIdx )
             {
               const double offset { ( orderedRat.value( rowIdx, minIdx ).toDouble( ) - min ) / range };
-              const QColor color { orderedRat.color( rowIdx ) };
+              const QColor color { orderedRat.color( rowIdx  - 1 ) };
               stops.append( QgsGradientStop( offset, color ) );
               labels.push_back( labelFromField( rowIdx ) );
             }
