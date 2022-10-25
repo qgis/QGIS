@@ -44,6 +44,8 @@ class QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGpsOptio
 
   private:
     bool mBlockStoringChanges = false;
+    QIntValidator *mAcquisitionIntValidator = nullptr;
+    QIntValidator *mDistanceThresholdValidator = nullptr;
 };
 
 

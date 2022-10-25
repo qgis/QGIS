@@ -121,6 +121,8 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsGpsConnection::settingsGpsdPortNumber );
   addSettingsEntry( &QgsGpsConnection::settingsGpsdDeviceName );
   addSettingsEntry( &QgsGpsConnection::settingsGpsSerialDevice );
+  addSettingsEntry( &QgsGpsConnection::settingGpsAcquisitionInterval );
+  addSettingsEntry( &QgsGpsConnection::settingGpsDistanceThreshold );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
