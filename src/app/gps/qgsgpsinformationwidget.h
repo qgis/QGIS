@@ -63,6 +63,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     static const inline QgsSettingsEntryDouble settingGpsTrackWidth = QgsSettingsEntryDouble( QStringLiteral( "track-width" ), QgsSettings::Prefix::GPS, 2, QStringLiteral( "GPS track width" ) );
     static const inline QgsSettingsEntryColor settingGpsTrackColor = QgsSettingsEntryColor( QStringLiteral( "track-color" ), QgsSettings::Prefix::GPS, QColor( Qt::red ), QStringLiteral( "GPS track color" ) );
     static const inline QgsSettingsEntryString settingBearingLineSymbol = QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
+    static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
+    static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
 
     QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
@@ -163,6 +165,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     int mAcquisitionInterval = 0;
     double mDistanceThreshold = 0;
     bool mBearingFromTravelDirection = false;
+    int mMapExtentMultiplier = 50;
+    int mMapRotateInterval = 0;
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields

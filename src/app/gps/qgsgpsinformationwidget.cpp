@@ -169,8 +169,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mpHistogramLayout->addWidget( mPlot );
   mpHistogramWidget->setLayout( mpHistogramLayout );
 
-  mSpinMapRotateInterval->setClearValue( 0 );
-
   //
   // Set up the polar graph for satellite pos
   //
@@ -236,8 +234,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   mCheckShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
 
-  mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt() );
-  mSpinMapExtentMultiplier->setClearValue( 50 );
   mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
 
   //auto digitizing behavior
@@ -262,10 +258,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
     radRecenterWhenNeeded->setChecked( true );
   }
 
-  connect( mRotateMapCheckBox, &QCheckBox::toggled, mSpinMapRotateInterval, &QSpinBox::setEnabled );
 
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool() );
-  mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool() );
   connect( mShowBearingLineCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
@@ -383,7 +377,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "mapExtentMultiplier" ), mSpinMapExtentMultiplier->value(), QgsSettings::Gps );
 
   // pan mode
   if ( radRecenterMap->isChecked() )
@@ -399,7 +392,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
     mySettings.setValue( QStringLiteral( "panMode" ), "none", QgsSettings::Gps );
   }
   mySettings.setValue( QStringLiteral( "rotateMap" ), mRotateMapCheckBox->isChecked(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "rotateMapInterval" ), mSpinMapRotateInterval->value(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "showBearingLine" ), mShowBearingLineCheck->isChecked(), QgsSettings::Gps );
 
   if ( mMapCanvas )
@@ -440,6 +432,8 @@ void QgsGpsInformationWidget::gpsSettingsChanged()
     acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
     mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
+    mMapExtentMultiplier = QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value();
+    mMapRotateInterval = QgsGpsInformationWidget::settingMapRotateInterval.value();
   }
   else
   {
@@ -447,6 +441,9 @@ void QgsGpsInformationWidget::gpsSettingsChanged()
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
     mBearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
+
+    mMapExtentMultiplier = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
+    mMapRotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
   }
 
   mAcquisitionInterval = acquisitionInterval * 1000;
@@ -1004,7 +1001,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         // testing if position is outside some proportion of the map extent
         // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
         QgsRectangle myExtentLimit( mMapCanvas->extent() );
-        myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
+        myExtentLimit.scale( mMapExtentMultiplier * 0.01 );
 
         // only change the extents if the point is beyond the current extents to minimize repaints
         if ( radRecenterMap->isChecked() ||
@@ -1063,7 +1060,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     }
 
-    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
+    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mMapRotateInterval * 1000 ) ) )
     {
       const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
