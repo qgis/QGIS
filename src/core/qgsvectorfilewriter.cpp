@@ -2798,9 +2798,19 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         // add m/z values if not present in the input wkb type -- this is needed for formats which determine
         // geometry type based on features, e.g. geojson
         if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( geom.wkbType() ) )
-          geom.get()->addZValue( std::numeric_limits<double>::quiet_NaN() );
+        {
+          if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+            geom.get()->addZValue( std::numeric_limits<double>::quiet_NaN() );
+          else
+            geom.get()->addZValue( 0 );
+        }
         if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( geom.wkbType() ) )
-          geom.get()->addMValue( std::numeric_limits<double>::quiet_NaN() );
+        {
+          if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
+            geom.get()->addMValue( std::numeric_limits<double>::quiet_NaN() );
+          else
+            geom.get()->addMValue( 0 );
+        }
 
         if ( !mGeom2 )
         {
