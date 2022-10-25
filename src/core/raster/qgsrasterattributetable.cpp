@@ -1376,7 +1376,7 @@ QgsGradientColorRamp QgsRasterAttributeTable::colorRamp( QStringList &labels, co
             {
               return QStringLiteral( "%L1 - %L2" ).arg( orderedRat.value( rowIdx, minIdx ).toDouble() ).arg( orderedRat.value( rowIdx, maxIdx ).toDouble() );
             }
-            const QVariant val { orderedRat.value( rowIdx, labelIdx ) };
+            const QVariant val( orderedRat.value( rowIdx, labelIdx ) );
             bool ok { true };
             QString res;
             switch ( val.type() )
