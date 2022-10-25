@@ -91,8 +91,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   mSpinGpsdPort->setValue( 2947 );
   mSpinGpsdPort->setClearValue( 2947 );
-
   mSpinTrackWidth->setClearValue( 2 );
+  mSpinMapRotateInterval->setClearValue( 0 );
+  mSpinMapExtentMultiplier->setClearValue( 50 );
 
   mBtnTrackColor->setAllowOpacity( true );
   mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
@@ -128,6 +129,8 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   int acquisitionInterval = 0;
   double distanceThreshold = 0;
   bool bearingFromTravelDirection = false;
+  int recenteringThreshold = 50;
+  int rotateInterval = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
@@ -139,6 +142,8 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
     distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
     bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
+    recenteringThreshold = QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value();
+    rotateInterval = QgsGpsInformationWidget::settingMapRotateInterval.value();
   }
   else
   {
@@ -173,6 +178,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     distanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
 
     bearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
+
+    recenteringThreshold = settings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt();
+    rotateInterval = settings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt();
   }
 
   mGpsdHost->setText( gpsdHost );
@@ -208,6 +216,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   mCboAcquisitionInterval->setCurrentText( QString::number( acquisitionInterval ) );
   mCboDistanceThreshold->setCurrentText( QString::number( distanceThreshold ) );
+
+  mSpinMapExtentMultiplier->setValue( recenteringThreshold );
+  mSpinMapRotateInterval->setValue( rotateInterval );
 
   refreshDevices();
 }
@@ -260,6 +271,9 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsConnection::settingGpsAcquisitionInterval.setValue( mCboAcquisitionInterval->currentText().toInt() );
   QgsGpsConnection::settingGpsDistanceThreshold.setValue( mCboDistanceThreshold->currentText().toDouble() );
   QgsGpsConnection::settingGpsBearingFromTravelDirection.setValue( mTravelBearingCheckBox->isChecked() );
+
+  QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.setValue( mSpinMapExtentMultiplier->value() );
+  QgsGpsInformationWidget::settingMapRotateInterval.setValue( mSpinMapRotateInterval->value() );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()
