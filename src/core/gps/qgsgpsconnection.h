@@ -344,6 +344,9 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Settings entry GPS track point distance threshold
     static const inline QgsSettingsEntryDouble settingGpsDistanceThreshold = QgsSettingsEntryDouble( QStringLiteral( "distance-threshold" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS track point distance threshold" ) ) SIP_SKIP;
 
+    //! Settings entry GPS calculate bearing from travel direction
+    static const inline QgsSettingsEntryBool settingGpsBearingFromTravelDirection = QgsSettingsEntryBool( QStringLiteral( "calculate-bearing-from-travel" ), QgsSettings::Prefix::GPS, false, QStringLiteral( "Calculate GPS bearing from travel direction" ) ) SIP_SKIP;
+
     /**
      * Constructor
      * \param dev input device for the connection (e.g. serial device). The class takes ownership of the object

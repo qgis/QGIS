@@ -127,6 +127,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   QColor trackColor;
   int acquisitionInterval = 0;
   double distanceThreshold = 0;
+  bool bearingFromTravelDirection = false;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
@@ -137,6 +138,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
     acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
     distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
+    bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
   }
   else
   {
@@ -169,6 +171,8 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     distanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+
+    bearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
   }
 
   mGpsdHost->setText( gpsdHost );
@@ -197,6 +201,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   }
   mRadInternal->hide();
 
+  mTravelBearingCheckBox->setChecked( bearingFromTravelDirection );
 
   mSpinTrackWidth->setValue( trackWidth );
   mBtnTrackColor->setColor( trackColor );
@@ -254,6 +259,7 @@ void QgsGpsOptionsWidget::apply()
 
   QgsGpsConnection::settingGpsAcquisitionInterval.setValue( mCboAcquisitionInterval->currentText().toInt() );
   QgsGpsConnection::settingGpsDistanceThreshold.setValue( mCboDistanceThreshold->currentText().toDouble() );
+  QgsGpsConnection::settingGpsBearingFromTravelDirection.setValue( mTravelBearingCheckBox->isChecked() );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()

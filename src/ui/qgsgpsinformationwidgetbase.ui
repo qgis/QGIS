@@ -748,16 +748,6 @@ gray = no data
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="mTravelBearingCheckBox">
-                <property name="toolTip">
-                 <string>If checked, the bearing reported by the GPS device will be ignored and the bearing will instead be calculated by the angle between the previous two GPS locations</string>
-                </property>
-                <property name="text">
-                 <string>Calculate bearing from travel direction</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -1152,7 +1142,6 @@ gray = no data
   <tabstop>mCboTimeZones</tabstop>
   <tabstop>mCbxLeapSeconds</tabstop>
   <tabstop>mLeapSeconds</tabstop>
-  <tabstop>mTravelBearingCheckBox</tabstop>
   <tabstop>mCheckShowMarker</tabstop>
   <tabstop>radRecenterMap</tabstop>
   <tabstop>radRecenterWhenNeeded</tabstop>

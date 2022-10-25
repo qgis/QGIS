@@ -235,7 +235,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   // Restore state
 
   mCheckShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
-  mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool() );
 
   mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt() );
   mSpinMapExtentMultiplier->setClearValue( 50 );
@@ -379,7 +378,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
 
   QgsSettings mySettings;
   mySettings.setValue( QStringLiteral( "showMarker" ), mCheckShowMarker->isChecked(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
@@ -441,12 +439,14 @@ void QgsGpsInformationWidget::gpsSettingsChanged()
   {
     acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
+    mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
   }
   else
   {
     // legacy settings
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+    mBearingFromTravelDirection = settings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool();
   }
 
   mAcquisitionInterval = acquisitionInterval * 1000;
@@ -1033,9 +1033,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   const QgsSettings settings;
   const double adjustment = settings.value( QStringLiteral( "gps/bearingAdjustment" ), 0.0, QgsSettings::App ).toDouble();
 
-  if ( !std::isnan( info.direction ) || ( mTravelBearingCheckBox->isChecked() && !mSecondLastGpsPosition.isEmpty() ) )
+  if ( !std::isnan( info.direction ) || ( mBearingFromTravelDirection && !mSecondLastGpsPosition.isEmpty() ) )
   {
-    if ( !mTravelBearingCheckBox->isChecked() )
+    if ( !mBearingFromTravelDirection )
     {
       bearing = info.direction;
       if ( settings.value( QStringLiteral( "gps/correctForTrueNorth" ), false, QgsSettings::App ).toBool() )
