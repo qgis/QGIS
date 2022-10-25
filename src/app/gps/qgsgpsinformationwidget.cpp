@@ -91,7 +91,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
   connect( mBtnOptions, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnOptions_clicked );
   connect( mBtnDebug, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnDebug_clicked );
-  connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnRefreshDevices_clicked );
   connect( mBtnAddVertex, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnAddVertex_clicked );
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
@@ -140,7 +139,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
   mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
-  populateDevices();
   QWidget *mpHistogramWidget = mStackedWidget->widget( 1 );
 #ifndef WITH_QWTPOLAR
   mBtnSatellites->setVisible( false );
@@ -268,38 +266,11 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt() );
   mSpinTrackWidth->setClearValue( 2 );
   mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>() );
-  const QString myPortMode = mySettings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
 
   mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt() );
   mSpinMapExtentMultiplier->setClearValue( 50 );
   mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
 
-  mGpsdHost->setText( mySettings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString() );
-  mGpsdPort->setText( mySettings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toString() );
-  mGpsdDevice->setText( mySettings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString() );
-
-  //port mode
-  if ( myPortMode == QLatin1String( "scanPorts" ) )
-  {
-    mRadAutodetect->setChecked( true );
-  }
-  else if ( myPortMode == QLatin1String( "internalGPS" ) )
-  {
-    mRadInternal->setChecked( true );
-  }
-  else if ( myPortMode == QLatin1String( "explicitPort" ) )
-  {
-    mRadUserPath->setChecked( true );
-  }
-  else if ( myPortMode == QLatin1String( "gpsd" ) )
-  {
-    mRadGpsd->setChecked( true );
-  }
-  if ( mRadInternal->isChecked() )
-  {
-    mRadAutodetect->setChecked( true );
-  }
-  mRadInternal->hide();
 
   //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool() );
@@ -457,7 +428,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
 #endif
 
   QgsSettings mySettings;
-  mySettings.setValue( QStringLiteral( "lastPort" ), mCboDevices->currentData().toString(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "trackWidth" ), mSpinTrackWidth->value(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "trackColor" ), mBtnTrackColor->color(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "showMarker" ), mCheckShowMarker->isChecked(), QgsSettings::Gps );
@@ -470,28 +440,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "mapExtentMultiplier" ), mSpinMapExtentMultiplier->value(), QgsSettings::Gps );
-
-  // scan, explicit port or gpsd
-  if ( mRadAutodetect->isChecked() )
-  {
-    mySettings.setValue( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps );
-  }
-  else if ( mRadInternal->isChecked() )
-  {
-    mySettings.setValue( QStringLiteral( "portMode" ), "internalGPS", QgsSettings::Gps );
-  }
-  else if ( mRadUserPath->isChecked() )
-  {
-    mySettings.setValue( QStringLiteral( "portMode" ), "explicitPort", QgsSettings::Gps );
-  }
-  else
-  {
-    mySettings.setValue( QStringLiteral( "portMode" ), "gpsd", QgsSettings::Gps );
-  }
-
-  mySettings.setValue( QStringLiteral( "gpsdHost" ), mGpsdHost->text(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "gpsdPort" ), mGpsdPort->text().toInt(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "gpsdDevice" ), mGpsdDevice->text(), QgsSettings::Gps );
 
   // pan mode
   if ( radRecenterMap->isChecked() )
@@ -642,26 +590,71 @@ void QgsGpsInformationWidget::connectGps()
 
   QString port;
 
-  if ( mRadUserPath->isChecked() )
+  Qgis::GpsConnectionType connectionType = Qgis::GpsConnectionType::Automatic;
+  QString gpsdHost;
+  int gpsdPort = 0;
+  QString gpsdDevice;
+  QString serialDevice;
+  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
-    port = mCboDevices->currentData().toString();
+    connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
+    gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
+    gpsdPort = QgsGpsConnection::settingsGpsdPortNumber.value();
+    gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
+    serialDevice = QgsGpsConnection::settingsGpsSerialDevice.value();
+  }
+  else
+  {
+    // legacy settings
+    QgsSettings settings;
+    const QString portMode = settings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
 
-    if ( port.isEmpty() )
+    if ( portMode == QLatin1String( "scanPorts" ) )
     {
-      QMessageBox::information( this, tr( "/gps" ), tr( "No path to the GPS port "
-                                "is specified. Please enter a path then try again." ) );
-      //toggle the button back off
-      mConnectButton->setChecked( false );
-      return;
+      connectionType = Qgis::GpsConnectionType::Automatic;
     }
+    else if ( portMode == QLatin1String( "internalGPS" ) )
+    {
+      connectionType = Qgis::GpsConnectionType::Internal;
+    }
+    else if ( portMode == QLatin1String( "explicitPort" ) )
+    {
+      connectionType = Qgis::GpsConnectionType::Serial;
+    }
+    else if ( portMode == QLatin1String( "gpsd" ) )
+    {
+      connectionType = Qgis::GpsConnectionType::Gpsd;
+    }
+
+    gpsdHost = settings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString();
+    gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
+    gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
+    serialDevice = settings.value( QStringLiteral( "lastPort" ), "", QgsSettings::Gps ).toString();
   }
-  else if ( mRadGpsd->isChecked() )
+
+  switch ( connectionType )
   {
-    port = QStringLiteral( "%1:%2:%3" ).arg( mGpsdHost->text(), mGpsdPort->text(), mGpsdDevice->text() );
-  }
-  else if ( mRadInternal->isChecked() )
-  {
-    port = QStringLiteral( "internalGPS" );
+    case Qgis::GpsConnectionType::Automatic:
+      break;
+    case Qgis::GpsConnectionType::Internal:
+      port = QStringLiteral( "internalGPS" );
+      break;
+    case Qgis::GpsConnectionType::Serial:
+      port = QgsGpsConnection::settingsGpsSerialDevice.value();
+      if ( port.isEmpty() )
+      {
+        QMessageBox::information( this, tr( "/gps" ), tr( "No path to the GPS port "
+                                  "is specified. Please enter a path then try again." ) );
+        //toggle the button back off
+        mConnectButton->setChecked( false );
+        return;
+      }
+      break;
+    case Qgis::GpsConnectionType::Gpsd:
+    {
+      port = QStringLiteral( "%1:%2:%3" ).arg( gpsdHost ).arg( gpsdPort ).arg( gpsdDevice );
+      break;
+    }
   }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
@@ -1391,32 +1384,6 @@ void QgsGpsInformationWidget::connectGpsSlot()
 {
   connect( mNmea, &QgsGpsConnection::stateChanged,
            this, &QgsGpsInformationWidget::displayGPSInformation );
-}
-
-void QgsGpsInformationWidget::mBtnRefreshDevices_clicked()
-{
-  populateDevices();
-}
-
-/* Copied from gps plugin */
-void QgsGpsInformationWidget::populateDevices()
-{
-  QList< QPair<QString, QString> > ports = QgsGpsDetector::availablePorts();
-
-  mCboDevices->clear();
-
-  // add devices to combobox, but skip gpsd which is first.
-  for ( int i = 1; i < ports.size(); i++ )
-  {
-    mCboDevices->addItem( ports[i].second, ports[i].first );
-  }
-
-  // remember the last ports used
-  const QgsSettings settings;
-  const QString lastPort = settings.value( QStringLiteral( "lastPort" ), "", QgsSettings::Gps ).toString();
-
-  const int idx = mCboDevices->findData( lastPort );
-  mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
 void QgsGpsInformationWidget::createRubberBand()

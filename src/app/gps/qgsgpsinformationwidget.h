@@ -93,7 +93,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void mBtnSatellites_clicked();
     void mBtnOptions_clicked();
     void mBtnDebug_clicked();
-    void mBtnRefreshDevices_clicked();
     void mBtnAddVertex_clicked();
     void mBtnCloseFeature_clicked();
     void mBtnResetFeature_clicked();
@@ -121,7 +120,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void connectGps();
     void connectGpsSlot();
     void disconnectGps();
-    void populateDevices();
     void setStatusIndicator( FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
     void setAcquisitionInterval( uint );

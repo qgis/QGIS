@@ -843,6 +843,14 @@ Qgis.ContentStatus.__doc__ = 'Status for fetched or stored content\n\n.. version
 # --
 Qgis.ContentStatus.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GpsConnectionType.Automatic.__doc__ = "Automatically detected GPS device connection"
+Qgis.GpsConnectionType.Internal.__doc__ = "Internal GPS device"
+Qgis.GpsConnectionType.Serial.__doc__ = "Serial port GPS device"
+Qgis.GpsConnectionType.Gpsd.__doc__ = "GPSD device"
+Qgis.GpsConnectionType.__doc__ = 'GPS connection types.\n\n.. versionadded:: 3.30\n\n' + '* ``Automatic``: ' + Qgis.GpsConnectionType.Automatic.__doc__ + '\n' + '* ``Internal``: ' + Qgis.GpsConnectionType.Internal.__doc__ + '\n' + '* ``Serial``: ' + Qgis.GpsConnectionType.Serial.__doc__ + '\n' + '* ``Gpsd``: ' + Qgis.GpsConnectionType.Gpsd.__doc__
+# --
+Qgis.GpsConnectionType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GpsQualityIndicator.Unknown.__doc__ = "Unknown"
 Qgis.GpsQualityIndicator.Invalid.__doc__ = "Invalid"
 Qgis.GpsQualityIndicator.GPS.__doc__ = "Standalone"

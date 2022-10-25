@@ -161,6 +161,11 @@ Abstract base class for connection to a GPS device
       GPSDataReceived
     };
 
+
+
+
+
+
     QgsGpsConnection( QIODevice *dev /Transfer/ );
 %Docstring
 Constructor

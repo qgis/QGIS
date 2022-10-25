@@ -40,6 +40,8 @@ class QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGpsOptio
 
   private slots:
 
+    void refreshDevices();
+
   private:
     bool mBlockStoringChanges = false;
 };
