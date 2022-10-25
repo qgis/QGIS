@@ -64,6 +64,8 @@ QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   addSettingsEntry( &QgsGpsInformationWidget::settingGpsTrackColor );
   addSettingsEntry( &QgsGpsInformationWidget::settingGpsTrackWidth );
   addSettingsEntry( &QgsGpsInformationWidget::settingBearingLineSymbol );
+  addSettingsEntry( &QgsGpsInformationWidget::settingMapExtentRecenteringThreshold );
+  addSettingsEntry( &QgsGpsInformationWidget::settingMapRotateInterval );
 
   addSettingsEntry( &QgsGpsMarker::settingLocationMarkerSymbol );
   addSettingsEntry( &QgsGpsMarker::settingRotateLocationMarker );
