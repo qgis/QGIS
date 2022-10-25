@@ -46,6 +46,7 @@
 #include "qgsrastertransparency.h"
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsmaplayerrenderer.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -101,6 +102,7 @@ class TestQgsRasterLayer : public QgsTest
     void sample();
     void testTemporalProperties();
     void rotatedRaster();
+    void forceRasterRender();
 
 
   private:
@@ -1053,6 +1055,19 @@ void TestQgsRasterLayer::rotatedRaster()
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << rgba.get() );
   QVERIFY( render( QStringLiteral( "raster_rotated_rgba" ) ) );
+}
+
+void TestQgsRasterLayer::forceRasterRender()
+{
+  QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
+
+  mMapSettings->setDestinationCrs( mpLandsatRasterLayer->crs() );
+  mMapSettings->setExtent( QgsRectangle( 10, 10, 11, 11 ) );  // outside of layer extent
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mpLandsatRasterLayer );
+
+  QgsRenderContext context( QgsRenderContext::fromMapSettings( *mMapSettings ) );
+  std::unique_ptr<QgsMapLayerRenderer> layerRenderer( mpLandsatRasterLayer->createMapRenderer( context ) );
+  layerRenderer->forceRasterRender();  // this should not crash
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )
