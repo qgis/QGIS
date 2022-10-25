@@ -2838,6 +2838,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
       d->mIsValid = true;
       d->mDescription = QString( proj_get_name( d->threadLocalProjObject() ) );
       setMapUnits();
+      d->mIsGeographic = testIsGeographic( d->threadLocalProjObject() );
     }
   }
 
