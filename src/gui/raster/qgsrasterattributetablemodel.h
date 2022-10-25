@@ -16,7 +16,7 @@
 #ifndef QGSRASTERATTRIBUTETABLEMODEL_H
 #define QGSRASTERATTRIBUTETABLEMODEL_H
 
-#include "qgis_core.h"
+#include "qgis_gui.h"
 #include "qgsrasterattributetable.h"
 #include "qgis_sip.h"
 
@@ -28,7 +28,7 @@
  * \brief The QgsRasterAttributeTableModel class manages a QgsRasterAttributeTable
  * \since QGIS 3.30
  */
-class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
+class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 
