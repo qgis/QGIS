@@ -341,10 +341,9 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
         case Qt::ItemDataRole::ForegroundRole:
         {
           // Choose black or white for a decent contrast.
-          // From https://forum.qt.io/topic/106362/best-way-to-set-text-color-for-maximum-contrast-on-background-color/3
-          const QColor tempColor { mRat->color( index.row() ).darker( 1 ) };  // Force conversion to color QML type object
-          const double a = 1 - ( 0.299 * tempColor.redF() + 0.587 * tempColor.greenF() + 0.114 * tempColor.blueF() );
-          return ( tempColor.alphaF() > 0 && a >= 0.3 ) ? QColor( Qt::GlobalColor::black ) : QColor( Qt::GlobalColor::white );
+          const QColor tempColor { mRat->color( index.row() ) };
+          const double darkness { 1 - ( 0.299 * tempColor.red() + 0.587 * tempColor.green() + 0.114 * tempColor.blue() ) / 255};
+          return darkness > 0.5 ? QColor( Qt::GlobalColor::white ) : QColor( Qt::GlobalColor::black );
         }
         case Qt::ItemDataRole::EditRole:
         case Qt::ItemDataRole::BackgroundRole:
