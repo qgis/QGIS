@@ -39,15 +39,15 @@
 #include "qgsmessagebar.h"
 #include "qgsbearingutils.h"
 #include "qgsgpsbearingitem.h"
-#include "qgssymbollayerutils.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgspolygon.h"
-#include "qgslinesymbol.h"
 #include "qgsgpsconnection.h"
 #include "qgscoordinateutils.h"
 #include "qgsgui.h"
+#include "qgslinesymbol.h"
+#include "qgssymbollayerutils.h"
 
 // QWT Charting widget
 
@@ -230,27 +230,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 #endif
   mPlot->replot();
 
-  mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
-
   const QgsSettings mySettings;
-
-  QDomDocument doc;
-  QDomElement elem;
-  const QString symbolXml = mySettings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
-  if ( !symbolXml.isEmpty() )
-  {
-    doc.setContent( symbolXml );
-    elem = doc.documentElement();
-    std::unique_ptr< QgsLineSymbol > bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
-    if ( bearingSymbol )
-      mBearingLineStyleButton->setSymbol( bearingSymbol.release() );
-  }
-
-  connect( mBearingLineStyleButton, &QgsSymbolButton::changed, this, [ = ]
-  {
-    if ( mMapBearingItem )
-      mMapBearingItem->setSymbol( std::unique_ptr< QgsSymbol >( mBearingLineStyleButton->clonedSymbol< QgsLineSymbol >() ) );
-  } );
 
   // Restore state
 
@@ -288,7 +268,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "rotateMap" ), false, QgsSettings::Gps ).toBool() );
   mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "rotateMapInterval" ), 0, QgsSettings::Gps ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "showBearingLine" ), false, QgsSettings::Gps ).toBool() );
-  connect( mShowBearingLineCheck, &QgsCollapsibleGroupBox::toggled, this, [ = ]( bool checked )
+  connect( mShowBearingLineCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     if ( !checked )
     {
@@ -424,11 +404,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "rotateMapInterval" ), mSpinMapRotateInterval->value(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "showBearingLine" ), mShowBearingLineCheck->isChecked(), QgsSettings::Gps );
 
-  QDomDocument doc;
-  const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mBearingLineStyleButton->symbol(), doc, QgsReadWriteContext() );
-  doc.appendChild( elem );
-  mySettings.setValue( QStringLiteral( "bearingLineSymbol" ), doc.toString(), QgsSettings::Gps );
-
   if ( mMapCanvas )
     mMapCanvas->removeInteractionBlocker( this );
 }
@@ -458,7 +433,9 @@ void QgsGpsInformationWidget::setConnection( QgsGpsConnection *connection )
 void QgsGpsInformationWidget::gpsSettingsChanged()
 {
   updateTrackAppearance();
+  updateBearingAppearance();
 
+  QgsSettings settings;
   int acquisitionInterval = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
@@ -468,7 +445,6 @@ void QgsGpsInformationWidget::gpsSettingsChanged()
   else
   {
     // legacy settings
-    QgsSettings settings;
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
   }
@@ -507,6 +483,32 @@ void QgsGpsInformationWidget::updateTrackAppearance()
   }
   mRubberBand->setWidth( trackWidth );
   mRubberBand->update();
+}
+
+void QgsGpsInformationWidget::updateBearingAppearance()
+{
+  if ( !mMapBearingItem )
+    return;
+
+  QDomDocument doc;
+  QDomElement elem;
+  QString bearingLineSymbolXml = QgsGpsInformationWidget::settingBearingLineSymbol.value();
+  if ( bearingLineSymbolXml.isEmpty() )
+  {
+    QgsSettings settings;
+    bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
+  }
+
+  if ( !bearingLineSymbolXml.isEmpty() )
+  {
+    doc.setContent( bearingLineSymbolXml );
+    elem = doc.documentElement();
+    std::unique_ptr< QgsLineSymbol > bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    if ( bearingSymbol )
+    {
+      mMapBearingItem->setSymbol( std::move( bearingSymbol ) );
+    }
+  }
 }
 
 void QgsGpsInformationWidget::mBtnPosition_clicked()
@@ -1100,7 +1102,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       if ( ! mMapBearingItem )
       {
         mMapBearingItem = new QgsGpsBearingItem( mMapCanvas );
-        mMapBearingItem->setSymbol( std::unique_ptr< QgsSymbol >( mBearingLineStyleButton->clonedSymbol< QgsLineSymbol >() ) );
+        updateBearingAppearance();
       }
 
       mMapBearingItem->setGpsPosition( myNewCenter );

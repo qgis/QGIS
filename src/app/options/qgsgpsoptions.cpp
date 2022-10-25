@@ -22,6 +22,7 @@
 #include "qgsgpsdetector.h"
 #include "qgsgpsconnection.h"
 #include "qgsgpsinformationwidget.h"
+#include "qgslinesymbol.h"
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
@@ -57,6 +58,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   connect( mRadInternal, &QRadioButton::toggled, mBtnRefreshDevices, &QWidget::setDisabled );
 
   mGpsMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
+  mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
   const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol.value();
   QDomDocument symbolDoc;
@@ -65,6 +67,25 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   std::unique_ptr< QgsMarkerSymbol > gpsMarkerSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( markerElement, QgsReadWriteContext() ) );
   if ( gpsMarkerSymbol )
     mGpsMarkerSymbolButton->setSymbol( gpsMarkerSymbol.release() );
+
+
+  QgsSettings settings;
+  QDomDocument doc;
+  QDomElement elem;
+  QString bearingLineSymbolXml = QgsGpsInformationWidget::settingBearingLineSymbol.value();
+  if ( bearingLineSymbolXml.isEmpty() )
+  {
+    bearingLineSymbolXml = settings.value( QStringLiteral( "bearingLineSymbol" ), QVariant(), QgsSettings::Gps ).toString();
+  }
+
+  if ( !bearingLineSymbolXml.isEmpty() )
+  {
+    doc.setContent( bearingLineSymbolXml );
+    elem = doc.documentElement();
+    std::unique_ptr< QgsLineSymbol > bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    if ( bearingSymbol )
+      mBearingLineStyleButton->setSymbol( bearingSymbol.release() );
+  }
 
   mCheckRotateLocationMarker->setChecked( QgsGpsMarker::settingRotateLocationMarker.value() );
 
@@ -120,7 +141,6 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   else
   {
     // legacy settings
-    QgsSettings settings;
     const QString portMode = settings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
 
     if ( portMode == QLatin1String( "scanPorts" ) )
@@ -197,6 +217,14 @@ void QgsGpsOptionsWidget::apply()
     QgsGpsMarker::settingLocationMarkerSymbol.setValue( doc.toString( 0 ) );
   }
   QgsGpsMarker::settingRotateLocationMarker.setValue( mCheckRotateLocationMarker->isChecked() );
+
+  if ( QgsSymbol *lineSymbol = mBearingLineStyleButton->symbol() )
+  {
+    QDomDocument doc;
+    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-bearing-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
+    doc.appendChild( elem );
+    QgsGpsInformationWidget::settingBearingLineSymbol.setValue( doc.toString( 0 ) );
+  }
 
   QgsGpsConnection::settingsGpsSerialDevice.setValue( mCboDevices->currentData().toString() );
 
