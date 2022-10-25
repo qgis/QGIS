@@ -21,6 +21,9 @@
 #include "qgssymbollayerutils.h"
 #include "qgsgpsdetector.h"
 #include "qgsgpsconnection.h"
+#include "qgsgpsinformationwidget.h"
+
+
 //
 // QgsGpsOptionsWidget
 //
@@ -66,18 +69,27 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   mSpinGpsdPort->setValue( 2947 );
   mSpinGpsdPort->setClearValue( 2947 );
 
+  mSpinTrackWidth->setClearValue( 2 );
+
+  mBtnTrackColor->setAllowOpacity( true );
+  mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
+
   connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsOptionsWidget::refreshDevices );
 
   Qgis::GpsConnectionType connectionType = Qgis::GpsConnectionType::Automatic;
   QString gpsdHost;
   int gpsdPort = 0;
   QString gpsdDevice;
+  double trackWidth = 2;
+  QColor trackColor;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
     gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
     gpsdPort = QgsGpsConnection::settingsGpsdPortNumber.value();
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
+    trackWidth = QgsGpsInformationWidget::settingGpsTrackWidth.value();
+    trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
   }
   else
   {
@@ -105,6 +117,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     gpsdHost = settings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString();
     gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
     gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
+
+    trackWidth = settings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt();
+    trackColor = settings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>();
   }
 
   mGpsdHost->setText( gpsdHost );
@@ -132,6 +147,10 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     mRadAutodetect->setChecked( true );
   }
   mRadInternal->hide();
+
+
+  mSpinTrackWidth->setValue( trackWidth );
+  mBtnTrackColor->setColor( trackColor );
 
   refreshDevices();
 }
@@ -169,6 +188,9 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsConnection::settingsGpsdHostName.setValue( mGpsdHost->text() );
   QgsGpsConnection::settingsGpsdPortNumber.setValue( mSpinGpsdPort->value() );
   QgsGpsConnection::settingsGpsdDeviceName.setValue( mGpsdDevice->text() );
+
+  QgsGpsInformationWidget::settingGpsTrackColor.setValue( mBtnTrackColor->color() );
+  QgsGpsInformationWidget::settingGpsTrackWidth.setValue( mSpinTrackWidth->value() );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()

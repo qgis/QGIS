@@ -157,8 +157,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>579</width>
-            <height>741</height>
+            <width>162</width>
+            <height>544</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -601,8 +601,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>565</width>
-            <height>835</height>
+            <width>579</width>
+            <height>741</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -636,78 +636,6 @@ gray = no data
               <property name="verticalSpacing">
                <number>2</number>
               </property>
-              <item row="2" column="0">
-               <widget class="QGroupBox" name="groupBox_3">
-                <property name="title">
-                 <string>Track</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_16" columnstretch="0,1">
-                 <property name="topMargin">
-                  <number>2</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>4</number>
-                 </property>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_6">
-                   <property name="text">
-                    <string>Line width</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QgsSpinBox" name="mSpinTrackWidth">
-                   <property name="toolTip">
-                    <string>Track width in pixels</string>
-                   </property>
-                   <property name="suffix">
-                    <string> px</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <widget class="QCheckBox" name="mCbxAutoAddVertices">
-                   <property name="text">
-                    <string>Automatically add points</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_7">
-                   <property name="text">
-                    <string>Line color</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QgsColorButton" name="mBtnTrackColor">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string/>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="mCbxAutoCommit">
-                <property name="toolTip">
-                 <string>save layer after every feature added</string>
-                </property>
-                <property name="text">
-                 <string>Automatically save added feature</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QGroupBox" name="mGboxTimestamp">
                 <property name="title">
@@ -761,6 +689,23 @@ gray = no data
                   </widget>
                  </item>
                 </layout>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="mCbxAutoAddVertices">
+                <property name="text">
+                 <string>Automatically add track points</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="mCbxAutoCommit">
+                <property name="toolTip">
+                 <string>save layer after every feature added</string>
+                </property>
+                <property name="text">
+                 <string>Automatically save added feature</string>
+                </property>
                </widget>
               </item>
               <item row="3" column="0">
@@ -1238,12 +1183,6 @@ gray = no data
    <header>qgsfieldcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
@@ -1267,9 +1206,6 @@ gray = no data
   <tabstop>mCboTimeZones</tabstop>
   <tabstop>mCbxLeapSeconds</tabstop>
   <tabstop>mLeapSeconds</tabstop>
-  <tabstop>mCbxAutoAddVertices</tabstop>
-  <tabstop>mSpinTrackWidth</tabstop>
-  <tabstop>mBtnTrackColor</tabstop>
   <tabstop>mTravelBearingCheckBox</tabstop>
   <tabstop>mCheckShowMarker</tabstop>
   <tabstop>mCboAcquisitionInterval</tabstop>
