@@ -46,6 +46,7 @@
 #include "qgspolygon.h"
 #include "qgslinesymbol.h"
 #include "qgsgpsconnection.h"
+#include "qgscoordinateutils.h"
 
 // QWT Charting widget
 
@@ -910,8 +911,14 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   }
   if ( mStackedWidget->currentIndex() == 0 ) //position
   {
-    mTxtLatitude->setText( QString::number( info.latitude, 'f', 8 ) );
-    mTxtLongitude->setText( QString::number( info.longitude, 'f', 8 ) );
+    QString formattedX;
+    QString formattedY;
+    QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject::instance(), QgsPointXY( info.longitude, info.latitude ),
+        QgsCoordinateReferenceSystem(), 8, formattedX, formattedY );
+
+    mTxtLatitude->setText( formattedX );
+    mTxtLongitude->setText( formattedY );
+
     mTxtAltitude->setText( tr( "%1 m" ).arg( info.elevation, 0, 'f', 3 ) );
     mTxtAltitudeDiff->setText( tr( "%1 m" ).arg( info.elevation_diff, 0, 'f', 3 ) );
 
