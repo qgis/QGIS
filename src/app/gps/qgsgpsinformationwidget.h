@@ -62,6 +62,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     static const inline QgsSettingsEntryString settingLastLogFolder = QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
     static const inline QgsSettingsEntryDouble settingGpsTrackWidth = QgsSettingsEntryDouble( QStringLiteral( "track-width" ), QgsSettings::Prefix::GPS, 2, QStringLiteral( "GPS track width" ) );
     static const inline QgsSettingsEntryColor settingGpsTrackColor = QgsSettingsEntryColor( QStringLiteral( "track-color" ), QgsSettings::Prefix::GPS, QColor( Qt::red ), QStringLiteral( "GPS track color" ) );
+    static const inline QgsSettingsEntryString settingBearingLineSymbol = QgsSettingsEntryString( QStringLiteral( "bearing-line-symbol" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Line symbol to use for GPS bearing line" ), Qgis::SettingsOptions(), 0 );
 
     QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
@@ -89,6 +90,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void layerEditStateChanged();
     void gpsSettingsChanged();
     void updateTrackAppearance();
+    void updateBearingAppearance();
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
     void mBtnSatellites_clicked();

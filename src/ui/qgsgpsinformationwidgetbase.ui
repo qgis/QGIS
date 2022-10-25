@@ -621,38 +621,6 @@ gray = no data
            <property name="verticalSpacing">
             <number>4</number>
            </property>
-           <item row="4" column="0">
-            <widget class="QgsCollapsibleGroupBox" name="mShowBearingLineCheck">
-             <property name="title">
-              <string>Show Bearing Line</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1">
-              <item>
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>Line style</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsSymbolButton" name="mBearingLineStyleButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="5" column="0">
             <widget class="QgsCollapsibleGroupBox" name="mLogFileGroupBox">
              <property name="enabled">
@@ -793,6 +761,26 @@ gray = no data
              </layout>
             </widget>
            </item>
+           <item row="6" column="0">
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="mShowBearingLineCheck">
+             <property name="text">
+              <string>Show bearing line</string>
+             </property>
+            </widget>
+           </item>
            <item row="2" column="0">
             <widget class="QCheckBox" name="mCheckShowMarker">
              <property name="text">
@@ -803,7 +791,7 @@ gray = no data
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
              <property name="title">
               <string>Map Centering and Rotation</string>
@@ -931,19 +919,6 @@ gray = no data
               </item>
              </layout>
             </widget>
-           </item>
-           <item row="6" column="0">
-            <spacer name="verticalSpacer_6">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -1132,11 +1107,6 @@ gray = no data
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
@@ -1190,8 +1160,6 @@ gray = no data
   <tabstop>radNeverRecenter</tabstop>
   <tabstop>mRotateMapCheckBox</tabstop>
   <tabstop>mSpinMapRotateInterval</tabstop>
-  <tabstop>mShowBearingLineCheck</tabstop>
-  <tabstop>mBearingLineStyleButton</tabstop>
   <tabstop>mLogFileGroupBox</tabstop>
   <tabstop>mLogFilename</tabstop>
   <tabstop>mGPSPlainTextEdit</tabstop>
