@@ -136,7 +136,7 @@ def initMenusAndToolbars():
                                'gdal:overviews': miscMenu,
                                'gdal:tileindex': miscMenu})
 
-    toolBarButtons = {'native:selectbylocation': iface.selectionToolBar()}
+    toolBarButtons = {'native:selectbylocation': iface.selectionToolBar(), 'native:selectwithindistance': iface.selectionToolBar()}
 
 
 if iface is not None:
