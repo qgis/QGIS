@@ -47,6 +47,7 @@
 #include "qgslinesymbol.h"
 #include "qgsgpsconnection.h"
 #include "qgscoordinateutils.h"
+#include "qgsgui.h"
 
 // QWT Charting widget
 
@@ -84,8 +85,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
   connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
   connect( mConnectButton, &QAbstractButton::toggled, mRecenterButton, &QWidget::setEnabled );
-  connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
-  connect( mSpinTrackWidth, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
   connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSatellites_clicked );
@@ -234,9 +233,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 #endif
   mPlot->replot();
 
-  mBtnTrackColor->setAllowOpacity( true );
-  mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
-
   mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
   const QgsSettings mySettings;
@@ -263,14 +259,10 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   mCheckShowMarker->setChecked( mySettings.value( QStringLiteral( "showMarker" ), "true", QgsSettings::Gps ).toBool() );
   mTravelBearingCheckBox->setChecked( mySettings.value( QStringLiteral( "calculateBearingFromTravel" ), "false", QgsSettings::Gps ).toBool() );
-  mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt() );
-  mSpinTrackWidth->setClearValue( 2 );
-  mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>() );
 
   mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "mapExtentMultiplier" ), "50", QgsSettings::Gps ).toInt() );
   mSpinMapExtentMultiplier->setClearValue( 50 );
   mDateTimeFormat = mySettings.value( QStringLiteral( "dateTimeFormat" ), "", QgsSettings::Gps ).toString(); // zero-length string signifies default format
-
 
   //auto digitizing behavior
   mCbxAutoAddVertices->setChecked( mySettings.value( QStringLiteral( "autoAddVertices" ), "false", QgsSettings::Gps ).toBool() );
@@ -409,6 +401,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mCboDistanceThreshold, qOverload< const QString & >( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
 
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsInformationWidget::updateTrackAppearance );
+
   mMapCanvas->installInteractionBlocker( this );
 }
 
@@ -428,8 +422,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
 #endif
 
   QgsSettings mySettings;
-  mySettings.setValue( QStringLiteral( "trackWidth" ), mSpinTrackWidth->value(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "trackColor" ), mBtnTrackColor->color(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "showMarker" ), mCheckShowMarker->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
@@ -489,25 +481,32 @@ void QgsGpsInformationWidget::setConnection( QgsGpsConnection *connection )
   connected( connection );
 }
 
-void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
+void QgsGpsInformationWidget::updateTrackAppearance()
 {
-  if ( mRubberBand )
-  {
-    mRubberBand->setWidth( value );
-    mRubberBand->update();
-  }
-}
+  if ( !mRubberBand )
+    return;
 
-void QgsGpsInformationWidget::trackColorChanged( const QColor &color )
-{
-  if ( color.isValid() )  // check that a color was picked
+  double trackWidth = 2;
+  QColor trackColor;
+  if ( settingGpsTrackWidth.exists() )
   {
-    if ( mRubberBand )
-    {
-      mRubberBand->setColor( color );
-      mRubberBand->update();
-    }
+    trackWidth = QgsGpsInformationWidget::settingGpsTrackWidth.value();
+    trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
   }
+  else
+  {
+    // legacy settings
+    QgsSettings settings;
+    trackWidth = settings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt();
+    trackColor = settings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>();
+  }
+
+  if ( trackColor.isValid() )  // check that a color was picked
+  {
+    mRubberBand->setColor( trackColor );
+  }
+  mRubberBand->setWidth( trackWidth );
+  mRubberBand->update();
 }
 
 void QgsGpsInformationWidget::mBtnPosition_clicked()
@@ -1391,8 +1390,7 @@ void QgsGpsInformationWidget::createRubberBand()
   delete mRubberBand;
 
   mRubberBand = new QgsRubberBand( mMapCanvas, QgsWkbTypes::LineGeometry );
-  mRubberBand->setColor( mBtnTrackColor->color() );
-  mRubberBand->setWidth( mSpinTrackWidth->value() );
+  updateTrackAppearance();
   mRubberBand->show();
 }
 

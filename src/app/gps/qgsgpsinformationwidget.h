@@ -60,6 +60,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
   public:
 
     static const inline QgsSettingsEntryString settingLastLogFolder = QgsSettingsEntryString( QStringLiteral( "last-log-folder" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "Last used folder for GPS log files" ) );
+    static const inline QgsSettingsEntryDouble settingGpsTrackWidth = QgsSettingsEntryDouble( QStringLiteral( "track-width" ), QgsSettings::Prefix::GPS, 2, QStringLiteral( "GPS track width" ) );
+    static const inline QgsSettingsEntryColor settingGpsTrackColor = QgsSettingsEntryColor( QStringLiteral( "track-color" ), QgsSettings::Prefix::GPS, QColor( Qt::red ), QStringLiteral( "GPS track color" ) );
 
     QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
@@ -85,9 +87,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
-//   void setTrackColor(); // no longer used
-    void trackColorChanged( const QColor &color );
-    void mSpinTrackWidth_valueChanged( int value );
+    void updateTrackAppearance();
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
     void mBtnSatellites_clicked();
