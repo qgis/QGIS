@@ -33,7 +33,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -47,7 +47,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-22</y>
+        <y>0</y>
         <width>676</width>
         <height>783</height>
        </rect>
@@ -494,6 +494,12 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
