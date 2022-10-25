@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
+    <width>690</width>
     <height>761</height>
    </rect>
   </property>
@@ -48,7 +48,7 @@
        <rect>
         <x>0</x>
         <y>-22</y>
-        <width>495</width>
+        <width>676</width>
         <height>783</height>
        </rect>
       </property>
@@ -229,7 +229,7 @@
          <property name="title">
           <string>Filtering</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
+         <layout class="QGridLayout" name="gridLayout_14" columnstretch="1,2">
           <item row="1" column="1">
            <widget class="QComboBox" name="mCboDistanceThreshold">
             <property name="editable">
@@ -266,7 +266,7 @@
          <property name="title">
           <string>GPS Visualization Options</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
+         <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2,0">
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -287,20 +287,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="mCheckRotateLocationMarker">
             <property name="text">
              <string>Rotate to match GPS bearing</string>
@@ -409,7 +396,7 @@
          <property name="title">
           <string>Map Centering and Rotation</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout" columnstretch="1,2">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
