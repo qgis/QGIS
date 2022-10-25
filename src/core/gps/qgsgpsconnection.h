@@ -338,6 +338,12 @@ class CORE_EXPORT QgsGpsConnection : public QObject
     //! Settings entry GPS serial device name
     static const inline QgsSettingsEntryString settingsGpsSerialDevice = QgsSettingsEntryString( QStringLiteral( "gpsd-serial-device" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS serial device name" ) ) SIP_SKIP;
 
+    //! Settings entry GPS track point acquisition interval
+    static const inline QgsSettingsEntryInteger settingGpsAcquisitionInterval = QgsSettingsEntryInteger( QStringLiteral( "acquisition-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS track point acquisition interval" ) ) SIP_SKIP;
+
+    //! Settings entry GPS track point distance threshold
+    static const inline QgsSettingsEntryDouble settingGpsDistanceThreshold = QgsSettingsEntryDouble( QStringLiteral( "distance-threshold" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "GPS track point distance threshold" ) ) SIP_SKIP;
+
     /**
      * Constructor
      * \param dev input device for the connection (e.g. serial device). The class takes ownership of the object

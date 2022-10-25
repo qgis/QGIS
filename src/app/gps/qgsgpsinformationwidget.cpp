@@ -72,9 +72,6 @@
 #include <QPen>
 #include <QTimeZone>
 
-const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
-const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
-
 
 QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent )
   : QgsPanelWidget( parent )
@@ -317,27 +314,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
 
-  mAcquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
-  mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
+
   mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
   mAcquisitionTimer->setSingleShot( true );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "0" ), 0 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "2" ), 2 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "5" ), 5 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "10" ), 10 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "15" ), 15 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "30" ), 30 );
-  mCboAcquisitionInterval->addItem( QStringLiteral( "60" ), 60 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "0" ), 0 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "3" ), 3 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
-  mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
-
-  mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
-  mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
-  mCboAcquisitionInterval->setCurrentText( mySettings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toString() );
-  mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toString() );
 
   // Timestamp
   mCboTimestampField->setAllowEmptyFieldName( true );
@@ -396,12 +375,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
 
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsInformationWidget::switchAcquisition );
-  connect( mCboAcquisitionInterval, qOverload< const QString & >( &QComboBox::currentTextChanged ),
-           this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
-  connect( mCboDistanceThreshold, qOverload< const QString & >( &QComboBox::currentTextChanged ),
-           this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
 
-  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsInformationWidget::updateTrackAppearance );
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsInformationWidget::gpsSettingsChanged );
+  gpsSettingsChanged();
 
   mMapCanvas->installInteractionBlocker( this );
 }
@@ -426,8 +402,6 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "calculateBearingFromTravel" ), mTravelBearingCheckBox->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoAddVertices" ), mCbxAutoAddVertices->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "autoCommit" ), mCbxAutoCommit->isChecked(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "acquisitionInterval" ), mCboAcquisitionInterval->currentText(), QgsSettings::Gps );
-  mySettings.setValue( QStringLiteral( "distanceThreshold" ), mCboDistanceThreshold->currentText(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "timestampTimeZone" ), mCboTimeZones->currentText(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "applyLeapSeconds" ), mCbxLeapSeconds->isChecked(), QgsSettings::Gps );
   mySettings.setValue( QStringLiteral( "leapSecondsCorrection" ), mLeapSeconds->value(), QgsSettings::Gps );
@@ -479,6 +453,32 @@ bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlo
 void QgsGpsInformationWidget::setConnection( QgsGpsConnection *connection )
 {
   connected( connection );
+}
+
+void QgsGpsInformationWidget::gpsSettingsChanged()
+{
+  updateTrackAppearance();
+
+  int acquisitionInterval = 0;
+  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
+  {
+    acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
+    mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
+  }
+  else
+  {
+    // legacy settings
+    QgsSettings settings;
+    acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
+    mDistanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
+  }
+
+  mAcquisitionInterval = acquisitionInterval * 1000;
+  if ( mAcquisitionTimer->isActive() )
+    mAcquisitionTimer->stop();
+  mAcquisitionEnabled = true;
+
+  switchAcquisition();
 }
 
 void QgsGpsInformationWidget::updateTrackAppearance()
@@ -1498,19 +1498,6 @@ void QgsGpsInformationWidget::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
 }
-void QgsGpsInformationWidget::setAcquisitionInterval( uint interval )
-{
-  mAcquisitionInterval = static_cast<int>( interval ) * 1000 ;
-  if ( mAcquisitionTimer->isActive() )
-    mAcquisitionTimer->stop();
-  mAcquisitionEnabled = true;
-  switchAcquisition();
-
-}
-void QgsGpsInformationWidget::setDistanceThreshold( uint distance )
-{
-  mDistanceThreshold = distance;
-}
 
 void QgsGpsInformationWidget::updateTimeZones()
 {
@@ -1569,16 +1556,6 @@ QVariant QgsGpsInformationWidget::timestamp( QgsVectorLayer *vlayer, int idx )
     }
   }
   return value;
-}
-
-void QgsGpsInformationWidget::cboAcquisitionIntervalEdited()
-{
-  setAcquisitionInterval( mCboAcquisitionInterval->currentText().toUInt() );
-}
-
-void QgsGpsInformationWidget::cboDistanceThresholdEdited()
-{
-  setDistanceThreshold( mCboDistanceThreshold->currentText().toUInt() );
 }
 
 void QgsGpsInformationWidget::timestampFormatChanged( int )

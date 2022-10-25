@@ -87,6 +87,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
+    void gpsSettingsChanged();
     void updateTrackAppearance();
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
@@ -101,8 +102,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void connected( QgsGpsConnection * );
     void timedout();
     void switchAcquisition();
-    void cboAcquisitionIntervalEdited();
-    void cboDistanceThresholdEdited();
     void timestampFormatChanged( int index );
     void cursorCoordinateChanged( const QgsPointXY &point );
 
@@ -122,8 +121,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void disconnectGps();
     void setStatusIndicator( FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
-    void setAcquisitionInterval( uint );
-    void setDistanceThreshold( uint );
     void updateTimeZones();
     QVariant timestamp( QgsVectorLayer *vlayer, int idx );
     QgsGpsConnection *mNmea = nullptr;
@@ -157,14 +154,12 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     QPointer< QgsVectorLayer > mLastLayer;
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-    QIntValidator *mAcquisitionIntValidator = nullptr;
-    QIntValidator *mDistanceThresholdValidator = nullptr;
     nmeaPOS mLastNmeaPosition;
     nmeaTIME mLastNmeaTime;
     std::unique_ptr<QTimer> mAcquisitionTimer;
     bool mAcquisitionEnabled = true;
     int mAcquisitionInterval = 0;
-    unsigned int mDistanceThreshold = 0;
+    double mDistanceThreshold = 0;
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields

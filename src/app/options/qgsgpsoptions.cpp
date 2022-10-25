@@ -23,6 +23,8 @@
 #include "qgsgpsconnection.h"
 #include "qgsgpsinformationwidget.h"
 
+const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
+const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
 
 //
 // QgsGpsOptionsWidget
@@ -76,12 +78,34 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsOptionsWidget::refreshDevices );
 
+  mCboAcquisitionInterval->addItem( QStringLiteral( "0" ), 0 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "2" ), 2 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "5" ), 5 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "10" ), 10 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "15" ), 15 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "30" ), 30 );
+  mCboAcquisitionInterval->addItem( QStringLiteral( "60" ), 60 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "0" ), 0 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "3" ), 3 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
+  mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
+
+  mAcquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
+  mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
+
+  mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
+  mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
+
+
   Qgis::GpsConnectionType connectionType = Qgis::GpsConnectionType::Automatic;
   QString gpsdHost;
   int gpsdPort = 0;
   QString gpsdDevice;
   double trackWidth = 2;
   QColor trackColor;
+  int acquisitionInterval = 0;
+  double distanceThreshold = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
@@ -90,6 +114,8 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
     trackWidth = QgsGpsInformationWidget::settingGpsTrackWidth.value();
     trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
+    acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
+    distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
   }
   else
   {
@@ -120,6 +146,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
     trackWidth = settings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt();
     trackColor = settings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>();
+
+    acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
+    distanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
   }
 
   mGpsdHost->setText( gpsdHost );
@@ -151,6 +180,9 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   mSpinTrackWidth->setValue( trackWidth );
   mBtnTrackColor->setColor( trackColor );
+
+  mCboAcquisitionInterval->setCurrentText( QString::number( acquisitionInterval ) );
+  mCboDistanceThreshold->setCurrentText( QString::number( distanceThreshold ) );
 
   refreshDevices();
 }
@@ -191,6 +223,9 @@ void QgsGpsOptionsWidget::apply()
 
   QgsGpsInformationWidget::settingGpsTrackColor.setValue( mBtnTrackColor->color() );
   QgsGpsInformationWidget::settingGpsTrackWidth.setValue( mSpinTrackWidth->value() );
+
+  QgsGpsConnection::settingGpsAcquisitionInterval.setValue( mCboAcquisitionInterval->currentText().toInt() );
+  QgsGpsConnection::settingGpsDistanceThreshold.setValue( mCboDistanceThreshold->currentText().toDouble() );
 }
 
 void QgsGpsOptionsWidget::refreshDevices()
