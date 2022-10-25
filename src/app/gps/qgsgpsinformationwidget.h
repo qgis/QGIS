@@ -162,6 +162,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     bool mAcquisitionEnabled = true;
     int mAcquisitionInterval = 0;
     double mDistanceThreshold = 0;
+    bool mBearingFromTravelDirection = false;
     //! Temporary storage of preferred fields
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields

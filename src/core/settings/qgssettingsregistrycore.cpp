@@ -123,6 +123,7 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   addSettingsEntry( &QgsGpsConnection::settingsGpsSerialDevice );
   addSettingsEntry( &QgsGpsConnection::settingGpsAcquisitionInterval );
   addSettingsEntry( &QgsGpsConnection::settingGpsDistanceThreshold );
+  addSettingsEntry( &QgsGpsConnection::settingGpsBearingFromTravelDirection );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()
