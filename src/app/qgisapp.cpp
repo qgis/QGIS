@@ -1921,6 +1921,8 @@ QgisApp::~QgisApp()
   mUserInputDockWidget = nullptr;
   delete mMapStylingDock;
   mMapStylingDock = nullptr;
+  delete mCoordsEdit;
+  mCoordsEdit = nullptr;
 
   QgsGui::instance()->nativePlatformInterface()->cleanup();
 
