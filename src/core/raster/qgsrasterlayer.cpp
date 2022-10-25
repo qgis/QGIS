@@ -1053,9 +1053,9 @@ void QgsRasterLayer::writeRasterAttributeTableExternalPaths( QDomNode &layerNode
   }
 }
 
-void QgsRasterLayer::readRasterAttributeTableExternalPaths( const QDomNode &layer_node, QgsReadWriteContext &context ) const
+void QgsRasterLayer::readRasterAttributeTableExternalPaths( const QDomNode &layerNode, QgsReadWriteContext &context ) const
 {
-  const QDomElement ratsElement = layer_node.firstChildElement( QStringLiteral( "FileBasedAttributeTables" ) );
+  const QDomElement ratsElement = layerNode.firstChildElement( QStringLiteral( "FileBasedAttributeTables" ) );
   if ( !ratsElement.isNull() && ratsElement.childNodes().count() > 0 )
   {
     const QDomNodeList ratElements { ratsElement.childNodes() };

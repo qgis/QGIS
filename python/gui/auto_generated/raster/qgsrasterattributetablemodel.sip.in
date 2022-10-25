@@ -110,8 +110,6 @@ Create RGBA minimum and maximum fields and inserts them at ``position``, optiona
 Removes the row at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
-    static QString RAT_COLOR_HEADER_NAME;
-
   public:
     virtual int rowCount( const QModelIndex &parent ) const;
 
@@ -124,6 +122,7 @@ Removes the row at ``position``, optionally reporting any error in ``errorMessag
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
 
 
 };

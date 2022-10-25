@@ -35,6 +35,9 @@ class GUI_EXPORT QgsRasterAttributeTableDialog: public QDialog, private Ui::QRas
 
   public:
 
+    /**
+     * Create a new QgsRasterAttributeTableDialog
+     */
     QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     // QDialog interface

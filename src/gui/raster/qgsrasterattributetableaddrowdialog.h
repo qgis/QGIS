@@ -22,7 +22,8 @@
 #include "ui_qgsrasterattributetableaddrowdialogbase.h"
 
 /**
- * The QgsRasterAttributeTableAddColumnDialog class collects options to add a new row to a raster attribute table.
+ * \ingroup gui
+ * \brief The QgsRasterAttributeTableAddColumnDialog class collects options to add a new row to a raster attribute table.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private Ui::QgsRasterAttributeTableAddRowDialogBase
@@ -32,7 +33,6 @@ class GUI_EXPORT QgsRasterAttributeTableAddRowDialog : public QDialog, private U
 
     /**
      * Creates a new QgsRasterAttributeTableAddRowDialog
-     * \param attributeTable the raster attribute table
      * \param parent optional parent
      */
     QgsRasterAttributeTableAddRowDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );

@@ -155,7 +155,8 @@ class CORE_EXPORT QgsRasterAttributeTable
      * Returns the list of field usages.
      */
     QList<int> intUsages( ) const SIP_PYNAME( usages );
-///@encond
+
+///@endcond PRIVATE
 
     /**
      * Returns the color of the rat \a row or an invalid color if row does not exist or if there is no color definition.
@@ -404,7 +405,7 @@ class CORE_EXPORT QgsRasterAttributeTable
 
     static QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> sUsageInformation SIP_SKIP;
 
-///@encond
+///@endcond PRIVATE
 
   private:
 

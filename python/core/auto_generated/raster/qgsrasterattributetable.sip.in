@@ -137,6 +137,7 @@ Sets the color ramp for the row at ``rowIndex`` to ``colorMin`` and ``colorMax``
 Returns the list of field usages.
 %End
 
+
     QColor color( int row ) const;
 %Docstring
 Returns the color of the rat ``row`` or an invalid color if row does not exist or if there is no color definition.

@@ -24,7 +24,8 @@
 class QgsRasterAttributeTable;
 
 /**
- * The QgsRasterAttributeTableAddColumnDialog class collects options to add a new column to a raster attribute table.
+ * \ingroup gui
+ * \brief The QgsRasterAttributeTableAddColumnDialog class collects options to add a new column to a raster attribute table.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, private Ui::QgsRasterAttributeTableAddColumnDialogBase

@@ -157,7 +157,7 @@ void QgsCreateRasterAttributeTableDialog::accept()
     }
     else
     {
-      success = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );
+      success = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage ); //#spellok
       if ( ! success )
       {
         notify( tr( "Error Saving Raster Attribute Table" ),

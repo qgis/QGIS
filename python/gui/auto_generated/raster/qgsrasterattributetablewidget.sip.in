@@ -32,7 +32,6 @@ Creates a new QgsRasterAttributeTableWidget
 :param parent: parent widget
 :param rasterLayer: raster layer
 :param bandNumber: optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
-:param parent: parent widget
 %End
 
     void setRasterLayer( QgsRasterLayer *rasterLayer, const int bandNumber = 0 );
@@ -52,8 +51,6 @@ Returns ``True`` if the associated raster attribute table is dirty
 %Docstring
 Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
 to the appropriate message bar.
-
-.. seealso:: :py:func:`messageBar`
 %End
 
   signals:
