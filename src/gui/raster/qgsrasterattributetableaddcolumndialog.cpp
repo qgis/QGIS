@@ -169,7 +169,7 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
       mUsage->addItem( QgsRasterAttributeTable::usageName( it.key() ), static_cast<int>( it.key() ) );
     }
   }
-  mUsage->setCurrentIndex( std::clamp( currentUsageIndex, 0,  mUsage->count() - 1 ) );
+  mUsage->setCurrentIndex( std::clamp( currentUsageIndex, 0, static_cast<int>( mUsage->count() - 1 ) ) );
 
   const QList<QgsRasterAttributeTable::Field> fields { mAttributeTable->fields() };
 
@@ -185,7 +185,7 @@ void QgsRasterAttributeTableAddColumnDialog::updateDialog()
   {
     mColumn->addItem( field.name );
   }
-  mColumn->setCurrentIndex( std::clamp( currentIndex, 0, fields.count( ) - 1 ) );
+  mColumn->setCurrentIndex( std::clamp( currentIndex, 0, static_cast<int>( fields.count( ) - 1 ) ) );
 
   if ( ! isValid )
   {

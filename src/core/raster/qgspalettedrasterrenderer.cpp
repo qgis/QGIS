@@ -457,7 +457,7 @@ QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::raster
     classData.push_back( { minMaxClass.minMaxValues, minMaxClass.color, minMaxClass.name  } );
   }
 
-  int numClasses { classData.count( ) };
+  int numClasses { static_cast<int>( classData.count( ) ) };
 
   // assign colors from ramp
   if ( ramp && numClasses > 0 )

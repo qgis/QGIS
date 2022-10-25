@@ -87,6 +87,8 @@ class ColorRampDelegate: public QStyledItemDelegate
 class ColorRampAlphaDelegate: public ColorRampDelegate
 {
 
+    Q_OBJECT
+
   public:
 
     ColorRampAlphaDelegate( QObject *parent = nullptr ): ColorRampDelegate( parent ) {};
@@ -105,6 +107,7 @@ class ColorRampAlphaDelegate: public ColorRampDelegate
 class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::QgsRasterAttributeTableWidgetBase
 {
     Q_OBJECT
+
   public:
 
     /**
@@ -154,8 +157,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
      */
     bool setEditable( bool editable, bool allowCancel = true );
 
-  private slots:
-
+  private:
 
     void classify();
     void addColumn();
@@ -165,8 +167,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
     void bandChanged( const int index );
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
     void setDelegates( );
-
-  private:
 
     QgsRasterLayer *mRasterLayer = nullptr;
     std::unique_ptr<QgsRasterAttributeTable> mAttributeTableBuffer;
