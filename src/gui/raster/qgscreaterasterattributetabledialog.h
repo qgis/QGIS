@@ -63,7 +63,6 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
      * to the appropriate message bar.
-     * \see messageBar()
      */
     void setMessageBar( QgsMessageBar *bar );
 

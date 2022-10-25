@@ -122,9 +122,6 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
      */
     bool removeRow( const int position, QString *errorMessage SIP_OUT = nullptr );
 
-    //! Translatable name of the "color" header.
-    static QString RAT_COLOR_HEADER_NAME;
-
   private:
 
     QgsRasterAttributeTable *mRat = nullptr;
@@ -132,6 +129,8 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
 
     // Checks for rat not nullptr and editable state
     bool editChecks( QString *errorMessage = nullptr );
+
+    QString ratColorHeaderName( ) const;
 
     // QAbstractItemModel interface
   public:
@@ -141,6 +140,7 @@ class CORE_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
 
 };
 

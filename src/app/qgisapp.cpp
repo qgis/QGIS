@@ -13408,10 +13408,10 @@ bool QgisApp::checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> 
             QString errorMessage;
             if ( rat->filePath().isEmpty( ) )
             {
-              if ( ! rasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage ) )
+              if ( ! rasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage ) ) //#spellok
               {
                 visibleMessageBar()->pushMessage( tr( "Error Saving Raster Attribute Table" ),
-                                                  tr( "An error occourred while saving raster attribute table for layer '%1': %2" ).arg( rasterLayer->name(), errorMessage ),
+                                                  tr( "An error occurred while saving raster attribute table for layer '%1': %2" ).arg( rasterLayer->name(), errorMessage ),
                                                   Qgis::MessageLevel::Critical );
                 retVal = false;
               }
@@ -13421,7 +13421,7 @@ bool QgisApp::checkUnsavedRasterAttributeTableEdits( const QList<QgsMapLayer *> 
               if ( ! rat->writeToFile( rat->filePath(), &errorMessage ) )
               {
                 visibleMessageBar()->pushMessage( tr( "Error Saving Raster Attribute Table" ),
-                                                  tr( "An error occourred while saving raster attribute table for layer '%1' to VAT.DBF file '%2': %3" ).arg( rasterLayer->name(), rat->filePath(), errorMessage ),
+                                                  tr( "An error occurred while saving raster attribute table for layer '%1' to VAT.DBF file '%2': %3" ).arg( rasterLayer->name(), rat->filePath(), errorMessage ),
                                                   Qgis::MessageLevel::Critical );
                 retVal = false;
               }

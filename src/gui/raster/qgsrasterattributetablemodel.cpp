@@ -18,8 +18,6 @@
 #include <QFont>
 
 
-QString QgsRasterAttributeTableModel::RAT_COLOR_HEADER_NAME = QObject::tr( "Color" );
-
 QgsRasterAttributeTableModel::QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent )
   : QAbstractTableModel( parent )
   , mRat( rat )
@@ -59,7 +57,7 @@ QStringList QgsRasterAttributeTableModel::headerNames() const
 
     if ( hasColor() || hasRamp() )
     {
-      headers.append( RAT_COLOR_HEADER_NAME );
+      headers.append( ratColorHeaderName() );
     }
   }
   return headers;
@@ -312,6 +310,11 @@ bool QgsRasterAttributeTableModel::editChecks( QString *errorMessage )
   return true;
 }
 
+QString QgsRasterAttributeTableModel::ratColorHeaderName() const
+{
+  return tr( "Color" );
+}
+
 int QgsRasterAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
   return ( !parent.isValid() && mRat ) ? mRat->data().count() : 0;
@@ -386,7 +389,7 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
     }
     else if ( role == Qt::ItemDataRole::ToolTipRole && ( field.isColor() || field.isRamp() ) )
     {
-      return tr( "This data is part of a color definition: click on '%1' column to edit." ).arg( RAT_COLOR_HEADER_NAME );
+      return tr( "This data is part of a color definition: click on '%1' column to edit." ).arg( ratColorHeaderName() );
     }
     else if ( role == Qt::ItemDataRole::DisplayRole || role == Qt::ItemDataRole::EditRole )
     {

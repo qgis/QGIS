@@ -38,6 +38,8 @@ class QSortFilterProxyModel;
 class ColorDelegate: public QStyledItemDelegate
 {
 
+    Q_OBJECT
+
   public:
 
     ColorDelegate( QObject *parent = nullptr ): QStyledItemDelegate( parent ) {};
@@ -51,6 +53,8 @@ class ColorDelegate: public QStyledItemDelegate
 class ColorAlphaDelegate: public ColorDelegate
 {
 
+    Q_OBJECT
+
   public:
 
     ColorAlphaDelegate( QObject *parent = nullptr ): ColorDelegate( parent ) {};
@@ -61,6 +65,8 @@ class ColorAlphaDelegate: public ColorDelegate
 
 class ColorRampDelegate: public QStyledItemDelegate
 {
+
+    Q_OBJECT
 
   public:
 
@@ -89,7 +95,7 @@ class ColorRampAlphaDelegate: public ColorRampDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 #endif
-///@endcond
+///@endcond private
 
 /**
  * \ingroup gui
@@ -106,7 +112,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
      * \param parent parent widget
      * \param rasterLayer raster layer
      * \param bandNumber optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
-     * \param parent parent widget
      */
     explicit QgsRasterAttributeTableWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsRasterLayer *rasterLayer = nullptr, const int bandNumber = 0 );
 
@@ -125,7 +130,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QWidget, private Ui::Qgs
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
      * to the appropriate message bar.
-     * \see messageBar()
      */
     void setMessageBar( QgsMessageBar *bar );
 

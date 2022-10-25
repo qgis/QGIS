@@ -22,6 +22,9 @@ The :py:class:`QgsRasterAttributeTableDialog` class embeds an attribute table wi
   public:
 
     QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Create a new QgsRasterAttributeTableDialog
+%End
 
   public slots:
 

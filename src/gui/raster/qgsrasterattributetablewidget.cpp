@@ -276,13 +276,13 @@ void QgsRasterAttributeTableWidget::saveChanges()
       }
       else if ( saveToNative )
       {
-        writeSuccess = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );
+        writeSuccess = mRasterLayer->dataProvider()->writeNativeAttributeTable( &errorMessage );  //#spellok
       }
 
       if ( writeSuccess )
       {
         mAttributeTableBuffer->setDirty( false );
-        notify( tr( "Attribute Table Write Success" ), tr( "The raster attibute table has been successfully saved." ), Qgis::MessageLevel::Success );
+        notify( tr( "Attribute Table Write Success" ), tr( "The raster attribute table has been successfully saved." ), Qgis::MessageLevel::Success );
       }
       else
       {
@@ -604,5 +604,5 @@ QWidget *ColorRampAlphaDelegate::createEditor( QWidget *parent, const QStyleOpti
   return editor;
 }
 
-///@endcond
+///@endcond private
 

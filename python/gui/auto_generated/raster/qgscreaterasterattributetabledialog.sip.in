@@ -52,8 +52,6 @@ Returns ``True`` if the option to open the newly created attribute table is chec
 %Docstring
 Sets the message ``bar`` associated with the widget. This allows the widget to push feedback messages
 to the appropriate message bar.
-
-.. seealso:: :py:func:`messageBar`
 %End
 
     void setOpenWhenDoneVisible( bool visible );

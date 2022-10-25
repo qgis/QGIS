@@ -577,11 +577,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     /**
      * Reads the paths to the external raster attribute table files associated with the raster bands and loads the raster attribute tables, the raster symbology is not changed.
      * \param layerNode layer node
-     * \param doc document
      * \param context read-write context
      * \since QGIS 3.30
      */
-    void readRasterAttributeTableExternalPaths( const QDomNode &layer_node, QgsReadWriteContext &context ) const;
+    void readRasterAttributeTableExternalPaths( const QDomNode &layerNode, QgsReadWriteContext &context ) const;
 
     //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
