@@ -28,6 +28,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsogrdbconnection.h"
 #include "qgsfontmanager.h"
+#include "qgsgpsconnection.h"
 
 QgsSettingsRegistryCore::QgsSettingsRegistryCore()
   : QgsSettingsRegistry()
@@ -114,6 +115,12 @@ QgsSettingsRegistryCore::QgsSettingsRegistryCore()
 
   addSettingsEntry( &QgsFontManager::settingsFontFamilyReplacements );
   addSettingsEntry( &QgsFontManager::settingsDownloadMissingFonts );
+
+  addSettingsEntry( &QgsGpsConnection::settingsGpsConnectionType );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsdHostName );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsdPortNumber );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsdDeviceName );
+  addSettingsEntry( &QgsGpsConnection::settingsGpsSerialDevice );
 }
 
 QgsSettingsRegistryCore::~QgsSettingsRegistryCore()

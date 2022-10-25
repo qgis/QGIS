@@ -919,6 +919,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( ContentStatus )
 
     /**
+     * GPS connection types.
+     *
+     * \since QGIS 3.30
+     */
+    enum class GpsConnectionType : int
+    {
+      Automatic, //!< Automatically detected GPS device connection
+      Internal, //!< Internal GPS device
+      Serial, //!< Serial port GPS device
+      Gpsd, //!< GPSD device
+    };
+    Q_ENUM( GpsConnectionType )
+
+    /**
      * GPS signal quality indicator
      *
      * \since QGIS 3.22.6

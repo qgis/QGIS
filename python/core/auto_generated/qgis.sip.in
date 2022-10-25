@@ -564,6 +564,14 @@ The development version
       Canceled,
     };
 
+    enum class GpsConnectionType
+    {
+      Automatic,
+      Internal,
+      Serial,
+      Gpsd,
+    };
+
     enum class GpsQualityIndicator
     {
       Unknown,

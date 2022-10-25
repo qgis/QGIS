@@ -24,6 +24,8 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 class QIODevice;
 
@@ -320,6 +322,21 @@ class CORE_EXPORT QgsGpsConnection : public QObject
       DataReceived,
       GPSDataReceived
     };
+
+    //! Settings entry GPS connection type
+    static const inline QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> settingsGpsConnectionType = QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( QStringLiteral( "gps-connection-type" ), QgsSettings::Prefix::GPS, Qgis::GpsConnectionType::Automatic, QStringLiteral( "GPS connection type" ) ) SIP_SKIP;
+
+    //! Settings entry GPSD host name
+    static const inline QgsSettingsEntryString settingsGpsdHostName = QgsSettingsEntryString( QStringLiteral( "gpsd-host-name" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPSD connection host name" ) ) SIP_SKIP;
+
+    //! Settings entry GPSD port number
+    static const inline QgsSettingsEntryInteger settingsGpsdPortNumber = QgsSettingsEntryInteger( QStringLiteral( "gpsd-port" ), QgsSettings::Prefix::GPS, 2947, QStringLiteral( "GPSD port number" ) ) SIP_SKIP;
+
+    //! Settings entry GPSD device name
+    static const inline QgsSettingsEntryString settingsGpsdDeviceName = QgsSettingsEntryString( QStringLiteral( "gpsd-device-name" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPSD connection device name" ) ) SIP_SKIP;
+
+    //! Settings entry GPS serial device name
+    static const inline QgsSettingsEntryString settingsGpsSerialDevice = QgsSettingsEntryString( QStringLiteral( "gpsd-serial-device" ), QgsSettings::Prefix::GPS, QString(), QStringLiteral( "GPS serial device name" ) ) SIP_SKIP;
 
     /**
      * Constructor
