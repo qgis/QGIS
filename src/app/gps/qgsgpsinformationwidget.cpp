@@ -459,27 +459,20 @@ void QgsGpsInformationWidget::updateTrackAppearance()
   if ( !mRubberBand )
     return;
 
-  double trackWidth = 2;
-  QColor trackColor;
-  if ( settingGpsTrackWidth.exists() )
+  QDomDocument doc;
+  QDomElement elem;
+  const QString trackLineSymbolXml = QgsGpsInformationWidget::settingTrackLineSymbol.value();
+  if ( !trackLineSymbolXml.isEmpty() )
   {
-    trackWidth = QgsGpsInformationWidget::settingGpsTrackWidth.value();
-    trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
+    doc.setContent( trackLineSymbolXml );
+    elem = doc.documentElement();
+    std::unique_ptr< QgsLineSymbol > trackLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    if ( trackLineSymbol )
+    {
+      mRubberBand->setSymbol( trackLineSymbol.release() );
+    }
+    mRubberBand->update();
   }
-  else
-  {
-    // legacy settings
-    QgsSettings settings;
-    trackWidth = settings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt();
-    trackColor = settings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>();
-  }
-
-  if ( trackColor.isValid() )  // check that a color was picked
-  {
-    mRubberBand->setColor( trackColor );
-  }
-  mRubberBand->setWidth( static_cast< int >( std::round( trackWidth ) ) );
-  mRubberBand->update();
 }
 
 void QgsGpsInformationWidget::updateBearingAppearance()
