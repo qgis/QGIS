@@ -632,7 +632,7 @@ class TestQgsRasterAttributeTable(unittest.TestCase):
 
         path = os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.tif')
         shutil.copyfile(os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.tif'), os.path.join(self.temp_path, 'band1_float32_noct_epsg4326.tif'))
-        # Note this wierd rename from "rat" to "aux.xml" because of an ancient git ignore.
+        # Note this rename from "rat" to "aux.xml" because of an ancient git ignore.
         shutil.copyfile(os.path.join(unitTestDataPath('raster'), 'band1_float32_noct_epsg4326.rat.xml'), os.path.join(self.temp_path, 'band1_float32_noct_epsg4326.tif.aux.xml'))
 
         raster = QgsRasterLayer(os.path.join(self.temp_path, 'band1_float32_noct_epsg4326.tif'))
