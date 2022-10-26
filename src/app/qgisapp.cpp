@@ -249,6 +249,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsguiutils.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsgpsinformationwidget.h"
+#include "qgsappgpsconnection.h"
 #include "qgsguivectorlayertools.h"
 #include "qgsdiagramproperties.h"
 #include "qgslayerdefinition.h"
@@ -1391,7 +1392,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipBadLayers
   mBookMarksDockWidget->hide();
 
   // create the GPS tool on starting QGIS - this is like the browser
-  mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
+  mGpsConnection = new QgsAppGpsConnection( this );
+
+  mpGpsWidget = new QgsGpsInformationWidget( mGpsConnection, mMapCanvas );
   QgsPanelWidgetStack *gpsStack = new QgsPanelWidgetStack();
   gpsStack->setMainPanel( mpGpsWidget );
   mpGpsWidget->setDockMode( true );
@@ -1965,6 +1968,9 @@ QgisApp::~QgisApp()
   delete mpMaptip;
 
   delete mpGpsWidget;
+  mpGpsWidget = nullptr;
+  delete mGpsConnection;
+  mGpsConnection = nullptr;
 
   delete mOverviewMapCursor;
 
@@ -4876,7 +4882,7 @@ QgsLayerTreeRegistryBridge::InsertionPoint QgisApp::layerTreeInsertionPoint() co
 
 void QgisApp::setGpsPanelConnection( QgsGpsConnection *connection )
 {
-  mpGpsWidget->setConnection( connection );
+  mGpsConnection->setConnection( connection );
 }
 
 void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer *> layers )

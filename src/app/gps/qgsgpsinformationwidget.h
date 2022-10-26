@@ -38,6 +38,7 @@
 #include <QTextStream>
 
 class QextSerialPort;
+class QgsAppGpsConnection;
 class QgsGpsConnection;
 class QgsGpsTrackerThread;
 class QgsGpsInformation;
@@ -65,18 +66,10 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     static const inline QgsSettingsEntryInteger settingMapExtentRecenteringThreshold = QgsSettingsEntryInteger( QStringLiteral( "map-recentering-threshold" ), QgsSettings::Prefix::GPS, 50, QStringLiteral( "Threshold for GPS automatic map centering" ) );
     static const inline QgsSettingsEntryInteger settingMapRotateInterval = QgsSettingsEntryInteger( QStringLiteral( "map-rotate-interval" ), QgsSettings::Prefix::GPS, 0, QStringLiteral( "Interval for GPS automatic map rotation" ) );
 
-    QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
+    QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
 
     bool blockCanvasInteraction( Interaction interaction ) const override;
-
-    /**
-     * Sets a GPS \a connection to use within the GPS Panel widget.
-     *
-     * Any existing GPS connection used by the widget will be disconnect and replaced with this connection. The connection
-     * is automatically registered within the QgsApplication::gpsConnectionRegistry().
-     */
-    void setConnection( QgsGpsConnection *connection );
 
   public slots:
     void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
@@ -102,7 +95,6 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
     void mBtnResetFeature_clicked();
 // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
 
-    void connected( QgsGpsConnection * );
     void timedout();
     void switchAcquisition();
     void timestampFormatChanged( int index );
@@ -113,20 +105,23 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
      */
     void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
 
+    void gpsConnecting();
+    void gpsConnectionError( const QString &error );
+    void gpsDisconnected();
+    void gpsConnected();
+
   private:
     enum FixStatus  //GPS status
     {
       NoData, NoFix, Fix2D, Fix3D
     };
     void addVertex();
-    void connectGps();
-    void connectGpsSlot();
-    void disconnectGps();
     void setStatusIndicator( FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
     void updateTimeZones();
     QVariant timestamp( QgsVectorLayer *vlayer, int idx );
-    QgsGpsConnection *mNmea = nullptr;
+
+    QgsAppGpsConnection *mConnection = nullptr;
     QPointer< QgsMapCanvas > mMapCanvas;
     QgsGpsMarker *mMapMarker = nullptr;
     QgsGpsBearingItem *mMapBearingItem = nullptr;
@@ -176,6 +171,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, public QgsMapCa
 
     QElapsedTimer mLastRotateTimer;
     QElapsedTimer mLastForcedStatusUpdate;
+
+    int mBlockGpsStateChanged = 0;
 
     friend class TestQgsGpsInformationWidget;
 };

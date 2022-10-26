@@ -263,6 +263,7 @@ set(QGIS_APP_SRCS
   options/qgsrenderingoptions.cpp
   options/qgsvectorrenderingoptions.cpp
 
+  gps/qgsappgpsconnection.cpp
   gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
