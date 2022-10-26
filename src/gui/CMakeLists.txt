@@ -1458,7 +1458,7 @@ set(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddrowdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscreaterasterattributetabledialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsloadrasterattributetabledialogbase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddcolumndialog.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterattributetableaddcolumndialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
