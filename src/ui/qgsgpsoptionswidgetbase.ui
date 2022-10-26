@@ -48,8 +48,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>676</width>
-        <height>783</height>
+        <width>690</width>
+        <height>761</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -349,39 +349,19 @@
            <number>4</number>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="label_13">
             <property name="text">
-             <string>Line width</string>
+             <string>Track line style</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QgsSpinBox" name="mSpinTrackWidth">
-            <property name="toolTip">
-             <string>Track width in pixels</string>
-            </property>
-            <property name="suffix">
-             <string> px</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Line color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsColorButton" name="mBtnTrackColor">
+           <widget class="QgsSymbolButton" name="mTrackLineStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string/>
             </property>
             <property name="text">
              <string/>
@@ -521,12 +501,6 @@
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -59,6 +59,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   mGpsMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
   mBearingLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
+  mTrackLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
 
   const QString defaultSymbol = QgsGpsMarker::settingLocationMarkerSymbol.value();
   QDomDocument symbolDoc;
@@ -87,16 +88,22 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
       mBearingLineStyleButton->setSymbol( bearingSymbol.release() );
   }
 
+  const QString trackLineSymbolXml = QgsGpsInformationWidget::settingTrackLineSymbol.value();
+  if ( !trackLineSymbolXml.isEmpty() )
+  {
+    doc.setContent( trackLineSymbolXml );
+    elem = doc.documentElement();
+    std::unique_ptr< QgsLineSymbol > trackLineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    if ( trackLineSymbol )
+      mTrackLineStyleButton->setSymbol( trackLineSymbol.release() );
+  }
+
   mCheckRotateLocationMarker->setChecked( QgsGpsMarker::settingRotateLocationMarker.value() );
 
   mSpinGpsdPort->setValue( 2947 );
   mSpinGpsdPort->setClearValue( 2947 );
-  mSpinTrackWidth->setClearValue( 2 );
   mSpinMapRotateInterval->setClearValue( 0 );
   mSpinMapExtentMultiplier->setClearValue( 50 );
-
-  mBtnTrackColor->setAllowOpacity( true );
-  mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
 
   connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGpsOptionsWidget::refreshDevices );
 
@@ -124,8 +131,6 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   QString gpsdHost;
   int gpsdPort = 0;
   QString gpsdDevice;
-  double trackWidth = 2;
-  QColor trackColor;
   int acquisitionInterval = 0;
   double distanceThreshold = 0;
   bool bearingFromTravelDirection = false;
@@ -137,8 +142,6 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
     gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber.value() );
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
-    trackWidth = QgsGpsInformationWidget::settingGpsTrackWidth.value();
-    trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
     acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
     bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
@@ -170,9 +173,6 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
     gpsdHost = settings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString();
     gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
     gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
-
-    trackWidth = settings.value( QStringLiteral( "trackWidth" ), "2", QgsSettings::Gps ).toInt();
-    trackColor = settings.value( QStringLiteral( "trackColor" ), QColor( Qt::red ), QgsSettings::Gps ).value<QColor>();
 
     acquisitionInterval = settings.value( QStringLiteral( "acquisitionInterval" ), 0, QgsSettings::Gps ).toInt();
     distanceThreshold = settings.value( QStringLiteral( "distanceThreshold" ), 0, QgsSettings::Gps ).toDouble();
@@ -211,9 +211,6 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   mTravelBearingCheckBox->setChecked( bearingFromTravelDirection );
 
-  mSpinTrackWidth->setValue( static_cast< int >( std::round( trackWidth ) ) );
-  mBtnTrackColor->setColor( trackColor );
-
   mCboAcquisitionInterval->setCurrentText( QString::number( acquisitionInterval ) );
   mCboDistanceThreshold->setCurrentText( QString::number( distanceThreshold ) );
 
@@ -242,6 +239,14 @@ void QgsGpsOptionsWidget::apply()
     QgsGpsInformationWidget::settingBearingLineSymbol.setValue( doc.toString( 0 ) );
   }
 
+  if ( QgsSymbol *lineSymbol = mTrackLineStyleButton->symbol() )
+  {
+    QDomDocument doc;
+    const QDomElement elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "gps-track-symbol" ), lineSymbol, doc, QgsReadWriteContext() );
+    doc.appendChild( elem );
+    QgsGpsInformationWidget::settingTrackLineSymbol.setValue( doc.toString( 0 ) );
+  }
+
   QgsGpsConnection::settingsGpsSerialDevice.setValue( mCboDevices->currentData().toString() );
 
   if ( mRadAutodetect->isChecked() )
@@ -264,9 +269,6 @@ void QgsGpsOptionsWidget::apply()
   QgsGpsConnection::settingsGpsdHostName.setValue( mGpsdHost->text() );
   QgsGpsConnection::settingsGpsdPortNumber.setValue( mSpinGpsdPort->value() );
   QgsGpsConnection::settingsGpsdDeviceName.setValue( mGpsdDevice->text() );
-
-  QgsGpsInformationWidget::settingGpsTrackColor.setValue( mBtnTrackColor->color() );
-  QgsGpsInformationWidget::settingGpsTrackWidth.setValue( mSpinTrackWidth->value() );
 
   QgsGpsConnection::settingGpsAcquisitionInterval.setValue( mCboAcquisitionInterval->currentText().toInt() );
   QgsGpsConnection::settingGpsDistanceThreshold.setValue( mCboDistanceThreshold->currentText().toDouble() );
