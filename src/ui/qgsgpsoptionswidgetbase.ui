@@ -264,7 +264,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
          <property name="title">
-          <string>GPS Visualization Options</string>
+          <string>GPS Location Marker</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="1,2,0">
           <item row="0" column="0">
@@ -290,7 +290,7 @@
           <item row="1" column="0" colspan="3">
            <widget class="QCheckBox" name="mCheckRotateLocationMarker">
             <property name="text">
-             <string>Rotate to match GPS bearing</string>
+             <string>Rotate location marker to match GPS bearing</string>
             </property>
            </widget>
           </item>
@@ -329,7 +329,7 @@
              <string>If checked, the bearing reported by the GPS device will be ignored and the bearing will instead be calculated by the angle between the previous two GPS locations</string>
             </property>
             <property name="text">
-             <string>Calculate bearing from travel direction</string>
+             <string>Calculate bearings from travel direction</string>
             </property>
            </widget>
           </item>
@@ -339,7 +339,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
          <property name="title">
-          <string>GPS Track Visualization</string>
+          <string>GPS Track</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_16" columnstretch="1,2">
           <property name="topMargin">
