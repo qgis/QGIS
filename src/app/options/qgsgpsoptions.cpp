@@ -135,15 +135,15 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
     gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
-    gpsdPort = QgsGpsConnection::settingsGpsdPortNumber.value();
+    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber.value() );
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
     trackWidth = QgsGpsInformationWidget::settingGpsTrackWidth.value();
     trackColor = QgsGpsInformationWidget::settingGpsTrackColor.value();
-    acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
+    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     distanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
     bearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    recenteringThreshold = QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value();
-    rotateInterval = QgsGpsInformationWidget::settingMapRotateInterval.value();
+    recenteringThreshold = static_cast< int >( QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value() );
+    rotateInterval = static_cast< int >( QgsGpsInformationWidget::settingMapRotateInterval.value() );
   }
   else
   {
@@ -211,7 +211,7 @@ QgsGpsOptionsWidget::QgsGpsOptionsWidget( QWidget *parent )
 
   mTravelBearingCheckBox->setChecked( bearingFromTravelDirection );
 
-  mSpinTrackWidth->setValue( trackWidth );
+  mSpinTrackWidth->setValue( static_cast< int >( std::round( trackWidth ) ) );
   mBtnTrackColor->setColor( trackColor );
 
   mCboAcquisitionInterval->setCurrentText( QString::number( acquisitionInterval ) );

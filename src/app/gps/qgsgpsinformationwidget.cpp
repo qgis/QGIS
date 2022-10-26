@@ -429,11 +429,11 @@ void QgsGpsInformationWidget::gpsSettingsChanged()
   int acquisitionInterval = 0;
   if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
   {
-    acquisitionInterval = QgsGpsConnection::settingGpsAcquisitionInterval.value();
+    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval.value() );
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold.value();
     mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection.value();
-    mMapExtentMultiplier = QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value();
-    mMapRotateInterval = QgsGpsInformationWidget::settingMapRotateInterval.value();
+    mMapExtentMultiplier = static_cast< int >( QgsGpsInformationWidget::settingMapExtentRecenteringThreshold.value() );
+    mMapRotateInterval = static_cast< int >( QgsGpsInformationWidget::settingMapRotateInterval.value() );
   }
   else
   {
@@ -478,7 +478,7 @@ void QgsGpsInformationWidget::updateTrackAppearance()
   {
     mRubberBand->setColor( trackColor );
   }
-  mRubberBand->setWidth( trackWidth );
+  mRubberBand->setWidth( static_cast< int >( std::round( trackWidth ) ) );
   mRubberBand->update();
 }
 
@@ -597,7 +597,7 @@ void QgsGpsInformationWidget::connectGps()
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
     gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
-    gpsdPort = QgsGpsConnection::settingsGpsdPortNumber.value();
+    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber.value() );
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
     serialDevice = QgsGpsConnection::settingsGpsSerialDevice.value();
   }
@@ -1060,7 +1060,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     }
 
-    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mMapRotateInterval * 1000 ) ) )
+    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast< long long >( mMapRotateInterval ) * 1000 ) ) )
     {
       const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
