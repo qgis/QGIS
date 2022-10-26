@@ -20,6 +20,7 @@
 #include "qgsgpsdetector.h"
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
+#include "qgsmessagebar.h"
 
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
@@ -112,8 +113,9 @@ void QgsAppGpsConnection::connectGps()
       port = QgsGpsConnection::settingsGpsSerialDevice.value();
       if ( port.isEmpty() )
       {
-        emit connectionError( tr( "No path to the GPS port "
-                                  "is specified. Please set a path then try again." ) );
+        QgisApp::instance()->statusBarIface()->clearMessage();
+        QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "No path to the GPS port is specified. Please set a path then try again." ) );
+        emit connectionError( tr( "No path to the GPS port is specified. Please set a path then try again." ) );
         return;
       }
       break;
@@ -151,7 +153,9 @@ void QgsAppGpsConnection::onTimeOut()
 {
   mConnection = nullptr;
   emit connectionTimedOut();
-  showStatusBarMessage( tr( "Failed to connect to GPS device." ) );
+
+  QgisApp::instance()->statusBarIface()->clearMessage();
+  QgisApp::instance()->messageBar()->pushCritical( QString(), tr( "Failed to connect to GPS device." ) );
 }
 
 void QgsAppGpsConnection::onConnected( QgsGpsConnection *conn )

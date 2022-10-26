@@ -584,9 +584,8 @@ void QgsGpsInformationWidget::gpsConnecting()
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
 }
 
-void QgsGpsInformationWidget::gpsConnectionError( const QString &error )
+void QgsGpsInformationWidget::gpsConnectionError( const QString & )
 {
-  QMessageBox::information( this, tr( "GPS Connection" ), error );
   //toggle the button back off
   mConnectButton->setChecked( false );
 }
