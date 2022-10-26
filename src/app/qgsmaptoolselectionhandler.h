@@ -18,6 +18,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QTimer>
 
 #include "qgsgeometry.h"
 
@@ -94,7 +95,13 @@ class QgsMapToolSelectionHandler : public QObject
       //! SelectFreehand - free hand selection
       SelectFreehand,
       //! SelectRadius - a circle selection
-      SelectRadius
+      SelectRadius,
+
+      /**
+       * SelectOnMouseMove - selection on mouse move
+       * \since QGIS 3.30
+       */
+      SelectOnMouseMove
     };
     Q_ENUM( SelectionMode )
 
@@ -200,6 +207,9 @@ class QgsMapToolSelectionHandler : public QObject
 
     //! Shows features to select polygon from existing features
     QgsIdentifyMenu *mIdentifyMenu = nullptr; // owned by canvas
+
+    //! Delay timer for continuous selection mode
+    std::unique_ptr<QTimer> mOnMouseMoveDelayTimer;
 };
 
 #endif

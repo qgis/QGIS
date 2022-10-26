@@ -133,6 +133,7 @@ QgsMapTool::Flags QgsMapToolSelect::flags() const
       break;
 
     case QgsMapToolSelectionHandler::SelectSimple:
+    case QgsMapToolSelectionHandler::SelectOnMouseMove:
     case QgsMapToolSelectionHandler::SelectFreehand:
     case QgsMapToolSelectionHandler::SelectRadius:
       return QgsMapTool::flags() | QgsMapTool::ShowContextMenu;
