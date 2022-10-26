@@ -133,7 +133,7 @@ bool QgsRasterAttributeTableModel::insertField( const int position, const QStrin
     return false;
   }
 
-  const int newPosition { std::clamp( position, 0, mRat->fields().count( ) ) };
+  const int newPosition { std::clamp( position, 0, static_cast<int>( mRat->fields().count( ) ) ) };
   const QgsRasterAttributeTable::Field field { name, usage, type };
   beginResetModel( );
   const bool retVal { mRat->insertField( newPosition, field, errorMessage ) };
