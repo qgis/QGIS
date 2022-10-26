@@ -41,6 +41,7 @@
 #include <QTimer>
 #include <QEventLoop>
 #include <QThread>
+#include <QTextDocument>
 
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -117,7 +118,8 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
   const QgsScopedQPainterState painterState( painter );
 
   double rectScale = 1.0;
-  if ( mMode == QgsLayoutItemLabel::ModeFont )
+  if ( mMode == QgsLayoutItemLabel::ModeFont
+       || ( mMode == QgsLayoutItemLabel::ModeHtml && mUseHtmlSubset ) )
   {
     rectScale = context.renderContext().scaleFactor();
   }
@@ -149,11 +151,24 @@ void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
       {
         if ( mUseHtmlSubset )
         {
+          painter->save();
+
+          // Magic scale to have the same rendered size as with other options
+          painter->scale( 0.6, 0.6 );
+
           QTextDocument document;
-          document.setPageSize( QSize( painterRect.width() * mHtmlUnitsToLayoutUnits * 10.0, painterRect.height() * mHtmlUnitsToLayoutUnits * 10.0 ) );
+          document.setPageSize( QSize( painterRect.width(), painterRect.height() ) );
           document.setDefaultStyleSheet( createStylesheet() );
+          document.setDefaultFont(getRenderFont());
+
+          QTextOption textOption = document.defaultTextOption();
+          textOption.setAlignment(mHAlignment);
+          document.setDefaultTextOption(textOption);
+
           document.setHtml( currentText() );
-          document.drawContents( painter );
+
+          document.drawContents( painter, painterRect );
+          painter->restore();
         }
         else
         {
@@ -358,6 +373,33 @@ void QgsLayoutItemLabel::replaceDateText( QString &text ) const
   }
 }
 
+QFont QgsLayoutItemLabel::getRenderFont() const
+{
+    QFont f = mFormat.font();
+    switch ( mFormat.sizeUnit() )
+    {
+      case QgsUnitTypes::RenderMillimeters:
+        f.setPointSizeF( mFormat.size() / 0.352778 );
+        break;
+      case QgsUnitTypes::RenderPixels:
+        f.setPixelSize( mFormat.size() );
+        break;
+      case QgsUnitTypes::RenderPoints:
+        f.setPointSizeF( mFormat.size() );
+        break;
+      case QgsUnitTypes::RenderInches:
+        f.setPointSizeF( mFormat.size() * 72 );
+        break;
+      case QgsUnitTypes::RenderUnknownUnit:
+      case QgsUnitTypes::RenderPercentage:
+      case QgsUnitTypes::RenderMetersInMapUnits:
+      case QgsUnitTypes::RenderMapUnits:
+        break;
+    }
+
+    return f;
+}
+
 QString QgsLayoutItemLabel::createStylesheet() const
 {
   QString stylesheet;
@@ -465,6 +507,7 @@ QFont QgsLayoutItemLabel::font() const
 bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
   layoutLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "useHtmlSubset" ), mUseHtmlSubset );
 
   layoutLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
   layoutLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
@@ -487,6 +530,7 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
 
   //html state
   mMode = static_cast< Mode >( itemElem.attribute( QStringLiteral( "htmlState" ) ).toInt() );
+  mUseHtmlSubset = ( itemElem.attribute( QStringLiteral( "useHtmlSubset" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 
   //margin
   bool marginXOk = false;

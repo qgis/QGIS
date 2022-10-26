@@ -278,7 +278,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     QString mText;
 
     Mode mMode = ModeFont;
-    bool mUseHtmlSubset;
+    bool mUseHtmlSubset = false;
     double mHtmlUnitsToLayoutUnits = 1.0;
     double htmlUnitsToLayoutUnits(); //calculate scale factor
     bool mHtmlLoaded = false;
@@ -304,6 +304,8 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
     void replaceDateText( QString &text ) const;
+
+    QFont getRenderFont() const;
 
     //! Creates stylesheet content using the current font and label appearance settings
     QString createStylesheet() const;
