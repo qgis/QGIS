@@ -30,6 +30,7 @@
 #include "qgis_gui.h"
 #include "qgsresamplingutils.h"
 #include "qgsrasterpipe.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsPointXY;
 class QgsMapLayer;

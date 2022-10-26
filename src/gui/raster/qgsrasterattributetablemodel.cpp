@@ -419,11 +419,7 @@ bool QgsRasterAttributeTableModel::setData( const QModelIndex &index, const QVar
     }
     if ( hasColor() && isColorOrRamp )
     {
-      if ( ! value.canConvert( QVariant::Type::Color ) )
-      {
-        return false;
-      }
-      else if ( ! mRat->setColor( index.row(), value.value<QColor>( ) ) )
+      if ( ! value.canConvert( QVariant::Type::Color ) || ! mRat->setColor( index.row(), value.value<QColor>( ) ) )
       {
         return false;
       }

@@ -486,9 +486,9 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += tr( "n/a" );
     myMetadata += QLatin1String( "</td>" );
 
-    if ( provider->hasStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE ) )
+    if ( provider->hasStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) ) )
     {
-      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), SAMPLE_SIZE );
+      const QgsRasterBandStats myRasterBandStats = provider->bandStatistics( i, QgsRasterBandStats::Min | QgsRasterBandStats::Max, provider->extent(), static_cast<int>( SAMPLE_SIZE ) );
       myMetadata += QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.minimumValue, 'f', 10 ) % QStringLiteral( "</td>" ) %
                     QStringLiteral( "<td>" ) % QString::number( myRasterBandStats.maximumValue, 'f', 10 ) % QStringLiteral( "</td>" );
     }
@@ -750,11 +750,8 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   {
     mRasterType = ColorLayer;
   }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
-  {
-    mRasterType = Palette;
-  }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
+  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex
+            || mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
   {
     mRasterType = Palette;
   }
@@ -1300,6 +1297,11 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
       if ( rendererType == QLatin1String( "singlebandpseudocolor" ) )
       {
+        // This is not necessary, but clang-tidy thinks it is.
+        if ( ! myPseudoColorRenderer )
+        {
+          return;
+        }
         // Do not overwrite min/max with NaN if they were already set,
         // for example when the style was already loaded from a raster attribute table
         // in that case we need to respect the style from the attribute table and do
@@ -1339,11 +1341,12 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     }
   }
 
-  if ( rendererType == QLatin1String( "singlebandgray" ) )
+  // Again, second check is redundant but clang-tidy doesn't agree
+  if ( rendererType == QLatin1String( "singlebandgray" ) && myGrayRenderer )
   {
     if ( myEnhancements.first() ) myGrayRenderer->setContrastEnhancement( myEnhancements.takeFirst() );
   }
-  else if ( rendererType == QLatin1String( "multibandcolor" ) )
+  else if ( rendererType == QLatin1String( "multibandcolor" ) && myMultiBandRenderer )
   {
     if ( myEnhancements.first() ) myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.takeFirst() );
     if ( myEnhancements.first() ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.takeFirst() );
@@ -1393,7 +1396,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
                             renderer()->minMaxOrigin().limits() == QgsRasterMinMaxOrigin::None ?
                             QgsRasterMinMaxOrigin::MinMax : renderer()->minMaxOrigin().limits(),
                             extent,
-                            SAMPLE_SIZE,
+                            static_cast<int>( SAMPLE_SIZE ),
                             true,
                             renderer() );
   }
@@ -1406,7 +1409,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
       setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum,
                               myLimits,
                               extent,
-                              SAMPLE_SIZE,
+                              static_cast<int>( SAMPLE_SIZE ),
                               true,
                               renderer() );
     }
@@ -1449,7 +1452,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       computeMinMax( sbpcr->band(),
                      rasterRenderer->minMaxOrigin(),
                      rasterRenderer->minMaxOrigin().limits(), extent,
-                     SAMPLE_SIZE, min, max );
+                     static_cast<int>( SAMPLE_SIZE ), min, max );
       sbpcr->setClassificationMin( min );
       sbpcr->setClassificationMax( max );
 
@@ -1489,7 +1492,7 @@ void QgsRasterLayer::refreshRenderer( QgsRasterRenderer *rasterRenderer, const Q
       setContrastEnhancement( ce->contrastEnhancementAlgorithm(),
                               rasterRenderer->minMaxOrigin().limits(),
                               extent,
-                              SAMPLE_SIZE,
+                              static_cast<int>( SAMPLE_SIZE ),
                               true,
                               rasterRenderer );
 
