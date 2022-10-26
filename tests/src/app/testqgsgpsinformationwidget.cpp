@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgssettingsregistrycore.h"
+#include "qgsappgpsconnection.h"
 #include "gps/qgsgpsinformationwidget.h"
 #include "nmeatime.h"
 
@@ -111,7 +112,8 @@ void TestQgsGpsInformationWidget::cleanupTestCase()
 std::unique_ptr<QgsGpsInformationWidget> TestQgsGpsInformationWidget::prepareWidget()
 {
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
-  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( canvas );
+  QgsAppGpsConnection connection( nullptr );
+  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( &connection, canvas );
   // Widget config and input values
   // 2019/06/19 12:27:34.543[UTC]
   widget->mLastNmeaTime = { 119, 5, 19, 12, 27, 34, 543 };
@@ -307,7 +309,8 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
       QStringLiteral( "memory" ) );
 
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
-  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( canvas );
+  QgsAppGpsConnection connection( nullptr );
+  std::unique_ptr<QgsGpsInformationWidget> widget = std::make_unique<QgsGpsInformationWidget>( &connection, canvas );
   widget->mMapCanvas->setCurrentLayer( multiLineString.get() );
   multiLineString->startEditing();
 
@@ -332,7 +335,7 @@ void TestQgsGpsInformationWidget::testMultiPartLayers()
       QStringLiteral( "vl4" ),
       QStringLiteral( "memory" ) );
 
-  widget = std::make_unique<QgsGpsInformationWidget>( canvas );
+  widget = std::make_unique<QgsGpsInformationWidget>( &connection, canvas );
   widget->mMapCanvas->setCurrentLayer( multiPolygon.get() );
   multiPolygon->startEditing();
 

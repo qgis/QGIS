@@ -19,12 +19,10 @@
 #include "info.h"
 
 #include "qgisapp.h"
-#include "qgsapplication.h"
+#include "qgsappgpsconnection.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureaction.h"
 #include "qgsgeometry.h"
-#include "qgsgpsconnectionregistry.h"
-#include "qgsgpsdetector.h"
 #include "qgslogger.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgspointxy.h"
@@ -73,8 +71,10 @@
 #include <QTimeZone>
 
 
-QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent )
+QgsGpsInformationWidget::QgsGpsInformationWidget( QgsAppGpsConnection *connection,
+    QgsMapCanvas *mapCanvas, QWidget *parent )
   : QgsPanelWidget( parent )
+  , mConnection( connection )
   , mMapCanvas( mapCanvas )
 {
   Q_ASSERT( mMapCanvas ); // precondition
@@ -353,13 +353,20 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   gpsSettingsChanged();
 
   mMapCanvas->installInteractionBlocker( this );
+
+  connect( mConnection, &QgsAppGpsConnection::connecting, this, &QgsGpsInformationWidget::gpsConnecting );
+  connect( mConnection, &QgsAppGpsConnection::connectionError, this, &QgsGpsInformationWidget::gpsConnectionError );
+  connect( mConnection, &QgsAppGpsConnection::connectionTimedOut, this, &QgsGpsInformationWidget::timedout );
+  connect( mConnection, &QgsAppGpsConnection::connected, this, &QgsGpsInformationWidget::gpsConnected );
+  connect( mConnection, &QgsAppGpsConnection::disconnected, this, &QgsGpsInformationWidget::gpsDisconnected );
+  connect( mConnection, &QgsAppGpsConnection::stateChanged, this, &QgsGpsInformationWidget::displayGPSInformation );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
 {
-  if ( mNmea )
+  if ( mConnection->isConnected() )
   {
-    disconnectGps();
+    gpsDisconnected();
   }
 
   delete mMapMarker;
@@ -406,18 +413,13 @@ bool QgsGpsInformationWidget::blockCanvasInteraction( QgsMapCanvasInteractionBlo
       // if we're connected and set to follow the GPS location, block the single click navigation mode
       // to avoid accidental map canvas pans away from the GPS location.
       // (for now, we don't block click-and-drag pans, as they are less likely to be accidentally triggered)
-      if ( mNmea && ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() ) )
+      if ( mConnection->isConnected() && ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() ) )
         return true;
 
       break;
   }
 
   return false;
-}
-
-void QgsGpsInformationWidget::setConnection( QgsGpsConnection *connection )
-{
-  connected( connection );
 }
 
 void QgsGpsInformationWidget::gpsSettingsChanged()
@@ -504,22 +506,22 @@ void QgsGpsInformationWidget::updateBearingAppearance()
 void QgsGpsInformationWidget::mBtnPosition_clicked()
 {
   mStackedWidget->setCurrentIndex( 0 );
-  if ( mNmea )
-    displayGPSInformation( mNmea->currentGPSInformation() );
+  if ( QgsGpsConnection *connection = mConnection->connection() )
+    displayGPSInformation( connection->currentGPSInformation() );
 }
 
 void QgsGpsInformationWidget::mBtnSignal_clicked()
 {
   mStackedWidget->setCurrentIndex( 1 );
-  if ( mNmea )
-    displayGPSInformation( mNmea->currentGPSInformation() );
+  if ( QgsGpsConnection *connection = mConnection->connection() )
+    displayGPSInformation( connection->currentGPSInformation() );
 }
 
 void QgsGpsInformationWidget::mBtnSatellites_clicked()
 {
   mStackedWidget->setCurrentIndex( 2 );
-  if ( mNmea )
-    displayGPSInformation( mNmea->currentGPSInformation() );
+  if ( QgsGpsConnection *connection = mConnection->connection() )
+    displayGPSInformation( connection->currentGPSInformation() );
 }
 
 void QgsGpsInformationWidget::mBtnOptions_clicked()
@@ -536,11 +538,11 @@ void QgsGpsInformationWidget::mConnectButton_toggled( bool flag )
 {
   if ( flag )
   {
-    connectGps();
+    mConnection->connectGps();
   }
   else
   {
-    disconnectGps();
+    mConnection->disconnectGps();
   }
 }
 
@@ -558,7 +560,7 @@ void QgsGpsInformationWidget::recenter()
   }
 }
 
-void QgsGpsInformationWidget::connectGps()
+void QgsGpsInformationWidget::gpsConnecting()
 {
   // clear position page fields to give better indication that something happened (or didn't happen)
   mTxtLatitude->clear();
@@ -579,102 +581,26 @@ void QgsGpsInformationWidget::connectGps()
   mLastGpsPosition = QgsPointXY();
   mSecondLastGpsPosition = QgsPointXY();
 
-  QString port;
-
-  Qgis::GpsConnectionType connectionType = Qgis::GpsConnectionType::Automatic;
-  QString gpsdHost;
-  int gpsdPort = 0;
-  QString gpsdDevice;
-  QString serialDevice;
-  if ( QgsGpsConnection::settingsGpsConnectionType.exists() )
-  {
-    connectionType = QgsGpsConnection::settingsGpsConnectionType.value();
-    gpsdHost = QgsGpsConnection::settingsGpsdHostName.value();
-    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber.value() );
-    gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName.value();
-    serialDevice = QgsGpsConnection::settingsGpsSerialDevice.value();
-  }
-  else
-  {
-    // legacy settings
-    QgsSettings settings;
-    const QString portMode = settings.value( QStringLiteral( "portMode" ), "scanPorts", QgsSettings::Gps ).toString();
-
-    if ( portMode == QLatin1String( "scanPorts" ) )
-    {
-      connectionType = Qgis::GpsConnectionType::Automatic;
-    }
-    else if ( portMode == QLatin1String( "internalGPS" ) )
-    {
-      connectionType = Qgis::GpsConnectionType::Internal;
-    }
-    else if ( portMode == QLatin1String( "explicitPort" ) )
-    {
-      connectionType = Qgis::GpsConnectionType::Serial;
-    }
-    else if ( portMode == QLatin1String( "gpsd" ) )
-    {
-      connectionType = Qgis::GpsConnectionType::Gpsd;
-    }
-
-    gpsdHost = settings.value( QStringLiteral( "gpsdHost" ), "localhost", QgsSettings::Gps ).toString();
-    gpsdPort = settings.value( QStringLiteral( "gpsdPort" ), 2947, QgsSettings::Gps ).toInt();
-    gpsdDevice = settings.value( QStringLiteral( "gpsdDevice" ), QVariant(), QgsSettings::Gps ).toString();
-    serialDevice = settings.value( QStringLiteral( "lastPort" ), "", QgsSettings::Gps ).toString();
-  }
-
-  switch ( connectionType )
-  {
-    case Qgis::GpsConnectionType::Automatic:
-      break;
-    case Qgis::GpsConnectionType::Internal:
-      port = QStringLiteral( "internalGPS" );
-      break;
-    case Qgis::GpsConnectionType::Serial:
-      port = QgsGpsConnection::settingsGpsSerialDevice.value();
-      if ( port.isEmpty() )
-      {
-        QMessageBox::information( this, tr( "/gps" ), tr( "No path to the GPS port "
-                                  "is specified. Please enter a path then try again." ) );
-        //toggle the button back off
-        mConnectButton->setChecked( false );
-        return;
-      }
-      break;
-    case Qgis::GpsConnectionType::Gpsd:
-    {
-      port = QStringLiteral( "%1:%2:%3" ).arg( gpsdHost ).arg( gpsdPort ).arg( gpsdDevice );
-      break;
-    }
-  }
-
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
-  showStatusBarMessage( tr( "Connecting to GPS device %1…" ).arg( port ) );
+}
 
-  QgsGpsDetector *detector = new QgsGpsDetector( port );
-  connect( detector, static_cast < void ( QgsGpsDetector::* )( QgsGpsConnection * ) > ( &QgsGpsDetector::detected ), this, &QgsGpsInformationWidget::connected );
-  connect( detector, &QgsGpsDetector::detectionFailed, this, &QgsGpsInformationWidget::timedout );
-  detector->advance();   // start the detection process
+void QgsGpsInformationWidget::gpsConnectionError( const QString &error )
+{
+  QMessageBox::information( this, tr( "GPS Connection" ), error );
+  //toggle the button back off
+  mConnectButton->setChecked( false );
 }
 
 void QgsGpsInformationWidget::timedout()
 {
   mConnectButton->setChecked( false );
-  mNmea = nullptr;
   mGPSPlainTextEdit->appendPlainText( tr( "Timed out!" ) );
-  showStatusBarMessage( tr( "Failed to connect to GPS device." ) );
 }
 
-void QgsGpsInformationWidget::connected( QgsGpsConnection *conn )
+void QgsGpsInformationWidget::gpsConnected()
 {
-  mNmea = conn;
-  connect( mNmea, &QgsGpsConnection::stateChanged,
-           this, &QgsGpsInformationWidget::displayGPSInformation );
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Dis&connect" ) );
-  //insert connection into registry such that it can also be used by other dialogs or plugins
-  QgsApplication::gpsConnectionRegistry()->registerConnection( mNmea );
-  showStatusBarMessage( tr( "Connected to GPS device." ) );
 
   if ( mLogFileGroupBox->isChecked() && !mLogFilename->filePath().isEmpty() )
   {
@@ -690,7 +616,7 @@ void QgsGpsInformationWidget::connected( QgsGpsConnection *conn )
       // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
       mLogFileTextStream << "====" << "\r\n";
 
-      connect( mNmea, &QgsGpsConnection::nmeaSentenceReceived, this, &QgsGpsInformationWidget::logNmeaSentence ); // added to handle raw data
+      connect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsGpsInformationWidget::logNmeaSentence ); // added to handle raw data
     }
     else  // error opening file
     {
@@ -703,19 +629,16 @@ void QgsGpsInformationWidget::connected( QgsGpsConnection *conn )
   }
 }
 
-void QgsGpsInformationWidget::disconnectGps()
+void QgsGpsInformationWidget::gpsDisconnected()
 {
   if ( mLogFile && mLogFile->isOpen() )
   {
-    disconnect( mNmea, &QgsGpsConnection::nmeaSentenceReceived, this, &QgsGpsInformationWidget::logNmeaSentence );
+    disconnect( mConnection, &QgsAppGpsConnection::nmeaSentenceReceived, this, &QgsGpsInformationWidget::logNmeaSentence );
     mLogFile->close();
     delete mLogFile;
     mLogFile = nullptr;
   }
 
-  QgsApplication::gpsConnectionRegistry()->unregisterConnection( mNmea );
-  delete mNmea;
-  mNmea = nullptr;
   if ( mMapMarker )  // marker should not be shown on GPS disconnected - not current position
   {
     delete mMapMarker;
@@ -729,13 +652,15 @@ void QgsGpsInformationWidget::disconnectGps()
   mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
   mConnectButton->setChecked( false );
   mConnectButton->setText( tr( "&Connect" ) );
-  showStatusBarMessage( tr( "Disconnected from GPS device." ) );
 
   setStatusIndicator( NoData );
 }
 
 void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &info )
 {
+  if ( mBlockGpsStateChanged )
+    return;
+
   QVector<QPointF> data;
 
   // set validity flag and status from GPS data
@@ -1173,11 +1098,10 @@ void QgsGpsInformationWidget::addVertex()
 
 void QgsGpsInformationWidget::mBtnResetFeature_clicked()
 {
-  disconnect( mNmea, &QgsGpsConnection::stateChanged,
-              this, &QgsGpsInformationWidget::displayGPSInformation );
+  mBlockGpsStateChanged++;
   createRubberBand(); //deletes existing rubberband
   mCaptureList.clear();
-  connectGpsSlot();
+  mBlockGpsStateChanged--;
 }
 
 void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
@@ -1264,8 +1188,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     case QgsWkbTypes::LineGeometry:
     case QgsWkbTypes::PolygonGeometry:
     {
-      disconnect( mNmea, &QgsGpsConnection::stateChanged,
-                  this, &QgsGpsInformationWidget::displayGPSInformation );
+      mBlockGpsStateChanged++;
 
       QgsFeature f;
       QgsGeometry g;
@@ -1304,7 +1227,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         }
         catch ( QgsCsException & )
         {
-          connectGpsSlot();
+          mBlockGpsStateChanged--;
           QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ),
               tr( "Error reprojecting feature to layer CRS." ) );
           return;
@@ -1322,13 +1245,13 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         {
           //bail out...
           QgisApp::instance()->messageBar()->pushWarning( tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
-          connectGpsSlot();
+          mBlockGpsStateChanged--;
           return;
         }
         else if ( avoidIntersectionsReturn == 3 )
         {
           QgisApp::instance()->messageBar()->pushCritical( tr( "Add Feature" ), tr( "The feature has been added, but at least one geometry intersected is invalid. These geometries must be manually repaired." ) );
-          connectGpsSlot();
+          mBlockGpsStateChanged--;
           return;
         }
       }
@@ -1356,7 +1279,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         mCaptureList.clear();
       } // action.addFeature()
 
-      connectGpsSlot();
+      mBlockGpsStateChanged--;
       break;
     }
 
@@ -1369,12 +1292,6 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   // force focus back to GPS window/ Add Feature button for ease of use by keyboard
   activateWindow();
   mBtnCloseFeature->setFocus( Qt::OtherFocusReason );
-}
-
-void QgsGpsInformationWidget::connectGpsSlot()
-{
-  connect( mNmea, &QgsGpsConnection::stateChanged,
-           this, &QgsGpsInformationWidget::displayGPSInformation );
 }
 
 void QgsGpsInformationWidget::createRubberBand()
@@ -1560,7 +1477,7 @@ void QgsGpsInformationWidget::timestampFormatChanged( int )
 
 void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
 {
-  if ( !mNmea )
+  if ( !mConnection->isConnected() )
     return;
 
   try
@@ -1576,7 +1493,7 @@ void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
 
 void QgsGpsInformationWidget::updateGpsDistanceStatusMessage( bool forceDisplay )
 {
-  if ( !mNmea )
+  if ( !mConnection->isConnected() )
     return;
 
   static constexpr int GPS_DISTANCE_MESSAGE_TIMEOUT_MS = 2000;
@@ -1648,7 +1565,7 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
 
 void QgsGpsInformationWidget::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture * )
 {
-  if ( !mNmea )
+  if ( !mConnection->isConnected() )
     return;
 
   try
