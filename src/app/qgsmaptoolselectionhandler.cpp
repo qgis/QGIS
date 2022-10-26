@@ -117,6 +117,7 @@ void QgsMapToolSelectionHandler::canvasReleaseEvent( QgsMapMouseEvent *e )
   switch ( mSelectionMode )
   {
     case QgsMapToolSelectionHandler::SelectSimple:
+    case QgsMapToolSelectionHandler::SelectOnMouseMove:
       selectFeaturesReleaseEvent( e );
       break;
     case QgsMapToolSelectionHandler::SelectPolygon:
@@ -135,6 +136,7 @@ void QgsMapToolSelectionHandler::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   switch ( mSelectionMode )
   {
+    case QgsMapToolSelectionHandler::SelectOnMouseMove:
     case QgsMapToolSelectionHandler::SelectSimple:
       selectFeaturesMoveEvent( e );
       break;
@@ -154,6 +156,7 @@ void QgsMapToolSelectionHandler::canvasPressEvent( QgsMapMouseEvent *e )
 {
   switch ( mSelectionMode )
   {
+    case QgsMapToolSelectionHandler::SelectOnMouseMove:
     case QgsMapToolSelectionHandler::SelectSimple:
       selectFeaturesPressEvent( e );
       break;
@@ -192,6 +195,18 @@ void QgsMapToolSelectionHandler::selectFeaturesPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
 {
+
+  if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseMove )
+  {
+    mOnMouseMoveDelayTimer.reset( new QTimer( ) );
+    mOnMouseMoveDelayTimer->singleShot( 300, mOnMouseMoveDelayTimer.get(), [ = ]
+    {
+      setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
+    } );
+
+    return;
+  }
+
   if ( e->buttons() != Qt::LeftButton )
     return;
 
